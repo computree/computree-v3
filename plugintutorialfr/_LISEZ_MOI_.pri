@@ -1,5 +1,5 @@
 #################################################
-# TUTORIAL Computree - FR - Version du 26/04/2013
+# TUTORIAL Computree - FR - Version du 03/05/2013
 # A. PIBOULE, ONF - alexandre.piboule@onf.fr
 #
 # Ce fichier (_LISEZ_MOI_.pri) est le point de départ de ce tutoriel.
@@ -8,7 +8,7 @@
 #
 # Ce projet est un plugin fonctionnel pour computree
 # Il contient des étapes visant à expliquer les mécanismes de création d'un plugin
-# Chaque étape est abondamment commentée
+# Chaque étape est commentée
 #
 #########################
 # Structure d'un plugin :
@@ -41,15 +41,18 @@
 # Cela définira le nom de la librairie du plugin une fois compilé
 # Ici le nom du plugin est tutorialfr, ce qui donne : TARGET = plug_tutorialfr
 #
-# Pour fonctionner un plugin Computree doit contenir deux classes :
-# - CODE_PluginEntry (dans tufr_pluginentry.h et tufr_pluginentry.cpp ici)
-# - CODE_StepPluginManager (dans tufr_steppluginmanager.h et tufr_steppluginmanager.cpp ici)
+# Pour fonctionner un plugin Computree doit contenir (au moins) deux classes :
+# - CODE_PluginEntry (définie dans tufr_pluginentry.h et tufr_pluginentry.cpp ici)
+# - CODE_StepPluginManager (définie dans tufr_steppluginmanager.h et tufr_steppluginmanager.cpp ici)
 #
 # La classe CODE_PluginEntry permet à Computree d'utiliser le plugin
 # La classe CODE_StepPluginManager définit les étapes du plugin utilisables
 #
 # Ensuite on ajoute une classe pour chaque étape ou item du plugin,
 # respectivement dans des repertoires step et itemdrawable
+# Dans le cas général la création d'item n'est pas utile étant donné
+# qu'il est préférable de n'utiliser que des items standard définis dans PluginSharedV2
+# Ainsi, la plupart du temps un plugin ne contient que des étapes.
 #
 ##########################################################
 # Ordre préconisé pour la lecture des fichiers de ce tutorial :
@@ -57,37 +60,7 @@
 # 2) Sources  : tufr_pluginentry.cpp
 #
 # 3) En_têtes : tufr_steppluginmanager.h
-# 4) Sources  : tufr_steppluginmanager.cpp#
+# 4) Sources  : tufr_steppluginmanager.cpp
 #
 # 5) En_têtes : step/tufr_steptutorial01.h
 # 8) Sources  : step/tufr_steptutorial01.cpp
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#

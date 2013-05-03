@@ -1,53 +1,40 @@
-/****************************************************************************
+/*
+    Implémentation de la classe TUFR_PluginEntry
+*/
 
- Copyright (C) 2010-2012 the Office National des Forêts (ONF), France
-                     and the Association de Recherche Technologie et Sciences (ARTS), Ecole Nationale Supérieure d'Arts et Métiers (ENSAM), Cluny, France.
-                     All rights reserved.
-
- Contact : alexandre.piboule@onf.fr
-
- Developers : Michaël KREBS (ARTS/ENSAM)
-              Alexandre PIBOULE (ONF)
-
- This file is part of PluginONFENSAM library 2.0.
-
- PluginONFENSAM is free library: you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- PluginONFENSAM is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with PluginONFENSAM.  If not, see <http://www.gnu.org/licenses/lgpl.html>.
-
-*****************************************************************************/
-
+// Inclusion du fichier d'entête des du pluginManager (gestionnaire d'étapes)
 #include "tufr_pluginentry.h"
 #include "tufr_steppluginmanager.h"
 
+// Constructeur
 TUFR_PluginEntry::TUFR_PluginEntry()
 {
+    // création effective et initialisation du gestionnaire d'étapes
     _stepPluginManager = new TUFR_StepPluginManager();
     _stepPluginManager->init();
 }
 
+// Desctructeur : suppression du gestionnaire d'étapes
 TUFR_PluginEntry::~TUFR_PluginEntry()
 {
     delete _stepPluginManager;
 }
 
+// Version du plugin
+// Changer la chaîne de caractère lorsqu'une nouvelle version commence
+// Attentions les scripts d'étapes tiennent compte de la version du plugin
 QString TUFR_PluginEntry::getVersion() const
 {
     return "1.0";
 }
 
+// Renvoie le gestionnaire d'étape créé
 StepPluginInterface* TUFR_PluginEntry::getStepPluginManager()
 {
     return _stepPluginManager;
 }
 
+// Macro QT permettant la création de la librairie (.dll ou .so)
+// Le premier paramètre doit être identique à celui passé à la directive TARGET du fichier .pro
+// Le second est le nom de la présente classe
 Q_EXPORT_PLUGIN2(plug_tutorialfr, TUFR_PluginEntry)
