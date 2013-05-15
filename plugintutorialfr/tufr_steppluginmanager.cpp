@@ -7,6 +7,7 @@
 #include "ct_stepseparator.h"
 #include "ct_steploadfileseparator.h"
 #include "ct_stepcanbeaddedfirstseparator.h"
+#include "step/tufr_steptutorial02.h"
 
 // Inclure ici toutes les entêtes des classes définissant des étapes dans le plugin
 //#include "step/TUFR_stepcalculateplotindicator.h"
@@ -28,7 +29,8 @@ bool TUFR_StepPluginManager::loadGenericsStep()
     CT_StepSeparator *sep = addNewSeparator(new CT_StepSeparator());
 
     // Ajout d'un étape dans le menu (en fait l'étape est ajoutée au séparateur)
-//    sep->addStep(new TUFR_StepCalculatePlotIndicator(*createNewStepInitializeData(NULL)));
+    sep->addStep(new TUFR_StepTutorial02(*createNewStepInitializeData(NULL)));
+    //    sep->addStep(new TUFR_StepCalculatePlotIndicator(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;
