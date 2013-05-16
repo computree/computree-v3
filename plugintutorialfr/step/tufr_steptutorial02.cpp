@@ -245,7 +245,10 @@ void TUFR_StepTutorial02::compute()
                 }
 
                 CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(*groupModel, 0, outResult);
-                CT_Scene *newScene = new CT_Scene(sceneItemModel, 0, outResult, (CT_AbstractPointCloud*) pointcloud, newIndex, new CT_AxisAlignedBoundingBox(QVector3D(xmin, ymin, zmin), QVector3D(xmax, ymax, zmax)));
+
+                CT_AxisAlignedBoundingBox* boundingBox = new CT_AxisAlignedBoundingBox(QVector3D(xmin, ymin, zmin), QVector3D(xmax, ymax, zmax));
+                CT_Scene *newScene = new CT_Scene(sceneItemModel, 0, outResult, (CT_AbstractPointCloud*) pointcloud, newIndex, boundingBox);
+
                 newScene->setAutoDeletePointCloud(false);
                 newScene->setAutoDeletePointCloudIndex(true);
 

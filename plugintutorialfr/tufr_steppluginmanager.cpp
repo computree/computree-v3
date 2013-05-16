@@ -7,7 +7,9 @@
 #include "ct_stepseparator.h"
 #include "ct_steploadfileseparator.h"
 #include "ct_stepcanbeaddedfirstseparator.h"
+#include "step/tufr_steptutorial01.h"
 #include "step/tufr_steptutorial02.h"
+#include "step/tufr_steptutorial03.h"
 
 // Inclure ici toutes les entêtes des classes définissant des étapes dans le plugin
 //#include "step/TUFR_stepcalculateplotindicator.h"
@@ -30,6 +32,7 @@ bool TUFR_StepPluginManager::loadGenericsStep()
 
     // Ajout d'un étape dans le menu (en fait l'étape est ajoutée au séparateur)
     sep->addStep(new TUFR_StepTutorial02(*createNewStepInitializeData(NULL)));
+    sep->addStep(new TUFR_StepTutorial03(*createNewStepInitializeData(NULL)));
     //    sep->addStep(new TUFR_StepCalculatePlotIndicator(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
@@ -49,8 +52,11 @@ bool TUFR_StepPluginManager::loadOpenFileStep()
 // Pour autant ce ne sont pas des étapes standard de chargement de fichier
 bool TUFR_StepPluginManager::loadCanBeAddedFirstStep()
 {
-//    CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
-//    sep->addStep(new TUFR_StepLoadFieldInventory(*createNewStepInitializeData(NULL)));
+    // Ajoute une nouvelle section d'étapes pouvant être ajouter en tête de script
+    CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
+
+    // Ajout d'une étape
+    sep->addStep(new TUFR_StepTutorial01(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;
