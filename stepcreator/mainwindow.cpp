@@ -54,6 +54,8 @@ bool MainWindow::createFiles(QString directory, QString stepName)
     QFile stepFileh(QString("%1/%2.h").arg(directory).arg(stepName.toLower()));
     QFile stepFilecpp(QString("%1/%2.cpp").arg(directory).arg(stepName.toLower()));
 
+    QStringList splitted = stepName.split("_");
+
     QString parentClass = "CT_AbstractStep";
 
     if (stepFileh.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -65,13 +67,33 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "\n";
         stream << "#include \"ct_step/abstract/" << parentClass.toLower() << ".h\n";
         stream << "\n";
-        stream << "    /*! \\class " << stepName << "\n";
-        stream << "     * \n";
+        stream << "    /*!\n";
+        stream << "     * \\class " << stepName << "\n";
+        stream << "     * \\ingroup Steps_" << splitted.at(0) << "\n";
+        stream << "     * \\brief <b>Short description of the step.</b>\n";
+        stream << "     *\n";
         stream << "     * Detailed decription of step purpose.\n";
         stream << "     * Please also give a general view of the algorithm.\n";
-        stream << "     * \n";
+        stream << "     *\n";
         stream << "     * \\param ParameterName Description of the parameter to give in the DialogBox\n";
+        stream << "     *\n";
+        stream << "     *\n";
+        stream << "     * <b>Input Models:</b>\n";
+        stream << "     *\n";
+        stream << "     *  - CT_ResultGroup \\n\n";
+        stream << "     *      - CT_StandardItemGroup (name)... \\n\n";
+        stream << "     *          - CT_ItemDrawable (name) \\n\n";
+        stream << "     *          - CT_ItemDrawable (name) \\n\n";
+        stream << "     *\n";
+        stream << "     * <b>Output Models:</b>\n";
+        stream << "     *\n";
+        stream << "     *  - CT_ResultGroup \\n\n";
+        stream << "     *      - CT_StandardItemGroup (Section)... \\n\n";
+        stream << "     *          - <em>cpy CT_ItemDrawable (name)</em> \\n\n";
+        stream << "     *          - <em>cpy+ CT_ItemDrawable (name)</em> \\n\n";
+        stream << "     *\n";
         stream << "     */\n";
+        stream << "\n";
         stream << "class " << stepName << ": public " << parentClass << "\n";
         stream << "{\n";
         stream << "    Q_OBJECT\n";
