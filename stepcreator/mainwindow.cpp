@@ -88,7 +88,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "     * <b>Output Models:</b>\n";
         stream << "     *\n";
         stream << "     *  - CT_ResultGroup \\n\n";
-        stream << "     *      - CT_StandardItemGroup (Section)... \\n\n";
+        stream << "     *      - <em>cpy CT_StandardItemGroup (Section)...</em> \\n\n";
         stream << "     *          - <em>cpy CT_ItemDrawable (name)</em> \\n\n";
         stream << "     *          - <em>cpy+ CT_ItemDrawable (name)</em> \\n\n";
         stream << "     *\n";
