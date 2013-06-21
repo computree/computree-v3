@@ -1,14 +1,16 @@
 // Balises C++, évitant les doublons d'includes
-#ifndef TUFR_STEPTUTORIAL01_H
-#define TUFR_STEPTUTORIAL01_H
+#ifndef TUFR_STEPTUTORIAL03_H
+#define TUFR_STEPTUTORIAL03_H
 
 
 // Inclusion de la classe parente des étapes
 #include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+
+// Inclusion du système d'indexation automatique
+#include "ct_tools/ct_autorenamemodels.h"
 
 // Une étape doit hériter de CT_AbstractStep
-class TUFR_StepTutorial01 : public CT_AbstractStepCanBeAddedFirst
+class TUFR_StepTutorial03 : public CT_AbstractStep
 {
     // Macro Qt, donnant accès à certaines fonctionnalités
     // En l'occurence, permet de récupérer le nom de l'étape
@@ -17,7 +19,7 @@ class TUFR_StepTutorial01 : public CT_AbstractStepCanBeAddedFirst
 public:
 
     // Constructeur de l'étape
-    TUFR_StepTutorial01(CT_StepInitializeData &dataInit);
+    TUFR_StepTutorial03(CT_StepInitializeData &dataInit);
 
     // Méthode fournissant la description de l'étape (tooltip dans le menu contectuel)
     QString getStepDescription() const;
@@ -40,16 +42,11 @@ protected:
     void compute();
 
 private:
-    // Dans la zone privée : les paramètres de l'étapes (initilisés dans le constructeur)
-    int     _n;      /*!< Nombre de points aléatoires à générer */
-    double _xmin;   /*!< X maximum de la placette a extraire */
-    double _xmax;   /*!< X minimum de la placette a extraire */
-    double _ymin;   /*!< Y maximum de la placette a extraire */
-    double _ymax;   /*!< Y minimum de la placette a extraire */
-    double _zmin;   /*!< Z minimum de la placette a extraire */
-    double _zmax;   /*!< Z maximum de la placette a extraire */
+
+    // Attributs permettant l'indexation des cercles qu'on va ajouter
+    CT_AutoRenameModels     _outCircleModelName;
 
 };
 
 
-#endif // TUFR_STEPTUTORIAL01_H
+#endif // TUFR_STEPTUTORIAL03_H

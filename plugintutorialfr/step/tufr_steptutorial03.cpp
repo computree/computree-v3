@@ -1,9 +1,9 @@
 // Inclusion du fichier d'entête
-#include "tufr_steptutorial03.h"
+#include "tufr_steptutorial02.h"
 
-// Inclusion des modèles de résultats in et out, PERMETTANT LA COPIE
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-#include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
+// Inclusion des modèles de résultats in et out
+#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
 // Inclusion des modèles de groupes in et out
 #include "ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h"
@@ -18,62 +18,90 @@
 // Inclusion de la classe de résultat standard
 #include "ct_result/ct_resultgroup.h"
 
-// Inclusion des item utiles
-#include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
-#include "ct_itemdrawable/ct_circle.h"
+// Inclusion des CT_ItemDrawables utiles dans l'étape
+#include "ct_itemdrawable/ct_scene.h"
+
+// Inclusion des autres éléments nécessaires à la création d'une scène
+#include "ct_pointcloudindexvector.h"
+#include "ct_element/ct_axisalignedboundingbox.h"
+
+#include "qdebug.h" // pour afficher des messages à la console
+
+#include "math.h"
 
 // Alias des chaines de caractères pour l'indexation des modèles in et out
 #define DEF_SearchInResult  "r"
-#define DEF_SearchInPointCloud   "pc"
+#define DEF_SearchInScene   "sc"
 
-#define DEF_SearchOutResult  "r"
+#define DEF_SearchOutResult "r"
+#define DEF_SearchOutGroup  "g"
+#define DEF_SearchOutScene  "sc"
 
-TUFR_StepTutorial03::TUFR_StepTutorial03(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
+// Constructeur : appel du constructeur de la classe mère
+//                Initialisation des paramètres (valeurs par défaut)
+TUFR_StepTutorial02::TUFR_StepTutorial02(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    // pas de paramètres
+    _zmin = 0;
+    _zmax = 1;
 }
 
 // Description de l'étape (tooltip du menu contextuel)
-QString TUFR_StepTutorial03::getStepDescription() const
+QString TUFR_StepTutorial02::getStepDescription() const
 {
-    return "Ajuste des cercles sur des groupes de points";
+    return "Extrait une placette entre zmin et zmax";
 }
 
 // Méthode de recopie de l'étape
-CT_VirtualAbstractStep* TUFR_StepTutorial03::createNewInstance(CT_StepInitializeData &dataInit)
+CT_VirtualAbstractStep* TUFR_StepTutorial02::createNewInstance(CT_StepInitializeData &dataInit)
 {
     // cree une copie de cette étape
-    return new TUFR_StepTutorial03(dataInit);
+    return new TUFR_StepTutorial02(dataInit);
 }
 
 //////////////////// PROTECTED //////////////////
 
 // Création et affiliation des modèles IN
-void TUFR_StepTutorial03::createInResultModelListProtected()
+void TUFR_StepTutorial02::createInResultModelListProtected()
 {
     // Déclaration et création du modèle de groupe racine
+    // Ici on utilise un CT_InOneOrMoreGroupModel, pour permettre
+    // d'utiliser une scène n'importe où dans une hiérachie des groupes
     CT_InOneOrMoreGroupModel *groupModel;
     groupModel = new CT_InOneOrMoreGroupModel();
 
-    // Déclaration et création du modèle d'item groupe de points
-    CT_InStandardItemDrawableModel *pointCloudItemModel;
-    pointCloudItemModel = new CT_InStandardItemDrawableModel(CT_AbstractItemDrawableWithPointCloud::staticGetType(),
+    // Déclaration et création du modèle d'item scène
+    // Le 1er paramètre spécifie la classe souhaitée pour l'Item NomDeClasse::staticGetType()
+    // Le 2ieme paramètre indique si plusieurs candidats peuvent être séléctionnés dans le résultat d'entrée
+    // Ici on oblige à n'en choisir qu'un seul
+    // Le 3ieme paramètre est l'alias d'indexation de ce modèle
+    // Le 4ieme paramètre indique si cet item est obligatoire (c'est le cas ici) ou facultatif
+    // N.B. : il faut au moins un item obligatoire dans le cas général
+    // Le 5ieme paramètre donne un nom à ce modèle d'item affichable par l'interface
+    // Le 6ieme paramètre donne une description à ce modèle d'item affichable par l'interface
+    CT_InStandardItemDrawableModel *sceneItemModel;
+    sceneItemModel = new CT_InStandardItemDrawableModel(CT_Scene::staticGetType(),
                              CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple,
-                             DEF_SearchInPointCloud,
+                             DEF_SearchInScene,
                              CT_InStandardItemDrawableModel::F_IsObligatory,
-                             "Groupe de points",
-                             "Objet héritant de CT_AbstractItemDrawableWithPointCloud");
+                             "Scène",
+                             "Objet CT_Scene");
 
-    // On ajoute le modèle d'item (nuage de points) au modèle du groupe racine
-    groupModel->addItem(pointCloudItemModel);
+    // On ajoute le modèle d'item (scène) au modèle du groupe racine
+    groupModel->addItem(sceneItemModel);
 
     // Déclaration et création du modèle de résultat
     CT_InResultModelGroup *resultModel;
+    // Le 1er paramètre est le modèle du groupe racine
+    // Le 2ieme paramètre est l'alias d'indexation du modèle de résultat
+    // Le 3ieme paramètre indique si on doit chercher le résultat d'entrée
+    // récurssivement en remontant l'arbre des étapes (ici non : false)
+    // Le 4ieme paramètre donne une description à ce modèle de résultat, affichable par l'interface
+    // Le 5ieme paramètre donne un nom à ce modèle de résultat, affichable par l'interface
     resultModel = new CT_InResultModelGroup(groupModel,
                                             DEF_SearchInResult,
                                             false,
-                                            "Un résultat avec une/des groupes de points",
-                                            "Résultat avec un/des groupes de points");
+                                            "Un résultat avec une/des scènes",
+                                            "Résultat avec une Scène");
 
     // Ajout du modèle de résultat séquenciellement dans cette étape
     // En réalité cette méthode génère aussi un resulat auquel est attaché ce modèle
@@ -82,107 +110,158 @@ void TUFR_StepTutorial03::createInResultModelListProtected()
 }
 
 // Création et affiliation des modèles OUT
-void TUFR_StepTutorial03::createOutResultModelListProtected()
+void TUFR_StepTutorial02::createOutResultModelListProtected()
 {
-    // on récupère le résultat modèle d'entrée à copier défini dans "createInResultModelListProtected()"
-    CT_InResultModelGroupToCopy *intResModelToCopy = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInResult);
+    // Déclaration et création du modèle de groupe racine
+    CT_OutStandardGroupModel *groupModel;
+    groupModel = new CT_OutStandardGroupModel(DEF_SearchOutGroup);
 
-    // on récupère toutes les possibilités de RESULTATS que l'utilisateur a défini
-    // ici il n'y en aobligatoirement une seule
-    QList<CT_OutResultModelGroupToCopyPossibility*> copyList = intResModelToCopy->getOutResultModelGroupsSelectedToCopy();
+    // Déclaration et création du modèle d'item scène
+    // Le 1er paramètre spécifie la classe qui sera crée, en fournissant une instance de cette classe
+    // Le 2ieme paramètre est l'alias d'indexation de ce modèle
+    // Le 3ieme paramètre donne un nom à ce modèle d'item affichable par l'interface
+    // Le 4ieme paramètre donne une description à ce modèle d'item affichable par l'interface
+    CT_OutStandardItemDrawableModel *sceneItemModel;
+    sceneItemModel = new CT_OutStandardItemDrawableModel(new CT_Scene(),
+                             DEF_SearchOutScene,
+                             "Scène extraite",
+                             "Scène extraite");
 
-    // On vérifie qu'il y a au moins une possibilité (on sait jamais ...)
-    if (!copyList.isEmpty())
-    {
-        // On récupère la possibilité choisie
-        CT_OutResultModelGroupToCopyPossibility *outResModelToCopy = copyList.first();
+    // On ajoute le modèle d'item (scène) au modèle du groupe racine
+    groupModel->addItem(sceneItemModel);
 
-        // on récupère le résultat modèle de sortie à copier/modifier
-        CT_OutResultModelGroup *outResModelModif = outResModelToCopy->outModelForModification();
-        const CT_OutResultModelGroup *outResModelSearch = outResModelToCopy->outModelForSearch();
+    // Déclaration et création du modèle de résultat
+    CT_OutResultModelGroup *resultModel;
+    // Le 1er paramètre est le modèle du groupe racine
+    // Le 2ieme paramètre est l'alias d'indexation du modèle de résultat
+    // Le 3ieme paramètre donne un nom au résultat
+    // Le 4ieme paramètre donne un nom à ce modèle de résultat affichable par l'interface
+    // Le 5ieme paramètre donne une decription à ce modèle de résultat affichable par l'interface
+    resultModel = new CT_OutResultModelGroup(groupModel,
+                                             DEF_SearchOutResult,
+                                             "ExtractedPlot",
+                                             "Scène extraite",
+                                             "Scène extraite");
 
-        // on récupère le modèle du nuage de point défini dans "createInResultModelListProtected()"
-        // pour la recherche
-        CT_InAbstractItemDrawableModel *inPointCloudModel = (CT_InAbstractItemDrawableModel*)getInModel(*outResModelSearch, DEF_SearchInPointCloud);
-
-        // on recherche tous les modèles d'items du type nuage de points qui ont été sélectionnés
-        // par l'utilisateur
-        if(outResModelModif->recursiveBeginIterateItemsModel(*inPointCloudModel))
-        {
-            DEF_CT_AbstractGroupModelOut *outModel;
-
-            // un if et non un while car on a défini C_ChooseOneIfMultiple
-            // il ne peut donc y avoir qu'un seul modèle choisi pour le nuage de point
-            if((outModel = outResModelModif->recursiveNextItemModel()) != NULL)
-            {
-                // un nouveau modèle pour les cercles SANS NOM puisqu'il sera défini automatiquement
-                CT_OutStandardItemDrawableModel *newItemModel = new CT_OutStandardItemDrawableModel(new CT_Circle(), "", "Cercle", "Cercle ajusté");
-
-                // On passe le modèle de cercle au modèle du groupe contenant le modèle du nuage de points
-                // on passe aussi un objet de type CT_AutoRenameModels permettant de renommer l'item au cas où le nom
-                // du modèle existe déjà (obligatoire dans ce cas puisqu'on ne connait pas les noms
-                // des modèles du résultat que l'on copie et il risque d'y avoir conflit)
-                outModel->addItem(newItemModel, _outCircleModelName);
-            }
-        }
-
-        // on crée un nouveau résultat de sortie contenant le résultat modèle modifié
-        addOutResultModel(new CT_OutResultModelGroupCopy(DEF_SearchOutResult, outResModelToCopy));
-    }
+    // Ajout du modèle de résultat séquenciellement dans cette étape
+    // En réalité cette méthode génère aussi un resulat auquel est attaché ce modèle
+    // Les addOutResultModel susccessifs, ajoutent des résultats dans l'ordre à la OutResultList
+    addOutResultModel(resultModel);
 }
 
 // Création semi-automatique de la boite de dialogue de paramétrage de l'étape
-void TUFR_StepTutorial03::createPostConfigurationDialog()
+void TUFR_StepTutorial02::createPostConfigurationDialog()
 {
-    // Pas de boite de dialogue
+    // Création de la boite de dialog en elle-même
+    // La méthode newStandardPostConfigurationDialog crée la boite et l'affecte à l'étape en cours
+    // Ainsi la gestion et la suppression de cette boite sont gérés automatiquement
+    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
+
+    // Ajout de contrôles unitaires de paramètrages à la boite (un par paramètre en général)
+    configDialog->addDouble("Z minimum :", "m", -10000, 10000, 2, _zmin);
+    configDialog->addDouble("Z maximum :", "m", -10000, 10000, 2, _zmax);
 }
 
-void TUFR_StepTutorial03::compute()
+void TUFR_StepTutorial02::compute()
 {
-    // on récupère le résultat copié (résultat de sortie donc)
-    CT_ResultGroup *outRes = getOutResultList().first();
+    // RESULTATS IN
+    // Récupération de la liste des résultats d'entrée séléctionné par createInResultModelListProtected()
+    // L'ordre dans cette liste est celui des addInResultModel() successifs
+    QList<CT_ResultGroup*> inResultList = getInputResults();
 
-    // ainsi que son modèle
-    CT_OutAbstractResultModel *outResModel = outRes->model();
+    // Ici on a fait un seul addInResultModel(), donc on a un seul résultat à récupérer : le premier
+    CT_ResultGroup* inResult;
+    inResult = inResultList.at(0);
 
-    // on récupère le modèle d'entrée qu'on avait ajouté
-    CT_InResultModelGroupToCopy *intResModel = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInResult);
+    // On va récupérer le modèle OUT de ce résultat d'entrée
+    CT_OutAbstractResultModel* inResultOutModel = inResult->model();
 
-    // Afin de récupérer le modèle de sortie correspondant
-    // Ici il n'y a qu'une possiblité, donc un seul modèle, d'où le .first()
-    const CT_OutResultModelGroup *outModelForSearchInModel = intResModel->getOutResultModelForSearchInModel().first();
+    // On va récupérer les modèles IN des groupes et items que l'on souhaite indexer
+    CT_InStandardItemDrawableModel *inSceneModel = (CT_InStandardItemDrawableModel*) getInModel(*inResultOutModel, DEF_SearchInScene);
 
-    // et qu'on utilise ici pour rechercher le modèle d'entrée du nuage de point
-    CT_InAbstractItemDrawableModel *inPointCloudModel = (CT_InAbstractItemDrawableModel*)getInModel(*outModelForSearchInModel, DEF_SearchInPointCloud);
 
-    // on utilise le modèle du résultat de sortie pour rechercher le modèle de sortie du Cercle.
-    // En utilisant le nom automatique généré lors de l'ajout (grace au CT_AutoRenameModels)
-    CT_OutAbstractModel *outCircleModel = getOutModel(*outResModel, _outCircleModelName.completeName());
+    // RESULTATS OUT
+    // Récupération de la liste des résultats de sortie créés par createOutResultModelListProtected()
+    // L'ordre dans cette liste est celui des addOutResultModel() successifs
+    QList<CT_ResultGroup*> outResultList = getOutResultList();
 
-    /**************************************************/
+    // Ici on a fait un seul addOutResultModel(), donc on a un seul résultat à récupérer : le premier
+    CT_ResultGroup* outResult;
+    outResult = outResultList.at(0);
 
-    // on va rechercher tous les groupes contenant des nuages de points (qui ont été choisi par l'utilisateur)
-    if(outRes->recursiveBeginIterateItems(*inPointCloudModel))
+    // On va récupérer le modèle OUT de ce résultat de sortie
+    CT_OutAbstractResultModel* outResultOutModel = outResult->model();
+
+    // On va récupérer les modèles OUT des groupes et items que l'on souhaite créer
+    CT_OutStandardGroupModel* groupModel = (CT_OutStandardGroupModel*) getOutModel(*outResultOutModel, DEF_SearchOutGroup);
+    CT_OutStandardItemDrawableModel* sceneItemModel = (CT_OutStandardItemDrawableModel*) getOutModel(*outResultOutModel, DEF_SearchOutScene);
+
+
+    // ALGORITHME
+    // Création d'un itérateur sur les items ayant pour modèle : inSceneModel
+    if (inResult->recursiveBeginIterateItems(*inSceneModel))
     {
-        CT_AbstractItemGroup *group;
+        // récupération du premier groupe contenant un item de ce type
+        CT_AbstractItemGroup *itemGroup = inResult->recursiveNextItem();
 
-        // pour chaque groupe contenant un nuage de point
-        while((group = outRes->recursiveNextItem()) != NULL && (!isStopped()))
+        // on s'assure qu'il exite
+        if (itemGroup!=NULL)
         {
-            group->beginIterateItems(*inPointCloudModel);
+            // On récupère la première (la seule ici) scène correspondant au modèle dans ce groupe
+            const CT_Scene *scene = (CT_Scene*) itemGroup->findFirstItem(*inSceneModel);
 
-            // on récupère le groupe de point
-            const CT_AbstractItemDrawableWithPointCloud *item = (const CT_AbstractItemDrawableWithPointCloud*)group->nextItem();
-
-            // on créé le cercle mathématique
-            CT_CircleData *cData = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloud(*item->getPointCloud(),
-                                                                                                   *item->getPointCloudIndex(),                                                                                                   item->getCenterZ());
-
-            // et on ajoute un itemDrawable cercle
-            if(cData != NULL)
+            // On s'assure qu'elle existe
+            if (scene != NULL)
             {
-                group->addItemDrawable(new CT_Circle(outCircleModel, item->id(), outRes, cData));
+                const CT_AbstractPointCloud *pointcloud = scene->getPointCloud();
+                const CT_AbstractPointCloudIndex *pointcloudIndex = scene->getPointCloudIndex();
+
+                CT_PointCloudIndexVector *newIndex = new CT_PointCloudIndexVector();
+
+                double xmin = LONG_MAX;
+                double xmax = LONG_MIN;
+                double ymin = LONG_MAX;
+                double ymax = LONG_MIN;
+                double zmin = LONG_MAX;
+                double zmax = LONG_MIN;
+
+                int cloudSize = pointcloudIndex->indexSize();
+
+                for (int i = 0 ; i < cloudSize ; ++i)
+                {
+                    const CT_Point &point = (*pointcloud)[(*pointcloudIndex)[i]];
+
+                    if ((point.z >= _zmin) && (point.z <= _zmax))
+                    {
+                        newIndex->addIndex((*pointcloudIndex)[i]);
+
+                        if (point.x < xmin) {xmin = point.x;}
+                        if (point.x > xmax) {xmax = point.x;}
+                        if (point.y < ymin) {ymin = point.y;}
+                        if (point.y > ymax) {ymax = point.y;}
+                        if (point.z < zmin) {zmin = point.z;}
+                        if (point.z > zmax) {zmax = point.z;}
+                     }
+                }
+
+                CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(*groupModel, 0, outResult);
+
+                CT_AxisAlignedBoundingBox* boundingBox = new CT_AxisAlignedBoundingBox(QVector3D(xmin, ymin, zmin), QVector3D(xmax, ymax, zmax));
+                CT_Scene *newScene = new CT_Scene(sceneItemModel, 0, outResult, (CT_AbstractPointCloud*) pointcloud, newIndex, boundingBox);
+
+                newScene->setAutoDeletePointCloud(false);
+                newScene->setAutoDeletePointCloudIndex(true);
+
+                newGroup->addItemDrawable(newScene);
+                outResult->addGroup(newGroup);
             }
         }
+    } else {
+        qDebug() << "Problème d'itérateur";
     }
+
+
+
+
+
 }

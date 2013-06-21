@@ -63,4 +63,16 @@
 # 4) Sources  : tufr_steppluginmanager.cpp
 #
 # 5) En_têtes : step/tufr_steptutorial01.h
-# 8) Sources  : step/tufr_steptutorial01.cpp
+# 6) Sources  : step/tufr_steptutorial01.cpp
+#
+# 7) En_têtes : step/tufr_steptutorial02.h
+# 8) Sources  : step/tufr_steptutorial02.cpp
+#
+# 9) En_têtes : step/tufr_steptutorial03.h
+# 10) Sources  : step/tufr_steptutorial03.cpp
+#
+# 11) En_têtes : step/tufr_steptutorial04.h
+# 12) Sources  : step/tufr_steptutorial04.cpp
+#
+# 13) En_têtes : step/tufr_steptutorial05.h
+# 14) Sources  : step/tufr_steptutorial05.cpp
