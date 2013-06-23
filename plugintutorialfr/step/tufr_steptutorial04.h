@@ -2,14 +2,30 @@
 #ifndef TUFR_STEPTUTORIAL04_H
 #define TUFR_STEPTUTORIAL04_H
 
-
 // Inclusion de la classe parente des étapes
 #include "ct_step/abstract/ct_abstractstep.h"
 
 // Inclusion du système d'indexation automatique
 #include "ct_tools/model/ct_autorenamemodels.h"
 
-// Une étape doit hériter de CT_AbstractStep
+/*! \class TUFR_StepTutorial04
+ *
+ * \brief Cette classe créée un CT_ReferencePoint pour chaque CT_PointCluster
+ *
+ * Modèle IN : Aucun
+ *  - CT_ResultGroup \n
+ *      - CT_StandardItemGroup \n
+ *          - CT_PointCluster \n
+ *
+ * Modèle OUT : \n
+ *  - CT_ResultGroup \n
+ *      - CT_StandardItemGroup \n
+ *          - cpy  CT_PointCluster \n
+ *          - cpy+ CT_ReferencePoint \n
+ *
+ */
+
+ // Une étape doit hériter de CT_AbstractStep
 class TUFR_StepTutorial04 : public CT_AbstractStep
 {
     // Macro Qt, donnant accès à certaines fonctionnalités
