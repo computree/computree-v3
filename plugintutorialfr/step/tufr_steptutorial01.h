@@ -8,6 +8,7 @@
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 
 /*! \class TUFR_StepTutorial01
+ * \ingroup Steps_TUFR
  *
  * \brief Cette classe ne fait rien
  *

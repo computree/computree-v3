@@ -9,6 +9,7 @@
 #include "ct_tools/model/ct_autorenamemodels.h"
 
 /*! \class TUFR_StepTutorial04
+ * \ingroup Steps_TUFR
  *
  * \brief Cette classe créée un CT_ReferencePoint pour chaque CT_PointCluster
  *

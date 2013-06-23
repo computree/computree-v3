@@ -17,6 +17,9 @@
 // On n'utilise pas de directive #include, à cause d'une inclusion réciproque des deux classes
 class TUFR_StepPluginManager;
 
+/*! \defgroup Steps_TUFR PluginTutorialFR (TUFR) steps
+ */
+
 // Cette classe hétite de la classe générique PluginInterface de PluginSharedV2
 // C'est le cas pour tout plugin d'étapes
 class TUFR_PluginEntry : public PluginInterface

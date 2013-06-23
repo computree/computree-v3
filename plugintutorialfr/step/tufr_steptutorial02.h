@@ -8,6 +8,7 @@
 
 
 /*! \class TUFR_StepTutorial02
+ * \ingroup Steps_TUFR
  *
  * \brief Cette classe génère une scène de points de positions aléatoires
  *

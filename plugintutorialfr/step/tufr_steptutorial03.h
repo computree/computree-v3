@@ -7,6 +7,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 
 /*! \class TUFR_StepTutorial03
+ * \ingroup Steps_TUFR
  *
  * \brief Cette classe découpe une scène de points en groupes paralellepipediques
  *
