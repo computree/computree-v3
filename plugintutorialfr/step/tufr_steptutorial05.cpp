@@ -1,5 +1,5 @@
 // Inclusion du fichier d'entête
-#include "tufr_steptutorial03.h"
+#include "tufr_steptutorial05.h"
 
 // Inclusion des modèles de résultats in et out, PERMETTANT LA COPIE
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -28,28 +28,28 @@
 
 #define DEF_SearchOutResult  "r"
 
-TUFR_StepTutorial03::TUFR_StepTutorial03(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
+TUFR_StepTutorial05::TUFR_StepTutorial05(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     // pas de paramètres
 }
 
 // Description de l'étape (tooltip du menu contextuel)
-QString TUFR_StepTutorial03::getStepDescription() const
+QString TUFR_StepTutorial05::getStepDescription() const
 {
     return "Ajuste des cercles sur des groupes de points";
 }
 
 // Méthode de recopie de l'étape
-CT_VirtualAbstractStep* TUFR_StepTutorial03::createNewInstance(CT_StepInitializeData &dataInit)
+CT_VirtualAbstractStep* TUFR_StepTutorial05::createNewInstance(CT_StepInitializeData &dataInit)
 {
     // cree une copie de cette étape
-    return new TUFR_StepTutorial03(dataInit);
+    return new TUFR_StepTutorial05(dataInit);
 }
 
 //////////////////// PROTECTED //////////////////
 
 // Création et affiliation des modèles IN
-void TUFR_StepTutorial03::createInResultModelListProtected()
+void TUFR_StepTutorial05::createInResultModelListProtected()
 {
     // Déclaration et création du modèle de groupe racine
     CT_InOneOrMoreGroupModel *groupModel;
@@ -82,7 +82,7 @@ void TUFR_StepTutorial03::createInResultModelListProtected()
 }
 
 // Création et affiliation des modèles OUT
-void TUFR_StepTutorial03::createOutResultModelListProtected()
+void TUFR_StepTutorial05::createOutResultModelListProtected()
 {
     // on récupère le résultat modèle d'entrée à copier défini dans "createInResultModelListProtected()"
     CT_InResultModelGroupToCopy *intResModelToCopy = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInResult);
@@ -132,12 +132,12 @@ void TUFR_StepTutorial03::createOutResultModelListProtected()
 }
 
 // Création semi-automatique de la boite de dialogue de paramétrage de l'étape
-void TUFR_StepTutorial03::createPostConfigurationDialog()
+void TUFR_StepTutorial05::createPostConfigurationDialog()
 {
     // Pas de boite de dialogue
 }
 
-void TUFR_StepTutorial03::compute()
+void TUFR_StepTutorial05::compute()
 {
     // on récupère le résultat copié (résultat de sortie donc)
     CT_ResultGroup *outRes = getOutResultList().first();

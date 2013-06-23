@@ -1,16 +1,16 @@
 // Balises C++, évitant les doublons d'includes
-#ifndef TUFR_STEPTUTORIAL03_H
-#define TUFR_STEPTUTORIAL03_H
+#ifndef TUFR_STEPTUTORIAL05_H
+#define TUFR_STEPTUTORIAL05_H
 
 
 // Inclusion de la classe parente des étapes
 #include "ct_step/abstract/ct_abstractstep.h"
 
 // Inclusion du système d'indexation automatique
-#include "ct_tools/ct_autorenamemodels.h"
+#include "ct_tools/model/ct_autorenamemodels.h"
 
 // Une étape doit hériter de CT_AbstractStep
-class TUFR_StepTutorial03 : public CT_AbstractStep
+class TUFR_StepTutorial05 : public CT_AbstractStep
 {
     // Macro Qt, donnant accès à certaines fonctionnalités
     // En l'occurence, permet de récupérer le nom de l'étape
@@ -19,7 +19,7 @@ class TUFR_StepTutorial03 : public CT_AbstractStep
 public:
 
     // Constructeur de l'étape
-    TUFR_StepTutorial03(CT_StepInitializeData &dataInit);
+    TUFR_StepTutorial05(CT_StepInitializeData &dataInit);
 
     // Méthode fournissant la description de l'étape (tooltip dans le menu contectuel)
     QString getStepDescription() const;
@@ -49,4 +49,5 @@ private:
 };
 
 
-#endif // TUFR_STEPTUTORIAL03_H
+// Fin de balise
+#endif // TUFR_STEPTUTORIAL05_H

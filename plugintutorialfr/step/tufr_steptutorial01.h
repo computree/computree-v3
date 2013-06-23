@@ -7,7 +7,27 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 
-// Une étape doit hériter de CT_AbstractStep
+/*! \class TUFR_StepTutorial01
+ *
+ * \brief Cette classe ne fait rien
+ *
+ * Son but est de montrer la gestion des boites de dialogues de paramétrage
+ *
+ * \param _intParam Paramètre entier
+ * \param _doubleParam Paramètre double
+ * \param _boolParam Paramètre booléen
+ * \param _listParam Paramètre liste
+ * \param _choiceParam Paramètre de choix
+ * \param _fileNameParam Paramètre de nom de fichier
+ *
+ * Modèle IN : Aucun
+ *
+ * Modèle OUT : \n
+ *  - CT_ResultGroup \n
+ *
+ */
+// Une étape doit hériter de CT_AbstractStep (ou d'une classe en héritant)
+// Ici, l'étape ne prend pas de données en entrée, on hérite donc de CT_AbstractStepCanBeAddedFirst
 class TUFR_StepTutorial01 : public CT_AbstractStepCanBeAddedFirst
 {
     // Macro Qt, donnant accès à certaines fonctionnalités
@@ -41,15 +61,14 @@ protected:
 
 private:
     // Dans la zone privée : les paramètres de l'étapes (initilisés dans le constructeur)
-    int     _n;      /*!< Nombre de points aléatoires à générer */
-    double _xmin;   /*!< X maximum de la placette a extraire */
-    double _xmax;   /*!< X minimum de la placette a extraire */
-    double _ymin;   /*!< Y maximum de la placette a extraire */
-    double _ymax;   /*!< Y minimum de la placette a extraire */
-    double _zmin;   /*!< Z minimum de la placette a extraire */
-    double _zmax;   /*!< Z maximum de la placette a extraire */
+    int     _intParam;       /*!< Paramètre entier */
+    double  _doubleParam;    /*!< Paramètre double */
+    bool    _boolParam;      /*!< Paramètre booléen */
+    QString _listParam;      /*!< Paramètre liste */
+    int     _choiceParam;    /*!< Paramètre de choix */
+    QString _fileNameParam;  /*!< Paramètre de nom de fichier */
 
 };
 
-
+// Fin de balise
 #endif // TUFR_STEPTUTORIAL01_H

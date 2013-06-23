@@ -10,17 +10,14 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/tufr_steptutorial01.h \
     step/tufr_steptutorial02.h \
     step/tufr_steptutorial03.h \
-    step/tufr_steptutorial04.h \
-    step/tufr_steptutorial05.h
-
+    step/tufr_steptutorial04.h
 SOURCES += \
     tufr_pluginentry.cpp \
     tufr_steppluginmanager.cpp \
     step/tufr_steptutorial01.cpp \
     step/tufr_steptutorial02.cpp \
     step/tufr_steptutorial03.cpp \
-    step/tufr_steptutorial04.cpp \
-    step/tufr_steptutorial05.cpp
+    step/tufr_steptutorial04.cpp
 
 OTHER_FILES +=
 

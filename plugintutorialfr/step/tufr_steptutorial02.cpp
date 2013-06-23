@@ -1,18 +1,14 @@
 // Inclusion du fichier d'entête
-#include "tufr_steptutorial01.h"
+#include "tufr_steptutorial02.h"
 
 // Inclusion des modèles de résultats in et out
 #include "ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
 // Inclusion des modèles de groupes in et out
-#include "ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
 
 // Inclusion des modèles d'items in et out
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
 
 // Inclusion de la classe de résultat standard
@@ -37,7 +33,7 @@
 
 // Constructeur : appel du constructeur de la classe mère
 //                Initialisation des paramètres (valeurs par défaut)
-TUFR_StepTutorial01::TUFR_StepTutorial01(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
+TUFR_StepTutorial02::TUFR_StepTutorial02(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
     _n = 10000;
     _xmin = -10;
@@ -49,64 +45,55 @@ TUFR_StepTutorial01::TUFR_StepTutorial01(CT_StepInitializeData &dataInit) : CT_A
 }
 
 // Description de l'étape (tooltip du menu contextuel)
-QString TUFR_StepTutorial01::getStepDescription() const
+QString TUFR_StepTutorial02::getStepDescription() const
 {
     return "Génère une scène";
 }
 
 // Méthode de recopie de l'étape
-CT_VirtualAbstractStep* TUFR_StepTutorial01::createNewInstance(CT_StepInitializeData &dataInit)
+CT_VirtualAbstractStep* TUFR_StepTutorial02::createNewInstance(CT_StepInitializeData &dataInit)
 {
-    // cree une copie de cette étape
-    return new TUFR_StepTutorial01(dataInit);
+    // créée une copie de cette étape
+    return new TUFR_StepTutorial02(dataInit);
 }
 
 //////////////////// PROTECTED //////////////////
 
 // Création et affiliation des modèles IN
-void TUFR_StepTutorial01::createInResultModelListProtected()
+void TUFR_StepTutorial02::createInResultModelListProtected()
 {
     // Déclaration et création du modèle de résultat : Pas de résultat
-    CT_InResultModelNotNeedInputResult *resultModel;
-    resultModel = new CT_InResultModelNotNeedInputResult();
+    CT_InResultModelNotNeedInputResult *resultModel = new CT_InResultModelNotNeedInputResult();
 
     // Ajout du modèle de résultat dans cette étape
     addInResultModel(resultModel);
 }
 
 // Création et affiliation des modèles OUT
-void TUFR_StepTutorial01::createOutResultModelListProtected()
+void TUFR_StepTutorial02::createOutResultModelListProtected()
 {
     // Déclaration et création du modèle de groupe racine
-    CT_OutStandardGroupModel *groupModel;
-    groupModel = new CT_OutStandardGroupModel(DEF_SearchOutGroup);
+    CT_OutStandardGroupModel *groupModel = new CT_OutStandardGroupModel(DEF_SearchOutGroup);
 
     // Déclaration et création du modèle d'item scène
-    // Le 1er paramètre spécifie la classe qui sera crée, en fournissant une instance de cette classe
-    // Le 2ieme paramètre est l'alias d'indexation de ce modèle
+    // Le 1ier paramètre est l'alias d'indexation de ce modèle
+    // Le 2ieme paramètre spécifie la classe qui sera crée, en fournissant une instance de cette classe
     // Le 3ieme paramètre donne un nom à ce modèle d'item affichable par l'interface
-    // Le 4ieme paramètre donne une description à ce modèle d'item affichable par l'interface
     CT_OutStandardItemDrawableModel *sceneItemModel;
-    sceneItemModel = new CT_OutStandardItemDrawableModel(new CT_Scene(),
-                             DEF_SearchOutScene,
-                             "Scène générée",
-                             "Scène générée");
+    sceneItemModel = new CT_OutStandardItemDrawableModel(DEF_SearchOutScene,
+                                                         new CT_Scene(),
+                                                         "Scène générée");
 
     // On ajoute le modèle d'item (scène) au modèle du groupe racine
     groupModel->addItem(sceneItemModel);
 
     // Déclaration et création du modèle de résultat
-    CT_OutResultModelGroup *resultModel;
-    // Le 1er paramètre est le modèle du groupe racine
-    // Le 2ieme paramètre est l'alias d'indexation du modèle de résultat
+    // Le 1er paramètre est l'alias d'indexation du modèle de résultat
+    // Le 2ieme paramètre est le modèle du groupe racine
     // Le 3ieme paramètre donne un nom au résultat
-    // Le 4ieme paramètre donne un nom à ce modèle de résultat affichable par l'interface
-    // Le 5ieme paramètre donne une decription à ce modèle de résultat affichable par l'interface
-    resultModel = new CT_OutResultModelGroup(groupModel,
-                                             DEF_SearchOutResult,
-                                             "GeneratedPlot",
-                                             "Scène générée",
-                                             "Scène générée");
+    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_SearchOutResult,
+                                                                     groupModel,
+                                                                     "Scène générée");
 
     // Ajout du modèle de résultat séquenciellement dans cette étape
     // En réalité cette méthode génère aussi un resulat auquel est attaché ce modèle
@@ -115,7 +102,7 @@ void TUFR_StepTutorial01::createOutResultModelListProtected()
 }
 
 // Création semi-automatique de la boite de dialogue de paramétrage de l'étape
-void TUFR_StepTutorial01::createPostConfigurationDialog()
+void TUFR_StepTutorial02::createPostConfigurationDialog()
 {
     // Pas de boite de dialogue
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
@@ -130,7 +117,7 @@ void TUFR_StepTutorial01::createPostConfigurationDialog()
     configDialog->addDouble("Z maximum :", "m", -10000, 10000, 2, _zmax);
 }
 
-void TUFR_StepTutorial01::compute()
+void TUFR_StepTutorial02::compute()
 {
     // RESULTATS OUT
     // Récupération de la liste des résultats de sortie créés par createOutResultModelListProtected()
@@ -138,24 +125,24 @@ void TUFR_StepTutorial01::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
 
     // Ici on a fait un seul addOutResultModel(), donc on a un seul résultat à récupérer : le premier
-    CT_ResultGroup* outResult;
-    outResult = outResultList.at(0);
-
-    // On va récupérer le modèle OUT de ce résultat de sortie
-    CT_OutAbstractResultModel* outResultOutModel = outResult->model();
+    CT_ResultGroup* outResult = outResultList.at(0);
 
     // On va récupérer les modèles OUT des groupes et items que l'on souhaite créer
-    CT_OutStandardGroupModel* groupModel = (CT_OutStandardGroupModel*) getOutModel(*outResultOutModel, DEF_SearchOutGroup);
-    CT_OutStandardItemDrawableModel* sceneItemModel = (CT_OutStandardItemDrawableModel*) getOutModel(*outResultOutModel, DEF_SearchOutScene);
+    CT_OutStandardGroupModel* groupModel = (CT_OutStandardGroupModel*) getOutModelForCreation(outResult, DEF_SearchOutGroup);
+    CT_OutStandardItemDrawableModel* sceneItemModel = (CT_OutStandardItemDrawableModel*) getOutModelForCreation(outResult, DEF_SearchOutScene);
 
+
+    // Création du nuage de points et du vecteur d'index pour la nouvelle scène
     CT_PointCloudStdVector* newCloud = new CT_PointCloudStdVector(_n);
     CT_PointCloudIndexVector *newIndex = new CT_PointCloudIndexVector(_n);
 
+    // Vérification du bon ordonnencement des coordonnées min et max
     double tmp;
     if (_xmin > _xmax) {tmp = _xmin; _xmin = _xmax; _xmax = tmp;}
     if (_ymin > _ymax) {tmp = _ymin; _ymin = _ymax; _ymax = tmp;}
     if (_zmin > _zmax) {tmp = _zmin; _zmin = _zmax; _zmax = tmp;}
 
+    // Génération aléatoire des points
     for (int i = 0 ; i < _n ; i++)
     {
         CT_Point& point = newCloud->operator [](i);
@@ -167,14 +154,22 @@ void TUFR_StepTutorial01::compute()
 
     }
 
+    // Création du groupe contenant la scène (avec le modèle correspondant
+    CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(groupModel, 0, outResult);
 
-    CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(*groupModel, 0, outResult);
+    // Création de la boite englobante avec les limites de la scène
     CT_AxisAlignedBoundingBox* boundingBox = new CT_AxisAlignedBoundingBox(QVector3D(_xmin, _ymin, _zmin), QVector3D(_xmax, _ymax, _zmax));
+
+    // Création de la scène
     CT_Scene *newScene = new CT_Scene(sceneItemModel, 0, outResult, newCloud, newIndex, boundingBox);
+
+    // C'est une nouvelle scène : elle devra se charger le l'effacement des points tout juste créés
     newScene->setAutoDeletePointCloud(true);
     newScene->setAutoDeletePointCloudIndex(true);
 
+    // Ajout de la scène au groupe
     newGroup->addItemDrawable(newScene);
-    outResult->addGroup(newGroup);
 
+    // Ajout du groupe au résultat
+    outResult->addGroup(newGroup);
 }

@@ -1,13 +1,34 @@
 // Balises C++, évitant les doublons d'includes
-#ifndef TUFR_STEPTUTORIAL02_H
-#define TUFR_STEPTUTORIAL02_H
+#ifndef TUFR_STEPTUTORIAL03_H
+#define TUFR_STEPTUTORIAL03_H
 
 
 // Inclusion de la classe parente des étapes
 #include "ct_step/abstract/ct_abstractstep.h"
 
+/*! \class TUFR_StepTutorial03
+ *
+ * \brief Cette classe découpe une scène de points en groupes paralellepipediques
+ *
+ * \param _nx Nombre de clusters selon x
+ * \param _ny Nombre de clusters selon y
+ * \param _nz Nombre de clusters selon z
+
+ *
+ * Modèle IN : Aucun
+ *  - CT_ResultGroup \n
+ *      - CT_StandardItemGroup \n
+ *          - CT_Scene \n
+ *
+ * Modèle OUT : \n
+ *  - CT_ResultGroup \n
+ *      - CT_StandardItemGroup \n
+ *          - CT_PointCluster \n
+ *
+ */
+
 // Une étape doit hériter de CT_AbstractStep
-class TUFR_StepTutorial02 : public CT_AbstractStep
+class TUFR_StepTutorial03 : public CT_AbstractStep
 {
     // Macro Qt, donnant accès à certaines fonctionnalités
     // En l'occurence, permet de récupérer le nom de l'étape
@@ -16,7 +37,7 @@ class TUFR_StepTutorial02 : public CT_AbstractStep
 public:
 
     // Constructeur de l'étape
-    TUFR_StepTutorial02(CT_StepInitializeData &dataInit);
+    TUFR_StepTutorial03(CT_StepInitializeData &dataInit);
 
     // Méthode fournissant la description de l'étape (tooltip dans le menu contectuel)
     QString getStepDescription() const;
@@ -41,10 +62,12 @@ protected:
 private:
 
     // Dans la zone privée : les paramètres de l'étapes (initilisés dans le constructeur)
-    double _zmin;                         /*!< Z minimum de la placette a extraire*/
-    double _zmax;                         /*!< Z maximum de la placette a extraire*/
+    int _nx;      /*!< Nombre de clusters selon x */
+    int _ny;      /*!< Nombre de clusters selon y */
+    int _nz;      /*!< Nombre de clusters selon z */
 
 };
 
 
-#endif // TUFR_STEPTUTORIAL02_H
+// Fin de balise
+#endif // TUFR_STEPTUTORIAL03_H
