@@ -5,6 +5,9 @@
 #include "ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
+// Inclusion des modèles de groupes in et out
+#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
+
 // Inclusion de la classe de résultat standard
 #include "ct_result/ct_resultgroup.h"
 
@@ -15,6 +18,7 @@
 
 // Alias des chaines de caractères pour l'indexation du modèle out
 #define DEF_SearchOutResult "r"
+#define DEF_SearchOutGroup  "g"
 
 // Constructeur : appel du constructeur de la classe mère
 //                Initialisation des paramètres (valeurs par défaut)
@@ -56,11 +60,15 @@ void TUFR_StepTutorial01::createInResultModelListProtected()
 // Création et affiliation des modèles OUT
 void TUFR_StepTutorial01::createOutResultModelListProtected()
 {
+
+    // Déclaration et création du modèle de groupe racine
+    CT_OutStandardGroupModel *groupModel = new CT_OutStandardGroupModel(DEF_SearchOutGroup);
+
     // Déclaration et création du modèle de résultat  
     // Le 1er paramètre est l'alias d'indexation du modèle de résultat
     // Le 2ieme paramètre est le modèle du groupe racine
     // Le 3ieme paramètre donne un nom au résultat
-    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_SearchOutResult, NULL, "Résultat vide");
+    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_SearchOutResult, groupModel, "Résultat vide");
 
     // Ajout du modèle de résultat séquenciellement dans cette étape
     addOutResultModel(resultModel);

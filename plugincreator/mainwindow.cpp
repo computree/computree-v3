@@ -177,7 +177,7 @@ bool MainWindow::createFiles(QString directory, QString code, QString name)
         stream << "#include \"ct_stepseparator.h\"\n";
         stream << "#include \"ct_steploadfileseparator.h\"\n";
         stream << "#include \"ct_stepcanbeaddedfirstseparator.h\"\n";
-        stream << "// Inclure ici les entêtes des classes définissant des étapes dans le plugin\n";
+        stream << "// Inclure ici les entetes des classes definissant des etapes dans le plugin\n";
         stream << "\n";
         stream << code << "_StepPluginManager::" << code << "_StepPluginManager() : CT_AbstractStepPlugin()\n";
         stream << "{\n";
@@ -190,7 +190,7 @@ bool MainWindow::createFiles(QString directory, QString code, QString name)
         stream << "bool " << code << "_StepPluginManager::loadGenericsStep()\n";
         stream << "{\n";
         stream << "    CT_StepSeparator *sep = addNewSeparator(new CT_StepSeparator());\n";
-        stream << "    // Ajouter ici les étapes\n";
+        stream << "    // Ajouter ici les etapes\n";
         stream << "    //sep->addStep(new NomDeLEtape(*createNewStepInitializeData(NULL)));\n";
         stream << "\n";
         stream << "    return true;\n";
