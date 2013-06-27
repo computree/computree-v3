@@ -68,6 +68,7 @@ private:
     QString _listParam;      /*!< Paramètre liste */
     int     _choiceParam;    /*!< Paramètre de choix */
     QString _fileNameParam;  /*!< Paramètre de nom de fichier */
+    QString _stringParam;    /*!< Paramètre QString */
 
 };
 

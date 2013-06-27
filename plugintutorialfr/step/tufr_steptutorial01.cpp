@@ -30,6 +30,7 @@ TUFR_StepTutorial01::TUFR_StepTutorial01(CT_StepInitializeData &dataInit) : CT_A
     _listParam = "choix 2";
     _choiceParam = 1;
     _fileNameParam = "";
+    _stringParam = "";
 }
 
 // Description de l'étape (tooltip du menu contextuel)
@@ -90,6 +91,9 @@ void TUFR_StepTutorial01::createPostConfigurationDialog()
     // Paramètre prenant une valeur booléenne
     configDialog->addBool("Paramètre booléen", "labelAfter", "labelCheckBox", _boolParam);
 
+    // Paramètre prenant une valeur QString
+    configDialog->addString("Paramètre chaine de caractère", "", _stringParam);
+
     // Paramètre prenant une valeur parmi une liste de choix
     // 1) création de la liste des choix possibles
     QStringList liste;
@@ -110,6 +114,7 @@ void TUFR_StepTutorial01::createPostConfigurationDialog()
 
     // Paramètre prenant une valeur "nom de fichier"
     configDialog->addFileChoice("Paramètre nom de Fichier", CT_FileChoiceButton::OneExistingFile, "Tout fichier (*.*)",_fileNameParam);
+
 }
 
 void TUFR_StepTutorial01::compute()
@@ -120,6 +125,7 @@ void TUFR_StepTutorial01::compute()
     qDebug() << "Paramètre entier = " << _intParam;
     qDebug() << "Paramètre double = " << _doubleParam;
     qDebug() << "Paramètre booléenne = " << _boolParam;
+    qDebug() << "Paramètre chaine de caractère = " << _stringParam;
     qDebug() << "Paramètre choix dans une liste = " << _listParam;
     qDebug() << "Paramètre valeur exclusive = " << _choiceParam;
     qDebug() << "Paramètre Nom de fichier = " << _fileNameParam;
