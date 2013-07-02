@@ -1,6 +1,8 @@
 #include "inmodeldialog.h"
 #include "ui_inmodeldialog.h"
 
+#include "qdebug.h"
+
 #include "widgets/inresultwidget.h"
 INModelDialog::INModelDialog(QWidget *parent) :
     QDialog(parent),
@@ -12,6 +14,8 @@ INModelDialog::INModelDialog(QWidget *parent) :
     QVBoxLayout *layout = new QVBoxLayout();
     ui->widgetZone->setLayout(layout);
     layout->addWidget(new INResultWidget());
+
+    _idCount = 0;
 }
 
 INModelDialog::~INModelDialog()
@@ -26,7 +30,7 @@ void INModelDialog::on_pb_addResult_clicked()
     {
         item = _model->invisibleRootItem();
     }
-    item->appendRow(new QStandardItem("item"));
+    item->appendRow(new QStandardItem(QString("item n°%1").arg(_idCount++)));
     ui->treeView->setExpanded(ui->treeView->currentIndex(), true);
 }
 
@@ -35,5 +39,8 @@ void INModelDialog::on_pb_delete_clicked()
     QStandardItem *item = _model->itemFromIndex(ui->treeView->currentIndex());
     if (item != NULL)
     {
+        qDebug() << "Item supprimé = " << item->text();
+        qDebug() << "Item fils = " << item->child(0)->text();
+        qDebug() << "Nb Items fils = " << item->rowCount();
     }
 }

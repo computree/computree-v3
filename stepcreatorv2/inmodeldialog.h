@@ -26,6 +26,7 @@ private slots:
 private:
     Ui::INModelDialog *ui;
     QStandardItemModel *_model;
+    int _idCount;
 
 };
 
