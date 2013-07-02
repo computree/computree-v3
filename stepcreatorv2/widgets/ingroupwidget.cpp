@@ -2,11 +2,19 @@
 #include "ui_ingroupwidget.h"
 
 INGroupWidget::INGroupWidget(QWidget *parent) :
-    QWidget(parent),
+    AbstractWidget(parent),
     ui(new Ui::INGroupWidget)
 {
     ui->setupUi(this);
     ui->rb_standard->setChecked(true);
+
+    ui->cb_finderMode->addItem("Obligatory");
+    ui->cb_finderMode->addItem("Optional");
+    ui->cb_finderMode->setCurrentIndex(0);
+
+    ui->cb_choiceMode->addItem("ChooseOneIfMultiple");
+    ui->cb_choiceMode->addItem("ChooseMultipleIfMultiple");
+    ui->cb_choiceMode->setCurrentIndex(0);
 }
 
 INGroupWidget::~INGroupWidget()

@@ -69,6 +69,23 @@ void TUFR_StepTutorial02::createInResultModelListProtected()
     addInResultModel(resultModel);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Création et affiliation des modèles OUT
 void TUFR_StepTutorial02::createOutResultModelListProtected()
 {
@@ -101,6 +118,23 @@ void TUFR_StepTutorial02::createOutResultModelListProtected()
     addOutResultModel(resultModel);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Création semi-automatique de la boite de dialogue de paramétrage de l'étape
 void TUFR_StepTutorial02::createPostConfigurationDialog()
 {
@@ -117,6 +151,23 @@ void TUFR_StepTutorial02::createPostConfigurationDialog()
     configDialog->addDouble("Z maximum :", "m", -10000, 10000, 2, _zmax);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void TUFR_StepTutorial02::compute()
 {
     // RESULTATS OUT
@@ -129,9 +180,8 @@ void TUFR_StepTutorial02::compute()
 
     // On va récupérer les modèles OUT des groupes et items que l'on souhaite créer
     CT_OutStandardGroupModel* groupModel = (CT_OutStandardGroupModel*) getOutModelForCreation(outResult, DEF_SearchOutGroup);
-    CT_OutStandardItemDrawableModel* sceneItemModel = (CT_OutStandardItemDrawableModel*) getOutModelForCreation(outResult, DEF_SearchOutScene);
-
-
+    CT_OutStandardItemDrawableModel* sceneItemModel = (CT_OutStandardItemDrawableModel*) getOutModelForCreation(outResult,
+                                                                                                                DEF_SearchOutScene);
     // Création du nuage de points et du vecteur d'index pour la nouvelle scène
     CT_PointCloudStdVector* newCloud = new CT_PointCloudStdVector(_n);
     CT_PointCloudIndexVector *newIndex = new CT_PointCloudIndexVector(_n);

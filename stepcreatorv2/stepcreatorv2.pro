@@ -13,7 +13,9 @@ SOURCES += main.cpp\
     models/inresultmodel.cpp \
     models/ingroupmodel.cpp \
     models/initemmodel.cpp \
-    models/abtractmodel.cpp
+    models/abtractmodel.cpp \
+    widgets/abstractwidget.cpp \
+    widgets/initemwidget.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -23,13 +25,16 @@ HEADERS  += mainwindow.h \
     models/inresultmodel.h \
     models/ingroupmodel.h \
     models/initemmodel.h \
-    models/abtractmodel.h
+    models/abtractmodel.h \
+    widgets/abstractwidget.h \
+    widgets/initemwidget.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \
     outmodeldialog.ui \
     widgets/inresultwidget.ui \
-    widgets/ingroupwidget.ui
+    widgets/ingroupwidget.ui \
+    widgets/initemwidget.ui
 
 
 

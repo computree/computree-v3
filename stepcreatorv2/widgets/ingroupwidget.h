@@ -1,13 +1,14 @@
 #ifndef INGROUPWIDGET_H
 #define INGROUPWIDGET_H
 
-#include <QWidget>
+
+#include "widgets/abstractwidget.h"
 
 namespace Ui {
     class INGroupWidget;
 }
 
-class INGroupWidget : public QWidget
+class INGroupWidget : public AbstractWidget
 {
     Q_OBJECT
 

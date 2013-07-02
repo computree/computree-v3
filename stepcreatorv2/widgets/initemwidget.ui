@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>INResultWidget</class>
- <widget class="QWidget" name="INResultWidget">
+ <class>INItemWidget</class>
+ <widget class="QWidget" name="INItemWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,21 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QRadioButton" name="rb_standardresult">
-     <property name="text">
-      <string>Résulltat d'entrée standard</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QRadioButton" name="rb_copyresult">
-     <property name="text">
-      <string>Résulltat d'entrée à copier</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="label">
      <property name="text">
       <string>Alias d'indexation</string>
      </property>
@@ -45,26 +31,9 @@
     <widget class="QLineEdit" name="alias"/>
    </item>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Nom du résultat :</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="resultName">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Nom du modèle de résultat :</string>
+      <string>Nom du modèle d'item :</string>
      </property>
     </widget>
    </item>
@@ -81,7 +50,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Description du résultat :</string>
+      <string>Description de l'item :</string>
      </property>
     </widget>
    </item>
@@ -94,6 +63,12 @@
       </sizepolicy>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cb_choiceMode"/>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cb_finderMode"/>
    </item>
    <item>
     <spacer name="verticalSpacer">

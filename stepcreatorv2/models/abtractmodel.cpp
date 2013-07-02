@@ -1,5 +1,5 @@
 #include "abtractmodel.h"
 
-AbtractModel::AbtractModel()
+AbtractModel::AbtractModel() : QStandardItem()
 {
 }

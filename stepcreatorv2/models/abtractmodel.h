@@ -2,6 +2,7 @@
 #define ABTRACTMODEL_H
 
 #include "qstandarditemmodel.h"
+#include "widgets/abstractwidget.h"
 
 class AbtractModel : public QStandardItem
 {
@@ -20,6 +21,8 @@ public:
     AbtractModel();
 
     virtual AbtractModel::ModelType getModelType() = 0;
+
+    virtual AbstractWidget* getWidget() = 0;
 };
 
 #endif // ABTRACTMODEL_H

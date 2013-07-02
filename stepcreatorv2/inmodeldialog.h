@@ -4,6 +4,8 @@
 #include <QDialog>
 
 #include "qstandarditemmodel.h"
+#include "qboxlayout.h"
+#include "widgets/abstractwidget.h"
 
 
 namespace Ui {
@@ -23,10 +25,19 @@ private slots:
 
     void on_pb_delete_clicked();
 
+    void on_pb_addGroup_clicked();
+
+    void on_pb_addItem_clicked();
+
+    void on_treeView_clicked(const QModelIndex &index);
+
 private:
     Ui::INModelDialog *ui;
     QStandardItemModel *_model;
     int _idCount;
+    QVBoxLayout *_layout;
+    AbstractWidget *_activeWidget;
+
 
 };
 
