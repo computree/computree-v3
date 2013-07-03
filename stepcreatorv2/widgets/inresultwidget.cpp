@@ -33,8 +33,14 @@ QString INResultWidget::getDisplayableName()
 
 QString INResultWidget::getDescription()
 {
-    return ui->modelDescription->toPlainText();
+    return ui->modelDescription->toPlainText().replace("\n","\\n");
 }
+
+bool INResultWidget::getRecursive()
+{
+    return ui->cb_recursive->isChecked();
+}
+
 
 INResultWidget::ResultType  INResultWidget::getResultType()
 {

@@ -35,6 +35,8 @@ private slots:
 
     void on_buttonBox_rejected();
 
+    void accept();
+
 private:
     Ui::INModelDialog *ui;
     QStandardItemModel *_model;

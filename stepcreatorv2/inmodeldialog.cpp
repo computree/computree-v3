@@ -3,6 +3,8 @@
 
 #include "qdebug.h"
 
+#include "qmessagebox.h"
+
 #include "models/inresultmodel.h"
 #include "models/ingroupmodel.h"
 #include "models/initemmodel.h"
@@ -183,4 +185,46 @@ void INModelDialog::on_pb_clear_clicked()
 void INModelDialog::on_buttonBox_rejected()
 {
     on_pb_clear_clicked();
+}
+
+void INModelDialog::accept()
+{
+    bool ok = true;
+    int count = _model->rowCount();
+    QList<QString> liste;
+    for (int i = 0 ; i < count && ok; i++)
+    {
+        AbtractModel* item = (AbtractModel*) _model->item(i);
+        if (liste.contains(item->getAlias()) || !item->isValid())
+        {
+            ok = false;
+        } else {
+            liste.append(item->getAlias());
+        }
+    }
+
+    if (!ok) {
+        QMessageBox::warning(this, "Validation impossible", "Les alias ne sont pas tous définis et / ou uniques !");
+    } else {
+        QStandardItem* root = _model->invisibleRootItem();
+        int count = root->rowCount();
+
+        qDebug() << "------------IN Models -------------\n";
+        for (int i = 0 ; i < count ; i++)
+        {
+            AbtractModel* item = (AbtractModel*) root->child(i);
+
+            qDebug() << item->getInModelsDefinition();
+        }
+
+        qDebug() << "------------Compute -------------\n";
+        for (int i = 0 ; i < count ; i++)
+        {
+            AbtractModel* item = (AbtractModel*) root->child(i);
+
+            qDebug() << item->getInComputeContent();
+        }
+
+        done(QDialog::Accepted);
+    }
 }

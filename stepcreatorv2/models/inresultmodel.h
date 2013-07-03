@@ -13,8 +13,13 @@ public:
 
     virtual AbtractModel::ModelType getModelType() {return AbtractModel::M_Result_IN;}
     virtual AbstractWidget* getWidget() {return _widget;}
+    virtual QString getName();
+
+    virtual QString getInModelsDefinition();
+    virtual QString getInComputeContent();
 
 private:
+
     INResultWidget* _widget;
 
 };

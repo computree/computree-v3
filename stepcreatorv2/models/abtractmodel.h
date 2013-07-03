@@ -23,6 +23,20 @@ public:
     virtual AbtractModel::ModelType getModelType() = 0;
 
     virtual AbstractWidget* getWidget() = 0;
+    virtual QString getName() = 0;
+    QString getDef();
+
+    virtual QString getAlias() {return getWidget()->getAlias();}
+    virtual bool isValid() {return getWidget()->isvalid();}
+
+    virtual QString getInModelsDefinition() = 0;
+    void getChildrenInModelsDefinitions(QString &result);
+
+    virtual QString getInComputeContent() = 0;
+    void getChildrenInComputeContent(QString &result);
+
+
+
 };
 
 #endif // ABTRACTMODEL_H

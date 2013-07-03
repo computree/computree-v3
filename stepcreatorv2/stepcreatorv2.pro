@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     models/initemmodel.cpp \
     models/abtractmodel.cpp \
     widgets/abstractwidget.cpp \
-    widgets/initemwidget.cpp
+    widgets/initemwidget.cpp \
+    tools.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     models/initemmodel.h \
     models/abtractmodel.h \
     widgets/abstractwidget.h \
-    widgets/initemwidget.h
+    widgets/initemwidget.h \
+    tools.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \

@@ -70,7 +70,7 @@ QString INItemWidget::getDisplayableName()
 
 QString INItemWidget::getDescription()
 {
-    return ui->modelDescription->toPlainText();
+    return ui->modelDescription->toPlainText().replace("\n","\\n");
 }
 
 

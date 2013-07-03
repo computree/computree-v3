@@ -43,7 +43,7 @@ QString INGroupWidget::getDisplayableName()
 
 QString INGroupWidget::getDescription()
 {
-    return ui->modelDescription->toPlainText();
+    return ui->modelDescription->toPlainText().replace("\n","\\n");
 }
 
 INGroupWidget::GroupType  INGroupWidget::getResultType()
