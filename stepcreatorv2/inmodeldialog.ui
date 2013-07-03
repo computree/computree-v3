@@ -81,21 +81,21 @@
             <item>
              <widget class="QPushButton" name="pb_addResult">
               <property name="text">
-               <string>Ajouter Modèle de Resultat</string>
+               <string>Ajouter Résultat</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pb_addGroup">
               <property name="text">
-               <string>Ajouter Modèle de Groupe</string>
+               <string>Ajouter Groupe</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pb_addItem">
               <property name="text">
-               <string>Ajouter Modèle d'Item</string>
+               <string>Ajouter Item</string>
               </property>
              </widget>
             </item>
@@ -103,6 +103,13 @@
              <widget class="QPushButton" name="pb_delete">
               <property name="text">
                <string>Supprimer</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_clear">
+              <property name="text">
+               <string>Tout Supprimer</string>
               </property>
              </widget>
             </item>

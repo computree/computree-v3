@@ -31,14 +31,15 @@ private slots:
 
     void on_treeView_clicked(const QModelIndex &index);
 
+    void on_pb_clear_clicked();
+
+    void on_buttonBox_rejected();
+
 private:
     Ui::INModelDialog *ui;
     QStandardItemModel *_model;
-    int _idCount;
     QVBoxLayout *_layout;
     AbstractWidget *_activeWidget;
-
-    static void recursiveDeleteItem(QStandardItem* item, QStandardItemModel* model);
 
 
 };
