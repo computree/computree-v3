@@ -32,6 +32,7 @@ void INModelDialog::on_pb_addResult_clicked()
     QStandardItem *item = _model->invisibleRootItem();
 
     INResultModel *item2 = new INResultModel();
+    item2->setText(QString("result%1").arg(_idCount++));
 
     item->appendRow(item2);
     if (_activeWidget!=NULL)
@@ -60,6 +61,7 @@ void INModelDialog::on_pb_addGroup_clicked()
     }
 
     INGroupModel *item2 = new INGroupModel();
+    item2->setText(QString("group%1").arg(_idCount++));
 
     item->appendRow(item2);
     if (_activeWidget!=NULL)
@@ -88,6 +90,7 @@ void INModelDialog::on_pb_addItem_clicked()
     }
 
     INItemModel *item2 = new INItemModel();
+    item2->setText(QString("item%1").arg(_idCount++));
 
     item->appendRow(item2);
     if (_activeWidget!=NULL)
@@ -103,12 +106,41 @@ void INModelDialog::on_pb_addItem_clicked()
 
 void INModelDialog::on_pb_delete_clicked()
 {
-    QStandardItem *item = _model->itemFromIndex(ui->treeView->currentIndex());
+    QModelIndex index = ui->treeView->currentIndex();
+    AbtractModel *item = (AbtractModel*) _model->itemFromIndex(index);
+    ui->treeView->clearSelection();
     if (item != NULL)
     {
-        qDebug() << "Item supprimé = " << item->text();
-        qDebug() << "Item fils = " << item->child(0)->text();
-        qDebug() << "Nb Items fils = " << item->rowCount();
+        //ui->treeView->setModel(NULL);
+
+
+        //delete all children of parent;
+        QStandardItem * loopItem = item; //main loop item
+        QList<QStandardItem *> carryItems; //Last In First Out stack of items
+        QList<QStandardItem *> itemsToBeDeleted; //List of items to be deleted
+        while (loopItem->rowCount())
+        {
+            itemsToBeDeleted << loopItem->takeRow(0);
+            //if the row removed has children:
+            if (itemsToBeDeleted.at(0)->hasChildren())
+            {
+                carryItems << loopItem; //put on the stack the current loopItem
+                loopItem = itemsToBeDeleted.at(0); //set the row with children as the loopItem
+            }
+            //if current loopItem has no more rows but carryItems list is not empty:
+            if (!loopItem->rowCount() && !carryItems.isEmpty()) loopItem = carryItems.takeFirst();
+
+        }
+        item->parent()->takeRow(item->row());
+        itemsToBeDeleted.append(item);
+
+        while (!itemsToBeDeleted.isEmpty())        {
+            AbtractModel* itemToDelete = (AbtractModel*) itemsToBeDeleted.takeLast();
+            if (itemToDelete->getWidget() == _activeWidget) {_activeWidget = NULL;}
+            delete itemToDelete;
+        }
+
+        //ui->treeView->setModel(_model);
     }
 }
 
@@ -124,3 +156,16 @@ void INModelDialog::on_treeView_clicked(const QModelIndex &index)
     _layout->addWidget(_activeWidget);
 
 }
+
+void INModelDialog::recursiveDeleteItem(QStandardItem* item, QStandardItemModel* model)
+{
+    int count = item->rowCount();
+    for (int i = count - 1 ; i >= 0 ; i--)
+    {
+        QStandardItem* child = item->child(i);
+        recursiveDeleteItem(child, model);
+        model->removeRow(child->index().row(), child->index().parent());
+        delete child;
+    }
+}
+

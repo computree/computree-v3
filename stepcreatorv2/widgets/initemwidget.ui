@@ -21,9 +21,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Type d'Item :</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cb_itemType"/>
+   </item>
+   <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Alias d'indexation</string>
+      <string>Alias d'indexation :</string>
      </property>
     </widget>
    </item>

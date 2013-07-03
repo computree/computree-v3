@@ -23,43 +23,26 @@
    <item>
     <widget class="QRadioButton" name="rb_standardresult">
      <property name="text">
-      <string>Résulltat d'entrée standard</string>
+      <string>Résultat d'entrée standard</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QRadioButton" name="rb_copyresult">
      <property name="text">
-      <string>Résulltat d'entrée à copier</string>
+      <string>Résultat d'entrée à copier</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Alias d'indexation</string>
+      <string>Alias d'indexation :</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLineEdit" name="alias"/>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Nom du résultat :</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="resultName">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_2">

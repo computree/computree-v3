@@ -38,6 +38,8 @@ private:
     QVBoxLayout *_layout;
     AbstractWidget *_activeWidget;
 
+    static void recursiveDeleteItem(QStandardItem* item, QStandardItemModel* model);
+
 
 };
 

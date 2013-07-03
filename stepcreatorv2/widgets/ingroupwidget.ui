@@ -44,7 +44,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Alias d'indexation</string>
+      <string>Alias d'indexation :</string>
      </property>
     </widget>
    </item>
