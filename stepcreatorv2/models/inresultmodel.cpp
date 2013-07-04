@@ -2,10 +2,10 @@
 #include "tools.h"
 #include "assert.h"
 
-INResultModel::INResultModel()
+INResultModel::INResultModel() : AbstractModel()
 {
-    _widget = new INResultWidget();
-    setText("Result");
+    _widget = new INResultWidget(this);
+    setText(getName());
 }
 
 INResultModel::~INResultModel()
@@ -18,6 +18,11 @@ QString INResultModel::getName()
     return QString("result_%1").arg(getAlias());
 }
 
+bool INResultModel::isValid()
+{
+    if (rowCount()!=1) {return false;}
+    return AbtractModel::isValid();
+}
 
 QString INResultModel::getInModelsDefinition()
 {

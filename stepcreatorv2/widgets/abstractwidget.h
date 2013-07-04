@@ -3,14 +3,20 @@
 
 #include <QWidget>
 
+class AbstractModel;
 
 class AbstractWidget : public QWidget
 {
+    Q_OBJECT
+
 public:
-    AbstractWidget(QWidget *parent);
+    AbstractWidget(AbstractModel* model, QWidget *parent = 0);
 
     virtual QString getAlias() = 0;
     virtual bool isvalid() = 0;
+
+signals:
+    void aliasChanged();
 
 };
 

@@ -1,5 +1,7 @@
-#include "abstractwidget.h"
+#include "widgets/abstractwidget.h"
+#include "models/abtractmodel.h"
 
-AbstractWidget::AbstractWidget(QWidget *parent) : QWidget(parent)
+AbstractWidget::AbstractWidget(AbstractModel *model, QWidget *parent) : QWidget(parent)
 {
+    connect(this, SIGNAL(aliasChanged()), model, SLOT(onAliasChange()));
 }

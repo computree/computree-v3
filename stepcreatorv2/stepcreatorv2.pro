@@ -39,7 +39,8 @@ FORMS    += mainwindow.ui \
     widgets/initemwidget.ui
 
 
-
+INCLUDEPATH += ./models
+INCLUDEPATH += ./widgets
 
 
 

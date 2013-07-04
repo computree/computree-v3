@@ -19,7 +19,7 @@ public:
         R_CopyResult
     };
 
-    explicit INResultWidget(QWidget *parent = 0);
+    explicit INResultWidget(AbstractModel* model, QWidget *parent = 0);
     ~INResultWidget();
 
     bool isvalid();
@@ -29,6 +29,9 @@ public:
     bool getRecursive();
 
     INResultWidget::ResultType getResultType();
+
+private slots:
+    void on_alias_textChanged(const QString &arg1);
 
 private:
     Ui::INResultWidget *ui;

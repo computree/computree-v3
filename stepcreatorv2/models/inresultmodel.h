@@ -2,8 +2,6 @@
 #define INRESULTMODEL_H
 
 #include "models/abtractmodel.h"
-#include "widgets/inresultwidget.h"
-
 
 class INResultModel : public AbtractModel
 {
@@ -14,6 +12,7 @@ public:
     virtual AbtractModel::ModelType getModelType() {return AbtractModel::M_Result_IN;}
     virtual AbstractWidget* getWidget() {return _widget;}
     virtual QString getName();
+    virtual bool isValid();
 
     virtual QString getInModelsDefinition();
     virtual QString getInComputeContent();

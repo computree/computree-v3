@@ -59,6 +59,12 @@ void INModelDialog::on_pb_addGroup_clicked()
         return;
     }
 
+    if (item->getModelType()==AbtractModel::M_Result_IN && item->rowCount()!=0)
+    {
+        return;
+    }
+
+
     INGroupModel *item2 = new INGroupModel();
 
     item->appendRow(item2);
@@ -204,7 +210,7 @@ void INModelDialog::accept()
     }
 
     if (!ok) {
-        QMessageBox::warning(this, "Validation impossible", "Les alias ne sont pas tous définis et / ou uniques !");
+        QMessageBox::warning(this, "Validation impossible", "Erreurs possibles :\n- Les alias ne sont pas tous définis et / ou uniques\n- Chaque résultat doit contenir exactement un groupe racine");
     } else {
         QStandardItem* root = _model->invisibleRootItem();
         int count = root->rowCount();

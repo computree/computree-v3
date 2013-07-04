@@ -1,8 +1,8 @@
 #include "inresultwidget.h"
 #include "ui_inresultwidget.h"
 
-INResultWidget::INResultWidget(QWidget *parent) :
-    AbstractWidget(parent),
+INResultWidget::INResultWidget(AbstractModel* model, QWidget *parent) :
+    AbstractWidget(model, parent),
     ui(new Ui::INResultWidget)
 {
     ui->setupUi(this);
@@ -50,4 +50,9 @@ INResultWidget::ResultType  INResultWidget::getResultType()
     } else {
         return INResultWidget::R_CopyResult;
     }
+}
+
+void INResultWidget::on_alias_textChanged(const QString &arg1)
+{
+    emit aliasChanged();
 }

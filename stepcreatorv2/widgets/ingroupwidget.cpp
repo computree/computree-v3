@@ -1,8 +1,8 @@
 #include "ingroupwidget.h"
 #include "ui_ingroupwidget.h"
 
-INGroupWidget::INGroupWidget(QWidget *parent) :
-    AbstractWidget(parent),
+INGroupWidget::INGroupWidget(AbstractModel* model, QWidget *parent) :
+    AbstractWidget(model, parent),
     ui(new Ui::INGroupWidget)
 {
     ui->setupUi(this);
@@ -102,4 +102,9 @@ void INGroupWidget::on_rb_standard_toggled(bool checked)
         ui->modelDescription->clear();
         ui->modelDescription->setEnabled(false);
     }
+}
+
+void INGroupWidget::on_alias_textChanged(const QString &arg1)
+{
+    emit aliasChanged();
 }

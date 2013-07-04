@@ -1,9 +1,9 @@
 #include "initemmodel.h"
 
-INItemModel::INItemModel()
+INItemModel::INItemModel() : AbstractModel()
 {
-    _widget = new INItemWidget();
-    setText("Item");
+    _widget = new INItemWidget(this);
+    setText(getName());
 }
 
 INItemModel::~INItemModel()

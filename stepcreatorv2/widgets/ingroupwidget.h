@@ -33,7 +33,7 @@ public:
         F_Optional
     };
 
-    explicit INGroupWidget(QWidget *parent = 0);
+    explicit INGroupWidget(AbstractModel* model, QWidget *parent = 0);
     ~INGroupWidget();
 
     bool isvalid();
@@ -49,6 +49,8 @@ public:
 
 private slots:
     void on_rb_standard_toggled(bool checked);
+
+    void on_alias_textChanged(const QString &arg1);
 
 private:
     Ui::INGroupWidget *ui;

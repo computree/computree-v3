@@ -27,7 +27,7 @@ public:
     };
 
 
-    explicit INItemWidget(QWidget *parent = 0);
+    explicit INItemWidget(AbstractModel* model, QWidget *parent = 0);
     ~INItemWidget();
 
     bool isvalid();
@@ -38,6 +38,9 @@ public:
 
     INItemWidget::FinderMode getFinderMode();
     INItemWidget::ChoiceMode getChoiceMode();
+
+private slots:
+    void on_alias_textChanged(const QString &arg1);
 
 private:
     Ui::INItemWidget *ui;

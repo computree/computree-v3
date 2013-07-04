@@ -1,8 +1,8 @@
 #include "initemwidget.h"
 #include "ui_initemwidget.h"
 
-INItemWidget::INItemWidget(QWidget *parent) :
-    AbstractWidget(parent),
+INItemWidget::INItemWidget(AbstractModel* model, QWidget *parent) :
+    AbstractWidget(model, parent),
     ui(new Ui::INItemWidget)
 {
     ui->setupUi(this);
@@ -94,4 +94,9 @@ INItemWidget::ChoiceMode INItemWidget::getChoiceMode()
     {
         return INItemWidget::C_MultipleIfMultiple;
     }
+}
+
+void INItemWidget::on_alias_textChanged(const QString &arg1)
+{
+    emit aliasChanged();
 }

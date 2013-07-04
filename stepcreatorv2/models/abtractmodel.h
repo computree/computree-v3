@@ -2,9 +2,10 @@
 #define ABTRACTMODEL_H
 
 #include "qstandarditemmodel.h"
-#include "widgets/abstractwidget.h"
 
-class AbtractModel : public QStandardItem
+class AbstractWidget;
+
+class AbtractModel : public QStandardItem, public QObject
 {
 public:
 
@@ -27,7 +28,7 @@ public:
     QString getDef();
 
     virtual QString getAlias() {return getWidget()->getAlias();}
-    virtual bool isValid() {return getWidget()->isvalid();}
+    virtual bool isValid();
 
     virtual QString getInModelsDefinition() = 0;
     void getChildrenInModelsDefinitions(QString &result);
@@ -35,7 +36,8 @@ public:
     virtual QString getInComputeContent() = 0;
     void getChildrenInComputeContent(QString &result);
 
-
+public slots:
+    void onAliasChange();
 
 };
 

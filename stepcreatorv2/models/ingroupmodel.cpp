@@ -1,9 +1,9 @@
 #include "ingroupmodel.h"
 
-INGroupModel::INGroupModel()
+INGroupModel::INGroupModel() : AbstractModel()
 {
-    _widget = new INGroupWidget();
-    setText("Group");
+    _widget = new INGroupWidget(this);
+    setText(getName());
 }
 
 INGroupModel::~INGroupModel()

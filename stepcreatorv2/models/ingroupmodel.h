@@ -2,7 +2,6 @@
 #define INGROUPMODEL_H
 
 #include "models/abtractmodel.h"
-#include "widgets/ingroupwidget.h"
 
 class INGroupModel : public AbtractModel
 {

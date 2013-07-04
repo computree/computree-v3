@@ -2,8 +2,6 @@
 #define INITEMMODEL_H
 
 #include "models/abtractmodel.h"
-#include "widgets/initemwidget.h"
-
 
 class INItemModel : public AbtractModel
 {
