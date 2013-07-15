@@ -1,5 +1,6 @@
 #include "ingroupwidget.h"
 #include "ui_ingroupwidget.h"
+#include "models/abstractmodel.h"
 
 INGroupWidget::INGroupWidget(AbstractModel* model, QWidget *parent) :
     AbstractWidget(model, parent),
@@ -106,5 +107,5 @@ void INGroupWidget::on_rb_standard_toggled(bool checked)
 
 void INGroupWidget::on_alias_textChanged(const QString &arg1)
 {
-    emit aliasChanged();
+    _model->onAliasChange();
 }

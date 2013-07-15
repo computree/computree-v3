@@ -1,24 +1,18 @@
 #ifndef INGROUPMODEL_H
 #define INGROUPMODEL_H
 
-#include "models/abtractmodel.h"
+#include "models/abstractmodel.h"
 
-class INGroupModel : public AbtractModel
+class INGroupModel : public AbstractModel
 {
 public:
     INGroupModel();
-    ~INGroupModel();
 
-
-    virtual AbtractModel::ModelType getModelType() {return AbtractModel::M_Group_IN;}
-    virtual AbstractWidget* getWidget() {return _widget;}
+    virtual AbstractModel::ModelType getModelType() {return AbstractModel::M_Group_IN;}
     virtual QString getName();
 
     virtual QString getInModelsDefinition();
     virtual QString getInComputeContent();
-
-private:
-    INGroupWidget* _widget;
 };
 
 #endif // INGROUPMODEL_H

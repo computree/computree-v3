@@ -1,14 +1,10 @@
 #include "initemmodel.h"
+#include "widgets/initemwidget.h"
 
 INItemModel::INItemModel() : AbstractModel()
 {
     _widget = new INItemWidget(this);
     setText(getName());
-}
-
-INItemModel::~INItemModel()
-{
-    delete _widget;
 }
 
 QString INItemModel::getName()

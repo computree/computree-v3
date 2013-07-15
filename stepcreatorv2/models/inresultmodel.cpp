@@ -1,4 +1,5 @@
-#include "inresultmodel.h"
+#include "models/inresultmodel.h"
+#include "widgets/inresultwidget.h"
 #include "tools.h"
 #include "assert.h"
 
@@ -8,10 +9,6 @@ INResultModel::INResultModel() : AbstractModel()
     setText(getName());
 }
 
-INResultModel::~INResultModel()
-{
-    delete _widget;
-}
 
 QString INResultModel::getName()
 {
@@ -21,7 +18,7 @@ QString INResultModel::getName()
 bool INResultModel::isValid()
 {
     if (rowCount()!=1) {return false;}
-    return AbtractModel::isValid();
+    return AbstractModel::isValid();
 }
 
 QString INResultModel::getInModelsDefinition()
@@ -29,11 +26,11 @@ QString INResultModel::getInModelsDefinition()
     QString result = "";
     getChildrenInModelsDefinitions(result);
 
-    AbtractModel* childGroup = (AbtractModel*) child(0);
+    AbstractModel* childGroup = (AbstractModel*) child(0);
     assert(childGroup!=NULL);
 
     QString resultClass;
-    if (_widget->getResultType()==INResultWidget::R_StandardResult)
+    if (((INResultWidget*) _widget)->getResultType()==INResultWidget::R_StandardResult)
     {
         resultClass = "CT_InResultModelGroup";
     } else {
@@ -46,9 +43,9 @@ QString INResultModel::getInModelsDefinition()
     result += resultClass +" *" + getName();
     result += "= new " + resultClass +"(" + getDef() + ", ";
     result += childGroup->getName();
-    result += ", \"" + _widget->getDisplayableName() + "\", ";
-    result += "\"" + _widget->getDescription() + "\", ";
-    result += Tools::getBooleanText(_widget->getRecursive()) + ");";
+    result += ", \"" + ((INResultWidget*) _widget)->getDisplayableName() + "\", ";
+    result += "\"" + ((INResultWidget*) _widget)->getDescription() + "\", ";
+    result += Tools::getBooleanText(((INResultWidget*) _widget)->getRecursive()) + ");";
     result += "\n";
     result += "\n";
 

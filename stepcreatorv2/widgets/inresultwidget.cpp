@@ -1,5 +1,6 @@
 #include "inresultwidget.h"
 #include "ui_inresultwidget.h"
+#include "models/abstractmodel.h"
 
 INResultWidget::INResultWidget(AbstractModel* model, QWidget *parent) :
     AbstractWidget(model, parent),
@@ -54,5 +55,5 @@ INResultWidget::ResultType  INResultWidget::getResultType()
 
 void INResultWidget::on_alias_textChanged(const QString &arg1)
 {
-    emit aliasChanged();
+    _model->onAliasChange();
 }

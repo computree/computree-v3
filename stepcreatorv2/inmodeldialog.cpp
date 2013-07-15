@@ -8,7 +8,7 @@
 #include "models/inresultmodel.h"
 #include "models/ingroupmodel.h"
 #include "models/initemmodel.h"
-#include "models/abtractmodel.h"
+#include "models/abstractmodel.h"
 
 INModelDialog::INModelDialog(QWidget *parent) :
     QDialog(parent),
@@ -48,18 +48,18 @@ void INModelDialog::on_pb_addResult_clicked()
 
 void INModelDialog::on_pb_addGroup_clicked()
 {
-    AbtractModel *item = (AbtractModel*) _model->itemFromIndex(ui->treeView->currentIndex());
+    AbstractModel *item = (AbstractModel*) _model->itemFromIndex(ui->treeView->currentIndex());
     if (item == NULL)
     {
         return;
     }
 
-    if (item->getModelType()!=AbtractModel::M_Result_IN && item->getModelType()!=AbtractModel::M_Group_IN)
+    if (item->getModelType()!=AbstractModel::M_Result_IN && item->getModelType()!=AbstractModel::M_Group_IN)
     {
         return;
     }
 
-    if (item->getModelType()==AbtractModel::M_Result_IN && item->rowCount()!=0)
+    if (item->getModelType()==AbstractModel::M_Result_IN && item->rowCount()!=0)
     {
         return;
     }
@@ -83,12 +83,12 @@ void INModelDialog::on_pb_addGroup_clicked()
 
 void INModelDialog::on_pb_addItem_clicked()
 {
-    AbtractModel *item = (AbtractModel*) _model->itemFromIndex(ui->treeView->currentIndex());
+    AbstractModel *item = (AbstractModel*) _model->itemFromIndex(ui->treeView->currentIndex());
     if (item == NULL)
     {
         return;
     }
-    if (item->getModelType()!=AbtractModel::M_Group_IN)
+    if (item->getModelType()!=AbstractModel::M_Group_IN)
     {
         return;
     }
@@ -110,7 +110,7 @@ void INModelDialog::on_pb_addItem_clicked()
 void INModelDialog::on_pb_delete_clicked()
 {
     QModelIndex index = ui->treeView->currentIndex();
-    AbtractModel *item = (AbtractModel*) _model->itemFromIndex(index);
+    AbstractModel *item = (AbstractModel*) _model->itemFromIndex(index);
     ui->treeView->clearSelection();
     if (item != NULL)
     {
@@ -143,7 +143,7 @@ void INModelDialog::on_pb_delete_clicked()
         itemsToBeDeleted.append(item);
 
         while (!itemsToBeDeleted.isEmpty())        {
-            AbtractModel* itemToDelete = (AbtractModel*) itemsToBeDeleted.takeLast();
+            AbstractModel* itemToDelete = (AbstractModel*) itemsToBeDeleted.takeLast();
             if (itemToDelete->getWidget() == _activeWidget) {_activeWidget = NULL;}
             delete itemToDelete;
         }
@@ -153,7 +153,7 @@ void INModelDialog::on_pb_delete_clicked()
 
 void INModelDialog::on_treeView_clicked(const QModelIndex &index)
 {
-    AbtractModel *item = (AbtractModel*) _model->itemFromIndex(index);
+    AbstractModel *item = (AbstractModel*) _model->itemFromIndex(index);
     if (_activeWidget!=NULL)
     {
         _layout->removeWidget(_activeWidget);
@@ -200,7 +200,7 @@ void INModelDialog::accept()
     QList<QString> liste;
     for (int i = 0 ; i < count && ok; i++)
     {
-        AbtractModel* item = (AbtractModel*) _model->item(i);
+        AbstractModel* item = (AbstractModel*) _model->item(i);
         if (liste.contains(item->getAlias()) || !item->isValid())
         {
             ok = false;
@@ -218,7 +218,7 @@ void INModelDialog::accept()
         qDebug() << "------------IN Models -------------\n";
         for (int i = 0 ; i < count ; i++)
         {
-            AbtractModel* item = (AbtractModel*) root->child(i);
+            AbstractModel* item = (AbstractModel*) root->child(i);
 
             qDebug() << item->getInModelsDefinition();
         }
@@ -226,7 +226,7 @@ void INModelDialog::accept()
         qDebug() << "------------Compute -------------\n";
         for (int i = 0 ; i < count ; i++)
         {
-            AbtractModel* item = (AbtractModel*) root->child(i);
+            AbstractModel* item = (AbstractModel*) root->child(i);
 
             qDebug() << item->getInComputeContent();
         }

@@ -1,25 +1,19 @@
 #ifndef INRESULTMODEL_H
 #define INRESULTMODEL_H
 
-#include "models/abtractmodel.h"
+#include "models/abstractmodel.h"
 
-class INResultModel : public AbtractModel
+class INResultModel : public AbstractModel
 {
 public:
     INResultModel();
-    ~INResultModel();
 
-    virtual AbtractModel::ModelType getModelType() {return AbtractModel::M_Result_IN;}
-    virtual AbstractWidget* getWidget() {return _widget;}
+    virtual AbstractModel::ModelType getModelType() {return AbstractModel::M_Result_IN;}
     virtual QString getName();
     virtual bool isValid();
 
     virtual QString getInModelsDefinition();
     virtual QString getInComputeContent();
-
-private:
-
-    INResultWidget* _widget;
 
 };
 

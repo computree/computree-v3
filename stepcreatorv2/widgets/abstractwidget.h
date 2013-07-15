@@ -12,11 +12,12 @@ class AbstractWidget : public QWidget
 public:
     AbstractWidget(AbstractModel* model, QWidget *parent = 0);
 
+
     virtual QString getAlias() = 0;
     virtual bool isvalid() = 0;
 
-signals:
-    void aliasChanged();
+protected:
+    AbstractModel*      _model;
 
 };
 
