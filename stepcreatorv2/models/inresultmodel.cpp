@@ -25,6 +25,8 @@ QString INResultModel::getInModelsDefinition()
 {
     QString result = "";
     getChildrenInModelsDefinitions(result);
+    result += "\n";
+    result += getInModelsHierachy();
 
     AbstractModel* childGroup = (AbstractModel*) child(0);
     assert(childGroup!=NULL);
@@ -38,24 +40,54 @@ QString INResultModel::getInModelsDefinition()
     }
 
     result += "\n";
-    result += "\n";
-    result += Tools::getIndentation(1);
-    result += resultClass +" *" + getName();
-    result += "= new " + resultClass +"(" + getDef() + ", ";
+
+    QString resultTmp = "";
+
+    resultTmp += Tools::getIndentation(1);
+    resultTmp += resultClass +" *" + getName();
+    resultTmp += " = new " + resultClass +"(";
+
+    int indentSize = resultTmp.size();
+    result += resultTmp;
+
+    result += getDef();
+    result += ", \n";
+
+    result += Tools::getSpaceSequence(indentSize);
     result += childGroup->getName();
-    result += ", \"" + ((INResultWidget*) _widget)->getDisplayableName() + "\", ";
-    result += "\"" + ((INResultWidget*) _widget)->getDescription() + "\", ";
+    result += ", \n";
+
+    result += Tools::getSpaceSequence(indentSize);
+    result += "tr(\"" + ((INResultWidget*) _widget)->getDisplayableName() + "\")";
+    result += ", \n";
+
+    result += Tools::getSpaceSequence(indentSize);
+    result += "tr(\"" + ((INResultWidget*) _widget)->getDescription() + "\")";
+    result += ", \n";
+
+    result += Tools::getSpaceSequence(indentSize);
     result += Tools::getBooleanText(((INResultWidget*) _widget)->getRecursive()) + ");";
     result += "\n";
     result += "\n";
 
     result += Tools::getIndentation(1) + "addInResultModel(" + getName() + ");";
     result += "\n";
-    result += "\n";
 
     return result;
 }
 
+QString INResultModel::getInModelsHierachy()
+{
+    QString result = "";
+    getChildrenInModelsHierachy(result);
+    return result;
+}
+
+QString INResultModel::getInModelAddingCommand()
+{
+    // Jamais appelé dans le cas d'un modèle de résultat
+    return "";
+}
 
 QString INResultModel::getInComputeContent()
 {

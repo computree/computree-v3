@@ -33,6 +33,10 @@ public:
     virtual QString getInModelsDefinition() = 0;
     void getChildrenInModelsDefinitions(QString &result);
 
+    virtual QString getInModelsHierachy() = 0;
+    void getChildrenInModelsHierachy(QString &result);
+    virtual QString getInModelAddingCommand() = 0;
+
     virtual QString getInComputeContent() = 0;
     void getChildrenInComputeContent(QString &result);
 

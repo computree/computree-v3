@@ -12,6 +12,8 @@ public:
     virtual QString getName();
 
     virtual QString getInModelsDefinition();
+    virtual QString getInModelsHierachy();
+    virtual QString getInModelAddingCommand();
     virtual QString getInComputeContent();
 };
 

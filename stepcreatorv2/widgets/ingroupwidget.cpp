@@ -16,7 +16,7 @@ INGroupWidget::INGroupWidget(AbstractModel* model, QWidget *parent) :
     ui->cb_choiceMode->addItem("ChooseOneIfMultiple");
     ui->cb_choiceMode->addItem("ChooseMultipleIfMultiple");
     ui->cb_choiceMode->addItem("DontChoose");
-    ui->cb_choiceMode->setCurrentIndex(0);
+    ui->cb_choiceMode->setCurrentIndex(2);
 }
 
 INGroupWidget::~INGroupWidget()

@@ -47,6 +47,16 @@ void AbstractModel::getChildrenInModelsDefinitions(QString &result)
     }
 }
 
+void AbstractModel::getChildrenInModelsHierachy(QString &result)
+{
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractModel* item = (AbstractModel*) child(i);
+        result.append(item->getInModelsHierachy());
+    }
+}
+
 void AbstractModel::getChildrenInComputeContent(QString &result)
 {
     int size = rowCount();
