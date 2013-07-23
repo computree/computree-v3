@@ -1,13 +1,15 @@
 #include "inresultwidget.h"
 #include "ui_inresultwidget.h"
-#include "models/abstractmodel.h"
+#include "models/abstractinmodel.h"
 
-INResultWidget::INResultWidget(AbstractModel* model, QWidget *parent) :
-    AbstractWidget(model, parent),
+INResultWidget::INResultWidget(AbstractInModel* model, QWidget *parent) :
+    AbstractInWidget(model, parent),
     ui(new Ui::INResultWidget)
 {
     ui->setupUi(this);
     ui->rb_standardresult->setChecked(true);
+    setFocusProxy(ui->alias);
+
 }
 
 INResultWidget::~INResultWidget()
@@ -20,7 +22,6 @@ bool INResultWidget::isvalid()
     if (getAlias().isEmpty()) {return false;}
     return true;
 }
-
 
 QString INResultWidget::getAlias()
 {

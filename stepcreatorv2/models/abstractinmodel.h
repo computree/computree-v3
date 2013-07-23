@@ -2,9 +2,10 @@
 #define ABTRACTMODEL_H
 
 #include "qstandarditemmodel.h"
-#include "widgets/abstractwidget.h"
+#include "widgets/abstractinwidget.h"
+#include "qset.h"
 
-class AbstractModel : public QStandardItem
+class AbstractInModel : public QStandardItem
 {
 public:
 
@@ -18,17 +19,22 @@ public:
         M_Item_OUT
     };
 
-    AbstractModel();
-    ~AbstractModel();
+    AbstractInModel();
+    ~AbstractInModel();
 
-    virtual AbstractModel::ModelType getModelType() = 0;
+    virtual AbstractInModel::ModelType getModelType() = 0;
 
-    virtual AbstractWidget* getWidget();
+    virtual AbstractInWidget* getWidget();
     virtual QString getName() = 0;
     QString getDef();
 
     virtual QString getAlias();
     virtual bool isValid();
+
+    virtual QString getInModelsDefines();
+
+    static QString getInModelsIncludes(QSet<QString> &list);
+    virtual void getInModelsIncludesList(QSet<QString> &list) = 0;
 
     virtual QString getInModelsDefinition() = 0;
     void getChildrenInModelsDefinitions(QString &result);
@@ -43,7 +49,7 @@ public:
     void onAliasChange();
 
 protected:
-    AbstractWidget*  _widget;
+    AbstractInWidget*  _widget;
 
 };
 

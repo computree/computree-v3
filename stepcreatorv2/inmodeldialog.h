@@ -5,7 +5,7 @@
 
 #include "qstandarditemmodel.h"
 #include "qboxlayout.h"
-#include "widgets/abstractwidget.h"
+#include "widgets/abstractinwidget.h"
 
 
 namespace Ui {
@@ -41,7 +41,7 @@ private:
     Ui::INModelDialog *ui;
     QStandardItemModel *_model;
     QVBoxLayout *_layout;
-    AbstractWidget *_activeWidget;
+    AbstractInWidget *_activeWidget;
 
 
 };

@@ -2,13 +2,13 @@
 #define INITEMWIDGET_H
 
 
-#include "widgets/abstractwidget.h"
+#include "widgets/abstractinwidget.h"
 
 namespace Ui {
     class INItemWidget;
 }
 
-class INItemWidget : public AbstractWidget
+class INItemWidget : public AbstractInWidget
 {
     Q_OBJECT
 
@@ -27,7 +27,7 @@ public:
     };
 
 
-    explicit INItemWidget(AbstractModel* model, QWidget *parent = 0);
+    explicit INItemWidget(AbstractInModel* model, QWidget *parent = 0);
     ~INItemWidget();
 
     bool isvalid();

@@ -1,9 +1,9 @@
 #include "initemwidget.h"
 #include "ui_initemwidget.h"
-#include "models/abstractmodel.h"
+#include "models/abstractinmodel.h"
 
-INItemWidget::INItemWidget(AbstractModel* model, QWidget *parent) :
-    AbstractWidget(model, parent),
+INItemWidget::INItemWidget(AbstractInModel* model, QWidget *parent) :
+    AbstractInWidget(model, parent),
     ui(new Ui::INItemWidget)
 {
     ui->setupUi(this);
@@ -40,6 +40,7 @@ INItemWidget::INItemWidget(AbstractModel* model, QWidget *parent) :
     ui->cb_itemType->addItem("CT_Triangulation2D");
     ui->cb_itemType->setCurrentIndex(0);
 
+    setFocusProxy(ui->alias);
 }
 
 INItemWidget::~INItemWidget()

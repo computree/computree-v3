@@ -2,7 +2,7 @@
 #include "widgets/ingroupwidget.h"
 #include "tools.h"
 
-INGroupModel::INGroupModel() : AbstractModel()
+INGroupModel::INGroupModel() : AbstractInModel()
 {
     _widget = new INGroupWidget(this);
     setText(getName());
@@ -11,6 +11,26 @@ INGroupModel::INGroupModel() : AbstractModel()
 QString INGroupModel::getName()
 {
     return QString("group_%1").arg(getAlias());
+}
+
+void INGroupModel::getInModelsIncludesList(QSet<QString> &list)
+{
+    if (((INGroupWidget*) _widget)->getResultType() == INGroupWidget::G_ZeroOrMore)
+    {
+        list.insert("#include \"ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h\"");
+    } else if (((INGroupWidget*) _widget)->getResultType() == INGroupWidget::G_OneOrMore)
+    {
+        list.insert("#include \"ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h\"");
+    } else
+    {
+        list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h\"");
+    }
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) child(i);
+        item->getInModelsIncludesList(list);
+    }
 }
 
 
@@ -107,7 +127,7 @@ QString INGroupModel::getInModelsHierachy()
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
-        AbstractModel* item = (AbstractModel*) child(i);
+        AbstractInModel* item = (AbstractInModel*) child(i);
         result += Tools::getIndentation(1);
         result += getName();
         result += item->getInModelAddingCommand();

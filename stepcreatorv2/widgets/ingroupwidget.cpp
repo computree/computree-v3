@@ -1,9 +1,9 @@
 #include "ingroupwidget.h"
 #include "ui_ingroupwidget.h"
-#include "models/abstractmodel.h"
+#include "models/abstractinmodel.h"
 
-INGroupWidget::INGroupWidget(AbstractModel* model, QWidget *parent) :
-    AbstractWidget(model, parent),
+INGroupWidget::INGroupWidget(AbstractInModel* model, QWidget *parent) :
+    AbstractInWidget(model, parent),
     ui(new Ui::INGroupWidget)
 {
     ui->setupUi(this);
@@ -17,6 +17,8 @@ INGroupWidget::INGroupWidget(AbstractModel* model, QWidget *parent) :
     ui->cb_choiceMode->addItem("ChooseMultipleIfMultiple");
     ui->cb_choiceMode->addItem("DontChoose");
     ui->cb_choiceMode->setCurrentIndex(2);
+
+    setFocusProxy(ui->alias);
 }
 
 INGroupWidget::~INGroupWidget()
@@ -30,7 +32,6 @@ bool INGroupWidget::isvalid()
     if (getAlias().isEmpty()) {return false;}
     return true;
 }
-
 
 QString INGroupWidget::getAlias()
 {
@@ -89,19 +90,19 @@ void INGroupWidget::on_rb_standard_toggled(bool checked)
 {
     if (checked)
     {
-        ui->alias->clear();
-        ui->alias->setEnabled(true);
         ui->modelName->clear();
         ui->modelName->setEnabled(true);
         ui->modelDescription->clear();
         ui->modelDescription->setEnabled(true);
+        ui->cb_finderMode->setEnabled(true);
+        ui->cb_choiceMode->setEnabled(true);
     } else {
-        ui->alias->clear();
-        ui->alias->setEnabled(false);
         ui->modelName->clear();
         ui->modelName->setEnabled(false);
         ui->modelDescription->clear();
         ui->modelDescription->setEnabled(false);
+        ui->cb_finderMode->setEnabled(false);
+        ui->cb_choiceMode->setEnabled(false);
     }
 }
 

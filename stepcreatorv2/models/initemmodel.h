@@ -1,16 +1,17 @@
 #ifndef INITEMMODEL_H
 #define INITEMMODEL_H
 
-#include "models/abstractmodel.h"
+#include "models/abstractinmodel.h"
 
-class INItemModel : public AbstractModel
+class INItemModel : public AbstractInModel
 {
 public:
     INItemModel();
 
-    virtual AbstractModel::ModelType getModelType() {return AbstractModel::M_Item_IN;}
+    virtual AbstractInModel::ModelType getModelType() {return AbstractInModel::M_Item_IN;}
     virtual QString getName();
 
+    virtual void getInModelsIncludesList(QSet<QString> &list);
     virtual QString getInModelsDefinition();
     virtual QString getInModelsHierachy();
     virtual QString getInModelAddingCommand();

@@ -3,7 +3,7 @@
 #include "tools.h"
 #include "assert.h"
 
-INResultModel::INResultModel() : AbstractModel()
+INResultModel::INResultModel() : AbstractInModel()
 {
     _widget = new INResultWidget(this);
     setText(getName());
@@ -15,10 +15,29 @@ QString INResultModel::getName()
     return QString("result_%1").arg(getAlias());
 }
 
+
+void INResultModel::getInModelsIncludesList(QSet<QString> &list)
+{
+    if (((INResultWidget*) _widget)->getResultType() == INResultWidget::R_StandardResult)
+    {
+        list.insert("#include \"ct_result/model/inModel/ct_inresultmodelgroup.h\"");
+    } else
+    {
+        list.insert("#include \"ct_result/model/inModel/ct_inresultmodelgrouptocopy.h\"");
+    }
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) child(i);
+        item->getInModelsIncludesList(list);
+    }
+}
+
 bool INResultModel::isValid()
 {
     if (rowCount()!=1) {return false;}
-    return AbstractModel::isValid();
+    return AbstractInModel::isValid();
 }
 
 QString INResultModel::getInModelsDefinition()
@@ -28,7 +47,7 @@ QString INResultModel::getInModelsDefinition()
     result += "\n";
     result += getInModelsHierachy();
 
-    AbstractModel* childGroup = (AbstractModel*) child(0);
+    AbstractInModel* childGroup = (AbstractInModel*) child(0);
     assert(childGroup!=NULL);
 
     QString resultClass;

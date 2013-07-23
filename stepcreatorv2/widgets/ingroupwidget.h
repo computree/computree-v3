@@ -2,13 +2,13 @@
 #define INGROUPWIDGET_H
 
 
-#include "widgets/abstractwidget.h"
+#include "widgets/abstractinwidget.h"
 
 namespace Ui {
     class INGroupWidget;
 }
 
-class INGroupWidget : public AbstractWidget
+class INGroupWidget : public AbstractInWidget
 {
     Q_OBJECT
 
@@ -33,7 +33,7 @@ public:
         F_Optional
     };
 
-    explicit INGroupWidget(AbstractModel* model, QWidget *parent = 0);
+    explicit INGroupWidget(AbstractInModel* model, QWidget *parent = 0);
     ~INGroupWidget();
 
     bool isvalid();

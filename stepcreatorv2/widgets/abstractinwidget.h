@@ -3,21 +3,21 @@
 
 #include <QWidget>
 
-class AbstractModel;
+class AbstractInModel;
 
-class AbstractWidget : public QWidget
+class AbstractInWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    AbstractWidget(AbstractModel* model, QWidget *parent = 0);
+    AbstractInWidget(AbstractInModel* model, QWidget *parent = 0);
 
 
     virtual QString getAlias() = 0;
     virtual bool isvalid() = 0;
 
 protected:
-    AbstractModel*      _model;
+    AbstractInModel*      _model;
 
 };
 

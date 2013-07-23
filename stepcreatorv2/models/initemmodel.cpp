@@ -2,7 +2,7 @@
 #include "widgets/initemwidget.h"
 #include "tools.h"
 
-INItemModel::INItemModel() : AbstractModel()
+INItemModel::INItemModel() : AbstractInModel()
 {
     _widget = new INItemWidget(this);
     setText(getName());
@@ -11,6 +11,12 @@ INItemModel::INItemModel() : AbstractModel()
 QString INItemModel::getName()
 {
     return QString("item_%1").arg(getAlias());
+}
+
+
+void INItemModel::getInModelsIncludesList(QSet<QString> &list)
+{
+    list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h\"");
 }
 
 QString INItemModel::getInModelsDefinition()

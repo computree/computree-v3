@@ -1,13 +1,13 @@
 #ifndef INRESULTWIDGET_H
 #define INRESULTWIDGET_H
 
-#include "widgets/abstractwidget.h"
+#include "widgets/abstractinwidget.h"
 
 namespace Ui {
     class INResultWidget;
 }
 
-class INResultWidget : public AbstractWidget
+class INResultWidget : public AbstractInWidget
 {
     Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
         R_CopyResult
     };
 
-    explicit INResultWidget(AbstractModel* model, QWidget *parent = 0);
+    explicit INResultWidget(AbstractInModel* model, QWidget *parent = 0);
     ~INResultWidget();
 
     bool isvalid();
