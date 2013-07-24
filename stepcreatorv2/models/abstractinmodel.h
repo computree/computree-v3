@@ -26,6 +26,7 @@ public:
 
     virtual AbstractInWidget* getWidget();
     virtual QString getName() = 0;
+    virtual QString getModelName() = 0;
     QString getDef();
 
     virtual QString getAlias();
@@ -33,8 +34,10 @@ public:
 
     virtual QString getInModelsDefines();
 
-    static QString getInModelsIncludes(QSet<QString> &list);
+    static QString getQStringListConcat(QSet<QString> &list);
     virtual void getInModelsIncludesList(QSet<QString> &list) = 0;
+
+    virtual void getInItemsTypesIncludesList(QSet<QString> &list) = 0;
 
     virtual QString getInModelsDefinition() = 0;
     void getChildrenInModelsDefinitions(QString &result);
@@ -43,8 +46,10 @@ public:
     void getChildrenInModelsHierachy(QString &result);
     virtual QString getInModelAddingCommand() = 0;
 
-    virtual QString getInComputeContent() = 0;
-    void getChildrenInComputeContent(QString &result);
+    virtual QString getInComputeBeginning(QString resultDef = "", QString useCopy = "") = 0;
+    void getChildrenInComputeBeginning(QString &result, QString resultDef = "", QString useCopy = "");
+
+    virtual QString getInComputeLoops(int nbIndent = 1) = 0;
 
     void onAliasChange();
 

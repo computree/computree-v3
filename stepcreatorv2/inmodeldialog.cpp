@@ -9,6 +9,7 @@
 #include "models/ingroupmodel.h"
 #include "models/initemmodel.h"
 #include "models/abstractinmodel.h"
+#include "tools.h"
 
 INModelDialog::INModelDialog(QWidget *parent) :
     QDialog(parent),
@@ -26,6 +27,92 @@ INModelDialog::~INModelDialog()
 {
     delete ui;
 }
+
+QString INModelDialog::getInIncludes()
+{
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    QSet<QString> list;
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+        item->getInModelsIncludesList(list);
+    }
+
+    return AbstractInModel::getQStringListConcat(list);
+}
+
+QString INModelDialog::getInItemTypesIncludes()
+{
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    QSet<QString> list;
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+        item->getInItemsTypesIncludesList(list);
+    }
+
+    return AbstractInModel::getQStringListConcat(list);
+}
+
+QString INModelDialog::getInDefines()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+        result += item->getInModelsDefines();
+    }
+
+    return result;
+}
+
+QString INModelDialog::getInModelsDefinitions()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+
+        result += item->getInModelsDefinition();
+    }
+
+    return result;
+}
+
+QString INModelDialog::getInComputeContents()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+
+        result += item->getInComputeBeginning();
+    }
+
+    result += "\n";
+    result += "\n";
+
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) root->child(i);
+
+        result += item->getInComputeLoops();
+    }
+
+    return result;
+}
+
 
 void INModelDialog::on_pb_addResult_clicked()
 {
@@ -217,40 +304,20 @@ void INModelDialog::accept()
     if (!ok) {
         QMessageBox::warning(this, "Validation impossible", "Erreurs possibles :\n- Les alias ne sont pas tous définis et / ou uniques\n- Chaque résultat doit contenir exactement un groupe racine");
     } else {
-        QStandardItem* root = _model->invisibleRootItem();
-        int count = root->rowCount();
-
         qDebug() << "------------IN Includes -------------\n";
-        QSet<QString> list;
-        for (int i = 0 ; i < count ; i++)
-        {
-            AbstractInModel* item = (AbstractInModel*) root->child(i);
-            item->getInModelsIncludesList(list);
-        }
-        qDebug() << AbstractInModel::getInModelsIncludes(list);
+        qDebug() << getInIncludes();
+        qDebug() << getInItemTypesIncludes();
 
         qDebug() << "------------IN Defines -------------\n";
-        for (int i = 0 ; i < count ; i++)
-        {
-            AbstractInModel* item = (AbstractInModel*) root->child(i);
-            qDebug() << item->getInModelsDefines();
-        }
+        qDebug() << getInDefines();
 
         qDebug() << "------------IN Models -------------\n";
-        for (int i = 0 ; i < count ; i++)
-        {
-            AbstractInModel* item = (AbstractInModel*) root->child(i);
+        qDebug() << getInModelsDefinitions();
 
-            qDebug() << item->getInModelsDefinition();
-        }
 
         qDebug() << "------------Compute -------------\n";
-        for (int i = 0 ; i < count ; i++)
-        {
-            AbstractInModel* item = (AbstractInModel*) root->child(i);
+        qDebug() << getInComputeContents();
 
-            qDebug() << item->getInComputeContent();
-        }
 
         done(QDialog::Accepted);
     }

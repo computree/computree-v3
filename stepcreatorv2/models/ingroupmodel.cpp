@@ -1,5 +1,6 @@
 #include "ingroupmodel.h"
 #include "widgets/ingroupwidget.h"
+#include "models/initemmodel.h"
 #include "tools.h"
 
 INGroupModel::INGroupModel() : AbstractInModel()
@@ -11,6 +12,11 @@ INGroupModel::INGroupModel() : AbstractInModel()
 QString INGroupModel::getName()
 {
     return QString("group_%1").arg(getAlias());
+}
+
+QString INGroupModel::getModelName()
+{
+    return QString("groupInModel_%1").arg(getAlias());
 }
 
 void INGroupModel::getInModelsIncludesList(QSet<QString> &list)
@@ -25,14 +31,17 @@ void INGroupModel::getInModelsIncludesList(QSet<QString> &list)
     {
         list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h\"");
     }
+}
+
+void INGroupModel::getInItemsTypesIncludesList(QSet<QString> &list)
+{
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
         AbstractInModel* item = (AbstractInModel*) child(i);
-        item->getInModelsIncludesList(list);
+        item->getInItemsTypesIncludesList(list);
     }
 }
-
 
 QString INGroupModel::getInModelsDefinition()
 {
@@ -42,14 +51,14 @@ QString INGroupModel::getInModelsDefinition()
     {
         result += Tools::getIndentation(1);
         result += "CT_InZeroOrMoreGroupModel *";
-        result += getName();
+        result += getModelName();
         result += " = new CT_InZeroOrMoreGroupModel();";
         result += "\n";
     } else if (((INGroupWidget*) _widget)->getResultType() == INGroupWidget::G_OneOrMore)
     {
         result += Tools::getIndentation(1);
         result += "CT_InOneOrMoreGroupModel *";
-        result += getName();
+        result += getModelName();
         result += " = new CT_InOneOrMoreGroupModel();";
         result += "\n";
     } else
@@ -57,7 +66,7 @@ QString INGroupModel::getInModelsDefinition()
         QString resultTmp = "";
         resultTmp += Tools::getIndentation(1);
         resultTmp += "CT_InStandardGroupModel *";
-        resultTmp += getName();
+        resultTmp += getModelName();
         resultTmp += " = new CT_InStandardGroupModel(";
 
         int indentSize = resultTmp.size();
@@ -129,7 +138,7 @@ QString INGroupModel::getInModelsHierachy()
     {
         AbstractInModel* item = (AbstractInModel*) child(i);
         result += Tools::getIndentation(1);
-        result += getName();
+        result += getModelName();
         result += item->getInModelAddingCommand();
         result += "\n";
     }
@@ -142,15 +151,54 @@ QString INGroupModel::getInModelsHierachy()
 QString INGroupModel::getInModelAddingCommand()
 {
     QString result = ".addGroup(";
-    result += getName();
+    result += getModelName();
     result += ");";
     return result;
 }
 
-QString INGroupModel::getInComputeContent()
+QString INGroupModel::getInComputeBeginning(QString resultDef, QString useCopy)
 {
-    QString result = "Compute Groupe";
+    QString result = "";
 
-    getChildrenInComputeContent(result);
+    result += Tools::getIndentation(1) + "// Get the group model corresponding to " + getDef() + "\n";
+    result += Tools::getIndentation(1) + "CT_InAbstractGroupModel* " + getModelName() + " = (CT_InAbstractGroupModel*)getInModelForResearch" + useCopy + "(" + resultDef + ", " + getDef() + ");" + "\n";
+
+    getChildrenInComputeBeginning(result, resultDef, useCopy);
+    return result;
+}
+
+
+QString INGroupModel::getInComputeLoops(int nbIndent)
+{
+    QString result = "";
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractInModel* groupOrItem = (AbstractInModel*) child(i);
+
+        if (groupOrItem->getModelType() == AbstractInModel::M_Group_IN)
+        {
+            result += "\n";
+            result += Tools::getIndentation(nbIndent) + "// Iterating on children groups corresponding to " + groupOrItem->getDef() + "\n";
+            result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + groupOrItem->getName() + " = " + getName() + "->beginGroup(" + groupOrItem->getModelName() + ")\n";
+            result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " != NULL  && !isStopped()\n";
+            result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " = " + getName() + "->nextGroup() )\n";
+            result += Tools::getIndentation(nbIndent) + "{\n";
+
+            result += groupOrItem->getInComputeLoops(nbIndent+1);
+
+            result += Tools::getIndentation(nbIndent) + "}\n";
+
+        } else if (groupOrItem->getModelType() == AbstractInModel::M_Item_IN)
+        {
+            QString type = ((INItemModel*) groupOrItem)->getItemType();
+            result += Tools::getIndentation(nbIndent) + "// Gets the item corresponding to " + groupOrItem->getDef() + "\n";
+            result += Tools::getIndentation(nbIndent) + "const " + type + "* " + groupOrItem->getName();
+            result += " = (const " + type + "*) " + getName() + "->findFirstItem(" + groupOrItem->getModelName() + ");\n";
+
+        }
+    }
+
     return result;
 }

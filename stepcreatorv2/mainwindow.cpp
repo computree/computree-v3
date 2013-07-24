@@ -30,6 +30,7 @@ void MainWindow::on_pushButton_2_clicked()
 {
     if ((ui->directory->text()=="") || (!QDir(ui->directory->text()).exists())) {ui->statusBar->showMessage("Vous devez choisir un répertoire valide pour les fichiers de l'étape");return;}
     if (ui->code->text().size() < 2) {ui->statusBar->showMessage("Vous devez définir un nom pour l'étape");return;}
+    if (ui->description->text().size() <= 0) {ui->statusBar->showMessage("Vous devez donner une description pour l'étape");return;}
 
     if (createFiles(ui->directory->text(), ui->code->text()))
     {
@@ -169,31 +170,29 @@ bool MainWindow::createFiles(QString directory, QString stepName)
 
         stream << "#include \"" << stepName.toLower() << ".h\"\n";
         stream << "\n";
-        stream << "// Inclusion of in and out results models\n";
-        stream << "#include \"ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h\"\n";
-        stream << "#include \"ct_result/model/inModel/ct_inresultmodelgroup.h\"\n";
-        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"\n";
-        stream << "#include \"ct_result/model/inModel/ct_inresultmodelgrouptocopy.h\"\n";
-        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroupcopy.h\"\n";
+
+        stream << "// Inclusion of in models\n";
+        stream << _inModelDialog->getInIncludes();
         stream << "\n";
-        stream << "// Inclusion of in and out groups models\n";
-        stream << "#include \"ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h\"\n";
-        stream << "#include \"ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h\"\n";
-        stream << "#include \"ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h\"\n";
+        stream << "// Inclusion of out models\n";
         stream << "#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"\n";
-        stream << "\n";
-        stream << "// Inclusion of in and out items models\n";
-        stream << "#include \"ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h\"\n";
+        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"\n";
+        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroupcopy.h\"\n";
         stream << "#include \"ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h\"\n";
         stream << "\n";
         stream << "// Inclusion of standard result class\n";
         stream << "#include \"ct_result/ct_resultgroup.h\"\n";
-        stream << "\n";        
+        stream << "\n";
         stream << "// Inclusion of action system\n";
         stream << "#include \"ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h\"\n";
         stream << "\n";
-        stream << "// Alias for indexing in and out models\n";
-        stream << "#define DEF_SearchInResult  \"r\"\n";
+        stream << "// Inclusion of IN ItemDrawable classes\n";
+        stream << _inModelDialog->getInItemTypesIncludes();
+        stream << "\n";
+        stream << "// Alias for indexing in models\n";
+        stream << _inModelDialog->getInDefines();
+        stream << "\n";
+        stream << "// Alias for indexing out models\n";
         stream << "#define DEF_SearchOutResult \"r\"\n";
         stream << "#define DEF_SearchOutGroup  \"g\"\n";
         stream << "\n";
@@ -206,7 +205,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "// Step description (tooltip of contextual menu)\n";
         stream << "QString " << stepName << "::getStepDescription() const\n";
         stream << "{\n";
-        stream << "    return \"Description\";\n";
+        stream << "    return \"" << ui->description->text() << "\";\n";
         stream << "}\n";
         stream << "\n";
         stream << "// Step copy method\n";
@@ -219,9 +218,15 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "\n";
         stream << "// Creation and affiliation of IN models\n";
         stream << "void " << stepName << "::createInResultModelListProtected()\n";
-        stream << "{\n";                
-        stream << "    CT_InResultModelNotNeedInputResult *resultModel = new CT_InResultModelNotNeedInputResult();\n";
-        stream << "    addInResultModel(resultModel);\n";
+        stream << "{\n";
+        if (_inModelDialog->getInModelsDefinitions() == "")
+        {
+            stream << "    // No in result is needed\n";
+            stream << "    CT_InResultModelNotNeedInputResult *resultModel = new CT_InResultModelNotNeedInputResult();\n";
+            stream << "    addInResultModel(resultModel);\n";
+        } else {
+            stream << _inModelDialog->getInModelsDefinitions();
+        }
         stream << "}\n";
         stream << "\n";
         stream << "// Creation and affiliation of OUT models\n";
@@ -243,6 +248,13 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "void " << stepName << "::compute()\n";
         stream << "{\n";
         stream << "    // DONT'T FORGET TO ADD THIS STEP TO THE STEPPLUGINMANAGER !!!!!\n";
+        stream << "\n";
+        stream << "\n";
+        if (_inModelDialog->getInModelsDefinitions() != "")
+        {
+            stream << _inModelDialog->getInComputeContents();
+        }
+        stream << "\n";
         stream << "}\n";
 
         stepFilecpp.close();

@@ -10,12 +10,15 @@ public:
 
     virtual AbstractInModel::ModelType getModelType() {return AbstractInModel::M_Group_IN;}
     virtual QString getName();
+    virtual QString getModelName();
 
     virtual void getInModelsIncludesList(QSet<QString> &list);
+    virtual void getInItemsTypesIncludesList(QSet<QString> &list);
     virtual QString getInModelsDefinition();
     virtual QString getInModelsHierachy();
     virtual QString getInModelAddingCommand();
-    virtual QString getInComputeContent();
+    virtual QString getInComputeBeginning(QString resultDef = "", QString useCopy = "");
+    virtual QString getInComputeLoops(int nbIndent);
 
 };
 

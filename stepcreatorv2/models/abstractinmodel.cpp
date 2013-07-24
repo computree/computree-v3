@@ -36,7 +36,8 @@ bool AbstractInModel::isValid()
 
 QString AbstractInModel::getInModelsDefines()
 {
-    QString result = getDef();
+    QString result = "#define ";
+    result.append(getDef());
     result.append(QString(" \"%1\"\n").arg(getAlias()));
 
     int size = rowCount();
@@ -50,7 +51,7 @@ QString AbstractInModel::getInModelsDefines()
 
 
 // static
-QString AbstractInModel::getInModelsIncludes(QSet<QString> &list)
+QString AbstractInModel::getQStringListConcat(QSet<QString> &list)
 {
     QStringList list2(list.toList());
     list2.sort();
@@ -87,15 +88,13 @@ void AbstractInModel::getChildrenInModelsHierachy(QString &result)
     }
 }
 
-void AbstractInModel::getChildrenInComputeContent(QString &result)
+void AbstractInModel::getChildrenInComputeBeginning(QString &result, QString resultDef, QString useCopy)
 {
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
         AbstractInModel* item = (AbstractInModel*) child(i);
-        result.append("\n");
-        result.append("\n");
-        result.append(item->getInComputeContent());
+        result.append(item->getInComputeBeginning(resultDef, useCopy));
     }
 }
 

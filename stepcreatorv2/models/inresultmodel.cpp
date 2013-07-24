@@ -15,6 +15,10 @@ QString INResultModel::getName()
     return QString("result_%1").arg(getAlias());
 }
 
+QString INResultModel::getModelName()
+{
+    return QString("resultInModel_%1").arg(getAlias());
+}
 
 void INResultModel::getInModelsIncludesList(QSet<QString> &list)
 {
@@ -31,6 +35,16 @@ void INResultModel::getInModelsIncludesList(QSet<QString> &list)
     {
         AbstractInModel* item = (AbstractInModel*) child(i);
         item->getInModelsIncludesList(list);
+    }
+}
+
+void INResultModel::getInItemsTypesIncludesList(QSet<QString> &list)
+{
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) child(i);
+        item->getInItemsTypesIncludesList(list);
     }
 }
 
@@ -63,7 +77,7 @@ QString INResultModel::getInModelsDefinition()
     QString resultTmp = "";
 
     resultTmp += Tools::getIndentation(1);
-    resultTmp += resultClass +" *" + getName();
+    resultTmp += resultClass +" *" + getModelName();
     resultTmp += " = new " + resultClass +"(";
 
     int indentSize = resultTmp.size();
@@ -73,7 +87,7 @@ QString INResultModel::getInModelsDefinition()
     result += ", \n";
 
     result += Tools::getSpaceSequence(indentSize);
-    result += childGroup->getName();
+    result += childGroup->getModelName();
     result += ", \n";
 
     result += Tools::getSpaceSequence(indentSize);
@@ -89,7 +103,7 @@ QString INResultModel::getInModelsDefinition()
     result += "\n";
     result += "\n";
 
-    result += Tools::getIndentation(1) + "addInResultModel(" + getName() + ");";
+    result += Tools::getIndentation(1) + "addInResultModel(" + getModelName() + ");";
     result += "\n";
 
     return result;
@@ -108,10 +122,47 @@ QString INResultModel::getInModelAddingCommand()
     return "";
 }
 
-QString INResultModel::getInComputeContent()
+QString INResultModel::getInComputeBeginning(QString resultDef, QString useCopy)
 {
-    QString result = "Compute Résultat";
+    QString result = "";
 
-    getChildrenInComputeContent(result);
+    result += "\n";
+    result += "\n";
+    result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
+    result += Tools::getIndentation(1) + "// Get the result corresponding to " + getDef() + "\n";
+    result += Tools::getIndentation(1) + "CT_ResultGroup* " + getName() + " = getInputResultsForModel(" + getDef() + ").first();" + "\n";
+    result += "\n";
+
+    if (((INResultWidget*) _widget)->getResultType() == INResultWidget::R_StandardResult)
+    {
+        useCopy = "";
+    } else
+    {
+        useCopy = "IfUseCopy";
+    }
+
+    getChildrenInComputeBeginning(result, getDef(), useCopy);
     return result;
 }
+
+QString INResultModel::getInComputeLoops(int nbIndent)
+{
+    QString result = "";
+    AbstractInModel* group = (AbstractInModel*) child(0);
+
+    result += "\n";
+    result += Tools::getIndentation(nbIndent) + "// ----------------------------------------------------------------------------\n";
+    result += Tools::getIndentation(nbIndent) + "// Works on the result corresponding to " + getDef() + "\n";
+    result += Tools::getIndentation(nbIndent) + "// Iterating on groups situated at the root of the result (corresponding to " + group->getDef() + ")\n";
+    result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + group->getName() + " = " + getName() + "->beginGroup(" + group->getModelName() + ")\n";
+    result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " != NULL  && !isStopped()\n";
+    result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " = " + getName() + "->nextGroup() )\n";
+    result += Tools::getIndentation(nbIndent) + "{\n";
+
+    result += group->getInComputeLoops(nbIndent + 1);
+
+    result += Tools::getIndentation(nbIndent) + "}\n";
+
+    return result;
+}
+

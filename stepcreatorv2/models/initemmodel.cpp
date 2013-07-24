@@ -13,10 +13,25 @@ QString INItemModel::getName()
     return QString("item_%1").arg(getAlias());
 }
 
+QString INItemModel::getModelName()
+{
+    return QString("itemInModel_%1").arg(getAlias());
+}
+
+QString INItemModel::getItemType()
+{
+    return ((INItemWidget*) _widget)->getItemType();
+}
+
 
 void INItemModel::getInModelsIncludesList(QSet<QString> &list)
 {
     list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h\"");
+}
+
+void INItemModel::getInItemsTypesIncludesList(QSet<QString> &list)
+{
+    list.insert(QString("#include \"ct_itemdrawable/%1.h\"").arg(getItemType().toLower()));
 }
 
 QString INItemModel::getInModelsDefinition()
@@ -25,7 +40,7 @@ QString INItemModel::getInModelsDefinition()
 
     result += Tools::getIndentation(1);
     result += "CT_InStandardItemDrawableModel *";
-    result += getName();
+    result += getModelName();
     result += " = new CT_InStandardItemDrawableModel(";
 
     int indentSize = result.size();
@@ -97,15 +112,23 @@ QString INItemModel::getInModelsHierachy()
 QString INItemModel::getInModelAddingCommand()
 {
     QString result = ".addItem(";
-    result += getName();
+    result += getModelName();
     result += ");";
     return result;
 }
 
-QString INItemModel::getInComputeContent()
+QString INItemModel::getInComputeBeginning(QString resultDef, QString useCopy)
 {
-    QString result = "Compute Item";
+    QString result = "";
 
-    getChildrenInComputeContent(result);
+    result += Tools::getIndentation(1) + "// Get the group model corresponding to " + getDef() + "\n";
+    result += Tools::getIndentation(1) + "CT_InAbstractItemDrawableModel* " + getModelName() + " = (CT_InAbstractItemDrawableModel*)getInModelForResearch" + useCopy + "(" + resultDef + ", " + getDef() + ");" + "\n";
+
     return result;
+
+}
+
+QString INItemModel::getInComputeLoops(int nbIndent)
+{
+    return "";
 }

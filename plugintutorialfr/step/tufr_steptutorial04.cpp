@@ -126,53 +126,47 @@ void TUFR_StepTutorial04::compute()
     CT_InAbstractGroupModel *inGroupModel = (CT_InAbstractGroupModel*)getInModelForResearchIfUseCopy(DEF_SearchInResult, DEF_SearchInGroup);
     CT_InAbstractItemDrawableModel *inPointClusterModel = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_SearchInResult, DEF_SearchInPointCluster);
 
-
-
     /**************************************************/
-
     // on va rechercher tous les groupes contenant des nuages de points (qui ont été choisi par l'utilisateur)
-    if(outRes->recursiveBeginIterateGroups(*inGroupModel))
+    for ( CT_AbstractItemGroup *group = outRes->beginGroup(inGroupModel)
+        ; group != NULL  && !isStopped()
+        ; group = outRes->nextGroup() )
     {
-        CT_AbstractItemGroup *group;
+        // On récupère le groupe de points à l'aide du modèle
+        const CT_PointCluster *item = (const CT_PointCluster*) group->findFirstItem(inPointClusterModel);
 
-        // pour chaque groupe contenant un nuage de point
-        while( ((group = outRes->recursiveNextGroup()) != NULL) && (!isStopped()))
+        // On vérifie qu'il existe
+        if(item != NULL)
         {
-            // On récupère le groupe de points à l'aide du modèle
-            const CT_PointCluster *item = (const CT_PointCluster*) group->findFirstItem(inPointClusterModel);
+            // On récupère le barycentre auto-calculé du groupe de points
+            const CT_PointClusterBarycenter barycentre = item->getBarycenter();
 
-            // On vérifie qu'il existe
-            if(item != NULL)
+            // coordonnées du barycentre
+            float xref = barycentre.x();
+            float yref = barycentre.y();
+            float zref = barycentre.z();
+
+            // calcul du bufferXY
+            // Maximum de la distance point/refPoint pour chaque segment
+            float buffer = 0;
+            const CT_AbstractPointCloud *cloud = item->getPointCloud();
+            const CT_AbstractPointCloudIndex *cloudIndex = item->getPointCloudIndex();
+
+            int indexsize = cloudIndex->indexSize();
+            for (int i = 0 ; i < indexsize ; i++)
             {
-                // On récupère le barycentre auto-calculé du groupe de points
-                const CT_PointClusterBarycenter barycentre = item->getBarycenter();
-
-                // coordonnées du barycentre
-                float xref = barycentre.x();
-                float yref = barycentre.y();
-                float zref = barycentre.z();
-
-                // calcul du bufferXY
-                // Maximum de la distance point/refPoint pour chaque segment
-                float buffer = 0;
-                const CT_AbstractPointCloud *cloud = item->getPointCloud();
-                const CT_AbstractPointCloudIndex *cloudIndex = item->getPointCloudIndex();
-
-                int indexsize = cloudIndex->indexSize();
-                for (int i = 0 ; i < indexsize ; i++)
-                {
-                    int index = cloudIndex->operator [](i);
-                    const CT_Point point = cloud->operator [](index);
-                    float distance = pow(xref-point.x, 2) + pow(yref-point.y, 2);
-                    if (distance > buffer) {buffer = distance;}
-                }
-                if (buffer > 0) {buffer = sqrt(buffer);}
-
-                // et on ajoute un referencePoint
-                CT_ReferencePoint *refPoint = new CT_ReferencePoint(outRefPointModel, item->id(), outRes, xref, yref, zref, buffer);
-                group->addItemDrawable(refPoint);
-
+                int index = cloudIndex->operator [](i);
+                const CT_Point point = cloud->operator [](index);
+                float distance = pow(xref-point.x, 2) + pow(yref-point.y, 2);
+                if (distance > buffer) {buffer = distance;}
             }
+            if (buffer > 0) {buffer = sqrt(buffer);}
+
+            // et on ajoute un referencePoint
+            CT_ReferencePoint *refPoint = new CT_ReferencePoint(outRefPointModel, item->id(), outRes, xref, yref, zref, buffer);
+            group->addItemDrawable(refPoint);
+
         }
     }
+
 }
