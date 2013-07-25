@@ -5,6 +5,7 @@
 
 #include "inmodeldialog.h"
 #include "outmodeldialog.h"
+#include "copymodeldialog.h"
 
 
 namespace Ui {
@@ -30,10 +31,13 @@ private slots:
 
     void on_modelout_clicked();
 
+    void on_modelcopy_clicked();
+
 private:
     Ui::MainWindow *ui;
     INModelDialog  *_inModelDialog;
     OUTModelDialog *_outModelDialog;
+    COPYModelDialog *_copyModelDialog;
 
 
     bool createFiles(QString directory, QString stepName);

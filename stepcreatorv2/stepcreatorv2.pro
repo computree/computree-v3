@@ -28,7 +28,16 @@ SOURCES += main.cpp\
     widgets/outresultwidget.cpp \
     widgets/outitemwidget.cpp \
     widgets/outgroupwidget.cpp \
-    widgets/abstractoutwidget.cpp
+    widgets/abstractoutwidget.cpp \
+    copymodeldialog.cpp \
+    widgets/copyresultwidget.cpp \
+    widgets/copyitemwidget.cpp \
+    widgets/copygroupwidget.cpp \
+    widgets/abstractcopywidget.cpp \
+    models/copyresultmodel.cpp \
+    models/copyitemmodel.cpp \
+    models/copygroupmodel.cpp \
+    models/abstractcopymodel.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -49,7 +58,16 @@ HEADERS  += mainwindow.h \
     widgets/outresultwidget.h \
     widgets/outitemwidget.h \
     widgets/outgroupwidget.h \
-    widgets/abstractoutwidget.h
+    widgets/abstractoutwidget.h \
+    copymodeldialog.h \
+    widgets/copyresultwidget.h \
+    widgets/copyitemwidget.h \
+    widgets/copygroupwidget.h \
+    widgets/abstractcopywidget.h \
+    models/copyresultmodel.h \
+    models/copyitemmodel.h \
+    models/copygroupmodel.h \
+    models/abstractcopymodel.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \
@@ -59,7 +77,11 @@ FORMS    += mainwindow.ui \
     widgets/initemwidget.ui \
     widgets/outresultwidget.ui \
     widgets/outitemwidget.ui \
-    widgets/outgroupwidget.ui
+    widgets/outgroupwidget.ui \
+    copymodeldialog.ui \
+    widgets/copyresultwidget.ui \
+    widgets/copyitemwidget.ui \
+    widgets/copygroupwidget.ui
 
 
 INCLUDEPATH += ./models
