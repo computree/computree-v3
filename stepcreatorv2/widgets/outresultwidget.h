@@ -13,12 +13,6 @@ class OUTResultWidget : public AbstractOutWidget
 
 public:
 
-    enum ResultType
-    {
-        R_StandardResult,
-        R_CopyResult
-    };
-
     explicit OUTResultWidget(AbstractOutModel* model, QWidget *parent = 0);
     ~OUTResultWidget();
 
@@ -26,8 +20,6 @@ public:
     QString getAlias();
     QString getDisplayableName();
     QString getDescription();
-
-    OUTResultWidget::ResultType getResultType();
 
 private slots:
     void on_alias_textChanged(const QString &arg1);

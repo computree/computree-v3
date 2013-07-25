@@ -178,10 +178,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << _inModelDialog->getInIncludes();
         stream << "\n";
         stream << "// Inclusion of out models\n";
-        stream << "#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"\n";
-        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"\n";
-        stream << "#include \"ct_result/model/outModel/ct_outresultmodelgroupcopy.h\"\n";
-        stream << "#include \"ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h\"\n";
+        stream << _outModelDialog->getOutIncludes();
         stream << "\n";
         stream << "// Inclusion of standard result class\n";
         stream << "#include \"ct_result/ct_resultgroup.h\"\n";
@@ -201,8 +198,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << _inModelDialog->getInDefines();
         stream << "\n";
         stream << "// Alias for indexing out models\n";
-        stream << "#define DEF_SearchOutResult \"r\"\n";
-        stream << "#define DEF_SearchOutGroup  \"g\"\n";
+        stream << _outModelDialog->getOutDefines();
         stream << "\n";
         stream << "// Constructor : initialization of parameters\n";
         stream << stepName << "::" << stepName << "(CT_StepInitializeData &dataInit) : " << parentClass << "(dataInit)\n";
@@ -239,10 +235,8 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "\n";
         stream << "// Creation and affiliation of OUT models\n";
         stream << "void " << stepName << "::createOutResultModelListProtected()\n";
-        stream << "{\n";
-        stream << "    CT_OutStandardGroupModel *groupModel = new CT_OutStandardGroupModel(DEF_SearchOutGroup);\n";
-        stream << "    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_SearchOutResult, groupModel, \"Empty result\");\n";
-        stream << "    addOutResultModel(resultModel);\n";
+        stream << "{\n";        
+        stream << _outModelDialog->getOutModelsDefinitions();
         stream << "}\n";
         stream << "\n";
         stream << "// Semi-automatic creation of step parameters DialogBox\n";
@@ -258,12 +252,44 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "    // DONT'T FORGET TO ADD THIS STEP TO THE STEPPLUGINMANAGER !!!!!\n";
         stream << "\n";
         stream << "\n";
-        if (_inModelDialog->getInModelsDefinitions() != "")
+        stream << "    / --------------------------\n";
+        stream << "    // Gets IN results and models\n";
+        if (_inModelDialog->getInComputeBeginning() != "")
         {
-            stream << _inModelDialog->getInComputeContents();
+            stream << _inModelDialog->getInComputeBeginning();
         }
         stream << "\n";
+        stream << "\n";
+
+        stream << "    // ---------------------------\n";
+        stream << "    // Gets OUT results and models\n";
+        if (_outModelDialog->getOutComputeBeginning(_inModelDialog->getNumberOfCopyResults()) != "")
+        {
+            stream << _outModelDialog->getOutComputeBeginning(_inModelDialog->getNumberOfCopyResults());
+        }
+        stream << "\n";
+        stream << "\n";
+
+        stream << "    // ---------------------------------\n";
+        stream << "    // Goes through IN results structure\n";
+        if (_inModelDialog->getInComputeLoops() != "")
+        {
+            stream << _inModelDialog->getInComputeLoops();
+        }
+        stream << "\n";
+        stream << "\n";
+
+        stream << "    // ------------------------------\n";
+        stream << "    // Create OUT groups and items\n";
+        if (_outModelDialog->getOutComputeItemsCreations() != "")
+        {
+            stream << _outModelDialog->getOutComputeItemsCreations();
+        }
+        stream << "\n";
+
         stream << "}\n";
+
+
 
         stepFilecpp.close();
     } else {return false;}

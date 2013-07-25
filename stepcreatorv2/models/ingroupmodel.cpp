@@ -11,7 +11,7 @@ INGroupModel::INGroupModel() : AbstractInModel()
 
 QString INGroupModel::getName()
 {
-    return QString("group_%1").arg(getAlias());
+    return QString("groupIn_%1").arg(getAlias());
 }
 
 QString INGroupModel::getModelName()

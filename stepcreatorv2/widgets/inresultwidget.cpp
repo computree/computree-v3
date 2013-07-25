@@ -9,7 +9,6 @@ INResultWidget::INResultWidget(AbstractInModel* model, QWidget *parent) :
     ui->setupUi(this);
     ui->rb_standardresult->setChecked(true);
     setFocusProxy(ui->alias);
-
 }
 
 INResultWidget::~INResultWidget()

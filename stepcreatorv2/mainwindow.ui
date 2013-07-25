@@ -177,6 +177,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="modelcopy">
+         <property name="text">
+          <string>Parametrer les Copies de modèles IN</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="modelout">
          <property name="text">
           <string>Parametrer les modèles OUT</string>

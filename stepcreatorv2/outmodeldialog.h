@@ -25,7 +25,8 @@ public:
 
     QString getOutDefines();
     QString getOutModelsDefinitions();
-    QString getOutComputeContents();
+    QString getOutComputeBeginning(int nbOfCopyResults);
+    QString getOutComputeItemsCreations();
 
 
 private slots:

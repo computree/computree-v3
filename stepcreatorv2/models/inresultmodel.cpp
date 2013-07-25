@@ -12,13 +12,23 @@ INResultModel::INResultModel() : AbstractInModel()
 
 QString INResultModel::getName()
 {
-    return QString("result_%1").arg(getAlias());
+    return QString("resultIn_%1").arg(getAlias());
 }
 
 QString INResultModel::getModelName()
 {
     return QString("resultInModel_%1").arg(getAlias());
 }
+
+bool INResultModel::isCopyResult()
+{
+    if (((INResultWidget*) _widget)->getResultType() == INResultWidget::R_CopyResult)
+    {
+        return true;
+    }
+    return false;
+}
+
 
 void INResultModel::getInModelsIncludesList(QSet<QString> &list)
 {
@@ -126,7 +136,6 @@ QString INResultModel::getInComputeBeginning(QString resultDef, QString useCopy)
 {
     QString result = "";
 
-    result += "\n";
     result += "\n";
     result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
     result += Tools::getIndentation(1) + "// Get the result corresponding to " + getDef() + "\n";

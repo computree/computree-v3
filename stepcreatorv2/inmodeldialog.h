@@ -20,13 +20,16 @@ public:
     explicit INModelDialog(QWidget *parent = 0);
     ~INModelDialog();
 
+    int getNumberOfCopyResults();
+
+
     QString getInIncludes();
     void getInItemTypesIncludes(QSet<QString> &list);
 
     QString getInDefines();
     QString getInModelsDefinitions();
-    QString getInComputeContents();
-
+    QString getInComputeBeginning();
+    QString getInComputeLoops();
 
 private slots:
     void on_pb_addResult_clicked();

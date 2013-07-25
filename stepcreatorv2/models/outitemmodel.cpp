@@ -10,7 +10,7 @@ OUTItemModel::OUTItemModel() : AbstractOutModel()
 
 QString OUTItemModel::getName()
 {
-    return QString("item_%1").arg(getAlias());
+    return QString("itemOut_%1").arg(getAlias());
 }
 
 QString OUTItemModel::getModelName()
@@ -109,6 +109,7 @@ QString OUTItemModel::getOutComputeBeginning(int rank, QString resultName)
 
 QString OUTItemModel::getOutComputeItemsCreations(QString resultName)
 {
-    QString result = Tools::getIndentation(1) + "// TO COMPLETE" + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", ID, " + resultName + ");\n";
+    QString result = Tools::getIndentation(1) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
+    result += Tools::getIndentation(1) + "// " + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", ID, " + resultName + ");\n";
     return result;
 }

@@ -12,6 +12,7 @@ public:
     virtual QString getName();
     virtual QString getModelName();
     virtual bool isValid();
+    bool isCopyResult();
 
     virtual void getInModelsIncludesList(QSet<QString> &list);
     virtual void getInItemsTypesIncludesList(QSet<QString> &list);

@@ -37,23 +37,6 @@ QString OUTGroupWidget::getDescription()
     return ui->modelDescription->toPlainText().replace("\n","\\n");
 }
 
-
-void OUTGroupWidget::on_rb_standard_toggled(bool checked)
-{
-    if (checked)
-    {
-        ui->modelName->clear();
-        ui->modelName->setEnabled(true);
-        ui->modelDescription->clear();
-        ui->modelDescription->setEnabled(true);
-    } else {
-        ui->modelName->clear();
-        ui->modelName->setEnabled(false);
-        ui->modelDescription->clear();
-        ui->modelDescription->setEnabled(false);
-    }
-}
-
 void OUTGroupWidget::on_alias_textChanged(const QString &arg1)
 {
     _model->onAliasChange();

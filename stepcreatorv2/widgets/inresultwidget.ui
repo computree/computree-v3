@@ -35,10 +35,31 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="cb_recursive">
-     <property name="text">
-      <string>Recherche récursive</string>
-     </property>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>25</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="cb_modifyModel">
+        <property name="text">
+         <string>Modification du modèle copié</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -82,6 +103,13 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cb_recursive">
+     <property name="text">
+      <string>Recherche récursive</string>
      </property>
     </widget>
    </item>

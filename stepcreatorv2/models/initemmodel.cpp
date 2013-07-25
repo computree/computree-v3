@@ -10,7 +10,7 @@ INItemModel::INItemModel() : AbstractInModel()
 
 QString INItemModel::getName()
 {
-    return QString("item_%1").arg(getAlias());
+    return QString("itemIn_%1").arg(getAlias());
 }
 
 QString INItemModel::getModelName()

@@ -28,6 +28,21 @@ INModelDialog::~INModelDialog()
     delete ui;
 }
 
+
+int INModelDialog::getNumberOfCopyResults()
+{
+    int nb = 0;
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        INResultModel* result = (INResultModel*) root->child(i);
+        if (result->isCopyResult()) {++nb;}
+    }
+
+    return nb;
+}
+
 QString INModelDialog::getInIncludes()
 {
     QStandardItem* root = _model->invisibleRootItem();
@@ -84,7 +99,7 @@ QString INModelDialog::getInModelsDefinitions()
     return result;
 }
 
-QString INModelDialog::getInComputeContents()
+QString INModelDialog::getInComputeBeginning()
 {
     QString result = "";
 
@@ -97,9 +112,15 @@ QString INModelDialog::getInComputeContents()
         result += item->getInComputeBeginning();
     }
 
-    result += "\n";
-    result += "\n";
+    return result;
+}
 
+QString INModelDialog::getInComputeLoops()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
     for (int i = 0 ; i < count ; i++)
     {
         AbstractInModel* item = (AbstractInModel*) root->child(i);

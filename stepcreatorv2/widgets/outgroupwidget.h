@@ -43,8 +43,6 @@ public:
 
 
 private slots:
-    void on_rb_standard_toggled(bool checked);
-
     void on_alias_textChanged(const QString &arg1);
 
 private:

@@ -84,11 +84,10 @@ QString OUTModelDialog::getOutModelsDefinitions()
     return result;
 }
 
-QString OUTModelDialog::getOutComputeContents()
+QString OUTModelDialog::getOutComputeBeginning(int nbOfCopyResults)
 {
     QString result = "";
     result += Tools::getIndentation(1) + "QList<CT_ResultGroup*> outResultList = getOutResultList();\n";
-    result += "\n";
 
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
@@ -96,12 +95,18 @@ QString OUTModelDialog::getOutComputeContents()
     {
         AbstractOutModel* item = (AbstractOutModel*) root->child(i);
 
-        result += item->getOutComputeBeginning(i);
+        result += item->getOutComputeBeginning(i + nbOfCopyResults);
     }
 
-    result += "\n";
-    result += "\n";
+    return result;
+}
 
+QString OUTModelDialog::getOutComputeItemsCreations()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
     for (int i = 0 ; i < count ; i++)
     {
         AbstractOutModel* item = (AbstractOutModel*) root->child(i);

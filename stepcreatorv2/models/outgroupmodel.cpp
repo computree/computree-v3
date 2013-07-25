@@ -11,7 +11,7 @@ OUTGroupModel::OUTGroupModel() : AbstractOutModel()
 
 QString OUTGroupModel::getName()
 {
-    return QString("group_%1").arg(getAlias());
+    return QString("groupOut_%1").arg(getAlias());
 }
 
 QString OUTGroupModel::getModelName()
@@ -128,7 +128,7 @@ QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
 {
     QString result = "";
 
-    result += "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", 0, " + resultName + ");\n";
+    result += Tools::getIndentation(1) + "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", 0, " + resultName + ");\n";
 
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
@@ -142,7 +142,7 @@ QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
             result += Tools::getIndentation(1) + getName() + ".addGroup(" + groupOrItem->getName() + ");\n";
         } else if (groupOrItem->getModelType() == AbstractOutModel::M_Item_OUT)
         {
-            result += Tools::getIndentation(1) + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
+            result += Tools::getIndentation(1) + "// " + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
         }
     }
 

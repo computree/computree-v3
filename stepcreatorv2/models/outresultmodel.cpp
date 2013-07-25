@@ -12,7 +12,7 @@ OUTResultModel::OUTResultModel() : AbstractOutModel()
 
 QString OUTResultModel::getName()
 {
-    return QString("result_%1").arg(getAlias());
+    return QString("resultOut_%1").arg(getAlias());
 }
 
 QString OUTResultModel::getModelName()
@@ -22,13 +22,7 @@ QString OUTResultModel::getModelName()
 
 void OUTResultModel::getOutModelsIncludesList(QSet<QString> &list)
 {
-    if (((OUTResultWidget*) _widget)->getResultType() == OUTResultWidget::R_StandardResult)
-    {        
-        list.insert("#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"");
-    } else
-    {
-        list.insert("#include \"ct_result/model/outModel/ct_outresultmodelgroupcopy.h\"");
-    }
+    list.insert("#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"");
 
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
@@ -64,21 +58,13 @@ QString OUTResultModel::getOutModelsDefinition()
     AbstractOutModel* childGroup = (AbstractOutModel*) child(0);
     assert(childGroup!=NULL);
 
-    QString resultClass;
-    if (((OUTResultWidget*) _widget)->getResultType()==OUTResultWidget::R_StandardResult)
-    {
-        resultClass = "CT_OutResultModelGroup";
-    } else {
-        resultClass = "TODO";
-    }
-
     result += "\n";
 
     QString resultTmp = "";
 
     resultTmp += Tools::getIndentation(1);
-    resultTmp += resultClass +" *" + getModelName();
-    resultTmp += " = new " + resultClass +"(";
+    resultTmp += "CT_OutResultModelGroup *" + getModelName();
+    resultTmp += " = new CT_OutResultModelGroup(";
 
     int indentSize = resultTmp.size();
     result += resultTmp;
@@ -123,10 +109,9 @@ QString OUTResultModel::getOutComputeBeginning(int rank, QString resultName)
     QString result = "";
 
     result += "\n";
-    result += "\n";
     result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
     result += Tools::getIndentation(1) + "// Get the result corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_ResultGroup* " + getName() + " = outResultList.at(" + rank + ");" + "\n";
+    result += Tools::getIndentation(1) + "CT_ResultGroup* " + getName() + " = outResultList.at(" + QString("%1").arg(rank) + ");" + "\n";
     result += "\n";
 
     getChildrenOutComputeBeginning(result, getName());

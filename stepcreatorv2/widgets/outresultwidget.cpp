@@ -37,12 +37,6 @@ QString OUTResultWidget::getDescription()
     return ui->modelDescription->toPlainText().replace("\n","\\n");
 }
 
-
-OUTResultWidget::ResultType  OUTResultWidget::getResultType()
-{
-        return OUTResultWidget::R_StandardResult;
-}
-
 void OUTResultWidget::on_alias_textChanged(const QString &arg1)
 {
     _model->onAliasChange();
