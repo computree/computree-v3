@@ -39,21 +39,18 @@ QString INModelDialog::getInIncludes()
         item->getInModelsIncludesList(list);
     }
 
-    return AbstractInModel::getQStringListConcat(list);
+    return Tools::getQStringListConcat(list);
 }
 
-QString INModelDialog::getInItemTypesIncludes()
+void INModelDialog::getInItemTypesIncludes(QSet<QString> &list)
 {
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
-    QSet<QString> list;
     for (int i = 0 ; i < count ; i++)
     {
         AbstractInModel* item = (AbstractInModel*) root->child(i);
         item->getInItemsTypesIncludesList(list);
     }
-
-    return AbstractInModel::getQStringListConcat(list);
 }
 
 QString INModelDialog::getInDefines()

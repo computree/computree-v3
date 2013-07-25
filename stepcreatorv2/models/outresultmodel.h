@@ -18,8 +18,8 @@ public:
     virtual QString getOutModelsDefinition();
     virtual QString getOutModelsHierachy();
     virtual QString getOutModelAddingCommand();
-    virtual QString getOutComputeBeginning(QString resultDef = "", QString useCopy = "");
-    virtual QString getOutComputeLoops(int nbIndent);
+    virtual QString getOutComputeBeginning(int rank, QString resultName = "");
+    virtual QString getOutComputeItemsCreations(QString resultName = "");
 
 };
 

@@ -36,9 +36,6 @@ public:
     QString getDisplayableName();
     QString getDescription();
 
-    OUTItemWidget::FinderMode getFinderMode();
-    OUTItemWidget::ChoiceMode getChoiceMode();
-
 private slots:
     void on_alias_textChanged(const QString &arg1);
 

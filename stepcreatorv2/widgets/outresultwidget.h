@@ -26,7 +26,6 @@ public:
     QString getAlias();
     QString getDisplayableName();
     QString getDescription();
-    bool getRecursive();
 
     OUTResultWidget::ResultType getResultType();
 

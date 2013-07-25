@@ -25,8 +25,8 @@ QString OUTItemModel::getItemType()
 
 
 void OUTItemModel::getOutModelsIncludesList(QSet<QString> &list)
-{
-    list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h\"");
+{   
+    list.insert("#include \"ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h\"");
 }
 
 void OUTItemModel::getOutItemsTypesIncludesList(QSet<QString> &list)
@@ -39,9 +39,9 @@ QString OUTItemModel::getOutModelsDefinition()
     QString result = "";
 
     result += Tools::getIndentation(1);
-    result += "CT_InStandardItemDrawableModel *";
+    result += "CT_OutStandardItemDrawableModel *";
     result += getModelName();
-    result += " = new CT_InStandardItemDrawableModel(";
+    result += " = new CT_OutStandardItemDrawableModel(";
 
     int indentSize = result.size();
 
@@ -49,32 +49,11 @@ QString OUTItemModel::getOutModelsDefinition()
 
     // Item Type
     result += ", \n";
-    result += Tools::getSpaceSequence(indentSize);
+    result += Tools::getSpaceSequence(indentSize) + "new ";
     result += ((OUTItemWidget*) _widget)->getItemType();
-    result += "::staticGetType()";
+    result += "()";
 
     QString resultTmp = "";
-
-    // FinderMode
-    if (((OUTItemWidget*) _widget)->getFinderMode() == OUTItemWidget::F_Optional)
-    {
-        resultTmp += ", \n";
-        resultTmp += Tools::getSpaceSequence(indentSize);
-        resultTmp += "CT_InStandardItemDrawableModel::FG_IsOptional";
-    }
-
-    // ChoiceMode
-    if ((((OUTItemWidget*) _widget)->getChoiceMode() == OUTItemWidget::C_OneIfMultiple) && (resultTmp.size() > 0))
-    {
-        resultTmp.insert(0, "CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple");
-        resultTmp.insert(0, Tools::getSpaceSequence(indentSize));
-        resultTmp.insert(0, ", \n");
-    } else if (((OUTItemWidget*) _widget)->getChoiceMode() == OUTItemWidget::C_MultipleIfMultiple)
-    {
-        resultTmp.insert(0, "CT_InStandardItemDrawableModel::C_ChooseMultipleIfMultiple");
-        resultTmp.insert(0, Tools::getSpaceSequence(indentSize));
-        resultTmp.insert(0, ", \n");
-    }
 
     // Description
     QString description = ((OUTItemWidget*) _widget)->getDescription();
@@ -117,18 +96,19 @@ QString OUTItemModel::getOutModelAddingCommand()
     return result;
 }
 
-QString OUTItemModel::getOutComputeBeginning(QString resultDef, QString useCopy)
+QString OUTItemModel::getOutComputeBeginning(int rank, QString resultName)
 {
     QString result = "";
 
-    result += Tools::getIndentation(1) + "// Get the group model corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_InAbstractItemDrawableModel* " + getModelName() + " = (CT_InAbstractItemDrawableModel*)getInModelForResearch" + useCopy + "(" + resultDef + ", " + getDef() + ");" + "\n";
+    result += Tools::getIndentation(1) + "// Get the item model corresponding to " + getDef() + "\n";
+    result += Tools::getIndentation(1) + "CT_OutStandardItemDrawableModel* " + getModelName() + " = (CT_OutStandardItemDrawableModel*)getOutModelForCreation" + "(" + resultName + ", " + getDef() + ");" + "\n";
 
     return result;
 
 }
 
-QString OUTItemModel::getOutComputeLoops(int nbIndent)
+QString OUTItemModel::getOutComputeItemsCreations(QString resultName)
 {
-    return "";
+    QString result = Tools::getIndentation(1) + "// TO COMPLETE" + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", ID, " + resultName + ");\n";
+    return result;
 }

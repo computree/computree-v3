@@ -23,11 +23,11 @@ QString OUTResultModel::getModelName()
 void OUTResultModel::getOutModelsIncludesList(QSet<QString> &list)
 {
     if (((OUTResultWidget*) _widget)->getResultType() == OUTResultWidget::R_StandardResult)
-    {
-        list.insert("#include \"ct_result/model/inModel/ct_inresultmodelgroup.h\"");
+    {        
+        list.insert("#include \"ct_result/model/outModel/ct_outresultmodelgroup.h\"");
     } else
     {
-        list.insert("#include \"ct_result/model/inModel/ct_inresultmodelgrouptocopy.h\"");
+        list.insert("#include \"ct_result/model/outModel/ct_outresultmodelgroupcopy.h\"");
     }
 
     int size = rowCount();
@@ -67,9 +67,9 @@ QString OUTResultModel::getOutModelsDefinition()
     QString resultClass;
     if (((OUTResultWidget*) _widget)->getResultType()==OUTResultWidget::R_StandardResult)
     {
-        resultClass = "CT_InResultModelGroup";
+        resultClass = "CT_OutResultModelGroup";
     } else {
-        resultClass = "CT_InResultModelGroupToCopy";
+        resultClass = "TODO";
     }
 
     result += "\n";
@@ -96,14 +96,10 @@ QString OUTResultModel::getOutModelsDefinition()
 
     result += Tools::getSpaceSequence(indentSize);
     result += "tr(\"" + ((OUTResultWidget*) _widget)->getDescription() + "\")";
-    result += ", \n";
-
-    result += Tools::getSpaceSequence(indentSize);
-    result += Tools::getBooleanText(((OUTResultWidget*) _widget)->getRecursive()) + ");";
-    result += "\n";
+    result += ");";
     result += "\n";
 
-    result += Tools::getIndentation(1) + "addInResultModel(" + getModelName() + ");";
+    result += Tools::getIndentation(1) + "addOutResultModel(" + getModelName() + ");";
     result += "\n";
 
     return result;
@@ -122,7 +118,7 @@ QString OUTResultModel::getOutModelAddingCommand()
     return "";
 }
 
-QString OUTResultModel::getOutComputeBeginning(QString resultDef, QString useCopy)
+QString OUTResultModel::getOutComputeBeginning(int rank, QString resultName)
 {
     QString result = "";
 
@@ -130,38 +126,23 @@ QString OUTResultModel::getOutComputeBeginning(QString resultDef, QString useCop
     result += "\n";
     result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
     result += Tools::getIndentation(1) + "// Get the result corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_ResultGroup* " + getName() + " = getInputResultsForModel(" + getDef() + ").first();" + "\n";
+    result += Tools::getIndentation(1) + "CT_ResultGroup* " + getName() + " = outResultList.at(" + rank + ");" + "\n";
     result += "\n";
 
-    if (((OUTResultWidget*) _widget)->getResultType() == OUTResultWidget::R_StandardResult)
-    {
-        useCopy = "";
-    } else
-    {
-        useCopy = "IfUseCopy";
-    }
-
-    getChildrenOutComputeBeginning(result, getDef(), useCopy);
+    getChildrenOutComputeBeginning(result, getName());
     return result;
 }
 
-QString OUTResultModel::getOutComputeLoops(int nbIndent)
+QString OUTResultModel::getOutComputeItemsCreations(QString resultName)
 {
     QString result = "";
     AbstractOutModel* group = (AbstractOutModel*) child(0);
 
     result += "\n";
-    result += Tools::getIndentation(nbIndent) + "// ----------------------------------------------------------------------------\n";
-    result += Tools::getIndentation(nbIndent) + "// Works on the result corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(nbIndent) + "// Iterating on groups situated at the root of the result (corresponding to " + group->getDef() + ")\n";
-    result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + group->getName() + " = " + getName() + "->beginGroup(" + group->getModelName() + ")\n";
-    result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " != NULL  && !isStopped()\n";
-    result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " = " + getName() + "->nextGroup() )\n";
-    result += Tools::getIndentation(nbIndent) + "{\n";
-
-    result += group->getOutComputeLoops(nbIndent + 1);
-
-    result += Tools::getIndentation(nbIndent) + "}\n";
+    result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
+    result += Tools::getIndentation(1) + "// Works on the result corresponding to " + getDef() + "\n";
+    result += group->getOutComputeItemsCreations(getName());
+    result += Tools::getIndentation(1) + getName() + ".addGroup(" + group->getName() + ");\n";
 
     return result;
 }

@@ -41,11 +41,6 @@ public:
     QString getDisplayableName();
     QString getDescription();
 
-    OUTGroupWidget::GroupType getResultType();
-    OUTGroupWidget::FinderMode getFinderMode();
-    OUTGroupWidget::ChoiceMode getChoiceMode();
-
-
 
 private slots:
     void on_rb_standard_toggled(bool checked);

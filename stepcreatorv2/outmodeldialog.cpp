@@ -42,18 +42,15 @@ QString OUTModelDialog::getOutIncludes()
     return AbstractOutModel::getQStringListConcat(list);
 }
 
-QString OUTModelDialog::getOutItemTypesIncludes()
+void OUTModelDialog::getOutItemTypesIncludes(QSet<QString> &list)
 {
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
-    QSet<QString> list;
     for (int i = 0 ; i < count ; i++)
     {
         AbstractOutModel* item = (AbstractOutModel*) root->child(i);
         item->getOutItemsTypesIncludesList(list);
     }
-
-    return AbstractOutModel::getQStringListConcat(list);
 }
 
 QString OUTModelDialog::getOutDefines()
@@ -90,6 +87,8 @@ QString OUTModelDialog::getOutModelsDefinitions()
 QString OUTModelDialog::getOutComputeContents()
 {
     QString result = "";
+    result += Tools::getIndentation(1) + "QList<CT_ResultGroup*> outResultList = getOutResultList();\n";
+    result += "\n";
 
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
@@ -97,7 +96,7 @@ QString OUTModelDialog::getOutComputeContents()
     {
         AbstractOutModel* item = (AbstractOutModel*) root->child(i);
 
-        result += item->getOutComputeBeginning();
+        result += item->getOutComputeBeginning(i);
     }
 
     result += "\n";
@@ -107,7 +106,7 @@ QString OUTModelDialog::getOutComputeContents()
     {
         AbstractOutModel* item = (AbstractOutModel*) root->child(i);
 
-        result += item->getOutComputeLoops();
+        result += item->getOutComputeItemsCreations();
     }
 
     return result;

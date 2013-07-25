@@ -20,17 +20,8 @@ QString OUTGroupModel::getModelName()
 }
 
 void OUTGroupModel::getOutModelsIncludesList(QSet<QString> &list)
-{
-    if (((OUTGroupWidget*) _widget)->getResultType() == OUTGroupWidget::G_ZeroOrMore)
-    {
-        list.insert("#include \"ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h\"");
-    } else if (((OUTGroupWidget*) _widget)->getResultType() == OUTGroupWidget::G_OneOrMore)
-    {
-        list.insert("#include \"ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h\"");
-    } else
-    {
-        list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h\"");
-    }
+{   
+    list.insert("#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"");
 }
 
 void OUTGroupModel::getOutItemsTypesIncludesList(QSet<QString> &list)
@@ -47,83 +38,48 @@ QString OUTGroupModel::getOutModelsDefinition()
 {
     QString result = "";
 
-    if (((OUTGroupWidget*) _widget)->getResultType() == OUTGroupWidget::G_ZeroOrMore)
+    QString resultTmp = "";
+    resultTmp += Tools::getIndentation(1);
+    resultTmp += "CT_OutStandardGroupModel *";
+    resultTmp += getModelName();
+    resultTmp += " = new CT_OutStandardGroupModel(";
+
+    int indentSize = resultTmp.size();
+
+    result += resultTmp;
+    result += getDef();
+
+    QString resultTmp2 = "";
+
+    // Description
+    QString description = ((OUTGroupWidget*) _widget)->getDescription();
+    if ((description.size() > 0) || (resultTmp2.size() > 0))
     {
-        result += Tools::getIndentation(1);
-        result += "CT_InZeroOrMoreGroupModel *";
-        result += getModelName();
-        result += " = new CT_InZeroOrMoreGroupModel();";
-        result += "\n";
-    } else if (((OUTGroupWidget*) _widget)->getResultType() == OUTGroupWidget::G_OneOrMore)
-    {
-        result += Tools::getIndentation(1);
-        result += "CT_InOneOrMoreGroupModel *";
-        result += getModelName();
-        result += " = new CT_InOneOrMoreGroupModel();";
-        result += "\n";
-    } else
-    {
-        QString resultTmp = "";
-        resultTmp += Tools::getIndentation(1);
-        resultTmp += "CT_InStandardGroupModel *";
-        resultTmp += getModelName();
-        resultTmp += " = new CT_InStandardGroupModel(";
-
-        int indentSize = resultTmp.size();
-
-        result += resultTmp;
-        result += getDef();
-
-        QString resultTmp2 = "";
-
-        // FinderMode
-        if (((OUTGroupWidget*) _widget)->getFinderMode() == OUTGroupWidget::F_Optional)
-        {
-            resultTmp2 += ", \n";
-            resultTmp2 += Tools::getSpaceSequence(indentSize);
-            resultTmp2 += "CT_InAbstractGroupModel::FG_IsOptional";
-        }
-
-        // ChoiceMode
-        if ((((OUTGroupWidget*) _widget)->getChoiceMode() == OUTGroupWidget::C_DontChoose) && (resultTmp2.size() > 0))
-        {
-            resultTmp2.insert(0, "CT_InAbstractModel::C_DontChoose");
-            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-            resultTmp2.insert(0, ", \n");
-        } else if (((OUTGroupWidget*) _widget)->getChoiceMode() == OUTGroupWidget::C_OneIfMultiple)
-        {
-            resultTmp2.insert(0, "CT_InAbstractModel::C_ChooseOneIfMultiple");
-            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-            resultTmp2.insert(0, ", \n");
-        } else if (((OUTGroupWidget*) _widget)->getChoiceMode() == OUTGroupWidget::C_MultipleIfMultiple)
-        {
-            resultTmp2.insert(0, "CT_InAbstractModel::C_ChooseMultipleIfMultiple");
-            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-            resultTmp2.insert(0, ", \n");
-        }
-
-        // Description
-        QString description = ((OUTGroupWidget*) _widget)->getDescription();
-        if ((description.size() > 0) || (resultTmp2.size() > 0))
-        {
-            resultTmp2.insert(0, QString("tr(\"%1\")").arg(description));
-            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-            resultTmp2.insert(0, ", \n");
-        }
-
-        // Displayable Name
-        QString dispName = ((OUTGroupWidget*) _widget)->getDisplayableName();
-        if ((dispName.size() > 0) || (resultTmp2.size() > 0))
-        {
-            resultTmp2.insert(0, QString("tr(\"%1\")").arg(dispName));
-            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-            resultTmp2.insert(0, ", \n");
-        }
-
-        result += resultTmp2;
-        result += ");";
-        result += "\n";
+        resultTmp2.insert(0, QString("tr(\"%1\")").arg(description));
+        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+        resultTmp2.insert(0, ", \n");
     }
+
+    // Displayable Name
+    QString dispName = ((OUTGroupWidget*) _widget)->getDisplayableName();
+    if ((dispName.size() > 0) || (resultTmp2.size() > 0))
+    {
+        resultTmp2.insert(0, QString("tr(\"%1\")").arg(dispName));
+        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+        resultTmp2.insert(0, ", \n");
+    }
+
+    // New CT_StandardItemGroup
+    if (resultTmp2.size() > 0)
+    {
+        resultTmp2.insert(0, "new CT_StandardItemGroup()");
+        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+        resultTmp2.insert(0, ", \n");
+    }
+
+    result += resultTmp2;
+    result += ");";
+    result += "\n";
 
     getChildrenOutModelsDefinitions(result);
     return result;
@@ -156,47 +112,37 @@ QString OUTGroupModel::getOutModelAddingCommand()
     return result;
 }
 
-QString OUTGroupModel::getOutComputeBeginning(QString resultDef, QString useCopy)
+QString OUTGroupModel::getOutComputeBeginning(int rank, QString resultName)
 {
     QString result = "";
 
     result += Tools::getIndentation(1) + "// Get the group model corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_InAbstractGroupModel* " + getModelName() + " = (CT_InAbstractGroupModel*)getInModelForResearch" + useCopy + "(" + resultDef + ", " + getDef() + ");" + "\n";
+    result += Tools::getIndentation(1) + "CT_OutStandardGroupModel* " + getModelName() + " = (CT_OutStandardGroupModel*)getOutModelForCreation" + "(" + resultName + ", " + getDef() + ");" + "\n";
 
-    getChildrenOutComputeBeginning(result, resultDef, useCopy);
+    getChildrenOutComputeBeginning(result, resultName);
     return result;
 }
 
 
-QString OUTGroupModel::getOutComputeLoops(int nbIndent)
+QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
 {
     QString result = "";
+
+    result += "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", 0, " + resultName + ");\n";
 
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
         AbstractOutModel* groupOrItem = (AbstractOutModel*) child(i);
 
+        result += groupOrItem->getOutComputeItemsCreations(resultName);
+
         if (groupOrItem->getModelType() == AbstractOutModel::M_Group_OUT)
         {
-            result += "\n";
-            result += Tools::getIndentation(nbIndent) + "// Iterating on children groups corresponding to " + groupOrItem->getDef() + "\n";
-            result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + groupOrItem->getName() + " = " + getName() + "->beginGroup(" + groupOrItem->getModelName() + ")\n";
-            result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " != NULL  && !isStopped()\n";
-            result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " = " + getName() + "->nextGroup() )\n";
-            result += Tools::getIndentation(nbIndent) + "{\n";
-
-            result += groupOrItem->getOutComputeLoops(nbIndent+1);
-
-            result += Tools::getIndentation(nbIndent) + "}\n";
-
+            result += Tools::getIndentation(1) + getName() + ".addGroup(" + groupOrItem->getName() + ");\n";
         } else if (groupOrItem->getModelType() == AbstractOutModel::M_Item_OUT)
         {
-            QString type = ((OUTItemModel*) groupOrItem)->getItemType();
-            result += Tools::getIndentation(nbIndent) + "// Gets the item corresponding to " + groupOrItem->getDef() + "\n";
-            result += Tools::getIndentation(nbIndent) + "const " + type + "* " + groupOrItem->getName();
-            result += " = (const " + type + "*) " + getName() + "->findFirstItem(" + groupOrItem->getModelName() + ");\n";
-
+            result += Tools::getIndentation(1) + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
         }
     }
 

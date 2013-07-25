@@ -88,13 +88,13 @@ void AbstractOutModel::getChildrenOutModelsHierachy(QString &result)
     }
 }
 
-void AbstractOutModel::getChildrenOutComputeBeginning(QString &result, QString resultDef, QString useCopy)
+void AbstractOutModel::getChildrenOutComputeBeginning(QString &result, QString resultName)
 {
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
         AbstractOutModel* item = (AbstractOutModel*) child(i);
-        result.append(item->getOutComputeBeginning(resultDef, useCopy));
+        result.append(item->getOutComputeBeginning(i, resultName));
     }
 }
 

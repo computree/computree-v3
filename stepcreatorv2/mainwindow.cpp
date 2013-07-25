@@ -4,6 +4,8 @@
 #include "qfiledialog.h"
 #include "qfile.h"
 #include "qtextstream.h"
+#include "qset.h"
+#include "tools.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -187,8 +189,13 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "// Inclusion of action system\n";
         stream << "#include \"ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h\"\n";
         stream << "\n";
-        stream << "// Inclusion of IN ItemDrawable classes\n";
-        stream << _inModelDialog->getInItemTypesIncludes();
+        stream << "// Inclusion of used ItemDrawable classes\n";
+
+        QSet<QString> list;
+        _inModelDialog->getInItemTypesIncludes(list);
+        _outModelDialog->getOutItemTypesIncludes(list);
+
+        stream << Tools::getQStringListConcat(list);
         stream << "\n";
         stream << "// Alias for indexing in models\n";
         stream << _inModelDialog->getInDefines();

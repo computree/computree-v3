@@ -18,8 +18,8 @@ public:
     virtual QString getOutModelsDefinition();
     virtual QString getOutModelsHierachy();
     virtual QString getOutModelAddingCommand();
-    virtual QString getOutComputeBeginning(QString resultDef = "", QString useCopy = "");
-    virtual QString getOutComputeLoops(int nbIndent);
+    virtual QString getOutComputeBeginning(int rank = 0, QString resultName = "");
+    virtual QString getOutComputeItemsCreations(QString resultName = "");
 };
 
 #endif // OUITEMMODEL_H

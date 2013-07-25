@@ -1,6 +1,7 @@
 #include "initemwidget.h"
 #include "ui_initemwidget.h"
 #include "models/abstractinmodel.h"
+#include "tools.h"
 
 INItemWidget::INItemWidget(AbstractInModel* model, QWidget *parent) :
     AbstractInWidget(model, parent),
@@ -17,27 +18,11 @@ INItemWidget::INItemWidget(AbstractInModel* model, QWidget *parent) :
     ui->cb_choiceMode->setCurrentIndex(0);
 
     // Ajout des classes d'itemdrawables disponibles
-    ui->cb_itemType->addItem("CT_AbstractItemDrawableWithPointCloud");
-    ui->cb_itemType->addItem("CT_Scene");
-    ui->cb_itemType->addItem("CT_PointCluster");
-    ui->cb_itemType->addItem("CT_PolyLine");
-
-    ui->cb_itemType->addItem("CT_AbstractItemDrawableWithoutPointCloud");
-    ui->cb_itemType->addItem("CT_ReferencePoint");
-    ui->cb_itemType->addItem("CT_AbstractShape");
-    ui->cb_itemType->addItem("CT_Circle");
-    ui->cb_itemType->addItem("CT_Ellipse");
-    ui->cb_itemType->addItem("CT_Line");
-    ui->cb_itemType->addItem("CT_Cylinder");
-    ui->cb_itemType->addItem("CT_Raster2DFloat");
-    ui->cb_itemType->addItem("CT_Raster2DInt");
-    ui->cb_itemType->addItem("CT_RectangularGridDataFloat");
-    ui->cb_itemType->addItem("CT_RectangularGridDataInt");
-    ui->cb_itemType->addItem("CT_RectangularGridDataDouble");
-    ui->cb_itemType->addItem("CT_RectangularGridDataBool");
-    ui->cb_itemType->addItem("CT_Ray");
-    ui->cb_itemType->addItem("CT_Scanner");
-    ui->cb_itemType->addItem("CT_Triangulation2D");
+    int size = Tools::ITEMTYPE.size();
+    for (int i = 0 ; i < size ; i++)
+    {
+        ui->cb_itemType->addItem(Tools::ITEMTYPE.at(i));
+    }
     ui->cb_itemType->setCurrentIndex(0);
 
     setFocusProxy(ui->alias);

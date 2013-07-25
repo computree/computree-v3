@@ -31,7 +31,6 @@ public:
 
     virtual QString getInModelsDefines();
 
-    static QString getQStringListConcat(QSet<QString> &list);
     virtual void getInModelsIncludesList(QSet<QString> &list) = 0;
 
     virtual void getInItemsTypesIncludesList(QSet<QString> &list) = 0;

@@ -2,6 +2,8 @@
 #define TOOLS_H
 
 #include "qstring.h"
+#include "qstringlist.h"
+#include "qset.h"
 
 class Tools
 {
@@ -33,6 +35,13 @@ public:
     {
         return (b?"true":"false");
     }  
+
+
+    static QStringList ITEMTYPE;
+    static void initItemTypes();
+
+    static QString getQStringListConcat(QSet<QString> &list);
+
 
 };
 

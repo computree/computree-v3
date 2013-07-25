@@ -21,27 +21,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QRadioButton" name="rb_standardresult">
-     <property name="text">
-      <string>Résultat d'entrée standard</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QRadioButton" name="rb_copyresult">
-     <property name="text">
-      <string>Résultat d'entrée à copier</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="cb_recursive">
-     <property name="text">
-      <string>Recherche récursive</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Alias d'indexation :</string>

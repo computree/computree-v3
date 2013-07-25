@@ -43,10 +43,10 @@ public:
     void getChildrenOutModelsHierachy(QString &result);
     virtual QString getOutModelAddingCommand() = 0;
 
-    virtual QString getOutComputeBeginning(QString resultDef = "", QString useCopy = "") = 0;
-    void getChildrenOutComputeBeginning(QString &result, QString resultDef = "", QString useCopy = "");
+    virtual QString getOutComputeBeginning(int rank = 0, QString resultName = "") = 0;
+    void getChildrenOutComputeBeginning(QString &result, QString resultName = "");
 
-    virtual QString getOutComputeLoops(int nbIndent = 1) = 0;
+    virtual QString getOutComputeItemsCreations(QString resultName = "") = 0;
 
     void onAliasChange();
 

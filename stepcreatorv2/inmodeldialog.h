@@ -21,7 +21,7 @@ public:
     ~INModelDialog();
 
     QString getInIncludes();
-    QString getInItemTypesIncludes();
+    void getInItemTypesIncludes(QSet<QString> &list);
 
     QString getInDefines();
     QString getInModelsDefinitions();

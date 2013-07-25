@@ -21,27 +21,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QRadioButton" name="rb_zeroormore">
-     <property name="text">
-      <string>Zero Or More Group</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QRadioButton" name="rb_oneormore">
-     <property name="text">
-      <string>One Or More Group</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QRadioButton" name="rb_standard">
-     <property name="text">
-      <string>Standard Group</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Alias d'indexation :</string>
@@ -84,12 +63,6 @@
       </sizepolicy>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QComboBox" name="cb_choiceMode"/>
-   </item>
-   <item>
-    <widget class="QComboBox" name="cb_finderMode"/>
    </item>
    <item>
     <spacer name="verticalSpacer">

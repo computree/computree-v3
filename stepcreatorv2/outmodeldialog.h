@@ -21,7 +21,7 @@ public:
     ~OUTModelDialog();
 
     QString getOutIncludes();
-    QString getOutItemTypesIncludes();
+    void getOutItemTypesIncludes(QSet<QString> &list);
 
     QString getOutDefines();
     QString getOutModelsDefinitions();

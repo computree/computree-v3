@@ -49,24 +49,6 @@ QString AbstractInModel::getInModelsDefines()
     return result;
 }
 
-
-// static
-QString AbstractInModel::getQStringListConcat(QSet<QString> &list)
-{
-    QStringList list2(list.toList());
-    list2.sort();
-
-    QString result = "";
-
-    foreach (const QString &value, list2)
-    {
-        result += value;
-        result += "\n";
-    }
-    return result;
-}
-
-
 void AbstractInModel::getChildrenInModelsDefinitions(QString &result)
 {
     int size = rowCount();
