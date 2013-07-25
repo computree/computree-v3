@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "inmodeldialog.h"
+#include "outmodeldialog.h"
 
 
 namespace Ui {
@@ -31,7 +32,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    INModelDialog *_inModelDialog;
+    INModelDialog  *_inModelDialog;
+    OUTModelDialog *_outModelDialog;
 
 
     bool createFiles(QString directory, QString stepName);

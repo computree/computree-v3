@@ -1,5 +1,5 @@
-#ifndef ABTRACTMODEL_H
-#define ABTRACTMODEL_H
+#ifndef ABTRACTINMODEL_H
+#define ABTRACTINMODEL_H
 
 #include "qstandarditemmodel.h"
 #include "widgets/abstractinwidget.h"
@@ -13,10 +13,7 @@ public:
     {
         M_Result_IN,
         M_Group_IN,
-        M_Item_IN,
-        M_Result_OUT,
-        M_Group_OUT,
-        M_Item_OUT
+        M_Item_IN
     };
 
     AbstractInModel();
@@ -58,4 +55,4 @@ protected:
 
 };
 
-#endif // ABTRACTMODEL_H
+#endif // ABTRACTINMODEL_H

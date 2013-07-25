@@ -1,7 +1,12 @@
-#ifndef OUTModelDialog_H
-#define OUTModelDialog_H
+#ifndef OUTMODELDIALOG_H
+#define OUTMODELDIALOG_H
 
 #include <QDialog>
+
+#include "qstandarditemmodel.h"
+#include "qboxlayout.h"
+#include "widgets/abstractoutwidget.h"
+
 
 namespace Ui {
     class OUTModelDialog;
@@ -15,8 +20,32 @@ public:
     explicit OUTModelDialog(QWidget *parent = 0);
     ~OUTModelDialog();
 
+    QString getOutIncludes();
+    QString getOutItemTypesIncludes();
+
+    QString getOutDefines();
+    QString getOutModelsDefinitions();
+    QString getOutComputeContents();
+
+
+private slots:
+    void on_pb_addResult_clicked();
+    void on_pb_delete_clicked();
+    void on_pb_addGroup_clicked();
+    void on_pb_addItem_clicked();
+    void on_treeView_clicked(const QModelIndex &index);
+    void on_pb_clear_clicked();
+    void on_buttonBox_rejected();
+
+    void accept();
+
 private:
     Ui::OUTModelDialog *ui;
+    QStandardItemModel *_model;
+    QVBoxLayout *_layout;
+    AbstractOutWidget *_activeWidget;
+
+
 };
 
-#endif // OUTModelDialog_H
+#endif // OUTMODELDIALOG_H

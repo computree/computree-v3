@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     _inModelDialog = new INModelDialog();
+    _outModelDialog = new OUTModelDialog();
 
 }
 
@@ -275,5 +276,5 @@ void MainWindow::on_modelin_clicked()
 
 void MainWindow::on_modelout_clicked()
 {
-
+    _outModelDialog->show();
 }

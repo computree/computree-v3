@@ -304,21 +304,6 @@ void INModelDialog::accept()
     if (!ok) {
         QMessageBox::warning(this, "Validation impossible", "Erreurs possibles :\n- Les alias ne sont pas tous définis et / ou uniques\n- Chaque résultat doit contenir exactement un groupe racine");
     } else {
-        qDebug() << "------------IN Includes -------------\n";
-        qDebug() << getInIncludes();
-        qDebug() << getInItemTypesIncludes();
-
-        qDebug() << "------------IN Defines -------------\n";
-        qDebug() << getInDefines();
-
-        qDebug() << "------------IN Models -------------\n";
-        qDebug() << getInModelsDefinitions();
-
-
-        qDebug() << "------------Compute -------------\n";
-        qDebug() << getInComputeContents();
-
-
         done(QDialog::Accepted);
     }
 }

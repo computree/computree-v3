@@ -1,5 +1,5 @@
-#ifndef ABSTRACTWIDGET_H
-#define ABSTRACTWIDGET_H
+#ifndef ABSTRACTINWIDGET_H
+#define ABSTRACTINWIDGET_H
 
 #include <QWidget>
 
@@ -21,4 +21,4 @@ protected:
 
 };
 
-#endif // ABSTRACTWIDGET_H
+#endif // ABSTRACTINWIDGET_H
