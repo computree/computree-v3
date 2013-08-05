@@ -17,8 +17,10 @@ class COPYModelDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit COPYModelDialog(QWidget *parent = 0);
+    explicit COPYModelDialog(QStandardItemModel *inModel, QWidget *parent = 0);
     ~COPYModelDialog();
+
+    void init();
 
     QString getCopyIncludes();
     void getCopyItemTypesIncludes(QSet<QString> &list);
@@ -30,12 +32,10 @@ public:
 
 
 private slots:
-    void on_pb_addResult_clicked();
     void on_pb_delete_clicked();
     void on_pb_addGroup_clicked();
     void on_pb_addItem_clicked();
     void on_treeView_clicked(const QModelIndex &index);
-    void on_pb_clear_clicked();
     void on_buttonBox_rejected();
 
     void accept();
@@ -43,6 +43,7 @@ private slots:
 private:
     Ui::COPYModelDialog *ui;
     QStandardItemModel *_model;
+    QStandardItemModel *_inModel;
     QVBoxLayout *_layout;
     AbstractCopyWidget *_activeWidget;
 

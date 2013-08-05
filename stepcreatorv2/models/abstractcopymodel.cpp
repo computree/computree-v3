@@ -2,6 +2,7 @@
 
 AbstractCopyModel::AbstractCopyModel() : QStandardItem()
 {
+    _status = AbstractCopyModel::S_Copy;
 }
 
 AbstractCopyModel::~AbstractCopyModel()

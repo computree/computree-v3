@@ -7,7 +7,21 @@ COPYGroupModel::COPYGroupModel() : AbstractCopyModel()
 {
     _widget = new COPYGroupWidget(this);
     setText(getName());
+    _status = AbstractCopyModel::S_Added;
 }
+
+COPYGroupModel::COPYGroupModel(QString alias, QString name, QString desc) : AbstractCopyModel()
+{
+    _widget = new COPYGroupWidget(this, alias, name, desc);
+    setText(getName() + " (cpy)");
+}
+
+COPYGroupModel::COPYGroupModel(INGroupModel *inModel)
+{
+    _widget = new COPYGroupWidget(this, inModel->getAlias(), inModel->getName(), inModel->getDescription());
+    setText(getName() + " (cpy)");
+}
+
 
 QString COPYGroupModel::getName()
 {

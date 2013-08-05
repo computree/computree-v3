@@ -2,11 +2,13 @@
 #define COPYRESULTMODEL_H
 
 #include "models/abstractcopymodel.h"
+#include "models/inresultmodel.h"
 
 class COPYResultModel : public AbstractCopyModel
 {
 public:
-    COPYResultModel();
+    COPYResultModel(INResultModel *inModel);
+    COPYResultModel(QString alias, QString name, QString desc);
 
     virtual AbstractCopyModel::ModelType getModelType() {return AbstractCopyModel::M_Result_COPY;}
     virtual QString getName();

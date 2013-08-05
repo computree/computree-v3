@@ -14,8 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     _inModelDialog = new INModelDialog();
     _outModelDialog = new OUTModelDialog();
-    _copyModelDialog = new COPYModelDialog();
-
+    _copyModelDialog = new COPYModelDialog(_inModelDialog->getModel());
 }
 
 MainWindow::~MainWindow()

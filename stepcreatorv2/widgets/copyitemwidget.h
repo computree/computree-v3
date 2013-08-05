@@ -28,6 +28,7 @@ public:
 
 
     explicit COPYItemWidget(AbstractCopyModel* model, QWidget *parent = 0);
+    explicit COPYItemWidget(AbstractCopyModel* model, QString itemType, QString alias, QString name, QString desc, QWidget *parent = 0);
     ~COPYItemWidget();
 
     bool isvalid();

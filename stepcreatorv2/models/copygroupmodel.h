@@ -1,12 +1,15 @@
 #ifndef COPYGROUPMODEL_H
 #define COPYGROUPMODEL_H
 
+#include "models/ingroupmodel.h"
 #include "models/abstractcopymodel.h"
 
 class COPYGroupModel : public AbstractCopyModel
 {
 public:
     COPYGroupModel();
+    COPYGroupModel(INGroupModel *inModel);
+    COPYGroupModel(QString alias, QString name, QString desc);
 
     virtual AbstractCopyModel::ModelType getModelType() {return AbstractCopyModel::M_Group_COPY;}
     virtual QString getName();

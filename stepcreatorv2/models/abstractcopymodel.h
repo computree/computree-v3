@@ -16,6 +16,13 @@ public:
         M_Item_COPY
     };
 
+    enum Status
+    {
+        S_Copy,
+        S_DeletedCopy,
+        S_Added
+    };
+
     AbstractCopyModel();
     ~AbstractCopyModel();
 
@@ -52,6 +59,7 @@ public:
 
 protected:
     AbstractCopyWidget*  _widget;
+    AbstractCopyModel::Status   _status;
 
 };
 

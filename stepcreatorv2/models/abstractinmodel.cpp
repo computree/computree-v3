@@ -24,6 +24,11 @@ QString AbstractInModel::getAlias()
     return _widget->getAlias();
 }
 
+QString AbstractInModel::getDescription()
+{
+    return _widget->getDescription();
+}
+
 bool AbstractInModel::isValid()
 {
     for (int i = 0 ; i < rowCount() ; i++)

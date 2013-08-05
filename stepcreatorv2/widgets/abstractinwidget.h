@@ -14,6 +14,7 @@ public:
 
 
     virtual QString getAlias() = 0;
+    virtual QString getDescription() = 0;
     virtual bool isvalid() = 0;
 
 protected:

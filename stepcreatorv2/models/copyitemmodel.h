@@ -1,12 +1,15 @@
 #ifndef COPYITEMMODEL_H
 #define COPYITEMMODEL_H
 
+#include "models/initemmodel.h"
 #include "models/abstractcopymodel.h"
 
 class COPYItemModel : public AbstractCopyModel
 {
 public:
     COPYItemModel();
+    COPYItemModel(INItemModel *inModel);
+    COPYItemModel(QString itemType, QString alias, QString name, QString desc);
 
     virtual AbstractCopyModel::ModelType getModelType() {return AbstractCopyModel::M_Item_COPY;}
     virtual QString getName();

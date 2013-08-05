@@ -14,6 +14,7 @@ class COPYResultWidget : public AbstractCopyWidget
 public:
 
     explicit COPYResultWidget(AbstractCopyModel* model, QWidget *parent = 0);
+    explicit COPYResultWidget(AbstractCopyModel* model, QString alias, QString name, QString desc, QWidget *parent = 0);
     ~COPYResultWidget();
 
     bool isvalid();

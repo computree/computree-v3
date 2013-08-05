@@ -6,7 +6,22 @@ COPYItemModel::COPYItemModel() : AbstractCopyModel()
 {
     _widget = new COPYItemWidget(this);
     setText(getName());
+    _status = AbstractCopyModel::S_Added;
 }
+
+
+COPYItemModel::COPYItemModel(QString itemType, QString alias, QString name, QString desc) : AbstractCopyModel()
+{
+    _widget = new COPYItemWidget(this, itemType, alias, name, desc);
+    setText(getName() + " (cpy)");
+}
+
+COPYItemModel::COPYItemModel(INItemModel *inModel)
+{
+    _widget = new COPYItemWidget(this, inModel->getItemType(), inModel->getAlias(), inModel->getName(), inModel->getDescription());
+    setText(getName() + " (cpy)");
+}
+
 
 QString COPYItemModel::getName()
 {

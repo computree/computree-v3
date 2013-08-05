@@ -11,6 +11,20 @@ COPYResultWidget::COPYResultWidget(AbstractCopyModel* model, QWidget *parent) :
 
 }
 
+COPYResultWidget::COPYResultWidget(AbstractCopyModel* model, QString alias, QString name, QString desc, QWidget *parent) :
+    AbstractCopyWidget(model, parent),
+    ui(new Ui::COPYResultWidget)
+{
+    ui->setupUi(this);
+    setFocusProxy(ui->alias);
+    ui->alias->setText(alias);
+    ui->alias->setEnabled(false);
+    ui->modelName->setText(name);
+    ui->modelName->setEnabled(false);
+    ui->modelDescription->setPlainText(desc);
+    ui->modelDescription->setEnabled(false);
+}
+
 COPYResultWidget::~COPYResultWidget()
 {
     delete ui;

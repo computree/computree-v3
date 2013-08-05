@@ -10,6 +10,21 @@ COPYGroupWidget::COPYGroupWidget(AbstractCopyModel* model, QWidget *parent) :
     setFocusProxy(ui->alias);
 }
 
+COPYGroupWidget::COPYGroupWidget(AbstractCopyModel* model, QString alias, QString name, QString desc, QWidget *parent) :
+    AbstractCopyWidget(model, parent),
+    ui(new Ui::COPYGroupWidget)
+{
+    ui->setupUi(this);
+    setFocusProxy(ui->alias);
+    ui->alias->setText(alias);
+    ui->alias->setEnabled(false);
+    ui->modelName->setText(name);
+    ui->modelName->setEnabled(false);
+    ui->modelDescription->setPlainText(desc);
+    ui->modelDescription->setEnabled(false);
+}
+
+
 COPYGroupWidget::~COPYGroupWidget()
 {
     delete ui;

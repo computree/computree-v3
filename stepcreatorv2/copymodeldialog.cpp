@@ -11,7 +11,7 @@
 #include "models/abstractcopymodel.h"
 #include "tools.h"
 
-COPYModelDialog::COPYModelDialog(QWidget *parent) :
+COPYModelDialog::COPYModelDialog(QStandardItemModel *inModel, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::COPYModelDialog)
 {
@@ -21,12 +21,19 @@ COPYModelDialog::COPYModelDialog(QWidget *parent) :
     _layout = new QVBoxLayout();
     ui->widgetZone->setLayout(_layout);
     _activeWidget = NULL;
+    _inModel = inModel;
 }
 
 COPYModelDialog::~COPYModelDialog()
 {
     delete ui;
 }
+
+void COPYModelDialog::init()
+{
+
+}
+
 
 QString COPYModelDialog::getCopyIncludes()
 {
@@ -115,27 +122,6 @@ QString COPYModelDialog::getCopyComputeItemsCreations()
     }
 
     return result;
-}
-
-
-void COPYModelDialog::on_pb_addResult_clicked()
-{
-    QStandardItem *item = _model->invisibleRootItem();
-
-    COPYResultModel *item2 = new COPYResultModel();
-
-    item->appendRow(item2);
-    if (_activeWidget!=NULL)
-    {
-        _layout->removeWidget(_activeWidget);
-        _activeWidget->setParent(0);
-    }
-    _activeWidget = item2->getWidget();
-    _layout->addWidget(_activeWidget);
-
-    ui->treeView->setExpanded(ui->treeView->currentIndex(), true);
-    ui->treeView->setCurrentIndex(item2->index());
-    _activeWidget->setFocus();
 }
 
 
@@ -260,33 +246,9 @@ void COPYModelDialog::on_treeView_clicked(const QModelIndex &index)
 
 }
 
-void COPYModelDialog::on_pb_clear_clicked()
-{
-    ui->treeView->clearSelection();
-
-    //delete all children of parent;
-    QStandardItem * loopItem = _model->invisibleRootItem();; //main loop item
-    QList<QStandardItem *> carryItems; //Last In First Copy stack of items
-    QList<QStandardItem *> itemsToBeDeleted; //List of items to be deleted
-    while (loopItem->rowCount())
-    {
-        itemsToBeDeleted << loopItem->takeRow(0);
-        //if the row removed has children:
-        if (itemsToBeDeleted.at(0)->hasChildren())
-        {
-            carryItems << loopItem; //put on the stack the current loopItem
-            loopItem = itemsToBeDeleted.at(0); //set the row with children as the loopItem
-        }
-        //if current loopItem has no more rows but carryItems list is not empty:
-        if (!loopItem->rowCount() && !carryItems.isEmpty()) loopItem = carryItems.takeFirst();
-    }
-    qDeleteAll(itemsToBeDeleted);
-    _activeWidget = NULL;
-}
-
 void COPYModelDialog::on_buttonBox_rejected()
 {
-    on_pb_clear_clicked();
+    init();
 }
 
 void COPYModelDialog::accept()

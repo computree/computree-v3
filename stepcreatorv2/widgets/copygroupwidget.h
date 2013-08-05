@@ -34,6 +34,7 @@ public:
     };
 
     explicit COPYGroupWidget(AbstractCopyModel* model, QWidget *parent = 0);
+    explicit COPYGroupWidget(AbstractCopyModel* model, QString alias, QString name, QString desc, QWidget *parent = 0);
     ~COPYGroupWidget();
 
     bool isvalid();

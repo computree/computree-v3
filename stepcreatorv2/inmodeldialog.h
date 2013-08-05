@@ -20,6 +20,7 @@ public:
     explicit INModelDialog(QWidget *parent = 0);
     ~INModelDialog();
 
+    inline QStandardItemModel* getModel() {return _model;}
     int getNumberOfCopyResults();
 
 
