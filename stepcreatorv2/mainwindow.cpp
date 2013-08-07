@@ -58,6 +58,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 bool MainWindow::createFiles(QString directory, QString stepName)
 {
+    QString str;
+
     QFile stepFileh(QString("%1/%2.h").arg(directory).arg(stepName.toLower()));
     QFile stepFilecpp(QString("%1/%2.cpp").arg(directory).arg(stepName.toLower()));
 
@@ -75,7 +77,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "#include \"ct_step/abstract/" << parentClass.toLower() << ".h\"\n";
         stream << "\n";
 
-        if (_copyModelDialog->copyIncludesNeeded() == AbstractCopyModel::C_Add)
+        if (_copyModelDialog->copyIncludesNeeded())
         {
             stream << "// Inclusion of auto-indexation system\n";
             stream << "#include \"ct_tools/model/ct_autorenamemodels.h\"\n";
@@ -162,7 +164,24 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "    void compute();\n";
         stream << "\n";
         stream << "private:\n";
+
+        str = _copyModelDialog->getAutoRenamesDeclarations();
+        if (str != "")
+        {
+            stream << "\n";
+            stream << Tools::getIndentation(1) << "// Declaration of autoRenames Variables (groups or items addes to In models copies)\n";
+            stream << str;
+        }
+
         stream << "\n";
+
+        str = _copyModelDialog->getAutoRenamesDeclarations();
+        if (str!="")
+        {
+
+        }
+
+
         stream << "    // Step parameters\n";
         stream << "    double _parametre;   /*!< parameter description */\n";
         stream << "\n";
@@ -180,17 +199,19 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "#include \"" << stepName.toLower() << ".h\"\n";
         stream << "\n";
 
-        if (_inModelDialog->getInIncludes()!="")
+        str = _inModelDialog->getInIncludes();
+        if (str!="")
         {
             stream << "// Inclusion of in models\n";
-            stream << _inModelDialog->getInIncludes();
+            stream << str;
             stream << "\n";
         }
 
-        if (_outModelDialog->getOutIncludes()!="")
+        str = _outModelDialog->getOutIncludes();
+        if (str!="")
         {
             stream << "// Inclusion of out models\n";
-            stream << _outModelDialog->getOutIncludes();
+            stream << str;
             stream << "\n";
         }
 
@@ -198,10 +219,12 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "#include \"ct_result/ct_resultgroup.h\"\n";
         stream << "\n";
 
-        if (_copyModelDialog->copyIncludesNeeded() != AbstractCopyModel::C_None)
+        QSet<QString> listAction;
+        _copyModelDialog->getActionsIncludes(listAction);
+        if (listAction.size()>0)
         {
-            stream << "// Inclusion of action system\n";
-            stream << "#include \"ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h\"\n";
+            stream << "// Inclusion of actions methods\n";
+            stream << Tools::getQStringListConcat(listAction);
             stream << "\n";
         }
 
@@ -217,17 +240,19 @@ bool MainWindow::createFiles(QString directory, QString stepName)
             stream << "\n";
         }
 
-        if (_inModelDialog->getInDefines()!="")
+        str = _inModelDialog->getInDefines();
+        if (str!="")
         {
             stream << "// Alias for indexing in models\n";
-            stream << _inModelDialog->getInDefines();
+            stream << str;
             stream << "\n";
         }
 
-        if (_outModelDialog->getOutDefines()!="")
+        str = _outModelDialog->getOutDefines();
+        if (str!="")
         {
             stream << "// Alias for indexing out models\n";
-            stream << _outModelDialog->getOutDefines();
+            stream << str;
             stream << "\n";
         }
 
@@ -254,19 +279,25 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "// Creation and affiliation of IN models\n";
         stream << "void " << stepName << "::createInResultModelListProtected()\n";
         stream << "{\n";
-        if (_inModelDialog->getInModelsDefinitions() == "")
+
+        str = _inModelDialog->getInModelsDefinitions();
+        if (str == "")
         {
             stream << "    // No in result is needed\n";
             stream << "    CT_InResultModelNotNeedInputResult *resultModel = new CT_InResultModelNotNeedInputResult();\n";
             stream << "    addInResultModel(resultModel);\n";
         } else {
-            stream << _inModelDialog->getInModelsDefinitions();
+            stream << str;
         }
         stream << "}\n";
         stream << "\n";
         stream << "// Creation and affiliation of OUT models\n";
         stream << "void " << stepName << "::createOutResultModelListProtected()\n";
-        stream << "{\n";        
+        stream << "{\n";
+
+        stream << _copyModelDialog->getCopyModelsDefinitions();
+        stream << "\n";
+        stream << "\n";
         stream << _outModelDialog->getOutModelsDefinitions();
         stream << "}\n";
         stream << "\n";
@@ -285,38 +316,44 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "\n";
         stream << "    / --------------------------\n";
         stream << "    // Gets IN results and models\n";
-        if (_inModelDialog->getInComputeBeginning() != "")
+
+        str = _inModelDialog->getInComputeBeginning();
+        if (str != "")
         {
-            stream << _inModelDialog->getInComputeBeginning();
+            stream << str;
         }
         stream << "\n";
         stream << "\n";
 
         stream << "    // ---------------------------\n";
         stream << "    // Gets OUT results and models\n";
-        if (_outModelDialog->getOutComputeBeginning(_inModelDialog->getNumberOfCopyResults()) != "")
+
+        str = _outModelDialog->getOutComputeBeginning(_inModelDialog->getNumberOfCopyResults());
+        if (str != "")
         {
-            stream << _outModelDialog->getOutComputeBeginning(_inModelDialog->getNumberOfCopyResults());
+            stream << str;
         }
         stream << "\n";
         stream << "\n";
 
-        stream << "    // ---------------------------------\n";
-        stream << "    // Goes through IN results structure\n";
-        if (_inModelDialog->getInComputeLoops() != "")
+        str = _inModelDialog->getInComputeLoops();
+        if (str != "")
         {
-            stream << _inModelDialog->getInComputeLoops();
+            stream << "    // ---------------------------------\n";
+            stream << "    // Goes through IN results structure\n";
+            stream << str;
+            stream << "\n";
+            stream << "\n";
         }
-        stream << "\n";
-        stream << "\n";
 
-        stream << "    // ------------------------------\n";
-        stream << "    // Create OUT groups and items\n";
-        if (_outModelDialog->getOutComputeItemsCreations() != "")
+        str = _outModelDialog->getOutComputeItemsCreations();
+        if (str != "")
         {
-            stream << _outModelDialog->getOutComputeItemsCreations();
+            stream << "    // ------------------------------\n";
+            stream << "    // Create OUT groups and items\n";
+            stream << str;
+            stream << "\n";
         }
-        stream << "\n";
 
         stream << "}\n";
 

@@ -15,14 +15,8 @@ public:
     virtual QString getName();
     virtual QString getModelName();
 
-    virtual void getCopyModelsIncludesList(QSet<QString> &list);
-    virtual void getCopyItemsTypesIncludesList(QSet<QString> &list);
-    virtual QString getCopyModelsDefinition();
-    virtual QString getCopyModelsHierachy();
-    virtual QString getCopyModelAddingCommand();
-    virtual QString getCopyComputeBeginning(int rank = 0, QString resultName = "");
-    virtual QString getCopyComputeItemsCreations(QString resultName = "");
-
+    virtual void getActionsIncludes(QSet<QString> &list);
+    virtual QString getCopyModelsDefinitions(QString actionName = "");
 };
 
 #endif // COPYGROUPMODEL_H

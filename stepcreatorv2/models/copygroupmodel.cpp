@@ -40,132 +40,71 @@ QString COPYGroupModel::getModelName()
     return QString("groupCopyModel_%1").arg(getAlias());
 }
 
-void COPYGroupModel::getCopyModelsIncludesList(QSet<QString> &list)
-{   
-    list.insert("#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"");
-}
 
-void COPYGroupModel::getCopyItemsTypesIncludesList(QSet<QString> &list)
+void COPYGroupModel::getActionsIncludes(QSet<QString> &list)
 {
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
+    if (_status == AbstractCopyModel::S_Added)
     {
-        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        item->getCopyItemsTypesIncludesList(list);
-    }
-}
-
-QString COPYGroupModel::getCopyModelsDefinition()
-{
-    QString result = "";
-
-    QString resultTmp = "";
-    resultTmp += Tools::getIndentation(1);
-    resultTmp += "CT_OutStandardGroupModel *";
-    resultTmp += getModelName();
-    resultTmp += " = new CT_OutStandardGroupModel(";
-
-    int indentSize = resultTmp.size();
-
-    result += resultTmp;
-    result += getDef();
-
-    QString resultTmp2 = "";
-
-    // Description
-    QString description = ((COPYGroupWidget*) _widget)->getDescription();
-    if ((description.size() > 0) || (resultTmp2.size() > 0))
+        list.insert("#include \"ct_tools/model/ct_outmodelcopyactionaddmodelgroupingroup.h\"");
+    } else if (_status == AbstractCopyModel::S_DeletedCopy)
     {
-        resultTmp2.insert(0, QString("tr(\"%1\")").arg(description));
-        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-        resultTmp2.insert(0, ", \n");
+        list.insert("#include \"ct_tools/model/ct_outmodelcopyactionremovemodelgroupingroup.h\"");
     }
-
-    // Displayable Name
-    QString dispName = ((COPYGroupWidget*) _widget)->getDisplayableName();
-    if ((dispName.size() > 0) || (resultTmp2.size() > 0))
-    {
-        resultTmp2.insert(0, QString("tr(\"%1\")").arg(dispName));
-        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-        resultTmp2.insert(0, ", \n");
-    }
-
-    // New CT_StandardItemGroup
-    if (resultTmp2.size() > 0)
-    {
-        resultTmp2.insert(0, "new CT_StandardItemGroup()");
-        resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
-        resultTmp2.insert(0, ", \n");
-    }
-
-    result += resultTmp2;
-    result += ");";
-    result += "\n";
-
-    getChildrenCopyModelsDefinitions(result);
-    return result;
-}
-
-QString COPYGroupModel::getCopyModelsHierachy()
-{
-    QString result = "";
 
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)
     {
         AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        result += Tools::getIndentation(1);
-        result += getModelName();
-        result += item->getCopyModelAddingCommand();
-        result += "\n";
+        item->getActionsIncludes(list);
     }
-
-    result += "\n";
-    getChildrenCopyModelsHierachy(result);
-    return result;
 }
 
-QString COPYGroupModel::getCopyModelAddingCommand()
-{
-    QString result = ".addGroup(";
-    result += getModelName();
-    result += ");";
-    return result;
-}
-
-QString COPYGroupModel::getCopyComputeBeginning(int rank, QString resultName)
+QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
 {
     QString result = "";
 
-    result += Tools::getIndentation(1) + "// Get the group model corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_OutStandardGroupModel* " + getModelName() + " = (CT_OutStandardGroupModel*)getOutModelForCreation" + "(" + resultName + ", " + getDef() + ");" + "\n";
 
-    getChildrenCopyComputeBeginning(result, resultName);
-    return result;
-}
-
-
-QString COPYGroupModel::getCopyComputeItemsCreations(QString resultName)
-{
-    QString result = "";
-
-    result += Tools::getIndentation(1) + "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", 0, " + resultName + ");\n";
-
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
+    if (getStatus() == AbstractCopyModel::S_Added)
     {
-        AbstractCopyModel* groupOrItem = (AbstractCopyModel*) child(i);
 
-        result += groupOrItem->getCopyComputeItemsCreations(resultName);
+    } else if (getStatus() == AbstractCopyModel::S_DeletedCopy)
+    {
 
-        if (groupOrItem->getModelType() == AbstractCopyModel::M_Group_COPY)
-        {
-            result += Tools::getIndentation(1) + getName() + ".addGroup(" + groupOrItem->getName() + ");\n";
-        } else if (groupOrItem->getModelType() == AbstractCopyModel::M_Item_COPY)
-        {
-            result += Tools::getIndentation(1) + "// " + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
-        }
+    }
+
+    int count = rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
+        result += item->getCopyModelsDefinitions(actionName);
     }
 
     return result;
 }
+
+#ifdef TOTO
+void toto()
+{
+    // on récupère le résultat modèle d'entrée à copier défini dans "createInResultModelListProtected()"
+    CT_InResultModelGroupToCopy *intResModelToCopy = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInResult);
+
+    // On créée une liste d'action à executer sur la copie du modèle
+    QList<CT_AbstractOutModelCopyAction*> actions;
+
+
+
+    // On créée le modèle d'item (CT_ReferencePoint) à ajouter
+    CT_OutStandardItemDrawableModel *refPointModel = new CT_OutStandardItemDrawableModel("", new CT_ReferencePoint(), tr("Barycentre"));
+
+    // On ajoute une action permettant d'ajouter le modèle d'item créé
+    // Cette action prend en paramètre à générateur de nom automatique : _outRefPointModelName
+    actions << new CT_OutModelCopyActionAddModelItemInGroup(DEF_SearchInGroup,
+                                                            refPointModel,
+                                                            _outRefPointModelName);
+
+
+    // On ajoute le modèle de sortie modifier
+    // En réalité cette méthode va faire effectivement la copie du résultat d'entrée
+    addOutResultModelCopy(intResModelToCopy, actions);
+}
+#endif

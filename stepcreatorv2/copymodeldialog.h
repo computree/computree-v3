@@ -26,7 +26,12 @@ public:
 
     static void recursiveAddChildren(AbstractCopyModel* copyModel, AbstractInModel* inModel);
 
-    AbstractCopyModel::CopyIncludesNeeds copyIncludesNeeded();
+    bool copyIncludesNeeded();
+    void getActionsIncludes(QSet<QString> &list);
+
+    QString getAutoRenamesDeclarations();
+
+    QString getCopyModelsDefinitions();
 
     void closeEvent(QCloseEvent *event);
 

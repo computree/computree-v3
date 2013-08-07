@@ -1,4 +1,5 @@
 #include "models/abstractcopymodel.h"
+#include "tools.h"
 
 AbstractCopyModel::AbstractCopyModel() : QStandardItem()
 {
@@ -25,6 +26,12 @@ QString AbstractCopyModel::getAlias()
     return _widget->getAlias();
 }
 
+QString AbstractCopyModel::getAutoRenameName()
+{
+    QString str = "_" + getName() + "_ModelName";
+    return str;
+}
+
 bool AbstractCopyModel::isValid()
 {
     for (int i = 0 ; i < rowCount() ; i++)
@@ -35,21 +42,34 @@ bool AbstractCopyModel::isValid()
     return getWidget()->isvalid();
 }
 
-AbstractCopyModel::CopyIncludesNeeds AbstractCopyModel::copyIncludesNeeded()
+bool AbstractCopyModel::copyIncludesNeeded()
 {
-    AbstractCopyModel::CopyIncludesNeeds result = AbstractCopyModel::C_None;
-
-    if (_status == AbstractCopyModel::S_Added) {result = AbstractCopyModel::C_Add;}
-    if (_status == AbstractCopyModel::S_DeletedCopy) {result = AbstractCopyModel::C_Delete;}
+    if (_status == AbstractCopyModel::S_Added) {return true;}
 
     for (int i = 0 ; i < rowCount() ; i++)
     {
         AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-
-        if (item->copyIncludesNeeded() == AbstractCopyModel::C_Add) {result =  AbstractCopyModel::C_Add;}
-        if ((result!=AbstractCopyModel::C_Add) && (item->copyIncludesNeeded() == AbstractCopyModel::C_Delete)) {result = AbstractCopyModel::C_Delete;}
+        if (item->copyIncludesNeeded()) {return true;}
     }
 
+    return false;
+}
+
+QString AbstractCopyModel::getAutoRenamesDeclarations()
+{
+    QString result = "";
+
+    if (getStatus()==AbstractCopyModel::S_Added)
+    {
+        result += Tools::getIndentation(1) + "CT_AutoRenameModels" + Tools::getIndentation(1) + getAutoRenameName() + ";\n";
+    }
+
+    int count = rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
+        result += item->getAutoRenamesDeclarations();
+    }
     return result;
 }
 
@@ -66,70 +86,6 @@ void AbstractCopyModel::setNotDeleted()
     setData(QVariant(QColor(Qt::black)),Qt::ForegroundRole);
 }
 
-
-QString AbstractCopyModel::getCopyModelsDefines()
-{
-    QString result = "#define ";
-    result.append(getDef());
-    result.append(QString(" \"%1\"\n").arg(getAlias()));
-
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        result.append(item->getCopyModelsDefines());
-    }
-    return result;
-}
-
-
-// static
-QString AbstractCopyModel::getQStringListConcat(QSet<QString> &list)
-{
-    QStringList list2(list.toList());
-    list2.sort();
-
-    QString result = "";
-
-    foreach (const QString &value, list2)
-    {
-        result += value;
-        result += "\n";
-    }
-    return result;
-}
-
-
-void AbstractCopyModel::getChildrenCopyModelsDefinitions(QString &result)
-{
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        result.append("\n");
-        result.append(item->getCopyModelsDefinition());
-    }
-}
-
-void AbstractCopyModel::getChildrenCopyModelsHierachy(QString &result)
-{
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        result.append(item->getCopyModelsHierachy());
-    }
-}
-
-void AbstractCopyModel::getChildrenCopyComputeBeginning(QString &result, QString resultName)
-{
-    int size = rowCount();
-    for (int i = 0 ; i < size ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
-        result.append(item->getCopyComputeBeginning(i, resultName));
-    }
-}
 
 void AbstractCopyModel::onAliasChange()
 {

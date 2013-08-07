@@ -76,22 +76,58 @@ void COPYModelDialog::recursiveAddChildren(AbstractCopyModel* copyModel, Abstrac
     }
 }
 
-AbstractCopyModel::CopyIncludesNeeds COPYModelDialog::copyIncludesNeeded()
+bool COPYModelDialog::copyIncludesNeeded()
 {
-    AbstractCopyModel::CopyIncludesNeeds result = AbstractCopyModel::C_None;
-
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
     for (int i = 0 ; i < count ; i++)
     {
         AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
 
-        if (item->copyIncludesNeeded() == AbstractCopyModel::C_Add) {result =  AbstractCopyModel::C_Add;}
-        if ((result!=AbstractCopyModel::C_Add) && (item->copyIncludesNeeded() == AbstractCopyModel::C_Delete)) {result = AbstractCopyModel::C_Delete;}
+        if (item->copyIncludesNeeded()) {return true;}
+    }
+    return false;
+}
+
+
+void COPYModelDialog::getActionsIncludes(QSet<QString> &list)
+{
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
+        item->getActionsIncludes(list);
+    }
+}
+
+
+QString COPYModelDialog::getAutoRenamesDeclarations()
+{
+    QString result = "";
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
+        result += item->getAutoRenamesDeclarations();
     }
     return result;
 }
 
+QString COPYModelDialog::getCopyModelsDefinitions()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
+        result += item->getCopyModelsDefinitions();
+    }
+    return result;
+}
 
 
 void COPYModelDialog::on_pb_addGroup_clicked()

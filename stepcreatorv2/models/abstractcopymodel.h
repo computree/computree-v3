@@ -23,13 +23,6 @@ public:
         S_Added
     };
 
-    enum CopyIncludesNeeds
-    {
-        C_Add,
-        C_Delete,
-        C_None
-    };
-
     AbstractCopyModel();
     ~AbstractCopyModel();
 
@@ -41,32 +34,18 @@ public:
     QString getDef();
 
     virtual QString getAlias();
+    virtual QString getAutoRenameName();
     virtual bool isValid();
     inline AbstractCopyModel::Status getStatus() {return _status;}
 
-    AbstractCopyModel::CopyIncludesNeeds copyIncludesNeeded();
+    bool copyIncludesNeeded();
+    virtual void getActionsIncludes(QSet<QString> &list) = 0;
+    QString getAutoRenamesDeclarations();
+    virtual QString getCopyModelsDefinitions(QString actionName = "") = 0;
+
 
     void setDeleted();
     void setNotDeleted();
-
-    virtual QString getCopyModelsDefines();
-
-    static QString getQStringListConcat(QSet<QString> &list);
-    virtual void getCopyModelsIncludesList(QSet<QString> &list) = 0;
-
-    virtual void getCopyItemsTypesIncludesList(QSet<QString> &list) = 0;
-
-    virtual QString getCopyModelsDefinition() = 0;
-    void getChildrenCopyModelsDefinitions(QString &result);
-
-    virtual QString getCopyModelsHierachy() = 0;
-    void getChildrenCopyModelsHierachy(QString &result);
-    virtual QString getCopyModelAddingCommand() = 0;
-
-    virtual QString getCopyComputeBeginning(int rank = 0, QString resultName = "") = 0;
-    void getChildrenCopyComputeBeginning(QString &result, QString resultName = "");
-
-    virtual QString getCopyComputeItemsCreations(QString resultName = "") = 0;
 
     void onAliasChange();
 
