@@ -56,11 +56,13 @@ QString COPYResultModel::getCopyModelsDefinitions(QString actionName)
 {
     QString result = "";
 
+    actionName = "actions_" + getModelName();
+
     result += Tools::getIndentation(1) + "// Get IN model corresponding to " + getDef() + "\n";
-    result += Tools::getIndentation(1) + "CT_InResultModelGroupToCopy *" + getModelName() + " = (CT_InResultModelGroupToCopy*)getInResultModel(" + getDef() + ");";
+    result += Tools::getIndentation(1) + "CT_InResultModelGroupToCopy *" + getModelName() + " = (CT_InResultModelGroupToCopy*)getInResultModel(" + getDef() + ");\n";
     result += "\n";
-    result += Tools::getIndentation(1) + "Creation an action list to modify the in model (empty in no modifications)\n";
-    result += Tools::getIndentation(1) + "QList<CT_AbstractOutModelCopyAction*> actions_" + getModelName() + ";\n";
+    result += Tools::getIndentation(1) + "// Create an action list to modify the in model (empty in no modifications)\n";
+    result += Tools::getIndentation(1) + "QList<CT_AbstractOutModelCopyAction*> " + actionName + ";\n";
     result += "\n";
 
     int count = rowCount();

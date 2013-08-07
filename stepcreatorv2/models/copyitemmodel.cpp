@@ -1,6 +1,7 @@
 #include "copyitemmodel.h"
 #include "widgets/copyitemwidget.h"
 #include "tools.h"
+#include "assert.h"
 
 COPYItemModel::COPYItemModel() : AbstractCopyModel()
 {
@@ -59,7 +60,70 @@ void COPYItemModel::getActionsIncludes(QSet<QString> &list)
 QString COPYItemModel::getCopyModelsDefinitions(QString actionName)
 {
     QString result = "";
+    assert(parent()!=NULL);
 
+    if (getStatus() == AbstractCopyModel::S_Added)
+    {
+        // Création du modèle d'item
+        result += "\n";
+        result += Tools::getIndentation(1) + "// Create the model for " + getAutoRenameName() + "\n";
+
+        result += Tools::getIndentation(1);
+        result += "CT_OutStandardItemDrawableModel *";
+        result += getModelName();
+        result += " = new CT_OutStandardItemDrawableModel(";
+
+        int indentSize = result.size();
+
+        result += getDef();
+
+        // Item Type
+        result += ", \n";
+        result += Tools::getSpaceSequence(indentSize) + "new ";
+        result += ((COPYItemWidget*) _widget)->getItemType();
+        result += "()";
+
+        QString resultTmp = "";
+
+        // Description
+        QString description = ((COPYItemWidget*) _widget)->getDescription();
+        if ((description.size() > 0) || (resultTmp.size() > 0))
+        {
+            resultTmp.insert(0, QString("tr(\"%1\")").arg(description));
+            resultTmp.insert(0, Tools::getSpaceSequence(indentSize));
+            resultTmp.insert(0, ", \n");
+        }
+
+        // Displayable Name
+        QString dispName = ((COPYItemWidget*) _widget)->getDisplayableName();
+        if ((dispName.size() > 0) || (resultTmp.size() > 0))
+        {
+            resultTmp.insert(0, QString("tr(\"%1\")").arg(dispName));
+            resultTmp.insert(0, Tools::getSpaceSequence(indentSize));
+            resultTmp.insert(0, ", \n");
+        }
+
+        result += resultTmp;
+        result += ");";
+        result += "\n";
+
+        // Action d'ajout
+        result += "\n";
+        result += Tools::getIndentation(1) + "// Create the action to add the item associated with " + getAutoRenameName() + "\n";
+        QString str = Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionAddModelGroupInGroup(";
+        result += str + ((AbstractCopyModel*) parent())->getDef() + ", \n";
+        result += Tools::getSpaceSequence(str.length()) + getModelName() + ", \n";
+        result += Tools::getSpaceSequence(str.length()) + getAutoRenameName() + ");\n";
+        result += "\n";
+
+    } else if (getStatus() == AbstractCopyModel::S_DeletedCopy)
+    {
+        // Action de suppression
+        result += Tools::getIndentation(1) + "// Create the action to delete the item associated with " + getDef() + "\n";
+        result += Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionRemoveModelGroupInGroup(";
+        result += getDef() + ");\n";
+        result += "\n";
+    }
 
     return result;
 }

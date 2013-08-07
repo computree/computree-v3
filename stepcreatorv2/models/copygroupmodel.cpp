@@ -2,6 +2,7 @@
 #include "widgets/copygroupwidget.h"
 #include "models/copyitemmodel.h"
 #include "tools.h"
+#include "assert.h"
 
 COPYGroupModel::COPYGroupModel() : AbstractCopyModel()
 {
@@ -62,14 +63,64 @@ void COPYGroupModel::getActionsIncludes(QSet<QString> &list)
 QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
 {
     QString result = "";
-
+    assert(parent()!=NULL);
 
     if (getStatus() == AbstractCopyModel::S_Added)
     {
+        // Création du modèle de groupe
+        result += "\n";
+        result += Tools::getIndentation(1) + "// Create the model for " + getAutoRenameName() + "\n";
+        QString resultTmp = "";
+        resultTmp += Tools::getIndentation(1);
+        resultTmp += "CT_OutStandardGroupModel *";
+        resultTmp += getModelName();
+        resultTmp += " = new CT_OutStandardGroupModel(";
 
-    } else if (getStatus() == AbstractCopyModel::S_DeletedCopy)
-    {
+        int indentSize = resultTmp.size();
 
+        result += resultTmp;
+        result += getDef();
+
+        QString resultTmp2 = "";
+
+        // Description
+        QString description = ((COPYGroupWidget*) _widget)->getDescription();
+        if ((description.size() > 0) || (resultTmp2.size() > 0))
+        {
+            resultTmp2.insert(0, QString("tr(\"%1\")").arg(description));
+            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+            resultTmp2.insert(0, ", \n");
+        }
+
+        // Displayable Name
+        QString dispName = ((COPYGroupWidget*) _widget)->getDisplayableName();
+        if ((dispName.size() > 0) || (resultTmp2.size() > 0))
+        {
+            resultTmp2.insert(0, QString("tr(\"%1\")").arg(dispName));
+            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+            resultTmp2.insert(0, ", \n");
+        }
+
+        // New CT_StandardItemGroup
+        if (resultTmp2.size() > 0)
+        {
+            resultTmp2.insert(0, "new CT_StandardItemGroup()");
+            resultTmp2.insert(0, Tools::getSpaceSequence(indentSize));
+            resultTmp2.insert(0, ", \n");
+        }
+
+        result += resultTmp2;
+        result += ");";
+        result += "\n";
+
+        // Action d'ajout
+        result += "\n";
+        result += Tools::getIndentation(1) + "// Create the action to add the group associated with " + getAutoRenameName() + "\n";
+        QString str = Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionAddModelGroupInGroup(";
+        result += str + ((AbstractCopyModel*) parent())->getDef() + ", \n";
+        result += Tools::getSpaceSequence(str.length()) + getModelName() + ", \n";
+        result += Tools::getSpaceSequence(str.length()) + getAutoRenameName() + ");\n";
+        result += "\n";
     }
 
     int count = rowCount();
@@ -77,6 +128,15 @@ QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
     {
         AbstractCopyModel* item = (AbstractCopyModel*) child(i);
         result += item->getCopyModelsDefinitions(actionName);
+    }
+
+    if (getStatus() == AbstractCopyModel::S_DeletedCopy)
+    {
+        // Action de suppression
+        result += Tools::getIndentation(1) + "// Create the action to delete the group associated with " + getDef() + "\n";
+        result += Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionRemoveModelGroupInGroup(";
+        result += getDef() + ");\n";
+        result += "\n";
     }
 
     return result;
