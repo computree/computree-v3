@@ -8,7 +8,6 @@
 #include "models/copyresultmodel.h"
 #include "models/copygroupmodel.h"
 #include "models/copyitemmodel.h"
-#include "models/abstractcopymodel.h"
 #include "tools.h"
 
 COPYModelDialog::COPYModelDialog(QStandardItemModel *inModel, QWidget *parent) :
@@ -77,95 +76,22 @@ void COPYModelDialog::recursiveAddChildren(AbstractCopyModel* copyModel, Abstrac
     }
 }
 
-
-QString COPYModelDialog::getCopyIncludes()
+AbstractCopyModel::CopyIncludesNeeds COPYModelDialog::copyIncludesNeeded()
 {
-    QStandardItem* root = _model->invisibleRootItem();
-    int count = root->rowCount();
-    QSet<QString> list;
-    for (int i = 0 ; i < count ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-        item->getCopyModelsIncludesList(list);
-    }
-
-    return AbstractCopyModel::getQStringListConcat(list);
-}
-
-void COPYModelDialog::getCopyItemTypesIncludes(QSet<QString> &list)
-{
-    QStandardItem* root = _model->invisibleRootItem();
-    int count = root->rowCount();
-    for (int i = 0 ; i < count ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-        item->getCopyItemsTypesIncludesList(list);
-    }
-}
-
-QString COPYModelDialog::getCopyDefines()
-{
-    QString result = "";
+    AbstractCopyModel::CopyIncludesNeeds result = AbstractCopyModel::C_None;
 
     QStandardItem* root = _model->invisibleRootItem();
     int count = root->rowCount();
     for (int i = 0 ; i < count ; i++)
     {
         AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-        result += item->getCopyModelsDefines();
-    }
 
+        if (item->copyIncludesNeeded() == AbstractCopyModel::C_Add) {result =  AbstractCopyModel::C_Add;}
+        if ((result!=AbstractCopyModel::C_Add) && (item->copyIncludesNeeded() == AbstractCopyModel::C_Delete)) {result = AbstractCopyModel::C_Delete;}
+    }
     return result;
 }
 
-QString COPYModelDialog::getCopyModelsDefinitions()
-{
-    QString result = "";
-
-    QStandardItem* root = _model->invisibleRootItem();
-    int count = root->rowCount();
-    for (int i = 0 ; i < count ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-
-        result += item->getCopyModelsDefinition();
-    }
-
-    return result;
-}
-
-QString COPYModelDialog::getCopyComputeBeginning(int nbOfCopyResults)
-{
-    QString result = "";
-    result += Tools::getIndentation(1) + "QList<CT_ResultGroup*> outResultList = getCopyResultList();\n";
-
-    QStandardItem* root = _model->invisibleRootItem();
-    int count = root->rowCount();
-    for (int i = 0 ; i < count ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-
-        result += item->getCopyComputeBeginning(i + nbOfCopyResults);
-    }
-
-    return result;
-}
-
-QString COPYModelDialog::getCopyComputeItemsCreations()
-{
-    QString result = "";
-
-    QStandardItem* root = _model->invisibleRootItem();
-    int count = root->rowCount();
-    for (int i = 0 ; i < count ; i++)
-    {
-        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
-
-        result += item->getCopyComputeItemsCreations();
-    }
-
-    return result;
-}
 
 
 void COPYModelDialog::on_pb_addGroup_clicked()
@@ -321,6 +247,11 @@ void COPYModelDialog::on_treeView_clicked(const QModelIndex &index)
 void COPYModelDialog::on_buttonBox_rejected()
 {
     init();
+}
+
+void COPYModelDialog::closeEvent(QCloseEvent *event)
+{
+    on_buttonBox_rejected();
 }
 
 void COPYModelDialog::accept()

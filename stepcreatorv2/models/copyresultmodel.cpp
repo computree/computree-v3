@@ -6,14 +6,14 @@
 COPYResultModel::COPYResultModel() : AbstractCopyModel()
 {
     _widget = new COPYResultWidget(this);
-    setText(getName() + " (cpy)");
+    setText(getName() + " (copie)");
 }
 
 
 void COPYResultModel::init(QString alias, QString name, QString desc)
 {
     ((COPYResultWidget*)_widget)->init(alias, name, desc);
-    setText(getName() + " (cpy)");
+    setText(getName() + " (copie)");
 }
 
 void COPYResultModel::init(INResultModel *inModel)
@@ -23,7 +23,7 @@ void COPYResultModel::init(INResultModel *inModel)
 
 QString COPYResultModel::getName()
 {
-    return QString("resultCopy_%1").arg(getAlias());
+    return QString("resultIn_%1").arg(getAlias());
 }
 
 QString COPYResultModel::getModelName()

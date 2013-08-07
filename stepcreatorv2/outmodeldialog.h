@@ -28,6 +28,7 @@ public:
     QString getOutComputeBeginning(int nbOfCopyResults);
     QString getOutComputeItemsCreations();
 
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_pb_addResult_clicked();

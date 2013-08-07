@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
+    <width>276</width>
     <height>434</height>
    </rect>
   </property>
@@ -52,13 +52,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QCheckBox" name="cb_modifyModel">
-        <property name="text">
-         <string>Modification du modèle copié</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

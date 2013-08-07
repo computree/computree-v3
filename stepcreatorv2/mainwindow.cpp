@@ -6,6 +6,7 @@
 #include "qtextstream.h"
 #include "qset.h"
 #include "tools.h"
+#include "models/abstractcopymodel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,10 +73,15 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "#define " << stepName.toUpper() << "_H\n";
         stream << "\n";
         stream << "#include \"ct_step/abstract/" << parentClass.toLower() << ".h\"\n";
-        stream << "\n";        
-        stream << "// Inclusion of auto-indexation system\n";
-        stream << "#include \"ct_tools/model/ct_autorenamemodels.h\"\n";
         stream << "\n";
+
+        if (_copyModelDialog->copyIncludesNeeded() == AbstractCopyModel::C_Add)
+        {
+            stream << "// Inclusion of auto-indexation system\n";
+            stream << "#include \"ct_tools/model/ct_autorenamemodels.h\"\n";
+            stream << "\n";
+        }
+
         stream << "    /*!\n";
         stream << "     * \\class " << stepName << "\n";
         stream << "     * \\ingroup Steps_" << splitted.at(0) << "\n";
@@ -174,32 +180,57 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "#include \"" << stepName.toLower() << ".h\"\n";
         stream << "\n";
 
-        stream << "// Inclusion of in models\n";
-        stream << _inModelDialog->getInIncludes();
-        stream << "\n";
-        stream << "// Inclusion of out models\n";
-        stream << _outModelDialog->getOutIncludes();
-        stream << "\n";
+        if (_inModelDialog->getInIncludes()!="")
+        {
+            stream << "// Inclusion of in models\n";
+            stream << _inModelDialog->getInIncludes();
+            stream << "\n";
+        }
+
+        if (_outModelDialog->getOutIncludes()!="")
+        {
+            stream << "// Inclusion of out models\n";
+            stream << _outModelDialog->getOutIncludes();
+            stream << "\n";
+        }
+
         stream << "// Inclusion of standard result class\n";
         stream << "#include \"ct_result/ct_resultgroup.h\"\n";
         stream << "\n";
-        stream << "// Inclusion of action system\n";
-        stream << "#include \"ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h\"\n";
-        stream << "\n";
-        stream << "// Inclusion of used ItemDrawable classes\n";
+
+        if (_copyModelDialog->copyIncludesNeeded() != AbstractCopyModel::C_None)
+        {
+            stream << "// Inclusion of action system\n";
+            stream << "#include \"ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h\"\n";
+            stream << "\n";
+        }
+
 
         QSet<QString> list;
         _inModelDialog->getInItemTypesIncludes(list);
         _outModelDialog->getOutItemTypesIncludes(list);
 
-        stream << Tools::getQStringListConcat(list);
-        stream << "\n";
-        stream << "// Alias for indexing in models\n";
-        stream << _inModelDialog->getInDefines();
-        stream << "\n";
-        stream << "// Alias for indexing out models\n";
-        stream << _outModelDialog->getOutDefines();
-        stream << "\n";
+        if (list.size()>0)
+        {
+            stream << "// Inclusion of used ItemDrawable classes\n";
+            stream << Tools::getQStringListConcat(list);
+            stream << "\n";
+        }
+
+        if (_inModelDialog->getInDefines()!="")
+        {
+            stream << "// Alias for indexing in models\n";
+            stream << _inModelDialog->getInDefines();
+            stream << "\n";
+        }
+
+        if (_outModelDialog->getOutDefines()!="")
+        {
+            stream << "// Alias for indexing out models\n";
+            stream << _outModelDialog->getOutDefines();
+            stream << "\n";
+        }
+
         stream << "// Constructor : initialization of parameters\n";
         stream << stepName << "::" << stepName << "(CT_StepInitializeData &dataInit) : " << parentClass << "(dataInit)\n";
         stream << "{\n";
@@ -314,6 +345,10 @@ void MainWindow::on_modelout_clicked()
 
 void MainWindow::on_modelcopy_clicked()
 {
-    _copyModelDialog->init();
+    if (_inModelDialog->hasBeenModified())
+    {
+        _copyModelDialog->init();
+        _inModelDialog->setModified(false);
+    }
     _copyModelDialog->show();
 }

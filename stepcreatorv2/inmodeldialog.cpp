@@ -21,6 +21,7 @@ INModelDialog::INModelDialog(QWidget *parent) :
     _layout = new QVBoxLayout();
     ui->widgetZone->setLayout(_layout);
     _activeWidget = NULL;
+    _modified = true;
 }
 
 INModelDialog::~INModelDialog()
@@ -300,11 +301,19 @@ void INModelDialog::on_pb_clear_clicked()
 
 void INModelDialog::on_buttonBox_rejected()
 {
+    _modified = true;
     on_pb_clear_clicked();
 }
 
+void INModelDialog::closeEvent(QCloseEvent *event)
+{
+    on_buttonBox_rejected();
+}
+
+
 void INModelDialog::accept()
 {
+    _modified = true;
     bool ok = true;
     int count = _model->rowCount();
     QList<QString> liste;

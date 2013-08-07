@@ -23,6 +23,13 @@ public:
         S_Added
     };
 
+    enum CopyIncludesNeeds
+    {
+        C_Add,
+        C_Delete,
+        C_None
+    };
+
     AbstractCopyModel();
     ~AbstractCopyModel();
 
@@ -36,6 +43,8 @@ public:
     virtual QString getAlias();
     virtual bool isValid();
     inline AbstractCopyModel::Status getStatus() {return _status;}
+
+    AbstractCopyModel::CopyIncludesNeeds copyIncludesNeeded();
 
     void setDeleted();
     void setNotDeleted();

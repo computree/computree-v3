@@ -80,6 +80,9 @@
             </property>
             <item>
              <widget class="QPushButton" name="pb_addGroup">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { color: blue}</string>
+              </property>
               <property name="text">
                <string>Ajouter Groupe</string>
               </property>
@@ -87,6 +90,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="pb_addItem">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { color: blue}</string>
+              </property>
               <property name="text">
                <string>Ajouter Item</string>
               </property>
@@ -94,6 +100,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="pb_delete">
+              <property name="styleSheet">
+               <string notr="true">QPushButton { color: red}</string>
+              </property>
               <property name="text">
                <string>Supprimer</string>
               </property>

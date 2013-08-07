@@ -6,17 +6,17 @@
 COPYGroupModel::COPYGroupModel() : AbstractCopyModel()
 {
     _widget = new COPYGroupWidget(this);
-    setText(getName());
     _status = AbstractCopyModel::S_Added;
     setData(QVariant(QColor(Qt::blue)),Qt::ForegroundRole);
+    setText(getName());
 }
 
 void COPYGroupModel::init(QString alias, QString name, QString desc)
 {
     ((COPYGroupWidget*)_widget)->init(alias, name, desc);
-    setText(getName() + " (cpy)");
     _status = AbstractCopyModel::S_Copy;
     setData(QVariant(QColor(Qt::black)),Qt::ForegroundRole);
+    setText(getName() + " (copie)");
 }
 
 void COPYGroupModel::init(INGroupModel *inModel)
@@ -27,7 +27,12 @@ void COPYGroupModel::init(INGroupModel *inModel)
 
 QString COPYGroupModel::getName()
 {
-    return QString("groupCopy_%1").arg(getAlias());
+    if (_status == AbstractCopyModel::S_Added)
+    {
+        return QString("groupOut_%1").arg(getAlias());
+    } else {
+        return QString("groupIn_%1").arg(getAlias());
+    }
 }
 
 QString COPYGroupModel::getModelName()

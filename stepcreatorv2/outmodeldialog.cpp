@@ -289,6 +289,11 @@ void OUTModelDialog::on_buttonBox_rejected()
     on_pb_clear_clicked();
 }
 
+void OUTModelDialog::closeEvent(QCloseEvent *event)
+{
+    on_buttonBox_rejected();
+}
+
 void OUTModelDialog::accept()
 {
     bool ok = true;

@@ -35,6 +35,25 @@ bool AbstractCopyModel::isValid()
     return getWidget()->isvalid();
 }
 
+AbstractCopyModel::CopyIncludesNeeds AbstractCopyModel::copyIncludesNeeded()
+{
+    AbstractCopyModel::CopyIncludesNeeds result = AbstractCopyModel::C_None;
+
+    if (_status == AbstractCopyModel::S_Added) {result = AbstractCopyModel::C_Add;}
+    if (_status == AbstractCopyModel::S_DeletedCopy) {result = AbstractCopyModel::C_Delete;}
+
+    for (int i = 0 ; i < rowCount() ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) child(i);
+
+        if (item->copyIncludesNeeded() == AbstractCopyModel::C_Add) {result =  AbstractCopyModel::C_Add;}
+        if ((result!=AbstractCopyModel::C_Add) && (item->copyIncludesNeeded() == AbstractCopyModel::C_Delete)) {result = AbstractCopyModel::C_Delete;}
+    }
+
+    return result;
+}
+
+
 void AbstractCopyModel::setDeleted()
 {
     _status = AbstractCopyModel::S_DeletedCopy;

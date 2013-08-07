@@ -32,6 +32,11 @@ public:
     QString getInComputeBeginning();
     QString getInComputeLoops();
 
+    inline void setModified(bool value) {_modified = value;}
+    inline bool hasBeenModified() {return _modified;}
+
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void on_pb_addResult_clicked();
     void on_pb_delete_clicked();
@@ -48,6 +53,7 @@ private:
     QStandardItemModel *_model;
     QVBoxLayout *_layout;
     AbstractInWidget *_activeWidget;
+    bool _modified;
 
 
 };

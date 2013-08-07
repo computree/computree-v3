@@ -5,18 +5,18 @@
 COPYItemModel::COPYItemModel() : AbstractCopyModel()
 {
     _widget = new COPYItemWidget(this);
-    setText(getName());
     _status = AbstractCopyModel::S_Added;
     setData(QVariant(QColor(Qt::blue)),Qt::ForegroundRole);
+    setText(getName());
 }
 
 
 void COPYItemModel::init(QString itemType, QString alias, QString name, QString desc)
 {
     ((COPYItemWidget*)_widget)->init(itemType, alias, name, desc);
-    setText(getName() + " (cpy)");
     _status = AbstractCopyModel::S_Copy;
     setData(QVariant(QColor(Qt::black)),Qt::ForegroundRole);
+    setText(getName() + " (copie)");
 }
 
 void COPYItemModel::init(INItemModel *inModel)
@@ -27,7 +27,12 @@ void COPYItemModel::init(INItemModel *inModel)
 
 QString COPYItemModel::getName()
 {
-    return QString("itemCopy_%1").arg(getAlias());
+    if (_status == AbstractCopyModel::S_Added)
+    {
+        return QString("itemOut_%1").arg(getAlias());
+    } else {
+        return QString("itemIn_%1").arg(getAlias());
+    }
 }
 
 QString COPYItemModel::getModelName()

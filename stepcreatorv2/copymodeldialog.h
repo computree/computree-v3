@@ -7,6 +7,7 @@
 #include "qboxlayout.h"
 #include "widgets/abstractcopywidget.h"
 #include "models/abstractinmodel.h"
+#include "models/abstractcopymodel.h"
 
 
 namespace Ui {
@@ -25,15 +26,9 @@ public:
 
     static void recursiveAddChildren(AbstractCopyModel* copyModel, AbstractInModel* inModel);
 
+    AbstractCopyModel::CopyIncludesNeeds copyIncludesNeeded();
 
-    QString getCopyIncludes();
-    void getCopyItemTypesIncludes(QSet<QString> &list);
-
-    QString getCopyDefines();
-    QString getCopyModelsDefinitions();
-    QString getCopyComputeBeginning(int nbOfCopyResults);
-    QString getCopyComputeItemsCreations();
-
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_pb_delete_clicked();
