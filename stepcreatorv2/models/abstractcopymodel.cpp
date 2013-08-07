@@ -35,6 +35,19 @@ bool AbstractCopyModel::isValid()
     return getWidget()->isvalid();
 }
 
+void AbstractCopyModel::setDeleted()
+{
+    _status = AbstractCopyModel::S_DeletedCopy;
+    setData(QVariant(QColor(Qt::red)),Qt::ForegroundRole);
+}
+
+void AbstractCopyModel::setNotDeleted()
+{
+    _status = AbstractCopyModel::S_Copy;
+    setData(QVariant(QColor(Qt::black)),Qt::ForegroundRole);
+}
+
+
 QString AbstractCopyModel::getCopyModelsDefines()
 {
     QString result = "#define ";

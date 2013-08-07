@@ -8,8 +8,8 @@ class COPYItemModel : public AbstractCopyModel
 {
 public:
     COPYItemModel();
-    COPYItemModel(INItemModel *inModel);
-    COPYItemModel(QString itemType, QString alias, QString name, QString desc);
+    void init(INItemModel *inModel);
+    void init(QString itemType, QString alias, QString name, QString desc);
 
     virtual AbstractCopyModel::ModelType getModelType() {return AbstractCopyModel::M_Item_COPY;}
     virtual QString getName();

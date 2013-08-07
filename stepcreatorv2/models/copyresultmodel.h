@@ -7,8 +7,10 @@
 class COPYResultModel : public AbstractCopyModel
 {
 public:
-    COPYResultModel(INResultModel *inModel);
-    COPYResultModel(QString alias, QString name, QString desc);
+    COPYResultModel();
+    void init(INResultModel *inModel);
+
+    void init(QString alias, QString name, QString desc);
 
     virtual AbstractCopyModel::ModelType getModelType() {return AbstractCopyModel::M_Result_COPY;}
     virtual QString getName();

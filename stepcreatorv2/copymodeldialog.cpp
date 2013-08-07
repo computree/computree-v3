@@ -31,7 +31,50 @@ COPYModelDialog::~COPYModelDialog()
 
 void COPYModelDialog::init()
 {
+    _activeWidget = NULL;
+    _model->clear();
+    QStandardItem* inRoot = _inModel->invisibleRootItem();
+    QStandardItem* copyRoot = _model->invisibleRootItem();
+    int count = inRoot->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        INResultModel* inResult = (INResultModel*) inRoot->child(i);
 
+        if (inResult->isCopyResult())
+        {
+            COPYResultModel* copyResult = new COPYResultModel();
+            copyResult->init(inResult);
+            copyRoot->appendRow(copyResult);
+            recursiveAddChildren(copyResult, inResult);
+        }
+    }
+    ui->treeView->expandAll();
+
+}
+
+// static
+void COPYModelDialog::recursiveAddChildren(AbstractCopyModel* copyModel, AbstractInModel* inModel)
+{
+    int count = inModel->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractInModel* inItem = (AbstractInModel*) inModel->child(i);
+
+        if (inItem->getModelType() == AbstractInModel::M_Group_IN)
+        {
+            COPYGroupModel* copyItem = new COPYGroupModel();
+            copyItem->init((INGroupModel*) inItem);
+            copyModel->appendRow(copyItem);
+            recursiveAddChildren(copyItem, inItem);
+
+        } else if (inItem->getModelType() == AbstractInModel::M_Item_IN)
+        {
+            COPYItemModel* copyItem = new COPYItemModel();
+            copyItem->init((INItemModel*) inItem);
+            copyModel->appendRow(copyItem);
+            recursiveAddChildren(copyItem, inItem);
+        }
+    }
 }
 
 
@@ -194,7 +237,16 @@ void COPYModelDialog::on_pb_delete_clicked()
     QModelIndex index = ui->treeView->currentIndex();
     AbstractCopyModel *item = (AbstractCopyModel*) _model->itemFromIndex(index);
     ui->treeView->clearSelection();
-    if (item != NULL)
+    if (item != NULL && item->getModelType()!=AbstractCopyModel::M_Result_COPY)
+    {
+        deleteItem(item, _model, _activeWidget);
+
+    }
+}
+
+void COPYModelDialog::deleteItem(AbstractCopyModel * item, QStandardItemModel* model, AbstractCopyWidget* &activeWidget)
+{
+    if (item->getStatus()==AbstractCopyModel::S_Added)
     {
         //delete all children of parent;
         QStandardItem * loopItem = item; //main loop item
@@ -218,7 +270,7 @@ void COPYModelDialog::on_pb_delete_clicked()
             item->parent()->takeRow(item->row());
         } else
         {
-            QStandardItem *root = _model->invisibleRootItem();
+            QStandardItem *root = model->invisibleRootItem();
             root->takeRow(item->row());
         }
 
@@ -226,12 +278,32 @@ void COPYModelDialog::on_pb_delete_clicked()
 
         while (!itemsToBeDeleted.isEmpty())        {
             AbstractCopyModel* itemToDelete = (AbstractCopyModel*) itemsToBeDeleted.takeLast();
-            if (itemToDelete->getWidget() == _activeWidget) {_activeWidget = NULL;}
+            if (itemToDelete->getWidget() == activeWidget) {activeWidget = NULL;}
             delete itemToDelete;
         }
-
+    } else {
+        item->setDeleted();
+        int count = item->rowCount();
+        for (int i = 0 ; i < count ; i++)
+        {
+            AbstractCopyModel* item2 = (AbstractCopyModel*) item->child(i);
+            deleteItem(item2, model, activeWidget);
+        }
     }
 }
+
+void COPYModelDialog::cancelDelete(AbstractCopyModel * item)
+{
+    if (item != NULL && item->getStatus()==AbstractCopyModel::S_DeletedCopy)
+    {
+        item->setNotDeleted();
+        if (item->parent()!=NULL)
+        {
+            cancelDelete((AbstractCopyModel*)item->parent());
+        }
+    }
+}
+
 
 void COPYModelDialog::on_treeView_clicked(const QModelIndex &index)
 {
@@ -272,4 +344,11 @@ void COPYModelDialog::accept()
     } else {
         done(QDialog::Accepted);
     }
+}
+
+void COPYModelDialog::on_pb_cancelDelete_clicked()
+{
+    QModelIndex index = ui->treeView->currentIndex();
+    AbstractCopyModel *item = (AbstractCopyModel*) _model->itemFromIndex(index);
+    cancelDelete(item);
 }

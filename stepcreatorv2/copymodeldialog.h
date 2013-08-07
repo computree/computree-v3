@@ -6,6 +6,7 @@
 #include "qstandarditemmodel.h"
 #include "qboxlayout.h"
 #include "widgets/abstractcopywidget.h"
+#include "models/abstractinmodel.h"
 
 
 namespace Ui {
@@ -21,6 +22,9 @@ public:
     ~COPYModelDialog();
 
     void init();
+
+    static void recursiveAddChildren(AbstractCopyModel* copyModel, AbstractInModel* inModel);
+
 
     QString getCopyIncludes();
     void getCopyItemTypesIncludes(QSet<QString> &list);
@@ -40,6 +44,8 @@ private slots:
 
     void accept();
 
+    void on_pb_cancelDelete_clicked();
+
 private:
     Ui::COPYModelDialog *ui;
     QStandardItemModel *_model;
@@ -47,7 +53,8 @@ private:
     QVBoxLayout *_layout;
     AbstractCopyWidget *_activeWidget;
 
-
+    static void deleteItem(AbstractCopyModel *item, QStandardItemModel *model, AbstractCopyWidget *&activeWidget);
+    static void cancelDelete(AbstractCopyModel *item);
 };
 
 #endif // COPYMODELDIALOG_H

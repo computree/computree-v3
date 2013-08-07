@@ -7,19 +7,21 @@ COPYItemModel::COPYItemModel() : AbstractCopyModel()
     _widget = new COPYItemWidget(this);
     setText(getName());
     _status = AbstractCopyModel::S_Added;
+    setData(QVariant(QColor(Qt::blue)),Qt::ForegroundRole);
 }
 
 
-COPYItemModel::COPYItemModel(QString itemType, QString alias, QString name, QString desc) : AbstractCopyModel()
+void COPYItemModel::init(QString itemType, QString alias, QString name, QString desc)
 {
-    _widget = new COPYItemWidget(this, itemType, alias, name, desc);
+    ((COPYItemWidget*)_widget)->init(itemType, alias, name, desc);
     setText(getName() + " (cpy)");
+    _status = AbstractCopyModel::S_Copy;
+    setData(QVariant(QColor(Qt::black)),Qt::ForegroundRole);
 }
 
-COPYItemModel::COPYItemModel(INItemModel *inModel)
+void COPYItemModel::init(INItemModel *inModel)
 {
-    _widget = new COPYItemWidget(this, inModel->getItemType(), inModel->getAlias(), inModel->getName(), inModel->getDescription());
-    setText(getName() + " (cpy)");
+    init(inModel->getItemType(), inModel->getAlias(), inModel->getDisplayableName(), inModel->getDescription());
 }
 
 

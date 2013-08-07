@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Paramétrage des modèkes IN</string>
+   <string>Paramétrage des modèles IN copiés</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -96,6 +96,13 @@
              <widget class="QPushButton" name="pb_delete">
               <property name="text">
                <string>Supprimer</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_cancelDelete">
+              <property name="text">
+               <string>Annuler Supprimer</string>
               </property>
              </widget>
             </item>

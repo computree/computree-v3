@@ -28,6 +28,7 @@ public:
 
     virtual QString getAlias();
     virtual QString getDescription();
+    virtual QString getDisplayableName();
     virtual bool isValid();
 
     virtual QString getInModelsDefines();

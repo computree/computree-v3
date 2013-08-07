@@ -314,5 +314,6 @@ void MainWindow::on_modelout_clicked()
 
 void MainWindow::on_modelcopy_clicked()
 {
+    _copyModelDialog->init();
     _copyModelDialog->show();
 }

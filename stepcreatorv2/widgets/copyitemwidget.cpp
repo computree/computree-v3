@@ -21,12 +21,8 @@ COPYItemWidget::COPYItemWidget(AbstractCopyModel* model, QWidget *parent) :
     setFocusProxy(ui->alias);
 }
 
-COPYItemWidget::COPYItemWidget(AbstractCopyModel* model, QString itemType, QString alias, QString name, QString desc, QWidget *parent) :
-    AbstractCopyWidget(model, parent),
-    ui(new Ui::COPYItemWidget)
+void COPYItemWidget::init(QString itemType, QString alias, QString name, QString desc)
 {
-    ui->setupUi(this);
-    setFocusProxy(ui->alias);
     ui->alias->setText(alias);
     ui->alias->setEnabled(false);
     ui->modelName->setText(name);

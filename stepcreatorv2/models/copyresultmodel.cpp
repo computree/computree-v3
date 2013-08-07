@@ -3,16 +3,22 @@
 #include "tools.h"
 #include "assert.h"
 
-COPYResultModel::COPYResultModel(QString alias, QString name, QString desc) : AbstractCopyModel()
+COPYResultModel::COPYResultModel() : AbstractCopyModel()
 {
-    _widget = new COPYResultWidget(this, alias, name, desc);
+    _widget = new COPYResultWidget(this);
     setText(getName() + " (cpy)");
 }
 
-COPYResultModel::COPYResultModel(INResultModel *inModel)
+
+void COPYResultModel::init(QString alias, QString name, QString desc)
 {
-    _widget = new COPYResultWidget(this, inModel->getAlias(), inModel->getName(), inModel->getDescription());
+    ((COPYResultWidget*)_widget)->init(alias, name, desc);
     setText(getName() + " (cpy)");
+}
+
+void COPYResultModel::init(INResultModel *inModel)
+{
+    init(inModel->getAlias(), inModel->getDisplayableName(), inModel->getDescription());
 }
 
 QString COPYResultModel::getName()

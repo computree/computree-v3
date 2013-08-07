@@ -28,13 +28,17 @@ public:
 
     virtual AbstractCopyModel::ModelType getModelType() = 0;
 
-    virtual AbstractCopyWidget* getWidget();
+    AbstractCopyWidget* getWidget();
     virtual QString getName() = 0;
     virtual QString getModelName() = 0;
     QString getDef();
 
     virtual QString getAlias();
     virtual bool isValid();
+    inline AbstractCopyModel::Status getStatus() {return _status;}
+
+    void setDeleted();
+    void setNotDeleted();
 
     virtual QString getCopyModelsDefines();
 
