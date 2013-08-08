@@ -31,6 +31,8 @@ public:
     QString getInModelsDefinitions();
     QString getInComputeBeginning();
     QString getInComputeLoops();
+    QString getInModelDoc();
+
 
     inline void setModified(bool value) {_modified = value;}
     inline bool hasBeenModified() {return _modified;}

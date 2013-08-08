@@ -127,8 +127,23 @@ QString OUTResultModel::getOutComputeItemsCreations(QString resultName)
     result += Tools::getIndentation(1) + "// ----------------------------------------------------------------------------\n";
     result += Tools::getIndentation(1) + "// Works on the result corresponding to " + getDef() + "\n";
     result += group->getOutComputeItemsCreations(getName());
+    result += "\n";
     result += Tools::getIndentation(1) + getName() + ".addGroup(" + group->getName() + ");\n";
 
     return result;
 }
 
+QString OUTResultModel::getOutModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * - CT_ResultGroup" + desc + "\\n\n";
+
+    AbstractOutModel* group = (AbstractOutModel*) child(0);
+    result += group->getOutModelDoc(nbIndent + 1);
+    result += " *\n";
+    return result;
+}

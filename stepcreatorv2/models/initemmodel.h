@@ -20,6 +20,7 @@ public:
     virtual QString getInModelAddingCommand();
     virtual QString getInComputeBeginning(QString resultDef = "", QString useCopy = "");
     virtual QString getInComputeLoops(int nbIndent);
+    virtual QString getInModelDoc(int nbIndent = 0);
 };
 
 #endif // INITEMMODEL_H

@@ -202,3 +202,20 @@ QString INGroupModel::getInComputeLoops(int nbIndent)
 
     return result;
 }
+
+QString INGroupModel::getInModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * " + Tools::getIndentation(nbIndent) + "- CT_StandardItemGroup" + desc + "...\\n\n";
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        result += ((AbstractInModel*) child(i))->getInModelDoc(nbIndent + 1);
+    }
+    return result;
+}

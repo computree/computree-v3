@@ -19,7 +19,10 @@ public:
     virtual QString getAutoRenameName();
 
     virtual void getActionsIncludes(QSet<QString> &list);
-    virtual QString getCopyModelsDefinitions(QString actionName = "");
+    virtual QString getCopyModelsDefinitions(QString actionName = "");    
+    virtual QString getCopyComputeLoops(int nbIndent, QString resultName = "");
+    virtual QString getCopyModelDoc(int nbIndent = 0);
+
 
 };
 

@@ -15,6 +15,10 @@ AbstractCopyWidget* AbstractCopyModel::getWidget()
     return _widget;
 }
 
+QString AbstractCopyModel::getDisplayableName()
+{
+    return _widget->getDisplayableName();
+}
 
 QString AbstractCopyModel::getDef()
 {

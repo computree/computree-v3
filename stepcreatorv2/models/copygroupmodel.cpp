@@ -115,7 +115,7 @@ QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
 
         // Action d'ajout
         result += "\n";
-        result += Tools::getIndentation(1) + "// Create the action to add the group associated with " + getAutoRenameName() + "\n";
+        result += Tools::getIndentation(1) + "// Create the action to add the group corresponding to " + getAutoRenameName() + "\n";
         QString str = Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionAddModelGroupInGroup(";
         result += str + ((AbstractCopyModel*) parent())->getDef() + ", \n";
         result += Tools::getSpaceSequence(str.length()) + getModelName() + ", \n";
@@ -133,7 +133,7 @@ QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
     if (getStatus() == AbstractCopyModel::S_DeletedCopy)
     {
         // Action de suppression
-        result += Tools::getIndentation(1) + "// Create the action to delete the group associated with " + getDef() + "\n";
+        result += Tools::getIndentation(1) + "// Create the action to delete the group corresponding to " + getDef() + "\n";
         result += Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionRemoveModelGroupInGroup(";
         result += getDef() + ");\n";
         result += "\n";
@@ -142,29 +142,82 @@ QString COPYGroupModel::getCopyModelsDefinitions(QString actionName)
     return result;
 }
 
-#ifdef TOTO
-void toto()
+QString COPYGroupModel::getCopyComputeLoops(int nbIndent, QString resultName = "")
 {
-    // on récupère le résultat modèle d'entrée à copier défini dans "createInResultModelListProtected()"
-    CT_InResultModelGroupToCopy *intResModelToCopy = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInResult);
+    QString result = "";
 
-    // On créée une liste d'action à executer sur la copie du modèle
-    QList<CT_AbstractOutModelCopyAction*> actions;
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractCopyModel* groupOrItem = (AbstractCopyModel*) child(i);
 
+        if (groupOrItem->getStatus() == AbstractCopyModel::S_Copy)
+        {
+            if (groupOrItem->getModelType() == AbstractCopyModel::M_Group_COPY)
+            {
+                result += "\n";
+                result += Tools::getIndentation(nbIndent) + "// Iterating on children groups corresponding to " + groupOrItem->getDef() + "\n";
+                result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + groupOrItem->getName();
+                result += " = " + getName() + "->beginGroup(" + groupOrItem->getModelName() + ")\n";
+                result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " != NULL  && !isStopped()\n";
+                result += Tools::getIndentation(nbIndent+1) + "; " + groupOrItem->getName() + " = " + getName() + "->nextGroup() )\n";
+                result += Tools::getIndentation(nbIndent) + "{\n";
 
+                result += groupOrItem->getCopyComputeLoops(nbIndent+1, resultName);
 
-    // On créée le modèle d'item (CT_ReferencePoint) à ajouter
-    CT_OutStandardItemDrawableModel *refPointModel = new CT_OutStandardItemDrawableModel("", new CT_ReferencePoint(), tr("Barycentre"));
+                result += Tools::getIndentation(nbIndent) + "}\n";
 
-    // On ajoute une action permettant d'ajouter le modèle d'item créé
-    // Cette action prend en paramètre à générateur de nom automatique : _outRefPointModelName
-    actions << new CT_OutModelCopyActionAddModelItemInGroup(DEF_SearchInGroup,
-                                                            refPointModel,
-                                                            _outRefPointModelName);
+            } else if (groupOrItem->getModelType() == AbstractCopyModel::M_Item_COPY)
+            {
+                QString type = ((COPYItemModel*) groupOrItem)->getItemType();
+                result += Tools::getIndentation(nbIndent) + "// Gets the item corresponding to " + groupOrItem->getDef() + "\n";
+                result += Tools::getIndentation(nbIndent) + "const " + type + "* " + groupOrItem->getName();
+                result += " = (const " + type + "*) " + getName() + "->findFirstItem(" + groupOrItem->getModelName() + ");\n";
 
+            }
+        } else if (groupOrItem->getStatus() == AbstractCopyModel::S_Added)
+        {
+            if (groupOrItem->getModelType() == AbstractCopyModel::M_Group_COPY)
+            {
+                result += "\n";
+                result += Tools::getIndentation(nbIndent+1) + "CT_StandardItemGroup* " + groupOrItem->getName();
+                result += " = new CT_StandardItemGroup(" + groupOrItem->getModelName() + ", 0, " + resultName + ");\n";
+                result += Tools::getIndentation(nbIndent+1) + getName() + ".addGroup(" + groupOrItem->getName() + ");\n";
+                result += groupOrItem->getCopyComputeLoops(nbIndent+1, resultName);
+            } else if (groupOrItem->getModelType() == AbstractCopyModel::M_Item_COPY)
+            {
+                result += "\n";
+                result += Tools::getIndentation(nbIndent) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
+                result += Tools::getIndentation(nbIndent) + "// " + ((COPYItemModel*)groupOrItem)->getItemType() + "* " + groupOrItem->getName();
+                result += " = new " +  ((COPYItemModel*)groupOrItem)->getItemType() + "(" + groupOrItem->getModelName() + ", ID, " + resultName + ");\n";
+                result += Tools::getIndentation(nbIndent+1) + "// " + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
+            }
 
-    // On ajoute le modèle de sortie modifier
-    // En réalité cette méthode va faire effectivement la copie du résultat d'entrée
-    addOutResultModelCopy(intResModelToCopy, actions);
+            result += "\n";
+        }
+
+    }
+
+    return result;
 }
-#endif
+
+QString COPYGroupModel::getCopyModelDoc(int nbIndent)
+{
+    if (_status == AbstractCopyModel::S_DeletedCopy) {return "";}
+
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    QString sign = "";
+    if (_status == AbstractCopyModel::S_Added) {sign = "+";}
+    result += " * " + Tools::getIndentation(nbIndent) + "- <em>cpy" + sign + " CT_StandardItemGroup" + desc + "...</em>\\n\n";
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        result += ((AbstractCopyModel*) child(i))->getCopyModelDoc(nbIndent + 1);
+    }
+    return result;
+}

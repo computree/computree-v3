@@ -13,6 +13,10 @@ AbstractOutWidget* AbstractOutModel::getWidget()
     return _widget;
 }
 
+QString AbstractOutModel::getDisplayableName()
+{
+    return _widget->getDisplayableName();
+}
 
 QString AbstractOutModel::getDef()
 {

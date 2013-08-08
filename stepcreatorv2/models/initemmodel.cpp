@@ -132,3 +132,15 @@ QString INItemModel::getInComputeLoops(int nbIndent)
 {
     return "";
 }
+
+QString INItemModel::getInModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * " + Tools::getIndentation(nbIndent) + "- " + getItemType() + desc + "\\n\n";
+
+    return result;
+}

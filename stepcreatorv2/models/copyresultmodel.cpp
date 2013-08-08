@@ -79,4 +79,42 @@ QString COPYResultModel::getCopyModelsDefinitions(QString actionName)
     return result;
 }
 
+QString COPYResultModel::getCopyComputeLoops(int nbIndent, QString resultName)
+{
+    QString result = "";
+    AbstractCopyModel* group = (AbstractCopyModel*) child(0);
+
+    if (group->getStatus() == AbstractCopyModel::S_Copy)
+    {
+        result += "\n";
+        result += Tools::getIndentation(nbIndent) + "// ----------------------------------------------------------------------------\n";
+        result += Tools::getIndentation(nbIndent) + "// Works on the result corresponding to " + getDef() + "\n";
+        result += Tools::getIndentation(nbIndent) + "// Iterating on groups situated at the root of the result (corresponding to " + group->getDef() + ")\n";
+        result += Tools::getIndentation(nbIndent) + "for ( CT_AbstractItemGroup *" + group->getName() + " = " + getName() + "->beginGroup(" + group->getModelName() + ")\n";
+        result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " != NULL  && !isStopped()\n";
+        result += Tools::getIndentation(nbIndent+1) + "; " + group->getName() + " = " + getName() + "->nextGroup() )\n";
+        result += Tools::getIndentation(nbIndent) + "{\n";
+
+        result += group->getCopyComputeLoops(nbIndent + 1, getName());
+
+        result += Tools::getIndentation(nbIndent) + "}\n";
+    }
+
+    return result;
+}
+
+QString COPYResultModel::getCopyModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * - CT_ResultGroup" + desc + "\\n\n";
+
+    AbstractCopyModel* group = (AbstractCopyModel*) child(0);
+    result += group->getCopyModelDoc(nbIndent + 1);
+    result += " *\n";
+    return result;
+}
 

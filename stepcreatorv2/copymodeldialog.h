@@ -32,6 +32,8 @@ public:
     QString getAutoRenamesDeclarations();
 
     QString getCopyModelsDefinitions();
+    QString getCopyComputeLoops();
+    QString getCopyModelDoc();
 
     void closeEvent(QCloseEvent *event);
 

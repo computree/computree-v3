@@ -27,6 +27,7 @@ public:
     QString getOutModelsDefinitions();
     QString getOutComputeBeginning(int nbOfCopyResults);
     QString getOutComputeItemsCreations();
+    QString getOutModelDoc();
 
     void closeEvent(QCloseEvent *event);
 

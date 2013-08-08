@@ -117,6 +117,21 @@ QString OUTModelDialog::getOutComputeItemsCreations()
     return result;
 }
 
+QString OUTModelDialog::getOutModelDoc()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        OUTResultModel* item = (OUTResultModel*) root->child(i);
+        result += item->getOutModelDoc(0);
+    }
+
+    return result;
+}
+
 
 void OUTModelDialog::on_pb_addResult_clicked()
 {

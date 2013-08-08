@@ -24,6 +24,7 @@ public:
     virtual AbstractOutWidget* getWidget();
     virtual QString getName() = 0;
     virtual QString getModelName() = 0;
+    virtual QString getDisplayableName();
     QString getDef();
 
     virtual QString getAlias();
@@ -47,6 +48,8 @@ public:
     void getChildrenOutComputeBeginning(QString &result, QString resultName = "");
 
     virtual QString getOutComputeItemsCreations(QString resultName = "") = 0;
+
+    virtual QString getOutModelDoc(int nbIndent = 0) = 0;
 
     void onAliasChange();
 

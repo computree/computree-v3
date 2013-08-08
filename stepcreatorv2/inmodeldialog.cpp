@@ -124,13 +124,32 @@ QString INModelDialog::getInComputeLoops()
     int count = root->rowCount();
     for (int i = 0 ; i < count ; i++)
     {
-        AbstractInModel* item = (AbstractInModel*) root->child(i);
+        INResultModel* item = (INResultModel*) root->child(i);
 
-        result += item->getInComputeLoops();
+        if (!item->isCopyResult())
+        {
+            result += item->getInComputeLoops(1);
+        }
     }
 
     return result;
 }
+
+QString INModelDialog::getInModelDoc()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        INResultModel* item = (INResultModel*) root->child(i);
+        result += item->getInModelDoc(0);
+    }
+
+    return result;
+}
+
 
 
 void INModelDialog::on_pb_addResult_clicked()

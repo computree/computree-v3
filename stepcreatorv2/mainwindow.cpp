@@ -84,32 +84,43 @@ bool MainWindow::createFiles(QString directory, QString stepName)
             stream << "\n";
         }
 
-        stream << "    /*!\n";
-        stream << "     * \\class " << stepName << "\n";
-        stream << "     * \\ingroup Steps_" << splitted.at(0) << "\n";
-        stream << "     * \\brief <b>Short description of the step.</b>\n";
-        stream << "     *\n";
-        stream << "     * Detailed decription of step purpose.\n";
-        stream << "     * Please also give a general view of the algorithm.\n";
-        stream << "     *\n";
-        stream << "     * \\param ParameterName Description of the parameter to give in the DialogBox\n";
-        stream << "     *\n";
-        stream << "     *\n";
-        stream << "     * <b>Input Models:</b>\n";
-        stream << "     *\n";
-        stream << "     *  - CT_ResultGroup \\n\n";
-        stream << "     *      - CT_StandardItemGroup (name)... \\n\n";
-        stream << "     *          - CT_ItemDrawable (name) \\n\n";
-        stream << "     *          - CT_ItemDrawable (name) \\n\n";
-        stream << "     *\n";
-        stream << "     * <b>Output Models:</b>\n";
-        stream << "     *\n";
-        stream << "     *  - CT_ResultGroup \\n\n";
-        stream << "     *      - <em>cpy CT_StandardItemGroup (Section)...</em> \\n\n";
-        stream << "     *          - <em>cpy CT_ItemDrawable (name)</em> \\n\n";
-        stream << "     *          - <em>cpy+ CT_ItemDrawable (name)</em> \\n\n";
-        stream << "     *\n";
-        stream << "     */\n";
+        stream << "/*!\n";
+        stream << " * \\class " << stepName << "\n";
+        stream << " * \\ingroup Steps_" << splitted.at(0) << "\n";
+        stream << " * \\brief <b>" + ui->description->text() + ".</b>\n";
+        stream << " *\n";
+        stream << " * Detailed decription of step purpose.\n";
+        stream << " * Please also give a general view of the algorithm.\n";
+        stream << " *\n";
+        stream << " * \\param ParameterName Description of the parameter to give in the DialogBox\n";
+        stream << " *\n";
+        stream << " *\n";
+        stream << " * <b>Input Models:</b>\n";
+        stream << " *\n";
+
+        str = _inModelDialog->getInModelDoc();
+        if (str == "")
+        {
+            stream << " * No input model defined\\n\n";
+            stream << " *\n";
+        } else {
+            stream << str;
+        }
+
+        stream << " * <b>Output Models:</b>\n";
+        stream << " *\n";
+
+        str = _copyModelDialog->getCopyModelDoc();
+        str += _outModelDialog->getOutModelDoc();
+        if (str == "")
+        {
+            stream << " * No output model defined\\n\n";
+            stream << " *\n";
+        } else {
+            stream << str;
+        }
+
+        stream << " */\n";
         stream << "\n";
         stream << "class " << stepName << ": public " << parentClass << "\n";
         stream << "{\n";
@@ -321,9 +332,9 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         if (str != "")
         {
             stream << str;
+            stream << "\n";
+            stream << "\n";
         }
-        stream << "\n";
-        stream << "\n";
 
         stream << "    // ---------------------------\n";
         stream << "    // Gets OUT results and models\n";
@@ -332,9 +343,21 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         if (str != "")
         {
             stream << str;
+            stream << "\n";
+            stream << "\n";
         }
-        stream << "\n";
-        stream << "\n";
+
+
+        str = _copyModelDialog->getCopyComputeLoops();
+        if (str != "")
+        {
+            stream << "    // ---------------------------------\n";
+            stream << "    // Goes through copied IN results structure\n";
+            stream << str;
+            stream << "\n";
+            stream << "\n";
+        }
+
 
         str = _inModelDialog->getInComputeLoops();
         if (str != "")

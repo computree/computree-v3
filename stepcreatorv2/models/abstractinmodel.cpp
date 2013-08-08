@@ -34,7 +34,6 @@ QString AbstractInModel::getDisplayableName()
     return _widget->getDisplayableName();
 }
 
-
 bool AbstractInModel::isValid()
 {
     for (int i = 0 ; i < rowCount() ; i++)

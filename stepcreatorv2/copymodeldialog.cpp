@@ -129,6 +129,37 @@ QString COPYModelDialog::getCopyModelsDefinitions()
     return result;
 }
 
+QString COPYModelDialog::getCopyComputeLoops()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        AbstractCopyModel* item = (AbstractCopyModel*) root->child(i);
+
+        result += item->getCopyComputeLoops();
+    }
+
+    return result;
+}
+
+QString COPYModelDialog::getCopyModelDoc()
+{
+    QString result = "";
+
+    QStandardItem* root = _model->invisibleRootItem();
+    int count = root->rowCount();
+    for (int i = 0 ; i < count ; i++)
+    {
+        COPYResultModel* item = (COPYResultModel*) root->child(i);
+        result += item->getCopyModelDoc(0);
+    }
+
+    return result;
+}
+
 
 void COPYModelDialog::on_pb_addGroup_clicked()
 {

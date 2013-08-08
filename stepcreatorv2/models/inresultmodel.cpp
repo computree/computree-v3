@@ -175,3 +175,19 @@ QString INResultModel::getInComputeLoops(int nbIndent)
     return result;
 }
 
+QString INResultModel::getInModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * - CT_ResultGroup" + desc + "\\n\n";
+
+    AbstractInModel* group = (AbstractInModel*) child(0);
+    result += group->getInModelDoc(nbIndent + 1);
+    result += " *\n";
+    return result;
+}
+
+

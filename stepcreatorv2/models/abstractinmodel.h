@@ -48,6 +48,7 @@ public:
     void getChildrenInComputeBeginning(QString &result, QString resultDef = "", QString useCopy = "");
 
     virtual QString getInComputeLoops(int nbIndent = 1) = 0;
+    virtual QString getInModelDoc(int nbIndent = 0) = 0;
 
     void onAliasChange();
 

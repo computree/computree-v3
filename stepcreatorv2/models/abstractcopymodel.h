@@ -31,6 +31,7 @@ public:
     AbstractCopyWidget* getWidget();
     virtual QString getName() = 0;
     virtual QString getModelName() = 0;
+    virtual QString getDisplayableName();
     QString getDef();
 
     virtual QString getAlias();
@@ -42,6 +43,8 @@ public:
     virtual void getActionsIncludes(QSet<QString> &list) = 0;
     QString getAutoRenamesDeclarations();
     virtual QString getCopyModelsDefinitions(QString actionName = "") = 0;
+    virtual QString getCopyComputeLoops(int nbIndent = 1, QString resultName = "") = 0;
+    virtual QString getCopyModelDoc(int nbIndent = 0) = 0;
 
 
     void setDeleted();

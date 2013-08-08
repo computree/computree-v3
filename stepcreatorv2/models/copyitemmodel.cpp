@@ -68,14 +68,16 @@ QString COPYItemModel::getCopyModelsDefinitions(QString actionName)
         result += "\n";
         result += Tools::getIndentation(1) + "// Create the model for " + getAutoRenameName() + "\n";
 
-        result += Tools::getIndentation(1);
-        result += "CT_OutStandardItemDrawableModel *";
-        result += getModelName();
-        result += " = new CT_OutStandardItemDrawableModel(";
+        QString resultTmp = "";
 
-        int indentSize = result.size();
+        resultTmp += Tools::getIndentation(1);
+        resultTmp += "CT_OutStandardItemDrawableModel *";
+        resultTmp += getModelName();
+        resultTmp += " = new CT_OutStandardItemDrawableModel(";
 
-        result += getDef();
+        int indentSize = resultTmp.size();
+
+        result += resultTmp + getDef();
 
         // Item Type
         result += ", \n";
@@ -83,7 +85,7 @@ QString COPYItemModel::getCopyModelsDefinitions(QString actionName)
         result += ((COPYItemWidget*) _widget)->getItemType();
         result += "()";
 
-        QString resultTmp = "";
+        resultTmp = "";
 
         // Description
         QString description = ((COPYItemWidget*) _widget)->getDescription();
@@ -109,8 +111,8 @@ QString COPYItemModel::getCopyModelsDefinitions(QString actionName)
 
         // Action d'ajout
         result += "\n";
-        result += Tools::getIndentation(1) + "// Create the action to add the item associated with " + getAutoRenameName() + "\n";
-        QString str = Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionAddModelGroupInGroup(";
+        result += Tools::getIndentation(1) + "// Create the action to add the item corresponding to " + getAutoRenameName() + "\n";
+        QString str = Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionAddModelItemInGroup(";
         result += str + ((AbstractCopyModel*) parent())->getDef() + ", \n";
         result += Tools::getSpaceSequence(str.length()) + getModelName() + ", \n";
         result += Tools::getSpaceSequence(str.length()) + getAutoRenameName() + ");\n";
@@ -119,11 +121,33 @@ QString COPYItemModel::getCopyModelsDefinitions(QString actionName)
     } else if (getStatus() == AbstractCopyModel::S_DeletedCopy)
     {
         // Action de suppression
-        result += Tools::getIndentation(1) + "// Create the action to delete the item associated with " + getDef() + "\n";
-        result += Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionRemoveModelGroupInGroup(";
+        result += Tools::getIndentation(1) + "// Create the action to delete the item corresponding to " + getDef() + "\n";
+        result += Tools::getIndentation(1) + actionName + " << new CT_OutModelCopyActionRemoveModelItemInGroup(";
         result += getDef() + ");\n";
         result += "\n";
     }
 
     return result;
 }
+
+QString COPYItemModel::getCopyComputeLoops(int nbIndent, QString resultName)
+{
+    return "result""";
+}
+
+QString COPYItemModel::getCopyModelDoc(int nbIndent)
+{
+    if (_status == AbstractCopyModel::S_DeletedCopy) {return "";}
+
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}    
+
+    QString sign = "";
+    if (_status == AbstractCopyModel::S_Added) {sign = "+";}
+    result += " * " + Tools::getIndentation(nbIndent) + "- <em>cpy" + sign + " " + getItemType() + desc + "</em>\\n\n";
+
+    return result;
+}
+

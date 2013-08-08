@@ -18,6 +18,9 @@ public:
 
     virtual void getActionsIncludes(QSet<QString> &list);
     virtual QString getCopyModelsDefinitions(QString actionName = "");
+    virtual QString getCopyComputeLoops(int nbIndent, QString resultName = "");
+    virtual QString getCopyModelDoc(int nbIndent = 0);
+
 };
 
 #endif // OUITEMMODEL_H

@@ -23,7 +23,6 @@ QString OUTItemModel::getItemType()
     return ((OUTItemWidget*) _widget)->getItemType();
 }
 
-
 void OUTItemModel::getOutModelsIncludesList(QSet<QString> &list)
 {   
     list.insert("#include \"ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h\"");
@@ -109,7 +108,20 @@ QString OUTItemModel::getOutComputeBeginning(int rank, QString resultName)
 
 QString OUTItemModel::getOutComputeItemsCreations(QString resultName)
 {
-    QString result = Tools::getIndentation(1) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
+    QString result = "\n";
+    result += Tools::getIndentation(1) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
     result += Tools::getIndentation(1) + "// " + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", ID, " + resultName + ");\n";
+    return result;
+}
+
+QString OUTItemModel::getOutModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * " + Tools::getIndentation(nbIndent) + "- " + getItemType() + desc + "\\n\n";
+
     return result;
 }

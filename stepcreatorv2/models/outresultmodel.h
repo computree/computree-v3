@@ -20,6 +20,7 @@ public:
     virtual QString getOutModelAddingCommand();
     virtual QString getOutComputeBeginning(int rank, QString resultName = "");
     virtual QString getOutComputeItemsCreations(QString resultName = "");
+    virtual QString getOutModelDoc(int nbIndent = 0);
 
 };
 

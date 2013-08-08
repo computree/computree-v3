@@ -148,3 +148,20 @@ QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
 
     return result;
 }
+
+QString OUTGroupModel::getOutModelDoc(int nbIndent)
+{
+    QString result = "";
+    QString desc = "";
+    if (getDisplayableName().length()>0) {desc = " (" + getDisplayableName() + ")";}
+    else {desc = "";}
+
+    result += " * " + Tools::getIndentation(nbIndent) + "- CT_StandardItemGroup" + desc + "...\\n\n";
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        result += ((AbstractOutModel*) child(i))->getOutModelDoc(nbIndent + 1);
+    }
+    return result;
+}
