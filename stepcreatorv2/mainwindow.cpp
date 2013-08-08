@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _inModelDialog = new INModelDialog();
     _outModelDialog = new OUTModelDialog();
     _copyModelDialog = new COPYModelDialog(_inModelDialog->getModel());
+    _paramModelDialog = new ParameterModelDialog();
 }
 
 MainWindow::~MainWindow()
@@ -411,4 +412,9 @@ void MainWindow::on_modelcopy_clicked()
         _inModelDialog->setModified(false);
     }
     _copyModelDialog->show();
+}
+
+void MainWindow::on_parameters_clicked()
+{
+    _paramModelDialog->show();
 }

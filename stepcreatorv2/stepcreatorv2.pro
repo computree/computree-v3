@@ -37,7 +37,12 @@ SOURCES += main.cpp\
     models/copyresultmodel.cpp \
     models/copyitemmodel.cpp \
     models/copygroupmodel.cpp \
-    models/abstractcopymodel.cpp
+    models/abstractcopymodel.cpp \
+    parameters/abstractparameter.cpp \
+    parameters/widgets/abstractparameterwidget.cpp \
+    parametermodeldialog.cpp \
+    parameters/parameterbool.cpp \
+    parameters/widgets/widgetbool.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -67,7 +72,12 @@ HEADERS  += mainwindow.h \
     models/copyresultmodel.h \
     models/copyitemmodel.h \
     models/copygroupmodel.h \
-    models/abstractcopymodel.h
+    models/abstractcopymodel.h \
+    parameters/abstractparameter.h \
+    parameters/widgets/abstractparameterwidget.h \
+    parametermodeldialog.h \
+    parameters/parameterbool.h \
+    parameters/widgets/widgetbool.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \
@@ -81,7 +91,9 @@ FORMS    += mainwindow.ui \
     copymodeldialog.ui \
     widgets/copyresultwidget.ui \
     widgets/copyitemwidget.ui \
-    widgets/copygroupwidget.ui
+    widgets/copygroupwidget.ui \
+    parametermodeldialog.ui \
+    parameters/widgets/widgetbool.ui
 
 
 INCLUDEPATH += ./models
