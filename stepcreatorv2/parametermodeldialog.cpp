@@ -6,6 +6,13 @@
 #include "tools.h"
 #include "parameters/abstractparameter.h"
 #include "parameters/parameterbool.h"
+#include "parameters/parameterdouble.h"
+#include "parameters/parameteremptyline.h"
+#include "parameters/parameterexcludevalue.h"
+#include "parameters/parameterfilechoice.h"
+#include "parameters/parameterint.h"
+#include "parameters/parameterstringchoice.h"
+#include "parameters/parametertextline.h"
 
 ParameterModelDialog::ParameterModelDialog(QWidget *parent) :
     QDialog(parent),
@@ -41,15 +48,74 @@ void ParameterModelDialog::on_treeView_clicked(const QModelIndex &index)
 void ParameterModelDialog::on_pb_clear_clicked()
 {
     ui->treeView->clearSelection();
-    _activeWidget = NULL;
 
     //delete all children of parent;
-    QStandardItem * root = _model->invisibleRootItem(); //main loop item
-
-    while (root->hasChildren())
+    QStandardItem * loopItem = _model->invisibleRootItem();; //main loop item
+    QList<QStandardItem *> carryItems; //Last In First Out stack of items
+    QList<QStandardItem *> itemsToBeDeleted; //List of items to be deleted
+    while (loopItem->rowCount())
     {
-        delete root->takeChild(0);
+        itemsToBeDeleted << loopItem->takeRow(0);
+        //if the row removed has children:
+        if (itemsToBeDeleted.at(0)->hasChildren())
+        {
+            carryItems << loopItem; //put on the stack the current loopItem
+            loopItem = itemsToBeDeleted.at(0); //set the row with children as the loopItem
+        }
+        //if current loopItem has no more rows but carryItems list is not empty:
+        if (!loopItem->rowCount() && !carryItems.isEmpty()) loopItem = carryItems.takeFirst();
     }
+    qDeleteAll(itemsToBeDeleted);
+    _activeWidget = NULL;
+}
+
+
+QString ParameterModelDialog::getParametersDeclaration()
+{
+    QString result = "";
+    int count = _model->rowCount();
+    for (int i = 0 ; i < count; i++)
+    {
+        AbstractParameter* item = (AbstractParameter*) _model->item(i);
+        result += item->getParameterDeclaration();
+    }
+    return result;
+}
+
+QString ParameterModelDialog::getParametersInitialization()
+{
+    QString result = "";
+    int count = _model->rowCount();
+    for (int i = 0 ; i < count; i++)
+    {
+        AbstractParameter* item = (AbstractParameter*) _model->item(i);
+        result += item->getParameterInitialization();
+    }
+    return result;
+}
+
+QString ParameterModelDialog::getParametersDialogCommands()
+{
+    QString result = "";
+    int count = _model->rowCount();
+    for (int i = 0 ; i < count; i++)
+    {
+        AbstractParameter* item = (AbstractParameter*) _model->item(i);
+        result += item->getParameterDialogCommands();
+    }
+    return result;
+}
+
+QString ParameterModelDialog::getParamatersDoc()
+{
+    QString result = "";
+    int count = _model->rowCount();
+    for (int i = 0 ; i < count; i++)
+    {
+        AbstractParameter* item = (AbstractParameter*) _model->item(i);
+        result += item->getParamaterDoc();
+    }
+    return result;
 }
 
 void ParameterModelDialog::on_buttonBox_rejected()
@@ -88,52 +154,53 @@ void ParameterModelDialog::accept()
     }
 }
 
-void ParameterModelDialog::on_pb_bool_clicked()
+void ParameterModelDialog::addItem(QStandardItem* item)
 {
     QStandardItem * root = _model->invisibleRootItem();
-    root->appendRow(new ParameterBool());
+    root->appendRow(item);
+    ui->treeView->setCurrentIndex(item->index());
+    on_treeView_clicked(item->index());
+    _activeWidget->setFocus();
+}
+
+void ParameterModelDialog::on_pb_bool_clicked()
+{
+    addItem(new ParameterBool());
 }
 
 void ParameterModelDialog::on_pb_double_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterDouble());
 }
 
 void ParameterModelDialog::on_pb_int_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterInt());
 }
 
 void ParameterModelDialog::on_pb_stringchoice_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterStringChoice());
 }
 
 void ParameterModelDialog::on_pb_excludevalue_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterExcludeValue());
 }
 
 void ParameterModelDialog::on_pb_filechoice_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterFileChoice());
 }
 
 void ParameterModelDialog::on_pb_text_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterTextLine());
 }
 
 void ParameterModelDialog::on_pb_empty_clicked()
 {
-    QStandardItem * root = _model->invisibleRootItem();
-
+    addItem(new ParameterEmptyLine());
 }
 
 void ParameterModelDialog::on_pb_up_clicked()

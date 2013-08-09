@@ -1,30 +1,40 @@
-#include "parameters/parameterbool.h"
+#include "parameters/parameteremptyline.h"
 #include "tools.h"
 
-ParameterBool::ParameterBool() : AbstractParameter()
+ParameterEmptyLine::ParameterEmptyLine() : AbstractParameter()
 {
-    _widget = new WidgetBool(this);
+    _widget = new WidgetEmptyLine(this);
     onAliasChange();
 }
 
-void ParameterBool::onAliasChange()
+bool  ParameterEmptyLine::isValid()
 {
-    setText(getName() + " (bool)");
+    return true;
 }
 
-QString ParameterBool::getParameterDeclaration()
+bool ParameterEmptyLine::isDataParameter()
+{
+    return false;
+}
+
+void ParameterEmptyLine::onAliasChange()
+{
+    setText("Ligne vide");
+}
+
+QString ParameterEmptyLine::getParameterDeclaration()
 {
     return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
            Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
 }
 
-QString ParameterBool::getParameterInitialization()
+QString ParameterEmptyLine::getParameterInitialization()
 {
     QString value = (widget()->getDefaultValue()) ? "true" : "false";
     return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
 }
 
-QString ParameterBool::getParameterDialogCommands()
+QString ParameterEmptyLine::getParameterDialogCommands()
 {
     return Tools::getIndentation(1) + "configDialog->addBool(" +
             "\"" + widget()->getBeforeText()   + "\", " +
@@ -33,7 +43,7 @@ QString ParameterBool::getParameterDialogCommands()
             widget()->getAlias()        + ");\n";
 }
 
-QString ParameterBool::getParamaterDoc()
+QString ParameterEmptyLine::getParamaterDoc()
 {
     return " * \\param " + widget()->getAlias() + " " + widget()->getDescription() + "\n";
 }

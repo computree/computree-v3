@@ -1,20 +1,20 @@
-#ifndef WIDGETBOOL_H
-#define WIDGETBOOL_H
+#ifndef WIDGETDOUBLE_H
+#define WIDGETDOUBLE_H
 
 #include "parameters/widgets/abstractparameterwidget.h"
 
 namespace Ui {
-    class WidgetBool;
+    class WidgetDouble;
 }
 
-class WidgetBool : public AbstractParameterWidget
+class WidgetDouble : public AbstractParameterWidget
 {
     Q_OBJECT
 
 public:
 
-    explicit WidgetBool(AbstractParameter* model, QWidget *parent = 0);
-    ~WidgetBool();
+    explicit WidgetDouble(AbstractParameter* model, QWidget *parent = 0);
+    ~WidgetDouble();
 
     bool isvalid();
     QString getAlias();
@@ -28,7 +28,7 @@ private slots:
     void on_alias_textChanged(const QString &arg1);
 
 private:
-    Ui::WidgetBool *ui;
+    Ui::WidgetDouble *ui;
 };
 
-#endif // WIDGETBOOL_H
+#endif // WIDGETDOUBLE_H

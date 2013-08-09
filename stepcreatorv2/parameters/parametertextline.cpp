@@ -1,30 +1,40 @@
-#include "parameters/parameterbool.h"
+#include "parameters/parametertextline.h"
 #include "tools.h"
 
-ParameterBool::ParameterBool() : AbstractParameter()
+ParameterTextLine::ParameterTextLine() : AbstractParameter()
 {
-    _widget = new WidgetBool(this);
+    _widget = new WidgetTextLine(this);
     onAliasChange();
 }
 
-void ParameterBool::onAliasChange()
+bool  ParameterTextLine::isValid()
 {
-    setText(getName() + " (bool)");
+    return true;
 }
 
-QString ParameterBool::getParameterDeclaration()
+bool ParameterTextLine::isDataParameter()
+{
+    return false;
+}
+
+void ParameterTextLine::onAliasChange()
+{
+    setText("Ligne de texte");
+}
+
+QString ParameterTextLine::getParameterDeclaration()
 {
     return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
            Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
 }
 
-QString ParameterBool::getParameterInitialization()
+QString ParameterTextLine::getParameterInitialization()
 {
     QString value = (widget()->getDefaultValue()) ? "true" : "false";
     return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
 }
 
-QString ParameterBool::getParameterDialogCommands()
+QString ParameterTextLine::getParameterDialogCommands()
 {
     return Tools::getIndentation(1) + "configDialog->addBool(" +
             "\"" + widget()->getBeforeText()   + "\", " +
@@ -33,7 +43,7 @@ QString ParameterBool::getParameterDialogCommands()
             widget()->getAlias()        + ");\n";
 }
 
-QString ParameterBool::getParamaterDoc()
+QString ParameterTextLine::getParamaterDoc()
 {
     return " * \\param " + widget()->getAlias() + " " + widget()->getDescription() + "\n";
 }

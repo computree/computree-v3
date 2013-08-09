@@ -1,13 +1,13 @@
-#ifndef PARAMETERBOOL_H
-#define PARAMETERBOOL_H
+#ifndef PARAMETERDOUBLE_H
+#define PARAMETERDOUBLE_H
 
 #include "parameters/abstractparameter.h"
-#include "parameters/widgets/widgetbool.h"
+#include "parameters/widgets/widgetdouble.h"
 
-class ParameterBool : public AbstractParameter
+class ParameterDouble : public AbstractParameter
 {
 public:
-    ParameterBool();
+    ParameterDouble();
 
     virtual QString getParameterDeclaration();
     virtual QString getParameterInitialization();
@@ -17,8 +17,8 @@ public:
     void virtual onAliasChange();
 
 private:
-    inline WidgetBool* widget() {return (WidgetBool*) _widget;}
+    inline WidgetDouble* widget() {return (WidgetDouble*) _widget;}
 
 };
 
-#endif // PARAMETERBOOL_H
+#endif // PARAMETERDOUBLE_H

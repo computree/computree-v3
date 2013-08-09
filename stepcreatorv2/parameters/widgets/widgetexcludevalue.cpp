@@ -1,58 +1,58 @@
-#include "parameters/widgets/widgetbool.h"
-#include "ui_widgetbool.h"
+#include "parameters/widgets/widgetexcludevalue.h"
+#include "ui_widgetexcludevalue.h"
 #include "parameters/abstractparameter.h"
 #include "tools.h"
 
-WidgetBool::WidgetBool(AbstractParameter* model, QWidget *parent) :
+WidgetExcludeValue::WidgetExcludeValue(AbstractParameter* model, QWidget *parent) :
     AbstractParameterWidget(model, parent),
-    ui(new Ui::WidgetBool)
+    ui(new Ui::WidgetExcludeValue)
 {
     ui->setupUi(this);
     setFocusProxy(ui->alias);
 }
 
-WidgetBool::~WidgetBool()
+WidgetExcludeValue::~WidgetExcludeValue()
 {
     delete ui;
 }
 
-bool WidgetBool::isvalid()
+bool WidgetExcludeValue::isvalid()
 {
     if (getAlias().isEmpty()) {return false;}
     return true;
 }
 
-QString WidgetBool::getAlias()
+QString WidgetExcludeValue::getAlias()
 {
     return ui->alias->text();
 }
 
-QString WidgetBool::getBeforeText()
+QString WidgetExcludeValue::getBeforeText()
 {
     return ui->libBefore->text();
 }
 
-QString WidgetBool::getAfterText()
+QString WidgetExcludeValue::getAfterText()
 {
     return ui->libAfter->text();
 }
 
-QString WidgetBool::getCheckboxText()
+QString WidgetExcludeValue::getCheckboxText()
 {
     return ui->libCheckbox->text();
 }
 
-bool WidgetBool::getDefaultValue()
+bool WidgetExcludeValue::getDefaultValue()
 {
     return ui->defaultValue->isChecked();
 }
 
-QString WidgetBool::getDescription()
+QString WidgetExcludeValue::getDescription()
 {
     return ui->description->toPlainText().replace("\n","\\n");
 }
 
-void WidgetBool::on_alias_textChanged(const QString &arg1)
+void WidgetExcludeValue::on_alias_textChanged(const QString &arg1)
 {
     if (arg1.size()>0)
     {

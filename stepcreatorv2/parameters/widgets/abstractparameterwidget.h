@@ -13,7 +13,7 @@ public:
     AbstractParameterWidget(AbstractParameter* model, QWidget *parent = 0);
 
     virtual bool isvalid() = 0;
-    virtual QString getName() = 0;
+    virtual QString getAlias() = 0;
 
 protected:
     AbstractParameter*      _model;

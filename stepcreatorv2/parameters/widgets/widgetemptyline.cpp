@@ -1,58 +1,58 @@
-#include "parameters/widgets/widgetbool.h"
-#include "ui_widgetbool.h"
+#include "parameters/widgets/widgetemptyline.h"
+#include "ui_widgetemptyline.h"
 #include "parameters/abstractparameter.h"
 #include "tools.h"
 
-WidgetBool::WidgetBool(AbstractParameter* model, QWidget *parent) :
+WidgetEmptyLine::WidgetEmptyLine(AbstractParameter* model, QWidget *parent) :
     AbstractParameterWidget(model, parent),
-    ui(new Ui::WidgetBool)
+    ui(new Ui::WidgetEmptyLine)
 {
     ui->setupUi(this);
     setFocusProxy(ui->alias);
 }
 
-WidgetBool::~WidgetBool()
+WidgetEmptyLine::~WidgetEmptyLine()
 {
     delete ui;
 }
 
-bool WidgetBool::isvalid()
+bool WidgetEmptyLine::isvalid()
 {
     if (getAlias().isEmpty()) {return false;}
     return true;
 }
 
-QString WidgetBool::getAlias()
+QString WidgetEmptyLine::getAlias()
 {
     return ui->alias->text();
 }
 
-QString WidgetBool::getBeforeText()
+QString WidgetEmptyLine::getBeforeText()
 {
     return ui->libBefore->text();
 }
 
-QString WidgetBool::getAfterText()
+QString WidgetEmptyLine::getAfterText()
 {
     return ui->libAfter->text();
 }
 
-QString WidgetBool::getCheckboxText()
+QString WidgetEmptyLine::getCheckboxText()
 {
     return ui->libCheckbox->text();
 }
 
-bool WidgetBool::getDefaultValue()
+bool WidgetEmptyLine::getDefaultValue()
 {
     return ui->defaultValue->isChecked();
 }
 
-QString WidgetBool::getDescription()
+QString WidgetEmptyLine::getDescription()
 {
     return ui->description->toPlainText().replace("\n","\\n");
 }
 
-void WidgetBool::on_alias_textChanged(const QString &arg1)
+void WidgetEmptyLine::on_alias_textChanged(const QString &arg1)
 {
     if (arg1.size()>0)
     {

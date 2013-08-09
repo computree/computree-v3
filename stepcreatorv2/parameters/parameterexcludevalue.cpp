@@ -1,30 +1,30 @@
-#include "parameters/parameterbool.h"
+#include "parameters/parameterexcludevalue.h"
 #include "tools.h"
 
-ParameterBool::ParameterBool() : AbstractParameter()
+ParameterExcludeValue::ParameterExcludeValue() : AbstractParameter()
 {
-    _widget = new WidgetBool(this);
+    _widget = new WidgetExcludeValue(this);
     onAliasChange();
 }
 
-void ParameterBool::onAliasChange()
+void ParameterExcludeValue::onAliasChange()
 {
-    setText(getName() + " (bool)");
+    setText(getName() + " (exclude value)");
 }
 
-QString ParameterBool::getParameterDeclaration()
+QString ParameterExcludeValue::getParameterDeclaration()
 {
     return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
            Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
 }
 
-QString ParameterBool::getParameterInitialization()
+QString ParameterExcludeValue::getParameterInitialization()
 {
     QString value = (widget()->getDefaultValue()) ? "true" : "false";
     return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
 }
 
-QString ParameterBool::getParameterDialogCommands()
+QString ParameterExcludeValue::getParameterDialogCommands()
 {
     return Tools::getIndentation(1) + "configDialog->addBool(" +
             "\"" + widget()->getBeforeText()   + "\", " +
@@ -33,7 +33,7 @@ QString ParameterBool::getParameterDialogCommands()
             widget()->getAlias()        + ");\n";
 }
 
-QString ParameterBool::getParamaterDoc()
+QString ParameterExcludeValue::getParamaterDoc()
 {
     return " * \\param " + widget()->getAlias() + " " + widget()->getDescription() + "\n";
 }

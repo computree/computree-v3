@@ -42,7 +42,21 @@ SOURCES += main.cpp\
     parameters/widgets/abstractparameterwidget.cpp \
     parametermodeldialog.cpp \
     parameters/parameterbool.cpp \
-    parameters/widgets/widgetbool.cpp
+    parameters/widgets/widgetbool.cpp \
+    parameters/parametertextline.cpp \
+    parameters/parameterstringchoice.cpp \
+    parameters/parameterint.cpp \
+    parameters/parameterfilechoice.cpp \
+    parameters/parameterexcludevalue.cpp \
+    parameters/parameteremptyline.cpp \
+    parameters/parameterdouble.cpp \
+    parameters/widgets/widgettextline.cpp \
+    parameters/widgets/widgetstringchoice.cpp \
+    parameters/widgets/widgetint.cpp \
+    parameters/widgets/widgetfilechoice.cpp \
+    parameters/widgets/widgetexcludevalue.cpp \
+    parameters/widgets/widgetemptyline.cpp \
+    parameters/widgets/widgetdouble.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -77,7 +91,21 @@ HEADERS  += mainwindow.h \
     parameters/widgets/abstractparameterwidget.h \
     parametermodeldialog.h \
     parameters/parameterbool.h \
-    parameters/widgets/widgetbool.h
+    parameters/widgets/widgetbool.h \
+    parameters/parametertextline.h \
+    parameters/parameterstringchoice.h \
+    parameters/parameterint.h \
+    parameters/parameterfilechoice.h \
+    parameters/parameterexcludevalue.h \
+    parameters/parameteremptyline.h \
+    parameters/parameterdouble.h \
+    parameters/widgets/widgettextline.h \
+    parameters/widgets/widgetstringchoice.h \
+    parameters/widgets/widgetint.h \
+    parameters/widgets/widgetfilechoice.h \
+    parameters/widgets/widgetexcludevalue.h \
+    parameters/widgets/widgetemptyline.h \
+    parameters/widgets/widgetdouble.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \
@@ -93,7 +121,14 @@ FORMS    += mainwindow.ui \
     widgets/copyitemwidget.ui \
     widgets/copygroupwidget.ui \
     parametermodeldialog.ui \
-    parameters/widgets/widgetbool.ui
+    parameters/widgets/widgetbool.ui \
+    parameters/widgets/widgettextline.ui \
+    parameters/widgets/widgetstringchoice.ui \
+    parameters/widgets/widgetint.ui \
+    parameters/widgets/widgetfilechoice.ui \
+    parameters/widgets/widgetexcludevalue.ui \
+    parameters/widgets/widgetemptyline.ui \
+    parameters/widgets/widgetdouble.ui
 
 
 INCLUDEPATH += ./models

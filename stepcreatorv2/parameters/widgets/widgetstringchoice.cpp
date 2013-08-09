@@ -1,58 +1,58 @@
-#include "parameters/widgets/widgetbool.h"
-#include "ui_widgetbool.h"
+#include "parameters/widgets/widgetstringchoice.h"
+#include "ui_widgetstringchoice.h"
 #include "parameters/abstractparameter.h"
 #include "tools.h"
 
-WidgetBool::WidgetBool(AbstractParameter* model, QWidget *parent) :
+WidgetStringChoice::WidgetStringChoice(AbstractParameter* model, QWidget *parent) :
     AbstractParameterWidget(model, parent),
-    ui(new Ui::WidgetBool)
+    ui(new Ui::WidgetStringChoice)
 {
     ui->setupUi(this);
     setFocusProxy(ui->alias);
 }
 
-WidgetBool::~WidgetBool()
+WidgetStringChoice::~WidgetStringChoice()
 {
     delete ui;
 }
 
-bool WidgetBool::isvalid()
+bool WidgetStringChoice::isvalid()
 {
     if (getAlias().isEmpty()) {return false;}
     return true;
 }
 
-QString WidgetBool::getAlias()
+QString WidgetStringChoice::getAlias()
 {
     return ui->alias->text();
 }
 
-QString WidgetBool::getBeforeText()
+QString WidgetStringChoice::getBeforeText()
 {
     return ui->libBefore->text();
 }
 
-QString WidgetBool::getAfterText()
+QString WidgetStringChoice::getAfterText()
 {
     return ui->libAfter->text();
 }
 
-QString WidgetBool::getCheckboxText()
+QString WidgetStringChoice::getCheckboxText()
 {
     return ui->libCheckbox->text();
 }
 
-bool WidgetBool::getDefaultValue()
+bool WidgetStringChoice::getDefaultValue()
 {
     return ui->defaultValue->isChecked();
 }
 
-QString WidgetBool::getDescription()
+QString WidgetStringChoice::getDescription()
 {
     return ui->description->toPlainText().replace("\n","\\n");
 }
 
-void WidgetBool::on_alias_textChanged(const QString &arg1)
+void WidgetStringChoice::on_alias_textChanged(const QString &arg1)
 {
     if (arg1.size()>0)
     {

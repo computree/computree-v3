@@ -15,7 +15,12 @@ public:
     virtual bool isValid();
     virtual bool isDataParameter();
     virtual QString getName();
+    virtual QString getParameterDeclaration() = 0;
+    virtual QString getParameterInitialization() = 0;
+    virtual QString getParameterDialogCommands() = 0;
+    virtual QString getParamaterDoc() = 0;
 
+    void virtual onAliasChange() = 0;
 
 protected:
     AbstractParameterWidget*  _widget;

@@ -1,13 +1,13 @@
-#ifndef PARAMETERBOOL_H
-#define PARAMETERBOOL_H
+#ifndef PARAMETERINT_H
+#define PARAMETERINT_H
 
 #include "parameters/abstractparameter.h"
-#include "parameters/widgets/widgetbool.h"
+#include "parameters/widgets/widgetint.h"
 
-class ParameterBool : public AbstractParameter
+class ParameterInt : public AbstractParameter
 {
 public:
-    ParameterBool();
+    ParameterInt();
 
     virtual QString getParameterDeclaration();
     virtual QString getParameterInitialization();
@@ -17,8 +17,8 @@ public:
     void virtual onAliasChange();
 
 private:
-    inline WidgetBool* widget() {return (WidgetBool*) _widget;}
+    inline WidgetInt* widget() {return (WidgetInt*) _widget;}
 
 };
 
-#endif // PARAMETERBOOL_H
+#endif // PARAMETERINT_H

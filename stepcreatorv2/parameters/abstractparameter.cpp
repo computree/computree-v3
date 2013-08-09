@@ -25,6 +25,6 @@ bool AbstractParameter::isDataParameter()
 
 QString AbstractParameter::getName()
 {
-    return "_" + _widget->getName();
+    return _widget->getAlias();
 }
 

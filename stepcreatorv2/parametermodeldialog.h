@@ -23,6 +23,12 @@ public:
     inline QStandardItemModel* getModel() {return _model;}
     void closeEvent(QCloseEvent *event);
 
+    QString getParametersDeclaration();
+    QString getParametersInitialization();
+    QString getParametersDialogCommands();
+    QString getParamatersDoc();
+
+
 private slots:
     void on_treeView_clicked(const QModelIndex &index);
     void on_pb_clear_clicked();
@@ -55,6 +61,7 @@ private:
     QVBoxLayout *_layout;
     AbstractParameterWidget *_activeWidget;
 
+    void addItem(QStandardItem *item);
 
 };
 

@@ -93,7 +93,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << " * Detailed decription of step purpose.\n";
         stream << " * Please also give a general view of the algorithm.\n";
         stream << " *\n";
-        stream << " * \\param ParameterName Description of the parameter to give in the DialogBox\n";
+        stream << _paramModelDialog->getParamatersDoc();
         stream << " *\n";
         stream << " *\n";
         stream << " * <b>Input Models:</b>\n";
@@ -194,8 +194,15 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         }
 
 
-        stream << "    // Step parameters\n";
-        stream << "    double _parametre;   /*!< parameter description */\n";
+        stream << "    // Step parameters\n";        
+        str = _paramModelDialog->getParametersDeclaration();
+        if (str == "")
+        {
+            stream << "    // No parameter for this step";
+        } else {
+            stream << str;
+        }
+
         stream << "\n";
         stream << "};\n";
         stream << "\n";
@@ -271,7 +278,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "// Constructor : initialization of parameters\n";
         stream << stepName << "::" << stepName << "(CT_StepInitializeData &dataInit) : " << parentClass << "(dataInit)\n";
         stream << "{\n";
-        stream << "    _parametre = 0;\n";
+        stream << _paramModelDialog->getParametersInitialization();
         stream << "}\n";
         stream << "\n";
         stream << "// Step description (tooltip of contextual menu)\n";
@@ -316,9 +323,17 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "// Semi-automatic creation of step parameters DialogBox\n";
         stream << "void " << stepName << "::createPostConfigurationDialog()\n";
         stream << "{\n";
-        stream << "    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();\n";
-        stream << "\n";
-        stream << "    configDialog->addDouble(\"Parameter value\", \"unit\", 0, 1000, 2, _parametre);\n";
+
+        str = _paramModelDialog->getParametersDialogCommands();
+        if (str == "")
+        {
+            stream << "    // No parameter dialog for this step";
+        } else {
+            stream << "    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();\n";
+            stream << "\n";
+            stream << str;
+        }
+
         stream << "}\n";
         stream << "\n";
         stream << "void " << stepName << "::compute()\n";

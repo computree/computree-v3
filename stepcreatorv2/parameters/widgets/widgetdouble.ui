@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetBool</class>
- <widget class="QWidget" name="WidgetBool">
+ <class>WidgetDouble</class>
+ <widget class="QWidget" name="WidgetDouble">
   <property name="geometry">
    <rect>
     <x>0</x>

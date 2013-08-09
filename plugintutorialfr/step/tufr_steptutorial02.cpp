@@ -149,6 +149,7 @@ void TUFR_StepTutorial02::createPostConfigurationDialog()
     configDialog->addDouble("Y maximum :", "m", -10000, 10000, 2, _ymax);
     configDialog->addDouble("Z minimum :", "m", -10000, 10000, 2, _zmin);
     configDialog->addDouble("Z maximum :", "m", -10000, 10000, 2, _zmax);
+    configDialog->addBool()
 }
 
 
