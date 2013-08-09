@@ -106,7 +106,7 @@
    <item>
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Valeurs par défaut :</string>
+      <string>Valeur par défaut :</string>
      </property>
     </widget>
    </item>

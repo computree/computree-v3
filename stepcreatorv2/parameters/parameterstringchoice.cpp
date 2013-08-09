@@ -27,6 +27,7 @@ QString ParameterStringChoice::getParameterDialogCommands()
 {
     QString result = "";
 
+    result += "\n";
     result += Tools::getIndentation(1) + "QStringList " + "list" + widget()->getAlias() + ";\n";
 
     QStringList list = widget()->getPossibleValues();

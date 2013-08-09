@@ -7,6 +7,7 @@
 #include "qset.h"
 #include "tools.h"
 #include "models/abstractcopymodel.h"
+#include "qtextcodec.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -71,6 +72,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
     if (stepFileh.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&stepFileh);
+        stream.setCodec("Latin-1");
 
         stream << "#ifndef " << stepName.toUpper() << "_H\n";
         stream << "#define " << stepName.toUpper() << "_H\n";
@@ -214,25 +216,29 @@ bool MainWindow::createFiles(QString directory, QString stepName)
     if (stepFilecpp.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&stepFilecpp);
+        stream.setCodec("Latin-1");
 
         stream << "#include \"" << stepName.toLower() << ".h\"\n";
         stream << "\n";
 
+        stream << "// Inclusion of in models\n";
         str = _inModelDialog->getInIncludes();
         if (str!="")
         {
-            stream << "// Inclusion of in models\n";
             stream << str;
-            stream << "\n";
+        } else {
+            stream << "#include \"ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h\"\n";
         }
+        stream << "\n";
 
+        stream << "// Inclusion of out models\n";
+        stream << "#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"\n";
         str = _outModelDialog->getOutIncludes();
         if (str!="")
         {
-            stream << "// Inclusion of out models\n";
             stream << str;
-            stream << "\n";
         }
+        stream << "\n";
 
         stream << "// Inclusion of standard result class\n";
         stream << "#include \"ct_result/ct_resultgroup.h\"\n";
@@ -299,7 +305,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "void " << stepName << "::createInResultModelListProtected()\n";
         stream << "{\n";
 
-        str = _inModelDialog->getInModelsDefinitions();
+        QString str = _inModelDialog->getInModelsDefinitions();
         if (str == "")
         {
             stream << "    // No in result is needed\n";
@@ -314,10 +320,22 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "void " << stepName << "::createOutResultModelListProtected()\n";
         stream << "{\n";
 
-        stream << _copyModelDialog->getCopyModelsDefinitions();
-        stream << "\n";
-        stream << "\n";
-        stream << _outModelDialog->getOutModelsDefinitions();
+        str = _copyModelDialog->getCopyModelsDefinitions();
+        QString str2 = _outModelDialog->getOutModelsDefinitions();
+
+        if (str!="" || str2!="")
+        {
+            stream << str;
+            stream << "\n";
+            stream << "\n";
+            stream << str2;
+        } else {
+            stream << "    // No OUT model definition => create an empty result\n";
+            stream << "    CT_OutStandardGroupModel *groupModel = new CT_OutStandardGroupModel(\"r\");\n";
+            stream << "    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(\"r\", groupModel, tr(\"Empty Result\"));\n";
+            stream << "    addOutResultModel(resultModel);\n";
+        }
+
         stream << "}\n";
         stream << "\n";
         stream << "// Semi-automatic creation of step parameters DialogBox\n";
@@ -341,7 +359,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         stream << "    // DONT'T FORGET TO ADD THIS STEP TO THE STEPPLUGINMANAGER !!!!!\n";
         stream << "\n";
         stream << "\n";
-        stream << "    / --------------------------\n";
+        stream << "    // --------------------------\n";
         stream << "    // Gets IN results and models\n";
 
         str = _inModelDialog->getInComputeBeginning();

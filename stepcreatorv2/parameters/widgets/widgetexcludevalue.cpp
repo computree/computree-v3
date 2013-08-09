@@ -37,15 +37,21 @@ QString WidgetExcludeValue::getAfterText()
     return ui->libAfter->text();
 }
 
-QString WidgetExcludeValue::getCheckboxText()
+int WidgetExcludeValue::getDefaultValue()
 {
-    return ui->libCheckbox->text();
+    return ui->defaultValue->currentIndex();
 }
 
-bool WidgetExcludeValue::getDefaultValue()
+QStringList WidgetExcludeValue::getPossibleValues()
 {
-    return ui->defaultValue->isChecked();
+    QStringList list;
+    for (int i = 0 ; i < ui->defaultValue->count() ; i++)
+    {
+        list.append(ui->defaultValue->itemText(i));
+    }
+    return list;
 }
+
 
 QString WidgetExcludeValue::getDescription()
 {
@@ -62,4 +68,14 @@ void WidgetExcludeValue::on_alias_textChanged(const QString &arg1)
         }
     }
     _model->onAliasChange();
+}
+
+void WidgetExcludeValue::on_pushButton_clicked()
+{
+    QString str = ui->newValue->text();
+    if (str != "")
+    {
+        ui->defaultValue->addItem(str);
+        ui->defaultValue->setCurrentIndex(ui->defaultValue->findText(str));
+    }
 }

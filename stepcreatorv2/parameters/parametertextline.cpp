@@ -37,7 +37,7 @@ QString ParameterTextLine::getParameterDialogCommands()
     return Tools::getIndentation(1) + "configDialog->addText(" +
             "\"" + widget()->getBeforeText() + "\", " +
             "\"" + widget()->getMiddleText() + "\", " +
-            "\"" + widget()->getAfterText()  + ");\n";
+            "\"" + widget()->getAfterText()  + "\");\n";
 }
 
 QString ParameterTextLine::getParamaterDoc()

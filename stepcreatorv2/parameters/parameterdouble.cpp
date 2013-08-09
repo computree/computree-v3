@@ -20,7 +20,7 @@ QString ParameterDouble::getParameterDeclaration()
 
 QString ParameterDouble::getParameterInitialization()
 {
-    QString value = QString("%1").arg(widget()->getDefaultValue());
+    QString value = QString("%1").arg(widget()->getDefaultValue()/widget()->getMult());
     return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
 }
 
