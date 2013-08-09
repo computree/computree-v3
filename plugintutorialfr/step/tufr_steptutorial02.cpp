@@ -69,23 +69,6 @@ void TUFR_StepTutorial02::createInResultModelListProtected()
     addInResultModel(resultModel);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Création et affiliation des modèles OUT
 void TUFR_StepTutorial02::createOutResultModelListProtected()
 {
@@ -118,23 +101,6 @@ void TUFR_StepTutorial02::createOutResultModelListProtected()
     addOutResultModel(resultModel);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Création semi-automatique de la boite de dialogue de paramétrage de l'étape
 void TUFR_StepTutorial02::createPostConfigurationDialog()
 {
@@ -149,25 +115,7 @@ void TUFR_StepTutorial02::createPostConfigurationDialog()
     configDialog->addDouble("Y maximum :", "m", -10000, 10000, 2, _ymax);
     configDialog->addDouble("Z minimum :", "m", -10000, 10000, 2, _zmin);
     configDialog->addDouble("Z maximum :", "m", -10000, 10000, 2, _zmax);
-    configDialog->addBool()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void TUFR_StepTutorial02::compute()
 {

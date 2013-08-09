@@ -37,15 +37,21 @@ QString WidgetStringChoice::getAfterText()
     return ui->libAfter->text();
 }
 
-QString WidgetStringChoice::getCheckboxText()
+QString WidgetStringChoice::getDefaultValue()
 {
-    return ui->libCheckbox->text();
+    return ui->defaultValue->currentText();
 }
 
-bool WidgetStringChoice::getDefaultValue()
+QStringList WidgetStringChoice::getPossibleValues()
 {
-    return ui->defaultValue->isChecked();
+    QStringList list;
+    for (int i = 0 ; i < ui->defaultValue->count() ; i++)
+    {
+        list.append(ui->defaultValue->itemText(i));
+    }
+    return list;
 }
+
 
 QString WidgetStringChoice::getDescription()
 {
@@ -62,4 +68,14 @@ void WidgetStringChoice::on_alias_textChanged(const QString &arg1)
         }
     }
     _model->onAliasChange();
+}
+
+void WidgetStringChoice::on_pushButton_clicked()
+{
+    QString str = ui->newValue->text();
+    if (str != "")
+    {
+        ui->defaultValue->addItem(str);
+        ui->defaultValue->setCurrentIndex(ui->defaultValue->findText(str));
+    }
 }

@@ -14,23 +14,35 @@ void ParameterStringChoice::onAliasChange()
 
 QString ParameterStringChoice::getParameterDeclaration()
 {
-    return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
+    return Tools::getIndentation(1) + "QString" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
            Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
 }
 
 QString ParameterStringChoice::getParameterInitialization()
 {
-    QString value = (widget()->getDefaultValue()) ? "true" : "false";
-    return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
+    return Tools::getIndentation(1) + widget()->getAlias() + " = \"" + widget()->getDefaultValue() + "\";\n";
 }
 
 QString ParameterStringChoice::getParameterDialogCommands()
 {
-    return Tools::getIndentation(1) + "configDialog->addBool(" +
-            "\"" + widget()->getBeforeText()   + "\", " +
-            "\"" + widget()->getAfterText()    + "\", " +
-            "\"" + widget()->getCheckboxText() + "\", " +
-            widget()->getAlias()        + ");\n";
+    QString result = "";
+
+    result += Tools::getIndentation(1) + "QStringList " + "list" + widget()->getAlias() + ";\n";
+
+    QStringList list = widget()->getPossibleValues();
+    for (int i = 0 ; i < list.size() ; i++)
+    {
+        result += Tools::getIndentation(1) + "list" + widget()->getAlias() + ".append(\"" + list.at(i) + "\");\n";
+    }
+
+    result += "\n";
+    result += Tools::getIndentation(1) + "configDialog->addStringChoice(" +
+                "\"" + widget()->getBeforeText()   + "\", " +
+                "\"" + widget()->getAfterText()    + "\", " +
+                "list" + widget()->getAlias()      + ", " +
+                widget()->getAlias()               + ");\n";
+
+    return result;
 }
 
 QString ParameterStringChoice::getParamaterDoc()

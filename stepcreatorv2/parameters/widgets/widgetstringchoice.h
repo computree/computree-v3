@@ -20,12 +20,14 @@ public:
     QString getAlias();
     QString getBeforeText();
     QString getAfterText();
-    QString getCheckboxText();
-    bool getDefaultValue();
+    QString getDefaultValue();
+    QStringList getPossibleValues();
     QString getDescription();
 
 private slots:
     void on_alias_textChanged(const QString &arg1);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::WidgetStringChoice *ui;

@@ -56,7 +56,9 @@ SOURCES += main.cpp\
     parameters/widgets/widgetfilechoice.cpp \
     parameters/widgets/widgetexcludevalue.cpp \
     parameters/widgets/widgetemptyline.cpp \
-    parameters/widgets/widgetdouble.cpp
+    parameters/widgets/widgetdouble.cpp \
+    parameters/parameterstring.cpp \
+    parameters/widgets/widgetstring.cpp
 
 HEADERS  += mainwindow.h \
     inmodeldialog.h \
@@ -105,7 +107,9 @@ HEADERS  += mainwindow.h \
     parameters/widgets/widgetfilechoice.h \
     parameters/widgets/widgetexcludevalue.h \
     parameters/widgets/widgetemptyline.h \
-    parameters/widgets/widgetdouble.h
+    parameters/widgets/widgetdouble.h \
+    parameters/parameterstring.h \
+    parameters/widgets/widgetstring.h
 
 FORMS    += mainwindow.ui \
     inmodeldialog.ui \
@@ -128,7 +132,8 @@ FORMS    += mainwindow.ui \
     parameters/widgets/widgetfilechoice.ui \
     parameters/widgets/widgetexcludevalue.ui \
     parameters/widgets/widgetemptyline.ui \
-    parameters/widgets/widgetdouble.ui
+    parameters/widgets/widgetdouble.ui \
+    parameters/widgets/widgetstring.ui
 
 
 INCLUDEPATH += ./models

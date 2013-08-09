@@ -14,23 +14,22 @@ void ParameterFileChoice::onAliasChange()
 
 QString ParameterFileChoice::getParameterDeclaration()
 {
-    return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
+    return Tools::getIndentation(1) + "QString" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
            Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
 }
 
 QString ParameterFileChoice::getParameterInitialization()
 {
-    QString value = (widget()->getDefaultValue()) ? "true" : "false";
-    return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
+       return Tools::getIndentation(1) + widget()->getAlias() + " = \"\";\n";
 }
 
 QString ParameterFileChoice::getParameterDialogCommands()
 {
-    return Tools::getIndentation(1) + "configDialog->addBool(" +
-            "\"" + widget()->getBeforeText()   + "\", " +
-            "\"" + widget()->getAfterText()    + "\", " +
-            "\"" + widget()->getCheckboxText() + "\", " +
-            widget()->getAlias()        + ");\n";
+    return Tools::getIndentation(1) + "configDialog->addFileChoice("+
+            "\"" + widget()->getBeforeText()                        + "\", " +
+            "CT_FileChoiceButton::" + widget()->getNeededFileType() + ", " +
+            "\"" + widget()->getAfterText()                         + "\", " +
+            widget()->getAlias()                                    + ");\n";
 }
 
 QString ParameterFileChoice::getParamaterDoc()

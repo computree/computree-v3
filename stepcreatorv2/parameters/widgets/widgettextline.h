@@ -20,12 +20,9 @@ public:
     QString getAlias();
     QString getBeforeText();
     QString getAfterText();
-    QString getCheckboxText();
-    bool getDefaultValue();
-    QString getDescription();
-
+    QString getMiddleText();
 private slots:
-    void on_alias_textChanged(const QString &arg1);
+    void on_libBefore_textChanged(const QString &arg1);
 
 private:
     Ui::WidgetTextLine *ui;

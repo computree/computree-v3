@@ -9,6 +9,11 @@ WidgetFileChoice::WidgetFileChoice(AbstractParameter* model, QWidget *parent) :
 {
     ui->setupUi(this);
     setFocusProxy(ui->alias);
+
+    ui->neededFileType->addItem("OneExistingFile");
+    ui->neededFileType->addItem("OneOrMoreExistingFiles");
+    ui->neededFileType->addItem("OneNewFile");
+    ui->neededFileType->addItem("OneExistingFolder");
 }
 
 WidgetFileChoice::~WidgetFileChoice()
@@ -32,19 +37,14 @@ QString WidgetFileChoice::getBeforeText()
     return ui->libBefore->text();
 }
 
+QString WidgetFileChoice::getNeededFileType()
+{
+    return ui->neededFileType->currentText();
+}
+
 QString WidgetFileChoice::getAfterText()
 {
     return ui->libAfter->text();
-}
-
-QString WidgetFileChoice::getCheckboxText()
-{
-    return ui->libCheckbox->text();
-}
-
-bool WidgetFileChoice::getDefaultValue()
-{
-    return ui->defaultValue->isChecked();
 }
 
 QString WidgetFileChoice::getDescription()

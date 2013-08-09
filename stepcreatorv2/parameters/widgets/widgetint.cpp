@@ -37,14 +37,19 @@ QString WidgetInt::getAfterText()
     return ui->libAfter->text();
 }
 
-QString WidgetInt::getCheckboxText()
+double WidgetInt::getMin()
 {
-    return ui->libCheckbox->text();
+    return ui->min->value();
 }
 
-bool WidgetInt::getDefaultValue()
+double WidgetInt::getMax()
 {
-    return ui->defaultValue->isChecked();
+    return ui->max->value();
+}
+
+double WidgetInt::getDefaultValue()
+{
+    return ui->defaultValue->value();
 }
 
 QString WidgetInt::getDescription()
@@ -62,4 +67,14 @@ void WidgetInt::on_alias_textChanged(const QString &arg1)
         }
     }
     _model->onAliasChange();
+}
+
+void WidgetInt::on_min_valueChanged(int arg1)
+{
+    ui->defaultValue->setMinimum(arg1);
+}
+
+void WidgetInt::on_max_valueChanged(int arg1)
+{
+    ui->defaultValue->setMaximum(arg1);
 }

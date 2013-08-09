@@ -19,9 +19,8 @@ public:
     bool isvalid();
     QString getAlias();
     QString getBeforeText();
+    QString getNeededFileType();
     QString getAfterText();
-    QString getCheckboxText();
-    bool getDefaultValue();
     QString getDescription();
 
 private slots:

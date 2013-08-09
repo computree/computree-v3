@@ -18,14 +18,6 @@ public:
 
     bool isvalid();
     QString getAlias();
-    QString getBeforeText();
-    QString getAfterText();
-    QString getCheckboxText();
-    bool getDefaultValue();
-    QString getDescription();
-
-private slots:
-    void on_alias_textChanged(const QString &arg1);
 
 private:
     Ui::WidgetEmptyLine *ui;

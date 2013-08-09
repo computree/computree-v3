@@ -5,6 +5,7 @@ ParameterEmptyLine::ParameterEmptyLine() : AbstractParameter()
 {
     _widget = new WidgetEmptyLine(this);
     onAliasChange();
+    setData(QVariant(QColor(Qt::lightGray)),Qt::ForegroundRole);
 }
 
 bool  ParameterEmptyLine::isValid()
@@ -19,32 +20,26 @@ bool ParameterEmptyLine::isDataParameter()
 
 void ParameterEmptyLine::onAliasChange()
 {
-    setText("Ligne vide");
+    setText(">");
 }
 
 QString ParameterEmptyLine::getParameterDeclaration()
 {
-    return Tools::getIndentation(1) + "bool" + Tools::getIndentation(1) + widget()->getAlias() + ";" +
-           Tools::getIndentation(1) + "/*!< " + widget()->getDescription() + " */\n";
+    return "";
 }
 
 QString ParameterEmptyLine::getParameterInitialization()
 {
-    QString value = (widget()->getDefaultValue()) ? "true" : "false";
-    return Tools::getIndentation(1) + widget()->getAlias() + " = " + value + ";\n";
+    return "";
 }
 
 QString ParameterEmptyLine::getParameterDialogCommands()
 {
-    return Tools::getIndentation(1) + "configDialog->addBool(" +
-            "\"" + widget()->getBeforeText()   + "\", " +
-            "\"" + widget()->getAfterText()    + "\", " +
-            "\"" + widget()->getCheckboxText() + "\", " +
-            widget()->getAlias()        + ");\n";
+    return Tools::getIndentation(1) + "configDialog->addEmpty();\n";
 }
 
 QString ParameterEmptyLine::getParamaterDoc()
 {
-    return " * \\param " + widget()->getAlias() + " " + widget()->getDescription() + "\n";
+    return "";
 }
 

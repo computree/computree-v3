@@ -11,6 +11,7 @@
 #include "parameters/parameterexcludevalue.h"
 #include "parameters/parameterfilechoice.h"
 #include "parameters/parameterint.h"
+#include "parameters/parameterstring.h"
 #include "parameters/parameterstringchoice.h"
 #include "parameters/parametertextline.h"
 
@@ -176,6 +177,11 @@ void ParameterModelDialog::on_pb_double_clicked()
 void ParameterModelDialog::on_pb_int_clicked()
 {
     addItem(new ParameterInt());
+}
+
+void ParameterModelDialog::on_pb_string_clicked()
+{
+    addItem(new ParameterString());
 }
 
 void ParameterModelDialog::on_pb_stringchoice_clicked()

@@ -21,16 +21,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Nom du paramètre :</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="alias"/>
-   </item>
-   <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Libellé (avant) :</string>
@@ -43,12 +33,12 @@
    <item>
     <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Libellé (checkbox) :</string>
+      <string>Libellé (Milieu) :</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="libCheckbox"/>
+    <widget class="QLineEdit" name="libMiddle"/>
    </item>
    <item>
     <widget class="QLabel" name="label_4">
@@ -59,30 +49,6 @@
    </item>
    <item>
     <widget class="QLineEdit" name="libAfter"/>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="defaultValue">
-     <property name="text">
-      <string>Valeur par défaut</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Description du paramètre :</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPlainTextEdit" name="description">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">

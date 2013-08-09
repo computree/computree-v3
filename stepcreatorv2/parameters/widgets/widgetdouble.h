@@ -20,12 +20,21 @@ public:
     QString getAlias();
     QString getBeforeText();
     QString getAfterText();
-    QString getCheckboxText();
-    bool getDefaultValue();
+    double getMin();
+    double getMax();
+    int getDec();
+    double getMult();
+    double getDefaultValue();
     QString getDescription();
 
 private slots:
     void on_alias_textChanged(const QString &arg1);
+
+    void on_nbDec_valueChanged(int arg1);
+
+    void on_min_valueChanged(double arg1);
+
+    void on_max_valueChanged(double arg1);
 
 private:
     Ui::WidgetDouble *ui;

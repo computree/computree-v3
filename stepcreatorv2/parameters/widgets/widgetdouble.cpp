@@ -37,14 +37,29 @@ QString WidgetDouble::getAfterText()
     return ui->libAfter->text();
 }
 
-QString WidgetDouble::getCheckboxText()
+double WidgetDouble::getMin()
 {
-    return ui->libCheckbox->text();
+    return ui->min->value();
 }
 
-bool WidgetDouble::getDefaultValue()
+double WidgetDouble::getMax()
 {
-    return ui->defaultValue->isChecked();
+    return ui->max->value();
+}
+
+int WidgetDouble::getDec()
+{
+    return ui->nbDec->value();
+}
+
+double WidgetDouble::getMult()
+{
+    return ui->mult->value();
+}
+
+double WidgetDouble::getDefaultValue()
+{
+    return ui->defaultValue->value();
 }
 
 QString WidgetDouble::getDescription()
@@ -62,4 +77,21 @@ void WidgetDouble::on_alias_textChanged(const QString &arg1)
         }
     }
     _model->onAliasChange();
+}
+
+void WidgetDouble::on_nbDec_valueChanged(int arg1)
+{
+    ui->min->setDecimals(arg1);
+    ui->max->setDecimals(arg1);
+    ui->defaultValue->setDecimals(arg1);
+}
+
+void WidgetDouble::on_min_valueChanged(double arg1)
+{
+    ui->defaultValue->setMinimum(arg1);
+}
+
+void WidgetDouble::on_max_valueChanged(double arg1)
+{
+    ui->defaultValue->setMaximum(arg1);
 }

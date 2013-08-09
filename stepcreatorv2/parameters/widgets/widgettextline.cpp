@@ -8,7 +8,7 @@ WidgetTextLine::WidgetTextLine(AbstractParameter* model, QWidget *parent) :
     ui(new Ui::WidgetTextLine)
 {
     ui->setupUi(this);
-    setFocusProxy(ui->alias);
+    setFocusProxy(ui->libBefore);
 }
 
 WidgetTextLine::~WidgetTextLine()
@@ -24,7 +24,7 @@ bool WidgetTextLine::isvalid()
 
 QString WidgetTextLine::getAlias()
 {
-    return ui->alias->text();
+    return "";
 }
 
 QString WidgetTextLine::getBeforeText()
@@ -37,29 +37,12 @@ QString WidgetTextLine::getAfterText()
     return ui->libAfter->text();
 }
 
-QString WidgetTextLine::getCheckboxText()
+QString WidgetTextLine::getMiddleText()
 {
-    return ui->libCheckbox->text();
+    return ui->libMiddle->text();
 }
 
-bool WidgetTextLine::getDefaultValue()
+void WidgetTextLine::on_libBefore_textChanged(const QString &arg1)
 {
-    return ui->defaultValue->isChecked();
-}
-
-QString WidgetTextLine::getDescription()
-{
-    return ui->description->toPlainText().replace("\n","\\n");
-}
-
-void WidgetTextLine::on_alias_textChanged(const QString &arg1)
-{
-    if (arg1.size()>0)
-    {
-        if (arg1.at(0)!='_')
-        {
-            ui->alias->setText("_" + arg1);
-        }
-    }
     _model->onAliasChange();
 }

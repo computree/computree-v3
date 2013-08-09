@@ -55,6 +55,8 @@ private slots:
 
     void on_pb_down_clicked();
 
+    void on_pb_string_clicked();
+
 private:
     Ui::ParameterModelDialog *ui;
     QStandardItemModel *_model;
