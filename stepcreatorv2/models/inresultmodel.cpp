@@ -150,7 +150,7 @@ QString INResultModel::getInComputeBeginning(QString resultDef, QString useCopy)
         useCopy = "IfUseCopy";
     }
 
-    getChildrenInComputeBeginning(result, getDef(), useCopy);
+    getChildrenInComputeBeginning(result, getName(), useCopy);
     return result;
 }
 

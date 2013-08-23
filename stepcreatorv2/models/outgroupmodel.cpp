@@ -22,6 +22,13 @@ QString OUTGroupModel::getModelName()
 void OUTGroupModel::getOutModelsIncludesList(QSet<QString> &list)
 {   
     list.insert("#include \"ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h\"");
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractOutModel* item = (AbstractOutModel*) child(i);
+        item->getOutModelsIncludesList(list);
+    }
 }
 
 void OUTGroupModel::getOutItemsTypesIncludesList(QSet<QString> &list)
@@ -106,7 +113,7 @@ QString OUTGroupModel::getOutModelsHierachy()
 
 QString OUTGroupModel::getOutModelAddingCommand()
 {
-    QString result = ".addGroup(";
+    QString result = "->addGroup(";
     result += getModelName();
     result += ");";
     return result;

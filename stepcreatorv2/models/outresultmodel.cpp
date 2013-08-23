@@ -128,7 +128,7 @@ QString OUTResultModel::getOutComputeItemsCreations(QString resultName)
     result += Tools::getIndentation(1) + "// Works on the result corresponding to " + getDef() + "\n";
     result += group->getOutComputeItemsCreations(getName());
     result += "\n";
-    result += Tools::getIndentation(1) + getName() + ".addGroup(" + group->getName() + ");\n";
+    result += Tools::getIndentation(1) + getName() + "->addGroup(" + group->getName() + ");\n";
 
     return result;
 }

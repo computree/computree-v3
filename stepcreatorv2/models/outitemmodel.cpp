@@ -89,7 +89,7 @@ QString OUTItemModel::getOutModelsHierachy()
 
 QString OUTItemModel::getOutModelAddingCommand()
 {
-    QString result = ".addItem(";
+    QString result = "->addItem(";
     result += getModelName();
     result += ");";
     return result;

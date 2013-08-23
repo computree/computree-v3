@@ -31,6 +31,13 @@ void INGroupModel::getInModelsIncludesList(QSet<QString> &list)
     {
         list.insert("#include \"ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h\"");
     }
+
+    int size = rowCount();
+    for (int i = 0 ; i < size ; i++)
+    {
+        AbstractInModel* item = (AbstractInModel*) child(i);
+        item->getInModelsIncludesList(list);
+    }
 }
 
 void INGroupModel::getInItemsTypesIncludesList(QSet<QString> &list)
@@ -150,7 +157,7 @@ QString INGroupModel::getInModelsHierachy()
 
 QString INGroupModel::getInModelAddingCommand()
 {
-    QString result = ".addGroup(";
+    QString result = "->addGroup(";
     result += getModelName();
     result += ");";
     return result;

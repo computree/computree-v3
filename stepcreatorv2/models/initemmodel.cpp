@@ -111,7 +111,7 @@ QString INItemModel::getInModelsHierachy()
 
 QString INItemModel::getInModelAddingCommand()
 {
-    QString result = ".addItem(";
+    QString result = "->addItem(";
     result += getModelName();
     result += ");";
     return result;
