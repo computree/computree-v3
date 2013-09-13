@@ -37,4 +37,6 @@ StepPluginInterface* TUFR_PluginEntry::getStepPluginManager()
 // Macro QT permettant la création de la librairie (.dll ou .so)
 // Le premier paramètre doit être identique à celui passé à la directive TARGET du fichier .pro
 // Le second est le nom de la présente classe
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 Q_EXPORT_PLUGIN2(plug_tutorialfr, TUFR_PluginEntry)
+#endif

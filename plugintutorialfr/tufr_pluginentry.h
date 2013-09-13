@@ -28,6 +28,11 @@ class TUFR_PluginEntry : public PluginInterface
 // Macros Qt. La première donne accès à certaines fonctionnalités Qt utiles
 // La second permet de créer un plugin sous forme de librairie (.dll, .so)
     Q_OBJECT
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    Q_PLUGIN_METADATA(IID PluginInterface_iid)
+#endif
+
     Q_INTERFACES(PluginInterface)
 
 public:
