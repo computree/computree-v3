@@ -146,10 +146,10 @@ QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
 
         if (groupOrItem->getModelType() == AbstractOutModel::M_Group_OUT)
         {
-            result += Tools::getIndentation(1) + getName() + ".addGroup(" + groupOrItem->getName() + ");\n";
+            result += Tools::getIndentation(1) + getName() + "->addGroup(" + groupOrItem->getName() + ");\n";
         } else if (groupOrItem->getModelType() == AbstractOutModel::M_Item_OUT)
         {
-            result += Tools::getIndentation(1) + "// " + getName() + ".addItem(" + groupOrItem->getName() + ");\n";
+            result += Tools::getIndentation(1) + "// " + getName() + "->addItemDrawable(" + groupOrItem->getName() + ");\n";
         }
     }
 

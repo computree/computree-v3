@@ -17,10 +17,10 @@ void Tools::initItemTypes()
     Tools::ITEMTYPE.append("CT_Cylinder");
     Tools::ITEMTYPE.append("CT_Raster2DFloat");
     Tools::ITEMTYPE.append("CT_Raster2DInt");
-    Tools::ITEMTYPE.append("CT_RectangularGridDataFloat");
-    Tools::ITEMTYPE.append("CT_RectangularGridDataInt");
-    Tools::ITEMTYPE.append("CT_RectangularGridDataDouble");
-    Tools::ITEMTYPE.append("CT_RectangularGridDataBool");
+    Tools::ITEMTYPE.append("CT_RegularGridFloat");
+    Tools::ITEMTYPE.append("CT_RegularGridInt");
+    Tools::ITEMTYPE.append("CT_RegularGridDouble");
+    Tools::ITEMTYPE.append("CT_RegularGridBool");
     Tools::ITEMTYPE.append("CT_Ray");
     Tools::ITEMTYPE.append("CT_Scanner");
     Tools::ITEMTYPE.append("CT_Triangulation2D");

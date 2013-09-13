@@ -90,6 +90,11 @@ bool MainWindow::createFiles(QString directory, QString code, QString name)
         stream << "class " << code << "_PluginEntry : public PluginInterface\n";
         stream << "{\n";
         stream << "    Q_OBJECT\n";
+        stream << "\n";
+        stream << "#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)\n";
+        stream << "    Q_PLUGIN_METADATA(IID PluginInterface_iid)\n";
+        stream << "#endif\n";
+        stream << "\n";
         stream << "    Q_INTERFACES(PluginInterface)\n";
         stream << "\n";
         stream << "public:\n";
@@ -136,7 +141,10 @@ bool MainWindow::createFiles(QString directory, QString code, QString name)
         stream << "    return _stepPluginManager;\n";
         stream << "}\n";
         stream << "\n";
-        stream << "Q_EXPORT_PLUGIN2(" << target << ", " << code << "_PluginEntry)\n";
+        stream << "#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)\n";
+        stream << "    Q_EXPORT_PLUGIN2(" << target << ", " << code << "_PluginEntry)\n";
+        stream << "#endif\n";
+
 
         entryFilecpp.close();
     } else {return false;}
