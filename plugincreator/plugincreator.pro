@@ -10,6 +10,10 @@ TARGET = plugincreator
 TEMPLATE = app
 
 
+contains ( QT_VERSION, "^5.*" ) {
+    QT *= widgets
+}
+
 SOURCES += main.cpp\
         mainwindow.cpp
 

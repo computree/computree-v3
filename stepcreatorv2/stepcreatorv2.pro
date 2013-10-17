@@ -8,6 +8,11 @@ MOC_DIR = .moc
 UI_DIR = .ui
 RCC_DIR = .rcc
 
+
+contains ( QT_VERSION, "^5.*" ) {
+    QT *= widgets
+}
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     inmodeldialog.cpp \
