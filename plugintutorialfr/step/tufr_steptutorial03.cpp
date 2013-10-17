@@ -217,7 +217,6 @@ void TUFR_StepTutorial03::createInResultModelListProtected()
                   if (clusterVector[indice]==NULL)
                   {
                       clusterVector[indice] = new CT_PointCluster(clusterItemModel,
-                                                                     indice,
                                                                      outResult,
                                                                      (CT_AbstractPointCloud*) pointcloud,
                                                                      new CT_AxisAlignedBoundingBox());
@@ -239,7 +238,6 @@ void TUFR_StepTutorial03::createInResultModelListProtected()
                       // Pour chaque cluster, ajout à un groupe et ajout du groupe au résultat
                       // Avec les modèles OUT adéquats
                       CT_StandardItemGroup* group = new CT_StandardItemGroup(groupModel,
-                                                                             cluster->id(),
                                                                              outResult);
                       group->addItemDrawable(cluster);
                       outResult->addGroup(group);

@@ -163,7 +163,7 @@ void TUFR_StepTutorial04::compute()
             if (buffer > 0) {buffer = sqrt(buffer);}
 
             // et on ajoute un referencePoint
-            CT_ReferencePoint *refPoint = new CT_ReferencePoint(outRefPointModel, item->id(), outRes, xref, yref, zref, buffer);
+            CT_ReferencePoint *refPoint = new CT_ReferencePoint(outRefPointModel, outRes, xref, yref, zref, buffer);
             group->addItemDrawable(refPoint);
 
         }

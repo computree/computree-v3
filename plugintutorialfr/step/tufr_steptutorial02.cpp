@@ -154,13 +154,13 @@ void TUFR_StepTutorial02::compute()
     }
 
     // Création du groupe contenant la scène (avec le modèle correspondant
-    CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(groupModel, 0, outResult);
+    CT_StandardItemGroup* newGroup = new CT_StandardItemGroup(groupModel, outResult);
 
     // Création de la boite englobante avec les limites de la scène
     CT_AxisAlignedBoundingBox* boundingBox = new CT_AxisAlignedBoundingBox(QVector3D(_xmin, _ymin, _zmin), QVector3D(_xmax, _ymax, _zmax));
 
     // Création de la scène
-    CT_Scene *newScene = new CT_Scene(sceneItemModel, 0, outResult, newCloud, newIndex, boundingBox);
+    CT_Scene *newScene = new CT_Scene(sceneItemModel, outResult, newCloud, newIndex, boundingBox);
 
     // C'est une nouvelle scène : elle devra se charger le l'effacement des points tout juste créés
     newScene->setAutoDeletePointCloud(true);

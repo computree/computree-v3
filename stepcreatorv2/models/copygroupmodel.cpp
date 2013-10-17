@@ -181,7 +181,7 @@ QString COPYGroupModel::getCopyComputeLoops(int nbIndent, QString resultName = "
             {
                 result += "\n";
                 result += Tools::getIndentation(nbIndent+1) + "CT_StandardItemGroup* " + groupOrItem->getName();
-                result += " = new CT_StandardItemGroup(" + groupOrItem->getModelName() + ", 0, " + resultName + ");\n";
+                result += " = new CT_StandardItemGroup(" + groupOrItem->getModelName() + ", " + resultName + ");\n";
                 result += Tools::getIndentation(nbIndent+1) + getName() + "->addGroup(" + groupOrItem->getName() + ");\n";
                 result += groupOrItem->getCopyComputeLoops(nbIndent+1, resultName);
             } else if (groupOrItem->getModelType() == AbstractCopyModel::M_Item_COPY)
@@ -189,7 +189,7 @@ QString COPYGroupModel::getCopyComputeLoops(int nbIndent, QString resultName = "
                 result += "\n";
                 result += Tools::getIndentation(nbIndent) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
                 result += Tools::getIndentation(nbIndent) + "// " + ((COPYItemModel*)groupOrItem)->getItemType() + "* " + groupOrItem->getName();
-                result += " = new " +  ((COPYItemModel*)groupOrItem)->getItemType() + "(" + groupOrItem->getModelName() + ", ID, " + resultName + ");\n";
+                result += " = new " +  ((COPYItemModel*)groupOrItem)->getItemType() + "(" + groupOrItem->getModelName() + ", " + resultName + ");\n";
                 result += Tools::getIndentation(nbIndent+1) + "// " + getName() + "->addItem(" + groupOrItem->getName() + ");\n";
             }
 

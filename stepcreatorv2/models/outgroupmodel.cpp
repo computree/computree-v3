@@ -135,7 +135,7 @@ QString OUTGroupModel::getOutComputeItemsCreations(QString resultName)
 {
     QString result = "";
 
-    result += Tools::getIndentation(1) + "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", 0, " + resultName + ");\n";
+    result += Tools::getIndentation(1) + "CT_StandardItemGroup* " + getName() + " = new CT_StandardItemGroup(" + getModelName() + ", " + resultName + ");\n";
 
     int size = rowCount();
     for (int i = 0 ; i < size ; i++)

@@ -345,7 +345,7 @@ bool MainWindow::createFiles(QString directory, QString stepName)
         str = _paramModelDialog->getParametersDialogCommands();
         if (str == "")
         {
-            stream << "    // No parameter dialog for this step";
+            stream << "    // No parameter dialog for this step\n";
         } else {
             stream << "    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();\n";
             stream << "\n";

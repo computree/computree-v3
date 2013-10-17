@@ -110,7 +110,7 @@ QString OUTItemModel::getOutComputeItemsCreations(QString resultName)
 {
     QString result = "\n";
     result += Tools::getIndentation(1) + "// UNCOMMENT Following lines and complete parameters of the item's contructor\n";
-    result += Tools::getIndentation(1) + "// " + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", ID, " + resultName + ");\n";
+    result += Tools::getIndentation(1) + "// " + getItemType() + "* " + getName() + " = new " +  getItemType() + "(" + getModelName() + ", " + resultName + ");\n";
     return result;
 }
 
