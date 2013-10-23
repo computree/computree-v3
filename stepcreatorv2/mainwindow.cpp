@@ -28,24 +28,24 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     ui->log->setText("");
-    QString s = QFileDialog::getExistingDirectory(this, "Dossier où ajouter les fichiers de l'étape", "");
+    QString s = QFileDialog::getExistingDirectory(this, "Dossier oÃ¹ ajouter les fichiers de l'Ã©tape", "");
     ui->directory->setText(s);
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    if ((ui->directory->text()=="") || (!QDir(ui->directory->text()).exists())) {ui->statusBar->showMessage("Vous devez choisir un répertoire valide pour les fichiers de l'étape");return;}
-    if (ui->code->text().size() < 2) {ui->statusBar->showMessage("Vous devez définir un nom pour l'étape");return;}
-    if (ui->description->text().size() <= 0) {ui->statusBar->showMessage("Vous devez donner une description pour l'étape");return;}
+    if ((ui->directory->text()=="") || (!QDir(ui->directory->text()).exists())) {ui->statusBar->showMessage("Vous devez choisir un rÃ©pertoire valide pour les fichiers de l'Ã©tape");return;}
+    if (ui->code->text().size() < 2) {ui->statusBar->showMessage("Vous devez dÃ©finir un nom pour l'Ã©tape");return;}
+    if (ui->description->text().size() <= 0) {ui->statusBar->showMessage("Vous devez donner une description pour l'Ã©tape");return;}
 
     if (createFiles(ui->directory->text(), ui->code->text()))
     {
         ui->statusBar->showMessage("CREATION REUSSIE !!!");
         ui->log->clear();
-        ui->log->append(QString("L'étape %1 a été créée\nLes fichiers :").arg(ui->code->text()));
+        ui->log->append(QString("L'Ã©tape %1 a Ã©tÃ© crÃ©Ã©e\nLes fichiers :").arg(ui->code->text()));
         ui->log->append(QString("     - %1.h").arg(ui->code->text().toLower()));
         ui->log->append(QString("     - %1.cpp").arg(ui->code->text().toLower()));
-        ui->log->append(QString("Ont été créés dans le répertoire %1\n\n").arg(ui->directory->text()));
+        ui->log->append(QString("Ont Ã©tÃ© crÃ©Ã©s dans le rÃ©pertoire %1\n\n").arg(ui->directory->text()));
         ui->log->append("Vous devez maintenant ajouter ces fichiers dans le projet Qt de votre plugin");
         ui->log->append("(Clic droit sur le projet / Ajouter des fichiers existants)\n\n");
         ui->log->append("N'OUBLIEZ PAS D'AJOUTER L'ETAPE A VOTRE StepPluginManager !!!");
@@ -68,6 +68,11 @@ bool MainWindow::createFiles(QString directory, QString stepName)
     QStringList splitted = stepName.split("_");
 
     QString parentClass = "CT_AbstractStep";
+
+    if (ui->rb_canbeaddedfirst->isChecked())
+    {
+        parentClass = "CT_AbstractStepCanBeAddedFirst";
+    }
 
     if (stepFileh.open(QIODevice::WriteOnly | QIODevice::Text))
     {

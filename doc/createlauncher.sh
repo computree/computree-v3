@@ -1,5 +1,4 @@
 #!/bin/sh
- appname=`basename $0 | sed s,\.sh$,,`
 
  dirname=`dirname $0`
  tmp="${dirname#?}"
@@ -8,7 +7,6 @@
  dirname=$PWD/$dirname
  fi
 
-rm computree.desktop
 echo "[Desktop Entry]" >> ./computree.desktop
 echo "Version=1.0" >> ./computree.desktop
 echo "Type=Application" >> ./computree.desktop
@@ -19,3 +17,4 @@ echo "Path="$dirname >> ./computree.desktop
 echo "Name=Computree" >> ./computree.desktop
 echo "Comment=Logiciel Computree" >> ./computree.desktop
 echo "Icon="$dirname"/Icone_48x48.png" >> ./computree.desktop
+
