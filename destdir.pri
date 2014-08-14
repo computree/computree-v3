@@ -1,0 +1,6 @@
+isEmpty(CT_PREFIX) {
+    CT_PREFIX = ../../computreeV3
+}
+
+PLUGINSHARED_DESTDIR = $${CT_PREFIX}/ComputreeInstall
+PLUGINSHARED_PLUGIN_DESTDIR = $${PLUGINSHARED_DESTDIR}/plugins

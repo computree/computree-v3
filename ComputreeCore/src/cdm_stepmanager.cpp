@@ -1,0 +1,727 @@
+#include "cdm_stepmanager.h"
+
+#include "cdm_scriptmanagerabstract.h"
+#include "cdm_actionsmanager.h"
+
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
+#include <QWaitCondition>
+#include <QLocale>
+
+CDM_ScriptStepObjectUserData::CDM_ScriptStepObjectUserData(QString path)
+{
+    _stepLoadSerializedResultDirPath = path;
+}
+
+void CDM_ScriptStepObjectUserData::setSerializedResultDirPath(QString path)
+{
+    _stepLoadSerializedResultDirPath = path;
+}
+
+QString CDM_ScriptStepObjectUserData::getSerializedResultDirPath() const
+{
+    return _stepLoadSerializedResultDirPath;
+}
+
+CDM_StepManager::CDM_StepManager(const CDM_ScriptManagerAbstract *scriptManager,
+                                 const CDM_ActionsManager *actionManager) : QThread()
+{
+    setScriptManager(scriptManager);
+
+    _beginStep = NULL;
+    m_currentStep = NULL;
+    _debugMode = false;
+    _stop = false;
+    _action = None;
+    m_guiContext = NULL;
+    m_actionsManager = (CDM_ActionsManager*)actionManager;
+
+    _options.load();
+    setDefaultQLocale(_options.getQLocale());
+
+    connect(this, SIGNAL(stepFinishExecuted(Step*)), this, SLOT(slotRemoveActionsAfterStepExecuted()), Qt::QueuedConnection);
+}
+
+CDM_StepManager::~CDM_StepManager()
+{
+    stop();
+
+    wait();
+
+    qDeleteAll(_stepRootList.begin(), _stepRootList.end());
+    //qDeleteAll(_threadCreated.begin(), _threadCreated.end());
+
+    _options.save();
+}
+
+void CDM_StepManager::setGuiContext(const GuiContextInterface *guiContext)
+{
+    m_guiContext = (GuiContextInterface*)guiContext;
+}
+
+void CDM_StepManager::setScriptManager(const CDM_ScriptManagerAbstract *scriptManager)
+{
+    _scripManager = (CDM_ScriptManagerAbstract*)scriptManager;
+}
+
+CDM_ScriptManagerAbstract* CDM_StepManager::getScriptManager() const
+{
+    return _scripManager;
+}
+
+bool CDM_StepManager::addStep(Step *step, Step *parent)
+{
+    if(parent == NULL)
+    {
+        _stepRootList.append(step);
+        //createThread(*step);
+
+        connectStep(step);
+
+        emit stepAdded(step);
+
+        return true;
+    }
+    else
+    {
+        if(parent->appendStep(step))
+        {
+            //createThread(*step);
+
+            connectStep(step);
+
+            emit stepAdded(step);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CDM_StepManager::insertStep(Step *step, Step &parent)
+{
+    if(parent.insertStep(-1, step))
+    {
+        //createThread(*step);
+
+        connectStep(step);
+
+        emit stepInserted(-1, step);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool CDM_StepManager::removeStep(Step *step)
+{
+    if(isRunning())
+    {
+        return false;
+    }
+
+    if(step->parentStep() != NULL)
+    {
+        emit stepToBeRemoved(step);
+
+        //_threadCreated.removeOne(step->thread());
+        step->parentStep()->removeStep(step);
+
+        return true;
+    }
+    else
+    {
+        emit stepToBeRemoved(step);
+
+        //_threadCreated.removeOne(step->thread());
+        _stepRootList.removeOne(step);
+        delete step;
+
+        return true;
+    }
+
+    return false;
+}
+
+void CDM_StepManager::setStepDebugModeOn(Step *step, bool debugModeOn)
+{
+    if(m_currentStep == step)
+        step->postWaitForAckIfInDebugMode();
+
+    step->setDebugModeOn(debugModeOn);
+}
+
+QList<Step*> CDM_StepManager::getStepRootList() const
+{
+    return _stepRootList;
+}
+
+bool CDM_StepManager::executeStep(Step *beginStep)
+{
+    if(isRunning())
+    {
+        if(_debugMode)
+        {
+            if(ackDebugMode(-1))
+            {
+                emit stepWaitForAckInDebugMode(false);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    return internalExecuteStep(beginStep, true);
+}
+
+bool CDM_StepManager::executeModifyStep(Step *beginStep)
+{
+    if(isRunning() || (beginStep == NULL) || !beginStep->isModifiable())
+        return false;
+
+    return internalExecuteModifyStep(beginStep, true);
+}
+
+bool CDM_StepManager::executeOrForwardStepInDebugMode(Step *beginStep)
+{
+    if(!isRunning())
+    {
+        return internalExecuteStep(beginStep, true);
+    }
+
+    if(ackDebugMode(1))
+    {
+        emit stepWaitForAckInDebugMode(false);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool CDM_StepManager::executeOrForwardStepFastInDebugMode(Step *beginStep)
+{
+    if(!isRunning())
+    {
+        return internalExecuteStep(beginStep, true);
+    }
+
+    if(ackDebugMode(_options.getFastJumpValueInDebugMode()))
+    {
+        emit stepWaitForAckInDebugMode(false);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool CDM_StepManager::quitManualMode()
+{
+    QMutexLocker locker(&_mutex);
+
+    if(m_currentStep == NULL)
+        return false;
+
+    m_currentStep->quitManualMode();
+
+    return true;
+}
+
+bool CDM_StepManager::loadSerializedResultFromStep(StepSerializable &childBeginStep)
+{
+    if(isRunning())
+    {
+        return false;
+    }
+
+    CDM_ScriptStepObjectUserData *userData = dynamic_cast<CDM_ScriptStepObjectUserData*>(childBeginStep.userData(0));
+
+    if((userData == NULL)
+            || (!childBeginStep.canBeDeserialized(userData->getSerializedResultDirPath())))
+    {
+        return false;
+    }
+
+    _action = LoadSerializeResult;
+    _stop = false;
+
+    emit started(true);
+
+    _beginStep = &childBeginStep;
+
+    start();
+
+    return true;
+}
+
+void CDM_StepManager::stop()
+{
+    QMutexLocker locker(&_mutex);
+
+    _stop = true;
+
+    if(m_currentStep != NULL)
+        m_currentStep->stop();
+}
+
+bool CDM_StepManager::setFastForwardJumpInDebugMode(int value)
+{
+    return _options.changeFastJumpInDebugMode(value);
+}
+
+bool CDM_StepManager::setOptions(CDM_StepManagerOptions options)
+{
+    if(!isRunning())
+    {
+        _options = options;
+        setDefaultQLocale(_options.getQLocale());
+
+        return true;
+    }
+
+    return false;
+}
+
+CDM_StepManagerOptions CDM_StepManager::getOptions() const
+{
+    return _options;
+}
+
+CDM_StepManager::ActionType CDM_StepManager::getAction() const
+{
+    return _action;
+}
+
+bool CDM_StepManager::checkAutoSaveDisabledIfExecuteFromStep(Step &step) const
+{
+    return (step.parentStep() != NULL);
+}
+
+bool CDM_StepManager::checkOneStepIsInDebugModeFromStep(Step *step) const
+{
+    QList<Step*> stepChildList;
+
+    if(step != NULL)
+    {
+        if(step->isDebugModeOn())
+        {
+            return true;
+        }
+
+        stepChildList = step->getStepChildList();
+    }
+    else
+    {
+        stepChildList = getStepRootList();
+    }
+
+    QListIterator<Step*> it(stepChildList);
+
+    while(it.hasNext())
+    {
+        if(checkOneStepIsInDebugModeFromStep(it.next()))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CDM_StepManager::isInManualMode() const
+{
+    QMutexLocker locker((QMutex*)&_mutex);
+
+    if(m_currentStep == NULL)
+        return false;
+
+    return m_currentStep->isInManualMode();
+}
+
+////////////// PROTECTED //////////////
+
+bool CDM_StepManager::internalExecuteStep(Step *beginStep, bool debugMode)
+{
+    _action = ExecuteStep;
+    _debugMode = debugMode;
+    _stop = false;
+
+    emit started(true);
+
+    _beginStep = beginStep;
+
+    start();
+
+    return true;
+}
+
+bool CDM_StepManager::internalExecuteModifyStep(Step *beginStep, bool debugMode)
+{
+    _action = ExecuteModifyStep;
+    _debugMode = debugMode;
+    _stop = false;
+
+    emit started(true);
+
+    _beginStep = beginStep;
+
+    start();
+
+    return true;
+}
+
+void CDM_StepManager::connectStep(Step *step)
+{
+    connect(step->getStepSignalEmmiter(), SIGNAL(resultAdded(Result*)), this, SIGNAL(resultAdded(Result*)), Qt::DirectConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeClearedFromMemory(Result*)), this, SIGNAL(resultToBeClearedFromMemory(Result*)), Qt::DirectConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeRemoved(Result*)), this, SIGNAL(resultToBeRemoved(Result*)), Qt::DirectConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeSerialized(Result*)), this, SIGNAL(resultToBeSerialized(Result*)), Qt::DirectConnection);
+}
+
+void CDM_StepManager::connectStepBeforeRunning(Step *step)
+{
+    connect(step->getStepSignalEmmiter(), SIGNAL(waitForAckInDebugMode()), this, SLOT(slotStepWaitForAckInDebugMode()), Qt::QueuedConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(showMessage(QString)), this, SIGNAL(stepNeedShowMessage(QString)), Qt::QueuedConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(manualModeRequired()), this, SLOT(slotStepRequiredManualMode()), Qt::QueuedConnection);
+    connect(step->getStepSignalEmmiter(), SIGNAL(manualModeCompleted()), this, SLOT(slotStepManualModeCompleted()), Qt::QueuedConnection);
+}
+
+void CDM_StepManager::disconnectStepAfterRunning(Step *step)
+{
+    disconnect(step->getStepSignalEmmiter(), SIGNAL(waitForAckInDebugMode()), this, SLOT(slotStepWaitForAckInDebugMode()));
+    disconnect(step->getStepSignalEmmiter(), SIGNAL(showMessage(QString)), this, SIGNAL(stepNeedShowMessage(QString)));
+    disconnect(step->getStepSignalEmmiter(), SIGNAL(manualModeRequired()), this, SLOT(slotStepRequiredManualMode()));
+    disconnect(step->getStepSignalEmmiter(), SIGNAL(manualModeCompleted()), this, SLOT(slotStepManualModeCompleted()));
+}
+
+void CDM_StepManager::run()
+{
+    if(_action == ExecuteStep)
+    {
+        QList<Result*> results;
+
+        QString scriptFileAndSerializedDirName = QString("serialization_%1").arg(QDateTime::currentDateTime().toString("dd-MM-yyyy_hh-mm-ss"));
+
+        bool restart;
+
+        do
+        {
+            restart = false;
+
+            if(_beginStep == NULL)
+            {
+                bool continueLoop = true;
+
+                QListIterator<Step*> it(_stepRootList);
+
+                while(continueLoop
+                      && !restart
+                      && it.hasNext())
+                {
+                    continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *it.next(), results, false, restart);
+                }
+
+                if(restart)
+                    _beginStep = NULL;
+            }
+            else
+            {
+                if(_beginStep->parentStep() != NULL)
+                {
+                    results = _beginStep->parentStep()->getResults();
+                }
+
+                if(checkAutoSaveDisabledIfExecuteFromStep(*_beginStep))
+                {
+                    _options.disableAutoSave();
+                }
+
+                recursiveExecuteStep(scriptFileAndSerializedDirName, *_beginStep, results, false, restart);
+            }
+
+        }while(restart);
+    }
+    else if(_action == LoadSerializeResult)
+    {
+        StepSerializable *beginStepSerializable = dynamic_cast<StepSerializable*>(_beginStep);
+
+        if(beginStepSerializable != NULL)
+        {
+            CDM_ScriptStepObjectUserData *userData = dynamic_cast<CDM_ScriptStepObjectUserData*>(beginStepSerializable->userData(0));
+
+            if((userData != NULL)
+                    && (beginStepSerializable->canBeDeserialized(userData->getSerializedResultDirPath())))
+            {
+                // on va tout d'abord supprimer tous les rsultats
+                // des tapes filles de l'tape d'o on doit commencer
+                recursiveClearResult(*_beginStep);
+
+                beginStepSerializable->deserialize(userData->getSerializedResultDirPath());
+            }
+        }
+    }
+
+    emit completed(true);
+}
+
+////////////// PRIVATE //////////////
+
+bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirName, Step &step, QList<Result*> results, bool force, bool &restart)
+{
+    bool continueLoop = true;
+    bool forceAfterExecute = force;
+
+    // si l'tape a subit de changement
+    // ou si elle n'a aucun rsultat de sortie
+    // ou si elle en a un mais qu'il a t supprim de la mmoire
+    if(forceAfterExecute
+        || step.isSettingsModified()
+        || (step.nResult() == 0)
+        || ((step.nResult() > 0)
+            && (step.getResult(0)->isClearedFromMemory())))
+    {
+        // on lance l'tape seulement si elle a besoin d'un rsultat
+        // et qu'il y en a un
+        // OU
+        // que l'tape n'a pas besoin de rsultat
+        if((step.needInputResults()
+            && (results.size() > 0))
+            || (!step.needInputResults()))
+        {
+            _mutex.lock();
+            m_currentStep = &step;
+            connectStepBeforeRunning(&step);
+
+            if(step.isDebugModeOn())
+                step.setGuiContext(m_guiContext);
+
+            _mutex.unlock();
+
+            emit stepBeginExecuted(&step);
+
+            // lance l'tape
+            if((_action == ExecuteModifyStep) && (_beginStep != NULL) && (&step == _beginStep) && step.isModifiable())
+                step.executeModify();
+            else
+                step.execute();
+
+            emit stepFinishExecuted(&step);
+
+            _mutex.lock();
+            disconnectStepAfterRunning(&step);
+
+            step.setGuiContext(NULL);
+
+            m_currentStep = NULL;
+            _mutex.unlock();
+
+            forceAfterExecute = true;
+
+            if(step.getErrorCode() != 0)
+                continueLoop = false;
+        }
+        else
+        {
+            continueLoop = false;
+        }
+    }
+
+    if(continueLoop)
+        continueLoop = !step.isStopped();
+
+    if(continueLoop)
+    {
+        if(step.mustRestartTree())
+        {
+            restart = true;
+            return continueLoop;
+        }
+    }
+
+    // si on a pas stopp l'etape ou si il n'y a pas eu d'erreur
+    if(continueLoop)
+    {
+        // on continu avec les tapes filles
+        QList<Step*> children = step.getStepChildList();
+        QListIterator<Step*> it(children);
+
+        while(continueLoop
+              && !restart
+              && it.hasNext())
+        {
+            Step *childStep = it.next();
+
+            continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *childStep, step.getResults(), forceAfterExecute, restart);
+        }
+
+        if(!restart)
+        {
+            // si on doit supprimer de la mmoire les rsultats des tapes et
+            // que la sauvegarde automatique n'est pas active
+            if(_options.isAutoClearResultFromMemoryEnable()
+                && !_options.isAutoSaveEnable())
+            {
+                // on peut commencer  dtruire les rsultats
+                step.clearOutResultFromMemory();
+            }
+            // sinon si on doit sauvegarder les rsultats dans un fichier
+            // et qu'on est revenu  la premire tape
+            else if(_options.isAutoSaveEnable()
+                    && (step.parentStep() == NULL))
+            {
+                // normalement la premire tape est du type StepSerializable
+                StepSerializable *stepSerializable = dynamic_cast<StepSerializable*>(&step);
+
+                if(stepSerializable != NULL)
+                {
+                    QString savePath = QString("%1/%2").arg(_options.autoSaveDirPath()).arg(scriptFileAndSerializedDirName);
+
+                    // donc on peut la srialiser
+                    if(stepSerializable->serialize(savePath, _options.isAutoClearResultFromMemoryEnable()))
+                    {
+                        // on enregistre l'endroit ou sont enregistr les rsultats srialiss
+                        stepSerializable->setUserData(0, new CDM_ScriptStepObjectUserData(savePath));
+
+                        if(getScriptManager() != NULL)
+                        {
+                            getScriptManager()->writeScript(QString("%1/%2.%3").arg(_options.autoSaveDirPath()).arg(scriptFileAndSerializedDirName).arg(getScriptManager()->getFileExtensionAccepted().first()),
+                                                       true,
+                                                       *this);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return continueLoop;
+}
+
+void CDM_StepManager::recursiveClearResult(Step &step)
+{
+    QList<Step *> stepChildList = step.getStepChildList();
+    QListIterator<Step*> it(stepChildList);
+
+    while((!_stop)
+            && it.hasNext())
+    {
+        recursiveClearResult(*(it.next()));
+    }
+
+    if(!_stop)
+    {
+        step.clearOutResult();
+    }
+}
+
+/*QThread* CDM_StepManager::createThread(Step &step)
+{
+    QThread *thread = step.thread();
+
+    if(!_threadCreated.contains(thread))
+    {
+        thread = new QThread();
+        step.moveToThread(thread);
+
+        connect(&step, SIGNAL(isCompleted()), thread, SLOT(quit()), Qt::DirectConnection);
+        connect(thread, SIGNAL(started()), &step, SLOT(execute()), Qt::QueuedConnection);
+
+        _threadCreated.append(thread);
+    }
+
+    return thread;
+}*/
+
+bool CDM_StepManager::ackDebugMode(int jumpNStep)
+{
+    QMutexLocker locker(&_mutex);
+
+    if(m_currentStep != NULL)
+    {
+        m_currentStep->postWaitForAckIfInDebugMode();
+
+        if(jumpNStep < 0)
+            m_currentStep->setDebugModeOn(false);
+        else
+            m_currentStep->ackDebugMode(jumpNStep);
+
+        return true;
+    }
+
+    return false;
+}
+
+void CDM_StepManager::slotStepWaitForAckInDebugMode()
+{
+    m_currentStep->preWaitForAckIfInDebugMode();
+
+    emit stepWaitForAckInDebugMode(true);
+}
+
+void CDM_StepManager::slotStepRequiredManualMode()
+{
+    StepSignalEmmiter *stepSigEmit = qobject_cast<StepSignalEmmiter*>(sender());
+
+    if(stepSigEmit != NULL)
+    {
+        Step *step = stepSigEmit->getStepWhoSignal();
+
+        if(step != NULL)
+        {
+            // si on ne connait pas le contexte donc on
+            // tourne en mode batch
+            if(m_guiContext == NULL)
+            {
+                step->quitManualMode(); // on quitte le mode manuel car il n'est pas possible
+            }
+            else
+            {
+                emit stepRequiredManualMode(step);
+                emit stepInManualMode(true);
+
+                // sinon si on n'a pas déjà donné le contexte à l'étape
+                if(step->getGuiContext() != m_guiContext)
+                    step->setGuiContext(m_guiContext); // on lui donne
+
+                // on informe l'étape qu'on a bien activé le mode manuel
+                step->ackManualMode();
+            }
+        }
+    }
+}
+
+void CDM_StepManager::slotStepManualModeCompleted()
+{
+    StepSignalEmmiter *stepSigEmit = qobject_cast<StepSignalEmmiter*>(sender());
+
+    if(stepSigEmit != NULL)
+    {
+        Step *step = stepSigEmit->getStepWhoSignal();
+
+        if(step != NULL)
+        {
+            emit stepInManualMode(false);
+            emit stepQuitManualMode(step);
+        }
+    }
+}
+
+void CDM_StepManager::setDefaultQLocale(QString name)
+{
+    QLocale locale(name);
+    locale.setNumberOptions(QLocale::OmitGroupSeparator);
+    QLocale::setDefault(locale);
+}
+
+void CDM_StepManager::slotRemoveActionsAfterStepExecuted()
+{
+    if(m_actionsManager != NULL)
+        m_actionsManager->clearActions();
+}
+

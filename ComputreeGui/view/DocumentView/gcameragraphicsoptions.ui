@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GCameraGraphicsOptions</class>
+ <widget class="QWidget" name="GCameraGraphicsOptions">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>960</width>
+    <height>37</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>624</width>
+    <height>27</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+     <item row="0" column="8">
+      <widget class="QPushButton" name="pushButtonSync">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton { color: red; }
+
+QPushButton:checked 
+{
+	color: green;
+}</string>
+       </property>
+       <property name="text">
+        <string>Sync</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="7">
+      <widget class="QPushButton" name="pushButtonInitCenter">
+       <property name="toolTip">
+        <string>Centrer la vue sur l'origine</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/center_on_0.png</normaloff>:/Icones/Icones/center_on_0.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QComboBox" name="comboBoxPointOfView">
+       <property name="maximumSize">
+        <size>
+         <width>40</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="19">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="6">
+      <widget class="QPushButton" name="pushButtonFixBarycenter">
+       <property name="toolTip">
+        <string>Centrer la vue sur le barycentre des éléments présents dans la vue</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/center_on_scene.png</normaloff>:/Icones/Icones/center_on_scene.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QPushButton" name="pushButtonFixBarycenterSelected">
+       <property name="toolTip">
+        <string>Centrer la vue sur le barycentre des éléments sélectionnés</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/center_on_cell.png</normaloff>:/Icones/Icones/center_on_cell.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="9">
+      <widget class="QToolButton" name="toolButtonCameraCoordinate">
+       <property name="minimumSize">
+        <size>
+         <width>33</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Vue personnalisée</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/camera.png</normaloff>:/Icones/Icones/camera.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QPushButton" name="pushButtonFitBB">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/fitBB.png</normaloff>:/Icones/Icones/fitBB.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../resource/icones.qrc"/>
+ </resources>
+ <connections/>
+</ui>

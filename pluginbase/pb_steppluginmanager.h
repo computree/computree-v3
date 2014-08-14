@@ -1,0 +1,65 @@
+/****************************************************************************
+
+ Copyright (C) 2010-2012 the Office National des Forêts (ONF), France
+                     and the Association de Recherche Technologie et Sciences (ARTS), Ecole Nationale Supérieure d'Arts et Métiers (ENSAM), Cluny, France.
+                     All rights reserved.
+
+ Contact : alexandre.piboule@onf.fr
+
+ Developers : Alexandre P
+
+ This file is part of PluginShared library 2.0.
+
+ PluginShared is free library: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ PluginShared is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with PluginShared.  If not, see <http://www.gnu.org/licenses/lgpl.html>.
+
+*****************************************************************************/
+
+
+#ifndef PB_STEPPLUGINMANAGER_H
+#define PB_STEPPLUGINMANAGER_H
+
+#include "ct_abstractstepplugin.h"
+#include "ct_log/ct_fileloglistener.h"
+
+class PB_StepPluginManager : public CT_AbstractStepPlugin
+{
+public:
+    PB_StepPluginManager();
+    ~PB_StepPluginManager();
+
+    QString getPluginURL() {return QString("http://rdinnovation.onf.fr:8080/projects/plugin-base");}
+
+    bool init();
+
+    QString getKeyForStep(Step &step) const;
+    Step* getStepFromKey(QString key) const;
+
+protected:
+
+    QSettings* initQSettings();
+
+    bool loadGenericsStep();
+    bool loadOpenFileStep();
+    bool loadCanBeAddedFirstStep();
+    bool loadActions();
+    bool loadExporters();
+    bool loadReaders();
+
+    bool loadAfterAllPluginsLoaded();
+
+private:
+    CT_FileLogListener m_fileLog;
+};
+
+#endif // PB_STEPPLUGINMANAGER_H

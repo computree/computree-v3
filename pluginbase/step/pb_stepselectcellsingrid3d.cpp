@@ -1,0 +1,235 @@
+#include "pb_stepselectcellsingrid3d.h"
+
+// Inclusion of in models
+#include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
+#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+
+// Inclusion of out models
+#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+
+// Inclusion of standard result class
+#include "ct_result/ct_resultgroup.h"
+
+// Inclusion of used ItemDrawable classes
+#include "ct_itemdrawable/abstract/ct_abstractgrid3d.h"
+#include "ct_itemdrawable/ct_grid3d.h"
+
+//Inclusion of actions
+#include "actions/pb_actionselectcellsingrid3d.h"
+#include "ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h"
+
+#include <QMessageBox>
+
+// Alias for indexing in models
+#define DEF_resultIn "result"
+#define DEF_groupIn "group"
+#define DEF_itemBaseGrid "basegrid"
+
+#define DEF_resultOut "result"
+#define DEF_outGroup "group"
+#define DEF_outBoolGrid "boolGrid"
+#define DEF_outFilteredGrid "filteredGrid"
+
+// Constructor : initialization of parameters
+PB_StepSelectCellsInGrid3D::PB_StepSelectCellsInGrid3D(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
+{
+    m_doc = NULL;
+    _refGrid = NULL;
+    _boolGrid = NULL;
+    setManual(true);
+}
+
+// Step description (tooltip of contextual menu)
+QString PB_StepSelectCellsInGrid3D::getStepDescription() const
+{
+    return "Séléction d'un ensemble de cases dans une grille";
+}
+
+// Step description (tooltip of contextual menu)
+QString PB_StepSelectCellsInGrid3D::getStepDetailledDescription() const
+{
+    return tr("Cette étape permet de générer une grille booléenne, représentant une séléction de cellules parmi celles de la grille de référence choisie en entrée.<br>"
+              "Elle utilise un actionner, permettant de faire des séléction soit par plans horizontaux 2D, soit directement en 3D.<br>"
+              "En sortie elle fournie également une copie de la grille d'entrée pour laquelle toute les cases non sélectionnées sont réinitialisées à la valeur 0. ");
+}
+
+// Step copy method
+CT_VirtualAbstractStep* PB_StepSelectCellsInGrid3D::createNewInstance(CT_StepInitializeData &dataInit)
+{
+    return new PB_StepSelectCellsInGrid3D(dataInit);
+}
+
+//////////////////// PROTECTED METHODS //////////////////
+
+// Creation and affiliation of IN models
+void PB_StepSelectCellsInGrid3D::createInResultModelListProtected()
+{
+    CT_InZeroOrMoreGroupModel *rootGroup = new CT_InZeroOrMoreGroupModel();
+
+    CT_InStdGroupModel *group = new CT_InStdGroupModel(DEF_groupIn);
+
+    CT_InStandardItemDrawableModel *baseGridModel = new CT_InStandardItemDrawableModel(DEF_itemBaseGrid,
+                                                                                       CT_AbstractGrid3D::staticGetType(),
+                                                                                       tr("Grille"));
+
+    group->addItem(baseGridModel);
+    rootGroup->addGroup(group);
+
+
+    CT_InResultModelGroup *resultInModel = new CT_InResultModelGroup(DEF_resultIn,
+                                                                     rootGroup,
+                                                                     tr("Result"),
+                                                                     tr(""),
+                                                                     false);
+
+    addInResultModel(resultInModel);
+}
+
+// Creation and affiliation of OUT models
+void PB_StepSelectCellsInGrid3D::createOutResultModelListProtected()
+{
+    CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel(DEF_outGroup);
+    CT_OutStdSingularItemModel *boolGridModel = new CT_OutStdSingularItemModel(DEF_outBoolGrid, new CT_Grid3D<bool>(), tr("Cases séléctionnées"));
+    groupModel->addItem(boolGridModel);
+
+    CT_InAbstractResultModel *resultInModel = getInResultModel(DEF_resultIn);
+
+    CT_OutAbstractResultModel* resultInModelOut = NULL;
+    CT_InAbstractItemDrawableModel* baseGridModel = NULL;
+    CT_AbstractSingularItemDrawable* itemPrototype = NULL;
+
+    // check if model have choice (can be empty if the step want to create a default out model list)
+    if(resultInModel->getPossibilitiesSavedChecked().size() > 0)
+        resultInModelOut = resultInModel->getPossibilitiesSavedChecked().first()->outModel();
+
+    if(resultInModelOut != NULL)
+        baseGridModel = (CT_InAbstractItemDrawableModel*)getInModelForResearch(resultInModelOut, DEF_itemBaseGrid);
+
+    if(baseGridModel != NULL)
+        itemPrototype = (CT_AbstractSingularItemDrawable*) ((CT_OutAbstractItemDrawableModel*) baseGridModel->getPossibilitiesSavedChecked().first()->outModel())->item()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);
+
+    // if we don't have a possibility and we don't create a default out model, there was a problem
+    if((itemPrototype == NULL) && !isCreateDefaultOutModelActive())
+        qFatal("Error creating out model in PB_StepSelectCellsInGrid3D");
+
+    CT_OutStdSingularItemModel *filteredGridModel = new CT_OutStdSingularItemModel(DEF_outFilteredGrid,
+                                                                                             itemPrototype,
+                                                                                             tr("Grille filtrée"));
+    groupModel->addItem(filteredGridModel);
+
+
+    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_resultOut, groupModel, tr("Grille filtrée"), tr("Grille filtrée"));
+
+    // Add OUT result
+    addOutResultModel(resultModel);
+}
+
+// Semi-automatic creation of step parameters DialogBox
+void PB_StepSelectCellsInGrid3D::createPostConfigurationDialog()
+{
+    // No parameter dialog for this step
+}
+
+void PB_StepSelectCellsInGrid3D::compute()
+{
+    m_doc = NULL;
+    m_status = 0;
+
+    CT_ResultGroup *resultIn = getInputResults().first();
+    CT_InAbstractGroupModel* groupInModel = (CT_InAbstractGroupModel*)getInModelForResearch(resultIn, DEF_groupIn);
+    CT_InAbstractItemDrawableModel* baseGridModel = (CT_InAbstractItemDrawableModel*)getInModelForResearch(resultIn, DEF_itemBaseGrid);
+
+    CT_ResultGroup *resultOut = getOutResultList().first();
+    CT_OutStdGroupModel* outGroupModel = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut, DEF_outGroup);
+    CT_OutStdSingularItemModel* boolGridModel = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut, DEF_outBoolGrid);
+    CT_OutStdSingularItemModel* filteredGridModel = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut, DEF_outFilteredGrid);
+
+    // create a list of itemdrawable to add in the document
+    CT_AbstractItemGroup *groupIn = resultIn->beginGroup(groupInModel);
+    if (groupIn!=NULL)
+    {
+        CT_AbstractGrid3D *baseGrid = (CT_AbstractGrid3D*) groupIn->findFirstItem(baseGridModel);
+        if (baseGrid!=NULL)
+        {
+            _boolGrid = new CT_Grid3D<bool>(boolGridModel, resultOut,
+                                            baseGrid->minX(), baseGrid->minY(), baseGrid->minZ(),
+                                            baseGrid->xdim(), baseGrid->ydim(), baseGrid->zdim(),
+                                            baseGrid->resolution(), false, false);
+            _refGrid = baseGrid;
+
+            CT_AbstractGrid3D *filteredGrid = (CT_AbstractGrid3D*) baseGrid->copy(filteredGridModel, resultOut, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableCompletely);
+
+            // request the manual mode
+            requestManualMode();
+
+            m_status = 1;
+            requestManualMode();
+
+            // Filter output grid, copied from reference grid
+            for (size_t i = 0 ; i < _refGrid->nCells() ; i++)
+            {
+                if (!_boolGrid->valueAtIndex(i))
+                {
+                    filteredGrid->setValueAtIndexFromDouble(i, 0);
+                }
+            }
+
+            CT_StandardItemGroup* outGroup = new CT_StandardItemGroup(outGroupModel, resultOut);
+            outGroup->addItemDrawable(_boolGrid);
+            outGroup->addItemDrawable(filteredGrid);
+            resultOut->addGroup(outGroup);
+        }
+    }
+
+}
+
+void PB_StepSelectCellsInGrid3D::initManualMode()
+{
+    if(m_doc == NULL)
+    {
+        // create a new 3D document
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
+
+        PB_ActionSelectCellsInGrid3D *action = new PB_ActionSelectCellsInGrid3D(_refGrid, _boolGrid);
+
+        // check if don't exist in the action manager
+        if(!getGuiContext()->actionsManager()->existAction(action->uniqueName()))
+        {
+            // if not we add it to the manager. The action is deleted by the manager.
+            getGuiContext()->actionsManager()->addAction(action);
+        }
+
+        // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
+        m_doc->setCurrentAction(action);
+    }
+
+    m_doc->removeAllItemDrawable();
+
+    QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette étape de filtrage.\n"
+                                                         "Seuls les voxels séléctionés (Rouges) seront conservés.\n"
+                                                         "Laisser la souris au-dessus d'un bouton pour avoir des infos."), QMessageBox::Ok);
+}
+
+void PB_StepSelectCellsInGrid3D::useManualMode(bool quit)
+{
+    if(m_status == 0)
+    {
+        if(quit)
+        {
+            // nothing to do, _boolGrid has already been modified in manual mode
+        }
+    }
+    else if(m_status == 1)
+    {
+        if(!quit)
+        {
+            getGuiContext()->documentManager()->closeDocument(m_doc);
+            m_doc = NULL;
+
+            quitManualMode();
+        }
+    }
+}

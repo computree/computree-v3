@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/select_rectangular.png</file>
+        <file>icons/info.png</file>
+        <file>icons/extends.png</file>
+        <file>icons/moins.png</file>
+        <file>icons/move.png</file>
+        <file>icons/plus.png</file>
+        <file>icons/show_all.png</file>
+        <file>icons/show_selected.png</file>
+        <file>icons/colonize.png</file>
+        <file>icons/level.png</file>
+        <file>icons/thickness.png</file>
+        <file>icons/copy_all.png</file>
+        <file>icons/copy_upwards.png</file>
+        <file>icons/interrupteur_2D.png</file>
+        <file>icons/interrupteur_3D.png</file>
+        <file>icons/grid_off.png</file>
+        <file>icons/grid_on.png</file>
+        <file>icons/center_on_cell.png</file>
+        <file>icons/colonize_param.png</file>
+        <file>icons/side_view.png</file>
+        <file>icons/limits.png</file>
+        <file>icons/view-refresh.png</file>
+        <file>icons/fill.png</file>
+        <file>icons/pencil.png</file>
+        <file>icons/pipette.png</file>
+        <file>icons/red.png</file>
+        <file>icons/border.png</file>
+        <file>icons/redo.png</file>
+        <file>icons/undo.png</file>
+        <file>icons/merge.png</file>
+        <file>icons/fillMode_full.png</file>
+        <file>icons/fillMode_std.png</file>
+        <file>icons/cancel.png</file>
+        <file>icons/ok.png</file>
+        <file>icons/cursor.png</file>
+        <file>icons/cursor_multi.png</file>
+        <file>icons/cursor_remove.png</file>
+        <file>icons/cursor_remove_multi.png</file>
+        <file>icons/cursor_add.png</file>
+        <file>icons/cursor_multi_add.png</file>
+    </qresource>
+</RCC>
