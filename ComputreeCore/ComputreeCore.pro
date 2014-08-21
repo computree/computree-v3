@@ -2,6 +2,7 @@ include(../common.pri)
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
+CONFIG -= plugin
 TARGET = CompuTreeCore
 TEMPLATE = lib
 
@@ -11,7 +12,7 @@ contains ( QT_VERSION, "^5.*" ) {
     QT *= widgets
 }
 
-DESTDIR = $${COMPUTREE_CORE_DESTDIR}
+DESTDIR = $${COMPUTREE_DESTDIR}
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 UI_DIR  = .ui
