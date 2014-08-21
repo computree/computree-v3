@@ -29,7 +29,6 @@
 #define CT_GRID3D_H
 
 #include "ct_itemdrawable/abstract/ct_abstractgrid3d.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata3darray.h"
 
 #include "ct_math/ct_math.h"
@@ -81,7 +80,7 @@ public:
      * \param na Value used to code NA
      * \param initValue Initialisation value for grid cells
      */
-    CT_Grid3D(const CT_OutAbstractItemModel *model,
+    CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
               float xmin,
               float ymin,
@@ -122,7 +121,7 @@ public:
      * \param initValue Initialisation value for grid cells
      * \param coordConstructor Not used, only to ensure constructor different signatures
      */
-    static CT_Grid3D<DataT>* createGrid3DFromXYZCoords(const CT_OutAbstractItemModel *model,
+    static CT_Grid3D<DataT>* createGrid3DFromXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                           const CT_AbstractResult *result,
                                                           float xmin,
                                                           float ymin,
@@ -383,15 +382,16 @@ protected:
     DataT       _dataMin;           /*!< valeur minimale du grid*/
     std::vector<DataT> _data;       /*!< Tableau contenant les donnees pour chaque case de la grille*/
 
-    CT_USE_DEFAULT_IA(CT_Grid3D<DataT>)
-    CT_DEFAULT_IA_V2(0, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_Grid3D<DataT>::xdim, tr("X dimension"))
-    CT_DEFAULT_IA_V2(1, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_Grid3D<DataT>::ydim, tr("Y dimension"))
-    CT_DEFAULT_IA_V2(2, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Z_DIMENSION, &CT_Grid3D<DataT>::zdim, tr("Z dimension"))
-    CT_DEFAULT_IA_V2(3, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_X, &CT_Grid3D<DataT>::minX, tr("X min"))
-    CT_DEFAULT_IA_V2(4, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Y, &CT_Grid3D<DataT>::minY, tr("Y min"))
-    CT_DEFAULT_IA_V2(5, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Z, &CT_Grid3D<DataT>::minZ, tr("Z min"))
-    CT_DEFAULT_IA_V2(6, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Grid3D<DataT>::resolution, tr("Resolution"))
-    CT_DEFAULT_IA_V2(7, CT_Grid3D<DataT>, CT_AbstractCategory::DATA_NA, &CT_Grid3D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_BEGIN(CT_Grid3D<DataT>)
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_Grid3D<DataT>::xdim, tr("X dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_Grid3D<DataT>::ydim, tr("Y dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Z_DIMENSION, &CT_Grid3D<DataT>::zdim, tr("Z dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_X, &CT_Grid3D<DataT>::minX, tr("X min"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Y, &CT_Grid3D<DataT>::minY, tr("Y min"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_Z, &CT_Grid3D<DataT>::minZ, tr("Z min"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Grid3D<DataT>::resolution, tr("Resolution"))
+    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::DATA_NA, &CT_Grid3D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_END(CT_Grid3D<DataT>)
 
     const static CT_StandardGrid3DDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;
 

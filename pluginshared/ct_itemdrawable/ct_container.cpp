@@ -223,6 +223,14 @@ QList<CT_ItemDrawableConfiguration*> CT_Container::getDependantViewConfiguration
     return liste;
 }
 
+void CT_Container::internalSetWillBeRemovedFromResult(const CT_AbstractResult *res)
+{
+    QListIterator<CT_AbstractItemDrawable*> it(_list);
+
+    while(it.hasNext())
+        CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(it.next(), res);
+}
+
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_Container)
 #endif

@@ -1,4 +1,6 @@
 include(../common.pri)
+include(../shared.pri)
+include($${PLUGIN_SHARED_DIR}/include.pri)
 
 TARGET = CompuTreeCore
 TEMPLATE = lib
@@ -19,9 +21,8 @@ DEFINES += COMPUTREECORE_LIBRARY
 
 INCLUDEPATH += ./
 INCLUDEPATH += ./src
-INCLUDEPATH += $${PLUGIN_SHARED_DIR}
 
-HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
+HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     src/cdm_configfile.h \
     computreeCore_global.h \
     src/cdm_stepmanageroptions.h \

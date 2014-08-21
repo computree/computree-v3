@@ -56,7 +56,7 @@ protected:
     int _columnNZ;                            /*!< Numéro de colonne où trouver la normale (Z)*/
     bool _firstCall;
 
-    QList<CT_OutAbstractItemDrawableModel*> createOtherOutResultListProtected(const QString &sceneModelName);
+    QList<CT_OutAbstractSingularItemModel*> createOtherOutResultListProtected(const QString &sceneModelName);
 
     int readHeaderFile(QFile &f);
     void readDataFile(QFile &f, int offset, bool little_endian = false);

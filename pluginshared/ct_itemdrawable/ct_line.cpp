@@ -26,27 +26,18 @@
 *****************************************************************************/
 
 #include "ct_line.h"
-#include "ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 #include "math.h"
 
 const CT_StandardLineDrawManager CT_Line::LINE_DRAW_MANAGER;
 
-CT_INIT_DEFAULT_IA(0, CT_Line)
-CT_INIT_DEFAULT_IA(1, CT_Line)
-CT_INIT_DEFAULT_IA(2, CT_Line)
-CT_INIT_DEFAULT_IA(3, CT_Line)
-CT_INIT_DEFAULT_IA(4, CT_Line)
-CT_INIT_DEFAULT_IA(5, CT_Line)
-CT_INIT_DEFAULT_IA(6, CT_Line)
-CT_INIT_DEFAULT_IA(7, CT_Line)
+CT_DEFAULT_IA_INIT(CT_Line)
 
 CT_Line::CT_Line() : CT_AbstractShape()
 {
     setBaseDrawManager(&LINE_DRAW_MANAGER);
 }
 
-CT_Line::CT_Line(const CT_OutAbstractItemModel *model,
+CT_Line::CT_Line(const CT_OutAbstractSingularItemModel *model,
                  const CT_AbstractResult *result,
                  CT_LineData *data) : CT_AbstractShape(model, result, data)
 {
@@ -90,7 +81,7 @@ CT_AbstractItemDrawable* CT_Line::copy(const CT_OutAbstractItemModel *model,
                                        CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Line *line = new CT_Line(model, result, (getPointerData() != NULL) ? ((const CT_LineData&)getData()).clone() : NULL);
+    CT_Line *line = new CT_Line((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_LineData&)getData()).clone() : NULL);
     line->setId(id());
 
     line->setAlternativeDrawManager(getAlternativeDrawManager());
@@ -98,7 +89,7 @@ CT_AbstractItemDrawable* CT_Line::copy(const CT_OutAbstractItemModel *model,
     return line;
 }
 
-CT_Line* CT_Line::staticCreateLineFromPointCloud(const CT_OutAbstractItemModel *model,
+CT_Line* CT_Line::staticCreateLineFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                  quint64 id,
                                                  const CT_AbstractResult *result,
                                                  const CT_AbstractPointCloud &pointCloud,
@@ -111,7 +102,7 @@ CT_Line* CT_Line::staticCreateLineFromPointCloud(const CT_OutAbstractItemModel *
     if(data == NULL)
         return NULL;
 
-    return new CT_Line(model, result, data);
+    return new CT_Line((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
 
 #ifdef USE_BOOST_OLD

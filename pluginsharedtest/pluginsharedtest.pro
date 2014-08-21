@@ -20,8 +20,12 @@ TEMPLATE = app
 
 SOURCES += \
     main.cpp \
-    tst_modeltest.cpp
+    tst_modeltest.cpp \
+    steptest.cpp \
+    cloudtest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
-    tst_modeltest.h
+    tst_modeltest.h \
+    steptest.h \
+    cloudtest.h

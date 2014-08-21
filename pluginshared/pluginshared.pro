@@ -128,10 +128,6 @@ SOURCES += \
     ct_tools/model/ct_generateoutmodelname.cpp \
     ct_itemdrawable/tools/ct_standardcontext.cpp \
     ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp \
-    ct_itemdrawable/tools/ct_abstractitemdataref.cpp \
-    ct_itemdrawable/tools/ct_standarditemdataref.cpp \
-    ct_itemdrawable/tools/ct_abstractitemdatavalue.cpp \
-    ct_itemdrawable/tools/ct_standarditemdatareflist.cpp \
     ct_itemdrawable/ct_referencepoint.cpp \
     ct_view/tools/ct_textfileconfigurationdialog.cpp \
     ct_math/ct_math2dlines.cpp \
@@ -279,7 +275,6 @@ SOURCES += \
     ct_exporter/abstract/ct_abstractexporterattributesselection.cpp \
     ct_tools/itemdrawable/abstract/ct_abstractitemdrawablecollectionbuilder.cpp \
     ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp \
-    ct_itemdrawable/tools/ct_standarditemdatavalue.cpp \
     ct_itemdrawable/ct_polygon2d.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.cpp \
     ct_shapedata/ct_polygon2ddata.cpp \
@@ -307,7 +302,6 @@ SOURCES += \
     ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.cpp \
     ct_result/tools/iterator/ct_resultgroupiterator.cpp \
     ct_result/tools/iterator/ct_resultitemiterator.cpp \
-    ct_result/tools/iterator/ct_resultiteratorforgui.cpp \
     ct_tools/ct_mimedata.cpp \
     ct_categories/abstract/ct_abstractcategory.cpp \
     ct_categories/ct_stdcategory.cpp \
@@ -334,7 +328,10 @@ SOURCES += \
     ct_result/model/outModel/abstract/ct_outabstractresultmodelgroup.cpp \
     ct_attributes/tools/ct_defaultitemattributemanager.cpp \
     ct_result/model/inModel/tools/ct_instdresultmodelpossibility.cpp \
-    ct_itemdrawable/abstract/ct_abstractmeshmodel.cpp
+    ct_itemdrawable/abstract/ct_abstractmeshmodel.cpp \
+    ct_result/tools/iterator/ct_resultiterator.cpp \
+    ct_item/abstract/ct_abstractitem.cpp \
+    ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -435,10 +432,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/ct_standardcontext.h \
     ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h \
     interfacessettings.h \
-    ct_itemdrawable/tools/ct_abstractitemdataref.h \
-    ct_itemdrawable/tools/ct_standarditemdataref.h \
-    ct_itemdrawable/tools/ct_abstractitemdatavalue.h \
-    ct_itemdrawable/tools/ct_standarditemdatareflist.h \
     ct_itemdrawable/ct_referencepoint.h \
     ct_shapedata/ct_linedata.hpp \
     ct_view/tools/ct_textfileconfigurationdialog.h \
@@ -627,13 +620,6 @@ HEADERS += interfaces.h \
     ct_exporter/abstract/ct_abstractexporterattributesselection.h \
     ct_tools/itemdrawable/abstract/ct_abstractitemdrawablecollectionbuilder.h \
     ct_exporter/abstract/ct_abstractexporterpointattributesselection.h \
-    ct_tools/itemdrawable/abstract/ct_abstractitemdatavaluedelegate.h \
-    ct_tools/itemdrawable/ct_standarditemdatavaluedelegatet.h \
-    ct_tools/itemdrawable/ct_standardglobalclouditemdatavaluedelegatet.h \
-    ct_itemdrawable/tools/ct_standarditemdatavaluet.h \
-    ct_itemdrawable/tools/ct_standarditemdatavaluet.hpp \
-    ct_itemdrawable/tools/ct_standarditemdatavalue.h \
-    ct_tools/itemdrawable/ct_standarditemdatavaluedelegatestatict.h \
     ct_tools/ct_numerictostringconversiont.h \
     ct_tools/ct_stringtonumericconversion.h \
     ct_itemdrawable/ct_polygon2d.h \
@@ -643,8 +629,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_metrict.h \
     ct_itemdrawable/ct_metrict.hpp \
     ct_itemdrawable/ct_affiliationid.h \
-    ct_tools/itemdrawable/ct_idvdcreator.h \
-    ct_tools/itemdrawable/ct_standardarraytitemdatavaluedelegatet.h \
     ct_itemdrawable/abstract/ct_abstractprofile.h \
     ct_itemdrawable/ct_profile.h \
     ct_itemdrawable/ct_profile.hpp \
@@ -671,7 +655,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.h \
     ct_result/tools/iterator/ct_resultgroupiterator.h \
     ct_result/tools/iterator/ct_resultitemiterator.h \
-    ct_result/tools/iterator/ct_resultiteratorforgui.h \
     ct_cloudindex/ct_cloudindexstdlistt.h \
     ct_cloudindex/ct_cloudindexstdlistt.hpp \
     ct_cloudindex/ct_cloudindexstdmapt.h \
@@ -725,7 +708,10 @@ HEADERS += interfaces.h \
     ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h \
     ct_result/model/inModel/tools/ct_instdresultmodelpossibility.h \
     ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h \
-    ct_itemdrawable/abstract/ct_abstractmeshmodel.h
+    ct_itemdrawable/abstract/ct_abstractmeshmodel.h \
+    ct_result/tools/iterator/ct_resultiterator.h \
+    ct_item/abstract/ct_abstractitem.h \
+    ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step

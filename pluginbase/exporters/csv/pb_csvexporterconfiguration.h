@@ -4,26 +4,27 @@
 #include <QList>
 #include <QPair>
 
-class IItemDataRefList;
-class IItemDataRef;
+class CT_OutAbstractSingularItemModel;
+class CT_OutAbstractItemAttributeModel;
 
 class PB_CSVExporterConfiguration
 {
 public:
-    PB_CSVExporterConfiguration(const QList<const IItemDataRefList*> &list);
+    PB_CSVExporterConfiguration(const QList<CT_OutAbstractSingularItemModel*> &list);
 
-    void setList(const QList<const IItemDataRefList*> &list);
+    void setList(const QList<CT_OutAbstractSingularItemModel*> &list);
+    const QList<CT_OutAbstractSingularItemModel*>& list() const;
 
-    void addColumn(const IItemDataRefList *refList, IItemDataRef *ref);
+    void addColumn(const CT_OutAbstractSingularItemModel *sItem, const CT_OutAbstractItemAttributeModel *ia);
 
-    const QList< QPair<const IItemDataRefList*, const IItemDataRef*> >& getColumns() const;
+    const QList< QPair<CT_OutAbstractSingularItemModel*, CT_OutAbstractItemAttributeModel*> >& getColumns() const;
 
     void clearColumns();
 
 private:
 
-    QList<const IItemDataRefList *>                                 _list;
-    QList< QPair<const IItemDataRefList*, const IItemDataRef*> >    _columns;
+    QList<CT_OutAbstractSingularItemModel*>                                                 _list;
+    QList< QPair<CT_OutAbstractSingularItemModel*, CT_OutAbstractItemAttributeModel*> >     _columns;
 };
 
 #endif // PB_CSVEXPORTERCONFIGURATION_H

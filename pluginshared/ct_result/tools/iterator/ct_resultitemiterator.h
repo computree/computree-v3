@@ -16,7 +16,7 @@ class CT_TreeStructureForIterator;
 /**
  * @brief Class tools to iterate over itemdrawable in result
  *
- * @warning Be careful that if groups of the result or itemdrawable is changed the iterator can returns undefined results
+ * @warning Be careful that if groups of the result or itemdrawable is changed (deleted per example) the iterator can returns undefined results
  */
 class PLUGINSHAREDSHARED_EXPORT CT_ResultItemIterator
 {

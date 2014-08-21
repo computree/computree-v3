@@ -51,7 +51,7 @@ public:
      * @warning The model and/or the result can be NULL but you must set them with method "setModel()" and "changeResult()" before finish
      *          your step computing !!!
      */
-    CT_Scene(const CT_OutAbstractItemModel *model,
+    CT_Scene(const CT_OutAbstractSingularItemModel *model,
              const CT_AbstractResult *result);
 
     /**
@@ -63,7 +63,7 @@ public:
      * @param pcir : a point cloud registered to the repository. You can pass a point cloud registered by another ItemDrawable if you
      *               want because sharing is managed automatically.
      */
-    CT_Scene(const CT_OutAbstractItemModel *model,
+    CT_Scene(const CT_OutAbstractSingularItemModel *model,
              const CT_AbstractResult *result,
              CT_AbstractCIR pcir);
 

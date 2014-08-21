@@ -211,7 +211,7 @@ void PB_ActionSelectItemDrawableGV::drawOverlay(GraphicsViewInterface &view, QPa
     }
 }
 
-ActionInterface* PB_ActionSelectItemDrawableGV::copy() const
+CT_AbstractAction* PB_ActionSelectItemDrawableGV::copy() const
 {
     return new PB_ActionSelectItemDrawableGV();
 }

@@ -63,11 +63,6 @@ public:
     void finishSaveCycle();
 
     /**
-     * @brief Undo the last save cycle from this model and its childrens
-     */
-    void recursiveUndoSaveCycle();
-
-    /**
      * @brief Returns the number of save cycle created
      */
     int nSaveCycle() const;
@@ -347,6 +342,8 @@ private:
 
     QList< CT_InModelSaveCycle >            m_saveCycles;
     CT_InStdModelPossibilityGroup           *m_possibilitiesGroup;
+
+    int                                     m_nPossibilitiesWithoutSaving;
 
     /**
      * @brief Find one/all possibilities in the out model for this model and its children

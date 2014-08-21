@@ -875,7 +875,7 @@ void PB_ActionSegmentGaps::drawOverlay(GraphicsViewInterface &view, QPainter &pa
     Q_UNUSED(painter);
 }
 
-ActionInterface* PB_ActionSegmentGaps::copy() const
+CT_AbstractAction *PB_ActionSegmentGaps::copy() const
 {
     return new PB_ActionSegmentGaps(_densityGrid, _mnsGrid, _clustersGrid);
 }

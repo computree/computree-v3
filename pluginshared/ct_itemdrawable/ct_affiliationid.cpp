@@ -26,10 +26,8 @@
 *****************************************************************************/
 
 #include "ct_itemdrawable/ct_affiliationid.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 
-CT_INIT_DEFAULT_IA(0, CT_AffiliationID)
+CT_DEFAULT_IA_INIT(CT_AffiliationID)
 
 size_t CT_AffiliationID::LASTID = 0;
 
@@ -38,13 +36,13 @@ CT_AffiliationID::CT_AffiliationID() : CT_AbstractItemDrawableWithoutPointCloud(
     _value = 0;
 }
 
-CT_AffiliationID::CT_AffiliationID(const CT_OutAbstractItemModel *model,
+CT_AffiliationID::CT_AffiliationID(const CT_OutAbstractSingularItemModel *model,
                                    CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _value = ++LASTID;
 }
 
-CT_AffiliationID::CT_AffiliationID(const CT_OutAbstractItemModel *model,
+CT_AffiliationID::CT_AffiliationID(const CT_OutAbstractSingularItemModel *model,
                                    const CT_AbstractResult *result,
                                    size_t value) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
@@ -88,7 +86,7 @@ CT_AbstractItemDrawable* CT_AffiliationID::copy(const CT_OutAbstractItemModel *m
 {
     Q_UNUSED(copyModeList);
 
-    CT_AffiliationID* cpy = new CT_AffiliationID(model, result, _value);
+    CT_AffiliationID* cpy = new CT_AffiliationID((const CT_OutAbstractSingularItemModel *)model, result, _value);
     cpy->setId(this->id());
     cpy->setValue(_value);
 

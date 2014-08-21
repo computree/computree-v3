@@ -32,11 +32,11 @@ CT_AbstractProfile::CT_AbstractProfile() : CT_AbstractItemDrawableWithoutPointCl
 {
 }
 
-CT_AbstractProfile::CT_AbstractProfile(const CT_OutAbstractItemModel *model, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractProfile::CT_AbstractProfile(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 }
 
-CT_AbstractProfile::CT_AbstractProfile(const QString &modelName, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+CT_AbstractProfile::CT_AbstractProfile(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
 }
 

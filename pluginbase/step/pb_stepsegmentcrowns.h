@@ -4,8 +4,8 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_tools/model/ct_autorenamemodels.h"
 
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_triangulation/ct_delaunayt.h"
 

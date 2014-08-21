@@ -30,16 +30,16 @@ void PB_ASCRGBExporter::init()
     addNewExportFormat(FileFormat("asc", tr("Fichier asc")));
 }
 
-bool PB_ASCRGBExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_ASCRGBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(dynamic_cast<CT_IAccessPointCloud*>(item) != NULL)
             myList.append(item);
@@ -54,7 +54,7 @@ bool PB_ASCRGBExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list
     return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
-IExporter* PB_ASCRGBExporter::copy() const
+CT_AbstractExporter* PB_ASCRGBExporter::copy() const
 {
     return new PB_ASCRGBExporter();
 }
@@ -75,9 +75,8 @@ bool PB_ASCRGBExporter::protectedExportToFile()
 
         txtStream << "X Y Z R G B\n";
 
-        IColorCloud *cc = createColorCloudBeforeExportToFile();
+        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
 
-        quint8 *bgra;
         float r = 1;
         float g = 1;
         float b = 1;
@@ -86,13 +85,13 @@ bool PB_ASCRGBExporter::protectedExportToFile()
         int nExported = 0;
 
         // write data
-        QListIterator<ItemDrawable*> it(itemDrawableToExport());
+        QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
-            const CT_AbstractPointCloudIndex *constPCIndex = dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex();
+            const CT_AbstractPointCloudIndex *constPCIndex = ((CT_IAccessPointCloud*)item)->getPointCloudIndex();
 
             size_t totalSize = constPCIndex->size();
             size_t i = 0;
@@ -114,10 +113,10 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                 }
                 else
                 {
-                    bgra = cc->valueAt(begin.cIndex());
-                    r = (quint16)bgra[0] / 255.0;
-                    g = (quint16)bgra[1] / 255.0;
-                    b = (quint16)bgra[2] / 255.0;
+                    const CT_Color &co = cc->constColorAt(begin.cIndex());
+                    r = (quint16)co.r / 255.0;
+                    g = (quint16)co.g / 255.0;
+                    b = (quint16)co.b / 255.0;
 
                     txtStream << r << " ";
                     txtStream << g << " ";

@@ -80,7 +80,6 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             bool filter = m_filterRadius > 0;
 
             QTextStream stream(&f);
-            qint64 fileSize = f.size();
 
             CT_AbstractUndefinedSizePointCloud* pointCloud = PS_REPOSITORY->createNewUndefinedSizePointCloud();
             CT_ColorCloudStdVector *colorCloud = new CT_ColorCloudStdVector(false);

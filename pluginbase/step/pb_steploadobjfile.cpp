@@ -2,8 +2,8 @@
 
 #include "ct_global/ct_context.h"
 
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_result/ct_resultgroup.h"
@@ -12,6 +12,8 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 #include "ct_mesh/tools/ct_meshallocatort.h"
+
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -101,7 +103,7 @@ void PB_StepLoadObjFile::compute()
 {
     CT_ResultGroup *out_res = getOutResultList().at(0);
 
-    CT_OutAbstractItemModel *meshModel = getOutModelForCreation(out_res, DEF_SearchMesh);
+    CT_OutAbstractSingularItemModel *meshModel = getOutSingularItemModelForCreation(out_res, DEF_SearchMesh);
 
     CT_Mesh *mesh = new CT_Mesh();
 

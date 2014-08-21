@@ -5,7 +5,7 @@ CT_AbstractFaceAttributes::CT_AbstractFaceAttributes() : CT_AbstractAttributes()
     m_aci = NULL;
 }
 
-CT_AbstractFaceAttributes::CT_AbstractFaceAttributes(const CT_OutAbstractItemModel *model,
+CT_AbstractFaceAttributes::CT_AbstractFaceAttributes(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
                                                      CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir) : CT_AbstractAttributes(model, result)
 {

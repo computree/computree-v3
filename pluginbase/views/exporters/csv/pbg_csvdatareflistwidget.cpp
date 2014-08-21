@@ -1,7 +1,8 @@
 #include "pbg_csvdatareflistwidget.h"
 #include "ui_pbg_csvdatareflistwidget.h"
 
-#include "interfaces.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 
 #include <QMimeData>
 #include <QModelIndex>
@@ -11,9 +12,7 @@ QMimeData* PBG_CSVDataRefListWidgetDragModel::mimeData(const QModelIndexList &in
     QMimeData* mimeData = QStandardItemModel::mimeData(indexes);
 
     if(!indexes.isEmpty())
-    {
         mimeData->setText(indexes.first().data(Qt::UserRole+1).toString());
-    }
 
     return mimeData;
 }
@@ -37,12 +36,9 @@ PBG_CSVDataRefListWidget::~PBG_CSVDataRefListWidget()
     delete ui;
 }
 
-void PBG_CSVDataRefListWidget::setListOfDataRefList(const QList<const IItemDataRefList*> *list)
+void PBG_CSVDataRefListWidget::setList(const QList<CT_OutAbstractSingularItemModel*> &list)
 {
-    if(list == NULL)
-        _list.clear();
-    else
-        _list = (*list);
+    _list = list;
 
     initView();
 }
@@ -70,23 +66,23 @@ void PBG_CSVDataRefListWidget::initView()
 {
     _model.invisibleRootItem()->removeRows(0, _model.invisibleRootItem()->rowCount());
 
-    QListIterator<const IItemDataRefList*> it(_list);
+    QListIterator<CT_OutAbstractSingularItemModel*> it(_list);
 
     while(it.hasNext())
     {
-        const IItemDataRefList *refList = it.next();
+        CT_OutAbstractSingularItemModel *sItem = it.next();
 
-        QList<QStandardItem*> items = createItemsForIItemDataRefList(refList);
+        QList<QStandardItem*> items = createItemsForSingularItem(sItem);
 
         _model.invisibleRootItem()->appendRow(items);
 
         QStandardItem *item = items.first();
 
-        QListIterator<IItemDataRef*> itR(refList->references());
+        QListIterator<CT_OutAbstractItemAttributeModel*> itR(sItem->itemAttributes());
 
         while(itR.hasNext())
         {
-            QList<QStandardItem*> items = createItemsForIItemDataRef(refList, itR.next());
+            QList<QStandardItem*> items = createItemsForItemAttribute(sItem, itR.next());
 
             item->appendRow(items);
         }
@@ -95,11 +91,11 @@ void PBG_CSVDataRefListWidget::initView()
     ui->treeView->expandAll();
 }
 
-QList<QStandardItem*> PBG_CSVDataRefListWidget::createItemsForIItemDataRefList(const IItemDataRefList *list) const
+QList<QStandardItem*> PBG_CSVDataRefListWidget::createItemsForSingularItem(const CT_OutAbstractSingularItemModel *sModel) const
 {
     QList<QStandardItem*> items;
 
-    QStandardItem *item = new QStandardItem(list->name());
+    QStandardItem *item = new QStandardItem(sModel->displayableName());
     item->setEditable(false);
     item->setDragEnabled(false);
     items.append(item);
@@ -107,81 +103,22 @@ QList<QStandardItem*> PBG_CSVDataRefListWidget::createItemsForIItemDataRefList(c
     return items;
 }
 
-QList<QStandardItem*> PBG_CSVDataRefListWidget::createItemsForIItemDataRef(const IItemDataRefList *refList,
-                                                                           const IItemDataRef *ref) const
+QList<QStandardItem*> PBG_CSVDataRefListWidget::createItemsForItemAttribute(const CT_OutAbstractSingularItemModel *sModel,
+                                                                            const CT_OutAbstractItemAttributeModel *iaModel) const
 {
     QList<QStandardItem*> items;
 
-    // drag data = index du IItemDataRefList dans la liste ;; index de la référence dans la liste de IItemDataRefList
-    QString dragText = QString("%1;;%2").arg(_list.indexOf(refList)).arg(refList->references().indexOf((IItemDataRef*)ref));
+    // drag data = index du modèle de l'item dans la liste ;; index du modèle de l'attribute dans la liste des attributs d'item
+    QString dragText = QString("%1;;%2").arg(_list.indexOf((CT_OutAbstractSingularItemModel*)sModel)).arg(sModel->itemAttributes().indexOf((CT_OutAbstractItemAttributeModel*)iaModel));
 
-
-    QStandardItem *item = new QStandardItem(ref->displayableName());
+    QStandardItem *item = new QStandardItem(iaModel->displayableName());
     item->setEditable(false);
     item->setDragEnabled(true);
     item->setData(dragText, Qt::UserRole+1);
 
     items.append(item);
 
-    if(ref->dataType() == IItemDataValue::IDVT_BOOL)
-        item = new QStandardItem(tr("Bool"));
-    else if(ref->dataType() == IItemDataValue::IDVT_INT)
-        item = new QStandardItem(tr("Int"));
-    else if(ref->dataType() == IItemDataValue::IDVT_UINT64)
-        item = new QStandardItem(tr("Int64"));
-    else if(ref->dataType() == IItemDataValue::IDVT_SIZE_T)
-        item = new QStandardItem(tr("SizeT"));
-    else if(ref->dataType() == IItemDataValue::IDVT_DOUBLE)
-        item = new QStandardItem(tr("Double"));
-    else if(ref->dataType() == IItemDataValue::IDVT_LONG_DOUBLE)
-        item = new QStandardItem(tr("Long Double"));
-    else if(ref->dataType() == IItemDataValue::IDVT_FLOAT)
-        item = new QStandardItem(tr("Float"));
-    else if(ref->dataType() == IItemDataValue::IDVT_STRING)
-        item = new QStandardItem(tr("String"));
-    else if(ref->dataType() == IItemDataValue::IDVT_INT_LIST)
-        item = new QStandardItem(tr("IntList"));
-    else if(ref->dataType() == IItemDataValue::IDVT_DOUBLE_LIST)
-        item = new QStandardItem(tr("DoubleList"));
-    else if(ref->dataType() == IItemDataValue::IDVT_FLOAT_LIST)
-        item = new QStandardItem(tr("FloatList"));
-    else if(ref->dataType() == IItemDataValue::IDVT_STRING_LIST)
-        item = new QStandardItem(tr("StringList"));
-    else if(ref->dataType() == IItemDataValue::IDVT_BOOL_1D_ARRAY)
-        item = new QStandardItem(tr("Bool 1D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_INT_1D_ARRAY)
-        item = new QStandardItem(tr("Int 1D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_DOUBLE_1D_ARRAY)
-        item = new QStandardItem(tr("Double 1D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_FLOAT_1D_ARRAY)
-        item = new QStandardItem(tr("Float 1D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_STRING_1D_ARRAY)
-        item = new QStandardItem(tr("String 1D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_BOOL_2D_ARRAY)
-        item = new QStandardItem(tr("Bool 2D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_INT_2D_ARRAY)
-        item = new QStandardItem(tr("Int 2D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_DOUBLE_2D_ARRAY)
-        item = new QStandardItem(tr("Double 2D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_FLOAT_2D_ARRAY)
-        item = new QStandardItem(tr("Float 2D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_STRING_2D_ARRAY)
-        item = new QStandardItem(tr("String 2D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_BOOL_3D_ARRAY)
-        item = new QStandardItem(tr("Bool 3D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_INT_3D_ARRAY)
-        item = new QStandardItem(tr("Int 3D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_DOUBLE_3D_ARRAY)
-        item = new QStandardItem(tr("Double 3D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_FLOAT_3D_ARRAY)
-        item = new QStandardItem(tr("Float 3D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_STRING_3D_ARRAY)
-        item = new QStandardItem(tr("String 3D Array"));
-    else if(ref->dataType() == IItemDataValue::IDVT_POINT_CLOUD_DATA)
-        item = new QStandardItem(tr("PointCloudData"));
-    else
-        item = new QStandardItem(tr("Unknown"));
-
+    item = new QStandardItem(iaModel->itemAttribute()->typeToString());
     item->setEditable(false);
     item->setDragEnabled(true);
     item->setData(dragText, Qt::UserRole+1);

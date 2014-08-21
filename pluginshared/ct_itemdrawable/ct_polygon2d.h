@@ -52,7 +52,7 @@ public:
     /**
       * \brief Contructeur avec une instance des donnes (CT_Polygon2DData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_Polygon2D(const CT_OutAbstractItemModel *model,
+    CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result,
                 CT_Polygon2DData *data);
 
@@ -77,9 +77,9 @@ public:
 private:
     const static CT_StandardPolygon2DDrawManager POLYGON2D_DRAW_MANAGER;
 
-    CT_USE_DEFAULT_IA(CT_Polygon2D)
-    CT_DEFAULT_IA_V2(0, CT_Polygon2D, CT_AbstractCategory::DATA_SIZE, &CT_Polygon2D::getNumberOfVertices, tr("Number Of Vertices"))
-
+    CT_DEFAULT_IA_BEGIN(CT_Polygon2D)
+    CT_DEFAULT_IA_V2(CT_Polygon2D, CT_AbstractCategory::DATA_SIZE, &CT_Polygon2D::getNumberOfVertices, tr("Number Of Vertices"))
+    CT_DEFAULT_IA_END(CT_Polygon2D)
 };
 
 #endif // CT_POLYGON2D_H

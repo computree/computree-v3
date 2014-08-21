@@ -36,7 +36,7 @@ public:
     void draw(GraphicsViewInterface &view, PainterInterface &painter);
     void drawOverlay(GraphicsViewInterface &view, QPainter &painter);
 
-    ActionInterface* copy() const;
+    CT_AbstractAction* copy() const;
 
     CT_AbstractSingularItemDrawable * closetItemFromClickDirection(QMouseEvent *e,
                                                                    const QList<CT_AbstractSingularItemDrawable *> *itemList);

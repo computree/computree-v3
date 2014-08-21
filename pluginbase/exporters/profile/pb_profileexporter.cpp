@@ -28,17 +28,17 @@ void PB_ProfileExporter::init()
     addNewExportFormat(FileFormat("hist", tr("Fichiers Profile (ASCII)")));
 }
 
-bool PB_ProfileExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_ProfileExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
     int nProfiles = 0;
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
         if(dynamic_cast<CT_AbstractProfile*>(item) != NULL)
         {
             myList.append(item);
@@ -66,7 +66,7 @@ bool PB_ProfileExporter::configureExport()
     return true;
 }
 
-IExporter* PB_ProfileExporter::copy() const
+CT_AbstractExporter* PB_ProfileExporter::copy() const
 {
     return new PB_ProfileExporter();
 }
@@ -84,58 +84,56 @@ bool PB_ProfileExporter::protectedExportToFile()
     if (itemDrawableToExport().size() > 1) {indice = "_0";}
     int cpt = 0;
 
-    QListIterator<ItemDrawable*> it(itemDrawableToExport());
+    QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
-        CT_AbstractProfile* item = dynamic_cast<CT_AbstractProfile*>(it.next());
-        if (item != NULL)
+        CT_AbstractProfile* item = (CT_AbstractProfile*)it.next();
+
+        QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
+
+        QFile file(filePath);
+
+        if(file.open(QFile::WriteOnly))
         {
-            QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
+            QTextStream stream(&file);
 
-            QFile file(filePath);
+            // write header
+            size_t dim = item->nCells();
 
-            if(file.open(QFile::WriteOnly))
+            stream << "Nlevels\t" << dim << "\n";
+
+            stream << "Xorigin\t" << item->minX() << "\n";
+            stream << "Yorigin\t" << item->minY() << "\n";
+            stream << "Zorigin\t" << item->minZ() << "\n";
+
+            const QVector3D &direction = item->getDirection();
+
+            stream << "Xdirection\t" << direction.x() << "\n";
+            stream << "Ydirection\t" << direction.y() << "\n";
+            stream << "Zdirection\t" << direction.z() << "\n";
+
+            stream << "Resolution\t" << item->resolution() << "\n";
+            stream << "NODATA_value\t" << item->NAAsString() << "\n";
+
+            stream << "Level\tLength\tXc\tYc\tZc\tValue\n";
+
+            // write data
+            for (size_t index = 0 ; index < dim ; index++)
             {
-                QTextStream stream(&file);
+                QVector3D cellCenter;
+                item->getCellCenterXYZ(index, cellCenter);
 
-                // write header
-                size_t dim = item->nCells();
+                stream << index << "\t";
+                stream << item->lengthForIndex(index) << "\t";
+                stream << cellCenter.x() << "\t";
+                stream << cellCenter.y() << "\t";
+                stream << cellCenter.z() << "\t";
+                stream << item->valueAtIndexAsString(index) << "\n";
+            }
 
-                stream << "Nlevels\t" << dim << "\n";
-
-                stream << "Xorigin\t" << item->minX() << "\n";
-                stream << "Yorigin\t" << item->minY() << "\n";
-                stream << "Zorigin\t" << item->minZ() << "\n";
-
-                const QVector3D &direction = item->getDirection();
-
-                stream << "Xdirection\t" << direction.x() << "\n";
-                stream << "Ydirection\t" << direction.y() << "\n";
-                stream << "Zdirection\t" << direction.z() << "\n";
-
-                stream << "Resolution\t" << item->resolution() << "\n";
-                stream << "NODATA_value\t" << item->NAAsString() << "\n";
-
-                stream << "Level\tLength\tXc\tYc\tZc\tValue\n";
-
-                // write data
-                for (size_t index = 0 ; index < dim ; index++)
-                {
-                    QVector3D cellCenter;
-                    item->getCellCenterXYZ(index, cellCenter);
-
-                    stream << index << "\t";
-                    stream << item->lengthForIndex(index) << "\t";
-                    stream << cellCenter.x() << "\t";
-                    stream << cellCenter.y() << "\t";
-                    stream << cellCenter.z() << "\t";
-                    stream << item->valueAtIndexAsString(index) << "\n";
-                }
-
-                file.close();
-            } else {ok = false;}
-            indice = QString("_%1").arg(++cpt);
-        }
+            file.close();
+        } else {ok = false;}
+        indice = QString("_%1").arg(++cpt);
     }
 
     return ok;

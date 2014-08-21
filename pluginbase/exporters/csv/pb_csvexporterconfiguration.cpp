@@ -1,23 +1,29 @@
 #include "pb_csvexporterconfiguration.h"
 
-#include "interfaces.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
 
-PB_CSVExporterConfiguration::PB_CSVExporterConfiguration(const QList<const IItemDataRefList *> &list)
+PB_CSVExporterConfiguration::PB_CSVExporterConfiguration(const QList<CT_OutAbstractSingularItemModel *> &list)
 {
     _list = list;
 }
 
-void PB_CSVExporterConfiguration::setList(const QList<const IItemDataRefList*> &list)
+void PB_CSVExporterConfiguration::setList(const QList<CT_OutAbstractSingularItemModel *> &list)
 {
     _list = list;
 }
 
-void PB_CSVExporterConfiguration::addColumn(const IItemDataRefList *refList, IItemDataRef *ref)
+const QList<CT_OutAbstractSingularItemModel *> &PB_CSVExporterConfiguration::list() const
 {
-    _columns.append(qMakePair(refList, (const IItemDataRef*)ref));
+    return _list;
 }
 
-const QList< QPair<const IItemDataRefList*, const IItemDataRef*> >& PB_CSVExporterConfiguration::getColumns() const
+void PB_CSVExporterConfiguration::addColumn(const CT_OutAbstractSingularItemModel *sItem, const CT_OutAbstractItemAttributeModel *ia)
+{
+    _columns.append(qMakePair((CT_OutAbstractSingularItemModel*)sItem, (CT_OutAbstractItemAttributeModel*)ia));
+}
+
+const QList<QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > &PB_CSVExporterConfiguration::getColumns() const
 {
     return _columns;
 }

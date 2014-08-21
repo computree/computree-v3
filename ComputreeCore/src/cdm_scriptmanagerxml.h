@@ -58,7 +58,7 @@ private:
     int    _valueCount;
 
     QString recursiveLoadScript(QDomElement &e,
-                                Step *parent,
+                                CT_VirtualAbstractStep *parent,
                                 const QString &fileDirectory,
                                 CDM_StepManager *stepManager,
                                 CDM_PluginManager *pluginManager,
@@ -66,7 +66,7 @@ private:
 
     void recursiveWriteScript(QTextStream &stream,
                               CDM_PluginManager &pluginManager,
-                              Step &step,
+                              CT_VirtualAbstractStep &step,
                               QString first,
                               bool &saveResult);
 

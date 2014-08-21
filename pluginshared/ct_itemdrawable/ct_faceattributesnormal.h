@@ -11,11 +11,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesNormal : public CT_AbstractFace
 public:
     CT_FaceAttributesNormal();
 
-    CT_FaceAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
 
-    CT_FaceAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                               CT_AbstractNormalCloud *nc);

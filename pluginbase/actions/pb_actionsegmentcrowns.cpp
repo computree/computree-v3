@@ -880,7 +880,7 @@ void PB_ActionSegmentCrowns::drawOverlay(GraphicsViewInterface &view, QPainter &
     Q_UNUSED(painter);
 }
 
-ActionInterface* PB_ActionSegmentCrowns::copy() const
+CT_AbstractAction *PB_ActionSegmentCrowns::copy() const
 {
     return new PB_ActionSegmentCrowns(_densityGrid, _mnsGrid, _clustersGrid);
 }

@@ -29,7 +29,6 @@
 #define CT_PROFILE_H
 
 #include "ct_itemdrawable/abstract/ct_abstractprofile.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata3darray.h"
 
 #include "ct_math/ct_math.h"
@@ -82,7 +81,7 @@ public:
      * \param na Value used to code NA
      * \param initValue Initialisation value for grid cells
      */
-    CT_Profile(const CT_OutAbstractItemModel *model,
+    CT_Profile(const CT_OutAbstractSingularItemModel *model,
                const CT_AbstractResult *result,
                float xmin,
                float ymin,
@@ -124,7 +123,7 @@ public:
      * \param na Value used to code NA
      * \param initValue Initialisation value for grid cells
      */
-    static CT_Profile<DataT>* createProfileFromSegment(const CT_OutAbstractItemModel *model,
+    static CT_Profile<DataT>* createProfileFromSegment(const CT_OutAbstractSingularItemModel *model,
                                                        const CT_AbstractResult *result,
                                                        float xmin,
                                                        float ymin,
@@ -385,13 +384,14 @@ protected:
     const static CT_StandardProfileDrawManager<DataT> ABSPROFILE_DRAW_MANAGER;
 
 private:
-    CT_USE_DEFAULT_IA(CT_Profile<DataT>)
-    CT_DEFAULT_IA_V2(0, CT_Profile<DataT>, CT_AbstractCategory::DATA_SIZE, &CT_Profile<DataT>::nCells, tr("Dimension"))
-    CT_DEFAULT_IA_V2(1, CT_Profile<DataT>, CT_AbstractCategory::DATA_X, &CT_Profile<DataT>::minX, tr("X origin"))
-    CT_DEFAULT_IA_V2(2, CT_Profile<DataT>, CT_AbstractCategory::DATA_Y, &CT_Profile<DataT>::minY, tr("Y origin"))
-    CT_DEFAULT_IA_V2(3, CT_Profile<DataT>, CT_AbstractCategory::DATA_Z, &CT_Profile<DataT>::minZ, tr("Z origin"))
-    CT_DEFAULT_IA_V2(4, CT_Profile<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Profile<DataT>::resolution, tr("Resolution"))
-    CT_DEFAULT_IA_V2(5, CT_Profile<DataT>, CT_AbstractCategory::DATA_NA, &CT_Profile<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_BEGIN(CT_Profile<DataT>)
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_SIZE, &CT_Profile<DataT>::nCells, tr("Dimension"))
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_X, &CT_Profile<DataT>::minX, tr("X origin"))
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_Y, &CT_Profile<DataT>::minY, tr("Y origin"))
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_Z, &CT_Profile<DataT>::minZ, tr("Z origin"))
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Profile<DataT>::resolution, tr("Resolution"))
+    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::DATA_NA, &CT_Profile<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_END(CT_Profile<DataT>)
 };
 
 // Spécialisations

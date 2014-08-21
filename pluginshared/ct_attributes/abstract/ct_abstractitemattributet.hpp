@@ -126,6 +126,12 @@ CT_AbstractCategory::ValueType CT_AbstractItemAttributeT<VType>::realType() cons
 }
 
 template <typename VType>
+QString CT_AbstractItemAttributeT<VType>::realTypeToString() const
+{
+    return CT_AbstractCategory::staticValueTypeToCategoryTypeString<VType>();
+}
+
+template <typename VType>
 QString CT_AbstractItemAttributeT<VType>::internalVerifyCategory() const
 {
     CT_AbstractCategory::ValueType realType = CT_AbstractCategory::staticValueTypeToCategoryType<VType>();

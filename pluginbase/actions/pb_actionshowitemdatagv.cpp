@@ -6,6 +6,11 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
+#include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h"
+#include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
+
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+
 #include <QIcon>
 #include <QPainter>
 #include <QMouseEvent>
@@ -89,11 +94,11 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
 {
     bool result = m_selectAction->mouseReleaseEvent(e);
 
-    QSharedPointer<IndexCloudRegisteredInterface> pcir = graphicsView()->getSelectedPoints();
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
     if(pcir.data() != NULL)
     {
-        IModifiableCloudIndex *pci = pcir->indexCloud();
-        size_t size = pci->indexSize();
+        CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
+        size_t size = pci->size();
 
         if(size > 0)
         {
@@ -113,47 +118,48 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
     m_selectAction->drawOverlay(view, painter);
 
     // draw information about the first item selected
-    QList<ItemDrawable*> selected = graphicsView()->getSelectedItems();
+    QList<CT_AbstractItemDrawable*> selected = graphicsView()->getSelectedItems();
+    QListIterator<CT_AbstractItemDrawable*> itS(selected);
 
     int add = painter.fontMetrics().height()+2;
     int y = add;
 
-    if(!selected.isEmpty())
+    CT_AbstractSingularItemDrawable *sItem = NULL;
+
+    while(itS.hasNext() && (sItem != NULL))
+        sItem = dynamic_cast<CT_AbstractSingularItemDrawable*>(itS.next());
+
+    if(sItem != NULL)
     {
-        ItemDrawable* item = selected.first();
+        QList<CT_AbstractItemAttribute*> attList = sItem->itemAttributes();
 
-        const IItemDataRefList *refList = item->dataReferencesListStatic();
-
-        if((refList != NULL)
-                && !refList->references().isEmpty())
+        if(!attList.isEmpty())
         {
             painter.save();
             painter.setPen(QColor(255,255,255,127));
-            QListIterator<IItemDataRef*> it(refList->references());
+            QListIterator<CT_AbstractItemAttribute*> itAtt(attList);
 
-            while(it.hasNext())
+            while(itAtt.hasNext())
             {
-                IItemDataRef *ref = it.next();
+                CT_AbstractItemAttribute *att = itAtt.next();
 
-                if(item->dataValueFromRef(*ref, &m_value))
-                {
-                    painter.drawText(2, y, QString("%1 = %2").arg(ref->displayableName()).arg(m_value.toString(NULL)));
+                painter.drawText(2, y, QString("%1 = %2").arg(att->displayableName()).arg(att->toString(sItem, NULL)));
 
-                    y += add;
-                }
+                y += add;
             }
+
             painter.restore();
 
             y += add;
         }
     }
 
-    QSharedPointer<IndexCloudRegisteredInterface> pcir = graphicsView()->getSelectedPoints();
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
 
     if(pcir.data() != NULL)
     {
-        IModifiableCloudIndex *pci = pcir->indexCloud();
-        size_t size = pci->indexSize();
+        CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
+        size_t size = pci->size();
 
         if(size > 0)
         {
@@ -172,12 +178,12 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         }
     }
 
-    QSharedPointer<IndexCloudRegisteredInterface> fcir = graphicsView()->getSelectedFaces();
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> fcir = graphicsView()->getSelectedFaces();
 
     if(pcir.data() != NULL)
     {
-        IModifiableCloudIndex *fci = fcir->indexCloud();
-        size_t size = fci->indexSize();
+        CT_AbstractModifiableCloudIndex *fci = fcir->abstractModifiableCloudIndex();
+        size_t size = fci->size();
 
         if(size > 0)
         {
@@ -202,12 +208,12 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         }
     }
 
-    QSharedPointer<IndexCloudRegisteredInterface> ecir = graphicsView()->getSelectedEdges();
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> ecir = graphicsView()->getSelectedEdges();
 
     if(pcir.data() != NULL)
     {
-        IModifiableCloudIndex *eci = ecir->indexCloud();
-        size_t size = eci->indexSize();
+        CT_AbstractModifiableCloudIndex *eci = ecir->abstractModifiableCloudIndex();
+        size_t size = eci->size();
 
         if(size > 0)
         {
@@ -230,7 +236,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
     }
 }
 
-ActionInterface* PB_ActionShowItemDataGV::copy() const
+CT_AbstractAction *PB_ActionShowItemDataGV::copy() const
 {
     return new PB_ActionShowItemDataGV();
 }

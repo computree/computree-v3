@@ -51,7 +51,7 @@ public:
     CT_Cylinder();
 
 
-    CT_Cylinder(const CT_OutAbstractItemModel *model,
+    CT_Cylinder(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result,
                 CT_CylinderData *data);
 
@@ -78,7 +78,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  3.
       */
-    static CT_Cylinder* staticCreate3DCylinderFromPointCloud(const CT_OutAbstractItemModel *model,
+    static CT_Cylinder* staticCreate3DCylinderFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                              quint64 id,
                                                              const CT_AbstractResult *result,
                                                              const CT_AbstractPointCloud &pointCloud,
@@ -87,14 +87,15 @@ public:
 
 private:
 
-    CT_USE_DEFAULT_IA(CT_Cylinder)
-    CT_DEFAULT_IA_V2(0, CT_Cylinder, CT_AbstractCategory::DATA_X_DIRECTION, &CT_Cylinder::getDirectionX, tr("Direction X"))
-    CT_DEFAULT_IA_V2(1, CT_Cylinder, CT_AbstractCategory::DATA_Y_DIRECTION, &CT_Cylinder::getDirectionY, tr("Direction Y"))
-    CT_DEFAULT_IA_V2(2, CT_Cylinder, CT_AbstractCategory::DATA_Z_DIRECTION, &CT_Cylinder::getDirectionZ, tr("Direction Z"))
-    CT_DEFAULT_IA_V2(3, CT_Cylinder, CT_AbstractCategory::DATA_RADIUS, &CT_Cylinder::getRadius, tr("Rayon"))
-    CT_DEFAULT_IA_V2(4, CT_Cylinder, CT_AbstractCategory::DATA_LENGTH, &CT_Cylinder::getHeight, tr("Longueur"))
-    CT_DEFAULT_IA_V2(5, CT_Cylinder, CT_AbstractCategory::DATA_R2, &CT_Cylinder::getCircleError, tr("Erreur d'ajustement du cercle"))
-    CT_DEFAULT_IA_V2(6, CT_Cylinder, CT_AbstractCategory::DATA_R2, &CT_Cylinder::getLineError, tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_BEGIN(CT_Cylinder)
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_X_DIRECTION, &CT_Cylinder::getDirectionX, tr("Direction X"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_Y_DIRECTION, &CT_Cylinder::getDirectionY, tr("Direction Y"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_Z_DIRECTION, &CT_Cylinder::getDirectionZ, tr("Direction Z"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_RADIUS, &CT_Cylinder::getRadius, tr("Rayon"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_LENGTH, &CT_Cylinder::getHeight, tr("Longueur"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_R2, &CT_Cylinder::getCircleError, tr("Erreur d'ajustement du cercle"))
+    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_R2, &CT_Cylinder::getLineError, tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_END(CT_Cylinder)
 
     const static CT_StandardCylinderDrawManager CYLINDER_DRAW_MANAGER;
 

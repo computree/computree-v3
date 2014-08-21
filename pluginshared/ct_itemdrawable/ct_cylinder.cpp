@@ -27,17 +27,8 @@
 
 #include "ct_cylinder.h"
 #include "ct_line.h"
-#include "ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 
-//CT_INIT_DEFAULT_IA(CT_Cylinder)
-CT_INIT_DEFAULT_IA(0, CT_Cylinder)
-CT_INIT_DEFAULT_IA(1, CT_Cylinder)
-CT_INIT_DEFAULT_IA(2, CT_Cylinder)
-CT_INIT_DEFAULT_IA(3, CT_Cylinder)
-CT_INIT_DEFAULT_IA(4, CT_Cylinder)
-CT_INIT_DEFAULT_IA(5, CT_Cylinder)
-CT_INIT_DEFAULT_IA(6, CT_Cylinder)
+CT_DEFAULT_IA_INIT(CT_Cylinder)
 
 const CT_StandardCylinderDrawManager CT_Cylinder::CYLINDER_DRAW_MANAGER;
 
@@ -46,7 +37,7 @@ CT_Cylinder::CT_Cylinder() : CT_AbstractShape()
     setBaseDrawManager(&CYLINDER_DRAW_MANAGER);
 }
 
-CT_Cylinder::CT_Cylinder(const CT_OutAbstractItemModel *model,
+CT_Cylinder::CT_Cylinder(const CT_OutAbstractSingularItemModel *model,
                          const CT_AbstractResult *result,
                          CT_CylinderData *data) : CT_AbstractShape(model, result, data)
 {
@@ -95,7 +86,7 @@ CT_AbstractItemDrawable* CT_Cylinder::copy(const CT_OutAbstractItemModel *model,
                                            CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Cylinder *cylinder = new CT_Cylinder(model, result, (getPointerData() != NULL) ? ((const CT_CylinderData&)getData()).clone() : NULL);
+    CT_Cylinder *cylinder = new CT_Cylinder((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_CylinderData&)getData()).clone() : NULL);
     cylinder->setId(id());
 
     cylinder->setAlternativeDrawManager(getAlternativeDrawManager());
@@ -103,7 +94,7 @@ CT_AbstractItemDrawable* CT_Cylinder::copy(const CT_OutAbstractItemModel *model,
     return cylinder;
 }
 
-CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstractItemModel *model,
+CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                quint64 id,
                                                                const CT_AbstractResult *result,
                                                                const CT_AbstractPointCloud &pointCloud,
@@ -119,7 +110,7 @@ CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstr
     if(data == NULL)
         return NULL;
 
-    return new CT_Cylinder(model, result, data);
+    return new CT_Cylinder((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
 
 #ifdef USE_BOOST_OLD

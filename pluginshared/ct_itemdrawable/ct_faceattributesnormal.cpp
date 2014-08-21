@@ -5,7 +5,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal() : CT_AbstractFaceAttributes()
 {
 }
 
-CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
                                                  CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributes(model,
                                                                                                                                                       result,
@@ -14,7 +14,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractItemModel *
 {
 }
 
-CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
                                                  CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                                                  CT_AbstractNormalCloud *nc) : CT_AbstractFaceAttributes(model,
@@ -57,7 +57,7 @@ CT_AbstractItemDrawable* CT_FaceAttributesNormal::copy(const CT_OutAbstractItemM
     CT_AbstractNormalCloud* normalCloud = getNormalCloud();
 
     if (normalCloud == NULL)
-        return new CT_FaceAttributesNormal(model, result, getFaceCloudIndexRegistered(), (CT_AbstractNormalCloud*) NULL);
+        return new CT_FaceAttributesNormal((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered(), (CT_AbstractNormalCloud*) NULL);
     else
-        return new CT_FaceAttributesNormal(model, result, getFaceCloudIndexRegistered(), dynamic_cast<CT_AbstractNormalCloud*>(normalCloud->copy()));
+        return new CT_FaceAttributesNormal((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered(), dynamic_cast<CT_AbstractNormalCloud*>(normalCloud->copy()));
 }

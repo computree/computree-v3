@@ -22,6 +22,11 @@ public:
     virtual void init() = 0;
 
     /**
+     * @brief Configure your exporter. Returns false if configuration is canceled.
+     */
+    virtual bool configureExport() { return true; }
+
+    /**
      * @brief Return Exporter class name
      *
      *        call "metaObject()->className()"

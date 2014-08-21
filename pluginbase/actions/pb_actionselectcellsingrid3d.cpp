@@ -781,7 +781,7 @@ void PB_ActionSelectCellsInGrid3D::drawOverlay(GraphicsViewInterface &view, QPai
     }
 }
 
-ActionInterface* PB_ActionSelectCellsInGrid3D::copy() const
+CT_AbstractAction *PB_ActionSelectCellsInGrid3D::copy() const
 {
     return new PB_ActionSelectCellsInGrid3D(_refGrid, _boolGrid);
 }

@@ -1,22 +1,24 @@
 #include "cdm_log.h"
 
+#include "ct_log/abstract/ct_abstractloglistener.h"
+
 #include <QMutex>
 #include <QWaitCondition>
 
-#define CDM_IMPLEMENT_NORMAL_MESSAGE void CDM_Log::addMessage(const int &severity, Step *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::step, s, filter); } \
-void CDM_Log::addMessage(const int &severity, ActionInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::action, s, filter); } \
+#define CDM_IMPLEMENT_NORMAL_MESSAGE void CDM_Log::addMessage(const int &severity, CT_VirtualAbstractStep *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::step, s, filter); } \
+void CDM_Log::addMessage(const int &severity, CT_AbstractAction *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::action, s, filter); } \
 void CDM_Log::addMessage(const int &severity, PluginEntryInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::plugin, s, filter); } \
-void CDM_Log::addMessage(const int &severity, PluginInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::plugin, s, filter); } \
-void CDM_Log::addMessage(const int &severity, Result *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::result, s, filter); } \
-void CDM_Log::addMessage(const int &severity, ItemDrawable *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::itemdrawable, s, filter); }
+void CDM_Log::addMessage(const int &severity, CT_AbstractStepPlugin *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::plugin, s, filter); } \
+void CDM_Log::addMessage(const int &severity, CT_AbstractResult *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::result, s, filter); } \
+void CDM_Log::addMessage(const int &severity, CT_AbstractItemDrawable *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(severity, LogInterface::itemdrawable, s, filter); }
 
 #define CDM_IMPLEMENT_SEVERITY_MESSAGE(_M_TYPE_, SEVTYPE) void CDM_Log::_M_TYPE_(const int &type, const QString &s, const QString &filter) { addMessage(SEVTYPE, type, s, filter); } \
-void CDM_Log::_M_TYPE_(Step *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::step, s, filter); } \
-void CDM_Log::_M_TYPE_(ActionInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::action, s, filter); } \
+void CDM_Log::_M_TYPE_(CT_VirtualAbstractStep *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::step, s, filter); } \
+void CDM_Log::_M_TYPE_(CT_AbstractAction *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::action, s, filter); } \
 void CDM_Log::_M_TYPE_(PluginEntryInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::plugin, s, filter); } \
-void CDM_Log::_M_TYPE_(PluginInterface *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::plugin, s, filter); } \
-void CDM_Log::_M_TYPE_(Result *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::result, s, filter); } \
-void CDM_Log::_M_TYPE_(ItemDrawable *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::itemdrawable, s, filter); }
+void CDM_Log::_M_TYPE_(CT_AbstractStepPlugin *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::plugin, s, filter); } \
+void CDM_Log::_M_TYPE_(CT_AbstractResult *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::result, s, filter); } \
+void CDM_Log::_M_TYPE_(CT_AbstractItemDrawable *type, const QString &s, const QString &filter) { Q_UNUSED(type) addMessage(SEVTYPE, LogInterface::itemdrawable, s, filter); }
 
 CDM_Log::CDM_Log()
 {
@@ -47,19 +49,19 @@ CDM_Log::~CDM_Log()
     delete m_logProcess;
 }
 
-void CDM_Log::addPrioritaryLogListener(const ILogListener *logl)
+void CDM_Log::addPrioritaryLogListener(const CT_AbstractLogListener *logl)
 {
     QMutexLocker locker(&m_mutex);
 
-    m_prioritaryLogListener.append((ILogListener*)logl);
+    m_prioritaryLogListener.append((CT_AbstractLogListener*)logl);
 }
 
-void CDM_Log::addNormalLogListener(const ILogListener *logl)
+void CDM_Log::addNormalLogListener(const CT_AbstractLogListener *logl)
 {
     m_logProcess->addLogListener(logl);
 }
 
-void CDM_Log::removeLogListener(ILogListener *logl)
+void CDM_Log::removeLogListener(CT_AbstractLogListener *logl)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -75,11 +77,11 @@ void CDM_Log::addMessage(const int &severity, const int &type, const QString &s,
 
     if(!m_prioritaryLogListener.isEmpty())
     {
-        QListIterator<ILogListener*> it(m_prioritaryLogListener);
+        QListIterator<CT_AbstractLogListener*> it(m_prioritaryLogListener);
 
         while(it.hasNext())
         {
-            ILogListener *log = it.next();
+            CT_AbstractLogListener *log = it.next();
 
             log->addMessage(severity, type, s, filter);
         }
@@ -133,14 +135,14 @@ bool CDM_LogProcess::isEmpty() const
     return m_messages.isEmpty();
 }
 
-void CDM_LogProcess::addLogListener(const ILogListener *logl)
+void CDM_LogProcess::addLogListener(const CT_AbstractLogListener *logl)
 {
     QMutexLocker locker(&m_logMutex);
 
-    m_otherLogListener.append((ILogListener*)logl);
+    m_otherLogListener.append((CT_AbstractLogListener*)logl);
 }
 
-void CDM_LogProcess::removeLogListener(ILogListener *logl)
+void CDM_LogProcess::removeLogListener(CT_AbstractLogListener *logl)
 {
     QMutexLocker locker(&m_logMutex);
 
@@ -151,7 +153,7 @@ void CDM_LogProcess::process()
 {
     m_finished = false;
 
-    QListIterator<ILogListener*> it(m_otherLogListener);
+    QListIterator<CT_AbstractLogListener*> it(m_otherLogListener);
 
     while(!m_cancel)
     {
@@ -170,7 +172,7 @@ void CDM_LogProcess::process()
             while(it.hasNext()
                   && !m_cancel)
             {
-                ILogListener *log = it.next();
+                CT_AbstractLogListener *log = it.next();
 
                 log->addMessage(lm.m_severity, lm.m_type, lm.m_message, lm.m_filter);
             }

@@ -53,7 +53,7 @@ public:
       * \param model Item model for creation
       * \param result Result containing the item
       */
-     CT_AffiliationID(const CT_OutAbstractItemModel *model, CT_AbstractResult *result);
+     CT_AffiliationID(const CT_OutAbstractSingularItemModel *model, CT_AbstractResult *result);
 
     /*!
       * \brief Contructor with integer column and row coordinates
@@ -62,7 +62,7 @@ public:
       * \param result Result containing the item
       * \param value Value
       */
-     CT_AffiliationID(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, size_t value);
+     CT_AffiliationID(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, size_t value);
 
      /**
       * @brief Create a ItemDrawable with a name of model defined in your step (typically a DEF_...)
@@ -112,9 +112,9 @@ protected:
 private:
     static size_t                               LASTID;
 
-    CT_USE_DEFAULT_IA(CT_AffiliationID)
-    CT_DEFAULT_IA_V2(0, CT_AffiliationID, CT_AbstractCategory::DATA_ID, &CT_AffiliationID::getValue, tr("Affiliation_ID"))
-
+    CT_DEFAULT_IA_BEGIN(CT_AffiliationID)
+    CT_DEFAULT_IA_V2(CT_AffiliationID, CT_AbstractCategory::DATA_ID, &CT_AffiliationID::getValue, tr("Affiliation_ID"))
+    CT_DEFAULT_IA_END(CT_AffiliationID)
 };
 
 #endif // CT_AFFILIATIONID_H

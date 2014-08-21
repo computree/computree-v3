@@ -48,6 +48,9 @@ class CT_InResultModelGroup;
 class CT_InResultModelGroupToCopy;
 
 class CT_OutAbstractModel;
+class CT_OutAbstractSingularItemModel;
+class CT_OutAbstractGroupModel;
+class CT_OutAbstractItemAttributeModel;
 
 class CT_OutAbstractResultModel;
 class CT_OutAbstractResultModelGroup;
@@ -243,6 +246,7 @@ protected:
     friend class CT_OutModelCopyActionRemoveModelItemInGroup;
     friend class CT_OutModelCopyActionRemoveModelGroupInGroup;
     friend class CT_InTurnManager;
+    friend class CT_AbstractItem;
     friend class CT_AbstractItemAttribute;
     friend class CT_AbstractItemDrawable;
     friend class CT_AbstractItemGroup;
@@ -525,6 +529,9 @@ protected:
      * @return NULL if the model was not found
      */
     CT_OutAbstractModel *getOutModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const;
+    CT_OutAbstractSingularItemModel* getOutSingularItemModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const;
+    CT_OutAbstractGroupModel* getOutGroupModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const;
+    CT_OutAbstractItemAttributeModel* getOutItemAttributeModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const;
 
     /**
      * @brief Returns the list of result that was created for the current turn. Use this method in your "compute" method.
@@ -1092,9 +1099,9 @@ public:
 
     Q_DECL_DEPRECATED virtual bool recursiveCanBeDeserialized(QString &dirPath);
 
-    Q_DECL_DEPRECATED void setUserData (uint id, QObjectUserData *data) {}
+    Q_DECL_DEPRECATED void setUserData (uint id, QObjectUserData *data) { Q_UNUSED(id) Q_UNUSED(data) }
 
-    Q_DECL_DEPRECATED QObjectUserData* userData(uint id) const { return NULL; }
+    Q_DECL_DEPRECATED QObjectUserData* userData(uint id) const { Q_UNUSED(id) return NULL; }
 
 private:
 

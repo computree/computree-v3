@@ -29,8 +29,6 @@
 #define CT_VIRTUALGRID2D_HPP
 
 #include "ct_itemdrawable/abstract/ct_virtualgrid2d.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 
 #include <math.h>
 #include <typeinfo>
@@ -38,12 +36,7 @@
 
 #include "qdebug.h"
 
-template< typename DataT> CT_INIT_DEFAULT_IA(0, CT_VirtualGrid2D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(1, CT_VirtualGrid2D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(2, CT_VirtualGrid2D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(3, CT_VirtualGrid2D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(4, CT_VirtualGrid2D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(5, CT_VirtualGrid2D<DataT>)
+template< typename DataT> CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<DataT>)
 
 template< typename DataT>
 CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D() : CT_AbstractGrid2D()
@@ -65,12 +58,12 @@ CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D() : CT_AbstractGrid2D()
 }
 
 template< typename DataT>
-CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D(const CT_OutAbstractItemModel *model, CT_AbstractResult *result) : CT_AbstractGrid2D(model, result)
+CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractGrid2D(model, result)
 {
 }
 
 template< typename DataT>
-CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D(const QString &modelName, CT_AbstractResult *result) : CT_AbstractGrid2D(modelName, result)
+CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractGrid2D(modelName, result)
 {
 }
 

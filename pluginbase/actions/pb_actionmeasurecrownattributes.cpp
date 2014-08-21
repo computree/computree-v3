@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QVector3D>
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 PB_ActionMeasureCrownAttributes::PB_ActionMeasureCrownAttributes(CT_Grid2DXY<int> *grid, const QList<CT_Scene *> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) : CT_AbstractActionForGraphicsView()
 {
@@ -180,16 +181,14 @@ void PB_ActionMeasureCrownAttributes::computeCrownProjection(float zmin, float z
     for (int s = 0 ; s < size ; s++)
     {
         const CT_AbstractPointCloudIndex *pointCloudIndex = _sceneList.at(s)->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->indexSize();
+        size_t n_points = pointCloudIndex->size();
 
         for (size_t i = 0 ; i < n_points; i++)
         {
             const CT_Point &point = pointCloudIndex->constTAt(i);
 
             if (point.z >= zmin && point.z <= zmax)
-            {
                 _grid->addValueAtXY(point.x, point.y, 1);
-            }
         }
     }
     _grid->computeMinMax();
@@ -242,7 +241,7 @@ void PB_ActionMeasureCrownAttributes::drawOverlay(GraphicsViewInterface &view, Q
     }
 }
 
-ActionInterface* PB_ActionMeasureCrownAttributes::copy() const
+CT_AbstractAction *PB_ActionMeasureCrownAttributes::copy() const
 {
     return new PB_ActionMeasureCrownAttributes(_grid, _sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax);
 }

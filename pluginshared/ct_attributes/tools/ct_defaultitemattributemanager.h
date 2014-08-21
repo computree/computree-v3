@@ -11,29 +11,39 @@
 #include <QMultiHash>
 
 /**
- * @brief Call CT_USE_DEFAULT_IA in the private section of your singular item class before the use of method
+ * @brief Call CT_DEFAULT_IA_BEGIN in the private section of your singular item class BEFORE the use of method
  *        "CT_DEFAULT_IA_Vxxx"
+ *        Call CT_DEFAULT_IA_END in the  private section of your singular item class AFTER the use of method
+ *        "CT_DEFAULT_IA_Vxxx"
+ *
  * @param ClassNameSI : your class name
  *
  * @example : private:
- *            CT_USE_DEFAULT_IA(CT_Cylinder)
- *            CT_DEFAULT_IA_V2(0, CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getCenterX, tr("Angle"))
+ *            CT_DEFAULT_IA_BEGIN(CT_Cylinder)
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getAngle, tr("Angle"))
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_R2, &CT_Cylinder::getR2, tr("R²"))
+ *            CT_DEFAULT_IA_END(CT_Cylinder)
  *
  *            cpp file:
  *
- *            CT_INIT_DEFAULT_IA(0, CT_Cylinder)
+ *            CT_DEFAULT_IA_INIT(CT_Cylinder)
  *
  *            -----~ OR IF YOUR CLASS IS TEMPLATED ~------
  *
  *            CT_USE_DEFAULT_IA(CT_MetricT<T>)
- *            CT_DEFAULT_IA_V2(0, CT_MetricT<T>, CT_AbstractCategory::DATA_VALUE, &CT_MetricT<T>::getValue, tr("Value"))
+ *            CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::DATA_VALUE, &CT_MetricT<T>::getValue, tr("Value"))
  *
- *            cpp file:
+ *            hpp file:
  *
- *            template<typename T> CT_INIT_DEFAULT_IA(0, CT_MetricT<T>)
+ *            template<typename T> CT_DEFAULT_IA_INIT(CT_MetricT<T>)
  */
-#define CT_USE_DEFAULT_IA(ClassNameSI) \
-    friend class CT_StaticInitDefaultIAInvoker<ClassNameSI>;
+#define CT_DEFAULT_IA_BEGIN(ClassNameSI) \
+    friend class CT_StaticInitDefaultIAInvoker< ClassNameSI >; \
+    static void staticInitDefaultItemAttributes() {
+
+#define CT_DEFAULT_IA_END(ClassNameSI) \
+    } \
+    static CT_StaticInitDefaultIAInvoker< ClassNameSI >    INVOKER_DEFAULT_IA;
 
 /**
  * @brief Call CT_DEFAULT_IA_V2 in the private section of your singular item class
@@ -44,13 +54,10 @@
  * @param DisplayableName : a displayable name for your default attribute
  *
  * @example : private:
- *            CT_DEFAULT_IA_V2(0, CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getCenterX, tr("Angle"))
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getCenterX, tr("Angle"))
  */
-#define CT_DEFAULT_IA_V2(UniqueNumber, ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName) \
-    static void staticInitDefaultItemAttributes##UniqueNumber(const QString &className) { \
-        PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName); \
-    } \
-    static CT_StaticInitDefaultIAInvoker<ClassNameSI>    INVOKER_##UniqueNumber;
+#define CT_DEFAULT_IA_V2(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName) \
+    PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName);
 
 /**
  * @brief Call CT_DEFAULT_IA_V3 in the private section of your singular item class
@@ -62,35 +69,30 @@
  * @param UniqueKey : a unique key if you want to retreive your default attribute
  *
  * @example : private:
- *            CT_DEFAULT_IA_V3(0, CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getCenterX, tr("Angle"), DEF_CYL_ANGLE_KEY)
+ *            CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::DATA_ANGLE, &CT_Cylinder::getCenterX, tr("Angle"), DEF_CYL_ANGLE_KEY)
  */
-#define CT_DEFAULT_IA_V3(UniqueNumber, ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey) \
-    static void staticInitDefaultItemAttributes##UniqueNumber(const QString &className) { \
-        PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey); \
-    } \
-    static CT_StaticInitDefaultIAInvoker<ClassNameSI>    INVOKER_##UniqueNumber;
+#define CT_DEFAULT_IA_V3(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey) \
+    PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey);
 
 /**
- * @brief Call CT_INIT_DEFAULT_IA in the bottom of your header file (.h) and pass the name of your singular item class
+ * @brief Call CT_DEFAULT_IA_INIT in the top of your source file (.cpp or .hpp) and pass the name of your singular item class
  *        between parenthesys
  *
- * @example : CT_INIT_DEFAULT_IA(0, CT_Cylinder)
- *            CT_INIT_DEFAULT_IA(1, CT_Cylinder)
- *            etc...
+ * @example : CT_DEFAULT_IA_INIT(CT_Cylinder)
  */
-#define CT_INIT_DEFAULT_IA(UniqueNumber, ClassNameSI) \
-    CT_StaticInitDefaultIAInvoker<ClassNameSI> ClassNameSI::INVOKER_##UniqueNumber = CT_StaticInitDefaultIAInvoker<ClassNameSI>(#ClassNameSI, &staticInitDefaultItemAttributes##UniqueNumber);
+#define CT_DEFAULT_IA_INIT(ClassNameSI) \
+    CT_StaticInitDefaultIAInvoker<ClassNameSI> ClassNameSI::INVOKER_DEFAULT_IA = CT_StaticInitDefaultIAInvoker<ClassNameSI>(&staticInitDefaultItemAttributes);
 
 template<typename ClassNameT>
 class PLUGINSHAREDSHARED_EXPORT CT_StaticInitDefaultIAInvoker
 {
 public:
 
-    typedef void (*staticInit)(const QString &);
+    typedef void (*staticInit)();
 
-    CT_StaticInitDefaultIAInvoker(const QString &classNameString, staticInit initMethod)
+    CT_StaticInitDefaultIAInvoker(staticInit initMethod)
     {
-        (*initMethod)(classNameString);
+        (*initMethod)();
     }
 };
 

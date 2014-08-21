@@ -28,22 +28,12 @@
 #include "pb_stepsetaffiliationidfromreference.h"
 #include "actions/pb_actionmodifyaffiliations.h"
 
-#include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
-
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
-#include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
-
-#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibility.h"
-
 #include "ct_itemdrawable/ct_affiliationid.h"
 
 #include "ct_result/ct_resultgroup.h"
-#include "ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h"
+#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "qdebug.h"
 
@@ -86,36 +76,17 @@ CT_VirtualAbstractStep* PB_StepSetAffiliationIDFromReference::createNewInstance(
 
 void PB_StepSetAffiliationIDFromReference::createInResultModelListProtected()
 {
-    // a besoin en entrée d'un résultat contenant un ou plusieurs groupes
-    CT_InZeroOrMoreGroupModel *groupSource = new CT_InZeroOrMoreGroupModel();
+    CT_InResultModelGroupToCopy *inResultRefCopy = createNewInResultModelForCopy(DEF_SearchInSourceResult, tr("Résultat de référence"), "", true);
+    inResultRefCopy->setZeroOrMoreRootGroup();
+    inResultRefCopy->addGroupModel("", DEF_SearchInSourceGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe de référence"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    inResultRefCopy->addItemModel(DEF_SearchInSourceGroup, DEF_SearchInSourceId, CT_AffiliationID::staticGetType(), tr("ID de référence"));
+    inResultRefCopy->addItemModel(DEF_SearchInSourceGroup, DEF_SearchInSourceItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item de référence"));
 
-    CT_InStdGroupModel* refgroupSource = new CT_InStdGroupModel(DEF_SearchInSourceGroup, "Groupe de référence", "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    CT_InStandardItemDrawableModel *idItemSource = new CT_InStandardItemDrawableModel(DEF_SearchInSourceId, CT_AffiliationID::staticGetType(), tr("ID de référence"));
-    CT_InStandardItemDrawableModel *refItemSource = new CT_InStandardItemDrawableModel(DEF_SearchInSourceItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item de référence"));
-
-    groupSource->addGroup(refgroupSource);
-    refgroupSource->addItem(idItemSource);
-    refgroupSource->addItem(refItemSource);
-
-    // le résultat est du type ResultGroupToCopy car nous voulons
-    // un résultat du type ResultGroup que nous allons copier et modifier
-    addInResultModel(new CT_InResultModelGroupToCopy(DEF_SearchInSourceResult, groupSource, tr("Résultat de référence"), "", true));
-
-
-    // a besoin en entrée d'un résultat contenant un ou plusieurs groupes
-    CT_InZeroOrMoreGroupModel *groupTarget = new CT_InZeroOrMoreGroupModel();
-
-    CT_InStdGroupModel* refgroupTarget = new CT_InStdGroupModel(DEF_SearchInTargetGroup, "Groupe à affilier", "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    CT_InStandardItemDrawableModel *idItemTarget = new CT_InStandardItemDrawableModel(DEF_SearchInTargetId, CT_AffiliationID::staticGetType(), tr("ID à affilier"));
-    CT_InStandardItemDrawableModel *refItemTarget = new CT_InStandardItemDrawableModel(DEF_SearchInTargetItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à affilier"));
-
-    groupTarget->addGroup(refgroupTarget);
-    refgroupTarget->addItem(idItemTarget);
-    refgroupTarget->addItem(refItemTarget);
-
-    // le résultat est du type ResultGroupToCopy car nous voulons
-    // un résultat du type ResultGroup que nous allons copier et modifier
-    addInResultModel(new CT_InResultModelGroupToCopy(DEF_SearchInTargetResult, groupTarget, tr("Résultat à affilier"), "", true));
+    CT_InResultModelGroupToCopy *inResultAffCopy = createNewInResultModelForCopy(DEF_SearchInTargetResult, tr("Résultat à affilier"), "", true);
+    inResultAffCopy->setZeroOrMoreRootGroup();
+    inResultRefCopy->addGroupModel("", DEF_SearchInTargetGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe à affilier"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    inResultRefCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetId, CT_AffiliationID::staticGetType(), tr("ID à affilier"));
+    inResultRefCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à affilier"));
 }
 
 void PB_StepSetAffiliationIDFromReference::createPostConfigurationDialog()
@@ -130,8 +101,8 @@ void PB_StepSetAffiliationIDFromReference::createOutResultModelListProtected()
 {
     setManual(_manualModeActivated);
 
-    addOutResultModelCopy((CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInSourceResult));
-    addOutResultModelCopy((CT_InResultModelGroupToCopy*)getInResultModel(DEF_SearchInTargetResult));
+    createNewOutResultModelToCopy(DEF_SearchInSourceResult);
+    createNewOutResultModelToCopy(DEF_SearchInTargetResult);
 }
 
 void PB_StepSetAffiliationIDFromReference::compute()
@@ -139,25 +110,27 @@ void PB_StepSetAffiliationIDFromReference::compute()
     QList<CT_ResultGroup*> resultList = getOutResultList();
     CT_ResultGroup *sourceRes = resultList.at(0);
     CT_InAbstractGroupModel* refgroupSourceModel = (CT_InAbstractGroupModel*)getInModelForResearchIfUseCopy(DEF_SearchInSourceResult, DEF_SearchInSourceGroup);
-    CT_InAbstractItemDrawableModel* idItemSourceModel = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_SearchInSourceResult, DEF_SearchInSourceId);
-    CT_InAbstractItemDrawableModel* refItemSourceModel = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_SearchInSourceResult, DEF_SearchInSourceItem);
+    CT_InAbstractSingularItemModel* idItemSourceModel = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_SearchInSourceResult, DEF_SearchInSourceId);
+    CT_InAbstractSingularItemModel* refItemSourceModel = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_SearchInSourceResult, DEF_SearchInSourceItem);
 
 
     CT_ResultGroup *targetRes = resultList.at(1);
     CT_InAbstractGroupModel* refgroupTargetModel = (CT_InAbstractGroupModel*)getInModelForResearchIfUseCopy(DEF_SearchInTargetResult, DEF_SearchInTargetGroup);
-    CT_InAbstractItemDrawableModel* idItemTargetModel = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_SearchInTargetResult, DEF_SearchInTargetId);
-    CT_InAbstractItemDrawableModel* refItemTargetModel = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_SearchInTargetResult, DEF_SearchInTargetItem);
+    CT_InAbstractSingularItemModel* idItemTargetModel = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_SearchInTargetResult, DEF_SearchInTargetId);
+    CT_InAbstractSingularItemModel* refItemTargetModel = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_SearchInTargetResult, DEF_SearchInTargetItem);
 
 
     QMap<CT_AbstractSingularItemDrawable*, size_t> sourceMap;
 
+    CT_ResultGroupIterator itR(sourceRes, refgroupSourceModel);
+
     // Parcours des groupes contenant les scènes à filtrer
-    for (CT_StandardItemGroup *groupSource = (CT_StandardItemGroup*) sourceRes->beginGroup(refgroupSourceModel)
-          ; groupSource != NULL  && !isStopped()
-          ; groupSource = (CT_StandardItemGroup*) sourceRes->nextGroup())
+    while(itR.hasNext()
+          && !isStopped())
     {
-        CT_AffiliationID* idSource = (CT_AffiliationID*) groupSource->findFirstItem(idItemSourceModel);
-        CT_AbstractSingularItemDrawable* refItemSource = groupSource->findFirstItem(refItemSourceModel);
+        const CT_AbstractItemGroup *groupSource = itR.next();
+        CT_AffiliationID* idSource = (CT_AffiliationID*) groupSource->firstItem(idItemSourceModel);
+        CT_AbstractSingularItemDrawable* refItemSource = groupSource->firstItem(refItemSourceModel);
 
         if (idSource!=NULL && refItemSource!=NULL)
         {
@@ -170,15 +143,15 @@ void PB_StepSetAffiliationIDFromReference::compute()
     QMap<CT_AbstractSingularItemDrawable*, CT_AffiliationID*> targetMap;
     QMap<float, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*> > correspondances;
 
+    CT_ResultGroupIterator itR2(targetRes, refgroupTargetModel);
+
     // Parcours des groupes
-    for (CT_StandardItemGroup *groupTarget = (CT_StandardItemGroup*) targetRes->beginGroup(refgroupTargetModel)
-          ; groupTarget != NULL  && !isStopped()
-          ; groupTarget = (CT_StandardItemGroup*) targetRes->nextGroup())
+    while(itR2.hasNext()
+          && !isStopped())
     {
-        CT_AffiliationID* idTarget = (CT_AffiliationID*) groupTarget->findFirstItem(idItemTargetModel);
-        CT_AbstractSingularItemDrawable* refItemTarget = groupTarget->findFirstItem(refItemTargetModel);
-
-
+        const CT_AbstractItemGroup *groupTarget = itR2.next();
+        CT_AffiliationID* idTarget = (CT_AffiliationID*) groupTarget->firstItem(idItemTargetModel);
+        CT_AbstractSingularItemDrawable* refItemTarget = groupTarget->firstItem(refItemTargetModel);
 
         if (idTarget!=NULL && refItemTarget!=NULL)
         {

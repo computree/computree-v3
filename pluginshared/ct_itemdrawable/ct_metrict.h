@@ -48,7 +48,7 @@ public:
       * \param result Result containing the item
       * \param value Value
       */
-    CT_MetricT(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const T &value);
+    CT_MetricT(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const T &value);
 
     /*!
      * \brief Contructor with integer column and row coordinates
@@ -58,7 +58,7 @@ public:
      * \param value Value
      * \param label Label
      */
-    CT_MetricT(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const T &value, QString label);
+    CT_MetricT(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const T &value, QString label);
 
     CT_MetricT(const QString &modelName, const CT_AbstractResult *result, const T &value);
     CT_MetricT(const QString &modelName, const CT_AbstractResult *result, const T &value, QString label);
@@ -92,8 +92,10 @@ protected:
     T       _value;
 
 private:
-    CT_USE_DEFAULT_IA(CT_MetricT<T>)
-    CT_DEFAULT_IA_V2(0, CT_MetricT<T>, CT_AbstractCategory::DATA_VALUE, &CT_MetricT<T>::getValue, tr("Value"))
+
+    CT_DEFAULT_IA_BEGIN(CT_MetricT<T>)
+    CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::DATA_VALUE, &CT_MetricT<T>::getValue, tr("Value"))
+    CT_DEFAULT_IA_END(CT_MetricT<T>)
 };
 
 // Spécialisations

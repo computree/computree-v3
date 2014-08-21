@@ -1,6 +1,7 @@
 #ifndef CT_ABSTRACTITEMATTRIBUTE_H
 #define CT_ABSTRACTITEMATTRIBUTE_H
 
+#include "ct_item/abstract/ct_abstractitem.h"
 #include "ct_categories/abstract/ct_abstractcategory.h"
 
 class CT_OutAbstractItemAttributeModel;
@@ -10,9 +11,13 @@ class CT_AbstractItemDrawable;
 /**
  * @brief An item attribute is a scalar value of type CT_AbstractCategory::ValueType
  */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemAttribute
+class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemAttribute : public CT_AbstractItem
 {
+    Q_OBJECT
+
 public:
+    CT_AbstractItemAttribute();
+
     /**
      * @brief Create a attribute with a model defined in your step
      * @param model : the model of the attribute
@@ -43,9 +48,24 @@ public:
     bool isValid() const;
 
     /**
-      * @brief Type of value
+      * @brief Type of value (type of category)
       */
     CT_AbstractCategory::ValueType type() const;
+
+    /**
+      * @brief Type of value to String (type of category)
+      */
+    QString typeToString() const;
+
+    /**
+      * @brief Real type of value
+      */
+    virtual CT_AbstractCategory::ValueType realType() const = 0;
+
+    /**
+      * @brief Real type of value to String
+      */
+    virtual QString realTypeToString() const = 0;
 
     /**
       * @brief Methods to get the value in bool type
@@ -120,14 +140,15 @@ public:
     virtual QString toString(const CT_AbstractItemDrawable *item, bool *ok) const = 0;
 
     /**
+     * @brief Returns a displayable name (by default if model is not null return model()->displayableName(), else
+     *        returns category()->displayableName())
+     */
+    QString displayableName() const;
+
+    /**
      * @brief Returns the model of the attribute
      */
     CT_OutAbstractItemAttributeModel* model() const;
-
-    /**
-     * @brief Returns the result that contains this attribute
-     */
-    CT_AbstractResult *result() const;
 
     /**
      * @brief Returns the category of the attribute
@@ -148,9 +169,14 @@ public:
      */
     virtual CT_AbstractItemAttribute* copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result) = 0;
 
+protected:
+
+    /**
+     * @brief Called from Result or item to inform that this item will be removed from the result passed in parameter
+     */
+    virtual void internalSetWillBeRemovedFromResult(const CT_AbstractResult *res) { Q_UNUSED(res) }
+
 private:
-    CT_OutAbstractItemAttributeModel    *m_model;
-    CT_AbstractResult                   *m_result;
     CT_AbstractCategory                 *m_category;
 };
 

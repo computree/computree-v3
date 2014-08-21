@@ -32,12 +32,12 @@ CT_Scene::CT_Scene() : CT_AbstractItemDrawableWithPointCloud()
 {
 }
 
-CT_Scene::CT_Scene(const CT_OutAbstractItemModel *model,
+CT_Scene::CT_Scene(const CT_OutAbstractSingularItemModel *model,
                    const CT_AbstractResult *result) : CT_AbstractItemDrawableWithPointCloud(model, result)
 {
 }
 
-CT_Scene::CT_Scene(const CT_OutAbstractItemModel *model,
+CT_Scene::CT_Scene(const CT_OutAbstractSingularItemModel *model,
                    const CT_AbstractResult *result,
                    CT_AbstractCIR pcir) : CT_AbstractItemDrawableWithPointCloud(model, result)
 {
@@ -95,14 +95,14 @@ CT_AbstractItemDrawable* CT_Scene::copy(const CT_OutAbstractItemModel *model,
 
     if(copyMode == CT_ResultCopyModeList::CopyItemDrawableReference)
     {
-        scene = new CT_Scene(model,
+        scene = new CT_Scene((const CT_OutAbstractSingularItemModel *)model,
                              result,
                              getPointCloudIndexRegistered());
         scene->setId(id());
     }
     else if(copyMode == CT_ResultCopyModeList::CopyItemDrawableCompletely)
     {
-        scene = new CT_Scene(model,
+        scene = new CT_Scene((const CT_OutAbstractSingularItemModel *)model,
                              result);
 
         scene->setPointCloudIndexRegistered(PS_REPOSITORY->copyPointCloud(getPointCloudIndexRegistered(), CT_Repository::MemoryOptimized));

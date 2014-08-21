@@ -81,7 +81,7 @@ public:
      * @warning The model and/or the result can be NULL but you must set them with method "setModel()" and "changeResult()" before finish
      *          your step computing !!!
      */
-    CT_AbstractItemGroup(const CT_OutAbstractItemModel *model,
+    CT_AbstractItemGroup(const CT_OutAbstractGroupModel *model,
                          const CT_AbstractResult *result);
 
     /**
@@ -557,6 +557,11 @@ protected:
      *        Check the parameter isAInModel to know if the model returned is a IN model or a OUT model
      */
     CT_AbstractModel* getModelInStep(const CT_VirtualAbstractStep *step, const QString &modelName, bool &isAInModel) const;
+
+    /**
+     * @brief Overloaded to cast the model to check the validity.
+     */
+    virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
 
 private:
     RemoveLaterBits         _removedLater;  // quint8 : first bit is set if the group must be removed later, second bit is set if at least one child must be removed later

@@ -76,15 +76,15 @@ public:
     static CT_AbstractMetric* staticCreateMetricForType(const QString &type, const QString &value = "");
 
 private:
-    QHash<QString, CT_OPF_Type>             m_types;
-    QHash<QString, CT_OPF_Attribute>        m_attributes;
+    QHash<QString, CT_OPF_Type>                 m_types;
+    QHash<QString, CT_OPF_Attribute>            m_attributes;
     QHash<QString, CT_OutAbstractItemModel*>    m_models;
-    QHash<int, CT_OPF_Mesh*>                m_meshes;
-    QHash<int, CT_OPF_Mesh*>                m_shapes;
+    QHash<int, CT_OPF_Mesh*>                    m_meshes;
+    QHash<int, CT_OPF_Mesh*>                    m_shapes;
 
-    int                                     m_totalNode;
+    int                                         m_totalNode;
 
-    static const QVector<QString>       TOPOLOGY_NAMES;
+    static const QVector<QString>               TOPOLOGY_NAMES;
 
     void clearOtherModels();
     void clearMeshes();

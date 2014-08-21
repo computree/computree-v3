@@ -51,8 +51,8 @@ public:
       */
     CT_AbstractProfile();
 
-    CT_AbstractProfile(const CT_OutAbstractItemModel *model, CT_AbstractResult *result);
-    CT_AbstractProfile(const QString &modelName, CT_AbstractResult *result);
+    CT_AbstractProfile(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
+    CT_AbstractProfile(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractProfile();
 

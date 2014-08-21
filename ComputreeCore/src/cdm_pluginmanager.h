@@ -38,11 +38,6 @@ public:
      */
     PluginManagerInterface* pluginManager() const;
 
-    /**
-     * @brief Retourne le contexte des plugins, NULL si aucun plugin n'est chargé
-     */
-    ContextInterface* getPluginsContext() const;
-
     /*!
      *  \brief Charge/Recharge les plugins.
      *
@@ -71,9 +66,9 @@ public:
     QString getPluginName(int i = 0) const;
 
     /*!
-     *  \brief Retourne le nom du plugin en fonction de son PluginInterface.
+     *  \brief Retourne le nom du plugin en fonction de son CT_AbstractStepPlugin.
      */
-    QString getPluginName(PluginInterface *stepPluginManager) const;
+    QString getPluginName(CT_AbstractStepPlugin *stepPluginManager) const;
 
     /*!
      *  \brief Retourne le chemin de recherche des plugins.
@@ -88,12 +83,12 @@ public:
     /*!
      *  \brief Retourne l'entree du plugin "i".
      */
-    PluginInterface* getPlugin(int i) const;
+    CT_AbstractStepPlugin* getPlugin(int i) const;
 
     /*!
      *  \brief Retourne l'entree du plugin en fonction de son nom.
      */
-    PluginInterface* getPlugin(QString pluginName) const;
+    CT_AbstractStepPlugin* getPlugin(QString pluginName) const;
 
 private:
 

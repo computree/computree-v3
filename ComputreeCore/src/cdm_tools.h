@@ -4,6 +4,7 @@
 #include <QMenu>
 
 #include "src/cdm_pluginmanager.h"
+#include "ct_exporter/abstract/ct_abstractexporter.h"
 
 class COMPUTREECORESHARED_EXPORT CDM_Tools
 {
@@ -25,9 +26,9 @@ public:
     /*!
      *  \brief Crée un filtre que vous pouvez utiliser dans une fenêtre d'ouverture/sauvegarde de fichier pour l'exportateur passé en paramètre
      */
-    QString createFileExtensionForExporter(IExporter *exporter) const;
+    QString createFileExtensionForExporter(CT_AbstractExporter *exporter) const;
 
-    QString createNameForExporter(IExporter *exporter) const;
+    QString createNameForExporter(CT_AbstractExporter *exporter) const;
 
 private:
     CDM_PluginManager   *m_pm;

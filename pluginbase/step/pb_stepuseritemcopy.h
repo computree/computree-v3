@@ -90,7 +90,7 @@ private:
 
     // Step parameters
     QHash<CT_AbstractSingularItemDrawable*, CT_AbstractItemGroup*>  m_itemDrawableToAdd;
-    QList<ItemDrawable*>                                            m_itemDrawableSelected;
+    QList<CT_AbstractItemDrawable*>                                            m_itemDrawableSelected;
     DocumentInterface                                               *m_doc;
     int                                                             m_status;
 

@@ -11,12 +11,12 @@ class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesColor : public CT_AbstractEdgeA
 public:
     CT_EdgeAttributesColor();
 
-    CT_EdgeAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                              bool withAlphaInformation);
 
-    CT_EdgeAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                              CT_AbstractColorCloud *cc);

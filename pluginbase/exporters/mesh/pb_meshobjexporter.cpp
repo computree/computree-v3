@@ -22,16 +22,16 @@ void PB_MeshObjExporter::init()
     addNewExportFormat(FileFormat("obj", tr("Fichiers .obj")));
 }
 
-bool PB_MeshObjExporter::setItemDrawableToExport(const QList<ItemDrawable *> &list)
+bool PB_MeshObjExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(dynamic_cast<CT_MeshModel*>(item) != NULL)
             myList.append(item);
@@ -46,7 +46,7 @@ bool PB_MeshObjExporter::setItemDrawableToExport(const QList<ItemDrawable *> &li
     return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
-IExporter* PB_MeshObjExporter::copy() const
+CT_AbstractExporter* PB_MeshObjExporter::copy() const
 {
     return new PB_MeshObjExporter();
 }
@@ -70,13 +70,13 @@ bool PB_MeshObjExporter::protectedExportToFile()
         int nExported = 0;
 
         // write data
-        QListIterator<ItemDrawable*> it(itemDrawableToExport());
+        QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
-            CT_Mesh *mesh = dynamic_cast<CT_MeshModel*>(item)->mesh();
+            CT_Mesh *mesh = ((CT_MeshModel*)item)->mesh();
 
             if(mesh != NULL)
             {

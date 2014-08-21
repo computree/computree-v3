@@ -73,258 +73,6 @@ class CT_StandardNormalCloudRegistered;
 class CT_AbstractModifiableCloudIndexRegistered;
 class CT_AbstractModifiableCloudIndex;
 
-/**
-  * \brief Représente une valeur que peut retourner un ItemDrawable. Typiquement
-  *        cette valeur est une information sur l'ItemDrawable. Par exemple le rayon
-  *        si l'ItemDrawable est un cercle, ou la largeur si celui-ci est une image, etc...
-  *
-  *        La valeur peut aussi être une liste. Par exemple pour un nuage de points la
-  *        valeur peut être la liste des coordonnés des points en X.
-  */
-class IItemDataValue
-{
-public:
-
-    /**
-      * \brief Le type de la valeur
-      */
-    enum ItemDataValueType
-    {
-        // ATTENTION : Si vous rajoutez un élément dans la liste il faut le rajouter pour tous les types (listes et tableaux)
-        // et aussi dans ItemScalarDataValueType. Attention à bien respecter l'ordre de déclaration
-        // sous peine d'avoir des problèmes.
-
-        IDVT_BOOL = 0,                  // un booléen
-        IDVT_INT,                       // un entier signés 32 ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_UINT64,                    // un entier non signés 64 bits
-        IDVT_SIZE_T,                    // un entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE,                    // un double
-        IDVT_LONG_DOUBLE,               // un long double
-        IDVT_FLOAT,                     // un float
-        IDVT_STRING,                    // une chaine de caractère
-        IDVT_UNKNOWN_SCALAR,            // un scalaire inconnu (toujours laisser avant les listes et après les scalaires)
-
-        IDVT_BOOL_LIST,                 // une liste de booléen
-        IDVT_INT_LIST,                  // une liste d'entiers 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_UINT64_LIST,               // une liste d'entier non signés 64 bits
-        IDVT_SIZE_T_LIST,               // une liste d'entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE_LIST,               // une liste de double
-        IDVT_LONG_DOUBLE_LIST,          // une liste de long double
-        IDVT_FLOAT_LIST,                // une liste de float
-        IDVT_STRING_LIST,               // une liste de chaine de caractère
-        IDVT_UNKNOWN_LIST,              // une liste inconnu (toujours laisser avant les tableaux 1D et après les listes)
-
-        IDVT_BOOL_1D_ARRAY,             // un tableau 1D de booléen
-        IDVT_INT_1D_ARRAY,              // un tableau 1D d'entiers signés 32 ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_UINT64_1D_ARRAY,           // un tableau 1D d'entiers non signés 64 bits
-        IDVT_SIZE_T_1D_ARRAY,           // un tableau 2D d'entiers non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE_1D_ARRAY,           // un tableau 1D de double
-        IDVT_LONG_DOUBLE_1D_ARRAY,      // un tableau 1D de long double
-        IDVT_FLOAT_1D_ARRAY,            // un tableau 1D de float
-        IDVT_STRING_1D_ARRAY,           // un tableau 1D de chaine de caractère
-        IDVT_UNKNOWN_1D_ARRAY,          // un tableau 1D inconnu (toujours laisser avant les tableaux 2D et après les tableau 1D)
-
-        IDVT_BOOL_2D_ARRAY,             // un tableau 2D de booléen
-        IDVT_INT_2D_ARRAY,              // un tableau 2D d'entiers signés 32 ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_UINT64_2D_ARRAY,           // un tableau 2D d'entiers non signés 64 bits
-        IDVT_SIZE_T_2D_ARRAY,           // un tableau 2D d'entiers non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE_2D_ARRAY,           // un tableau 2D de double
-        IDVT_LONG_DOUBLE_2D_ARRAY,      // un tableau 1D de long double
-        IDVT_FLOAT_2D_ARRAY,            // un tableau 2D de float
-        IDVT_STRING_2D_ARRAY,           // un tableau 2D de chaine de caractère
-        IDVT_UNKNOWN_2D_ARRAY,          // un tableau 2D inconnu (toujours laisser avant les tableaux 3D et après les tableau 2D)
-
-        IDVT_BOOL_3D_ARRAY,             // un tableau 3D de booléen
-        IDVT_INT_3D_ARRAY,              // un tableau 3D d'entiers 32 bits
-        IDVT_UINT64_3D_ARRAY,           // un tableau 3D d'entiers non signés 64 bits
-        IDVT_SIZE_T_3D_ARRAY,           // un tableau 3D d'entiers non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE_3D_ARRAY,           // un tableau 3D de double
-        IDVT_LONG_DOUBLE_3D_ARRAY,      // un tableau 3D de long double
-        IDVT_FLOAT_3D_ARRAY,            // un tableau 3D de float
-        IDVT_STRING_3D_ARRAY,           // un tableau 3D de chaine de caractère
-        IDVT_UNKNOWN_3D_ARRAY,          // un tableau 3D inconnu (toujours laisser avant les nuages et après les tableau 2D)
-
-        IDVT_BOOL_4D_ARRAY,             // un tableau 4D de booléen
-        IDVT_INT_4D_ARRAY,              // un tableau 4D d'entiers 32 bits
-        IDVT_UINT64_4D_ARRAY,           // un tableau 4D d'entiers non signés 64 bits
-        IDVT_SIZE_T_4D_ARRAY,           // un tableau 4D d'entiers non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        IDVT_DOUBLE_4D_ARRAY,           // un tableau 4D de double
-        IDVT_LONG_DOUBLE_4D_ARRAY,      // un tableau 4D de long double
-        IDVT_FLOAT_4D_ARRAY,            // un tableau 4D de float
-        IDVT_STRING_4D_ARRAY,           // un tableau 4D de chaine de caractère
-        IDVT_UNKNOWN_4D_ARRAY,          // un tableau 4D inconnu (toujours laisser avant les nuages et après les tableau 3D)
-
-        IDVT_POINT_CLOUD_DATA,          // un nuage de points + les index du nuage de points + l'index de la valeur
-        IDVT_UNKNOWN_CLOUD,             // un nuage inconnu (toujours laisser après les nuages)
-
-        IDVT_UNKNOWN                    // une valeur non valide (toujours laisser à la fin de cet 'enum')
-    };
-
-    /**
-      * \brief Le type de la valeur scalaire (par exemple si on veut savoir ce que contient une liste ou un tableau)
-      */
-    enum ItemScalarDataValueType
-    {
-        ISDVT_BOOL = 0,          // un booléen
-        ISDVT_INT,               // un entier signés 32 ou 64 bits (dépend de la plateforme de compilation)
-        ISDVT_UINT64,            // un entier non signés 64 bits
-        ISDVT_SIZE_T,            // un entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
-        ISDVT_DOUBLE,            // un double
-        ISDVT_LONG_DOUBLE,       // un long double
-        ISDVT_FLOAT,             // un float
-        ISDVT_STRING,            // une chaine de caractère
-        ISDVT_UNKNOWN            // un type inconnu
-    };
-
-    virtual ~IItemDataValue() {}
-
-    /**
-      * \brief Est ce que la valeur est valide ? Oui si le type est différent de IDVT_UNKNOWN.
-      */
-    virtual bool isValid() const = 0;
-
-    /**
-      * \brief Type de la valeur
-      */
-    virtual IItemDataValue::ItemDataValueType type() const = 0;
-
-    /**
-      * \brief Type de la valeur scalaire
-      */
-    virtual IItemDataValue::ItemScalarDataValueType scalarType() const = 0;
-
-    /**
-      * \brief Méthodes pour récupérer la valeur
-      */
-    virtual bool toBool(bool *ok) const = 0;
-    virtual int toInt(bool *ok) const = 0;
-    virtual quint64 toUInt64(bool *ok) const = 0;
-    virtual size_t toSizeT(bool *ok) const = 0;
-    virtual double toDouble(bool *ok) const = 0;
-    virtual long double toLongDouble(bool *ok) const = 0;
-    virtual float toFloat(bool *ok) const = 0;
-    virtual QString toString(bool *ok) const = 0;
-    virtual void toPointCloudData(CT_AbstractPointCloud **pc,
-                                  CT_AbstractCloudIndex **pcIndex,
-                                  int &dataIndex,
-                                  bool *ok) const = 0;
-
-    /**
-      * \brief Retourne la valeur à l'index 'index' en String.
-      *
-      * Utilisez la méthode size() pour savoir le nombre de valeurs disponibles.
-      */
-    virtual QString valueAtIndexToString(const size_t &index, bool *ok) = 0;
-
-    /**
-      * \brief Retourne la valeur à l'index 'index' en valeur scalaire (pointeur sur la valeur).
-      *
-      * Utilisez la méthode size() pour savoir le nombre de valeurs disponibles. Utilisez la méthode
-      * scalarType() pour savoir le type de la donnée.
-      */
-    virtual void* valueAtIndexToScalar(const size_t &index, bool *ok) = 0;
-
-    /**
-      * \brief Retourne le nombre de valeur totale
-      *
-      * Retourne le nombre de valeur contenu dans cette objet. Si la valeur est unique (type scalar) la méthode
-      * renvoie 1. Si la valeur est une liste : la méthode renvoie la taille de la liste. Si la valeur
-      * est un tableau : la méthode retourne la taille totale du tableau. Si la valeur est un nuage de
-      * points : la méthode retourne le nombre de points.
-      */
-    virtual size_t size() const = 0;
-
-    /**
-      * \brief Retourne le nombre de valeur (pour les tableaux à plus d'une dimension)
-      *
-      * @param dim représente la dimension que l'on souhaite (1 pour la 1ère dimension, etc...)
-      * @return la taille
-      */
-    virtual size_t otherSize(const int &dim) const = 0;
-};
-
-/**
-  * \brief Représente une référence sur une valeur d'un ItemDrawable.
-  *
-  *        L'ItemDrawable renvoie une liste de référence. Celles-ci ont un nom
-  *        et un type de donnée. Par exemple une des références d'un ItemDrawable
-  *        représentant un cercle a comme nom "Rayon" et comme type de valeur un
-  *        IItemDataValue::IDVT_DOUBLE.
-  *
-  *        Une référence peut aussi être configurée ! Par exemple un ItemDrawable
-  *        du type Arbre veut renvoyer son rayon à une hauteur donnée. La référence
-  *        aura comme nom "Rayon à X mètres", un type de valeur IItemDataValue::IDVT_DOUBLE et
-  *        lors de l'appel à la méthode "configure()" une boite de dialogue s'affichera
-  *        pour demander à l'utilisateur de choisir la hauteur.
-  *
-  *        Cette référence est ensuite passé à l'ItemDrawable afin qu'il retourne la valeur souhaitée.
-  */
-class IItemDataRef
-{
-public:
-
-    virtual ~IItemDataRef() {}
-
-    /**
-      * \brief Nom de la référence (doit être unique dans une IItemDataRefList). Permettra
-      *        de retrouver une référence par son nom.
-      */
-    virtual QString name() const = 0;
-
-    /**
-      * \brief Nom de la référence plus parlant pour l'utilisateur (par exemple "X Center" ou "Radius", etc...)
-      *        (peut être différent après que la méthode "configure()" est été appelée)
-      */
-    virtual QString displayableName() const = 0;
-
-    /**
-      * \brief Type de la valeur (peut être différent après que la méthode "configure()" est été appelée)
-      */
-    virtual IItemDataValue::ItemDataValueType dataType() const = 0;
-
-    /**
-      * \brief Configurer la référence
-      */
-    virtual bool configure() = 0;
-
-    /**
-      * \brief Sauvegarde la configuration
-      */
-    virtual SettingsNodeGroup* saveConfiguration() const = 0;
-
-    /**
-      * \brief Recharge une ancienne configuration
-      */
-    virtual bool loadConfiguration(const SettingsNodeGroup *root) const = 0;
-};
-
-/**
-  * \brief Représente une liste de références sur des valeurs d'un ItemDrawable
-  */
-class IItemDataRefList
-{
-public:
-
-    virtual ~IItemDataRefList() {}
-
-    /**
-      * \brief Retourne le nom de la liste (Doit être unique pour chaque classe héritant
-      *        d'ItemDrawable, typiquement ont donnera le nom de la classe). Permettra
-      *        de classer les ItemDrawable en fonction du nom des IItemDataRefList.
-      */
-    virtual QString name() const = 0;
-
-    /**
-      * \brief Retourne un nom plus parlant pour l'utilisateur.
-      */
-    virtual QString displayableName() const = 0;
-
-    /**
-      * \brief Retourne la liste des références
-      */
-    virtual const QList<IItemDataRef*>& references() const = 0;
-};
-
 /*!
  *  \brief Représente un objet qui doit être utilisé par les ItemDrawable
  *         pour dessiner leur élements 3D/2D.
@@ -1636,7 +1384,7 @@ public:
     /*!
      *  \brief Retourne le gestionnaire de plugin d'étapes
      */
-    virtual CT_AbstractStepPlugin* getPlugin() = 0;
+    virtual CT_AbstractStepPlugin* getPlugin() const = 0;
 };
 
 #define CoreInterface_iid "com.krebs.michael.ONF.PluginSharedV2.CoreInterface"
@@ -1657,9 +1405,6 @@ public:
 #define ActionsManagerInterface_iid "com.krebs.michael.ONF.PluginSharedV2.ActionsManagerInterface"
 #define ActionOptionsInterface_iid "com.krebs.michael.ONF.PluginSharedV2.ActionOptionsInterface"
 
-#define IItemDataValue_iid "com.krebs.michael.ONF.PluginSharedV2.IItemDataValue"
-#define IItemDataRef_iid "com.krebs.michael.ONF.PluginSharedV2.IItemDataRef"
-#define IItemDataRefList_iid "com.krebs.michael.ONF.PluginSharedV2.IItemDataRefList"
 #define PluginEntryInterface_iid "com.krebs.michael.ONF.PluginSharedV2.PluginEntryInterface"
 
 // CORE
@@ -1683,9 +1428,6 @@ Q_DECLARE_INTERFACE(ActionsManagerInterface, ActionsManagerInterface_iid)
 Q_DECLARE_INTERFACE(ActionOptionsInterface, ActionOptionsInterface_iid)
 
 // PLUGINS
-Q_DECLARE_INTERFACE(IItemDataValue, IItemDataValue_iid)
-Q_DECLARE_INTERFACE(IItemDataRef, IItemDataRef_iid)
-Q_DECLARE_INTERFACE(IItemDataRefList, IItemDataRefList_iid)
 Q_DECLARE_INTERFACE(PluginEntryInterface, PluginEntryInterface_iid)
 
 #endif // INTERFACES_H

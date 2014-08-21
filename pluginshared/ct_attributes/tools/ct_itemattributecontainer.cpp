@@ -1,5 +1,9 @@
 #include "ct_itemattributecontainer.h"
 
+#include "ct_attributes/model/inModel/abstract/ct_inabstractitemattributemodel.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+
 CT_ItemAttributeContainer::CT_ItemAttributeContainer()
 {
 }
@@ -9,7 +13,7 @@ CT_ItemAttributeContainer::~CT_ItemAttributeContainer()
     clear();
 }
 
-void CT_ItemAttributeContainer::addItemAttribute(CT_AbstractItemAttribute *att)
+bool CT_ItemAttributeContainer::addItemAttribute(CT_AbstractItemAttribute *att)
 {
     QList<CT_AbstractItemAttribute *> *l = m_attributes.value(att->result(), NULL);
 
@@ -20,6 +24,7 @@ void CT_ItemAttributeContainer::addItemAttribute(CT_AbstractItemAttribute *att)
     }
 
     l->append(att);
+    return true;
 }
 
 void CT_ItemAttributeContainer::removeItemAttribute(CT_AbstractItemAttribute *att)
@@ -40,12 +45,12 @@ void CT_ItemAttributeContainer::removeItemAttribute(CT_AbstractItemAttribute *at
     }
 }
 
-void CT_ItemAttributeContainer::removeItemAttributeFromResult(CT_AbstractResult *result)
+void CT_ItemAttributeContainer::removeItemAttributeFromResult(const CT_AbstractResult *result)
 {
-    if(m_attributes.contains(result))
-    {
-        QList<CT_AbstractItemAttribute *> *l = m_attributes.take(result);
+    QList<CT_AbstractItemAttribute *> *l = m_attributes.take((CT_AbstractResult*)result);
 
+    if(l != NULL)
+    {
         qDeleteAll(l->begin(), l->end());
         delete l;
     }
@@ -72,6 +77,62 @@ QList<CT_AbstractItemAttribute *> CT_ItemAttributeContainer::itemAttributesFromR
         return QList<CT_AbstractItemAttribute *>();
 
     return *l;
+}
+
+CT_AbstractItemAttribute* CT_ItemAttributeContainer::itemAttributeFromModel(const CT_OutAbstractItemAttributeModel *outModel) const
+{
+    QString uName = outModel->uniqueName();
+    QHashIterator<CT_AbstractResult*, QList<CT_AbstractItemAttribute*>*> it(m_attributes);
+
+    while(it.hasNext())
+    {
+        it.next();
+
+        QListIterator<CT_AbstractItemAttribute*> itL(*it.value());
+
+        while(itL.hasNext())
+        {
+            CT_AbstractItemAttribute *att = itL.next();
+
+            if(att->model()->uniqueName() == uName)
+                return att;
+        }
+    }
+
+    return NULL;
+}
+
+QList<CT_AbstractItemAttribute*> CT_ItemAttributeContainer::itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel) const
+{
+    QList<CT_AbstractItemAttribute*> l;
+    QHashIterator<CT_AbstractResult*, QList<CT_AbstractItemAttribute*>*> it(m_attributes);
+
+    QList<CT_InStdModelPossibility*> p = inModel->getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> itP(p);
+
+    while(itP.hasNext())
+    {
+        QString uName = itP.next()->outModel()->uniqueName();
+
+        it.toFront();
+
+        while(it.hasNext())
+        {
+            it.next();
+
+            QListIterator<CT_AbstractItemAttribute*> itL(*it.value());
+
+            while(itL.hasNext())
+            {
+                CT_AbstractItemAttribute *att = itL.next();
+
+                if(att->model()->uniqueName() == uName)
+                    l.append(att);
+            }
+        }
+    }
+
+    return l;
 }
 
 void CT_ItemAttributeContainer::clear()

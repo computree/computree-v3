@@ -4,27 +4,13 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardgrid4ddrawmanager.h"
 #include "ct_itemdrawable/ct_grid4d.h"
 
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
-
 #include <math.h>
 #include <typeinfo>
 
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT> CT_INIT_DEFAULT_IA(0, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(1, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(2, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(3, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(4, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(5, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(6, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(7, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(8, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(9, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(10, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(11, CT_Grid4D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(12, CT_Grid4D<DataT>)
+template< typename DataT> CT_DEFAULT_IA_INIT(CT_Grid4D<DataT>)
 
 template< typename DataT>
 const CT_StandardGrid4DDrawManager<DataT> CT_Grid4D<DataT>::ABSGRID4D_DRAW_MANAGER;
@@ -67,7 +53,7 @@ CT_Grid4D<DataT>::CT_Grid4D() : CT_AbstractGrid4D()
 }
 
 template< typename DataT>
-CT_Grid4D<DataT>::CT_Grid4D(const CT_OutAbstractItemModel *model,
+CT_Grid4D<DataT>::CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             float wmin,
                             float xmin,
@@ -182,7 +168,7 @@ CT_Grid4D<DataT>::CT_Grid4D(const QString &modelName,
 
 
 template< typename DataT>
-CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstractItemModel *model,
+CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                     const CT_AbstractResult *result,
                                                     float wmin,
                                                     float xmin,
@@ -204,7 +190,7 @@ CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstr
     size_t dimy = ceil((ymax - ymin)/resy);
     size_t dimz = ceil((zmax - zmin)/resz);
 
-    CT_Grid4D<DataT>* grid = new CT_Grid4D(model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
+    CT_Grid4D<DataT>* grid = new CT_Grid4D((const CT_OutAbstractSingularItemModel *)model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (wmax >= grid->maxW())
@@ -260,7 +246,7 @@ CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const QString &mo
     size_t dimy = ceil((ymax - ymin)/resy);
     size_t dimz = ceil((zmax - zmin)/resz);
 
-    CT_Grid4D<DataT>* grid = new CT_Grid4D(model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
+    CT_Grid4D<DataT>* grid = new CT_Grid4D((const CT_OutAbstractSingularItemModel *)model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (wmax >= grid->maxW())
@@ -490,7 +476,7 @@ CT_AbstractItemDrawable* CT_Grid4D<DataT>::copy(const CT_OutAbstractItemModel *m
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid4D<DataT>* cpy = new CT_Grid4D<DataT>(model, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
+    CT_Grid4D<DataT>* cpy = new CT_Grid4D<DataT>((const CT_OutAbstractSingularItemModel *)model, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
     cpy->setId(id());
 
     size_t ncells = nCells();

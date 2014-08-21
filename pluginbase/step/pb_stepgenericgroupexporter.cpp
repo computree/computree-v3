@@ -7,6 +7,8 @@
 #include "ct_step/ct_stepinitializedata.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 
+#include "ct_view/ct_stepconfigurabledialog.h"
+
 #include <QFileDialog>
 
 #define DEF_SearchInGroup    "g"
@@ -61,7 +63,7 @@ void PB_StepGenericGroupExporter::compute()
 {
     CT_ResultGroup *outRes = getOutResultList().first();
     
-    QList<ItemDrawable*> itemsToExport;
+    QList<CT_AbstractItemDrawable*> itemsToExport;
 
 
     // create a iterator to find groups that user selected with the IN model named DEF_SearchInGroup

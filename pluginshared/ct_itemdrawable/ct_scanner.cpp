@@ -59,7 +59,7 @@ CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWith
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
-CT_Scanner::CT_Scanner(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
+CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
 {
     _scanID = scanId;
     _position = QVector3D(0,0,0);
@@ -82,7 +82,7 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractItemModel *model, const CT_AbstractRe
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
-CT_Scanner::CT_Scanner(const CT_OutAbstractItemModel *model,
+CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
                        const CT_AbstractResult *result,
                        int scanID,
                        const QVector3D &origin,
@@ -323,7 +323,7 @@ CT_Scanner* CT_Scanner::copy(const CT_OutAbstractItemModel *model,
                              const CT_AbstractResult *result,
                              CT_ResultCopyModeList copyModeList)
 {
-    CT_Scanner *sc = new CT_Scanner(model, result, _scanID, _position, _zVector, _hFov, _vFov, _hRes, _vRes, _initTheta, _initPhi, _clockWise);
+    CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model, result, _scanID, _position, _zVector, _hFov, _vFov, _hRes, _vRes, _initTheta, _initPhi, _clockWise);
     sc->setId(id());
     sc->setAlternativeDrawManager(getAlternativeDrawManager());
 

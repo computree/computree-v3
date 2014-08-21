@@ -53,7 +53,7 @@ public:
     /**
       * \brief Contructeur avec une instance des donnes (CT_CircleData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_Circle(const CT_OutAbstractItemModel *model,
+    CT_Circle(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
               CT_CircleData *data);
 
@@ -78,7 +78,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  3.
       */
-    static CT_Circle* staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractItemModel *model,
+    static CT_Circle* staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                    quint64 id,
                                                                    const CT_AbstractResult *result,
                                                                    const CT_AbstractPointCloud &pointCloud,
@@ -87,9 +87,11 @@ public:
 
 private:
 
-    CT_USE_DEFAULT_IA(CT_Circle)
-    CT_DEFAULT_IA_V2(0, CT_Circle, CT_AbstractCategory::DATA_RADIUS, &CT_Circle::getRadius, tr("Rayon du cercle"))
-    CT_DEFAULT_IA_V2(1, CT_Circle, CT_AbstractCategory::DATA_R2, &CT_Circle::getError, tr("Erreur d'ajustement du cercle"))
+    CT_DEFAULT_IA_BEGIN(CT_Circle)
+    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::DATA_RADIUS, &CT_Circle::getRadius, tr("Rayon du cercle"))
+    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::DATA_R2, &CT_Circle::getError, tr("Erreur d'ajustement du cercle"))
+    CT_DEFAULT_IA_END(CT_Circle)
+
     const static CT_StandardCircleDrawManager   CIRCLE_DRAW_MANAGER;
 
 #ifdef USE_BOOST_OLD

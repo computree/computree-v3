@@ -1,7 +1,8 @@
 #include "pb_stepsegmentcrowns.h"
 
 // Inclusion of in models
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_result/ct_resultgroup.h"
 
 // Inclusion of used ItemDrawable classes
@@ -303,7 +304,7 @@ void PB_StepSegmentCrowns::addPointsToExtractedScenes(CT_ResultGroup *resultIn,
         CT_Scene *scene = (CT_Scene*) itRes.next();
 
         const CT_AbstractPointCloudIndex *pointCloudIndex = scene->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->indexSize();
+        size_t n_points = pointCloudIndex->size();
 
         size_t i = 0;
         while((i<n_points) && (!isStopped()))

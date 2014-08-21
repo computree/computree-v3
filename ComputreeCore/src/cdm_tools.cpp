@@ -1,5 +1,8 @@
 #include "cdm_tools.h"
 
+#include "ct_abstractstepplugin.h"
+#include "ct_exporter/ct_standardexporterseparator.h"
+
 CDM_Tools::CDM_Tools(const CDM_PluginManager *pm)
 {
     m_pm = (CDM_PluginManager*)pm;
@@ -13,26 +16,26 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
 
     for(int i=0; i<s; ++i)
     {
-        PluginInterface *plugin = m_pm->getPlugin(i);
-        QList<IExporterSeparator*> separators = plugin->getExportersAvailable();
+        CT_AbstractStepPlugin *plugin = m_pm->getPlugin(i);
+        QList<CT_StandardExporterSeparator*> separators = plugin->getExportersAvailable();
 
         if(!separators.isEmpty())
         {
             QMenu *sepMenu = new QMenu(m_pm->getPluginName(i));
 
-            QListIterator<IExporterSeparator*> itS(separators);
+            QListIterator<CT_StandardExporterSeparator*> itS(separators);
 
             while(itS.hasNext())
             {
-                IExporterSeparator *sep = itS.next();
+                CT_StandardExporterSeparator *sep = itS.next();
 
                 if(!sep->exporters().isEmpty())
                 {
-                    QListIterator<IExporter*> itE(sep->exporters());
+                    QListIterator<CT_AbstractExporter*> itE(sep->exporters());
 
                     while(itE.hasNext())
                     {
-                        IExporter *exp = itE.next();
+                        CT_AbstractExporter *exp = itE.next();
 
                         QString name = createNameForExporter(exp);
 
@@ -64,7 +67,7 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
     return menu;
 }
 
-QString CDM_Tools::createFileExtensionForExporter(IExporter *exporter) const
+QString CDM_Tools::createFileExtensionForExporter(CT_AbstractExporter *exporter) const
 {
     QString fileExtension;
 
@@ -96,7 +99,7 @@ QString CDM_Tools::createFileExtensionForExporter(IExporter *exporter) const
     return fileExtension;
 }
 
-QString CDM_Tools::createNameForExporter(IExporter *exporter) const
+QString CDM_Tools::createNameForExporter(CT_AbstractExporter *exporter) const
 {
 //    QString ret;
 

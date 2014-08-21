@@ -4,7 +4,6 @@
 #include <QDialog>
 
 class PB_CSVExporterConfiguration;
-class IItemDataRefList;
 
 namespace Ui {
 class PBG_CSVConfigurationDialog;
@@ -18,8 +17,6 @@ public:
     explicit PBG_CSVConfigurationDialog(PB_CSVExporterConfiguration &configuration,
                                         QWidget *parent = 0);
     ~PBG_CSVConfigurationDialog();
-    
-    void setListOfDataRefList(const QList<const IItemDataRefList*> *list);
 
 private:
     Ui::PBG_CSVConfigurationDialog *ui;

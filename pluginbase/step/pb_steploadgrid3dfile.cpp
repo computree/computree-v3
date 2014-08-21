@@ -4,8 +4,8 @@
 
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_itemdrawable/ct_standarditemgroup.h"
 
 #include "ct_itemdrawable/ct_grid3d.h"
@@ -161,7 +161,7 @@ void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endia
     CT_ResultGroup* out_res = getOutResultList().first();
 
     // Creating a grid with the parameters read from the header
-    CT_Grid3D<float>* loadedGrid = new CT_Grid3D<float>( getOutModelForCreation(out_res, DEF_Search_Grid3d),
+    CT_Grid3D<float>* loadedGrid = new CT_Grid3D<float>( getOutSingularItemModelForCreation(out_res, DEF_Search_Grid3d),
                                                          out_res,
                                                          _minX,
                                                          _minY,
@@ -189,7 +189,7 @@ void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endia
 
     loadedGrid->computeMinMax();
 
-    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup((DEF_CT_AbstractGroupModelOut*)getOutModelForCreation(out_res, DEF_Search_Grid3dGroup), out_res);
+    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup(getOutGroupModelForCreation(out_res, DEF_Search_Grid3dGroup), out_res);
     gridGroup->addItemDrawable( loadedGrid );
     out_res->addGroup( gridGroup );
 }

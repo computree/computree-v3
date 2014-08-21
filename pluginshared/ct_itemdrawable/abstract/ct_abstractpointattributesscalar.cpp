@@ -4,7 +4,7 @@ CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar() : CT_Abstra
 {
 }
 
-CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const CT_OutAbstractItemModel *model,
+CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                    const CT_AbstractResult *result,
                                                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(model,
                                                                                                                                                                            result,

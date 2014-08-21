@@ -1,7 +1,9 @@
 #include "pbg_csvpreviewwidget.h"
 #include "ui_pbg_csvpreviewwidget.h"
 
-#include "interfaces.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
+
 #include "exporters/csv/pb_csvexporterconfiguration.h"
 
 #include <QDragEnterEvent>
@@ -40,16 +42,7 @@ PBG_CSVPreviewWidget::~PBG_CSVPreviewWidget()
 void PBG_CSVPreviewWidget::setConfiguration(const PB_CSVExporterConfiguration *configuration)
 {
     _configuration = (PB_CSVExporterConfiguration*)configuration;
-
-    updateViewFromConfiguration();
-}
-
-void PBG_CSVPreviewWidget::setListOfDataRefList(const QList<const IItemDataRefList*> *list)
-{
-    if(list == NULL)
-        _list.clear();
-    else
-        _list = (*list);
+    _list = _configuration->list();
 
     updateViewFromConfiguration();
 }
@@ -70,8 +63,8 @@ bool PBG_CSVPreviewWidget::updateConfiguration()
         int refListIndex = item->data(Qt::UserRole).toInt();
         int refIndex = item->data(Qt::UserRole+1).toInt();
 
-        const IItemDataRefList *refList = _list.at(refListIndex);
-        _configuration->addColumn(refList, refList->references().at(refIndex));
+        CT_OutAbstractSingularItemModel *sItem = _list.at(refListIndex);
+        _configuration->addColumn(sItem, sItem->itemAttributes().at(refIndex));
     }
 
     return true;
@@ -108,13 +101,13 @@ void PBG_CSVPreviewWidget::dragMoveEvent(QDragMoveEvent *event)
             {
                 if((refListIndex >= 0) && (refListIndex < _list.size()))
                 {
-                    const IItemDataRefList *refList = _list.at(refListIndex);
+                    CT_OutAbstractSingularItemModel *sItem = _list.at(refListIndex);
 
-                    if((refIndex >= 0) && (refIndex < refList->references().size()))
+                    if((refIndex >= 0) && (refIndex < sItem->itemAttributes().size()))
                     {
-                        IItemDataRef *ref = refList->references().at(refIndex);
+                        CT_OutAbstractItemAttributeModel *ref = sItem->itemAttributes().at(refIndex);
 
-                        createColumn(refList, ref, event->pos(), true);
+                        createColumn(sItem, ref, event->pos(), true);
                     }
                 }
             }
@@ -144,8 +137,8 @@ void PBG_CSVPreviewWidget::keyPressEvent(QKeyEvent *e)
         removeSelectedColumn();
 }
 
-void PBG_CSVPreviewWidget::createColumn(const IItemDataRefList *refList,
-                                        IItemDataRef *ref,
+void PBG_CSVPreviewWidget::createColumn(const CT_OutAbstractSingularItemModel *sItem,
+                                        const CT_OutAbstractItemAttributeModel *ia,
                                         const QPoint &pos,
                                         bool preview)
 {
@@ -190,23 +183,15 @@ void PBG_CSVPreviewWidget::createColumn(const IItemDataRefList *refList,
                 --columnIndex;
         }
 
-        bool addColumn = true;
-
-        if(!preview)
-            addColumn = ref->configure(); // TODO : problème si on ajoute plusieurs fois la même ref
-
-        if(addColumn)
-            createColumn(refList, ref, columnIndex, preview);
+        createColumn(sItem, ia, columnIndex, preview);
     }
 
     if(!preview)
-    {
         _currentDropPreviewColumnIndex = -9999;
-    }
 }
 
-void PBG_CSVPreviewWidget::createColumn(const IItemDataRefList *refList,
-                                        IItemDataRef *ref,
+void PBG_CSVPreviewWidget::createColumn(const CT_OutAbstractSingularItemModel *sItem,
+                                        const CT_OutAbstractItemAttributeModel *ia,
                                         int columnIndex,
                                         bool preview)
 {
@@ -218,9 +203,9 @@ void PBG_CSVPreviewWidget::createColumn(const IItemDataRefList *refList,
     _model.insertColumn(columnIndex, QList<QStandardItem*>() << item);
 
     item = new QStandardItem();
-    item->setData(ref->displayableName(), Qt::DisplayRole);
-    item->setData(_list.indexOf(refList), Qt::UserRole);
-    item->setData(refList->references().indexOf(ref), Qt::UserRole+1);
+    item->setData(ia->displayableName(), Qt::DisplayRole);
+    item->setData(_list.indexOf((CT_OutAbstractSingularItemModel*)sItem), Qt::UserRole);
+    item->setData(sItem->itemAttributes().indexOf((CT_OutAbstractItemAttributeModel*)ia), Qt::UserRole+1);
 
     if(preview)
         item->setData(QColor(Qt::gray), Qt::BackgroundColorRole);
@@ -277,12 +262,12 @@ void PBG_CSVPreviewWidget::updateViewFromConfiguration()
 
     if(_configuration != NULL)
     {
-        QListIterator< QPair<const IItemDataRefList*, const IItemDataRef*> > it(_configuration->getColumns());
+        QListIterator< QPair<CT_OutAbstractSingularItemModel*, CT_OutAbstractItemAttributeModel*> > it(_configuration->getColumns());
 
         while(it.hasNext())
         {
-            const QPair<const IItemDataRefList*, const IItemDataRef*> &pair = it.next();
-            createColumn(pair.first, (IItemDataRef*)pair.second, _model.columnCount(), false);
+            const QPair<CT_OutAbstractSingularItemModel*, CT_OutAbstractItemAttributeModel*> &pair = it.next();
+            createColumn(pair.first, pair.second, _model.columnCount(), false);
         }
     }
 }
@@ -308,9 +293,9 @@ bool PBG_CSVPreviewWidget::acceptItemAttribute(const QString &mimeData)
         {
             if((refListIndex >= 0) && (refListIndex < _list.size()))
             {
-                const IItemDataRefList *refList = _list.at(refListIndex);
+                CT_OutAbstractSingularItemModel *refList = _list.at(refListIndex);
 
-                if((refIndex >= 0) && (refIndex < refList->references().size()))
+                if((refIndex >= 0) && (refIndex < refList->itemAttributes().size()))
                     return true;
             }
         }
@@ -322,9 +307,7 @@ bool PBG_CSVPreviewWidget::acceptItemAttribute(const QString &mimeData)
 void PBG_CSVPreviewWidget::setCurrentDropPreviewColumnWidth(int size)
 {
     if(_currentDropPreviewColumnIndex >= 0)
-    {
         ui->tableView->setColumnWidth(_currentDropPreviewColumnIndex, size);
-    }
 }
 
 void PBG_CSVPreviewWidget::showHorizontalHeaderViewContextMenu(const QPoint &pos)
@@ -342,9 +325,7 @@ void PBG_CSVPreviewWidget::removeSelectedColumn()
         QStandardItem *item = _model.itemFromIndex(list.first());
 
         if(item != NULL)
-        {
             _model.removeColumn(item->column());
-        }
     }
 }
 
@@ -357,8 +338,8 @@ void PBG_CSVPreviewWidget::setItemAttribute(const QString &mimeData, QDropEvent 
         int refListIndex = values.first().toInt();
         int refIndex = values.at(1).toInt();
 
-        const IItemDataRefList *refList = _list.at(refListIndex);
-        IItemDataRef *ref = refList->references().at(refIndex);
+        CT_OutAbstractSingularItemModel *refList = _list.at(refListIndex);
+        CT_OutAbstractItemAttributeModel *ref = refList->itemAttributes().at(refIndex);
 
         if(event != NULL)
             createColumn(refList, ref, event->pos(), false);

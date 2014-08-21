@@ -26,30 +26,29 @@ void PB_PbmExporter::init()
     addNewExportFormat(FileFormat("pbm", tr("Fichiers Images 2D (pbm)")));
 }
 
-bool PB_PbmExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_PbmExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    int nGrids = 0;
-    int nNotGrids = 0;
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
-    QListIterator<ItemDrawable*> it(list);
-
-    while(it.hasNext())
+    while(it.hasNext()
+            && myList.isEmpty())
     {
-        if(it.next()->rtti() == IDGT_GRID2D)
-            ++nGrids;
-        else
-            ++nNotGrids;
+        CT_AbstractItemDrawable *item = it.next();
+
+        if(dynamic_cast<CT_ITemplatedData2DArray<int>*>(item) != NULL)
+            myList.append(item);
     }
 
-    if(nGrids == 0)
+    if(myList.isEmpty())
     {
-        setErrorMessage(tr("Aucun ItemDrawable du type IDGT_GRID2D"));
+        setErrorMessage(tr("Aucun ItemDrawable du type CT_ITemplatedData2DArray<int>"));
         return false;
     }
 
-    return CT_AbstractExporter::setItemDrawableToExport(list);
+    return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
 bool PB_PbmExporter::configureExport()
@@ -63,7 +62,7 @@ bool PB_PbmExporter::configureExport()
     return true;
 }
 
-IExporter* PB_PbmExporter::copy() const
+CT_AbstractExporter* PB_PbmExporter::copy() const
 {
     return new PB_PbmExporter();
 }
@@ -78,7 +77,7 @@ bool PB_PbmExporter::protectedExportToFile()
 
     QFile file(filePath);
 
-    QListIterator<ItemDrawable*> it(itemDrawableToExport());
+    QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
     if( itemDrawableToExport().size() > 1 )
     {
@@ -92,9 +91,9 @@ bool PB_PbmExporter::protectedExportToFile()
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
-            CT_VirtualGrid2D<int> *grid = dynamic_cast<CT_VirtualGrid2D<int>*>(item);
+            CT_ITemplatedData2DArray<int> *grid = (CT_ITemplatedData2DArray<int>*)item;
             int width = grid->xArraySize();
             int height = grid->yArraySize();
 
@@ -112,7 +111,7 @@ bool PB_PbmExporter::protectedExportToFile()
                 {
                     for (int x = 0 ; x < width ; x++ )
                     {
-                        stream << ( grid->value( x, height - 1 - y ) != 0 ) << " ";
+                        stream << ( grid->dataFromArray(x, height - 1 - y ) != 0 ) << " ";
                     }
 
                     if( y != height - 1 )

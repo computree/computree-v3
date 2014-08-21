@@ -4,7 +4,7 @@
 #include "ct_colorcloud/ct_indexcloudcolorstdmapt.h"
 
 template<typename T>
-CT_IndexCloudColorStdMapT<T>::CT_IndexCloudColorStdMapT() : CT_CloudIndexStdMapT<T, CT_Color>()
+CT_IndexCloudColorStdMapT<T>::CT_IndexCloudColorStdMapT() : CT_CloudIndexStdMapT<T, CT_Color>(), CT_AbstractModifiableIndexCloudColorMap()
 {
 }
 

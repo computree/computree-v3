@@ -3,11 +3,7 @@
 #include "math.h"
 
 // initialize default item attributes of this class for each unique number declared
-CT_INIT_DEFAULT_IA(0, CT_AbstractSingularItemDrawable)
-CT_INIT_DEFAULT_IA(1, CT_AbstractSingularItemDrawable)
-CT_INIT_DEFAULT_IA(2, CT_AbstractSingularItemDrawable)
-CT_INIT_DEFAULT_IA(3, CT_AbstractSingularItemDrawable)
-CT_INIT_DEFAULT_IA(4, CT_AbstractSingularItemDrawable)
+CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable)
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable() : CT_AbstractItemDrawable()
 {
@@ -20,7 +16,7 @@ CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable() : CT_Abstract
     _maxCoordinates.setZ(-std::numeric_limits<float>::max());
 }
 
-CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const CT_OutAbstractItemModel *model,
+CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const CT_OutAbstractSingularItemModel *model,
                                                                  const CT_AbstractResult *result) : CT_AbstractItemDrawable(model, result)
 {
     _minCoordinates.setX(std::numeric_limits<float>::max());
@@ -49,9 +45,19 @@ QString CT_AbstractSingularItemDrawable::staticGetType()
     return CT_AbstractItemDrawable::staticGetType() + "/CT_AbstractSingularItemDrawable";
 }
 
-void CT_AbstractSingularItemDrawable::addItemAttribute(CT_AbstractItemAttribute *att)
+bool CT_AbstractSingularItemDrawable::addItemAttribute(CT_AbstractItemAttribute *att)
 {
-    m_itemAttributes.addItemAttribute(att);
+    return m_itemAttributes.addItemAttribute(att);
+}
+
+CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::itemAttribute(const CT_OutAbstractItemAttributeModel *outModel) const
+{
+    return m_itemAttributes.itemAttributeFromModel(outModel);
+}
+
+QList<CT_AbstractItemAttribute*> CT_AbstractSingularItemDrawable::itemAttributes(const CT_InAbstractItemAttributeModel *inModel) const
+{
+    return m_itemAttributes.itemAttributesFromModel(inModel);
 }
 
 QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttributes() const
@@ -82,6 +88,19 @@ void CT_AbstractSingularItemDrawable::updateCenterFromBoundingBox()
     setCenterX((_maxCoordinates.x() + _minCoordinates.x())/2);
     setCenterY((_maxCoordinates.y() + _minCoordinates.y())/2);
     setCenterZ((_maxCoordinates.z() + _minCoordinates.z())/2);
+}
+
+QString CT_AbstractSingularItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const
+{
+    if(dynamic_cast<const CT_OutAbstractSingularItemModel*>(model) == NULL)
+        return tr("Model passed in parameter is not a CT_OutAbstractGroupModel");
+
+    return QString();
+}
+
+void CT_AbstractSingularItemDrawable::internalSetWillBeRemovedFromResult(const CT_AbstractResult *res)
+{
+    m_itemAttributes.removeItemAttributeFromResult(res);
 }
 
 void CT_AbstractSingularItemDrawable::getBoundingBox(QVector3D &min, QVector3D &max) const

@@ -25,8 +25,16 @@ public:
 
     static CT_Context* staticInstance()
     {
-        static CT_Context context;
-        return &context;
+        if(UNIQUE_INSTANCE == NULL)
+            UNIQUE_INSTANCE = new CT_Context();
+
+        return UNIQUE_INSTANCE;
+    }
+
+    static void deleteStaticInstance()
+    {
+        delete UNIQUE_INSTANCE;
+        UNIQUE_INSTANCE = NULL;
     }
 
     ~CT_Context();
@@ -76,6 +84,7 @@ protected:
     DocumentManagerInterface* documentManager() const;
 
 private:
+    static CT_Context               *UNIQUE_INSTANCE;
     CT_RepositoryManager            *m_repositoryManager;
     CT_CategoryManager              *m_categoryManager;
     GuiManagerInterface             *m_guiManager;

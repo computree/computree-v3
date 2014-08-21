@@ -37,7 +37,7 @@ CT_AbstractItemDrawableWithoutPointCloud::CT_AbstractItemDrawableWithoutPointClo
     setBaseDrawManager(&IDWITHOUTPC_DRAW_MANAGER);
 }
 
-CT_AbstractItemDrawableWithoutPointCloud::CT_AbstractItemDrawableWithoutPointCloud(const CT_OutAbstractItemModel *model,
+CT_AbstractItemDrawableWithoutPointCloud::CT_AbstractItemDrawableWithoutPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                                    const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
 {
     setBaseDrawManager(&IDWITHOUTPC_DRAW_MANAGER);

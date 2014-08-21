@@ -47,7 +47,7 @@ public:
     /**
       * \brief Contructeur avec une instance des donnes (CT_ShapeData*), ne peut être NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_AbstractShape(const CT_OutAbstractItemModel *model,
+    CT_AbstractShape(const CT_OutAbstractSingularItemModel *model,
                      const CT_AbstractResult *result,
                      CT_ShapeData *data);
 

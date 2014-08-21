@@ -4,6 +4,8 @@
 #include "ct_categories/tools/ct_categorymanager.h"
 #include "ct_categories/ct_stdcategory.h"
 
+CT_Context* CT_Context::UNIQUE_INSTANCE = NULL;
+
 CT_Context::CT_Context()
 {
     m_categoryManager = new CT_CategoryManager();

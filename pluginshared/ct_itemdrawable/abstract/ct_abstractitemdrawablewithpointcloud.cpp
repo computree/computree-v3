@@ -35,7 +35,7 @@
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 CT_StandardAbstractItemDrawableWithPointCloudDrawManager CT_AbstractItemDrawableWithPointCloud::IDWITHPC_DRAW_MANAGER;
-CT_INIT_DEFAULT_IA(0, CT_AbstractItemDrawableWithPointCloud)
+CT_DEFAULT_IA_INIT(CT_AbstractItemDrawableWithPointCloud)
 
 CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud() : CT_AbstractSingularItemDrawable()
 {
@@ -43,14 +43,14 @@ CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud() :
     setBaseDrawManager(&IDWITHPC_DRAW_MANAGER);
 }
 
-CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractItemModel *model,
+CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                              const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
 {
     m_apci = NULL;
     setBaseDrawManager(&IDWITHPC_DRAW_MANAGER);
 }
 
-CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractItemModel *model,
+CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                              const CT_AbstractResult *result,
                                                                              CT_AbstractCIR pcir) : CT_AbstractSingularItemDrawable(model, result)
 {

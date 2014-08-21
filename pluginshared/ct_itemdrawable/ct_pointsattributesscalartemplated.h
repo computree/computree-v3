@@ -18,14 +18,14 @@ public:
     /**
      * @brief Create a collection of SCALAR whose size is the same that the points cloud index passed as a parameter
      */
-    CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
 
     /**
      * @brief Create a collection of SCALAR. Attention the size of the collection passed in parameter must be the same that the size of points cloud index.
      */
-    CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                        CT_StandardCloudStdVectorT<SCALAR> *collection);
@@ -33,7 +33,7 @@ public:
     /**
      * @brief Create a collection of SCALAR. Attention the size of the collection passed in parameter must be the same that the size of points cloud index.
      */
-    CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                        CT_StandardCloudStdVectorT<SCALAR> *collection,

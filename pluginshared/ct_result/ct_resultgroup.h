@@ -6,7 +6,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
 
-#include "ct_result/tools/iterator/ct_resultiteratorforgui.h"
+#include "ct_result/tools/iterator/ct_resultiterator.h"
 #include "ct_result/tools/iterator/ct_resultgroupiterator.h"
 #include "ct_result/tools/iterator/ct_resultitemiterator.h"
 
@@ -145,7 +145,7 @@ private:
 
     QList<CT_AbstractItemGroup*>            _groups;
 
-    CT_ResultIteratorForGui                 *m_guiIterator;
+    CT_ResultIterator                       *m_guiIterator;
     CT_ResultItemIterator                   *m_iIterator;
     CT_ResultGroupIterator                  *m_gIterator;
     CT_ResultGroupIterator                  *m_gRootIterator;

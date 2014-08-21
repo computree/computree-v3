@@ -21,7 +21,7 @@ public:
      * @warning The model and/or the result can be NULL but you must set them with method "setModel()" and "changeResult()" before finish
      *          your step computing !!!
      */
-    CT_AbstractSingularItemDrawable(const CT_OutAbstractItemModel *model,
+    CT_AbstractSingularItemDrawable(const CT_OutAbstractSingularItemModel *model,
                                     const CT_AbstractResult *result);
 
     /**
@@ -42,8 +42,21 @@ public:
     /**
      * @brief Add an attribute to this itemdrawable
      * @warning the attribute must have a result to be added to this item
+     * @return false if the attribute already exist (model uniqueName already exist) in this singular item
      */
-    void addItemAttribute(CT_AbstractItemAttribute *att);
+    bool addItemAttribute(CT_AbstractItemAttribute *att);
+
+    /**
+     * @brief Returns the item attribute corresponding to the OUTPUT model passed in parameter
+     * @return NULL if item attribute don't exist in this singular item
+     */
+    CT_AbstractItemAttribute* itemAttribute(const CT_OutAbstractItemAttributeModel *outModel) const;
+
+    /**
+     * @brief Returns a list of item attributes corresponding to the possibility selected of the INPUT model passed in parameter
+     * @return NULL if item attribute don't exist in this singular item
+     */
+    QList<CT_AbstractItemAttribute*> itemAttributes(const CT_InAbstractItemAttributeModel *inModel) const;
 
     /**
      * @brief Return all item attributes of this item drawable
@@ -120,18 +133,29 @@ protected:
     QVector3D   _minCoordinates;
     QVector3D   _maxCoordinates;
 
+    /**
+     * @brief Overloaded to cast the model to check the validity.
+     */
+    virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
+
+    /**
+     * @brief Called from result ot parent item to inform that this item will be deleted from the result passed in parameter
+     */
+    virtual void internalSetWillBeRemovedFromResult(const CT_AbstractResult *res);
+
 private:
 
     CT_ItemAttributeContainer   m_itemAttributes;
 
     // declare that we will add default item attributes in this class
-    //  => We must add CT_INIT_DEFAULT_IA(Number, CT_AbstractSingularItemDrawable) in top of cpp file for each number declare here
-    CT_USE_DEFAULT_IA(CT_AbstractSingularItemDrawable)
-    CT_DEFAULT_IA_V2(0, CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_ID, &CT_AbstractSingularItemDrawable::id, tr("ID"))
-    CT_DEFAULT_IA_V2(1, CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_DISPLAYABLE_NAME, &CT_AbstractSingularItemDrawable::displayableName, tr("Nom"))
-    CT_DEFAULT_IA_V2(2, CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CX, &CT_AbstractSingularItemDrawable::getCenterX, tr("Centre X"))
-    CT_DEFAULT_IA_V2(3, CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CY, &CT_AbstractSingularItemDrawable::getCenterY, tr("Centre Y"))
-    CT_DEFAULT_IA_V2(4, CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CZ, &CT_AbstractSingularItemDrawable::getCenterZ, tr("Centre Z"))
+    //  => We must add CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable) in top of cpp file
+    CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_ID, &CT_AbstractSingularItemDrawable::id, tr("ID"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_DISPLAYABLE_NAME, &CT_AbstractSingularItemDrawable::displayableName, tr("Nom"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CX, &CT_AbstractSingularItemDrawable::getCenterX, tr("Centre X"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CY, &CT_AbstractSingularItemDrawable::getCenterY, tr("Centre Y"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CZ, &CT_AbstractSingularItemDrawable::getCenterZ, tr("Centre Z"))
+    CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)
 };

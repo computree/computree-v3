@@ -4,9 +4,8 @@
 #include "ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h"
 
 // Inclusion of out models
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
 // Inclusion of standard result class
@@ -17,6 +16,8 @@
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
+
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "qdebug.h"

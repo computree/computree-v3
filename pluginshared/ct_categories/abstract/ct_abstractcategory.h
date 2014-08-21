@@ -7,9 +7,11 @@
 #include <QString>
 #include <typeinfo>
 
-#define CT_SPECIALIZE_VALUE_TYPE_TO(SCALARTYPE, CATEGORY_TYPE) \
+#define CT_SPECIALIZE_VALUE_TYPE_TO(SCALARTYPE, CATEGORY_TYPE, CATEGORY_TYPE_STRING) \
 template<> \
-inline CT_AbstractCategory::ValueType CT_AbstractCategory::staticValueTypeToCategoryType<SCALARTYPE>() { return CATEGORY_TYPE; }
+inline CT_AbstractCategory::ValueType CT_AbstractCategory::staticValueTypeToCategoryType<SCALARTYPE>() { return CATEGORY_TYPE; } \
+template<> \
+inline QString CT_AbstractCategory::staticValueTypeToCategoryTypeString<SCALARTYPE>() { return QString(CATEGORY_TYPE_STRING); }
 
 /**
  * @brief \defgroup CT_AbstractCategoryClass
@@ -165,6 +167,18 @@ public:
         return CT_AbstractCategory::UNKNOWN;
     }
 
+    /**
+     * @brief Convert a type of data to a type of data of a category (String)
+     */
+    template <typename VType>
+    static inline QString staticValueTypeToCategoryTypeString()
+    {
+        // TODO
+        Q_ASSERT_X(1==0, "CT_AbstractCategory::staticValueTypeToCategoryType", qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
+
+        return QString("UNKNOWN");
+    }
+
 private:
     QString         m_uName;
     ValueType       m_vType;
@@ -185,17 +199,17 @@ protected:
     static bool staticTestValueTypeIsEndOfHierarchy(ValueType v);
 };
 
-CT_SPECIALIZE_VALUE_TYPE_TO(bool, CT_AbstractCategory::BOOLEAN)
-CT_SPECIALIZE_VALUE_TYPE_TO(double, CT_AbstractCategory::DOUBLE)
-CT_SPECIALIZE_VALUE_TYPE_TO(float, CT_AbstractCategory::FLOAT)
-CT_SPECIALIZE_VALUE_TYPE_TO(long double, CT_AbstractCategory::LONG_DOUBLE)
-CT_SPECIALIZE_VALUE_TYPE_TO(int, CT_AbstractCategory::INT)
+CT_SPECIALIZE_VALUE_TYPE_TO(bool, CT_AbstractCategory::BOOLEAN, "BOOL")
+CT_SPECIALIZE_VALUE_TYPE_TO(double, CT_AbstractCategory::DOUBLE, "DOUBLE")
+CT_SPECIALIZE_VALUE_TYPE_TO(float, CT_AbstractCategory::FLOAT, "FLOAT")
+CT_SPECIALIZE_VALUE_TYPE_TO(long double, CT_AbstractCategory::LONG_DOUBLE, "LONG_DOUBLE")
+CT_SPECIALIZE_VALUE_TYPE_TO(int, CT_AbstractCategory::INT, "INT")
 
 #ifdef ENVIRONMENT32
-CT_SPECIALIZE_VALUE_TYPE_TO(quint64, CT_AbstractCategory::UINT64)
+CT_SPECIALIZE_VALUE_TYPE_TO(quint64, CT_AbstractCategory::UINT64, "UINT64")
 #endif
 
-CT_SPECIALIZE_VALUE_TYPE_TO(size_t, CT_AbstractCategory::SIZE_T)
-CT_SPECIALIZE_VALUE_TYPE_TO(QString, CT_AbstractCategory::STRING)
+CT_SPECIALIZE_VALUE_TYPE_TO(size_t, CT_AbstractCategory::SIZE_T, "SIZE_T")
+CT_SPECIALIZE_VALUE_TYPE_TO(QString, CT_AbstractCategory::STRING, "STRING")
 
 #endif // CT_ABSTRACTCATEGORY_H

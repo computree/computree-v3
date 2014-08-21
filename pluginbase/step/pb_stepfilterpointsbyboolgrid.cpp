@@ -128,7 +128,7 @@ void PB_StepFilterPointsByBoolGrid::compute()
                 PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Grille %1, Scène %2:")).arg(gridNum++).arg(sceneNum++));
 
                 const CT_AbstractPointCloudIndex *pointCloudIndex = in_scene->getPointCloudIndex();
-                size_t n_points = pointCloudIndex->indexSize();
+                size_t n_points = pointCloudIndex->size();
 
                 PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène %1 points...")).arg(n_points));
 
@@ -163,7 +163,7 @@ void PB_StepFilterPointsByBoolGrid::compute()
                 PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("...%1 points ont été conservés")).arg(nbOfFilteredPoints));
             }
 
-            if (resPointCloudIndex->indexSize() > 0)
+            if (resPointCloudIndex->size() > 0)
             {
                 // creation et ajout de la scene
                 CT_Scene *outScene = new CT_Scene(_ModelOut_Scene.completeName(), resultOut);

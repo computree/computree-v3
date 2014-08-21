@@ -5,7 +5,7 @@ CT_AbstractEdgeAttributes::CT_AbstractEdgeAttributes() : CT_AbstractAttributes()
     m_aci = NULL;
 }
 
-CT_AbstractEdgeAttributes::CT_AbstractEdgeAttributes(const CT_OutAbstractItemModel *model,
+CT_AbstractEdgeAttributes::CT_AbstractEdgeAttributes(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
                                                      CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir) : CT_AbstractAttributes(model, result)
 {

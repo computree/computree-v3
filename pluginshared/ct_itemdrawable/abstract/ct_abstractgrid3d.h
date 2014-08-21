@@ -51,7 +51,7 @@ public:
       */
     CT_AbstractGrid3D();
 
-    CT_AbstractGrid3D(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result);
+    CT_AbstractGrid3D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
     CT_AbstractGrid3D(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractGrid3D();

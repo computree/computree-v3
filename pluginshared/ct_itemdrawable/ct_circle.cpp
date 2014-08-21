@@ -27,20 +27,16 @@
 
 #include "ct_circle.h"
 
-#include "ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
-
 const CT_StandardCircleDrawManager CT_Circle::CIRCLE_DRAW_MANAGER;
 
-CT_INIT_DEFAULT_IA(0, CT_Circle)
-CT_INIT_DEFAULT_IA(1, CT_Circle)
+CT_DEFAULT_IA_INIT(CT_Circle)
 
 CT_Circle::CT_Circle() : CT_AbstractShape()
 {
     setBaseDrawManager(&CIRCLE_DRAW_MANAGER);
 }
 
-CT_Circle::CT_Circle(const CT_OutAbstractItemModel *model,
+CT_Circle::CT_Circle(const CT_OutAbstractSingularItemModel *model,
                      const CT_AbstractResult *result, CT_CircleData *data) : CT_AbstractShape(model, result, data)
 {
     setBaseDrawManager(&CIRCLE_DRAW_MANAGER);
@@ -75,14 +71,14 @@ float CT_Circle::getError() const
 CT_AbstractItemDrawable* CT_Circle::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Circle *circle = new CT_Circle(model, result, (getPointerData() != NULL) ? ((const CT_CircleData&)getData()).clone() : NULL);
+    CT_Circle *circle = new CT_Circle((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_CircleData&)getData()).clone() : NULL);
     circle->setId(id());
     circle->setAlternativeDrawManager(getAlternativeDrawManager());
 
     return circle;
 }
 
-CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractItemModel *model,
+CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                    quint64 id,
                                                                    const CT_AbstractResult *result,
                                                                    const CT_AbstractPointCloud &pointCloud,
@@ -98,7 +94,7 @@ CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutA
         return NULL;
     }
 
-    return new CT_Circle(model, result, data);
+    return new CT_Circle((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
 
 #ifdef USE_BOOST_OLD

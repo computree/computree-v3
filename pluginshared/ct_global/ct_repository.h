@@ -153,6 +153,13 @@ public:
      * @brief Create a new index cloud whose indices is synchronized with index of cloud passed in parameter. This means that
      *        indices will be automatically modified if a cloud is deleted. The cloud is a map : QMap<size_t, Color>, key is indices
      *        and value the color.
+     *
+     * @example An example of how to use the result of this method :
+     *
+     *        QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mccr = createNewMapIndexCloudColor(CT_Repository::SyncWithXXXCloud);
+     *        CT_AbstractModifiableIndexCloudColorMap *map = (CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex();
+     *        map->insertIndexAndColor(0, color);
+     *
      * @return return the index cloud registered
      */
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewMapIndexCloudColor(SyncCloudWith syncWith);

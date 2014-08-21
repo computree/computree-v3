@@ -27,6 +27,8 @@
 
 #include "pb_computehitsthread.h"
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
                                            CT_Grid2DXY<int> *grdXY,
                                            CT_Grid2DXZ<int> *grdXZ,
@@ -48,7 +50,7 @@ PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
 void PB_ComputeHitsThread::run()
 {
     const CT_AbstractPointCloudIndex *pointCloudIndex = _scene->getPointCloudIndex();
-    size_t n_points = pointCloudIndex->indexSize();
+    size_t n_points = pointCloudIndex->size();
 
     size_t progressStep = n_points / 20;
 

@@ -1,5 +1,7 @@
 #include "cdm_scriptmanagerxml.h"
 
+#include "ct_abstractstepplugin.h"
+
 #include <QFileInfo>
 #include <QDomDocument>
 #include <QTextStream>
@@ -175,8 +177,8 @@ bool CDM_ScriptManagerXML::writeScript(const QString &filePath,
 
         stream << "<COMPUTREE_SCRIPT>\r\n";
 
-        QList<Step*> rootList = stepManager.getStepRootList();
-        QListIterator<Step*> it(rootList);
+        QList<CT_VirtualAbstractStep*> rootList = stepManager.getStepRootList();
+        QListIterator<CT_VirtualAbstractStep*> it(rootList);
 
         while(it.hasNext())
         {
@@ -196,7 +198,7 @@ bool CDM_ScriptManagerXML::writeScript(const QString &filePath,
 ////////////// PRIVATE ////////////////
 
 QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
-                                                  Step *parent,
+                                                  CT_VirtualAbstractStep *parent,
                                                   const QString &fileDirectory,
                                                   CDM_StepManager *stepManager,
                                                   CDM_PluginManager *pluginManager,
@@ -206,7 +208,7 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
     if(pluginManager->isAPluginLoaded())
     {
-        Step *newParent = NULL;
+        CT_VirtualAbstractStep *newParent = NULL;
 
         if(!e.isNull()
                 && (e.tagName() == "Step"))
@@ -219,14 +221,14 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
                 return QCoreApplication::translate("recursiveLoadScript", QString("Le plugin n'est pas renseigne pour l'etape %1. Vous utilisez surement une ancienne version de script.").arg(key).toLatin1());
             }
 
-            PluginInterface *stepPluginManager = pluginManager->getPlugin(pluginName);
+            CT_AbstractStepPlugin *stepPluginManager = pluginManager->getPlugin(pluginName);
 
             if(stepPluginManager == NULL)
             {
                 return QCoreApplication::translate("recursiveLoadScript", QString("Le plugin %1 pour l'etape %2 ne semble pas etre charge.").arg(pluginName).arg(key).toLatin1());
             }
 
-            Step *step = stepPluginManager->getStepFromKey(key);
+            CT_VirtualAbstractStep *step = stepPluginManager->getStepFromKey(key);
 
             if(step == NULL)
             {
@@ -242,7 +244,7 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
             if(!verify)
             {
-                Step *copyStep = stepPluginManager->createNewInstanceOfStep(*step, parent);
+                CT_VirtualAbstractStep *copyStep = stepPluginManager->createNewInstanceOfStep(*step, parent);
 
                 if(copyStep == NULL)
                 {
@@ -266,7 +268,7 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
                 delete rootSettingsGroup;
 
-                StepSerializable *copyStepLF = dynamic_cast<StepSerializable*>(copyStep);
+                CT_AbstractStepSerializable *copyStepLF = dynamic_cast<CT_AbstractStepSerializable*>(copyStep);
 
                 if(copyStepLF != NULL)
                 {
@@ -350,7 +352,7 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
 void CDM_ScriptManagerXML::recursiveWriteScript(QTextStream &stream,
                                                 CDM_PluginManager &pluginManager,
-                                                Step &step,
+                                                CT_VirtualAbstractStep &step,
                                                 QString first,
                                                 bool &saveResult)
 {
@@ -389,8 +391,8 @@ void CDM_ScriptManagerXML::recursiveWriteScript(QTextStream &stream,
         delete s2Root;
 
         // ecriture des etapes filles
-        QList<Step *> stepChildList = step.getStepChildList();
-        QListIterator<Step *> it(stepChildList);
+        QList<CT_VirtualAbstractStep *> stepChildList = step.getStepChildList();
+        QListIterator<CT_VirtualAbstractStep *> it(stepChildList);
 
         while(it.hasNext())
         {

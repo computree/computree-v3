@@ -68,7 +68,7 @@ public:
 
     void drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const float &resolution, const double &z_val);
 
-    ActionInterface* copy() const;
+    CT_AbstractAction* copy() const;
 
     void addUndoContent(UndoRedoContent* content);
 

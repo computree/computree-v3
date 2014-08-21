@@ -32,7 +32,7 @@ CT_AbstractGrid3D::CT_AbstractGrid3D() : CT_AbstractItemDrawableWithoutPointClou
 {
 }
 
-CT_AbstractGrid3D::CT_AbstractGrid3D(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractGrid3D::CT_AbstractGrid3D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 }
 

@@ -32,11 +32,11 @@ CT_AbstractGrid2D::CT_AbstractGrid2D() : CT_AbstractItemDrawableWithoutPointClou
 {
 }
 
-CT_AbstractGrid2D::CT_AbstractGrid2D(const CT_OutAbstractItemModel *model, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractGrid2D::CT_AbstractGrid2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 }
 
-CT_AbstractGrid2D::CT_AbstractGrid2D(const QString &modelName, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+CT_AbstractGrid2D::CT_AbstractGrid2D(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
 }
 

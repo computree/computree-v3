@@ -20,13 +20,13 @@ public:
 
     void init();
 
-    bool setItemDrawableToExport(const QList<ItemDrawable*> &list);
+    bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
     bool configureExport() { return true; }
 
     SettingsNodeGroup* saveExportConfiguration() const;
     bool loadExportConfiguration(const SettingsNodeGroup *root);
 
-    virtual IExporter* copy() const;
+    virtual CT_AbstractExporter* copy() const;
 
 protected:
 

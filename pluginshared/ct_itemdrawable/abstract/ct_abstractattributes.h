@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractAttributes : public CT_AbstractSingul
 
 public:
     CT_AbstractAttributes();
-    CT_AbstractAttributes(const CT_OutAbstractItemModel *model,
+    CT_AbstractAttributes(const CT_OutAbstractSingularItemModel *model,
                           const CT_AbstractResult *result);
 
     CT_AbstractAttributes(const QString &modelName,

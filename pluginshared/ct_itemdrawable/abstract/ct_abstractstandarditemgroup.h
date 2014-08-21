@@ -174,6 +174,11 @@ protected:
     QMutex                                                  *_mutexAccessGroup;
     QMutex                                                  *_mutexAccessItem;
 
+    /**
+     * @brief Called from result or parent group to inform that this item will be deleted from the result passed in parameter
+     */
+    virtual void internalSetWillBeRemovedFromResult(const CT_AbstractResult *res);
+
     bool protectedAddGroup(CT_AbstractItemGroup *group);
 
     bool protectedAddItemDrawable(CT_AbstractSingularItemDrawable *item);

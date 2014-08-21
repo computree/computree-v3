@@ -28,17 +28,17 @@ void PB_Grid2DExporter::init()
     addNewExportFormat(FileFormat("GRD2D", tr("Fichiers Grid 2D (ASCII)")));
 }
 
-bool PB_Grid2DExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_Grid2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
     int nGrids = 0;
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
         if(dynamic_cast<CT_AbstractGrid2D*>(item) != NULL)
         {
             myList.append(item);
@@ -66,7 +66,7 @@ bool PB_Grid2DExporter::configureExport()
     return true;
 }
 
-IExporter* PB_Grid2DExporter::copy() const
+CT_AbstractExporter* PB_Grid2DExporter::copy() const
 {
     return new PB_Grid2DExporter();
 }
@@ -84,7 +84,7 @@ bool PB_Grid2DExporter::protectedExportToFile()
     if (itemDrawableToExport().size() > 1) {indice = "_0";}
     int cpt = 0;
 
-    QListIterator<ItemDrawable*> it(itemDrawableToExport());
+    QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
         CT_AbstractGrid2D* item = dynamic_cast<CT_AbstractGrid2D*>(it.next());

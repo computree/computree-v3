@@ -12,12 +12,12 @@ class PLUGINSHAREDSHARED_EXPORT CT_PointsAttributesColor : public CT_AbstractPoi
 public:
     CT_PointsAttributesColor();
 
-    CT_PointsAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                              bool withAlphaInformation);
 
-    CT_PointsAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                              CT_AbstractColorCloud *cc);

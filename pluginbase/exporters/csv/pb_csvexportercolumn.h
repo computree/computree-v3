@@ -1,12 +1,12 @@
 #ifndef PB_CSVEXPORTERCOLUMN_H
 #define PB_CSVEXPORTERCOLUMN_H
 
-#include "interfaces.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 
 class PB_CSVExporterColumn
 {
 public:
-    PB_CSVExporterColumn(const QList<ItemDrawable*> &items, const IItemDataRef &ref);
+    PB_CSVExporterColumn(const QList<CT_AbstractSingularItemDrawable*> &items, const CT_OutAbstractItemAttributeModel *iaModel);
     ~PB_CSVExporterColumn();
 
     int currentItemIndex() const;
@@ -17,24 +17,18 @@ public:
     size_t size() const;
 
 private:
-    QList<ItemDrawable*>            _items;
-    const IItemDataRef              *_ref;
+    QList<CT_AbstractSingularItemDrawable*>         _items;
+    CT_OutAbstractItemAttributeModel                *_ref;
 
-    QListIterator<ItemDrawable*>    *_iterator;
+    QListIterator<CT_AbstractSingularItemDrawable*> *_iterator;
 
-    ItemDrawable                    *_currentItem;
-    int                             _currentItemIndex;
-    size_t                          _currentArrayIndex;
-    size_t                          _currentArraySize;
-    size_t                          _currentArraySecondIndex;
-    bool                            _hasNext;
+    CT_AbstractSingularItemDrawable         *_currentItem;
+    CT_AbstractItemAttribute                *m_currentItemAttribut;
 
-    IItemDataValue                  *_currentValue;
+    int                                     _currentItemIndex;
+    bool                                    _hasNext;
 
     void nextItem();
-
-    bool isDataValueType2DArray() const;
-    bool isDataValueType3DArray() const;
 };
 
 #endif // PB_CSVEXPORTERCOLUMN_H

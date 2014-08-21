@@ -194,7 +194,7 @@ typename CT_GlobalCloudManagerT<T, CLOUD>::CT_AbstractNotModifiableCIR CT_Global
 template<typename T, typename CLOUD>
 void CT_GlobalCloudManagerT<T, CLOUD>::staticDeleteCIR(CT_AbstractNotModifiableCloudIndexRegisteredT<T> *cir)
 {
-    CT_GlobalCloudManagerT<T, CLOUD> *thisPtr = (CT_GlobalCloudManagerT<T, CLOUD>*)PS_REPOSITORY->globalCloudManager<T>();
+    CT_GlobalCloudManagerT<T, CLOUD> *thisPtr = dynamic_cast<CT_GlobalCloudManagerT<T, CLOUD>*>(PS_REPOSITORY->globalCloudManager<T>());
 
     thisPtr->internalUnregisterIndex(cir, true, true);
 }

@@ -75,7 +75,7 @@ public:
     *  \warning All will be set to 0 or NULL exept the direction which is (1,0,0) by default (a ray can not have a direction equals to (0,0,0) ).
     *
     */
-    CT_Beam(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result );
+    CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result );
 
     /*!
     *  \brief Constructor
@@ -85,7 +85,7 @@ public:
     *  \param origin : origin of the ray
     *  \param direction : direction of the ray
     */
-    CT_Beam(const CT_OutAbstractItemModel *model, const CT_AbstractResult* result, const QVector3D& origin, const QVector3D& direction );
+    CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult* result, const QVector3D& origin, const QVector3D& direction );
 
     CT_Beam(const QString &modelName, const CT_AbstractResult *result);
 

@@ -9,7 +9,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointAttributesScalar : public CT_Abs
 
 public:
     CT_AbstractPointAttributesScalar();
-    CT_AbstractPointAttributesScalar(const CT_OutAbstractItemModel *model,
+    CT_AbstractPointAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
                                      CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
 

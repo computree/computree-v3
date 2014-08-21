@@ -42,7 +42,7 @@ CT_PointCluster::CT_PointCluster() : CT_AbstractItemDrawableWithPointCloud()
     _barycenter.reset();
 }
 
-CT_PointCluster::CT_PointCluster(const CT_OutAbstractItemModel *model,
+CT_PointCluster::CT_PointCluster(const CT_OutAbstractSingularItemModel *model,
                                  const CT_AbstractResult *result) : CT_AbstractItemDrawableWithPointCloud(model, result)
 {
     CT_PointCloudIndexVector *cloudIndex = new CT_PointCloudIndexVector();
@@ -118,11 +118,11 @@ const CT_PointClusterBarycenter& CT_PointCluster::getBarycenter() const
     return _barycenter;
 }
 
-CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointCluster &pCLuster2, const CT_OutAbstractItemModel *model, quint64 id, CT_AbstractResult &result, bool verifyDuplicated)
+CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointCluster &pCLuster2, const CT_OutAbstractSingularItemModel *model, quint64 id, CT_AbstractResult &result, bool verifyDuplicated)
 {
     Q_UNUSED(id)
 
-    CT_PointCluster *pMerged = new CT_PointCluster(model, &result);
+    CT_PointCluster *pMerged = new CT_PointCluster((const CT_OutAbstractSingularItemModel *)model, &result);
 
     const CT_AbstractCloudIndexT<CT_Point> *pIndex1 = pCLuster1.getPointCloudIndex();
     const CT_AbstractCloudIndexT<CT_Point> *pIndex2 = pCLuster2.getPointCloudIndex();
@@ -167,14 +167,14 @@ CT_AbstractItemDrawable* CT_PointCluster::copy(const CT_OutAbstractItemModel *mo
 
     if(copyMode == CT_ResultCopyModeList::CopyItemDrawableReference)
     {
-        pCluster = new CT_PointCluster(model, result);
+        pCluster = new CT_PointCluster((const CT_OutAbstractSingularItemModel *)model, result);
         pCluster->setPointCloudIndexRegisteredProtected(getPointCloudIndexRegistered());
         pCluster->updateBoundingBox();
         pCluster->initBarycenter();
     }
     else if(copyMode == CT_ResultCopyModeList::CopyItemDrawableCompletely)
     {
-        pCluster = new CT_PointCluster(model, result);
+        pCluster = new CT_PointCluster((const CT_OutAbstractSingularItemModel *)model, result);
 
         if(getPointCloudIndexRegistered() != NULL)
         {

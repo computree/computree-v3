@@ -1,7 +1,12 @@
 #include "pb_stepsegmentgaps.h"
 
 // Inclusion of in models
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
+
+// Inclusion of out models
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+
+// Inclusion of results
 #include "ct_result/ct_resultgroup.h"
 
 // Inclusion of used ItemDrawable classes

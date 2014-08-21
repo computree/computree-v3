@@ -1,6 +1,7 @@
 #include "cdm_pluginmanager.h"
 
 #include "cdm_configfile.h"
+#include "ct_abstractstepplugin.h"
 
 #include <QDir>
 #include <QDebug>
@@ -33,14 +34,6 @@ LogInterface* CDM_PluginManager::log() const
 PluginManagerInterface* CDM_PluginManager::pluginManager() const
 {
     return const_cast<PluginManagerInterface*>((const PluginManagerInterface*)this);
-}
-
-ContextInterface* CDM_PluginManager::getPluginsContext() const
-{
-    if(_plugins.isEmpty())
-        return NULL;
-
-    return getPlugin(0)->contextInterface();
 }
 
 void CDM_PluginManager::loadConfiguration()
@@ -186,7 +179,7 @@ QString CDM_PluginManager::getPluginName(int i) const
     return "";
 }
 
-QString CDM_PluginManager::getPluginName(PluginInterface *stepPluginManager) const
+QString CDM_PluginManager::getPluginName(CT_AbstractStepPlugin *stepPluginManager) const
 {
     if(isAPluginLoaded())
     {
@@ -216,7 +209,7 @@ void CDM_PluginManager::setSearchPath(QString path)
     _defaultPluginDirPath = path;
 }
 
-PluginInterface* CDM_PluginManager::getPlugin(int i) const
+CT_AbstractStepPlugin* CDM_PluginManager::getPlugin(int i) const
 {
     if(isAPluginLoaded())
     {
@@ -238,7 +231,7 @@ PluginInterface* CDM_PluginManager::getPlugin(int i) const
     return NULL;
 }
 
-PluginInterface* CDM_PluginManager::getPlugin(QString pluginName) const
+CT_AbstractStepPlugin* CDM_PluginManager::getPlugin(QString pluginName) const
 {
     if(isAPluginLoaded())
     {

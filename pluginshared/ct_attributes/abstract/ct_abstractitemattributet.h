@@ -55,6 +55,11 @@ public:
       */
     CT_AbstractCategory::ValueType realType() const;
 
+    /**
+      * @brief Real type of value to String
+      */
+    QString realTypeToString() const;
+
 protected:
 
     /**

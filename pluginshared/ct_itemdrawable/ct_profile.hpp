@@ -31,8 +31,6 @@
 #include "ct_itemdrawable/ct_profile.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardprofiledrawmanager.h"
 
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
-
 #include <math.h>
 #include <typeinfo>
 #include <limits>
@@ -40,12 +38,7 @@
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT > CT_INIT_DEFAULT_IA(0, CT_Profile<DataT>)
-template< typename DataT > CT_INIT_DEFAULT_IA(1, CT_Profile<DataT>)
-template< typename DataT > CT_INIT_DEFAULT_IA(2, CT_Profile<DataT>)
-template< typename DataT > CT_INIT_DEFAULT_IA(3, CT_Profile<DataT>)
-template< typename DataT > CT_INIT_DEFAULT_IA(4, CT_Profile<DataT>)
-template< typename DataT > CT_INIT_DEFAULT_IA(5, CT_Profile<DataT>)
+template< typename DataT > CT_DEFAULT_IA_INIT(CT_Profile<DataT>)
 
 template< typename DataT>
 const CT_StandardProfileDrawManager<DataT> CT_Profile<DataT>::ABSPROFILE_DRAW_MANAGER;
@@ -71,7 +64,7 @@ CT_Profile<DataT>::CT_Profile() : CT_AbstractProfile()
 
 
 template< typename DataT>
-CT_Profile<DataT>::CT_Profile(const CT_OutAbstractItemModel *model,
+CT_Profile<DataT>::CT_Profile(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               float xmin,
                               float ymin,
@@ -161,7 +154,7 @@ CT_Profile<DataT>::CT_Profile(const QString &modelName,
 }
 
 template< typename DataT>
-CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstractItemModel *model,
+CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstractSingularItemModel *model,
                                                                const CT_AbstractResult *result,
                                                                float xmin,
                                                                float ymin,
@@ -182,7 +175,7 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstr
 
     int dim = ceil(length/resolution);
 
-    CT_Profile<DataT>* grid = new CT_Profile(model, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
+    CT_Profile<DataT>* grid = new CT_Profile((const CT_OutAbstractSingularItemModel *)model, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (length >= grid->maxLength())
@@ -522,7 +515,7 @@ CT_AbstractItemDrawable* CT_Profile<DataT>::copy(const CT_OutAbstractItemModel *
 {
     Q_UNUSED(copyModeList);
 
-    CT_Profile<DataT>* cpy = new CT_Profile<DataT>(model, result, minX(), minY(), minZ(), _direction.x(), _direction.y(), _direction.z(), _dim, _res, _NAdata, _NAdata);
+    CT_Profile<DataT>* cpy = new CT_Profile<DataT>((const CT_OutAbstractSingularItemModel *)model, result, minX(), minY(), minZ(), _direction.x(), _direction.y(), _direction.z(), _dim, _res, _NAdata, _NAdata);
     cpy->setId(id());
 
     for (size_t i = 0 ; i < nCells() ; i++)

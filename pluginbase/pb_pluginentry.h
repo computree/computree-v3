@@ -71,7 +71,7 @@ public:
     ~PB_PluginEntry();
 
     QString getVersion() const;
-    PluginInterface* getPlugin();
+    CT_AbstractStepPlugin* getPlugin() const;
 
 private:
     PB_StepPluginManager *_stepPluginManager;

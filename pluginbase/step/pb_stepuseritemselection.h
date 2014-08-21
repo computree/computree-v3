@@ -89,12 +89,12 @@ protected:
 private:
 
     // Step parameters
-    QHash<ItemDrawable*, CT_AbstractItemGroup*>     m_itemDrawableToAdd;
-    QList<ItemDrawable*>                            m_itemDrawableSelected;
-    DocumentInterface                               *m_doc;
-    int                                             m_status;
-    bool                                            m_removeGroupsWithoutItemResearched;
-    bool                                            m_removeParents;
+    QHash<CT_AbstractItemDrawable*, CT_AbstractItemGroup*>      m_itemDrawableToAdd;
+    QList<CT_AbstractItemDrawable*>                             m_itemDrawableSelected;
+    DocumentInterface                                           *m_doc;
+    int                                                         m_status;
+    bool                                                        m_removeGroupsWithoutItemResearched;
+    bool                                                        m_removeParents;
 
     void recursiveRemoveGroup(CT_AbstractItemGroup *parent, CT_AbstractItemGroup *group) const;
 };

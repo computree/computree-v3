@@ -49,8 +49,8 @@ public:
       * \brief Empty Contructor vide
       */
     CT_AbstractGrid2D();
-    CT_AbstractGrid2D(const CT_OutAbstractItemModel *model, CT_AbstractResult *result);
-    CT_AbstractGrid2D(const QString &modelName, CT_AbstractResult *result);
+    CT_AbstractGrid2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
+    CT_AbstractGrid2D(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractGrid2D();
 

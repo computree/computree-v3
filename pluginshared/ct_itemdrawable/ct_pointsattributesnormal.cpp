@@ -8,7 +8,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal() : CT_AbstractPointsAttrib
     setBaseDrawManager(&PAN_DRAW_MANAGER);
 }
 
-CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
                                                      CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(model,
                                                                                                                                                              result,
@@ -18,7 +18,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractItemMod
     setBaseDrawManager(&PAN_DRAW_MANAGER);
 }
 
-CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
                                                      CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                                      CT_AbstractNormalCloud *nc) : CT_AbstractPointsAttributes(model,
@@ -64,7 +64,7 @@ CT_AbstractItemDrawable* CT_PointsAttributesNormal::copy(const CT_OutAbstractIte
     CT_AbstractNormalCloud* normalCloud = getNormalCloud();
 
     if (normalCloud == NULL)
-        return new CT_PointsAttributesNormal(model, result, getPointCloudIndexRegistered(), (CT_AbstractNormalCloud*) NULL);
+        return new CT_PointsAttributesNormal((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered(), (CT_AbstractNormalCloud*) NULL);
     else
-        return new CT_PointsAttributesNormal(model, result, getPointCloudIndexRegistered(), dynamic_cast<CT_AbstractNormalCloud*>(normalCloud->copy()));
+        return new CT_PointsAttributesNormal((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered(), dynamic_cast<CT_AbstractNormalCloud*>(normalCloud->copy()));
 }

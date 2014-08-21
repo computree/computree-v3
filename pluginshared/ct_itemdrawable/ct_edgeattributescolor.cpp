@@ -5,7 +5,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor() : CT_AbstractEdgeAttributes(), 
 {
 }
 
-CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractItemModel *model,
+CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                                                bool withAlphaInformation) : CT_AbstractEdgeAttributes(model,
@@ -14,7 +14,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractItemModel *mo
 {
 }
 
-CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractItemModel *model,
+CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractEdgeAttributes(model,
@@ -59,7 +59,7 @@ CT_AbstractItemDrawable* CT_EdgeAttributesColor::copy(const CT_OutAbstractItemMo
     CT_AbstractColorCloud* colorCloud = getColorCloud();
 
     if (colorCloud == NULL)
-        return new CT_EdgeAttributesColor(model, result, getEdgeCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
+        return new CT_EdgeAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getEdgeCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
     else
-        return new CT_EdgeAttributesColor(model, result, getEdgeCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
+        return new CT_EdgeAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getEdgeCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
 }

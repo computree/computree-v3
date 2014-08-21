@@ -1,14 +1,10 @@
 #include "pb_stepuseritemcopy.h"
 
 // Inclusion of in models
-#include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
 
 // Inclusion of out models
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
 // Inclusion of standard result class
 #include "ct_result/ct_resultgroup.h"
@@ -56,45 +52,27 @@ CT_VirtualAbstractStep* PB_StepUserItemCopy::createNewInstance(CT_StepInitialize
 // Creation and affiliation of IN models
 void PB_StepUserItemCopy::createInResultModelListProtected()
 {
-    CT_InZeroOrMoreGroupModel *groupInModel_Z = new CT_InZeroOrMoreGroupModel();
-
-    CT_InStdGroupModel *groupInModel_G = new CT_InStdGroupModel(DEF_groupIn_G,
-                                                                          "Groupe");
-
-    CT_InStandardItemDrawableModel *itemInModel_I = new CT_InStandardItemDrawableModel(DEF_itemIn_I,
-                                                                                       CT_Cylinder::staticGetType(),
-                                                                                       tr("Item"));
-
-    groupInModel_G->addItem(itemInModel_I);
-    groupInModel_Z->addGroup(groupInModel_G);
-
-
-    CT_InResultModelGroup *resultInModel_R = new CT_InResultModelGroup(DEF_resultIn_R,
-                                                                       groupInModel_Z,
-                                                                       tr("Result"),
-                                                                       tr(""),
-                                                                       false);
-
-    addInResultModel(resultInModel_R);
+    CT_InResultModelGroup *resultInModel_R = createNewInResultModel(DEF_resultIn_R,
+                                                                    tr("Result"));
+    resultInModel_R->setZeroOrMoreRootGroup();
+    resultInModel_R->addGroupModel("", DEF_groupIn_G);
+    resultInModel_R->addItemModel(DEF_groupIn_G,
+                                  DEF_itemIn_I,
+                                  CT_Cylinder::staticGetType(),
+                                  tr("Cylinder"));
 }
 
 // Creation and affiliation of OUT models
 void PB_StepUserItemCopy::createOutResultModelListProtected()
 {
-    CT_OutStdGroupModel *groupOutModel_G = new CT_OutStdGroupModel(DEF_groupOut_G);
-
-    CT_OutStdSingularItemModel *itemOutModel_I = new CT_OutStdSingularItemModel(DEF_itemOut_I,
-                                                                                        new CT_Cylinder(),
-                                                                                        tr("Item"));
-    groupOutModel_G->addItem(itemOutModel_I);
-
-
-    CT_OutResultModelGroup *resultOutModel_R = new CT_OutResultModelGroup(DEF_resultOut_R,
-                                                                          groupOutModel_G,
-                                                                          tr("Result"),
-                                                                          tr(""));
-
-    addOutResultModel(resultOutModel_R);}
+    CT_OutResultModelGroup *resultOutModel_R = createNewOutResultModel(DEF_resultOut_R,
+                                                                       tr("Result"));
+    resultOutModel_R->setRootGroup(DEF_groupOut_G);
+    resultOutModel_R->addItemModel(DEF_groupOut_G,
+                                   DEF_itemOut_I,
+                                   new CT_Cylinder(),
+                                   tr("Cylinder"));
+}
 
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepUserItemCopy::createPostConfigurationDialog()
@@ -109,41 +87,37 @@ void PB_StepUserItemCopy::compute()
 
     CT_ResultGroup *inRes = getInputResults().first();
     CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)getInModelForResearch(inRes, DEF_groupIn_G);
-    CT_InAbstractItemDrawableModel* itemInModel_I = (CT_InAbstractItemDrawableModel*)getInModelForResearch(inRes, DEF_itemIn_I);
-
+    CT_InAbstractSingularItemModel* itemInModel_I = (CT_InAbstractSingularItemModel*)getInModelForResearch(inRes, DEF_itemIn_I);
 
     m_itemDrawableToAdd.clear();
 
     QList<CT_AbstractItemGroup*> emptyGroups;
 
-    // create a list of itemdrawable to add in the document
-    for ( CT_AbstractItemGroup *group = inRes->beginGroup(groupInModel_G)
-          ; group != NULL  && !isStopped()
-          ; group = inRes->nextGroup() )
-    {
-        CT_Cylinder *itemOut_I = (CT_Cylinder*) group->findFirstItem(itemInModel_I);
+    CT_ResultGroupIterator itR(inRes, groupInModel_G);
 
-        if (itemOut_I != NULL)
-        {
-            m_itemDrawableToAdd.insert(itemOut_I, group);
-        } else {
-            emptyGroups.append(group);
-        }
+    // create a list of itemdrawable to add in the document
+    while(itR.hasNext()
+          && !isStopped())
+    {
+        const CT_AbstractItemGroup *group = itR.next();
+        CT_Cylinder *itemOut_I = (CT_Cylinder*) group->firstItem(itemInModel_I);
+
+        if(itemOut_I != NULL)
+            m_itemDrawableToAdd.insert(itemOut_I, (CT_AbstractItemGroup*)group);
+        else
+            emptyGroups.append((CT_AbstractItemGroup*)group);
     }
 
     // request the manual mode
     requestManualMode();
 
 
-
-
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup *resultOut_R = outResultList.first();
-    CT_OutStdGroupModel* groupOutModel_G = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut_R, DEF_groupOut_G);
-    CT_OutStdSingularItemModel* itemOutModel_I = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut_R, DEF_itemOut_I);
+    CT_OutAbstractGroupModel* groupOutModel_G = getOutGroupModelForCreation(resultOut_R, DEF_groupOut_G);
+    CT_OutAbstractSingularItemModel* itemOutModel_I = getOutSingularItemModelForCreation(resultOut_R, DEF_itemOut_I);
 
-
-    QListIterator<ItemDrawable*> it(m_itemDrawableSelected);
+    QListIterator<CT_AbstractItemDrawable*> it(m_itemDrawableSelected);
     while (it.hasNext())
     {
         CT_Cylinder *cylinder = dynamic_cast<CT_Cylinder*>(it.next());

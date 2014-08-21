@@ -4,7 +4,7 @@ CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar() : CT_Abstract
 {
 }
 
-CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const CT_OutAbstractItemModel *model,
+CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                  CT_AbstractResult *result,
                                                                  CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir) : CT_AbstractFaceAttributes(model,
                                                                                                                                                                      result,

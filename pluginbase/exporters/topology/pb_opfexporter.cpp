@@ -29,17 +29,17 @@ void PB_OPFExporter::init()
     addNewExportFormat(FileFormat("opf", tr("Fichiers AmapStudio .opf")));
 }
 
-bool PB_OPFExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_OPFExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
     while(it.hasNext()
             && myList.isEmpty())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(dynamic_cast<CT_TTreeGroup*>(item) != NULL)
             myList.append(item);
@@ -66,7 +66,7 @@ bool PB_OPFExporter::loadExportConfiguration(const SettingsNodeGroup *root)
     return CT_AbstractExporter::loadExportConfiguration(root);
 }
 
-IExporter* PB_OPFExporter::copy() const
+CT_AbstractExporter* PB_OPFExporter::copy() const
 {
     return new PB_OPFExporter();
 }
@@ -88,16 +88,14 @@ bool PB_OPFExporter::protectedExportToFile()
         txtStream << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << endl;
         txtStream << "<opf version=\"2.0\" editable=\"true\">" << endl;
 
-        CT_TTreeGroup *topology = dynamic_cast<CT_TTreeGroup*>(itemDrawableToExport().first());
+        CT_TTreeGroup *topology = (CT_TTreeGroup*)itemDrawableToExport().first();
 
         CT_TOPFNodeGroup *root = dynamic_cast<CT_TOPFNodeGroup*>(topology->rootNode());
 
         bool ok = true;
 
         if(root != NULL)
-        {
             ok = recursiveWriteFile(txtStream, "topology", root);
-        }
 
         txtStream << "</opf>" << endl;
 

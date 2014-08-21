@@ -10,16 +10,16 @@ class CT_EdgeAttributesScalarT : public CT_AbstractEdgeAttributesScalar, public 
 public:
     CT_EdgeAttributesScalarT();
 
-    CT_EdgeAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
 
-    CT_EdgeAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
-    CT_EdgeAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,

@@ -28,6 +28,7 @@
 #ifndef CT_ABSTRACTITEMDRAWABLE_H
 #define CT_ABSTRACTITEMDRAWABLE_H
 
+#include "ct_item/abstract/ct_abstractitem.h"
 #include "ct_result/ct_resultcopymodelist.h"
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 
@@ -40,7 +41,7 @@ class CT_AbstractResult;
 /**
  * @brief Represent a item that can be added in a result or in another item
  */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawable : public QObject
+class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawable : public CT_AbstractItem
 {
     Q_OBJECT
 
@@ -107,12 +108,6 @@ public:
      * @brief Returns information of this item that can be displayed in a tooltip per example
      */
     virtual QString getInfo();
-
-    /**
-     * @brief Returns the result that contains this item. If the item is contained in another item this method
-     *        still returns the result containing this item.
-     */
-    CT_AbstractResult* result() const;
 
     /**
      * @brief Change the result that contains this item.
@@ -375,10 +370,14 @@ protected:
      */
     void setMatrix4x4(const QMatrix4x4 &matrix);
 
+    /**
+     * @brief Overloaded to cast the model to check the validity.
+     */
+    virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
+
 private:
 
     quint64                     _id;
-    CT_AbstractResult           *_result;
     QList<DocumentInterface*>   _documentList;
     bool                        _selected;
     bool                        _displayed;
@@ -387,7 +386,6 @@ private:
     QVector3D                   _centerCoordinate;
     QString                     _name;
     bool                        _autoDelete;
-    CT_OutAbstractItemModel     *_model;
     CT_AbstractItemDrawable     *_parent;
     QMatrix4x4                  m_transformMatrix;
 

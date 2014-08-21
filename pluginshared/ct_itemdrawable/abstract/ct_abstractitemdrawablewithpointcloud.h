@@ -53,7 +53,7 @@ public:
      * @warning The model and/or the result can be NULL but you must set them with method "setModel()" and "changeResult()" before finish
      *          your step computing !!!
      */
-    CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractItemModel *model,
+    CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                           const CT_AbstractResult *result);
 
     /**
@@ -65,7 +65,7 @@ public:
      * @param pcir : a point cloud registered to the repository. You can pass a point cloud registered by another ItemDrawable if you
      *               want because sharing is managed automatically.
      */
-    CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractItemModel *model,
+    CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                           const CT_AbstractResult *result,
                                           CT_AbstractCIR pcir);
 
@@ -146,9 +146,9 @@ private:
     static CT_StandardAbstractItemDrawableWithPointCloudDrawManager IDWITHPC_DRAW_MANAGER;
 
     // default attributes
-    CT_USE_DEFAULT_IA(CT_AbstractItemDrawableWithPointCloud)
-    CT_DEFAULT_IA_V2(0, CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::DATA_CX, &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, tr("Nombre de points"))
-
+    CT_DEFAULT_IA_BEGIN(CT_AbstractItemDrawableWithPointCloud)
+    CT_DEFAULT_IA_V2(CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::DATA_CX, &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, tr("Nombre de points"))
+    CT_DEFAULT_IA_END(CT_AbstractItemDrawableWithPointCloud)
 protected:
 
     void deletePointCloud();

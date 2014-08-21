@@ -11,7 +11,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT() : CT_AbstractFaceAt
 }
 
 template<typename SCALAR>
-CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
                                                            CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributesScalar(model,
                                                                                                                                                                       result,
@@ -20,7 +20,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractI
 }
 
 template<typename SCALAR>
-CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
                                                            CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractFaceAttributesScalar(model,
@@ -30,7 +30,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractI
 }
 
 template<typename SCALAR>
-CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
                                                            CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection,
@@ -98,9 +98,9 @@ CT_AbstractItemDrawable* CT_FaceAttributesScalarT<SCALAR>::copy(const CT_OutAbst
     CT_StandardCloudStdVectorT<SCALAR>* collect = this->collection();
 
     if (collect == NULL)
-        return new CT_FaceAttributesScalarT<SCALAR>(model, result, getFaceCloudIndexRegistered());
+        return new CT_FaceAttributesScalarT<SCALAR>((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered());
     else
-        return new CT_FaceAttributesScalarT<SCALAR>(model, result, getFaceCloudIndexRegistered(), dynamic_cast< CT_StandardCloudStdVectorT<SCALAR>* >(collect->copy()), this->min(), this->max());
+        return new CT_FaceAttributesScalarT<SCALAR>((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered(), dynamic_cast< CT_StandardCloudStdVectorT<SCALAR>* >(collect->copy()), this->min(), this->max());
 }
 
 #endif // CT_FACEATTRIBUTESSCALART_HPP

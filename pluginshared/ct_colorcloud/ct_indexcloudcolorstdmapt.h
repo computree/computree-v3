@@ -2,6 +2,7 @@
 #define CT_INDEXCLOUDCOLORSTDMAPT_H
 
 #include "ct_cloudindex/ct_cloudindexstdmapt.h"
+#include "ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h"
 #include "ct_color.h"
 
 class CT_AbstractColorCloud;
@@ -11,7 +12,7 @@ class CT_AbstractColorCloud;
  *        and the value of type "CT_Color" --> the color
  */
 template<typename T>
-class CT_IndexCloudColorStdMapT : public CT_CloudIndexStdMapT<T, CT_Color>
+class CT_IndexCloudColorStdMapT : public CT_CloudIndexStdMapT<T, CT_Color>, public CT_AbstractModifiableIndexCloudColorMap
 {
 public:
     CT_IndexCloudColorStdMapT();

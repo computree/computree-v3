@@ -8,7 +8,7 @@ CT_PointsAttributesColor::CT_PointsAttributesColor() : CT_AbstractPointsAttribut
     setBaseDrawManager(&PAC_DRAW_MANAGER);
 }
 
-CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                    const CT_AbstractResult *result,
                                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                                    bool withAlphaInformation) : CT_AbstractPointsAttributes(model,
@@ -18,7 +18,7 @@ CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractItemModel
     setBaseDrawManager(&PAC_DRAW_MANAGER);
 }
 
-CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                    const CT_AbstractResult *result,
                                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                                    CT_AbstractColorCloud *cc) : CT_AbstractPointsAttributes(model,
@@ -65,7 +65,7 @@ CT_AbstractItemDrawable* CT_PointsAttributesColor::copy(const CT_OutAbstractItem
     CT_AbstractColorCloud* colorCloud = getColorCloud();
 
     if (colorCloud == NULL)
-        return new CT_PointsAttributesColor(model, result, getPointCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
+        return new CT_PointsAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
     else
-        return new CT_PointsAttributesColor(model, result, getPointCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
+        return new CT_PointsAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
 }

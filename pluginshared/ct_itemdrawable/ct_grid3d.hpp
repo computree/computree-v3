@@ -31,8 +31,6 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardgrid3ddrawmanager.h"
 
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
-
 #include <math.h>
 #include <typeinfo>
 #include <limits>
@@ -40,14 +38,7 @@
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT> CT_INIT_DEFAULT_IA(0, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(1, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(2, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(3, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(4, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(5, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(6, CT_Grid3D<DataT>)
-template< typename DataT> CT_INIT_DEFAULT_IA(7, CT_Grid3D<DataT>)
+template< typename DataT> CT_DEFAULT_IA_INIT(CT_Grid3D<DataT>)
 
 template< typename DataT>
 const CT_StandardGrid3DDrawManager<DataT> CT_Grid3D<DataT>::ABSGRID3D_DRAW_MANAGER;
@@ -73,7 +64,7 @@ CT_Grid3D<DataT>::CT_Grid3D() : CT_AbstractGrid3D()
 }
 
 template< typename DataT>
-CT_Grid3D<DataT>::CT_Grid3D(const CT_OutAbstractItemModel *model,
+CT_Grid3D<DataT>::CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             float xmin,
                             float ymin,
@@ -149,7 +140,7 @@ CT_Grid3D<DataT>::CT_Grid3D(const QString &modelName,
 }
 
 template< typename DataT>
-CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstractItemModel *model,
+CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                               const CT_AbstractResult *result,
                                                               float xmin,
                                                               float ymin,
@@ -165,7 +156,7 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstra
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid3D<DataT>* grid = new CT_Grid3D(model, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
+    CT_Grid3D<DataT>* grid = new CT_Grid3D((const CT_OutAbstractSingularItemModel *)model, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (xmax >= grid->maxX())
@@ -536,7 +527,7 @@ CT_AbstractItemDrawable* CT_Grid3D<DataT>::copy(const CT_OutAbstractItemModel *m
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid3D<DataT>* cpy = new CT_Grid3D<DataT>(model, result, minX(), minY(), minZ(), _dimx, _dimy, _dimz, _res, _NAdata, _NAdata);
+    CT_Grid3D<DataT>* cpy = new CT_Grid3D<DataT>((const CT_OutAbstractSingularItemModel *)model, result, minX(), minY(), minZ(), _dimx, _dimy, _dimz, _res, _NAdata, _NAdata);
     cpy->setId(id());
 
     for (size_t i = 0 ; i < nCells() ; i++)

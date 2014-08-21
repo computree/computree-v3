@@ -23,8 +23,6 @@
 #include "ct_mesh/cloud/ct_edgecloudindexvector.h"
 #include "ct_mesh/cloud/ct_facecloudindexvector.h"
 
-#include "ct_itemdrawable/tools/ct_standarditemdatavalue.h"
-
 #include <QMutexLocker>
 
 CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim)

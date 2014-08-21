@@ -49,8 +49,9 @@ private:
     // only CT_EdgeCloudIndexLessMemory can create a CT_CloudIndexLessMemoryT
     CT_CloudIndexLessMemoryT(const size_t &begin, const size_t &size);
 
-    size_t         m_begin;
-    size_t         m_size;
+    size_t                                      m_begin;
+    size_t                                      m_size;
+    mutable CT_AbstractCloudIndex::size_type    m_temporary;
 
 protected:
     bool internalResize(const size_t &newSize);

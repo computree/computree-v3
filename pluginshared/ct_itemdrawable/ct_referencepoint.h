@@ -52,7 +52,7 @@ public:
     /**
       * \brief Contructeur
       */
-    CT_ReferencePoint(const CT_OutAbstractItemModel *model,
+    CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             float x, float y, float z, float buffer);
 
@@ -94,7 +94,7 @@ private:
 
 
     // Contructeur privé pour la copie (permettant de conserver le refId de l'instance copiée
-    CT_ReferencePoint(const CT_OutAbstractItemModel *model,
+    CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                       const CT_AbstractResult *result,
                       float x, float y, float z, float buffer, int refId);
 

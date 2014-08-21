@@ -122,7 +122,7 @@ public:
 
     CT_PointCluster();
 
-    CT_PointCluster(const CT_OutAbstractItemModel *model,
+    CT_PointCluster(const CT_OutAbstractSingularItemModel *model,
                     const CT_AbstractResult *result);
 
     CT_PointCluster(const QString &modelName,
@@ -161,7 +161,7 @@ public:
       *
       * ATTENTION les deux groupes doivent avoir le mme nuage de points en rfrence ! sinon la mthode renvoie NULL.
       */
-    static CT_PointCluster* merge(CT_PointCluster &pCLuster1, CT_PointCluster &pCLuster2, const CT_OutAbstractItemModel *model, quint64 id, CT_AbstractResult &result, bool verifyDuplicated = false);
+    static CT_PointCluster* merge(CT_PointCluster &pCLuster1, CT_PointCluster &pCLuster2, const CT_OutAbstractSingularItemModel *model, quint64 id, CT_AbstractResult &result, bool verifyDuplicated = false);
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model,
                                           const CT_AbstractResult *result,

@@ -16,7 +16,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributes : public CT_AbstractAt
 
 public:
     CT_AbstractFaceAttributes();
-    CT_AbstractFaceAttributes(const CT_OutAbstractItemModel *model,
+    CT_AbstractFaceAttributes(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir);
 

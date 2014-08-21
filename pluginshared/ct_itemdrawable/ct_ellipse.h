@@ -51,7 +51,7 @@ public:
     /**
       * \brief Contructeur avec une instance des donnes (CT_CircleData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_Ellipse(const CT_OutAbstractItemModel *model,
+    CT_Ellipse(const CT_OutAbstractSingularItemModel *model,
                const CT_AbstractResult *result,
                CT_EllipseData *data);
 
@@ -99,7 +99,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  6.
       */
-    static CT_Ellipse* staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractItemModel *model,
+    static CT_Ellipse* staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                      quint64 id,
                                                                      const CT_AbstractResult *result,
                                                                      const CT_AbstractPointCloud *pointCloud,
@@ -108,30 +108,32 @@ public:
 private:
     const static CT_StandardEllipseDrawManager  ELLIPSE_DRAW_MANAGER;
 
-    CT_USE_DEFAULT_IA(CT_Ellipse)
-    CT_DEFAULT_IA_V2(0, CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP1X, tr("X1 axe mineur"))
-    CT_DEFAULT_IA_V2(1, CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP1Y, tr("Y1 axe mineur"))
-    CT_DEFAULT_IA_V2(2, CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP1Z, tr("Z1 axe mineur"))
-    CT_DEFAULT_IA_V2(3, CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP2X, tr("X2 axe mineur"))
-    CT_DEFAULT_IA_V2(4, CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP2Y, tr("Y2 axe mineur"))
-    CT_DEFAULT_IA_V2(5, CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP2Z, tr("Z2 axe mineur"))
+    CT_DEFAULT_IA_BEGIN(CT_Ellipse)
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP1X, tr("X1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP1Y, tr("Y1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP1Z, tr("Z1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP2X, tr("X2 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP2Y, tr("Y2 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP2Z, tr("Z2 axe mineur"))
 
-    CT_DEFAULT_IA_V2(6, CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP1X, tr("X1 axe majeur"))
-    CT_DEFAULT_IA_V2(7, CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP1Y, tr("Y1 axe majeur"))
-    CT_DEFAULT_IA_V2(8, CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP1Z, tr("Z1 axe majeur"))
-    CT_DEFAULT_IA_V2(9, CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP2X, tr("X2 axe majeur"))
-    CT_DEFAULT_IA_V2(10, CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP2Y, tr("Y2 axe majeur"))
-    CT_DEFAULT_IA_V2(11, CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP2Z, tr("Z2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP1X, tr("X1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP1Y, tr("Y1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP1Z, tr("Z1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP2X, tr("X2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP2Y, tr("Y2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP2Z, tr("Z2 axe majeur"))
 
-    CT_DEFAULT_IA_V2(12, CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisALength, tr("Longueur axe mineur"))
-    CT_DEFAULT_IA_V2(13, CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisBLength, tr("Longueur axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisALength, tr("Longueur axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisBLength, tr("Longueur axe majeur"))
 
-    CT_DEFAULT_IA_V2(14, CT_Ellipse, CT_AbstractCategory::DATA_R2, &CT_Ellipse::getError, tr("Erreur d'ajustement de l'ellipse"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_R2, &CT_Ellipse::getError, tr("Erreur d'ajustement de l'ellipse"))
 
-    CT_DEFAULT_IA_V2(15, CT_Ellipse, CT_AbstractCategory::DATA_RATIO, &CT_Ellipse::getAxisRatio, tr("Ratio des axes"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_RATIO, &CT_Ellipse::getAxisRatio, tr("Ratio des axes"))
 
-    CT_DEFAULT_IA_V2(16, CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, 0.0, tr("Angle de début"))
-    CT_DEFAULT_IA_V2(17, CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, (2.0*M_PI), tr("Angle de fin"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, 0.0, tr("Angle de début"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, (2.0*M_PI), tr("Angle de fin"))
+
+    CT_DEFAULT_IA_END(CT_Ellipse)
 
 #ifdef USE_BOOST_OLD
 private:

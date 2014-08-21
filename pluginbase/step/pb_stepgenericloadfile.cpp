@@ -1,7 +1,7 @@
 #include "pb_stepgenericloadfile.h"
 
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_result/ct_resultgroup.h"
@@ -136,16 +136,16 @@ void PB_StepGenericLoadFile::compute()
     if(m_reader->readFile())
     {
         CT_ResultGroup *out_res = getOutResultList().first();
-        CT_StandardItemGroup *group = new CT_StandardItemGroup((DEF_CT_AbstractGroupModelOut*)getOutModelForCreation(out_res, DEF_SearchGroup), out_res);
+        CT_StandardItemGroup *group = new CT_StandardItemGroup(getOutGroupModelForCreation(out_res, DEF_SearchGroup), out_res);
 
         QListIterator<CT_OutStdSingularItemModel*> it(m_reader->outItemDrawableModels());
 
         while(it.hasNext())
         {
             CT_OutStdSingularItemModel *model = it.next();
-            CT_OutAbstractItemModel *modelCreation = getOutModelForCreation(out_res, model->name());
+            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)getOutModelForCreation(out_res, model->uniqueName());
 
-            QList<CT_AbstractSingularItemDrawable*> items = m_reader->takeItemDrawableOfModel(model->name(), out_res, modelCreation);
+            QList<CT_AbstractSingularItemDrawable*> items = m_reader->takeItemDrawableOfModel(model->uniqueName(), out_res, modelCreation);
             QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
 
             while(itI.hasNext())
@@ -157,9 +157,9 @@ void PB_StepGenericLoadFile::compute()
         while(itG.hasNext())
         {
             CT_OutStdGroupModel *model = itG.next();
-            CT_OutAbstractItemModel *modelCreation = getOutModelForCreation(out_res, model->name());
+            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)getOutModelForCreation(out_res, model->uniqueName());
 
-            QList<CT_AbstractItemGroup*> groups = m_reader->takeGroupOfModel(model->name(), out_res, modelCreation);
+            QList<CT_AbstractItemGroup*> groups = m_reader->takeGroupOfModel(model->uniqueName(), out_res, modelCreation);
             QListIterator<CT_AbstractItemGroup*> itI(groups);
 
             while(itI.hasNext())

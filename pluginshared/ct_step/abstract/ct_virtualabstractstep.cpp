@@ -1162,6 +1162,21 @@ CT_OutAbstractModel* CT_VirtualAbstractStep::getOutModelForCreation(const CT_Res
     return _outManager->getTurnManager()->getOutModel(*outResult->model(), uniqueName);
 }
 
+CT_OutAbstractSingularItemModel *CT_VirtualAbstractStep::getOutSingularItemModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const
+{
+    return (CT_OutAbstractSingularItemModel*)getOutModelForCreation(outResult, uniqueName);
+}
+
+CT_OutAbstractGroupModel *CT_VirtualAbstractStep::getOutGroupModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const
+{
+    return (CT_OutAbstractGroupModel*)getOutModelForCreation(outResult, uniqueName);
+}
+
+CT_OutAbstractItemAttributeModel *CT_VirtualAbstractStep::getOutItemAttributeModelForCreation(const CT_ResultGroup *outResult, const QString &uniqueName) const
+{
+    return (CT_OutAbstractItemAttributeModel*)getOutModelForCreation(outResult, uniqueName);
+}
+
 QList<CT_ResultGroup*> CT_VirtualAbstractStep::getOutResultList() const
 {
     QList<CT_ResultGroup*> ret;

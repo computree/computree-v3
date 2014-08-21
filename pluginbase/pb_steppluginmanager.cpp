@@ -104,35 +104,33 @@ bool PB_StepPluginManager::init()
     return CT_AbstractStepPlugin::init();
 }
 
-QString PB_StepPluginManager::getKeyForStep(Step &step) const
+QString PB_StepPluginManager::getKeyForStep(const CT_VirtualAbstractStep &step) const
 {
-    PB_StepGenericExporter *sEx = dynamic_cast<PB_StepGenericExporter*>(&step);
+    const PB_StepGenericExporter *sEx = dynamic_cast<const PB_StepGenericExporter*>(&step);
 
     if(sEx != NULL)
-    {
         return QString("PB_StepGenericExporter__") + sEx->getStepName();
-    }
 
     return CT_AbstractStepPlugin::getKeyForStep(step);
 }
 
-Step* PB_StepPluginManager::getStepFromKey(QString key) const
+CT_VirtualAbstractStep* PB_StepPluginManager::getStepFromKey(QString key) const
 {
     if(key.startsWith("PB_StepGenericExporter"))
     {
         key = key.remove("PB_StepGenericExporter__");
 
-        QList<StepSeparator*> separators = getGenericsStepAvailable();
-        QListIterator<StepSeparator*> it(separators);
+        QList<CT_StepSeparator*> separators = getGenericsStepAvailable();
+        QListIterator<CT_StepSeparator*> it(separators);
 
         while(it.hasNext())
         {
-            StepSeparator *separator = it.next();
+            CT_StepSeparator *separator = it.next();
 
             if(separator->getTitle() == DEF_ExporterSeparatorTitle)
             {
-                QList<Step*> steps = separator->getStepList();
-                QListIterator<Step*> itS(steps);
+                QList<CT_VirtualAbstractStep*> steps = separator->getStepList();
+                QListIterator<CT_VirtualAbstractStep*> itS(steps);
 
                 while(itS.hasNext())
                 {
@@ -299,26 +297,26 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 
     for(int i=0; i<s; ++i)
     {
-        PluginInterface *p = pm->getPlugin(i);
+        CT_AbstractStepPlugin *p = pm->getPlugin(i);
         QString pluginName = pm->getPluginName(i);
 
-        QList<IExporterSeparator*> esl = p->getExportersAvailable();
-        QListIterator<IExporterSeparator*> it(esl);
+        QList<CT_StandardExporterSeparator*> esl = p->getExportersAvailable();
+        QListIterator<CT_StandardExporterSeparator*> it(esl);
 
         while(it.hasNext())
         {
-            IExporterSeparator *es = it.next();
+            CT_StandardExporterSeparator *es = it.next();
 
-            QListIterator<IExporter*> itE(es->exporters());
+            QListIterator<CT_AbstractExporter*> itE(es->exporters());
 
             while(itE.hasNext())
             {
-                IExporter *exporter = itE.next();
+                CT_AbstractExporter *exporter = itE.next();
                 sepGE->addStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()));
             }
         }
 
-        QList<CT_StandardReaderSeparator*> rsl = ((CT_AbstractStepPlugin*)p)->getReadersAvailable();
+        QList<CT_StandardReaderSeparator*> rsl = p->getReadersAvailable();
         QListIterator<CT_StandardReaderSeparator*> itR(rsl);
 
         while(itR.hasNext())

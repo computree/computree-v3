@@ -43,7 +43,7 @@ public:
     QList<size_t> computeExtends3D(size_t index);
     QList<size_t> computeColonize3D(size_t index);
 
-    ActionInterface* copy() const;
+    CT_AbstractAction* copy() const;
 
 public slots:
     void updateLevel(int level);

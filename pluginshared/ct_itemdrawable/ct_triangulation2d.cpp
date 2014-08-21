@@ -12,7 +12,7 @@ CT_Triangulation2D::CT_Triangulation2D() : CT_AbstractItemDrawableWithoutPointCl
     setBaseDrawManager(&TRIANGULATION2D_DRAW_MANAGER);
 }
 
-CT_Triangulation2D::CT_Triangulation2D(const CT_OutAbstractItemModel *model,
+CT_Triangulation2D::CT_Triangulation2D(const CT_OutAbstractSingularItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_DelaunayT *delaunay) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
@@ -54,7 +54,7 @@ CT_AbstractItemDrawable* CT_Triangulation2D::copy(const CT_OutAbstractItemModel 
 {
     Q_UNUSED(copyModeList);
 
-    CT_Triangulation2D *t2d = new CT_Triangulation2D(model, result, NULL);
+    CT_Triangulation2D *t2d = new CT_Triangulation2D((const CT_OutAbstractSingularItemModel *)model, result, NULL);
     t2d->setId(id());
 
     if(_delaunay != NULL)

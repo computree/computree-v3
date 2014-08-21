@@ -26,12 +26,10 @@
 *****************************************************************************/
 
 #include "ct_polygon2d.h"
-#include "ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 
 #include <limits>
 
-CT_INIT_DEFAULT_IA(0, CT_Polygon2D)
+CT_DEFAULT_IA_INIT(CT_Polygon2D)
 
 const CT_StandardPolygon2DDrawManager CT_Polygon2D::POLYGON2D_DRAW_MANAGER;
 
@@ -40,7 +38,7 @@ CT_Polygon2D::CT_Polygon2D() : CT_AbstractShape()
     setBaseDrawManager(&POLYGON2D_DRAW_MANAGER);
 }
 
-CT_Polygon2D::CT_Polygon2D(const CT_OutAbstractItemModel *model,
+CT_Polygon2D::CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
                          const CT_AbstractResult *result,
                          CT_Polygon2DData *data) : CT_AbstractShape(model, result, data)
 {
@@ -108,7 +106,7 @@ CT_AbstractItemDrawable* CT_Polygon2D::copy(const CT_OutAbstractItemModel *model
                                            CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Polygon2D *polygon = new CT_Polygon2D(model, result, (getPointerData() != NULL) ? ((const CT_Polygon2DData&)getData()).clone() : NULL);
+    CT_Polygon2D *polygon = new CT_Polygon2D((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_Polygon2DData&)getData()).clone() : NULL);
     polygon->setId(id());
 
     polygon->setAlternativeDrawManager(getAlternativeDrawManager());

@@ -10,16 +10,16 @@ class CT_FaceAttributesScalarT : public CT_AbstractFaceAttributesScalar, public 
 public:
     CT_FaceAttributesScalarT();
 
-    CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
 
-    CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
-    CT_FaceAttributesScalarT(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,

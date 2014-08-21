@@ -168,14 +168,14 @@ CT_AbstractItemDrawable* CT_ResultGroup::nextItemDrawable()
 int CT_ResultGroup::recursiveBeginIterateItemDrawableWithModel(const CT_AbstractModel &model)
 {
     delete m_guiIterator;
-    m_guiIterator = new CT_ResultIteratorForGui(this);
+    m_guiIterator = NULL;
 
     const CT_OutAbstractItemModel *itemModel = dynamic_cast<const CT_OutAbstractItemModel*>(&model);
 
     if(itemModel == NULL)
         return 0;
 
-    m_guiIterator->init(itemModel);
+    m_guiIterator = new CT_ResultIterator(this, itemModel, true);
 
     return m_guiIterator->size();
 }
@@ -183,7 +183,7 @@ int CT_ResultGroup::recursiveBeginIterateItemDrawableWithModel(const CT_Abstract
 CT_AbstractItemDrawable* CT_ResultGroup::recursiveNextItemDrawable()
 {
     if(m_guiIterator->hasNext())
-        return m_guiIterator->next();
+        return (CT_AbstractItemDrawable*)m_guiIterator->next();
 
     return NULL;
 }
@@ -308,7 +308,10 @@ void CT_ResultGroup::clearFromMemoryProtected()
 
     while(!_groups.isEmpty())
     {
-        delete _groups.takeFirst();
+        CT_AbstractItemGroup *gr = _groups.takeFirst();
+        gr->internalSetWillBeRemovedFromResult(this);
+
+        delete gr;
 
         ++i;
 

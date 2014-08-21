@@ -38,7 +38,7 @@ CT_ReferencePoint::CT_ReferencePoint() : CT_AbstractItemDrawableWithoutPointClou
     setBaseDrawManager(&REFERENCEPOINT_DRAW_MANAGER);
 }
 
-CT_ReferencePoint::CT_ReferencePoint(const  CT_OutAbstractItemModel *model,
+CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
                                      float x, float y, float z, float buffer) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
@@ -61,7 +61,7 @@ CT_ReferencePoint::CT_ReferencePoint(const  CT_OutAbstractItemModel *model,
 }
 
 // Contructeur privé pour la copie
-CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractItemModel *model,
+CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
                                      float x, float y, float z, float buffer, int refId) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
@@ -143,7 +143,7 @@ void CT_ReferencePoint::setCenterZ(float z)
 
 CT_AbstractItemDrawable* CT_ReferencePoint::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
-    CT_ReferencePoint *ref = new CT_ReferencePoint(model, result, x(), y(), z(), xyBuffer(), _refId);
+    CT_ReferencePoint *ref = new CT_ReferencePoint((const CT_OutAbstractSingularItemModel *)model, result, x(), y(), z(), xyBuffer(), _refId);
     ref->setId(id());
 
     ref->setAlternativeDrawManager(getAlternativeDrawManager());

@@ -11,11 +11,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesNormal : public CT_AbstractEdge
 public:
     CT_EdgeAttributesNormal();
 
-    CT_EdgeAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
 
-    CT_EdgeAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
                             CT_AbstractNormalCloud *nc);

@@ -26,30 +26,29 @@ void PB_PgmExporter::init()
     addNewExportFormat(FileFormat("pgm", tr("Fichiers Images 2D (pgm)")));
 }
 
-bool PB_PgmExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
-{
+bool PB_PgmExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
+{    
     clearErrorMessage();
 
-    int nGrids = 0;
-    int nNotGrids = 0;
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
-    QListIterator<ItemDrawable*> it(list);
-
-    while(it.hasNext())
+    while(it.hasNext()
+            && myList.isEmpty())
     {
-        if(it.next()->rtti() == IDGT_GRID2D)
-            ++nGrids;
-        else
-            ++nNotGrids;
+        CT_AbstractItemDrawable *item = it.next();
+
+        if(dynamic_cast<CT_VirtualGrid2D<int>*>(item) != NULL)
+            myList.append(item);
     }
 
-    if(nGrids == 0)
+    if(myList.isEmpty())
     {
-        setErrorMessage(tr("Aucun ItemDrawable du type IDGT_GRID2D"));
+        setErrorMessage(tr("Aucun ItemDrawable du type CT_VirtualGrid2D<int>"));
         return false;
     }
 
-    return CT_AbstractExporter::setItemDrawableToExport(list);
+    return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
 bool PB_PgmExporter::configureExport()
@@ -63,7 +62,7 @@ bool PB_PgmExporter::configureExport()
     return true;
 }
 
-IExporter* PB_PgmExporter::copy() const
+CT_AbstractExporter* PB_PgmExporter::copy() const
 {
     return new PB_PgmExporter();
 }
@@ -78,7 +77,7 @@ bool PB_PgmExporter::protectedExportToFile()
 
     QFile file(filePath);
 
-    QListIterator<ItemDrawable*> it(itemDrawableToExport());
+    QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
     if( itemDrawableToExport().size() > 1 )
     {
@@ -92,9 +91,9 @@ bool PB_PgmExporter::protectedExportToFile()
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
-            CT_VirtualGrid2D<int> *grid = dynamic_cast<CT_VirtualGrid2D<int>*>(item);
+            CT_VirtualGrid2D<int> *grid = (CT_VirtualGrid2D<int>*)item;
             int width = grid->xArraySize();
             int height = grid->yArraySize();
 

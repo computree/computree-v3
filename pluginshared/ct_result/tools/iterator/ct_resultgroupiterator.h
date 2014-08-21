@@ -18,7 +18,7 @@ class CT_VirtualAbstractStep;
 /**
  * @brief Class tools to iterate over groups in result
  *
- * @warning Be careful that if groups of the result or child groups is changed the iterator can returns undefined results
+ * @warning Be careful that if groups of the result or child groups is changed (deleted per example) the iterator can returns undefined results
  */
 class PLUGINSHAREDSHARED_EXPORT CT_ResultGroupIterator
 {

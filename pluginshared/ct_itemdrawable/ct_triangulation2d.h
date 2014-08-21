@@ -48,7 +48,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_Triangulation2D : public CT_AbstractItemDrawa
 
 public:
     CT_Triangulation2D();
-    CT_Triangulation2D(const CT_OutAbstractItemModel *model,
+    CT_Triangulation2D(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result, CT_DelaunayT *delaunay);
 
     CT_Triangulation2D(const QString &modelName,

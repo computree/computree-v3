@@ -2,10 +2,9 @@
 #define CDM_STEPMANAGER_H
 
 #include "computreeCore_global.h"
-
 #include "interfaces.h"
-
 #include "cdm_stepmanageroptions.h"
+#include "ct_step/abstract/ct_abstractstepserializable.h"
 
 #include <QThread>
 #include <QMutex>
@@ -76,7 +75,7 @@ public:
      *
      *  \return true si l'ajout est effectif, false sinon.
      */
-    bool addStep(Step *step, Step *parent = NULL);
+    bool addStep(CT_VirtualAbstractStep *step, CT_VirtualAbstractStep *parent = NULL);
 
     /*!
      *  \brief Insertion d'une etape
@@ -86,7 +85,7 @@ public:
      *
      *  \return true si l'ajout est effectif, false sinon.
      */
-    bool insertStep(Step *step, Step &parent);
+    bool insertStep(CT_VirtualAbstractStep *step, CT_VirtualAbstractStep &parent);
 
     /*!
      *  \brief Suppression d'une etape
@@ -95,17 +94,17 @@ public:
      *
      *  \return true si la suppression est effective, false sinon.
      */
-    bool removeStep(Step *step);
+    bool removeStep(CT_VirtualAbstractStep *step);
 
     /**
      * @brief Activate or not the debug mode of the step
      */
-    void setStepDebugModeOn(Step *step, bool debugModeOn);
+    void setStepDebugModeOn(CT_VirtualAbstractStep *step, bool debugModeOn);
 
     /*!
      *  \brief Retourne la liste des etapes du tronc de l'arbre
      */
-    QList<Step*> getStepRootList() const;
+    QList<CT_VirtualAbstractStep*> getStepRootList() const;
 
     /*!
      *  \brief Changer les options
@@ -126,13 +125,13 @@ public:
      *  \brief Retourne vrai si lorsque l'on va executer les traitements  partir de l'etape passe en parametre
      *         l'auto sauvegarde va etre desactive.
      */
-    bool checkAutoSaveDisabledIfExecuteFromStep(Step &step) const;
+    bool checkAutoSaveDisabledIfExecuteFromStep(CT_VirtualAbstractStep &step) const;
 
     /*!
      *  \brief Retourne vrai si au moins une etape fille de l'etape passe en paramtre est en mode debug (recursif). L'etape en parametre
      *         peut etre NULL, alors le test s'effectura a partir des etapes du tronc de l'arbre.
      */
-    bool checkOneStepIsInDebugModeFromStep(Step *step) const;
+    bool checkOneStepIsInDebugModeFromStep(CT_VirtualAbstractStep *step) const;
 
     /**
      * @brief Return true if the current step is in manual mode
@@ -149,7 +148,7 @@ public slots:
      *
      *  \return false si des traitements sont deja en cours, true si le lancement c'est bien passe.
      */
-    bool executeStep(Step *beginStep = NULL);
+    bool executeStep(CT_VirtualAbstractStep *beginStep = NULL);
 
     /*!
      *  \brief Lancement des traitements manuels
@@ -158,7 +157,7 @@ public slots:
      *
      *  \return false si des traitements sont deja en cours, true si le lancement c'est bien passe.
      */
-    bool executeModifyStep(Step *beginStep);
+    bool executeModifyStep(CT_VirtualAbstractStep *beginStep);
 
     /*!
      *  \brief Lancement des traitements en mode debug OU avancer de 1 pas
@@ -169,7 +168,7 @@ public slots:
      *
      *  \return false si aucun traitements n'attend de ack ou si un lancement en mode non debug a deja ete effectue, true si le lancement c'est bien passe.
      */
-    bool executeOrForwardStepInDebugMode(Step *beginStep = NULL);
+    bool executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *beginStep = NULL);
 
     /*!
      *  \brief Lancement des traitements en mode debug ou avancer de N pas
@@ -180,7 +179,7 @@ public slots:
      *
      *  \return false si aucun traitements n'attend de ack ou si un lancement en mode non debug a deja ete effectue, true si le lancement c'est bien passe.
      */
-    bool executeOrForwardStepFastInDebugMode(Step *beginStep = NULL);
+    bool executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *beginStep = NULL);
 
     /**
      * @brief Quit the manual mode of the current step
@@ -195,7 +194,7 @@ public slots:
      *
      *  \return false si des traitements sont deja en cours, true si le lancement c'est bien passe.
      */
-    bool loadSerializedResultFromStep(StepSerializable &childBeginStep);
+    bool loadSerializedResultFromStep(CT_AbstractStepSerializable &childBeginStep);
 
     /*!
      *  \brief Stop tous les traitements
@@ -209,15 +208,15 @@ public slots:
 
 private:
 
-    bool internalExecuteStep(Step *beginStep, bool debugMode);
-    bool internalExecuteModifyStep(Step *beginStep, bool debugMode);
+    bool internalExecuteStep(CT_VirtualAbstractStep *beginStep, bool debugMode);
+    bool internalExecuteModifyStep(CT_VirtualAbstractStep *beginStep, bool debugMode);
 
     /*!
      * \brief Connexion/Deconnexion des signaux de l'etape aux signaux/slot de cet objet
      */
-    void connectStep(Step *step);
-    void connectStepBeforeRunning(Step *step);
-    void disconnectStepAfterRunning(Step *step);
+    void connectStep(CT_VirtualAbstractStep *step);
+    void connectStepBeforeRunning(CT_VirtualAbstractStep *step);
+    void disconnectStepAfterRunning(CT_VirtualAbstractStep *step);
 
     void run();
 
@@ -228,18 +227,18 @@ private:
     CDM_StepManagerOptions      _options;
 
     ActionType                  _action;
-    Step                        *_beginStep;
+    CT_VirtualAbstractStep                        *_beginStep;
     bool                        _stop;
     bool                        _debugMode;
 
-    QList<Step*>                _stepRootList;
-    Step*                       m_currentStep;
+    QList<CT_VirtualAbstractStep*>                _stepRootList;
+    CT_VirtualAbstractStep*                       m_currentStep;
 
     QMutex                      _mutex;
 
-    bool recursiveExecuteStep(QString &scriptFileAndSerializedDirName, Step &step, QList<Result*> results, bool force = false, bool &restart);
+    bool recursiveExecuteStep(QString &scriptFileAndSerializedDirName, CT_VirtualAbstractStep &step, QList<CT_ResultGroup*> results, bool &restart, bool force = false);
 
-    void recursiveClearResult(Step &step);
+    void recursiveClearResult(CT_VirtualAbstractStep &step);
 
     bool ackDebugMode(int jumpNStep);
 
@@ -254,21 +253,21 @@ private slots:
 
 signals:
 
-    void stepAdded(Step *step);
-    void stepInserted(int n, Step *step);
-    void stepToBeRemoved(Step *step);
-    void stepBeginExecuted(Step *step);
-    void stepFinishExecuted(Step *step);
+    void stepAdded(CT_VirtualAbstractStep *step);
+    void stepInserted(int n, CT_VirtualAbstractStep *step);
+    void stepToBeRemoved(CT_VirtualAbstractStep *step);
+    void stepBeginExecuted(CT_VirtualAbstractStep *step);
+    void stepFinishExecuted(CT_VirtualAbstractStep *step);
     void stepWaitForAckInDebugMode(bool aStepWait);
-    void stepRequiredManualMode(Step *step);
+    void stepRequiredManualMode(CT_VirtualAbstractStep *step);
     void stepInManualMode(bool val);
-    void stepQuitManualMode(Step *step);
+    void stepQuitManualMode(CT_VirtualAbstractStep *step);
     void stepNeedShowMessage(QString message);
 
-    void resultAdded(Result *res);
-    void resultToBeClearedFromMemory(Result *res);
-    void resultToBeRemoved(Result *res);
-    void resultToBeSerialized(Result *res);
+    void resultAdded(CT_AbstractResult *res);
+    void resultToBeClearedFromMemory(CT_AbstractResult *res);
+    void resultToBeRemoved(CT_AbstractResult *res);
+    void resultToBeSerialized(CT_AbstractResult *res);
 
     void started(bool started);
     void loadResultBegin();

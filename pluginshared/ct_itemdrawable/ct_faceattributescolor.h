@@ -11,12 +11,12 @@ class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesColor : public CT_AbstractFaceA
 public:
     CT_FaceAttributesColor();
 
-    CT_FaceAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
                            CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                            bool withAlphaInformation);
 
-    CT_FaceAttributesColor(const CT_OutAbstractItemModel *model,
+    CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
                            CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                            CT_AbstractColorCloud *cc);

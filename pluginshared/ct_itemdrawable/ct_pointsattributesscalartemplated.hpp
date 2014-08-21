@@ -11,7 +11,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated()
 }
 
 template<typename SCALAR>
-CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
                                                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointAttributesScalar(model,
                                                                                                                                                                                             result,
@@ -20,7 +20,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 }
 
 template<typename SCALAR>
-CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
                                                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractPointAttributesScalar(model,
@@ -30,7 +30,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 }
 
 template<typename SCALAR>
-CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractItemModel *model,
+CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
                                                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection,
@@ -96,9 +96,9 @@ CT_AbstractItemDrawable* CT_PointsAttributesScalarTemplated<SCALAR>::copy(const 
     CT_StandardCloudStdVectorT<SCALAR>* collect = this->collection();
 
     if (collect == NULL)
-        return new CT_PointsAttributesScalarTemplated<SCALAR>(model, result, getPointCloudIndexRegistered());
+        return new CT_PointsAttributesScalarTemplated<SCALAR>((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered());
     else
-        return new CT_PointsAttributesScalarTemplated<SCALAR>(model, result, getPointCloudIndexRegistered(), dynamic_cast< CT_StandardCloudStdVectorT<SCALAR>* >(collect->copy()), this->min(), this->max());
+        return new CT_PointsAttributesScalarTemplated<SCALAR>((const CT_OutAbstractSingularItemModel *)model, result, getPointCloudIndexRegistered(), dynamic_cast< CT_StandardCloudStdVectorT<SCALAR>* >(collect->copy()), this->min(), this->max());
 }
 
 #endif // CT_POINTSATTRIBUTESSCALARTEMPLATED_HPP

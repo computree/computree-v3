@@ -9,7 +9,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributesScalar : public CT_Abst
 
 public:
     CT_AbstractFaceAttributesScalar();
-    CT_AbstractFaceAttributesScalar(const CT_OutAbstractItemModel *model,
+    CT_AbstractFaceAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                     CT_AbstractResult *result,
                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir);
 

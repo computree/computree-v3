@@ -4,7 +4,7 @@ CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar() : CT_Abstract
 {
 }
 
-CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const CT_OutAbstractItemModel *model,
+CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                  CT_AbstractResult *result,
                                                                  CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir) : CT_AbstractEdgeAttributes(model,
                                                                                                                                                                      result,

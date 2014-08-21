@@ -47,8 +47,8 @@ public:
       * \brief Empty Contructor vide
       */
     CT_AbstractMetric();
-    CT_AbstractMetric(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result);
-    CT_AbstractMetric(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const QString &label);
+    CT_AbstractMetric(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
+    CT_AbstractMetric(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const QString &label);
 
     CT_AbstractMetric(const QString &modelName, const CT_AbstractResult *result);
     CT_AbstractMetric(const QString &modelName, const CT_AbstractResult *result, const QString &label);

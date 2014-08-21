@@ -27,27 +27,7 @@
 
 #include "ct_ellipse.h"
 
-#include "ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
-
-CT_INIT_DEFAULT_IA(0, CT_Ellipse)
-CT_INIT_DEFAULT_IA(1, CT_Ellipse)
-CT_INIT_DEFAULT_IA(2, CT_Ellipse)
-CT_INIT_DEFAULT_IA(3, CT_Ellipse)
-CT_INIT_DEFAULT_IA(4, CT_Ellipse)
-CT_INIT_DEFAULT_IA(5, CT_Ellipse)
-CT_INIT_DEFAULT_IA(6, CT_Ellipse)
-CT_INIT_DEFAULT_IA(7, CT_Ellipse)
-CT_INIT_DEFAULT_IA(8, CT_Ellipse)
-CT_INIT_DEFAULT_IA(9, CT_Ellipse)
-CT_INIT_DEFAULT_IA(10, CT_Ellipse)
-CT_INIT_DEFAULT_IA(11, CT_Ellipse)
-CT_INIT_DEFAULT_IA(12, CT_Ellipse)
-CT_INIT_DEFAULT_IA(13, CT_Ellipse)
-CT_INIT_DEFAULT_IA(14, CT_Ellipse)
-CT_INIT_DEFAULT_IA(15, CT_Ellipse)
-CT_INIT_DEFAULT_IA(16, CT_Ellipse)
-CT_INIT_DEFAULT_IA(17, CT_Ellipse)
+CT_DEFAULT_IA_INIT(CT_Ellipse)
 const CT_StandardEllipseDrawManager CT_Ellipse::ELLIPSE_DRAW_MANAGER;
 
 CT_Ellipse::CT_Ellipse(): CT_AbstractShape()
@@ -55,7 +35,7 @@ CT_Ellipse::CT_Ellipse(): CT_AbstractShape()
     setBaseDrawManager(&ELLIPSE_DRAW_MANAGER);
 }
 
-CT_Ellipse::CT_Ellipse(const CT_OutAbstractItemModel *model,
+CT_Ellipse::CT_Ellipse(const CT_OutAbstractSingularItemModel *model,
                        const CT_AbstractResult *result,
                        CT_EllipseData *data) : CT_AbstractShape(model, result, data)
 {
@@ -174,14 +154,14 @@ CT_AbstractItemDrawable* CT_Ellipse::copy(const CT_OutAbstractItemModel *model,
                                           CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Ellipse *el = new CT_Ellipse(model, result, (getPointerData() != NULL) ? ((const CT_EllipseData&)getData()).clone() : NULL);
+    CT_Ellipse *el = new CT_Ellipse((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_EllipseData&)getData()).clone() : NULL);
     el->setId(id());
     el->setAlternativeDrawManager(getAlternativeDrawManager());
 
     return el;
 }
 
-CT_Ellipse* CT_Ellipse::staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractItemModel *model,
+CT_Ellipse* CT_Ellipse::staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                       quint64 id,
                                                                       const CT_AbstractResult *result,
                                                                       const CT_AbstractPointCloud *pointCloud,
@@ -194,7 +174,7 @@ CT_Ellipse* CT_Ellipse::staticCreateZAxisAlignedEllipseFromPointCloud(const CT_O
     if(data == NULL)
         return NULL;
 
-    return new CT_Ellipse(model, result, data);
+    return new CT_Ellipse((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
 
 #ifdef USE_BOOST_OLD

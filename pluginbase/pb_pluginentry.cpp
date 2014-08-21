@@ -43,7 +43,7 @@ QString PB_PluginEntry::getVersion() const
     return "1.0";
 }
 
-PluginInterface* PB_PluginEntry::getPlugin()
+CT_AbstractStepPlugin* PB_PluginEntry::getPlugin() const
 {
     return _stepPluginManager;
 }

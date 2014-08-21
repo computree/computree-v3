@@ -2,13 +2,14 @@
 
 // Inclusion of in models
 #include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdsingularitemmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 // Inclusion of out models
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
 // Inclusion of standard result class
 #include "ct_result/ct_resultgroup.h"
@@ -19,6 +20,8 @@
 //Inclusion of actions
 #include "actions/pb_actionmeasurecrownattributes.h"
 #include "ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h"
+
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include <limits>
 #include <QMessageBox>
@@ -62,38 +65,29 @@ CT_VirtualAbstractStep* PB_StepMeasureCrownAttributes::createNewInstance(CT_Step
 // Creation and affiliation of IN models
 void PB_StepMeasureCrownAttributes::createInResultModelListProtected()
 {
-    CT_InZeroOrMoreGroupModel *rootGroup = new CT_InZeroOrMoreGroupModel();
-
-    CT_InStandardItemDrawableModel *sceneModel = new CT_InStandardItemDrawableModel(DEF_itemScene,
-                                                                                       CT_Scene::staticGetType(),
-                                                                                       tr("Scène(s)"));
-
-    rootGroup->addItem(sceneModel);
-
-
-    CT_InResultModelGroup *resultInModel = new CT_InResultModelGroup(DEF_resultIn,
-                                                                     rootGroup,
-                                                                     tr("Result"),
-                                                                     tr(""),
-                                                                     false);
-
-    addInResultModel(resultInModel);
+    CT_InResultModelGroup *resultInModel = createNewInResultModel(DEF_resultIn,
+                                                                  tr("Result"),
+                                                                  tr(""),
+                                                                  false);
+    resultInModel->setZeroOrMoreRootGroup();
+    resultInModel->addItemModel("",
+                                DEF_itemScene,
+                                CT_Scene::staticGetType(),
+                                tr("Scène(s)"));
 }
 
 // Creation and affiliation of OUT models
 void PB_StepMeasureCrownAttributes::createOutResultModelListProtected()
 {
-    CT_OutStdGroupModel *group = new CT_OutStdGroupModel(DEF_SearchOutGroup, new CT_StandardItemGroup(), tr("Groupe"));
-    CT_OutStdSingularItemModel *item = new CT_OutStdSingularItemModel(DEF_SearchOutGrid, new CT_Grid2DXY<float>(), tr("Projection"));
-    group->addItem(item);
-    addOutResultModel(new CT_OutResultModelGroup(DEF_resultOut, group,  tr("Projection")));
+    CT_OutResultModelGroup *resultOutModel = createNewOutResultModel(DEF_resultOut, tr("Projection"));
+    resultOutModel->setRootGroup(DEF_SearchOutGroup);
+    resultOutModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutGrid, new CT_Grid2DXY<float>(), tr("Projection"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepMeasureCrownAttributes::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
-
     configDialog->addDouble(tr("Résolution de la grille"),tr("meters"),0.0001,10000,2, _res );
 }
 
@@ -103,7 +97,7 @@ void PB_StepMeasureCrownAttributes::compute()
     m_status = 0;
 
     CT_ResultGroup *resultIn = getInputResults().first();
-    CT_InAbstractItemDrawableModel* sceneModel = (CT_InAbstractItemDrawableModel*)getInModelForResearch(resultIn, DEF_itemScene);
+    CT_InAbstractSingularItemModel* sceneModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultIn, DEF_itemScene);
 
     const QList<CT_ResultGroup*> &outResList = getOutResultList();
     CT_ResultGroup *outResult = outResList.at(0);
@@ -120,12 +114,14 @@ void PB_StepMeasureCrownAttributes::compute()
     _ymax = -std::numeric_limits<float>::max();
     _zmax = -std::numeric_limits<float>::max();
 
+    CT_ResultItemIterator it(resultIn, sceneModel);
 
     // Parcours des groupes contenant les scènes à filtrer
-    for ( CT_Scene *scene = (CT_Scene*) resultIn->beginItem(sceneModel)
-          ; scene != NULL  && !isStopped()
-          ; scene = (CT_Scene*) resultIn->nextItem())
+    while(it.hasNext()
+          && !isStopped())
     {
+        CT_Scene *scene = (CT_Scene*)it.next();
+
         _sceneList.append(scene);
 
         if (scene->minX() < _xmin) {_xmin = scene->minX();}

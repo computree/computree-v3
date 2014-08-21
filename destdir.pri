@@ -1,5 +1,5 @@
 isEmpty(CT_PREFIX) {
-    CT_PREFIX = ../../computreeV3
+    CT_PREFIX = ..
 }
 
 PLUGINSHARED_DESTDIR = $${CT_PREFIX}/ComputreeInstall

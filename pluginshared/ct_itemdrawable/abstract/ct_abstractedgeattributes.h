@@ -16,7 +16,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributes : public CT_AbstractAt
 
 public:
     CT_AbstractEdgeAttributes();
-    CT_AbstractEdgeAttributes(const CT_OutAbstractItemModel *model,
+    CT_AbstractEdgeAttributes(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
 

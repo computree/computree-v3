@@ -50,7 +50,7 @@ CT_Beam::CT_Beam() : CT_AbstractItemDrawableWithoutPointCloud()
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-CT_Beam::CT_Beam(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _origin.setX(0);
     _origin.setY(0);
@@ -68,7 +68,7 @@ CT_Beam::CT_Beam(const CT_OutAbstractItemModel *model, const CT_AbstractResult *
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-CT_Beam::CT_Beam(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const QVector3D &origin, const QVector3D &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const QVector3D &origin, const QVector3D &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     assert( !(direction.x() == 0 && direction.y() == 0 && direction.z() == 0) );
 
@@ -203,7 +203,7 @@ CT_Beam* CT_Beam::copy(const CT_OutAbstractItemModel *model,
                      const CT_AbstractResult *result,
                      CT_ResultCopyModeList copyModeList)
 {
-    CT_Beam *ray = new CT_Beam(model, result, _origin, _direction);
+    CT_Beam *ray = new CT_Beam((const CT_OutAbstractSingularItemModel *)model, result, _origin, _direction);
     ray->setId(id());
 
     ray->setAlternativeDrawManager(getAlternativeDrawManager());

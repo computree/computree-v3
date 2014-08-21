@@ -4,6 +4,8 @@
 #include "views/exporters/csv/pbg_csvconfigurationdialog.h"
 #include "pb_csvexportercolumn.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+
 #include <QFile>
 #include <QTextStream>
 #include <QVector>
@@ -32,37 +34,51 @@ void PB_CSVExporter::init()
     addNewExportFormat(FileFormat("csv", tr("Fichiers csv")));
 }
 
-bool PB_CSVExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_CSVExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
-    if(CT_AbstractExporter::setItemDrawableToExport(list))
-    {
-        QMap<const IItemDataRefList*, QList<ItemDrawable*>* > newMap;
+    clearErrorMessage();
 
-        QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
+
+    while(it.hasNext())
+    {
+        CT_AbstractItemDrawable *item = it.next();
+
+        if(dynamic_cast<CT_AbstractSingularItemDrawable*>(item) != NULL)
+            myList.append(item);
+    }
+
+    if(myList.isEmpty())
+    {
+        setErrorMessage(tr("Aucun Groupe"));
+        return false;
+    }
+
+    if(CT_AbstractExporter::setItemDrawableToExport(myList))
+    {
+        QMap<CT_OutAbstractSingularItemModel*, QList<CT_AbstractItemDrawable*>* > newMap;
+
+        it = myList;
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
 
-            const IItemDataRefList *refList = item->dataReferencesListStatic();
+            QList<CT_AbstractItemDrawable*> *list = newMap.value((CT_OutAbstractSingularItemModel*)item->model(), NULL);
 
-            if(refList != NULL)
+            if(list == NULL)
             {
-                QList<ItemDrawable*> *list = newMap.value(refList, NULL);
-
-                if(list == NULL)
-                {
-                    list = new QList<ItemDrawable*>();
-                    newMap.insert(refList, list);
-                }
-
-                list->append(item);
+                list = new QList<CT_AbstractItemDrawable*>();
+                newMap.insert((CT_OutAbstractSingularItemModel*)item->model(), list);
             }
+
+            list->append(item);
         }
 
         _mapKeyChanged = true;
 
-        QMapIterator<const IItemDataRefList*, QList<ItemDrawable*>* > itMap(_mapItemToExport);
+        QMapIterator<CT_OutAbstractSingularItemModel*, QList<CT_AbstractItemDrawable*>* > itMap(_mapItemToExport);
 
         if(itMap.hasNext())
         {
@@ -89,7 +105,7 @@ bool PB_CSVExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
 
 bool PB_CSVExporter::configureExport()
 {
-    QList<const IItemDataRefList*> list = _mapItemToExport.keys();
+    QList<CT_OutAbstractSingularItemModel*> list = _mapItemToExport.keys();
 
     if(_mapKeyChanged
             || (_configuration == NULL))
@@ -103,8 +119,6 @@ bool PB_CSVExporter::configureExport()
     }
 
     PBG_CSVConfigurationDialog dialog(*_configuration);
-
-    dialog.setListOfDataRefList(&list);
 
     bool ret = (dialog.exec() == QDialog::Accepted) && (!_configuration->getColumns().isEmpty());
 
@@ -127,26 +141,17 @@ SettingsNodeGroup* PB_CSVExporter::saveExportConfiguration() const
 
     int i = 0;
 
-    QListIterator< QPair<const IItemDataRefList*, const IItemDataRef*> > it(_configuration->getColumns());
+    QListIterator< QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > it(_configuration->getColumns());
 
     while(it.hasNext())
     {
-        const QPair<const IItemDataRefList*, const IItemDataRef*> &pair = it.next();
+        const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &pair = it.next();
 
         SettingsNodeGroup *groupCol = new SettingsNodeGroup("Column");
         groupCol->addValue(new SettingsNodeValue("Version", "1"));
         groupCol->addValue(new SettingsNodeValue("ColumnIndex", i));
-        groupCol->addValue(new SettingsNodeValue("IItemDataRefListName", pair.first->name()));
-        groupCol->addValue(new SettingsNodeValue("IItemDataRefName", pair.second->name()));
-
-        SettingsNodeGroup *itemDataRefConf = pair.second->saveConfiguration();
-
-        if(itemDataRefConf != NULL)
-        {
-            SettingsNodeGroup *groupRefConf = new SettingsNodeGroup("IItemDataRefConfiguration");
-            groupRefConf->addGroup(itemDataRefConf);
-            groupCol->addGroup(groupRefConf);
-        }
+        groupCol->addValue(new SettingsNodeValue("ItemModelUniqueName", pair.first->uniqueName()));
+        groupCol->addValue(new SettingsNodeValue("ItemAttributeModelUniqueName", pair.second->uniqueName()));
 
         groupC->addGroup(groupCol);
 
@@ -162,7 +167,7 @@ bool PB_CSVExporter::loadExportConfiguration(const SettingsNodeGroup *root)
 {
     if(CT_AbstractExporter::loadExportConfiguration(root))
     {
-        QList<const IItemDataRefList*> list = _mapItemToExport.keys();
+        QList<CT_OutAbstractSingularItemModel*> list = _mapItemToExport.keys();
 
         delete _configuration;
         _configuration = new PB_CSVExporterConfiguration(list);
@@ -216,33 +221,25 @@ bool PB_CSVExporter::loadExportConfiguration(const SettingsNodeGroup *root)
         {
             SettingsNodeGroup *column = itV.next();
 
-            values = column->valuesByTagName("IItemDataRefListName");
+            values = column->valuesByTagName("ItemModelUniqueName");
 
             if(values.isEmpty())
                 return false;
 
-            const IItemDataRefList *refList = getItemDataRefListByName(values.first()->value().toString());
+            CT_OutAbstractSingularItemModel *refList = getItemModelByName(values.first()->value().toString());
 
             if(refList == NULL)
                 return false;
 
-            values = column->valuesByTagName("IItemDataRefName");
+            values = column->valuesByTagName("ItemAttributeModelUniqueName");
 
             if(values.isEmpty())
                 return false;
 
-            IItemDataRef *ref = getItemDataRefByName(refList, values.first()->value().toString());
+            CT_OutAbstractItemAttributeModel *ref = getItemAttributeModelByName(refList, values.first()->value().toString());
 
             if(ref == NULL)
                 return false;
-
-            groups = column->groupsByTagName("IItemDataRefConfiguration");
-
-            if(!groups.isEmpty())
-            {
-                if(!ref->loadConfiguration(groups.first()))
-                    return false;
-            }
 
             _configuration->addColumn(refList, ref);
         }
@@ -253,7 +250,7 @@ bool PB_CSVExporter::loadExportConfiguration(const SettingsNodeGroup *root)
     return false;
 }
 
-IExporter* PB_CSVExporter::copy() const
+CT_AbstractExporter* PB_CSVExporter::copy() const
 {
     return new PB_CSVExporter();
 }
@@ -275,14 +272,21 @@ bool PB_CSVExporter::protectedExportToFile()
         QList<PB_CSVExporterColumn*> columns;
 
         // ecriture de l'header
-        QListIterator< QPair<const IItemDataRefList*, const IItemDataRef*> > it(_configuration->getColumns());
+        QListIterator< QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > it(_configuration->getColumns());
 
         while(it.hasNext())
         {
-            const QPair<const IItemDataRefList*, const IItemDataRef*> &column = it.next();
+            const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = it.next();
             stream << column.second->displayableName() << ";";
 
-            columns.append(new PB_CSVExporterColumn(*_mapItemToExport.value(column.first)/*itemDrawableToExport()*/, *column.second));
+            QList<CT_AbstractItemDrawable*> *lToConvert = _mapItemToExport.value(column.first);
+            QList<CT_AbstractSingularItemDrawable*> lToPass;
+
+            foreach (CT_AbstractItemDrawable *itemD, *lToConvert) {
+                lToPass.append((CT_AbstractSingularItemDrawable*)itemD);
+            }
+
+            columns.append(new PB_CSVExporterColumn(lToPass, column.second));
         }
 
         // ecriture des données
@@ -296,9 +300,7 @@ bool PB_CSVExporter::protectedExportToFile()
         QListIterator<PB_CSVExporterColumn*> itC(columns);
 
         while(itC.hasNext())
-        {
             completeSize += itC.next()->size();
-        }
 
         do
         {
@@ -363,30 +365,30 @@ void PB_CSVExporter::clearMap()
     _mapItemToExport.clear();
 }
 
-const IItemDataRefList* PB_CSVExporter::getItemDataRefListByName(const QString &name) const
+CT_OutAbstractSingularItemModel* PB_CSVExporter::getItemModelByName(const QString &name) const
 {
-    QMapIterator<const IItemDataRefList*, QList<ItemDrawable*>* > it(_mapItemToExport);
+    QMapIterator<CT_OutAbstractSingularItemModel*, QList<CT_AbstractItemDrawable*>* > it(_mapItemToExport);
 
     while(it.hasNext())
     {
         it.next();
 
-        if(it.key()->name() == name)
+        if(it.key()->uniqueName() == name)
             return it.key();
     }
 
     return NULL;
 }
 
-IItemDataRef* PB_CSVExporter::getItemDataRefByName(const IItemDataRefList *refList, const QString &name) const
+CT_OutAbstractItemAttributeModel* PB_CSVExporter::getItemAttributeModelByName(CT_OutAbstractSingularItemModel *sItem, const QString &name) const
 {
-    QListIterator<IItemDataRef*> it(refList->references());
+    QListIterator<CT_OutAbstractItemAttributeModel*> it(sItem->itemAttributes());
 
     while(it.hasNext())
     {
-        IItemDataRef *ref = it.next();
+        CT_OutAbstractItemAttributeModel *ref = it.next();
 
-        if(ref->name() == name)
+        if(ref->uniqueName() == name)
             return ref;
     }
 

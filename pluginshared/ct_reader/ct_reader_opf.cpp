@@ -420,7 +420,7 @@ void CT_Reader_OPF::transformAndCreateMesh(CT_OPF_Mesh *mesh, CT_TOPFNodeGroup *
         ++itF;
     }
 
-    node->addItemDrawable(new CT_MeshModel(m_models.value(typeName +  + "_mesh", NULL), NULL, newMesh));
+    node->addItemDrawable(new CT_MeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, newMesh));
 }
 
 void CT_Reader_OPF::protectedInit()

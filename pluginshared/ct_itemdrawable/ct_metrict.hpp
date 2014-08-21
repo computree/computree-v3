@@ -29,13 +29,11 @@
 #define CT_METRIC_HPP
 
 #include "ct_itemdrawable/ct_metrict.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
-#include "ct_tools/itemdrawable/ct_idvdcreator.h"
 #include "ct_tools/ct_numerictostringconversiont.h"
 
 #include <typeinfo>
 
-template< typename T> CT_INIT_DEFAULT_IA(0, CT_MetricT<T>)
+template< typename T> CT_DEFAULT_IA_INIT(CT_MetricT<T>)
 
 template< typename T>
 CT_MetricT<T>::CT_MetricT() : CT_AbstractMetric()
@@ -43,13 +41,13 @@ CT_MetricT<T>::CT_MetricT() : CT_AbstractMetric()
 }
 
 template< typename T>
-CT_MetricT<T>::CT_MetricT(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const T &value) : CT_AbstractMetric(model, result)
+CT_MetricT<T>::CT_MetricT(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const T &value) : CT_AbstractMetric(model, result)
 {
     _value = value;
 }
 
 template< typename T>
-CT_MetricT<T>::CT_MetricT(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const T &value, QString label) : CT_AbstractMetric(model, result, label)
+CT_MetricT<T>::CT_MetricT(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const T &value, QString label) : CT_AbstractMetric(model, result, label)
 {
     _value = value;
 }
@@ -101,7 +99,7 @@ CT_AbstractItemDrawable* CT_MetricT<T>::copy(const CT_OutAbstractItemModel *mode
 {
     Q_UNUSED(copyModeList);
 
-    CT_MetricT<T>* cpy = new CT_MetricT<T>(model, result, _value);
+    CT_MetricT<T>* cpy = new CT_MetricT<T>((const CT_OutAbstractSingularItemModel *)model, result, _value);
     cpy->setId(this->id());
 
     cpy->setAlternativeDrawManager(this->getAlternativeDrawManager());

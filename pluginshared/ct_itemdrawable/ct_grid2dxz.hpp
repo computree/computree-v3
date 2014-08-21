@@ -30,7 +30,6 @@
 
 #include "ct_itemdrawable/ct_grid2dxz.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardgrid2dxzdrawmanager.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
 #include <math.h>
 #include <typeinfo>
 
@@ -46,7 +45,7 @@ CT_Grid2DXZ<DataT>::CT_Grid2DXZ() : CT_VirtualGrid2D<DataT>()
 }
 
 template< typename DataT>
-CT_Grid2DXZ<DataT>::CT_Grid2DXZ(const CT_OutAbstractItemModel *model,
+CT_Grid2DXZ<DataT>::CT_Grid2DXZ(const CT_OutAbstractSingularItemModel *model,
                                 const CT_AbstractResult *result,
                                 float xmin,
                                 float zmin,
@@ -122,7 +121,7 @@ CT_Grid2DXZ<DataT>::CT_Grid2DXZ(const QString &modelName,
 }
 
 template< typename DataT>
-CT_Grid2DXZ<DataT>* CT_Grid2DXZ<DataT>::createGrid2DXZFromXZCoords(const CT_OutAbstractItemModel *model,
+CT_Grid2DXZ<DataT>* CT_Grid2DXZ<DataT>::createGrid2DXZFromXZCoords(const CT_OutAbstractSingularItemModel *model,
                                                                    const CT_AbstractResult *result,
                                                                    float xmin,
                                                                    float zmin,
@@ -136,7 +135,7 @@ CT_Grid2DXZ<DataT>* CT_Grid2DXZ<DataT>::createGrid2DXZFromXZCoords(const CT_OutA
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid2DXZ<DataT>* grid = new CT_Grid2DXZ(model, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
+    CT_Grid2DXZ<DataT>* grid = new CT_Grid2DXZ((const CT_OutAbstractSingularItemModel *)model, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (xmax >= grid->maxX())
@@ -220,7 +219,7 @@ QString CT_Grid2DXZ<DataT>::name() const
 template< typename DataT>
 CT_AbstractItemDrawable* CT_Grid2DXZ<DataT>::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
-    CT_Grid2DXZ<DataT>* cpy = new CT_Grid2DXZ<DataT>(model, result, this->minX(), this->minZ(), this->_dimCol, this->_dimLin, this->_res, this->_level, this->_NAdata, this->_NAdata);
+    CT_Grid2DXZ<DataT>* cpy = new CT_Grid2DXZ<DataT>((const CT_OutAbstractSingularItemModel *)model, result, this->minX(), this->minZ(), this->_dimCol, this->_dimLin, this->_res, this->_level, this->_NAdata, this->_NAdata);
     cpy->setId(this->id());
     size_t size = this->nCells();
     for (size_t i = 0 ; i < size ; i++)

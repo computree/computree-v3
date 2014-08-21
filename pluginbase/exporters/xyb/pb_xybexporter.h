@@ -19,8 +19,8 @@ public:
 
     void init();
 
-    bool setItemDrawableToExport(const QList<ItemDrawable*> &list);
-    bool setPointsToExport(const QList<ICloudIndex*> &list);
+    bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
+    bool setPointsToExport(const QList<CT_AbstractCloudIndex*> &list);
 
     SettingsNodeGroup* saveExportConfiguration() const;
     bool loadExportConfiguration(const SettingsNodeGroup *root);
@@ -29,7 +29,7 @@ public:
     void setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const;
     bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget);
 
-    virtual IExporter* copy() const;
+    virtual CT_AbstractExporter* copy() const;
 
 protected:
 
@@ -43,8 +43,7 @@ private:
 
     void exportPoints(QDataStream &stream,
                       const CT_AbstractCloudIndexT<CT_Point> *constPCIndex,
-                      const IColorCloud *cc,
-                      quint8 *bgra,
+                      const CT_AbstractColorCloud *cc,
                       const int &nExported,
                       const int &totalToExport);
 };

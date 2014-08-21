@@ -34,10 +34,9 @@
 
 quint64 CT_AbstractItemDrawable::NEXTID = 1;
 
-CT_AbstractItemDrawable::CT_AbstractItemDrawable()
+CT_AbstractItemDrawable::CT_AbstractItemDrawable() : CT_AbstractItem()
 {
     _id = 0;
-    _result = NULL;
     _selected = false;
     _displayed = false;
     _color = QColor();
@@ -46,16 +45,14 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable()
     _centerCoordinate.setY(0);
     _centerCoordinate.setZ(0);
     _autoDelete = true;
-    _model = NULL;
     _parent = NULL;
     _baseDrawManager = NULL;
     _alternativeDrawManager = NULL;
 }
 
-CT_AbstractItemDrawable::CT_AbstractItemDrawable(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result)
+CT_AbstractItemDrawable::CT_AbstractItemDrawable(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result) : CT_AbstractItem(model, result)
 {
     _id = NEXTID++;
-    _result = (CT_AbstractResult*)result;
     _selected = false;
     _displayed = false;
     _color = Qt::white;
@@ -67,22 +64,11 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const CT_OutAbstractItemModel *
     _parent = NULL;
     _baseDrawManager = NULL;
     _alternativeDrawManager = NULL;
-
-    setModel(model);
 }
 
-CT_AbstractItemDrawable::CT_AbstractItemDrawable(const QString &modelUniqueName, const CT_AbstractResult *result)
+CT_AbstractItemDrawable::CT_AbstractItemDrawable(const QString &modelUniqueName, const CT_AbstractResult *result) : CT_AbstractItem(modelUniqueName, result)
 {
-    Q_ASSERT_X(!modelUniqueName.isEmpty(), "CT_AbstractItemDrawable constructor", "When you create a ItemDrawable the modelName must not be empty !");
-    Q_ASSERT_X((result != NULL), "CT_AbstractItemDrawable constructor", "When you create a ItemDrawable with a modelName the result must not be NULL !");
-    Q_ASSERT_X((result->parentStep() != NULL), "CT_AbstractItemDrawable constructor", "When you create a ItemDrawable with a modelName the result must know its parent step");
-
-    CT_OutAbstractItemModel *model = dynamic_cast<CT_OutAbstractItemModel*>(((CT_AbstractResult*)result)->parentStep()->getOutModelForCreation((CT_ResultGroup*)result, modelUniqueName));
-
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemDrawable constructor", "You created a ItemDrawable with a modelName but the model was not found");
-
     _id = NEXTID++;
-    _result = (CT_AbstractResult*)result;
     _selected = false;
     _displayed = false;
     _color = Qt::white;
@@ -94,8 +80,6 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const QString &modelUniqueName,
     _parent = NULL;
     _baseDrawManager = NULL;
     _alternativeDrawManager = NULL;
-
-    setModel(model);
 }
 
 CT_AbstractItemDrawable::~CT_AbstractItemDrawable()
@@ -112,6 +96,14 @@ void CT_AbstractItemDrawable::setId(quint64 id)
 void CT_AbstractItemDrawable::setMatrix4x4(const QMatrix4x4 &matrix)
 {
     m_transformMatrix = matrix;
+}
+
+QString CT_AbstractItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const
+{
+    if(dynamic_cast<const CT_OutAbstractItemModel*>(model) == NULL)
+        return tr("Model passed in parameter is not a CT_OutAbstractItemModel");
+
+    return QString();
 }
 
 void CT_AbstractItemDrawable::setDisplayableName(const QString &displayableName)
@@ -135,13 +127,13 @@ void CT_AbstractItemDrawable::setDisplayed(bool value)
     {
         if(value)
         {
-            if(_result != NULL)
-                ((CT_AbstractResult*)_result)->incrementItemVisible();
+            if(result() != NULL)
+                result()->incrementItemVisible();
         }
         else
         {
-            if(_result != NULL)
-                ((CT_AbstractResult*)_result)->decrementItemVisible();
+            if(result() != NULL)
+                result()->decrementItemVisible();
 
             _drawing_position = -1;
         }
@@ -152,17 +144,9 @@ void CT_AbstractItemDrawable::setDisplayed(bool value)
     }
 }
 
-CT_AbstractResult* CT_AbstractItemDrawable::result() const
-{
-    return _result;
-}
-
 void CT_AbstractItemDrawable::changeResult(const CT_AbstractResult *newRes)
 {
-    _result = (CT_AbstractResult*)newRes;
-
-    if(_model != NULL)
-        _model->setResult(newRes);
+    internalSetResult(newRes);
 }
 
 QList<DocumentInterface*> CT_AbstractItemDrawable::document() const
@@ -179,8 +163,8 @@ bool CT_AbstractItemDrawable::addDocumentParent(DocumentInterface *doc)
 
         setDisplayed(true);
 
-        if(_model != NULL)
-            _model->incrementVisibleInDocument(doc);
+        if(abstractModel() != NULL)
+            abstractModel()->incrementVisibleInDocument(doc);
 
         return true;
     }
@@ -203,8 +187,8 @@ void CT_AbstractItemDrawable::removeDocumentParent(DocumentInterface *doc)
             setSelected(false);
         }
 
-        if(_model != NULL)
-            _model->decrementVisibleInDocument(doc);
+        if(abstractModel() != NULL)
+            abstractModel()->decrementVisibleInDocument(doc);
     }
 }
 
@@ -218,8 +202,8 @@ QString CT_AbstractItemDrawable::displayableName() const
     if(!_name.isEmpty())
         return _name;
 
-    if(_model != NULL)
-        return _model->displayableName();
+    if(abstractModel() != NULL)
+        return abstractModel()->displayableName();
 
     return name();
 }
@@ -236,10 +220,10 @@ void CT_AbstractItemDrawable::setAutoDelete(bool autoDelete)
 
 CT_OutAbstractItemModel* CT_AbstractItemDrawable::model() const
 {
-    return _model;
+    return (CT_OutAbstractItemModel*)abstractModel();
 }
 
-CT_AbstractItemDrawable *CT_AbstractItemDrawable::itemParent() const
+CT_AbstractItemDrawable* CT_AbstractItemDrawable::itemParent() const
 {
     return _parent;
 }
@@ -408,10 +392,7 @@ bool CT_AbstractItemDrawable::isAutoDelete() const
 
 void CT_AbstractItemDrawable::setModel(const CT_OutAbstractItemModel *model)
 {
-    _model = (CT_OutAbstractItemModel*)model;
-
-    if(_model != NULL)
-        _model->setResult(result());
+    internalSetModel(model);
 }
 
 #ifdef USE_BOOST_OLD

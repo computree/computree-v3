@@ -29,10 +29,9 @@
 
 #include "ct_global/ct_context.h"
 
-#include "ct_itemdrawable/model/inModel/ct_inoneormoregroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdsingularitemmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
@@ -42,7 +41,7 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
-#include "ct_view/ct_buttongroup.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include <math.h>
 #include <iostream>
@@ -81,38 +80,23 @@ CT_VirtualAbstractStep* PB_StepReducePointsDensity::createNewInstance(CT_StepIni
 
 void PB_StepReducePointsDensity::createInResultModelListProtected()
 {
-    CT_InOneOrMoreGroupModel *group = new CT_InOneOrMoreGroupModel();
-
-    CT_InStandardItemDrawableModel *item = new CT_InStandardItemDrawableModel(DEF_SearchInScene,
-                                                                              CT_Scene::staticGetType(),
-                                                                              tr("Scène"));
-
-    group->addItem(item);
-
-    CT_InResultModelGroup *resultModel = new CT_InResultModelGroup(DEF_SearchInResult, group, tr("Scène(s)"));
-
-    addInResultModel(resultModel);
+    CT_InResultModelGroup *resultModel = createNewInResultModel(DEF_SearchInResult, tr("Scène(s)"));
+    resultModel->setZeroOrMoreRootGroup();
+    resultModel->addItemModel("",
+                              DEF_SearchInScene,
+                              CT_Scene::staticGetType(),
+                              tr("Scène"));
 }
 
 // Création et affiliation des modèles OUT
 void PB_StepReducePointsDensity::createOutResultModelListProtected()
 {
-    // Creation du model de groupe racine
-    CT_OutStdGroupModel *group = new CT_OutStdGroupModel(DEF_SearchOutGroup, new CT_StandardItemGroup(), tr("Groupe"));
-
-    // Creation du modele d'item pour la scène
-    CT_OutStdSingularItemModel *item = new CT_OutStdSingularItemModel(DEF_SearchOutScene,
-                                                                                new CT_Scene(),
-                                                                                tr("Scène"));
-
-    // ajout du modèle d'item de scene au modele de groupe racine
-    group->addItem(item);
-
-    // Creation du modèle de résultat
-    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_SearchOutResult, group,  tr("Scène à densité réduite"));
-
-    // Affectation du modèle de résultat à l'étape ==> conduira à la création effective de ce résulat avec ce modèle
-    addOutResultModel(resultModel);
+    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_SearchOutResult, tr("Scène à densité réduite"));
+    resultModel->setRootGroup(DEF_SearchOutGroup);
+    resultModel->addItemModel(DEF_SearchOutGroup,
+                              DEF_SearchOutScene,
+                              new CT_Scene(),
+                              tr("Scène"));
 }
 
 void PB_StepReducePointsDensity::createPostConfigurationDialog()
@@ -128,21 +112,22 @@ void PB_StepReducePointsDensity::compute()
     // Result IN
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup *inResult = inResultList.first();
-    CT_InStandardItemDrawableModel *inSceneModel = (CT_InStandardItemDrawableModel*) getInModelForResearch(inResult, DEF_SearchInScene);
+    CT_InAbstractSingularItemModel *inSceneModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(inResult, DEF_SearchInScene);
 
     // Result OUT
     const QList<CT_ResultGroup*> &outResList = getOutResultList();
     CT_ResultGroup *outResult = outResList.first();
-    CT_OutStdGroupModel *groupModel = (CT_OutStdGroupModel*) getOutModelForCreation(outResult, DEF_SearchOutGroup);
-    CT_OutStdSingularItemModel *outSceneModel = (CT_OutStdSingularItemModel*) getOutModelForCreation(outResult, DEF_SearchOutScene);
+    CT_OutAbstractGroupModel *groupModel = getOutGroupModelForCreation(outResult, DEF_SearchOutGroup);
+    CT_OutAbstractSingularItemModel *outSceneModel = getOutSingularItemModelForCreation(outResult, DEF_SearchOutScene);
 
+    CT_ResultItemIterator itR(inResult, inSceneModel);
 
-    for ( CT_Scene *in_scene = (CT_Scene*) inResult->beginItem(inSceneModel)
-          ; in_scene != NULL  && !isStopped()
-          ; in_scene = (CT_Scene*) inResult->nextItem())
+    while(itR.hasNext()
+          && !isStopped())
     {
+        CT_Scene *in_scene = (CT_Scene*)itR.next();
         const CT_AbstractPointCloudIndex *pointCloudIndex = in_scene->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->indexSize();
+        size_t n_points = pointCloudIndex->size();
 
         _minx = in_scene->minX();
         _miny = in_scene->minY();
@@ -213,7 +198,7 @@ void PB_StepReducePointsDensity::compute()
             ++i;
         }
 
-        if (resPointCloudIndex->indexSize() > 0)
+        if (resPointCloudIndex->size() > 0)
         {
             CT_StandardItemGroup *outGroup = new CT_StandardItemGroup(groupModel, outResult);
             CT_Scene *outScene = new CT_Scene(outSceneModel, outResult);
@@ -223,7 +208,7 @@ void PB_StepReducePointsDensity::compute()
             outGroup->addItemDrawable(outScene);
             outResult->addGroup(outGroup);
 
-            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène de densité réduite comporte %1 points.")).arg(outScene->getPointCloudIndex()->indexSize()));
+            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène de densité réduite comporte %1 points.")).arg(outScene->getPointCloudIndex()->size()));
         } else {
 
             PS_LOG->addMessage(LogInterface::info, LogInterface::step, tr("Aucun point conservé pour cette scène"));

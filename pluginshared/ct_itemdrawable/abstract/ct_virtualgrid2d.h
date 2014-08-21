@@ -29,7 +29,7 @@
 #define CT_VIRTUALGRID2D_H
 
 #include "ct_itemdrawable/abstract/ct_abstractgrid2d.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
+#include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
 #include "ct_math/ct_math.h"
 
 #include "qvector2d.h"
@@ -65,9 +65,9 @@ public:
       */
     CT_VirtualGrid2D();
 
-    CT_VirtualGrid2D(const CT_OutAbstractItemModel *model, CT_AbstractResult *result);
+    CT_VirtualGrid2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
 
-    CT_VirtualGrid2D(const QString &modelName, CT_AbstractResult *result);
+    CT_VirtualGrid2D(const QString &modelName, const CT_AbstractResult *result);
 
 
     /*!
@@ -279,13 +279,14 @@ protected:
     DataT               _dataMin;   /*!< valeur minimale du raster*/
     std::vector<DataT>  _data;    /*!< Tableau contenant les données pour chaque case de la grille*/
 
-    CT_USE_DEFAULT_IA(CT_VirtualGrid2D<DataT>)
-    CT_DEFAULT_IA_V2(0, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_VirtualGrid2D<DataT>::colDim, tr("X dimension"))
-    CT_DEFAULT_IA_V2(1, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_VirtualGrid2D<DataT>::linDim, tr("Y dimension"))
-    CT_DEFAULT_IA_V2(2, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X, &CT_VirtualGrid2D<DataT>::minX, tr("X min"))
-    CT_DEFAULT_IA_V2(3, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y, &CT_VirtualGrid2D<DataT>::minY, tr("Y min"))
-    CT_DEFAULT_IA_V2(4, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_VirtualGrid2D<DataT>::resolution, tr("Resolution"))
-    CT_DEFAULT_IA_V2(5, CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_NA, &CT_VirtualGrid2D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_BEGIN(CT_VirtualGrid2D<DataT>)
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_VirtualGrid2D<DataT>::colDim, tr("X dimension"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_VirtualGrid2D<DataT>::linDim, tr("Y dimension"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X, &CT_VirtualGrid2D<DataT>::minX, tr("X min"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y, &CT_VirtualGrid2D<DataT>::minY, tr("Y min"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_VirtualGrid2D<DataT>::resolution, tr("Resolution"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_NA, &CT_VirtualGrid2D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_END(CT_VirtualGrid2D<DataT>)
 };
 
 // Spécialisations

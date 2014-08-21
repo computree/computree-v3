@@ -20,7 +20,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointsAttributes : public CT_Abstract
 
 public:
     CT_AbstractPointsAttributes();
-    CT_AbstractPointsAttributes(const CT_OutAbstractItemModel *model,
+    CT_AbstractPointsAttributes(const CT_OutAbstractSingularItemModel *model,
                                 const CT_AbstractResult *result,
                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
 

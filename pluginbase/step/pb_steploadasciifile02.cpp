@@ -33,8 +33,8 @@
 
 #include "ct_global/ct_context.h"
 
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_itemdrawable/ct_standarditemgroup.h"
@@ -317,9 +317,9 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
     return true;
 }
 
-QList<CT_OutAbstractItemDrawableModel *> PB_StepLoadAsciiFile02::createOtherOutResultListProtected(const QString &sceneModelName)
+QList<CT_OutAbstractSingularItemModel *> PB_StepLoadAsciiFile02::createOtherOutResultListProtected(const QString &sceneModelName)
 {
-    QList<CT_OutAbstractItemDrawableModel *> root;
+    QList<CT_OutAbstractSingularItemModel *> root;
 
     if (_columnI > 0)
     {
@@ -614,7 +614,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
     QList<CT_AbstractSingularItemDrawable*> lAdd;
 
     if(collection != NULL)
-    {    CT_PointsAttributesScalarTemplated<float> *pas = new CT_PointsAttributesScalarTemplated<float>(getOutModelForCreation(out_res, DEF_SearchPAI),
+    {    CT_PointsAttributesScalarTemplated<float> *pas = new CT_PointsAttributesScalarTemplated<float>(getOutSingularItemModelForCreation(out_res, DEF_SearchPAI),
                                                                                                         out_res,
                                                                                                         pcir,
                                                                                                         collection,
@@ -626,7 +626,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     if(colorCloud != NULL)
     {
-        CT_PointsAttributesColor *pac = new CT_PointsAttributesColor(getOutModelForCreation(out_res, DEF_SearchPARGB),
+        CT_PointsAttributesColor *pac = new CT_PointsAttributesColor(getOutSingularItemModelForCreation(out_res, DEF_SearchPARGB),
                                                                      out_res,
                                                                      pcir,
                                                                      colorCloud);
@@ -636,7 +636,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     if(normalCloud != NULL)
     {
-        CT_PointsAttributesNormal *pan = new CT_PointsAttributesNormal(getOutModelForCreation(out_res, DEF_SearchPNORM),
+        CT_PointsAttributesNormal *pan = new CT_PointsAttributesNormal(getOutSingularItemModelForCreation(out_res, DEF_SearchPNORM),
                                                                        out_res,
                                                                        pcir,
                                                                        normalCloud);

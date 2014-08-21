@@ -12,11 +12,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_PointsAttributesNormal : public CT_AbstractPo
 public:
     CT_PointsAttributesNormal();
 
-    CT_PointsAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
 
-    CT_PointsAttributesNormal(const CT_OutAbstractItemModel *model,
+    CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
                               CT_AbstractNormalCloud *nc);

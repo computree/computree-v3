@@ -58,8 +58,8 @@ protected:
      */
     void setOriginalModel(const CT_OutAbstractModel *model);
 
+    friend class CT_AbstractItem;
     friend class CT_AbstractItemDrawable;
-    friend class CT_AbstractItemAttribute;
 
     /**
      * @brief Used by CT_AbstractItemDrawable or CT_AbstractItemAttribute to set the result of this model

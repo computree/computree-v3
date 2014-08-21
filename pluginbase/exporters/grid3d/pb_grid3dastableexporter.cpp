@@ -28,25 +28,21 @@ void PB_Grid3DAsTableExporter::init()
     addNewExportFormat(FileFormat("txt", tr("Fichiers txt")));
 }
 
-bool PB_Grid3DAsTableExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_Grid3DAsTableExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {
     clearErrorMessage();
 
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
-    int nGrids = 0;
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
         if(dynamic_cast<CT_AbstractGrid3D*>(item) != NULL)
-        {
             myList.append(item);
-            ++nGrids;
-        }
     }
 
-    if(nGrids == 0)
+    if(myList.isEmpty())
     {
         setErrorMessage(tr("Aucun ItemDrawable du type Ct_AbstractGird3D"));
         return false;
@@ -66,7 +62,7 @@ bool PB_Grid3DAsTableExporter::configureExport()
     return true;
 }
 
-IExporter* PB_Grid3DAsTableExporter::copy() const
+CT_AbstractExporter* PB_Grid3DAsTableExporter::copy() const
 {
     return new PB_Grid3DAsTableExporter();
 }
@@ -84,51 +80,49 @@ bool PB_Grid3DAsTableExporter::protectedExportToFile()
     if (itemDrawableToExport().size() > 1) {indice = "_0";}
     int cpt = 0;
 
-    QListIterator<ItemDrawable*> it(itemDrawableToExport());
+    QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
-        CT_AbstractGrid3D* item = dynamic_cast<CT_AbstractGrid3D*>(it.next());
-        if (item != NULL)
+        CT_AbstractGrid3D* item = (CT_AbstractGrid3D*)it.next();
+
+        QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
+
+        QFile file(filePath);
+
+        if(file.open(QFile::WriteOnly))
         {
-            QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
+            QTextStream stream(&file);
 
-            QFile file(filePath);
+            // write header
+            size_t xdim = item->xdim();
+            size_t ydim = item->ydim();
+            size_t zdim = item->zdim();
 
-            if(file.open(QFile::WriteOnly))
+            stream << "X\tY\tZ\tValue\n";
+
+            // write data
+            for (size_t xx = 0 ; xx < xdim ; xx++)
             {
-                QTextStream stream(&file);
-
-                // write header
-                size_t xdim = item->xdim();
-                size_t ydim = item->ydim();
-                size_t zdim = item->zdim();
-
-                stream << "X\tY\tZ\tValue\n";
-
-                // write data
-                for (size_t xx = 0 ; xx < xdim ; xx++)
+                for (size_t yy = 0 ; yy < ydim ; yy++)
                 {
-                    for (size_t yy = 0 ; yy < ydim ; yy++)
+                    for (size_t zz = 0 ; zz < zdim ; zz++)
                     {
-                        for (size_t zz = 0 ; zz < zdim ; zz++)
-                        {
 
-                            size_t sIndex;
-                            item->index(xx, yy, zz, sIndex);
+                        size_t sIndex;
+                        item->index(xx, yy, zz, sIndex);
 
-                            stream << item->getCellCenterX(xx) << "\t";
-                            stream << item->getCellCenterY(yy) << "\t";
-                            stream << item->getCellCenterZ(zz) << "\t";
-                            stream << item->valueAtIndexAsString(sIndex);
-                            stream << "\n";
-                        }
+                        stream << item->getCellCenterX(xx) << "\t";
+                        stream << item->getCellCenterY(yy) << "\t";
+                        stream << item->getCellCenterZ(zz) << "\t";
+                        stream << item->valueAtIndexAsString(sIndex);
+                        stream << "\n";
                     }
                 }
+            }
 
-                file.close();
-            } else {ok = false;}
-            indice = QString("_%1").arg(++cpt);
-        }
+            file.close();
+        } else {ok = false;}
+        indice = QString("_%1").arg(++cpt);
     }
 
     return ok;

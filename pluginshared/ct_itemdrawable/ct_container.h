@@ -106,6 +106,13 @@ public:
 
     virtual QList<CT_ItemDrawableConfiguration*> getDependantViewConfigurations();
 
+protected:
+
+    /**
+     * @brief Called from Result or item to inform that this item will be removed from the result passed in parameter
+     */
+    virtual void internalSetWillBeRemovedFromResult(const CT_AbstractResult *res);
+
 private:
 
     QList<CT_AbstractItemDrawable*>                 _list;

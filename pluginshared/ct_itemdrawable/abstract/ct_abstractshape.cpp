@@ -33,7 +33,7 @@ CT_AbstractShape::CT_AbstractShape() : CT_AbstractItemDrawableWithoutPointCloud(
     _data = NULL;
 }
 
-CT_AbstractShape::CT_AbstractShape(const CT_OutAbstractItemModel *model,
+CT_AbstractShape::CT_AbstractShape(const CT_OutAbstractSingularItemModel *model,
                                    const CT_AbstractResult *result,
                                    CT_ShapeData *data) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {

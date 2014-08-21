@@ -13,6 +13,8 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h"
+
 CT_AbstractItemGroup::CT_AbstractItemGroup() : CT_AbstractItemDrawable()
 {
     _parentGroup = NULL;
@@ -21,7 +23,7 @@ CT_AbstractItemGroup::CT_AbstractItemGroup() : CT_AbstractItemDrawable()
     m_parentContainer = NULL;
 }
 
-CT_AbstractItemGroup::CT_AbstractItemGroup(const CT_OutAbstractItemModel *model,
+CT_AbstractItemGroup::CT_AbstractItemGroup(const CT_OutAbstractGroupModel *model,
                                            const CT_AbstractResult *result) : CT_AbstractItemDrawable(model, result)
 {
     _parentGroup = NULL;
@@ -257,4 +259,12 @@ CT_AbstractModel* CT_AbstractItemGroup::getModelInStep(const CT_VirtualAbstractS
 
     // search a in model
     return step->getInModelForResearch((CT_ResultGroup*)result(), modelName);
+}
+
+QString CT_AbstractItemGroup::internalVerifyModel(const CT_OutAbstractModel *model) const
+{
+    if(dynamic_cast<const CT_OutAbstractGroupModel*>(model) == NULL)
+        return tr("Model passed in parameter is not a CT_OutAbstractGroupModel");
+
+    return QString();
 }

@@ -4,6 +4,8 @@
 #include "cdm_pluginmanager.h"
 #include "cdm_stepmanager.h"
 
+#include "ct_actions/ct_actionsseparator.h"
+
 /**
  * @brief The actions manager is used to manage actions from step and plugins.
  *
@@ -29,37 +31,37 @@ public:
      *
      * @warning Only call this method if you are a Step !
      */
-    bool addAction(ActionInterface *action);
+    bool addAction(CT_AbstractAction *action);
 
     /**
      * @brief Remove a action
      *
      * @warning Only call this method if you are a Step !
      */
-    bool removeAction(ActionInterface *action);
+    bool removeAction(CT_AbstractAction *action);
     bool removeAction(const QString &uniqueName);
 
     /**
      * @brief Return the collection of actions (from steps + plugins)
      */
-    QList<ActionInterface*> actions() const;
+    QList<CT_AbstractAction*> actions() const;
 
     /**
      * @brief Return true if the action exist in the collection (steps + plugins)
      */
-    bool existAction(const ActionInterface *action) const;
+    bool existAction(const CT_AbstractAction *action) const;
     bool existAction(const QString &uniqueName) const;
 
     /**
      * @brief Return true if the action exist in the collection (steps + plugins). Compare
      *        the uniqueName AND the pointer adress
      */
-    bool existActionCompareAddress(const ActionInterface *action) const;
+    bool existActionCompareAddress(const CT_AbstractAction *action) const;
 
     /**
      * @brief Return a action from is uniqueName
      */
-    ActionInterface* action(const QString &uniqueName) const;
+    CT_AbstractAction* action(const QString &uniqueName) const;
 
     /**
      * @brief Return the number of plugins loaded
@@ -67,19 +69,19 @@ public:
     int nPlugins() const;
 
     /**
-     * @brief Return the collection of ActionsSeparator from plugin 'index'
+     * @brief Return the collection of CT_ActionsSeparator from plugin 'index'
      */
-    QList<ActionsSeparator*> actionsFromPlugin(const int &index) const;
+    QList<CT_ActionsSeparator*> actionsFromPlugin(const int &index) const;
 
     /**
      * @brief Return the collection of actions from all plugins
      */
-    QList<ActionInterface*> actionsFromPlugins() const;
+    QList<CT_AbstractAction*> actionsFromPlugins() const;
 
     /**
      * @brief Return actions added by steps
      */
-    QList<ActionInterface*> actionsFromSteps() const;
+    QList<CT_AbstractAction*> actionsFromSteps() const;
 
     /**
      * @brief Delete all actions added by steps
@@ -87,27 +89,27 @@ public:
     void clearActions();
 
 private:
-    QList<ActionInterface*>     m_actions;                  /*!< actions from steps */
-    QList<ActionInterface*>     m_actionsAddedInManualMode; /*!< actions added in manual mode */
+    QList<CT_AbstractAction*>     m_actions;                  /*!< actions from steps */
+    QList<CT_AbstractAction*>     m_actionsAddedInManualMode; /*!< actions added in manual mode */
     CDM_PluginManager           *m_pluginManager;           /*!< plugin manager to get actions from plugins */
     bool                        m_manualModeEnabled;        /*!< if manual mode is enabled */
-    Step*                       m_manualModeEnabledByStep;  /*!< the step who request the manual mode */
+    CT_VirtualAbstractStep*                       m_manualModeEnabledByStep;  /*!< the step who request the manual mode */
 
 private slots:
-    void stepRequiredManualMode(Step *step);
-    void stepFinished(Step *step);
+    void stepRequiredManualMode(CT_VirtualAbstractStep *step);
+    void stepFinished(CT_VirtualAbstractStep *step);
 
 signals:
 
     /**
      * @brief Emitted when a action from step has been added
      */
-    void actionAdded(ActionInterface *action);
+    void actionAdded(CT_AbstractAction *action);
 
     /**
      * @brief Emitted when an action from step will be deleted
      */
-    void actionToRemove(ActionInterface *action);
+    void actionToRemove(CT_AbstractAction *action);
 
     /**
      * @brief Emitted when a action has been added or has been deleted, or

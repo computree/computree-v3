@@ -24,8 +24,8 @@ public:
     int size() const;
     bool isEmpty() const;
 
-    void addLogListener(const ILogListener *logl);
-    void removeLogListener(ILogListener *logl);
+    void addLogListener(const CT_AbstractLogListener *logl);
+    void removeLogListener(CT_AbstractLogListener *logl);
 
 private:
 
@@ -48,7 +48,7 @@ private:
     bool                        m_finished;
     bool                        m_cancel;
     QList<LogMessage>           m_messages;
-    QList<ILogListener*>        m_otherLogListener;
+    QList<CT_AbstractLogListener*>        m_otherLogListener;
     mutable QMutex              m_messMutex;
     mutable QMutex              m_logMutex;
     QSemaphore                  m_messWait;
@@ -62,20 +62,20 @@ signals:
 };
 
 #define CDM_DECLARE_NORMAL_MESSAGE void addMessage(const int &severity, const int &type, const QString &s, const QString &filter = ""); \
-void addMessage(const int &severity, Step *type, const QString &s, const QString &filter = ""); \
-void addMessage(const int &severity, ActionInterface *type, const QString &s, const QString &filter = ""); \
+void addMessage(const int &severity, CT_VirtualAbstractStep *type, const QString &s, const QString &filter = ""); \
+void addMessage(const int &severity, CT_AbstractAction *type, const QString &s, const QString &filter = ""); \
 void addMessage(const int &severity, PluginEntryInterface *type, const QString &s, const QString &filter = ""); \
-void addMessage(const int &severity, PluginInterface *type, const QString &s, const QString &filter = ""); \
-void addMessage(const int &severity, Result *type, const QString &s, const QString &filter = ""); \
-void addMessage(const int &severity, ItemDrawable *type, const QString &s, const QString &filter = "");
+void addMessage(const int &severity, CT_AbstractStepPlugin *type, const QString &s, const QString &filter = ""); \
+void addMessage(const int &severity, CT_AbstractResult *type, const QString &s, const QString &filter = ""); \
+void addMessage(const int &severity, CT_AbstractItemDrawable *type, const QString &s, const QString &filter = "");
 
 #define CDM_DECLARE_SEVERITY_MESSAGE(_M_TYPE_) void _M_TYPE_(const int &type, const QString &s, const QString &filter = ""); \
-void _M_TYPE_(Step *type, const QString &s, const QString &filter = ""); \
-void _M_TYPE_(ActionInterface *type, const QString &s, const QString &filter = ""); \
+void _M_TYPE_(CT_VirtualAbstractStep *type, const QString &s, const QString &filter = ""); \
+void _M_TYPE_(CT_AbstractAction *type, const QString &s, const QString &filter = ""); \
 void _M_TYPE_(PluginEntryInterface *type, const QString &s, const QString &filter = ""); \
-void _M_TYPE_(PluginInterface *type, const QString &s, const QString &filter = ""); \
-void _M_TYPE_(Result *type, const QString &s, const QString &filter = ""); \
-void _M_TYPE_(ItemDrawable *type, const QString &s, const QString &filter = "");
+void _M_TYPE_(CT_AbstractStepPlugin *type, const QString &s, const QString &filter = ""); \
+void _M_TYPE_(CT_AbstractResult *type, const QString &s, const QString &filter = ""); \
+void _M_TYPE_(CT_AbstractItemDrawable *type, const QString &s, const QString &filter = "");
 
 class CDM_Log : public LogInterface
 {
@@ -89,17 +89,17 @@ public:
      * @brief Add log listener that must receive message in prioritary and immediately (Elements like File, std::cout, etc...)
      * @warning Add a log listener to this method can reduce the performance of your application if the message is not compute fast
      */
-    void addPrioritaryLogListener(const ILogListener *logl);
+    void addPrioritaryLogListener(const CT_AbstractLogListener *logl);
 
     /**
      * @brief Add a log listener that must receive message in normal mode (Elements of ui like QTextEdit, etc...)
      */
-    void addNormalLogListener(const ILogListener *logl);
+    void addNormalLogListener(const CT_AbstractLogListener *logl);
 
     /**
      * @brief Remove a log listener
      */
-    void removeLogListener(ILogListener *logl);
+    void removeLogListener(CT_AbstractLogListener *logl);
 
     /**
      * @brief Add a message to all listener that accept the severity
@@ -114,7 +114,7 @@ public:
     CDM_DECLARE_SEVERITY_MESSAGE(addFatalMessage)
 
 private:
-    QList<ILogListener*>    m_prioritaryLogListener;
+    QList<CT_AbstractLogListener*>    m_prioritaryLogListener;
     QMutex                  m_mutex;
     QThread                 m_thread;
     CDM_LogProcess          *m_logProcess;

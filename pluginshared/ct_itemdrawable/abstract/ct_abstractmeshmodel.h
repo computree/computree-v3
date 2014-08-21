@@ -17,7 +17,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractMeshModel : public CT_AbstractSingula
 public:
     CT_AbstractMeshModel();
 
-    CT_AbstractMeshModel(const CT_OutAbstractItemModel *model,
+    CT_AbstractMeshModel(const CT_OutAbstractSingularItemModel *model,
                          const CT_AbstractResult *result);
 
     CT_AbstractMeshModel(const QString &modelName,

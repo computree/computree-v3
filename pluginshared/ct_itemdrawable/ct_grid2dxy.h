@@ -67,7 +67,7 @@ public:
      * \param na Value used to code NA
      * \param initValue Initialisation value for raster cells
      */
-    CT_Grid2DXY(const CT_OutAbstractItemModel *model,
+    CT_Grid2DXY(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result,
                 float xmin,
                 float ymin,
@@ -104,7 +104,7 @@ public:
       * \param initValue Initialisation value for raster cells
       * \param coodConstructor Not used, only to ensure constructor different signatures
       */
-    static CT_Grid2DXY<DataT>* createGrid2DXYFromXYCoords(const CT_OutAbstractItemModel *model,
+    static CT_Grid2DXY<DataT>* createGrid2DXYFromXYCoords(const CT_OutAbstractSingularItemModel *model,
                                                           const CT_AbstractResult *result,
                                                           float xmin,
                                                           float ymin,

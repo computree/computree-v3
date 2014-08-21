@@ -6,8 +6,8 @@
 #include <QMenu>
 
 class PB_CSVExporterConfiguration;
-class IItemDataRefList;
-class IItemDataRef;
+class CT_OutAbstractSingularItemModel;
+class CT_OutAbstractItemAttributeModel;
 
 namespace Ui {
 class PBG_CSVPreviewWidget;
@@ -23,7 +23,6 @@ public:
     ~PBG_CSVPreviewWidget();
 
     void setConfiguration(const PB_CSVExporterConfiguration *configuration);
-    void setListOfDataRefList(const QList<const IItemDataRefList*> *list);
 
     bool updateConfiguration();
 
@@ -54,19 +53,19 @@ protected:
 private:
     Ui::PBG_CSVPreviewWidget *ui;
 
-    PB_CSVExporterConfiguration     *_configuration;
-    QList<const IItemDataRefList*>  _list;
-    QStandardItemModel              _model;
-    QMenu                           *_headerContextMenu;
-    int                             _currentDropPreviewColumnIndex;
+    PB_CSVExporterConfiguration             *_configuration;
+    QList<CT_OutAbstractSingularItemModel*> _list;
+    QStandardItemModel                      _model;
+    QMenu                                   *_headerContextMenu;
+    int                                     _currentDropPreviewColumnIndex;
 
-    void createColumn(const IItemDataRefList *refList,
-                      IItemDataRef *ref,
+    void createColumn(const CT_OutAbstractSingularItemModel *sItem,
+                      const CT_OutAbstractItemAttributeModel *ia,
                       const QPoint &pos,
                       bool preview);
 
-    void createColumn(const IItemDataRefList *refList,
-                      IItemDataRef *ref,
+    void createColumn(const CT_OutAbstractSingularItemModel *sItem,
+                      const CT_OutAbstractItemAttributeModel *ia,
                       int columnIndex,
                       bool preview);
 

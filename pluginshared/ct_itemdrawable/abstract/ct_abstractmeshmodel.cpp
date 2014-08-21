@@ -4,7 +4,7 @@ CT_AbstractMeshModel::CT_AbstractMeshModel() : CT_AbstractSingularItemDrawable()
 {
 }
 
-CT_AbstractMeshModel::CT_AbstractMeshModel(const CT_OutAbstractItemModel *model,
+CT_AbstractMeshModel::CT_AbstractMeshModel(const CT_OutAbstractSingularItemModel *model,
                                            const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
 {
 }

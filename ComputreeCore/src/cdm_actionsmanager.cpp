@@ -1,5 +1,8 @@
 #include "cdm_actionsmanager.h"
 
+#include "ct_actions/abstract/ct_abstractaction.h"
+#include "ct_abstractstepplugin.h"
+
 CDM_ActionsManager::CDM_ActionsManager()
 {
     m_pluginManager = NULL;
@@ -32,11 +35,11 @@ CDM_PluginManager* CDM_ActionsManager::pluginManager() const
 
 void CDM_ActionsManager::setStepManager(const CDM_StepManager *stepManager)
 {
-    connect(stepManager, SIGNAL(stepQuitManualMode(Step*)), this, SLOT(stepFinished(Step*)), Qt::DirectConnection);
-    connect(stepManager, SIGNAL(stepRequiredManualMode(Step*)), this, SLOT(stepRequiredManualMode(Step*)), Qt::DirectConnection);
+    connect(stepManager, SIGNAL(stepQuitManualMode(CT_VirtualAbstractStep*)), this, SLOT(stepFinished(CT_VirtualAbstractStep*)), Qt::DirectConnection);
+    connect(stepManager, SIGNAL(stepRequiredManualMode(CT_VirtualAbstractStep*)), this, SLOT(stepRequiredManualMode(CT_VirtualAbstractStep*)), Qt::DirectConnection);
 }
 
-bool CDM_ActionsManager::addAction(ActionInterface *action)
+bool CDM_ActionsManager::addAction(CT_AbstractAction *action)
 {
     if(existAction(action))
         return true;
@@ -52,18 +55,18 @@ bool CDM_ActionsManager::addAction(ActionInterface *action)
     return true;
 }
 
-bool CDM_ActionsManager::removeAction(ActionInterface *action)
+bool CDM_ActionsManager::removeAction(CT_AbstractAction *action)
 {
     return removeAction(action->uniqueName());
 }
 
 bool CDM_ActionsManager::removeAction(const QString &uniqueName)
 {
-    QMutableListIterator<ActionInterface*> it(m_actions);
+    QMutableListIterator<CT_AbstractAction*> it(m_actions);
 
     while(it.hasNext())
     {
-        ActionInterface *ac = it.next();
+        CT_AbstractAction *ac = it.next();
 
         if(ac->uniqueName() == uniqueName)
         {
@@ -84,9 +87,9 @@ bool CDM_ActionsManager::removeAction(const QString &uniqueName)
     return false;
 }
 
-QList<ActionInterface *> CDM_ActionsManager::actions() const
+QList<CT_AbstractAction *> CDM_ActionsManager::actions() const
 {
-    QList<ActionInterface*> list;
+    QList<CT_AbstractAction*> list;
 
     list.append(actionsFromPlugins());
     list.append(m_actions);
@@ -94,7 +97,7 @@ QList<ActionInterface *> CDM_ActionsManager::actions() const
     return list;
 }
 
-bool CDM_ActionsManager::existAction(const ActionInterface *action) const
+bool CDM_ActionsManager::existAction(const CT_AbstractAction *action) const
 {
     if(action == NULL)
         return false;
@@ -110,19 +113,19 @@ bool CDM_ActionsManager::existAction(const QString &uniqueName) const
 
         for(int i=0; i<size; ++i)
         {
-            QList<ActionsSeparator*> actionsSep = m_pluginManager->getPlugin(i)->getActionsAvailable();
-            QListIterator<ActionsSeparator*> itS(actionsSep);
+            QList<CT_ActionsSeparator*> actionsSep = m_pluginManager->getPlugin(i)->getActionsAvailable();
+            QListIterator<CT_ActionsSeparator*> itS(actionsSep);
 
             while(itS.hasNext())
             {
-                ActionsSeparator *sep = itS.next();
+                CT_ActionsSeparator *sep = itS.next();
 
-                QList<ActionInterface*> actions = sep->actions();
-                QListIterator<ActionInterface*> it(actions);
+                QList<CT_AbstractAction*> actions = sep->actions();
+                QListIterator<CT_AbstractAction*> it(actions);
 
                 while(it.hasNext())
                 {
-                    ActionInterface *ac = it.next();
+                    CT_AbstractAction *ac = it.next();
 
                     if(ac->uniqueName() == uniqueName)
                         return true;
@@ -131,7 +134,7 @@ bool CDM_ActionsManager::existAction(const QString &uniqueName) const
         }
     }
 
-    QListIterator<ActionInterface*> it(m_actions);
+    QListIterator<CT_AbstractAction*> it(m_actions);
 
     while(it.hasNext())
     {
@@ -142,7 +145,7 @@ bool CDM_ActionsManager::existAction(const QString &uniqueName) const
     return false;
 }
 
-bool CDM_ActionsManager::existActionCompareAddress(const ActionInterface *action) const
+bool CDM_ActionsManager::existActionCompareAddress(const CT_AbstractAction *action) const
 {
     if(action == NULL)
         return false;
@@ -155,19 +158,19 @@ bool CDM_ActionsManager::existActionCompareAddress(const ActionInterface *action
 
         for(int i=0; i<size; ++i)
         {
-            QList<ActionsSeparator*> actionsSep = m_pluginManager->getPlugin(i)->getActionsAvailable();
-            QListIterator<ActionsSeparator*> itS(actionsSep);
+            QList<CT_ActionsSeparator*> actionsSep = m_pluginManager->getPlugin(i)->getActionsAvailable();
+            QListIterator<CT_ActionsSeparator*> itS(actionsSep);
 
             while(itS.hasNext())
             {
-                ActionsSeparator *sep = itS.next();
+                CT_ActionsSeparator *sep = itS.next();
 
-                QList<ActionInterface*> actions = sep->actions();
-                QListIterator<ActionInterface*> it(actions);
+                QList<CT_AbstractAction*> actions = sep->actions();
+                QListIterator<CT_AbstractAction*> it(actions);
 
                 while(it.hasNext())
                 {
-                    ActionInterface *ac = it.next();
+                    CT_AbstractAction *ac = it.next();
 
                     if(ac->uniqueName() == uniqueName)
                         return (ac == action);
@@ -176,11 +179,11 @@ bool CDM_ActionsManager::existActionCompareAddress(const ActionInterface *action
         }
     }
 
-    QListIterator<ActionInterface*> it(m_actions);
+    QListIterator<CT_AbstractAction*> it(m_actions);
 
     while(it.hasNext())
     {
-        ActionInterface *ac = it.next();
+        CT_AbstractAction *ac = it.next();
 
         if(ac->uniqueName() == uniqueName)
             return (ac == action);
@@ -189,14 +192,14 @@ bool CDM_ActionsManager::existActionCompareAddress(const ActionInterface *action
     return false;
 }
 
-ActionInterface* CDM_ActionsManager::action(const QString &uniqueName) const
+CT_AbstractAction* CDM_ActionsManager::action(const QString &uniqueName) const
 {
-    QList<ActionInterface*> act = actions();
-    QListIterator<ActionInterface*> it(act);
+    QList<CT_AbstractAction*> act = actions();
+    QListIterator<CT_AbstractAction*> it(act);
 
     while(it.hasNext())
     {
-        ActionInterface *ac = it.next();
+        CT_AbstractAction *ac = it.next();
 
         if(ac->uniqueName() == uniqueName)
             return ac;
@@ -213,25 +216,25 @@ int CDM_ActionsManager::nPlugins() const
     return m_pluginManager->countPluginLoaded();
 }
 
-QList<ActionsSeparator *> CDM_ActionsManager::actionsFromPlugin(const int &index) const
+QList<CT_ActionsSeparator *> CDM_ActionsManager::actionsFromPlugin(const int &index) const
 {
     if(m_pluginManager != NULL)
     {
         return m_pluginManager->getPlugin(index)->getActionsAvailable();
     }
 
-    return QList<ActionsSeparator *>();
+    return QList<CT_ActionsSeparator *>();
 }
 
-QList<ActionInterface *> CDM_ActionsManager::actionsFromPlugins() const
+QList<CT_AbstractAction *> CDM_ActionsManager::actionsFromPlugins() const
 {
-    QList<ActionInterface *> list;
+    QList<CT_AbstractAction *> list;
     int size = nPlugins();
 
     for(int i=0; i<size; ++i)
     {
-        QList<ActionsSeparator*> actionsSep = actionsFromPlugin(i);
-        QListIterator<ActionsSeparator*> it(actionsSep);
+        QList<CT_ActionsSeparator*> actionsSep = actionsFromPlugin(i);
+        QListIterator<CT_ActionsSeparator*> it(actionsSep);
 
         while(it.hasNext())
             list.append(it.next()->actions());
@@ -240,7 +243,7 @@ QList<ActionInterface *> CDM_ActionsManager::actionsFromPlugins() const
     return list;
 }
 
-QList<ActionInterface *> CDM_ActionsManager::actionsFromSteps() const
+QList<CT_AbstractAction *> CDM_ActionsManager::actionsFromSteps() const
 {
     return m_actions;
 }
@@ -249,7 +252,7 @@ void CDM_ActionsManager::clearActions()
 {
     while(!m_actions.isEmpty())
     {
-        ActionInterface *ac = m_actions.last();
+        CT_AbstractAction *ac = m_actions.last();
 
         emit actionToRemove(ac);
 
@@ -259,7 +262,7 @@ void CDM_ActionsManager::clearActions()
     }
 }
 
-void CDM_ActionsManager::stepRequiredManualMode(Step *step)
+void CDM_ActionsManager::stepRequiredManualMode(CT_VirtualAbstractStep *step)
 {
     if((m_manualModeEnabledByStep != NULL)
             && (m_manualModeEnabledByStep != step))
@@ -274,7 +277,7 @@ void CDM_ActionsManager::stepRequiredManualMode(Step *step)
     }
 }
 
-void CDM_ActionsManager::stepFinished(Step *step)
+void CDM_ActionsManager::stepFinished(CT_VirtualAbstractStep *step)
 {
     if((m_manualModeEnabledByStep != NULL)
             && (m_manualModeEnabledByStep == step))

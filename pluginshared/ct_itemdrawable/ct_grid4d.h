@@ -2,7 +2,6 @@
 #define CT_GRID4D_H
 
 #include "ct_itemdrawable/abstract/ct_abstractgrid4d.h"
-#include "ct_itemdrawable/tools/ct_standarditemdataref.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata4darray.h"
 #include <typeinfo>
 
@@ -66,7 +65,7 @@ public:
      * \param na Value used to code NA
      * \param initValue Initialisation value for grid cells
      */
-    CT_Grid4D(const CT_OutAbstractItemModel *model,
+    CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
               float wmin,
               float xmin,
@@ -124,7 +123,7 @@ public:
      * \param initValue Initialisation value for grid cells
      * \param coordConstructor Not used, only to ensure constructor different signatures
      */
-    static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const CT_OutAbstractItemModel *model,
+    static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                         const CT_AbstractResult *result,
                                                         float wmin,
                                                         float xmin,
@@ -494,20 +493,21 @@ protected:
     std::vector<DataT> _data;       /*!< Tableau contenant les donnees pour chaque case de la grille*/
 
 private:
-    CT_USE_DEFAULT_IA(CT_Grid4D<DataT>)
-    CT_DEFAULT_IA_V2(0, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_DIMENSION, &CT_Grid4D<DataT>::wdim, tr("W dimension"))
-    CT_DEFAULT_IA_V2(1, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_Grid4D<DataT>::xdim, tr("X dimension"))
-    CT_DEFAULT_IA_V2(2, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_Grid4D<DataT>::ydim, tr("Y dimension"))
-    CT_DEFAULT_IA_V2(3, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z_DIMENSION, &CT_Grid4D<DataT>::zdim, tr("Z dimension"))
-    CT_DEFAULT_IA_V2(4, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_COORDINATE, &CT_Grid4D<DataT>::minW, tr("W min"))
-    CT_DEFAULT_IA_V2(5, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X, &CT_Grid4D<DataT>::minX, tr("X min"))
-    CT_DEFAULT_IA_V2(6, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y, &CT_Grid4D<DataT>::minY, tr("Y min"))
-    CT_DEFAULT_IA_V2(7, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z, &CT_Grid4D<DataT>::minZ, tr("Z min"))
-    CT_DEFAULT_IA_V2(8, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Grid4D<DataT>::wres, tr("Resolution W"))
-    CT_DEFAULT_IA_V2(9, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X_RESOLUTION, &CT_Grid4D<DataT>::xres, tr("Resolution X"))
-    CT_DEFAULT_IA_V2(10, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y_RESOLUTION, CT_Grid4D<DataT>::yres, tr("Resolution Y"))
-    CT_DEFAULT_IA_V2(11, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z_RESOLUTION, &CT_Grid4D<DataT>::zres, tr("Resolution Z"))
-    CT_DEFAULT_IA_V2(12, CT_Grid4D<DataT>, CT_AbstractCategory::DATA_NA, &CT_Grid4D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_BEGIN(CT_Grid4D<DataT>)
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_DIMENSION, &CT_Grid4D<DataT>::wdim, tr("W dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_Grid4D<DataT>::xdim, tr("X dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_Grid4D<DataT>::ydim, tr("Y dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z_DIMENSION, &CT_Grid4D<DataT>::zdim, tr("Z dimension"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_COORDINATE, &CT_Grid4D<DataT>::minW, tr("W min"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X, &CT_Grid4D<DataT>::minX, tr("X min"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y, &CT_Grid4D<DataT>::minY, tr("Y min"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z, &CT_Grid4D<DataT>::minZ, tr("Z min"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_Grid4D<DataT>::wres, tr("Resolution W"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_X_RESOLUTION, &CT_Grid4D<DataT>::xres, tr("Resolution X"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Y_RESOLUTION, CT_Grid4D<DataT>::yres, tr("Resolution Y"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_Z_RESOLUTION, &CT_Grid4D<DataT>::zres, tr("Resolution Z"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::DATA_NA, &CT_Grid4D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_END(CT_Grid4D<DataT>)
 };
 
 // Includes the template implementations

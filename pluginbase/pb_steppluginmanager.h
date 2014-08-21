@@ -38,12 +38,12 @@ public:
     PB_StepPluginManager();
     ~PB_StepPluginManager();
 
-    QString getPluginURL() {return QString("http://rdinnovation.onf.fr:8080/projects/plugin-base");}
+    QString getPluginURL() const {return QString("http://rdinnovation.onf.fr:8080/projects/plugin-base");}
 
     bool init();
 
-    QString getKeyForStep(Step &step) const;
-    Step* getStepFromKey(QString key) const;
+    QString getKeyForStep(const CT_VirtualAbstractStep &step) const;
+    CT_VirtualAbstractStep* getStepFromKey(QString key) const;
 
 protected:
 

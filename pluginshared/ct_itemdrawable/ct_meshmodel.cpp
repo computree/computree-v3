@@ -10,7 +10,7 @@ CT_MeshModel::CT_MeshModel() : CT_AbstractMeshModel()
     setBaseDrawManager(&CT_MESHMODEL_DRAW_MANAGER);
 }
 
-CT_MeshModel::CT_MeshModel(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result) : CT_AbstractMeshModel(model, result)
+CT_MeshModel::CT_MeshModel(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractMeshModel(model, result)
 {
     m_mesh = NULL;
     m_autoDeleteMesh = true;
@@ -18,7 +18,7 @@ CT_MeshModel::CT_MeshModel(const CT_OutAbstractItemModel *model, const CT_Abstra
     setBaseDrawManager(&CT_MESHMODEL_DRAW_MANAGER);
 }
 
-CT_MeshModel::CT_MeshModel(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_Mesh *mesh) : CT_AbstractMeshModel(model, result)
+CT_MeshModel::CT_MeshModel(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, CT_Mesh *mesh) : CT_AbstractMeshModel(model, result)
 {
     m_mesh = mesh;
     m_autoDeleteMesh = true;
@@ -93,7 +93,7 @@ void CT_MeshModel::clearMesh()
 
 CT_AbstractItemDrawable* CT_MeshModel::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
-    CT_MeshModel* meshm = new CT_MeshModel(model, result, m_mesh);
+    CT_MeshModel* meshm = new CT_MeshModel((const CT_OutAbstractSingularItemModel *)model, result, m_mesh);
     meshm->setAutoDeleteMesh(false);
 
     return meshm;

@@ -9,7 +9,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributesScalar : public CT_Abst
 
 public:
     CT_AbstractEdgeAttributesScalar();
-    CT_AbstractEdgeAttributesScalar(const CT_OutAbstractItemModel *model,
+    CT_AbstractEdgeAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                     CT_AbstractResult *result,
                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
 

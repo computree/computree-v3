@@ -16,9 +16,9 @@ class PLUGINSHAREDSHARED_EXPORT CT_MeshModel : public CT_AbstractMeshModel
 
 public:
     CT_MeshModel();
-    CT_MeshModel(const CT_OutAbstractItemModel *model,
+    CT_MeshModel(const CT_OutAbstractSingularItemModel *model,
                  const CT_AbstractResult *result);
-    CT_MeshModel(const CT_OutAbstractItemModel *model,
+    CT_MeshModel(const CT_OutAbstractSingularItemModel *model,
                  const CT_AbstractResult *result,
                  CT_Mesh *mesh);
 

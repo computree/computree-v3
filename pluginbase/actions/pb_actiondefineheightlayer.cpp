@@ -1,5 +1,6 @@
 #include "actions/pb_actiondefineheightlayer.h"
-#include "ct_global/ct_context.h"
+
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -16,11 +17,11 @@ PB_ActionDefineHeightLayer_gridContainer::PB_ActionDefineHeightLayer_gridContain
     _mnsGrid = NULL;
 }
 
-PB_ActionDefineHeightLayer::PB_ActionDefineHeightLayer(Result *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) : CT_AbstractActionForGraphicsView()
+PB_ActionDefineHeightLayer::PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) : CT_AbstractActionForGraphicsView()
 {
     m_status = 0;
 
-    _result = result;
+    _result = (CT_AbstractResult*)result;
     _densityGridModel = densityGridModel;
     _mnsGridModel = mnsGridModel;
     _gridContainer = gridContainer;
@@ -244,7 +245,7 @@ void PB_ActionDefineHeightLayer::computeCrownProjection()
     for (int s = 0 ; s < size ; s++)
     {
         const CT_AbstractPointCloudIndex *pointCloudIndex = _sceneList.at(s)->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->indexSize();
+        size_t n_points = pointCloudIndex->size();
 
         for (size_t i = 0 ; i < n_points; i++)
         {
@@ -295,7 +296,7 @@ void PB_ActionDefineHeightLayer::drawOverlay(GraphicsViewInterface &view, QPaint
     Q_UNUSED(painter);
 }
 
-ActionInterface* PB_ActionDefineHeightLayer::copy() const
+CT_AbstractAction *PB_ActionDefineHeightLayer::copy() const
 {
     return new PB_ActionDefineHeightLayer(_result, _densityGridModel, _mnsGridModel, _gridContainer, _sceneList, _xmin, _ymin, _gridContainer->_zmin, _xmax, _ymax, _gridContainer->_zmax);
 }

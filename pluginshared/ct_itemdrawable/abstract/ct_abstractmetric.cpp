@@ -32,12 +32,12 @@ CT_AbstractMetric::CT_AbstractMetric() : CT_AbstractItemDrawableWithoutPointClou
 {
 }
 
-CT_AbstractMetric::CT_AbstractMetric(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractMetric::CT_AbstractMetric(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _label = "";
 }
 
-CT_AbstractMetric::CT_AbstractMetric(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, const QString &label) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractMetric::CT_AbstractMetric(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const QString &label) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _label = label;
 }

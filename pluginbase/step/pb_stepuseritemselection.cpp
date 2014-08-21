@@ -2,12 +2,12 @@
 
 // Inclusion of in models
 #include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdsingularitemmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 // Inclusion of out models
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
 
 // Inclusion of standard result class
 #include "ct_result/ct_resultgroup.h"
@@ -17,6 +17,8 @@
 
 //Inclusion of actions
 #include "actions/pb_actionselectitemdrawablegv.h"
+
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 #include <QMessageBox>
 
@@ -52,39 +54,22 @@ CT_VirtualAbstractStep* PB_StepUserItemSelection::createNewInstance(CT_StepIniti
 // Creation and affiliation of IN models
 void PB_StepUserItemSelection::createInResultModelListProtected()
 {
-    CT_InZeroOrMoreGroupModel *groupInModel_Z = new CT_InZeroOrMoreGroupModel();
-
-    CT_InStdGroupModel *groupInModel_G = new CT_InStdGroupModel(DEF_groupIn_G,
-                                                                          "Groupe");
-
-    CT_InStandardItemDrawableModel *itemInModel_I = new CT_InStandardItemDrawableModel(DEF_itemIn_I, 
-                                                                                       CT_AbstractSingularItemDrawable::staticGetType(),
-                                                                                       tr("Item"));
-
-    groupInModel_G->addItem(itemInModel_I);
-    groupInModel_Z->addGroup(groupInModel_G);
-
-
-    CT_InResultModelGroupToCopy *resultInModel_R = new CT_InResultModelGroupToCopy(DEF_resultIn_R, 
-                                                                                   groupInModel_Z,
-                                                                                   tr("Result"), 
-                                                                                   tr(""), 
-                                                                                   false);
-
-    addInResultModel(resultInModel_R);
+    CT_InResultModelGroupToCopy *resultInModel_R = createNewInResultModelForCopy(DEF_resultIn_R,
+                                                                                 tr("Result"),
+                                                                                 tr(""),
+                                                                                 false);
+    resultInModel_R->setZeroOrMoreRootGroup();
+    resultInModel_R->addGroupModel("", DEF_groupIn_G);
+    resultInModel_R->addItemModel(DEF_groupIn_G,
+                                  DEF_itemIn_I,
+                                  CT_AbstractSingularItemDrawable::staticGetType(),
+                                  tr("Item"));
 }
 
 // Creation and affiliation of OUT models
 void PB_StepUserItemSelection::createOutResultModelListProtected()
 {
-    // Get IN model corresponding to DEF_resultIn_R
-    CT_InResultModelGroupToCopy *resultCopyModel_R = (CT_InResultModelGroupToCopy*)getInResultModel(DEF_resultIn_R);
-
-    // Create an action list to modify the in model (empty in no modifications)
-    QList<CT_AbstractOutModelCopyAction*> actions_resultCopyModel_R;
-
-    // Add IN model copy (eventually modified) to OUT results
-    addOutResultModelCopy(resultCopyModel_R, actions_resultCopyModel_R);
+    createNewOutResultModelToCopy(DEF_resultIn_R);
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -112,7 +97,7 @@ void PB_StepUserItemSelection::compute()
     // Get the group model corresponding to DEF_groupIn_G
     CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)getInModelForResearchIfUseCopy(DEF_resultIn_R, DEF_groupIn_G);
     // Get the group model corresponding to DEF_itemIn_I
-    CT_InAbstractItemDrawableModel* itemInModel_I = (CT_InAbstractItemDrawableModel*)getInModelForResearchIfUseCopy(DEF_resultIn_R, DEF_itemIn_I);
+    CT_InAbstractSingularItemModel* itemInModel_I = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_resultIn_R, DEF_itemIn_I);
 
 
     // ---------------------------
@@ -125,24 +110,25 @@ void PB_StepUserItemSelection::compute()
 
     QList<CT_AbstractItemGroup*> groupsToRemove;
 
+    CT_ResultGroupIterator itG(resultOut_R, groupInModel_G);
+
     // create a list of itemdrawable to add in the document
-    for ( CT_AbstractItemGroup *groupOut_G = resultOut_R->beginGroup(groupInModel_G)
-        ; groupOut_G != NULL  && !isStopped()
-        ; groupOut_G = resultOut_R->nextGroup() )
+    while(itG.hasNext() && !isStopped())
     {
-        CT_AbstractSingularItemDrawable *itemOut_I = groupOut_G->findFirstItem(itemInModel_I);
+        const CT_AbstractItemGroup *groupOut_G = itG.next();
+        CT_AbstractSingularItemDrawable *itemOut_I = groupOut_G->firstItem(itemInModel_I);
 
         if (itemOut_I != NULL)
-            m_itemDrawableToAdd.insert(itemOut_I, groupOut_G);
+            m_itemDrawableToAdd.insert(itemOut_I, (CT_AbstractItemGroup*)groupOut_G);
         else if(m_removeGroupsWithoutItemResearched || m_removeParents)
-            groupsToRemove.append(groupOut_G);
+            groupsToRemove.append((CT_AbstractItemGroup*)groupOut_G);
     }
 
     // request the manual mode
     requestManualMode();
 
     // remove item selected from the list (to not remove them from the out result)
-    QListIterator<ItemDrawable*> it(m_itemDrawableSelected);
+    QListIterator<CT_AbstractItemDrawable*> it(m_itemDrawableSelected);
 
     while(it.hasNext()
           && !isStopped())
@@ -195,7 +181,7 @@ void PB_StepUserItemSelection::initManualMode()
     m_doc->removeAllItemDrawable();
 
     // TODO add async with GuiManagerInterface
-    QHashIterator<ItemDrawable*, CT_AbstractItemGroup*> it(m_itemDrawableToAdd);
+    QHashIterator<CT_AbstractItemDrawable*, CT_AbstractItemGroup*> it(m_itemDrawableToAdd);
 
     while(it.hasNext())
         m_doc->addItemDrawable(*it.next().key());

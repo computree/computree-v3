@@ -4,6 +4,8 @@
 #include "ct_exporter/abstract/ct_abstractexporter.h"
 
 class PB_CSVExporterConfiguration;
+class CT_OutAbstractSingularItemModel;
+class CT_OutAbstractItemAttributeModel;
 
 class PB_CSVExporter : public CT_AbstractExporter
 {
@@ -16,7 +18,7 @@ public:
 
     void init();
 
-    bool setItemDrawableToExport(const QList<ItemDrawable*> &list);
+    bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
 
     bool configureExport();
 
@@ -24,7 +26,7 @@ public:
 
     bool loadExportConfiguration(const SettingsNodeGroup *root);
 
-    virtual IExporter* copy() const;
+    virtual CT_AbstractExporter* copy() const;
 
 protected:
 
@@ -32,13 +34,13 @@ protected:
 
 private:
 
-    PB_CSVExporterConfiguration                             *_configuration;
-    QMap<const IItemDataRefList*, QList<ItemDrawable*>* >   _mapItemToExport;
-    bool                                                    _mapKeyChanged;
+    PB_CSVExporterConfiguration                                                 *_configuration;
+    QMap<CT_OutAbstractSingularItemModel*, QList<CT_AbstractItemDrawable*>* >   _mapItemToExport;
+    bool                                                                        _mapKeyChanged;
 
     void clearMap();
-    const IItemDataRefList* getItemDataRefListByName(const QString &name) const;
-    IItemDataRef* getItemDataRefByName(const IItemDataRefList *refList, const QString &name) const;
+    CT_OutAbstractSingularItemModel* getItemModelByName(const QString &name) const;
+    CT_OutAbstractItemAttributeModel* getItemAttributeModelByName(CT_OutAbstractSingularItemModel *sItem, const QString &name) const;
 };
 
 #endif // PB_CSVEXPORTER_H

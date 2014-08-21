@@ -2,8 +2,7 @@
 #define PB_STEPGENERICEXPORTER_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
-
-class IExporter;
+#include "ct_exporter/abstract/ct_abstractexporter.h"
 
 /*!
  * \class PB_StepGenericExporter
@@ -21,11 +20,11 @@ class PB_StepGenericExporter : public CT_AbstractStep
 public:
 
     PB_StepGenericExporter(CT_StepInitializeData &dataInit,
-                           QString pluginName,
-                           IExporter *exporter);
+                           const QString &pluginName,
+                           CT_AbstractExporter *exporter);
     ~PB_StepGenericExporter();
 
-    const IExporter* exporter() const;
+    const CT_AbstractExporter* exporter() const;
     const QString& pluginName() const;
 
     // CT_AbstractStep non obligatoire :
@@ -64,7 +63,7 @@ protected:
     void compute();
 
 private:
-    IExporter           *_exporter;
+    CT_AbstractExporter *_exporter;
     QString             _pluginName;
     QString             _exportPath;
     QString             _exportFilename;

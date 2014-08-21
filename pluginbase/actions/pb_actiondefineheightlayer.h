@@ -5,7 +5,6 @@
 #include "views/actions/pb_actiondefineheightlayeroptions.h"
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 
-#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractmodel.h"
 #include "ct_itemdrawable/ct_grid2dxy.h"
 #include "ct_itemdrawable/ct_scene.h"
 
@@ -29,7 +28,7 @@ class PB_ActionDefineHeightLayer : public CT_AbstractActionForGraphicsView
 public:
 
     PB_ActionDefineHeightLayer();
-    PB_ActionDefineHeightLayer(Result *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
+    PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
 
     void createGrids(float res);
 
@@ -55,7 +54,7 @@ public:
     void draw(GraphicsViewInterface &view, PainterInterface &painter);
     void drawOverlay(GraphicsViewInterface &view, QPainter &painter);
 
-    ActionInterface* copy() const;
+    CT_AbstractAction* copy() const;
 
 public slots:
     void updateGraphics();
@@ -68,7 +67,7 @@ public slots:
 private:
     int         m_status;
 
-    Result *_result;
+    CT_AbstractResult *_result;
     QString _densityGridModel;
     QString _mnsGridModel;
 

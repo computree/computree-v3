@@ -18,9 +18,9 @@ public:
 
     void init();
 
-    bool setItemDrawableToExport(const QList<ItemDrawable*> &list);
+    bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
 
-    virtual IExporter* copy() const;
+    virtual CT_AbstractExporter* copy() const;
 
 protected:
 

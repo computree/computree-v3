@@ -48,7 +48,7 @@ public:
 
     void drawOverlay(GraphicsViewInterface &view, QPainter &painter);
 
-    ActionInterface* copy() const;
+    CT_AbstractAction* copy() const;
 
     /**
      * @brief change the selection mode for this action. The mode will be set to view

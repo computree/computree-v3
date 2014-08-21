@@ -345,13 +345,13 @@ void ModelTest::testCaseTreeSearchVeryComplex()
 {
     CT_OutResultModelGroup *oRModel = new CT_OutResultModelGroup("UNR", NULL, "RN", "DIR", "DER");
     oRModel->setRootGroup("UNG", new CT_StandardItemGroup(), "DIG", "DEG");
-    QVERIFY(oRModel->addGroupModel("UNG", "UNG2", new CT_StandardItemGroup(), "DIG2", "DEG2"));
-    QVERIFY(oRModel->addItemModel("UNG2", "UNI1", new CT_Circle(), "DI1", "DE1"));
-    QVERIFY(oRModel->addGroupModel("UNG2", "UNG3", new CT_StandardItemGroup(), "DIG2", "DEG2"));
-    QVERIFY(oRModel->addItemModel("UNG3", "UNI2", new CT_Ellipse(), "DI2", "DE2"));
-    QVERIFY(oRModel->addItemModel("UNG", "UNI3", new CT_Circle(), "DI3", "DE3"));
-    QVERIFY(oRModel->addGroupModel("UNG", "UNG4", new CT_StandardItemGroup(), "DIG4", "DEG4"));
-    QVERIFY(oRModel->addItemModel("UNG4", "UNI4", new CT_Circle(), "DI4", "DE4"));
+        QVERIFY(oRModel->addGroupModel("UNG", "UNG2", new CT_StandardItemGroup(), "DIG2", "DEG2"));
+            QVERIFY(oRModel->addItemModel("UNG2", "UNI1", new CT_Circle(), "DI1", "DE1"));
+            QVERIFY(oRModel->addGroupModel("UNG2", "UNG3", new CT_StandardItemGroup(), "DIG2", "DEG2"));
+                QVERIFY(oRModel->addItemModel("UNG3", "UNI2", new CT_Ellipse(), "DI2", "DE2"));
+        QVERIFY(oRModel->addItemModel("UNG", "UNI3", new CT_Circle(), "DI3", "DE3"));
+        QVERIFY(oRModel->addGroupModel("UNG", "UNG4", new CT_StandardItemGroup(), "DIG4", "DEG4"));
+            QVERIFY(oRModel->addItemModel("UNG4", "UNI4", new CT_Circle(), "DI4", "DE4"));
 
     CT_InResultModelGroup *iRModel = new CT_InResultModelGroup("UNR", NULL, "DIR", "DER", true);
     QVERIFY(iRModel->setZeroOrMoreRootGroup());
@@ -362,7 +362,57 @@ void ModelTest::testCaseTreeSearchVeryComplex()
     QCOMPARE(iRModel->nPossibilitiesSaved(), 1);
     QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, "UNG")->nPossibilitiesSaved(), 3);
     QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, "UNI")->nPossibilitiesSaved(), 3);
-    QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, iRModel->rootGroup()->uniqueName())->nPossibilitiesSaved(), 1);
+    QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, iRModel->rootGroup()->uniqueName())->nPossibilitiesSaved(), 2);
+
+    delete oRModel;
+    delete iRModel;
+}
+
+void ModelTest::testCaseTreeSearchSimple1Optional()
+{
+    CT_OutResultModelGroup *oRModel = new CT_OutResultModelGroup("UNR", NULL, "RN", "DIR", "DER");
+    oRModel->setRootGroup("UNG", new CT_StandardItemGroup(), "DIG", "DEG");
+    QVERIFY(oRModel->addGroupModel("UNG", "UNG2", new CT_StandardItemGroup(), "DIG2", "DEG2"));
+    QVERIFY(oRModel->addItemModel("UNG2", "UNI", new CT_Circle(), "DI", "DE"));
+
+    CT_InResultModelGroup *iRModel = new CT_InResultModelGroup("UNR", NULL, "DIR", "DER", true);
+    QVERIFY(iRModel->setZeroOrMoreRootGroup());
+    QVERIFY(iRModel->addGroupModel("", "UNG", CT_StandardItemGroup::staticGetType(), "DIG", "DEG", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple, CT_InAbstractGroupModel::FG_IsObligatory));
+    QVERIFY(iRModel->addItemModel("UNG", "UNI", CT_Circle::staticGetType(), "DI", "DE", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsOptional));
+
+    QVERIFY(iRModel->recursiveFindAllPossibilitiesInModel(*oRModel, true));
+    QCOMPARE(iRModel->nPossibilitiesSaved(), 1);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, "UNG"))->nPossibilitiesSaved(), 2);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, iRModel->rootGroup()->uniqueName()))->nPossibilitiesSaved(), 1);
+
+    delete oRModel;
+    delete iRModel;
+}
+
+void ModelTest::testCaseTreeSearchComplexOptional()
+{
+    CT_OutResultModelGroup *oRModel = new CT_OutResultModelGroup("UNR", NULL, "RN", "DIR", "DER");
+    oRModel->setRootGroup("UNG", new CT_StandardItemGroup(), "DIG", "DEG");
+        QVERIFY(oRModel->addGroupModel("UNG", "UNG2", new CT_StandardItemGroup(), "DIG2", "DEG2"));
+            QVERIFY(oRModel->addItemModel("UNG2", "UNI1", new CT_Circle(), "DI1", "DE1"));
+            QVERIFY(oRModel->addGroupModel("UNG2", "UNG3", new CT_StandardItemGroup(), "DIG2", "DEG2"));
+                QVERIFY(oRModel->addItemModel("UNG3", "UNI2", new CT_Ellipse(), "DI2", "DE2"));
+                QVERIFY(oRModel->addItemModel("UNG3", "UNI3", new CT_Circle(), "DI3", "DE3"));
+        QVERIFY(oRModel->addGroupModel("UNG", "UNG4", new CT_StandardItemGroup(), "DIG4", "DEG4"));
+            QVERIFY(oRModel->addItemModel("UNG4", "UNI4", new CT_Circle(), "DI4", "DE4"));
+
+    CT_InResultModelGroup *iRModel = new CT_InResultModelGroup("UNR", NULL, "DIR", "DER", true);
+    QVERIFY(iRModel->setZeroOrMoreRootGroup());
+    QVERIFY(iRModel->addGroupModel("", "UNG", CT_StandardItemGroup::staticGetType(), "DIG", "DEG", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple, CT_InAbstractGroupModel::FG_IsObligatory));
+    QVERIFY(iRModel->addItemModel("UNG", "UNI", CT_Circle::staticGetType(), "DI", "DE", CT_InStdSingularItemModel::C_ChooseOneIfMultiple, CT_InStdSingularItemModel::F_IsOptional));
+    QVERIFY(iRModel->addItemModel("UNG", "UNI2", CT_Ellipse::staticGetType(), "DI", "DE", CT_InStdSingularItemModel::C_ChooseOneIfMultiple, CT_InStdSingularItemModel::F_IsObligatory));
+
+    QVERIFY(iRModel->recursiveFindAllPossibilitiesInModel(*oRModel, true));
+    QCOMPARE(iRModel->nPossibilitiesSaved(), 1);
+    QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, "UNG")->nPossibilitiesSaved(), 1);
+    //QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, "UNI")->nPossibilitiesSaved(), 1);
+    QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, "UNI2")->nPossibilitiesSaved(), 1);
+    QCOMPARE(iRModel->findModelInTreeOfModelInPossibility(0, iRModel->rootGroup()->uniqueName())->nPossibilitiesSaved(), 2);
 
     delete oRModel;
     delete iRModel;

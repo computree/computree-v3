@@ -5,7 +5,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor() : CT_AbstractFaceAttributes(), 
 {
 }
 
-CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                                                bool withAlphaInformation) : CT_AbstractFaceAttributes(model,
@@ -14,7 +14,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractItemModel *mo
 {
 }
 
-CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractItemModel *model,
+CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
                                                CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractFaceAttributes(model,
@@ -58,7 +58,7 @@ CT_AbstractItemDrawable* CT_FaceAttributesColor::copy(const CT_OutAbstractItemMo
     CT_AbstractColorCloud* colorCloud = getColorCloud();
 
     if (colorCloud == NULL)
-        return new CT_FaceAttributesColor(model, result, getFaceCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
+        return new CT_FaceAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered(), (CT_AbstractColorCloud*) NULL);
     else
-        return new CT_FaceAttributesColor(model, result, getFaceCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
+        return new CT_FaceAttributesColor((const CT_OutAbstractSingularItemModel *)model, result, getFaceCloudIndexRegistered(), dynamic_cast<CT_AbstractColorCloud*>(colorCloud->copy()));
 }

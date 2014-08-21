@@ -45,6 +45,8 @@
 #include "ct_itemdrawable/ct_profile.h"
 #include "tools/pb_computehitsthread.h"
 
+#include "ct_view/ct_stepconfigurabledialog.h"
+
 #include <QFileInfo>
 #include <QDebug>
 #include <QVector3D>

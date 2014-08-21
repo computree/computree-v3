@@ -2,13 +2,16 @@
 
 // Inclusion of in models
 #include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandardgroupmodel.h"
-#include "ct_itemdrawable/model/inModel/ct_instandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_instdsingularitemmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 // Inclusion of out models
-#include "ct_itemdrawable/model/outModel/ct_outstandardgroupmodel.h"
-#include "ct_itemdrawable/model/outModel/ct_outstandarditemdrawablemodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
 
 // Inclusion of standard result class
 #include "ct_result/ct_resultgroup.h"
@@ -67,64 +70,48 @@ CT_VirtualAbstractStep* PB_StepSelectCellsInGrid3D::createNewInstance(CT_StepIni
 // Creation and affiliation of IN models
 void PB_StepSelectCellsInGrid3D::createInResultModelListProtected()
 {
-    CT_InZeroOrMoreGroupModel *rootGroup = new CT_InZeroOrMoreGroupModel();
-
-    CT_InStdGroupModel *group = new CT_InStdGroupModel(DEF_groupIn);
-
-    CT_InStandardItemDrawableModel *baseGridModel = new CT_InStandardItemDrawableModel(DEF_itemBaseGrid,
-                                                                                       CT_AbstractGrid3D::staticGetType(),
-                                                                                       tr("Grille"));
-
-    group->addItem(baseGridModel);
-    rootGroup->addGroup(group);
-
-
-    CT_InResultModelGroup *resultInModel = new CT_InResultModelGroup(DEF_resultIn,
-                                                                     rootGroup,
-                                                                     tr("Result"),
-                                                                     tr(""),
-                                                                     false);
-
-    addInResultModel(resultInModel);
+    CT_InResultModelGroup *resultInModel = createNewInResultModel(DEF_resultIn,
+                                                                  tr("Result"),
+                                                                  tr(""),
+                                                                  false);
+    resultInModel->setZeroOrMoreRootGroup();
+    resultInModel->addGroupModel("", DEF_groupIn);
+    resultInModel->addItemModel(DEF_groupIn,
+                                DEF_itemBaseGrid,
+                                CT_AbstractGrid3D::staticGetType(),
+                                tr("Grille"));
 }
 
 // Creation and affiliation of OUT models
 void PB_StepSelectCellsInGrid3D::createOutResultModelListProtected()
 {
-    CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel(DEF_outGroup);
-    CT_OutStdSingularItemModel *boolGridModel = new CT_OutStdSingularItemModel(DEF_outBoolGrid, new CT_Grid3D<bool>(), tr("Cases séléctionnées"));
-    groupModel->addItem(boolGridModel);
-
     CT_InAbstractResultModel *resultInModel = getInResultModel(DEF_resultIn);
 
     CT_OutAbstractResultModel* resultInModelOut = NULL;
-    CT_InAbstractItemDrawableModel* baseGridModel = NULL;
+    CT_InAbstractSingularItemModel* baseGridModel = NULL;
     CT_AbstractSingularItemDrawable* itemPrototype = NULL;
 
     // check if model have choice (can be empty if the step want to create a default out model list)
-    if(resultInModel->getPossibilitiesSavedChecked().size() > 0)
-        resultInModelOut = resultInModel->getPossibilitiesSavedChecked().first()->outModel();
+    if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
+        resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
 
     if(resultInModelOut != NULL)
-        baseGridModel = (CT_InAbstractItemDrawableModel*)getInModelForResearch(resultInModelOut, DEF_itemBaseGrid);
+        baseGridModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultInModelOut, DEF_itemBaseGrid);
 
-    if(baseGridModel != NULL)
-        itemPrototype = (CT_AbstractSingularItemDrawable*) ((CT_OutAbstractItemDrawableModel*) baseGridModel->getPossibilitiesSavedChecked().first()->outModel())->item()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);
+    if((baseGridModel != NULL) && !baseGridModel->getPossibilitiesSavedSelected().isEmpty())
+        itemPrototype = (CT_AbstractSingularItemDrawable*) ((CT_OutAbstractSingularItemModel*) baseGridModel->getPossibilitiesSavedSelected().first()->outModel())->item()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);
 
     // if we don't have a possibility and we don't create a default out model, there was a problem
     if((itemPrototype == NULL) && !isCreateDefaultOutModelActive())
         qFatal("Error creating out model in PB_StepSelectCellsInGrid3D");
 
-    CT_OutStdSingularItemModel *filteredGridModel = new CT_OutStdSingularItemModel(DEF_outFilteredGrid,
-                                                                                             itemPrototype,
-                                                                                             tr("Grille filtrée"));
-    groupModel->addItem(filteredGridModel);
-
-
-    CT_OutResultModelGroup *resultModel = new CT_OutResultModelGroup(DEF_resultOut, groupModel, tr("Grille filtrée"), tr("Grille filtrée"));
-
-    // Add OUT result
-    addOutResultModel(resultModel);
+    // create the out result
+    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_resultOut,
+                                                                  tr("Grille filtrée"),
+                                                                  tr("Grille filtrée"));
+    resultModel->setRootGroup(DEF_outGroup);
+    resultModel->addItemModel(DEF_outGroup, DEF_outBoolGrid, new CT_Grid3D<bool>(), tr("Cases séléctionnées"));
+    resultModel->addItemModel(DEF_outGroup, DEF_outFilteredGrid, itemPrototype, tr("Grille filtrée"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -140,7 +127,7 @@ void PB_StepSelectCellsInGrid3D::compute()
 
     CT_ResultGroup *resultIn = getInputResults().first();
     CT_InAbstractGroupModel* groupInModel = (CT_InAbstractGroupModel*)getInModelForResearch(resultIn, DEF_groupIn);
-    CT_InAbstractItemDrawableModel* baseGridModel = (CT_InAbstractItemDrawableModel*)getInModelForResearch(resultIn, DEF_itemBaseGrid);
+    CT_InAbstractSingularItemModel* baseGridModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultIn, DEF_itemBaseGrid);
 
     CT_ResultGroup *resultOut = getOutResultList().first();
     CT_OutStdGroupModel* outGroupModel = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut, DEF_outGroup);

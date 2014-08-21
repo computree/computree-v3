@@ -375,7 +375,7 @@ void PB_ActionModifyAffiliations::drawOverlay(GraphicsViewInterface &view, QPain
     Q_UNUSED(painter)
 }
 
-ActionInterface* PB_ActionModifyAffiliations::copy() const
+CT_AbstractAction *PB_ActionModifyAffiliations::copy() const
 {
     return new PB_ActionModifyAffiliations(_sourceList, _targetList, _correspondances);
 }

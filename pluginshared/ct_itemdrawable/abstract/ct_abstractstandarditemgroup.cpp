@@ -1435,6 +1435,29 @@ void CT_AbstractStandardItemGroup::recursiveSetComplete()
     }
 }
 
+void CT_AbstractStandardItemGroup::internalSetWillBeRemovedFromResult(const CT_AbstractResult *result)
+{
+    QHashIterator<QString, CT_Container*> it(_groupsNew);
+
+    while(it.hasNext())
+        CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(it.next().value(), result);
+
+    it = _groupsBackup;
+
+    while(it.hasNext())
+        CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(it.next().value(), result);
+
+    QHashIterator<QString, CT_GroupItemDrawableContainer*> itB(_itemsBackup);
+
+    while(itB.hasNext())
+        CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(itB.next().value()->item(), result);
+
+    itB = _itemsNew;
+
+    while(itB.hasNext())
+        CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(itB.next().value()->item(), result);
+}
+
 
 // SLOTS //
 

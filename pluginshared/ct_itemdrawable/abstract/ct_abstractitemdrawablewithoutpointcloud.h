@@ -43,7 +43,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithoutPointCloud : publi
 
 public:
     CT_AbstractItemDrawableWithoutPointCloud();
-    CT_AbstractItemDrawableWithoutPointCloud(const CT_OutAbstractItemModel *model,
+    CT_AbstractItemDrawableWithoutPointCloud(const CT_OutAbstractSingularItemModel *model,
                                              const CT_AbstractResult *result);
 
     /**

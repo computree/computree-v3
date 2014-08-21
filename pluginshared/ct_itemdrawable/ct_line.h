@@ -52,7 +52,7 @@ public:
     /**
       * \brief Contructeur avec une instance des donnes (CT_LineData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_Line(const CT_OutAbstractItemModel *model,
+    CT_Line(const CT_OutAbstractSingularItemModel *model,
             const CT_AbstractResult *result,
             CT_LineData *data);
 
@@ -85,7 +85,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  2.
       */
-    static CT_Line* staticCreateLineFromPointCloud(const CT_OutAbstractItemModel *model,
+    static CT_Line* staticCreateLineFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                    quint64 id,
                                                    const CT_AbstractResult *result,
                                                    const CT_AbstractPointCloud &pointCloud,
@@ -94,17 +94,18 @@ public:
 private:
     const static CT_StandardLineDrawManager   LINE_DRAW_MANAGER;
 
-    CT_USE_DEFAULT_IA(CT_Line)
-    CT_DEFAULT_IA_V2(0, CT_Line, CT_AbstractCategory::DATA_X, &CT_Line::getP1_X, tr("X1"))
-    CT_DEFAULT_IA_V2(1, CT_Line, CT_AbstractCategory::DATA_Y, &CT_Line::getP1_Y, tr("Y1"))
-    CT_DEFAULT_IA_V2(2, CT_Line, CT_AbstractCategory::DATA_Z, &CT_Line::getP1_Z, tr("Z1"))
+    CT_DEFAULT_IA_BEGIN(CT_Line)
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_X, &CT_Line::getP1_X, tr("X1"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_Y, &CT_Line::getP1_Y, tr("Y1"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_Z, &CT_Line::getP1_Z, tr("Z1"))
 
-    CT_DEFAULT_IA_V2(3, CT_Line, CT_AbstractCategory::DATA_X, &CT_Line::getP2_X, tr("X2"))
-    CT_DEFAULT_IA_V2(4, CT_Line, CT_AbstractCategory::DATA_Y, &CT_Line::getP2_Y, tr("Y2"))
-    CT_DEFAULT_IA_V2(5, CT_Line, CT_AbstractCategory::DATA_Z, &CT_Line::getP2_Z, tr("Z2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_X, &CT_Line::getP2_X, tr("X2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_Y, &CT_Line::getP2_Y, tr("Y2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_Z, &CT_Line::getP2_Z, tr("Z2"))
 
-    CT_DEFAULT_IA_V2(6, CT_Line, CT_AbstractCategory::DATA_LENGTH, &CT_Line::getLength, tr("Longueur"))
-    CT_DEFAULT_IA_V2(7, CT_Line, CT_AbstractCategory::DATA_R2, &CT_Line::getError, tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_LENGTH, &CT_Line::getLength, tr("Longueur"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::DATA_R2, &CT_Line::getError, tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_END(CT_Line)
 
 #ifdef USE_BOOST_OLD
 private:

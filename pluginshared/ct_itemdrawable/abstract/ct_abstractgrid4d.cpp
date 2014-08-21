@@ -4,7 +4,7 @@ CT_AbstractGrid4D::CT_AbstractGrid4D() : CT_AbstractItemDrawableWithoutPointClou
 {
 }
 
-CT_AbstractGrid4D::CT_AbstractGrid4D(const CT_OutAbstractItemModel *model, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_AbstractGrid4D::CT_AbstractGrid4D(const CT_OutAbstractSingularItemModel *model, CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 }
 

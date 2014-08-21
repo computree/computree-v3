@@ -13,6 +13,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
 #include "ct_itemdrawable/ct_scanner.h"
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
+#include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
 
 PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -34,14 +35,14 @@ void PB_XYBExporter::init()
     addNewExportFormat(FileFormat("xyb", tr("Fichiers binaire de points .xyb")));
 }
 
-bool PB_XYBExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
+bool PB_XYBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
-    QList<ItemDrawable*> myList;
-    QListIterator<ItemDrawable*> it(list);
+    QList<CT_AbstractItemDrawable*> myList;
+    QListIterator<CT_AbstractItemDrawable*> it(list);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(dynamic_cast<CT_IAccessPointCloud*>(item) != NULL)
             myList.append(item);
@@ -56,14 +57,14 @@ bool PB_XYBExporter::setItemDrawableToExport(const QList<ItemDrawable*> &list)
     return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
-bool PB_XYBExporter::setPointsToExport(const QList<ICloudIndex *> &list)
+bool PB_XYBExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list)
 {
-    QList<ICloudIndex*> myList;
-    QListIterator<ICloudIndex*> it(list);
+    QList<CT_AbstractCloudIndex*> myList;
+    QListIterator<CT_AbstractCloudIndex*> it(list);
 
     while(it.hasNext())
     {
-        ICloudIndex *item = it.next();
+        CT_AbstractCloudIndex *item = it.next();
 
         if(dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(item) != NULL)
             myList.append(item);
@@ -228,7 +229,7 @@ bool PB_XYBExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget
     return false;
 }
 
-IExporter* PB_XYBExporter::copy() const
+CT_AbstractExporter* PB_XYBExporter::copy() const
 {
     return new PB_XYBExporter();
 }
@@ -265,13 +266,12 @@ bool PB_XYBExporter::protectedExportToFile()
 
     if(file.open(QFile::Append))
     {
-        IColorCloud *cc = createColorCloudBeforeExportToFile();
+        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
 
         QDataStream stream(&file);
         stream.setByteOrder(QDataStream::LittleEndian);
 
         char d_data[8];
-        quint8 *bgra;
 
         // write header
         d_data[0] = 0;
@@ -283,36 +283,34 @@ bool PB_XYBExporter::protectedExportToFile()
 
         int totalToExport = itemDrawableToExport().size();
 
-        const QList<ICloudIndex*> &pointsSelected = pointsToExport();
+        const QList<CT_AbstractCloudIndex*> &pointsSelected = pointsToExport();
         totalToExport = pointsSelected.size();
 
         int nExported = 0;
 
         // write data
-        QListIterator<ItemDrawable*> it(itemDrawableToExport());
+        QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
             exportPoints(stream,
                          dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex(),
                          cc,
-                         bgra,
                          nExported,
                          totalToExport);
 
             nExported += 100;
         }
 
-        QListIterator<ICloudIndex*> itCI(pointsSelected);
+        QListIterator<CT_AbstractCloudIndex*> itCI(pointsSelected);
 
         while(itCI.hasNext())
         {
             exportPoints(stream,
                          dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(itCI.next()),
                          cc,
-                         bgra,
                          nExported,
                          totalToExport);
 
@@ -339,8 +337,7 @@ void PB_XYBExporter::clearWorker()
 
 void PB_XYBExporter::exportPoints(QDataStream &stream,
                                   const CT_AbstractCloudIndexT<CT_Point> *constPCIndex,
-                                  const IColorCloud *cc,
-                                  quint8 *bgra,
+                                  const CT_AbstractColorCloud *cc,
                                   const int &nExported,
                                   const int &totalToExport)
 {
@@ -364,8 +361,8 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
         }
         else
         {
-            bgra = cc->valueAt(begin.cIndex());
-            quint16 tmp = (quint16)bgra[0];
+            const CT_Color &col = cc->constColorAt(begin.cIndex());
+            quint16 tmp = (quint16)col.b;
             stream << tmp;
         }
 

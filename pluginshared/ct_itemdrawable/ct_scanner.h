@@ -92,7 +92,7 @@ public:
     *  \warning The _zVector attribute is set to (0,0,1) by default
     *
     */
-    CT_Scanner(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
+    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
 
     /*!
     *  \brief Constructor
@@ -110,7 +110,7 @@ public:
     *  \param initPhi : (vertical) angle between the first vertical ray and the Oz axis
     *  \param radians : type of angle (radians or degrees), degrees by default
     */
-    CT_Scanner(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, int scanID, const QVector3D& position, const QVector3D& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
+    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanID, const QVector3D& position, const QVector3D& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
 
     CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
