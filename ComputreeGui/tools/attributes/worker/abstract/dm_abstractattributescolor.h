@@ -2,20 +2,20 @@
 #define DM_ABSTRACTATTRIBUTESCOLOR_H
 
 #include "tools/attributes/worker/abstract/dm_abstractattributes.h"
-#include "interfaces.h"
+#include "ct_global/ct_repository.h"
 
 class DM_AbstractAttributesColor : public DM_AbstractAttributes
 {
 public:
     DM_AbstractAttributesColor();
 
-    void setSyncWithCloud(RepositoryInterface::SyncCloudWith syncWith);
-    RepositoryInterface::SyncCloudWith syncWithCloud() const;
+    void setSyncWithCloud(CT_Repository::SyncCloudWith syncWith);
+    CT_Repository::SyncCloudWith syncWithCloud() const;
 
     virtual void checkAndSetColorCloudToDoc() = 0;
 
 private:
-    RepositoryInterface::SyncCloudWith m_syncWith;
+    CT_Repository::SyncCloudWith m_syncWith;
 };
 
 #endif // DM_ABSTRACTATTRIBUTESCOLOR_H

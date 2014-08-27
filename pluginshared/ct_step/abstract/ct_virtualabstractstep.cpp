@@ -115,7 +115,7 @@ CT_VirtualAbstractStep::CT_VirtualAbstractStep(CT_StepInitializeData &dataInit)
     _outManager = new CT_OutManager(*this, *_inManager->getTurnManager());
     _outManager->setTurnIndexManager(_turnIndexManager);
 
-    connect(_outManager->getResultManager(), SIGNAL(resultAdded(Result*)), this, SIGNAL(resultAdded(Result*)), Qt::DirectConnection);
+    connect(_outManager->getResultManager(), SIGNAL(resultAdded(const CT_AbstractResult*)), this, SIGNAL(resultAdded(const CT_AbstractResult*)), Qt::DirectConnection);
 }
 
 CT_VirtualAbstractStep::~CT_VirtualAbstractStep()
@@ -916,21 +916,21 @@ bool CT_VirtualAbstractStep::setNotNeedInputResult()
     return false;
 }
 
-bool CT_VirtualAbstractStep::setMaximumTurn(uint n)
+bool CT_VirtualAbstractStep::setMaximumTurn(int n)
 {
-    if(n == 0)
+    if(n <= 0)
         return false;
 
     _inManager->getTurnManager()->setMaximumTurn(n);
     return true;
 }
 
-uint CT_VirtualAbstractStep::maximumTurn() const
+int CT_VirtualAbstractStep::maximumTurn() const
 {
     return _inManager->getTurnManager()->maximumTurn();
 }
 
-uint CT_VirtualAbstractStep::currentTurnIndex() const
+int CT_VirtualAbstractStep::currentTurnIndex() const
 {
     return _inManager->getTurnManager()->getTurnIndexManager()->currentTurnIndex();
 }
@@ -1110,6 +1110,11 @@ CT_OutResultModelGroupToCopyPossibilities* CT_VirtualAbstractStep::createNewOutR
     }
 
     return outModel;
+}
+
+CT_OutTurnManager* CT_VirtualAbstractStep::getOutTurnManager() const
+{
+    return _outManager->getTurnManager();
 }
 
 bool CT_VirtualAbstractStep::addOutResultModelCopy(CT_InResultModelGroupToCopy *inModel,

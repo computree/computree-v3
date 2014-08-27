@@ -1,6 +1,8 @@
 #include "glogwidget.h"
 #include "ui_glogwidget.h"
 
+#include "interfaces.h"
+
 const QString GLogWidget::BEGIN_HMTL = "<html>";
 const QString GLogWidget::END_HMTL = "<br/></html>";
 

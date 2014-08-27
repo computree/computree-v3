@@ -23,7 +23,13 @@ public:
      */
     CT_OutAbstractResultModel(const QString &uniqueName,
                               const QString &description,
-                              const QString &displayableName);
+                              const QString &displayableName,
+                              const QString &resultName = "");
+
+    /**
+     * @brief Returns the name that will be set to the generated result
+     */
+    QString resultName() const;
 
     /**
      * @brief Create the result and return it.
@@ -31,6 +37,9 @@ public:
      * @return NULL if it was a problem
      */
     virtual CT_AbstractResult* createResult(CT_ResultInitializeData &data) const = 0;
+
+private:
+    QString     m_resultName;
 };
 
 #endif // CT_OUTABSTRACTRESULTMODEL_H

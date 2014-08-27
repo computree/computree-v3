@@ -22,6 +22,7 @@ public:
 protected:
 
     template< class ItemT, class InheritedT > friend class CT_AbstractGroupModelT;
+    template <class GroupModelT, class AttributModelT, class InheritedT> friend class CT_AbstractSingularItemModelT;
     friend class CT_AbstractModel;
 
     void setName(QString name);

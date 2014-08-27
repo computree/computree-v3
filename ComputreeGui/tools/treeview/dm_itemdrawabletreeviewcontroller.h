@@ -10,14 +10,14 @@
 #include "tools/treeview/dm_itreeviewmanager.h"
 
 /**
- * @brief Class that control the build/manage of a QStandardItemModel that must contains ItemDrawable. When you finish to add
- *        ItemDrawable the controller request the gui manager a exclusive asynchronous operation to perform the creation of
+ * @brief Class that control the build/manage of a QStandardItemModel that must contains CT_AbstractItemDrawable. When you finish to add
+ *        CT_AbstractItemDrawable the controller request the gui manager a exclusive asynchronous operation to perform the creation of
  *        the list of QStandardItem in a thread. When the thread finish all QStandardItem will be added to the model.
  *
  *        You can call construcModel() to (re)construct completely the model. The controller request the list of
- *        ItemDrawable to add to the model at the DM_ITreeViewManager with the help of the method itemDrawableForTreeView().
+ *        CT_AbstractItemDrawable to add to the model at the DM_ITreeViewManager with the help of the method itemDrawableForTreeView().
  *
- *        When you finish to remove ItemDrawable the controller reconstruct the model if the number of ItemDrawable to remove
+ *        When you finish to remove CT_AbstractItemDrawable the controller reconstruct the model if the number of CT_AbstractItemDrawable to remove
  *        is greater than the return of the method maxRemoveToDoInGuiThread().
  */
 class DM_ItemDrawableTreeViewController : public QObject
@@ -43,30 +43,30 @@ public:
     void setTreeViewManager(const DM_ITreeViewManager *manager);
 
     /**
-     * @brief If the number of ItemDrawable to remove is greater than this parameter the controller recontruct the model instead
+     * @brief If the number of CT_AbstractItemDrawable to remove is greater than this parameter the controller recontruct the model instead
      *        remove in gui thread. (default : 100)
      */
     void setMaxRemoveToDoInGuiThread(const int &n);
 
     /**
-     * @brief Return the number of ItemDrawable to remove in gui thread.
+     * @brief Return the number of CT_AbstractItemDrawable to remove in gui thread.
      */
     int maxRemoveToDoInGuiThread() const;
 
     /**
-     * @brief Call this methods when the controller must add one or many ItemDrawable to the TreeView. You can call this method
+     * @brief Call this methods when the controller must add one or many CT_AbstractItemDrawable to the TreeView. You can call this method
      *        in a thread.
      */
     void beginAddMultipleItemDrawable();
-    void addItemDrawable(ItemDrawable &item);
+    void addItemDrawable(CT_AbstractItemDrawable &item);
     void endAddMultipleItemDrawable();
 
     /**
-     * @brief Call this methods when the controller must remove one or many ItemDrawable from the TreeView. You can call this method
+     * @brief Call this methods when the controller must remove one or many CT_AbstractItemDrawable from the TreeView. You can call this method
      *        in a thread.
      */
     void beginRemoveMultipleItemDrawable();
-    void removeItemDrawable(ItemDrawable &item);
+    void removeItemDrawable(CT_AbstractItemDrawable &item);
     void endRemoveMultipleItemDrawable();
 
 private:
@@ -77,14 +77,14 @@ private:
     QVector< QList<QStandardItem*> >        m_collectionUpdate;
 
     bool                                    m_addMultiple;
-    QList<ItemDrawable*>                    m_tmpItemsToAdd;
+    QList<CT_AbstractItemDrawable*>                    m_tmpItemsToAdd;
     QTimer                                  m_timerAddToView;
 
     bool                                    m_removeMultiple;
-    QList<ItemDrawable*>                    m_tmpItemsToRemove;
+    QList<CT_AbstractItemDrawable*>                    m_tmpItemsToRemove;
     QTimer                                  m_timerRemoveFromView;
 
-    QList<QPair<QStandardItem *, ItemDrawable *> >  m_tmpItemsToUpdate;
+    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> >  m_tmpItemsToUpdate;
 
     int                                     m_maxRemoveInGuiThread;
 
@@ -111,9 +111,9 @@ public slots:
     /**
      * @brief Call to refresh children of this QStandardItem
      * @param item : the item to update
-     * @param itemDrawable : the ItemDrawable represented by the QStandardItem
+     * @param itemDrawable : the CT_AbstractItemDrawable represented by the QStandardItem
      */
-    void refresh(const QList<QPair<QStandardItem *, ItemDrawable *> > &list);
+    void refresh(const QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > &list);
 
 private slots:
 
@@ -138,13 +138,13 @@ private slots:
     void slotModelBuilderRemoveFinished(bool canceled);
 
     /**
-     * @brief Called when the timer time out and when we must add ItemDrawable of the
+     * @brief Called when the timer time out and when we must add CT_AbstractItemDrawable of the
      *        m_tmpItemsToAdd list to the treeview
      */
     void slotAddTemporaryItemsInTable();
 
     /**
-     * @brief Called when the timer time out and when we must remove ItemDrawable of the
+     * @brief Called when the timer time out and when we must remove CT_AbstractItemDrawable of the
      *        m_tmpItemsToRemove list from the treeview
      */
     void slotRemoveTemporaryItemsInTable();

@@ -10,6 +10,11 @@ CT_InStdItemAttributeModel::CT_InStdItemAttributeModel(const QString &uniqueName
 {
 }
 
+QString CT_InStdItemAttributeModel::modelTypeDisplayable() const
+{
+    return QString("CT_InStdItemAttributeModel");
+}
+
 CT_InAbstractModel* CT_InStdItemAttributeModel::copy(bool withPossibilities) const
 {
     CT_InStdItemAttributeModel *cpy = new CT_InStdItemAttributeModel(uniqueName(),

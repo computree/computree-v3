@@ -30,6 +30,11 @@ public:
     ~CT_InResultModelGroup();
 
     /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
+    /**
      * @brief Returns the root model that represent a group
      */
     CT_InAbstractGroupModel* rootGroup() const;

@@ -18,19 +18,19 @@ public:
     virtual bool canConstructTheModel() const = 0;
 
     /**
-     * @brief Return the complete list of ItemDrawable to add to the TreeView (only first level, childrens will be created automatically)
+     * @brief Return the complete list of CT_AbstractItemDrawable to add to the TreeView (only first level, childrens will be created automatically)
      */
-    virtual QList<ItemDrawable*> itemDrawableForTreeView() const = 0;
+    virtual QList<CT_AbstractItemDrawable*> itemDrawableForTreeView() const = 0;
 
     /**
-     * @brief Return the number maximum of level to construct (how many times we can enter in the childrens method of a ItemDrawable in the 'itemDrawableForTreeView' list)
+     * @brief Return the number maximum of level to construct (how many times we can enter in the childrens method of a CT_AbstractItemDrawable in the 'itemDrawableForTreeView' list)
      */
     virtual int nLevelToConstruct() const = 0;
 
     /**
-     * @brief Return the QStandardItem corresponding at the ItemDrawable passed in parameter
+     * @brief Return the QStandardItem corresponding at the CT_AbstractItemDrawable passed in parameter
      */
-    virtual QStandardItem* itemFromItemDrawable(const ItemDrawable *item) const = 0;
+    virtual QStandardItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const = 0;
 
     /**
      * @brief Refresh headers of the view

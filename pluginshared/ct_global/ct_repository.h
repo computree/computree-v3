@@ -157,7 +157,7 @@ public:
      * @example An example of how to use the result of this method :
      *
      *        QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mccr = createNewMapIndexCloudColor(CT_Repository::SyncWithXXXCloud);
-     *        CT_AbstractModifiableIndexCloudColorMap *map = (CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex();
+     *        CT_AbstractModifiableIndexCloudColorMap *map = dynamic_cast<CT_AbstractModifiableIndexCloudColorMap*>(mccr->abstractModifiableCloudIndex());
      *        map->insertIndexAndColor(0, color);
      *
      * @return return the index cloud registered

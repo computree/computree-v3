@@ -19,12 +19,17 @@ public:
      * @param choiceMode : type of selection you want. Choose only one by default.
      * @param finderMode : if you want that the item is optionnal or not. Obligatory by default.
      */
-    CT_InStdSingularItemModel(QString uniqueName,
-                              QString itemType,
-                              QString displayableName = "",
-                              QString description = "",
+    CT_InStdSingularItemModel(const QString &uniqueName,
+                              const QString &itemType,
+                              const QString &displayableName = "",
+                              const QString &description = "",
                               CT_InStdSingularItemModel::ChoiceMode choiceMode = CT_InStdSingularItemModel::C_ChooseOneIfMultiple,
                               CT_InStdSingularItemModel::FinderMode finderMode = CT_InStdSingularItemModel::F_IsObligatory);
+
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
 
     CT_InAbstractModel* copy(bool withPossibilities) const;
 

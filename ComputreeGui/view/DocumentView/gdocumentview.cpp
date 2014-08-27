@@ -62,7 +62,7 @@ GDocumentView::~GDocumentView()
 
 void GDocumentView::init()
 {
-    // le widget qui contiendra les widgets créé par les ItemDrawable....
+    // le widget qui contiendra les widgets créé par les CT_AbstractItemDrawable....
     createAndAddItemDrawableWidgetContainer(getCentralWidget());
 }
 

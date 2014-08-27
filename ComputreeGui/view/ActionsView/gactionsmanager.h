@@ -42,15 +42,15 @@ private:
     DM_ActionsManager       *m_actionsManager;
     GDocumentManagerView    *m_docManager;
     QStandardItemModel      m_model;
-    ActionInterface         *m_currentAction;
+    CT_AbstractAction         *m_currentAction;
     DM_DocumentView         *m_currentDoc;
 
     QMap<QString, bool> menuExpandedState() const;
-    QList<QStandardItem*> createItemForAction(ActionInterface *ac) const;
+    QList<QStandardItem*> createItemForAction(CT_AbstractAction *ac) const;
 
 private slots:
     void documentActivated(DM_DocumentView *view);
-    void documentCurrentActionChanged(ActionInterface *action);
+    void documentCurrentActionChanged(CT_AbstractAction *action);
     void itemClicked(const QModelIndex &index);
     void refreshView();
 

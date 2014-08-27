@@ -1,6 +1,6 @@
 #include "dm_abstractattributes.h"
 
-#include "interfaces.h"
+#include "ct_itemdrawable/abstract/ct_abstractattributes.h"
 
 DM_AbstractAttributes::DM_AbstractAttributes() : DM_AbstractWorker()
 {
@@ -22,12 +22,12 @@ QString DM_AbstractAttributes::displayableName() const
 {
     if(m_name.isEmpty()
             && (abstractAttributes() != NULL))
-        return abstractAttributes()->getModel()->displayableName();
+        return abstractAttributes()->model()->displayableName();
 
     return m_name;
 }
 
-IAttributes* DM_AbstractAttributes::abstractAttributes() const
+CT_AbstractAttributes* DM_AbstractAttributes::abstractAttributes() const
 {
     return m_attributes;
 }
@@ -63,12 +63,12 @@ void DM_AbstractAttributes::apply()
     setFinished();
 }
 
-void DM_AbstractAttributes::setAttributes(const IAttributes *att)
+void DM_AbstractAttributes::setAttributes(const CT_AbstractAttributes *att)
 {
-    m_attributes = (IAttributes*)att;
+    m_attributes = (CT_AbstractAttributes*)att;
 
     if(att != NULL)
-        connect(att->getItemDrawableSignalSlotManager(), SIGNAL(destroyed()), this, SLOT(slotAttributesDeleted()), Qt::DirectConnection);
+        connect(att, SIGNAL(destroyed()), this, SLOT(slotAttributesDeleted()), Qt::DirectConnection);
 }
 
 void DM_AbstractAttributes::slotAttributesDeleted()

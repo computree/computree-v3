@@ -52,9 +52,9 @@ public:
     size_t nEdges() const;
     size_t nFaces() const;
 
-    const QList<ICloudIndex*>& pointCloudIndexBackup() const;
-    const QList<ICloudIndex*>& edgeCloudIndexBackup() const;
-    const QList<ICloudIndex*>& faceCloudIndexBackup() const;
+    const QList<CT_AbstractCloudIndex*>& pointCloudIndexBackup() const;
+    const QList<CT_AbstractCloudIndex*>& edgeCloudIndexBackup() const;
+    const QList<CT_AbstractCloudIndex*>& faceCloudIndexBackup() const;
 
     void save();
     void restore();
@@ -73,14 +73,14 @@ public:
     void rotate(double alpha, double x, double y, double z);
     void scale(double x, double y, double z);
 
-    void drawPointCloud(const IPointCloud *pc,
-                        const ICloudIndex *pci,
+    void drawPointCloud(const CT_AbstractPointCloud *pc,
+                        const CT_AbstractCloudIndex *pci,
                         int fastestIncrement);
 
-    void drawMesh(const IMesh *mesh);
-    void drawFaces(const IMesh *mesh);
-    void drawEdges(const IMesh *mesh);
-    void drawPoints(const IMesh *mesh, int fastestIncrement);
+    void drawMesh(const CT_AbstractMeshModel *mesh);
+    void drawFaces(const CT_AbstractMeshModel *mesh);
+    void drawEdges(const CT_AbstractMeshModel *mesh);
+    void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
 
     // called from a mesh to draw Faces
     void beginDrawMultipleTriangle();
@@ -212,9 +212,9 @@ private:
     size_t                  m_nPoints;
     size_t                  m_nEdges;
     size_t                  m_nFaces;
-    QList<ICloudIndex*>     m_pCloudIndexBackup;
-    QList<ICloudIndex*>     m_fCloudIndexBackup;
-    QList<ICloudIndex*>     m_eCloudIndexBackup;
+    QList<CT_AbstractCloudIndex*>     m_pCloudIndexBackup;
+    QList<CT_AbstractCloudIndex*>     m_fCloudIndexBackup;
+    QList<CT_AbstractCloudIndex*>     m_eCloudIndexBackup;
 
     GraphicsViewInterface   *m_gv;
 };

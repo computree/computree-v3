@@ -5,6 +5,10 @@
 #include "view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h"
 #include "cdm_tools.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
+#include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
+
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QFileDialog>
@@ -61,7 +65,7 @@ void GDocumentViewForGraphics::beginAddMultipleItemDrawable()
     lockGraphics();
 }
 
-void GDocumentViewForGraphics::addItemDrawable(ItemDrawable &item)
+void GDocumentViewForGraphics::addItemDrawable(CT_AbstractItemDrawable &item)
 {
     if(!_graphicsLocked)
     {
@@ -87,7 +91,7 @@ void GDocumentViewForGraphics::beginRemoveMultipleItemDrawable()
     lockGraphics();
 }
 
-void GDocumentViewForGraphics::removeItemDrawable(ItemDrawable &item)
+void GDocumentViewForGraphics::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
     if(!_graphicsLocked)
     {
@@ -108,7 +112,7 @@ void GDocumentViewForGraphics::endRemoveMultipleItemDrawable()
     unlockGraphics();
 }
 
-void GDocumentViewForGraphics::removeAllItemDrawableOfResult(Result &res)
+void GDocumentViewForGraphics::removeAllItemDrawableOfResult(CT_AbstractResult &res)
 {
     lockGraphics();
 
@@ -117,7 +121,7 @@ void GDocumentViewForGraphics::removeAllItemDrawableOfResult(Result &res)
     unlockGraphics();
 }
 
-void GDocumentViewForGraphics::removeAllItemDrawableOfModel(IItemModel &model)
+void GDocumentViewForGraphics::removeAllItemDrawableOfModel(CT_OutAbstractModel &model)
 {
     lockGraphics();
 
@@ -183,12 +187,12 @@ void GDocumentViewForGraphics::unlock()
     unlockGraphics();
 }
 
-bool GDocumentViewForGraphics::acceptAction(const ActionInterface *action) const
+bool GDocumentViewForGraphics::acceptAction(const CT_AbstractAction *action) const
 {
-    return (action == NULL) || (dynamic_cast<const ActionForGraphicsViewInterface*>(action) != NULL);
+    return (action == NULL) || (dynamic_cast<const CT_AbstractActionForGraphicsView*>(action) != NULL);
 }
 
-bool GDocumentViewForGraphics::setCurrentAction(ActionInterface *action, bool deleteAction)
+bool GDocumentViewForGraphics::setCurrentAction(CT_AbstractAction *action, bool deleteAction)
 {
     if(!acceptAction(action))
     {
@@ -207,7 +211,7 @@ bool GDocumentViewForGraphics::setCurrentAction(ActionInterface *action, bool de
         if(action == NULL)
             it.next()->setCurrentAction(NULL);
         else
-            it.next()->setCurrentAction(dynamic_cast<ActionForGraphicsViewInterface*>(action->copy()));
+            it.next()->setCurrentAction((CT_AbstractActionForGraphicsView*)action->copy());
     }
 
     redrawGraphics();
@@ -218,7 +222,7 @@ bool GDocumentViewForGraphics::setCurrentAction(ActionInterface *action, bool de
     return true;
 }
 
-bool GDocumentViewForGraphics::setDefaultAction(ActionInterface *action, bool deleteAction)
+bool GDocumentViewForGraphics::setDefaultAction(CT_AbstractAction *action, bool deleteAction)
 {
     if(!acceptAction(action))
     {
@@ -237,7 +241,7 @@ bool GDocumentViewForGraphics::setDefaultAction(ActionInterface *action, bool de
         if(action == NULL)
             it.next()->setDefaultAction(NULL);
         else
-            it.next()->setDefaultAction(dynamic_cast<ActionForGraphicsViewInterface*>(action->copy()));
+            it.next()->setDefaultAction((CT_AbstractActionForGraphicsView*)action->copy());
     }
 
     redrawGraphics();
@@ -248,7 +252,7 @@ bool GDocumentViewForGraphics::setDefaultAction(ActionInterface *action, bool de
     return true;
 }
 
-ActionInterface* GDocumentViewForGraphics::currentAction() const
+CT_AbstractAction* GDocumentViewForGraphics::currentAction() const
 {
     if(_listGraphics.isEmpty())
         return NULL;
@@ -256,7 +260,7 @@ ActionInterface* GDocumentViewForGraphics::currentAction() const
     return _listGraphics.first()->actionsHandler()->currentAction();
 }
 
-ActionInterface *GDocumentViewForGraphics::defaultAction() const
+CT_AbstractAction *GDocumentViewForGraphics::defaultAction() const
 {
     if(_listGraphics.isEmpty())
         return NULL;
@@ -280,28 +284,28 @@ QString GDocumentViewForGraphics::getType() const
 }
 
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IPointAttributes>()
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractPointsAttributes>()
 {
-    if(colorCloudRegistered<IPointAttributes>().data() == NULL)
-        setColorCloudRegistered<IPointAttributes>(GUI_MANAGER->getPluginsContext()->repository()->createNewColorCloud(RepositoryInterface::SyncWithPointCloud, false));
+    if(colorCloudRegistered<CT_AbstractPointsAttributes>().data() == NULL)
+        setColorCloudRegistered<CT_AbstractPointsAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud, false));
 }
 
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IFaceAttributes>()
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractFaceAttributes>()
 {
-    if(colorCloudRegistered<IFaceAttributes>().data() == NULL)
-        setColorCloudRegistered<IFaceAttributes>(GUI_MANAGER->getPluginsContext()->repository()->createNewColorCloud(RepositoryInterface::SyncWithFaceCloud, false));
+    if(colorCloudRegistered<CT_AbstractFaceAttributes>().data() == NULL)
+        setColorCloudRegistered<CT_AbstractFaceAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithFaceCloud, false));
 }
 
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IEdgeAttributes>()
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractEdgeAttributes>()
 {
-    if(colorCloudRegistered<IEdgeAttributes>().data() == NULL)
-        setColorCloudRegistered<IEdgeAttributes>(GUI_MANAGER->getPluginsContext()->repository()->createNewColorCloud(RepositoryInterface::SyncWithEdgeCloud, false));
+    if(colorCloudRegistered<CT_AbstractEdgeAttributes>().data() == NULL)
+        setColorCloudRegistered<CT_AbstractEdgeAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithEdgeCloud, false));
 }
 
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IPointAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     lock();
 
@@ -318,7 +322,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<IPointAttributes>(QShared
 }
 
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IFaceAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     lock();
 
@@ -335,7 +339,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<IFaceAttributes>(QSharedP
 }
 
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IEdgeAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     lock();
 
@@ -352,19 +356,19 @@ void GDocumentViewForGraphics::setColorCloudRegistered<IEdgeAttributes>(QSharedP
 }
 
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IPointAttributes>() const
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractPointsAttributes>() const
 {
     return m_pColorCloudRegistered;
 }
 
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IFaceAttributes>() const
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractFaceAttributes>() const
 {
     return m_fColorCloudRegistered;
 }
 
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IEdgeAttributes>() const
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractEdgeAttributes>() const
 {
     return m_eColorCloudRegistered;
 }
@@ -391,7 +395,7 @@ bool GDocumentViewForGraphics::useColorCloud() const
 }
 
 template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<IPointAttributes>(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     lock();
 
@@ -408,7 +412,7 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<IPointAttributes>(QShare
 }
 
 template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<IFaceAttributes>(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     lock();
 
@@ -425,13 +429,13 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<IFaceAttributes>(QShared
 }
 
 template<>
-QSharedPointer<NormalCloudRegisteredInterface> GDocumentViewForGraphics::normalCloudRegistered<IPointAttributes>() const
+QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractPointsAttributes>() const
 {
     return m_pNormalCloudRegistered;
 }
 
 template<>
-QSharedPointer<NormalCloudRegisteredInterface> GDocumentViewForGraphics::normalCloudRegistered<IFaceAttributes>() const
+QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractFaceAttributes>() const
 {
     return m_fNormalCloudRegistered;
 }
@@ -658,9 +662,9 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 {
     CDM_Tools tools(GUI_MANAGER->getPluginManager());
 
-    IExporter *exporter = dynamic_cast<IExporter*>(sender()->parent());
+    CT_AbstractExporter *exporter = dynamic_cast<CT_AbstractExporter*>(sender()->parent());
 
-    IExporter *exCopy = exporter->copy();
+    CT_AbstractExporter *exCopy = exporter->copy();
     exCopy->init();
 
     if(exCopy->canExportItems())
@@ -668,36 +672,36 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
     if(exCopy->canExportPoints())
     {
-        QList<ICloudIndex*> points;
+        QList<CT_AbstractCloudIndex*> points;
 
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            points.append(it.next()->getSelectedPoints()->indexCloud());
+            points.append(it.next()->getSelectedPoints()->abstractModifiableCloudIndex());
 
         exCopy->setPointsToExport(points);
     }
 
     if(exCopy->canExportFaces())
     {
-        QList<ICloudIndex*> faces;
+        QList<CT_AbstractCloudIndex*> faces;
 
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            faces.append(it.next()->getSelectedFaces()->indexCloud());
+            faces.append(it.next()->getSelectedFaces()->abstractModifiableCloudIndex());
 
         exCopy->setFacesToExport(faces);
     }
 
     if(exCopy->canExportEdges())
     {
-        QList<ICloudIndex*> edges;
+        QList<CT_AbstractCloudIndex*> edges;
 
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            edges.append(it.next()->getSelectedEdges()->indexCloud());
+            edges.append(it.next()->getSelectedEdges()->abstractModifiableCloudIndex());
 
         exCopy->setEdgesToExport(edges);
     }
@@ -752,7 +756,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _pointOfViewMenu = new GPointOfViewDocumentManager(_pofManager, getKeyForPointOfViewManager(), _pointOfViewButton);
     _pointOfViewButton->setMenu(_pointOfViewMenu);
 
-    // bouton qui permet d'exporter les ItemDrawable selectionnes
+    // bouton qui permet d'exporter les CT_AbstractItemDrawable selectionnes
     _buttonExport = new QPushButton(widgetContainer);
     _buttonExport->setMaximumWidth(33);
     _buttonExport->setMinimumWidth(33);

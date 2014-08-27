@@ -1,5 +1,6 @@
 #include "tst_modeltest.h"
 #include "cloudtest.h"
+#include "steptest.h"
 
 int main( int argc, char *argv[])
 {
@@ -7,8 +8,8 @@ int main( int argc, char *argv[])
     QTest::qExec (&mt, argc, argv );
     CloudTest ct;
     QTest::qExec (&ct, argc, argv );
-    /*Modele2Tests tc2 ;
-    QTest::qExec (&tc2, argc, argv );*/
+    StepTest st ;
+    QTest::qExec (&st, argc, argv );
 
     CT_Context::deleteStaticInstance();
 

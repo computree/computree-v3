@@ -22,18 +22,18 @@ public:
 
     void setDocumentManagerView(const GDocumentManagerView *docManagerView);
     
-    void addResult(const Result *res);
-    void removeResult(const Result *res);
+    void addResult(const CT_AbstractResult *res);
+    void removeResult(const CT_AbstractResult *res);
 
-    Result* currentResult() const;
+    CT_AbstractResult* currentResult() const;
 
 private:
     Ui::GMultipleItemDrawableModelManager   *ui;
 
-    QList<Result*>                          _results;
+    QList<CT_AbstractResult*>                          _results;
     DM_ItemDrawableManagerOptions           _options;
 
-    int indexOfResultInComboBox(const Result *res);
+    int indexOfResultInComboBox(const CT_AbstractResult *res);
     void setEmptyComboBoxText();
 
 private slots:

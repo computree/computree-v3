@@ -35,7 +35,7 @@
 
 #include "interfaces.h"
 
-class ItemDrawable;
+class CT_AbstractItemDrawable;
 
 class DM_DocumentManager;
 class DM_ActionsHandler;
@@ -56,7 +56,7 @@ public:
 };
 
 /**
- * @brief Class to filter the add of ItemDrawable to a document
+ * @brief Class to filter the add of CT_AbstractItemDrawable to a document
  */
 class DM_IDocumentAddFilter
 {
@@ -64,14 +64,14 @@ public:
     virtual ~DM_IDocumentAddFilter() {}
 
     /**
-     * @brief Return true if the document can add ItemDrawable
+     * @brief Return true if the document can add CT_AbstractItemDrawable
      */
-    virtual bool canAddItemDrawable(const DM_Document *document, const ItemDrawable *item) const = 0;
+    virtual bool canAddItemDrawable(const DM_Document *document, const CT_AbstractItemDrawable *item) const = 0;
 };
 
 /**
   * Classe qui représente un document. Un document peut avoir un
-  * ou plusieurs ItemDrawable. Le document est géré par un DocumentManager,
+  * ou plusieurs CT_AbstractItemDrawable. Le document est géré par un DocumentManager,
   * et le document connait son manager.
   */
 class DM_Document : public DocumentInterface
@@ -118,113 +118,113 @@ public:
     QString getTitle() const;
 
     /**
-     * @brief Return true if the document can add the ItemDrawable
+     * @brief Return true if the document can add the CT_AbstractItemDrawable
      */
-    bool canAddItemDrawable(const ItemDrawable *item) const;
+    bool canAddItemDrawable(const CT_AbstractItemDrawable *item) const;
 
     /**
-     * @brief Call this method if you plan to add multiple ItemDrawable in one times
+     * @brief Call this method if you plan to add multiple CT_AbstractItemDrawable in one times
      */
     virtual void beginAddMultipleItemDrawable() = 0;
 
     /**
-      * \brief Ajout d'un ItemDrawable au document
+      * \brief Ajout d'un CT_AbstractItemDrawable au document
       */
-    virtual void addItemDrawable(ItemDrawable &item);
+    virtual void addItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
-     * @brief Call this method after you add multiple ItemDrawable and if you have called the method 'beginAddMultipleItemDrawable'
+     * @brief Call this method after you add multiple CT_AbstractItemDrawable and if you have called the method 'beginAddMultipleItemDrawable'
      */
     virtual void endAddMultipleItemDrawable() = 0;
 
     /**
-     * @brief Call this method if you plan to remove multiple ItemDrawable in one times
+     * @brief Call this method if you plan to remove multiple CT_AbstractItemDrawable in one times
      */
     virtual void beginRemoveMultipleItemDrawable() = 0;
 
     /**
-      * \brief Supprime l'ItemDrawable du document
+      * \brief Supprime l'CT_AbstractItemDrawable du document
       */
-    virtual void removeItemDrawable(ItemDrawable &item);
+    virtual void removeItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
-     * @brief Call this method after you removed multiple ItemDrawable and if you have called the method 'beginRemoveMultipleItemDrawable'
+     * @brief Call this method after you removed multiple CT_AbstractItemDrawable and if you have called the method 'beginRemoveMultipleItemDrawable'
      */
     virtual void endRemoveMultipleItemDrawable() = 0;
 
     /**
-      * \brief Removes all ItemDrawable in the document that was in the result 'res'. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
+      * \brief Removes all CT_AbstractItemDrawable in the document that was in the result 'res'. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
       */
-    virtual void removeAllItemDrawableOfResult(const Result &res);
+    virtual void removeAllItemDrawableOfResult(const CT_AbstractResult &res);
 
     /**
-      * \brief Removes all ItemDrawable in the document that have the model 'model'. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
+      * \brief Removes all CT_AbstractItemDrawable in the document that have the model 'model'. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
       */
-    virtual void removeAllItemDrawableOfModel(const IItemModel &model);
+    virtual void removeAllItemDrawableOfModel(const CT_OutAbstractModel &model);
 
     /**
-      * \brief Removes all selected ItemDrawable in the document. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
+      * \brief Removes all selected CT_AbstractItemDrawable in the document. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
       */
     virtual void removeAllSelectedItemDrawable();
 
     /**
-      * \brief Removes all ItemDrawable in the document. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
+      * \brief Removes all CT_AbstractItemDrawable in the document. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
       */
     virtual void removeAllItemDrawable();
 
     /**
-      * \brief Selectionne/De-Selectionne tous les ItemDrawable du document
+      * \brief Selectionne/De-Selectionne tous les CT_AbstractItemDrawable du document
       */
     void setSelectAllItemDrawable(bool select);
 
     /**
-      * \brief Selectionne/De-Selectionne tous les ItemDrawable du document qui ont le modèle passé en paramètre
+      * \brief Selectionne/De-Selectionne tous les CT_AbstractItemDrawable du document qui ont le modèle passé en paramètre
       */
-    void setSelectAllItemDrawableOfModel(bool select, const IItemModel &model);
+    void setSelectAllItemDrawableOfModel(bool select, const CT_OutAbstractModel &model);
 
     /**
-      * \brief Retourne la liste des ItemDrawable contenu dans ce document
+      * \brief Retourne la liste des CT_AbstractItemDrawable contenu dans ce document
       */
-    const QList<ItemDrawable *>& getItemDrawable() const;
+    const QList<CT_AbstractItemDrawable *>& getItemDrawable() const;
 
     /**
-      * \brief Retourne la liste des ItemDrawable slectionn
+      * \brief Retourne la liste des CT_AbstractItemDrawable slectionn
       */
-    QList<ItemDrawable*> getSelectedItemDrawable() const;
+    QList<CT_AbstractItemDrawable*> getSelectedItemDrawable() const;
 
     /**
-      * \brief Returns the number of ItemDrawable
+      * \brief Returns the number of CT_AbstractItemDrawable
       */
     size_t nItemDrawable() const;
 
     /**
-      * \brief Retoune le n ime ItemDrawable de la liste
+      * \brief Retoune le n ime CT_AbstractItemDrawable de la liste
       * \return NULL si il l'index dpasse la port de la liste
       */
-    ItemDrawable* getItemDrawable(int i) const;
+    CT_AbstractItemDrawable* getItemDrawable(int i) const;
 
     /**
-      * \brief Recherche des ItemDrawable dans la liste  partir du type pass en paramtre
-      * \return une liste vide si aucun ItemDrawable n'est de ce type
+      * \brief Recherche des CT_AbstractItemDrawable dans la liste  partir du type pass en paramtre
+      * \return une liste vide si aucun CT_AbstractItemDrawable n'est de ce type
       */
-    QList<ItemDrawable*> findItemDrawable(const IItemModel &model) const;
-    void findItemDrawable(const IItemModel &model, QList<ItemDrawable*> &outList) const;
+    QList<CT_AbstractItemDrawable*> findItemDrawable(const CT_OutAbstractModel &model) const;
+    void findItemDrawable(const CT_OutAbstractModel &model, QList<CT_AbstractItemDrawable*> &outList) const;
 
     /**
-      * \brief Recherche le premier ItemDrawable dans la liste  partir de son type
-      * \return NULL si aucun ItemDrawable n'est de ce type
+      * \brief Recherche le premier CT_AbstractItemDrawable dans la liste  partir de son type
+      * \return NULL si aucun CT_AbstractItemDrawable n'est de ce type
       */
-    ItemDrawable* findFirstItemDrawable(const IItemModel &model) const;
+    CT_AbstractItemDrawable* findFirstItemDrawable(const CT_OutAbstractModel &model) const;
 
     /**
      * @brief Return the current action
      */
-    virtual ActionInterface* currentAction() const = 0;
+    virtual CT_AbstractAction* currentAction() const = 0;
 
     /**
      * @brief Return the default action
      */
-    virtual ActionInterface* defaultAction() const = 0;
+    virtual CT_AbstractAction* defaultAction() const = 0;
 
     /**
      * @brief Remove (delete) actions from the document that have the unique name passed in parameter
@@ -239,7 +239,7 @@ public:
 
 protected:
     DM_DocumentManager              *_manager;
-    QList<ItemDrawable*>            _listItemDrawable;
+    QList<CT_AbstractItemDrawable*>            _listItemDrawable;
     QString                         _title;
     int                             m_number;
 
@@ -253,35 +253,35 @@ signals:
      * @brief Connect to this signal in Qt::QueuedConnection if you want to
      *        create/delete a widget because this signal can be emitted in a thread
      */
-    void itemDrawableAdded(ItemDrawable &item);
+    void itemDrawableAdded(CT_AbstractItemDrawable &item);
 
     /**
      * @brief Connect to this signal in Qt::QueuedConnection if you want to
      *        create/delete a widget because this signal can be emitted in a thread
      */
-    void itemDrawableToBeRemoved(ItemDrawable &item);
+    void itemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
 
     /**
      * @brief emit when a itemdrawable is selected
      */
-    void itemDrawableSelectionChanged(ItemDrawable *item, bool selected);
+    void itemDrawableSelectionChanged(CT_AbstractItemDrawable *item, bool selected);
 
     /**
      * @brief Connect to this signal in Qt::DirectConnection because just after
      *        it will be emit the action is deleted
      */
-    void currentActionChanged(ActionInterface *action);
+    void currentActionChanged(CT_AbstractAction *action);
 
     /**
      * @brief Connect to this signal in Qt::DirectConnection because just after
      *        it will be emit the action is deleted
      */
-    void defaultActionChanged(ActionInterface *action);
+    void defaultActionChanged(CT_AbstractAction *action);
 
 private slots:
 
-    void slotItemDrawableAdded(ItemDrawable &item);
-    void slotItemToBeRemoved(ItemDrawable &item);
+    void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
+    void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
     void slotItemDrawableSelectionChanged(bool select);
 };
 

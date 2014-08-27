@@ -9,32 +9,19 @@ CT_OutAbstractGroupModel::CT_OutAbstractGroupModel(const QString &uniqueName,
                                                                                                                description,
                                                                                                                displayableName)
 {
-    _group = group;
+    setItem(group);
 }
 
 CT_OutAbstractGroupModel::~CT_OutAbstractGroupModel()
 {
-    clearGroup();
 }
 
 CT_AbstractItemGroup* CT_OutAbstractGroupModel::group() const
 {
-    return _group;
+    return (CT_AbstractItemGroup*)item();
 }
 
-CT_AbstractItemDrawable *CT_OutAbstractGroupModel::item() const
+CT_AbstractItemDrawable *CT_OutAbstractGroupModel::itemDrawable() const
 {
     return group();
-}
-
-void CT_OutAbstractGroupModel::clearGroup()
-{
-    delete _group;
-    _group = NULL;
-}
-
-void CT_OutAbstractGroupModel::setGroup(CT_AbstractItemGroup *group)
-{
-    clearGroup();
-    _group = group;
 }

@@ -91,9 +91,9 @@ void CT_InStdModelPossibilityGroup::setEnable(bool en)
         m_possibilitiesSelected.clear();
 }
 
-bool CT_InStdModelPossibilityGroup::setMinimumNumberOfPossibilityThatMustBeSelected(uint n)
+bool CT_InStdModelPossibilityGroup::setMinimumNumberOfPossibilityThatMustBeSelected(int n)
 {
-    if((n > maximumNumberOfPossibilityThatCanBeSelected()) || (n == 0))
+    if((n > maximumNumberOfPossibilityThatCanBeSelected()) || (n <= 0))
         return false;
 
     m_minMustBeSelected = n;
@@ -101,14 +101,14 @@ bool CT_InStdModelPossibilityGroup::setMinimumNumberOfPossibilityThatMustBeSelec
     return true;
 }
 
-uint CT_InStdModelPossibilityGroup::minimumNumberOfPossibilityThatMustBeSelected() const
+int CT_InStdModelPossibilityGroup::minimumNumberOfPossibilityThatMustBeSelected() const
 {
     return m_minMustBeSelected;
 }
 
-bool CT_InStdModelPossibilityGroup::setMaximumNumberOfPossibilityThatCanBeSelected(uint n)
+bool CT_InStdModelPossibilityGroup::setMaximumNumberOfPossibilityThatCanBeSelected(int n)
 {
-    if((n < minimumNumberOfPossibilityThatMustBeSelected()) || (n == 0))
+    if((n < minimumNumberOfPossibilityThatMustBeSelected()) || (n <= 0))
         return false;
 
     m_maxCanBeSelected = n;
@@ -119,7 +119,7 @@ bool CT_InStdModelPossibilityGroup::setMaximumNumberOfPossibilityThatCanBeSelect
     return true;
 }
 
-uint CT_InStdModelPossibilityGroup::maximumNumberOfPossibilityThatCanBeSelected() const
+int CT_InStdModelPossibilityGroup::maximumNumberOfPossibilityThatCanBeSelected() const
 {
     return m_maxCanBeSelected;
 }

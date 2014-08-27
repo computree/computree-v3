@@ -87,7 +87,7 @@ bool PB_ProfileExporter::protectedExportToFile()
     QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
-        CT_AbstractProfile* item = (CT_AbstractProfile*)it.next();
+        CT_AbstractProfile* item = dynamic_cast<CT_AbstractProfile*>(it.next());
 
         QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
 

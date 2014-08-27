@@ -8,7 +8,7 @@
 
 #include "view/DocumentView/ItemModelViews/gitemmodelview.h"
 
-#include "tools/itemdrawable/dm_itemdrawabletypebuilder.h"
+#include "tools/itemdrawable/dm_itemdrawablebuildert.h"
 
 #include "tools/treeview/dm_itemdrawabletreeviewcontroller.h"
 #include "tools/treeview/dm_iitemdrawablestandarditembuilder.h"
@@ -17,16 +17,8 @@
 
 #include "dm_itemdrawablemanageroptions.h"
 
-class DataRefPairCompare : public QPair<QString, IItemDataRef*>
-{
-public:
-    DataRefPairCompare(QString name, IItemDataRef *ref) : QPair<QString, IItemDataRef*>(name, ref) {}
-
-    bool operator ==(const DataRefPairCompare &other) const
-    {
-        return other.first == this->first;
-    }
-};
+#include "ct_attributes/abstract/ct_abstractitemattribute.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilder, public DM_ITreeViewManager
 {
@@ -47,7 +39,7 @@ public:
 
     // TreeViewInterface
     QStandardItem* itemFromIndex(const QModelIndex &proxyIndex) const;
-    ItemDrawable* itemDrawableFromItem(const QStandardItem *item) const;
+    CT_AbstractItemDrawable* itemDrawableFromItem(const QStandardItem *item) const;
     QModelIndex indexAt(const QPoint &point) const;
     QWidget* treeViewport() const;
     void setSelectionMode(QAbstractItemView::SelectionMode mode);
@@ -56,22 +48,22 @@ public:
     QItemSelectionModel* selectionModel() const;
     void refreshAll();
     void refreshItems(const QList<QStandardItem*> &items);
-    void refreshItems(const QList<ItemDrawable*> &items);
+    void refreshItems(const QList<CT_AbstractItemDrawable*> &items);
 
     // DM_IItemDrawableStandardItemBuilder
-    QList<QStandardItem*> createItems(const ItemDrawable &item, const int &level) const;
+    QList<QStandardItem*> createItems(const CT_AbstractItemDrawable &item, const int &level) const;
 
     // DM_ITreeViewManager
     bool canConstructTheModel() const;
-    QList<ItemDrawable*> itemDrawableForTreeView() const;
+    QList<CT_AbstractItemDrawable*> itemDrawableForTreeView() const;
     int nLevelToConstruct() const;
-    QList<ItemDrawable*> expandedItem() const;
-    QStandardItem* itemFromItemDrawable(const ItemDrawable *item) const;
+    QList<CT_AbstractItemDrawable*> expandedItem() const;
+    QStandardItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const;
     void refreshHeaders();
 
     // THIS
     DM_ActionsHandlerForTreeView* actionsHandlerTreeView() const;
-    QList<ItemDrawable*> itemDrawableFromRowSelected() const;
+    QList<CT_AbstractItemDrawable*> itemDrawableFromRowSelected() const;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -85,15 +77,13 @@ private:
     QStandardItemModel                      *m_model;
     DM_ItemDrawableTreeViewController       m_treeViewController;
 
-    DM_ItemDrawableTypeBuilder              m_typeBuilder;
+    DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable>       m_typeBuilder;
 
-    QList<ItemDrawable*>                    m_expandedItems;
+    QList<CT_AbstractItemDrawable*>         m_expandedItems;
 
     QLineEdit                               *m_lineFilter;
 
-    mutable IItemDataValue                  *m_dataValue;
-
-    QList<DataRefPairCompare>               m_dataReferencesToUse;
+    QList<CT_OutAbstractItemAttributeModel*>    m_dataReferencesToUse;
 
     DM_ItemDrawableManagerOptions           m_options;
 
@@ -119,32 +109,27 @@ private:
      */
     void reconstructCompleter();
 
-    /**
-     * @brief Return true if 'ref' exist in m_dataReferencesToUse (compare unique name)
-     */
-    bool checkIfReferenceExistInReferences(const IItemDataRef *ref, const QList<IItemDataRef*> &refs) const;
-
 private slots:
 
     /**
      * @brief Called when a new type of itemdrawable is detected
      */
-    void slotNewItemTypeDetected(DM_ItemDrawableType type);
+    void slotNewItemTypeDetected();
 
     /**
      * @brief Called when a type of itemdrawable is removed
      */
-    void slotItemTypeRemoved(DM_ItemDrawableType type);
+    void slotItemTypeRemoved();
 
     /**
-     * @brief Called when a ItemDrawable is added to the document
+     * @brief Called when a CT_AbstractItemDrawable is added to the document
      */
-    void slotAddItemDrawable(ItemDrawable &item);
+    void slotAddItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
-     * @brief Called when a ItemDrawable is removed from the document
+     * @brief Called when a CT_AbstractItemDrawable is removed from the document
      */
-    void slotRemoveItemDrawable(ItemDrawable &item);
+    void slotRemoveItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
      * @brief Called when the button 'Sync with' is clicked
@@ -207,12 +192,12 @@ private slots:
     void slotShowColorOptions();
 
     /**
-     * @brief Called when we must select ItemDrawable of QStandardItem selected
+     * @brief Called when we must select CT_AbstractItemDrawable of QStandardItem selected
      */
     void slotSelect();
 
     /**
-     * @brief Called when we must de-select ItemDrawable of QStandardItem selected
+     * @brief Called when we must de-select CT_AbstractItemDrawable of QStandardItem selected
      */
     void slotDeSelect();
 
@@ -222,12 +207,12 @@ private slots:
     void slotInverseSelection();
 
     /**
-     * @brief Called when we must set automatic color of ItemDrawable selected
+     * @brief Called when we must set automatic color of CT_AbstractItemDrawable selected
      */
     void slotColorAuto();
 
     /**
-     * @brief Called when we must set unique color of ItemDrawable selected
+     * @brief Called when we must set unique color of CT_AbstractItemDrawable selected
      */
     void slotColorSolid();
 

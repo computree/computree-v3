@@ -13,18 +13,35 @@
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
 
 CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
-                                     const CT_AbstractModel *model,
-                                     bool mustGetSize)
+                                     bool recursiveIteration)
 {
+    m_size = -1;
     m_result = (CT_ResultGroup*)result;
     m_itemIT = NULL;
     m_groupIT = NULL;
+
+    if(recursiveIteration)
+        m_itemIT = new CT_ResultItemIterator(m_result);
+    else
+        m_groupIT = new CT_ResultGroupIterator(m_result);
+
+    m_model = NULL;
+}
+
+CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
+                                     const CT_AbstractModel *model)
+{
+    m_size = -1;
+    m_result = (CT_ResultGroup*)result;
+    m_itemIT = NULL;
+    m_groupIT = NULL;
+    m_model = (CT_AbstractModel*)model;
 
     const CT_OutAbstractSingularItemModel *outItemModel = dynamic_cast<const CT_OutAbstractSingularItemModel*>(model);
 
     if(outItemModel != NULL)
     {
-        this->initItemT<CT_OutAbstractSingularItemModel>(model, mustGetSize);
+        this->initItemT<CT_OutAbstractSingularItemModel>(model);
     }
     else
     {
@@ -32,7 +49,7 @@ CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
 
         if(inItemModel != NULL)
         {
-            this->initItemT<CT_InAbstractSingularItemModel>(model, mustGetSize);
+            this->initItemT<CT_InAbstractSingularItemModel>(model);
         }
         else
         {
@@ -40,16 +57,14 @@ CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
 
             if(outGModel != NULL)
             {
-                this->initGroupT<CT_OutAbstractGroupModel>(model, mustGetSize);
+                this->initGroupT<CT_OutAbstractGroupModel>(model);
             }
             else
             {
                 const CT_InAbstractGroupModel *inGModel = dynamic_cast<const CT_InAbstractGroupModel*>(model);
 
                 if(inGModel != NULL)
-                {
-                    this->initGroupT<CT_InAbstractGroupModel>(model, mustGetSize);
-                }
+                    this->initGroupT<CT_InAbstractGroupModel>(model);
             }
         }
     }
@@ -63,7 +78,29 @@ CT_ResultIterator::~CT_ResultIterator()
 
 int CT_ResultIterator::size() const
 {
-    return m_collection.size();
+    if(m_size == -1)
+    {
+        if(m_itemIT != NULL)
+        {
+            while(m_itemIT->hasNext())
+                m_collection.append((CT_AbstractSingularItemDrawable*)m_itemIT->next());
+
+            delete m_itemIT;
+            m_itemIT = NULL;
+        }
+        else if(m_groupIT != NULL)
+        {
+            while(m_groupIT->hasNext())
+                m_collection.append((CT_AbstractItemGroup*)m_groupIT->next());
+
+            delete m_groupIT;
+            m_groupIT = NULL;
+        }
+
+        m_size = m_collection.size();
+    }
+
+    return m_size;
 }
 
 bool CT_ResultIterator::hasNext() const
@@ -87,33 +124,13 @@ const CT_AbstractItem* CT_ResultIterator::next()
 }
 
 template<typename T>
-void CT_ResultIterator::initGroupT(const CT_AbstractModel *model, bool mustGetSize)
+void CT_ResultIterator::initGroupT(const CT_AbstractModel *model)
 {
-    if(mustGetSize)
-    {
-        CT_ResultGroupIterator it(m_result, (T*)model);
-
-        while(it.hasNext())
-            m_collection.append((CT_AbstractItemGroup*)it.next());
-    }
-    else
-    {
-        m_groupIT = new CT_ResultGroupIterator(m_result, (T*)model);
-    }
+    m_groupIT = new CT_ResultGroupIterator(m_result, (T*)model);
 }
 
 template<typename T>
-void CT_ResultIterator::initItemT(const CT_AbstractModel *model, bool mustGetSize)
+void CT_ResultIterator::initItemT(const CT_AbstractModel *model)
 {
-    if(mustGetSize)
-    {
-        CT_ResultItemIterator it(m_result, (T*)model);
-
-        while(it.hasNext())
-            m_collection.append((CT_AbstractSingularItemDrawable*)it.next());
-    }
-    else
-    {
-        m_itemIT = new CT_ResultItemIterator(m_result, (T*)model);
-    }
+    m_itemIT = new CT_ResultItemIterator(m_result, (T*)model);
 }

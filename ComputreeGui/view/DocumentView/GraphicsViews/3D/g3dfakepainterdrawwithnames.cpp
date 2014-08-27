@@ -2,6 +2,14 @@
 
 #include "dm_guimanager.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
+#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
+#include "ct_itemdrawable/abstract/ct_abstractmeshmodel.h"
+#include "ct_mesh/cloud/abstract/ct_abstractedgecloudindex.h"
+#include "ct_mesh/cloud/abstract/ct_abstractfacecloudindex.h"
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 G3DFakePainterDrawWithNames::G3DFakePainterDrawWithNames()
 {
     m_gv = NULL;
@@ -67,17 +75,17 @@ size_t G3DFakePainterDrawWithNames::nFaces() const
     return m_nFaces;
 }
 
-const QList<ICloudIndex *>& G3DFakePainterDrawWithNames::pointCloudIndexBackup() const
+const QList<CT_AbstractCloudIndex *>& G3DFakePainterDrawWithNames::pointCloudIndexBackup() const
 {
     return m_pCloudIndexBackup;
 }
 
-const QList<ICloudIndex *>& G3DFakePainterDrawWithNames::edgeCloudIndexBackup() const
+const QList<CT_AbstractCloudIndex *>& G3DFakePainterDrawWithNames::edgeCloudIndexBackup() const
 {
     return m_eCloudIndexBackup;
 }
 
-const QList<ICloudIndex *>& G3DFakePainterDrawWithNames::faceCloudIndexBackup() const
+const QList<CT_AbstractCloudIndex *>& G3DFakePainterDrawWithNames::faceCloudIndexBackup() const
 {
     return m_fCloudIndexBackup;
 }
@@ -165,8 +173,8 @@ void G3DFakePainterDrawWithNames::scale(double x, double y, double z)
     glScaled(x, y, z);
 }
 
-void G3DFakePainterDrawWithNames::drawPointCloud(const IPointCloud *pc,
-                                                 const ICloudIndex *pci,
+void G3DFakePainterDrawWithNames::drawPointCloud(const CT_AbstractPointCloud *pc,
+                                                 const CT_AbstractCloudIndex *pci,
                                                  int fastestIncrement)
 {
     if(m_drawMode.testFlag(DrawPoints))
@@ -175,7 +183,7 @@ void G3DFakePainterDrawWithNames::drawPointCloud(const IPointCloud *pc,
 
         size_t n = 0;
         size_t pIndex;
-        size_t indexCount = pci->indexSize();
+        size_t indexCount = pci->size();
         size_t increment = 1;
 
         if(drawFastest() && (fastestIncrement > 0))
@@ -191,7 +199,7 @@ void G3DFakePainterDrawWithNames::drawPointCloud(const IPointCloud *pc,
                 glPushName(pIndex);
 
                 glBegin(GL_POINTS);
-                glVertex3fv(pc->valueAt(pIndex));
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 glEnd();
 
                 glPopName();
@@ -209,7 +217,7 @@ void G3DFakePainterDrawWithNames::drawPointCloud(const IPointCloud *pc,
                 glPushName(pIndex);
 
                 glBegin(GL_POINTS);
-                glVertex3fv(pc->valueAt(pIndex));
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 glEnd();
 
                 glPopName();
@@ -220,16 +228,16 @@ void G3DFakePainterDrawWithNames::drawPointCloud(const IPointCloud *pc,
     }
     else if(m_drawMode.testFlag(CountPoints))
     {
-        m_nPoints += pci->indexSize();
+        m_nPoints += pci->size();
     }
     else if(m_drawMode.testFlag(BackupPointCloudIndex))
     {
-        if(!m_pCloudIndexBackup.contains((ICloudIndex*)pci))
-            m_pCloudIndexBackup.append((ICloudIndex*)pci);
+        if(!m_pCloudIndexBackup.contains((CT_AbstractCloudIndex*)pci))
+            m_pCloudIndexBackup.append((CT_AbstractCloudIndex*)pci);
     }
 }
 
-void G3DFakePainterDrawWithNames::drawMesh(const IMesh *mesh)
+void G3DFakePainterDrawWithNames::drawMesh(const CT_AbstractMeshModel *mesh)
 {
     if(m_drawMode.testFlag(BackupPointCloudIndex)
             || m_drawMode.testFlag(BackupFaceCloudIndex)
@@ -240,10 +248,10 @@ void G3DFakePainterDrawWithNames::drawMesh(const IMesh *mesh)
             if(mesh == NULL)
                 return;
 
-            ICloudIndex *pci = mesh->pointCloudIndex();
+            const CT_AbstractPointCloudIndex *pci = mesh->getPointCloudIndex();
 
-            if(!m_pCloudIndexBackup.contains(pci))
-                m_pCloudIndexBackup.append(pci);
+            if(!m_pCloudIndexBackup.contains((CT_AbstractPointCloudIndex*)pci))
+                m_pCloudIndexBackup.append((CT_AbstractPointCloudIndex*)pci);
         }
 
         if(m_drawMode.testFlag(BackupFaceCloudIndex))
@@ -251,10 +259,10 @@ void G3DFakePainterDrawWithNames::drawMesh(const IMesh *mesh)
             if(mesh == NULL)
                 return;
 
-            ICloudIndex *fci = mesh->faceCloudIndex();
+            const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
-            if(!m_fCloudIndexBackup.contains(fci))
-                m_fCloudIndexBackup.append(fci);
+            if(!m_fCloudIndexBackup.contains((CT_AbstractCloudIndex*)fci))
+                m_fCloudIndexBackup.append((CT_AbstractCloudIndex*)fci);
         }
 
         if(m_drawMode.testFlag(BackupEdgeCloudIndex))
@@ -262,10 +270,10 @@ void G3DFakePainterDrawWithNames::drawMesh(const IMesh *mesh)
             if(mesh == NULL)
                 return;
 
-            ICloudIndex *eci = mesh->edgeCloudIndex();
+            const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
-            if(!m_eCloudIndexBackup.contains(eci))
-                m_eCloudIndexBackup.append(eci);
+            if(!m_eCloudIndexBackup.contains((CT_AbstractCloudIndex*)eci))
+                m_eCloudIndexBackup.append((CT_AbstractCloudIndex*)eci);
         }
     }
     else
@@ -274,7 +282,7 @@ void G3DFakePainterDrawWithNames::drawMesh(const IMesh *mesh)
     }
 }
 
-void G3DFakePainterDrawWithNames::drawFaces(const IMesh *mesh)
+void G3DFakePainterDrawWithNames::drawFaces(const CT_AbstractMeshModel *mesh)
 {
     if(m_drawMode.testFlag(DrawFaces))
     {
@@ -283,17 +291,17 @@ void G3DFakePainterDrawWithNames::drawFaces(const IMesh *mesh)
         if(mesh == NULL)
             return;
 
-        ICloudIndex *fci = mesh->faceCloudIndex();
+        const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
         size_t fIndex;
-        size_t size = fci->indexSize();
+        size_t size = fci->size();
 
         for(size_t n=0; n<size; ++n)
         {
             fci->indexAt(n, fIndex);
 
             glPushName(fIndex);
-            ((IMesh*)mesh)->drawFaceAt(n, *m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->drawFaceAt(n, *m_gv, *this);
             glPopName();
         }
     }
@@ -302,9 +310,9 @@ void G3DFakePainterDrawWithNames::drawFaces(const IMesh *mesh)
         if(mesh == NULL)
             return;
 
-        ICloudIndex *fci = mesh->faceCloudIndex();
+        const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
-        m_nFaces += fci->indexSize();
+        m_nFaces += fci->size();
     }
     else if(m_drawMode.testFlag(BackupFaceCloudIndex))
     {
@@ -312,7 +320,7 @@ void G3DFakePainterDrawWithNames::drawFaces(const IMesh *mesh)
     }
 }
 
-void G3DFakePainterDrawWithNames::drawEdges(const IMesh *mesh)
+void G3DFakePainterDrawWithNames::drawEdges(const CT_AbstractMeshModel *mesh)
 {
     if(m_drawMode.testFlag(DrawEdges))
     {
@@ -321,17 +329,17 @@ void G3DFakePainterDrawWithNames::drawEdges(const IMesh *mesh)
         if(mesh == NULL)
             return;
 
-        ICloudIndex *eci = mesh->edgeCloudIndex();
+        const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
         size_t eIndex;
-        size_t size = eci->indexSize();
+        size_t size = eci->size();
 
         for(size_t n=0; n<size; ++n)
         {
             eci->indexAt(n, eIndex);
 
             glPushName(eIndex);
-            ((IMesh*)mesh)->drawEdgeAt(n, *m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(n, *m_gv, *this);
             glPopName();
         }
     }
@@ -340,9 +348,9 @@ void G3DFakePainterDrawWithNames::drawEdges(const IMesh *mesh)
         if(mesh == NULL)
             return;
 
-        ICloudIndex *eci = mesh->edgeCloudIndex();
+        const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
-        m_nEdges += eci->indexSize();
+        m_nEdges += eci->size();
     }
     else if(m_drawMode.testFlag(BackupEdgeCloudIndex))
     {
@@ -350,16 +358,12 @@ void G3DFakePainterDrawWithNames::drawEdges(const IMesh *mesh)
     }
 }
 
-void G3DFakePainterDrawWithNames::drawPoints(const IMesh *mesh, int fastestIncrement)
+void G3DFakePainterDrawWithNames::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
 {
     if(m_drawMode.testFlag(BackupPointCloudIndex))
-    {
         drawMesh(mesh);
-    }
     else
-    {
-        drawPointCloud(GUI_MANAGER->getPluginsContext()->repository()->globalPointsCloud(), mesh->pointCloudIndex(), fastestIncrement);
-    }
+        drawPointCloud(PS_REPOSITORY->globalPointCloud(), mesh->getPointCloudIndex(), fastestIncrement);
 }
 
 void G3DFakePainterDrawWithNames::beginDrawMultipleLine()

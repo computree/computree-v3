@@ -44,6 +44,11 @@ public:
     virtual ~CT_AbstractModel();
 
     /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const = 0;
+
+    /**
      * @brief Returns the unique name of the model
      */
     QString uniqueName() const;
@@ -208,6 +213,11 @@ protected:
      *        this model from this object.
      */
     void setAutoRenameObject(const CT_AutoRenameModels *autoRename);
+
+    /**
+     * @brief Returns the auto rename object of this model
+     */
+    CT_AutoRenameModels* autoRenameObject() const;
 
     friend class CT_VirtualAbstractStep;
     /**

@@ -8,6 +8,9 @@ CT_OutAbstractItemAttributeModel::CT_OutAbstractItemAttributeModel(const QString
                                                                                                                                     displayableName)
 {
     m_attribute = attribute;
+
+    if(m_attribute != NULL)
+        m_attribute->setModel(this);
 }
 
 CT_OutAbstractItemAttributeModel::~CT_OutAbstractItemAttributeModel()
@@ -30,4 +33,7 @@ void CT_OutAbstractItemAttributeModel::setItemAttribute(CT_AbstractItemAttribute
 {
     clearItemAttribute();
     m_attribute = attribute;
+
+    if(m_attribute != NULL)
+        m_attribute->setModel(this);
 }

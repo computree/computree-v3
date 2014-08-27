@@ -11,9 +11,11 @@
 
 class QtColorPicker;
 
-class IModel;
-class IItemModel;
-class IResultModel;
+class CT_AbstractModel;
+class CT_OutAbstractModel;
+class CT_OutAbstractItemModel;
+class CT_OutAbstractItemAttributeModel;
+class CT_OutAbstractResultModel;
 class DM_DocumentView;
 class GDocumentManagerView;
 class DocumentInterface;
@@ -32,19 +34,19 @@ public:
     
     void setDocumentManagerView(const GDocumentManagerView *docManagerView);
 
-    void setResult(const Result *res);
+    void setResult(const CT_AbstractResult *res);
     void setColorOptions(const DM_ItemDrawableManagerOptions &options);
 
-    Result* result() const;
+    CT_AbstractResult* result() const;
 
-    QList<const IModel*> getSelectedIModels() const;
+    QList<const CT_AbstractModel*> getSelectedIModels() const;
 
 private:
     Ui::GItemDrawableModelManager   *ui;
 
     GDocumentManagerView            *m_docManagerView;
 
-    Result                          *_result;
+    CT_AbstractResult                          *_result;
     QStandardItemModel              _viewModel;
 
     QMenu                           *_contextMenu;
@@ -57,14 +59,14 @@ private:
     void constructHeader();
     QMenu* constructContextMenu();
 
-    QList<QStandardItem*> recursiveCreateItemsForResultModel(const IResultModel *model);
-    QList<QStandardItem*> recursiveCreateItemsForItemModel(const IItemModel *model);
+    QList<QStandardItem*> recursiveCreateItemsForModel(const CT_OutAbstractModel *model);
 
-    QList<QStandardItem*> createItemsForResultModel(const IResultModel *model);
-    QList<QStandardItem*> createItemsForItemModel(const IItemModel *model);
+    QList<QStandardItem*> createItemsForModel(const CT_OutAbstractModel *model);
+    QList<QStandardItem*> createItemsForResultModel(const CT_OutAbstractResultModel *model);
+    QList<QStandardItem*> createItemsForItemModel(const CT_OutAbstractItemModel *model);
 
-    QStandardItem* recursiveGetStandardItemForModel(QStandardItem *pItem, IItemModel *model, int column) const;
-    QStandardItem* recursiveGetStandardItemForModel(QStandardItem *pItem, IItemModel *model, const DocumentInterface *doc) const;
+    QStandardItem* recursiveGetStandardItemForModel(QStandardItem *pItem, CT_OutAbstractModel *model, int column) const;
+    QStandardItem* recursiveGetStandardItemForModel(QStandardItem *pItem, CT_OutAbstractModel *model, const DocumentInterface *doc) const;
 
     void recursiveSetCheckBoxEnable(QStandardItem *parent, bool enable);
 

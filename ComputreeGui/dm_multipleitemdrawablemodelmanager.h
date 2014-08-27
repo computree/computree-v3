@@ -3,7 +3,7 @@
 
 #include <QList>
 
-class Result;
+class CT_AbstractResult;
 
 class DM_MultipleItemDrawableModelManager
 {
@@ -11,10 +11,10 @@ public:
     DM_MultipleItemDrawableModelManager();
     virtual ~DM_MultipleItemDrawableModelManager();
 
-    virtual void addResult(const Result *res) = 0;
-    virtual void removeResult(const Result *res) = 0;
+    virtual void addResult(const CT_AbstractResult *res) = 0;
+    virtual void removeResult(const CT_AbstractResult *res) = 0;
 
-    virtual Result* currentResult() const = 0;
+    virtual CT_AbstractResult* currentResult() const = 0;
 };
 
 #endif // DM_MULTIPLEITEMDRAWABLEMODELMANAGER_H

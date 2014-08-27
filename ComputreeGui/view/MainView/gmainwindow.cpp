@@ -43,6 +43,12 @@
 
 #include "myqaction.h"
 
+#include "ct_steploadfileseparator.h"
+#include "ct_stepcanbeaddedfirstseparator.h"
+#include "ct_abstractstepplugin.h"
+#include "ct_step/abstract/ct_abstractsteploadfile.h"
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
@@ -452,15 +458,15 @@ void GMainWindow::initUI()
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepInManualMode(bool)), actionAckManualMode, SLOT(setEnabled(bool)));
 
-    connect(_stepManagerView->getStepManager(), SIGNAL(stepFinishExecuted(Step*)), _docManagerView, SLOT(stepFinished(Step*)), Qt::QueuedConnection);
-    connect(_stepManagerView->getStepManager(), SIGNAL(stepRequiredManualMode(Step*)), _docManagerView, SLOT(stepRequiredManualMode(Step*)), Qt::DirectConnection);
+    connect(_stepManagerView->getStepManager(), SIGNAL(stepFinishExecuted(CT_VirtualAbstractStep*)), _docManagerView, SLOT(stepFinished(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_stepManagerView->getStepManager(), SIGNAL(stepRequiredManualMode(CT_VirtualAbstractStep*)), _docManagerView, SLOT(stepRequiredManualMode(CT_VirtualAbstractStep*)), Qt::DirectConnection);
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionStart, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionForwardOneStepDebug, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionForwardFastStepDebug, SLOT(setEnabled(bool)));
 
-    connect(_stepManagerView->getStepManager(), SIGNAL(stepAdded(Step*)), this, SLOT(stepAdded(Step*)), Qt::QueuedConnection);
-    connect(_stepManagerView->getStepManager(), SIGNAL(stepToBeRemoved(Step*)), this, SLOT(stepToBeRemoved(Step*)), Qt::QueuedConnection);
+    connect(_stepManagerView->getStepManager(), SIGNAL(stepAdded(CT_VirtualAbstractStep*)), this, SLOT(stepAdded(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_stepManagerView->getStepManager(), SIGNAL(stepToBeRemoved(CT_VirtualAbstractStep*)), this, SLOT(stepToBeRemoved(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepNeedShowMessage(QString)), _permanentLabelForMessage, SLOT(setText(QString)));
 
@@ -665,18 +671,18 @@ QString GMainWindow::createFileExtensionAvailable()
 
         for(int i=0; i<count; ++i)
         {
-            QList<StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
+            QList<CT_StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
 
-            QListIterator<StepLoadFileSeparator*> it(listSeparator);
+            QListIterator<CT_StepLoadFileSeparator*> it(listSeparator);
 
             while(it.hasNext())
             {
-                QList<StepLoadFile *> listStep = it.next()->getStepList();
-                QListIterator<StepLoadFile*> itStep(listStep);
+                QList<CT_AbstractStepLoadFile *> listStep = it.next()->getStepList();
+                QListIterator<CT_AbstractStepLoadFile*> itStep(listStep);
 
                 while(itStep.hasNext())
                 {
-                    StepLoadFile *step = itStep.next();
+                    CT_AbstractStepLoadFile *step = itStep.next();
 
                     QList<QString> ext = step->getFileExtensionAccepted();
                     QListIterator<QString> itExt(ext);
@@ -702,22 +708,22 @@ QString GMainWindow::createFileExtensionAvailable()
 
         for(int i=0; i<count; ++i)
         {
-            QList<StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
+            QList<CT_StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
 
-            QListIterator<StepLoadFileSeparator*> it(listSeparator);
+            QListIterator<CT_StepLoadFileSeparator*> it(listSeparator);
 
             while(it.hasNext())
             {
-                StepLoadFileSeparator *sep = it.next();
+                CT_StepLoadFileSeparator *sep = it.next();
 
                 fileExtension += sep->typeOfFile() + " (";
 
-                QList<StepLoadFile *> listStep = sep->getStepList();
-                QListIterator<StepLoadFile*> itStep(listStep);
+                QList<CT_AbstractStepLoadFile *> listStep = sep->getStepList();
+                QListIterator<CT_AbstractStepLoadFile*> itStep(listStep);
 
                 while(itStep.hasNext())
                 {
-                    StepLoadFile *step = itStep.next();
+                    CT_AbstractStepLoadFile *step = itStep.next();
 
                     QList<QString> ext = step->getFileExtensionAccepted();
                     QListIterator<QString> itExt(ext);
@@ -766,16 +772,16 @@ void GMainWindow::documentToBeClosed(DM_DocumentView *view)
     }
 }
 
-void GMainWindow::stepAdded(Step *step)
+void GMainWindow::stepAdded(CT_VirtualAbstractStep *step)
 {
     Q_UNUSED(step)
 
     actionSaveScript->setEnabled(getStepManager()->getStepRootList().size() > 0);
 }
 
-void GMainWindow::stepToBeRemoved(Step *step)
+void GMainWindow::stepToBeRemoved(CT_VirtualAbstractStep *step)
 {
-    QList<Step*> list = getStepManager()->getStepRootList();
+    QList<CT_VirtualAbstractStep*> list = getStepManager()->getStepRootList();
 
     int n = list.size();
 
@@ -802,14 +808,14 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
             QMenu *menuStep = new QMenu(pluginManager->getPluginName(i), this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
 
-            QList<StepCanBeAddedFirstSeparator*> stepAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
-            QListIterator<StepCanBeAddedFirstSeparator*> it(stepAvailable);
+            QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
+            QListIterator<CT_StepCanBeAddedFirstSeparator*> it(stepAvailable);
 
             while(it.hasNext())
             {
-                StepCanBeAddedFirstSeparator *sep = it.next();
-                QList<StepCanBeAddedFirst*> stepList = sep->getStepList();
-                QListIterator<StepCanBeAddedFirst*> itStep(stepList);
+                CT_StepCanBeAddedFirstSeparator *sep = it.next();
+                QList<CT_AbstractStepCanBeAddedFirst*> stepList = sep->getStepList();
+                QListIterator<CT_AbstractStepCanBeAddedFirst*> itStep(stepList);
 
                 if(itStep.hasNext())
                 {
@@ -820,7 +826,7 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
 
                     while(itStep.hasNext())
                     {
-                        StepCanBeAddedFirst *step = itStep.next();
+                        CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                         MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepName()), this);
                         action->setToolTip(step->getStepDescription());
@@ -860,6 +866,6 @@ void GMainWindow::addCanBeAddedFirstStepFromMyQAction()
 
     if(action->step() != NULL)
     {
-        _stepManagerView->addCanBeAddedFirstStepAndConfigure(dynamic_cast<StepCanBeAddedFirst*>(action->step()));
+        _stepManagerView->addCanBeAddedFirstStepAndConfigure(dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(action->step()));
     }
 }

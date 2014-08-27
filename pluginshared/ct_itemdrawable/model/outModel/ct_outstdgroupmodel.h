@@ -24,6 +24,12 @@ public:
                         CT_AbstractItemGroup *group = new CT_StandardItemGroup(),
                         const QString &displayableName = "",
                         const QString &description = "");
+
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
     /**
      * @brief Returns a copy of this model
      */

@@ -1,34 +1,36 @@
 #include "dm_attributesnormalt.h"
 
+#include "ct_global/ct_context.h"
+
 template<>
-bool DM_AttributesNormalT<IPointAttributes, ICloudIndex>::process(GDocumentViewForGraphics *doc)
+bool DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc)
 {
     if(m_an == NULL)
         return false;
 
-    const ICloudIndex *index = abstractTypeAttributes()->cloudIndex();
-    const IPointCloud *cloud = GUI_MANAGER->getPluginsContext()->repository()->globalPointsCloud();
+    const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
+    const CT_AbstractPointCloud *cloud = PS_REPOSITORY->globalPointCloud();
 
-    size_t size = index->indexSize();
+    size_t size = index->size();
     size_t indexP;
 
-    QSharedPointer<NormalCloudRegisteredInterface> spn = doc->normalCloudRegistered<IPointAttributes>();
+    QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractPointsAttributes>();
 
     if(spn.data() != NULL)
     {
-        INormalCloud *nn = spn->normalCloud();
+        CT_AbstractNormalCloud *nn = spn->abstractNormalCloud();
 
         for(size_t i=0; i<size && !isCanceled(); ++i)
         {
             index->indexAt(i, indexP);
-            float *nxnynz_pa = m_an->valueAt(i);
-            float *xyz = cloud->valueAt(indexP);
+            const CT_Normal &nxnynz_pa = m_an->constNormalAt(i);
+            const CT_Point &xyz = cloud->constTAt(indexP);
 
             // set the normal of the point at this document
-            float *nxnynz = nn->valueAt(indexP);
-            *nxnynz = (*xyz) + (*nxnynz_pa);
-            *(nxnynz+1) = (*(xyz+1)) + (*(nxnynz_pa+1));
-            *(nxnynz+2) = (*(xyz+2)) + (*(nxnynz_pa+2));
+            CT_Normal &nxnynz = nn->normalAt(indexP);
+            nxnynz.normal_x = xyz.getX() + nxnynz_pa.normal_x;
+            nxnynz.normal_y = xyz.getY() + nxnynz_pa.normal_y;
+            nxnynz.normal_z = xyz.getZ() + nxnynz_pa.normal_z;
 
             setProgress((i*100)/size);
         }
@@ -42,32 +44,30 @@ bool DM_AttributesNormalT<IPointAttributes, ICloudIndex>::process(GDocumentViewF
 }
 
 template<>
-bool DM_AttributesNormalT<IFaceAttributes, ICloudIndex>::process(GDocumentViewForGraphics *doc)
+bool DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc)
 {
     if(m_an == NULL)
         return false;
 
-    const ICloudIndex *index = abstractTypeAttributes()->cloudIndex();
+    const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
 
-    size_t size = index->indexSize();
+    size_t size = index->size();
     size_t indexF;
 
-    QSharedPointer<NormalCloudRegisteredInterface> spn = doc->normalCloudRegistered<IFaceAttributes>();
+    QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractFaceAttributes>();
 
     if(spn.data() != NULL)
     {
-        INormalCloud *nn = spn->normalCloud();
+        CT_AbstractNormalCloud *nn = spn->abstractNormalCloud();
 
         for(size_t i=0; i<size && !isCanceled(); ++i)
         {
             index->indexAt(i, indexF);
-            float *nxnynz_pa = m_an->valueAt(i);
+            const CT_Normal &nxnynz_pa = m_an->constNormalAt(i);
 
             // set the normal of the face at this document
-            float *nxnynz = nn->valueAt(indexF);
-            *nxnynz = *nxnynz_pa;
-            *(nxnynz+1) = *(nxnynz_pa+1);
-            *(nxnynz+2) = *(nxnynz_pa+2);
+            CT_Normal &nxnynz = nn->normalAt(indexF);
+            nxnynz.setNormal(nxnynz_pa);
 
             setProgress((i*100)/size);
         }
@@ -80,5 +80,5 @@ bool DM_AttributesNormalT<IFaceAttributes, ICloudIndex>::process(GDocumentViewFo
     return false;
 }
 
-template class DM_AttributesNormalT<IPointAttributes, ICloudIndex>;
-template class DM_AttributesNormalT<IFaceAttributes, ICloudIndex>;
+template class DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>;
+template class DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>;

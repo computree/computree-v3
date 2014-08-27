@@ -35,7 +35,7 @@ CT_InResultModelManager* CT_InTurnManager::getResultModelManager() const
     return _manager;
 }
 
-void CT_InTurnManager::setMaximumTurn(uint n)
+void CT_InTurnManager::setMaximumTurn(int n)
 {
     if(n > 0)
     {
@@ -46,7 +46,7 @@ void CT_InTurnManager::setMaximumTurn(uint n)
     _maximumTurn = n;
 }
 
-uint CT_InTurnManager::maximumTurn() const
+int CT_InTurnManager::maximumTurn() const
 {
     return _maximumTurn;
 }

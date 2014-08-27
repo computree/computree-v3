@@ -56,8 +56,8 @@ public slots:
 
 signals:
 
-    void mustAddItem(ItemDrawableConfiguration *config);
-    void mustRemoveItem(ItemDrawableConfiguration *config);
+    void mustAddItem(CT_ItemDrawableConfiguration *config);
+    void mustRemoveItem(CT_ItemDrawableConfiguration *config);
 
 private:
     Ui::GItemDrawableConfigurationManagerView   *ui;

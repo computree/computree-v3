@@ -31,8 +31,8 @@ private:
     DM_ItemModelViewSynchronizedGroupOptions    _options;
 
 private slots:
-    void slotItemDrawableSelectionChanged(ItemDrawable *item, bool selected);
-    void slotItemDrawableToBeRemoved(ItemDrawable &item);
+    void slotItemDrawableSelectionChanged(CT_AbstractItemDrawable *item, bool selected);
+    void slotItemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
 };
 
 #endif // DM_ITEMMODELVIEWSYNCHRONIZEDGROUP_H

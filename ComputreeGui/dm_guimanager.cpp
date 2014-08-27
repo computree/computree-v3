@@ -30,6 +30,12 @@
 
 #include "view/MainView/gmainprogressdialog.h"
 
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+#include "ct_exporter/abstract/ct_abstractexporter.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+#include "ct_result/ct_resultgroup.h"
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QtConcurrentRun>
 #else
@@ -119,7 +125,7 @@ DM_AsyncOperation* DM_GuiManager::requestExclusiveAsyncOperation(const DM_Abstra
     return NULL;
 }
 
-bool DM_GuiManager::asyncAddAllItemDrawableOfResultOnView(Result &res, DM_Context *context)
+bool DM_GuiManager::asyncAddAllItemDrawableOfResultOnView(CT_AbstractResult &res, DM_Context *context)
 {
     if(!getStepManager()->isRunning()
             || !getStepManager()->getOptions().isAutoClearResultFromMemoryEnable())
@@ -150,8 +156,8 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfResultOnView(Result &res, DM_Contex
     return false;
 }
 
-bool DM_GuiManager::asyncAddAllItemDrawableOfModelOnView(Result &res,
-                                                         IItemModel &model,
+bool DM_GuiManager::asyncAddAllItemDrawableOfModelOnView(CT_AbstractResult &res,
+                                                         CT_OutAbstractItemModel &model,
                                                          DM_DocumentView &view,
                                                          DM_Context *context)
 {
@@ -189,7 +195,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfModelOnView(Result &res,
     return false;
 }
 
-bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<ItemDrawable*> &itemList, DM_DocumentView *view, DM_Context *context)
+bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *view, DM_Context *context)
 {
     if((!getStepManager()->isRunning()
             || !getStepManager()->getOptions().isAutoClearResultFromMemoryEnable()))
@@ -209,7 +215,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<ItemDrawable*> &it
                                                                  &_asyncProgress);
             infoActionID.m_docView = view;
 
-            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'ajout des ItemDrawable au document actif."));
+            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'ajout des CT_AbstractItemDrawable au document actif."));
 
             _future = QtConcurrent::run(staticAddAllItemDrawableOfListOnView, infoActionID);
             _futureWatcher.setFuture(_future);
@@ -221,7 +227,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<ItemDrawable*> &it
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveAllItemDrawableOfResultFromView(Result &res, DM_Context *context)
+bool DM_GuiManager::asyncRemoveAllItemDrawableOfResultFromView(CT_AbstractResult &res, DM_Context *context)
 {
     DM_AsyncOperation *aop = requestExclusiveAsyncOperation();
 
@@ -248,7 +254,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfResultFromView(Result &res, DM_C
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromAllViews(IItemModel &model, DM_Context *context)
+bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromAllViews(CT_OutAbstractItemModel &model, DM_Context *context)
 {
     if(model.result() == NULL)
         return false;
@@ -279,7 +285,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromAllViews(IItemModel &mo
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromView(IItemModel &model, DM_DocumentView &view, DM_Context *context)
+bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromView(CT_OutAbstractItemModel &model, DM_DocumentView &view, DM_Context *context)
 {
     if(model.result() == NULL)
         return false;
@@ -311,7 +317,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromView(IItemModel &model,
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<ItemDrawable*> &itemList, DM_Context *context)
+bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_Context *context)
 {
     DM_AsyncOperation *aop = requestExclusiveAsyncOperation();
 
@@ -327,7 +333,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<ItemDrawable*> 
                                                              getDocumentManagerView(),
                                                              &_asyncProgress);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des ItemDrawable du(des) document(s)."));
+        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des CT_AbstractItemDrawable du(des) document(s)."));
 
         _future = QtConcurrent::run(staticRemoveAllItemDrawableOfListFromView, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -338,7 +344,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<ItemDrawable*> 
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveStep(Step &step, DM_Context *context)
+bool DM_GuiManager::asyncRemoveStep(CT_VirtualAbstractStep &step, DM_Context *context)
 {
     DM_AbstractAsyncOperationOptions options;
     options.setWaitUntilStepManagerIsFinished(true);
@@ -397,12 +403,12 @@ int DM_GuiManager::asyncRemoveAllStep(DM_Context *context)
         {
             initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des etapes."));
 
-            QList<Step*> stepRootList = infoActionStep._stepManager->getStepRootList();
-            QListIterator<Step*> it(stepRootList);
+            QList<CT_VirtualAbstractStep*> stepRootList = infoActionStep._stepManager->getStepRootList();
+            QListIterator<CT_VirtualAbstractStep*> it(stepRootList);
 
             while(it.hasNext())
             {
-                Step *step = it.next();
+                CT_VirtualAbstractStep *step = it.next();
 
                 recursiveDeleteStepConfigurationDialog(*step);
             }
@@ -419,7 +425,7 @@ int DM_GuiManager::asyncRemoveAllStep(DM_Context *context)
     return 0;
 }
 
-bool DM_GuiManager::asyncLoadResultStep(StepSerializable &step, DM_Context *context)
+bool DM_GuiManager::asyncLoadResultStep(CT_AbstractStepSerializable &step, DM_Context *context)
 {
     DM_AbstractAsyncOperationOptions options;
     options.setWaitUntilStepManagerIsFinished(true);
@@ -444,7 +450,7 @@ bool DM_GuiManager::asyncLoadResultStep(StepSerializable &step, DM_Context *cont
     return false;
 }
 
-bool DM_GuiManager::asyncExport(IExporter *exporter,
+bool DM_GuiManager::asyncExport(CT_AbstractExporter *exporter,
                                 DM_Context *context)
 {
     exporter->clearErrorMessage();
@@ -481,7 +487,7 @@ bool DM_GuiManager::asyncExport(IExporter *exporter,
     return false;
 }
 
-bool DM_GuiManager::setColorOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const IItemModel *model, const QColor &color)
+bool DM_GuiManager::setColorOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const CT_OutAbstractItemModel *model, const QColor &color)
 {
     if(!isRunning())
     {
@@ -491,14 +497,14 @@ bool DM_GuiManager::setColorOnAllItemDrawableOnAllDocumentsThatModelCorrespondin
         {
             DM_DocumentView *doc = getDocumentManagerView()->getDocumentView(i);
 
-            QListIterator<ItemDrawable*> it(doc->getItemDrawable());
+            QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
 
             while(it.hasNext())
             {
-                ItemDrawable *item = it.next();
+                CT_AbstractItemDrawable *item = it.next();
 
-                if(item->getModel() == model)
-                    item->getItemDrawableSignalSlotManager()->setColor(color);
+                if(item->model() == model)
+                    item->setColor(color);
             }
 
             doc->redrawGraphics();
@@ -510,7 +516,7 @@ bool DM_GuiManager::setColorOnAllItemDrawableOnAllDocumentsThatModelCorrespondin
     return false;
 }
 
-bool DM_GuiManager::setColorListOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const IItemModel *model, const QList<QColor> &colorList)
+bool DM_GuiManager::setColorListOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const CT_OutAbstractItemModel *model, const QList<QColor> &colorList)
 {
     if(!isRunning()
             && !colorList.isEmpty())
@@ -524,15 +530,15 @@ bool DM_GuiManager::setColorListOnAllItemDrawableOnAllDocumentsThatModelCorrespo
         {
             DM_DocumentView *doc = getDocumentManagerView()->getDocumentView(i);
 
-            QListIterator<ItemDrawable*> it(doc->getItemDrawable());
+            QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
 
             while(it.hasNext())
             {
-                ItemDrawable *item = it.next();
+                CT_AbstractItemDrawable *item = it.next();
 
-                if(item->getModel() == model)
+                if(item->model() == model)
                 {
-                    item->getItemDrawableSignalSlotManager()->setColor(colorList.at(j));
+                    item->setColor(colorList.at(j));
                     ++j;
 
                     if(j == cSize)
@@ -549,13 +555,13 @@ bool DM_GuiManager::setColorListOnAllItemDrawableOnAllDocumentsThatModelCorrespo
     return false;
 }
 
-bool DM_GuiManager::editItemDrawableModelOfResult(Result &res)
+bool DM_GuiManager::editItemDrawableModelOfResult(CT_AbstractResult &res)
 {
     getItemDrawableModelManager()->addResult(&res);
     return true;
 }
 
-bool DM_GuiManager::removeEditItemDrawableModelOfResult(Result &res)
+bool DM_GuiManager::removeEditItemDrawableModelOfResult(CT_AbstractResult &res)
 {
     getItemDrawableModelManager()->removeResult(&res);
     return true;
@@ -603,8 +609,8 @@ void DM_GuiManager::init()
 {
     m_currentAsyncOperation = NULL;
 
-    connect(getStepManager(), SIGNAL(resultToBeClearedFromMemory(Result*)), this, SLOT(resultToBeClearedFromMemory(Result*)), Qt::DirectConnection);
-    connect(getStepManager(), SIGNAL(resultToBeRemoved(Result*)), this, SLOT(resultToBeRemoved(Result*)), Qt::DirectConnection);
+    connect(getStepManager(), SIGNAL(resultToBeClearedFromMemory(const CT_AbstractResult*)), this, SLOT(resultToBeClearedFromMemory(const CT_AbstractResult*)), Qt::DirectConnection);
+    connect(getStepManager(), SIGNAL(resultToBeRemoved(const CT_AbstractResult*)), this, SLOT(resultToBeRemoved(const CT_AbstractResult*)), Qt::DirectConnection);
     connect(getStepManager(), SIGNAL(completed(bool)), this, SLOT(stepManagerCompletedLoadResultStep()), Qt::DirectConnection);
 
     _progressDialog = getMainWindow()->createWaitProgressDialog();
@@ -649,12 +655,12 @@ void DM_GuiManager::addNewContext(DM_Context *context)
     }
 }
 
-void DM_GuiManager::recursiveDeleteStepConfigurationDialog(Step &step)
+void DM_GuiManager::recursiveDeleteStepConfigurationDialog(CT_VirtualAbstractStep &step)
 {
     step.aboutToBeDeleted();
 
-    QList<Step*> stepList = step.getStepChildList();
-    QListIterator<Step*> it(stepList);
+    QList<CT_VirtualAbstractStep*> stepList = step.getStepChildList();
+    QListIterator<CT_VirtualAbstractStep*> it(stepList);
 
     while(it.hasNext())
     {
@@ -738,9 +744,9 @@ void DM_GuiManager::staticClearResultMemoryAndRemoveStep(ActionStep info)
 {
     if(info._step == NULL)
     {
-        QList<Step *> list = info._stepManager->getStepRootList();
+        QList<CT_VirtualAbstractStep *> list = info._stepManager->getStepRootList();
 
-        QListIterator<Step *> it(list);
+        QListIterator<CT_VirtualAbstractStep *> it(list);
 
         while(it.hasNext())
         {
@@ -771,13 +777,13 @@ void DM_GuiManager::staticClearResultMemoryAndRemoveStep(ActionStep info)
     delete info._aop;
 }
 
-int DM_GuiManager::staticRecursiveCountProgress(Step *step)
+int DM_GuiManager::staticRecursiveCountProgress(CT_VirtualAbstractStep *step)
 {
     int count = 0;
 
-    QList<Step *> list = step->getStepChildList();
+    QList<CT_VirtualAbstractStep *> list = step->getStepChildList();
 
-    QListIterator<Step *> it(list);
+    QListIterator<CT_VirtualAbstractStep *> it(list);
 
     while(it.hasNext())
     {
@@ -791,9 +797,9 @@ int DM_GuiManager::staticRecursiveCountProgress(Step *step)
 
 int DM_GuiManager::staticRecursiveClearResultMemoryAndRemoveStep(ActionStep info)
 {
-    QList<Step *> list = info._step->getStepChildList();
+    QList<CT_VirtualAbstractStep *> list = info._step->getStepChildList();
 
-    QListIterator<Step *> it(list);
+    QListIterator<CT_VirtualAbstractStep *> it(list);
 
     while(it.hasNext())
     {
@@ -803,13 +809,13 @@ int DM_GuiManager::staticRecursiveClearResultMemoryAndRemoveStep(ActionStep info
         info._nProgress = staticRecursiveClearResultMemoryAndRemoveStep(infoRecur);
     }
 
-    QList<Result *> listRes = info._step->getResults();
+    QList<CT_ResultGroup *> listRes = info._step->getResults();
 
-    QListIterator<Result *> itRes(listRes);
+    QListIterator<CT_ResultGroup *> itRes(listRes);
 
     while(itRes.hasNext())
     {
-        Result *res = itRes.next();
+        CT_ResultGroup *res = itRes.next();
 
         staticRemoveResultFromOtherView(ActionItemDrawable(NULL,
                                                            res,
@@ -842,20 +848,20 @@ void DM_GuiManager::staticExport(ActionItemDrawable info)
 
 ///////////////// PRIVATE SLOTS /////////////////
 
-void DM_GuiManager::resultToBeClearedFromMemory(Result *res)
+void DM_GuiManager::resultToBeClearedFromMemory(const CT_AbstractResult *res)
 {
     staticRemoveResultFromOtherView(ActionItemDrawable(NULL,
-                                                       res,
+                                                       (CT_AbstractResult*)res,
                                                        NULL,
                                                        "",
                                                        getDocumentManagerView(),
                                                        &_asyncSecondProgress));
 }
 
-void DM_GuiManager::resultToBeRemoved(Result *res)
+void DM_GuiManager::resultToBeRemoved(const CT_AbstractResult *res)
 {
     staticRemoveResultFromOtherView(ActionItemDrawable(NULL,
-                                                       res,
+                                                       (CT_AbstractResult*)res,
                                                        NULL,
                                                        "",
                                                        getDocumentManagerView(),

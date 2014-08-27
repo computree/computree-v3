@@ -32,9 +32,9 @@
 #include <QObject>
 #include <QStandardItem>
 
-class Step;
-class Result;
-class ItemDrawable;
+class CT_VirtualAbstractStep;
+class CT_AbstractResult;
+class CT_AbstractItemDrawable;
 
 /**
   * Classe permettant de grer les tapes et les rsultats dans le modele de l'arbre
@@ -72,28 +72,28 @@ public:
         InvisibleBoolTypeRole = ColumnTypeRole + 1
     };
 
-    MyQStandardItem(Step *step,
-                    Result *res,
+    MyQStandardItem(CT_VirtualAbstractStep *step,
+                    CT_AbstractResult *res,
                     MyQStandardItem::ColumnType type,
                     const QString &text);
 
-    MyQStandardItem(ItemDrawable *id,
+    MyQStandardItem(CT_AbstractItemDrawable *id,
                     MyQStandardItem::ColumnType type,
                     const QString &text);
 
-    MyQStandardItem(Step *step,
-                    Result *res,
+    MyQStandardItem(CT_VirtualAbstractStep *step,
+                    CT_AbstractResult *res,
                     MyQStandardItem::ColumnType type,
                     const QVariant &value);
 
-    MyQStandardItem(ItemDrawable *id,
+    MyQStandardItem(CT_AbstractItemDrawable *id,
                     MyQStandardItem::ColumnType type,
                     const QVariant &value);
 
-    Step* step() { return _step; }
-    Result* result() { return _result; }
+    CT_VirtualAbstractStep* step() { return _step; }
+    CT_AbstractResult* result() { return _result; }
     void removeResult() { _result = NULL; }
-    ItemDrawable* itemDrawable(){ return _itemDrawable; }
+    CT_AbstractItemDrawable* itemDrawable(){ return _itemDrawable; }
     void removeItemDrawable() { _itemDrawable = NULL; }
 
     MyQStandardItem::ColumnType columnType() const { return _columnType; }
@@ -103,9 +103,9 @@ public:
 
 private:
 
-    Step            *_step;
-    Result          *_result;
-    ItemDrawable    *_itemDrawable;
+    CT_VirtualAbstractStep            *_step;
+    CT_AbstractResult          *_result;
+    CT_AbstractItemDrawable    *_itemDrawable;
 
     ColumnType      _columnType;
 

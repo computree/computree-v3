@@ -145,7 +145,7 @@ void ModelTest::testCaseOutSingularItemModelCreation()
 
     QVERIFY2(singularModel->uniqueName() == "UN", "uniqueName not valid");
     QVERIFY2(singularModel->uniqueNamePlusTurn() == "UN", "uniqueNamePlusTurn not valid");
-    QVERIFY2(singularModel->item() != NULL, "item == NULL");
+    QVERIFY2(singularModel->itemDrawable() != NULL, "item == NULL");
     QVERIFY2(singularModel->displayableName() == "DI", "displayableName not valid");
     QVERIFY2(singularModel->description() == "DE", "description not valid");
     QVERIFY2(singularModel->parentModel() == NULL, "parentModel not valid");
@@ -217,7 +217,7 @@ void ModelTest::testCaseOutTreeCreation()
 
     QVERIFY2(gModel->uniqueName() == "UNG", "uniqueName not valid");
     QVERIFY2(gModel->uniqueNamePlusTurn() == "UNG", "uniqueNamePlusTurn not valid");
-    QVERIFY2(gModel->item()->getType() == CT_TOPFNodeGroup::staticGetType(), qPrintable("groupType not valid : " + gModel->item()->getType()));
+    QVERIFY2(gModel->itemDrawable()->getType() == CT_TOPFNodeGroup::staticGetType(), qPrintable("groupType not valid : " + gModel->itemDrawable()->getType()));
     QVERIFY2(gModel->displayableName() == "DIG", "displayableName not valid");
     QVERIFY2(gModel->description() == "DEG", "description not valid");
     QVERIFY2(gModel->parentModel() == rModel, "parentModel not valid");
@@ -229,7 +229,7 @@ void ModelTest::testCaseOutTreeCreation()
 
     QVERIFY2(siModel->uniqueName() == "UNI", "uniqueName not valid");
     QVERIFY2(siModel->uniqueNamePlusTurn() == "UNI", "uniqueNamePlusTurn not valid");
-    QVERIFY2(siModel->item()->getType() == CT_Circle::staticGetType(), "itemType not valid");
+    QVERIFY2(siModel->itemDrawable()->getType() == CT_Circle::staticGetType(), "itemType not valid");
     QVERIFY2(siModel->displayableName() == "DI", "displayableName not valid");
     QVERIFY2(siModel->description() == "DE", "description not valid");
     QVERIFY2(siModel->parentModel() == gModel, "parentModel not valid");

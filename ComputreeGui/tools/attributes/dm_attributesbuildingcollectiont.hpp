@@ -3,13 +3,15 @@
 
 #include "tools/attributes/dm_attributesbuildingcollectiont.h"
 
+#include "ct_result/abstract/ct_abstractresult.h"
+
 template<typename Type>
 DM_AttributesBuildingCollectionT<Type>::DM_AttributesBuildingCollectionT()
 {
 }
 
 template<typename Type>
-bool DM_AttributesBuildingCollectionT<Type>::buildFrom(Step *step)
+bool DM_AttributesBuildingCollectionT<Type>::buildFrom(CT_VirtualAbstractStep *step)
 {
     m_collection.clear();
 
@@ -28,44 +30,39 @@ const QList<Type*>& DM_AttributesBuildingCollectionT<Type>::attributesCollection
 }
 
 template<typename Type>
-void DM_AttributesBuildingCollectionT<Type>::recursiveBuildAttributesFromStep(Step *step)
+void DM_AttributesBuildingCollectionT<Type>::recursiveBuildAttributesFromStep(CT_VirtualAbstractStep *step)
 {
-    QList<Result*> results = step->getResults();
-    QListIterator<Result*> it(results);
+    QList<CT_ResultGroup*> results = step->getResults();
+    QListIterator<CT_ResultGroup*> it(results);
 
     while(it.hasNext())
-        recursiveBuildAttributesFromModels(it.next()->getModel()->getRootItemModel());
+        recursiveBuildAttributesFromModels(it.next()->model()->childrens());
 
-    QList<Step*> steps = step->getStepChildList();
+    QList<CT_VirtualAbstractStep*> steps = step->getStepChildList();
 
     while(!steps.isEmpty())
         recursiveBuildAttributesFromStep(steps.takeFirst());
 }
 
 template<typename Type>
-void DM_AttributesBuildingCollectionT<Type>::recursiveBuildAttributesFromModels(QList<IItemModel*> models)
+void DM_AttributesBuildingCollectionT<Type>::recursiveBuildAttributesFromModels(QList<CT_AbstractModel*> models)
 {
-    QListIterator<IItemModel*> itM(models);
+    QListIterator<CT_AbstractModel*> itM(models);
 
     while(itM.hasNext())
     {
-        IItemModel *model = itM.next();
+        CT_AbstractModel *model = itM.next();
 
-        if(dynamic_cast<Type*>(model->itemDrawable()) != NULL)
+        if((dynamic_cast<Type*>(((CT_OutAbstractModel*)model)->item()) != NULL)
+                && (((CT_OutAbstractModel*)model)->result() != NULL))
         {
-            if((model->result() != NULL)
-                    && (model->result()->recursiveBeginIterateItemDrawableWithModel(*model) > 0))
-            {
-                ItemDrawable *item;
+            CT_ResultIterator it((CT_ResultGroup*)((CT_OutAbstractModel*)model)->result(), model);
 
-                while((item = model->result()->recursiveNextItemDrawable()) != NULL)
-                {
-                    m_collection.append(dynamic_cast<Type*>(item));
-                }
-            }
+            while(it.hasNext())
+                m_collection.append((Type*)it.next());
         }
 
-        recursiveBuildAttributesFromModels(model->getChildrenItemModel());
+        recursiveBuildAttributesFromModels(model->childrens());
     }
 }
 

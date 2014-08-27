@@ -17,9 +17,9 @@ CT_InResultModelGroupToCopy::CT_InResultModelGroupToCopy(const QString &uniqueNa
 {
 }
 
-QString CT_InResultModelGroupToCopy::resultTypeDisplayable() const
+QString CT_InResultModelGroupToCopy::modelTypeDisplayable() const
 {
-    return "CT_InResultModelGroupToCopy";
+    return QString("CT_InResultModelGroupToCopy");
 }
 
 QList<CT_OutResultModelGroupToCopyPossibility*> CT_InResultModelGroupToCopy::getOutResultModelGroupsSelectedToCopy() const

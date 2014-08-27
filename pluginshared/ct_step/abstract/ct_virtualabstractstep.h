@@ -69,6 +69,7 @@ class CT_InTurnManager;
 class CT_TurnIndexManager;
 
 class CT_OutManager;
+class CT_OutTurnManager;
 
 class CT_AbstractOutModelCopyAction;
 
@@ -328,17 +329,17 @@ protected:
      * @param n : number of maximum turn
      * @return true if the number has been set. 0 will return false.
      */
-    bool setMaximumTurn(uint n);
+    bool setMaximumTurn(int n);
 
     /**
      * @brief Returns the maximum turns allowed. See "setMaximumTurn" method for more information.
      */
-    uint maximumTurn() const;
+    int maximumTurn() const;
 
     /**
      * @brief Returns the index of the current turn. Use this method in your "compute" method if you want to know what is the current turn.
      */
-    uint currentTurnIndex() const;
+    int currentTurnIndex() const;
 
     /**
      * @brief Returns the INPUT turns manager
@@ -507,6 +508,11 @@ protected:
      * @return returns the model created. NULL if the INPUT model was not found.
      */
     CT_OutResultModelGroupToCopyPossibilities* createNewOutResultModelToCopy(const QString &inUniqueName);
+
+    /**
+     * @brief Returns the OUTPUT turns manager
+     */
+    CT_OutTurnManager* getOutTurnManager() const;
 
     /**
      * @brief Returns the model that represent a result that correspond to the unique name passed in parameter
@@ -1319,7 +1325,7 @@ signals:
      * @brief Emitted when a result is added
      * @param res : the result
      */
-    void resultAdded(const CT_ResultGroup *res);
+    void resultAdded(const CT_AbstractResult *res);
 
     /**
      * @brief Emitted when the result will cleared its elements from memory
@@ -1327,7 +1333,7 @@ signals:
      * @warning if you want to use method of the result you must connect this signal in Qt::DirectConnection because
      *          the result can be removed from memory when this signal is catched in Qt::QueuedConnection
      */
-    void resultToBeClearedFromMemory(const CT_ResultGroup *res);
+    void resultToBeClearedFromMemory(const CT_AbstractResult *res);
 
     /**
      * @brief Emitted when the result will be removed from memory
@@ -1335,7 +1341,7 @@ signals:
      * @warning if you want to use method of the result you must connect this signal in Qt::DirectConnection because
      *          the result will be removed from memory if this signal is catched in Qt::QueuedConnection
      */
-    void resultToBeRemoved(const CT_ResultGroup *res);
+    void resultToBeRemoved(const CT_AbstractResult *res);
 
     /**
      * @brief Emitted when the result will be cleared serialized
@@ -1343,7 +1349,7 @@ signals:
      * @warning if you want to use method of the result you must connect this signal in Qt::DirectConnection because
      *          the result can be removed from memory when this signal is catched in Qt::QueuedConnection
      */
-    void resultToBeSerialized(const CT_ResultGroup *res);
+    void resultToBeSerialized(const CT_AbstractResult *res);
 };
 
 #endif // CT_VIRTUALABSTRACTSTEP_H

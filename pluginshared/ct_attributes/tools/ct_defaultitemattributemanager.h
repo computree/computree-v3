@@ -1,9 +1,9 @@
 #ifndef CT_DEFAULTITEMATTRIBUTEMANAGER_H
 #define CT_DEFAULTITEMATTRIBUTEMANAGER_H
 
-#include "ct_tools/model/ct_autorenamemodels.h"
 #include "ct_attributes/tools/ct_iacreator.h"
 #include "ct_attributes/model/outModel/ct_outstditemattributemodel.h"
+#include "ct_attributes/model/inModel/abstract/ct_inabstractitemattributemodel.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_categories/tools/ct_categorymanager.h"
@@ -133,17 +133,19 @@ public:
         // create the model
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
 
-        // create a CT_AutoRenameModels object to rename the model automatically
-        CT_AutoRenameModels *autoName = new CT_AutoRenameModels();
+        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
 
-        // add element to the collection
+        if(newL == NULL)
+        {
+            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
+            m_collection.insert(className, newL);
+        }
+
         CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();
         c->m_model = model;
-        c->m_autoName = autoName;
         c->m_userKey = uniqueKey;
 
-        // m_collection is a multi map so for all attributes created by a class we will insert a new container
-        m_collection.insert(className, c);
+        newL->append(c);
 
         return true;
     }
@@ -175,17 +177,20 @@ public:
         // create the model
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
 
-        // create a CT_AutoRenameModels object to rename the model automatically
-        CT_AutoRenameModels *autoName = new CT_AutoRenameModels();
-
         // add element to the collection
+        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
+
+        if(newL == NULL)
+        {
+            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
+            m_collection.insert(className, newL);
+        }
+
         CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();
         c->m_model = model;
-        c->m_autoName = autoName;
         c->m_userKey = uniqueKey;
 
-        // m_collection is a multi map so for all attributes created by a class we will insert a new container
-        m_collection.insert(className, c);
+        newL->append(c);
 
         return true;
     }
@@ -196,6 +201,26 @@ public:
      */
     QList<CT_AbstractItemAttribute*> itemAttributes(const QString &itemType) const;
 
+    /**
+     * @brief Returns the item attribute corresponding to the key (uniqueKey) that you install when you add the default item attribute
+     * @param uniqueKey : the unique key used in method addItemAttribute...
+     * @param itemType : the item type => myItem->getType();
+     * @return NULL if the element was not found.
+     */
+    CT_AbstractItemAttribute* itemAttributeFromUniqueKey(const QString &uniqueKey, const QString &itemType) const;
+
+    /**
+     * @brief Returns the item attribute corresponding to the OUTPUT model passed in parameter
+     * @return NULL if item attribute don't exist
+     */
+    CT_AbstractItemAttribute* itemAttributeFromModel(const CT_OutAbstractItemAttributeModel *outModel, const QString &itemType) const;
+
+    /**
+     * @brief Returns a list of item attributes corresponding to the possibility selected of the INPUT model passed in parameter
+     * @return an empty list if item attributes don't exist
+     */
+    QList<CT_AbstractItemAttribute*> itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
+
 private:
 
     class CT_DefaultItemAttributeManagerContainer
@@ -204,17 +229,14 @@ private:
 
         CT_DefaultItemAttributeManagerContainer()
         {
-            m_autoName = NULL;
             m_model = NULL;
         }
 
         ~CT_DefaultItemAttributeManagerContainer()
         {
             delete m_model;
-            delete m_autoName;
         }
 
-        CT_AutoRenameModels                 *m_autoName;
         CT_OutAbstractItemAttributeModel    *m_model;
         QString                             m_userKey;
     };
@@ -223,7 +245,7 @@ private:
      * @brief A QMultiHash with a QString for key (name of the class of the item) and
      *        a CT_DefaultItemAttributeManagerContainer for value.
      */
-    QMultiHash<QString, CT_DefaultItemAttributeManagerContainer*>    m_collection;
+    QHash<QString, QList<CT_DefaultItemAttributeManagerContainer*>* >    m_collection;
 };
 
 #endif // CT_DEFAULTITEMATTRIBUTEMANAGER_H

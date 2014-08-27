@@ -7,7 +7,16 @@
 #include "cdm_tools.h"
 #include "dm_guimanager.h"
 
-#include "interfaces.h"
+#include "ct_stepseparator.h"
+#include "ct_steploadfileseparator.h"
+#include "ct_stepcanbeaddedfirstseparator.h"
+#include "ct_actions/ct_actionsseparator.h"
+#include "ct_actions/abstract/ct_abstractaction.h"
+#include "ct_exporter/ct_standardexporterseparator.h"
+#include "ct_exporter/abstract/ct_abstractexporter.h"
+#include "ct_step/abstract/ct_abstractsteploadfile.h"
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_abstractstepplugin.h"
 
 #include <QListWidgetItem>
 #include <QFileDialog>
@@ -58,20 +67,20 @@ void GAboutPluginsDialog::initView()
         item->setData(0, Qt::UserRole, I_Step);
         item->setData(0, Qt::UserRole+1, i);
 
-        PluginInterface *sPManager = _pManager->getPlugin(i);
+        CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
 
         // Etape de chargement de fichiers
-        QList<StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
-        QListIterator<StepLoadFileSeparator*> it0(l0);
+        QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
+        QListIterator<CT_StepLoadFileSeparator*> it0(l0);
 
         if(it0.hasNext())
         {
             QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("StepLoadFile"));
+            itemF->setText(0, tr("Load File Step"));
 
             while(it0.hasNext())
             {
-                QList<StepLoadFile*> l00 = it0.next()->getStepList();
+                QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
 
                 while(!l00.isEmpty())
                     createItemsForStep(itemF, l00.takeFirst());
@@ -79,17 +88,17 @@ void GAboutPluginsDialog::initView()
         }
 
         // Etape pouvant être ajouté en premier
-        QList<StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
-        QListIterator<StepCanBeAddedFirstSeparator*> it1(l1);
+        QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
+        QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
 
         if(it1.hasNext())
         {
             QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("StepCanBeAddedFirst"));
+            itemF->setText(0, tr("Can be added first Step"));
 
             while(it1.hasNext())
             {
-                QList<StepCanBeAddedFirst*> l11 = it1.next()->getStepList();
+                QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
 
                 while(!l11.isEmpty())
                     createItemsForStep(itemF, l11.takeFirst());
@@ -97,17 +106,17 @@ void GAboutPluginsDialog::initView()
         }
 
         // Etape générique
-        QList<StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
-        QListIterator<StepSeparator*> it2(l2);
+        QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
+        QListIterator<CT_StepSeparator*> it2(l2);
 
         if(it2.hasNext())
         {
             QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("Step"));
+            itemF->setText(0, tr("Normal Step"));
 
             while(it2.hasNext())
             {
-                QList<Step*> l22 = it2.next()->getStepList();
+                QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
 
                 while(!l22.isEmpty())
                     createItemsForStep(itemF, l22.takeFirst());
@@ -115,8 +124,8 @@ void GAboutPluginsDialog::initView()
         }
 
         // Actions
-        QList<ActionsSeparator*> l3 = sPManager->getActionsAvailable();
-        QListIterator<ActionsSeparator*> it3(l3);
+        QList<CT_ActionsSeparator*> l3 = sPManager->getActionsAvailable();
+        QListIterator<CT_ActionsSeparator*> it3(l3);
 
         if(it3.hasNext())
         {
@@ -125,7 +134,7 @@ void GAboutPluginsDialog::initView()
 
             while(it3.hasNext())
             {
-                QList<ActionInterface*> l33 = it3.next()->actions();
+                QList<CT_AbstractAction*> l33 = it3.next()->actions();
 
                 while(!l33.isEmpty())
                     createItemsForAction(itemF, l33.takeFirst());
@@ -133,8 +142,8 @@ void GAboutPluginsDialog::initView()
         }
 
         // Exporters
-        QList<IExporterSeparator*> l4 = sPManager->getExportersAvailable();
-        QListIterator<IExporterSeparator*> it4(l4);
+        QList<CT_StandardExporterSeparator*> l4 = sPManager->getExportersAvailable();
+        QListIterator<CT_StandardExporterSeparator*> it4(l4);
 
         if(it4.hasNext())
         {
@@ -143,7 +152,7 @@ void GAboutPluginsDialog::initView()
 
             while(it4.hasNext())
             {
-                QList<IExporter*> l44 = it4.next()->exporters();
+                QList<CT_AbstractExporter*> l44 = it4.next()->exporters();
 
                 while(!l44.isEmpty())
                     createItemsForExporter(itemF, l44.takeFirst());
@@ -154,7 +163,7 @@ void GAboutPluginsDialog::initView()
     ui->treeWidget->insertTopLevelItem(0, rootItem);
 }
 
-void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, Step *step)
+void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step)
 {
     QString stepName = step->getStepName();
     QString keyName = parent->text(0)+ "_" + stepName;
@@ -167,8 +176,8 @@ void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, Step *step
     QTreeWidgetItem *itemIN = new QTreeWidgetItem(item);
     itemIN->setText(0, "IN");
 
-    QList<const IInResultModel*> list = step->getInResultsModel();
-    QListIterator<const IInResultModel*> it(list);
+    QList<const CT_InAbstractResultModel*> list = step->getInResultsModel();
+    QListIterator<const CT_InAbstractResultModel*> it(list);
 
     while(it.hasNext())
         recursiveCreateItemsForResultModel(itemIN, it.next());
@@ -176,21 +185,21 @@ void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, Step *step
     QTreeWidgetItem *itemOUT = new QTreeWidgetItem(item);
     itemOUT->setText(0, "OUT");
 
-    QList<const IOutResultModel*> listO = step->getOutResultsModel();
-    QListIterator<const IOutResultModel*> itO(listO);
+    QList<const CT_OutAbstractResultModel*> listO = step->getOutResultsModel();
+    QListIterator<const CT_OutAbstractResultModel*> itO(listO);
 
     while(itO.hasNext())
         recursiveCreateItemsForResultModel(itemOUT, itO.next());
 }
 
-void GAboutPluginsDialog::createItemsForAction(QTreeWidgetItem *parent, ActionInterface *act)
+void GAboutPluginsDialog::createItemsForAction(QTreeWidgetItem *parent, CT_AbstractAction *act)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
     item->setText(0, act->title());
     item->setIcon(0, act->icon());
 }
 
-void GAboutPluginsDialog::createItemsForExporter(QTreeWidgetItem *parent, IExporter *ex)
+void GAboutPluginsDialog::createItemsForExporter(QTreeWidgetItem *parent, CT_AbstractExporter *ex)
 {
     CDM_Tools tools(GUI_MANAGER->getPluginManager());
 
@@ -201,28 +210,40 @@ void GAboutPluginsDialog::createItemsForExporter(QTreeWidgetItem *parent, IExpor
     item->setData(0, Qt::UserRole+1, i);*/
 }
 
-void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const IResultModelSimple *rModel) const
+void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, "Result : " + rModel->resultNameDisplayable() + " (" + rModel->resultTypeDisplayable() + ")");
+    item->setText(0, "Result : " + rModel->resultName() + " (" + rModel->modelTypeDisplayable() + ")");
 
-    QList<IItemModelSimple*> list = rModel->getRootItemModelSimple();
-    QListIterator<IItemModelSimple*> it(list);
+    QList<CT_AbstractModel*> list = rModel->childrens();
+    QListIterator<CT_AbstractModel*> it(list);
 
     while(it.hasNext())
-        recursiveCreateItemsForItemModel(item, it.next());
+        recursiveCreateItemsForModel(item, it.next());
 }
 
-void GAboutPluginsDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const IItemModelSimple *rModel) const
+void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0,rModel->itemNameDisplayable() + " (" + rModel->itemTypeDisplayable() + ")");
+    item->setText(0, "Result : " + rModel->displayableName() + " (" + rModel->modelTypeDisplayable() + ")");
 
-    QList<IItemModelSimple*> list = rModel->getChildrenItemModelSimple();
-    QListIterator<IItemModelSimple*> it(list);
+    QList<CT_AbstractModel*> list = rModel->childrens();
+    QListIterator<CT_AbstractModel*> it(list);
 
     while(it.hasNext())
-        recursiveCreateItemsForItemModel(item, it.next());
+        recursiveCreateItemsForModel(item, it.next());
+}
+
+void GAboutPluginsDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_AbstractModel *rModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0,rModel->displayableName() + " (" + rModel->modelTypeDisplayable() + ")");
+
+    QList<CT_AbstractModel*> list = rModel->childrens();
+    QListIterator<CT_AbstractModel*> it(list);
+
+    while(it.hasNext())
+        recursiveCreateItemsForModel(item, it.next());
 }
 
 void GAboutPluginsDialog::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
@@ -238,7 +259,7 @@ void GAboutPluginsDialog::on_treeWidget_currentItemChanged(QTreeWidgetItem *curr
         {
             if(from == I_Step)
             {
-                PluginInterface *tinterface = _pManager->getPlugin(current->data(0, Qt::UserRole+1).toInt());
+                CT_AbstractStepPlugin *tinterface = _pManager->getPlugin(current->data(0, Qt::UserRole+1).toInt());
                 ui->pushButtonConfigurer->setEnabled((tinterface != NULL)
                                                      && tinterface->canBeConfigured());
             }
@@ -260,7 +281,7 @@ void GAboutPluginsDialog::on_pushButtonConfigurer_clicked()
             if(from == I_Step)
             {
                 int currentRow = current->data(0, Qt::UserRole+1).toInt();
-                PluginInterface *tinterface = _pManager->getPlugin(currentRow);
+                CT_AbstractStepPlugin *tinterface = _pManager->getPlugin(currentRow);
 
                 if(tinterface != NULL)
                     tinterface->configure();
@@ -304,7 +325,7 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
             for(int i = 0 ; i < n ; ++i)
             {
-                PluginInterface *sPManager = _pManager->getPlugin(i);
+                CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
 
                 QString xmlFileName = QString("%1_Steps_%2.xml").arg(languageId).arg(_pManager->getPluginName(i));
                 QString xmlFilePath = QString("%1/%2").arg(s).arg(xmlFileName);
@@ -334,8 +355,8 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
                     stream << "{{toc}}" << EOL << EOL;
 
                     // Etape de chargement de fichiers
-                    QList<StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
-                    QListIterator<StepLoadFileSeparator*> it0(l0);
+                    QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
+                    QListIterator<CT_StepLoadFileSeparator*> it0(l0);
 
                     if(it0.hasNext())
                     {
@@ -343,11 +364,11 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
                         while(it0.hasNext())
                         {
-                            QList<StepLoadFile*> l00 = it0.next()->getStepList();
+                            QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
 
                             while(!l00.isEmpty())
                             {
-                                Step* step = l00.takeFirst();
+                                CT_VirtualAbstractStep* step = l00.takeFirst();
                                 exportStepData(stream, step);
                             }
                         }
@@ -355,8 +376,8 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
 
                     // Etape pouvant être ajoutées en premier
-                    QList<StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
-                    QListIterator<StepCanBeAddedFirstSeparator*> it1(l1);
+                    QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
+                    QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
 
                     if(it1.hasNext())
                     {
@@ -365,11 +386,11 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
                         while(it1.hasNext())
                         {
-                            QList<StepCanBeAddedFirst*> l11 = it1.next()->getStepList();
+                            QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
 
                             while(!l11.isEmpty())
                             {
-                                Step* step = l11.takeFirst();
+                                CT_VirtualAbstractStep* step = l11.takeFirst();
                                 exportStepData(stream, step);
                             }
                         }
@@ -377,8 +398,8 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
 
                     // Etape générique
-                    QList<StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
-                    QListIterator<StepSeparator*> it2(l2);
+                    QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
+                    QListIterator<CT_StepSeparator*> it2(l2);
 
                     if(it2.hasNext())
                     {
@@ -387,11 +408,11 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 
                         while(it2.hasNext())
                         {
-                            QList<Step*> l22 = it2.next()->getStepList();
+                            QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
 
                             while(!l22.isEmpty())
                             {
-                                Step* step = l22.takeFirst();
+                                CT_VirtualAbstractStep* step = l22.takeFirst();
                                 exportStepData(stream, step);
                             }
                         }
@@ -408,7 +429,7 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
     }
 }
 
-void GAboutPluginsDialog::exportStepData(QTextStream &stream, Step *step)
+void GAboutPluginsDialog::exportStepData(QTextStream &stream, CT_VirtualAbstractStep *step)
 {
     QString htmlDescr = step->getStepDetailledDescription();
     convertHTMLtoTextile(htmlDescr);
@@ -453,7 +474,7 @@ void GAboutPluginsDialog::on_pb_stepInfo_clicked()
 
             if (_stepList.contains(keyName))
             {
-                Step *step = _stepList.value(keyName);
+                CT_VirtualAbstractStep *step = _stepList.value(keyName);
                 GAboutStepDialog dialog(step);
                 dialog.exec();
             }

@@ -37,7 +37,8 @@ bool CT_InTurn::isValid() const
     {
         CT_InAbstractResultModel *model = it.next();
 
-        if(model->getPossibilitiesSavedSelected().size() < model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn())
+        if(model->needOutputModel()
+                && (model->getPossibilitiesSavedSelected().size() < model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn()))
             return false;
 
         if((model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() > 0)

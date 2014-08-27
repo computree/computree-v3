@@ -3,7 +3,10 @@
 
 #include "dm_guimanager.h"
 
-GAboutStepDialog::GAboutStepDialog(Step *step, QWidget *parent) :
+#include "ct_abstractstepplugin.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+
+GAboutStepDialog::GAboutStepDialog(CT_VirtualAbstractStep *step, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GAboutStepDialog)
 {
@@ -17,7 +20,7 @@ GAboutStepDialog::~GAboutStepDialog()
     delete ui;
 }
 
-void GAboutStepDialog::initView(Step *step)
+void GAboutStepDialog::initView(CT_VirtualAbstractStep *step)
 {
     ui->scrollArea->setWidgetResizable(true);
 
@@ -37,13 +40,11 @@ void GAboutStepDialog::initView(Step *step)
     QTreeWidgetItem *inRootItem = new QTreeWidgetItem(ui->inModels);
     inRootItem->setData(0, Qt::DisplayRole, tr("IN Models :"));
 
-    QList<const IInResultModel*> list = step->getInResultsModel();
-    QListIterator<const IInResultModel*> it(list);
+    QList<const CT_InAbstractResultModel*> list = step->getInResultsModel();
+    QListIterator<const CT_InAbstractResultModel*> it(list);
 
     while(it.hasNext())
-    {
         recursiveCreateItemsForResultModel(inRootItem, it.next());
-    }
 
     ui->inModels->expandAll();
 
@@ -51,13 +52,11 @@ void GAboutStepDialog::initView(Step *step)
     QTreeWidgetItem *outRootItem = new QTreeWidgetItem(ui->outModels);
     outRootItem->setData(0, Qt::DisplayRole, tr("OUT Models :"));
 
-    QList<const IOutResultModel*> listOut = step->getOutResultsModel();
-    QListIterator<const IOutResultModel*> itO(listOut);
+    QList<const CT_OutAbstractResultModel*> listOut = step->getOutResultsModel();
+    QListIterator<const CT_OutAbstractResultModel*> itO(listOut);
 
     while(itO.hasNext())
-    {
         recursiveCreateItemsForResultModel(outRootItem, itO.next());
-    }
 
     ui->outModels->expandAll();
 
@@ -86,26 +85,124 @@ void GAboutStepDialog::initView(Step *step)
     ui->outModels->setMaximumHeight(outSize);
 }
 
-void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const IResultModelSimple *rModel) const
+void GAboutStepDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_OutAbstractModel *model) const
 {
-    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, "Result : " + rModel->resultNameDisplayable() + " (" + rModel->resultTypeDisplayable() + ")");
+    const CT_OutAbstractResultModel *rModel = dynamic_cast<const CT_OutAbstractResultModel*>(model);
 
-    QList<IItemModelSimple*> list = rModel->getRootItemModelSimple();
-    QListIterator<IItemModelSimple*> it(list);
+    if(rModel != NULL)
+    {
+        recursiveCreateItemsForResultModel(parent, rModel);
+    }
+    else
+    {
+        const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(model);
 
-    while(it.hasNext())
-        recursiveCreateItemsForItemModel(item, it.next());
+        if(iModel != NULL)
+        {
+            recursiveCreateItemsForItemModel(parent, iModel);
+        }
+        else
+        {
+            const CT_OutAbstractItemAttributeModel *iaModel = dynamic_cast<const CT_OutAbstractItemAttributeModel*>(model);
+
+            if(iaModel != NULL)
+                recursiveCreateItemsForItemAttributesModel(parent, iaModel);
+            else
+                qFatal("In GAboutStepDialog::recursiveCreateItemsForModel : model is not known");
+        }
+    }
 }
 
-void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const IItemModelSimple *rModel) const
+void GAboutStepDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_InAbstractModel *model) const
+{
+    const CT_InAbstractResultModel *rModel = dynamic_cast<const CT_InAbstractResultModel*>(model);
+
+    if(rModel != NULL)
+    {
+        recursiveCreateItemsForResultModel(parent, rModel);
+    }
+    else
+    {
+        const CT_InAbstractItemModel *iModel = dynamic_cast<const CT_InAbstractItemModel*>(model);
+
+        if(iModel != NULL)
+        {
+            recursiveCreateItemsForItemModel(parent, iModel);
+        }
+        else
+        {
+            const CT_InAbstractItemAttributeModel *iaModel = dynamic_cast<const CT_InAbstractItemAttributeModel*>(model);
+
+            if(iaModel != NULL)
+                recursiveCreateItemsForItemAttributesModel(parent, iaModel);
+            else
+                qFatal("In GAboutStepDialog::recursiveCreateItemsForModel : model is not known");
+        }
+    }
+}
+
+void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0,rModel->itemNameDisplayable() + " (" + rModel->itemShortTypeDisplayable() + ")");
+    item->setText(0, "Result : " + rModel->resultName() + " (" + rModel->uniqueNamePlusTurn() + ")");
 
-    QList<IItemModelSimple*> list = rModel->getChildrenItemModelSimple();
-    QListIterator<IItemModelSimple*> it(list);
+    createForChildrens(item, rModel);
+}
+
+void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, "Result : " + rModel->displayableName() + " (" + rModel->uniqueNamePlusTurn() + ")");
+
+    createForChildrens(item, rModel);
+}
+
+void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_OutAbstractItemModel *iModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, iModel->itemDrawable()->name() + " (" + iModel->uniqueName() + ")");
+
+    createForChildrens(item, iModel);
+}
+
+void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_InAbstractItemModel *iModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, iModel->itemShortType() + " (" + iModel->uniqueName() + ")");
+
+    createForChildrens(item, iModel);
+}
+
+void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_OutAbstractItemAttributeModel *iaModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->uniqueName() + ")");
+
+    createForChildrens(item, iaModel);
+}
+
+void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_InAbstractItemAttributeModel *iaModel) const
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setText(0, iaModel->displayableName() + " (" + iaModel->uniqueName() + ")");
+
+    createForChildrens(item, iaModel);
+}
+
+void GAboutStepDialog::createForChildrens(QTreeWidgetItem *parent, const CT_OutAbstractModel *model) const
+{
+    QList<CT_AbstractModel*> list = model->childrens();
+    QListIterator<CT_AbstractModel*> it(list);
 
     while(it.hasNext())
-        recursiveCreateItemsForItemModel(item, it.next());
+        recursiveCreateItemsForModel(parent, (CT_OutAbstractModel*)it.next());
+}
+
+void GAboutStepDialog::createForChildrens(QTreeWidgetItem *parent, const CT_InAbstractModel *model) const
+{
+    QList<CT_AbstractModel*> list = model->childrens();
+    QListIterator<CT_AbstractModel*> it(list);
+
+    while(it.hasNext())
+        recursiveCreateItemsForModel(parent, (CT_InAbstractModel*)it.next());
 }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Step informations</string>
+   <string>CT_VirtualAbstractStep informations</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -67,7 +67,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Step Name</string>
+         <string>CT_VirtualAbstractStep Name</string>
         </property>
        </widget>
       </item>

@@ -5,7 +5,7 @@
 #include "tools/worker/dm_abstractworker.h"
 
 class GDocumentViewForGraphics;
-class IAttributes;
+class CT_AbstractAttributes;
 
 class DM_AbstractAttributes : public DM_AbstractWorker
 {
@@ -27,7 +27,7 @@ public:
     /**
      * @brief Get the Attributes
      */
-    IAttributes* abstractAttributes() const;
+    CT_AbstractAttributes* abstractAttributes() const;
 
     /**
      * @brief Set if he must be displayed alone
@@ -60,12 +60,12 @@ private:
     QString                     m_name;
     bool                        m_displayAlone;
     GDocumentViewForGraphics    *m_doc;
-    IAttributes                 *m_attributes;
+    CT_AbstractAttributes       *m_attributes;
 
 protected:
 
     virtual bool process(GDocumentViewForGraphics *doc) = 0;
-    void setAttributes(const IAttributes *att);
+    void setAttributes(const CT_AbstractAttributes *att);
     virtual void attributesDeleted() = 0;
 
 private slots:

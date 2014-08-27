@@ -5,7 +5,7 @@
 #include "ct_outabstractresultmodel.h"
 #include "ct_virtualabstractstep.h"
 
-#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_result/model/inModel/tools/ct_instdresultmodelpossibility.h"
 
 #include <QDragEnterEvent>
 #include <QMenu>
@@ -142,7 +142,7 @@ QList<QStandardItem*> CTG_InResultModelTurnChoice::createItemsForResultModel(CT_
     {
         QList<QStandardItem*> list;
 
-        CT_InStdModelPossibility *possibility = it.next();
+        CT_InStdResultModelPossibility *possibility = (CT_InStdResultModelPossibility*)it.next();
 
         // Nom du modèle de sortie
         CTG_InResultModelTurnChoiceItem *item = new CTG_InResultModelTurnChoiceItem(possibility->outModel()->displayableName());
@@ -296,7 +296,7 @@ void CTG_InResultModelTurnChoice::setResultChoosed(const QString &mimeData)
                 model = NULL;
         }
 
-        m_possibilityToSelect = model->getPossibilitiesSaved().at(possibilityIndex);
+        m_possibilityToSelect = (CT_InStdResultModelPossibility*)model->getPossibilitiesSaved().at(possibilityIndex);
 
         // on coche la possibilié "droppé"
         m_possibilityToSelect->setSelected(true);

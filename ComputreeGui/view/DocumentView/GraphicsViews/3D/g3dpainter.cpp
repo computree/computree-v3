@@ -29,6 +29,14 @@
 
 #include "dm_guimanager.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+#include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
+#include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
+#include "ct_normalcloud/abstract/ct_abstractnormalcloud.h"
+#include "ct_itemdrawable/ct_meshmodel.h"
+
 #include <QQuaternion>
 
 #define M_PI_MULT_2 6.28318530717958647692
@@ -60,64 +68,64 @@ void G3DPainter::setGraphicsView(const GraphicsViewInterface *gv)
     m_gv = (GraphicsViewInterface*)gv;
 }
 
-void G3DPainter::setCurrentItemDrawable(const ItemDrawable *item)
+void G3DPainter::setCurrentItemDrawable(const CT_AbstractItemDrawable *item)
 {
-    m_currentItem = (ItemDrawable*)item;
+    m_currentItem = (CT_AbstractItemDrawable*)item;
 }
 
-void G3DPainter::setCurrentPointCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DPainter::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     m_pColorCloud = cc;
 }
 
-void G3DPainter::setCurrentFaceCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DPainter::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     m_fColorCloud = cc;
 }
 
-void G3DPainter::setCurrentEdgeCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DPainter::setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     m_eColorCloud = cc;
 }
 
-void G3DPainter::setCurrentPointCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void G3DPainter::setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     m_pNormalCloud = nn;
 }
 
-void G3DPainter::setCurrentFaceCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void G3DPainter::setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     m_fNormalCloud = nn;
 }
 
-QSharedPointer<ColorCloudRegisteredInterface> G3DPainter::currentPointCloudColor() const
+QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentPointCloudColor() const
 {
     return m_pColorCloud;
 }
 
-QSharedPointer<ColorCloudRegisteredInterface> G3DPainter::currentFaceCloudColor() const
+QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentFaceCloudColor() const
 {
     return m_fColorCloud;
 }
 
-QSharedPointer<ColorCloudRegisteredInterface> G3DPainter::currentEdgeCloudColor() const
+QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentEdgeCloudColor() const
 {
     return m_eColorCloud;
 }
 
-QSharedPointer<NormalCloudRegisteredInterface> G3DPainter::currentPointCloudNormal() const
+QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentPointCloudNormal() const
 {
     return m_pNormalCloud;
 }
 
-QSharedPointer<NormalCloudRegisteredInterface> G3DPainter::currentFaceCloudNormal() const
+QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentFaceCloudNormal() const
 {
     return m_fNormalCloud;
 }
 
-QSharedPointer<NormalCloudRegisteredInterface> G3DPainter::currentEdgeCloudNormal() const
+QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentEdgeCloudNormal() const
 {
-    return QSharedPointer<NormalCloudRegisteredInterface>(NULL);
+    return QSharedPointer<CT_StandardNormalCloudRegistered>(NULL);
 }
 
 bool G3DPainter::drawFastest() const
@@ -428,8 +436,8 @@ void G3DPainter::drawPoint(float *p)
     glEnd();
 }
 
-void G3DPainter::drawPointCloud(const IPointCloud *pc,
-                                const ICloudIndex *pci,
+void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
+                                const CT_AbstractCloudIndex *pci,
                                 int fastestIncrement)
 {
     if(!m_gv->getOptions().useColor())
@@ -437,7 +445,7 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
 
     size_t n = 0;
     size_t pIndex;
-    size_t indexCount = pci->indexSize();
+    size_t indexCount = pci->size();
     size_t increment = 1;
 
     if(_drawFastest)
@@ -454,34 +462,32 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             if(m_useNormalCloud
                     && (m_pNormalCloud.data() != NULL))
             {
-                quint8 *bgra;
-                IColorCloud *cc = m_pColorCloud->colorCloud();
-                INormalCloud *nn = m_pNormalCloud->normalCloud();
+                CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
+                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
                     pci->indexAt(n, pIndex);
-                    bgra = cc->valueAt(pIndex);
-                    glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
-                    glVertex3fv(pc->valueAt(pIndex));
-                    glVertex3fv(nn->valueAt(pIndex));
+                    const CT_Color &color = cc->constColorAt(pIndex);
+                    glColor4ub(color.r, color.g, color.b, color.a);
+                    glVertex3fv(pc->constTAt(pIndex).vertex());
+                    glVertex3fv(nn->normalAt(pIndex).vertex());
                     n += increment;
                 }
                 glEnd();
             }
 
-            quint8 *bgra;
-            IColorCloud *cc = m_pColorCloud->colorCloud();
+            CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
             n = 0;
 
             glBegin(GL_POINTS);
             while(n < indexCount)
             {
                 pci->indexAt(n, pIndex);
-                bgra = cc->valueAt(pIndex);
-                glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
-                glVertex3fv(pc->valueAt(pIndex));
+                const CT_Color &color = cc->constColorAt(pIndex);
+                glColor4ub(color.r, color.g, color.b, color.a);
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 n += increment;
             }
             glEnd();
@@ -493,14 +499,14 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             if(m_useNormalCloud
                     && (m_pNormalCloud.data() != NULL))
             {
-                INormalCloud *nn = m_pNormalCloud->normalCloud();
+                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
                     pci->indexAt(n, pIndex);
-                    glVertex3fv(pc->valueAt(pIndex));
-                    glVertex3fv(nn->valueAt(pIndex));
+                    glVertex3fv(pc->constTAt(pIndex).vertex());
+                    glVertex3fv(nn->normalAt(pIndex).vertex());
                     n += increment;
                 }
                 glEnd();
@@ -511,7 +517,7 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             while(n < indexCount)
             {
                 pci->indexAt(n, pIndex);
-                glVertex3fv(pc->valueAt(pIndex));
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 n += increment;
             }
             glEnd();
@@ -528,34 +534,32 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             if(m_useNormalCloud
                     && (m_pNormalCloud.data() != NULL))
             {
-                quint8 *bgra;
-                IColorCloud *cc = m_pColorCloud->colorCloud();
-                INormalCloud *nn = m_pNormalCloud->normalCloud();
+                CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
+                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
                     pci->indexAt(n, pIndex);
-                    bgra = cc->valueAt(pIndex);
-                    glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
-                    glVertex3fv(pc->valueAt(pIndex));
-                    glVertex3fv(nn->valueAt(pIndex));
+                    const CT_Color &color = cc->constColorAt(pIndex);
+                    glColor4ub(color.r, color.g, color.b, color.a);
+                    glVertex3fv(pc->constTAt(pIndex).vertex());
+                    glVertex3fv(nn->normalAt(pIndex).vertex());
                     ++n;
                 }
                 glEnd();
             }
 
-            quint8 *bgra;
-            IColorCloud *cc = m_pColorCloud->colorCloud();
+            CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
             n = 0;
 
             glBegin(GL_POINTS);
             while(n < indexCount)
             {
                 pci->indexAt(n, pIndex);
-                bgra = cc->valueAt(pIndex);
-                glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
-                glVertex3fv(pc->valueAt(pIndex));
+                const CT_Color &color = cc->constColorAt(pIndex);
+                glColor4ub(color.r, color.g, color.b, color.a);
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 ++n;
             }
             glEnd();
@@ -567,14 +571,14 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             if(m_useNormalCloud
                     && (m_pNormalCloud.data() != NULL))
             {
-                INormalCloud *nn = m_pNormalCloud->normalCloud();
+                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
                     pci->indexAt(n, pIndex);
-                    glVertex3fv(pc->valueAt(pIndex));
-                    glVertex3fv(nn->valueAt(pIndex));
+                    glVertex3fv(pc->constTAt(pIndex).vertex());
+                    glVertex3fv(nn->normalAt(pIndex).vertex());
                     ++n;
                 }
                 glEnd();
@@ -585,7 +589,7 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
             while(n < indexCount)
             {
                 pci->indexAt(n, pIndex);
-                glVertex3fv(pc->valueAt(pIndex));
+                glVertex3fv(pc->constTAt(pIndex).vertex());
                 ++n;
             }
             glEnd();
@@ -593,12 +597,12 @@ void G3DPainter::drawPointCloud(const IPointCloud *pc,
     }
 }
 
-void G3DPainter::drawMesh(const IMesh *mesh)
+void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
 {
     drawFaces(mesh);
 }
 
-void G3DPainter::drawFaces(const IMesh *mesh)
+void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 {
     if(mesh == NULL)
         return;
@@ -610,49 +614,45 @@ void G3DPainter::drawFaces(const IMesh *mesh)
     if(m_useFColorCloud
             && (m_fColorCloud.data() != NULL))
     {
-        ((IMesh*)mesh)->beginDrawMultipleFace(*m_gv, *this);
+        ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-        IColorCloud *cc = m_fColorCloud->colorCloud();
-        ICloudIndex *fIndex = mesh->faceCloudIndex();
+        CT_AbstractColorCloud *cc = m_fColorCloud->abstractColorCloud();
+        const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
         // W/ normals cloud
         if(m_useFNormalCloud
                 && (m_fNormalCloud.data() != NULL))
         {
-            INormalCloud *nn = m_fNormalCloud->normalCloud();
+            CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
 
-            size_t size = fIndex->indexSize();
-            quint8 *bgra;
-            float *norm;
+            size_t size = fIndex->size();
             size_t index;
 
             for(size_t i=0; i<size; ++i)
             {
                 index = fIndex->indexAt(i);
-                bgra = cc->valueAt(index);
-                norm = nn->valueAt(index);
-                glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
-                glNormal3fv(norm);
+                const CT_Color &color = cc->constColorAt(index);
+                glColor4ub(color.r, color.g, color.b, color.a);
+                glNormal3fv(nn->normalAt(index).vertex());
 
-                ((IMesh*)mesh)->drawFaceAt(i, *m_gv, *this);
+                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
             }
         }
         // W/O normals cloud
         else
         {
-            size_t size = fIndex->indexSize();
-            quint8 *bgra;
+            size_t size = fIndex->size();
 
             for(size_t i=0; i<size; ++i)
             {
-                bgra = cc->valueAt(fIndex->indexAt(i));
-                glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
+                const CT_Color &color = cc->constColorAt(fIndex->indexAt(i));
+                glColor4ub(color.r, color.g, color.b, color.a);
 
-                ((IMesh*)mesh)->drawFaceAt(i, *m_gv, *this);
+                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
             }
         }
 
-        ((IMesh*)mesh)->endDrawMultipleFace(*m_gv, *this);
+        ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
     }
     else
     {
@@ -660,33 +660,31 @@ void G3DPainter::drawFaces(const IMesh *mesh)
         if(m_useFNormalCloud
                 && (m_fNormalCloud.data() != NULL))
         {
-            ((IMesh*)mesh)->beginDrawMultipleFace(*m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-            INormalCloud *nn = m_fNormalCloud->normalCloud();
-            ICloudIndex *fIndex = mesh->faceCloudIndex();
+            CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
+            const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
-            size_t size = fIndex->indexSize();
-            float *norm;
+            size_t size = fIndex->size();
 
             for(size_t i=0; i<size; ++i)
             {
-                norm = nn->valueAt(fIndex->indexAt(i));
-                glNormal3fv(norm);
+                glNormal3fv(nn->normalAt(fIndex->indexAt(i)).vertex());
 
-                ((IMesh*)mesh)->drawFaceAt(i, *m_gv, *this);
+                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
             }
 
-            ((IMesh*)mesh)->endDrawMultipleFace(*m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
         }
         // W/O normals cloud
         else
         {
-            ((IMesh*)mesh)->drawFaces(*m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->drawFaces(*m_gv, *this);
         }
     }
 }
 
-void G3DPainter::drawEdges(const IMesh *mesh)
+void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
 {
     if(mesh == NULL)
         return;
@@ -697,33 +695,32 @@ void G3DPainter::drawEdges(const IMesh *mesh)
     if(m_useEColorCloud
             && (m_eColorCloud.data() != NULL))
     {
-        ((IMesh*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
+        ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
 
-        IColorCloud *cc = m_eColorCloud->colorCloud();
-        ICloudIndex *eIndex = mesh->edgeCloudIndex();
+        CT_AbstractColorCloud *cc = m_eColorCloud->abstractColorCloud();
+        const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
 
-        size_t size = eIndex->indexSize();
-        quint8 *bgra;
+        size_t size = eIndex->size();
 
         for(size_t i=0; i<size; ++i)
         {
-            bgra = cc->valueAt(eIndex->indexAt(i));
-            glColor4ub((*(bgra+2)), (*(bgra+1)), (*bgra), 255);
+            const CT_Color &color = cc->constColorAt(eIndex->indexAt(i));
+            glColor4ub(color.r, color.g, color.b, color.a);
 
-            ((IMesh*)mesh)->drawEdgeAt(i, *m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(i, *m_gv, *this);
         }
 
-        ((IMesh*)mesh)->endDrawMultipleEdge(*m_gv, *this);
+        ((CT_AbstractMeshModel*)mesh)->endDrawMultipleEdge(*m_gv, *this);
     }
     else
     {
-        ((IMesh*)mesh)->drawEdges(*m_gv, *this);
+        ((CT_AbstractMeshModel*)mesh)->drawEdges(*m_gv, *this);
     }
 }
 
-void G3DPainter::drawPoints(const IMesh *mesh, int fastestIncrement)
+void G3DPainter::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
 {
-    drawPointCloud(GUI_MANAGER->getPluginsContext()->repository()->globalPointsCloud(), mesh->pointCloudIndex(), fastestIncrement);
+    drawPointCloud(PS_REPOSITORY->globalPointCloud(), mesh->getPointCloudIndex(), fastestIncrement);
 }
 
 void G3DPainter::beginMultiplePoints()

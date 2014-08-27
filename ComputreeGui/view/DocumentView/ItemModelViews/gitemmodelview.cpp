@@ -3,6 +3,8 @@
 
 #include "dm_actionshandler.h"
 
+#include "ct_actions/abstract/ct_abstractactionfortreeview.h"
+
 GItemModelView::GItemModelView()
 {
     m_doc = NULL;
@@ -18,7 +20,7 @@ void GItemModelView::setDocument(const GDocumentView *doc)
     m_doc = (GDocumentView*)doc;
 }
 
-void GItemModelView::setCurrentAction(ActionForTreeViewInterface *action)
+void GItemModelView::setCurrentAction(CT_AbstractActionForTreeView *action)
 {
     if(action != NULL)
     {
@@ -29,7 +31,7 @@ void GItemModelView::setCurrentAction(ActionForTreeViewInterface *action)
     actionsHandler()->setCurrentAction(action);
 }
 
-void GItemModelView::setDefaultAction(ActionForTreeViewInterface *action)
+void GItemModelView::setDefaultAction(CT_AbstractActionForTreeView *action)
 {
     if(action != NULL)
     {

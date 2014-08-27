@@ -19,12 +19,13 @@
 #include "view/StepResultTreeView/myqstandarditem.h"
 #include "view/ItemDrawableView/gitemdrawablemanageroptionscolor.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
+
 int GTreeView::COLUMN_FIRST_DATA_VALUE = 1;
 
 GTreeView::GTreeView(QWidget *parent) : QWidget(parent), GItemModelView()
 {
-    m_dataValue = NULL;
-
     m_actionsHandler = new DM_ActionsHandlerForTreeView(*GUI_MANAGER->getActionsManager());
 }
 
@@ -33,11 +34,12 @@ GTreeView::~GTreeView()
     delete m_actionsHandler;
     delete m_treeView->model();
     delete m_model;
-    delete m_dataValue;
 }
 
 void GTreeView::init()
 {
+    m_typeBuilder.setGetter(&CT_AbstractSingularItemDrawable::model);
+
     m_contextMenu = new QMenu(this);
 
     m_model = new QStandardItemModel();
@@ -114,12 +116,12 @@ void GTreeView::init()
     m_treeView->viewport()->setMouseTracking(true);
 
     // SIGNALS-SLOTS CONNECTION
-    connect(document(), SIGNAL(itemDrawableAdded(ItemDrawable&)), this, SLOT(slotAddItemDrawable(ItemDrawable&)), Qt::DirectConnection);
-    connect(document(), SIGNAL(itemDrawableToBeRemoved(ItemDrawable&)), this, SLOT(slotRemoveItemDrawable(ItemDrawable&)), Qt::DirectConnection);
+    connect(document(), SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), this, SLOT(slotAddItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(document(), SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(slotRemoveItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
-    qRegisterMetaType<DM_ItemDrawableType>("DM_ItemDrawableType");
-    connect(&m_typeBuilder, SIGNAL(removed(DM_ItemDrawableType)), this, SLOT(slotItemTypeRemoved(DM_ItemDrawableType)), Qt::QueuedConnection);
-    connect(&m_typeBuilder, SIGNAL(added(DM_ItemDrawableType)), this, SLOT(slotNewItemTypeDetected(DM_ItemDrawableType)), Qt::QueuedConnection);
+    qRegisterMetaType<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> >("DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> ");
+    connect(&m_typeBuilder, SIGNAL(removed()), this, SLOT(slotItemTypeRemoved()), Qt::QueuedConnection);
+    connect(&m_typeBuilder, SIGNAL(added()), this, SLOT(slotNewItemTypeDetected()), Qt::QueuedConnection);
 
     connect(bSyncWith, SIGNAL(clicked()), this, SLOT(slotButtonSyncWithClicked()));
 
@@ -151,9 +153,11 @@ void GTreeView::beginAddMultipleItemDrawable()
     m_treeViewController.beginAddMultipleItemDrawable();
 }
 
-void GTreeView::slotAddItemDrawable(ItemDrawable &item)
+void GTreeView::slotAddItemDrawable(CT_AbstractItemDrawable &item)
 {
-    m_typeBuilder.addItemDrawable(item);
+    if(dynamic_cast<CT_AbstractSingularItemDrawable*>(&item) != NULL)
+        m_typeBuilder.addItemDrawable((CT_AbstractSingularItemDrawable&)item);
+
     m_treeViewController.addItemDrawable(item);
 }
 
@@ -167,9 +171,11 @@ void GTreeView::beginRemoveMultipleItemDrawable()
     m_treeViewController.beginRemoveMultipleItemDrawable();
 }
 
-void GTreeView::slotRemoveItemDrawable(ItemDrawable &item)
+void GTreeView::slotRemoveItemDrawable(CT_AbstractItemDrawable &item)
 {
-    m_typeBuilder.removeItemDrawable(item);
+    if(dynamic_cast<CT_AbstractSingularItemDrawable*>(&item) != NULL)
+        m_typeBuilder.removeItemDrawable((CT_AbstractSingularItemDrawable&)item);
+
     m_treeViewController.removeItemDrawable(item);
 }
 
@@ -215,13 +221,13 @@ void GTreeView::slotSetTextFilter()
     QString textToUse = m_lineFilter->text();
     int columnToUse = -1;
     bool continueLoop = true;
-    QListIterator<DataRefPairCompare> it(m_dataReferencesToUse);
+    QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
 
     while(it.hasNext()
             && continueLoop)
     {
         ++columnToUse;
-        QString str = it.next().second->displayableName() + " : ";
+        QString str = it.next()->displayableName() + " : ";
 
         if(m_lineFilter->text().startsWith(str))
         {
@@ -278,7 +284,7 @@ void GTreeView::slotResetColorLineFilter()
 void GTreeView::slotItemDataChanged(QStandardItem *item)
 {
     MyQStandardItem *myItem = (MyQStandardItem*)item;
-    ItemDrawable *itemDrawable = myItem->itemDrawable();
+    CT_AbstractItemDrawable *itemDrawable = myItem->itemDrawable();
 
     if(itemDrawable != NULL)
     {
@@ -307,8 +313,8 @@ void GTreeView::slotShowColorOptions()
 
 void GTreeView::slotSelect()
 {
-    QList<ItemDrawable*> sel = itemDrawableFromRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = itemDrawableFromRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
         it.next()->setSelected(true);
@@ -318,8 +324,8 @@ void GTreeView::slotSelect()
 
 void GTreeView::slotDeSelect()
 {
-    QList<ItemDrawable*> sel = itemDrawableFromRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = itemDrawableFromRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
         it.next()->setSelected(false);
@@ -329,12 +335,12 @@ void GTreeView::slotDeSelect()
 
 void GTreeView::slotInverseSelection()
 {
-    QList<ItemDrawable*> sel = itemDrawableFromRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = itemDrawableFromRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
     {
-        ItemDrawable *ii = it.next();
+        CT_AbstractItemDrawable *ii = it.next();
         ii->setSelected(!ii->isSelected());
     }
 
@@ -343,11 +349,11 @@ void GTreeView::slotInverseSelection()
 
 void GTreeView::slotColorAuto()
 {
-    QList<ItemDrawable *> l = itemDrawableFromRowSelected();
+    QList<CT_AbstractItemDrawable *> l = itemDrawableFromRowSelected();
 
     if(!l.isEmpty())
     {
-        QListIterator<ItemDrawable*> it(l);
+        QListIterator<CT_AbstractItemDrawable*> it(l);
 
         while(it.hasNext())
             it.next()->setColor(m_options.getNextColor());
@@ -365,8 +371,8 @@ void GTreeView::slotColorSolid()
     {
         QColor color = colorPicker.currentColor();
 
-        QList<ItemDrawable *> l = itemDrawableFromRowSelected();
-        QListIterator<ItemDrawable*> it(l);
+        QList<CT_AbstractItemDrawable *> l = itemDrawableFromRowSelected();
+        QListIterator<CT_AbstractItemDrawable*> it(l);
 
         while(it.hasNext())
             it.next()->setColor(color);
@@ -389,7 +395,7 @@ void GTreeView::slotAddSelectedToDocument()
 
         if(doc->getNumber() == number)
         {
-            QList<ItemDrawable *> items = itemDrawableFromRowSelected();
+            QList<CT_AbstractItemDrawable *> items = itemDrawableFromRowSelected();
 
             GUI_MANAGER->asyncAddAllItemDrawableOfListOnView(items, doc, NULL);
 
@@ -408,9 +414,9 @@ QStandardItem* GTreeView::itemFromIndex(const QModelIndex &proxyIndex) const
     return m_model->itemFromIndex(((DM_SortFilterMathProxyModel*)m_treeView->model())->mapToSource(proxyIndex));
 }
 
-ItemDrawable* GTreeView::itemDrawableFromItem(const QStandardItem *item) const
+CT_AbstractItemDrawable* GTreeView::itemDrawableFromItem(const QStandardItem *item) const
 {
-    return (ItemDrawable*)item->data().value<void*>();
+    return (CT_AbstractItemDrawable*)item->data().value<void*>();
 }
 
 QModelIndex GTreeView::indexAt(const QPoint &point) const
@@ -450,7 +456,7 @@ void GTreeView::refreshAll()
 
 void GTreeView::refreshItems(const QList<QStandardItem*> &items)
 {
-    QList<QPair<QStandardItem *, ItemDrawable *> > list;
+    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > list;
 
     QListIterator<QStandardItem*> it(items);
 
@@ -463,22 +469,22 @@ void GTreeView::refreshItems(const QList<QStandardItem*> &items)
     m_treeViewController.refresh(list);
 }
 
-void GTreeView::refreshItems(const QList<ItemDrawable*> &items)
+void GTreeView::refreshItems(const QList<CT_AbstractItemDrawable*> &items)
 {
-    QList<QPair<QStandardItem *, ItemDrawable *> > list;
+    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > list;
 
-    QListIterator<ItemDrawable*> it(items);
+    QListIterator<CT_AbstractItemDrawable*> it(items);
 
     while(it.hasNext())
     {
-        ItemDrawable *i = it.next();
+        CT_AbstractItemDrawable *i = it.next();
         list << qMakePair(itemFromItemDrawable(i), i);
     }
 
     m_treeViewController.refresh(list);
 }
 
-QList<QStandardItem *> GTreeView::createItems(const ItemDrawable &item, const int &level) const
+QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &item, const int &level) const
 {
     QList<QStandardItem *> l;
 
@@ -503,42 +509,44 @@ QList<QStandardItem *> GTreeView::createItems(const ItemDrawable &item, const in
             return l;
     }
 
-    if(m_dataValue == NULL)
-        m_dataValue = GUI_MANAGER->getPluginsContext()->repository()->createNewEmptyDataValue();
-
     // selectionné
-    MyQStandardItem *itemDisplay = new MyQStandardItem((ItemDrawable*)&item, MyQStandardItem::ItemDrawableSelection, QString(""));
+    MyQStandardItem *itemDisplay = new MyQStandardItem((CT_AbstractItemDrawable*)&item, MyQStandardItem::ItemDrawableSelection, QString(""));
     itemDisplay->setCheckable(true);
     itemDisplay->setCheckState(item.isSelected() ? Qt::Checked : Qt::Unchecked);
     itemDisplay->setData(qVariantFromValue((void*)&item), Qt::UserRole + 1);
-    QObject::connect(item.getItemDrawableSignalSlotManager(), SIGNAL(selectChange(bool)), itemDisplay, SLOT(setBoolData(bool)), Qt::DirectConnection);
+    QObject::connect(&item, SIGNAL(selectChange(bool)), itemDisplay, SLOT(setBoolData(bool)), Qt::DirectConnection);
     QObject::connect(itemDisplay, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(slotItemDataChanged(QStandardItem*)), Qt::QueuedConnection);
     l << itemDisplay;
 
-    const QList<IItemDataRef*> &refs = item.dataReferencesListStatic()->references();
-    QListIterator<DataRefPairCompare> it(m_dataReferencesToUse);
-
-    while(it.hasNext())
+    if(dynamic_cast<const CT_AbstractSingularItemDrawable*>(&item) != NULL)
     {
-        const DataRefPairCompare &pair = it.next();
-        QStandardItem *ii = new QStandardItem();
+        QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
 
-        if(checkIfReferenceExistInReferences(pair.second, refs))
+        while(it.hasNext())
         {
-            item.dataValueFromRef(*pair.second, m_dataValue);
-            ii->setText(m_dataValue->toString(NULL));
+            CT_OutAbstractItemAttributeModel *ref = it.next();
+            QStandardItem *ii = new QStandardItem();
+
+            CT_AbstractItemAttribute *att = ((const CT_AbstractSingularItemDrawable&)item).itemAttribute(ref);
+
+            if(att != NULL)
+                ii->setText(att->toString((const CT_AbstractSingularItemDrawable*)&item, NULL));
+
+            ii->setData(qVariantFromValue((void*)&item));
+            ii->setEditable(false);
+            l << ii;
         }
-
-        ii->setData(qVariantFromValue((void*)&item));
-        ii->setEditable(false);
-        l << ii;
     }
-
-    QStandardItem *ii = new QStandardItem("");
-    ii->setData(item.color(), Qt::BackgroundRole);
-    ii->setData(qVariantFromValue((void*)&item));
-    ii->setEditable(false);
-    l << ii;
+    else
+    {
+        for(int i=0; i<m_dataReferencesToUse.size(); ++i)
+        {
+            QStandardItem *ii = new QStandardItem();
+            ii->setData(qVariantFromValue((void*)&item));
+            ii->setEditable(false);
+            l << ii;
+        }
+    }
 
     return l;
 }
@@ -548,7 +556,7 @@ bool GTreeView::canConstructTheModel() const
     return !m_typeBuilder.isEmpty();
 }
 
-QList<ItemDrawable *> GTreeView::itemDrawableForTreeView() const
+QList<CT_AbstractItemDrawable *> GTreeView::itemDrawableForTreeView() const
 {
     return document()->getItemDrawable();
 }
@@ -558,12 +566,12 @@ int GTreeView::nLevelToConstruct() const
     return m_options.nLevelFiltering();
 }
 
-QList<ItemDrawable *> GTreeView::expandedItem() const
+QList<CT_AbstractItemDrawable *> GTreeView::expandedItem() const
 {
     return m_expandedItems;
 }
 
-QStandardItem* GTreeView::itemFromItemDrawable(const ItemDrawable *item) const
+QStandardItem* GTreeView::itemFromItemDrawable(const CT_AbstractItemDrawable *item) const
 {
     QStandardItem *root = m_model->invisibleRootItem();
 
@@ -582,34 +590,24 @@ QStandardItem* GTreeView::itemFromItemDrawable(const ItemDrawable *item) const
 
 void GTreeView::refreshHeaders()
 {
-    if(!m_dataReferencesToUse.isEmpty())
-    {
-        QStringList head;
+    QStringList head;
 
-        // if you change head order change => COLUMN_FIRST_DATA_VALUE
+    // if you change head order change => COLUMN_FIRST_DATA_VALUE
 
-        head << tr("Sel.");
+    head << tr("Sel.");
 
-        QListIterator<DataRefPairCompare> it(m_dataReferencesToUse);
+    QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
 
-        while(it.hasNext())
-            head << it.next().second->displayableName();
+    while(it.hasNext())
+        head << it.next()->displayableName();
 
-        head << tr("Couleur");
+    m_model->setHorizontalHeaderLabels(head);
 
-        m_model->setHorizontalHeaderLabels(head);
-
-        #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-        m_treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
-        #else
-        m_treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
-        #endif
-
-        return;
-    }
-
-    m_model->clear();
-    m_model->setHorizontalHeaderLabels(QStringList());
+    #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+    m_treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+    #else
+    m_treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    #endif
 }
 
 DM_ActionsHandlerForTreeView* GTreeView::actionsHandlerTreeView() const
@@ -617,16 +615,16 @@ DM_ActionsHandlerForTreeView* GTreeView::actionsHandlerTreeView() const
     return m_actionsHandler;
 }
 
-QList<ItemDrawable *> GTreeView::itemDrawableFromRowSelected() const
+QList<CT_AbstractItemDrawable *> GTreeView::itemDrawableFromRowSelected() const
 {
-    QList<ItemDrawable*> listItem;
+    QList<CT_AbstractItemDrawable*> listItem;
 
     QModelIndexList listSelected = m_treeView->selectionModel()->selectedRows();
     QListIterator<QModelIndex> it(listSelected);
 
     while(it.hasNext())
     {
-        ItemDrawable *id = itemDrawableFromItem(itemFromIndex(it.next()));
+        CT_AbstractItemDrawable *id = itemDrawableFromItem(itemFromIndex(it.next()));
 
         if(id != NULL)
             listItem.append(id);
@@ -756,29 +754,26 @@ void GTreeView::setValidColorForLineFilter(bool valid)
 
 void GTreeView::reconstructReferencesToUse()
 {
-    QList< DataRefPairCompare > uniqueReferences;
+    QList< CT_OutAbstractItemAttributeModel* > uniqueReferences;
 
-    QList<DM_ItemDrawableType> types = m_typeBuilder.types();
-    QListIterator<DM_ItemDrawableType> it(types);
+    QList<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> > types = m_typeBuilder.types();
+    QListIterator<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> > it(types);
 
     while(it.hasNext())
     {
-        const DM_ItemDrawableType &type = it.next();
-        QList<ItemDrawable*> items = type.itemDrawableCollection();
+        const DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable>  &type = it.next();
 
-        if(!items.isEmpty())
+        if(!type.isEmpty())
         {
-            ItemDrawable *item = items.first();
-            const QList<IItemDataRef*> &refList = item->dataReferencesListStatic()->references();
-
-            QListIterator<IItemDataRef*> itR(refList);
+            CT_OutAbstractSingularItemModel *model = (CT_OutAbstractSingularItemModel*)type.type();
+            QListIterator<CT_OutAbstractItemAttributeModel*> itR(model->itemAttributes());
 
             while(itR.hasNext())
             {
-                IItemDataRef *ref = itR.next();
+                CT_OutAbstractItemAttributeModel *ref = itR.next();
 
-                if(!uniqueReferences.contains(DataRefPairCompare(ref->name(), NULL)))
-                    uniqueReferences.append(DataRefPairCompare(ref->name(), ref));
+                if(!uniqueReferences.contains(ref))
+                    uniqueReferences.append(ref);
             }
         }
     }
@@ -790,15 +785,13 @@ void GTreeView::reconstructCompleter()
 {
     QStringList comp;
 
-    QListIterator<DataRefPairCompare> itH(m_dataReferencesToUse);
+    QListIterator<CT_OutAbstractItemAttributeModel*> itH(m_dataReferencesToUse);
 
     while(itH.hasNext())
     {
-        IItemDataRef *ref = itH.next().second;
+        CT_OutAbstractItemAttributeModel *ref = itH.next();
         comp << (ref->displayableName() + " : ");
-
-        if(ref->dataType() > IItemDataValue::IDVT_BOOL && ref->dataType() < IItemDataValue::IDVT_STRING)
-            comp << (ref->displayableName() + " : " + ((DM_SortFilterMathProxyModel*)m_treeView->model())->variableInMathExpression());
+        comp << (ref->displayableName() + " : " + ((DM_SortFilterMathProxyModel*)m_treeView->model())->variableInMathExpression());
     }
 
     QCompleter *lastCompleter = m_lineFilter->completer();
@@ -816,32 +809,15 @@ void GTreeView::reconstructCompleter()
     delete lastCompleter;
 }
 
-bool GTreeView::checkIfReferenceExistInReferences(const IItemDataRef *ref, const QList<IItemDataRef *> &refs) const
+void GTreeView::slotNewItemTypeDetected()
 {
-    QListIterator<IItemDataRef*> it(refs);
-
-    while(it.hasNext())
-    {
-        if(it.next()->name() == ref->name())
-            return true;
-    }
-
-    return false;
-}
-
-void GTreeView::slotNewItemTypeDetected(DM_ItemDrawableType type)
-{
-    Q_UNUSED(type)
-
     reconstructReferencesToUse();
     reconstructCompleter();
     construct();
 }
 
-void GTreeView::slotItemTypeRemoved(DM_ItemDrawableType type)
+void GTreeView::slotItemTypeRemoved()
 {
-    Q_UNUSED(type)
-
     reconstructReferencesToUse();
     reconstructCompleter();
     construct();

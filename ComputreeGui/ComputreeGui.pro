@@ -1,4 +1,8 @@
 include(../common.pri)
+include(../shared.pri)
+include($${PLUGIN_SHARED_DIR}/include.pri)
+
+CONFIG -= plugin
 
 TARGET = CompuTreeGui
 TEMPLATE = app
@@ -25,7 +29,8 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_itemmodelviewsynchronizedgroupoptions.h \
     dm_actionsmanager.h \
     dm_actionshandler.h \
-    imainprogressdialog.h
+    imainprogressdialog.h \
+    tools/itemdrawable/dm_abstractitemdrawablebuilder.h
 
 # OTHER
 SOURCES += main.cpp \

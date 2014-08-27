@@ -264,10 +264,10 @@ signals:
     void stepQuitManualMode(CT_VirtualAbstractStep *step);
     void stepNeedShowMessage(QString message);
 
-    void resultAdded(CT_AbstractResult *res);
-    void resultToBeClearedFromMemory(CT_AbstractResult *res);
-    void resultToBeRemoved(CT_AbstractResult *res);
-    void resultToBeSerialized(CT_AbstractResult *res);
+    void resultAdded(const CT_AbstractResult *res);
+    void resultToBeClearedFromMemory(const CT_AbstractResult *res);
+    void resultToBeRemoved(const CT_AbstractResult *res);
+    void resultToBeSerialized(const CT_AbstractResult *res);
 
     void started(bool started);
     void loadResultBegin();

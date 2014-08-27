@@ -15,6 +15,11 @@ public:
                                 const QString &displayableName = "",
                                 const QString &description = "");
 
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
     CT_OutAbstractModel* copy() const;
 };
 

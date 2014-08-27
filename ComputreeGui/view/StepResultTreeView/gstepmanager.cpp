@@ -34,6 +34,10 @@
 
 #include "gstepmanageroptions.h"
 
+#include "ct_result/abstract/ct_abstractresult.h"
+#include "ct_step/abstract/ct_abstractsteploadfile.h"
+#include "ct_abstractstepplugin.h"
+
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QComboBox>
@@ -83,29 +87,29 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
     _view.setContextMenuPolicy(Qt::CustomContextMenu);
     //_view.setExpandsOnDoubleClick(true);
 
-    connect(_contextMenuStep, SIGNAL(addStep(Step*,Step*)), this, SLOT(addGenericStepAndConfigure(Step*,Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(insertStep(Step*,Step*)), this, SLOT(insertGenericStepAndConfigure(Step*,Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(executeSelectedStep(Step*)), this, SLOT(executeStep(Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(executeModifySelectedStep(Step*)), this, SLOT(executeModifyStep(Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(configureInputResultOfSelectedStep(Step*)), this, SLOT(configureInputResultOfStep(Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(configureSelectedStep(Step*)), this, SLOT(configureStep(Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(deleteSelectedStep(Step*)), this, SLOT(removeStep(Step*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(loadResultOfSelectedStep(StepSerializable*)), this, SLOT(loadResultStep(StepSerializable*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(addStep(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), this, SLOT(addGenericStepAndConfigure(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(insertStep(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), this, SLOT(insertGenericStepAndConfigure(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(executeSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(executeModifySelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeModifyStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(configureInputResultOfSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(configureInputResultOfStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(configureSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(configureStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(deleteSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(removeStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
+    connect(_contextMenuStep, SIGNAL(loadResultOfSelectedStep(CT_AbstractStepSerializable*)), this, SLOT(loadResultStep(CT_AbstractStepSerializable*)), Qt::QueuedConnection);
     connect(_contextMenuStep, SIGNAL(expand()), this, SLOT(expandSelected()));
     connect(_contextMenuStep, SIGNAL(expandAll()), this, SLOT(expandAllTypeOfSelected()));
     connect(_contextMenuStep, SIGNAL(collapse()), this, SLOT(collapseSelected()));
     connect(_contextMenuStep, SIGNAL(collapseAll()), this, SLOT(collapseAllTypeOfSelected()));
 
-    connect(_stepManager, SIGNAL(stepAdded(Step*)), this, SLOT(stepAdded(Step*)), Qt::DirectConnection);
-    connect(_stepManager, SIGNAL(stepInserted(int,Step*)), this, SLOT(stepInserted(int,Step*)), Qt::DirectConnection);
-    connect(_stepManager, SIGNAL(stepToBeRemoved(Step*)), this, SLOT(stepToBeRemoved(Step*)), Qt::DirectConnection);
+    connect(_stepManager, SIGNAL(stepAdded(CT_VirtualAbstractStep*)), this, SLOT(stepAdded(CT_VirtualAbstractStep*)), Qt::DirectConnection);
+    connect(_stepManager, SIGNAL(stepInserted(int,CT_VirtualAbstractStep*)), this, SLOT(stepInserted(int,CT_VirtualAbstractStep*)), Qt::DirectConnection);
+    connect(_stepManager, SIGNAL(stepToBeRemoved(CT_VirtualAbstractStep*)), this, SLOT(stepToBeRemoved(CT_VirtualAbstractStep*)), Qt::DirectConnection);
 
-    connect(_stepManager, SIGNAL(resultToBeSerialized(Result*)), this, SLOT(resultToBeSerialized(Result*)), Qt::DirectConnection);
+    connect(_stepManager, SIGNAL(resultToBeSerialized(const CT_AbstractResult*)), this, SLOT(resultToBeSerialized(const CT_AbstractResult*)), Qt::DirectConnection);
 
     connect(&_view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showViewContextMenu(QPoint)), Qt::QueuedConnection);
     connect(&_view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(addResult(QStandardItem*,Result*)), this, SLOT(resultToAdd(QStandardItem*,Result*)), Qt::QueuedConnection);
+    connect(this, SIGNAL(addResult(QStandardItem*,CT_AbstractResult*)), this, SLOT(resultToAdd(QStandardItem*,CT_AbstractResult*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeResult(QStandardItem*,MyQStandardItem*)), this, SLOT(resultToRemove(QStandardItem*,MyQStandardItem*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeItem(QStandardItem*)), this, SLOT(itemToRemove(QStandardItem*)), Qt::QueuedConnection);
 }
@@ -122,7 +126,7 @@ CDM_StepManager* GStepManager::getStepManager() const
 
 ////////////////// PRIVATE /////////////////
 
-QList<QStandardItem *> GStepManager::createItemsForStep(Step &step)
+QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &step)
 {
     QList<QStandardItem *> list;
 
@@ -139,13 +143,13 @@ QList<QStandardItem *> GStepManager::createItemsForStep(Step &step)
     // progression
     item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepProgress, step.getProgress());
     item->setEditable(false);
-    connect(step.getStepSignalEmmiter(), SIGNAL(inProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
+    connect(&step, SIGNAL(inProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
     list.append(item);
 
     // temps coul
     item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepElapsedTime, step.getExecuteTime());
     item->setEditable(false);
-    connect(step.getStepSignalEmmiter(), SIGNAL(elapsed(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
+    connect(&step, SIGNAL(elapsed(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
     list.append(item);
 
     // debug
@@ -160,7 +164,7 @@ QList<QStandardItem *> GStepManager::createItemsForStep(Step &step)
     return list;
 }
 
-QList<QStandardItem *> GStepManager::createItemsForResult(Result &res)
+QList<QStandardItem *> GStepManager::createItemsForResult(CT_AbstractResult &res)
 {
     QList<QStandardItem *> list;
 
@@ -197,7 +201,7 @@ QList<QStandardItem *> GStepManager::createItemsForResult(Result &res)
     return list;
 }
 
-void GStepManager::setStepItemBackgroundColor(Step &step, QList<QStandardItem *> &list)
+void GStepManager::setStepItemBackgroundColor(CT_VirtualAbstractStep &step, QList<QStandardItem *> &list)
 {
     Q_UNUSED(step)
 
@@ -234,7 +238,7 @@ void GStepManager::setResultItemBackgroundColor(ResultInfo info, QList<QStandard
     }
 }
 
-MyQStandardItem* GStepManager::findItem(Step *step)
+MyQStandardItem* GStepManager::findItem(CT_VirtualAbstractStep *step)
 {
     MyQStandardItem *item = getSelectedItem();
 
@@ -247,7 +251,7 @@ MyQStandardItem* GStepManager::findItem(Step *step)
     return recursiveFindItem(step);
 }
 
-MyQStandardItem* GStepManager::findItem(Result *res)
+MyQStandardItem* GStepManager::findItem(CT_AbstractResult *res)
 {
     MyQStandardItem *item = getSelectedItem();
 
@@ -272,9 +276,9 @@ MyQStandardItem* GStepManager::getSelectedItem()
     return NULL;
 }
 
-MyQStandardItem* GStepManager::recursiveFindItem(Step *step)
+MyQStandardItem* GStepManager::recursiveFindItem(CT_VirtualAbstractStep *step)
 {
-    Step* parent = step->parentStep();
+    CT_VirtualAbstractStep* parent = step->parentStep();
     QStandardItem *parentItem = NULL;
 
     if(parent != NULL)
@@ -308,9 +312,9 @@ MyQStandardItem* GStepManager::recursiveFindItem(Step *step)
     return NULL;
 }
 
-MyQStandardItem* GStepManager::recursiveFindItem(Result *res)
+MyQStandardItem* GStepManager::recursiveFindItem(CT_AbstractResult *res)
 {
-    Step* parent = res->parentStep();
+    CT_VirtualAbstractStep* parent = res->parentStep();
 
     MyQStandardItem *stepItem = recursiveFindItem(parent);
 
@@ -322,7 +326,7 @@ MyQStandardItem* GStepManager::recursiveFindItem(Result *res)
     return NULL;
 }
 
-MyQStandardItem* GStepManager::getItemForResult(QStandardItem *stepItem, Result *res)
+MyQStandardItem* GStepManager::getItemForResult(QStandardItem *stepItem, CT_AbstractResult *res)
 {
     int n = stepItem->rowCount();
 
@@ -339,7 +343,7 @@ MyQStandardItem* GStepManager::getItemForResult(QStandardItem *stepItem, Result 
     return NULL;
 }
 
-QList<MyQStandardItem *> GStepManager::getItemsForResult(QStandardItem *stepItem, Result *res)
+QList<MyQStandardItem *> GStepManager::getItemsForResult(QStandardItem *stepItem, CT_AbstractResult *res)
 {
     QList<MyQStandardItem *> list;
 
@@ -368,7 +372,7 @@ QList<MyQStandardItem *> GStepManager::getItemsForResult(QStandardItem *stepItem
 
 void GStepManager::stepDataChanged(MyQStandardItem *item)
 {
-    Step *step = item->step();
+    CT_VirtualAbstractStep *step = item->step();
 
     if(step != NULL)
     {
@@ -412,7 +416,7 @@ void GStepManager::resultDataChanged(MyQStandardItem *item)
 {
     _mutexItemRes.lock();
 
-    Result *res = item->result();
+    CT_AbstractResult *res = item->result();
 
     _mutexItemRes.unlock();
 
@@ -436,9 +440,9 @@ void GStepManager::resultDataChanged(MyQStandardItem *item)
 
 }
 
-QString GStepManager::staticGetStepName(Step &step)
+QString GStepManager::staticGetStepName(CT_VirtualAbstractStep &step)
 {
-    StepLoadFile *stepLF = dynamic_cast<StepLoadFile*>(&step);
+    CT_AbstractStepLoadFile *stepLF = dynamic_cast<CT_AbstractStepLoadFile*>(&step);
 
     if(stepLF != NULL)
     {
@@ -456,7 +460,7 @@ void GStepManager::showMessageStepNotDebuggable()
     QMessageBox::warning(this, tr("Debug"), tr("L'tape ne semble pas tre dbogable."));
 }
 
-bool GStepManager::checkExecuteStepAndShowWarningMessage(Step *step, bool debugMode)
+bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep *step, bool debugMode)
 {
     bool continueExecution = true;
 
@@ -518,7 +522,7 @@ bool GStepManager::checkExecuteStepAndShowWarningMessage(Step *step, bool debugM
     return continueExecution;
 }
 
-bool GStepManager::configureStepAndAdd(Step *newStep, Step *parentStep)
+bool GStepManager::configureStepAndAdd(CT_VirtualAbstractStep *newStep, CT_VirtualAbstractStep *parentStep)
 {
     if(newStep != NULL)
     {
@@ -587,14 +591,14 @@ void GStepManager::addOpenFileStep(QString filePath)
 
     if(pluginManager->isAPluginLoaded())
     {
-        QList<StepLoadFile*>    stepLfList;
-        StepLoadFile            *stepToCopy = NULL;
+        QList<CT_AbstractStepLoadFile*>    stepLfList;
+        CT_AbstractStepLoadFile            *stepToCopy = NULL;
 
         int count = pluginManager->countPluginLoaded();
 
         for(int i =0; i<count; ++i)
         {
-            QList<StepLoadFile*> steps = pluginManager->getPlugin(i)->getOpenFileStep(filePath);
+            QList<CT_AbstractStepLoadFile*> steps = pluginManager->getPlugin(i)->getOpenFileStep(filePath);
 
             if(!steps.isEmpty())
             {
@@ -622,11 +626,11 @@ void GStepManager::addOpenFileStep(QString filePath)
             dialog.layout()->addWidget(cb);
             dialog.layout()->addWidget(dbb);
 
-            QListIterator<StepLoadFile*> itLf(stepLfList);
+            QListIterator<CT_AbstractStepLoadFile*> itLf(stepLfList);
 
             while(itLf.hasNext())
             {
-                StepLoadFile *stepLf = itLf.next();
+                CT_AbstractStepLoadFile *stepLf = itLf.next();
 
                 cb->addItem(stepLf->getStepName() + " (" + pluginManager->getPluginName(stepLf->getPlugin()) + ")");
             }
@@ -641,9 +645,9 @@ void GStepManager::addOpenFileStep(QString filePath)
         {
             stepLfList.removeOne(stepToCopy);
 
-            Step *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, NULL);
+            CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, NULL);
 
-            StepLoadFile *newStepLF = dynamic_cast<StepLoadFile*>(newStep);
+            CT_AbstractStepLoadFile *newStepLF = dynamic_cast<CT_AbstractStepLoadFile*>(newStep);
 
             if(newStepLF != NULL)
             {
@@ -672,33 +676,33 @@ void GStepManager::addOpenFileStep(QString filePath)
     }
 }
 
-void GStepManager::addGenericStepAndConfigure(Step *parentStep, Step *stepToCopy)
+void GStepManager::addGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
 {
     if((parentStep != NULL)
             && (stepToCopy->getPlugin() != NULL))
     {
-        Step *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
+        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
 
         configureStepAndAdd(newStep, parentStep);
     }
 }
 
-void GStepManager::addCanBeAddedFirstStepAndConfigure(StepCanBeAddedFirst *stepToCopy)
+void GStepManager::addCanBeAddedFirstStepAndConfigure(CT_AbstractStepCanBeAddedFirst *stepToCopy)
 {
     if(stepToCopy->getPlugin() != NULL)
     {
-        Step *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, NULL);
+        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, NULL);
 
         configureStepAndAdd(newStep, NULL);
     }
 }
 
-void GStepManager::insertGenericStepAndConfigure(Step *parentStep, Step *stepToCopy)
+void GStepManager::insertGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
 {
     if((parentStep != NULL)
             && (stepToCopy->getPlugin() != NULL))
     {
-        Step *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
+        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
 
         if(newStep != NULL)
         {
@@ -726,7 +730,7 @@ void GStepManager::insertGenericStepAndConfigure(Step *parentStep, Step *stepToC
     }
 }
 
-bool GStepManager::executeStep(Step *step)
+bool GStepManager::executeStep(CT_VirtualAbstractStep *step)
 {
     if(!_stepManager->isRunning())
     {
@@ -743,7 +747,7 @@ bool GStepManager::executeStep(Step *step)
     return _stepManager->executeStep(step);
 }
 
-bool GStepManager::executeModifyStep(Step *step)
+bool GStepManager::executeModifyStep(CT_VirtualAbstractStep *step)
 {
     if(!_stepManager->isRunning())
         return _stepManager->executeModifyStep(step);
@@ -751,7 +755,7 @@ bool GStepManager::executeModifyStep(Step *step)
     return _stepManager->executeModifyStep(step);
 }
 
-bool GStepManager::executeOrForwardStepInDebugMode(Step *step)
+bool GStepManager::executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *step)
 {
     if(!_stepManager->isRunning())
     {
@@ -768,7 +772,7 @@ bool GStepManager::executeOrForwardStepInDebugMode(Step *step)
     return _stepManager->executeOrForwardStepInDebugMode(step);
 }
 
-bool GStepManager::executeOrForwardStepFastInDebugMode(Step *step)
+bool GStepManager::executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *step)
 {
     if(!_stepManager->isRunning())
     {
@@ -785,7 +789,7 @@ bool GStepManager::executeOrForwardStepFastInDebugMode(Step *step)
     return _stepManager->executeOrForwardStepFastInDebugMode(step);
 }
 
-bool GStepManager::configureInputResultOfStep(Step *step)
+bool GStepManager::configureInputResultOfStep(CT_VirtualAbstractStep *step)
 {
     if((step != NULL)
         && (!_stepManager->isRunning()))
@@ -799,7 +803,7 @@ bool GStepManager::configureInputResultOfStep(Step *step)
     return false;
 }
 
-bool GStepManager::configureStep(Step *step)
+bool GStepManager::configureStep(CT_VirtualAbstractStep *step)
 {
     if((step != NULL)
         && (!_stepManager->isRunning()))
@@ -813,7 +817,7 @@ bool GStepManager::configureStep(Step *step)
     return false;
 }
 
-bool GStepManager::removeStep(Step *step)
+bool GStepManager::removeStep(CT_VirtualAbstractStep *step)
 {
     if(step != NULL)
     {
@@ -823,7 +827,7 @@ bool GStepManager::removeStep(Step *step)
     return false;
 }
 
-bool GStepManager::loadResultStep(StepSerializable *step)
+bool GStepManager::loadResultStep(CT_AbstractStepSerializable *step)
 {
     if(step != NULL)
     {
@@ -833,7 +837,7 @@ bool GStepManager::loadResultStep(StepSerializable *step)
     return false;
 }
 
-bool GStepManager::editItemDrawableModelOfResult(Result *res)
+bool GStepManager::editItemDrawableModelOfResult(CT_AbstractResult *res)
 {
     if(res != NULL)
     {
@@ -843,7 +847,7 @@ bool GStepManager::editItemDrawableModelOfResult(Result *res)
     return false;
 }
 
-bool GStepManager::removeEditItemDrawableModelOfResult(Result *res)
+bool GStepManager::removeEditItemDrawableModelOfResult(CT_AbstractResult *res)
 {
     if(res != NULL)
     {
@@ -853,7 +857,7 @@ bool GStepManager::removeEditItemDrawableModelOfResult(Result *res)
     return false;
 }
 
-bool GStepManager::removeItemDrawableOfResult(Result *res)
+bool GStepManager::removeItemDrawableOfResult(CT_AbstractResult *res)
 {
     if(res != NULL)
     {
@@ -894,9 +898,9 @@ void GStepManager::showStepManagerOptions()
 
 ////////////// PRIVATE SLOTS //////////////
 
-void GStepManager::stepAdded(Step *step)
+void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 {
-    Step *parentStep = step->parentStep();
+    CT_VirtualAbstractStep *parentStep = step->parentStep();
     QStandardItem *item = NULL;
 
     if(parentStep == NULL)
@@ -910,10 +914,10 @@ void GStepManager::stepAdded(Step *step)
 
     if(item != NULL)
     {
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultAdded(Result*)), this, SLOT(resultAdded(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeClearedFromMemory(Result*)), this, SLOT(resultToBeClearedFromMemory(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeRemoved(Result*)), this, SLOT(resultToBeRemoved(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(settingsModified()), this, SLOT(stepSettingsModified()), Qt::QueuedConnection);
+        connect(step, SIGNAL(resultAdded(const CT_AbstractResult*)), this, SLOT(resultAdded(const CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(resultToBeClearedFromMemory(const CT_AbstractResult*)), this, SLOT(resultToBeClearedFromMemory(const CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(resultToBeRemoved(const CT_AbstractResult*)), this, SLOT(resultToBeRemoved(const CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(settingsModified()), this, SLOT(stepSettingsModified()), Qt::QueuedConnection);
 
         QList<QStandardItem *> newItems = createItemsForStep(*step);
 
@@ -923,9 +927,9 @@ void GStepManager::stepAdded(Step *step)
     }
 }
 
-void GStepManager::stepInserted(int row, Step *step)
+void GStepManager::stepInserted(int row, CT_VirtualAbstractStep *step)
 {
-    Step *parentStep = step->parentStep();
+    CT_VirtualAbstractStep *parentStep = step->parentStep();
     QStandardItem *item = NULL;
 
     if(parentStep == NULL)
@@ -939,10 +943,10 @@ void GStepManager::stepInserted(int row, Step *step)
 
     if(item != NULL)
     {
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultAdded(Result*)), this, SLOT(resultAdded(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeClearedFromMemory(Result*)), this, SLOT(resultToBeClearedFromMemory(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(resultToBeRemoved(Result*)), this, SLOT(resultToBeRemoved(Result*)), Qt::DirectConnection);
-        connect(step->getStepSignalEmmiter(), SIGNAL(settingsModified()), this, SLOT(stepSettingsModified()), Qt::QueuedConnection);
+        connect(step, SIGNAL(resultAdded(CT_AbstractResult*)), this, SLOT(resultAdded(CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(resultToBeClearedFromMemory(CT_AbstractResult*)), this, SLOT(resultToBeClearedFromMemory(CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(resultToBeRemoved(CT_AbstractResult*)), this, SLOT(resultToBeRemoved(CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(settingsModified()), this, SLOT(stepSettingsModified()), Qt::QueuedConnection);
 
         QList<QStandardItem*> list = createItemsForStep(*step);
 
@@ -969,7 +973,7 @@ void GStepManager::stepInserted(int row, Step *step)
     }
 }
 
-void GStepManager::stepToBeRemoved(Step *step)
+void GStepManager::stepToBeRemoved(CT_VirtualAbstractStep *step)
 {
     QStandardItem *item = findItem(step);
 
@@ -988,44 +992,39 @@ void GStepManager::stepToBeRemoved(Step *step)
 
 void GStepManager::stepSettingsModified()
 {
-    StepSignalEmmiter *stepSigEmit = qobject_cast<StepSignalEmmiter*>(sender());
+    CT_VirtualAbstractStep *step = dynamic_cast<CT_VirtualAbstractStep*>(sender());
 
-    if(stepSigEmit != NULL)
+    if(step != NULL)
     {
-        Step *step = stepSigEmit->getStepWhoSignal();
+        MyQStandardItem *item = findItem(step);
 
-        if(step != NULL)
+        if(item != NULL)
         {
-            MyQStandardItem *item = findItem(step);
-
-            if(item != NULL)
-            {
-                item->setDataWithoutSignal(GStepManager::staticGetStepName(*step), Qt::DisplayRole);
-                item->setToolTip(step->getToolTip());
-            }
+            item->setDataWithoutSignal(GStepManager::staticGetStepName(*step), Qt::DisplayRole);
+            item->setToolTip(step->getToolTip());
         }
     }
 }
 
-void GStepManager::resultAdded(Result *res)
+void GStepManager::resultAdded(const CT_AbstractResult *res)
 {
     QStandardItem *item = findItem(res->parentStep());
 
     if(item != NULL)
     {
         _mutexResList.lock();
-        _resToBeAddedList.append(res);
+        _resToBeAddedList.append((CT_AbstractResult*)res);
         _mutexResList.unlock();
 
         // on emet un signal pour les mmes raisons que
         // lors de la suppression d'tape
-        emit addResult(item, res);
+        emit addResult(item, (CT_AbstractResult*)res);
     }
 }
 
-void GStepManager::resultToBeClearedFromMemory(Result *res)
+void GStepManager::resultToBeClearedFromMemory(const CT_AbstractResult *res)
 {
-    QStandardItem *item = findItem(res);
+    QStandardItem *item = findItem((CT_AbstractResult*)res);
 
     if(item != NULL)
     {
@@ -1044,7 +1043,7 @@ void GStepManager::resultToBeClearedFromMemory(Result *res)
     }
 }
 
-void GStepManager::resultToBeRemoved(Result *res)
+void GStepManager::resultToBeRemoved(const CT_AbstractResult *res)
 {
     // Dans un cas bien particulier il peut y avoir une
     // erreur d'accs au rsultat, ce cas est le suivant :
@@ -1066,13 +1065,13 @@ void GStepManager::resultToBeRemoved(Result *res)
     // pour ce remettre dans l'event loop de Qt et ne pas avoir d'erreur si la vue
     // est en train de ce mettre  jour.
     _mutexResList.lock();
-    _resToBeAddedList.removeOne(res);
+    _resToBeAddedList.removeOne((CT_AbstractResult*)res);
     _mutexResList.unlock();
 
     QStandardItem *item = findItem(res->parentStep());
     MyQStandardItem *itemRes = NULL;
 
-    QList<MyQStandardItem*> itemResList = getItemsForResult(item, res);
+    QList<MyQStandardItem*> itemResList = getItemsForResult(item, (CT_AbstractResult*)res);
     QListIterator<MyQStandardItem*> it(itemResList);
 
     if(it.hasNext())
@@ -1098,9 +1097,9 @@ void GStepManager::resultToBeRemoved(Result *res)
     }
 }
 
-void GStepManager::resultToBeSerialized(Result *res)
+void GStepManager::resultToBeSerialized(const CT_AbstractResult *res)
 {
-    QStandardItem *item = findItem(res);
+    QStandardItem *item = findItem((CT_AbstractResult*)res);
 
     if(item != NULL)
     {
@@ -1147,7 +1146,7 @@ void GStepManager::indexDoubleClicked(QModelIndex index)
     }
 }
 
-void GStepManager::resultToAdd(QStandardItem *parentItem, Result *res)
+void GStepManager::resultToAdd(QStandardItem *parentItem, CT_AbstractResult *res)
 {
     _mutexResList.lock();
 

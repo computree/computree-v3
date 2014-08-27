@@ -1,10 +1,13 @@
 #ifndef DM_ATTRIBUTESSCALART_H
 #define DM_ATTRIBUTESSCALART_H
 
-#include "interfaces.h"
 #include "tools/attributes/worker/abstract/dm_abstractattributesscalar.h"
 
 #include "view/DocumentView/gdocumentviewforgraphics.h"
+
+#include "ct_attributes/abstract/ct_abstractattributesscalar.h"
+#include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 
 #include <QPropertyAnimation>
 #include <QFutureWatcher>
@@ -47,7 +50,7 @@ public:
     /**
      * @brief accept only Type (Point, Face, etc...) and scalar
      */
-    bool setTypeAttributes(const Type *ta, const IAttributesScalar *as);
+    bool setTypeAttributes(const Type *ta, const CT_AbstractAttributesScalar *as);
 
     // GETTER
     /**
@@ -83,7 +86,7 @@ public:
     /**
      * @brief getter of I[Type]Attributes
      */
-    IAttributesScalar* scalarAttributes() const;
+    CT_AbstractAttributesScalar* scalarAttributes() const;
     Type* abstractTypeAttributes() const;
 
 protected:
@@ -101,10 +104,10 @@ private:
     struct ConcurrentMapInfo
     {
     public:
-        QPropertyAnimation      m_interpolator;
-        IAttributesScalar       *m_as;
-        const TypeCloudIndex    *m_index;
-        IColorCloud             *m_cc;
+        QPropertyAnimation              m_interpolator;
+        CT_AbstractAttributesScalar     *m_as;
+        const TypeCloudIndex            *m_index;
+        CT_AbstractColorCloud           *m_cc;
         double                  m_range;
         double                  m_manualMin;
         double                  m_granularity;
@@ -112,7 +115,7 @@ private:
         size_t                  m_end;
     };
 
-    IAttributesScalar           *m_as;
+    CT_AbstractAttributesScalar         *m_as;
     bool                        m_autoAdjust;
     double                      m_manualMin;
     double                      m_manualMax;

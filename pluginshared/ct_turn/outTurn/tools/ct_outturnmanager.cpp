@@ -47,6 +47,8 @@ CT_OutTurn* CT_OutTurnManager::createTurn(bool addTurnNameToDisplayableName)
         {
             CT_OutAbstractResultModel *outModel = it.next();
 
+            outModel->recursiveSetComplete();
+
             if(addTurnNameToDisplayableName)
                 outModel->setDisplayableName(outModel->displayableName() + QString(" [T%1]").arg(size+1));
 

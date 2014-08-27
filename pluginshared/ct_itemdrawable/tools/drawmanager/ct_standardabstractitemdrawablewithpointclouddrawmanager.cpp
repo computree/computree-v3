@@ -2,6 +2,8 @@
 
 #include "ct_abstractitemdrawablewithpointcloud.h"
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_POINTS_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapePointSize();
@@ -26,7 +28,7 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINTS_VISIBLE).toBool())
     {
         painter.drawPointCloud( PS_REPOSITORY->globalPointCloud(),
-                                (CT_AbstractCloudIndex*)item.getPointCloudIndex(),
+                                item.getPointCloudIndex(),
                                 item.getFastestIncrement());
     }
 

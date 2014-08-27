@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AttributesNormal
 {
 public:
     CT_AttributesNormal(CT_AbstractNormalCloud *cloud = NULL);
-    ~CT_AttributesNormal();
+    virtual ~CT_AttributesNormal();
 
     const CT_Normal& constNormalAt(const size_t &index) const;
 

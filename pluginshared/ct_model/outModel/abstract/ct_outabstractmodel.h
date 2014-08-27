@@ -2,6 +2,7 @@
 #define CT_OUTABSTRACTMODEL_H
 
 #include "ct_model/abstract/ct_abstractmodel.h"
+#include "ct_item/abstract/ct_abstractitem.h"
 
 class QMutex;
 
@@ -45,6 +46,11 @@ public:
     virtual CT_OutAbstractModel* copy() const = 0;
 
     /**
+     * @brief Returns the item contained in this model
+     */
+    CT_AbstractItem* item() const;
+
+    /**
      * @brief Returns the result where item is stocked. If it was a copy of a model the result will be found to the originalModel
      * @warning This will returns a no NULL element only if this model was set to an Item and the Item is added to a result
      *          or something in the tree structure of the result
@@ -57,6 +63,24 @@ protected:
      * @brief Used by model to set the original model when a copy is made
      */
     void setOriginalModel(const CT_OutAbstractModel *model);
+
+    /**
+     * @brief Used by other model to set the original model on childrens per example
+     */
+    static void staticSetOriginalModel(CT_OutAbstractModel *model, const CT_OutAbstractModel *originalModel)
+    {
+        model->setOriginalModel(originalModel);
+    }
+
+    /**
+     * @brief Used by model to set the item
+     */
+    void setItem(CT_AbstractItem *item);
+
+    /**
+     * @brief Delete the item from this model
+     */
+    void clearItem();
 
     friend class CT_AbstractItem;
     friend class CT_AbstractItemDrawable;
@@ -78,11 +102,20 @@ protected:
      */
     void decrementVisibleInDocument(const DocumentInterface *doc);
 
+    friend class CT_OutTurnManager;
+
+    /**
+     * @brief Called from CT_OutTurnManager or parent model to make some
+     *        change in models to complete it.
+     */
+    virtual bool recursiveSetComplete();
+
 private:
     CT_OutAbstractModel             *m_originalModel;
     QHash<DocumentInterface*, int>   m_visibleInDocuments;
     QMutex                          *m_originalModelMutex;
     CT_AbstractResult               *m_realResult;
+    CT_AbstractItem                 *m_item;
 
 private slots:
     void originalModelDestroyed();

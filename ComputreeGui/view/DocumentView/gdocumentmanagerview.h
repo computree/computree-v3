@@ -48,17 +48,17 @@ public:
 
     void setSyncManager(const GGraphicsViewSynchronizedGroup *syncMan);
 
-    bool addAllItemDrawableOfResultToActiveDocument(Result &res, DM_AsynchroneProgress &progress);
-    bool addAllItemDrawableOfModelToDocument(Result &res, IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
-    bool addAllItemDrawableOfResultToDocument(Result &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
+    bool addAllItemDrawableOfResultToActiveDocument(CT_AbstractResult &res, DM_AsynchroneProgress &progress);
+    bool addAllItemDrawableOfModelToDocument(CT_AbstractResult &res, CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
+    bool addAllItemDrawableOfResultToDocument(CT_AbstractResult &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
 
-    bool addAllItemDrawableOfListToActiveDocument(QList<ItemDrawable*> &itemList, DM_AsynchroneProgress &progress);
-    bool addAllItemDrawableOfListToDocument(QList<ItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
+    bool addAllItemDrawableOfListToActiveDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_AsynchroneProgress &progress);
+    bool addAllItemDrawableOfListToDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
 
-    bool removeAllItemDrawableOfResultFromDocuments(Result &res, DM_AsynchroneProgress &progress);
-    bool removeAllItemDrawableOfModelFromDocuments(IItemModel &model, DM_AsynchroneProgress &progress);
-    bool removeAllItemDrawableOfModelFromDocument(IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
-    bool removeAllItemDrawableOfListFromDocuments(QList<ItemDrawable *> &itemList, DM_AsynchroneProgress &progress);
+    bool removeAllItemDrawableOfResultFromDocuments(CT_AbstractResult &res, DM_AsynchroneProgress &progress);
+    bool removeAllItemDrawableOfModelFromDocuments(CT_OutAbstractItemModel &model, DM_AsynchroneProgress &progress);
+    bool removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
+    bool removeAllItemDrawableOfListFromDocuments(QList<CT_AbstractItemDrawable *> &itemList, DM_AsynchroneProgress &progress);
 
     DM_DocumentView* getActiveDocumentView();
     DM_DocumentView* getDocumentView(int index) const;
@@ -90,7 +90,7 @@ public:
     bool canClose(const DM_Document *document) const;
 
     // DM_IDocumentAddFilter
-    bool canAddItemDrawable(const DM_Document *document, const ItemDrawable *item) const;
+    bool canAddItemDrawable(const DM_Document *document, const CT_AbstractItemDrawable *item) const;
 
 private:
 
@@ -100,7 +100,7 @@ private:
     GGraphicsViewSynchronizedGroup  *m_syncMan;
     QMdiSubWindow                   *m_lastDocumentActivated;
     bool                            m_manualModeEnabled;
-    Step*                           m_manualModeEnabledByStep;
+    CT_VirtualAbstractStep*                           m_manualModeEnabledByStep;
     QList<GDocumentView*>           m_docAddedInNormalMode;
     QList<GDocumentView*>           m_docFromGuiAddedInManualMode;
     QList<GDocumentView*>           m_docToCloseAfterQuitManualMode;
@@ -109,8 +109,8 @@ private:
     QMdiSubWindow* subWindowFromDocument(DocumentInterface *doc) const;
 
 public slots:
-    void stepRequiredManualMode(Step *step);
-    void stepFinished(Step *step);
+    void stepRequiredManualMode(CT_VirtualAbstractStep *step);
+    void stepFinished(CT_VirtualAbstractStep *step);
 
 signals:
 

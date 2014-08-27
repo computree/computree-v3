@@ -88,7 +88,7 @@ bool PB_OPFExporter::protectedExportToFile()
         txtStream << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << endl;
         txtStream << "<opf version=\"2.0\" editable=\"true\">" << endl;
 
-        CT_TTreeGroup *topology = (CT_TTreeGroup*)itemDrawableToExport().first();
+        CT_TTreeGroup *topology = dynamic_cast<CT_TTreeGroup*>(itemDrawableToExport().first());
 
         CT_TOPFNodeGroup *root = dynamic_cast<CT_TOPFNodeGroup*>(topology->rootNode());
 

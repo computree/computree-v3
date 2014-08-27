@@ -36,7 +36,7 @@ void DM_AttributesManager::clearInvalid()
     }
 }
 
-DM_AbstractAttributes *DM_AttributesManager::getAttributesFromInterface(const IAttributes *ia) const
+DM_AbstractAttributes *DM_AttributesManager::getAttributesFromInterface(const CT_AbstractAttributes *ia) const
 {
     QListIterator<DM_AbstractAttributes*> it(m_collection);
 

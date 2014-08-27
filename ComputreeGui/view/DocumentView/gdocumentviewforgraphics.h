@@ -9,6 +9,10 @@
 #include "gpointofviewdocumentmanager.h"
 #include "tools/attributes/worker/dm_attributesmanager.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
+
 #include <QHBoxLayout>
 #include <QToolButton>
 
@@ -34,15 +38,15 @@ public:
     const QList<GGraphicsView*>& getGraphicsList() const;
 
     void beginAddMultipleItemDrawable();
-    void addItemDrawable(ItemDrawable &item);
+    void addItemDrawable(CT_AbstractItemDrawable &item);
     void endAddMultipleItemDrawable();
 
     void beginRemoveMultipleItemDrawable();
-    void removeItemDrawable(ItemDrawable &item);
+    void removeItemDrawable(CT_AbstractItemDrawable &item);
     void endRemoveMultipleItemDrawable();
 
-    void removeAllItemDrawableOfResult(Result &res);
-    void removeAllItemDrawableOfModel(IItemModel &model);
+    void removeAllItemDrawableOfResult(CT_AbstractResult &res);
+    void removeAllItemDrawableOfModel(CT_OutAbstractModel &model);
     void removeAllSelectedItemDrawable();
     void removeAllItemDrawable();
 
@@ -51,11 +55,11 @@ public:
     void lock();
     void unlock();
 
-    bool acceptAction(const ActionInterface *action) const;
-    bool setCurrentAction(ActionInterface *action, bool deleteAction = true);
-    bool setDefaultAction(ActionInterface *action, bool deleteAction = true);
-    ActionInterface* currentAction() const;
-    ActionInterface* defaultAction() const;
+    bool acceptAction(const CT_AbstractAction *action) const;
+    bool setCurrentAction(CT_AbstractAction *action, bool deleteAction = true);
+    bool setDefaultAction(CT_AbstractAction *action, bool deleteAction = true);
+    CT_AbstractAction* currentAction() const;
+    CT_AbstractAction* defaultAction() const;
     void removeActions(const QString &uniqueName) const;
 
     QString getType() const;
@@ -64,19 +68,19 @@ public:
     void createColorCloudRegistered() { }
 
     template<typename Type>
-    void setColorCloudRegistered(QSharedPointer<ColorCloudRegisteredInterface> cc) { Q_UNUSED(cc) }
+    void setColorCloudRegistered(QSharedPointer<CT_StandardColorCloudRegistered> cc) { Q_UNUSED(cc) }
 
     template<typename Type>
-    QSharedPointer<ColorCloudRegisteredInterface> colorCloudRegistered() const { return QSharedPointer<ColorCloudRegisteredInterface>(); }
+    QSharedPointer<CT_StandardColorCloudRegistered> colorCloudRegistered() const { return QSharedPointer<CT_StandardColorCloudRegistered>(); }
 
     void setUseColorCloud(bool use);
     bool useColorCloud() const;
 
     template<typename Type>
-    void setNormalCloudRegistered(QSharedPointer<NormalCloudRegisteredInterface> nn) { Q_UNUSED(nn) }
+    void setNormalCloudRegistered(QSharedPointer<CT_StandardNormalCloudRegistered> nn) { Q_UNUSED(nn) }
 
     template<typename Type>
-    QSharedPointer<NormalCloudRegisteredInterface> normalCloudRegistered() const { return QSharedPointer<NormalCloudRegisteredInterface>(); }
+    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloudRegistered() const { return QSharedPointer<CT_StandardNormalCloudRegistered>(); }
 
     void setUseNormalCloud(bool use);
     bool useNormalCloud() const;
@@ -86,11 +90,11 @@ private:
     GGraphicsViewOptions                            *_graphicsOptionsView;
     GCameraGraphicsOptions                          *_cameraOptionsView;
     DM_AttributesManager                            m_attributesManager;
-    QSharedPointer<ColorCloudRegisteredInterface>   m_pColorCloudRegistered;
-    QSharedPointer<ColorCloudRegisteredInterface>   m_fColorCloudRegistered;
-    QSharedPointer<ColorCloudRegisteredInterface>   m_eColorCloudRegistered;
-    QSharedPointer<NormalCloudRegisteredInterface>  m_pNormalCloudRegistered;
-    QSharedPointer<NormalCloudRegisteredInterface>  m_fNormalCloudRegistered;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_pColorCloudRegistered;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_fColorCloudRegistered;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_eColorCloudRegistered;
+    QSharedPointer<CT_StandardNormalCloudRegistered>  m_pNormalCloudRegistered;
+    QSharedPointer<CT_StandardNormalCloudRegistered>  m_fNormalCloudRegistered;
     bool                                            m_useColorCloud;
     bool                                            m_useNormalCloud;
 
@@ -164,34 +168,34 @@ signals:
 
 
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IPointAttributes>();
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractPointsAttributes>();
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IFaceAttributes>();
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractFaceAttributes>();
 template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<IEdgeAttributes>();
+void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractEdgeAttributes>();
 
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IPointAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc);
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IFaceAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc);
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
 template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<IEdgeAttributes>(QSharedPointer<ColorCloudRegisteredInterface> cc);
+void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
 
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IPointAttributes>() const;
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractPointsAttributes>() const;
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IFaceAttributes>() const;
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractFaceAttributes>() const;
 template<>
-QSharedPointer<ColorCloudRegisteredInterface> GDocumentViewForGraphics::colorCloudRegistered<IEdgeAttributes>() const;
+QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractEdgeAttributes>() const;
 
 template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<IPointAttributes>(QSharedPointer<NormalCloudRegisteredInterface> nn);
+void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
 template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<IFaceAttributes>(QSharedPointer<NormalCloudRegisteredInterface> nn);
+void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
 
 template<>
-QSharedPointer<NormalCloudRegisteredInterface> GDocumentViewForGraphics::normalCloudRegistered<IPointAttributes>() const;
+QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractPointsAttributes>() const;
 template<>
-QSharedPointer<NormalCloudRegisteredInterface> GDocumentViewForGraphics::normalCloudRegistered<IFaceAttributes>() const;
+QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractFaceAttributes>() const;
 
 #endif // GDOCUMENTVIEWFORGRAPHICS_H

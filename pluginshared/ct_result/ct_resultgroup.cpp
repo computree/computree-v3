@@ -175,7 +175,7 @@ int CT_ResultGroup::recursiveBeginIterateItemDrawableWithModel(const CT_Abstract
     if(itemModel == NULL)
         return 0;
 
-    m_guiIterator = new CT_ResultIterator(this, itemModel, true);
+    m_guiIterator = new CT_ResultIterator(this, itemModel);
 
     return m_guiIterator->size();
 }

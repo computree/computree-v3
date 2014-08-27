@@ -28,11 +28,6 @@ public:
     //                  //
 
     /**
-     * @brief Returns the name that will be set to the generated result
-     */
-    QString resultName() const;
-
-    /**
      * @brief Return the root model that represent a group
      */
     virtual DEF_CT_AbstractGroupModelOut* rootGroup() const = 0;
@@ -41,9 +36,6 @@ public:
      * @brief Set the root model that represent a group (delete the last root group from memory if exist).
      */
     virtual void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup) = 0;
-
-private:
-    QString     m_resultName;
 };
 
 #endif // CT_OUTABSTRACTRESULTMODELGROUP_H

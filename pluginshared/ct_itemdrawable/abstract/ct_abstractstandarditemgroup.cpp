@@ -1289,8 +1289,8 @@ void CT_AbstractStandardItemGroup::recursiveGetDependantViewConfigurations(QList
     {
         CT_OutAbstractSingularItemModel *iModel = itI.next();
 
-        if(!list.contains(iModel->item()->getViewConfiguration()))
-            list.append(iModel->item()->getViewConfiguration());
+        if(!list.contains(iModel->itemDrawable()->getViewConfiguration()))
+            list.append(iModel->itemDrawable()->getViewConfiguration());
     }
 
     QListIterator< DEF_CT_AbstractGroupModelOut* > itG(gModel->groups());

@@ -29,7 +29,7 @@ public:
     /**
      * @brief Returns the real item of this model
      */
-    virtual CT_AbstractItemDrawable* item() const = 0;
+    virtual CT_AbstractItemDrawable* itemDrawable() const = 0;
 };
 
 #endif // CT_OUTABSTRACTITEMMODEL_H

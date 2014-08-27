@@ -7,7 +7,7 @@
 #include "tools/treeview/dm_itreeviewmanager.h"
 
 /**
- * @brief This class is a worker (can call the method apply() with a thread) to transform a list of ItemDrawable to a list of QStandardItem (mapping).
+ * @brief This class is a worker (can call the method apply() with a thread) to transform a list of CT_AbstractItemDrawable to a list of QStandardItem (mapping).
  */
 class DM_ItemDrawableTreeViewModelResearcher : public DM_AbstractWorker
 {
@@ -17,25 +17,25 @@ public:
     DM_ItemDrawableTreeViewModelResearcher();
 
     /**
-     * @brief Set the collection to manage. The collection will be resized to map the size of the list of ItemDrawable passed
+     * @brief Set the collection to manage. The collection will be resized to map the size of the list of CT_AbstractItemDrawable passed
      *        in method setItemDrawable(...) and will contains the result of the mapping made by the DM_ITreeViewManager (method 'getItem').
      */
     void setCollection(const QVector< QList<QStandardItem*> > *collection);
 
     /**
-     * @brief Set the manager who get a QStandardItem for a ItemDrawable
+     * @brief Set the manager who get a QStandardItem for a CT_AbstractItemDrawable
      */
     void setTreeViewManager(const DM_ITreeViewManager *man);
 
     /**
-     * @brief Set the list of ItemDrawable to transform
+     * @brief Set the list of CT_AbstractItemDrawable to transform
      */
-    void setItemDrawable(const QList<ItemDrawable*> &list);
+    void setItemDrawable(const QList<CT_AbstractItemDrawable*> &list);
 
 private:
     QVector< QList<QStandardItem*> >        *m_collection;
     DM_ITreeViewManager                     *m_treeViewManager;
-    QList<ItemDrawable*>                    m_items;
+    QList<CT_AbstractItemDrawable*>                    m_items;
 
 public slots:
     /**

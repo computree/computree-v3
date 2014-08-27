@@ -6,6 +6,8 @@
 
 #include <QLineEdit>
 
+#include "ct_result/abstract/ct_abstractresult.h"
+
 GMultipleItemDrawableModelManager::GMultipleItemDrawableModelManager(QWidget *parent) :
     QWidget(parent), DM_MultipleItemDrawableModelManager(),
     ui(new Ui::GMultipleItemDrawableModelManager)
@@ -29,7 +31,7 @@ void GMultipleItemDrawableModelManager::setDocumentManagerView(const GDocumentMa
     ui->widgetModelManager->setDocumentManagerView(docManagerView);
 }
 
-void GMultipleItemDrawableModelManager::addResult(const Result *res)
+void GMultipleItemDrawableModelManager::addResult(const CT_AbstractResult *res)
 {
     int indexOf = indexOfResultInComboBox(res);
 
@@ -41,10 +43,10 @@ void GMultipleItemDrawableModelManager::addResult(const Result *res)
             ui->comboBoxResult->setEditable(false);
         }
 
-        connect((Result*)res, SIGNAL(destroyed(QObject*)), this, SLOT(resultDestroyedDirect(QObject*)), Qt::DirectConnection);
-        connect((Result*)res, SIGNAL(destroyed(QObject*)), this, SLOT(resultDestroyedQueued(QObject*)), Qt::QueuedConnection);
+        connect((CT_AbstractResult*)res, SIGNAL(destroyed(QObject*)), this, SLOT(resultDestroyedDirect(QObject*)), Qt::DirectConnection);
+        connect((CT_AbstractResult*)res, SIGNAL(destroyed(QObject*)), this, SLOT(resultDestroyedQueued(QObject*)), Qt::QueuedConnection);
 
-        _results.append((Result*)res);
+        _results.append((CT_AbstractResult*)res);
         ui->comboBoxResult->addItem(res->getName() + " (" + GStepManager::staticGetStepName(*res->parentStep()) + ")", qVariantFromValue((void*)res));
         ui->comboBoxResult->setCurrentIndex(ui->comboBoxResult->count()-1);
     }
@@ -54,15 +56,15 @@ void GMultipleItemDrawableModelManager::addResult(const Result *res)
     }
 }
 
-void GMultipleItemDrawableModelManager::removeResult(const Result *res)
+void GMultipleItemDrawableModelManager::removeResult(const CT_AbstractResult *res)
 {
     int index = indexOfResultInComboBox(res);
 
     if(index != -1)
     {
-        disconnect((Result*)res, NULL, this, NULL);
+        disconnect((CT_AbstractResult*)res, NULL, this, NULL);
 
-        _results.removeOne((Result*)res);
+        _results.removeOne((CT_AbstractResult*)res);
         ui->comboBoxResult->removeItem(index);
     }
 
@@ -70,12 +72,12 @@ void GMultipleItemDrawableModelManager::removeResult(const Result *res)
         setEmptyComboBoxText();
 }
 
-Result* GMultipleItemDrawableModelManager::currentResult() const
+CT_AbstractResult* GMultipleItemDrawableModelManager::currentResult() const
 {
     return ui->widgetModelManager->result();
 }
 
-int GMultipleItemDrawableModelManager::indexOfResultInComboBox(const Result *res)
+int GMultipleItemDrawableModelManager::indexOfResultInComboBox(const CT_AbstractResult *res)
 {
     int count = ui->comboBoxResult->count();
 
@@ -100,12 +102,12 @@ void GMultipleItemDrawableModelManager::setEmptyComboBoxText()
 void GMultipleItemDrawableModelManager::on_comboBoxResult_currentIndexChanged(int index)
 {
     ui->widgetModelManager->setResult(NULL);
-    int indexOf = _results.indexOf((Result*)ui->comboBoxResult->itemData(index).value<void*>());
+    int indexOf = _results.indexOf((CT_AbstractResult*)ui->comboBoxResult->itemData(index).value<void*>());
 
     if((index >= 0)
             && (index < ui->comboBoxResult->count())
             && (indexOf != -1))
-        ui->widgetModelManager->setResult((Result*)_results.at(indexOf));
+        ui->widgetModelManager->setResult((CT_AbstractResult*)_results.at(indexOf));
 }
 
 void GMultipleItemDrawableModelManager::on_pushButtonChooseColor_clicked()
@@ -124,12 +126,12 @@ void GMultipleItemDrawableModelManager::on_pushButtonChooseColor_clicked()
 
 void GMultipleItemDrawableModelManager::resultDestroyedDirect(QObject *o)
 {
-    _results.removeOne((Result*)o);
+    _results.removeOne((CT_AbstractResult*)o);
 }
 
 void GMultipleItemDrawableModelManager::resultDestroyedQueued(QObject *o)
 {
-    int index = indexOfResultInComboBox((Result*)o);
+    int index = indexOfResultInComboBox((CT_AbstractResult*)o);
 
     if(index != -1)
         ui->comboBoxResult->removeItem(index);

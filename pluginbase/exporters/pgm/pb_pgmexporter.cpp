@@ -93,7 +93,7 @@ bool PB_PgmExporter::protectedExportToFile()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            CT_VirtualGrid2D<int> *grid = (CT_VirtualGrid2D<int>*)item;
+            CT_VirtualGrid2D<int> *grid = dynamic_cast<CT_VirtualGrid2D<int>*>(item);
             int width = grid->xArraySize();
             int height = grid->yArraySize();
 

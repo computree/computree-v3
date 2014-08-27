@@ -93,7 +93,7 @@ bool PB_PbmExporter::protectedExportToFile()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            CT_ITemplatedData2DArray<int> *grid = (CT_ITemplatedData2DArray<int>*)item;
+            CT_ITemplatedData2DArray<int> *grid = dynamic_cast<CT_ITemplatedData2DArray<int>*>(item);
             int width = grid->xArraySize();
             int height = grid->yArraySize();
 

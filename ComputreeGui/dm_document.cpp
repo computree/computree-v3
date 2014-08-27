@@ -28,6 +28,12 @@
 
 #include "dm_document.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+
+#include "ct_result/abstract/ct_abstractresult.h"
+#include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
+
 int DM_Document::NUMBER = 1;
 
 DM_Document::DM_Document(DM_DocumentManager &manager, QString title)
@@ -40,8 +46,8 @@ DM_Document::DM_Document(DM_DocumentManager &manager, QString title)
 
     ++NUMBER;
 
-    connect(this, SIGNAL(itemDrawableToBeRemoved(ItemDrawable&)), this, SLOT(slotItemToBeRemoved(ItemDrawable&)), Qt::DirectConnection);
-    connect(this, SIGNAL(itemDrawableAdded(ItemDrawable&)), this, SLOT(slotItemDrawableAdded(ItemDrawable&)), Qt::DirectConnection);
+    connect(this, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(slotItemToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(this, SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), this, SLOT(slotItemDrawableAdded(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 }
 
 void DM_Document::setDocumentCloseFilter(const DM_IDocumentCloseFilter *filter)
@@ -79,7 +85,7 @@ QString DM_Document::getTitle() const
     return _title;
 }
 
-bool DM_Document::canAddItemDrawable(const ItemDrawable *item) const
+bool DM_Document::canAddItemDrawable(const CT_AbstractItemDrawable *item) const
 {
     if(m_addFilter != NULL)
         return m_addFilter->canAddItemDrawable(this, item);
@@ -87,20 +93,20 @@ bool DM_Document::canAddItemDrawable(const ItemDrawable *item) const
     return true;
 }
 
-void DM_Document::addItemDrawable(ItemDrawable &item)
+void DM_Document::addItemDrawable(CT_AbstractItemDrawable &item)
 {
     if(!canAddItemDrawable(&item))
         return;
 
     if(item.addDocumentParent(this))
     {
-        _listItemDrawable.append((ItemDrawable*)&item);
+        _listItemDrawable.append((CT_AbstractItemDrawable*)&item);
 
         emit itemDrawableAdded(item);
     }
 }
 
-void DM_Document::removeItemDrawable(ItemDrawable &item)
+void DM_Document::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
     if(_listItemDrawable.contains(&item))
     {
@@ -112,28 +118,28 @@ void DM_Document::removeItemDrawable(ItemDrawable &item)
     }
 }
 
-void DM_Document::removeAllItemDrawableOfResult(const Result &res)
+void DM_Document::removeAllItemDrawableOfResult(const CT_AbstractResult &res)
 {
-    Result *oResult = (Result*)&res;
-    Result *result = (Result*)&res;
+    CT_AbstractResult *oResult = (CT_AbstractResult*)&res;
+    CT_AbstractResult *result = (CT_AbstractResult*)&res;
 
-    if(res.getModel() != NULL)
+    if(res.model() != NULL)
     {
-        IResultModel *om = res.getModel()->originalModel();
+        CT_OutAbstractResultModel *om = (CT_OutAbstractResultModel*)res.model()->originalModel();
 
         if((om != NULL)
-            && !om->getRootItemModel().isEmpty())
-            oResult = om->getRootItemModel().first()->result();
+            && !om->childrens().isEmpty())
+            oResult = ((CT_OutAbstractModel*)om->childrens().first())->result();
     }
 
     beginRemoveMultipleItemDrawable();
 
-    QMutableListIterator<ItemDrawable*> it(_listItemDrawable);
+    QMutableListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
-        Result *iResult = item->result();
+        CT_AbstractItemDrawable *item = it.next();
+        CT_AbstractResult *iResult = item->result();
 
         if((iResult == result) || (iResult == oResult))
         {
@@ -147,25 +153,17 @@ void DM_Document::removeAllItemDrawableOfResult(const Result &res)
     endRemoveMultipleItemDrawable();
 }
 
-void DM_Document::removeAllItemDrawableOfModel(const IItemModel &model)
+void DM_Document::removeAllItemDrawableOfModel(const CT_OutAbstractModel &model)
 {
-    Result *result = model.result();
-
-    if(result == NULL)
-        return;
-
-    QString modelName = model.name();
-
     beginRemoveMultipleItemDrawable();
 
-    QMutableListIterator<ItemDrawable*> it(_listItemDrawable);
+    QMutableListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
-        if((item->result() == result)
-                && (item->getModel()->name() == modelName))
+        if(item->model() == &model)
         {
             emit itemDrawableToBeRemoved(*item);
 
@@ -181,11 +179,11 @@ void DM_Document::removeAllSelectedItemDrawable()
 {
     beginRemoveMultipleItemDrawable();
 
-    QMutableListIterator<ItemDrawable*> it(_listItemDrawable);
+    QMutableListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(item->isSelected())
         {
@@ -203,11 +201,11 @@ void DM_Document::removeAllItemDrawable()
 {
     beginRemoveMultipleItemDrawable();
 
-    QMutableListIterator<ItemDrawable*> it(_listItemDrawable);
+    QMutableListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         emit itemDrawableToBeRemoved(*item);
 
@@ -218,25 +216,23 @@ void DM_Document::removeAllItemDrawable()
     endRemoveMultipleItemDrawable();
 }
 
-const QList<ItemDrawable*>& DM_Document::getItemDrawable() const
+const QList<CT_AbstractItemDrawable*>& DM_Document::getItemDrawable() const
 {
     return _listItemDrawable;
 }
 
-QList<ItemDrawable*> DM_Document::getSelectedItemDrawable() const
+QList<CT_AbstractItemDrawable*> DM_Document::getSelectedItemDrawable() const
 {
-    QList<ItemDrawable*> list;
+    QList<CT_AbstractItemDrawable*> list;
 
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(item->isSelected())
-        {
             list.append(item);
-        }
     }
 
     return list;
@@ -247,7 +243,7 @@ size_t DM_Document::nItemDrawable() const
     return _listItemDrawable.size();
 }
 
-ItemDrawable* DM_Document::getItemDrawable(int i) const
+CT_AbstractItemDrawable* DM_Document::getItemDrawable(int i) const
 {
     if((i>=0)
         && (i<_listItemDrawable.size()))
@@ -260,96 +256,87 @@ ItemDrawable* DM_Document::getItemDrawable(int i) const
 
 void DM_Document::setSelectAllItemDrawable(bool select)
 {
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
+
+    while(it.hasNext())
+        it.next()->setSelected(select);
+}
+
+void DM_Document::setSelectAllItemDrawableOfModel(bool select, const CT_OutAbstractModel &model)
+{
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        it.next()->getItemDrawableSignalSlotManager()->select(select);
+        CT_AbstractItemDrawable *item = it.next();
+
+        if(item->model() == &model)
+            item->setSelected(select);
     }
 }
 
-void DM_Document::setSelectAllItemDrawableOfModel(bool select, const IItemModel &model)
+QList<CT_AbstractItemDrawable*> DM_Document::findItemDrawable(const CT_OutAbstractModel &model) const
 {
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
+    QList<CT_AbstractItemDrawable*> list;
+
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
-        if(item->getModel() == &model)
-            item->getItemDrawableSignalSlotManager()->select(select);
-    }
-}
-
-QList<ItemDrawable*> DM_Document::findItemDrawable(const IItemModel &model) const
-{
-    QList<ItemDrawable*> list;
-
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
-
-    while(it.hasNext())
-    {
-        ItemDrawable *item = it.next();
-
-        if(item->getModel() == &model)
-        {
+        if(item->model() == &model)
             list.append(item);
-        }
     }
 
     return list;
 }
 
-void DM_Document::findItemDrawable(const IItemModel &model, QList<ItemDrawable *> &outList) const
+void DM_Document::findItemDrawable(const CT_OutAbstractModel &model, QList<CT_AbstractItemDrawable *> &outList) const
 {
     outList.clear();
 
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
-        if(item->getModel() == &model)
-        {
+        if(item->model() == &model)
             outList.append(item);
-        }
     }
 }
 
-ItemDrawable* DM_Document::findFirstItemDrawable(const IItemModel &model) const
+CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstractModel &model) const
 {
-    QListIterator<ItemDrawable*> it(_listItemDrawable);
+    QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
-        if(item->getModel() == &model)
-        {
+        if(item->model() == &model)
             return item;
-        }
     }
 
     return NULL;
 }
 
-void DM_Document::slotItemDrawableAdded(ItemDrawable &item)
+void DM_Document::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
-    connect(item.getItemDrawableSignalSlotManager(), SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)), Qt::DirectConnection);
+    connect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)), Qt::DirectConnection);
 }
 
-void DM_Document::slotItemToBeRemoved(ItemDrawable &item)
+void DM_Document::slotItemToBeRemoved(CT_AbstractItemDrawable &item)
 {
-    disconnect(item.getItemDrawableSignalSlotManager(), SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)));
+    disconnect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)));
 }
 
 /////////// PRIVATE ////////////
 
 void DM_Document::slotItemDrawableSelectionChanged(bool select)
 {
-    ItemDrawableSignalSlotManager *itemSSM = (ItemDrawableSignalSlotManager*)sender();
-    ItemDrawable *item = itemSSM->getItemDrawable();
+    CT_AbstractItemDrawable *item = (CT_AbstractItemDrawable*)sender();
 
     emit itemDrawableSelectionChanged(item, select);
 }

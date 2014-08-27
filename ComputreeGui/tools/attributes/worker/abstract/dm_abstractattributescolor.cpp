@@ -2,15 +2,15 @@
 
 DM_AbstractAttributesColor::DM_AbstractAttributesColor() : DM_AbstractAttributes()
 {
-    m_syncWith = RepositoryInterface::SyncWithPointCloud;
+    m_syncWith = CT_Repository::SyncWithPointCloud;
 }
 
-void DM_AbstractAttributesColor::setSyncWithCloud(RepositoryInterface::SyncCloudWith syncWith)
+void DM_AbstractAttributesColor::setSyncWithCloud(CT_Repository::SyncCloudWith syncWith)
 {
     m_syncWith = syncWith;
 }
 
-RepositoryInterface::SyncCloudWith DM_AbstractAttributesColor::syncWithCloud() const
+CT_Repository::SyncCloudWith DM_AbstractAttributesColor::syncWithCloud() const
 {
     return m_syncWith;
 }

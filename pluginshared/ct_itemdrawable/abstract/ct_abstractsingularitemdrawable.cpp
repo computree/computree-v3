@@ -52,12 +52,20 @@ bool CT_AbstractSingularItemDrawable::addItemAttribute(CT_AbstractItemAttribute 
 
 CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::itemAttribute(const CT_OutAbstractItemAttributeModel *outModel) const
 {
+    if(outModel->originalModel() != NULL)
+        return PS_DIAM->itemAttributeFromModel(outModel, getType());
+
     return m_itemAttributes.itemAttributeFromModel(outModel);
 }
 
 QList<CT_AbstractItemAttribute*> CT_AbstractSingularItemDrawable::itemAttributes(const CT_InAbstractItemAttributeModel *inModel) const
 {
-    return m_itemAttributes.itemAttributesFromModel(inModel);
+    QList<CT_AbstractItemAttribute*> l = m_itemAttributes.itemAttributesFromModel(inModel);
+
+    if(l.isEmpty())
+        return PS_DIAM->itemAttributesFromModel(inModel, getType());
+
+    return l;
 }
 
 QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttributes() const
@@ -68,6 +76,11 @@ QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttribute
     l.append(m_itemAttributes.itemAttributes());
 
     return l;
+}
+
+QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::defaultItemAttributes() const
+{
+    return PS_DIAM->itemAttributes(getType());
 }
 
 void CT_AbstractSingularItemDrawable::setBoundingBox(float minx, float miny, float minz, float maxx, float maxy, float maxz)

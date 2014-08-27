@@ -2,15 +2,15 @@
 
 DM_AbstractAttributesNormal::DM_AbstractAttributesNormal() : DM_AbstractAttributes()
 {
-    m_syncWith = RepositoryInterface::SyncWithPointCloud;
+    m_syncWith = CT_Repository::SyncWithPointCloud;
 }
 
-void DM_AbstractAttributesNormal::setSyncWithCloud(RepositoryInterface::SyncCloudWith syncWith)
+void DM_AbstractAttributesNormal::setSyncWithCloud(CT_Repository::SyncCloudWith syncWith)
 {
     m_syncWith = syncWith;
 }
 
-RepositoryInterface::SyncCloudWith DM_AbstractAttributesNormal::syncWithCloud() const
+CT_Repository::SyncCloudWith DM_AbstractAttributesNormal::syncWithCloud() const
 {
     return m_syncWith;
 }

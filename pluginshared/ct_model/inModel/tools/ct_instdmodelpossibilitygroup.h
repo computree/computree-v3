@@ -86,8 +86,8 @@ public:
      * @brief Set the minimum number of possibility that must be selected in this group to be valid. No effect if this group is exclusive !
      * @return False if n is greather than "maximumNumberOfPossibilityThatCanBeSelected" or n == 0
      */
-    bool setMinimumNumberOfPossibilityThatMustBeSelected(uint n);
-    uint minimumNumberOfPossibilityThatMustBeSelected() const;
+    bool setMinimumNumberOfPossibilityThatMustBeSelected(int n);
+    int minimumNumberOfPossibilityThatMustBeSelected() const;
 
     /**
      * @brief Set the maximum number of possibility that can be selected in this group. No effect if this group is exclusive !
@@ -95,8 +95,8 @@ public:
      * @warning If n change and the number of possibilities is greather than n, all last selected possibilities will be removed while
      *          the number of selected possibilities is greather than n.
      */
-    bool setMaximumNumberOfPossibilityThatCanBeSelected(uint n);
-    uint maximumNumberOfPossibilityThatCanBeSelected() const;
+    bool setMaximumNumberOfPossibilityThatCanBeSelected(int n);
+    int maximumNumberOfPossibilityThatCanBeSelected() const;
 
     /**
      * @brief Returns true if this group is valid. If number of possibilities selected match the minimum and maximum criteria.
@@ -109,8 +109,8 @@ private:
     QList<CT_InStdModelPossibility*>    m_possibilitiesSelected;
     bool                                m_exclusive;
     bool                                m_enable;
-    uint                                m_minMustBeSelected;
-    uint                                m_maxCanBeSelected;
+    int                                 m_minMustBeSelected;
+    int                                 m_maxCanBeSelected;
 };
 
 #endif // CT_INSTDMODELPOSSIBILITYGROUP_H

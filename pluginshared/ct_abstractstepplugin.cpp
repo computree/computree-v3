@@ -365,6 +365,7 @@ void CT_AbstractStepPlugin::initStep(CT_VirtualAbstractStep *step) const
     step->preProcessCreateOutResultModelListProtected();
     step->getInTurnManager()->createSearchModelListForCurrentTurn();
     step->createOutResultModelListProtected();
+    step->getOutTurnManager()->createTurn(false);
 
     step->setCreateDefaultOutModelActive(false);
 }

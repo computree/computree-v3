@@ -23,22 +23,22 @@ bool CT_InAbstractResultModel::isRecursive() const
     return m_recursive;
 }
 
-bool CT_InAbstractResultModel::setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(uint n)
+bool CT_InAbstractResultModel::setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(int n)
 {
     return possibilitiesGroup()->setMinimumNumberOfPossibilityThatMustBeSelected(n);
 }
 
-uint CT_InAbstractResultModel::minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() const
+int CT_InAbstractResultModel::minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() const
 {
     return possibilitiesGroup()->minimumNumberOfPossibilityThatMustBeSelected();
 }
 
-bool CT_InAbstractResultModel::setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(uint n)
+bool CT_InAbstractResultModel::setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(int n)
 {
     return possibilitiesGroup()->setMaximumNumberOfPossibilityThatCanBeSelected(n);
 }
 
-uint CT_InAbstractResultModel::maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() const
+int CT_InAbstractResultModel::maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() const
 {
     return possibilitiesGroup()->maximumNumberOfPossibilityThatCanBeSelected();
 }

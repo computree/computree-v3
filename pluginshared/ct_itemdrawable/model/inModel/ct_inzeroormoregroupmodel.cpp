@@ -12,6 +12,11 @@ CT_InZeroOrMoreGroupModel::CT_InZeroOrMoreGroupModel() : CT_InAbstractGroupModel
     internalSetFinderMode(CT_InAbstractModel::F_IsObligatory);
 }
 
+QString CT_InZeroOrMoreGroupModel::modelTypeDisplayable() const
+{
+    return QString("CT_InZeroOrMoreGroupModel");
+}
+
 CT_InAbstractModel* CT_InZeroOrMoreGroupModel::copy(bool withPossibilities) const
 {
     CT_InZeroOrMoreGroupModel *cpy = new CT_InZeroOrMoreGroupModel();

@@ -2,8 +2,15 @@
 
 CT_OutAbstractResultModel::CT_OutAbstractResultModel(const QString &uniqueName,
                                                      const QString &description,
-                                                     const QString &displayableName) : CT_OutAbstractModel(uniqueName,
-                                                                                                           description,
-                                                                                                           displayableName)
+                                                     const QString &displayableName,
+                                                     const QString &resultName) : CT_OutAbstractModel(uniqueName,
+                                                                                                      description,
+                                                                                                      displayableName)
 {
+    m_resultName = resultName;
+}
+
+QString CT_OutAbstractResultModel::resultName() const
+{
+    return m_resultName;
 }

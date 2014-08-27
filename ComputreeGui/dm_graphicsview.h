@@ -49,11 +49,11 @@ public:
 
     virtual const DM_GraphicsViewOptions& getOptions() const;
 
-    virtual void setCurrentPointCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc) = 0;
-    virtual void setCurrentFaceCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc) = 0;
-    virtual void setCurrentEdgeCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc) = 0;
-    virtual void setCurrentPointCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn) = 0;
-    virtual void setCurrentFaceCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn) = 0;
+    virtual void setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc) = 0;
+    virtual void setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc) = 0;
+    virtual void setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc) = 0;
+    virtual void setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn) = 0;
+    virtual void setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn) = 0;
 
     virtual void setUseCloudColor(bool use) = 0;
     virtual void setUseCloudNormal(bool use) = 0;

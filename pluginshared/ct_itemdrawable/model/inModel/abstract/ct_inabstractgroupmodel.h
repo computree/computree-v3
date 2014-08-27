@@ -38,9 +38,9 @@ public:
      * @param description : a description
      * @param displayableName : a displayable name
      */
-    CT_InAbstractGroupModel(QString uniqueName,
-                            QString description,
-                            QString displayableName);
+    CT_InAbstractGroupModel(const QString &uniqueName,
+                            const QString &description,
+                            const QString &displayableName);
 
     /**
      * @brief Return the type of the group researched (CT_GroupXXX::statiGetType)
@@ -69,11 +69,6 @@ protected:
      * @brief Set the group's type
      */
     void setGroupType(const QString &groupType);
-
-private:
-
-    QString                     m_groupType;
-    QString                     m_groupShortType;
 };
 
 #endif // CT_INABSTRACTGROUPMODEL_H

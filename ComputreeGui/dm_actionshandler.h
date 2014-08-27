@@ -32,12 +32,12 @@ public:
      *
      *        The handler is responsible of the life of the action.
      */
-    void setCurrentAction(ActionInterface *action);
+    void setCurrentAction(CT_AbstractAction *action);
 
     /**
      * @brief Return the current action
      */
-    ActionInterface* currentAction() const;
+    CT_AbstractAction* currentAction() const;
 
     /**
      * @brief Remove actions that have the uniqueName passed in parameter. The default
@@ -48,12 +48,12 @@ public:
     /**
      * @brief Set the default action. The old action is deleted.
      */
-    void setDefaultAction(ActionInterface *action);
+    void setDefaultAction(CT_AbstractAction *action);
 
     /**
      * @brief Return the default action
      */
-    ActionInterface* defaultAction() const;
+    CT_AbstractAction* defaultAction() const;
 
     bool eventToAction(QEvent *e);
     bool enterEvent(QEvent *e);
@@ -67,13 +67,13 @@ public:
     bool keyReleaseEvent(QKeyEvent *e);
 
 private:
-    QList<ActionInterface*>     m_actions;
+    QList<CT_AbstractAction*>     m_actions;
     int                         m_maxActions;
-    ActionInterface             *m_activeAction;
-    ActionInterface             *m_defaultAction;
+    CT_AbstractAction             *m_activeAction;
+    CT_AbstractAction             *m_defaultAction;
     CDM_ActionsManager          *m_actionManager;
 
-    ActionInterface* findAction(const QString &uniqueName) const;
+    CT_AbstractAction* findAction(const QString &uniqueName) const;
 
 protected:
 
@@ -106,8 +106,8 @@ protected:
     }
 
 signals:
-    void currentActionChanged(ActionInterface *action);
-    void defaultActionChanged(ActionInterface *acrion);
+    void currentActionChanged(CT_AbstractAction *action);
+    void defaultActionChanged(CT_AbstractAction *acrion);
 };
 
 #endif // DM_ACTIONSHANDLER_H

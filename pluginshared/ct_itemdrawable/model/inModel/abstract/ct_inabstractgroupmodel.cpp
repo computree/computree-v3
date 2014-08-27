@@ -2,24 +2,22 @@
 
 #include "ct_itemdrawable/model/inModel/abstract/def_ct_abstractgroupmodelin.h"
 
-CT_InAbstractGroupModel::CT_InAbstractGroupModel(QString uniqueName,
-                                                 QString description,
-                                                 QString displayableName) : DEF_CT_AbstractGroupModelIn(uniqueName,
-                                                                                                        description,
-                                                                                                        displayableName)
+CT_InAbstractGroupModel::CT_InAbstractGroupModel(const QString &uniqueName,
+                                                 const QString &description,
+                                                 const QString &displayableName) : DEF_CT_AbstractGroupModelIn(uniqueName,
+                                                                                                               description,
+                                                                                                               displayableName)
 {
-    m_groupType = "";
-    m_groupShortType = "";
 }
 
 QString CT_InAbstractGroupModel::groupShortType() const
 {
-    return m_groupShortType;
+    return itemShortType();
 }
 
 QString CT_InAbstractGroupModel::groupType() const
 {
-    return m_groupType;
+    return itemType();
 }
 
 QList<SettingsNodeGroup*> CT_InAbstractGroupModel::getAllValues() const
@@ -110,8 +108,5 @@ bool CT_InAbstractGroupModel::setAllValues(const QList<SettingsNodeGroup*> &list
 
 void CT_InAbstractGroupModel::setGroupType(const QString &groupType)
 {
-    Q_ASSERT_X(!groupType.isEmpty(), "setGroupType", "You pass a group type empty !");
-
-    m_groupType = groupType;
-    m_groupShortType = m_groupType.split("/").last();
+    setItemType(groupType);
 }

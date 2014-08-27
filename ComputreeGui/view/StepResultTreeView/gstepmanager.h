@@ -35,6 +35,8 @@
 #include "myqstandarditem.h"
 #include "mytreedelegate.h"
 
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+
 #include <QTreeView>
 #include <QStandardItemModel>
 
@@ -72,7 +74,7 @@ public:
     /*!
      *  \brief Retourne le nom de l'tape en paramtres (diffrent selon si les paramtres de l'tape sont modifis)
      */
-    static QString staticGetStepName(Step &step);
+    static QString staticGetStepName(CT_VirtualAbstractStep &step);
 
 private:
     CDM_StepManager         *_stepManager;              /*!< le gestionnaire d'etape */
@@ -83,7 +85,7 @@ private:
     MyTreeDelegate          *_delegate;                 /*!< Un dlgu pour le style d'affichage des lments de la QTreeView */
 
     QMutex                  _mutexResList;
-    QList<Result *>         _resToBeAddedList;          /*!< Une liste qui contient les rsultats qui doivent tre ajout (voir slot "resultToBeRemoved" et "resultToAdd") */
+    QList<CT_AbstractResult *>         _resToBeAddedList;          /*!< Une liste qui contient les rsultats qui doivent tre ajout (voir slot "resultToBeRemoved" et "resultToAdd") */
 
     QMutex                  _mutexItemRes;
 
@@ -92,19 +94,19 @@ private:
      *
      *  \return la liste des items (un par colonne)
      */
-    QList<QStandardItem *> createItemsForStep(Step &step);
+    QList<QStandardItem *> createItemsForStep(CT_VirtualAbstractStep &step);
 
     /*!
      *  \brief Cre les items compatible avec le modle pour un rsultat
      *
      *  \return la liste des items (un par colonne)
      */
-    QList<QStandardItem *> createItemsForResult(Result &res);
+    QList<QStandardItem *> createItemsForResult(CT_AbstractResult &res);
 
     /*!
      *  \brief Dfini la couleur de fond des items reprsentant une tape
      */
-    void setStepItemBackgroundColor(Step &step, QList<QStandardItem *> &list);
+    void setStepItemBackgroundColor(CT_VirtualAbstractStep &step, QList<QStandardItem *> &list);
 
     /*!
      *  \brief Dfini la couleur de fond des items reprsentant un rsultat
@@ -116,14 +118,14 @@ private:
      *
      *  \return NULL si l'tape n'a pas t trouve, l'item correspondant sinon
      */
-    MyQStandardItem* findItem(Step *step);
+    MyQStandardItem* findItem(CT_VirtualAbstractStep *step);
 
     /*!
      *  \brief Recherche l'item de la premire colonne correspondant  un rsultat
      *
      *  \return NULL si le rsultat n'a pas t trouv, l'item correspondant sinon
      */
-    MyQStandardItem* findItem(Result *res);
+    MyQStandardItem* findItem(CT_AbstractResult *res);
 
     /*!
      *  \brief Retourne l'item (premire colonne) slectionn
@@ -134,21 +136,21 @@ private:
 
     /*!
      *  \brief (INTERNE) Recherche l'item de la premire colonne correspondant
-     *          une tape, mthode rcursive. Utiliser plutt findItem(Step *step).
+     *          une tape, mthode rcursive. Utiliser plutt findItem(CT_VirtualAbstractStep *step).
      *
      *  \return NULL si l'tape n'a pas t trouve, l'item correspondant sinon
      */
-    MyQStandardItem* recursiveFindItem(Step *step);
+    MyQStandardItem* recursiveFindItem(CT_VirtualAbstractStep *step);
 
     /*!
      *  \brief (INTERNE) Recherche l'item de la premire colonne correspondant
-     *          un rsultat, mthode rcursive. Utiliser plutt findItem(Result *res).
+     *          un rsultat, mthode rcursive. Utiliser plutt findItem(CT_AbstractResult *res).
      *
      *  \return NULL si le rsultat n'a pas t trouv, l'item correspondant sinon
      */
-    MyQStandardItem* recursiveFindItem(Result *res);
-    MyQStandardItem* getItemForResult(QStandardItem *stepItem, Result *res);
-    QList<MyQStandardItem *> getItemsForResult(QStandardItem *stepItem, Result *res);
+    MyQStandardItem* recursiveFindItem(CT_AbstractResult *res);
+    MyQStandardItem* getItemForResult(QStandardItem *stepItem, CT_AbstractResult *res);
+    QList<MyQStandardItem *> getItemsForResult(QStandardItem *stepItem, CT_AbstractResult *res);
 
     /*!
      *  \brief Appel lorsque l'item (colonne n) correspondant  une tape
@@ -174,9 +176,9 @@ private:
      *
      *  \return true si l'execution peut continuer
      */
-    bool checkExecuteStepAndShowWarningMessage(Step *step, bool debugMode);
+    bool checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep *step, bool debugMode);
 
-    bool configureStepAndAdd(Step *newStep, Step *parentStep = NULL);
+    bool configureStepAndAdd(CT_VirtualAbstractStep *newStep, CT_VirtualAbstractStep *parentStep = NULL);
 
     void recursiveExpandCollapseItemOfStep(MyQStandardItem *item, bool expand);
     void recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *item, bool expand);
@@ -184,38 +186,38 @@ private:
 public slots:
 
     void addOpenFileStep(QString filePath);
-    void addGenericStepAndConfigure(Step *parentStep, Step *stepToCopy);
-    void addCanBeAddedFirstStepAndConfigure(StepCanBeAddedFirst *stepToCopy);
-    void insertGenericStepAndConfigure(Step *parentStep, Step *stepToCopy);
-    bool executeStep(Step *step = NULL);
-    bool executeModifyStep(Step *step);
-    bool executeOrForwardStepInDebugMode(Step *step = NULL);
-    bool executeOrForwardStepFastInDebugMode(Step *step = NULL);
-    bool configureInputResultOfStep(Step *step);
-    bool configureStep(Step *step);
-    bool removeStep(Step *step);
-    bool loadResultStep(StepSerializable *step);
-    bool editItemDrawableModelOfResult(Result *res);
-    bool removeEditItemDrawableModelOfResult(Result *res);
-    bool removeItemDrawableOfResult(Result *res);
+    void addGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
+    void addCanBeAddedFirstStepAndConfigure(CT_AbstractStepCanBeAddedFirst *stepToCopy);
+    void insertGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
+    bool executeStep(CT_VirtualAbstractStep *step = NULL);
+    bool executeModifyStep(CT_VirtualAbstractStep *step);
+    bool executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *step = NULL);
+    bool executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *step = NULL);
+    bool configureInputResultOfStep(CT_VirtualAbstractStep *step);
+    bool configureStep(CT_VirtualAbstractStep *step);
+    bool removeStep(CT_VirtualAbstractStep *step);
+    bool loadResultStep(CT_AbstractStepSerializable *step);
+    bool editItemDrawableModelOfResult(CT_AbstractResult *res);
+    bool removeEditItemDrawableModelOfResult(CT_AbstractResult *res);
+    bool removeItemDrawableOfResult(CT_AbstractResult *res);
 
     void showStepManagerOptions();
 private slots:
 
-    void stepAdded(Step *step);
-    void stepInserted(int row, Step *step);
-    void stepToBeRemoved(Step *step);
+    void stepAdded(CT_VirtualAbstractStep *step);
+    void stepInserted(int row, CT_VirtualAbstractStep *step);
+    void stepToBeRemoved(CT_VirtualAbstractStep *step);
     void stepSettingsModified();
 
-    void resultAdded(Result *res);
-    void resultToBeClearedFromMemory(Result *res);
-    void resultToBeRemoved(Result *res);
-    void resultToBeSerialized(Result *res);
+    void resultAdded(const CT_AbstractResult *res);
+    void resultToBeClearedFromMemory(const CT_AbstractResult *res);
+    void resultToBeRemoved(const CT_AbstractResult *res);
+    void resultToBeSerialized(const CT_AbstractResult *res);
 
     void itemDataChanged(QStandardItem *item);
     void indexDoubleClicked(QModelIndex index);
 
-    void resultToAdd(QStandardItem *parentItem, Result *res);
+    void resultToAdd(QStandardItem *parentItem, CT_AbstractResult *res);
     void resultToRemove(QStandardItem *parentItem, MyQStandardItem *resItem);
     void itemToRemove(QStandardItem *item);
 
@@ -228,7 +230,7 @@ private slots:
 
 signals:
 
-    void addResult(QStandardItem *parentItem, Result *res);
+    void addResult(QStandardItem *parentItem, CT_AbstractResult *res);
     void removeResult(QStandardItem *parentItem, MyQStandardItem *resItem);
     void removeItem(QStandardItem *item);
 };

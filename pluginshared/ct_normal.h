@@ -47,6 +47,11 @@ public:
     {
         normal.copy(*this);
     }
+
+    inline float* vertex() const
+    {
+        return const_cast<float*>(&normal_x);
+    }
 };
 #endif
 

@@ -29,28 +29,12 @@ public:
     CT_AbstractSingularItemDrawable* singularItem() const;
 
     // INHERITED FROM CT_OutAbstractItemModel //
-    CT_AbstractItemDrawable* item() const;
+    CT_AbstractItemDrawable* itemDrawable() const;
 
     /**
      * @brief Returns all item attributes model contained in this model of item
      */
     virtual const QList<CT_OutAbstractItemAttributeModel*>& itemAttributes() const = 0;
-
-protected:
-
-    /**
-     * @brief Delete the item from this model
-     */
-    void clearItem();
-
-    /**
-     * @brief Set the item of this model
-     */
-    void setSingularItem(CT_AbstractSingularItemDrawable *item);
-
-private:
-
-    CT_AbstractSingularItemDrawable     *_item;
 };
 
 #endif // CT_OUTABSTRACTSINGULARITEMMODEL_H

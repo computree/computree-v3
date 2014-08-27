@@ -31,6 +31,11 @@
 #include "dm_guimanager.h"
 #include "tools/graphicsview/dm_colorselectionmanagert.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
+#include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+
 #include <limits>
 
 G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::SampleBuffers), parent), GGraphicsView()
@@ -55,9 +60,9 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
 
     m_signalEmitter.setGraphicsView(this);
 
-    m_pointsSelectionManager = new DM_ColorSelectionManagerT<IPointAttributes>(RepositoryInterface::SyncWithPointCloud);
-    m_facesSelectionManager = new DM_ColorSelectionManagerT<IFaceAttributes>(RepositoryInterface::SyncWithFaceCloud);
-    m_edgesSelectionManager = new DM_ColorSelectionManagerT<IEdgeAttributes>(RepositoryInterface::SyncWithEdgeCloud);
+    m_pointsSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>(CT_Repository::SyncWithPointCloud);
+    m_facesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>(CT_Repository::SyncWithFaceCloud);
+    m_edgesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>(CT_Repository::SyncWithEdgeCloud);
 
     // 1000 lments slectionnable (4x1000 = 4000)
     setSelectBufferSize(4000);
@@ -100,7 +105,7 @@ void G3DGraphicsView::setDocumentView(const DM_DocumentView *doc)
     m_facesSelectionManager->setDocument(gv);
     m_edgesSelectionManager->setDocument(gv);
 
-    connect(gv, SIGNAL(itemDrawableToBeRemoved(ItemDrawable&)), this, SLOT(itemDrawableToBeRemoved(ItemDrawable&)), Qt::DirectConnection);
+    connect(gv, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
     GGraphicsView::setDocumentView(doc);
 }
@@ -133,7 +138,7 @@ GraphicsViewSignalEmitterInterface* G3DGraphicsView::signalEmitter() const
     return (GraphicsViewSignalEmitterInterface*)&m_signalEmitter;
 }
 
-QSharedPointer<ColorCloudRegisteredInterface> G3DGraphicsView::colorCloudOf(GraphicsViewInterface::ColorCloudType type) const
+QSharedPointer<CT_StandardColorCloudRegistered> G3DGraphicsView::colorCloudOf(GraphicsViewInterface::ColorCloudType type) const
 {
     if(type == GraphicsViewInterface::CPointCloud)
         return _g.currentPointCloudColor();
@@ -142,10 +147,10 @@ QSharedPointer<ColorCloudRegisteredInterface> G3DGraphicsView::colorCloudOf(Grap
     else if(type == GraphicsViewInterface::CEdgeCloud)
         return _g.currentEdgeCloudColor();
 
-    return QSharedPointer<ColorCloudRegisteredInterface>(NULL);
+    return QSharedPointer<CT_StandardColorCloudRegistered>(NULL);
 }
 
-QSharedPointer<NormalCloudRegisteredInterface> G3DGraphicsView::normalCloudOf(GraphicsViewInterface::NormalCloudType type) const
+QSharedPointer<CT_StandardNormalCloudRegistered> G3DGraphicsView::normalCloudOf(GraphicsViewInterface::NormalCloudType type) const
 {
     if(type == GraphicsViewInterface::NPointCloud)
         return _g.currentPointCloudNormal();
@@ -154,7 +159,7 @@ QSharedPointer<NormalCloudRegisteredInterface> G3DGraphicsView::normalCloudOf(Gr
     else if(type == GraphicsViewInterface::NEdgeCloud)
         return _g.currentEdgeCloudNormal();
 
-    return QSharedPointer<NormalCloudRegisteredInterface>(NULL);
+    return QSharedPointer<CT_StandardNormalCloudRegistered>(NULL);
 }
 
 GraphicsViewInterface::GraphicsViewType G3DGraphicsView::type() const
@@ -165,7 +170,7 @@ GraphicsViewInterface::GraphicsViewType G3DGraphicsView::type() const
     return GV3D;
 }
 
-QList<ItemDrawable *> G3DGraphicsView::getSelectedItems() const
+QList<CT_AbstractItemDrawable *> G3DGraphicsView::getSelectedItems() const
 {
     return getDocumentView().getSelectedItemDrawable();
 }
@@ -198,7 +203,7 @@ void G3DGraphicsView::setAllPointsSelected(bool select)
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupPointCloudIndex);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -238,7 +243,7 @@ void G3DGraphicsView::setAllFacesSelected(bool select)
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupFaceCloudIndex);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -278,7 +283,7 @@ void G3DGraphicsView::setAllEdgesSelected(bool select)
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupEdgeCloudIndex);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -297,7 +302,7 @@ size_t G3DGraphicsView::countPoints()
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountPoints);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -316,7 +321,7 @@ size_t G3DGraphicsView::countEdges()
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountEdges);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -335,7 +340,7 @@ size_t G3DGraphicsView::countFaces()
     m_fakeG.beginNewDraw();
     m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountFaces);
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
         it.next()->draw(*this, m_fakeG);
@@ -493,27 +498,27 @@ bool G3DGraphicsView::mustDrawFastestNow() const
     return (drawModeToUse() == FAST);
 }
 
-void G3DGraphicsView::setCurrentPointCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DGraphicsView::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     _g.setCurrentPointCloudColor(cc);
 }
 
-void G3DGraphicsView::setCurrentFaceCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DGraphicsView::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     _g.setCurrentFaceCloudColor(cc);
 }
 
-void G3DGraphicsView::setCurrentEdgeCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc)
+void G3DGraphicsView::setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     _g.setCurrentEdgeCloudColor(cc);
 }
 
-void G3DGraphicsView::setCurrentPointCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void G3DGraphicsView::setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     _g.setCurrentPointCloudNormal(nn);
 }
 
-void G3DGraphicsView::setCurrentFaceCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn)
+void G3DGraphicsView::setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
 {
     _g.setCurrentFaceCloudNormal(nn);
 }
@@ -591,10 +596,10 @@ void G3DGraphicsView::addIdToSelection(const GLuint &id)
         m_facesSelectionManager->addIDToSelection(id);
     else
     {
-        ItemDrawable *item = getDocumentView().getItemDrawable(id);
+        CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
         if(item != NULL)
-            item->getItemDrawableSignalSlotManager()->select(true);
+            item->setSelected(true);
     }
 }
 
@@ -615,15 +620,15 @@ void G3DGraphicsView::addEdgesIDToSelection(const GLuint &id)
 
 void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
 {
-    ItemDrawable *item = getDocumentView().getItemDrawable(id);
+    CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
     if(item != NULL)
-        item->getItemDrawableSignalSlotManager()->select(true);
+        item->setSelected(true);
 }
 
 void G3DGraphicsView::setLastItemIdSelected(const GLuint &id)
 {
-    ItemDrawable *item = getDocumentView().getItemDrawable(id);
+    CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
     // fixe le pivot potentiel de la camera sur le centre du dernier item selectionne
     if(item != NULL)
@@ -632,9 +637,9 @@ void G3DGraphicsView::setLastItemIdSelected(const GLuint &id)
 
 void G3DGraphicsView::setLastPointIdSelected(const GLuint &id)
 {
-    float *point = GUI_MANAGER->getPluginsContext()->repository()->globalPointsCloud()->valueAt(id);
+    const CT_Point &point = PS_REPOSITORY->globalPointCloud()->constTAt(id);
 
-    _cameraController.setLastItemSelectedCameraCenter(point[0], point[1], point[2]);
+    _cameraController.setLastItemSelectedCameraCenter(point.getX(), point.getY(), point.getZ());
 }
 
 void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
@@ -657,10 +662,10 @@ void G3DGraphicsView::removeIdFromSelection(const GLuint &id)
         m_facesSelectionManager->removeIDFromSelection(id);
     else
     {
-        ItemDrawable *item = getDocumentView().getItemDrawable(id);
+        CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
         if(item != NULL)
-            item->getItemDrawableSignalSlotManager()->select(false);
+            item->setSelected(false);
     }
 }
 
@@ -681,10 +686,10 @@ void G3DGraphicsView::removeEdgesIDFromSelection(const GLuint &id)
 
 void G3DGraphicsView::removeItemsIDFromSelection(const GLuint &id)
 {
-    ItemDrawable *item = getDocumentView().getItemDrawable(id);
+    CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
     if(item != NULL)
-        item->getItemDrawableSignalSlotManager()->select(false);
+        item->setSelected(false);
 }
 
 void G3DGraphicsView::removeAllIdFromSelection()
@@ -784,11 +789,11 @@ void G3DGraphicsView::drawInternal()
 
     QColor selectedColor = getOptions().getSelectedColor();
 
-    QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if(item->isSelected())
         {
@@ -822,7 +827,7 @@ void G3DGraphicsView::drawInternal()
         }
     }
 
-    ActionForGraphicsViewInterface *action = dynamic_cast<ActionForGraphicsViewInterface*>(actionsHandler()->currentAction());
+    CT_AbstractActionForGraphicsView *action = dynamic_cast<CT_AbstractActionForGraphicsView*>(actionsHandler()->currentAction());
 
     if(action != NULL)
         action->draw(*this, _g);
@@ -913,7 +918,7 @@ void G3DGraphicsView::drawOverlay(QPainter &painter)
 {
     drawCoordinates(painter);
 
-    ActionForGraphicsViewInterface *action = dynamic_cast<ActionForGraphicsViewInterface*>(actionsHandler()->currentAction());
+    CT_AbstractActionForGraphicsView *action = dynamic_cast<CT_AbstractActionForGraphicsView*>(actionsHandler()->currentAction());
 
     lockPaint();
 
@@ -956,7 +961,7 @@ void G3DGraphicsView::drawWithNames()
 
         int i = 0;
 
-        QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+        QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
         while(it.hasNext())
         {
@@ -974,7 +979,7 @@ void G3DGraphicsView::drawWithNames()
         m_fakeG.setDrawFastest(mustDrawFastestNow());
         m_fakeG.setPointSize(getOptions().getPointSize());
 
-        QListIterator<ItemDrawable*> it(getDocumentView().getItemDrawable());
+        QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
         while(it.hasNext())
             it.next()->draw(*this, m_fakeG);
@@ -1340,17 +1345,17 @@ bool G3DGraphicsView::mustSelectItems() const
     return ((selectionMode() >= GraphicsViewInterface::SELECT) && (selectionMode() <= GraphicsViewInterface::REMOVE_ONE));
 }
 
-QSharedPointer<IndexCloudRegisteredInterface> G3DGraphicsView::getSelectedPoints() const
+QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedPoints() const
 {
     return m_pointsSelectionManager->selected();
 }
 
-QSharedPointer<IndexCloudRegisteredInterface> G3DGraphicsView::getSelectedFaces() const
+QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedFaces() const
 {
     return m_facesSelectionManager->selected();
 }
 
-QSharedPointer<IndexCloudRegisteredInterface> G3DGraphicsView::getSelectedEdges() const
+QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedEdges() const
 {
     return m_edgesSelectionManager->selected();
 }
@@ -1425,7 +1430,7 @@ void G3DGraphicsView::initIndexCloudRegistered()
     m_edgesSelectionManager->init();
 }
 
-void G3DGraphicsView::itemDrawableToBeRemoved(ItemDrawable &item)
+void G3DGraphicsView::itemDrawableToBeRemoved(CT_AbstractItemDrawable &item)
 {
     lockPaint();
 

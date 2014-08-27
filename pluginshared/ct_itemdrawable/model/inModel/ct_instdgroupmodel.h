@@ -19,12 +19,18 @@ public:
      * @param choiceMode : type of selection you want. Choose multiple by default.
      * @param finderMode : if you want that the group is optionnal or not. Obligatory by default.
      */
-    CT_InStdGroupModel(QString uniqueName,
-                       QString groupType = CT_AbstractItemGroup::staticGetType(),
-                       QString displayableName = "Groupe",
-                       QString description = "",
+    CT_InStdGroupModel(const QString &uniqueName,
+                       const QString &groupType = CT_AbstractItemGroup::staticGetType(),
+                       const QString &displayableName = "Groupe",
+                       const QString &description = "",
                        CT_InAbstractGroupModel::GroupChoiceMode choiceMode = CT_InAbstractGroupModel::CG_ChooseMultipleIfMultiple,
                        CT_InAbstractGroupModel::GroupFinderMode finderMode = CT_InAbstractGroupModel::FG_IsObligatory);
+
+
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
 
     /**
      * @brief Copy this model

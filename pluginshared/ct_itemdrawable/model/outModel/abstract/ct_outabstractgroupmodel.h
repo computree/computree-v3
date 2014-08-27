@@ -36,22 +36,7 @@ public:
     CT_AbstractItemGroup* group() const;
 
     // INHERITED FROM CT_OutAbstractItemModel //
-    CT_AbstractItemDrawable* item() const;
-
-protected:
-
-    /**
-     * @brief Delete the group from this model
-     */
-    void clearGroup();
-
-    /**
-     * @brief Set the group of this model
-     */
-    void setGroup(CT_AbstractItemGroup *group);
-
-private:
-    CT_AbstractItemGroup                    *_group;
+    CT_AbstractItemDrawable* itemDrawable() const;
 };
 
 #endif // CT_OUTABSTRACTGROUPMODEL_H

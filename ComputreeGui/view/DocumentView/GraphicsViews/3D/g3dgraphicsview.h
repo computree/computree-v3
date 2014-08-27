@@ -35,6 +35,10 @@
 
 #include <qglviewer.h>
 
+#include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
+
 class G3DGraphicsView;
 template<typename T> class DM_ColorSelectionManagerT;
 
@@ -71,8 +75,8 @@ public:
 
     // Inherit from GraphicsViewInterface
     GraphicsViewSignalEmitterInterface* signalEmitter() const;
-    QSharedPointer<ColorCloudRegisteredInterface> colorCloudOf(ColorCloudType type) const;
-    QSharedPointer<NormalCloudRegisteredInterface> normalCloudOf(NormalCloudType type) const;
+    QSharedPointer<CT_StandardColorCloudRegistered> colorCloudOf(ColorCloudType type) const;
+    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloudOf(NormalCloudType type) const;
     GraphicsViewType type() const;
 
     bool mustSelectPoints() const;
@@ -80,10 +84,10 @@ public:
     bool mustSelectEdges() const;
     bool mustSelectItems() const;
 
-    QSharedPointer<IndexCloudRegisteredInterface> getSelectedPoints() const;
-    QSharedPointer<IndexCloudRegisteredInterface> getSelectedFaces() const;
-    QSharedPointer<IndexCloudRegisteredInterface> getSelectedEdges() const;
-    QList<ItemDrawable*> getSelectedItems() const;
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedPoints() const;
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedFaces() const;
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedEdges() const;
+    QList<CT_AbstractItemDrawable*> getSelectedItems() const;
 
     void beginRemoveMultiplePointsFromSelection(const size_t &n);
     void removePointFromSelection(const size_t &globalIndex);
@@ -135,11 +139,11 @@ public:
     DM_GraphicsViewOptions::DrawFastestMode drawFastest() const;
     bool mustDrawFastestNow() const;
 
-    void setCurrentPointCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentFaceCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentEdgeCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentPointCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn);
-    void setCurrentFaceCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn);
+    void setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
+    void setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
 
     void setUseCloudColor(bool use);
     void setUseCloudNormal(bool use);
@@ -167,9 +171,9 @@ private:
     bool                            _forceDrawMode;
     G3DGraphicsViewSignalEmitter    m_signalEmitter;
 
-    DM_ColorSelectionManagerT<IPointAttributes>     *m_pointsSelectionManager;
-    DM_ColorSelectionManagerT<IFaceAttributes>      *m_facesSelectionManager;
-    DM_ColorSelectionManagerT<IEdgeAttributes>      *m_edgesSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>     *m_pointsSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>      *m_facesSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>      *m_edgesSelectionManager;
 
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);
@@ -237,7 +241,7 @@ private slots:
     void setDrawModeStartTimerAndRedraw();
     void changeDrawMethodToNormal();
     void initIndexCloudRegistered();
-    void itemDrawableToBeRemoved(ItemDrawable &item);
+    void itemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
 };
 
 #endif // G3DGRAPHICSVIEW_H

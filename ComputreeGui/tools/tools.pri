@@ -5,7 +5,6 @@ HEADERS += \
     tools/treeview/dm_itemdrawabletreeviewmodelresearcher.h \
     tools/treeview/dm_itreeviewmanager.h \
     tools/worker/dm_abstractworker.h \
-    tools/itemdrawable/dm_itemdrawabletypebuilder.h \
     tools/itemdrawable/dm_itemdrawableviewconfigurationbuilder.h \
     tools/guimanager/dm_abstractasyncoperationoptions.h \
     tools/guimanager/dm_guimanagertoken.h \
@@ -28,14 +27,15 @@ HEADERS += \
     tools/treeview/dm_sortfiltermathproxymodel.h \
     tools/graphicsview/dm_colorselectionmanagert.h \
     tools/graphicsview/dm_colorselectionmanagert.hpp \
-    tools/treeview/dm_actionshandlerfortreeview.h
+    tools/treeview/dm_actionshandlerfortreeview.h \
+    tools/itemdrawable/dm_itemdrawablebuildert.h \
+    tools/itemdrawable/dm_itemdrawablebuildert.hpp
 
 SOURCES += \
     tools/treeview/dm_itemdrawabletreeviewcontroller.cpp \
     tools/treeview/dm_itemdrawabletreeviewmodelbuilder.cpp \
     tools/treeview/dm_itemdrawabletreeviewmodelresearcher.cpp \
     tools/worker/dm_abstractworker.cpp \
-    tools/itemdrawable/dm_itemdrawabletypebuilder.cpp \
     tools/itemdrawable/dm_itemdrawableviewconfigurationbuilder.cpp \
     tools/guimanager/dm_abstractasyncoperationoptions.cpp \
     tools/guimanager/dm_guimanagertoken.cpp \

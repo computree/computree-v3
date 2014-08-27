@@ -136,7 +136,7 @@ CT_AbstractItemDrawable* CT_TTreeGroup::copy(const CT_OutAbstractItemModel *mode
         {
             DEF_CT_AbstractGroupModelOut *mm = it.next();
 
-            if(CT_TNodeGroup::staticGetType() == mm->item()->getType())
+            if(CT_TNodeGroup::staticGetType() == mm->itemDrawable()->getType())
                 modelsMap.insert(mm->uniqueName(), (CT_OutAbstractGroupModel*)mm);
         }
 

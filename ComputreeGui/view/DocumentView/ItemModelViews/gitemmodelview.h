@@ -4,6 +4,8 @@
 #include "dm_itemmodelviewsynchronizedgroup.h"
 #include "view/DocumentView/gdocumentview.h"
 
+class CT_AbstractActionForTreeView;
+
 class GItemModelView : public TreeViewInterface
 {
     Q_INTERFACES(TreeViewInterface)
@@ -22,8 +24,8 @@ public:
     virtual void beginRemoveMultipleItemDrawable() {}
     virtual void endRemoveMultipleItemDrawable() {}
 
-    void setCurrentAction(ActionForTreeViewInterface *action);
-    void setDefaultAction(ActionForTreeViewInterface *action);
+    void setCurrentAction(CT_AbstractActionForTreeView *action);
+    void setDefaultAction(CT_AbstractActionForTreeView *action);
 
     void setSyncGroup(const DM_ItemModelViewSynchronizedGroup *group);
     DM_ItemModelViewSynchronizedGroup* syncGroup() const;

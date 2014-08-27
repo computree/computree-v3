@@ -20,20 +20,29 @@ class PLUGINSHAREDSHARED_EXPORT CT_ResultIterator
 {
 public:
     /**
-     * @brief Create a iterator for the result passed in parameter
+     * @brief Create a iterator for the result passed in parameter.
      * @param result : the result to iterate
-     * @param model : the model searched
-     * @param mustGetSize : true if you want to use the method "size()". If true this object must iterate a first time
-     *        over all elements searched for get the size and a second time when you call next (slow). If false this object must
-     *        iterate only a first time (fast).
+     * @param recursiveIteration : true if you want to iterate over all childrens (recursively). False if you want to iterate over root
+     *        items of the result
      */
     CT_ResultIterator(const CT_ResultGroup *result,
-                      const CT_AbstractModel *model,
-                      bool mustGetSize);
+                      bool recursiveIteration);
+
+    /**
+     * @brief Create a iterator for the result passed in parameter. It iterate over childrens (recursively) defined by the model passed
+     *        in parameter.
+     * @param result : the result to iterate
+     * @param model : the model searched
+     */
+    CT_ResultIterator(const CT_ResultGroup *result,
+                      const CT_AbstractModel *model);
     ~CT_ResultIterator();
 
     /**
-     * @brief Return how many groups or items you must iterate (call the method "init" first)
+     * @brief Return how many groups or items you must iterate.
+     *
+     * If you call this method this object must iterate a first time
+     * over all elements searched for get the size and a second time when you call next (slow)
      */
     int size() const;
 
@@ -49,18 +58,17 @@ public:
 
 private:
     CT_ResultGroup                              *m_result;
-    CT_ResultItemIterator                       *m_itemIT;
-    CT_ResultGroupIterator                      *m_groupIT;
-    QList<CT_AbstractItem*>                  m_collection;
+    CT_AbstractModel                            *m_model;
+    mutable CT_ResultItemIterator               *m_itemIT;
+    mutable CT_ResultGroupIterator              *m_groupIT;
+    mutable QList<CT_AbstractItem*>             m_collection;
+    mutable int                                 m_size;
 
     template<typename T>
-    void initGroupT(const CT_AbstractModel *model,
-                    bool mustGetSize);
-
+    void initGroupT(const CT_AbstractModel *model);
 
     template<typename T>
-    void initItemT(const CT_AbstractModel *model,
-                    bool mustGetSize);
+    void initItemT(const CT_AbstractModel *model);
 };
 
 #endif // CT_RESULTITERATOR_H

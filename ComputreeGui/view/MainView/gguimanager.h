@@ -45,7 +45,6 @@ public:
 
     DM_DocumentManagerView* getDocumentManagerView() const;
     CDM_StepManager* getStepManager() const;
-    ContextInterface* getPluginsContext() const;
     DM_ActionsManager* getActionsManager() const;
 
 protected:

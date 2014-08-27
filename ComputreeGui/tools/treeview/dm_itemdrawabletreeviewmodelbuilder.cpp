@@ -1,5 +1,8 @@
 #include "dm_itemdrawabletreeviewmodelbuilder.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
+
 DM_ItemDrawableTreeViewModelBuilder::DM_ItemDrawableTreeViewModelBuilder() : DM_AbstractWorker()
 {
     m_collection = NULL;
@@ -23,23 +26,23 @@ void DM_ItemDrawableTreeViewModelBuilder::setNLevelToBuild(const int &nLevel)
     m_nLevel = nLevel;
 }
 
-void DM_ItemDrawableTreeViewModelBuilder::setItemDrawable(const QList<ItemDrawable *> &list)
+void DM_ItemDrawableTreeViewModelBuilder::setItemDrawable(const QList<CT_AbstractItemDrawable *> &list)
 {
     m_items = list;
     m_itemsToUpdate.clear();
 }
 
-void DM_ItemDrawableTreeViewModelBuilder::setQStandardItemToUpdate(const QList<QPair<QStandardItem *, ItemDrawable *> > &list)
+void DM_ItemDrawableTreeViewModelBuilder::setQStandardItemToUpdate(const QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > &list)
 {
     m_itemsToUpdate = list;
     m_items.clear();
 }
 
-void DM_ItemDrawableTreeViewModelBuilder::recursiveCreateItemForNextLevel(ItemDrawable *item, QStandardItem *parent, const int &level)
+void DM_ItemDrawableTreeViewModelBuilder::recursiveCreateItemForNextLevel(CT_AbstractItemDrawable *item, QStandardItem *parent, const int &level)
 {
     if(item->beginIterateChild())
     {
-        ItemDrawable *child;
+        CT_AbstractItemDrawable *child;
 
         while((child = item->nextChild()) != NULL)
         {
@@ -50,9 +53,7 @@ void DM_ItemDrawableTreeViewModelBuilder::recursiveCreateItemForNextLevel(ItemDr
                 parent->appendRow(items);
 
                 if((level+1) < m_nLevel)
-                {
                     recursiveCreateItemForNextLevel(child, items.first(), level+1);
-                }
             }
         }
     }
@@ -67,11 +68,11 @@ void DM_ItemDrawableTreeViewModelBuilder::apply()
 
         m_collection->resize(size);
 
-        QListIterator<ItemDrawable *> it(m_items);
+        QListIterator<CT_AbstractItemDrawable *> it(m_items);
 
         while(it.hasNext())
         {
-            ItemDrawable *item = it.next();
+            CT_AbstractItemDrawable *item = it.next();
 
             QList<QStandardItem*> items = m_itemModelBuilder->createItems(*item, 0);
 
@@ -94,11 +95,11 @@ void DM_ItemDrawableTreeViewModelBuilder::apply()
 
         m_collection->resize(size);
 
-        QListIterator< QPair<QStandardItem*, ItemDrawable*> > it(m_itemsToUpdate);
+        QListIterator< QPair<QStandardItem*, CT_AbstractItemDrawable*> > it(m_itemsToUpdate);
 
         while(it.hasNext())
         {
-            const QPair<QStandardItem*, ItemDrawable*> &pair = it.next();
+            const QPair<QStandardItem*, CT_AbstractItemDrawable*> &pair = it.next();
 
             int level = 0;
             QStandardItem *parent = pair.first->parent();

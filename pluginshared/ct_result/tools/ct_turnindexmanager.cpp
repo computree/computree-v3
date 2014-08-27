@@ -8,7 +8,7 @@ CT_TurnIndexManager::CT_TurnIndexManager(CT_InTurnManager &inTurnManager)
     _currentTurnIndex = 0;
 }
 
-uint CT_TurnIndexManager::maximumTurn() const
+int CT_TurnIndexManager::maximumTurn() const
 {
     return _inTurnManager->maximumTurn();
 }
@@ -18,7 +18,7 @@ int CT_TurnIndexManager::nTurn() const
     return _inTurnManager->nValidTurn();
 }
 
-uint CT_TurnIndexManager::currentTurnIndex() const
+int CT_TurnIndexManager::currentTurnIndex() const
 {
     return _currentTurnIndex;
 }

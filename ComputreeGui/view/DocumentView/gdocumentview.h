@@ -87,7 +87,7 @@ private:
     {
     public:
 
-        DM_ContextExport(QMap<QString, QList<ItemDrawable*> > *map,
+        DM_ContextExport(QMap<QString, QList<CT_AbstractItemDrawable*> > *map,
                          QString currentKey,
                          QObject *parent = 0) : DM_Context(parent)
         {
@@ -95,7 +95,7 @@ private:
             _currentKey = currentKey;
         }
 
-        QMap<QString, QList<ItemDrawable*> >    *_map;
+        QMap<QString, QList<CT_AbstractItemDrawable*> >    *_map;
         QString                                 _currentKey;
     };
 

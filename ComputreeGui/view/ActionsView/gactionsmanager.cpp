@@ -6,6 +6,8 @@
 #include "gdocumentmanagerview.h"
 #include "dm_actionshandler.h"
 
+#include "ct_actions/abstract/ct_abstractaction.h"
+
 #include <QToolButton>
 
 GActionsManager::GActionsManager(QWidget *parent) :
@@ -94,15 +96,15 @@ void GActionsManager::refreshView()
 
     if(m_actionsManager != NULL)
     {
-        QMap<QString, ActionInterface*> byType;
+        QMap<QString, CT_AbstractAction*> byType;
 
         // Create a map of actions sorted by type. Actions added in the map is get from plugins.
-        QList<ActionInterface*> actions = m_actionsManager->actionsFromPlugins();
-        QListIterator<ActionInterface*> it(actions);
+        QList<CT_AbstractAction*> actions = m_actionsManager->actionsFromPlugins();
+        QListIterator<CT_AbstractAction*> it(actions);
 
         while(it.hasNext())
         {
-            ActionInterface *ac = it.next();
+            CT_AbstractAction *ac = it.next();
             byType.insertMulti(ac->type(), ac);
         }
 
@@ -114,7 +116,7 @@ void GActionsManager::refreshView()
         {
             const QString &type = itK.next();
 
-            QList<ActionInterface*> actionsType = byType.values(type);
+            QList<CT_AbstractAction*> actionsType = byType.values(type);
 
             QStandardItem *menu = new QStandardItem(type);
             menu->setEditable(false);
@@ -122,7 +124,7 @@ void GActionsManager::refreshView()
             menu->setSelectable(false);
             menu->setData(type);
 
-            QListIterator<ActionInterface*> itA(actionsType);
+            QListIterator<CT_AbstractAction*> itA(actionsType);
 
             while(itA.hasNext())
                 menu->appendRow(createItemForAction(itA.next()));
@@ -143,7 +145,7 @@ void GActionsManager::refreshView()
             menu->setSelectable(false);
             menu->setData(menu->text());
 
-            QListIterator<ActionInterface*> itS(actions);
+            QListIterator<CT_AbstractAction*> itS(actions);
 
             while(itS.hasNext())
                 menu->appendRow(createItemForAction(itS.next()));
@@ -159,7 +161,7 @@ void GActionsManager::setDefaultActionToDocument()
 {
     if(m_currentDoc != NULL)
     {
-        ActionInterface *ac = m_currentDoc->currentAction();
+        CT_AbstractAction *ac = m_currentDoc->currentAction();
 
         if(ac == NULL)
         {
@@ -188,7 +190,7 @@ QMap<QString, bool> GActionsManager::menuExpandedState() const
     return list;
 }
 
-QList<QStandardItem*> GActionsManager::createItemForAction(ActionInterface *ac) const
+QList<QStandardItem*> GActionsManager::createItemForAction(CT_AbstractAction *ac) const
 {
     QList<QStandardItem*> list;
 
@@ -216,7 +218,7 @@ void GActionsManager::documentActivated(DM_DocumentView *view)
 
     if(m_currentDoc != NULL)
     {
-        connect(m_currentDoc, SIGNAL(currentActionChanged(ActionInterface*)), this, SLOT(documentCurrentActionChanged(ActionInterface*)));
+        connect(m_currentDoc, SIGNAL(currentActionChanged(CT_AbstractAction*)), this, SLOT(documentCurrentActionChanged(CT_AbstractAction*)));
         m_currentAction = view->currentAction();
 
         if(m_currentAction == NULL)
@@ -226,7 +228,7 @@ void GActionsManager::documentActivated(DM_DocumentView *view)
     refreshView();
 }
 
-void GActionsManager::documentCurrentActionChanged(ActionInterface *action)
+void GActionsManager::documentCurrentActionChanged(CT_AbstractAction *action)
 {
     DM_DocumentView *doc = (DM_DocumentView*)sender();
 
@@ -248,7 +250,7 @@ void GActionsManager::itemClicked(const QModelIndex &index)
 
     if(!item->hasChildren())
     {
-        ActionInterface *ac = (ActionInterface*)item->data().value<void*>();
+        CT_AbstractAction *ac = (CT_AbstractAction*)item->data().value<void*>();
 
         if((m_currentDoc != NULL)
                 && (((m_currentAction != NULL) && (m_currentAction->uniqueName() != ac->uniqueName()))

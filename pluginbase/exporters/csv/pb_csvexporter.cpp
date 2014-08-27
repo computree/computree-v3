@@ -63,7 +63,7 @@ bool PB_CSVExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable
 
         while(it.hasNext())
         {
-            CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
+            CT_AbstractSingularItemDrawable *item = dynamic_cast<CT_AbstractSingularItemDrawable*>(it.next());
 
             QList<CT_AbstractItemDrawable*> *list = newMap.value((CT_OutAbstractSingularItemModel*)item->model(), NULL);
 

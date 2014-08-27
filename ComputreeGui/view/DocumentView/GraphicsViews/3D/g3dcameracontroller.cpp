@@ -8,6 +8,11 @@
 
 #include "dm_guimanager.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h"
+#include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
+
 G3DCameraController::G3DCameraController() : DM_GraphicsViewCamera()
 {
     _realCamera = NULL;
@@ -632,14 +637,14 @@ void G3DCameraController::fixCameraCenterToItemsBarycenter()
             || (_realCamera == NULL))
         return;
 
-    QListIterator<ItemDrawable*> it(_view->getDocumentView().getItemDrawable());
+    QListIterator<CT_AbstractItemDrawable*> it(_view->getDocumentView().getItemDrawable());
 
     double bx = 0, by = 0, bz = 0;
     int size = 0;
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         bx += item->getCenterX();
         by += item->getCenterY();
@@ -666,14 +671,14 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
             || (_realCamera == NULL))
         return;
 
-    QList<ItemDrawable*> selected = _view->getDocumentView().getSelectedItemDrawable();
-    QListIterator<ItemDrawable*> it(selected);
+    QList<CT_AbstractItemDrawable*> selected = _view->getDocumentView().getSelectedItemDrawable();
+    QListIterator<CT_AbstractItemDrawable*> it(selected);
 
     double bx = 0, by = 0, bz = 0;
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         bx += item->getCenterX();
         by += item->getCenterY();
@@ -682,10 +687,10 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
 
     double size = selected.size();
 
-    QSharedPointer<IndexCloudRegisteredInterface> selec = _view->getSelectedPoints();
-    ICloudIndex *index = selec->indexCloud();
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = _view->getSelectedPoints();
+    CT_AbstractCloudIndex *index = selec->abstractModifiableCloudIndex();
 
-    size_t sizeP = index->indexSize();
+    size_t sizeP = index->size();
     size_t increment = log10(sizeP);
 
     if(increment < 3)
@@ -693,17 +698,17 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
     else
         increment = pow(10, increment)/10;
 
-    const IPointCloud *pc = GUI_MANAGER->getPluginsContext()->repository()->globalPointsCloud();
+    const CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
 
     size_t i=0;
 
     while(i<sizeP)
     {
-        float *point = pc->valueAt(index->indexAt(i));
+        const CT_Point &point = pc->constTAt(index->indexAt(i));
 
-        bx += point[0];
-        by += point[1];
-        bz += point[2];
+        bx += point.getX();
+        by += point.getY();
+        bz += point.getZ();
 
         ++size;
         i += increment;
@@ -725,8 +730,8 @@ void G3DCameraController::fitCameraToVisibleItems()
 {
     if((_view == NULL) || (_realCamera == NULL)) {return;}
 
-    QList<ItemDrawable*> items = _view->getDocumentView().getItemDrawable();
-    QListIterator<ItemDrawable*> it(items);
+    QList<CT_AbstractItemDrawable*> items = _view->getDocumentView().getItemDrawable();
+    QListIterator<CT_AbstractItemDrawable*> it(items);
 
     qglviewer::Vec min;
     qglviewer::Vec max;
@@ -744,7 +749,7 @@ void G3DCameraController::fitCameraToVisibleItems()
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         if (item->hasBoundingBox())
         {

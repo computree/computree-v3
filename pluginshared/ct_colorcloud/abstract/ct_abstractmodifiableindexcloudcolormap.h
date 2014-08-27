@@ -46,6 +46,17 @@ public:
      * @param eraseKeys : true if you want to erase keys founded
      */
     virtual void copyColorsOfCloudIndex(CT_AbstractColorCloud *cc, const QList<CT_AbstractCloudIndex*> &lci, bool eraseKeys = false) = 0;
+
+    /**
+     * @brief Remove the index from the cloud
+     * @param index : index to remove
+     */
+    virtual void removeIndex(const size_t &index) = 0;
+
+    /**
+     * @brief Removes all indexes in the cloud index
+     */
+    virtual void clear() = 0;
 };
 
 #endif // CT_ABSTRACTMODIFIABLEINDEXCLOUDCOLORMAP_H

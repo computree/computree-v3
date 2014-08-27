@@ -83,7 +83,7 @@ bool PB_Grid3DAsTableExporter::protectedExportToFile()
     QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
-        CT_AbstractGrid3D* item = (CT_AbstractGrid3D*)it.next();
+        CT_AbstractGrid3D* item = dynamic_cast<CT_AbstractGrid3D*>(it.next());
 
         QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
 

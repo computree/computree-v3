@@ -34,6 +34,7 @@
 #include "dm_actionshandler.h"
 
 class GDocumentView;
+class CT_AbstractActionForGraphicsView;
 
 class GGraphicsView : public DM_GraphicsView
 {
@@ -41,8 +42,8 @@ public:
     GGraphicsView();
     ~GGraphicsView();
 
-    void setCurrentAction(ActionForGraphicsViewInterface *action);
-    void setDefaultAction(ActionForGraphicsViewInterface *action);
+    void setCurrentAction(CT_AbstractActionForGraphicsView *action);
+    void setDefaultAction(CT_AbstractActionForGraphicsView *action);
 
     virtual QWidget* getViewWidget() const = 0;
 

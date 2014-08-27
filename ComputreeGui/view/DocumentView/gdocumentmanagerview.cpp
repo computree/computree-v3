@@ -36,6 +36,9 @@
 #include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
 #include "view/DocumentView/GraphicsViews/ggraphicsviewsynchronizedgroup.h"
 
+#include "ct_result/abstract/ct_abstractresult.h"
+#include "ct_result/tools/iterator/ct_resultiterator.h"
+
 #include <QMdiSubWindow>
 
 GDocumentManagerView::GDocumentManagerView(QWidget *parent) : QMdiArea(parent), DM_DocumentManagerView()
@@ -107,14 +110,14 @@ void GDocumentManagerView::addDocumentView(GDocumentView &view, bool fromGui)
     emit documentActivated(&view);
 }
 
-bool GDocumentManagerView::addAllItemDrawableOfResultToActiveDocument(Result &res, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::addAllItemDrawableOfResultToActiveDocument(CT_AbstractResult &res, DM_AsynchroneProgress &progress)
 {
     DM_DocumentView *activeDoc = getActiveDocumentView();
 
     return addAllItemDrawableOfResultToDocument(res, activeDoc, progress);
 }
 
-bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(Result &res, IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(CT_AbstractResult &res, CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
 {
     if((doc != NULL)
             && !res.isBusy())
@@ -123,7 +126,9 @@ bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(Result &res, IIte
 
         res.setBusy(true);
 
-        int n = res.recursiveBeginIterateItemDrawableWithModel(model);
+        CT_ResultIterator it((CT_ResultGroup*)&res, &model);
+
+        int n = it.size();
 
         if(n != 0)
         {
@@ -132,10 +137,9 @@ bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(Result &res, IIte
             if(n > 1)
                 doc->beginAddMultipleItemDrawable();
 
-            ItemDrawable *item = NULL;
-
-            while((item = res.recursiveNextItemDrawable()) != NULL)
+            while(it.hasNext())
             {
+                CT_AbstractItemDrawable *item = (CT_AbstractItemDrawable*)it.next();
                 doc->addItemDrawable(*item);
 
                 ++i;
@@ -158,7 +162,7 @@ bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(Result &res, IIte
     return false;
 }
 
-bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(Result &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(CT_AbstractResult &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
 {
     if((doc != NULL)
             && !res.isBusy())
@@ -167,7 +171,9 @@ bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(Result &res, DM_
 
         res.setBusy(true);
 
-        int n = res.beginIterateItemDrawableList();
+        CT_ResultIterator it((CT_ResultGroup*)&res, false);
+
+        int n = it.size();
 
         if(n != 0)
         {
@@ -176,10 +182,9 @@ bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(Result &res, DM_
             if(n > 1)
                 doc->beginAddMultipleItemDrawable();
 
-            ItemDrawable *item = NULL;
-
-            while((item = res.nextItemDrawable()) != NULL)
+            while(it.hasNext())
             {
+                CT_AbstractItemDrawable *item = (CT_AbstractItemDrawable*)it.next();
                 doc->addItemDrawable(*item);
 
                 ++i;
@@ -202,14 +207,14 @@ bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(Result &res, DM_
     return false;
 }
 
-bool GDocumentManagerView::addAllItemDrawableOfListToActiveDocument(QList<ItemDrawable*> &itemList, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::addAllItemDrawableOfListToActiveDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_AsynchroneProgress &progress)
 {
     DM_DocumentView *activeDoc = getActiveDocumentView();
 
     return addAllItemDrawableOfListToDocument(itemList, activeDoc, progress);
 }
 
-bool GDocumentManagerView::addAllItemDrawableOfListToDocument(QList<ItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::addAllItemDrawableOfListToDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
 {
     if(doc != NULL)
     {
@@ -220,7 +225,7 @@ bool GDocumentManagerView::addAllItemDrawableOfListToDocument(QList<ItemDrawable
             int n = itemList.size();
             int i = 0;
 
-            QListIterator<ItemDrawable*> it(itemList);
+            QListIterator<CT_AbstractItemDrawable*> it(itemList);
 
             if(n > 1)
                 doc->beginAddMultipleItemDrawable();
@@ -247,7 +252,7 @@ bool GDocumentManagerView::addAllItemDrawableOfListToDocument(QList<ItemDrawable
     return false;
 }
 
-bool GDocumentManagerView::removeAllItemDrawableOfResultFromDocuments(Result &res, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::removeAllItemDrawableOfResultFromDocuments(CT_AbstractResult &res, DM_AsynchroneProgress &progress)
 {
     progress.setProgress(0);
 
@@ -273,7 +278,7 @@ bool GDocumentManagerView::removeAllItemDrawableOfResultFromDocuments(Result &re
     return true;
 }
 
-bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocuments(IItemModel &model, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocuments(CT_OutAbstractItemModel &model, DM_AsynchroneProgress &progress)
 {
     progress.setProgress(0);
 
@@ -299,7 +304,7 @@ bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocuments(IItemModel 
     return true;
 }
 
-bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocument(IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
 {
     progress.setProgress(0);
 
@@ -317,7 +322,7 @@ bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocument(IItemModel &
     return true;
 }
 
-bool GDocumentManagerView::removeAllItemDrawableOfListFromDocuments(QList<ItemDrawable *> &itemList, DM_AsynchroneProgress &progress)
+bool GDocumentManagerView::removeAllItemDrawableOfListFromDocuments(QList<CT_AbstractItemDrawable *> &itemList, DM_AsynchroneProgress &progress)
 {
     progress.setProgress(0);
 
@@ -326,11 +331,11 @@ bool GDocumentManagerView::removeAllItemDrawableOfListFromDocuments(QList<ItemDr
         int i = 0;
         int n = itemList.size();
 
-        QListIterator<ItemDrawable*> itItem(itemList);
+        QListIterator<CT_AbstractItemDrawable*> itItem(itemList);
 
         while(itItem.hasNext())
         {
-            ItemDrawable *item = itItem.next();
+            CT_AbstractItemDrawable *item = itItem.next();
 
             if(item->isDisplayed())
             {
@@ -594,7 +599,7 @@ bool GDocumentManagerView::canClose(const DM_Document *document) const
     return (nbDocumentView() > 1);
 }
 
-bool GDocumentManagerView::canAddItemDrawable(const DM_Document *document, const ItemDrawable *item) const
+bool GDocumentManagerView::canAddItemDrawable(const DM_Document *document, const CT_AbstractItemDrawable *item) const
 {
     Q_UNUSED(item)
 
@@ -616,7 +621,7 @@ QMdiSubWindow* GDocumentManagerView::subWindowFromDocument(DocumentInterface *do
     return NULL;
 }
 
-void GDocumentManagerView::stepRequiredManualMode(Step *step)
+void GDocumentManagerView::stepRequiredManualMode(CT_VirtualAbstractStep *step)
 {
     if((m_manualModeEnabledByStep != NULL)
             && (m_manualModeEnabledByStep != step))
@@ -643,7 +648,7 @@ void GDocumentManagerView::stepRequiredManualMode(Step *step)
     }
 }
 
-void GDocumentManagerView::stepFinished(Step *step)
+void GDocumentManagerView::stepFinished(CT_VirtualAbstractStep *step)
 {
     if((m_manualModeEnabledByStep != NULL)
             && (m_manualModeEnabledByStep == step))

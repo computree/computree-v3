@@ -13,7 +13,7 @@ public:
     /*!
      *  \brief Retourne le nombre de tour maximum autorisé.
      */
-    uint maximumTurn() const;
+    int maximumTurn() const;
 
     /*!
      *  \brief Retourne le nombre de tour que l'on fera.
@@ -23,7 +23,7 @@ public:
     /*!
      *  \brief Retourne l'index du tour courant.
      */
-    uint currentTurnIndex() const;
+    int currentTurnIndex() const;
 
     /*!
      *  \brief Increment l'index du tour.
@@ -41,7 +41,7 @@ private:
 
     CT_InTurnManager    *_inTurnManager;
 
-    uint                _currentTurnIndex;
+    int                 _currentTurnIndex;
 };
 
 #endif // CT_TURNINDEXMANAGER_H

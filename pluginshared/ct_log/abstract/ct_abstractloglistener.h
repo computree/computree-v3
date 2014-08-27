@@ -1,10 +1,10 @@
 #ifndef CT_ABSTRACTLOGLISTENER_H
 #define CT_ABSTRACTLOGLISTENER_H
 
-#include "interfaces.h"
 #include "pluginShared_global.h"
 
 #include <QVector>
+#include <QString>
 
 /**
  * @brief Represent an object that can intercept message send to the LogInterface

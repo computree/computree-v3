@@ -4,7 +4,12 @@
 #include <QDialog>
 #include <QTreeWidgetItem>
 
-#include "interfaces.h"
+#include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
+#include "ct_result/model/inModel/abstract/ct_inabstractresultmodel.h"
+#include "ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+#include "ct_attributes/model/inModel/abstract/ct_inabstractitemattributemodel.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 
 namespace Ui {
 class GAboutStepDialog;
@@ -15,13 +20,27 @@ class GAboutStepDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit GAboutStepDialog(Step *step, QWidget *parent = 0);
+    explicit GAboutStepDialog(CT_VirtualAbstractStep *step, QWidget *parent = 0);
     ~GAboutStepDialog();
 
-    void initView(Step *step);
-    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const IResultModelSimple *rModel) const;
-    void recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const IItemModelSimple *rModel) const;
+    void initView(CT_VirtualAbstractStep *step);
 
+private:
+
+    void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_OutAbstractModel *rModel) const;
+    void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_InAbstractModel *rModel) const;
+
+    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const;
+    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const;
+
+    void recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_OutAbstractItemModel *iModel) const;
+    void recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_InAbstractItemModel *iModel) const;
+
+    void recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_OutAbstractItemAttributeModel *iaModel) const;
+    void recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_InAbstractItemAttributeModel *iaModel) const;
+
+    void createForChildrens(QTreeWidgetItem *parent , const CT_OutAbstractModel *model) const;
+    void createForChildrens(QTreeWidgetItem *parent , const CT_InAbstractModel *model) const;
 
 private:
     Ui::GAboutStepDialog *ui;

@@ -30,6 +30,8 @@
 #include "gdocumentview.h"
 #include "dm_guimanager.h"
 
+#include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
+
 GGraphicsView::GGraphicsView() : DM_GraphicsView()
 {
     m_actionsHandler = new DM_ActionsHandler(*GUI_MANAGER->getActionsManager());
@@ -40,7 +42,7 @@ GGraphicsView::~GGraphicsView()
     delete m_actionsHandler;
 }
 
-void GGraphicsView::setCurrentAction(ActionForGraphicsViewInterface *action)
+void GGraphicsView::setCurrentAction(CT_AbstractActionForGraphicsView *action)
 {
     if(action != NULL)
     {
@@ -51,7 +53,7 @@ void GGraphicsView::setCurrentAction(ActionForGraphicsViewInterface *action)
     m_actionsHandler->setCurrentAction(action);
 }
 
-void GGraphicsView::setDefaultAction(ActionForGraphicsViewInterface *action)
+void GGraphicsView::setDefaultAction(CT_AbstractActionForGraphicsView *action)
 {
     if(action != NULL)
     {

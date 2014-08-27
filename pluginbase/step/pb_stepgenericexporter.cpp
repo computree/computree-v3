@@ -236,7 +236,7 @@ void PB_StepGenericExporter::compute()
     while(it.hasNext())
     {
         CT_ResultGroup *inRes = it.next();
-        CT_ResultIterator it(inRes, inItemModelToExport, false);
+        CT_ResultIterator it(inRes, inItemModelToExport);
 
         // on recherche tous les ItemDrawable à exporter
         if(it.hasNext())
@@ -312,7 +312,7 @@ void PB_StepGenericExporter::configureExporterFromModel()
     CT_InStdModelPossibility *possibility = inItemModelToExport->getPossibilitiesSavedSelected().first();
 
     // on récupère l'ItemDrawable choisi
-    CT_AbstractItemDrawable *outItem = ((CT_OutAbstractItemModel*)possibility->outModel())->item();
+    CT_AbstractItemDrawable *outItem = ((CT_OutAbstractItemModel*)possibility->outModel())->itemDrawable();
 
     // on le donne à l'exporter
     _exporter->setItemDrawableToExport(QList<CT_AbstractItemDrawable*>() << outItem);

@@ -46,7 +46,7 @@
 #define GUI_MANAGER DM_GuiManager::getUniqueInstance()
 #define GUI_LOG DM_GuiManager::getUniqueInstance()->getPluginManager()->log()
 
-class IExporter;
+class CT_AbstractExporter;
 
 /**
   * Classe qui reprsente le gestionnaire de toutes les vues. La
@@ -68,8 +68,8 @@ private:
     {
     public:
         ActionItemDrawable(DM_AsyncOperation *aop,
-                           Result *res,
-                           QList<ItemDrawable*> *itemList,
+                           CT_AbstractResult *res,
+                           QList<CT_AbstractItemDrawable*> *itemList,
                            QString filePath,
                            DM_DocumentManagerView *view,
                            DM_AsynchroneProgress *progress,
@@ -105,27 +105,27 @@ private:
             _secondProgress = action._secondProgress;
         }
 
-        void setItemModel(IItemModel *model) { _itemModel = model; }
+        void setItemModel(CT_OutAbstractItemModel *model) { _itemModel = model; }
         void setDocumentView(DM_DocumentView *view) { m_docView = view; }
-        void setIExporter(IExporter *exporter) { _exporter = exporter; }
+        void setIExporter(CT_AbstractExporter *exporter) { _exporter = exporter; }
 
-        DM_AsyncOperation       *_aop;
-        Result                  *_res;
-        IItemModel              *_itemModel;
-        DM_DocumentView         *m_docView;
-        IExporter               *_exporter;
-        QList<ItemDrawable*>    _itemList;
-        QString                 _filePath;
-        DM_DocumentManagerView  *_view;
-        DM_AsynchroneProgress   *_progress;
-        DM_AsynchroneProgress   *_secondProgress;
+        DM_AsyncOperation                   *_aop;
+        CT_AbstractResult                   *_res;
+        CT_OutAbstractItemModel             *_itemModel;
+        DM_DocumentView                     *m_docView;
+        CT_AbstractExporter                 *_exporter;
+        QList<CT_AbstractItemDrawable*>     _itemList;
+        QString                             _filePath;
+        DM_DocumentManagerView              *_view;
+        DM_AsynchroneProgress               *_progress;
+        DM_AsynchroneProgress               *_secondProgress;
     };
 
     class ActionStep
     {
     public:
         ActionStep(DM_AsyncOperation *aop,
-                   Step *step,
+                   CT_VirtualAbstractStep *step,
                      CDM_StepManager *stepManager,
                      DM_DocumentManagerView *docManagerView,
                      DM_AsynchroneProgress *progress,
@@ -157,7 +157,7 @@ private:
         }
 
         DM_AsyncOperation       *_aop;
-        Step                    *_step;
+        CT_VirtualAbstractStep                    *_step;
         CDM_StepManager         *_stepManager;
         DM_DocumentManagerView  *_docManagerView;
         DM_AsynchroneProgress   *_progress;
@@ -195,26 +195,26 @@ public:
     DM_AsyncOperation* requestExclusiveAsyncOperation(const DM_AbstractAsyncOperationOptions *options = NULL, bool wait = true);
 
     /**
-      * \brief Gre l'ajout des ItemDrawable d'un rsultat aux diffrentes
+      * \brief Gre l'ajout des CT_AbstractItemDrawable d'un rsultat aux diffrentes
       *  vues qui en ont besoin. (Asynchrone)
       *
       * \param res : le rsultat
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncAddAllItemDrawableOfResultOnView(Result &res, DM_Context *context);
+    virtual bool asyncAddAllItemDrawableOfResultOnView(CT_AbstractResult &res, DM_Context *context);
 
     /**
-      * \brief Gere l'ajout des ItemDrawable à la vue passé en paramètre. (Asynchrone)
+      * \brief Gere l'ajout des CT_AbstractItemDrawable à la vue passé en paramètre. (Asynchrone)
       *
       * \param result : le résultat contenant le modèle. On ne peut pas le récupérer à partir du modèle car si c'est une copie
       *                 il contient le résultat du modèle original !
-      * \param model : le modele d'ItemDrawable a rechercher et ajouter
+      * \param model : le modele d'CT_AbstractItemDrawable a rechercher et ajouter
       * \param view : la vue à laquelle il faut ajouter les items
       * \param context : le context a renvoyer lorsque l'action est termine (voir signal correspondant)
       * \return false si une demande a deja ete formule et n'est pas terminee
       */
-    virtual bool asyncAddAllItemDrawableOfModelOnView(Result &res, IItemModel &model, DM_DocumentView &view, DM_Context *context);
+    virtual bool asyncAddAllItemDrawableOfModelOnView(CT_AbstractResult &res, CT_OutAbstractItemModel &model, DM_DocumentView &view, DM_Context *context);
 
     /**
       * \brief Gre l'ajout de la liste des ItemDrawables pass en paramtres aux
@@ -225,37 +225,37 @@ public:
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncAddAllItemDrawableOfListOnView(QList<ItemDrawable*> &itemList, DM_DocumentView *view, DM_Context *context);
+    virtual bool asyncAddAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *view, DM_Context *context);
 
     /**
-      * \brief Gre la suppression des ItemDrawable d'un rsultat des diffrentes
+      * \brief Gre la suppression des CT_AbstractItemDrawable d'un rsultat des diffrentes
       *  vues. (Asynchrone)
       *
       * \param res : le rsultat
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncRemoveAllItemDrawableOfResultFromView(Result &res, DM_Context *context);
+    virtual bool asyncRemoveAllItemDrawableOfResultFromView(CT_AbstractResult &res, DM_Context *context);
 
     /**
-      * \brief Gere la suppression des ItemDrawable, en fonction d'un modele, des differentes
+      * \brief Gere la suppression des CT_AbstractItemDrawable, en fonction d'un modele, des differentes
       *  vues. (Asynchrone)
       *
       * \param model : le modele d'ItemDrawablea rechercher et enlever
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncRemoveAllItemDrawableOfModelFromAllViews(IItemModel &model, DM_Context *context);
+    virtual bool asyncRemoveAllItemDrawableOfModelFromAllViews(CT_OutAbstractItemModel &model, DM_Context *context);
 
     /**
-      * \brief Gere la suppression des ItemDrawable, en fonction d'un modele, de la vue passé en paramètre. (Asynchrone)
+      * \brief Gere la suppression des CT_AbstractItemDrawable, en fonction d'un modele, de la vue passé en paramètre. (Asynchrone)
       *
-      * \param model : le modele d'ItemDrawable a rechercher et enlever
+      * \param model : le modele d'CT_AbstractItemDrawable a rechercher et enlever
       * \param view : la vue
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncRemoveAllItemDrawableOfModelFromView(IItemModel &model, DM_DocumentView &view, DM_Context *context);
+    virtual bool asyncRemoveAllItemDrawableOfModelFromView(CT_OutAbstractItemModel &model, DM_DocumentView &view, DM_Context *context);
 
     /**
       * \brief Gre la suppression de la liste des ItemDrawables pass en paramtres des diffrentes
@@ -265,16 +265,16 @@ public:
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncRemoveAllItemDrawableOfListOnView(QList<ItemDrawable*> &itemList, DM_Context *context);
+    virtual bool asyncRemoveAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_Context *context);
 
     /**
       * \brief Gre la suppression d'une tape (suppression des rsultats de la mmoire,
-      *        des ItemDrawable des documents, etc...)
+      *        des CT_AbstractItemDrawable des documents, etc...)
       * \param step : l'tape
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return : false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncRemoveStep(Step &step, DM_Context *context);
+    virtual bool asyncRemoveStep(CT_VirtualAbstractStep &step, DM_Context *context);
 
     /**
       * \brief Gre la suppression de toutes les tapes de l'arbre
@@ -289,7 +289,7 @@ public:
       * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
       * \return : false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncLoadResultStep(StepSerializable &step, DM_Context *context);
+    virtual bool asyncLoadResultStep(CT_AbstractStepSerializable &step, DM_Context *context);
 
     /**
       * \brief Gere l'exportation. Appel les methodes de l'exportateur : configureExport(...) puis avec un thread export(...)
@@ -300,32 +300,32 @@ public:
       * \param context : le context a renvoyer lorsque l'action est termine (voir signal correspondant)
       * \return : false si une demande a dj t formul et n'est pas termine
       */
-    virtual bool asyncExport(IExporter *exporter, DM_Context *context);
+    virtual bool asyncExport(CT_AbstractExporter *exporter, DM_Context *context);
 
     /**
-      * \brief Modifie la couleur de tous les ItemDrawable de tous les documents qui ont comme modèle celui
+      * \brief Modifie la couleur de tous les CT_AbstractItemDrawable de tous les documents qui ont comme modèle celui
       *        passé en paramètre
       */
-    bool setColorOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const IItemModel *model, const QColor &color);
+    bool setColorOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const CT_OutAbstractItemModel *model, const QColor &color);
 
     /**
-      * \brief Modifie la couleur de tous les ItemDrawable de tous les documents qui ont comme modèle celui
+      * \brief Modifie la couleur de tous les CT_AbstractItemDrawable de tous les documents qui ont comme modèle celui
       *        passé en paramètre parmis une liste de couleur
       */
-    bool setColorListOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const IItemModel *model, const QList<QColor> &colorList);
+    bool setColorListOnAllItemDrawableOnAllDocumentsThatModelCorresponding(const CT_OutAbstractItemModel *model, const QList<QColor> &colorList);
 
     /**
       * \brief Gere l'ajout des itemdrawable modele du resultat pass en paramtre a la vue permettant d'interagir avec eux
       */
-    bool editItemDrawableModelOfResult(Result &res);
+    bool editItemDrawableModelOfResult(CT_AbstractResult &res);
 
     /**
-      * \brief Supprime le résultat de la vue permettant d'intéragir avec les modèles de ses ItemDrawable
+      * \brief Supprime le résultat de la vue permettant d'intéragir avec les modèles de ses CT_AbstractItemDrawable
       */
-    bool removeEditItemDrawableModelOfResult(Result &res);
+    bool removeEditItemDrawableModelOfResult(CT_AbstractResult &res);
 
     /**
-      * \brief Supprime tous les ItemDrawable de tous les documents
+      * \brief Supprime tous les CT_AbstractItemDrawable de tous les documents
       */
     bool cleanItemDrawableOfAllDocuments();
 
@@ -344,11 +344,6 @@ public:
       * \brief Retourne le gestionnaire d'etape
       */
     virtual CDM_StepManager* getStepManager() const = 0;
-
-    /**
-     * @brief return the global context of plugins
-     */
-    virtual ContextInterface* getPluginsContext() const = 0;
 
     /**
      * @brief Return the actions manager
@@ -399,7 +394,7 @@ private:
 
     void addNewContext(DM_Context *context);
 
-    void recursiveDeleteStepConfigurationDialog(Step &step);
+    void recursiveDeleteStepConfigurationDialog(CT_VirtualAbstractStep &step);
 
     static void staticRemoveResultFromOtherView(ActionItemDrawable info);
 
@@ -412,7 +407,7 @@ private:
     static void staticRemoveAllItemDrawableOfListFromView(ActionItemDrawable info);
 
     static void staticClearResultMemoryAndRemoveStep(ActionStep info);
-    static int staticRecursiveCountProgress(Step *step);
+    static int staticRecursiveCountProgress(CT_VirtualAbstractStep *step);
     static int staticRecursiveClearResultMemoryAndRemoveStep(ActionStep info);
     static void staticExport(ActionItemDrawable info);
 
@@ -420,15 +415,15 @@ private slots:
 
     /**
       * \brief Slot connect au gestionnaire d'tape qui envoie un signal
-      *        lorsqu'on dsaloue les ItemDrawable d'un rsultat de la mmoire.
+      *        lorsqu'on dsaloue les CT_AbstractItemDrawable d'un rsultat de la mmoire.
       */
-    void resultToBeClearedFromMemory(Result *res);
+    void resultToBeClearedFromMemory(const CT_AbstractResult *res);
 
     /**
       * \brief Slot connect au gestionnaire d'tape qui envoie un signal
       *        lorsqu'une tape va supprimer l'un de ses rsultats.
       */
-    void resultToBeRemoved(Result *res);
+    void resultToBeRemoved(const CT_AbstractResult *res);
 
     void stepManagerCompletedLoadResultStep();
 

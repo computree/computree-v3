@@ -17,6 +17,11 @@ CT_OutResultModelGroupCopy::CT_OutResultModelGroupCopy(QString uniqueName,
     _inModelCopy = NULL;
 }
 
+QString CT_OutResultModelGroupCopy::modelTypeDisplayable() const
+{
+    return QString("CT_OutResultModelGroupCopy");
+}
+
 CT_OutResultModelGroupCopy::~CT_OutResultModelGroupCopy()
 {
     delete _outModelPossibility;

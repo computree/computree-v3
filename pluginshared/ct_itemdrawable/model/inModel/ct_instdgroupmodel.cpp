@@ -4,10 +4,10 @@
 
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h"
 
-CT_InStdGroupModel::CT_InStdGroupModel(QString uniqueName,
-                                       QString groupType,
-                                       QString displayableName,
-                                       QString description,
+CT_InStdGroupModel::CT_InStdGroupModel(const QString &uniqueName,
+                                       const QString &groupType,
+                                       const QString &displayableName,
+                                       const QString &description,
                                        GroupChoiceMode choiceMode,
                                        GroupFinderMode finderMode) : CT_InAbstractGroupModel(uniqueName,
                                                                                              description,
@@ -16,6 +16,11 @@ CT_InStdGroupModel::CT_InStdGroupModel(QString uniqueName,
     setGroupType(groupType);
     internalSetChoiceMode((CT_InAbstractGroupModel::ChoiceMode)choiceMode);
     internalSetFinderMode((CT_InAbstractGroupModel::FinderMode)finderMode);
+}
+
+QString CT_InStdGroupModel::modelTypeDisplayable() const
+{
+    return QString("CT_InStdGroupModel");
 }
 
 CT_InAbstractModel* CT_InStdGroupModel::copy(bool withPossibilities) const

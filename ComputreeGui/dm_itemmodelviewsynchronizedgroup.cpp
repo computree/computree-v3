@@ -1,5 +1,7 @@
 #include "dm_itemmodelviewsynchronizedgroup.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+
 DM_ItemModelViewSynchronizedGroup::DM_ItemModelViewSynchronizedGroup() : DM_AbstractViewSynchronizedGroup()
 {
     _imv = NULL;
@@ -22,8 +24,8 @@ void DM_ItemModelViewSynchronizedGroup::addDocumentView(const DM_DocumentView *d
 
     _dvList.append((DM_DocumentView*)dv);
 
-    connect(dv, SIGNAL(itemDrawableToBeRemoved(ItemDrawable&)), this, SLOT(slotItemDrawableToBeRemoved(ItemDrawable&)), Qt::DirectConnection);
-    connect(dv, SIGNAL(itemDrawableSelectionChanged(ItemDrawable*,bool)), this, SLOT(slotItemDrawableSelectionChanged(ItemDrawable*,bool)), Qt::DirectConnection);
+    connect(dv, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(slotItemDrawableToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(dv, SIGNAL(itemDrawableSelectionChanged(CT_AbstractItemDrawable*,bool)), this, SLOT(slotItemDrawableSelectionChanged(CT_AbstractItemDrawable*,bool)), Qt::DirectConnection);
 }
 
 void DM_ItemModelViewSynchronizedGroup::removeDocumentView(const DM_DocumentView *dv)
@@ -50,7 +52,7 @@ const QList<DM_DocumentView*>& DM_ItemModelViewSynchronizedGroup::documentViews(
 
 // PRIVATE //
 
-void DM_ItemModelViewSynchronizedGroup::slotItemDrawableSelectionChanged(ItemDrawable *item, bool selected)
+void DM_ItemModelViewSynchronizedGroup::slotItemDrawableSelectionChanged(CT_AbstractItemDrawable *item, bool selected)
 {
     if(_imv != NULL)
     {
@@ -61,7 +63,7 @@ void DM_ItemModelViewSynchronizedGroup::slotItemDrawableSelectionChanged(ItemDra
     }
 }
 
-void DM_ItemModelViewSynchronizedGroup::slotItemDrawableToBeRemoved(ItemDrawable &item)
+void DM_ItemModelViewSynchronizedGroup::slotItemDrawableToBeRemoved(CT_AbstractItemDrawable &item)
 {
     if(_imv != NULL
             && item.isSelected())

@@ -12,6 +12,10 @@
 
 #include "view/Tools/gradient/gradientarrow.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
+#include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
+
 namespace Ui {
 class GPointsAttributesManager;
 }
@@ -55,7 +59,7 @@ private:
     void initTreeView();
 
     template<typename IAttributesType, typename AttributesScalarType, typename AttributesColorType, typename AttributesNormalType>
-    void buildTreeViewTForStep(Step *step);
+    void buildTreeViewTForStep(CT_VirtualAbstractStep *step);
 
     void constructHeader();
 
@@ -103,24 +107,24 @@ private slots:
 };
 
 template<>
-void GPointsAttributesManager::addToScalarRoot<IPointAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToScalarRoot<IFaceAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToScalarRoot<IEdgeAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items);
 
 template<>
-void GPointsAttributesManager::addToColorRoot<IPointAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToColorRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToColorRoot<IFaceAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToColorRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToColorRoot<IEdgeAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToColorRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items);
 
 template<>
-void GPointsAttributesManager::addToNormalRoot<IPointAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToNormalRoot<IFaceAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items);
 template<>
-void GPointsAttributesManager::addToNormalRoot<IEdgeAttributes>(const QList<QStandardItem*> &items);
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items);
 
 #endif // GPOINTSATTRIBUTESMANAGER_H

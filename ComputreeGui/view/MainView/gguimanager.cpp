@@ -59,11 +59,6 @@ CDM_StepManager* GGuiManager::getStepManager() const
     return _mainWindow->getStepManager();
 }
 
-ContextInterface* GGuiManager::getPluginsContext() const
-{
-    return _mainWindow->getPluginManager()->getPluginsContext();
-}
-
 DM_ActionsManager* GGuiManager::getActionsManager() const
 {
     return (DM_ActionsManager*)_mainWindow->actionsManager();

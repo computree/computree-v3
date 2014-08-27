@@ -5,8 +5,11 @@
 
 #include "dm_guimanager.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+
 template<typename T>
-DM_ColorSelectionManagerT<T>::DM_ColorSelectionManagerT(RepositoryInterface::SyncCloudWith syncWith)
+DM_ColorSelectionManagerT<T>::DM_ColorSelectionManagerT(CT_Repository::SyncCloudWith syncWith)
 {
     m_document = NULL;
     m_indexCloudColor = NULL;
@@ -22,11 +25,10 @@ DM_ColorSelectionManagerT<T>::~DM_ColorSelectionManagerT()
 template<typename T>
 void DM_ColorSelectionManagerT<T>::init()
 {
-    if((m_selected.data() == NULL)
-            && (GUI_MANAGER->getPluginsContext() != NULL))
+    if(m_selected.data() == NULL)
     {
-        m_selected = GUI_MANAGER->getPluginsContext()->repository()->createNewMapIndexCloudColor(m_syncWith);
-        m_indexCloudColor = dynamic_cast<IModifiableMapCloudIndexColor*>(m_selected->indexCloud());
+        m_selected = PS_REPOSITORY->createNewMapIndexCloudColor(m_syncWith);
+        m_indexCloudColor = dynamic_cast<CT_AbstractModifiableIndexCloudColorMap*>(m_selected->abstractModifiableCloudIndex());
     }
 }
 
@@ -41,52 +43,52 @@ void DM_ColorSelectionManagerT<T>::addIDToSelection(const GLuint &id)
 {
     if(m_indexCloudColor != NULL)
     {
-        QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+        QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
-        IColorCloud *cc = ccr->colorCloud();
+        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
-        quint8* col = cc->valueAt(id);
+        CT_Color &col = cc->colorAt(id);
 
         m_indexCloudColor->insertIndexAndColor(id, col);
 
-        col[0] = 0;
-        col[1] = 0;
-        col[2] = 255;
-        col[3] = 0;
+        col.b = 0;
+        col.g = 0;
+        col.r = 255;
+        col.a = 0;
     }
 }
 
 template<typename T>
-void DM_ColorSelectionManagerT<T>::addCloudIndexToSelection(const QList<ICloudIndex*> &listID)
+void DM_ColorSelectionManagerT<T>::addCloudIndexToSelection(const QList<CT_AbstractCloudIndex*> &listID)
 {
     if(m_indexCloudColor != NULL)
     {
-        QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+        QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
-        IColorCloud *cc = ccr->colorCloud();
+        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
-        QListIterator<ICloudIndex*> it(listID);
+        QListIterator<CT_AbstractCloudIndex*> it(listID);
 
         size_t globalIndex;
 
         while(it.hasNext())
         {
-            ICloudIndex *ci = it.next();
+            CT_AbstractCloudIndex *ci = it.next();
 
-            size_t size = ci->indexSize();
+            size_t size = ci->size();
 
             for(size_t i=0; i<size; ++i)
             {
                 ci->indexAt(i, globalIndex);
 
-                quint8* col = cc->valueAt(globalIndex);
+                CT_Color &col = cc->colorAt(globalIndex);
 
                 m_indexCloudColor->insertIndexAndColor(globalIndex, col);
 
-                col[0] = 0;
-                col[1] = 0;
-                col[2] = 255;
-                col[3] = 0;
+                col.b = 0;
+                col.g = 0;
+                col.r = 255;
+                col.a = 0;
             }
         }
     }
@@ -111,18 +113,18 @@ void DM_ColorSelectionManagerT<T>::removeIDFromSelection(const GLuint &id)
         }
         else
         {
-            QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+            QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
             if(ccr.data() != NULL)
             {
-                IColorCloud *cc = ccr->colorCloud();
+                CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
-                quint8* colBackup = m_indexCloudColor->colorAtGlobalIndex(id, NULL);
+                CT_Color *colBackup = m_indexCloudColor->colorAtGlobalIndex(id, NULL);
 
                 if(colBackup != NULL)
                 {
-                    quint8* col = cc->valueAt(id);
-                    copyColor(colBackup, col);
+                    CT_Color &col = cc->colorAt(id);
+                    col.setColor(*colBackup);
 
                     m_indexCloudColor->removeIndex(id);
                 }
@@ -134,11 +136,11 @@ void DM_ColorSelectionManagerT<T>::removeIDFromSelection(const GLuint &id)
 template<typename T>
 void DM_ColorSelectionManagerT<T>::endRemoveMultipleIDFromSelection()
 {
-    QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
     if(ccr.data() != NULL)
     {
-        IColorCloud *cc = ccr->colorCloud();
+        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
         m_indexCloudColor->copyColorsOfKeys(cc, m_multipleVector, true);
     }
@@ -148,13 +150,13 @@ void DM_ColorSelectionManagerT<T>::endRemoveMultipleIDFromSelection()
 }
 
 template<typename T>
-void DM_ColorSelectionManagerT<T>::removeCloudIndexFromSelection(const QList<ICloudIndex*> &listID)
+void DM_ColorSelectionManagerT<T>::removeCloudIndexFromSelection(const QList<CT_AbstractCloudIndex*> &listID)
 {
-    QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
     if(ccr.data() != NULL)
     {
-        IColorCloud *cc = ccr->colorCloud();
+        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
         m_indexCloudColor->copyColorsOfCloudIndex(cc, listID, true);
     }
@@ -163,11 +165,11 @@ void DM_ColorSelectionManagerT<T>::removeCloudIndexFromSelection(const QList<ICl
 template<typename T>
 void DM_ColorSelectionManagerT<T>::clearSelection()
 {
-    QSharedPointer<ColorCloudRegisteredInterface> ccr = createDocumentColorCloudForTypeIfNotExist();
+    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
 
     if(ccr.data() != NULL)
     {
-        IColorCloud *cc = ccr->colorCloud();
+        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
 
         m_indexCloudColor->copyColors(cc);
     }
@@ -176,13 +178,13 @@ void DM_ColorSelectionManagerT<T>::clearSelection()
 }
 
 template<typename T>
-QSharedPointer<IndexCloudRegisteredInterface> DM_ColorSelectionManagerT<T>::selected() const
+QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> DM_ColorSelectionManagerT<T>::selected() const
 {
     return m_selected;
 }
 
 template<typename T>
-QSharedPointer<ColorCloudRegisteredInterface> DM_ColorSelectionManagerT<T>::createDocumentColorCloudForTypeIfNotExist()
+QSharedPointer<CT_StandardColorCloudRegistered> DM_ColorSelectionManagerT<T>::createDocumentColorCloudForTypeIfNotExist()
 {
     if(m_document->colorCloudRegistered<T>().data() == NULL)
         m_document->createColorCloudRegistered<T>();

@@ -34,13 +34,18 @@
 #include "gtreestepcontextmenu.h"
 #include "view/MainView/gaboutstepdialog.h"
 
+#include "ct_stepseparator.h"
+#include "ct_stepcanbeaddedfirstseparator.h"
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_abstractstepplugin.h"
+
 GTreeStepContextMenu::GTreeStepContextMenu(CDM_StepManager &stepManager, QWidget *parent) : QMenu(parent)
 {
     _selectedStep = NULL;
     _stepManager = &stepManager;
 }
 
-void GTreeStepContextMenu::setSelectedStep(Step *step)
+void GTreeStepContextMenu::setSelectedStep(CT_VirtualAbstractStep *step)
 {
     _selectedStep = step;
 
@@ -49,20 +54,20 @@ void GTreeStepContextMenu::setSelectedStep(Step *step)
 
 /////////////////// PRIVATE ///////////////////
 
-Step* GTreeStepContextMenu::selectedStep()
+CT_VirtualAbstractStep* GTreeStepContextMenu::selectedStep()
 {
     return _selectedStep;
 }
 
-void GTreeStepContextMenu::addAllStepOnMenu(QList<StepSeparator*> stepAvailable, QMenu *menuStep, bool insert)
+void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, QMenu *menuStep, bool insert)
 {
-    QListIterator<StepSeparator*> it(stepAvailable);
+    QListIterator<CT_StepSeparator*> it(stepAvailable);
 
     while(it.hasNext())
     {        
-        StepSeparator *sep = it.next();
-        QList<Step*> stepList = sep->getStepList();
-        QListIterator<Step*> itStep(stepList);
+        CT_StepSeparator *sep = it.next();
+        QList<CT_VirtualAbstractStep*> stepList = sep->getStepList();
+        QListIterator<CT_VirtualAbstractStep*> itStep(stepList);
 
         if(itStep.hasNext())
         {
@@ -77,7 +82,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<StepSeparator*> stepAvailable,
 
             while(itStep.hasNext())
             {
-                Step *step = itStep.next();
+                CT_VirtualAbstractStep *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepCustomName()), this);
                 action->setToolTip(step->getStepDescription());
@@ -95,8 +100,8 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<StepSeparator*> stepAvailable,
                     {
                         bool ok = true;
 
-                        QList<Step*> childList = selectedStep()->getStepChildList();
-                        QListIterator<Step*> itChild(childList);
+                        QList<CT_VirtualAbstractStep*> childList = selectedStep()->getStepChildList();
+                        QListIterator<CT_VirtualAbstractStep*> itChild(childList);
 
                         while(ok
                               && itChild.hasNext())
@@ -124,15 +129,15 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<StepSeparator*> stepAvailable,
     }
 }
 
-void GTreeStepContextMenu::addAllStepOnMenu(QList<StepCanBeAddedFirstSeparator *> stepAvailable, QMenu *menuStep)
+void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator *> stepAvailable, QMenu *menuStep)
 {
-    QListIterator<StepCanBeAddedFirstSeparator*> it(stepAvailable);
+    QListIterator<CT_StepCanBeAddedFirstSeparator*> it(stepAvailable);
 
     while(it.hasNext())
     {
-        StepCanBeAddedFirstSeparator *sep = it.next();
-        QList<StepCanBeAddedFirst*> stepList = sep->getStepList();
-        QListIterator<StepCanBeAddedFirst*> itStep(stepList);
+        CT_StepCanBeAddedFirstSeparator *sep = it.next();
+        QList<CT_AbstractStepCanBeAddedFirst*> stepList = sep->getStepList();
+        QListIterator<CT_AbstractStepCanBeAddedFirst*> itStep(stepList);
 
         if(itStep.hasNext())
         {
@@ -143,7 +148,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<StepCanBeAddedFirstSeparator *
 
             while(itStep.hasNext())
             {
-                StepCanBeAddedFirst *step = itStep.next();
+                CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepCustomName()), this);
                 action->setToolTip(step->getStepDescription());
@@ -239,7 +244,7 @@ void GTreeStepContextMenu::reload()
     /*action = new MyQAction(selectedStep(), tr("Charger à partir du disque dur"), this);
     action->setIcon(QIcon(":/Icones/Icones/upload.png"));
     action->setEnabled(false);
-    StepSerializable *selectedStepSerializable = dynamic_cast<StepSerializable*>(selectedStep());
+    CT_AbstractStepSerializable *selectedStepSerializable = dynamic_cast<CT_AbstractStepSerializable*>(selectedStep());
 
     if(selectedStepSerializable != NULL)
     {
@@ -288,7 +293,7 @@ void GTreeStepContextMenu::reload()
             /*QMenu *insertStep = new QMenu(trUtf8("Ins\xc3\xa9rer"), this);
             insertStep->setIcon(QIcon(":/Icones/Icones/add.png"));*/
 
-            QList<StepSeparator*> stepAvailable = pluginManager->getPlugin(i)->getGenericsStepAvailable();
+            QList<CT_StepSeparator*> stepAvailable = pluginManager->getPlugin(i)->getGenericsStepAvailable();
 
             /*addAllStepOnMenu(stepAvailable, insertStep, true);
 
@@ -303,7 +308,7 @@ void GTreeStepContextMenu::reload()
 
             addAllStepOnMenu(stepAvailable, menuStep);
 
-            QList<StepCanBeAddedFirstSeparator*> stepAddeFirstAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
+            QList<CT_StepCanBeAddedFirstSeparator*> stepAddeFirstAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
             addAllStepOnMenu(stepAddeFirstAvailable, menuStep);
 
             if(menuStep->actions().isEmpty())
@@ -372,7 +377,7 @@ void GTreeStepContextMenu::loadResultRequired()
 {
     if(selectedStep() != NULL)
     {
-        emit loadResultOfSelectedStep(dynamic_cast<StepSerializable*>(selectedStep()));
+        emit loadResultOfSelectedStep(dynamic_cast<CT_AbstractStepSerializable*>(selectedStep()));
     }
 }
 

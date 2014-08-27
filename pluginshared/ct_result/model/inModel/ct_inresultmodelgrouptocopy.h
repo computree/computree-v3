@@ -29,9 +29,10 @@ public:
                                 const QString &description = "",
                                 bool recursive = false);
 
-    // HERITE DE IInResultModel //
-    virtual QString resultTypeDisplayable() const;
-    //                     //
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
 
     /*!
      *  \brief Retourne une liste des modèles de sortie que vous

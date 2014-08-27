@@ -19,7 +19,7 @@ private:
 
 private slots:
 
-    void slotActionToBeRemoved(ActionInterface *action);
+    void slotActionToBeRemoved(CT_AbstractAction *action);
 };
 
 #endif // DM_ACTIONSMANAGER_H

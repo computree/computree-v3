@@ -1,14 +1,19 @@
 #include "gitemdrawablemodelmanager.h"
 #include "ui_gitemdrawablemodelmanager.h"
 
-#include "interfaces.h"
-
 #include "view/DocumentView/gdocumentmanagerview.h"
 #include "view/Tools/modelqstandarditem.h"
 
 #include "dm_guimanager.h"
 #include "dm_documentview.h"
 #include "qtcolorpicker.h"
+
+#include "ct_result/tools/iterator/ct_resultiterator.h"
+#include "ct_result/abstract/ct_abstractresult.h"
+#include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+#include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
 GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
     QWidget(parent),
@@ -55,12 +60,12 @@ void GItemDrawableModelManager::setDocumentManagerView(const GDocumentManagerVie
     }
 }
 
-void GItemDrawableModelManager::setResult(const Result *res)
+void GItemDrawableModelManager::setResult(const CT_AbstractResult *res)
 {
     if(_result != NULL)
         disconnect(_result, NULL, this, NULL);
 
-    _result = (Result*)res;
+    _result = (CT_AbstractResult*)res;
 
     if(_result != NULL)
     {
@@ -76,14 +81,14 @@ void GItemDrawableModelManager::setColorOptions(const DM_ItemDrawableManagerOpti
     _colorOptions = options;
 }
 
-Result* GItemDrawableModelManager::result() const
+CT_AbstractResult* GItemDrawableModelManager::result() const
 {
     return _result;
 }
 
-QList<const IModel*> GItemDrawableModelManager::getSelectedIModels() const
+QList<const CT_AbstractModel*> GItemDrawableModelManager::getSelectedIModels() const
 {
-    QList<const IModel*> retList;
+    QList<const CT_AbstractModel*> retList;
 
     QModelIndexList list = ui->treeView->selectionModel()->selectedRows(1);
 
@@ -94,10 +99,8 @@ QList<const IModel*> GItemDrawableModelManager::getSelectedIModels() const
         ModelQStandardItem *mItem = dynamic_cast<ModelQStandardItem*>(_viewModel.itemFromIndex(it.next()));
 
         if((mItem != NULL)
-                && (mItem->model() != NULL))
-        {
+                && (mItem->getModel() != NULL))
             retList.append(mItem->getModel());
-        }
     }
 
     return retList;
@@ -116,9 +119,9 @@ void GItemDrawableModelManager::constructModel()
     constructHeader();
 
     if((_result != NULL)
-            && (_result->getModel() != NULL))
+            && (_result->model() != NULL))
     {
-        _viewModel.invisibleRootItem()->appendRow(recursiveCreateItemsForResultModel(_result->getModel()));
+        _viewModel.invisibleRootItem()->appendRow(recursiveCreateItemsForModel(_result->model()));
 
         ui->treeView->expandAll();
 
@@ -161,43 +164,40 @@ QMenu* GItemDrawableModelManager::constructContextMenu()
     return contextMenu;
 }
 
-QList<QStandardItem*> GItemDrawableModelManager::recursiveCreateItemsForResultModel(const IResultModel *model)
+QList<QStandardItem*> GItemDrawableModelManager::recursiveCreateItemsForModel(const CT_OutAbstractModel *model)
 {
-    QList<QStandardItem*> retList = createItemsForResultModel(model);
+    QList<QStandardItem*> retList = createItemsForModel(model);
+
+    if(retList.isEmpty())
+        return retList;
+
     QStandardItem *rootItem = retList.first();
 
-    QList<IItemModel*> items = model->getRootItemModel();
-    QListIterator<IItemModel*> it(items);
+    QList<CT_AbstractModel*> items = model->childrens();
+    QListIterator<CT_AbstractModel*> it(items);
 
     while(it.hasNext())
     {
-        QList<QStandardItem*> list = recursiveCreateItemsForItemModel(it.next());
+        QList<QStandardItem *> lNew = recursiveCreateItemsForModel((CT_OutAbstractModel*)it.next());
 
-        rootItem->appendRow(list);
+        if(!lNew.isEmpty())
+            rootItem->appendRow(lNew);
     }
 
     return retList;
 }
 
-QList<QStandardItem*> GItemDrawableModelManager::recursiveCreateItemsForItemModel(const IItemModel *model)
+QList<QStandardItem *> GItemDrawableModelManager::createItemsForModel(const CT_OutAbstractModel *model)
 {
-    QList<QStandardItem*> retList = createItemsForItemModel(model);
-    QStandardItem *rootItem = retList.first();
+    if(dynamic_cast<const CT_OutAbstractItemModel*>(model) != NULL)
+        return createItemsForItemModel((const CT_OutAbstractItemModel*)model);
+    else if(dynamic_cast<const CT_OutAbstractResultModel*>(model) != NULL)
+        return createItemsForResultModel((const CT_OutAbstractResultModel*)model);
 
-    QList<IItemModel*> items = model->getChildrenItemModel();
-    QListIterator<IItemModel*> it(items);
-
-    while(it.hasNext())
-    {
-        QList<QStandardItem*> list = recursiveCreateItemsForItemModel(it.next());
-
-        rootItem->appendRow(list);
-    }
-
-    return retList;
+    return QList<QStandardItem*>();
 }
 
-QList<QStandardItem*> GItemDrawableModelManager::createItemsForResultModel(const IResultModel *model)
+QList<QStandardItem*> GItemDrawableModelManager::createItemsForResultModel(const CT_OutAbstractResultModel *model)
 {
     QList<QStandardItem*> retList;
 
@@ -212,7 +212,7 @@ QList<QStandardItem*> GItemDrawableModelManager::createItemsForResultModel(const
     return retList;
 }
 
-QList<QStandardItem*> GItemDrawableModelManager::createItemsForItemModel(const IItemModel *model)
+QList<QStandardItem *> GItemDrawableModelManager::createItemsForItemModel(const CT_OutAbstractItemModel *model)
 {
     QList<QStandardItem*> retList;
 
@@ -238,12 +238,12 @@ QList<QStandardItem*> GItemDrawableModelManager::createItemsForItemModel(const I
         }
     }
 
-    connect(model->getSignalEmitter(), SIGNAL(visibilityInDocumentChanged(const DocumentInterface*,bool)), this, SLOT(modelVisibilityInDocumentChanged(const DocumentInterface*,bool)), Qt::QueuedConnection);
+    connect(model, SIGNAL(visibilityInDocumentChanged(const DocumentInterface*,bool)), this, SLOT(modelVisibilityInDocumentChanged(const DocumentInterface*,bool)), Qt::QueuedConnection);
 
     return retList;
 }
 
-QStandardItem* GItemDrawableModelManager::recursiveGetStandardItemForModel(QStandardItem *pItem, IItemModel *model, int column) const
+QStandardItem* GItemDrawableModelManager::recursiveGetStandardItemForModel(QStandardItem *pItem, CT_OutAbstractModel *model, int column) const
 {
     int count = pItem->rowCount();
 
@@ -253,9 +253,7 @@ QStandardItem* GItemDrawableModelManager::recursiveGetStandardItemForModel(QStan
 
         if((itM != NULL)
                 && (itM->getModel() == model))
-        {
             return itM;
-        }
 
         QStandardItem *it = recursiveGetStandardItemForModel(pItem->child(i, 0), model, column);
 
@@ -266,7 +264,7 @@ QStandardItem* GItemDrawableModelManager::recursiveGetStandardItemForModel(QStan
     return NULL;
 }
 
-QStandardItem *GItemDrawableModelManager::recursiveGetStandardItemForModel(QStandardItem *pItem, IItemModel *model, const DocumentInterface *doc) const
+QStandardItem *GItemDrawableModelManager::recursiveGetStandardItemForModel(QStandardItem *pItem, CT_OutAbstractModel *model, const DocumentInterface *doc) const
 {
     int count = pItem->rowCount();
     int cCount = pItem->columnCount();
@@ -280,9 +278,7 @@ QStandardItem *GItemDrawableModelManager::recursiveGetStandardItemForModel(QStan
             if((itM != NULL)
                     && (itM->getModel() == model)
                     && ((DocumentInterface*)itM->data().value<void*>()) == doc)
-            {
                 return itM;
-            }
         }
 
         QStandardItem *it = recursiveGetStandardItemForModel(pItem->child(i, 0), model, doc);
@@ -340,29 +336,21 @@ void GItemDrawableModelManager::refreshCheckbox()
 
 void GItemDrawableModelManager::modelVisibilityChanged(bool visible)
 {
-    IModelSignalEmitter *emitter = (IModelSignalEmitter*)sender();
+    QStandardItem *item = recursiveGetStandardItemForModel(_viewModel.invisibleRootItem(), dynamic_cast<CT_OutAbstractModel*>(sender()), 1);
 
-    if(emitter != NULL)
+    if(item != NULL)
     {
-        QStandardItem *item = recursiveGetStandardItemForModel(_viewModel.invisibleRootItem(), dynamic_cast<IItemModel*>(emitter->model()), 1);
-
-        if(item != NULL)
-        {
-            disconnect(&_viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)));
-            item->setCheckState(visible ? Qt::Checked : Qt::Unchecked);
-            connect(&_viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)), Qt::DirectConnection);
-        }
+        disconnect(&_viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)));
+        item->setCheckState(visible ? Qt::Checked : Qt::Unchecked);
+        connect(&_viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)), Qt::DirectConnection);
     }
 }
 
 void GItemDrawableModelManager::modelVisibilityInDocumentChanged(const DocumentInterface *doc, bool visible)
 {
-    IModelSignalEmitter *emitter = (IModelSignalEmitter*)sender();
-
-    if((emitter != NULL)
-            && (m_docManagerView != NULL))
+    if(m_docManagerView != NULL)
     {
-        QStandardItem *item = recursiveGetStandardItemForModel(_viewModel.invisibleRootItem(), dynamic_cast<IItemModel*>(emitter->model()), doc);
+        QStandardItem *item = recursiveGetStandardItemForModel(_viewModel.invisibleRootItem(), dynamic_cast<CT_OutAbstractModel*>(sender()), doc);
 
         if((item != NULL)
                 && ((item->checkState() == Qt::Checked) != visible))
@@ -381,7 +369,7 @@ void GItemDrawableModelManager::itemChanged(QStandardItem *item)
     if((mItem != NULL)
             && (_result != NULL))
     {
-        IItemModel *mo = dynamic_cast<IItemModel*>(mItem->getModel());
+        CT_OutAbstractItemModel *mo = dynamic_cast<CT_OutAbstractItemModel*>(mItem->getModel());
         DM_DocumentView *view = (DM_DocumentView*)mItem->data().value<void*>();
 
         if((mo != NULL)
@@ -416,11 +404,11 @@ void GItemDrawableModelManager::resultDestroyedDirect()
 
 void GItemDrawableModelManager::showContextMenu(const QPoint &point)
 {
-    QList<const IModel*> sModel = getSelectedIModels();
+    QList<const CT_AbstractModel*> sModel = getSelectedIModels();
 
     if(!sModel.isEmpty())
     {
-        const IItemModel *iModel = dynamic_cast<const IItemModel*>(sModel.first());
+        const CT_OutAbstractModel *iModel = dynamic_cast<const CT_OutAbstractModel*>(sModel.first());
 
         if(iModel != NULL)
             _contextMenu->exec(ui->treeView->viewport()->mapToGlobal(point));
@@ -429,11 +417,11 @@ void GItemDrawableModelManager::showContextMenu(const QPoint &point)
 
 void GItemDrawableModelManager::setUniqueColorForModelSelected()
 {
-    Result *res = result();
+    CT_AbstractResult *res = result();
 
     if(res != NULL)
     {
-        QList<const IModel*> sModel = getSelectedIModels();
+        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
 
         if(!sModel.isEmpty())
         {
@@ -441,15 +429,14 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
             if(!_colorPicker->isDialogCanceled())
             {
-                const IItemModel *iModel = dynamic_cast<const IItemModel*>(sModel.first());
+                const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
 
-                if((iModel != NULL)
-                        && (res->recursiveBeginIterateItemDrawableWithModel(*iModel) > 0))
+                if(iModel != NULL)
                 {
-                    ItemDrawable *item;
+                    CT_ResultIterator it((CT_ResultGroup*)res, iModel);
 
-                    while((item = res->recursiveNextItemDrawable()) != NULL)
-                        item->getItemDrawableSignalSlotManager()->setColor(_colorPicker->currentColor());
+                    while(it.hasNext())
+                        ((CT_AbstractItemDrawable*)it.next())->setColor(_colorPicker->currentColor());
 
                     GUI_MANAGER->getDocumentManagerView()->getActiveDocumentView()->redrawGraphics();
                 }
@@ -460,23 +447,22 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
 void GItemDrawableModelManager::setAutomaticColorForModelSelected()
 {
-    Result *res = result();
+    CT_AbstractResult *res = result();
 
     if(res != NULL)
     {
-        QList<const IModel*> sModel = getSelectedIModels();
+        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
 
         if(!sModel.isEmpty())
         {
-            const IItemModel *iModel = dynamic_cast<const IItemModel*>(sModel.first());
+            const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
 
-            if((iModel != NULL)
-                    && (res->recursiveBeginIterateItemDrawableWithModel(*iModel) > 0))
+            if(iModel != NULL)
             {
-                ItemDrawable *item;
+                CT_ResultIterator it((CT_ResultGroup*)res, iModel);
 
-                while((item = res->recursiveNextItemDrawable()) != NULL)
-                    item->getItemDrawableSignalSlotManager()->setColor(_colorOptions.getNextColor());
+                while(it.hasNext())
+                    ((CT_AbstractItemDrawable*)it.next())->setColor(_colorOptions.getNextColor());
 
                 GUI_MANAGER->getDocumentManagerView()->getActiveDocumentView()->redrawGraphics();
             }

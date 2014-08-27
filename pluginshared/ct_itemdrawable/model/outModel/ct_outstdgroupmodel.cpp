@@ -10,6 +10,11 @@ CT_OutStdGroupModel::CT_OutStdGroupModel(const QString &uniqueName,
 {
 }
 
+QString CT_OutStdGroupModel::modelTypeDisplayable() const
+{
+    return QString("CT_OutStdGroupModel");
+}
+
 CT_OutAbstractModel* CT_OutStdGroupModel::copy() const
 {
     return copyGroup();
@@ -30,7 +35,7 @@ DEF_CT_AbstractGroupModelOut* CT_OutStdGroupModel::copyGroup() const
         cpy->addItemWithoutVerification((CT_OutAbstractSingularItemModel*)itI.next()->copy());
 
     if(group() != NULL)
-        cpy->setGroup((CT_AbstractItemGroup*)group()->copy(cpy, this->result(), CT_ResultCopyModeList()));
+        cpy->setItem(group()->copy(cpy, this->result(), CT_ResultCopyModeList()));
 
     cpy->setOriginalModel((const CT_OutAbstractItemModel*)this);
 

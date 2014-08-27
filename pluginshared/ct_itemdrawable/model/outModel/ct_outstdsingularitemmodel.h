@@ -19,14 +19,31 @@ public:
      * @param description : a description
      */
     CT_OutStdSingularItemModel(const QString &uniqueName,
-                               CT_AbstractSingularItemDrawable *item,
+                               CT_AbstractSingularItemDrawable *itemDrawable,
                                const QString &displayableName = "",
                                const QString &description = "");
+
+    ~CT_OutStdSingularItemModel();
+
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
 
     /**
      * @brief Returns a copy of this model
      */
     CT_OutAbstractModel* copy() const;
+
+protected:
+    /**
+     * @brief Called from parent model to make some
+     *        change in models to complete it.
+     */
+    virtual bool recursiveSetComplete();
+
+private:
+    QList<CT_AutoRenameModels*> m_autoRenameOfDefaultIA;
 };
 
 #endif // CT_OUTSTDSINGULARITEMMODEL_H

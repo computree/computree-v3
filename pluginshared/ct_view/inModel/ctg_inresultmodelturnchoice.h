@@ -6,7 +6,7 @@
 
 class CT_InTurn;
 class CT_InAbstractResultModel;
-class CT_InStdModelPossibility;
+class CT_InStdResultModelPossibility;
 
 namespace Ui {
 class CTG_InResultModelTurnChoice;
@@ -21,7 +21,7 @@ public:
 
     CTG_InResultModelTurnChoiceItem(const QString & text) : QStandardItem(text) { _possibility = NULL; }
 
-    CT_InStdModelPossibility     *_possibility;
+    CT_InStdResultModelPossibility     *_possibility;
 };
 
 /*!
@@ -68,7 +68,7 @@ private:
     CT_InTurn                           *_turn;
 
     QStandardItemModel                  _viewModel;
-    CT_InStdModelPossibility            *m_possibilityToSelect;
+    CT_InStdResultModelPossibility      *m_possibilityToSelect;
     QStandardItem                       *m_itemToSelect;
 
     /*!
@@ -105,7 +105,7 @@ public slots:
 
 signals:
 
-    void selectedPossibilityChanged(const CT_InStdModelPossibility *possibility);
+    void selectedPossibilityChanged(const CT_InStdResultModelPossibility *possibility);
 };
 
 #endif // CTG_INRESULTMODELTURNCHOICE_H

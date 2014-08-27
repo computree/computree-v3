@@ -39,12 +39,12 @@ public:
      *
      *  ATTENTION : si vous définissez un nombre de tour maximum inférieur au nombre de tour présent dans la liste, ils seront supprimés de la liste.
      */
-    void setMaximumTurn(uint n);
+    void setMaximumTurn(int n);
 
     /*!
      *  \brief Retourne le nombre de tour maximum autorisé.
      */
-    uint maximumTurn() const;
+    int maximumTurn() const;
 
     /*!
      *  \brief Crée un nouveau tour avec les résultats modèles par défault et l'ajoute à la liste.
@@ -130,7 +130,7 @@ private:
     CT_TurnIndexManager                                                     *_tIndexManager;
 
     QList<CT_InTurn*>                                                       _turns;
-    uint                                                                    _maximumTurn;
+    int                                                                     _maximumTurn;
 
     QMap<CT_OutAbstractResultModel*, QMap<QString,CT_InAbstractModel*>* >   _modelsForCurrentTurn;
 

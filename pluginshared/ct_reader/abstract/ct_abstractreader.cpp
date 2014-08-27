@@ -398,19 +398,13 @@ void CT_AbstractReader::recursiveSetResult(CT_AbstractItemGroup *gr, CT_Abstract
 {
     gr->changeResult(result);
 
-    if(gr->beginIterateGroups())
-    {
-        CT_AbstractItemGroup *ng;
+    CT_GroupIterator itG(gr);
 
-        while((ng = gr->nextGroup()) != NULL)
-            recursiveSetResult(ng, result);
-    }
+    while(itG.hasNext())
+        recursiveSetResult((CT_AbstractItemGroup*)itG.next(), result);
 
-    if(gr->beginIterateItems())
-    {
-        CT_AbstractSingularItemDrawable *item;
+    CT_ItemIterator itI(gr);
 
-        while((item = gr->nextItem()) != NULL)
-            item->changeResult(result);
-    }
+    while(itI.hasNext())
+        ((CT_AbstractSingularItemDrawable*)itI.next())->changeResult(result);
 }

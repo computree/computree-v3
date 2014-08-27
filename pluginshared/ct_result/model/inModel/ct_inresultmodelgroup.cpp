@@ -24,6 +24,11 @@ CT_InResultModelGroup::CT_InResultModelGroup(const QString &uniqueName,
     _group = rootGroupModel;
 }
 
+QString CT_InResultModelGroup::modelTypeDisplayable() const
+{
+    return QString("CT_InResultModelGroup");
+}
+
 CT_InResultModelGroup::~CT_InResultModelGroup()
 {
     delete _group;

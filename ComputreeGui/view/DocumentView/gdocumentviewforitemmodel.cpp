@@ -12,6 +12,8 @@
 
 #include "qtcolorpicker.h"
 
+#include "ct_actions/abstract/ct_abstractactionfortreeview.h"
+
 #include <QVBoxLayout>
 #include <QTreeView>
 #include <QHeaderView>
@@ -88,12 +90,12 @@ void GDocumentViewForItemModel::endRemoveMultipleItemDrawable()
         it.next()->endRemoveMultipleItemDrawable();
 }
 
-bool GDocumentViewForItemModel::acceptAction(const ActionInterface *action) const
+bool GDocumentViewForItemModel::acceptAction(const CT_AbstractAction *action) const
 {
-    return (action == NULL) || (dynamic_cast<const ActionForTreeViewInterface*>(action) != NULL);
+    return (action == NULL) || (dynamic_cast<const CT_AbstractActionForTreeView*>(action) != NULL);
 }
 
-bool GDocumentViewForItemModel::setCurrentAction(ActionInterface *action, bool deleteAction)
+bool GDocumentViewForItemModel::setCurrentAction(CT_AbstractAction *action, bool deleteAction)
 {
     if(!acceptAction(action))
     {
@@ -112,7 +114,7 @@ bool GDocumentViewForItemModel::setCurrentAction(ActionInterface *action, bool d
         if(action == NULL)
             it.next()->setCurrentAction(NULL);
         else
-            it.next()->setCurrentAction(dynamic_cast<ActionForTreeViewInterface*>(action->copy()));
+            it.next()->setCurrentAction(dynamic_cast<CT_AbstractActionForTreeView*>(action->copy()));
     }
 
     if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
@@ -121,7 +123,7 @@ bool GDocumentViewForItemModel::setCurrentAction(ActionInterface *action, bool d
     return true;
 }
 
-bool GDocumentViewForItemModel::setDefaultAction(ActionInterface *action, bool deleteAction)
+bool GDocumentViewForItemModel::setDefaultAction(CT_AbstractAction *action, bool deleteAction)
 {
     if(!acceptAction(action))
     {
@@ -140,7 +142,7 @@ bool GDocumentViewForItemModel::setDefaultAction(ActionInterface *action, bool d
         if(action == NULL)
             it.next()->setDefaultAction(NULL);
         else
-            it.next()->setDefaultAction(dynamic_cast<ActionForTreeViewInterface*>(action->copy()));
+            it.next()->setDefaultAction(dynamic_cast<CT_AbstractActionForTreeView*>(action->copy()));
     }
 
     if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
@@ -149,7 +151,7 @@ bool GDocumentViewForItemModel::setDefaultAction(ActionInterface *action, bool d
     return true;
 }
 
-ActionInterface* GDocumentViewForItemModel::currentAction() const
+CT_AbstractAction* GDocumentViewForItemModel::currentAction() const
 {
     if(m_views.isEmpty())
         return NULL;
@@ -157,7 +159,7 @@ ActionInterface* GDocumentViewForItemModel::currentAction() const
     return m_views.first()->actionsHandler()->currentAction();
 }
 
-ActionInterface* GDocumentViewForItemModel::defaultAction() const
+CT_AbstractAction* GDocumentViewForItemModel::defaultAction() const
 {
     if(m_views.isEmpty())
         return NULL;
@@ -194,7 +196,7 @@ void GDocumentViewForItemModel::addSelectedItemToDocument(const int &number)
 
         if(doc->getNumber() == number)
         {
-            QList<ItemDrawable *> items = getItemDrawableCorrespondingToRowSelected();
+            QList<CT_AbstractItemDrawable *> items = getItemDrawableCorrespondingToRowSelected();
 
             GUI_MANAGER->asyncAddAllItemDrawableOfListOnView(items, doc, NULL);
 
@@ -203,9 +205,9 @@ void GDocumentViewForItemModel::addSelectedItemToDocument(const int &number)
     }
 }
 
-QList<ItemDrawable*> GDocumentViewForItemModel::getItemDrawableCorrespondingToRowSelected()
+QList<CT_AbstractItemDrawable*> GDocumentViewForItemModel::getItemDrawableCorrespondingToRowSelected()
 {
-    QList<ItemDrawable*> listItem;
+    QList<CT_AbstractItemDrawable*> listItem;
 
     QModelIndexList listSelected = m_treeView->selectionModel()->selectedRows();
     QListIterator<QModelIndex> it(listSelected);
@@ -213,7 +215,7 @@ QList<ItemDrawable*> GDocumentViewForItemModel::getItemDrawableCorrespondingToRo
     while(it.hasNext())
     {
         QStandardItem *item = m_model->itemFromIndex(((QSortFilterProxyModel*)m_treeView->model())->mapToSource(it.next()));
-        ItemDrawable *id = (ItemDrawable*)item->data().value<void*>();
+        CT_AbstractItemDrawable *id = (CT_AbstractItemDrawable*)item->data().value<void*>();
 
         if(id != NULL)
             listItem.append(id);
@@ -222,7 +224,7 @@ QList<ItemDrawable*> GDocumentViewForItemModel::getItemDrawableCorrespondingToRo
     return listItem;
 }*/
 
-/*void GDocumentViewForItemModel::setReferencesToUseOfItemDrawable(const ItemDrawable *item)
+/*void GDocumentViewForItemModel::setReferencesToUseOfItemDrawable(const CT_AbstractItemDrawable *item)
 {
     if(item != NULL)
     {
@@ -308,7 +310,7 @@ void GDocumentViewForItemModel::initContextMenu()
 {
     m_contextMenu->clear();
 
-    QAction *action = m_contextMenu->addAction(tr("Modifier les titres des colonnes pour ce type d'ItemDrawable"));
+    QAction *action = m_contextMenu->addAction(tr("Modifier les titres des colonnes pour ce type d'CT_AbstractItemDrawable"));
     action->setEnabled(m_treeView->selectionModel()->selectedRows().size() == 1);
     connect(action, SIGNAL(triggered()), this, SLOT(slotUseReferences()));
 
@@ -400,7 +402,7 @@ void GDocumentViewForItemModel::slotMustRemoveItem(DM_ItemDrawableType type)
     #endif
 }*/
 
-/*void GDocumentViewForItemModel::slotAddItemDrawable(ItemDrawable &item)
+/*void GDocumentViewForItemModel::slotAddItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_typeBuilder.addItemDrawable(item);
 
@@ -413,7 +415,7 @@ void GDocumentViewForItemModel::slotMustRemoveItem(DM_ItemDrawableType type)
     #endif
 }
 
-void GDocumentViewForItemModel::slotRemoveItemDrawable(ItemDrawable &item)
+void GDocumentViewForItemModel::slotRemoveItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_typeBuilder.removeItemDrawable(item);
 
@@ -464,12 +466,12 @@ void GDocumentViewForItemModel::slotComboBoxItemChanged(const QString &text)
 
 /*void GDocumentViewForItemModel::slotExpanded(const QModelIndex &i)
 {
-    m_expanded.append((ItemDrawable*)m_model->itemFromIndex(((QSortFilterProxyModel*)m_treeView->model())->mapToSource(i))->data().value<void*>());
+    m_expanded.append((CT_AbstractItemDrawable*)m_model->itemFromIndex(((QSortFilterProxyModel*)m_treeView->model())->mapToSource(i))->data().value<void*>());
 }
 
 void GDocumentViewForItemModel::slotCollapsed(const QModelIndex &i)
 {
-    m_expanded.removeOne((ItemDrawable*)m_model->itemFromIndex(((QSortFilterProxyModel*)m_treeView->model())->mapToSource(i))->data().value<void*>());
+    m_expanded.removeOne((CT_AbstractItemDrawable*)m_model->itemFromIndex(((QSortFilterProxyModel*)m_treeView->model())->mapToSource(i))->data().value<void*>());
 }*/
 
 /*void GDocumentViewForItemModel::slotTimerRefreshTimeOut()
@@ -539,7 +541,7 @@ void GDocumentViewForItemModel::slotCollapsed(const QModelIndex &i)
 
 /*void GDocumentViewForItemModel::slotUseReferences()
 {
-    QList<ItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
+    QList<CT_AbstractItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
 
     if(!l.isEmpty())
     {
@@ -550,8 +552,8 @@ void GDocumentViewForItemModel::slotCollapsed(const QModelIndex &i)
 
 /*void GDocumentViewForItemModel::slotSelect()
 {
-    QList<ItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
         it.next()->getItemDrawableSignalSlotManager()->select(true);
@@ -561,8 +563,8 @@ void GDocumentViewForItemModel::slotCollapsed(const QModelIndex &i)
 
 void GDocumentViewForItemModel::slotDeSelect()
 {
-    QList<ItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
         it.next()->getItemDrawableSignalSlotManager()->select(false);
@@ -572,12 +574,12 @@ void GDocumentViewForItemModel::slotDeSelect()
 
 void GDocumentViewForItemModel::slotInverseSelection()
 {
-    QList<ItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
-    QListIterator<ItemDrawable*> it(sel);
+    QList<CT_AbstractItemDrawable*> sel = getItemDrawableCorrespondingToRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(sel);
 
     while(it.hasNext())
     {
-        ItemDrawable *ii = it.next();
+        CT_AbstractItemDrawable *ii = it.next();
         ii->getItemDrawableSignalSlotManager()->select(!ii->isSelected());
     }
 
@@ -586,11 +588,11 @@ void GDocumentViewForItemModel::slotInverseSelection()
 
 void GDocumentViewForItemModel::slotColorAuto()
 {
-    QList<ItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
+    QList<CT_AbstractItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
 
     if(!l.isEmpty())
     {
-        QListIterator<ItemDrawable*> it(l);
+        QListIterator<CT_AbstractItemDrawable*> it(l);
 
         while(it.hasNext())
             it.next()->getItemDrawableSignalSlotManager()->setColor(m_options.getNextColor());
@@ -608,8 +610,8 @@ void GDocumentViewForItemModel::slotColorSolid()
     {
         QColor color = colorPicker.currentColor();
 
-        QList<ItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
-        QListIterator<ItemDrawable*> it(l);
+        QList<CT_AbstractItemDrawable *> l = getItemDrawableCorrespondingToRowSelected();
+        QListIterator<CT_AbstractItemDrawable*> it(l);
 
         while(it.hasNext())
             it.next()->getItemDrawableSignalSlotManager()->setColor(color);
@@ -632,7 +634,7 @@ void GDocumentViewForItemModel::slotColorSolid()
 /*void GDocumentViewForItemModel::slotItemDataChanged(QStandardItem *item)
 {
     MyQStandardItem *myItem = (MyQStandardItem*)item;
-    ItemDrawable *itemDrawable = myItem->itemDrawable();
+    CT_AbstractItemDrawable *itemDrawable = myItem->itemDrawable();
 
     if(itemDrawable != NULL)
     {

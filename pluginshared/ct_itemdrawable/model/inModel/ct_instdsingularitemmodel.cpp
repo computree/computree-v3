@@ -3,10 +3,10 @@
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
-CT_InStdSingularItemModel::CT_InStdSingularItemModel(QString uniqueName,
-                                                     QString itemType,
-                                                     QString displayableName,
-                                                     QString description,
+CT_InStdSingularItemModel::CT_InStdSingularItemModel(const QString &uniqueName,
+                                                     const QString &itemType,
+                                                     const QString &displayableName,
+                                                     const QString &description,
                                                      CT_InStdSingularItemModel::ChoiceMode choiceMode,
                                                      CT_InStdSingularItemModel::FinderMode finderMode) : DEF_CT_AbstractItemDrawableModelIn(uniqueName,
                                                                                                                                            description,
@@ -15,6 +15,11 @@ CT_InStdSingularItemModel::CT_InStdSingularItemModel(QString uniqueName,
     setItemType(itemType);
     internalSetChoiceMode(choiceMode);
     internalSetFinderMode(finderMode);
+}
+
+QString CT_InStdSingularItemModel::modelTypeDisplayable() const
+{
+    return QString("CT_InStdSingularItemModel");
 }
 
 CT_InAbstractModel* CT_InStdSingularItemModel::copy(bool withPossibilities) const
@@ -41,7 +46,7 @@ bool CT_InStdSingularItemModel::canAddPossibilityForThisModel(const CT_OutAbstra
         return false;
 
     // we accept the out model to be a possibility if the item of the out model start with the type of the item of this model
-    return outModel->item()->getType().startsWith(itemType());
+    return outModel->itemDrawable()->getType().startsWith(itemType());
 }
 
 CT_InStdSingularItemModel::CT_InStdSingularItemModel(const CT_InStdSingularItemModel &model) : DEF_CT_AbstractItemDrawableModelIn(model.uniqueName(),

@@ -27,6 +27,11 @@ public:
     ~CT_OutResultModelGroup();
 
     /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
+    /**
      * @brief Return the root model that represent a group
      */
     DEF_CT_AbstractGroupModelOut* rootGroup() const;

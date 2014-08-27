@@ -56,7 +56,7 @@ void DM_ItemDrawableTreeViewController::beginAddMultipleItemDrawable()
     m_addMultiple = true;
 }
 
-void DM_ItemDrawableTreeViewController::addItemDrawable(ItemDrawable &item)
+void DM_ItemDrawableTreeViewController::addItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_tmpItemsToAdd.append(&item);
 
@@ -78,7 +78,7 @@ void DM_ItemDrawableTreeViewController::beginRemoveMultipleItemDrawable()
     m_removeMultiple = true;
 }
 
-void DM_ItemDrawableTreeViewController::removeItemDrawable(ItemDrawable &item)
+void DM_ItemDrawableTreeViewController::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_tmpItemsToRemove.append(&item);
 
@@ -118,13 +118,13 @@ void DM_ItemDrawableTreeViewController::updateElemensOfCollection()
     if(m_tmpItemsToUpdate.size() == m_collectionUpdate.size())
     {
         QVectorIterator< QList<QStandardItem*> > it(m_collectionUpdate);
-        QListIterator< QPair<QStandardItem *, ItemDrawable *> > itL(m_tmpItemsToUpdate);
+        QListIterator< QPair<QStandardItem *, CT_AbstractItemDrawable *> > itL(m_tmpItemsToUpdate);
 
         while(it.hasNext()
                 && itL.hasNext())
         {
             const QList<QStandardItem*> &ll = it.next();
-            const QPair<QStandardItem *, ItemDrawable *> &pair = itL.next();
+            const QPair<QStandardItem *, CT_AbstractItemDrawable *> &pair = itL.next();
 
             if(!ll.isEmpty())
             {
@@ -159,7 +159,7 @@ void DM_ItemDrawableTreeViewController::constructModel()
     {
         //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("reConstructModel"));
 
-        // add all ItemDrawable of the type to the QTreeView
+        // add all CT_AbstractItemDrawable of the type to the QTreeView
         DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
 
         m_timerAddToView.stop();
@@ -175,7 +175,7 @@ void DM_ItemDrawableTreeViewController::constructModel()
             aop->progressDialog()->setSecondLabelText("");
             aop->progressDialog()->setValue(0);
 
-            QList<ItemDrawable*> items = m_treeViewManager->itemDrawableForTreeView();
+            QList<CT_AbstractItemDrawable*> items = m_treeViewManager->itemDrawableForTreeView();
 
             if(!items.isEmpty())
             {
@@ -222,11 +222,11 @@ void DM_ItemDrawableTreeViewController::constructModel()
     }
 }
 
-void DM_ItemDrawableTreeViewController::refresh(const QList<QPair<QStandardItem *, ItemDrawable *> > &list)
+void DM_ItemDrawableTreeViewController::refresh(const QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > &list)
 {
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("refresh a item in the Model"));
 
-    // add all ItemDrawable of the type to the QTreeView
+    // add all CT_AbstractItemDrawable of the type to the QTreeView
     DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
 
     if(aop != NULL)
@@ -359,7 +359,7 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderRemoveFinished(bool canc
 
 void DM_ItemDrawableTreeViewController::slotAddTemporaryItemsInTable()
 {
-    // add all ItemDrawable in the temporary list to the QTreeView
+    // add all CT_AbstractItemDrawable in the temporary list to the QTreeView
     DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
 
     if(!m_tmpItemsToAdd.isEmpty())
@@ -404,7 +404,7 @@ void DM_ItemDrawableTreeViewController::slotAddTemporaryItemsInTable()
 
 void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
 {
-    // remvoe all ItemDrawable in the temporary list from the QTreeView
+    // remvoe all CT_AbstractItemDrawable in the temporary list from the QTreeView
     /*DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
 
     if(!m_tmpItemsToRemove.isEmpty())
@@ -447,7 +447,7 @@ void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
 
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("slotRemoveTemporaryItemsInTable : %1").arg(m_tmpItemsToRemove.size()));
 
-    // if the size of ItemDrawable to removes is too important
+    // if the size of CT_AbstractItemDrawable to removes is too important
     if(m_tmpItemsToRemove.size() > maxRemoveToDoInGuiThread())
     {
         //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("slotRemoveTemporaryItemsInTable reconstruct"));
@@ -465,7 +465,7 @@ void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
 
         while(!m_tmpItemsToRemove.isEmpty())
         {
-            ItemDrawable *item = m_tmpItemsToRemove.takeLast();
+            CT_AbstractItemDrawable *item = m_tmpItemsToRemove.takeLast();
 
             QStandardItem *si = m_treeViewManager->itemFromItemDrawable(item);
 

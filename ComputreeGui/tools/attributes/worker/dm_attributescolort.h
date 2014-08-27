@@ -1,10 +1,11 @@
 #ifndef DM_ATTRIBUTESCOLORT_H
 #define DM_ATTRIBUTESCOLORT_H
 
-#include "interfaces.h"
 #include "tools/attributes/worker/abstract/dm_abstractattributescolor.h"
 
 #include "view/DocumentView/gdocumentviewforgraphics.h"
+
+#include "ct_attributes/ct_attributescolor.h"
 
 template<typename Type, typename TypeCloudIndex>
 class DM_AttributesColorT : public DM_AbstractAttributesColor
@@ -17,12 +18,12 @@ public:
     /**
      * @brief accept only Type (Point, Face, etc...) and colors
      */
-    bool setTypeAttributes(const Type *ta, const IAttributesColor *ac);
+    bool setTypeAttributes(const Type *ta, const CT_AttributesColor *ac);
 
     /**
      * @brief getter of I[Type]Attributes
      */
-    IAttributesColor* colorAttributes() const;
+    CT_AttributesColor* colorAttributes() const;
     Type* abstractTypeAttributes() const;
 
 protected:
@@ -36,7 +37,7 @@ protected:
     void attributesDeleted();
 
 private:
-    IAttributesColor  *m_ac;
+    CT_AttributesColor  *m_ac;
 };
 
 #include "tools/attributes/worker/dm_attributescolort.hpp"

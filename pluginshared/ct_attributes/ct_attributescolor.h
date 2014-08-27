@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AttributesColor
 {
 public:
     CT_AttributesColor(CT_AbstractColorCloud *cloud = NULL);
-    ~CT_AttributesColor();
+    virtual ~CT_AttributesColor();
 
     const CT_Color& constColorAt(const size_t &index) const;
 

@@ -1,7 +1,8 @@
 #ifndef GLOGWIDGET_H
 #define GLOGWIDGET_H
 
-#include "interfaces.h"
+#include "ct_log/abstract/ct_abstractloglistener.h"
+
 #include <QWidget>
 #include <QReadWriteLock>
 
@@ -9,10 +10,9 @@ namespace Ui {
 class GLogWidget;
 }
 
-class GLogWidget : public QWidget, public ILogListener
+class GLogWidget : public QWidget, public CT_AbstractLogListener
 {
     Q_OBJECT
-    Q_INTERFACES(ILogListener)
 
 public:
     explicit GLogWidget(QWidget *parent = 0);
@@ -20,7 +20,6 @@ public:
 
 public slots:
     void addMessage(const int &severity, const int &type, const QString &s, const QString &filter = "");
-    void on_pushButtonClear_clicked();
 
 private:
     Ui::GLogWidget              *ui;
@@ -33,6 +32,7 @@ private:
 
 private slots:
     void slotNewMessageReceived();
+    void on_pushButtonClear_clicked();
 
 signals:
     void newMessageReceived();

@@ -5,8 +5,6 @@
 
 #include "ct_turn/outTurn/tools/ct_outturnmanager.h"
 
-class Result;
-
 class PLUGINSHAREDSHARED_EXPORT CT_OutResultManager : public QObject
 {
     Q_OBJECT
@@ -71,7 +69,7 @@ private:
 
 signals:
 
-    void resultAdded(CT_AbstractResult *res);
+    void resultAdded(const CT_AbstractResult *res);
 };
 
 #endif // CT_OUTRESULTMANAGER_H

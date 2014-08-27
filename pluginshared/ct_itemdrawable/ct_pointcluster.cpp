@@ -124,8 +124,8 @@ CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointClus
 
     CT_PointCluster *pMerged = new CT_PointCluster((const CT_OutAbstractSingularItemModel *)model, &result);
 
-    const CT_AbstractCloudIndexT<CT_Point> *pIndex1 = pCLuster1.getPointCloudIndex();
-    const CT_AbstractCloudIndexT<CT_Point> *pIndex2 = pCLuster2.getPointCloudIndex();
+    const CT_AbstractPointCloudIndex *pIndex1 = pCLuster1.getPointCloudIndex();
+    const CT_AbstractPointCloudIndex *pIndex2 = pCLuster2.getPointCloudIndex();
 
     size_t size = pIndex1->size();
     size_t index;
@@ -194,7 +194,7 @@ void CT_PointCluster::initBarycenter()
 {
     _barycenter.reset();
 
-    const CT_AbstractCloudIndexT<CT_Point> *pIndex = getPointCloudIndex();
+    const CT_AbstractPointCloudIndex *pIndex = getPointCloudIndex();
 
     if(pIndex != NULL)
     {

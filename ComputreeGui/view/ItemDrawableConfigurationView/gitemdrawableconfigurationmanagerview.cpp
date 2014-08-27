@@ -77,8 +77,8 @@ void GItemDrawableConfigurationManagerView::setDocument(DM_DocumentView *doc)
 
         if(_doc != NULL)
         {
-            connect(_doc, SIGNAL(itemDrawableAdded(ItemDrawable&)), m_configBuilder, SLOT(addItemDrawable(ItemDrawable&)), Qt::DirectConnection);
-            connect(_doc, SIGNAL(itemDrawableToBeRemoved(ItemDrawable&)), m_configBuilder, SLOT(removeItemDrawable(ItemDrawable&)), Qt::DirectConnection);
+            connect(_doc, SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), m_configBuilder, SLOT(addItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+            connect(_doc, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), m_configBuilder, SLOT(removeItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
             qRegisterMetaType<DM_ItemDrawableViewConfiguration>("DM_ItemDrawableViewConfiguration");
             connect(m_configBuilder, SIGNAL(added(DM_ItemDrawableViewConfiguration)), this, SLOT(slotMustAddItem(DM_ItemDrawableViewConfiguration)), Qt::QueuedConnection);
@@ -100,7 +100,7 @@ void GItemDrawableConfigurationManagerView::initView()
     {
         setTableHeader();
 
-        QListIterator<ItemDrawable*> it(_doc->getItemDrawable());
+        QListIterator<CT_AbstractItemDrawable*> it(_doc->getItemDrawable());
 
         while(it.hasNext())
             m_configBuilder->addItemDrawable(*it.next());
@@ -159,7 +159,7 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
 {
     if(!m_init)
     {
-        ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(text).configuration();
+        CT_ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(text).configuration();
 
         clearTableWidget();
 
@@ -175,7 +175,7 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
             {
                 QString name = config->getVariableName(i);
                 QVariant value = config->getVariableValue(i);
-                ItemDrawableConfiguration::Type type = config->getVariableType(i);
+                CT_ItemDrawableConfiguration::Type type = config->getVariableType(i);
 
                 QTableWidgetItem *item = new QTableWidgetItem();
                 item->setFlags(Qt::ItemIsEnabled);
@@ -183,7 +183,7 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
 
                 ui->tableWidgetConfiguration->setItem(i, 0, item);
 
-                if(type == ItemDrawableConfiguration::Bool)
+                if(type == CT_ItemDrawableConfiguration::Bool)
                 {
                     item = new QTableWidgetItem();
                     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
@@ -200,7 +200,7 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
 
                     ui->tableWidgetConfiguration->setItem(i, 1, item);
                 }
-                else if(type == ItemDrawableConfiguration::StringList)
+                else if(type == CT_ItemDrawableConfiguration::StringList)
                 {
                     QComboBox *cb = new QComboBox(ui->tableWidgetConfiguration);
 
@@ -242,16 +242,16 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
 
     if((_doc != NULL) && firstColumn)
     {
-        ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(ui->widgetComboBox->currentItemText()).configuration();
+        CT_ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(ui->widgetComboBox->currentItemText()).configuration();
 
         if(config != NULL)
         {
             int i = item->row();
 
             QVariant value = config->getVariableValue(i);
-            ItemDrawableConfiguration::Type type = config->getVariableType(i);
+            CT_ItemDrawableConfiguration::Type type = config->getVariableType(i);
 
-            if(type == ItemDrawableConfiguration::Bool)
+            if(type == CT_ItemDrawableConfiguration::Bool)
             {
                 bool enable = (item->checkState() == Qt::Checked);
 
@@ -262,7 +262,7 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
                     _doc->getManager()->redrawAllDocument();
                 }
             }
-            else if (type == ItemDrawableConfiguration::Double)
+            else if (type == CT_ItemDrawableConfiguration::Double)
             {
                 bool succeeded = false;
                 double newValue = item->text().toDouble(&succeeded);
@@ -273,7 +273,7 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
                     _doc->getManager()->redrawAllDocument();
                 }
             }
-            else if (type == ItemDrawableConfiguration::Int)
+            else if (type == CT_ItemDrawableConfiguration::Int)
             {
                 bool succeeded = false;
                 int newValue = item->text().toInt(&succeeded);
@@ -311,16 +311,16 @@ void GItemDrawableConfigurationManagerView::comboBoxIndexChanged(QString value)
 
     if((_doc != NULL) && firstColumn)
     {
-        ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(ui->widgetComboBox->currentItemText()).configuration();
+        CT_ItemDrawableConfiguration *config = m_configBuilder->getConfigurationWithName(ui->widgetComboBox->currentItemText()).configuration();
 
         if(config != NULL)
         {
             int i = row;
 
             QVariant varValue = config->getVariableValue(i);
-            ItemDrawableConfiguration::Type type = config->getVariableType(i);
+            CT_ItemDrawableConfiguration::Type type = config->getVariableType(i);
 
-            if(type == ItemDrawableConfiguration::StringList)
+            if(type == CT_ItemDrawableConfiguration::StringList)
             {
                 QStringList sList = varValue.toStringList();
 

@@ -122,6 +122,20 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfCloudIndex(CT_AbstractColorCloud 
     }
 }
 
+
+template<typename T>
+void CT_IndexCloudColorStdMapT<T>::removeIndex(const size_t &index)
+{
+    CT_CloudIndexStdMapT<T, CT_Color>::removeIndex(index);
+}
+
+
+template<typename T>
+void CT_IndexCloudColorStdMapT<T>::clear()
+{
+    CT_CloudIndexStdMapT<T, CT_Color>::clear();
+}
+
 template<typename T>
 CT_AbstractCloudIndex* CT_IndexCloudColorStdMapT<T>::copy() const
 {

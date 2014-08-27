@@ -26,6 +26,10 @@ public:
                                QString description = "");
     ~CT_OutResultModelGroupCopy();
 
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
 
     // OVERLOADED FROM CT_OutAbstractResultModelGroup //
     void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup);

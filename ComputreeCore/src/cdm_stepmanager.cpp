@@ -381,10 +381,10 @@ bool CDM_StepManager::internalExecuteModifyStep(CT_VirtualAbstractStep *beginSte
 
 void CDM_StepManager::connectStep(CT_VirtualAbstractStep *step)
 {
-    connect(step, SIGNAL(resultAdded(CT_AbstractResult*)), this, SIGNAL(resultAdded(CT_AbstractResult*)), Qt::DirectConnection);
-    connect(step, SIGNAL(resultToBeClearedFromMemory(CT_AbstractResult*)), this, SIGNAL(resultToBeClearedFromMemory(CT_AbstractResult*)), Qt::DirectConnection);
-    connect(step, SIGNAL(resultToBeRemoved(CT_AbstractResult*)), this, SIGNAL(resultToBeRemoved(CT_AbstractResult*)), Qt::DirectConnection);
-    connect(step, SIGNAL(resultToBeSerialized(CT_AbstractResult*)), this, SIGNAL(resultToBeSerialized(CT_AbstractResult*)), Qt::DirectConnection);
+    connect(step, SIGNAL(resultAdded(const CT_AbstractResult*)), this, SIGNAL(resultAdded(const CT_AbstractResult*)), Qt::DirectConnection);
+    connect(step, SIGNAL(resultToBeClearedFromMemory(const CT_AbstractResult*)), this, SIGNAL(resultToBeClearedFromMemory(const CT_AbstractResult*)), Qt::DirectConnection);
+    connect(step, SIGNAL(resultToBeRemoved(const CT_AbstractResult*)), this, SIGNAL(resultToBeRemoved(const CT_AbstractResult*)), Qt::DirectConnection);
+    connect(step, SIGNAL(resultToBeSerialized(const CT_AbstractResult*)), this, SIGNAL(resultToBeSerialized(const CT_AbstractResult*)), Qt::DirectConnection);
 }
 
 void CDM_StepManager::connectStepBeforeRunning(CT_VirtualAbstractStep *step)

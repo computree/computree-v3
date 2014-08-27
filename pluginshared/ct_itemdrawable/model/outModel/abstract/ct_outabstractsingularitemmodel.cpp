@@ -8,32 +8,18 @@ CT_OutAbstractSingularItemModel::CT_OutAbstractSingularItemModel(const QString &
                                                                                                                            description,
                                                                                                                            displayableName)
 {
-    _item = NULL;
 }
 
 CT_OutAbstractSingularItemModel::~CT_OutAbstractSingularItemModel()
 {
-    clearItem();
 }
 
 CT_AbstractSingularItemDrawable* CT_OutAbstractSingularItemModel::singularItem() const
 {
-    return _item;
+    return (CT_AbstractSingularItemDrawable*)item();
 }
 
-CT_AbstractItemDrawable* CT_OutAbstractSingularItemModel::item() const
+CT_AbstractItemDrawable* CT_OutAbstractSingularItemModel::itemDrawable() const
 {
     return singularItem();
-}
-
-void CT_OutAbstractSingularItemModel::clearItem()
-{
-    delete _item;
-    _item = NULL;
-}
-
-void CT_OutAbstractSingularItemModel::setSingularItem(CT_AbstractSingularItemDrawable *item)
-{
-    clearItem();
-    _item = item;
 }

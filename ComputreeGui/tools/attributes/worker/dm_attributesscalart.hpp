@@ -76,13 +76,13 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::setUseSharedGradient(bool val)
 }
 
 template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const IAttributesScalar *as)
+bool DM_AttributesScalarT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const CT_AbstractAttributesScalar *as)
 {
     if(ta != dynamic_cast<const Type*>(as))
         return false;
 
     setAttributes(ta);
-    m_as = (IAttributesScalar*)as;
+    m_as = (CT_AbstractAttributesScalar*)as;
 
     if(m_autoAdjust)
         autoAdjustMinMax();
@@ -142,14 +142,14 @@ bool DM_AttributesScalarT<Type, TypeCloudIndex>::process(GDocumentViewForGraphic
     QPropertyAnimation interpolator;
     constructColorInterpolator(interpolator, granularity);
 
-    const TypeCloudIndex *index = abstractTypeAttributes()->cloudIndex();
-    size_t size = index->indexSize();
+    const TypeCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
+    size_t size = index->size();
 
-    QSharedPointer<ColorCloudRegisteredInterface> spcc = doc->colorCloudRegistered<Type>();
+    QSharedPointer<CT_StandardColorCloudRegistered> spcc = doc->colorCloudRegistered<Type>();
 
     if(spcc.data() != NULL)
     {
-        IColorCloud *cc = spcc->colorCloud();
+        CT_AbstractColorCloud *cc = spcc->abstractColorCloud();
 
         QList<ConcurrentMapInfo*>   list;
 
@@ -197,7 +197,7 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::attributesDeleted()
 }
 
 template<typename Type, typename TypeCloudIndex>
-IAttributesScalar* DM_AttributesScalarT<Type, TypeCloudIndex>::scalarAttributes() const
+CT_AbstractAttributesScalar* DM_AttributesScalarT<Type, TypeCloudIndex>::scalarAttributes() const
 {
     return m_as;
 }
@@ -272,10 +272,10 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::staticApply(ConcurrentMapInfo *
         info->m_index->indexAt(i, indexP);
 
         // set the color of the point at this document
-        quint8 *bgra = info->m_cc->valueAt(indexP);
-        *bgra = (color.blueF()*255.0);
-        *(bgra+1) = (color.greenF()*255.0);
-        *(bgra+2) = (color.redF()*255.0);
+        CT_Color &colorC = info->m_cc->colorAt(indexP);
+        colorC.b = (color.blueF()*255.0);
+        colorC.g = (color.greenF()*255.0);
+        colorC.r = (color.redF()*255.0);
     }
 }
 

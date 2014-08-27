@@ -10,7 +10,6 @@ public:
                              const QString &description,
                              const QString &displayableName,
                              bool recursive);
-
     /**
      * @brief Set to true if you want this model research recusively results in all step in the tree (go up in hierarchy) or false
      *        if you want just research in results of the step passed in parameter of the method "searchResultsInStep..."
@@ -28,23 +27,23 @@ public:
      * @brief Define the number minimum of possibility that a user must select for one turn. The number is not changed if method return false.
      * @return false if "n" is greater than "maximumNumberOfPossibilityThatCanBeSelectedForOneTurn()" or if at least one possibility already exist.
      */
-    bool setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(uint n);
+    bool setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(int n);
 
     /**
      * @brief Returns the number minimum of possibilities that a user must select for one turn
      */
-    uint minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() const;
+    int minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() const;
 
     /**
      * @brief Define the number maximum of possibility (result) that a user must select for one turn. The number is not changed if method return false.
      * @return false if "n" is 0 or if at least one possibility already exist.
      */
-    bool setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(uint n);
+    bool setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(int n);
 
     /**
      * @brief Returns the number maximum of possibilities that a user must select for one turn
      */
-    uint maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() const;
+    int maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() const;
 
     /**
      * @brief If you want to select possibilities and know if you select them if the model can pass the "default select test" you

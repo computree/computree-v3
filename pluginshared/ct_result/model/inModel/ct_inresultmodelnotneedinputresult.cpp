@@ -3,10 +3,15 @@
 #include "interfaces.h"
 
 CT_InResultModelNotNeedInputResult::CT_InResultModelNotNeedInputResult() : CT_InAbstractResultModel("CT_InResultModelNotNeedInputResult",
-                                                                                                    "Not need input result",
+                                                                                                    tr("Not need input result"),
                                                                                                     "",
                                                                                                     false)
 {
+}
+
+QString CT_InResultModelNotNeedInputResult::modelTypeDisplayable() const
+{
+    return QString("CT_InResultModelNotNeedInputResult");
 }
 
 CT_InAbstractModel* CT_InResultModelNotNeedInputResult::copy(bool withPossibilities) const

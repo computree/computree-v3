@@ -76,7 +76,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            CT_Mesh *mesh = ((CT_MeshModel*)item)->mesh();
+            CT_Mesh *mesh = dynamic_cast<CT_MeshModel*>(item)->mesh();
 
             if(mesh != NULL)
             {

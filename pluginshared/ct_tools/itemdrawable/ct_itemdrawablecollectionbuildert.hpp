@@ -118,7 +118,7 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuil
             const CT_OutAbstractGroupModel *grModel = dynamic_cast<const CT_OutAbstractGroupModel*>(model);
 
             if(itemModel != NULL)
-                item = itemModel->item();
+                item = itemModel->itemDrawable();
             else if(grModel != NULL)
                 item = grModel->group();
 

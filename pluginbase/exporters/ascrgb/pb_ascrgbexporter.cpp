@@ -91,7 +91,7 @@ bool PB_ASCRGBExporter::protectedExportToFile()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            const CT_AbstractPointCloudIndex *constPCIndex = ((CT_IAccessPointCloud*)item)->getPointCloudIndex();
+            const CT_AbstractPointCloudIndex *constPCIndex = dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex();
 
             size_t totalSize = constPCIndex->size();
             size_t i = 0;

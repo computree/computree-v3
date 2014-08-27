@@ -2,7 +2,7 @@
 #define DM_ABSTRACTATTRIBUTESSCALAR_H
 
 #include "tools/attributes/worker/abstract/dm_abstractattributes.h"
-#include "interfaces.h"
+#include "ct_global/ct_repository.h"
 
 #include <QLinearGradient>
 

@@ -9,7 +9,6 @@
 #include "dm_itemdrawablemanageroptions.h"
 
 #include "dm_itemmodelviewsynchronizedgroup.h"
-#include "tools/itemdrawable/dm_itemdrawabletypebuilder.h"
 
 #include "tools/treeview/dm_itemdrawabletreeviewcontroller.h"
 #include "tools/treeview/dm_iitemdrawablestandarditembuilder.h"
@@ -45,11 +44,11 @@ public:
     void lock() {}
     void unlock() {}
 
-    bool acceptAction(const ActionInterface *action) const;
-    bool setCurrentAction(ActionInterface *action, bool deleteAction = true);
-    bool setDefaultAction(ActionInterface *action, bool deleteAction = true);
-    ActionInterface* currentAction() const;
-    ActionInterface* defaultAction() const;
+    bool acceptAction(const CT_AbstractAction *action) const;
+    bool setCurrentAction(CT_AbstractAction *action, bool deleteAction = true);
+    bool setDefaultAction(CT_AbstractAction *action, bool deleteAction = true);
+    CT_AbstractAction* currentAction() const;
+    CT_AbstractAction* defaultAction() const;
     void removeActions(const QString &uniqueName) const;
 
 private:
@@ -58,11 +57,11 @@ private:
     QHBoxLayout             *m_layoutViews;
 
     /**
-     * @brief Return ItemDrawable selected
+     * @brief Return CT_AbstractItemDrawable selected
      */
-    //QList<ItemDrawable *> getItemDrawableCorrespondingToRowSelected();
+    //QList<CT_AbstractItemDrawable *> getItemDrawableCorrespondingToRowSelected();
 
-    //void setReferencesToUseOfItemDrawable(const ItemDrawable *item);
+    //void setReferencesToUseOfItemDrawable(const CT_AbstractItemDrawable *item);
 
     /**
      * @brief Refresh the references list to use
@@ -102,14 +101,14 @@ private slots:
     //void slotMustRemoveItem(DM_ItemDrawableType type);
 
     /**
-     * @brief Called when a ItemDrawable is added to the document
+     * @brief Called when a CT_AbstractItemDrawable is added to the document
      */
-    //void slotAddItemDrawable(ItemDrawable &item);
+    //void slotAddItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
-     * @brief Called when a ItemDrawable is removed from the document
+     * @brief Called when a CT_AbstractItemDrawable is removed from the document
      */
-    //void slotRemoveItemDrawable(ItemDrawable &item);
+    //void slotRemoveItemDrawable(CT_AbstractItemDrawable &item);
 
     /**
      * @brief Called when the button 'Sync with' is clicked
@@ -172,17 +171,17 @@ private slots:
     //void slotShowViewContextMenu(const QPoint &p);
 
     /**
-     * @brief Called when we must use references of ItemDrawable selected
+     * @brief Called when we must use references of CT_AbstractItemDrawable selected
      */
     //void slotUseReferences();
 
     /**
-     * @brief Called when we must select ItemDrawable of QStandardItem selected
+     * @brief Called when we must select CT_AbstractItemDrawable of QStandardItem selected
      */
     //void slotSelect();
 
     /**
-     * @brief Called when we must de-select ItemDrawable of QStandardItem selected
+     * @brief Called when we must de-select CT_AbstractItemDrawable of QStandardItem selected
      */
     //void slotDeSelect();
 
@@ -192,12 +191,12 @@ private slots:
     //void slotInverseSelection();
 
     /**
-     * @brief Called when we must set automatic color of ItemDrawable selected
+     * @brief Called when we must set automatic color of CT_AbstractItemDrawable selected
      */
     //void slotColorAuto();
 
     /**
-     * @brief Called when we must set unique color of ItemDrawable selected
+     * @brief Called when we must set unique color of CT_AbstractItemDrawable selected
      */
     //void slotColorSolid();
 

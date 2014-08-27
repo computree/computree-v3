@@ -67,7 +67,7 @@ class CT_AbstractLogListener;
 class CT_AbstractMeshModel;
 class CT_AbstractPointCloud;
 class CT_AbstractCloudIndex;
-class CT_AbstractModel;
+class CT_OutAbstractModel;
 class CT_StandardColorCloudRegistered;
 class CT_StandardNormalCloudRegistered;
 class CT_AbstractModifiableCloudIndexRegistered;
@@ -865,7 +865,7 @@ public:
     /**
       * \brief Removes all ItemDrawable in the document that have the model 'model'. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
       */
-    virtual void removeAllItemDrawableOfModel(const CT_AbstractModel &model) = 0;
+    virtual void removeAllItemDrawableOfModel(const CT_OutAbstractModel &model) = 0;
 
     /**
       * \brief Removes all selected ItemDrawable in the document. Call the method 'beginRemoveMultipleItemDrawable' and 'endRemoveMultipleItemDrawable' automatically
@@ -885,7 +885,7 @@ public:
     /**
       * \brief Select/DeSelect of ItemDrawable of the document that have the model 'model'
       */
-    virtual void setSelectAllItemDrawableOfModel(bool select, const CT_AbstractModel &model) = 0;
+    virtual void setSelectAllItemDrawableOfModel(bool select, const CT_OutAbstractModel &model) = 0;
 
     /**
       * \brief Returns all ItemDrawable contained in this document
@@ -911,14 +911,14 @@ public:
       * \brief Recherche des ItemDrawable dans la liste  partir du model pass en paramtre
       * \return une liste vide si aucun ItemDrawable n'est de ce type
       */
-    virtual QList<CT_AbstractItemDrawable*> findItemDrawable(const CT_AbstractModel &model) const = 0;
-    virtual void findItemDrawable(const CT_AbstractModel &model, QList<CT_AbstractItemDrawable*> &outList) const = 0;
+    virtual QList<CT_AbstractItemDrawable*> findItemDrawable(const CT_OutAbstractModel &model) const = 0;
+    virtual void findItemDrawable(const CT_OutAbstractModel &model, QList<CT_AbstractItemDrawable*> &outList) const = 0;
 
     /**
       * \brief Recherche le premier ItemDrawable dans la liste a partir du modele
       * \return NULL si aucun ItemDrawable n'est de ce type
       */
-    virtual CT_AbstractItemDrawable* findFirstItemDrawable(const CT_AbstractModel &model) const = 0;
+    virtual CT_AbstractItemDrawable* findFirstItemDrawable(const CT_OutAbstractModel &model) const = 0;
 
     /**
      * @brief Return true if the document accept this type of action

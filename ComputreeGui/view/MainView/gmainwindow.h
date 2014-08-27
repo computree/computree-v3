@@ -111,8 +111,8 @@ private slots:
 
     void documentToBeClosed(DM_DocumentView *view);
 
-    void stepAdded(Step *step);
-    void stepToBeRemoved(Step *step);
+    void stepAdded(CT_VirtualAbstractStep *step);
+    void stepToBeRemoved(CT_VirtualAbstractStep *step);
     void menuNewStepCanBeAddedFirstAboutToShow();
 
     void addCanBeAddedFirstStepFromMyQAction();

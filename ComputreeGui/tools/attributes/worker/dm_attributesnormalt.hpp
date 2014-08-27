@@ -3,6 +3,8 @@
 
 #include "tools/attributes/worker/dm_attributesnormalt.h"
 
+#include "ct_global/ct_context.h"
+
 template<typename Type, typename TypeCloudIndex>
 DM_AttributesNormalT<Type, TypeCloudIndex>::DM_AttributesNormalT() : DM_AbstractAttributesNormal()
 {
@@ -15,17 +17,17 @@ void DM_AttributesNormalT<Type, TypeCloudIndex>::checkAndSetNormalCloudToDoc()
     GDocumentViewForGraphics *doc = document();
 
     if(doc->normalCloudRegistered<Type>().data() == NULL)
-        doc->setNormalCloudRegistered<Type>(GUI_MANAGER->getPluginsContext()->repository()->createNewNormalCloud(this->syncWithCloud()));
+        doc->setNormalCloudRegistered<Type>(PS_REPOSITORY->createNewNormalCloud(this->syncWithCloud()));
 }
 
 template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesNormalT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const IAttributesNormal *an)
+bool DM_AttributesNormalT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const CT_AttributesNormal *an)
 {
     if(ta != dynamic_cast<const Type*>(an))
         return false;
 
     setAttributes(ta);
-    m_an = (IAttributesNormal*)an;
+    m_an = (CT_AttributesNormal*)an;
 
     return true;
 }
@@ -37,7 +39,7 @@ void DM_AttributesNormalT<Type, TypeCloudIndex>::attributesDeleted()
 }
 
 template<typename Type, typename TypeCloudIndex>
-IAttributesNormal* DM_AttributesNormalT<Type, TypeCloudIndex>::normalAttributes() const
+CT_AttributesNormal* DM_AttributesNormalT<Type, TypeCloudIndex>::normalAttributes() const
 {
     return m_an;
 }

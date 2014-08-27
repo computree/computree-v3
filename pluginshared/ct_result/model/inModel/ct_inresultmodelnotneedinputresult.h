@@ -10,6 +10,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_InResultModelNotNeedInputResult : public CT_I
 public:
     CT_InResultModelNotNeedInputResult();
 
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
     // INHERITED FROM CT_AbstractModel //
     QList<CT_AbstractModel*> childrens() const { return QList<CT_AbstractModel*>(); }
     bool isEmpty() const { return true; }

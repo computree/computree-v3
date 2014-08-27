@@ -52,6 +52,11 @@ public:
      */
     CT_InZeroOrMoreGroupModel();
 
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
     // OVERLOADED FROM CT_AbstractItemModel //
     bool canSetUniqueName(QString modelName) const { Q_UNUSED(modelName) return false; }
 

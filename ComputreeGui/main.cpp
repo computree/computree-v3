@@ -45,5 +45,4 @@ int main(int argc, char *argv[])
     gm.initUi();
 
     return a.exec();
-
 }

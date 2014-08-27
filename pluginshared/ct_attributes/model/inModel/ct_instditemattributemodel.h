@@ -20,6 +20,11 @@ public:
                                const QString &displayableName);
 
     /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
+    /**
      * @brief Returns a copy of this model and its children.
      * @param withPossibilities : true if you want to copy possibilities in the copy of the model
      */

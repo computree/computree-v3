@@ -85,7 +85,7 @@ bool PB_GroupDataExporter::protectedExportToFile()
     QListIterator<CT_AbstractItemDrawable*> it_itemsToExport(itemDrawableToExport());
     while(it_itemsToExport.hasNext())
     {
-        CT_AbstractItemGroup* group = (CT_AbstractItemGroup*)it_itemsToExport.next();
+        CT_AbstractItemGroup* group = dynamic_cast<CT_AbstractItemGroup*>(it_itemsToExport.next());
 
         CT_OutAbstractGroupModel *groupModel = (CT_OutAbstractGroupModel*)group->model();
         groupMap.insert(groupModel, group);

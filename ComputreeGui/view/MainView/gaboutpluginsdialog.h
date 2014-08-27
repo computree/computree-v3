@@ -5,6 +5,11 @@
 #include <QTextStream>
 #include "cdm_pluginmanager.h"
 
+#include "ct_result/model/inModel/abstract/ct_inabstractresultmodel.h"
+#include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
+#include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
+#include "ct_exporter/abstract/ct_abstractexporter.h"
+
 class QTreeWidgetItem;
 
 namespace Ui {
@@ -33,17 +38,18 @@ private:
     };
 
     CDM_PluginManager       *_pManager;
-    QMap<QString, Step*>    _stepList;
+    QMap<QString, CT_VirtualAbstractStep*>    _stepList;
 
     bool                    _mustReloadStep;
 
     void initView();
-    void createItemsForStep(QTreeWidgetItem *parent, Step *step);
-    void createItemsForAction(QTreeWidgetItem *parent, ActionInterface *act);
-    void createItemsForExporter(QTreeWidgetItem *parent, IExporter *ex);
-    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const IResultModelSimple *rModel) const;
-    void recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const IItemModelSimple *rModel) const;
-    void exportStepData(QTextStream &stream, Step *step);
+    void createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step);
+    void createItemsForAction(QTreeWidgetItem *parent, CT_AbstractAction *act);
+    void createItemsForExporter(QTreeWidgetItem *parent, CT_AbstractExporter *ex);
+    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const;
+    void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const;
+    void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_AbstractModel *rModel) const;
+    void exportStepData(QTextStream &stream, CT_VirtualAbstractStep *step);
     void convertHTMLtoTextile(QString &input);
 
 private slots:

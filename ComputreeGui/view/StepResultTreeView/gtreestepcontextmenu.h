@@ -32,11 +32,11 @@
 #include <QMenu>
 #include "myqaction.h"
 
-class Step;
-class StepSerializable;
+class CT_VirtualAbstractStep;
+class CT_AbstractStepSerializable;
 class CDM_StepManager;
-class StepSeparator;
-class StepCanBeAddedFirstSeparator;
+class CT_StepSeparator;
+class CT_StepCanBeAddedFirstSeparator;
 
 /**
   * Classe reprsentant un menu pour l'ajout/suppression/autres actions pour les tapes
@@ -51,17 +51,17 @@ public:
     /*!
      *  \brief Dfinir l'tape qui subira l'action
      */
-    void setSelectedStep(Step *step);
+    void setSelectedStep(CT_VirtualAbstractStep *step);
 
 private:
 
     CDM_StepManager *_stepManager;
-    Step            *_selectedStep;
+    CT_VirtualAbstractStep            *_selectedStep;
 
-    Step* selectedStep();
+    CT_VirtualAbstractStep* selectedStep();
 
-    void addAllStepOnMenu(QList<StepSeparator*> stepAvailable, QMenu *menuStep, bool insert = false);
-    void addAllStepOnMenu(QList<StepCanBeAddedFirstSeparator*> stepAvailable, QMenu *menuStep);
+    void addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, QMenu *menuStep, bool insert = false);
+    void addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable, QMenu *menuStep);
 
     /*!
      *  \brief Connecte les signaux de l'action aux slots de cette classe
@@ -70,14 +70,14 @@ private:
 
 signals:
 
-    void executeSelectedStep(Step *selectedStep);
-    void executeModifySelectedStep(Step *selectedStep);
-    void configureInputResultOfSelectedStep(Step *selectedStep);
-    void configureSelectedStep(Step *selectedStep);
-    void deleteSelectedStep(Step *selectedStep);
-    void loadResultOfSelectedStep(StepSerializable *selectedStep);
-    void addStep(Step *parentStep, Step *stepToCopy);
-    void insertStep(Step *parentStep, Step *stepToCopy);
+    void executeSelectedStep(CT_VirtualAbstractStep *selectedStep);
+    void executeModifySelectedStep(CT_VirtualAbstractStep *selectedStep);
+    void configureInputResultOfSelectedStep(CT_VirtualAbstractStep *selectedStep);
+    void configureSelectedStep(CT_VirtualAbstractStep *selectedStep);
+    void deleteSelectedStep(CT_VirtualAbstractStep *selectedStep);
+    void loadResultOfSelectedStep(CT_AbstractStepSerializable *selectedStep);
+    void addStep(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
+    void insertStep(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
     void expand();
     void expandAll();
     void collapse();

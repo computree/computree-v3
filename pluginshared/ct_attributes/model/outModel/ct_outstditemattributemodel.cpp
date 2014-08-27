@@ -10,6 +10,11 @@ CT_OutStdItemAttributeModel::CT_OutStdItemAttributeModel(const QString &uniqueNa
 {
 }
 
+QString CT_OutStdItemAttributeModel::modelTypeDisplayable() const
+{
+    return QString("CT_OutStdItemAttributeModel");
+}
+
 CT_OutAbstractModel* CT_OutStdItemAttributeModel::copy() const
 {
     CT_OutStdItemAttributeModel *cpy = new CT_OutStdItemAttributeModel(uniqueName(),

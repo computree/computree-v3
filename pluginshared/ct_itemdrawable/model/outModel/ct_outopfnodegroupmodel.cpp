@@ -11,6 +11,11 @@ CT_OutOPFNodeGroupModel::CT_OutOPFNodeGroupModel(const QString &uniqueName,
     m_level = 0;
 }
 
+QString CT_OutOPFNodeGroupModel::modelTypeDisplayable() const
+{
+    return QString("CT_OutOPFNodeGroupModel");
+}
+
 void CT_OutOPFNodeGroupModel::setOPFLevel(const quint8 &level)
 {
     m_level = level;

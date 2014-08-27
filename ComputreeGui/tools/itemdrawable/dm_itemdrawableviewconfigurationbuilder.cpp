@@ -1,5 +1,7 @@
 #include "dm_itemdrawableviewconfigurationbuilder.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+
 DM_ItemDrawableViewConfigurationBuilder::DM_ItemDrawableViewConfigurationBuilder(bool searchInChildren)
 {
     m_searchInChildren = searchInChildren;
@@ -9,30 +11,28 @@ DM_ItemDrawableViewConfiguration DM_ItemDrawableViewConfigurationBuilder::getCon
 {
     QMutexLocker((QMutex*)&m_mutex);
 
-    QMapIterator<ItemDrawableConfiguration*, size_t> it(m_config);
+    QMapIterator<CT_ItemDrawableConfiguration*, size_t> it(m_config);
 
     while(it.hasNext())
     {
         it.next();
 
         if(it.key()->name() == name)
-        {
             return DM_ItemDrawableViewConfiguration(it.key());
-        }
     }
 
     return DM_ItemDrawableViewConfiguration(NULL);
 }
 
-void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(ItemDrawable &item)
+void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_mutex.lock();
 
-    ItemDrawable *pItem = (ItemDrawable*)&item;
+    CT_AbstractItemDrawable *pItem = (CT_AbstractItemDrawable*)&item;
 
     QList<DM_ItemDrawableViewConfiguration> addL;
 
-    ItemDrawableConfiguration *t = pItem->getViewConfiguration();
+    CT_ItemDrawableConfiguration *t = pItem->getViewConfiguration();
     size_t value = m_config.value(t, 0)+1;
 
     m_config.insert(t, value);
@@ -42,7 +42,7 @@ void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(ItemDrawable &item
 
     if(m_searchInChildren)
     {
-        QList<ItemDrawableConfiguration*> liste = pItem->getDependantViewConfigurations();
+        QList<CT_ItemDrawableConfiguration*> liste = pItem->getDependantViewConfigurations();
 
         int size = liste.size();
 
@@ -70,15 +70,15 @@ void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(ItemDrawable &item
     }
 }
 
-void DM_ItemDrawableViewConfigurationBuilder::removeItemDrawable(ItemDrawable &item)
+void DM_ItemDrawableViewConfigurationBuilder::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_mutex.lock();
 
-    ItemDrawable *pItem = (ItemDrawable*)&item;
+    CT_AbstractItemDrawable *pItem = (CT_AbstractItemDrawable*)&item;
 
     QList<DM_ItemDrawableViewConfiguration> rL;
 
-    ItemDrawableConfiguration *t = pItem->getViewConfiguration();
+    CT_ItemDrawableConfiguration *t = pItem->getViewConfiguration();
     size_t value = m_config.value(t, 0)-1;
 
     m_config.insert(t, value);
@@ -88,7 +88,7 @@ void DM_ItemDrawableViewConfigurationBuilder::removeItemDrawable(ItemDrawable &i
 
     if(m_searchInChildren)
     {
-        QList<ItemDrawableConfiguration*> liste = pItem->getDependantViewConfigurations();
+        QList<CT_ItemDrawableConfiguration*> liste = pItem->getDependantViewConfigurations();
 
         int size = liste.size();
 
@@ -130,7 +130,7 @@ QList<DM_ItemDrawableViewConfiguration> DM_ItemDrawableViewConfigurationBuilder:
 
     QList<DM_ItemDrawableViewConfiguration> l;
 
-    QMapIterator<ItemDrawableConfiguration*, size_t> it(m_config);
+    QMapIterator<CT_ItemDrawableConfiguration*, size_t> it(m_config);
 
     while(it.hasNext())
     {
@@ -143,12 +143,12 @@ QList<DM_ItemDrawableViewConfiguration> DM_ItemDrawableViewConfigurationBuilder:
     return l;
 }
 
-DM_ItemDrawableViewConfiguration::DM_ItemDrawableViewConfiguration(const ItemDrawableConfiguration *config)
+DM_ItemDrawableViewConfiguration::DM_ItemDrawableViewConfiguration(const CT_ItemDrawableConfiguration *config)
 {
-    m_config = (ItemDrawableConfiguration*)config;
+    m_config = (CT_ItemDrawableConfiguration*)config;
 }
 
-ItemDrawableConfiguration *DM_ItemDrawableViewConfiguration::configuration() const
+CT_ItemDrawableConfiguration *DM_ItemDrawableViewConfiguration::configuration() const
 {
     return m_config;
 }

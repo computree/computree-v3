@@ -49,19 +49,19 @@ public:
     virtual ~G3DPainter();
 
     void setGraphicsView(const GraphicsViewInterface *gv);
-    void setCurrentItemDrawable(const ItemDrawable *item);
-    void setCurrentPointCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentFaceCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentEdgeCloudColor(QSharedPointer<ColorCloudRegisteredInterface> cc);
-    void setCurrentPointCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn);
-    void setCurrentFaceCloudNormal(QSharedPointer<NormalCloudRegisteredInterface> nn);
+    void setCurrentItemDrawable(const CT_AbstractItemDrawable *item);
+    void setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
+    void setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
+    void setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
 
-    QSharedPointer<ColorCloudRegisteredInterface> currentPointCloudColor() const;
-    QSharedPointer<ColorCloudRegisteredInterface> currentFaceCloudColor() const;
-    QSharedPointer<ColorCloudRegisteredInterface> currentEdgeCloudColor() const;
-    QSharedPointer<NormalCloudRegisteredInterface> currentPointCloudNormal() const;
-    QSharedPointer<NormalCloudRegisteredInterface> currentFaceCloudNormal() const;
-    QSharedPointer<NormalCloudRegisteredInterface> currentEdgeCloudNormal() const;
+    QSharedPointer<CT_StandardColorCloudRegistered> currentPointCloudColor() const;
+    QSharedPointer<CT_StandardColorCloudRegistered> currentFaceCloudColor() const;
+    QSharedPointer<CT_StandardColorCloudRegistered> currentEdgeCloudColor() const;
+    QSharedPointer<CT_StandardNormalCloudRegistered> currentPointCloudNormal() const;
+    QSharedPointer<CT_StandardNormalCloudRegistered> currentFaceCloudNormal() const;
+    QSharedPointer<CT_StandardNormalCloudRegistered> currentEdgeCloudNormal() const;
 
     bool drawFastest() const;
     void setDrawFastest(bool enable);
@@ -109,14 +109,14 @@ public:
     void drawPoint(double *p);
     void drawPoint(float *p);
 
-    void drawPointCloud(const IPointCloud *pc,
-                        const ICloudIndex *pci,
+    void drawPointCloud(const CT_AbstractPointCloud *pc,
+                        const CT_AbstractCloudIndex *pci,
                         int fastestIncrement);
 
-    void drawMesh(const IMesh *mesh);
-    void drawFaces(const IMesh *mesh);
-    void drawEdges(const IMesh *mesh);
-    void drawPoints(const IMesh *mesh, int fastestIncrement);
+    void drawMesh(const CT_AbstractMeshModel *mesh);
+    void drawFaces(const CT_AbstractMeshModel *mesh);
+    void drawEdges(const CT_AbstractMeshModel *mesh);
+    void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
 
     void beginMultiplePoints();
     void addPoint(float *p);
@@ -201,15 +201,15 @@ public:
                                float x4, float y4, float z4, int r4, int g4, int b4 );
 
 private:
-    ItemDrawable        *m_currentItem;
+    CT_AbstractItemDrawable        *m_currentItem;
 
     GraphicsViewInterface *m_gv;
 
-    QSharedPointer<ColorCloudRegisteredInterface>   m_pColorCloud;
-    QSharedPointer<ColorCloudRegisteredInterface>   m_fColorCloud;
-    QSharedPointer<ColorCloudRegisteredInterface>   m_eColorCloud;
-    QSharedPointer<NormalCloudRegisteredInterface>  m_pNormalCloud;
-    QSharedPointer<NormalCloudRegisteredInterface>  m_fNormalCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_pColorCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_fColorCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>   m_eColorCloud;
+    QSharedPointer<CT_StandardNormalCloudRegistered>  m_pNormalCloud;
+    QSharedPointer<CT_StandardNormalCloudRegistered>  m_fNormalCloud;
 
     QColor          _color;
     QColor          _forcedColor;

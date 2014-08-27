@@ -12,6 +12,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractAttributesScalar
 {
 public:
     CT_AbstractAttributesScalar();
+    virtual ~CT_AbstractAttributesScalar() {}
 
     virtual double dMin() const = 0;
     virtual double dMax() const = 0;

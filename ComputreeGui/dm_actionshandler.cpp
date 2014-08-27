@@ -1,6 +1,9 @@
 #include "dm_actionshandler.h"
 
 #include "dm_guimanager.h"
+
+#include "ct_actions/abstract/ct_abstractaction.h"
+
 #include <QEvent>
 
 DM_ActionsHandler::DM_ActionsHandler(const CDM_ActionsManager &actionManager)
@@ -15,7 +18,7 @@ DM_ActionsHandler::~DM_ActionsHandler()
 {
     while(!m_actions.isEmpty())
     {
-        ActionInterface *ac = m_actions.takeFirst();
+        CT_AbstractAction *ac = m_actions.takeFirst();
 
         if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
             delete ac;
@@ -35,13 +38,13 @@ void DM_ActionsHandler::setMaxActions(const int &maxActions)
     m_maxActions = maxActions;
 }
 
-void DM_ActionsHandler::setCurrentAction(ActionInterface *action)
+void DM_ActionsHandler::setCurrentAction(CT_AbstractAction *action)
 {
     if(action != NULL)
         actionManager()->addAction(action);
 
-    ActionInterface *backup = m_activeAction;
-    ActionInterface *actionFound = (action != NULL ? findAction(action->uniqueName()) : NULL);
+    CT_AbstractAction *backup = m_activeAction;
+    CT_AbstractAction *actionFound = (action != NULL ? findAction(action->uniqueName()) : NULL);
 
     if((m_activeAction != NULL) && (m_activeAction != actionFound))
     {
@@ -95,7 +98,7 @@ void DM_ActionsHandler::setCurrentAction(ActionInterface *action)
 
                 if(m_actions.size() > maxActions())
                 {
-                    ActionInterface *ac = m_actions.takeFirst();
+                    CT_AbstractAction *ac = m_actions.takeFirst();
                     ac->finish();
 
                     if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
@@ -111,7 +114,7 @@ void DM_ActionsHandler::setCurrentAction(ActionInterface *action)
         emit currentActionChanged(m_activeAction);
 }
 
-ActionInterface* DM_ActionsHandler::currentAction() const
+CT_AbstractAction* DM_ActionsHandler::currentAction() const
 {
     return m_activeAction;
 }
@@ -120,11 +123,11 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
 {
     bool currentActionDeleted = false;
 
-    QMutableListIterator<ActionInterface*> it(m_actions);
+    QMutableListIterator<CT_AbstractAction*> it(m_actions);
 
     while(it.hasNext())
     {
-        ActionInterface *ac = it.next();
+        CT_AbstractAction *ac = it.next();
 
         if(ac->uniqueName() == uniqueName)
         {
@@ -146,7 +149,7 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
 
     if(currentActionDeleted)
     {
-        ActionInterface *ac = m_activeAction;
+        CT_AbstractAction *ac = m_activeAction;
         m_activeAction = NULL;
 
         ac->finish();
@@ -172,7 +175,7 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
     }
 }
 
-void DM_ActionsHandler::setDefaultAction(ActionInterface *action)
+void DM_ActionsHandler::setDefaultAction(CT_AbstractAction *action)
 {
     if(m_defaultAction != NULL)
     {
@@ -201,7 +204,7 @@ void DM_ActionsHandler::setDefaultAction(ActionInterface *action)
     emit defaultActionChanged(m_defaultAction);
 }
 
-ActionInterface *DM_ActionsHandler::defaultAction() const
+CT_AbstractAction *DM_ActionsHandler::defaultAction() const
 {
     return m_defaultAction;
 }
@@ -263,46 +266,46 @@ bool DM_ActionsHandler::leaveEvent(QEvent *e)
 
 bool DM_ActionsHandler::mousePressEvent(QMouseEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QMouseEvent*>(&ActionInterface::mousePressEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QMouseEvent*>(&CT_AbstractAction::mousePressEvent, e);
 }
 
 bool DM_ActionsHandler::mouseMoveEvent(QMouseEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QMouseEvent*>(&ActionInterface::mouseMoveEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QMouseEvent*>(&CT_AbstractAction::mouseMoveEvent, e);
 }
 
 bool DM_ActionsHandler::mouseReleaseEvent(QMouseEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QMouseEvent*>(&ActionInterface::mouseReleaseEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QMouseEvent*>(&CT_AbstractAction::mouseReleaseEvent, e);
 }
 
 bool DM_ActionsHandler::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QMouseEvent*>(&ActionInterface::mouseDoubleClickEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QMouseEvent*>(&CT_AbstractAction::mouseDoubleClickEvent, e);
 }
 
 bool DM_ActionsHandler::wheelEvent(QWheelEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QWheelEvent*>(&ActionInterface::wheelEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QWheelEvent*>(&CT_AbstractAction::wheelEvent, e);
 }
 
 bool DM_ActionsHandler::keyPressEvent(QKeyEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QKeyEvent*>(&ActionInterface::keyPressEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QKeyEvent*>(&CT_AbstractAction::keyPressEvent, e);
 }
 
 bool DM_ActionsHandler::keyReleaseEvent(QKeyEvent *e)
 {
-    return callEventStaticCastT<ActionInterface, QKeyEvent*>(&ActionInterface::keyReleaseEvent, e);
+    return callEventStaticCastT<CT_AbstractAction, QKeyEvent*>(&CT_AbstractAction::keyReleaseEvent, e);
 }
 
-ActionInterface* DM_ActionsHandler::findAction(const QString &uniqueName) const
+CT_AbstractAction* DM_ActionsHandler::findAction(const QString &uniqueName) const
 {
-    QListIterator<ActionInterface*> it(m_actions);
+    QListIterator<CT_AbstractAction*> it(m_actions);
 
     while(it.hasNext())
     {
-        ActionInterface *action = it.next();
+        CT_AbstractAction *action = it.next();
 
         if(action->uniqueName() == uniqueName)
             return action;

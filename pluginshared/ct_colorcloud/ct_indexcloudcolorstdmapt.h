@@ -55,6 +55,17 @@ public:
     void copyColorsOfCloudIndex(CT_AbstractColorCloud *cc, const QList<CT_AbstractCloudIndex*> &lci, bool eraseKeys = false);
 
     /**
+     * @brief Remove the index from the cloud
+     * @param index : index to remove
+     */
+    void removeIndex(const size_t &index);
+
+    /**
+     * @brief Removes all indexes in the cloud index
+     */
+    void clear();
+
+    /**
      * @brief Returns a copy of this cloud index
      */
     CT_AbstractCloudIndex* copy() const;

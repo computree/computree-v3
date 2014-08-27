@@ -1,11 +1,13 @@
 #ifndef DM_ATTRIBUTESNORMALT_H
 #define DM_ATTRIBUTESNORMALT_H
 
-#include "interfaces.h"
-
 #include "tools/attributes/worker/abstract/dm_abstractattributesnormal.h"
 #include "view/DocumentView/gdocumentviewforgraphics.h"
 #include "dm_guimanager.h"
+
+#include "ct_attributes/ct_attributesnormal.h"
+#include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
+#include "ct_normalcloud/abstract/ct_abstractnormalcloud.h"
 
 template<typename Type, typename TypeCloudIndex>
 class DM_AttributesNormalT : public DM_AbstractAttributesNormal
@@ -18,12 +20,12 @@ public:
     /**
      * @brief accept only Type (Point, Face, etc...) and normals
      */
-    bool setTypeAttributes(const Type *ta, const IAttributesNormal *an);
+    bool setTypeAttributes(const Type *ta, const CT_AttributesNormal *an);
 
     /**
      * @brief getter of I[Type]Attributes
      */
-    IAttributesNormal* normalAttributes() const;
+    CT_AttributesNormal* normalAttributes() const;
     Type* abstractTypeAttributes() const;
 
 protected:
@@ -37,15 +39,15 @@ protected:
     void attributesDeleted();
 
 private:
-    IAttributesNormal *m_an;
+    CT_AttributesNormal *m_an;
 };
 
 // specialisation for points
 template<>
-bool DM_AttributesNormalT<IPointAttributes, ICloudIndex>::process(GDocumentViewForGraphics *doc);
+bool DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc);
 
 template<>
-bool DM_AttributesNormalT<IFaceAttributes, ICloudIndex>::process(GDocumentViewForGraphics *doc);
+bool DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc);
 
 #include "tools/attributes/worker/dm_attributesnormalt.hpp"
 

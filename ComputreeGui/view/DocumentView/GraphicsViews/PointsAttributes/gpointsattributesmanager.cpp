@@ -73,17 +73,17 @@ void GPointsAttributesManager::closeEvent(QCloseEvent *e)
 
 void GPointsAttributesManager::initTreeView()
 {
-    typedef DM_AttributesScalarT<IPointAttributes, ICloudIndex>    PointAttributesScalar;
-    typedef DM_AttributesColorT<IPointAttributes, ICloudIndex>     PointAttributesColor;
-    typedef DM_AttributesNormalT<IPointAttributes, ICloudIndex>    PointAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>    PointAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     PointAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>    PointAttributesNormal;
 
-    typedef DM_AttributesScalarT<IFaceAttributes, ICloudIndex>      FaceAttributesScalar;
-    typedef DM_AttributesColorT<IFaceAttributes, ICloudIndex>       FaceAttributesColor;
-    typedef DM_AttributesNormalT<IFaceAttributes, ICloudIndex>      FaceAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>      FaceAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>       FaceAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>      FaceAttributesNormal;
 
-    typedef DM_AttributesScalarT<IEdgeAttributes, ICloudIndex>      EdgeAttributesScalar;
-    typedef DM_AttributesColorT<IEdgeAttributes, ICloudIndex>       EdgeAttributesColor;
-    typedef DM_AttributesNormalT<IEdgeAttributes, ICloudIndex>      EdgeAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>      EdgeAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>       EdgeAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>      EdgeAttributesNormal;
 
     m_model.clear();
     constructHeader();
@@ -103,19 +103,19 @@ void GPointsAttributesManager::initTreeView()
 
     m_model.appendRow(m_itemEdgeRoot);
 
-    QList<Step*> steps = GUI_MANAGER->getStepManager()->getStepRootList();
+    QList<CT_VirtualAbstractStep*> steps = GUI_MANAGER->getStepManager()->getStepRootList();
 
     while(!steps.isEmpty())
     {
-        Step *st = steps.takeFirst();
-        buildTreeViewTForStep< IPointAttributes, PointAttributesScalar, PointAttributesColor, PointAttributesNormal >(st);
-        buildTreeViewTForStep< IFaceAttributes, FaceAttributesScalar, FaceAttributesColor, FaceAttributesNormal >(st);
-        buildTreeViewTForStep< IEdgeAttributes, EdgeAttributesScalar, EdgeAttributesColor, EdgeAttributesNormal >(st);
+        CT_VirtualAbstractStep *st = steps.takeFirst();
+        buildTreeViewTForStep< CT_AbstractPointsAttributes, PointAttributesScalar, PointAttributesColor, PointAttributesNormal >(st);
+        buildTreeViewTForStep< CT_AbstractFaceAttributes, FaceAttributesScalar, FaceAttributesColor, FaceAttributesNormal >(st);
+        buildTreeViewTForStep< CT_AbstractEdgeAttributes, EdgeAttributesScalar, EdgeAttributesColor, EdgeAttributesNormal >(st);
     }
 }
 
 template<typename IAttributesType, typename AttributesScalarType, typename AttributesColorType, typename AttributesNormalType>
-void GPointsAttributesManager::buildTreeViewTForStep(Step *step)
+void GPointsAttributesManager::buildTreeViewTForStep(CT_VirtualAbstractStep *step)
 {
     DM_AttributesBuildingCollectionT<IAttributesType> builderPoints;
 
@@ -127,7 +127,7 @@ void GPointsAttributesManager::buildTreeViewTForStep(Step *step)
     {
         IAttributesType *pa = it.next();
 
-        IAttributesScalar *pas = dynamic_cast<IAttributesScalar*>(pa);
+        CT_AbstractAttributesScalar *pas = dynamic_cast<CT_AbstractAttributesScalar*>(pa);
 
         if(pas != NULL)
         {
@@ -145,7 +145,7 @@ void GPointsAttributesManager::buildTreeViewTForStep(Step *step)
         }
         else
         {
-            IAttributesColor *pac = dynamic_cast<IAttributesColor*>(pa);
+            CT_AttributesColor *pac = dynamic_cast<CT_AttributesColor*>(pa);
 
             if(pac != NULL)
             {
@@ -163,7 +163,7 @@ void GPointsAttributesManager::buildTreeViewTForStep(Step *step)
             }
             else
             {
-                IAttributesNormal *pan = dynamic_cast<IAttributesNormal*>(pa);
+                CT_AttributesNormal *pan = dynamic_cast<CT_AttributesNormal*>(pa);
 
                 if(pan != NULL)
                 {
@@ -318,19 +318,19 @@ QList<QStandardItem *> GPointsAttributesManager::createAttributesNormalForModel(
 }
 
 template<>
-void GPointsAttributesManager::addToScalarRoot<IPointAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items)
 {
     addToScalarRoot(items, m_itemPointRootScalar, m_itemPointRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToScalarRoot<IFaceAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items)
 {
     addToScalarRoot(items, m_itemFaceRootScalar, m_itemFaceRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToScalarRoot<IEdgeAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToScalarRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items)
 {
     addToScalarRoot(items, m_itemEdgeRootScalar, m_itemEdgeRoot);
 }
@@ -353,19 +353,19 @@ void GPointsAttributesManager::addToScalarRoot(const QList<QStandardItem *> &ite
 }
 
 template<>
-void GPointsAttributesManager::addToColorRoot<IPointAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToColorRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items)
 {
     addToColorRoot(items, m_itemPointRootColor, m_itemPointRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToColorRoot<IFaceAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToColorRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items)
 {
     addToColorRoot(items, m_itemFaceRootColor, m_itemFaceRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToColorRoot<IEdgeAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToColorRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items)
 {
     addToColorRoot(items, m_itemEdgeRootColor, m_itemEdgeRoot);
 }
@@ -388,19 +388,19 @@ void GPointsAttributesManager::addToColorRoot(const QList<QStandardItem *> &item
 }
 
 template<>
-void GPointsAttributesManager::addToNormalRoot<IPointAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractPointsAttributes>(const QList<QStandardItem*> &items)
 {
     addToNormalRoot(items, m_itemPointRootNormal, m_itemPointRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToNormalRoot<IFaceAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractFaceAttributes>(const QList<QStandardItem*> &items)
 {
     addToNormalRoot(items, m_itemFaceRootNormal, m_itemFaceRoot);
 }
 
 template<>
-void GPointsAttributesManager::addToNormalRoot<IEdgeAttributes>(const QList<QStandardItem*> &items)
+void GPointsAttributesManager::addToNormalRoot<CT_AbstractEdgeAttributes>(const QList<QStandardItem*> &items)
 {
     addToNormalRoot(items, m_itemEdgeRootNormal, m_itemEdgeRoot);
 }

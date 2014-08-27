@@ -16,7 +16,7 @@ void DM_ItemDrawableTreeViewModelResearcher::setTreeViewManager(const DM_ITreeVi
     m_treeViewManager = (DM_ITreeViewManager*)man;
 }
 
-void DM_ItemDrawableTreeViewModelResearcher::setItemDrawable(const QList<ItemDrawable *> &list)
+void DM_ItemDrawableTreeViewModelResearcher::setItemDrawable(const QList<CT_AbstractItemDrawable *> &list)
 {
     m_items = list;
 }
@@ -28,11 +28,11 @@ void DM_ItemDrawableTreeViewModelResearcher::apply()
 
     m_collection->resize(size);
 
-    QListIterator<ItemDrawable *> it(m_items);
+    QListIterator<CT_AbstractItemDrawable *> it(m_items);
 
     while(it.hasNext())
     {
-        ItemDrawable *item = it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
         QStandardItem* sItem = m_treeViewManager->itemFromItemDrawable(item);
 

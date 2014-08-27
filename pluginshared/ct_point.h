@@ -118,6 +118,8 @@ public:
     inline void setY(const float &_y) { y = _y; }
     inline void setZ(const float &_z) { z = _z; }
 
+    inline float* vertex() const { return const_cast<float*>(&x); }
+
     #ifndef USE_PCL
     inline CT_Point& operator+= (const CT_Point& o) { x += o.x; y += o.y; z += o.z; return *this; }
     inline CT_Point& operator-= (const CT_Point& o) { x -= o.x; y -= o.y; z -= o.z; return *this; }

@@ -23,6 +23,12 @@ public:
                             CT_TOPFNodeGroup *group = new CT_TOPFNodeGroup(),
                             const QString &displayableName = "",
                             const QString &description = "");
+
+    /**
+     * @brief Returns the model type in a displayable QString (for gui)
+     */
+    virtual QString modelTypeDisplayable() const;
+
     /**
      * @brief Set level (Scale) readed in OPF File
      */

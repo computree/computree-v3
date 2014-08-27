@@ -34,24 +34,25 @@
 
 #include "dm_asynchroneprogress.h"
 
-class Result;
+class CT_AbstractResult;
+class CT_OutAbstractItemModel;
 
 class DM_DocumentManagerView : public DM_DocumentManager
 {
 public:
     DM_DocumentManagerView();
 
-    virtual bool addAllItemDrawableOfResultToActiveDocument(Result &res, DM_AsynchroneProgress &progress) = 0;
-    virtual bool addAllItemDrawableOfModelToDocument(Result &res, IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
-    virtual bool addAllItemDrawableOfResultToDocument(Result &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
+    virtual bool addAllItemDrawableOfResultToActiveDocument(CT_AbstractResult &res, DM_AsynchroneProgress &progress) = 0;
+    virtual bool addAllItemDrawableOfModelToDocument(CT_AbstractResult &res, CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
+    virtual bool addAllItemDrawableOfResultToDocument(CT_AbstractResult &res, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
 
-    virtual bool addAllItemDrawableOfListToActiveDocument(QList<ItemDrawable*> &itemList, DM_AsynchroneProgress &progress) = 0;
-    virtual bool addAllItemDrawableOfListToDocument(QList<ItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
+    virtual bool addAllItemDrawableOfListToActiveDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_AsynchroneProgress &progress) = 0;
+    virtual bool addAllItemDrawableOfListToDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
 
-    virtual bool removeAllItemDrawableOfResultFromDocuments(Result &res, DM_AsynchroneProgress &progress) = 0;
-    virtual bool removeAllItemDrawableOfModelFromDocuments(IItemModel &model, DM_AsynchroneProgress &progress) = 0;
-    virtual bool removeAllItemDrawableOfModelFromDocument(IItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
-    virtual bool removeAllItemDrawableOfListFromDocuments(QList<ItemDrawable*> &itemList, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfResultFromDocuments(CT_AbstractResult &res, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfModelFromDocuments(CT_OutAbstractItemModel &model, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfListFromDocuments(QList<CT_AbstractItemDrawable*> &itemList, DM_AsynchroneProgress &progress) = 0;
 
     virtual DM_DocumentView* getActiveDocumentView() = 0;
     virtual DM_DocumentView* getDocumentView(int index) const = 0;
