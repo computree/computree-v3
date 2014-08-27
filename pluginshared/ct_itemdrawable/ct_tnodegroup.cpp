@@ -39,7 +39,12 @@ bool CT_TNodeGroup::setSuccessor(CT_TNodeGroup *successor)
     {
         if(!recursiveRemoveNode(m_successor))
             return false;
+
+        m_successor = NULL;
     }
+
+    if(successor == NULL)
+        return true;
 
     if(!addNode(successor))
         return false;
@@ -80,6 +85,36 @@ bool CT_TNodeGroup::addBranch(CT_TNodeGroup *son)
     son->setBearer(this);
 
     return true;
+}
+
+bool CT_TNodeGroup::removeComponent(CT_TNodeGroup *component)
+{
+    if(component == m_rootComponent)
+    {
+        if(!recursiveRemoveNode(component))
+            return false;
+
+        m_rootComponent = NULL;
+        return true;
+    }
+
+    if(component->ancestor() != NULL)
+        return component->ancestor()->setSuccessor(NULL);
+
+    return false;
+}
+
+bool CT_TNodeGroup::removeBranch(CT_TNodeGroup *son)
+{
+    if(m_branches.contains(son))
+    {
+        if(!recursiveRemoveNode(son))
+            return false;
+
+        return m_branches.removeOne(son);
+    }
+
+    return false;
 }
 
 CT_TNodeGroup* CT_TNodeGroup::ancestor() const
@@ -176,9 +211,11 @@ CT_AbstractItemDrawable* CT_TNodeGroup::copy(const CT_OutAbstractItemModel *mode
     itemGroup->setId(id());
     itemGroup->setAlternativeDrawManager(getAlternativeDrawManager());
 
-    // we can not copy successor etc... because we don't know the model
+    // we can not copy successor, etc... because we don't know the model
+	// it's not important because if the tree is copied it will inform all node
+	// were is the successor, etc...
 
-    // copy all ItemDrawable (reference) and groups (copy)
+    // copy all ItemDrawable (reference) and other groups (copy)
     if(!copyStructure(itemGroup))
     {
         delete itemGroup;
@@ -234,8 +271,31 @@ bool CT_TNodeGroup::recursiveRemoveNode(CT_TNodeGroup *n)
     if(tree() == NULL)
         return false;
 
-    // TODO
-    //return tree()->removeNode(n);
+    CT_TNodeGroup *s = n->rootComponent();
+
+    if(s != NULL)
+    {
+        if(!recursiveRemoveNode(s))
+            return false;
+    }
+
+    s = n->successor();
+
+    if(s != NULL)
+    {
+        if(!recursiveRemoveNode(s))
+            return false;
+    }
+
+    QListIterator<CT_TNodeGroup*> it(n->branches());
+
+    while(it.hasNext())
+    {
+        if(!recursiveRemoveNode(it.next()))
+            return false;
+    }
+
+    return tree()->removeNode(n);
 }
 
 void CT_TNodeGroup::setTopologyTree(CT_TTreeGroup *tree)

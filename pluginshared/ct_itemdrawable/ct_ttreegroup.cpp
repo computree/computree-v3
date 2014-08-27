@@ -31,37 +31,17 @@ QString CT_TTreeGroup::staticGetType()
     return CT_AbstractStandardItemGroup::staticGetType() + "/CT_TTreeGroup";
 }
 
-bool CT_TTreeGroup::removeCurrentGroup()
-{
-    // TODO
-    if(currentGroup() == NULL)
-        return false;
-
-    return removeGroup(currentGroup());
-}
-
-bool CT_TTreeGroup::removeGroup(CT_AbstractItemGroup *group)
-{
-    QMutexLocker locker(_mutexAccessGroup);
-
-    if(group->parentGroup() != this)
-        return false;
-
-    // si il n'a pas de modèle on va pas pouvoir le chercher
-    if(group->model() == NULL)
-        return false; // erreur
-
-    // TODO
-
-    return false;
-}
-
 bool CT_TTreeGroup::setRootNode(CT_TNodeGroup *root)
 {
     if(m_rootNode != NULL)
-        return false;
+    {
+        if(!removeNode(m_rootNode))
+            return false;
 
-    if(!protectedAddGroup(root))
+        m_rootNode = NULL;
+    }
+
+    if(!addNode(root))
         return false;
 
     m_rootNode = root;
@@ -72,19 +52,16 @@ bool CT_TTreeGroup::setRootNode(CT_TNodeGroup *root)
 
 bool CT_TTreeGroup::addSuccessor(CT_TNodeGroup *current, CT_TNodeGroup *successor)
 {
-    // TODO
     return current->setSuccessor(successor);
 }
 
 bool CT_TTreeGroup::addComponent(CT_TNodeGroup *complex, CT_TNodeGroup *component)
 {
-    // TODO
     return complex->addComponent(component);
 }
 
 bool CT_TTreeGroup::addBranch(CT_TNodeGroup *bearer, CT_TNodeGroup *son)
 {
-    // TODO
     return bearer->addBranch(son);
 }
 

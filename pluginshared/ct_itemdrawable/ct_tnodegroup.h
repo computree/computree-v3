@@ -51,15 +51,49 @@ public:
      */
     bool addBranch(CT_TNodeGroup *son);
 
+    /**
+     * @brief Remove the component passed in parameter
+     */
+    bool removeComponent(CT_TNodeGroup *component);
+
+    /**
+     * @brief Remove the component passed in parameter
+     */
+    bool removeBranch(CT_TNodeGroup *son);
+
+    /**
+     * @brief Returns the ancestor of this node
+     */
     CT_TNodeGroup* ancestor() const;
+
+    /**
+     * @brief Returns the successor of this node
+     */
     CT_TNodeGroup* successor() const;
 
+    /**
+     * @brief Returns the complex of this node
+     */
     CT_TNodeGroup* complex() const;
+
+    /**
+     * @brief Returns the root component of this node
+     */
     CT_TNodeGroup* rootComponent() const;
 
+    /**
+     * @brief Returns the bearer of this node
+     */
     CT_TNodeGroup* bearer() const;
+
+    /**
+     * @brief Returns branches of this node
+     */
     const QList<CT_TNodeGroup*>& branches() const;
 
+    /**
+     * @brief Returns the number of component of this node
+     */
     size_t nComponent() const;
 
     // Inherited from ItemDrawable //

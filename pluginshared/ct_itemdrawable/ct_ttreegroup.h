@@ -62,9 +62,6 @@ public:
      */
     bool addItemDrawable(CT_AbstractSingularItemDrawable *item) { delete item; return false; }
 
-    bool removeCurrentGroup();
-    bool removeGroup(CT_AbstractItemGroup *group);
-
     bool setRootNode(CT_TNodeGroup *root);
 
     bool addSuccessor(CT_TNodeGroup *current, CT_TNodeGroup *successor);
