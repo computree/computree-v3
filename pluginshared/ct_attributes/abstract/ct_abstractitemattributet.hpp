@@ -12,10 +12,6 @@ CT_AbstractItemAttributeT<VType>::CT_AbstractItemAttributeT(const CT_OutAbstract
                                                                                                                      category,
                                                                                                                      result)
 {
-    // TODO
-    /*QString error = internalVerifyCategory();
-    Q_ASSERT_X(error.isEmpty(), "CT_AbstractItemAttribute constructor", qPrintable("You created a Attribute with a categoryName but the category is not allowed : " + error));
-    */
 }
 
 template <typename VType>
@@ -25,10 +21,6 @@ CT_AbstractItemAttributeT<VType>::CT_AbstractItemAttributeT(const QString &model
                                                                                                                      categoryName,
                                                                                                                      result)
 {
-    // TODO
-    /*QString error = internalVerifyCategory();
-    Q_ASSERT_X(error.isEmpty(), "CT_AbstractItemAttribute constructor", qPrintable("You created a Attribute with a categoryName but the category is not allowed : " + error));
-    */
 }
 
 template <typename VType>
@@ -120,27 +112,15 @@ QString CT_AbstractItemAttributeT<VType>::toString(const CT_AbstractItemDrawable
 }
 
 template <typename VType>
-CT_AbstractCategory::ValueType CT_AbstractItemAttributeT<VType>::realType() const
+CT_AbstractCategory::ValueType CT_AbstractItemAttributeT<VType>::type() const
 {
     return CT_AbstractCategory::staticValueTypeToCategoryType<VType>();
 }
 
 template <typename VType>
-QString CT_AbstractItemAttributeT<VType>::realTypeToString() const
+QString CT_AbstractItemAttributeT<VType>::typeToString() const
 {
     return CT_AbstractCategory::staticValueTypeToCategoryTypeString<VType>();
-}
-
-template <typename VType>
-QString CT_AbstractItemAttributeT<VType>::internalVerifyCategory() const
-{
-    CT_AbstractCategory::ValueType realType = CT_AbstractCategory::staticValueTypeToCategoryType<VType>();
-    CT_AbstractCategory::ValueType catType = type();
-
-    if(catType == realType)
-        return "";
-
-    return QString("The type ") + category()->valueTypeToString(catType) + " defined in the category does not match the real type : " + category()->valueTypeToString(realType);
 }
 
 #endif // CT_ABSTRACTITEMATTRIBUTET_HPP

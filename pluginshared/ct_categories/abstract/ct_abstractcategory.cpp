@@ -37,13 +37,11 @@ const QString CT_AbstractCategory::DATA_Z_RESOLUTION            = "CT_Z_RESOLUTI
 const QString CT_AbstractCategory::DATA_NA                      = "CT_NA";
 
 CT_AbstractCategory::CT_AbstractCategory(const QString &uniqueName,
-                                         CT_AbstractCategory::ValueType valueType,
                                          const QString &categoryEquivalentUniqueName,
                                          const QString &displayableName,
                                          const QString &description)
 {
     m_uName = uniqueName;
-    m_vType = valueType;
     m_dName = displayableName;
     m_description = description;
 
@@ -57,13 +55,11 @@ CT_AbstractCategory::CT_AbstractCategory(const QString &uniqueName,
 }
 
 CT_AbstractCategory::CT_AbstractCategory(const QString &uniqueName,
-                                         CT_AbstractCategory::ValueType valueType,
                                          const QList<QString> &categoryEquivalentUniqueNameCollection,
                                          const QString &displayableName,
                                          const QString &description)
 {
     m_uName = uniqueName;
-    m_vType = valueType;
     m_dName = displayableName;
     m_description = description;
 
@@ -88,16 +84,6 @@ QString CT_AbstractCategory::uniqueName() const
     return m_uName;
 }
 
-CT_AbstractCategory::ValueType CT_AbstractCategory::valueType() const
-{
-    return m_vType;
-}
-
-QString CT_AbstractCategory::valueTypeToString() const
-{
-    return valueTypeToString(valueType());
-}
-
 QString CT_AbstractCategory::valueTypeToString(CT_AbstractCategory::ValueType v) const
 {
     int index = metaObject()->indexOfEnumerator("ValueType");
@@ -120,25 +106,13 @@ bool CT_AbstractCategory::isEquivalentTo(const CT_AbstractCategory *c) const
     return m_eCategories.contains(c->uniqueName());
 }
 
+bool CT_AbstractCategory::isEquivalentTo(const QString &categoryUniqueName) const
+{
+    return m_eCategories.contains(categoryUniqueName);
+}
+
 void CT_AbstractCategory::internalTestAttributes(const QString &where)
 {
     Q_ASSERT_X(!m_uName.isEmpty(), qPrintable(where), "uniqueName is empty");
-    Q_ASSERT_X(staticTestValueTypeIsEndOfHierarchy(m_vType) == true, qPrintable(where), "valueType is not at end ot the hierarchy");
 }
 
-bool CT_AbstractCategory::staticTestValueTypeIsEndOfHierarchy(CT_AbstractCategory::ValueType v)
-{
-    size_t tmp = v;
-
-    int n = 0;
-
-    while(tmp != 0)
-    {
-        if(tmp & 0x1)
-            ++n;
-
-        tmp >>= 1;
-    }
-
-    return (n < 2);
-}

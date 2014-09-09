@@ -26,6 +26,11 @@ CT_InAbstractModel* CT_InStdSingularItemModel::copy(bool withPossibilities) cons
 {
     CT_InStdSingularItemModel *cpy = new CT_InStdSingularItemModel(*this);
 
+    QListIterator<CT_InAbstractItemAttributeModel*> itI(itemAttributes());
+
+    while(itI.hasNext())
+        cpy->internalAddItemAttribute((CT_InAbstractItemAttributeModel*)itI.next()->copy(withPossibilities));
+
     if(withPossibilities)
         CT_InAbstractModel::staticCopyPossibilitiesToModel(this, cpy);
 

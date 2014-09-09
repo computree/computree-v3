@@ -29,6 +29,11 @@ CT_OutAbstractModel* CT_OutStdSingularItemModel::copy() const
                                                                      displayableName(),
                                                                      description());
 
+    QListIterator<CT_OutAbstractItemAttributeModel*> itI(itemAttributes());
+
+    while(itI.hasNext())
+        cpy->internalAddItemAttribute((CT_OutAbstractItemAttributeModel*)itI.next()->copy());
+
     if(itemDrawable() != NULL)
         cpy->setItem(itemDrawable()->copy(cpy, result(), CT_ResultCopyModeList()));
 

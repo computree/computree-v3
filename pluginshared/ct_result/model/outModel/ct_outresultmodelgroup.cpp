@@ -58,23 +58,36 @@ bool CT_OutResultModelGroup::addGroupModel(const QString &parentGroupUniquelName
     return addGroupModelT<CT_OutStdGroupModel>(parentGroupUniquelName, uniqueName, group, displayableName, description);
 }
 
-bool CT_OutResultModelGroup::addItemModel(const QString &parentGroupUniquelName,
+bool CT_OutResultModelGroup::addItemModel(const QString &parentGroupUniqueName,
                                           const QString &uniqueName,
                                           CT_AbstractSingularItemDrawable *item,
                                           const QString &displayableName,
                                           const QString &description)
 {
-    DEF_CT_AbstractGroupModelOut *rootModel = dynamic_cast<DEF_CT_AbstractGroupModelOut*>(findModelInTree(parentGroupUniquelName));
+    DEF_CT_AbstractGroupModelOut *rootModel = dynamic_cast<DEF_CT_AbstractGroupModelOut*>(findModelInTree(parentGroupUniqueName));
 
     if(rootModel == NULL)
         return false;
 
     CT_OutStdSingularItemModel *newModel = new CT_OutStdSingularItemModel(uniqueName, item, displayableName, description);
 
-    if(rootModel->addItem(newModel))
-        return true;
+    return rootModel->addItem(newModel);
+}
 
-    return false;
+bool CT_OutResultModelGroup::addItemAttributeModel(const QString &parentItemUniqueName,
+                                                   const QString &uniqueName,
+                                                   CT_AbstractItemAttribute *ia,
+                                                   const QString &displayableName,
+                                                   const QString &description)
+{
+    DEF_CT_AbstractItemDrawableModelOut *parentModel = dynamic_cast<DEF_CT_AbstractItemDrawableModelOut*>(findModelInTree(parentItemUniqueName));
+
+    if(parentModel == NULL)
+        return false;
+
+    CT_OutStdItemAttributeModel *newModel = new CT_OutStdItemAttributeModel(uniqueName, ia, displayableName, description);
+
+    return parentModel->addItemAttribute(newModel);
 }
 
 CT_AbstractResult* CT_OutResultModelGroup::createResult(CT_ResultInitializeData &data) const

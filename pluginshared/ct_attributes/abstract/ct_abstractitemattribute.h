@@ -48,24 +48,14 @@ public:
     bool isValid() const;
 
     /**
-      * @brief Type of value (type of category)
+      * @brief Type of value
       */
-    CT_AbstractCategory::ValueType type() const;
+    virtual CT_AbstractCategory::ValueType type() const = 0;
 
     /**
-      * @brief Type of value to String (type of category)
+      * @brief Type of value to String
       */
-    QString typeToString() const;
-
-    /**
-      * @brief Real type of value
-      */
-    virtual CT_AbstractCategory::ValueType realType() const = 0;
-
-    /**
-      * @brief Real type of value to String
-      */
-    virtual QString realTypeToString() const = 0;
+    virtual QString typeToString() const = 0;
 
     /**
       * @brief Methods to get the value in bool type

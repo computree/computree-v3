@@ -19,7 +19,6 @@ public:
      * @param description : a description
      */
     CT_StdCategory(const QString &uniqueName,
-                        ValueType valueType,
                         const QString &categoryEquivalentUniqueName = "",
                         const QString &displayableName = "",
                         const QString &description = "");
@@ -33,7 +32,6 @@ public:
      * @param description : a description
      */
     CT_StdCategory(const QString &uniqueName,
-                        ValueType valueType,
                         const QList<QString> &categoryEquivalentUniqueNameCollection,
                         const QString &displayableName = "",
                         const QString &description = "");

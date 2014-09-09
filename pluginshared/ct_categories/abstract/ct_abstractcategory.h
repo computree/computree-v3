@@ -88,13 +88,11 @@ public:
     /**
      * @brief Construct a category
      * @param uniqueName : a category must have a unique name to find it in a list.
-     * @param valueType : the type of the value (must be at end of the hierarchy : only one bit to 1)
      * @param categoryEquivalentUniqueName : a unique name of a category that can be equivalent to this category
      * @param displayableName : a displayable name (by default the unique name if empty)
      * @param description : a description
      */
     CT_AbstractCategory(const QString &uniqueName,
-                        ValueType valueType,
                         const QString &categoryEquivalentUniqueName = "",
                         const QString &displayableName = "",
                         const QString &description = "");
@@ -102,13 +100,11 @@ public:
     /**
      * @brief Construct a category
      * @param uniqueName : a category must have a unique name to find it in a list
-     * @param valueType : the type of the value (must be at end of the hierarchy : only one bit is set)
      * @param categoryEquivalentUniqueNameCollection : a collection of unique name of categories that can be equivalent to this category
      * @param displayableName : a displayable name (by default the unique name if empty)
      * @param description : a description
      */
     CT_AbstractCategory(const QString &uniqueName,
-                        ValueType valueType,
                         const QList<QString> &categoryEquivalentUniqueNameCollection,
                         const QString &displayableName = "",
                         const QString &description = "");
@@ -126,17 +122,7 @@ public:
     QString uniqueName() const;
 
     /**
-     * @brief Returns the value type of the category
-     */
-    ValueType valueType() const;
-
-    /**
-     * @brief Returns the value type to a displayable string
-     */
-    QString valueTypeToString() const;
-
-    /**
-     * @brief Convert a value type to a displayable string
+     * @brief Convert a value type to a displayable string (cannot be static because use metaObject() method)
      */
     QString valueTypeToString(ValueType v) const;
 
@@ -154,6 +140,11 @@ public:
      * @brief Returns true if this category is equivalent to category passed in parameter
      */
     bool isEquivalentTo(const CT_AbstractCategory *c) const;
+
+    /**
+     * @brief Returns true if this category is equivalent to category passed in parameter
+     */
+    bool isEquivalentTo(const QString &categoryUniqueName) const;
 
     /**
      * @brief Convert a type of data to a type of data of a category
@@ -190,13 +181,6 @@ private:
      * @brief check attributes and assert if it was a problem
      */
     void internalTestAttributes(const QString &where);
-
-protected:
-
-    /**
-     * @brief Returns true if the value passed in parameter is at end of the hierarchy (only one bit is set)
-     */
-    static bool staticTestValueTypeIsEndOfHierarchy(ValueType v);
 };
 
 CT_SPECIALIZE_VALUE_TYPE_TO(bool, CT_AbstractCategory::BOOLEAN, "BOOL")

@@ -12,12 +12,37 @@ public:
     /**
      * @brief Construct a model that represent a item attribute
      * @param uniqueName : a unique name in all the hierarchy
-     * @param description : a description
+     * @param categoryType : the category type (per example CT_AbstractCategory::DATA_ANGLE)
+     * @param valueType : pass the value type that you want (per example CT_AbstractCategory::NUMBER if you want
+     *                    to be generic and accept int, double, float, etc... or CT_AbstractCategory::UINT64 for a specific type)
      * @param displayableName : a displayable name
+     * @param description : a description
      */
     CT_InStdItemAttributeModel(const QString &uniqueName,
-                               const QString &description,
-                               const QString &displayableName);
+                               const QString &categoryType,
+                               CT_AbstractCategory::ValueType valueType,
+                               const QString &displayableName = "",
+                               const QString &description = "",
+                               CT_InStdItemAttributeModel::ChoiceMode choiceMode = CT_InStdItemAttributeModel::C_ChooseOneIfMultiple,
+                               CT_InStdItemAttributeModel::FinderMode finderMode = CT_InStdItemAttributeModel::F_IsObligatory);
+
+    /**
+     * @brief Construct a model that represent a item attribute
+     * @param uniqueName : a unique name in all the hierarchy
+     * @param categoriesType : a list of categories type (per example QList<...>() << CT_AbstractCategory::DATA_X_DIMENSION << CT_AbstractCategory::DATA_X_RESOLUTION). The
+     *                         list will be used with the logical operator 'OR'. Item attribute with a category type in the list will be accepted if value type is ok.
+     * @param valueType : pass the value type that you want (per example CT_AbstractCategory::NUMBER if you want
+     *                    to be generic and accept int, double, float, etc... or CT_AbstractCategory::UINT64 for a specific type)
+     * @param displayableName : a displayable name
+     * @param description : a description
+     */
+    CT_InStdItemAttributeModel(const QString &uniqueName,
+                               const QList<QString> &categoriesType,
+                               CT_AbstractCategory::ValueType valueType,
+                               const QString &displayableName = "",
+                               const QString &description = "",
+                               CT_InStdItemAttributeModel::ChoiceMode choiceMode = CT_InStdItemAttributeModel::C_ChooseOneIfMultiple,
+                               CT_InStdItemAttributeModel::FinderMode finderMode = CT_InStdItemAttributeModel::F_IsObligatory);
 
     /**
      * @brief Returns the model type in a displayable QString (for gui)

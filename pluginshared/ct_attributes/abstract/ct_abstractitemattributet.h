@@ -51,21 +51,16 @@ public:
     QString toString(const CT_AbstractItemDrawable *item, bool *ok) const;
 
     /**
-      * @brief Real type of value
+      * @brief Type of value
       */
-    CT_AbstractCategory::ValueType realType() const;
+    CT_AbstractCategory::ValueType type() const;
 
     /**
-      * @brief Real type of value to String
+      * @brief Type of value to String
       */
-    QString realTypeToString() const;
+    QString typeToString() const;
 
 protected:
-
-    /**
-     * @brief Returns an error if the category don't respect the type of data otherwise return a empty string
-     */
-    QString internalVerifyCategory() const;
 
     /**
      * @brief Returns the data

@@ -103,6 +103,7 @@ protected:
     void decrementVisibleInDocument(const DocumentInterface *doc);
 
     friend class CT_OutTurnManager;
+    friend class ModelTest;
 
     /**
      * @brief Called from CT_OutTurnManager or parent model to make some

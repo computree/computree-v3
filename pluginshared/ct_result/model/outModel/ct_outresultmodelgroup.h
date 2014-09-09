@@ -113,11 +113,28 @@ public:
      *
      * @return true if the item was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
      */
-    bool addItemModel(const QString &parentGroupUniquelName,
+    bool addItemModel(const QString &parentGroupUniqueName,
                       const QString &uniqueName,
                       CT_AbstractSingularItemDrawable *item,
                       const QString &displayableName = "",
                       const QString &description = "");
+
+    /**
+     * @brief Add a ItemAttribute model to a group model in the result.
+     *
+     * @param parentItemUniqueName : the unique name of the model of the parent group (typically DEF_....)
+     * @param uniqueName : unique name of the new group model (typically DEF_....)
+     * @param ia : the ItemAttribute that represent the item attribute (example : new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ANGLE), NULL, 0))
+     * @param displayableName: displayable name that will be show in gui
+     * @param description : description of the item model
+     *
+     * @return true if the item attribute was added to the parent item. false if the unique name already exist in the hierarchy or if the parent item was not found.
+     */
+    bool addItemAttributeModel(const QString &parentItemUniqueName,
+                               const QString &uniqueName,
+                               CT_AbstractItemAttribute *ia,
+                               const QString &displayableName = "",
+                               const QString &description = "");
 
     // INHERITED FROM CT_OutAbstractResultModel
     virtual CT_AbstractResult* createResult(CT_ResultInitializeData &data) const;

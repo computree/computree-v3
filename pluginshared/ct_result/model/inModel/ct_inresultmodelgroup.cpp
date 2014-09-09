@@ -52,10 +52,7 @@ bool CT_InResultModelGroup::setZeroOrMoreRootGroup()
 {
     CT_InZeroOrMoreGroupModel *model = new CT_InZeroOrMoreGroupModel();
 
-    if(setRootGroup(model))
-        return true;
-
-    return false;
+    return setRootGroup(model);
 }
 
 bool CT_InResultModelGroup::setRootGroup(const QString &uniqueName,
@@ -71,10 +68,7 @@ bool CT_InResultModelGroup::setRootGroup(const QString &uniqueName,
                                                        choiceMode,
                                                        finderMode);
 
-    if(setRootGroup(model))
-        return true;
-
-    return false;
+    return setRootGroup(model);
 }
 
 bool CT_InResultModelGroup::addGroupModel(const QString &parentGroupUniqueName,
@@ -97,10 +91,7 @@ bool CT_InResultModelGroup::addGroupModel(const QString &parentGroupUniqueName,
 
     CT_InStdGroupModel *newModel = new CT_InStdGroupModel(uniqueName, groupType, displayableName, description, choiceMode, finderMode);
 
-    if(rootModel->addGroup(newModel))
-        return true;
-
-    return false;
+    return rootModel->addGroup(newModel);
 }
 
 bool CT_InResultModelGroup::addItemModel(const QString &parentGroupUniqueName,
@@ -123,10 +114,26 @@ bool CT_InResultModelGroup::addItemModel(const QString &parentGroupUniqueName,
 
     CT_InStdSingularItemModel *newModel = new CT_InStdSingularItemModel(uniqueName, itemType, displayableName, description, choiceMode, finderMode);
 
-    if(rootModel->addItem(newModel))
-        return true;
+    return rootModel->addItem(newModel);
+}
 
-    return false;
+bool CT_InResultModelGroup::addItemAttributeModel(const QString &parentItemUniqueName,
+                                                  const QString &uniqueName,
+                                                  const QList<QString> &categoriesType,
+                                                  const CT_AbstractCategory::ValueType valueType,
+                                                  const QString &displayableName,
+                                                  const QString &description,
+                                                  CT_InAbstractModel::ChoiceMode choiceMode,
+                                                  CT_InAbstractModel::FinderMode finderMode)
+{
+    DEF_CT_AbstractItemDrawableModelIn *parentModel = dynamic_cast<DEF_CT_AbstractItemDrawableModelIn*>(findModelInTree(parentItemUniqueName));
+
+    if(parentModel == NULL)
+        return false;
+
+    CT_InStdItemAttributeModel *newModel = new CT_InStdItemAttributeModel(uniqueName, categoriesType, valueType, displayableName, description, choiceMode, finderMode);
+
+    return parentModel->addItemAttribute(newModel);
 }
 
 bool CT_InResultModelGroup::addGroupModel(const QString &parentGroupUniqueName,
@@ -149,10 +156,7 @@ bool CT_InResultModelGroup::addGroupModel(const QString &parentGroupUniqueName,
 
     CT_InStdGroupModel *newModel = new CT_InStdGroupModel("", groupType, displayableName, description, choiceMode, finderMode);
 
-    if(rootModel->addGroup(newModel, autoUniqueName))
-        return true;
-
-    return false;
+    return rootModel->addGroup(newModel, autoUniqueName);
 }
 
 bool CT_InResultModelGroup::addItemModel(const QString &parentGroupUniqueName,
@@ -175,10 +179,26 @@ bool CT_InResultModelGroup::addItemModel(const QString &parentGroupUniqueName,
 
     CT_InStdSingularItemModel *newModel = new CT_InStdSingularItemModel("", itemType, displayableName, description, choiceMode, finderMode);
 
-    if(rootModel->addItem(newModel, autoUniqueName))
-        return true;
+    return rootModel->addItem(newModel, autoUniqueName);
+}
 
-    return false;
+bool CT_InResultModelGroup::addItemAttributeModel(const QString &parentItemUniqueName,
+                                                  CT_AutoRenameModels &autoUniqueName,
+                                                  const QList<QString> &categoriesType,
+                                                  const CT_AbstractCategory::ValueType valueType,
+                                                  const QString &displayableName,
+                                                  const QString &description,
+                                                  CT_InAbstractModel::ChoiceMode choiceMode,
+                                                  CT_InAbstractModel::FinderMode finderMode)
+{
+    DEF_CT_AbstractItemDrawableModelIn *parentModel = dynamic_cast<DEF_CT_AbstractItemDrawableModelIn*>(findModelInTree(parentItemUniqueName));
+
+    if(parentModel == NULL)
+        return false;
+
+    CT_InStdItemAttributeModel *newModel = new CT_InStdItemAttributeModel("", categoriesType, valueType, displayableName, description, choiceMode, finderMode);
+
+    return parentModel->addItemAttribute(newModel, autoUniqueName);
 }
 
 QList<CT_AbstractModel *> CT_InResultModelGroup::childrens() const

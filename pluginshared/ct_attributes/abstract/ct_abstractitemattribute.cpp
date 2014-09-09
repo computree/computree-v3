@@ -37,16 +37,6 @@ bool CT_AbstractItemAttribute::isValid() const
     return type() != CT_AbstractCategory::UNKNOWN;
 }
 
-CT_AbstractCategory::ValueType CT_AbstractItemAttribute::type() const
-{
-    return m_category->valueType();
-}
-
-QString CT_AbstractItemAttribute::typeToString() const
-{
-    return m_category->valueTypeToString();
-}
-
 QString CT_AbstractItemAttribute::displayableName() const
 {
     if(model() != NULL)

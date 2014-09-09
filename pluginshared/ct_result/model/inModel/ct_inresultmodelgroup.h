@@ -91,7 +91,7 @@ public:
      * @brief Add a CT_InStdSingularItemModel to another model (that represent a group) in the result.
      *
      * @param parentGroupUniqueName : the unique name of the model of the parent group (typically DEF_....). Set empty if you want to add item to the rootGroup !
-     * @param uniqueName : unique name of the new group model (typically DEF_....)
+     * @param uniqueName : unique name of the new item model (typically DEF_....)
      * @param itemType : the result of the method staticGetType of the ItemDrawable you want to search (example : CT_Scene::staticGetType() or CT_AbstractSingularItemDrawable::staticGetType())
      * @param displayableName: displayable name that will be show in gui
      * @param description : description of the group model
@@ -107,6 +107,31 @@ public:
                               const QString &description = "",
                               CT_InAbstractModel::ChoiceMode choiceMode = CT_InAbstractModel::C_ChooseOneIfMultiple,
                               CT_InAbstractModel::FinderMode finderMode = CT_InAbstractModel::F_IsObligatory);
+
+    /**
+     * @brief Add a CT_InStdItemAttributeModel to another model (that represent a item) in the result.
+     *
+     * @param parentItemUniqueName : the unique name of the model of the parent item (typically DEF_....). Don't be empty !
+     * @param uniqueName : unique name of the new item attribute model (typically DEF_....)
+     * @param categoriesType : a list of categories type (per example QList<...>() << CT_AbstractCategory::DATA_X_DIMENSION << CT_AbstractCategory::DATA_X_RESOLUTION). The
+     *                         list will be used with the logical operator 'OR'. Item attribute with a category type in the list will be accepted if value type is ok.
+     * @param valueType : pass the value type that you want (per example CT_AbstractCategory::NUMBER if you want
+     *                    to be generic and accept int, double, float, etc... or CT_AbstractCategory::UINT64 for a specific type)
+     * @param displayableName: displayable name that will be show in gui
+     * @param description : description of the group model
+     * @param choiceMode : user selection mode in the input result configuration dialog. By default the user can choose only one itemdrawable type if multiple was founded.
+     * @param finderMode : if item is obligatory or not. By default it must.
+     *
+     * @return true if the item was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
+     */
+    virtual bool addItemAttributeModel(const QString &parentItemUniqueName,
+                                       const QString &uniqueName,
+                                       const QList<QString> &categoriesType,
+                                       const CT_AbstractCategory::ValueType valueType,
+                                       const QString &displayableName = "",
+                                       const QString &description = "",
+                                       CT_InAbstractModel::ChoiceMode choiceMode = CT_InAbstractModel::C_ChooseOneIfMultiple,
+                                       CT_InAbstractModel::FinderMode finderMode = CT_InAbstractModel::F_IsObligatory);
 
     /**
      * @brief Add a CT_InStdGroupModel to another model (that represent a group) in the result.
@@ -149,6 +174,32 @@ public:
                       const QString &description = "",
                       CT_InAbstractModel::ChoiceMode choiceMode = CT_InAbstractModel::C_ChooseOneIfMultiple,
                       CT_InAbstractModel::FinderMode finderMode = CT_InAbstractModel::F_IsObligatory);
+
+    /**
+     * @brief Add a CT_InStdItemAttributeModel to another model (that represent a item) in the result.
+     *
+     * @param parentItemUniqueName : the unique name of the model of the parent item (typically DEF_....). Don't be empty !
+     * @param autoUniqueName : object that automatically renames the model to avoid the same uniqueName exists in the hierarchy
+     * @param categoriesType : a list of categories type (per example QList<...>() << CT_AbstractCategory::DATA_X_DIMENSION << CT_AbstractCategory::DATA_X_RESOLUTION). The
+     *                         list will be used with the logical operator 'OR'. Item attribute with a category type in the list will be accepted if value type is ok.
+     * @param valueType : pass the value type that you want (per example CT_AbstractCategory::NUMBER if you want
+     *                    to be generic and accept int, double, float, etc... or CT_AbstractCategory::UINT64 for a specific type)
+     * @param displayableName: displayable name that will be show in gui
+     * @param description : description of the group model
+     * @param choiceMode : user selection mode in the input result configuration dialog. By default the user can choose only one itemdrawable type if multiple was founded.
+     * @param finderMode : if item is obligatory or not. By default it must.
+     *
+     * @return true if the item was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
+     */
+    virtual bool addItemAttributeModel(const QString &parentItemUniqueName,
+                                       CT_AutoRenameModels &autoUniqueName,
+                                       const QList<QString> &categoriesType,
+                                       const CT_AbstractCategory::ValueType valueType,
+                                       const QString &displayableName = "",
+                                       const QString &description = "",
+                                       CT_InAbstractModel::ChoiceMode choiceMode = CT_InAbstractModel::C_ChooseOneIfMultiple,
+                                       CT_InAbstractModel::FinderMode finderMode = CT_InAbstractModel::F_IsObligatory);
+
 
     // INHERITED FROM CT_AbstractModel //
     QList<CT_AbstractModel*> childrens() const;
