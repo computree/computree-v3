@@ -165,7 +165,9 @@ void PB_StepGenericExporter::createInResultModelListProtected()
 
     resultModel->setZeroOrMoreRootGroup();
     resultModel->addGroupModel("", DEF_SearchInGroup);
-    resultModel->addItemModel(DEF_SearchInGroup, DEF_SearchInItemDrawable, CT_AbstractItemDrawable::staticGetType(), tr("Item"));
+
+    if(!_exporter->exportOnlyGroup())
+        resultModel->addItemModel(DEF_SearchInGroup, DEF_SearchInItemDrawable, CT_AbstractItemDrawable::staticGetType(), tr("Item"));
 
     // un tour maximum !
     setMaximumTurn(1);
@@ -224,42 +226,51 @@ void PB_StepGenericExporter::createOutResultModelListProtected()
 
 void PB_StepGenericExporter::compute()
 {
-    // on récupère notre résultat modèle d'entrée à exporter
-    CT_InAbstractResultModel *inResModelToExport = getInResultModel(DEF_SearchInResultToExport);
     // on récupère le modèle d'entrée à exporter
-    CT_InAbstractModel *inItemModelToExport = getInModelForResearch((CT_OutAbstractResultModel*)inResModelToExport->getPossibilitiesSavedSelected().first()->outModel(), DEF_SearchInItemDrawable);
+    CT_InAbstractModel *inItemModelToExport = NULL;
 
     // on récupère les résultats d'entrée classé par modèle d'entrée
-    QList<CT_ResultGroup*> inResultByModels = getInputResultsForModel(inResModelToExport);
+    QList<CT_ResultGroup*> inResultByModels = getInputResultsForModel(DEF_SearchInResultToExport);
     QListIterator<CT_ResultGroup*> it(inResultByModels);
+
+    QList<CT_AbstractItemDrawable*> itemsToExport;
 
     while(it.hasNext())
     {
         CT_ResultGroup *inRes = it.next();
-        CT_ResultIterator it(inRes, inItemModelToExport);
+
+        if(_exporter->exportOnlyGroup())
+            inItemModelToExport = getInModelForResearch(inRes->model(), DEF_SearchInGroup);
+        else
+            inItemModelToExport = getInModelForResearch(inRes->model(), DEF_SearchInItemDrawable);
 
         // on recherche tous les ItemDrawable à exporter
-        if(it.hasNext())
+        CT_ResultIterator it(inRes, inItemModelToExport);
+
+        while(it.hasNext())
+            itemsToExport.append((CT_AbstractItemDrawable*)it.next());
+
+    }
+
+    // une fois la liste constituée
+    if(!itemsToExport.isEmpty())
+    {
+        _exporter->setExportFilePath(_exportFilename);
+
+        // on la donne à l'exportateur
+        if(!_exporter->setItemDrawableToExport(itemsToExport))
         {
-            QList<CT_AbstractItemDrawable*> itemsToExport;
+            PS_LOG->addErrorMessage(this, _exporter->errorMessage());
+            setErrorMessage(1, _exporter->errorMessage());
+            setErrorCode(1);
+        }
+        else
+        {
+            //if(_exporterConfiguration != NULL)
+                //_exporter->loadExportConfiguration(_exporterConfiguration);
 
-            while(it.hasNext())
-                itemsToExport.append((CT_AbstractItemDrawable*)it.next());
-
-            // une fois la liste constituée
-            if(!itemsToExport.isEmpty())
-            {
-                _exporter->setExportFilePath(_exportFilename);
-
-                // on la donne à l'exportateur
-                _exporter->setItemDrawableToExport(itemsToExport);
-
-                //if(_exporterConfiguration != NULL)
-                    //_exporter->loadExportConfiguration(_exporterConfiguration);
-
-                // et on exporte....
-                _exporter->exportToFile();
-            }
+            // et on exporte....
+            _exporter->exportToFile();
         }
     }
 }
@@ -305,17 +316,29 @@ void PB_StepGenericExporter::configureExporterFromModel()
     // on récupère les possibilités pour ce résultat (il n'y en a qu'une puisque un résultat d'entrée = un résultat de sortie)
     QList<CT_InStdModelPossibility*> possibilities = resModel->getPossibilitiesSavedSelected();
 
-    // on récupère le modèle d'entrée qu'on avait défini (celui à exporter)
-    CT_InStdSingularItemModel *inItemModelToExport = (CT_InStdSingularItemModel*)getInModelForResearch((CT_OutAbstractResultModel*)possibilities.first()->outModel(), DEF_SearchInItemDrawable);
+    QListIterator<CT_InStdModelPossibility*> it(possibilities);
 
-    // on récupère sa possibilité (il n'y en a qu'une puisqu'on a mis CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple)
-    CT_InStdModelPossibility *possibility = inItemModelToExport->getPossibilitiesSavedSelected().first();
+    QList<CT_AbstractItemDrawable*> eItems;
 
-    // on récupère l'ItemDrawable choisi
-    CT_AbstractItemDrawable *outItem = ((CT_OutAbstractItemModel*)possibility->outModel())->itemDrawable();
+    while(it.hasNext())
+    {
+        // on récupère le modèle d'entrée qu'on avait défini (celui à exporter)
+        CT_InAbstractItemModel *inItemModelToExport = NULL;
 
-    // on le donne à l'exporter
-    _exporter->setItemDrawableToExport(QList<CT_AbstractItemDrawable*>() << outItem);
+        if(_exporter->exportOnlyGroup())
+            inItemModelToExport = (CT_InAbstractItemModel*)getInModelForResearch((CT_OutAbstractResultModel*)it.next()->outModel(), DEF_SearchInGroup);
+        else
+            inItemModelToExport = (CT_InAbstractItemModel*)getInModelForResearch((CT_OutAbstractResultModel*)it.next()->outModel(), DEF_SearchInItemDrawable);
+
+        // on récupère sa possibilité (il n'y en a qu'une puisqu'on a mis CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple)
+        CT_InStdModelPossibility *possibility = inItemModelToExport->getPossibilitiesSavedSelected().first();
+
+        // on récupère l'ItemDrawable choisi
+        eItems.append(((CT_OutAbstractItemModel*)possibility->outModel())->itemDrawable());
+    }
+
+    // on les donne à l'exporter
+    _exporter->setItemDrawableToExport(eItems);
 }
 
 void PB_StepGenericExporter::setDefaultExportPath(const QString &path)

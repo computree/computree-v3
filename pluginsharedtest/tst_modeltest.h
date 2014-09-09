@@ -22,6 +22,8 @@ private Q_SLOTS:
     void testCaseOutTreeCreation();
     void testCaseTreeSearchSimple1();
     void testCaseTreeSearchSimple2();
+    void testCaseTreeSearchSimple3();
+    void testCaseTreeSearchSimple1Copy();
     void testCaseTreeSearchComplex();
     void testCaseTreeSearchOne();
     void testCaseTreeSearchVeryComplex();

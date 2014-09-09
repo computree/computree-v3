@@ -101,7 +101,13 @@ protected:
      *           result with another. We make a copy of all childrens for each OUTPUT model that represent a result so elements
      *           are not mixed.
      */
-    virtual QList<CT_AbstractModel*> childrensToFindPossibilities(bool savePossibilities);
+    virtual QList<CT_AbstractModel*> childrensToFindPossibilities(bool savePossibilities) const;
+
+    /**
+     * @brief Returns all childrens (INPUT) used by possibilities (Util for CT_InAbstractResultModel). By
+     *        default returns "childrens" method.
+     */
+    virtual QList<CT_AbstractModel*> childrensOfPossibilities() const;
 
     /**
      * @brief Called when the INPUT model (a children) is finished to be compared with all OUTPUT model.

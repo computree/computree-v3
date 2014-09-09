@@ -72,6 +72,11 @@ public:
     virtual bool setEdgesToExport(const QList<CT_AbstractCloudIndex*> &list);
 
     /**
+     * @brief Returns true if this exporter only export groups
+     */
+    bool exportOnlyGroup() const;
+
+    /**
      * @brief return true if the exporter can export ItemDrawable (true by default)
      */
     bool canExportItems() const;
@@ -225,6 +230,11 @@ protected:
      * @brief Define if you can export faces
      */
     void setCanExportFaces(bool e);
+
+    /**
+     * @brief Define if you only export groups
+     */
+    void setExportOnlyGroup(bool e);
 
     /**
       * \brief A redéfinir dans votre exporter. Export dans le fichier les éléments sélectionnés lors de la configuration.

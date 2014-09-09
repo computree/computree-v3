@@ -390,13 +390,15 @@ protected:
      *                             represented by the unique name passed in parameter. Typically a DEF_.... or result of the
      *                             method "completeName()" of a CT_AutoRenameModels object. Example :
      *
-     *                             CT_InAbstractModel *inItemDrawableModel = getInModelForResearch(DEF_InResult, DEF_InScene);
+     *                             CT_InAbstractModel *inItemDrawableModel = getInModelForResearch(DEF_InResult, 0, DEF_InScene);
      *
+     * @param possibilitySelectedIndex : the index of the possibility of the INPUT result that correspond to the INPUT result 'i' (set 0 by default if you don't know)
      * @param uniqueName : the unique name of the model you search. Typically a DEF_.... or result of the method "completeName()"
      *                     of a CT_AutoRenameModels object.
      * @return NULL if the model was not found.
      */
     CT_InAbstractModel* getInModelForResearch(const QString &inResultUniqueName,
+                                              const int &possibilitySelectedIndex,
                                               const QString &uniqueName) const;
 
     /**

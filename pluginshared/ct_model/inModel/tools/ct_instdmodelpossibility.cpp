@@ -91,6 +91,7 @@ CT_InStdModelPossibility* CT_InStdModelPossibility::copy() const
     CT_InStdModelPossibility *p = new CT_InStdModelPossibility();
     p->setOutModel(*outModel());
     p->setSelected(isSelected());
+    p->setAutoDeleteOutModel(false);
 
     return p;
 }

@@ -19,6 +19,7 @@
 
 PB_GroupDataExporter::PB_GroupDataExporter() : CT_AbstractExporter()
 {
+    setExportOnlyGroup(true);
 }
 
 PB_GroupDataExporter::~PB_GroupDataExporter()

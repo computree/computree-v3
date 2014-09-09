@@ -72,7 +72,7 @@ void PB_StepAddAffiliationID::createInResultModelListProtected()
     // and we search in the structure a group (addGroupModel with the first parameter
     // equal to "" mean that the group is after the root group defined : here ZeroOrMoreGroups).
     // This mean that the group can be the root group or anywhere in the structure.
-    res->addGroupModel("", DEF_SearchInGroup, tr("Groupe à affilier"));
+    res->addGroupModel("", DEF_SearchInGroup, CT_StandardItemGroup::staticGetType(), tr("Groupe à affilier"));
 
     // the group must contains at least one CT_AbstractSingularItemDrawable (the user will select the ItemDrawable)
     res->addItemModel(DEF_SearchInGroup,

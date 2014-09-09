@@ -28,6 +28,11 @@ public:
      */
     CT_InAbstractModel* inModel() const;
 
+    /**
+     * @brief Copy this possibility.
+     */
+    CT_InStdModelPossibility* copy() const;
+
 private:
     CT_InAbstractModel  *m_inModel;
 };

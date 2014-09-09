@@ -155,8 +155,7 @@ void GTreeView::beginAddMultipleItemDrawable()
 
 void GTreeView::slotAddItemDrawable(CT_AbstractItemDrawable &item)
 {
-    if(dynamic_cast<CT_AbstractSingularItemDrawable*>(&item) != NULL)
-        m_typeBuilder.addItemDrawable((CT_AbstractSingularItemDrawable&)item);
+    m_typeBuilder.addItemDrawable(item);
 
     m_treeViewController.addItemDrawable(item);
 }
@@ -173,8 +172,7 @@ void GTreeView::beginRemoveMultipleItemDrawable()
 
 void GTreeView::slotRemoveItemDrawable(CT_AbstractItemDrawable &item)
 {
-    if(dynamic_cast<CT_AbstractSingularItemDrawable*>(&item) != NULL)
-        m_typeBuilder.removeItemDrawable((CT_AbstractSingularItemDrawable&)item);
+    m_typeBuilder.removeItemDrawable(item);
 
     m_treeViewController.removeItemDrawable(item);
 }
@@ -221,7 +219,8 @@ void GTreeView::slotSetTextFilter()
     QString textToUse = m_lineFilter->text();
     int columnToUse = -1;
     bool continueLoop = true;
-    QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
+
+    QListIterator<CT_OutAbstractModel*> it(m_dataReferencesToUse);
 
     while(it.hasNext()
             && continueLoop)
@@ -518,34 +517,36 @@ QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &ite
     QObject::connect(itemDisplay, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(slotItemDataChanged(QStandardItem*)), Qt::QueuedConnection);
     l << itemDisplay;
 
+    int s = m_dataReferencesToUse.size();
+
+    for(int i=0; i<s; ++i)
+    {
+        QStandardItem *ii = new QStandardItem();
+        ii->setData(qVariantFromValue((void*)&item));
+        ii->setEditable(false);
+        l << ii;
+    }
+
     if(dynamic_cast<const CT_AbstractSingularItemDrawable*>(&item) != NULL)
     {
-        QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
+        QList<CT_AbstractItemAttribute*> lIA = ((const CT_AbstractSingularItemDrawable&)item).itemAttributes();
+        QListIterator<CT_AbstractItemAttribute*> itIA(lIA);
 
-        while(it.hasNext())
+        while(itIA.hasNext())
         {
-            CT_OutAbstractItemAttributeModel *ref = it.next();
-            QStandardItem *ii = new QStandardItem();
+            CT_AbstractItemAttribute *att = itIA.next();
+            int index = m_dataReferencesToUse.indexOf(att->model());
 
-            CT_AbstractItemAttribute *att = ((const CT_AbstractSingularItemDrawable&)item).itemAttribute(ref);
-
-            if(att != NULL)
+            if(index != -1)
+            {
+                QStandardItem *ii = l.at(index + GTreeView::COLUMN_FIRST_DATA_VALUE);
                 ii->setText(att->toString((const CT_AbstractSingularItemDrawable*)&item, NULL));
-
-            ii->setData(qVariantFromValue((void*)&item));
-            ii->setEditable(false);
-            l << ii;
+            }
         }
     }
     else
     {
-        for(int i=0; i<m_dataReferencesToUse.size(); ++i)
-        {
-            QStandardItem *ii = new QStandardItem();
-            ii->setData(qVariantFromValue((void*)&item));
-            ii->setEditable(false);
-            l << ii;
-        }
+        itemDisplay->setText(tr("Groupe"));
     }
 
     return l;
@@ -596,7 +597,7 @@ void GTreeView::refreshHeaders()
 
     head << tr("Sel.");
 
-    QListIterator<CT_OutAbstractItemAttributeModel*> it(m_dataReferencesToUse);
+    QListIterator<CT_OutAbstractModel*> it(m_dataReferencesToUse);
 
     while(it.hasNext())
         head << it.next()->displayableName();
@@ -754,42 +755,56 @@ void GTreeView::setValidColorForLineFilter(bool valid)
 
 void GTreeView::reconstructReferencesToUse()
 {
-    QList< CT_OutAbstractItemAttributeModel* > uniqueReferences;
+    QList<CT_OutAbstractModel *> uniqueReferences;
 
-    QList<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> > types = m_typeBuilder.types();
-    QListIterator<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable> > it(types);
+    QList<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractItemDrawable> > types = m_typeBuilder.types();
+    QListIterator<DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractItemDrawable> > it(types);
 
     while(it.hasNext())
     {
-        const DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable>  &type = it.next();
+        const DM_ItemDrawableType<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>  &type = it.next();
 
         if(!type.isEmpty())
-        {
-            CT_OutAbstractSingularItemModel *model = (CT_OutAbstractSingularItemModel*)type.type();
-            QListIterator<CT_OutAbstractItemAttributeModel*> itR(model->itemAttributes());
-
-            while(itR.hasNext())
-            {
-                CT_OutAbstractItemAttributeModel *ref = itR.next();
-
-                if(!uniqueReferences.contains(ref))
-                    uniqueReferences.append(ref);
-            }
-        }
+            recursiveAddToReferencesToUseForModel(uniqueReferences, type.type());
     }
 
     m_dataReferencesToUse = uniqueReferences;
+}
+
+void GTreeView::recursiveAddToReferencesToUseForModel(QList<CT_OutAbstractModel *> &uniqueReferences, const CT_OutAbstractModel *model)
+{
+    if(dynamic_cast<const CT_OutAbstractSingularItemModel*>(model) != NULL)
+    {
+        const CT_OutAbstractSingularItemModel *sModel = (const CT_OutAbstractSingularItemModel*)model;
+        QListIterator<CT_OutAbstractItemAttributeModel*> itR(sModel->itemAttributes());
+
+        while(itR.hasNext())
+        {
+            CT_OutAbstractModel *ref = itR.next()->originalModel();
+
+            if(!uniqueReferences.contains(ref))
+                uniqueReferences.append(ref);
+        }
+    }
+    else
+    {
+        QList<CT_AbstractModel*> child = model->childrens();
+        QListIterator<CT_AbstractModel*> it(child);
+
+        while(it.hasNext())
+            recursiveAddToReferencesToUseForModel(uniqueReferences, (CT_OutAbstractModel*)it.next());
+    }
 }
 
 void GTreeView::reconstructCompleter()
 {
     QStringList comp;
 
-    QListIterator<CT_OutAbstractItemAttributeModel*> itH(m_dataReferencesToUse);
+    QListIterator<CT_OutAbstractModel*> itH(m_dataReferencesToUse);
 
     while(itH.hasNext())
     {
-        CT_OutAbstractItemAttributeModel *ref = itH.next();
+        CT_OutAbstractModel *ref = itH.next();
         comp << (ref->displayableName() + " : ");
         comp << (ref->displayableName() + " : " + ((DM_SortFilterMathProxyModel*)m_treeView->model())->variableInMathExpression());
     }

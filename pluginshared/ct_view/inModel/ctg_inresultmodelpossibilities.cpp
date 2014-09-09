@@ -16,9 +16,7 @@ QMimeData* CTG_InResultModelPossibilitiesDragModel::mimeData(const QModelIndexLi
     QMimeData* mimeData = QStandardItemModel::mimeData(indexes);
 
     if(!indexes.isEmpty())
-    {
         mimeData->setText(indexes.first().data(Qt::UserRole+1).toString());
-    }
 
     return mimeData;
 }

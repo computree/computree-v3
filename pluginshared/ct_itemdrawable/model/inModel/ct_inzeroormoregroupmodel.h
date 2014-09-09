@@ -57,6 +57,18 @@ public:
      */
     virtual QString modelTypeDisplayable() const;
 
+    /**
+     * @brief Verify if this model (only obligatory) have at least one possibility selected.
+     * @return true is the test pass.
+     */
+    virtual bool isAtLeastOnePossibilitySelectedIfItDoes() const;
+
+    /**
+     * @brief Returns true if we can select possibilities of this model by default. If the user must choose among possibilities the
+     *        method return false.
+     */
+    virtual bool canSelectPossibilitiesByDefault() const;
+
     // OVERLOADED FROM CT_AbstractItemModel //
     bool canSetUniqueName(QString modelName) const { Q_UNUSED(modelName) return false; }
 

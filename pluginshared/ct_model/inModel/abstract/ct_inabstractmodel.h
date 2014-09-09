@@ -109,7 +109,7 @@ public:
      * @brief Verify if this model (only obligatory) have at least one possibility selected.
      * @return true is the test pass.
      */
-    bool isAtLeastOnePossibilitySelectedIfItDoes() const;
+    virtual bool isAtLeastOnePossibilitySelectedIfItDoes() const;
 
     /**
      * @brief Verify if all models (only obligatory, recursively) have at least one possibility selected.
@@ -124,12 +124,6 @@ public:
     virtual bool canSelectPossibilitiesByDefault() const;
 
     /**
-     * @brief Returns true if we can select possibilities for all models (recursively) by default. If the user must choose among possibilities the
-     *        method return false.
-     */
-    bool recursiveCanSelectPossibilitiesByDefault() const;
-
-    /**
      * @brief If you want to select possibilities and know if you select them if the model can pass the "default select test" you
      *        can call this method and pass the list of index of possibilities you want to select. By default returns false
      *          - if the number of possibilities passed in parameter is greather than the number of possibilities of this model
@@ -141,6 +135,12 @@ public:
      * @return true if the test pass
      */
     virtual bool canSelectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively) const;
+
+    /**
+     * @brief Returns true if we can select possibilities for all models (recursively) by default. If the user must choose among possibilities the
+     *        method return false.
+     */
+    bool recursiveCanSelectPossibilitiesByDefault() const;
 
     /**
      * @brief Select all possibilities of this models if its possible by default. By default select the first possibility if exist.
@@ -157,7 +157,7 @@ public:
     /**
      * @brief Select possibilities of this model by default
      * @param possibilitiesIndex : the list of index of possibilities that you want to select
-     * @param selectChildrensTooRecursively : true if you want to select childrens (recursively) can be selected by default
+     * @param selectChildrensTooRecursively : true if you want to select childrens (recursively) too
      * @return true if the test "canSelectPossibilitiesByDefault" pass
      */
     virtual bool selectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively);
@@ -252,7 +252,13 @@ protected:
      * @brief Returns all childrens (INPUT) that must be used to find possibilities in children of OUTPUT model. By
      *        default returns "childrens" method
      */
-    virtual QList<CT_AbstractModel*> childrensToFindPossibilities(bool savePossibilities) { Q_UNUSED(savePossibilities) return childrens(); }
+    virtual QList<CT_AbstractModel*> childrensToFindPossibilities(bool savePossibilities) const { Q_UNUSED(savePossibilities) return childrens(); }
+
+    /**
+     * @brief Returns all childrens (INPUT) used by possibilities (Util for CT_InAbstractResultModel). By
+     *        default returns "childrens" method.
+     */
+    virtual QList<CT_AbstractModel*> childrensOfPossibilities() const { return childrens(); }
 
     /**
      * @brief Remove from the list (m_saveCycles) the last save cycle
@@ -350,10 +356,10 @@ private:
      * @param model : the ouput model where begin the search
      * @param savePossibilities : true if you want this model ans its children save all possibilities in the current save cycle
      * @param searchMultiple : true if you want to search multiple possibility, false if you want to search only one
-     * @return true if all model had at least one possibility if it must have one. Otherwise return false. If the out model
-     *         cannot be compared with this model the method return automatically false.
+     * @return 1 if all model had at least one possibility if it must have one. 2 if it's ok recursively. Otherwise return 0. If the out model
+     *         cannot be compared with this model the method return automatically 0.
      */
-    bool recursiveFindPossibilitiesInModel(const CT_OutAbstractModel &model, bool savePossibilities, bool searchMultiple);
+    int recursiveFindPossibilitiesInModel(const CT_OutAbstractModel &model, bool savePossibilities, bool searchMultiple);
 };
 
 #endif // CT_INABSTRACTMODEL_H

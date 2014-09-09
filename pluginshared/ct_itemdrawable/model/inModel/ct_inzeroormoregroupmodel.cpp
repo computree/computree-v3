@@ -17,6 +17,48 @@ QString CT_InZeroOrMoreGroupModel::modelTypeDisplayable() const
     return QString("CT_InZeroOrMoreGroupModel");
 }
 
+bool CT_InZeroOrMoreGroupModel::isAtLeastOnePossibilitySelectedIfItDoes() const
+{
+    // if this model not need possiblities
+    if(!needOutputModel())
+        return true;
+
+    if((nPossibilitiesSaved() > 0) && getPossibilitiesSavedSelected().isEmpty())
+        return false;
+
+    QList<CT_AbstractModel*> l = childrens();
+    QListIterator<CT_AbstractModel*> it(l);
+
+    while(it.hasNext())
+    {
+        // if no possibilities of this children (and recursively) is selected : we return false
+        if(!((CT_InAbstractModel*)it.next())->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+            return false;
+    }
+
+    // all it's ok because this model is obligatory but it can not add a possibility if
+    // childrens (recursively) is ok
+    return true;
+}
+
+bool CT_InZeroOrMoreGroupModel::canSelectPossibilitiesByDefault() const
+{
+    if(nPossibilitiesSaved() > 1)
+        return false;
+
+    QList<CT_AbstractModel*> l = childrensOfPossibilities();
+    QListIterator<CT_AbstractModel*> it(l);
+
+    while(it.hasNext())
+    {
+        // if children (recursively) cannot select possibilities by default : we return false
+        if(!((CT_InAbstractModel*)it.next())->recursiveCanSelectPossibilitiesByDefault())
+            return false;
+    }
+
+    return true;
+}
+
 CT_InAbstractModel* CT_InZeroOrMoreGroupModel::copy(bool withPossibilities) const
 {
     CT_InZeroOrMoreGroupModel *cpy = new CT_InZeroOrMoreGroupModel();

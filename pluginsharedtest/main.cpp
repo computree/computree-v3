@@ -1,6 +1,5 @@
 #include "tst_modeltest.h"
 #include "cloudtest.h"
-#include "steptest.h"
 #include "itemdrawabletest.h"
 
 int main( int argc, char *argv[])

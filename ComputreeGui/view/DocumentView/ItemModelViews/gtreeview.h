@@ -77,13 +77,13 @@ private:
     QStandardItemModel                      *m_model;
     DM_ItemDrawableTreeViewController       m_treeViewController;
 
-    DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractSingularItemDrawable>       m_typeBuilder;
+    DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>       m_typeBuilder;
 
     QList<CT_AbstractItemDrawable*>         m_expandedItems;
 
     QLineEdit                               *m_lineFilter;
 
-    QList<CT_OutAbstractItemAttributeModel*>    m_dataReferencesToUse;
+    QList< CT_OutAbstractModel* >           m_dataReferencesToUse;
 
     DM_ItemDrawableManagerOptions           m_options;
 
@@ -105,6 +105,11 @@ private:
     void reconstructReferencesToUse();
 
     /**
+     * @brief Called by method reconstructReferencesToUse to add references from the model passed in parameter
+     */
+    void recursiveAddToReferencesToUseForModel(QList< CT_OutAbstractModel* > &uniqueReferences, const CT_OutAbstractModel *model);
+
+    /**
      * @brief Call this method when you want to reconstruct the completer of the line edit
      */
     void reconstructCompleter();
@@ -112,12 +117,12 @@ private:
 private slots:
 
     /**
-     * @brief Called when a new type of itemdrawable is detected
+     * @brief Called when a new type (a new type of model) of itemdrawable is detected
      */
     void slotNewItemTypeDetected();
 
     /**
-     * @brief Called when a type of itemdrawable is removed
+     * @brief Called when a type of itemdrawable (a type of model) is removed
      */
     void slotItemTypeRemoved();
 

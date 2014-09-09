@@ -52,9 +52,7 @@ void CTG_InTurnManager::setReadOnly(bool enabled)
 void CTG_InTurnManager::clearTabs()
 {
     while(ui->tabWidget->count() > 0)
-    {
         delete ui->tabWidget->widget(0);
-    }
 }
 
 void CTG_InTurnManager::constructTabs()
@@ -81,9 +79,7 @@ void CTG_InTurnManager::constructTabs()
         }
 
         if(ui->tabWidget->count() < _manager->maximumTurn())
-        {
             ui->tabWidget->addTab(new QWidget(), "+");
-        }
     }
 
     _constructEnabled = false;
@@ -109,7 +105,7 @@ QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
 
     wid->setLayout(layout);
 
-    connect(turnChoice, SIGNAL(selectedPossibilityChanged(const CT_InStdModelPossibility*)), pChoice, SLOT(setInResultModelPossibility(const CT_InStdResultModelPossibility*)));
+    connect(turnChoice, SIGNAL(selectedPossibilityChanged(const CT_InStdResultModelPossibility*)), pChoice, SLOT(setInResultModelPossibility(const CT_InStdResultModelPossibility*)));
 
     return wid;
 }
@@ -120,9 +116,7 @@ bool CTG_InTurnManager::isAddTab(int index) const
 
     if((index > 0)
             && (index == (count-1)))
-    {
         return true;
-    }
 
     return false;
 }
@@ -150,9 +144,7 @@ void CTG_InTurnManager::currentTabChanged(int index)
                     ++count;
 
                     if(count == _manager->maximumTurn())
-                    {
                         delete ui->tabWidget->widget(count-1);
-                    }
 
                     ui->tabWidget->setCurrentIndex(index);
                     _lastIndex = index;

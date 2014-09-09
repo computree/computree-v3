@@ -93,9 +93,7 @@ bool PB_StepGenericLoadFile::postConfigure()
 bool PB_StepGenericLoadFile::protectedInitAfterConfiguration()
 {
     if(getStepChildList().isEmpty())
-    {
         m_reader->createOutItemDrawableModelList();
-    }
 
     return true;
 }

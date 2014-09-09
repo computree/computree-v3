@@ -11,6 +11,7 @@ CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
                                                                                         displayableName)
 {
     m_recursive = recursive;
+    m_backupModel = NULL;
 }
 
 void CT_InAbstractResultModel::setRecursive(bool r)
@@ -81,7 +82,7 @@ CT_InAbstractModel* CT_InAbstractResultModel::findModelInTreeOfModelInPossibilit
     return (CT_InAbstractModel*)((CT_InStdResultModelPossibility*)possibilitiesGroup()->getPossibilities().at(pIndex))->inModel()->findModelInTree(uniqueName);
 }
 
-QList<CT_AbstractModel *> CT_InAbstractResultModel::childrensToFindPossibilities(bool savePossibilities)
+QList<CT_AbstractModel *> CT_InAbstractResultModel::childrensToFindPossibilities(bool savePossibilities) const
 {
     if(!savePossibilities)
         return childrens();
@@ -92,6 +93,19 @@ QList<CT_AbstractModel *> CT_InAbstractResultModel::childrensToFindPossibilities
 
     while(it.hasNext())
         r.append(((CT_InAbstractModel*)it.next())->copy(false));
+
+    return r;
+}
+
+QList<CT_AbstractModel *> CT_InAbstractResultModel::childrensOfPossibilities() const
+{
+    QList<CT_AbstractModel *> r;
+
+    QList<CT_InStdModelPossibility*> l = getPossibilitiesSaved();
+    QListIterator<CT_InStdModelPossibility*> it(l);
+
+    while(it.hasNext())
+        r.append(((CT_InStdResultModelPossibility*)it.next())->inModel());
 
     return r;
 }
@@ -118,10 +132,14 @@ CT_InStdModelPossibility* CT_InAbstractResultModel::createNewPossibility() const
 
 void CT_InAbstractResultModel::possibilityCreated(CT_InStdModelPossibility *p)
 {
-    ((CT_InStdResultModelPossibility*)p)->setInModel(m_backupModel);
+    if(m_backupModel != NULL)
+        dynamic_cast<CT_InStdResultModelPossibility*>(p)->setInModel(m_backupModel);
+
+    m_backupModel = NULL;
 }
 
 void CT_InAbstractResultModel::possibilityNotCreated()
 {
     delete m_backupModel;
+    m_backupModel = NULL;
 }

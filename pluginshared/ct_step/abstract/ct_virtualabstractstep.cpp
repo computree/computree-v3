@@ -59,6 +59,8 @@
 
 #include "ct_generateoutresultmodelname.h"
 
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+
 #include <QMutex>
 #include <QWaitCondition>
 #include <QDialog>
@@ -962,9 +964,16 @@ CT_InAbstractModel* CT_VirtualAbstractStep::getInModelForResearch(const CT_Resul
 }
 
 CT_InAbstractModel* CT_VirtualAbstractStep::getInModelForResearch(const QString &inResultUniqueName,
-                                                                      const QString &uniqueName) const
+                                                                  const int &possibilitySelectedIndex,
+                                                                  const QString &uniqueName) const
 {
-    return getInModelForResearch(inResultUniqueName, uniqueName);
+    CT_InAbstractResultModel *inResModel = getInResultModel(inResultUniqueName);
+    assert(inResModel != NULL);
+
+    QList<CT_InStdModelPossibility*> p = inResModel->getPossibilitiesSavedSelected();
+    assert((possibilitySelectedIndex > 0) && (possibilitySelectedIndex < p.size()));
+
+    return getInModelForResearch((CT_OutAbstractResultModel*)p.at(possibilitySelectedIndex)->outModel(), uniqueName);
 }
 
 CT_InAbstractModel* CT_VirtualAbstractStep::getInModelForResearchIfUseCopy(const QString &inCopyResultUniqueName,

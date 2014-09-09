@@ -21,13 +21,11 @@ TEMPLATE = app
 SOURCES += \
     main.cpp \
     tst_modeltest.cpp \
-    steptest.cpp \
     cloudtest.cpp \
     itemdrawabletest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     tst_modeltest.h \
-    steptest.h \
     cloudtest.h \
     itemdrawabletest.h

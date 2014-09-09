@@ -69,6 +69,13 @@ bool CT_AbstractExporter::setEdgesToExport(const QList<CT_AbstractCloudIndex *> 
     return true;
 }
 
+bool CT_AbstractExporter::exportOnlyGroup() const
+{
+    Q_D(const CT_AbstractExporter);
+
+    return d->_eOnlyGroup;
+}
+
 bool CT_AbstractExporter::canExportPoints() const
 {
     Q_D(const CT_AbstractExporter);
@@ -297,6 +304,13 @@ void CT_AbstractExporter::setCanExportFaces(bool e)
     Q_D(CT_AbstractExporter);
 
     d->_eFaces = e;
+}
+
+void CT_AbstractExporter::setExportOnlyGroup(bool e)
+{
+    Q_D(CT_AbstractExporter);
+
+    d->_eOnlyGroup = e;
 }
 
 void CT_AbstractExporter::setCanExportItems(bool e)

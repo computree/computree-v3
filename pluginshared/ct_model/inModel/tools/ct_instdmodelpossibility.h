@@ -60,7 +60,7 @@ public:
     /**
      * @brief Copy this possibility.
      */
-    CT_InStdModelPossibility* copy() const;
+    virtual CT_InStdModelPossibility* copy() const;
 
 public slots:
 
