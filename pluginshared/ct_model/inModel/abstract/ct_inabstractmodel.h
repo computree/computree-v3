@@ -115,7 +115,7 @@ public:
      * @brief Verify if all models (only obligatory, recursively) have at least one possibility selected.
      * @return true is the test pass.
      */
-    bool recursiveIsAtLeastOnePossibilitySelectedIfItDoes() const;
+    virtual bool recursiveIsAtLeastOnePossibilitySelectedIfItDoes() const;
 
     /**
      * @brief Returns true if we can select possibilities of this model by default. If the user must choose among possibilities the

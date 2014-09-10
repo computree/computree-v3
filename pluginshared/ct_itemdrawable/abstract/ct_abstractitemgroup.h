@@ -547,18 +547,6 @@ protected:
     void staticResursiveSetComplete(CT_AbstractItemGroup *group) { group->recursiveSetComplete(); }
 
     /**
-     * @brief Search a model to match with the modelName passed in parameter
-     *
-     *         IF the result of this group is a result of the step passed in parameter : the result is a OUT result of the step
-     *              -> Search a OUT model with modelName same as passed in parameter and if he was not found, search a IN model because the result is a copy (may be)
-     *         ELSE (the result is a IN result of the step)
-     *              -> Search a IN model
-     *
-     *        Check the parameter isAInModel to know if the model returned is a IN model or a OUT model
-     */
-    CT_AbstractModel* getModelInStep(const CT_VirtualAbstractStep *step, const QString &modelName, bool &isAInModel) const;
-
-    /**
      * @brief Overloaded to cast the model to check the validity.
      */
     virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;

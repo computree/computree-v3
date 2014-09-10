@@ -130,12 +130,12 @@ void CT_InResultModelGroupToCopy::possibilityCreated(CT_InStdModelPossibility *p
 {
     CT_InResultModelGroup::possibilityCreated(p);
 
-    CT_OutAbstractModel *model = p->outModel()->copy();
+    /*CT_OutAbstractModel *model = p->outModel()->copy();
 
     // on copie le modèle de sortie de la possibilité (qui est seulement une référence)
     // puisqu'il pourra être modifié
     p->setOutModel(*model);
 
     // on précise à la possibilité de supprimer son outModel de la mémoire
-    p->setAutoDeleteOutModel(true);
+    p->setAutoDeleteOutModel(true);*/
 }

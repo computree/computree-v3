@@ -3,6 +3,8 @@
 #include "ct_model/outModel/abstract/ct_outabstractmodel.h"
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 #include "ct_result/abstract/ct_abstractresult.h"
+#include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_AbstractItem::CT_AbstractItem()
 {
@@ -28,7 +30,7 @@ CT_AbstractItem::CT_AbstractItem(const QString &modelUniqueName, const CT_Abstra
     Q_ASSERT_X((result != NULL), "CT_AbstractItem constructor", "When you create a Element with a modelName the result must not be NULL !");
     Q_ASSERT_X((result->parentStep() != NULL), "CT_AbstractItem constructor", "When you create a Element with a modelName the result must know its parent step");
 
-    CT_OutAbstractModel *model = result->parentStep()->getOutModelForCreation((CT_ResultGroup*)result, modelUniqueName);
+    CT_OutAbstractModel *model = PS_MODELS->searchModelForCreation(modelUniqueName, result);
 
     Q_ASSERT_X(model != NULL, "CT_AbstractItem constructor", "You created a CT_AbstractItem with a modelName but the model was not found");
 

@@ -115,6 +115,8 @@ CT_OutAbstractModel* CT_OutResultModelGroup::copy() const
         cpy->setTurnIndex(turnIndex());
 
     cpy->setStep(step());
+    cpy->setResult(result());
+    cpy->setOriginalModel(this);
 
     return cpy;
 }

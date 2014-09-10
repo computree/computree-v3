@@ -49,13 +49,10 @@ QList<QString> PB_StepLoadPbmFile::getFileExtensionAccepted() const
 }
 
 void PB_StepLoadPbmFile::createOutResultModelListProtected()
-{
-    CT_OutStdGroupModel* gridGroup = new CT_OutStdGroupModel(DEF_Grid2dGroup);
-    CT_OutStdSingularItemModel* grid = new CT_OutStdSingularItemModel(DEF_Grid2dItem, new CT_Grid2DXY<int>() );
-
-    gridGroup->addItem(grid);
-
-    addOutResultModel(new CT_OutResultModelGroup(DEF_Grid2dResult, gridGroup, "CT_Grid2D"));
+{    
+    CT_OutResultModelGroup *outRes = createNewOutResultModel(DEF_Grid2dResult, "CT_Grid2D");
+    outRes->setRootGroup(DEF_Grid2dGroup);
+    outRes->addItemModel(DEF_Grid2dGroup, DEF_Grid2dItem, new CT_Grid2DXY<int>());
 }
 
 int PB_StepLoadPbmFile::readHeaderFile(QFile &f)
@@ -118,7 +115,7 @@ void PB_StepLoadPbmFile::readDataFile(QFile &f, int offset, bool little_endian)
 
 
     // Creating a 2d grid
-    CT_Grid2DXY<int>* outputImage = new CT_Grid2DXY<int>(getOutSingularItemModelForCreation(out_res, DEF_Grid2dItem), out_res, /*-_width/2, -_height/2,*/ 0,0, _width, _height, 1, 0, std::numeric_limits<int>::max(), 0 );
+    CT_Grid2DXY<int>* outputImage = new CT_Grid2DXY<int>(DEF_Grid2dItem, out_res, /*-_width/2, -_height/2,*/ 0,0, _width, _height, 1, 0, std::numeric_limits<int>::max(), 0 );
 
     QTextStream stream ( &f );
     QString currentvalue;
@@ -143,7 +140,7 @@ void PB_StepLoadPbmFile::readDataFile(QFile &f, int offset, bool little_endian)
 
     outputImage->computeMinMax();
 
-    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup(getOutGroupModelForCreation(out_res, DEF_Grid2dGroup), out_res);
+    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup(DEF_Grid2dGroup, out_res);
     gridGroup->addItemDrawable( outputImage );
     out_res->addGroup( gridGroup );
 }

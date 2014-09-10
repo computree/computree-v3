@@ -155,6 +155,8 @@ void DM_Document::removeAllItemDrawableOfResult(const CT_AbstractResult &res)
 
 void DM_Document::removeAllItemDrawableOfModel(const CT_OutAbstractModel &model)
 {
+    CT_OutAbstractModel *lom = model.lastOriginalModelWithAResult();
+
     beginRemoveMultipleItemDrawable();
 
     QMutableListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
@@ -163,7 +165,7 @@ void DM_Document::removeAllItemDrawableOfModel(const CT_OutAbstractModel &model)
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(item->model() == &model)
+        if((item->model() == lom) || (item->model() == &model))
         {
             emit itemDrawableToBeRemoved(*item);
 
@@ -264,19 +266,23 @@ void DM_Document::setSelectAllItemDrawable(bool select)
 
 void DM_Document::setSelectAllItemDrawableOfModel(bool select, const CT_OutAbstractModel &model)
 {
+    CT_OutAbstractModel *lom = model.lastOriginalModelWithAResult();
+
     QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(item->model() == &model)
+        if((item->model() == lom) || (item->model() == &model))
             item->setSelected(select);
     }
 }
 
 QList<CT_AbstractItemDrawable*> DM_Document::findItemDrawable(const CT_OutAbstractModel &model) const
 {
+    CT_OutAbstractModel *lom = model.lastOriginalModelWithAResult();
+
     QList<CT_AbstractItemDrawable*> list;
 
     QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
@@ -285,7 +291,7 @@ QList<CT_AbstractItemDrawable*> DM_Document::findItemDrawable(const CT_OutAbstra
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(item->model() == &model)
+        if((item->model() == lom) || (item->model() == &model))
             list.append(item);
     }
 
@@ -294,6 +300,8 @@ QList<CT_AbstractItemDrawable*> DM_Document::findItemDrawable(const CT_OutAbstra
 
 void DM_Document::findItemDrawable(const CT_OutAbstractModel &model, QList<CT_AbstractItemDrawable *> &outList) const
 {
+    CT_OutAbstractModel *lom = model.lastOriginalModelWithAResult();
+
     outList.clear();
 
     QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
@@ -302,20 +310,22 @@ void DM_Document::findItemDrawable(const CT_OutAbstractModel &model, QList<CT_Ab
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(item->model() == &model)
+        if((item->model() == lom) || (item->model() == &model))
             outList.append(item);
     }
 }
 
 CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstractModel &model) const
 {
+    CT_OutAbstractModel *lom = model.lastOriginalModelWithAResult();
+
     QListIterator<CT_AbstractItemDrawable*> it(_listItemDrawable);
 
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(item->model() == &model)
+        if((item->model() == lom) || (item->model() == &model))
             return item;
     }
 

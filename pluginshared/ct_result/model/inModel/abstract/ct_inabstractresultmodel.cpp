@@ -44,6 +44,35 @@ int CT_InAbstractResultModel::maximumNumberOfPossibilityThatCanBeSelectedForOneT
     return possibilitiesGroup()->maximumNumberOfPossibilityThatCanBeSelected();
 }
 
+bool CT_InAbstractResultModel::recursiveIsAtLeastOnePossibilitySelectedIfItDoes() const
+{
+    // if this model not need possiblities
+    if(!needOutputModel())
+        return true;
+
+    if(!isAtLeastOnePossibilitySelectedIfItDoes())
+        return false;
+
+    QList<CT_AbstractModel *> r;
+    QList<CT_InStdModelPossibility*> lP = getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> itP(lP);
+
+    while(itP.hasNext())
+        r.append(((CT_InStdResultModelPossibility*)itP.next())->inModel());
+
+    QListIterator<CT_AbstractModel*> it(r);
+
+    while(it.hasNext())
+    {
+        // if no possibilities of this children (and recursively) is selected : we return false
+        if(!((CT_InAbstractModel*)it.next())->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+            return false;
+    }
+
+    // all it's ok
+    return true;
+}
+
 bool CT_InAbstractResultModel::canSelectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively) const
 {
     if(!CT_InAbstractModel::canSelectPossibilitiesByDefault(possibilitiesIndex, false))

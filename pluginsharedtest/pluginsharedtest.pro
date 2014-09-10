@@ -8,7 +8,7 @@ include($${PLUGIN_SHARED_DIR}/include.pri)
 
 QT       += testlib
 
-QT       -= gui
+QT       += gui
 
 TARGET = tst_modeltest
 CONFIG   += console
@@ -22,10 +22,16 @@ SOURCES += \
     main.cpp \
     tst_modeltest.cpp \
     cloudtest.cpp \
-    itemdrawabletest.cpp
+    itemdrawabletest.cpp \
+    steptest.cpp \
+    step/steptestmodel1.cpp \
+    step/steptestmodelinit1.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \
     tst_modeltest.h \
     cloudtest.h \
-    itemdrawabletest.h
+    itemdrawabletest.h \
+    steptest.h \
+    step/steptestmodel1.h \
+    step/steptestmodelinit1.h

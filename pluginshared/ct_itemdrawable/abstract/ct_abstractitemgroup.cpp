@@ -14,6 +14,7 @@
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_AbstractItemGroup::CT_AbstractItemGroup() : CT_AbstractItemDrawable()
 {
@@ -58,105 +59,80 @@ QString CT_AbstractItemGroup::staticGetType()
 bool CT_AbstractItemGroup::containsItemDrawableByModelName(const CT_VirtualAbstractStep *step,
                                                            const QString &modelName) const
 {
-    bool isIN;
-    CT_AbstractModel *model = getModelInStep(step, modelName, isIN);
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
     Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
 
-    if(isIN)
-    {
-        CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
 
-        // check if the IN model is a ItemDrawable type
-        Q_ASSERT_X(inModel != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a IN model but it was not a item model");
-
+    if(inModel != NULL)
         return containsItemDrawable(inModel);
-    }
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        return containsItemDrawable(outModel);
+    else
+        qFatal("You search a item with a OUT model but it was not a item model");
 
-    CT_OutAbstractSingularItemModel *outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model);
-
-    // check if the OUT model is a ItemDrawable type
-    Q_ASSERT_X(outModel != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a OUT model but it was not a item model");
-
-    return containsItemDrawable(outModel);
+    return false;
 }
 
 CT_AbstractSingularItemDrawable* CT_AbstractItemGroup::itemByOUTModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
 {
-    bool isIN;
-    CT_AbstractModel *model = getModelInStep(step, modelName, isIN);
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup itemByModelName", "You search a item with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
 
-    if(isIN)
-    {
-        CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
 
-        // check if the IN model is a ItemDrawable type
-        Q_ASSERT_X(inModel != NULL, "CT_AbstractItemGroup itemByModelName", "You search a item with a IN model but it was not a item model");
-
+    if(inModel != NULL)
         return firstItem(inModel);
-    }
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        return item(outModel);
+    else
+        qFatal("You search a item with a OUT model but it was not a item model");
 
-    CT_OutAbstractSingularItemModel *outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model);
-
-    // check if the OUT model is a ItemDrawable type
-    Q_ASSERT_X(outModel != NULL, "CT_AbstractItemGroup itemByModelName", "You search a item with a OUT model but it was not a item model");
-
-    return item(outModel);
+    return NULL;
 }
 
 QList<CT_AbstractSingularItemDrawable *> CT_AbstractItemGroup::itemsByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
 {
-    bool isIN;
-    CT_AbstractModel *model = getModelInStep(step, modelName, isIN);
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup itemsByModelName", "You search items with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
 
-    if(isIN)
-    {
-        CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
 
-        // check if the IN model is a ItemDrawable type
-        Q_ASSERT_X(inModel != NULL, "CT_AbstractItemGroup itemsByModelName", "You search items with a IN model but it was not a item model");
-
+    if(inModel != NULL)
         return items(inModel);
-    }
-
-    CT_OutAbstractSingularItemModel *outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model);
-
-    // check if the OUT model is a ItemDrawable type
-    Q_ASSERT_X(outModel != NULL, "CT_AbstractItemGroup itemsByModelName", "You search items with a OUT model but it was not a item model");
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        return (QList<CT_AbstractSingularItemDrawable *>() << item(outModel));
+    else
+        qFatal("You search a item with a OUT model but it was not a item model");
 
     QList<CT_AbstractSingularItemDrawable *> l;
-    l.append(item(outModel));
 
     return l;
 }
 
 CT_AbstractSingularItemDrawable* CT_AbstractItemGroup::firstItemByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
 {
-    bool isIN;
-    CT_AbstractModel *model = getModelInStep(step, modelName, isIN);
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup firstItemByModelName", "You search the first item with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
 
-    if(isIN)
-    {
-        CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
 
-        // check if the IN model is a ItemDrawable type
-        Q_ASSERT_X(inModel != NULL, "CT_AbstractItemGroup firstItemByModelName", "You search the first item with a IN model but it was not a item model");
-
+    if(inModel != NULL)
         return firstItem(inModel);
-    }
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        return item(outModel);
+    else
+        qFatal("You search a item with a OUT model but it was not a item model");
 
-    CT_OutAbstractSingularItemModel *outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model);
-
-    // check if the OUT model is a ItemDrawable type
-    Q_ASSERT_X(outModel != NULL, "CT_AbstractItemGroup firstItemByModelName", "You search the first item with a OUT model but it was not a item model");
-
-    return item(outModel);
+    return NULL;
 }
 
 CT_AbstractItemGroup* CT_AbstractItemGroup::parentGroup() const
@@ -217,48 +193,6 @@ void CT_AbstractItemGroup::setAtLeastOneChildMustBeRemovedLater()
         parentGroup()->setAtLeastOneChildMustBeRemovedLater();
 
     _removedLater |= ChildRemoveLater;
-}
-
-CT_AbstractModel* CT_AbstractItemGroup::getModelInStep(const CT_VirtualAbstractStep *step,
-                                                       const QString &modelName,
-                                                       bool &isAInModel) const
-{
-    isAInModel = false;
-
-    // if the result is a OUT result of the current step
-    if(((CT_AbstractResult*)result())->parentStep() == step)
-    {
-        // search a out model
-        CT_OutAbstractItemModel *outAbsModel = dynamic_cast<CT_OutAbstractItemModel*>(step->getOutModelForCreation((CT_ResultGroup*)result(), modelName));
-
-        // if we don't found a OUT model
-        if(outAbsModel == NULL)
-        {
-            // check if the result is a copy
-            CT_OutResultModelGroupCopy *outCopyModel = dynamic_cast<CT_OutResultModelGroupCopy*>(((CT_AbstractResult*)result())->model());
-
-            if(outCopyModel != NULL)
-            {
-                // get the IN result model that correspond to this out model copy
-                const CT_InResultModelGroupToCopy *inResultCopyModel = outCopyModel->inResultModelCopy();
-
-                isAInModel = true;
-
-                // search a IN model
-                return step->getInModelForResearchIfUseCopy(inResultCopyModel->uniqueName(), modelName);
-            }
-
-            return NULL;
-        }
-
-        return outAbsModel;
-    }
-
-    // else the result is a IN result of the step
-    isAInModel = true;
-
-    // search a in model
-    return step->getInModelForResearch((CT_ResultGroup*)result(), modelName);
 }
 
 QString CT_AbstractItemGroup::internalVerifyModel(const CT_OutAbstractModel *model) const

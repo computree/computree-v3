@@ -26,7 +26,7 @@ bool CT_InZeroOrMoreGroupModel::isAtLeastOnePossibilitySelectedIfItDoes() const
     if((nPossibilitiesSaved() > 0) && getPossibilitiesSavedSelected().isEmpty())
         return false;
 
-    QList<CT_AbstractModel*> l = childrens();
+    QList<CT_AbstractModel*> l = childrensOfPossibilities();
     QListIterator<CT_AbstractModel*> it(l);
 
     while(it.hasNext())

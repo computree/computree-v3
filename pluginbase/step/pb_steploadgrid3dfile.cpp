@@ -161,7 +161,7 @@ void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endia
     CT_ResultGroup* out_res = getOutResultList().first();
 
     // Creating a grid with the parameters read from the header
-    CT_Grid3D<float>* loadedGrid = new CT_Grid3D<float>( getOutSingularItemModelForCreation(out_res, DEF_Search_Grid3d),
+    CT_Grid3D<float>* loadedGrid = new CT_Grid3D<float>( DEF_Search_Grid3d,
                                                          out_res,
                                                          _minX,
                                                          _minY,
@@ -189,7 +189,7 @@ void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endia
 
     loadedGrid->computeMinMax();
 
-    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup(getOutGroupModelForCreation(out_res, DEF_Search_Grid3dGroup), out_res);
+    CT_StandardItemGroup* gridGroup = new CT_StandardItemGroup(DEF_Search_Grid3dGroup, out_res);
     gridGroup->addItemDrawable( loadedGrid );
     out_res->addGroup( gridGroup );
 }

@@ -30,7 +30,7 @@ bool CT_OutResultModelGroupToCopyPossibilities::addGroupModel(const QString &inP
         if((step == NULL) || (poss == NULL))
             return false;
 
-        CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel("", group, displayableName, description);
+        CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel("", (CT_AbstractItemGroup*)group->copy(NULL, NULL, CT_ResultCopyModeList()), displayableName, description);
 
         CT_OutModelCopyActionAddModelGroupInGroup action(inParentGroupModelName,
                                                          groupModel,
@@ -38,10 +38,12 @@ bool CT_OutResultModelGroupToCopyPossibilities::addGroupModel(const QString &inP
 
         if(!action.execute(step, poss))
         {
-            delete groupModel;
+            delete group;
             return false;
         }
     }
+
+    delete group;
 
     return true;
 }
@@ -64,7 +66,7 @@ bool CT_OutResultModelGroupToCopyPossibilities::addGroupModel(const CT_AutoRenam
         if((step == NULL) || (poss == NULL))
             return false;
 
-        CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel("", group, displayableName, description);
+        CT_OutStdGroupModel *groupModel = new CT_OutStdGroupModel("", (CT_AbstractItemGroup*)group->copy(NULL, NULL, CT_ResultCopyModeList()), displayableName, description);
 
         CT_OutModelCopyActionAddModelGroupInGroup action(autoOutParentGroupModelName,
                                                          groupModel,
@@ -72,10 +74,12 @@ bool CT_OutResultModelGroupToCopyPossibilities::addGroupModel(const CT_AutoRenam
 
         if(!action.execute(step, poss))
         {
-            delete groupModel;
+            delete group;
             return false;
         }
     }
+
+    delete group;
 
     return true;
 }
@@ -121,7 +125,7 @@ bool CT_OutResultModelGroupToCopyPossibilities::addItemModel(const QString &inPa
         if((step == NULL) || (poss == NULL))
             return false;
 
-        CT_OutStdSingularItemModel *itemModel = new CT_OutStdSingularItemModel("", item, displayableName, description);
+        CT_OutStdSingularItemModel *itemModel = new CT_OutStdSingularItemModel("", (CT_AbstractSingularItemDrawable*)item->copy(NULL, NULL, CT_ResultCopyModeList()), displayableName, description);
 
         CT_OutModelCopyActionAddModelItemInGroup action(inParentGroupModelName,
                                                         itemModel,
@@ -129,10 +133,12 @@ bool CT_OutResultModelGroupToCopyPossibilities::addItemModel(const QString &inPa
 
         if(!action.execute(step, poss))
         {
-            delete itemModel;
+            delete item;
             return false;
         }
     }
+
+    delete item;
 
     return true;
 }
@@ -155,7 +161,7 @@ bool CT_OutResultModelGroupToCopyPossibilities::addItemModel(const CT_AutoRename
         if((step == NULL) || (poss == NULL))
             return false;
 
-        CT_OutStdSingularItemModel *itemModel = new CT_OutStdSingularItemModel("", item, displayableName, description);
+        CT_OutStdSingularItemModel *itemModel = new CT_OutStdSingularItemModel("", (CT_AbstractSingularItemDrawable*)item->copy(NULL, NULL, CT_ResultCopyModeList()), displayableName, description);
 
         CT_OutModelCopyActionAddModelItemInGroup action(autoOutParentGroupModelName,
                                                         itemModel,
@@ -163,10 +169,12 @@ bool CT_OutResultModelGroupToCopyPossibilities::addItemModel(const CT_AutoRename
 
         if(!action.execute(step, poss))
         {
-            delete itemModel;
+            delete item;
             return false;
         }
     }
+
+    delete item;
 
     return true;
 }

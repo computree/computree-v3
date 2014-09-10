@@ -23,6 +23,7 @@ private Q_SLOTS:
     void testCaseTreeSearchSimple1();
     void testCaseTreeSearchSimple2();
     void testCaseTreeSearchSimple3();
+    void testCaseTreeSearchSimple4();
     void testCaseTreeSearchSimple1Copy();
     void testCaseTreeSearchSimple1ItemAttribute();
     void testCaseTreeSearchSimple2ItemAttribute();

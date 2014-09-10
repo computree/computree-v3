@@ -10,6 +10,7 @@
 #include "ct_result/ct_resultgroup.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_MutableGroupIterator::CT_MutableGroupIterator(CT_AbstractItemGroup *parent)
 {
@@ -24,36 +25,35 @@ CT_MutableGroupIterator::CT_MutableGroupIterator(CT_AbstractItemGroup *parent)
 
 CT_MutableGroupIterator::CT_MutableGroupIterator(CT_AbstractItemGroup *parent, const CT_InAbstractGroupModel *inModel)
 {
-    QList<CT_InStdModelPossibility*> list = inModel->getPossibilitiesSavedSelected();
-
-    QListIterator<CT_InStdModelPossibility*> it(list);
-
-    QHash<QString, CT_Container*> gs = parent->groups();
-
-    while(it.hasNext())
-    {
-        CT_Container *container = NULL;
-        QString modelName = it.next()->outModel()->uniqueName();
-
-        container = gs.value(modelName, NULL);
-
-        if(container != NULL)
-            m_iterators.append(new CT_ContainerIterator(container));
-    }
-
-    m_hasNextCalled = false;
+    initIterator(parent, inModel);
 }
 
 CT_MutableGroupIterator::CT_MutableGroupIterator(CT_AbstractItemGroup *parent, const CT_OutAbstractGroupModel *outModel)
 {
-    QHash<QString, CT_Container*> gs = parent->groups();
+    initIterator(parent, outModel);
+}
 
-    CT_Container *container = gs.value(outModel->uniqueName(), NULL);
+CT_MutableGroupIterator::CT_MutableGroupIterator(const CT_AbstractItemGroup *parent,
+                                                 const CT_VirtualAbstractStep *step,
+                                                 const QString &modelName)
+{
+    CT_ResultGroup *result = (CT_ResultGroup*)parent->result();
 
-    if(container != NULL)
-        m_iterators.append(new CT_ContainerIterator(container));
+    Q_ASSERT_X(result != NULL, "CT_MutableGroupIterator constructor", "You created a CT_GroupIterator with a modelName but the result of the group is null");
 
-    m_hasNextCalled = false;
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result, step);
+
+    Q_ASSERT_X(model != NULL, "CT_MutableGroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not found");
+
+    CT_InAbstractGroupModel *inModel = dynamic_cast<CT_InAbstractGroupModel*>(model);
+    CT_OutAbstractGroupModel *outModel = NULL;
+
+    if(inModel != NULL)
+        initIterator(parent, inModel);
+    else if((outModel = dynamic_cast<CT_OutAbstractGroupModel*>(model)) != NULL)
+        initIterator(parent, outModel);
+    else
+        qFatal("You created a CT_MutableGroupIterator with a modelName but the model was not a group model");
 }
 
 CT_MutableGroupIterator::~CT_MutableGroupIterator()
@@ -132,4 +132,36 @@ void CT_MutableGroupIterator::remove()
     CT_AbstractItemGroup *group = current();
 
     ((CT_ResultGroup*)group->result())->removeGroupSomethingInStructure(group);
+}
+
+void CT_MutableGroupIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_InAbstractGroupModel *inModel)
+{
+    QList<CT_InStdModelPossibility*> list = inModel->getPossibilitiesSavedSelected();
+
+    QListIterator<CT_InStdModelPossibility*> it(list);
+
+    QHash<QString, CT_Container*> gs = parent->groups();
+
+    while(it.hasNext())
+    {
+        CT_Container *container = NULL;
+        QString modelName = it.next()->outModel()->uniqueName();
+
+        container = gs.value(modelName, NULL);
+
+        if(container != NULL)
+            m_iterators.append(new CT_ContainerIterator(container));
+    }
+
+    m_hasNextCalled = false;
+}
+
+void CT_MutableGroupIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_OutAbstractGroupModel *outModel)
+{
+    CT_Container *container = parent->groups().value(outModel->uniqueName(), NULL);
+
+    if(container != NULL)
+        m_iterators.append(new CT_ContainerIterator(container));
+
+    m_hasNextCalled = false;
 }

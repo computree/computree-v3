@@ -2,6 +2,9 @@
 
 #include "ct_abstractresult.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 CT_OutResultManager::CT_OutResultManager(CT_OutResultModelManager &resultModelManager,
                                          CT_OutTurnManager &turnManager)
 {
@@ -134,6 +137,8 @@ void CT_OutResultManager::completesResultsOfCurrentTurn()
     while(it.hasNext())
     {
         CT_AbstractResult *res = it.next();
+
+        PS_MODELS->removeCacheForResult(res);
 
         if(res->isClearedFromMemory())
         {

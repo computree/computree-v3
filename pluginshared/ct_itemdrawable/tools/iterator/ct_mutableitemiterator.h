@@ -16,6 +16,8 @@ class CT_ContainerIterator;
 
 class CT_GroupItemDrawableContainer;
 
+class CT_VirtualAbstractStep;
+
 /**
  * @brief Class tools to iterate over items (that can be removed) in a group
  *
@@ -43,6 +45,14 @@ public:
      * @param inModel : the OUT itemdrawable model that help to search item to iterate
      */
     CT_MutableItemIterator(CT_AbstractItemGroup *parent, const CT_OutAbstractSingularItemModel *outModel);
+
+    /**
+     * @brief Iterate by a IN or OUT group model name.
+     * @param parent : the group in which you want to iterate
+     * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     * @param modelName : the IN or OUT group model name to search (typically a DEF_...)
+     */
+    CT_MutableItemIterator(const CT_AbstractItemGroup *parent, const CT_VirtualAbstractStep *step, const QString &modelName);
 
     ~CT_MutableItemIterator();
 
@@ -79,6 +89,9 @@ private:
     QHash<QString, CT_GroupItemDrawableContainer*>      m_items;
 
     mutable bool                                        m_hasNextCalled;
+
+    void initIterator(const CT_AbstractItemGroup *parent, const CT_InAbstractSingularItemModel *inModel);
+    void initIterator(const CT_AbstractItemGroup *parent, const CT_OutAbstractSingularItemModel *outModel);
 };
 
 #endif // CT_MUTABLEITEMITERATOR_H

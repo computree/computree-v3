@@ -12,6 +12,8 @@ class CT_OutAbstractGroupModel;
 
 class CT_ContainerIterator;
 
+class CT_VirtualAbstractStep;
+
 /**
  * @brief Class tools to iterate over groups (that can be removed) in a group
  */
@@ -37,6 +39,14 @@ public:
      * @param inModel : the OUT group model that help to search group to iterate
      */
     CT_MutableGroupIterator(CT_AbstractItemGroup *parent, const CT_OutAbstractGroupModel *outModel);
+
+    /**
+     * @brief Iterate by a IN or OUT group model name.
+     * @param parent : the group in which you want to iterate
+     * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     * @param modelName : the IN or OUT group model name to search (typically a DEF_...)
+     */
+    CT_MutableGroupIterator(const CT_AbstractItemGroup *parent, const CT_VirtualAbstractStep *step, const QString &modelName);
 
     ~CT_MutableGroupIterator();
 
@@ -67,6 +77,9 @@ public:
 private:
     mutable QList<CT_ContainerIterator*>    m_iterators;
     mutable bool                            m_hasNextCalled;
+
+    void initIterator(const CT_AbstractItemGroup *parent, const CT_InAbstractGroupModel *inModel);
+    void initIterator(const CT_AbstractItemGroup *parent, const CT_OutAbstractGroupModel *outModel);
 };
 
 #endif // CT_MUTABLEGROUPITERATOR_H

@@ -103,8 +103,6 @@ void PB_StepLoadObjFile::compute()
 {
     CT_ResultGroup *out_res = getOutResultList().at(0);
 
-    CT_OutAbstractSingularItemModel *meshModel = getOutSingularItemModelForCreation(out_res, DEF_SearchMesh);
-
     CT_Mesh *mesh = new CT_Mesh();
 
     setErrorCode(-1);
@@ -270,6 +268,6 @@ void PB_StepLoadObjFile::compute()
     }
 
     CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_SearchGroup, out_res);
-    group->addItemDrawable(new CT_MeshModel(meshModel, out_res, mesh));
+    group->addItemDrawable(new CT_MeshModel(DEF_SearchMesh, out_res, mesh));
     out_res->addGroup(group);
 }

@@ -16,6 +16,8 @@
 //Inclusion of actions
 #include "actions/pb_actionselectitemdrawablegv.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <QMessageBox>
 
 // Alias for indexing in models
@@ -86,8 +88,7 @@ void PB_StepUserItemCopy::compute()
     m_status = 0;
 
     CT_ResultGroup *inRes = getInputResults().first();
-    CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)getInModelForResearch(inRes, DEF_groupIn_G);
-    CT_InAbstractSingularItemModel* itemInModel_I = (CT_InAbstractSingularItemModel*)getInModelForResearch(inRes, DEF_itemIn_I);
+    CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)PS_MODELS->searchModel(DEF_groupIn_G, inRes, this);
 
     m_itemDrawableToAdd.clear();
 
@@ -100,7 +101,7 @@ void PB_StepUserItemCopy::compute()
           && !isStopped())
     {
         const CT_AbstractItemGroup *group = itR.next();
-        CT_Cylinder *itemOut_I = (CT_Cylinder*) group->firstItem(itemInModel_I);
+        CT_Cylinder *itemOut_I = (CT_Cylinder*) group->firstItemByINModelName(this, DEF_itemIn_I);
 
         if(itemOut_I != NULL)
             m_itemDrawableToAdd.insert(itemOut_I, (CT_AbstractItemGroup*)group);
@@ -114,8 +115,7 @@ void PB_StepUserItemCopy::compute()
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup *resultOut_R = outResultList.first();
-    CT_OutAbstractGroupModel* groupOutModel_G = getOutGroupModelForCreation(resultOut_R, DEF_groupOut_G);
-    CT_OutAbstractSingularItemModel* itemOutModel_I = getOutSingularItemModelForCreation(resultOut_R, DEF_itemOut_I);
+    CT_OutAbstractSingularItemModel* itemOutModel_I = (CT_OutAbstractSingularItemModel*)PS_MODELS->searchModelForCreation(DEF_itemOut_I, resultOut_R);
 
     QListIterator<CT_AbstractItemDrawable*> it(m_itemDrawableSelected);
     while (it.hasNext())
@@ -125,7 +125,7 @@ void PB_StepUserItemCopy::compute()
         if (cylinder != NULL)
         {
             CT_Cylinder *cylinderCopy = (CT_Cylinder*) cylinder->copy(itemOutModel_I, resultOut_R, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableCompletely);
-            CT_StandardItemGroup *group = new CT_StandardItemGroup(groupOutModel_G, resultOut_R);
+            CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_groupOut_G, resultOut_R);
             group->addItemDrawable(cylinderCopy);
             resultOut_R->addGroup(group);
         }

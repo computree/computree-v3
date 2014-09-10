@@ -3,6 +3,7 @@
 #include "ct_attributes/tools/ct_defaultitemattributemanager.h"
 #include "ct_categories/tools/ct_categorymanager.h"
 #include "ct_categories/ct_stdcategory.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_Context* CT_Context::UNIQUE_INSTANCE = NULL;
 
@@ -44,6 +45,7 @@ CT_Context::CT_Context()
 
     m_tmpLog = new CT_TemporaryLog();
     m_diam = new CT_DefaultItemAttributeManager();
+    m_modelHelper = new CT_ModelSearchHelper();
 
     m_guiManager = NULL;
     m_coreInterface = NULL;
@@ -104,6 +106,11 @@ CT_CategoryManager* CT_Context::categoryManager() const
 CT_DefaultItemAttributeManager* CT_Context::defaultItemAttributesManager() const
 {
     return m_diam;
+}
+
+CT_ModelSearchHelper* CT_Context::modelSearchHelper() const
+{
+    return m_modelHelper;
 }
 
 void CT_Context::setCoreInterface(const CoreInterface *core)

@@ -22,27 +22,67 @@ CT_OutAbstractModel::~CT_OutAbstractModel()
 
 CT_OutAbstractModel* CT_OutAbstractModel::originalModel() const
 {
-    return m_originalModel;
+    if(m_originalModel != NULL)
+        return m_originalModel->originalModel();
+
+    return const_cast<CT_OutAbstractModel*>(this);
+}
+
+CT_OutAbstractModel* CT_OutAbstractModel::currentOriginalModel() const
+{
+    if(m_originalModel != NULL)
+        return m_originalModel;
+
+    return const_cast<CT_OutAbstractModel*>(this);
+}
+
+CT_OutAbstractModel* CT_OutAbstractModel::lastOriginalModelWithAResult() const
+{
+    CT_OutAbstractModel *lastModel = NULL;
+
+    CT_OutAbstractModel *oModel = const_cast<CT_OutAbstractModel*>(this);
+
+    while(oModel != NULL)
+    {
+        if(oModel->m_realResult != NULL)
+            lastModel = oModel;
+
+        oModel = oModel->m_originalModel;
+    }
+
+    return lastModel;
 }
 
 bool CT_OutAbstractModel::isVisible() const
 {
-    QMutexLocker locker(m_originalModelMutex);
+    bool val = !m_visibleInDocuments.isEmpty();
 
-    if(originalModel() != NULL)
-        return originalModel()->isVisible();
+    if(!val)
+    {
+        QMutexLocker locker(m_originalModelMutex);
 
-    return !m_visibleInDocuments.isEmpty();
+        CT_OutAbstractModel* oModel = lastOriginalModelWithAResult();
+
+        if(oModel != this)
+            val = oModel->isVisible();
+    }
+
+    return val;
 }
 
 bool CT_OutAbstractModel::isVisibleInDocument(const DocumentInterface *doc) const
 {
     bool val = (m_visibleInDocuments.value((DocumentInterface*)doc, 0) > 0);
 
-    QMutexLocker locker(m_originalModelMutex);
+    if(!val)
+    {
+        QMutexLocker locker(m_originalModelMutex);
 
-    if(!val && (originalModel() != NULL))
-        return originalModel()->isVisibleInDocument(doc);
+        CT_OutAbstractModel* oModel = lastOriginalModelWithAResult();
+
+        if(oModel != this)
+            val = oModel->isVisibleInDocument(doc);
+    }
 
     return val;
 }
@@ -54,16 +94,33 @@ CT_AbstractItem* CT_OutAbstractModel::item() const
 
 CT_AbstractResult* CT_OutAbstractModel::result() const
 {
-    if((m_realResult == NULL)
-            && (originalModel() != NULL))
-        return originalModel()->result();
+    CT_AbstractResult *lastResult = m_realResult;
 
-    return m_realResult;
+    if(m_realResult == NULL)
+    {
+        CT_OutAbstractModel *oModel = m_originalModel;
+
+        while(oModel != NULL)
+        {
+            if(oModel->m_realResult != NULL)
+                lastResult = oModel->m_realResult;
+
+            oModel = oModel->m_originalModel;
+        }
+    }
+
+    return lastResult;
 }
 
 void CT_OutAbstractModel::setResult(const CT_AbstractResult *res)
 {
     m_realResult = (CT_AbstractResult*)res;
+
+    QList<CT_AbstractModel*> l = childrens();
+    QListIterator<CT_AbstractModel*> it(l);
+
+    while(it.hasNext())
+        ((CT_OutAbstractModel*)it.next())->setResult(res);
 }
 
 void CT_OutAbstractModel::setOriginalModel(const CT_OutAbstractModel *model)

@@ -10,6 +10,7 @@ class CT_ResultItemIterator;
 class CT_ResultGroupIterator;
 class CT_AbstractModel;
 class CT_AbstractItem;
+class CT_VirtualAbstractStep;
 
 /**
  * @brief Class tools to iterate over element in result
@@ -36,6 +37,18 @@ public:
      */
     CT_ResultIterator(const CT_ResultGroup *result,
                       const CT_AbstractModel *model);
+
+    /**
+     * @brief Create a iterator for the result passed in parameter. It iterate over childrens (recursively) defined by the model passed
+     *        in parameter.
+     * @param result : the result to iterate
+     * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     * @param modelUniqueName : the unique name of the model searched
+     */
+    CT_ResultIterator(const CT_ResultGroup *result,
+                      const CT_VirtualAbstractStep *step,
+                      const QString &modelUniqueName);
+
     ~CT_ResultIterator();
 
     /**
@@ -63,6 +76,8 @@ private:
     mutable CT_ResultGroupIterator              *m_groupIT;
     mutable QList<CT_AbstractItem*>             m_collection;
     mutable int                                 m_size;
+
+    void initModel(const CT_AbstractModel *model);
 
     template<typename T>
     void initGroupT(const CT_AbstractModel *model);

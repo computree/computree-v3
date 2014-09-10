@@ -255,6 +255,7 @@ protected:
     friend class CT_ResultGroupIterator;
     friend class CT_GroupIterator;
     friend class CT_ItemIterator;
+    friend class CT_ModelSearchHelper;
 
     CT_StepInitializeData       *_data;             /*!< les données d'initialisation */
 
@@ -365,7 +366,7 @@ protected:
      * @param uniqueName : the unique name of the model you search. Typically a DEF_.... or result of the method "completeName()"
      *        of a CT_AutoRenameModels object.
      * @return NULL if the model was not found.
-     * @deprecated use the method "getInModelForResearch(QString, QString)"
+     * @deprecated use the method "PS_MODELS->searchModel(....)"
      */
     Q_DECL_DEPRECATED CT_InAbstractModel* getInModelForResearch(const CT_OutAbstractResultModel *inResultModel, const QString &uniqueName) const;
 
@@ -380,7 +381,7 @@ protected:
      * @param uniqueName : the unique name of the model you search. Typically a DEF_.... or result of the method "completeName()"
      *                     of a CT_AutoRenameModels object.
      * @return NULL if the model was not found.
-     * @deprecated use the method "getInModelForResearch(QString, QString)"
+     * @deprecated use the method "PS_MODELS->searchModel(....)"
      */
     Q_DECL_DEPRECATED CT_InAbstractModel* getInModelForResearch(const CT_ResultGroup *inResult, const QString &uniqueName) const;
 
@@ -412,8 +413,9 @@ protected:
      * @param uniqueName : the unique name of the model you search. Typically a DEF_.... or result of the method "completeName()"
      *                     of a CT_AutoRenameModels object.
      * @return NULL if the model was not found.
+     * @deprecated use the method "PS_MODELS->searchModel(....)"
      */
-    CT_InAbstractModel* getInModelForResearchIfUseCopy(const QString &inCopyResultUniqueName,
+    Q_DECL_DEPRECATED CT_InAbstractModel* getInModelForResearchIfUseCopy(const QString &inCopyResultUniqueName,
                                                        const QString &uniqueName,
                                                        int resultIndex = 0) const;
 

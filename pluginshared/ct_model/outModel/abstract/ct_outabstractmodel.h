@@ -26,9 +26,21 @@ public:
     ~CT_OutAbstractModel();
 
     /**
-     * @brief Returns the original model if this model is a copy
+     * @brief Returns the original model (recursively) if this model is a copy otherwise return 'this'
      */
     CT_OutAbstractModel* originalModel() const;
+
+    /**
+     * @brief Returns the original model (not recursively) if this model is a copy otherwise return 'this'
+     */
+    CT_OutAbstractModel* currentOriginalModel() const;
+
+    /**
+     * @brief Returns the original model (recursively) with a result not null. If this model
+     *        is not a copy and had a result the method return 'this'. If this model
+     *        is not a copy and don't had a result the method return NULL.
+     */
+    CT_OutAbstractModel* lastOriginalModelWithAResult() const;
 
     /**
      * @brief Returns true if at least one element that use this model is visible in a document

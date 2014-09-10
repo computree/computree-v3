@@ -20,6 +20,8 @@
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <QMessageBox>
 
 // Alias for indexing in models
@@ -95,17 +97,13 @@ void PB_StepUserItemSelection::compute()
 
     // ----------------------------------------------------------------------------
     // Get the group model corresponding to DEF_groupIn_G
-    CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)getInModelForResearchIfUseCopy(DEF_resultIn_R, DEF_groupIn_G);
-    // Get the group model corresponding to DEF_itemIn_I
-    CT_InAbstractSingularItemModel* itemInModel_I = (CT_InAbstractSingularItemModel*)getInModelForResearchIfUseCopy(DEF_resultIn_R, DEF_itemIn_I);
+    QList<CT_ResultGroup*> outResultList = getOutResultList();
+    CT_ResultGroup *resultOut_R = outResultList.first();
+    CT_InAbstractGroupModel* groupInModel_G = (CT_InAbstractGroupModel*)PS_MODELS->searchModel(DEF_groupIn_G, resultOut_R, this);
 
 
     // ---------------------------
     // Gets OUT results and models
-    QList<CT_ResultGroup*> outResultList = getOutResultList();
-
-    CT_ResultGroup *resultOut_R = outResultList.first();
-
     m_itemDrawableToAdd.clear();
 
     QList<CT_AbstractItemGroup*> groupsToRemove;
@@ -116,7 +114,7 @@ void PB_StepUserItemSelection::compute()
     while(itG.hasNext() && !isStopped())
     {
         const CT_AbstractItemGroup *groupOut_G = itG.next();
-        CT_AbstractSingularItemDrawable *itemOut_I = groupOut_G->firstItem(itemInModel_I);
+        CT_AbstractSingularItemDrawable *itemOut_I = groupOut_G->firstItemByINModelName(this, DEF_itemIn_I);
 
         if (itemOut_I != NULL)
             m_itemDrawableToAdd.insert(itemOut_I, (CT_AbstractItemGroup*)groupOut_G);

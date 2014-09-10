@@ -16,6 +16,7 @@
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
@@ -122,14 +123,11 @@ void PB_StepLoadMultiXYBFiles::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
 
     CT_ResultGroup* resultOut_individualScenes = outResultList.at(0);
-    CT_OutStdGroupModel* groupOutModel_individualScenes = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut_individualScenes, DEF_groupOut_g);
-    CT_OutStdSingularItemModel* itemOutModel_individualScene = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut_individualScenes, DEF_itemOut_individualScene);
-    CT_OutStdSingularItemModel* itemOutModel_individualIntensity = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut_individualScenes, DEF_itemOut_individualIntensity);
-    CT_OutStdSingularItemModel* itemOutModel_scanner = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut_individualScenes, DEF_itemOut_scanner);
+    CT_OutStdSingularItemModel* itemOutModel_individualScene = (CT_OutStdSingularItemModel*)PS_MODELS->searchModelForCreation(DEF_itemOut_individualScene, resultOut_individualScenes);
+    CT_OutStdSingularItemModel* itemOutModel_individualIntensity = (CT_OutStdSingularItemModel*)PS_MODELS->searchModelForCreation(DEF_itemOut_individualIntensity, resultOut_individualScenes);
+    CT_OutStdSingularItemModel* itemOutModel_scanner = (CT_OutStdSingularItemModel*)PS_MODELS->searchModelForCreation(DEF_itemOut_scanner, resultOut_individualScenes);
 
     CT_ResultGroup* resultOut_mergedScene = outResultList.at(1);
-    CT_OutStdGroupModel* groupOutModel_mergedScene = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut_mergedScene, DEF_groupOut_gm);
-    CT_OutStdSingularItemModel* itemOutModel_mergedScene = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut_mergedScene, DEF_itemOut_mergedScene);
 
     if (!_radiusFiltered) {_radius = 0;}
 
@@ -165,7 +163,7 @@ void PB_StepLoadMultiXYBFiles::compute()
                 CT_Scene* scene = (CT_Scene*)reader.takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_sceneOut, resultOut_individualScenes, itemOutModel_individualScene);
                 individualScenes.append(scene->getPointCloudIndexRegistered());
 
-                CT_StandardItemGroup* groupOut_individualScene = new CT_StandardItemGroup(groupOutModel_individualScenes, resultOut_individualScenes);
+                CT_StandardItemGroup* groupOut_individualScene = new CT_StandardItemGroup(DEF_groupOut_g, resultOut_individualScenes);
                 groupOut_individualScene->addItemDrawable(scene);
 
                 CT_PointsAttributesScalarTemplated<quint16>* intensity = (CT_PointsAttributesScalarTemplated<quint16>*)reader.takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_intensityOut, resultOut_individualScenes, itemOutModel_individualIntensity);
@@ -194,9 +192,9 @@ void PB_StepLoadMultiXYBFiles::compute()
     }
 
 
-    CT_StandardItemGroup* groupOut_mergedScene = new CT_StandardItemGroup(groupOutModel_mergedScene, resultOut_mergedScene);
+    CT_StandardItemGroup* groupOut_mergedScene = new CT_StandardItemGroup(DEF_groupOut_gm, resultOut_mergedScene);
 
-    CT_Scene *mergedScene = new CT_Scene(itemOutModel_mergedScene, resultOut_mergedScene);
+    CT_Scene *mergedScene = new CT_Scene(DEF_itemOut_mergedScene, resultOut_mergedScene);
     mergedScene->setBoundingBox(xmin,ymin,zmin, xmax,ymax,zmax);
     mergedScene->setPointCloudIndexRegistered(PS_REPOSITORY->mergePointCloudContiguous(individualScenes));
 

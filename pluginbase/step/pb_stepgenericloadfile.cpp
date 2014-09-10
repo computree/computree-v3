@@ -6,6 +6,7 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_itemdrawable/ct_standarditemgroup.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 #define DEF_SearchResult                "PB_SGLF_result"
 #define DEF_SearchGroup                 "PB_SGLF_group"
@@ -101,8 +102,7 @@ bool PB_StepGenericLoadFile::protectedInitAfterConfiguration()
 void PB_StepGenericLoadFile::createInResultModelListProtected()
 {
     // No in result is needed
-    CT_InResultModelNotNeedInputResult *resultModel = new CT_InResultModelNotNeedInputResult();
-    addInResultModel(resultModel);
+    setNotNeedInputResult();
 }
 
 // Creation and affiliation of OUT models
@@ -134,14 +134,14 @@ void PB_StepGenericLoadFile::compute()
     if(m_reader->readFile())
     {
         CT_ResultGroup *out_res = getOutResultList().first();
-        CT_StandardItemGroup *group = new CT_StandardItemGroup(getOutGroupModelForCreation(out_res, DEF_SearchGroup), out_res);
+        CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_SearchGroup, out_res);
 
         QListIterator<CT_OutStdSingularItemModel*> it(m_reader->outItemDrawableModels());
 
         while(it.hasNext())
         {
             CT_OutStdSingularItemModel *model = it.next();
-            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)getOutModelForCreation(out_res, model->uniqueName());
+            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(model->uniqueName(), out_res);
 
             QList<CT_AbstractSingularItemDrawable*> items = m_reader->takeItemDrawableOfModel(model->uniqueName(), out_res, modelCreation);
             QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
@@ -155,7 +155,7 @@ void PB_StepGenericLoadFile::compute()
         while(itG.hasNext())
         {
             CT_OutStdGroupModel *model = itG.next();
-            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)getOutModelForCreation(out_res, model->uniqueName());
+            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(model->uniqueName(), out_res);
 
             QList<CT_AbstractItemGroup*> groups = m_reader->takeGroupOfModel(model->uniqueName(), out_res, modelCreation);
             QListIterator<CT_AbstractItemGroup*> itI(groups);

@@ -369,7 +369,7 @@ void GItemDrawableModelManager::itemChanged(QStandardItem *item)
     if((mItem != NULL)
             && (_result != NULL))
     {
-        CT_OutAbstractItemModel *mo = dynamic_cast<CT_OutAbstractItemModel*>(mItem->getModel());
+        CT_OutAbstractItemModel *mo = (dynamic_cast<CT_OutAbstractItemModel*>(mItem->getModel()));
         DM_DocumentView *view = (DM_DocumentView*)mItem->data().value<void*>();
 
         if((mo != NULL)

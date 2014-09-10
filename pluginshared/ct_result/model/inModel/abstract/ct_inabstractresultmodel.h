@@ -46,6 +46,12 @@ public:
     int maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() const;
 
     /**
+     * @brief Verify if all models (only obligatory, recursively) have at least one possibility selected.
+     * @return true is the test pass.
+     */
+    virtual bool recursiveIsAtLeastOnePossibilitySelectedIfItDoes() const;
+
+    /**
      * @brief If you want to select possibilities and know if you select them if the model can pass the "default select test" you
      *        can call this method and pass the list of index of possibilities you want to select. By default returns false
      *          - if the number of possibilities passed in parameter is greather than the number of possibilities of this model

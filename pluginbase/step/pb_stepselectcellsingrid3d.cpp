@@ -24,6 +24,8 @@
 #include "actions/pb_actionselectcellsingrid3d.h"
 #include "ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <QMessageBox>
 
 // Alias for indexing in models
@@ -126,22 +128,21 @@ void PB_StepSelectCellsInGrid3D::compute()
     m_status = 0;
 
     CT_ResultGroup *resultIn = getInputResults().first();
-    CT_InAbstractGroupModel* groupInModel = (CT_InAbstractGroupModel*)getInModelForResearch(resultIn, DEF_groupIn);
-    CT_InAbstractSingularItemModel* baseGridModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultIn, DEF_itemBaseGrid);
 
     CT_ResultGroup *resultOut = getOutResultList().first();
-    CT_OutStdGroupModel* outGroupModel = (CT_OutStdGroupModel*)getOutModelForCreation(resultOut, DEF_outGroup);
-    CT_OutStdSingularItemModel* boolGridModel = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut, DEF_outBoolGrid);
-    CT_OutStdSingularItemModel* filteredGridModel = (CT_OutStdSingularItemModel*)getOutModelForCreation(resultOut, DEF_outFilteredGrid);
+    CT_OutStdSingularItemModel* filteredGridModel = (CT_OutStdSingularItemModel*)PS_MODELS->searchModelForCreation(DEF_outFilteredGrid, resultOut);
 
     // create a list of itemdrawable to add in the document
-    CT_AbstractItemGroup *groupIn = resultIn->beginGroup(groupInModel);
-    if (groupIn!=NULL)
+    CT_ResultGroupIterator itG(resultIn, this, DEF_groupIn);
+
+    if (itG.hasNext())
     {
-        CT_AbstractGrid3D *baseGrid = (CT_AbstractGrid3D*) groupIn->findFirstItem(baseGridModel);
+        const CT_AbstractItemGroup *groupIn = itG.next();
+
+        CT_AbstractGrid3D *baseGrid = (CT_AbstractGrid3D*) groupIn->firstItemByINModelName(this, DEF_itemBaseGrid);
         if (baseGrid!=NULL)
         {
-            _boolGrid = new CT_Grid3D<bool>(boolGridModel, resultOut,
+            _boolGrid = new CT_Grid3D<bool>(DEF_outBoolGrid, resultOut,
                                             baseGrid->minX(), baseGrid->minY(), baseGrid->minZ(),
                                             baseGrid->xdim(), baseGrid->ydim(), baseGrid->zdim(),
                                             baseGrid->resolution(), false, false);
@@ -164,7 +165,7 @@ void PB_StepSelectCellsInGrid3D::compute()
                 }
             }
 
-            CT_StandardItemGroup* outGroup = new CT_StandardItemGroup(outGroupModel, resultOut);
+            CT_StandardItemGroup* outGroup = new CT_StandardItemGroup(DEF_outGroup, resultOut);
             outGroup->addItemDrawable(_boolGrid);
             outGroup->addItemDrawable(filteredGrid);
             resultOut->addGroup(outGroup);

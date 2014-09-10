@@ -16,7 +16,7 @@ CT_OutAbstractSingularItemModel::~CT_OutAbstractSingularItemModel()
 
 CT_AbstractSingularItemDrawable* CT_OutAbstractSingularItemModel::singularItem() const
 {
-    return (CT_AbstractSingularItemDrawable*)item();
+    return dynamic_cast<CT_AbstractSingularItemDrawable*>(item());
 }
 
 CT_AbstractItemDrawable* CT_OutAbstractSingularItemModel::itemDrawable() const

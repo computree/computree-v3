@@ -3,6 +3,7 @@
 #include "ct_item/abstract/ct_abstractitem.h"
 #include "ct_result/tools/iterator/ct_resultgroupiterator.h"
 #include "ct_result/tools/iterator/ct_resultitemiterator.h"
+#include "ct_result/ct_resultgroup.h"
 
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 #include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
@@ -11,6 +12,8 @@
 #include "ct_itemdrawable/model/inModel/abstract/ct_inabstractsingularitemmodel.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
+
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
                                      bool recursiveIteration)
@@ -37,37 +40,22 @@ CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
     m_groupIT = NULL;
     m_model = (CT_AbstractModel*)model;
 
-    const CT_OutAbstractSingularItemModel *outItemModel = dynamic_cast<const CT_OutAbstractSingularItemModel*>(model);
+    initModel(m_model);
+}
 
-    if(outItemModel != NULL)
-    {
-        this->initItemT<CT_OutAbstractSingularItemModel>(model);
-    }
-    else
-    {
-        const CT_InAbstractSingularItemModel *inItemModel = dynamic_cast<const CT_InAbstractSingularItemModel*>(model);
+CT_ResultIterator::CT_ResultIterator(const CT_ResultGroup *result,
+                                     const CT_VirtualAbstractStep *step,
+                                     const QString &modelUniqueName)
+{
+    m_size = -1;
+    m_result = (CT_ResultGroup*)result;
+    m_itemIT = NULL;
+    m_groupIT = NULL;
+    m_model = PS_MODELS->searchModel(modelUniqueName, result, step);
 
-        if(inItemModel != NULL)
-        {
-            this->initItemT<CT_InAbstractSingularItemModel>(model);
-        }
-        else
-        {
-            const CT_OutAbstractGroupModel *outGModel = dynamic_cast<const CT_OutAbstractGroupModel*>(model);
+    Q_ASSERT_X(m_model != NULL, "CT_ResultIterator constructor", "You created a CT_ResultIterator with a modelName but the model was not found");
 
-            if(outGModel != NULL)
-            {
-                this->initGroupT<CT_OutAbstractGroupModel>(model);
-            }
-            else
-            {
-                const CT_InAbstractGroupModel *inGModel = dynamic_cast<const CT_InAbstractGroupModel*>(model);
-
-                if(inGModel != NULL)
-                    this->initGroupT<CT_InAbstractGroupModel>(model);
-            }
-        }
-    }
+    initModel(m_model);
 }
 
 CT_ResultIterator::~CT_ResultIterator()
@@ -121,6 +109,41 @@ const CT_AbstractItem* CT_ResultIterator::next()
         return m_groupIT->next();
 
     return m_collection.takeFirst();
+}
+
+void CT_ResultIterator::initModel(const CT_AbstractModel *model)
+{
+    const CT_OutAbstractSingularItemModel *outItemModel = dynamic_cast<const CT_OutAbstractSingularItemModel*>(model);
+
+    if(outItemModel != NULL)
+    {
+        this->initItemT<CT_OutAbstractSingularItemModel>(model);
+    }
+    else
+    {
+        const CT_InAbstractSingularItemModel *inItemModel = dynamic_cast<const CT_InAbstractSingularItemModel*>(model);
+
+        if(inItemModel != NULL)
+        {
+            this->initItemT<CT_InAbstractSingularItemModel>(model);
+        }
+        else
+        {
+            const CT_OutAbstractGroupModel *outGModel = dynamic_cast<const CT_OutAbstractGroupModel*>(model);
+
+            if(outGModel != NULL)
+            {
+                this->initGroupT<CT_OutAbstractGroupModel>(model);
+            }
+            else
+            {
+                const CT_InAbstractGroupModel *inGModel = dynamic_cast<const CT_InAbstractGroupModel*>(model);
+
+                if(inGModel != NULL)
+                    this->initGroupT<CT_InAbstractGroupModel>(model);
+            }
+        }
+    }
 }
 
 template<typename T>

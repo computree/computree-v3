@@ -1,6 +1,7 @@
 #include "tst_modeltest.h"
 #include "cloudtest.h"
 #include "itemdrawabletest.h"
+#include "steptest.h"
 
 int main( int argc, char *argv[])
 {
@@ -11,7 +12,10 @@ int main( int argc, char *argv[])
     ItemDrawableTest idt ;
     QTest::qExec (&idt, argc, argv );
 
-    CT_Context::deleteStaticInstance();
+    QApplication a(argc, argv);
+
+    StepTest st ;
+    QTest::qExec (&st, argc, argv );
 
     return 0;
 }

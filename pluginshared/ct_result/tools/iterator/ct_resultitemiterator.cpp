@@ -12,6 +12,7 @@
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_ResultItemIterator::CT_ResultItemIterator(const CT_ResultGroup *result)
 {
@@ -66,54 +67,20 @@ CT_ResultItemIterator::CT_ResultItemIterator(const CT_ResultGroup *result,
                                              const CT_VirtualAbstractStep *step,
                                              const QString &modelName)
 {
-    if(result->parentStep() == step)
-    {
-        // check if the result is a copy
-        CT_OutResultModelGroupCopy *outCopyModel = dynamic_cast<CT_OutResultModelGroupCopy*>(result->model());
 
-        if(outCopyModel != NULL)
-        {
-            // search the IN result model that correspond to this out model copy
-            const CT_InResultModelGroupToCopy *inResultCopyModel = outCopyModel->inResultModelCopy();
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result, step);
 
-            // search a IN model
-            CT_InAbstractModel *model = step->getInModelForResearchIfUseCopy(inResultCopyModel->uniqueName(), modelName);
+    Q_ASSERT_X(model != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not found");
 
-            Q_ASSERT_X(model != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not found");
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
 
-            CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
-
-            Q_ASSERT_X(inModel != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not a item model");
-
-            initIterator(result, inModel);
-        }
-        else
-        {
-            // search a out model
-            CT_OutAbstractModel *model = step->getOutModelForCreation(result, modelName);
-
-            Q_ASSERT_X(model != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not found");
-
-            CT_OutAbstractSingularItemModel *outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model);
-
-            Q_ASSERT_X(outModel != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not a item model");
-
-            initIterator(result, outModel);
-        }
-    }
-    else
-    {
-        // search a in model
-        CT_InAbstractModel *model = step->getInModelForResearch(result, modelName);
-
-        Q_ASSERT_X(model != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not found");
-
-        CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
-
-        Q_ASSERT_X(inModel != NULL, "CT_ResultItemIterator constructor", "You created a CT_ResultItemIterator with a modelName but the model was not a item model");
-
+    if(inModel != NULL)
         initIterator(result, inModel);
-    }
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        initIterator(result, outModel);
+    else
+        qFatal("You created a CT_ResultItemIterator with a modelName but the model was not a singular item model");
 }
 
 CT_ResultItemIterator::~CT_ResultItemIterator()

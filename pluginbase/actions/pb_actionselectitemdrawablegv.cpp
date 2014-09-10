@@ -189,11 +189,15 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
 
 bool PB_ActionSelectItemDrawableGV::keyPressEvent(QKeyEvent *e)
 {
+    Q_UNUSED(e)
+
     return false;
 }
 
 bool PB_ActionSelectItemDrawableGV::keyReleaseEvent(QKeyEvent *e)
 {
+    Q_UNUSED(e)
+
     return false;
 }
 

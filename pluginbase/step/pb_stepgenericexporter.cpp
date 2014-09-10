@@ -17,6 +17,8 @@
 #include "ct_step/ct_stepinitializedata.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <QFileDialog>
 
 #define DEF_SearchInGroup           "g"
@@ -240,16 +242,15 @@ void PB_StepGenericExporter::compute()
         CT_ResultGroup *inRes = it.next();
 
         if(_exporter->exportOnlyGroup())
-            inItemModelToExport = getInModelForResearch(inRes->model(), DEF_SearchInGroup);
+            inItemModelToExport = (CT_InAbstractModel*)PS_MODELS->searchModel(DEF_SearchInGroup, inRes, this);
         else
-            inItemModelToExport = getInModelForResearch(inRes->model(), DEF_SearchInItemDrawable);
+            inItemModelToExport = (CT_InAbstractModel*)PS_MODELS->searchModel(DEF_SearchInItemDrawable, inRes, this);
 
         // on recherche tous les ItemDrawable à exporter
         CT_ResultIterator it(inRes, inItemModelToExport);
 
         while(it.hasNext())
             itemsToExport.append((CT_AbstractItemDrawable*)it.next());
-
     }
 
     // une fois la liste constituée

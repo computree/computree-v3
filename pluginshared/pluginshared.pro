@@ -332,7 +332,8 @@ SOURCES += \
     ct_result/tools/iterator/ct_resultiterator.cpp \
     ct_item/abstract/ct_abstractitem.cpp \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.cpp \
-    ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.cpp
+    ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.cpp \
+    ct_model/tools/ct_modelsearchhelper.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -713,7 +714,8 @@ HEADERS += interfaces.h \
     ct_result/tools/iterator/ct_resultiterator.h \
     ct_item/abstract/ct_abstractitem.h \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h \
-    ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h
+    ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h \
+    ct_model/tools/ct_modelsearchhelper.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step

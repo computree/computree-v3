@@ -16,6 +16,7 @@
 #include "ct_result/ct_resultgroup.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_GroupIterator::CT_GroupIterator(const CT_AbstractItemGroup *parent)
 {
@@ -44,55 +45,19 @@ CT_GroupIterator::CT_GroupIterator(const CT_AbstractItemGroup *parent, const CT_
 
     Q_ASSERT_X(result != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the result of the group is null");
 
-    // if the group passed in parameter is a group of a OUT result of the step
-    if(result->parentStep() == step)
-    {
-        // check if the result is a copy
-        CT_OutResultModelGroupCopy *outCopyModel = dynamic_cast<CT_OutResultModelGroupCopy*>(result->model());
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result, step);
 
-        if(outCopyModel != NULL)
-        {
-            // search the IN result model that correspond to this out model copy
-            const CT_InResultModelGroupToCopy *inResultCopyModel = outCopyModel->inResultModelCopy();
+    Q_ASSERT_X(model != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not found");
 
-            // search a IN model
-            CT_InAbstractModel *model = step->getInModelForResearchIfUseCopy(inResultCopyModel->uniqueName(), modelName);
+    CT_InAbstractGroupModel *inModel = dynamic_cast<CT_InAbstractGroupModel*>(model);
+    CT_OutAbstractGroupModel *outModel = NULL;
 
-            Q_ASSERT_X(model != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not found");
-
-            CT_InAbstractGroupModel *inModel = dynamic_cast<CT_InAbstractGroupModel*>(model);
-
-            Q_ASSERT_X(inModel != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not a group model");
-
-            initIterator(parent, inModel);
-        }
-        else
-        {
-            // search a out model
-            CT_OutAbstractModel *model = step->getOutModelForCreation(result, modelName);
-
-            Q_ASSERT_X(model != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not found");
-
-            CT_OutAbstractGroupModel *outModel = dynamic_cast<CT_OutAbstractGroupModel*>(model);
-
-            Q_ASSERT_X(outModel != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not a group model");
-
-            initIterator(parent, outModel);
-        }
-    }
-    else
-    {
-        // search a in model
-        CT_InAbstractModel *model = step->getInModelForResearch(result, modelName);
-
-        Q_ASSERT_X(model != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not found");
-
-        CT_InAbstractGroupModel *inModel = dynamic_cast<CT_InAbstractGroupModel*>(model);
-
-        Q_ASSERT_X(inModel != NULL, "CT_GroupIterator constructor", "You created a CT_GroupIterator with a modelName but the model was not a group model");
-
+    if(inModel != NULL)
         initIterator(parent, inModel);
-    }
+    else if((outModel = dynamic_cast<CT_OutAbstractGroupModel*>(model)) != NULL)
+        initIterator(parent, outModel);
+    else
+        qFatal("You created a CT_GroupIterator with a modelName but the model was not a group model");
 }
 
 CT_GroupIterator::~CT_GroupIterator()

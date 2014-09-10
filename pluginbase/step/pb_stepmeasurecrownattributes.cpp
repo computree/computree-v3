@@ -97,12 +97,9 @@ void PB_StepMeasureCrownAttributes::compute()
     m_status = 0;
 
     CT_ResultGroup *resultIn = getInputResults().first();
-    CT_InAbstractSingularItemModel* sceneModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultIn, DEF_itemScene);
 
     const QList<CT_ResultGroup*> &outResList = getOutResultList();
     CT_ResultGroup *outResult = outResList.at(0);
-    CT_OutStdGroupModel *outGroupModel = (CT_OutStdGroupModel*) getOutModelForCreation(outResult, DEF_SearchOutGroup);
-    CT_OutStdSingularItemModel *outGridModel = (CT_OutStdSingularItemModel*) getOutModelForCreation(outResult, DEF_SearchOutGrid);
 
     m_itemDrawableToAdd.clear();
 
@@ -114,7 +111,7 @@ void PB_StepMeasureCrownAttributes::compute()
     _ymax = -std::numeric_limits<float>::max();
     _zmax = -std::numeric_limits<float>::max();
 
-    CT_ResultItemIterator it(resultIn, sceneModel);
+    CT_ResultItemIterator it(resultIn, this, DEF_itemScene);
 
     // Parcours des groupes contenant les scènes à filtrer
     while(it.hasNext()
@@ -137,8 +134,8 @@ void PB_StepMeasureCrownAttributes::compute()
 
     if (!m_itemDrawableToAdd.isEmpty())
     {
-        CT_StandardItemGroup *group = new CT_StandardItemGroup(outGroupModel, outResult);
-        _grid = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(outGridModel, outResult, _xmin, _ymin, _xmax, _ymax, _res, _zmin, -1, 0);
+        CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_SearchOutGroup, outResult);
+        _grid = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(DEF_SearchOutGrid, outResult, _xmin, _ymin, _xmax, _ymax, _res, _zmin, -1, 0);
         group->addItemDrawable(_grid);
         outResult->addGroup(group);
 

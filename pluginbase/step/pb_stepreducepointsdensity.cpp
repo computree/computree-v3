@@ -43,6 +43,8 @@
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <math.h>
 #include <iostream>
 #include <QList>
@@ -112,13 +114,11 @@ void PB_StepReducePointsDensity::compute()
     // Result IN
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup *inResult = inResultList.first();
-    CT_InAbstractSingularItemModel *inSceneModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(inResult, DEF_SearchInScene);
+    CT_InAbstractSingularItemModel *inSceneModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEF_SearchInScene, inResult, this);
 
     // Result OUT
     const QList<CT_ResultGroup*> &outResList = getOutResultList();
     CT_ResultGroup *outResult = outResList.first();
-    CT_OutAbstractGroupModel *groupModel = getOutGroupModelForCreation(outResult, DEF_SearchOutGroup);
-    CT_OutAbstractSingularItemModel *outSceneModel = getOutSingularItemModelForCreation(outResult, DEF_SearchOutScene);
 
     CT_ResultItemIterator itR(inResult, inSceneModel);
 
@@ -200,8 +200,8 @@ void PB_StepReducePointsDensity::compute()
 
         if (resPointCloudIndex->size() > 0)
         {
-            CT_StandardItemGroup *outGroup = new CT_StandardItemGroup(groupModel, outResult);
-            CT_Scene *outScene = new CT_Scene(outSceneModel, outResult);
+            CT_StandardItemGroup *outGroup = new CT_StandardItemGroup(DEF_SearchOutGroup, outResult);
+            CT_Scene *outScene = new CT_Scene(DEF_SearchOutScene, outResult);
 
             outScene->setBoundingBox(in_scene->minX(),in_scene->minY(),in_scene->minZ(), in_scene->maxX(),in_scene->maxY(),in_scene->maxZ());
             outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(resPointCloudIndex));

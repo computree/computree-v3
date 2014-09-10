@@ -325,6 +325,34 @@ void ModelTest::testCaseTreeSearchSimple3()
     delete iRModel;
 }
 
+void ModelTest::testCaseTreeSearchSimple4()
+{
+    CT_OutResultModelGroup *oRModel = new CT_OutResultModelGroup("OUNR", NULL);
+    oRModel->setRootGroup("OUNG");
+        QVERIFY(oRModel->addGroupModel("OUNG", "OUNG2"));
+            QVERIFY(oRModel->addItemModel("OUNG2", "UNI1", new CT_Circle()));
+    oRModel->recursiveSetComplete();
+
+    CT_InResultModelGroup *iRModel = new CT_InResultModelGroup("IUNR", NULL);
+        QVERIFY(iRModel->setZeroOrMoreRootGroup());
+            QVERIFY(iRModel->addGroupModel("", "IUNG"));
+                QVERIFY(iRModel->addGroupModel("IUNG", "IUNG2"));
+                    QVERIFY(iRModel->addItemModel("IUNG2", "IUNI", CT_Circle::staticGetType()));
+
+    QVERIFY(iRModel->recursiveFindOnePossibilityInModel(*oRModel, true));
+    QCOMPARE(iRModel->nPossibilitiesSaved(), 1);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, "IUNI"))->nPossibilitiesSaved(), 1);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, "IUNG"))->nPossibilitiesSaved(), 1);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, "IUNG2"))->nPossibilitiesSaved(), 1);
+    QCOMPARE(((CT_InAbstractModel*)iRModel->findModelInTreeOfModelInPossibility(0, iRModel->rootGroup()->uniqueName()))->nPossibilitiesSaved(), 0);
+    QVERIFY(iRModel->recursiveSelectAllPossibilitiesByDefault());
+    QVERIFY(iRModel->recursiveIsAtLeastOnePossibilitySelectedIfItDoes());
+
+
+    delete oRModel;
+    delete iRModel;
+}
+
 void ModelTest::testCaseTreeSearchSimple1Copy()
 {
     CT_OutResultModelGroup *oRModel = new CT_OutResultModelGroup("UNR", NULL, "RN", "DIR", "DER");

@@ -12,6 +12,7 @@
 #include "ct_result/ct_resultgroup.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 CT_MutableItemIterator::CT_MutableItemIterator(CT_AbstractItemGroup *parent)
 {
@@ -24,24 +25,33 @@ CT_MutableItemIterator::CT_MutableItemIterator(CT_AbstractItemGroup *parent)
 
 CT_MutableItemIterator::CT_MutableItemIterator(CT_AbstractItemGroup *parent, const CT_InAbstractSingularItemModel *inModel)
 {
-    m_items = m_parent->items();
-    QList<CT_InStdModelPossibility*> list = inModel->getPossibilitiesSavedSelected();
-    QListIterator<CT_InStdModelPossibility*> it(list);
-
-    while(it.hasNext())
-        m_iterators.append(it.next()->outModel()->uniqueName());
-
-    m_parent = parent;
-    m_current = NULL;
+    initIterator(parent, inModel);
 }
 
 CT_MutableItemIterator::CT_MutableItemIterator(CT_AbstractItemGroup *parent, const CT_OutAbstractSingularItemModel *outModel)
 {
-    m_items = m_parent->items();
-    m_iterators.append(outModel->uniqueName());
+    initIterator(parent, outModel);
+}
 
-    m_parent = parent;
-    m_current = NULL;
+CT_MutableItemIterator::CT_MutableItemIterator(const CT_AbstractItemGroup *parent, const CT_VirtualAbstractStep *step, const QString &modelName)
+{
+    CT_ResultGroup *result = (CT_ResultGroup*)parent->result();
+
+    Q_ASSERT_X(result != NULL, "CT_MutableItemIterator constructor", "You created a CT_MutableItemIterator with a modelName but the result of the group is null");
+
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result, step);
+
+    Q_ASSERT_X(model != NULL, "CT_MutableItemIterator constructor", "You created a CT_MutableItemIterator with a modelName but the model was not found");
+
+    CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
+    CT_OutAbstractSingularItemModel *outModel = NULL;
+
+    if(inModel != NULL)
+        initIterator(parent, inModel);
+    else if((outModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(model)) != NULL)
+        initIterator(parent, outModel);
+    else
+        qFatal("You created a CT_MutableItemIterator with a modelName but the model was not a singular item model");
 }
 
 CT_MutableItemIterator::~CT_MutableItemIterator()
@@ -105,4 +115,26 @@ void CT_MutableItemIterator::remove()
     CT_AbstractSingularItemDrawable *item = current();
 
     ((CT_ResultGroup*)m_parent->result())->removeSingularItemDrawableSomethingInStructure(m_parent, item);
+}
+
+void CT_MutableItemIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_InAbstractSingularItemModel *inModel)
+{
+    m_items = parent->items();
+    QList<CT_InStdModelPossibility*> list = inModel->getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> it(list);
+
+    while(it.hasNext())
+        m_iterators.append(it.next()->outModel()->uniqueName());
+
+    m_parent = (CT_AbstractItemGroup*)parent;
+    m_current = NULL;
+}
+
+void CT_MutableItemIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_OutAbstractSingularItemModel *outModel)
+{
+    m_items = parent->items();
+    m_iterators.append(outModel->uniqueName());
+
+    m_parent =(CT_AbstractItemGroup*) parent;
+    m_current = NULL;
 }

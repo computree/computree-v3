@@ -614,7 +614,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
     QList<CT_AbstractSingularItemDrawable*> lAdd;
 
     if(collection != NULL)
-    {    CT_PointsAttributesScalarTemplated<float> *pas = new CT_PointsAttributesScalarTemplated<float>(getOutSingularItemModelForCreation(out_res, DEF_SearchPAI),
+    {    CT_PointsAttributesScalarTemplated<float> *pas = new CT_PointsAttributesScalarTemplated<float>(DEF_SearchPAI,
                                                                                                         out_res,
                                                                                                         pcir,
                                                                                                         collection,
@@ -626,7 +626,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     if(colorCloud != NULL)
     {
-        CT_PointsAttributesColor *pac = new CT_PointsAttributesColor(getOutSingularItemModelForCreation(out_res, DEF_SearchPARGB),
+        CT_PointsAttributesColor *pac = new CT_PointsAttributesColor(DEF_SearchPARGB,
                                                                      out_res,
                                                                      pcir,
                                                                      colorCloud);
@@ -636,7 +636,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     if(normalCloud != NULL)
     {
-        CT_PointsAttributesNormal *pan = new CT_PointsAttributesNormal(getOutSingularItemModelForCreation(out_res, DEF_SearchPNORM),
+        CT_PointsAttributesNormal *pan = new CT_PointsAttributesNormal(DEF_SearchPNORM,
                                                                        out_res,
                                                                        pcir,
                                                                        normalCloud);
