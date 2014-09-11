@@ -46,6 +46,11 @@ public:
      */
     CT_AbstractResult* result() const;
 
+    /**
+     * @brief Returns childrens of this item for the GUI
+     */
+    virtual QList<CT_AbstractItem*> childrensForGui() const;
+
 protected:
 
     friend class CT_AbstractResult;

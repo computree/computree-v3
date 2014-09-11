@@ -95,7 +95,6 @@ SOURCES += \
     ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.cpp \
     ct_result/model/inModel/ct_inresultmodelgroup.cpp \
     ct_itemdrawable/ct_standarditemgroup.cpp \
-    ct_tools/ct_iteratortools.cpp \
     ct_result/model/outModel/ct_outresultmodelgroup.cpp \
     ct_result/model/inModel/ct_inresultmodelnotneedinputresult.cpp \
     ct_result/model/outModel/abstract/ct_outabstractresultmodel.cpp \
@@ -333,7 +332,8 @@ SOURCES += \
     ct_item/abstract/ct_abstractitem.cpp \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.cpp \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.cpp \
-    ct_model/tools/ct_modelsearchhelper.cpp
+    ct_model/tools/ct_modelsearchhelper.cpp \
+    ct_item/tools/iterator/ct_childiterator.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -398,7 +398,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h \
     ct_result/model/inModel/ct_inresultmodelgroup.h \
     ct_itemdrawable/ct_standarditemgroup.h \
-    ct_tools/ct_iteratortools.h \
     ct_result/model/outModel/ct_outresultmodelgroup.h \
     ct_result/model/inModel/ct_inresultmodelnotneedinputresult.h \
     ct_result/model/outModel/abstract/ct_outabstractresultmodel.h \
@@ -715,7 +714,8 @@ HEADERS += interfaces.h \
     ct_item/abstract/ct_abstractitem.h \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h \
-    ct_model/tools/ct_modelsearchhelper.h
+    ct_model/tools/ct_modelsearchhelper.h \
+    ct_item/tools/iterator/ct_childiterator.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step

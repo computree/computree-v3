@@ -20,14 +20,14 @@ void CT_StandardStandardItemGroupDrawManager::draw(GraphicsViewInterface &view, 
 
     painter.enableSetColor(false);
 
-    drawGroups(item.constGroupsNew(), view, painter, item);
-    drawGroups(item.constGroupsBackup(), view, painter, item);
+    drawGroups(item.groupsNew(), view, painter, item);
+    drawGroups(item.groupsBackup(), view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_ITEMS_NEW_VISIBLE).toBool())
-        drawItems(item.constItemsNew(), view, painter, item);
+        drawItems(item.itemsNew(), view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_ITEMS_BACKUP_VISIBLE).toBool())
-        drawItems(item.constItemsBackup(), view, painter, item);
+        drawItems(item.itemsBackup(), view, painter, item);
 
     painter.enableSetColor(true);
 }

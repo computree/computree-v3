@@ -55,6 +55,10 @@ CT_AbstractResult::CT_AbstractResult(const CT_OutAbstractResultModel *model,
     _clearFromMemoryProgress = 100;
     _autoDelete = true;
     _model = (CT_OutAbstractResultModel*)model;
+
+    if(_model != NULL)
+        _model->setResult(this);
+
     _mutexBusy = new QMutex(QMutex::Recursive);
 }
 

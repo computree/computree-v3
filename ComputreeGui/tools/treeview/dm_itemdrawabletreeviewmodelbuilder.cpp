@@ -2,6 +2,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
+#include "ct_item/tools/iterator/ct_childiterator.h"
 
 DM_ItemDrawableTreeViewModelBuilder::DM_ItemDrawableTreeViewModelBuilder() : DM_AbstractWorker()
 {
@@ -40,21 +41,20 @@ void DM_ItemDrawableTreeViewModelBuilder::setQStandardItemToUpdate(const QList<Q
 
 void DM_ItemDrawableTreeViewModelBuilder::recursiveCreateItemForNextLevel(CT_AbstractItemDrawable *item, QStandardItem *parent, const int &level)
 {
-    if(item->beginIterateChild())
+    CT_ChildIterator it(item);
+
+    while(it.hasNext())
     {
-        CT_AbstractItemDrawable *child;
+        CT_AbstractItemDrawable *child = dynamic_cast<CT_AbstractItemDrawable*>((CT_AbstractItem*)it.next());
 
-        while((child = item->nextChild()) != NULL)
+        QList<QStandardItem*> items = m_itemModelBuilder->createItems(*child, level);
+
+        if(!items.isEmpty())
         {
-            QList<QStandardItem*> items = m_itemModelBuilder->createItems(*child, level);
+            parent->appendRow(items);
 
-            if(!items.isEmpty())
-            {
-                parent->appendRow(items);
-
-                if((level+1) < m_nLevel)
-                    recursiveCreateItemForNextLevel(child, items.first(), level+1);
-            }
+            if((level+1) < m_nLevel)
+                recursiveCreateItemForNextLevel(child, items.first(), level+1);
         }
     }
 }

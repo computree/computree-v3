@@ -59,6 +59,9 @@ void CT_InStdModelPossibilityGroup::select(CT_InStdModelPossibility *p)
         }
 
         m_possibilitiesSelected.append(p);
+
+        while(m_possibilitiesSelected.size() > maximumNumberOfPossibilityThatCanBeSelected())
+            m_possibilitiesSelected.first()->setSelected(false);
     }
 }
 
@@ -113,8 +116,8 @@ bool CT_InStdModelPossibilityGroup::setMaximumNumberOfPossibilityThatCanBeSelect
 
     m_maxCanBeSelected = n;
 
-    while(m_possibilitiesSelected.size() > m_maxCanBeSelected)
-        m_possibilitiesSelected.removeLast();
+    while(m_possibilitiesSelected.size() > maximumNumberOfPossibilityThatCanBeSelected())
+        m_possibilitiesSelected.first()->setSelected(false);
 
     return true;
 }

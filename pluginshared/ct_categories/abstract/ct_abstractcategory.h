@@ -152,8 +152,7 @@ public:
     template <typename VType>
     static inline CT_AbstractCategory::ValueType staticValueTypeToCategoryType()
     {
-        // TODO
-        Q_ASSERT_X(1==0, "CT_AbstractCategory::staticValueTypeToCategoryType", qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
+        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
 
         return CT_AbstractCategory::UNKNOWN;
     }
@@ -164,8 +163,7 @@ public:
     template <typename VType>
     static inline QString staticValueTypeToCategoryTypeString()
     {
-        // TODO
-        Q_ASSERT_X(1==0, "CT_AbstractCategory::staticValueTypeToCategoryType", qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
+        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
 
         return QString("UNKNOWN");
     }

@@ -31,6 +31,16 @@ QString CT_TTreeGroup::staticGetType()
     return CT_AbstractStandardItemGroup::staticGetType() + "/CT_TTreeGroup";
 }
 
+QList<CT_AbstractItem *> CT_TTreeGroup::childrensForGui() const
+{
+    QList<CT_AbstractItem *> r;
+
+    if(m_rootNode != NULL)
+        r << m_rootNode;
+
+    return r;
+}
+
 bool CT_TTreeGroup::setRootNode(CT_TNodeGroup *root)
 {
     if(m_rootNode != NULL)
@@ -67,27 +77,6 @@ bool CT_TTreeGroup::addBranch(CT_TNodeGroup *bearer, CT_TNodeGroup *son)
 
 CT_TNodeGroup* CT_TTreeGroup::rootNode() const
 {
-    return m_rootNode;
-}
-
-bool CT_TTreeGroup::hasChildren() const
-{
-    return (m_rootNode != NULL);
-}
-
-bool CT_TTreeGroup::beginIterateChild()
-{
-    m_beginIterateChild = hasChildren();
-    return m_beginIterateChild;
-}
-
-CT_AbstractItemDrawable* CT_TTreeGroup::nextChild()
-{
-    if(!m_beginIterateChild)
-        return NULL;
-
-    m_beginIterateChild = false;
-
     return m_rootNode;
 }
 

@@ -48,7 +48,7 @@ bool PB_Grid3DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawa
 
     if(nGrids == 0)
     {
-        setErrorMessage(tr("Aucun ItemDrawable du type Ct_AbstractGird3D"));
+        setErrorMessage(tr("Aucun ItemDrawable du type CT_AbstractGrid3D"));
         return false;
     }
 

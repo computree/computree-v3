@@ -113,7 +113,7 @@ public:
      * @brief Change the result that contains this item.
      * @warning Not intended for direct use by plugin developper
      */
-    void changeResult(const CT_AbstractResult *newRes);
+    virtual void changeResult(const CT_AbstractResult *newRes);
 
     /**
      * @brief Returns the model of this item
@@ -300,21 +300,6 @@ public:
      * @deprecated use the method "itemParent"
      */
     Q_DECL_DEPRECATED CT_AbstractItemDrawable *itemDrawableParent() const;
-
-    /**
-     * @deprecated useless because the gui, the core and all other elements use plugin shared
-     */
-    Q_DECL_DEPRECATED virtual bool hasChildren() const { return false; }
-
-    /**
-     * @deprecated useless because the gui, the core and all other elements use plugin shared
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateChild() { return false; }
-
-    /**
-     * @deprecated useless because the gui, the core and all other elements use plugin shared
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemDrawable* nextChild() { return NULL; }
 
     /**
      * @deprecated not be used

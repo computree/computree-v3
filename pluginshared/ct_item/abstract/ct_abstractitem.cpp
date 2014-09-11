@@ -52,6 +52,11 @@ CT_AbstractResult* CT_AbstractItem::result() const
     return m_result;
 }
 
+QList<CT_AbstractItem *> CT_AbstractItem::childrensForGui() const
+{
+    return QList<CT_AbstractItem *>();
+}
+
 void CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(CT_AbstractItem *item, const CT_AbstractResult *res)
 {
     item->internalSetWillBeRemovedFromResult(res);

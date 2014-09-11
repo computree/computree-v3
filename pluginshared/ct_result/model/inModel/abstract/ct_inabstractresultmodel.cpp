@@ -12,6 +12,8 @@ CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
 {
     m_recursive = recursive;
     m_backupModel = NULL;
+
+    setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
 }
 
 void CT_InAbstractResultModel::setRecursive(bool r)

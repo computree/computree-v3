@@ -33,6 +33,31 @@ QString CT_TNodeGroup::staticGetType()
     return CT_StandardItemGroup::staticGetType() + "/CT_TNodeGroup";
 }
 
+QList<CT_AbstractItem *> CT_TNodeGroup::childrensForGui() const
+{
+    QList<CT_AbstractItem *> r;
+
+    CT_TNodeGroup *o = m_rootComponent;
+
+    if(o != NULL)
+    {
+        r.append(o);
+
+        while(o->successor() != NULL)
+        {
+            o = o->successor();
+            r.append(o);
+        }
+    }
+
+    QListIterator<CT_TNodeGroup*> it(m_branches);
+
+    while(it.hasNext())
+        r.append(it.next());
+
+    return r;
+}
+
 bool CT_TNodeGroup::setSuccessor(CT_TNodeGroup *successor)
 {
     if(m_successor != NULL)
@@ -165,39 +190,6 @@ size_t CT_TNodeGroup::nComponent() const
     }
 
     return n;
-}
-
-bool CT_TNodeGroup::hasChildren() const
-{
-    return ((m_rootComponent != NULL) || !m_branches.isEmpty());
-}
-
-bool CT_TNodeGroup::beginIterateChild()
-{
-    CT_TNodeGroup *o = m_rootComponent;
-
-    if(o != NULL)
-    {
-        m_iterateList.append(o);
-
-        while(o->successor() != NULL)
-        {
-            o = o->successor();
-            m_iterateList.append(o);
-        }
-    }
-
-    m_iterateList.append(m_branches);
-
-    return hasChildren();
-}
-
-CT_AbstractItemDrawable* CT_TNodeGroup::nextChild()
-{
-    if(m_iterateList.isEmpty())
-        return NULL;
-
-    return m_iterateList.takeFirst();
 }
 
 CT_AbstractItemDrawable* CT_TNodeGroup::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

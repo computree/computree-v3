@@ -16,6 +16,8 @@
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractgroupmodel.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+#include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
+
 CT_AbstractItemGroup::CT_AbstractItemGroup() : CT_AbstractItemDrawable()
 {
     _parentGroup = NULL;
@@ -54,6 +56,45 @@ QString CT_AbstractItemGroup::getType() const
 QString CT_AbstractItemGroup::staticGetType()
 {
     return CT_AbstractItemDrawable::staticGetType() + "/CT_AbstractItemGroup";
+}
+
+void CT_AbstractItemGroup::changeResult(const CT_AbstractResult *newRes)
+{
+    CT_GroupIterator itG(this);
+
+    while(itG.hasNext())
+        ((CT_AbstractItemGroup*)itG.next())->changeResult(newRes);
+
+    QHashIterator<QString, CT_GroupItemDrawableContainer*> itI(itemsNew());
+
+    while(itI.hasNext())
+        itI.next().value()->item()->changeResult(newRes);
+
+    CT_AbstractItemDrawable::changeResult(newRes);
+}
+
+QList<CT_AbstractItem *> CT_AbstractItemGroup::childrensForGui() const
+{
+    QList<CT_AbstractItem *> r;
+
+    QHash<QString, CT_GroupItemDrawableContainer*> i = items();
+    QHashIterator<QString, CT_GroupItemDrawableContainer*> itI(i);
+
+    while(itI.hasNext())
+        r.append(itI.next().value()->item());
+
+    QHash<QString, CT_Container*> g = groups();
+    QHashIterator<QString, CT_Container*> itG(g);
+
+    while(itG.hasNext())
+    {
+        QListIterator<CT_AbstractItemDrawable*> itL(*itG.next().value()->getList());
+
+        while(itL.hasNext())
+            r.append(itL.next());
+    }
+
+    return r;
 }
 
 bool CT_AbstractItemGroup::containsItemDrawableByModelName(const CT_VirtualAbstractStep *step,

@@ -80,23 +80,65 @@ public:
      * @brief Return the list of out ItemDrawable created in the method "readFile" that have the type passed in parameter and remove
      *        them from this reader. Set the model and change the result of the ItemDrawable returned if result != NULL or model != NULL.
      *
-     *        example : itemDrawableOfType( CT_Scene::staticGetType() )
+     * @example QList<CT_AbstractSingularItemDrawable*> scenes = takeItemDrawableOfType(CT_Scene::staticGetType()); // if you want to change the model and the result yourself
+     * @example QList<CT_AbstractSingularItemDrawable*> scenes = takeItemDrawableOfType(CT_Scene::staticGetType(), outResult, outSceneModel); // if you want to change the model and the result in this method
      *
      * @warning this method remove ItemDrawable from the reader !
      */
-    QList<CT_AbstractSingularItemDrawable*> takeItemDrawableOfType(const QString &type, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
-    QList<CT_AbstractSingularItemDrawable*> takeItemDrawableOfModel(const QString &modelName, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+    QList<CT_AbstractSingularItemDrawable*> takeItemDrawableOfType(const QString &type, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the list of out ItemDrawable created in the method "readFile" that have the modelName passed in parameter and remove
+     *        them from this reader. Set the model and change the result of the ItemDrawable returned by this method if result != NULL or model != NULL.
+     *
+     * @example QList<CT_AbstractSingularItemDrawable*> scenes = takeItemDrawableOfModel(DEF_Reader_XXX_OutScene); // if you want to change the model and the result yourself
+     * @example QList<CT_AbstractSingularItemDrawable*> scenes = takeItemDrawableOfModel(DEF_Reader_XXX_OutScene, outResult, outSceneModel); // if you want to change the model and the result in this method
+     *
+     * @warning this method remove ItemDrawable from the reader !
+     */
+    QList<CT_AbstractSingularItemDrawable*> takeItemDrawableOfModel(const QString &modelName, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the list of out ItemDrawable created in the method "readFile" that have the modelName passed in parameter and remove
+     *        them from this reader. The outModelName is used to search your model in your step and set it (with the result) to all itemdrawable returned.
+     *
+     * @example QList<CT_AbstractSingularItemDrawable*> scenes = takeItemDrawableOfModel(DEF_Reader_XXX_OutScene, outResult, DEF_MyOutScene);
+     *
+     * @warning this method remove ItemDrawable from the reader !
+     */
+    QList<CT_AbstractSingularItemDrawable*> takeItemDrawableOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName);
 
     /**
      * @brief Return the first ItemDrawable in the list that was created in the method "readFile" that have the type passed in parameter and remove
      *        them from this reader. Set the model and change the result of the ItemDrawable returned if result != NULL or model != NULL.
      *
-     *        example : itemDrawableOfType( CT_Scene::staticGetType() )
+     * @example CT_AbstractSingularItemDrawable *scene = takeFirstItemDrawableOfType(CT_Scene::staticGetType()); // if you want to change the model and the result yourself
+     * @example CT_AbstractSingularItemDrawable *scene = takeFirstItemDrawableOfType(CT_Scene::staticGetType(), outResult, outSceneModel); // if you want to change the model and the result in this method
      *
      * @warning this method remove ItemDrawable from the reader !
      */
-    CT_AbstractSingularItemDrawable* takeFirstItemDrawableOfType(const QString &type, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
-    CT_AbstractSingularItemDrawable* takeFirstItemDrawableOfModel(const QString &modelName, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+    CT_AbstractSingularItemDrawable* takeFirstItemDrawableOfType(const QString &type, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the first ItemDrawable in the list that was created in the method "readFile" that have the modelName passed in parameter and remove
+     *        them from this reader. Set the model and change the result of the ItemDrawable returned if result != NULL or model != NULL.
+     *
+     * @example CT_AbstractSingularItemDrawable *scene = takeFirstItemDrawableOfModel(DEF_Reader_XXX_OutScene); // if you want to change the model and the result yourself
+     * @example CT_AbstractSingularItemDrawable *scene = takeFirstItemDrawableOfModel(DEF_Reader_XXX_OutScene, outResult, outSceneModel); // if you want to change the model and the result in this method
+     *
+     * @warning this method remove ItemDrawable from the reader !
+     */
+    CT_AbstractSingularItemDrawable* takeFirstItemDrawableOfModel(const QString &modelName, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the first ItemDrawable in the list that was created in the method "readFile" that have the modelName passed in parameter and remove
+     *        them from this reader. The outModelName is used to search your model in your step and set it (with the result) to the itemdrawable returned.
+     *
+     * @example CT_AbstractSingularItemDrawable *scene = takeFirstItemDrawableOfModel(DEF_Reader_XXX_OutScene, outResult, DEF_MyOutScene); // if you want to change the model and the result in this method
+     *
+     * @warning this method remove ItemDrawable from the reader !
+     */
+    CT_AbstractSingularItemDrawable* takeFirstItemDrawableOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName);
 
     /**
      * @brief Return the list of ItemDrawable created in the method "readFile" that have the type passed in parameter.
@@ -106,6 +148,14 @@ public:
      * @warning this method DON'T remove ItemDrawable from the reader, it will be deleted by the reader in the destructor !
      */
     QList<CT_AbstractSingularItemDrawable*> itemDrawableOfType(const QString &type) const;
+
+    /**
+     * @brief Return the list of ItemDrawable created in the method "readFile" that have the modelName passed in parameter.
+     *
+     *        example : itemDrawableOfModel( DEF_Reader_XXX_OutScene )
+     *
+     * @warning this method DON'T remove ItemDrawable from the reader, it will be deleted by the reader in the destructor !
+     */
     QList<CT_AbstractSingularItemDrawable*> itemDrawableOfModel(const QString &modelName) const;
 
     /**
@@ -114,7 +164,15 @@ public:
      *
      * @warning this method remove Group from the reader !
      */
-    QList<CT_AbstractItemGroup*> takeGroupOfModel(const QString &modelName, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+    QList<CT_AbstractItemGroup*> takeGroupOfModel(const QString &modelName, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the list of out Group created in the method "readFile" that have the type passed in parameter and remove
+     *        them from this reader. The outModelName is used to search your model in your step and set it (with the result) to all groups returned.
+     *
+     * @warning this method remove Group from the reader !
+     */
+    QList<CT_AbstractItemGroup*> takeGroupOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName);
 
     /**
      * @brief Return the first Group in the list that was created in the method "readFile" that have the type passed in parameter and remove
@@ -122,7 +180,15 @@ public:
      *
      * @warning this method remove Group from the reader !
      */
-    CT_AbstractItemGroup* takeFirstGroupOfModel(const QString &modelName, CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+    CT_AbstractItemGroup* takeFirstGroupOfModel(const QString &modelName, const CT_AbstractResult *result = NULL, CT_OutAbstractItemModel *model = NULL);
+
+    /**
+     * @brief Return the first Group in the list that was created in the method "readFile" that have the type passed in parameter and remove
+     *        them from this reader. The outModelName is used to search your model in your step and set it (with the result) to the group returned.
+     *
+     * @warning this method remove Group from the reader !
+     */
+    CT_AbstractItemGroup* takeFirstGroupOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName);
 
     /**
      * @brief Return the list of Group created in the method "readFile" that have the type passed in parameter.
@@ -207,8 +273,8 @@ private:
     QString                                                 m_filePath;
     QList<FileFormat>                                       m_formats;
     QString                                                 m_errorMess;
-    QList<CT_OutStdSingularItemModel*>                 m_outItemsModel;
-    QList<CT_OutStdGroupModel*>                        m_outGroupsModel;
+    QList<CT_OutStdSingularItemModel*>                      m_outItemsModel;
+    QList<CT_OutStdGroupModel*>                             m_outGroupsModel;
     QMultiMap<QString, CT_AbstractSingularItemDrawable*>    m_outItems;
     QMultiMap<QString, CT_AbstractItemGroup*>               m_outGroups;
     int                                                     m_progress;
@@ -220,8 +286,6 @@ private:
 
     void clearOutGroupsModel();
     void clearOutGroups();
-
-    void recursiveSetResult(CT_AbstractItemGroup *gr, CT_AbstractResult *result);
 
 signals:
     void started();

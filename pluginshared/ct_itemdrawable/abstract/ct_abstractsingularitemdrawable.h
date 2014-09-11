@@ -40,6 +40,12 @@ public:
     static QString staticGetType();
 
     /**
+     * @brief Change the result that contains this item.
+     * @warning Not intended for direct use by plugin developper
+     */
+    virtual void changeResult(const CT_AbstractResult *newRes);
+
+    /**
      * @brief Add an attribute to this itemdrawable
      * @warning the attribute must have a result to be added to this item
      * @return false if the attribute already exist (model uniqueName already exist) in this singular item

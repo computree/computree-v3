@@ -31,8 +31,6 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardcontainerdrawmanager.h"
 
-#include "ct_tools/ct_iteratortools.h"
-
 /*!
  * \class CT_Container
  * \ingroup PluginShared_Items
@@ -49,7 +47,7 @@ public:
     CT_Container();
     CT_Container(const CT_OutAbstractItemModel *model,
                  const CT_AbstractResult *result,
-                 QString defaultItemDrawableType);
+                 const QString &defaultItemDrawableType);
 
     virtual ~CT_Container();
 
@@ -60,23 +58,29 @@ public:
     static QString staticGetType();
 
     /**
-      * \brief Ajoute un itemDrawable à la liste.
-      *
-      * \return false si l'itemdrawable ajout n'est pas du mme type que celui par dfaut
-      */
+     * @brief Add a Item to this container (to the list)
+     * @param id : the item to add
+     * @return Returns false if the item added is not the same type that the type set in constructor
+     */
     bool addItemDrawable(CT_AbstractItemDrawable *id);
 
-    bool beginIterateItemDrawable();
-    CT_AbstractItemDrawable* nextItemDrawable();
-    CT_AbstractItemDrawable* currentItemDrawable();
-    bool removeCurrentItemDrawable();
-
+    /**
+     * @brief Remove the item passed in parameter from this container. It will be deleted from memory if isAutoDelete() return true.
+     * @param item : the item to remove
+     * @return false if the item is not in this container
+     */
     bool removeItemDrawable(CT_AbstractItemDrawable *item);
+
+    /**
+     * @brief Remove the item passed in parameter from this container. Item will not be deleted from memory.
+     * @param item : the item to remove
+     * @return false if the item is not in this container
+     */
     bool removeItemDrawableWithoutAutoDelete(CT_AbstractItemDrawable *item);
 
     /**
-      * \brief Retourne la liste des ItemDrawable.
-      */
+     * @brief Returns the list of item from this container
+     */
     QList<CT_AbstractItemDrawable*>* getList() const;
 
     /**
@@ -91,13 +95,9 @@ public:
     void setItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *item);
 
     /**
-      * \brief Met  jour le centre.
-      */
+     * @brief Update the center
+     */
     void updateCenter();
-
-    bool hasChildren() const;
-    bool beginIterateChild();
-    CT_AbstractItemDrawable* nextChild();
 
     virtual int indexOf(const CT_AbstractItemDrawable *child) const;
     virtual int getFastestIncrement() const;
@@ -117,9 +117,7 @@ private:
 
     QList<CT_AbstractItemDrawable*>                 _list;
     QList<CT_AbstractItemDrawable*>                 m_itemRemovedLater;
-    QString                                         _defaultItemDrawableType;
-    CT_IteratorTools                                _itChildTools;
-    CT_IteratorTools                                _itComputeTools;
+    QString                                         m_defaultItemDrawableType;
 
     const static CT_StandardContainerDrawManager    CONTAINER_DRAW_MANAGER;
 

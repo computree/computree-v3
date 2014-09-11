@@ -67,13 +67,6 @@ private:
 
     const static CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager IDWITHOUTPC_DRAW_MANAGER;
 
-protected:
-
-    /**
-      * Recherche le premier enfant du type CT_AbstractItemDrawableWithPointCloud, si il y en a un : le niveau de celui-ci dans l'arborescence est retourn.
-      */
-    int recursiveSearchChildLevelThatMatchType(const QString &type, CT_AbstractItemDrawable &parent, int level);
-
 #ifdef USE_BOOST_OLD
 private:
 

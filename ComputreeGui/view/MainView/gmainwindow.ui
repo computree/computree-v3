@@ -95,7 +95,7 @@ QDockWidget &gt; QWidget { border-right: 1px solid darkgrey;}</string>
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>31</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
@@ -125,10 +125,16 @@ QDockWidget &gt; QWidget { border-right: 1px solid darkgrey;}</string>
     <addaction name="actionCascade"/>
     <addaction name="actionTile"/>
    </widget>
+   <widget class="QMenu" name="menuLangue">
+    <property name="title">
+     <string>Langue</string>
+    </property>
+   </widget>
    <addaction name="menuFichier"/>
    <addaction name="menuEdition"/>
    <addaction name="menuFenetre"/>
    <addaction name="menuVue"/>
+   <addaction name="menuLangue"/>
    <addaction name="menuAide"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

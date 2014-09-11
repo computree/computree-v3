@@ -42,7 +42,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     src/parserAction/cdm_parseractionlaunchstepmanager.h \
     src/cdm_actionsmanager.h \
     src/cdm_log.h \
-    src/cdm_tools.h
+    src/cdm_tools.h \
+    src/cdm_internationalization.h
 
 SOURCES += \
     src/cdm_configfile.cpp \
@@ -60,4 +61,5 @@ SOURCES += \
     src/parserAction/cdm_parseractionlaunchstepmanager.cpp \
     src/cdm_actionsmanager.cpp \
     src/cdm_log.cpp \
-    src/cdm_tools.cpp
+    src/cdm_tools.cpp \
+    src/cdm_internationalization.cpp

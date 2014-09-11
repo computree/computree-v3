@@ -37,6 +37,11 @@ public:
     static QString staticGetType();
 
     /**
+     * @brief Returns childrens of this group for the GUI
+     */
+    QList<CT_AbstractItem*> childrensForGui() const;
+
+    /**
      * @brief Set the successor of the node
      */
     bool setSuccessor(CT_TNodeGroup *successor);
@@ -95,11 +100,6 @@ public:
      * @brief Returns the number of component of this node
      */
     size_t nComponent() const;
-
-    // Inherited from ItemDrawable //
-    virtual bool hasChildren() const;
-    virtual bool beginIterateChild();
-    virtual CT_AbstractItemDrawable* nextChild();
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 

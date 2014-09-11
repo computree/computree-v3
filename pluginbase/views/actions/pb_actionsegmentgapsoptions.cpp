@@ -259,11 +259,15 @@ void PB_ActionSegmentGapsOptions::on_pb_showClusters_clicked()
 
 void PB_ActionSegmentGapsOptions::on_sb_pencilSize_valueChanged(int arg1)
 {
+    Q_UNUSED(arg1)
+
     emit parametersChanged();
 }
 
 void PB_ActionSegmentGapsOptions::on_pb_activeClusterColor_toggled(bool checked)
 {
+    Q_UNUSED(checked)
+
     emit activeClusterChanged();
     emit parametersChanged();
 }

@@ -6,6 +6,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractmetric.h"
 #include "ct_itemdrawable/ct_meshmodel.h"
+#include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -117,23 +118,21 @@ bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type
 
     CT_MeshModel *mesh = NULL;
 
-    if(node->beginIterateItems())
+    CT_ItemIterator itI(node);
+
+    while(itI.hasNext())
     {
-        CT_AbstractSingularItemDrawable *item;
+        CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)itI.next();
+        CT_AbstractMetric *metric = dynamic_cast<CT_AbstractMetric*>(item);
 
-        while((item = node->nextItem()) != NULL)
+        if(metric != NULL)
+            ok = writeAttribute(stream, node, metric);
+        else
         {
-            CT_AbstractMetric *metric = dynamic_cast<CT_AbstractMetric*>(item);
+            CT_MeshModel *oMesh = dynamic_cast<CT_MeshModel*>(item);
 
-            if(metric != NULL)
-                ok = writeAttribute(stream, node, metric);
-            else
-            {
-                CT_MeshModel *oMesh = dynamic_cast<CT_MeshModel*>(item);
-
-                if(oMesh != NULL)
-                    mesh = oMesh;
-            }
+            if(oMesh != NULL)
+                mesh = oMesh;
         }
     }
 

@@ -32,10 +32,12 @@
 #include "dm_guimanager.h"
 #include "gmainwindow.h"
 
+#include "cdm_internationalization.h"
+
 class GGuiManager : public DM_GuiManager
 {
 public:
-    GGuiManager();
+    GGuiManager(CDM_Internationalization *language);
     ~GGuiManager();
 
     // GuiManagerInterface
@@ -54,7 +56,8 @@ protected:
 
 private:
 
-    GMainWindow     *_mainWindow;
+    GMainWindow                 *_mainWindow;
+    CDM_Internationalization    *m_language;
 };
 
 #endif // GGUIMANAGER_H

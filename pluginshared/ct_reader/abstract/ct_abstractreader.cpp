@@ -2,6 +2,8 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 CT_AbstractReader::CT_AbstractReader()
 {
 }
@@ -102,7 +104,7 @@ void CT_AbstractReader::clearErrorMessage()
 }
 
 QList<CT_AbstractSingularItemDrawable*> CT_AbstractReader::takeItemDrawableOfType(const QString &type,
-                                                                                  CT_AbstractResult *result,
+                                                                                  const CT_AbstractResult *result,
                                                                                   CT_OutAbstractItemModel *model)
 {
     QList<CT_AbstractSingularItemDrawable*> l;
@@ -118,7 +120,7 @@ QList<CT_AbstractSingularItemDrawable*> CT_AbstractReader::takeItemDrawableOfTyp
         if(item->getType() == type)
         {
             if(result != NULL)
-                item->changeResult(result);
+                item->changeResult((CT_AbstractResult*)result);
 
             if(model != NULL)
                 item->setModel(model);
@@ -132,7 +134,7 @@ QList<CT_AbstractSingularItemDrawable*> CT_AbstractReader::takeItemDrawableOfTyp
 }
 
 QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::takeItemDrawableOfModel(const QString &modelName,
-                                                                                    CT_AbstractResult *result,
+                                                                                    const CT_AbstractResult *result,
                                                                                     CT_OutAbstractItemModel *model)
 {
     QList<CT_AbstractSingularItemDrawable*> l;
@@ -148,7 +150,7 @@ QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::takeItemDrawableOfMo
             CT_AbstractSingularItemDrawable *item = it.value();
 
             if(result != NULL)
-                item->changeResult(result);
+                item->changeResult((CT_AbstractResult*)result);
 
             if(model != NULL)
                 item->setModel(model);
@@ -161,8 +163,17 @@ QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::takeItemDrawableOfMo
     return l;
 }
 
+QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::takeItemDrawableOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName)
+{
+    CT_OutAbstractItemModel *model = dynamic_cast<CT_OutAbstractItemModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeItemDrawableOfModel", "You want to take items and set it a new model searched by modelName but this model was not found or is not a itemdrawable model");
+
+    return takeItemDrawableOfModel(modelName, result, model);
+}
+
 CT_AbstractSingularItemDrawable* CT_AbstractReader::takeFirstItemDrawableOfType(const QString &type,
-                                                                                CT_AbstractResult *result,
+                                                                                const CT_AbstractResult *result,
                                                                                 CT_OutAbstractItemModel *model)
 {
     QMutableMapIterator<QString, CT_AbstractSingularItemDrawable*> it(m_outItems);
@@ -191,7 +202,7 @@ CT_AbstractSingularItemDrawable* CT_AbstractReader::takeFirstItemDrawableOfType(
 }
 
 CT_AbstractSingularItemDrawable* CT_AbstractReader::takeFirstItemDrawableOfModel(const QString &modelName,
-                                                                                 CT_AbstractResult *result,
+                                                                                 const CT_AbstractResult *result,
                                                                                  CT_OutAbstractItemModel *model)
 {
     QMutableMapIterator<QString, CT_AbstractSingularItemDrawable*> it(m_outItems);
@@ -217,6 +228,17 @@ CT_AbstractSingularItemDrawable* CT_AbstractReader::takeFirstItemDrawableOfModel
     }
 
     return NULL;
+}
+
+CT_AbstractSingularItemDrawable* CT_AbstractReader::takeFirstItemDrawableOfModel(const QString &modelName,
+                                                                                 const CT_AbstractResult *result,
+                                                                                 const QString &outModelName)
+{
+    CT_OutAbstractItemModel *model = dynamic_cast<CT_OutAbstractItemModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeFirstItemDrawableOfModel", "You want to take the first item and set it a new model searched by modelName but this model was not found or is not a itemdrawable model");
+
+    return takeFirstItemDrawableOfModel(modelName, result, model);
 }
 
 QList<CT_AbstractSingularItemDrawable*> CT_AbstractReader::itemDrawableOfType(const QString &type) const
@@ -255,7 +277,7 @@ QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::itemDrawableOfModel(
     return l;
 }
 
-QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString &modelName, CT_AbstractResult *result, CT_OutAbstractItemModel *model)
+QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString &modelName, const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
 {
     QList<CT_AbstractItemGroup*> l;
 
@@ -270,7 +292,7 @@ QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString 
             CT_AbstractItemGroup *gr = it.value();
 
             if(result != NULL)
-                recursiveSetResult(gr, result);
+                gr->changeResult((CT_AbstractResult*)result);
 
             if(model != NULL)
                 gr->setModel(model);
@@ -283,7 +305,16 @@ QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString 
     return l;
 }
 
-CT_AbstractItemGroup *CT_AbstractReader::takeFirstGroupOfModel(const QString &modelName, CT_AbstractResult *result, CT_OutAbstractItemModel *model)
+QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName)
+{
+    CT_OutAbstractGroupModel *model = dynamic_cast<CT_OutAbstractGroupModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeGroupOfModel", "You want to take groups and set it a new model searched by modelName but this model was not found or is not a group model");
+
+    return takeGroupOfModel(modelName, result, model);
+}
+
+CT_AbstractItemGroup* CT_AbstractReader::takeFirstGroupOfModel(const QString &modelName, const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
 {
     QMutableMapIterator<QString, CT_AbstractItemGroup*> it(m_outGroups);
 
@@ -298,7 +329,7 @@ CT_AbstractItemGroup *CT_AbstractReader::takeFirstGroupOfModel(const QString &mo
             it.remove();
 
             if(result != NULL)
-                recursiveSetResult(gr, result);
+                gr->changeResult((CT_AbstractResult*)result);
 
             if(model != NULL)
                 gr->setModel(model);
@@ -308,6 +339,15 @@ CT_AbstractItemGroup *CT_AbstractReader::takeFirstGroupOfModel(const QString &mo
     }
 
     return NULL;
+}
+
+CT_AbstractItemGroup* CT_AbstractReader::takeFirstGroupOfModel(const QString &modelName, const CT_AbstractResult *result, const QString &outModelName)
+{
+    CT_OutAbstractGroupModel *model = dynamic_cast<CT_OutAbstractGroupModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeFirstGroupOfModel", "You want to take first group and set it a new model searched by modelName but this model was not found or is not a group model");
+
+    return takeFirstGroupOfModel(modelName, result, model);
 }
 
 QList<CT_AbstractItemGroup *> CT_AbstractReader::groupOfModel(const QString &modelName) const
@@ -392,19 +432,4 @@ void CT_AbstractReader::clearOutGroups()
 {
     qDeleteAll(m_outGroups.begin(), m_outGroups.end());
     m_outGroups.clear();
-}
-
-void CT_AbstractReader::recursiveSetResult(CT_AbstractItemGroup *gr, CT_AbstractResult *result)
-{
-    gr->changeResult(result);
-
-    CT_GroupIterator itG(gr);
-
-    while(itG.hasNext())
-        recursiveSetResult((CT_AbstractItemGroup*)itG.next(), result);
-
-    CT_ItemIterator itI(gr);
-
-    while(itI.hasNext())
-        ((CT_AbstractSingularItemDrawable*)itI.next())->changeResult(result);
 }

@@ -47,11 +47,6 @@ void CT_TreeStructureForIterator::setModel(const CT_OutAbstractModel *model)
     m_modelIsAItemAttribute = (dynamic_cast<const CT_OutAbstractItemAttributeModel*>(model) != NULL);
 }
 
-CT_OutAbstractModel* CT_TreeStructureForIterator::model() const
-{
-    return outModel();
-}
-
 CT_OutAbstractModel* CT_TreeStructureForIterator::outModel() const
 {
     return _model;
@@ -302,87 +297,6 @@ bool CT_TreeStructureConstructor::addModelsForGroupsToStructure(CT_InStdModelPos
         return false;
 
     return addModelsForGroupsToStructure(parentGroup);
-}
-
-bool CT_TreeStructureConstructor::createModelListForItemsPossibility(CT_InStdModelPossibility *possibility,
-                                                                     QList< DEF_CT_AbstractGroupModelOut* > &models)
-{
-    CT_OutAbstractSingularItemModel *itemModel = dynamic_cast<CT_OutAbstractSingularItemModel*>(possibility->outModel());
-
-    if(itemModel == NULL)
-        return false;
-
-    DEF_CT_AbstractGroupModelOut *parentGroup = dynamic_cast< DEF_CT_AbstractGroupModelOut* >(itemModel->parentModel());
-
-    // on crée la liste des groupes modèles en partant du groupe parent de l'item pour aller jusqu'au groupe racine (en remontant dans la structure)
-    while(parentGroup != NULL)
-    {
-        models.insert(0, parentGroup);
-        parentGroup = parentGroup->parentGroup();
-    }
-
-    return !models.isEmpty();
-}
-
-bool CT_TreeStructureConstructor::createModelListForGroupsPossibility(CT_InStdModelPossibility *possibility,
-                                                                      QList< DEF_CT_AbstractGroupModelOut* > &models)
-{
-    DEF_CT_AbstractGroupModelOut *parentGroup = dynamic_cast< DEF_CT_AbstractGroupModelOut* >(possibility->outModel());
-
-    if(parentGroup == NULL)
-        return false;
-
-    // on crée la liste des groupes modèles en partant du groupe pour aller jusqu'au groupe racine (en remontant dans la structure)
-    while(parentGroup != NULL)
-    {
-        models.insert(0, parentGroup);
-        parentGroup = parentGroup->parentGroup();
-    }
-
-    return !models.isEmpty();
-}
-
-void CT_TreeStructureConstructor::addModelListToTreeStructure(const QList< DEF_CT_AbstractGroupModelOut* > &models)
-{
-    if(models.isEmpty())
-        return;
-
-    if(_structure == NULL)
-    {
-        _structure = new CT_TreeStructureForIterator();
-        _structure->setModel(models.first());
-    }
-
-    CT_TreeStructureForIterator *currentChild = _structure;
-
-    QListIterator<DEF_CT_AbstractGroupModelOut*> it(models);
-    it.next();
-
-    if(!it.hasNext())
-    {
-        currentChild->setToSearch(true);
-    }
-    else
-    {
-        while(it.hasNext())
-        {
-            DEF_CT_AbstractGroupModelOut *groupModel = it.next();
-            CT_TreeStructureForIterator *newChild = currentChild->getChildWithModel(groupModel);
-
-            if(newChild == NULL)
-            {
-                newChild = new CT_TreeStructureForIterator();
-                newChild->setModel(groupModel);
-
-                if(!it.hasNext())
-                    newChild->setToSearch(true);
-
-                currentChild->addChild(newChild);
-            }
-
-            currentChild = newChild;
-        }
-    }
 }
 
 void CT_TreeStructureConstructor::clearTreeStructure()

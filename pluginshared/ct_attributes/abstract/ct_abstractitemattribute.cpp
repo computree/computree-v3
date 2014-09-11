@@ -61,3 +61,8 @@ void CT_AbstractItemAttribute::setModel(const CT_OutAbstractItemAttributeModel *
 {
     internalSetModel(model);
 }
+
+void CT_AbstractItemAttribute::changeResult(const CT_AbstractResult *newRes)
+{
+    internalSetResult(newRes);
+}

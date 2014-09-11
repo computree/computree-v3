@@ -57,6 +57,11 @@ public:
     QString getType() const;
     static QString staticGetType();
 
+    /**
+     * @brief Returns childrens of this group for the GUI
+     */
+    QList<CT_AbstractItem*> childrensForGui() const;
+
     /*!
      *  \brief Always returns false. You can not add a item in this type of group. Item will be destroyed from memory.
      */
@@ -72,16 +77,10 @@ public:
 
     CT_TNodeGroup* rootNode() const;
 
-    // Inherited from ItemDrawable //
-    virtual bool hasChildren() const;
-    virtual bool beginIterateChild();
-    virtual CT_AbstractItemDrawable* nextChild();
-
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 private:
     CT_TNodeGroup   *m_rootNode;
-    bool            m_beginIterateChild;
 
     CT_TNodeGroup* recursiveCopyNodes(const CT_OutAbstractGroupModel *newModel,
                                       const CT_AbstractResult *result,

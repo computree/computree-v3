@@ -39,9 +39,26 @@ public:
                                   const CT_VirtualAbstractStep *yourStep);
 
     /**
+     * @brief Search the model corresponding to the uniqueName passed in parameter in step passed in parameter for the
+     *        result passed in parameter.
+     *
+     * @param inOrOutModelUniqueName : unique name of the model that you search (typically DEF_InXXX or Def_OutXXX)
+     * @param inOrOutResultModel : the model of the result
+     * @param yourStep : your step (typically 'this')
+     */
+    CT_AbstractModel* searchModel(const QString &inOrOutModelUniqueName,
+                                  const CT_OutAbstractResultModel *inOrOutResultModel,
+                                  const CT_VirtualAbstractStep *yourStep);
+
+    /**
      * @brief Remove cache for the result passed in parameter
      */
     void removeCacheForResult(const CT_AbstractResult *res);
+
+    /**
+     * @brief Remove cache for the result model passed in parameter
+     */
+    void removeCacheForResultModel(const CT_OutAbstractResultModel *resM);
 
     /**
      * @brief Clear the cache
@@ -49,12 +66,12 @@ public:
     void clearCache();
 
 private:
-    QHash<CT_AbstractResult*, QHash<QString, CT_AbstractModel*>* >   m_cache;
+    QHash<CT_OutAbstractResultModel*, QHash<QString, CT_AbstractModel*>* >   m_cache;
 
-    CT_AbstractModel* getInCache(const CT_AbstractResult *result, const QString &modelUniqueName, QHash<QString, CT_AbstractModel *> **outHash);
+    CT_AbstractModel* getInCache(const CT_OutAbstractResultModel *resultModel, const QString &modelUniqueName, QHash<QString, CT_AbstractModel *> **outHash);
 
 private slots:
-    void resultDeleted(QObject *o);
+    void resultModelDeleted(QObject *o);
 };
 
 #endif // CT_MODELSEARCHHELPER_H

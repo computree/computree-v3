@@ -313,9 +313,7 @@ bool CDM_StepManager::checkOneStepIsInDebugModeFromStep(CT_VirtualAbstractStep *
     if(step != NULL)
     {
         if(step->isDebugModeOn())
-        {
             return true;
-        }
 
         stepChildList = step->getStepChildList();
     }
@@ -329,9 +327,7 @@ bool CDM_StepManager::checkOneStepIsInDebugModeFromStep(CT_VirtualAbstractStep *
     while(it.hasNext())
     {
         if(checkOneStepIsInDebugModeFromStep(it.next()))
-        {
             return true;
-        }
     }
 
     return false;

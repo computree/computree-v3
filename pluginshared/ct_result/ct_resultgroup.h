@@ -58,32 +58,6 @@ public:
      */
     const QList<CT_AbstractItemGroup*>& groups() const;
 
-
-    Q_DECL_DEPRECATED bool setList(QList<CT_AbstractItemGroup*> &list);
-    Q_DECL_DEPRECATED const QList<CT_AbstractItemGroup*>& getList() const;
-
-
-    // Ajout AP 24/07/2013
-    Q_DECL_DEPRECATED CT_AbstractItemGroup* beginGroup(const CT_InAbstractGroupModel *model);
-    Q_DECL_DEPRECATED CT_AbstractItemGroup* nextGroup();
-    Q_DECL_DEPRECATED CT_AbstractSingularItemDrawable* beginItem(const CT_InAbstractSingularItemModel *model);
-    Q_DECL_DEPRECATED CT_AbstractSingularItemDrawable* nextItem();
-
-    // Fin d'ajout AP 24/07/2013
-
-    Q_DECL_DEPRECATED bool recursiveBeginIterateItems(const CT_InAbstractSingularItemModel &model);
-    Q_DECL_DEPRECATED CT_AbstractSingularItemDrawable* recursiveNextItem();
-    Q_DECL_DEPRECATED bool recursiveBeginIterateGroups(const CT_InAbstractGroupModel &model);
-    Q_DECL_DEPRECATED CT_AbstractItemGroup* recursiveNextGroup();
-
-    // HERITE DE l'interface Result //
-    Q_DECL_DEPRECATED int beginIterateItemDrawableList();
-    Q_DECL_DEPRECATED int beginIterateItemDrawableList(bool mutableIterator);
-    Q_DECL_DEPRECATED CT_AbstractItemDrawable* nextItemDrawable();
-
-    Q_DECL_DEPRECATED int recursiveBeginIterateItemDrawableWithModel(const CT_AbstractModel &model);
-    Q_DECL_DEPRECATED CT_AbstractItemDrawable* recursiveNextItemDrawable();
-
     /**
      * @brief Use this method to remove an item from this result or something in the structure
      *

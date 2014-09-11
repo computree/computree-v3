@@ -152,6 +152,12 @@ public:
     void setModel(const CT_OutAbstractItemAttributeModel *model);
 
     /**
+     * @brief Change the result that contains this attribute.
+     * @warning Not intended for direct use by plugin developper
+     */
+    virtual void changeResult(const CT_AbstractResult *newRes);
+
+    /**
      * @brief Returns a copy of the item attribute
      * @param model : the new model that must be set to the copy
      * @param result : the new result that will contains the copy

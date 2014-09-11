@@ -31,20 +31,14 @@ const CT_StandardContainerDrawManager CT_Container::CONTAINER_DRAW_MANAGER;
 
 CT_Container::CT_Container() : CT_AbstractItemDrawable()
 {
-    _itComputeTools.setContainer((QList<CT_AbstractItemDrawable*>&)_list);
-    _itChildTools.setContainer((QList<CT_AbstractItemDrawable*>&)_list);
-
     setBaseDrawManager(&CONTAINER_DRAW_MANAGER);
 }
 
 CT_Container::CT_Container(const CT_OutAbstractItemModel *model,
                            const CT_AbstractResult *result,
-                           QString defaultItemDrawableType) : CT_AbstractItemDrawable(model, result)
+                           const QString &defaultItemDrawableType) : CT_AbstractItemDrawable(model, result)
 {
-    _itComputeTools.setContainer((QList<CT_AbstractItemDrawable*>&)_list);
-    _itChildTools.setContainer((QList<CT_AbstractItemDrawable*>&)_list);
-    _defaultItemDrawableType = defaultItemDrawableType;
-
+    m_defaultItemDrawableType = defaultItemDrawableType;
     setBaseDrawManager(&CONTAINER_DRAW_MANAGER);
 }
 
@@ -66,37 +60,23 @@ QString CT_Container::staticGetType()
 
 bool CT_Container::addItemDrawable(CT_AbstractItemDrawable *id)
 {
+    /*if(id->getType() != m_defaultItemDrawableType)
+        return false;*/
+
     _list.append(id);
 
     return true;
 }
 
-bool CT_Container::beginIterateItemDrawable()
-{
-    _itComputeTools.setDeleteItemDrawableFromMemoryWhenRemove(isAutoDelete());
-    return _itComputeTools.beginIterateItemDrawable();
-}
-
-CT_AbstractItemDrawable* CT_Container::nextItemDrawable()
-{
-    return _itComputeTools.nextItemDrawable();
-}
-
-CT_AbstractItemDrawable* CT_Container::currentItemDrawable()
-{
-    return _itComputeTools.currentItemDrawable();
-}
-
-bool CT_Container::removeCurrentItemDrawable()
-{
-    return removeItemDrawable(_itComputeTools.currentItemDrawable());
-}
-
 bool CT_Container::removeItemDrawable(CT_AbstractItemDrawable *item)
 {
-    if(_itComputeTools.removeItemDrawable(item))
+    if(_list.removeOne(item))
     {
         m_itemRemovedLater.removeOne(item);
+
+        if(isAutoDelete())
+            delete item;
+
         return true;
     }
 
@@ -105,7 +85,7 @@ bool CT_Container::removeItemDrawable(CT_AbstractItemDrawable *item)
 
 bool CT_Container::removeItemDrawableWithoutAutoDelete(CT_AbstractItemDrawable *item)
 {
-    if(_itComputeTools.removeItemDrawableWithoutAutoDelete(item))
+    if(_list.removeOne(item))
     {
         m_itemRemovedLater.removeOne(item);
         return true;
@@ -154,21 +134,6 @@ void CT_Container::updateCenter()
     }
 }
 
-bool CT_Container::hasChildren() const
-{
-    return !_list.isEmpty();
-}
-
-bool CT_Container::beginIterateChild()
-{
-    return _itChildTools.beginIterateItemDrawable();
-}
-
-CT_AbstractItemDrawable* CT_Container::nextChild()
-{
-    return _itChildTools.nextItemDrawable();
-}
-
 int CT_Container::indexOf(const CT_AbstractItemDrawable *child) const
 {
     return _list.indexOf(dynamic_cast<CT_AbstractItemDrawable*>((CT_AbstractItemDrawable*)child));
@@ -186,18 +151,16 @@ CT_AbstractItemDrawable* CT_Container::copy(const CT_OutAbstractItemModel *model
     if(!copyModeList.isEmpty())
         copyMode = copyModeList.takeFirst();
 
-    CT_Container *container = new CT_Container(model, result, _defaultItemDrawableType);
+    CT_Container *container = new CT_Container(model, result, m_defaultItemDrawableType);
     container->setId(id());
-
+    container->setAutoDelete(true);
 
     if(copyMode == CT_ResultCopyModeList::CopyItemDrawableCompletely)
     {
         int size = _list.size();
 
         for(int i=0; i<size; ++i)
-        {
             container->_list.append(_list.at(i)->copy(NULL, result, copyModeList));
-        }
     }
     else if(copyMode == CT_ResultCopyModeList::CopyItemDrawableReference)
     {

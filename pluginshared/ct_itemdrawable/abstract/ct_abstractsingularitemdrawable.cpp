@@ -45,6 +45,17 @@ QString CT_AbstractSingularItemDrawable::staticGetType()
     return CT_AbstractItemDrawable::staticGetType() + "/CT_AbstractSingularItemDrawable";
 }
 
+void CT_AbstractSingularItemDrawable::changeResult(const CT_AbstractResult *newRes)
+{
+    QList<CT_AbstractItemAttribute*> l = m_itemAttributes.itemAttributesFromResult(result());
+    QListIterator<CT_AbstractItemAttribute*> it(l);
+
+    while(it.hasNext())
+        it.next()->changeResult(newRes);
+
+    CT_AbstractItemDrawable::changeResult(newRes);
+}
+
 bool CT_AbstractSingularItemDrawable::addItemAttribute(CT_AbstractItemAttribute *att)
 {
     return m_itemAttributes.addItemAttribute(att);

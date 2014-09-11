@@ -40,11 +40,6 @@ public:
     /**
      * @brief Returns the model of this node
      */
-    Q_DECL_DEPRECATED CT_OutAbstractModel* model() const;
-
-    /**
-     * @brief Returns the model of this node
-     */
     CT_OutAbstractModel* outModel() const;
 
     /**
@@ -227,30 +222,6 @@ public:
      * @warning the model of the possibility must be a DEF_CT_AbstractGroupModelOut (group)
      */
     bool addModelsForGroupsToStructure(CT_InStdModelPossibility *groupModelPossibility);
-
-    /**
-     * @brief First method to call. Pass the possibility of the IN model of your choice and a empty list. The
-     *        list is filled and if the method return true you must pass the list to the method "addModelListToTreeStructure(...)"
-     *
-     * @warning the model of the possibility must be a CT_OutAbstractSingularItemModel (singular item drawable)
-     */
-    Q_DECL_DEPRECATED bool createModelListForItemsPossibility(CT_InStdModelPossibility *possibility,
-                                            QList< DEF_CT_AbstractGroupModelOut* > &models);
-
-    /**
-     * @brief First method to call. Pass the possibility of the IN model of your choice and a empty list. The
-     *        list is filled and if the method return true you must pass the list to the method "addModelListToTreeStructure(...)"
-     *
-     * @warning the model of the possibility must be a DEF_CT_AbstractGroupModelOut (group)
-     */
-    Q_DECL_DEPRECATED bool createModelListForGroupsPossibility(CT_InStdModelPossibility *possibility,
-                                             QList< DEF_CT_AbstractGroupModelOut* > &models);
-
-    /**
-     * @brief Pass the list constructed by one of the method above. The list is added to the structure. The method
-     *        merge the structure and the list passed in parameter.
-     */
-    Q_DECL_DEPRECATED void addModelListToTreeStructure(const QList< DEF_CT_AbstractGroupModelOut* > &models);
 
     /**
      * @brief Clear the tree structure created.

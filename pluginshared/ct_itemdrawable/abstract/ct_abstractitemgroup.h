@@ -102,9 +102,20 @@ public:
     static QString staticGetType();
 
     /**
+     * @brief Change the result that contains this item.
+     * @warning Not intended for direct use by plugin developper
+     */
+    virtual void changeResult(const CT_AbstractResult *newRes);
+
+    /**
      * @brief Returns true if the groups conatins no item and no groups (test flags willBeRemovedLater() to know the real number)
      */
     virtual bool isEmpty() const = 0;
+
+    /**
+     * @brief Returns childrens of this group for the GUI
+     */
+    QList<CT_AbstractItem*> childrensForGui() const;
 
     /****** SINGULAR ITEMDRAWABLE METHODS ********/
 
@@ -127,11 +138,6 @@ public:
      *        removed (the flag is not set).
      */
     virtual bool removeItem(CT_AbstractSingularItemDrawable *item) = 0;
-
-    /**
-     * @brief Returns a hashMap of CT_AbstractSingularItemDrawable. The key is the modelName.
-     */
-    virtual QHash<QString, CT_GroupItemDrawableContainer*> items() const = 0;
 
     /**
      * @brief Returns true if this group contains a ItemDrawable that match with at least one of the possibility of the IN model.
@@ -159,6 +165,21 @@ public:
      * @brief Returns true if the group don't contains singular ItemDrawable
      */
     virtual bool isEmptyOfSingularItems() const = 0;
+
+    /**
+     * @brief Returns a hashMap of CT_AbstractSingularItemDrawable. The key is the modelName.
+     */
+    virtual QHash<QString, CT_GroupItemDrawableContainer*> items() const = 0;
+
+    /**
+     * @brief Returns a hashMap of new added CT_AbstractSingularItemDrawable. The key is the modelName.
+     */
+    virtual const QHash<QString, CT_GroupItemDrawableContainer*>& itemsNew() const = 0;
+
+    /**
+     * @brief Returns a hashMap of old CT_AbstractSingularItemDrawable (items that have been added to the group if it was a copy). The key is the modelName.
+     */
+    virtual const QHash<QString, CT_GroupItemDrawableContainer*>& itemsBackup() const = 0;
 
     /**
      * @brief Returns the ItemDrawable corresponding to the OUT model
@@ -285,217 +306,6 @@ public:
      * @brief Returns true if at least one child must be removed later
      */
     bool atLeastOneChildMustBeRemovedLater() const;
-
-    /****** DEPRECATED METHODS ********/
-
-    /**
-     * @deprecated This method is deprecated use the method containsItemDrawable(const CT_InAbstractSingularItemModel *model) instead.
-     */
-    Q_DECL_DEPRECATED virtual bool containsItemDrawable(const CT_InAbstractSingularItemModel &model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method containsItemDrawable(const CT_OutAbstractSingularItemModel *model) instead.
-     */
-    Q_DECL_DEPRECATED virtual bool containsItemDrawable(const QVector<CT_OutAbstractSingularItemModel*> &outModelList) const = 0;
-
-    // Ajout AP 24/07/2013
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* beginGroup(const CT_InAbstractGroupModel *model, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* beginGroup(const CT_OutAbstractGroupModel *model, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator or a CT_MutableItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* beginItem(const CT_InAbstractSingularItemModel *model, bool mutableIterator = false) = 0;
-
-    // Fin d'ajout AP 24/07/2013
-
-    /**
-     * @deprecated This method is deprecated use the method nItems() instead.
-     */
-    Q_DECL_DEPRECATED virtual int nItemDrawable() const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateItems(const CT_InAbstractSingularItemModel &model, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateItems(const CT_InAbstractSingularItemModel *model, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateItems(bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* nextItem() = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_MutableItemIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool removeCurrentItem() = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator or the method items(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractSingularItemDrawable*> findItem(const CT_InAbstractSingularItemModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_ItemIterator or the method items(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractSingularItemDrawable*> findItem(const CT_InAbstractSingularItemModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method firstItem(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_InAbstractSingularItemModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method firstItem(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_InAbstractSingularItemModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method firstItem(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_InAbstractSingularItemModel &model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method firstItem(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_InAbstractSingularItemModel *model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractSingularItemDrawable*> findItem(const CT_OutAbstractSingularItemModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractSingularItemDrawable*> findItem(const CT_OutAbstractSingularItemModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_OutAbstractSingularItemModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_OutAbstractSingularItemModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_OutAbstractSingularItemModel &model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use the method item(...) instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractSingularItemDrawable* findFirstItem(const CT_OutAbstractSingularItemModel *model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateGroups(const CT_InAbstractGroupModel &inModel, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateGroups(const CT_InAbstractGroupModel *inModel, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateGroups(const CT_OutAbstractGroupModel &outModel, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateGroups(const CT_OutAbstractGroupModel *outModel, bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool beginIterateGroups(bool mutableIterator = false) = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* nextGroup() = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual bool removeCurrentGroup() = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator or a CT_MutableGroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* currentGroup() const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractItemGroup*> findGroup(const CT_InAbstractGroupModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractItemGroup*> findGroup(const CT_InAbstractGroupModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_InAbstractGroupModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_InAbstractGroupModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractItemGroup*> findGroup(const CT_OutAbstractGroupModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual QList<CT_AbstractItemGroup*> findGroup(const CT_OutAbstractGroupModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_OutAbstractGroupModel &model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_OutAbstractGroupModel *model, CT_AbstractItemGroup::SearchMode searchMode) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_OutAbstractGroupModel &model) const = 0;
-
-    /**
-     * @deprecated This method is deprecated use a CT_GroupIterator instead.
-     */
-    Q_DECL_DEPRECATED virtual CT_AbstractItemGroup* findFirstGroup(const CT_OutAbstractGroupModel *model) const = 0;
 
     /**
      * @brief Set the parent group

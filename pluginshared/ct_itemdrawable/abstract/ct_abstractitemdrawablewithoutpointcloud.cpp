@@ -54,32 +54,6 @@ QString CT_AbstractItemDrawableWithoutPointCloud::staticGetType()
     return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractItemDrawableWithoutPointCloud";
 }
 
-int CT_AbstractItemDrawableWithoutPointCloud::recursiveSearchChildLevelThatMatchType(const QString &type, CT_AbstractItemDrawable &parent, int level)
-{
-    if(level > 10)
-        return 0;
-
-    int newLevel = 0;
-
-    if(parent.beginIterateChild())
-    {
-        CT_AbstractItemDrawable *child = parent.nextChild();
-
-        if((dynamic_cast<CT_AbstractItemDrawableWithPointCloud*>(child) != NULL)
-                && child->getType().startsWith(type))
-        {
-            return level+1;
-        }
-
-        if((newLevel = recursiveSearchChildLevelThatMatchType(type, *child, level+1)) > 0)
-        {
-            return newLevel;
-        }
-    }
-
-    return 0;
-}
-
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_AbstractItemDrawableWithoutPointCloud)
 #endif

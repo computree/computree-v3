@@ -98,7 +98,7 @@ void PB_StepSelectCellsInGrid3D::createOutResultModelListProtected()
         resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
 
     if(resultInModelOut != NULL)
-        baseGridModel = (CT_InAbstractSingularItemModel*)getInModelForResearch(resultInModelOut, DEF_itemBaseGrid);
+        baseGridModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEF_itemBaseGrid, resultInModelOut, this);
 
     if((baseGridModel != NULL) && !baseGridModel->getPossibilitiesSavedSelected().isEmpty())
         itemPrototype = (CT_AbstractSingularItemDrawable*) ((CT_OutAbstractSingularItemModel*) baseGridModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);

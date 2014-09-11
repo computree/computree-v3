@@ -20,7 +20,7 @@ CT_OutAbstractModel* CT_ModelSearchHelper::searchModelForCreation(const QString 
 {
     QHash<QString, CT_AbstractModel*> *outHash = NULL;
 
-    CT_OutAbstractModel *model = (CT_OutAbstractModel*)getInCache(outResult, outModelUniqueName, &outHash);
+    CT_OutAbstractModel *model = (CT_OutAbstractModel*)getInCache(outResult->model(), outModelUniqueName, &outHash);
 
     if(model == NULL)
     {
@@ -39,7 +39,7 @@ CT_AbstractModel* CT_ModelSearchHelper::searchModel(const QString &inOrOutModelU
 {
     QHash<QString, CT_AbstractModel*> *outHash = NULL;
 
-    CT_AbstractModel *model = getInCache(inOrOutResult, inOrOutModelUniqueName, &outHash);
+    CT_AbstractModel *model = getInCache(inOrOutResult->model(), inOrOutModelUniqueName, &outHash);
 
     if(model == NULL)
     {
@@ -83,9 +83,40 @@ CT_AbstractModel* CT_ModelSearchHelper::searchModel(const QString &inOrOutModelU
     return model;
 }
 
+CT_AbstractModel *CT_ModelSearchHelper::searchModel(const QString &inOrOutModelUniqueName,
+                                                    const CT_OutAbstractResultModel *inOrOutResultModel,
+                                                    const CT_VirtualAbstractStep *yourStep)
+{
+    CT_AbstractModel *model = NULL;
+
+    QHash<QString, CT_AbstractModel*> *outHash = NULL;
+
+    if(inOrOutResultModel->result() == NULL)
+    {
+        model = getInCache(inOrOutResultModel, inOrOutModelUniqueName, &outHash);
+
+        if(model == NULL)
+            model = yourStep->getInModelForResearch(inOrOutResultModel, inOrOutModelUniqueName);
+    }
+    else
+    {
+        return searchModel(inOrOutModelUniqueName, inOrOutResultModel->result(), yourStep);
+    }
+
+    if(model != NULL)
+        outHash->insert(inOrOutModelUniqueName, model);
+
+    return model;
+}
+
 void CT_ModelSearchHelper::removeCacheForResult(const CT_AbstractResult *res)
 {
-    QHash<QString, CT_AbstractModel*> *hash = m_cache.take((CT_AbstractResult*)res);
+    removeCacheForResultModel(res->model());
+}
+
+void CT_ModelSearchHelper::removeCacheForResultModel(const CT_OutAbstractResultModel *resM)
+{
+    QHash<QString, CT_AbstractModel*> *hash = m_cache.take((CT_OutAbstractResultModel*)resM);
     delete hash;
 }
 
@@ -95,18 +126,18 @@ void CT_ModelSearchHelper::clearCache()
     m_cache.clear();
 }
 
-CT_AbstractModel* CT_ModelSearchHelper::getInCache(const CT_AbstractResult *result,
+CT_AbstractModel* CT_ModelSearchHelper::getInCache(const CT_OutAbstractResultModel *resultModel,
                                                    const QString &modelUniqueName,
                                                    QHash<QString, CT_AbstractModel*> **outHash)
 {
-    QHash<QString, CT_AbstractModel*> *hash = m_cache.value((CT_AbstractResult*)result, NULL);
+    QHash<QString, CT_AbstractModel*> *hash = m_cache.value((CT_OutAbstractResultModel*)resultModel, NULL);
 
     if(hash == NULL)
     {
         hash = new QHash<QString, CT_AbstractModel*>();
-        m_cache.insert((CT_AbstractResult*)result, hash);
+        m_cache.insert((CT_OutAbstractResultModel*)resultModel, hash);
 
-        connect(result, SIGNAL(destroyed(QObject*)), this, SLOT(resultDeleted(QObject*)), Qt::DirectConnection);
+        connect(resultModel, SIGNAL(destroyed(QObject*)), this, SLOT(resultModelDeleted(QObject*)), Qt::DirectConnection);
 
         *outHash = hash;
         return NULL;
@@ -117,7 +148,7 @@ CT_AbstractModel* CT_ModelSearchHelper::getInCache(const CT_AbstractResult *resu
     return hash->value(modelUniqueName, NULL);
 }
 
-void CT_ModelSearchHelper::resultDeleted(QObject *o)
+void CT_ModelSearchHelper::resultModelDeleted(QObject *o)
 {
-    removeCacheForResult((CT_AbstractResult*)o);
+    removeCacheForResultModel((CT_OutAbstractResultModel*)o);
 }

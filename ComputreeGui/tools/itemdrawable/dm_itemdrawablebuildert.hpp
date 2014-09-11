@@ -105,15 +105,13 @@ void DM_ItemDrawableBuilderT<T,ItemT>::recursiveAddItemDrawable(const ItemT &ite
 
     unlock();
 
-    /*CT_AbstractItemDrawable *pI = (CT_AbstractItemDrawable*)&item;
+    /*CT_ChildIterator it(&item);
 
     if(((level+1) < m_nLevel)
-            && pI->beginIterateChild())
+            && it.hasNext())
     {
-        CT_AbstractItemDrawable *child;
-
-        while((child = pI->nextChild()) != NULL)
-            recursiveAddItemDrawable(*child, level+1);
+        while(it.hasNext())
+            recursiveAddItemDrawable(dynamic_cast<CT_AbstractItemDrawable*>(it.next()), level+1);
     }*/
 
     if(size == 1)
@@ -137,15 +135,13 @@ void DM_ItemDrawableBuilderT<T,ItemT>::recursiveRemoveItemDrawable(const ItemT &
 
     unlock();
 
-    /*CT_AbstractItemDrawable *pI = (CT_AbstractItemDrawable*)&item;
+    /*CT_ChildIterator it(&item);
 
     if(((level+1) < m_nLevel)
-            && pI->beginIterateChild())
+            && it.hasNext())
     {
-        CT_AbstractItemDrawable *child;
-
-        while((child = pI->nextChild()) != NULL)
-            recursiveRemoveItemDrawable(*child, level+1);
+        while(it.hasNext())
+            recursiveAddItemDrawable(dynamic_cast<CT_AbstractItemDrawable*>(it.next()), level+1);
     }*/
 
     if(isE)

@@ -327,9 +327,9 @@ void PB_StepGenericExporter::configureExporterFromModel()
         CT_InAbstractItemModel *inItemModelToExport = NULL;
 
         if(_exporter->exportOnlyGroup())
-            inItemModelToExport = (CT_InAbstractItemModel*)getInModelForResearch((CT_OutAbstractResultModel*)it.next()->outModel(), DEF_SearchInGroup);
+            inItemModelToExport = (CT_InAbstractItemModel*)PS_MODELS->searchModel(DEF_SearchInGroup, (CT_OutAbstractResultModel*)it.next()->outModel(), this);
         else
-            inItemModelToExport = (CT_InAbstractItemModel*)getInModelForResearch((CT_OutAbstractResultModel*)it.next()->outModel(), DEF_SearchInItemDrawable);
+            inItemModelToExport = (CT_InAbstractItemModel*)PS_MODELS->searchModel(DEF_SearchInItemDrawable, (CT_OutAbstractResultModel*)it.next()->outModel(), this);
 
         // on récupère sa possibilité (il n'y en a qu'une puisqu'on a mis CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple)
         CT_InStdModelPossibility *possibility = inItemModelToExport->getPossibilitiesSavedSelected().first();

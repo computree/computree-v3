@@ -28,14 +28,16 @@
 
 #include "gguimanager.h"
 
-GGuiManager::GGuiManager()
+GGuiManager::GGuiManager(CDM_Internationalization *language)
 {
     _uniqueInstance = this;
     _mainWindow = NULL;
+    m_language = language;
 }
 
 GGuiManager::~GGuiManager()
 {
+    m_language->saveConfiguration();
     delete _mainWindow;
 }
 
