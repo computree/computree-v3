@@ -249,6 +249,12 @@ void CT_CloudIndexStdVectorT<T>::resize(const size_t &newSize)
 }
 
 template<typename T>
+void CT_CloudIndexStdVectorT<T>::reserve(const size_t &newSize)
+{
+    _vector->reserve(newSize);
+}
+
+template<typename T>
 void CT_CloudIndexStdVectorT<T>::removeIfOrShiftIf(typename CT_CloudIndexStdVectorT<T>::FindIfFunction findIf,
                                                 typename CT_CloudIndexStdVectorT<T>::RemoveIfFunction removeIf,
                                                 typename CT_CloudIndexStdVectorT<T>::ShiftIfFunction shiftIf,

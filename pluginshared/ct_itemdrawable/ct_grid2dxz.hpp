@@ -135,22 +135,18 @@ CT_Grid2DXZ<DataT>* CT_Grid2DXZ<DataT>::createGrid2DXZFromXZCoords(const CT_OutA
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid2DXZ<DataT>* grid = new CT_Grid2DXZ((const CT_OutAbstractSingularItemModel *)model, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimCol++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resolution))
     {
-        grid->_dimLin++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resolution);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid2DXZ<DataT>(model, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
 }
 
 template< typename DataT>
@@ -168,22 +164,18 @@ CT_Grid2DXZ<DataT>* CT_Grid2DXZ<DataT>::createGrid2DXZFromXZCoords(const QString
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid2DXZ<DataT>* grid = new CT_Grid2DXZ(modelName, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimCol++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resolution))
     {
-        grid->_dimLin++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resolution);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid2DXZ<DataT>(modelName, result, xmin, zmin, dimx, dimz, resolution, ylevel, na, initValue);
 }
 
 template< typename DataT>

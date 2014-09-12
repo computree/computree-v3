@@ -4,7 +4,7 @@
 #include "pluginShared_global.h"
 
 template< typename DataT>
-class PLUGINSHAREDSHARED_EXPORT CT_ITemplatedData4DArray
+class CT_ITemplatedData4DArray
 {
 public:
     virtual ~CT_ITemplatedData4DArray() {}

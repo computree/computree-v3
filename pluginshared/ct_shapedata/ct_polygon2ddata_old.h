@@ -25,8 +25,8 @@
 
 *****************************************************************************/
 
-#ifndef CT_POLYGON2DDATA_H
-#define CT_POLYGON2DDATA_H
+#ifndef CT_Polygon2DData_Old_OLD_H
+#define CT_Polygon2DData_Old_OLD_H
 
 #include "ct_shapedata/ct_shapedata.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
@@ -38,17 +38,17 @@
 #include <QVector2D>
 #include <QStack>
 
-class PLUGINSHAREDSHARED_EXPORT CT_Polygon2DData : public CT_ShapeData
+class PLUGINSHAREDSHARED_EXPORT CT_Polygon2DData_Old : public CT_ShapeData
 {
 public:
 
-    CT_Polygon2DData();
+    CT_Polygon2DData_Old();
 
-    CT_Polygon2DData(const QVector<QVector2D *> &vertices);
+    CT_Polygon2DData_Old(const QVector<QVector2D *> &vertices);
 
-    ~CT_Polygon2DData();
+    ~CT_Polygon2DData_Old();
 
-    CT_Polygon2DData* clone() const;
+    CT_Polygon2DData_Old* clone() const;
 
     void computeCentroid();
 
@@ -63,13 +63,13 @@ public:
 
     bool contains(float x, float y);
 
-    static CT_Polygon2DData* createConvexHull(const CT_PointCloudIndexVector *indices);
-    static CT_Polygon2DData* createConvexHull(const CT_DelaunayT &triangulation);
+    static CT_Polygon2DData_Old* createConvexHull(const CT_PointCloudIndexVector *indices);
+    static CT_Polygon2DData_Old* createConvexHull(const CT_DelaunayT &triangulation);
 
     static void orderPointsByXY(QList<QVector2D *> &pointList);
     // Use Andrew's monotone chain convex hull algorithm
-    static CT_Polygon2DData* createConvexHull(QList<QVector2D *> &orderedCandidates);
-    static CT_Polygon2DData* chainHull_2D(QList<QVector2D*> &orderedCandidates);
+    static CT_Polygon2DData_Old* createConvexHull(QList<QVector2D *> &orderedCandidates);
+    static CT_Polygon2DData_Old* chainHull_2D(QList<QVector2D*> &orderedCandidates);
 
 private:
     QVector<QVector2D*> _vertices;
@@ -79,11 +79,11 @@ private:
     float               _minY;
     float               _maxY;
 
-    friend class CT_Polygon2D;
+    friend class CT_Polygon2D_Old;
 
     static float cross(const QVector2D* O, const QVector2D* A, const QVector2D* B);
     static bool compare(const QVector2D* p1, const QVector2D* p2);
 
 };
 
-#endif // CT_POLYGON2DDATA_H
+#endif // CT_Polygon2DData_Old_OLD_H

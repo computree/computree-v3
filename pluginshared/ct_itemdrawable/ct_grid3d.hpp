@@ -156,28 +156,23 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstra
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid3D<DataT>* grid = new CT_Grid3D((const CT_OutAbstractSingularItemModel *)model, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimx++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resolution))
     {
-        grid->_dimy++;
-        grid->_maxCoordinates.setY(grid->maxY() + resolution);
+        dimy++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resolution))
     {
-        grid->_dimz++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resolution);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid3D<DataT>(model, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
 }
 
 template< typename DataT>
@@ -197,28 +192,23 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const QString &mod
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    CT_Grid3D<DataT>* grid = new CT_Grid3D(modelName, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimx++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resolution))
     {
-        grid->_dimy++;
-        grid->_maxCoordinates.setY(grid->maxY() + resolution);
+        dimy++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resolution))
     {
-        grid->_dimz++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resolution);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid3D<DataT>(modelName, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
 }
 
 

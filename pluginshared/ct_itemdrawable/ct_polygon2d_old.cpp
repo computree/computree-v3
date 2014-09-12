@@ -25,22 +25,22 @@
 
 *****************************************************************************/
 
-#include "ct_polygon2d.h"
+#include "ct_polygon2d_old.h"
 
 #include <limits>
 
-CT_DEFAULT_IA_INIT(CT_Polygon2D)
+CT_DEFAULT_IA_INIT(CT_Polygon2D_Old)
 
-const CT_StandardPolygon2DDrawManager CT_Polygon2D::POLYGON2D_DRAW_MANAGER;
+const CT_StandardPolygon2DDrawManager CT_Polygon2D_Old::POLYGON2D_DRAW_MANAGER;
 
-CT_Polygon2D::CT_Polygon2D() : CT_AbstractShape()
+CT_Polygon2D_Old::CT_Polygon2D_Old() : CT_AbstractShape()
 {
     setBaseDrawManager(&POLYGON2D_DRAW_MANAGER);
 }
 
-CT_Polygon2D::CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
+CT_Polygon2D_Old::CT_Polygon2D_Old(const CT_OutAbstractSingularItemModel *model,
                          const CT_AbstractResult *result,
-                         CT_Polygon2DData *data) : CT_AbstractShape(model, result, data)
+                         CT_Polygon2DData_Old *data) : CT_AbstractShape(model, result, data)
 {
     setBaseDrawManager(&POLYGON2D_DRAW_MANAGER);
 
@@ -62,9 +62,9 @@ CT_Polygon2D::CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
     _maxCoordinates.setZ(0);
 }
 
-CT_Polygon2D::CT_Polygon2D(const QString &modelName,
+CT_Polygon2D_Old::CT_Polygon2D_Old(const QString &modelName,
                          const CT_AbstractResult *result,
-                         CT_Polygon2DData *data) : CT_AbstractShape(modelName, result, data)
+                         CT_Polygon2DData_Old *data) : CT_AbstractShape(modelName, result, data)
 {
     setBaseDrawManager(&POLYGON2D_DRAW_MANAGER);
 
@@ -86,27 +86,27 @@ CT_Polygon2D::CT_Polygon2D(const QString &modelName,
     _maxCoordinates.setZ(0);
 }
 
-const QVector<QVector2D*>& CT_Polygon2D::getVertices() const
+const QVector<QVector2D*>& CT_Polygon2D_Old::getVertices() const
 {
-    return ((const CT_Polygon2DData&)getData()).getVertices();
+    return ((const CT_Polygon2DData_Old&)getData()).getVertices();
 }
 
-QString CT_Polygon2D::getType() const
+QString CT_Polygon2D_Old::getType() const
 {
     return staticGetType();
 }
 
-QString CT_Polygon2D::staticGetType()
+QString CT_Polygon2D_Old::staticGetType()
 {
-    return CT_AbstractShape::staticGetType() + "/CT_Polygon2D";
+    return CT_AbstractShape::staticGetType() + "/CT_Polygon2D_Old";
 }
 
-CT_AbstractItemDrawable* CT_Polygon2D::copy(const CT_OutAbstractItemModel *model,
+CT_AbstractItemDrawable* CT_Polygon2D_Old::copy(const CT_OutAbstractItemModel *model,
                                            const CT_AbstractResult *result,
                                            CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
-    CT_Polygon2D *polygon = new CT_Polygon2D((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_Polygon2DData&)getData()).clone() : NULL);
+    CT_Polygon2D_Old *polygon = new CT_Polygon2D_Old((const CT_OutAbstractSingularItemModel *)model, result, (getPointerData() != NULL) ? ((const CT_Polygon2DData_Old&)getData()).clone() : NULL);
     polygon->setId(id());
 
     polygon->setAlternativeDrawManager(getAlternativeDrawManager());

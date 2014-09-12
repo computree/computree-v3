@@ -166,7 +166,6 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstr
                                                                DataT na,
                                                                DataT initValue)
 {
-
     float xdir = xmax - xmin;
     float ydir = ymax - ymin;
     float zdir = zmax - zmin;
@@ -175,14 +174,13 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstr
 
     int dim = ceil(length/resolution);
 
-    CT_Profile<DataT>* grid = new CT_Profile((const CT_OutAbstractSingularItemModel *)model, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (length >= grid->maxLength())
+    while (length >= dim*resolution)
     {
-        grid->_dim++;
-        grid->_maxLength = grid->maxLength() + resolution;
+        dim++;
     }
+
+    CT_Profile<DataT>* grid = new CT_Profile(model, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
 
     return grid;
 }
@@ -200,7 +198,6 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const QString &mo
                                                                DataT na,
                                                                DataT initValue)
 {
-
     float xdir = xmax - xmin;
     float ydir = ymax - ymin;
     float zdir = zmax - zmin;
@@ -209,14 +206,13 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const QString &mo
 
     int dim = ceil(length/resolution);
 
-    CT_Profile<DataT>* grid = new CT_Profile(modelName, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (length >= grid->maxLength())
+    while (length >= dim*resolution)
     {
-        grid->_dim++;
-        grid->_maxLength = grid->maxLength() + resolution;
+        dim++;
     }
+
+    CT_Profile<DataT>* grid = new CT_Profile(modelName, result, xmin, ymin, zmin, xdir, ydir, zdir, dim, resolution, na, initValue);
 
     return grid;
 }

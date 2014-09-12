@@ -138,20 +138,18 @@ CT_Grid2DXY<DataT>* CT_Grid2DXY<DataT>::createGrid2DXYFromXYCoords(const CT_OutA
     size_t dimx = ceil((xmax - xmin)/resolution);;
     size_t dimy = ceil((ymax - ymin)/resolution);
 
-    CT_Grid2DXY<DataT>* grid = new CT_Grid2DXY((const CT_OutAbstractSingularItemModel *)model, result, xmin, ymin, dimx, dimy, resolution, zlevel, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimCol++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resolution))
     {
-        grid->_dimLin++;
-        grid->_maxCoordinates.setY(grid->maxY() + resolution);
+        dimy++;
     }
+
+    CT_Grid2DXY<DataT>* grid = new CT_Grid2DXY<DataT>(model, result, xmin, ymin, dimx, dimy, resolution, zlevel, na, initValue);
 
     return grid;
 }
@@ -171,20 +169,18 @@ CT_Grid2DXY<DataT>* CT_Grid2DXY<DataT>::createGrid2DXYFromXYCoords(const QString
     size_t dimx = ceil((xmax - xmin)/resolution);;
     size_t dimy = ceil((ymax - ymin)/resolution);
 
-    CT_Grid2DXY<DataT>* grid = new CT_Grid2DXY(modelName, result, xmin, ymin, dimx, dimy, resolution, zlevel, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resolution))
     {
-        grid->_dimCol++;
-        grid->_maxCoordinates.setX(grid->maxX() + resolution);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resolution))
     {
-        grid->_dimLin++;
-        grid->_maxCoordinates.setY(grid->maxY() + resolution);
+        dimy++;
     }
+
+    CT_Grid2DXY<DataT>* grid = new CT_Grid2DXY<DataT>(modelName, result, xmin, ymin, dimx, dimy, resolution, zlevel, na, initValue);
 
     return grid;
 }

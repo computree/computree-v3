@@ -39,9 +39,9 @@ public:
      * \param model Itemdrawable model attached to the grid
      * \param result Result attached to the grid
      */
-    CT_AbstractGrid4D(const CT_OutAbstractSingularItemModel *model, CT_AbstractResult *result);
+    CT_AbstractGrid4D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
 
-    CT_AbstractGrid4D(const QString &modelName, CT_AbstractResult *result);
+    CT_AbstractGrid4D(const QString &modelName, const CT_AbstractResult *result);
 
 
     /*!

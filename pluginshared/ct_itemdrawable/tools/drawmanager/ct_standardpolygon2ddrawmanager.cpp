@@ -1,11 +1,11 @@
 #include "ct_standardpolygon2ddrawmanager.h"
-#include "ct_polygon2d.h"
+#include "ct_polygon2d_old.h"
 
 
 const QString CT_StandardPolygon2DDrawManager::INDEX_CONFIG_DRAW_POINTS = CT_StandardPolygon2DDrawManager::staticInitConfigDrawPoints();
 const QString CT_StandardPolygon2DDrawManager::INDEX_CONFIG_DRAW_LINES = CT_StandardPolygon2DDrawManager::staticInitConfigDrawLines();
 
-CT_StandardPolygon2DDrawManager::CT_StandardPolygon2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? "CT_Polygon2D" : drawConfigurationName)
+CT_StandardPolygon2DDrawManager::CT_StandardPolygon2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? "CT_Polygon2D_Old" : drawConfigurationName)
 {
     
 }
@@ -18,7 +18,7 @@ void CT_StandardPolygon2DDrawManager::draw(GraphicsViewInterface &view, PainterI
 {
     CT_StandardAbstractShapeDrawManager::draw(view, painter, itemDrawable);
 
-    const CT_Polygon2D &item = dynamic_cast<const CT_Polygon2D&>(itemDrawable);
+    const CT_Polygon2D_Old &item = dynamic_cast<const CT_Polygon2D_Old&>(itemDrawable);
 
     bool drawPoints = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_POINTS).toBool();
     bool drawLines = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_LINES).toBool();

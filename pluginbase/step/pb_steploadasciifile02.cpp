@@ -188,6 +188,7 @@ QList<QString> PB_StepLoadAsciiFile02::getFileExtensionAccepted() const
     list << ".xyz";
     list << ".asc";
     list << ".txt";
+    list << ".csv";
 
     return list;
 }

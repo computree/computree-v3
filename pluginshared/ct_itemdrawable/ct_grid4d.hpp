@@ -190,37 +190,28 @@ CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstr
     size_t dimy = ceil((ymax - ymin)/resy);
     size_t dimz = ceil((zmax - zmin)/resz);
 
-    CT_Grid4D<DataT>* grid = new CT_Grid4D((const CT_OutAbstractSingularItemModel *)model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (wmax >= grid->maxW())
+    while (wmax >= (wmin + dimw * resw))
     {
-        grid->_dimw++;
-        grid->_top.setW( grid->_top.w() + resw);
+        dimw++;
     }
 
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resx))
     {
-        grid->_dimx++;
-        grid->_maxCoordinates.setX(grid->maxX() + resx);
-        grid->_top.setX( grid->_top.x() + resx);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resy))
     {
-        grid->_dimy++;
-        grid->_maxCoordinates.setY(grid->maxY() + resy);
-        grid->_top.setY( grid->_top.y() + resy);
+        dimy++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resz))
     {
-        grid->_dimz++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resz);
-        grid->_top.setZ( grid->_top.z() + resz);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid4D<DataT>(model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
 }
 
 template< typename DataT>
@@ -246,37 +237,28 @@ CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const QString &mo
     size_t dimy = ceil((ymax - ymin)/resy);
     size_t dimz = ceil((zmax - zmin)/resz);
 
-    CT_Grid4D<DataT>* grid = new CT_Grid4D((const CT_OutAbstractSingularItemModel *)model, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
-
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (wmax >= grid->maxW())
+    while (wmax >= (wmin + dimw * resw))
     {
-        grid->_dimw++;
-        grid->_top.setW( grid->_top.w() + resw);
+        dimw++;
     }
 
-    while (xmax >= grid->maxX())
+    while (xmax >= (xmin + dimx * resx))
     {
-        grid->_dimx++;
-        grid->_maxCoordinates.setX(grid->maxX() + resx);
-        grid->_top.setX( grid->_top.x() + resx);
+        dimx++;
     }
 
-    while (ymax >= grid->maxY())
+    while (ymax >= (ymin + dimy * resy))
     {
-        grid->_dimy++;
-        grid->_maxCoordinates.setY(grid->maxY() + resy);
-        grid->_top.setY( grid->_top.y() + resy);
+        dimy++;
     }
 
-    while (zmax >= grid->maxZ())
+    while (zmax >= (zmin + dimz * resz))
     {
-        grid->_dimz++;
-        grid->_maxCoordinates.setZ(grid->maxZ() + resz);
-        grid->_top.setZ( grid->_top.z() + resz);
+        dimz++;
     }
 
-    return grid;
+    return new CT_Grid4D<DataT>(modelName, result, wmin, xmin, ymin, zmin, dimw, dimx, dimy, dimz, resw, resx, resy, resz, na, initValue);
 }
 
 template< typename DataT>

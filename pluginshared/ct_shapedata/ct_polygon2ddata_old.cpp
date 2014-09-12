@@ -25,7 +25,7 @@
 
 *****************************************************************************/
 
-#include "ct_polygon2ddata.h"
+#include "ct_polygon2ddata_old.h"
 
 #include "ct_triangulation/ct_nodet.h"
 
@@ -33,11 +33,11 @@
 #include <limits>
 #include <algorithm>
 
-CT_Polygon2DData::CT_Polygon2DData() : CT_ShapeData()
+CT_Polygon2DData_Old::CT_Polygon2DData_Old() : CT_ShapeData()
 {
 }
 
-CT_Polygon2DData::CT_Polygon2DData(const QVector<QVector2D*> &vertices)
+CT_Polygon2DData_Old::CT_Polygon2DData_Old(const QVector<QVector2D*> &vertices)
 {
 
     int size = vertices.size();
@@ -52,7 +52,7 @@ CT_Polygon2DData::CT_Polygon2DData(const QVector<QVector2D*> &vertices)
     computeCentroid();
 }
 
-void CT_Polygon2DData::computeCentroid()
+void CT_Polygon2DData_Old::computeCentroid()
 {
     double signedArea = 0.0;
     double a = 0.0;
@@ -94,18 +94,18 @@ void CT_Polygon2DData::computeCentroid()
     setDirection(QVector3D(0, 0, 1));
 }
 
-CT_Polygon2DData::~CT_Polygon2DData()
+CT_Polygon2DData_Old::~CT_Polygon2DData_Old()
 {
     qDeleteAll(_vertices);
 }
 
 
-CT_Polygon2DData* CT_Polygon2DData::clone() const
+CT_Polygon2DData_Old* CT_Polygon2DData_Old::clone() const
 {
-    return new CT_Polygon2DData(_vertices);
+    return new CT_Polygon2DData_Old(_vertices);
 }
 
-void CT_Polygon2DData::expand(float buffer)
+void CT_Polygon2DData_Old::expand(float buffer)
 {
     int size = getVerticesNumber();
     for (int i = 0 ; i < size ; i++)
@@ -121,12 +121,12 @@ void CT_Polygon2DData::expand(float buffer)
     computeCentroid();
 }
 
-double CT_Polygon2DData::getAreaIfNotSelfIntersecting()
+double CT_Polygon2DData_Old::getAreaIfNotSelfIntersecting()
 {
     return fabs(getSignedArea());
 }
 
-double CT_Polygon2DData::getSignedArea()
+double CT_Polygon2DData_Old::getSignedArea()
 {
     double area = 0;
     QVector2D *pt1 = NULL;
@@ -144,7 +144,7 @@ double CT_Polygon2DData::getSignedArea()
     return 0.5*area;
 }
 
-double CT_Polygon2DData::getPerimeter()
+double CT_Polygon2DData_Old::getPerimeter()
 {
     double perimeter = 0;
     QVector2D *pt1 = NULL;
@@ -162,7 +162,7 @@ double CT_Polygon2DData::getPerimeter()
     return perimeter;
 }
 
-bool CT_Polygon2DData::contains(float x, float y)
+bool CT_Polygon2DData_Old::contains(float x, float y)
 {
     if (x < _minX) {return false;}
     if (x > _maxX) {return false;}
@@ -191,7 +191,7 @@ bool CT_Polygon2DData::contains(float x, float y)
     return result;
 }
 
-CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVector *indices)
+CT_Polygon2DData_Old* CT_Polygon2DData_Old::createConvexHull(const CT_PointCloudIndexVector *indices)
 {
     // Compute triangulation
     CT_DelaunayT delaunay;
@@ -208,7 +208,7 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVec
     return createConvexHull(delaunay);
 }
 
-CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_DelaunayT &triangulation)
+CT_Polygon2DData_Old* CT_Polygon2DData_Old::createConvexHull(const CT_DelaunayT &triangulation)
 {
     QVector<QVector2D*> convexHull;
 
@@ -228,24 +228,24 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_DelaunayT &triangu
         convexHull.append(vertice);
     }
 
-    return new CT_Polygon2DData(convexHull);
+    return new CT_Polygon2DData_Old(convexHull);
 }
 
 
 
-void CT_Polygon2DData::orderPointsByXY(QList<QVector2D*> &pointList)
+void CT_Polygon2DData_Old::orderPointsByXY(QList<QVector2D*> &pointList)
 {
     std::sort(pointList.begin(), pointList.end(), compare);
 }
 
-bool CT_Polygon2DData::compare(const QVector2D* p1, const QVector2D* p2)
+bool CT_Polygon2DData_Old::compare(const QVector2D* p1, const QVector2D* p2)
 {
      return (p1->x() < p2->x() || (p1->x() == p2->x() && p1->y() < p2->y()));
 }
 
 // Returns a list of points on the convex hull in counter-clockwise order.
 // Note: the last point in the returned list is the same as the first one.
-CT_Polygon2DData* CT_Polygon2DData::createConvexHull(QList<QVector2D*> &orderedCandidates)
+CT_Polygon2DData_Old* CT_Polygon2DData_Old::createConvexHull(QList<QVector2D*> &orderedCandidates)
 {
     // Adapted from http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 
@@ -277,13 +277,13 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(QList<QVector2D*> &orderedC
 
     if (Hlower.size() < 3) {return NULL;}
 
-    return  new CT_Polygon2DData(Hlower);
+    return  new CT_Polygon2DData_Old(Hlower);
 }
 
 // 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
 // Returns a positive value, if OAB makes a counter-clockwise turn,
 // negative for clockwise turn, and zero if the points are collinear.
-float CT_Polygon2DData::cross(const QVector2D* O, const QVector2D* A, const QVector2D* B)
+float CT_Polygon2DData_Old::cross(const QVector2D* O, const QVector2D* A, const QVector2D* B)
 {
     return (A->x() - O->x()) * (B->y() - O->y()) - (A->y() - O->y()) * (B->x() - O->x());
 }

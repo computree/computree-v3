@@ -274,9 +274,7 @@ SOURCES += \
     ct_exporter/abstract/ct_abstractexporterattributesselection.cpp \
     ct_tools/itemdrawable/abstract/ct_abstractitemdrawablecollectionbuilder.cpp \
     ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp \
-    ct_itemdrawable/ct_polygon2d.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.cpp \
-    ct_shapedata/ct_polygon2ddata.cpp \
     ct_itemdrawable/abstract/ct_abstractmetric.cpp \
     ct_itemdrawable/ct_affiliationid.cpp \
     ct_itemdrawable/ct_metrict.cpp \
@@ -333,7 +331,9 @@ SOURCES += \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.cpp \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.cpp \
     ct_model/tools/ct_modelsearchhelper.cpp \
-    ct_item/tools/iterator/ct_childiterator.cpp
+    ct_item/tools/iterator/ct_childiterator.cpp \
+    ct_itemdrawable/ct_polygon2d_old.cpp \
+    ct_shapedata/ct_polygon2ddata_old.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -623,9 +623,7 @@ HEADERS += interfaces.h \
     ct_exporter/abstract/ct_abstractexporterpointattributesselection.h \
     ct_tools/ct_numerictostringconversiont.h \
     ct_tools/ct_stringtonumericconversion.h \
-    ct_itemdrawable/ct_polygon2d.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.h \
-    ct_shapedata/ct_polygon2ddata.h \
     ct_itemdrawable/abstract/ct_abstractmetric.h \
     ct_itemdrawable/ct_metrict.h \
     ct_itemdrawable/ct_metrict.hpp \
@@ -715,7 +713,9 @@ HEADERS += interfaces.h \
     ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h \
     ct_model/tools/ct_modelsearchhelper.h \
-    ct_item/tools/iterator/ct_childiterator.h
+    ct_item/tools/iterator/ct_childiterator.h \
+    ct_itemdrawable/ct_polygon2d_old.h \
+    ct_shapedata/ct_polygon2ddata_old.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step

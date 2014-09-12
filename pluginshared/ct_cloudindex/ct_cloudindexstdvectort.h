@@ -58,6 +58,7 @@ public:
     void clear();
     void erase(const size_t &beginIndex, const size_t &sizes);
     void resize(const size_t &newSize);
+    void reserve(const size_t &newSize);
     void removeIfOrShiftIf(FindIfFunction findIf,
                            RemoveIfFunction removeIf,
                            ShiftIfFunction shiftIf,

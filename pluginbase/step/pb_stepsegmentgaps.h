@@ -15,7 +15,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractgrid3d.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_grid2dxy.h"
-#include "ct_itemdrawable/ct_polygon2d.h"
+#include "ct_itemdrawable/ct_polygon2d_old.h"
 
 
 class CT_AbstractSingularItemDrawable;

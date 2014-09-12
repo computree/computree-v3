@@ -98,7 +98,7 @@ void PB_StepSegmentCrowns::createOutResultModelListProtected()
 
     resultModel->addGroupModel(DEF_SearchOutGroup, DEF_SearchOutGroupScene);
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutScene, new CT_Scene(), tr("Scènes segmentées"));
-    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexHull, new CT_Polygon2D(), tr("ConvexHull"));
+    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexHull, new CT_Polygon2D_Old(), tr("ConvexHull"));
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutCrownArea, new CT_MetricT<float>(), tr("Aire du houppier"));
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexCrownArea, new CT_MetricT<float>(), tr("Aire du houppier convexe"));
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutZmax, new CT_MetricT<float>(), tr("Z max"));
@@ -232,7 +232,7 @@ void PB_StepSegmentCrowns::compute()
 
 
             PS_LOG->addMessage(LogInterface::info, LogInterface::step,tr("Création des Convex Hulls"));
-            QMap<int, CT_Polygon2DData*> convexHullsMap;
+            QMap<int, CT_Polygon2DData_Old*> convexHullsMap;
             createConvexHulls(cellsMapByCluster, sceneGroupMap, convexHullsMap);
 
 
@@ -382,7 +382,7 @@ void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<QVector2D*> *> &
 
 void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<QVector2D *> *> &cellsMapByCluster,
                                              const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
-                                             QMap<int, CT_Polygon2DData*> &convexHullsMap)
+                                             QMap<int, CT_Polygon2DData_Old *> &convexHullsMap)
 {
     QMapIterator<int, QList<QVector2D *> *> it(cellsMapByCluster);
     while (it.hasNext())
@@ -391,13 +391,13 @@ void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<QVector2D *> *> &ce
         int cluster = it.key();
         QList<QVector2D*> *cells = it.value();
         //CT_Polygon2DData::orderPointsByXY(cells); // Normalement inutile
-        CT_Polygon2DData* polygonData = CT_Polygon2DData::createConvexHull(*cells);
+        CT_Polygon2DData_Old* polygonData = CT_Polygon2DData_Old::createConvexHull(*cells);
 
         if (polygonData!=NULL)
         {
             convexHullsMap.insert(cluster, polygonData);
             CT_StandardItemGroup* groupScene = sceneGroupMap.value(cluster);
-            CT_Polygon2D *convexHull = new CT_Polygon2D(DEF_SearchOutConvexHull, _outResult, polygonData);
+            CT_Polygon2D_Old *convexHull = new CT_Polygon2D_Old(DEF_SearchOutConvexHull, _outResult, polygonData);
             groupScene->addItemDrawable(convexHull);
         }
     }
@@ -405,7 +405,7 @@ void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<QVector2D *> *> &ce
 
 
 void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
-                                          const QMap<int, CT_Polygon2DData*> &convexHullsMap,
+                                          const QMap<int, CT_Polygon2DData_Old *> &convexHullsMap,
                                           const QMap<int, size_t> &clusterCounts,
                                           const QMap<int, float> &clusterZMax)
 {
@@ -421,12 +421,12 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
         float y = _clustersGrid->getCellCenterLinCoord(row);
         int cluster = _clustersGrid->valueAtXY(x, y);
 
-        QMapIterator<int, CT_Polygon2DData*> it_convexHullMap(convexHullsMap);
+        QMapIterator<int, CT_Polygon2DData_Old*> it_convexHullMap(convexHullsMap);
         while (it_convexHullMap.hasNext())
         {
             it_convexHullMap.next();
             int hullCluster = it_convexHullMap.key();
-            CT_Polygon2DData* polygonData = it_convexHullMap.value();
+            CT_Polygon2DData_Old* polygonData = it_convexHullMap.value();
 
             if ((polygonData != NULL && polygonData->contains(x, y)) || (hullCluster == cluster))
             {

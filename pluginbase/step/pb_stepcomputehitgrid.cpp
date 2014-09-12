@@ -97,7 +97,6 @@ void PB_StepComputeHitGrid::createOutResultModelListProtected()
 {    
     CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEF_SearchInResult);
 
-    res->addItemModel(DEF_SearchInGroup, _hits_ModelName, new CT_Grid3D<int>(), tr("Hits"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_grxy_ModelName, new CT_Grid2DXY<int>(), tr("DensityXY"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_grxz_ModelName, new CT_Grid2DXZ<int>(), tr("DensityXZ"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_gryz_ModelName, new CT_Grid2DYZ<int>(), tr("DensityYZ"));
@@ -105,6 +104,7 @@ void PB_StepComputeHitGrid::createOutResultModelListProtected()
     res->addItemModel(DEF_SearchInGroup, _itemOut_pry_ModelName, new CT_Profile<int>(), tr("ProfilY"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_prz_ModelName, new CT_Profile<int>(), tr("ProfilZ"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_prdiag_ModelName, new CT_Profile<int>(), tr("ProfilDiag"));
+    res->addItemModel(DEF_SearchInGroup, _hits_ModelName, new CT_Grid3D<int>(), tr("Hits"));
 }
 
 void PB_StepComputeHitGrid::createPostConfigurationDialog()
