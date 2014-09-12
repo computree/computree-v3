@@ -12,7 +12,7 @@ contains ( QT_VERSION, "^5.*" ) {
     QT *= widgets
 }
 
-DESTDIR = $${COMPUTREE_DESTDIR}
+DESTDIR = $${PLUGINSHARED_DESTDIR}
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 UI_DIR  = .ui

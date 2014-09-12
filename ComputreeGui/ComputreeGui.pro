@@ -9,7 +9,7 @@ TEMPLATE = app
 QT += opengl
 QT += xml
 
-DESTDIR = $${COMPUTREE_DESTDIR}
+DESTDIR = $${PLUGINSHARED_DESTDIR}
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 UI_DIR  = .ui
@@ -89,19 +89,19 @@ INCLUDEPATH += $${COMPUTREE_CORE_DIR}/src
 RESOURCES += resource/icones.qrc
 
 macx {
-    LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.dylib
+    LIBS += $${DESTDIR}/libCompuTreeCore*.dylib
 } else {
     unix{
-        LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.so
+        LIBS += $${DESTDIR}/libCompuTreeCore*.so
     }
 
     win32 {
         win32-g++ {
-        LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.a
+        LIBS += $${DESTDIR}/libCompuTreeCore*.a
         }
 
         win32-msvc* {
-        LIBS += $${COMPUTREE_DESTDIR}/CompuTreeCore*.lib
+        LIBS += $${DESTDIR}/CompuTreeCore*.lib
         }
     }
 }
@@ -119,7 +119,7 @@ win32 {
 
   # LIB_NAME
   LIB_NAME = QGLViewer
-  LIB_DIR = $${COMPUTREE_DESTDIR}
+  LIB_DIR = $${DESTDIR}
   build_pass:CONFIG(debug, debug|release) {
     LIB_NAME = $$join(LIB_NAME,,,d)
   }
@@ -167,7 +167,7 @@ unix {
 
   # LIB_NAME
   LIB_NAME = libQGLViewer*.so*
-  LIB_DIR = $${COMPUTREE_DESTDIR}
+  LIB_DIR = $${DESTDIR}
   macx|darwin-g++ {
     LIB_NAME = libQGLViewer.$${QMAKE_EXTENSION_SHLIB}
   }

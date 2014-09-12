@@ -3,7 +3,7 @@
 cd > PWD
 set /p PWD= < PWD
 
-set DESTDIR=%PWD%\..\ComputreeInstall
+set DESTDIR=%PWD%\..\..\ComputreeInstall
 
 echo "Generating Translations"
 lrelease pluginbase.pro

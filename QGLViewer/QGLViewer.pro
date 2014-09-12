@@ -9,9 +9,9 @@ TARGET = QGLViewer
 VERSION = 2.5.2
 CONFIG *= qt opengl warn_on shared thread create_prl rtti no_keywords
 
-include(../common.pri)
+include(../destdir.pri)
 
-DESTDIR = $${COMPUTREE_DESTDIR}
+DESTDIR = $${PLUGINSHARED_DESTDIR}
 
 QGL_HEADERS = qglviewer.h \
 	  camera.h \

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 THISDIR="`pwd`"
-DESTDIR="`pwd`/../ComputreeInstall"
+DESTDIR="`pwd`/../../ComputreeInstall"
 
 cd "$THISDIR"
 
