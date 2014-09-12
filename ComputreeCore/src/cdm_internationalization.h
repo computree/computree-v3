@@ -6,11 +6,18 @@
 #include <QString>
 #include <QFileInfo>
 #include <QMultiMap>
+#include <QTranslator>
 
 class COMPUTREECORESHARED_EXPORT CDM_Internationalization
 {
 public:
     CDM_Internationalization();
+    ~CDM_Internationalization();
+
+    /**
+     * @brief Returns a list of language available (converted to displayable string)
+     */
+    QStringList displayableLanguageAvailable() const;
 
     /**
      * @brief Returns a list of language available
@@ -43,6 +50,7 @@ private:
     QString                         m_currentLanguageBaseName;
     QString                         m_languageDirectory;
     QMultiMap<QString, QFileInfo>   m_languageAvailable;
+    QList<QTranslator*>             m_translators;
 };
 
 #endif // CDM_INTERNATIONALIZATION_H

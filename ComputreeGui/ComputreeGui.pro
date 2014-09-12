@@ -69,6 +69,9 @@ HEADERS += \
     dm_graphicsviewcamera.h \
     dm_context.h
     
+TRANSLATIONS += languages/computreegui_fr.ts \
+                languages/computreegui_en.ts
+
 include(view/view.pri)
 include(qtcolorpicker/qtcolorpicker.pri)
 include(muParser/muparser.pri)
@@ -85,22 +88,22 @@ INCLUDEPATH += $${COMPUTREE_CORE_DIR}/src
 
 RESOURCES += resource/icones.qrc
 
-unix{
-LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.so
-}
-
-win32 {
-    win32-g++ {
-    LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.a
-    }
-
-    win32-msvc* {
-    LIBS += $${COMPUTREE_DESTDIR}/CompuTreeCore*.lib
-    }
-}
-
-mac {
+macx {
     LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.dylib
+} else {
+    unix{
+        LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.so
+    }
+
+    win32 {
+        win32-g++ {
+        LIBS += $${COMPUTREE_DESTDIR}/libCompuTreeCore*.a
+        }
+
+        win32-msvc* {
+        LIBS += $${COMPUTREE_DESTDIR}/CompuTreeCore*.lib
+        }
+    }
 }
 
 win32 {

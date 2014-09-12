@@ -11,10 +11,9 @@
 #include <QMultiHash>
 
 /**
- * @brief Call CT_DEFAULT_IA_BEGIN in the private section of your singular item class BEFORE the use of method
- *        "CT_DEFAULT_IA_Vxxx"
- *        Call CT_DEFAULT_IA_END in the  private section of your singular item class AFTER the use of method
- *        "CT_DEFAULT_IA_Vxxx"
+ * @brief Call CT_DEFAULT_IA_BEGIN in the private section of your singular item class BEFORE the use of method "CT_DEFAULT_IA_Vxxx"
+ *        Call CT_DEFAULT_IA_END in the  private section of your singular item class AFTER the use of method "CT_DEFAULT_IA_Vxxx"
+ *        Call CT_DEFAULT_IA_INIT in the cpp or hpp file
  *
  * @param ClassNameSI : your class name
  *

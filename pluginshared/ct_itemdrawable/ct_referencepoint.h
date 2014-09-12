@@ -68,6 +68,8 @@ public:
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
+    virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
+
     inline float x() const { return getCenterX(); }
     inline float y() const { return getCenterY(); }
     inline float z() const { return getCenterZ(); }
@@ -96,6 +98,10 @@ private:
     // Contructeur privé pour la copie (permettant de conserver le refId de l'instance copiée
     CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                       const CT_AbstractResult *result,
+                      float x, float y, float z, float buffer, int refId);
+
+    CT_ReferencePoint(const QString &modelName,
+                      const CT_AbstractResult  *result,
                       float x, float y, float z, float buffer, int refId);
 
 };

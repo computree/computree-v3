@@ -20,12 +20,12 @@ bool CT_AbstractExporterAttributesSelection::selectAttributes()
 
     if(!errorMessage().isEmpty())
     {
-        QMessageBox::critical(NULL, tr("Erreur"), errorMessage(), QMessageBox::Ok);
+        QMessageBox::critical(NULL, QObject::tr("Erreur"), errorMessage(), QMessageBox::Ok);
         return false;
     }
 
     QDialog dialog;
-    dialog.setWindowTitle(tr("Configuration des autres éléments de l'export"));
+    dialog.setWindowTitle(QObject::tr("Configuration des autres éléments de l'export"));
     dialog.resize(700,500);
 
     QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,

@@ -280,12 +280,12 @@ protected:
     std::vector<DataT>  _data;    /*!< Tableau contenant les données pour chaque case de la grille*/
 
     CT_DEFAULT_IA_BEGIN(CT_VirtualGrid2D<DataT>)
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_VirtualGrid2D<DataT>::colDim, tr("X dimension"))
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_VirtualGrid2D<DataT>::linDim, tr("Y dimension"))
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X, &CT_VirtualGrid2D<DataT>::minX, tr("X min"))
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y, &CT_VirtualGrid2D<DataT>::minY, tr("Y min"))
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_VirtualGrid2D<DataT>::resolution, tr("Resolution"))
-    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_NA, &CT_VirtualGrid2D<DataT>::NA, tr("NA"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X_DIMENSION, &CT_VirtualGrid2D<DataT>::colDim, QObject::tr("X dimension"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y_DIMENSION, &CT_VirtualGrid2D<DataT>::linDim, QObject::tr("Y dimension"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_X, &CT_VirtualGrid2D<DataT>::minX, QObject::tr("X min"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_Y, &CT_VirtualGrid2D<DataT>::minY, QObject::tr("Y min"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_RESOLUTION, &CT_VirtualGrid2D<DataT>::resolution, QObject::tr("Resolution"))
+    CT_DEFAULT_IA_V2(CT_VirtualGrid2D<DataT>, CT_AbstractCategory::DATA_NA, &CT_VirtualGrid2D<DataT>::NA, QObject::tr("NA"))
     CT_DEFAULT_IA_END(CT_VirtualGrid2D<DataT>)
 };
 

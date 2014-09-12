@@ -109,6 +109,11 @@ private:
 
 private slots:
 
+    /**
+     * @brief Called when a QAction of a language is triggered
+     */
+    void changeLanguage();
+
     void documentToBeClosed(DM_DocumentView *view);
 
     void stepAdded(CT_VirtualAbstractStep *step);

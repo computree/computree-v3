@@ -1,0 +1,2173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="en_US">
+<context>
+    <name>PBG_CSVConfigurationDialog</name>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvconfigurationdialog.ui" line="14"/>
+        <source>Configuration de l&apos;exportation</source>
+        <translation>Exportation configuration</translation>
+    </message>
+</context>
+<context>
+    <name>PBG_CSVDataRefListWidget</name>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvdatareflistwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvdatareflistwidget.ui" line="35"/>
+        <source>Ajouter tous</source>
+        <translation>Add all</translation>
+    </message>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvdatareflistwidget.cpp" line="51"/>
+        <source>Nom</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvdatareflistwidget.cpp" line="52"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+</context>
+<context>
+    <name>PBG_CSVPreviewWidget</name>
+    <message>
+        <location filename="../views/exporters/csv/pbg_csvpreviewwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ASCRGBExporter</name>
+    <message>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="30"/>
+        <source>Fichier asc</source>
+        <translation>Ascii file</translation>
+    </message>
+    <message>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="50"/>
+        <source>Aucun ItemDrawable du type CT_IAccessPointCloud</source>
+        <translation>No item of type CT_IAccessPointCloud</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionDefineHeightLayerOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="71"/>
+        <source>Min</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="84"/>
+        <source>Max</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="127"/>
+        <source>1 m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="140"/>
+        <source>10 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="150"/>
+        <source>1 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="160"/>
+        <source>1 mm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="219"/>
+        <source>Zmin</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="232"/>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="252"/>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="297"/>
+        <source> m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="242"/>
+        <source>Zmax</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="273"/>
+        <source>Seuil</source>
+        <translation>Threshold</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.ui" line="290"/>
+        <source>Résolution</source>
+        <translation>Resolution</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.cpp" line="32"/>
+        <source>Zmin= %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actiondefineheightlayeroptions.cpp" line="33"/>
+        <source>Zmax= %1</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionMeasureCrownAttributes</name>
+    <message>
+        <location filename="../actions/pb_actionmeasurecrownattributes.cpp" line="239"/>
+        <source>Press &quot;y&quot; to apply, or &quot;n&quot; to cancel !</source>
+        <translation>Press &quot;y&quot; to apply, or &quot;n&quot; to cancel!</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionMeasureCrownAttributesOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="71"/>
+        <source>Min</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="84"/>
+        <source>Max</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="120"/>
+        <source>Z =</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="127"/>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="263"/>
+        <source> m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="150"/>
+        <source>1 m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="163"/>
+        <source>10 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="173"/>
+        <source>1 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="183"/>
+        <source>1 mm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="249"/>
+        <source>Mise à jour de la mesure</source>
+        <translation>Updating the measure</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="256"/>
+        <source>offset =</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="279"/>
+        <source>Voir les mesures</source>
+        <translation>Show measures</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="317"/>
+        <source>Calculer projection</source>
+        <translation>Calculate projection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="324"/>
+        <source>entre</source>
+        <translation>between</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.ui" line="334"/>
+        <source>et</source>
+        <translation>and</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="39"/>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="166"/>
+        <source>Zsol= %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="40"/>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="167"/>
+        <source>offset= %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="41"/>
+        <source>Htot= %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="42"/>
+        <source>Hbase= 0</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="85"/>
+        <source>Valeur de la variable %1 modifiée !</source>
+        <translation>Value of variable %1 modified!</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="165"/>
+        <source>----- Mesures -----</source>
+        <translation>----- Measures -----</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="173"/>
+        <source>%1= %2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmeasurecrownattributesoptions.cpp" line="175"/>
+        <source>-------------------</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionModifyAffiliationsOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="142"/>
+        <source>Afficher items :</source>
+        <translation>Show items:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="152"/>
+        <source>De référence</source>
+        <translation>Of reference</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="165"/>
+        <source>A affilier</source>
+        <translation>To join</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="185"/>
+        <source>Lignes</source>
+        <translation>Lines</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="195"/>
+        <source>Items</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="205"/>
+        <source>Centres</source>
+        <translation>Centers</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="215"/>
+        <source>Uniquement sélectionnés</source>
+        <translation>Only selected</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="23"/>
+        <source>Afficher les lignes reliant les items affiliés</source>
+        <translation>Show lines connecting joined items</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="24"/>
+        <source>N&apos;afficher que les items sélectionnés (de référence et à affilier</source>
+        <translation>Display only selected items (of reference and to join)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="25"/>
+        <source>Afficher les centres des items</source>
+        <translation>Show centers of items</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="26"/>
+        <source>Afficher les items</source>
+        <translation>Show items</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="27"/>
+        <source>Afficher les items de référence</source>
+        <translation>Show item of reference</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="28"/>
+        <source>Afficher les items à affilier</source>
+        <translation>Show item to join</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="29"/>
+        <source>Affilier l&apos;item de référence et l&apos;item à affilier sélectionnés (A)</source>
+        <translation>Show the item of reference and the item to join selected (A)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="30"/>
+        <source>Supprimer l&apos;affiliation de l&apos;item à affilier sélectionné (Z)</source>
+        <translation>Delete the join of the item selected (Z)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="32"/>
+        <source>Activer la selection (S) :
+- Clic gauche = sélectionner un item de référence
+- Clic droit  = sélectionner un item à affilier</source>
+        <translation>Enable selection (S): 
+- Left click = select an item of reference 
+- Right click = select an item to join</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSegmentCrowns</name>
+    <message>
+        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="600"/>
+        <source>Caméra centrée en</source>
+        <translation>Camera center on</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSegmentCrownsOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="161"/>
+        <source>Switch in &quot;free move&quot; mode (shortcut : f)</source>
+        <translation>Switch in &quot;free move&quot; mode (shortcut: f)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="220"/>
+        <source>Clusters</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="230"/>
+        <source>MNS</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="240"/>
+        <source>Density</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="257"/>
+        <source>Taille :</source>
+        <translation>Size:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="352"/>
+        <source>Active Cluster</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="432"/>
+        <source>Only shows selected cells</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="456"/>
+        <source>CRTL Mousewheel</source>
+        <translation>CRTL+Mouse Wheel</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="472"/>
+        <source>1 m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="485"/>
+        <source>10 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="495"/>
+        <source>1 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.ui" line="529"/>
+        <source> px</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="15"/>
+        <source>Choisir le cluster actif (S = Select)</source>
+        <translation>Choose the active cluster (S = Select)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="16"/>
+        <source>Dessiner une limite (D = Draw)</source>
+        <translation>Draw a limit (D = Draw)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="17"/>
+        <source>Inclure une zone dans le cluster actif (F = Fill)</source>
+        <translation>Include an aera in the active cluster (F = Fill)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="18"/>
+        <source>Naviguer en 3D (G)</source>
+        <translation>Navigate in 3D (G)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="19"/>
+        <source>Recentrer la vue sur la case sélectionnée</source>
+        <translation>Refocusing the view on selected cell</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="20"/>
+        <source>Ajouter un nouveau cluster et le rendre actif</source>
+        <translation>Add a new cluster and activate it</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="21"/>
+        <source>Couleur du cluster actif (attention les couleurs sont recyclées)
+Si enfoncé : le cluster actif est tracé en rouge, même en mode cluster</source>
+        <translation>Color of the active cluster (warning colors are recycled) 
+If pressed: the active cluster is drawn in red, even in cluster mode</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="23"/>
+        <source>Afficher / masquer les cellules vides</source>
+        <translation>Show/Hide empty cells</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="24"/>
+        <source>Choisir le mode de remplissage (pot de peinture) :
+- Remplir uniquement la zone sélectionnée
+- Remplir tous les pixels du cluster</source>
+        <translation>Choose how to fill (bucket): 
+- Only fill the selected area 
+- Fill all pixels in the cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="27"/>
+        <source>Agrèges chaque petit cluster (&lt; n pixels) avec le grand cluster le plus proche</source>
+        <translation>Aggregated each small cluster (&lt;n pixels) with the nearest large cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="28"/>
+        <source>Taille maximale d&apos;un petit cluster (en pixels)</source>
+        <translation>Maximum size of a small cluster (in pixels)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="30"/>
+        <source>Annuler (CTRL+Z)</source>
+        <translation>Undo (CTRL+Z)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="31"/>
+        <source>Rétablir (CTRL+Y)</source>
+        <translation>Redo (CTRL+Y)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="33"/>
+        <source>Afficher les clusters</source>
+        <translation>Show clusters</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="34"/>
+        <source>Afficher la carte de densité</source>
+        <translation>Show the map of density</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="35"/>
+        <source>Afficher le Modèle Numérique de Surface</source>
+        <translation>Show the Digital Surface Model</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="37"/>
+        <source>Ajuster le plan de visualisation par étapes de 1 mètre</source>
+        <translation>Adjust the viewing plane by step of 1 meter</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="38"/>
+        <source>Ajuster le plan de visualisation par étapes de 10 cm</source>
+        <translation>Adjust the viewing plane by step of 10 cm</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="39"/>
+        <source>Ajuster le plan de visualisation par étapes de 1 cm</source>
+        <translation>Adjust the viewing plane by step of 1 cm</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="42"/>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="43"/>
+        <source>Changer de cluster actif</source>
+        <translation>Change the active cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="44"/>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="45"/>
+        <source>Choisir la hauteur du plan de visualisation (CTRL + molette)</source>
+        <translation>Choose the height of the  viewing plane (CTRL+Mouse Wheel)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="46"/>
+        <location filename="../views/actions/pb_actionsegmentcrownsoptions.cpp" line="47"/>
+        <source>Changer la taille de pinceau (SHIFT + molette)</source>
+        <translation>Change the size of the pencil (SHIFT+Mouse Wheel)</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSegmentGaps</name>
+    <message>
+        <location filename="../actions/pb_actionsegmentgaps.cpp" line="600"/>
+        <source>Caméra centrée en</source>
+        <translation>Camera centered coordinate</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSegmentGapsOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="161"/>
+        <source>Switch in &quot;free move&quot; mode (shortcut : f)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="220"/>
+        <source>Noir</source>
+        <translation>Black</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="230"/>
+        <source>MNS</source>
+        <translation>DSM</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="240"/>
+        <source>Density</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="257"/>
+        <source>Taille :</source>
+        <translation>Size:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="352"/>
+        <source>Active Cluster</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="432"/>
+        <source>Only shows selected cells</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="456"/>
+        <source>CRTL Mousewheel</source>
+        <translation>CRTL+Mouse Wheel</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="472"/>
+        <source>1 m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="485"/>
+        <source>10 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="495"/>
+        <source>1 cm</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.ui" line="529"/>
+        <source> px</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="15"/>
+        <source>Choisir le cluster actif (S = Select)</source>
+        <translation>Choose the active cluster (S = Select)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="16"/>
+        <source>Dessiner une limite (D = Draw)</source>
+        <translation>Draw a limit (D = Draw)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="17"/>
+        <source>Inclure une zone dans le cluster actif (F = Fill)</source>
+        <translation>Include an aera in the active cluster (F = Fill)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="18"/>
+        <source>Naviguer en 3D (G)</source>
+        <translation>Navigate in 3D (G)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="19"/>
+        <source>Recentrer la vue sur la case sélectionnée</source>
+        <translation>Refocusing the view on selected cell</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="20"/>
+        <source>Ajouter un nouveau cluster et le rendre actif</source>
+        <translation>Add a new cluster and activate it</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="21"/>
+        <source>Couleur du cluster actif (attention les couleurs sont recyclées)
+Si enfoncé : le cluster actif est tracé en rouge, même en mode cluster</source>
+        <translation>Color of the active cluster (warning colors are recycled) 
+If pressed: the active cluster is drawn in red, even in cluster mode</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="23"/>
+        <source>Afficher / masquer les cellules vides</source>
+        <translation>Show/Hide empty cells</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="24"/>
+        <source>Choisir le mode de remplissage (pot de peinture) :
+- Remplir uniquement la zone sélectionnée
+- Remplir tous les pixels du cluster</source>
+        <translation>Choose how to fill (bucket): 
+- Only fill the selected area 
+- Fill all pixels in the cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="27"/>
+        <source>Agrèges chaque petit cluster (&lt; n pixels) avec le grand cluster le plus proche</source>
+        <translation>Aggregated each small cluster (&lt;n pixels) with the nearest large cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="28"/>
+        <source>Taille maximale d&apos;un petit cluster (en pixels)</source>
+        <translation>Maximum size of a small cluster (in pixels)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="30"/>
+        <source>Annuler (CTRL+Z)</source>
+        <translation>Undo (CTRL+Z)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="31"/>
+        <source>Rétablir (CTRL+Y)</source>
+        <translation>Redo (CTRL+Y)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="33"/>
+        <source>Afficher les clusters</source>
+        <translation>Show clusters</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="34"/>
+        <source>Afficher la carte de densité</source>
+        <translation>Show the map of density</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="35"/>
+        <source>Afficher le Modèle Numérique de Surface</source>
+        <translation>Show the Digital Surface Model</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="37"/>
+        <source>Ajuster le plan de visualisation par étapes de 1 mètre</source>
+        <translation>Adjust the viewing plane by step of 1 meter</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="38"/>
+        <source>Ajuster le plan de visualisation par étapes de 10 cm</source>
+        <translation>Adjust the viewing plane by step of 10 cm</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="39"/>
+        <source>Ajuster le plan de visualisation par étapes de 1 cm</source>
+        <translation>Adjust the viewing plane by step of 1 cm</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="42"/>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="43"/>
+        <source>Changer de cluster actif</source>
+        <translation>Change the active cluster</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="44"/>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="45"/>
+        <source>Choisir la hauteur du plan de visualisation (CTRL + molette)</source>
+        <translation>Choose the height of the  viewing plane (CTRL+Mouse Wheel)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="46"/>
+        <location filename="../views/actions/pb_actionsegmentgapsoptions.cpp" line="47"/>
+        <source>Changer la taille de pinceau (SHIFT + molette)</source>
+        <translation>Change the size of the pencil (SHIFT+Mouse Wheel)</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSelectCellsInGrid3D</name>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="461"/>
+        <source>Extension validée</source>
+        <translation>Extension validated</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="473"/>
+        <source>Colonization validée</source>
+        <translation>Colonization validated</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="490"/>
+        <source>Caméra centrée en</source>
+        <translation>Camera centered coordinate</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="516"/>
+        <source>Opération annulée</source>
+        <translation>Operation canceled</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="767"/>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="778"/>
+        <source>Press &quot;y&quot; to apply, or &quot;n&quot; to cancel !</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="775"/>
+        <source>Select a cell as new view center !</source>
+        <translation>Select the cell as new view center!</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="812"/>
+        <source>Changement de mode de cumul pris en compte</source>
+        <translation>Changing mode of accumulation considered</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="839"/>
+        <source>Niveau en cours propagé sur l&apos;épaisseur (thickness)</source>
+        <translation>Level being propagated on the thickness (thickness)</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="846"/>
+        <source>Niveau en cours propagé sur TOUTE la grille</source>
+        <translation>Level being propagated on ALL the grid</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSelectCellsInGrid3DColonizeDialog</name>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation>Configuration</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="23"/>
+        <source>Directions de colonization autorisées :</source>
+        <translation>Directions of colonization allowed:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="30"/>
+        <source>X+ : vers la droite</source>
+        <translation>X+: to the right</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="40"/>
+        <source>X- : vers la gauche</source>
+        <translation>X-: to the left</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="50"/>
+        <source>Y+ : vers l&apos;avant</source>
+        <translation>Y+: to front</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="60"/>
+        <source>Y- : vers l&apos;arrière</source>
+        <translation>Y-: to back</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="70"/>
+        <source>Z+ : vers le haut</source>
+        <translation>Z+: to top</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui" line="80"/>
+        <source>Z- : vers le bas</source>
+        <translation>Z-: to bottom</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSelectCellsInGrid3DOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="108"/>
+        <source>Switch in &quot;add to selection&quot; mode (shortcut : a)</source>
+        <translation>Switch in &quot;add to selection&quot; mode (shortcut: a)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="134"/>
+        <source>Switch in &quot;colonize adjacent and not empty values&quot; mode (shortcut : z)</source>
+        <translation>Switch in &quot;colonize adjacent and not empty values&quot; mode (shortcut: z)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="160"/>
+        <source>Switch in &quot;Extends from selected cell&quot; mode (shortcut : e)</source>
+        <translation>Switch in &quot;Extends from selected cell&quot; mode (shortcut: e)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="186"/>
+        <source>Switch in &quot;remove from selection&quot; mode (shortcut : r)</source>
+        <translation>Switch in &quot;remove from selection&quot; mode (shortcut: r)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="212"/>
+        <source>Switch in &quot;free move&quot; mode (shortcut : f)</source>
+        <translation>Switch in &quot;free move&quot; mode (shortcut: f)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="271"/>
+        <source>Only shows selected cells</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="352"/>
+        <source>CRTL Mousewheel</source>
+        <translation>CRTL+Mouse Wheel</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="368"/>
+        <source>SHIFT Mousewheel</source>
+        <translation>SHIFT+Mouse Wheel</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="402"/>
+        <source>Set maximum level and thickness</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="405"/>
+        <source>max</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="415"/>
+        <source>Copy active level selection to all visible levels (see thickness)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="429"/>
+        <source>Copy active level selection to ALL levels of the grid</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="476"/>
+        <source>%2D</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.ui" line="514"/>
+        <source>Coef.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="18"/>
+        <source>Change de mode : 2D / 3D (D = 2D / 3D)</source>
+        <translation>Change mode: 2D/3D (D = 2D/3D)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="20"/>
+        <source>Ajouter des cellules (A = Add)</source>
+        <translation>Add cells (A=Add)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="21"/>
+        <source>Supprimer des cellules (R = Remove)</source>
+        <translation>Delete cells (R=Remove)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="22"/>
+        <source>Déplacement de la vue (F = Free Move)</source>
+        <translation>Moving (F=Free move)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="23"/>
+        <source>Extension jusqu&apos;aux limites (E = Extends)
+En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</source>
+        <translation>Extension to  limits (E = Extends) 
+In 3D mode, the tool only works on selected cells</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="24"/>
+        <source>Colonization des valeurs non vides (Z = coloniZe)</source>
+        <translation>Colonization of non-empty values ​​(Z=Colonize)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="25"/>
+        <source>Sélection d&apos;une case pour centrer la vue</source>
+        <translation>Select a cell to center the view</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="27"/>
+        <source>Monter toute les cellules / les cellules sélectionnées</source>
+        <translation>Bring up all cells/selected cells</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="28"/>
+        <source>Grille visible / masquée</source>
+        <translation>Grid Visible/Hidden</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="29"/>
+        <source>Cumuler tous les niveaux</source>
+        <translation>Earn all levels</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="30"/>
+        <source>Copier le niveau actuel à toute la grille (ATTENTION écrasement des valeurs)</source>
+        <translation>Copying the current level to the entire grid (WARNING overwrite values)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="31"/>
+        <source>Copier le niveau actuel aux niveaux actuellement cumulés (ATTENTION écrasement des valeurs)</source>
+        <translation>Copying the current level at the currently accumulated (WARNING overwrite values)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="33"/>
+        <source>Couleur des voxels non vides et non séléctionnés</source>
+        <translation>Color of non-empty voxels and unselected</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="35"/>
+        <source>Mode de cumul des niveaux</source>
+        <translation>Aggregate mode of levels</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="36"/>
+        <source>Echelle de couleur calée sur le niveau en cours</source>
+        <translation>Scale of color supported on the current level</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="38"/>
+        <source>Niveau Z affiché, ou le plus bas si épaisseur &gt; 1 (CTRL MOLETTE)</source>
+        <translation>Z level displayed, or lowest if thickness &gt; 1 (CTRL+Mouse Wheel)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="39"/>
+        <source>Nombre de niveaux cumulés = épaisseur (SHIFT MOLETTE)</source>
+        <translation>Cumulative numbers of levels = thickness (SHIFT+Mouse Wheel)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="40"/>
+        <source>Facteur de réduction de la taille des cellules 3D</source>
+        <translation>Reduction factor of the size of 3D cells</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSelectItemDrawableGVOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="14"/>
+        <source>Sélection</source>
+        <translation>Selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="32"/>
+        <source>Sélectionner un élément</source>
+        <translation>Select an element</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="35"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="64"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="90"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="116"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="142"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="168"/>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="61"/>
+        <source>Sélectionner de multiple éléments</source>
+        <translation>Select multiple elements</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="87"/>
+        <source>Ajouter un élément à la sélection</source>
+        <translation>Add an element to the selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="113"/>
+        <source>Ajouter de multiple éléments à la sélection</source>
+        <translation>Add multiples elements to the selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="139"/>
+        <source>Supprimer un élément de la sélection</source>
+        <translation>Delete an element from the selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="165"/>
+        <source>Supprimer de multiple éléments de la sélection</source>
+        <translation>Delete multiple elements from the selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="198"/>
+        <source>Action sur les ItemDrawable</source>
+        <translation>Action to the ItemDrawable</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="201"/>
+        <source>Items</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="214"/>
+        <source>Action sur les points</source>
+        <translation>Action on points</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="217"/>
+        <source>Points</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="227"/>
+        <source>Action sur les faces</source>
+        <translation>Action on faces</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="230"/>
+        <source>Faces</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="240"/>
+        <source>Action sur les edges</source>
+        <translation>Action on edges</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="243"/>
+        <source>Edges</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_CSVExporter</name>
+    <message>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="34"/>
+        <source>Fichiers csv</source>
+        <translation>CSV Files</translation>
+    </message>
+    <message>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="54"/>
+        <source>Aucun Groupe</source>
+        <translation>No group</translation>
+    </message>
+</context>
+<context>
+    <name>PB_Grid2DExporter</name>
+    <message>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="28"/>
+        <source>Fichiers Grid 2D (ASCII)</source>
+        <translation>Grid 2D Files (ASCII)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="51"/>
+        <source>Aucun ItemDrawable du type CT_AbstractGrid2D</source>
+        <translation>No ItemDrawable of type CT_AbstractGrid2D</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="62"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<context>
+    <name>PB_Grid3DAsTableExporter</name>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="28"/>
+        <source>Fichiers txt</source>
+        <translation>TXT Files</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="47"/>
+        <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
+        <translation>No ItemDrawable of type CT_AbstractGrid3D</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="58"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<context>
+    <name>PB_Grid3DExporter</name>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="28"/>
+        <source>Fichiers Grid 3D (ASCII)</source>
+        <translation>Grid 3D Files (ASCII)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="51"/>
+        <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
+        <translation>No ItemDrawable of type CT_AbstractGrid3D</translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="62"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<context>
+    <name>PB_GroupDataExporter</name>
+    <message>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="37"/>
+        <source>Fichier txt</source>
+        <translation>TXT Files</translation>
+    </message>
+    <message>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="62"/>
+        <source>Aucun Groupe</source>
+        <translation>No group</translation>
+    </message>
+</context>
+<context>
+    <name>PB_MeshObjExporter</name>
+    <message>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="22"/>
+        <source>Fichiers .obj</source>
+        <translation>OBJ Files</translation>
+    </message>
+    <message>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="42"/>
+        <source>Aucun ItemDrawable du type CT_MeshModel</source>
+        <translation>No ItemDrawable of type CT_MeshModel</translation>
+    </message>
+</context>
+<context>
+    <name>PB_OPFExporter</name>
+    <message>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="30"/>
+        <source>Fichiers AmapStudio .opf</source>
+        <translation>OPF Files (AmapStudio)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="51"/>
+        <source>Aucun ItemDrawable du type CT_TTreeGroup</source>
+        <translation>No ItemDrawable of type CT_TTreeGroup</translation>
+    </message>
+</context>
+<context>
+    <name>PB_PbmExporter</name>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="26"/>
+        <source>Fichiers Images 2D (pbm)</source>
+        <translation>PBM Files (2D images)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="47"/>
+        <source>Aucun ItemDrawable du type CT_ITemplatedData2DArray&lt;int&gt;</source>
+        <translation>No item of type  CT_ITemplatedData2DArray&lt;int&gt;</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="58"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="84"/>
+        <source>Impossible d&apos;enregistrer plusieurs images dans le meme fichier</source>
+        <translation>Unable to save multiple images in the same file</translation>
+    </message>
+</context>
+<context>
+    <name>PB_PgmExporter</name>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="26"/>
+        <source>Fichiers Images 2D (pgm)</source>
+        <translation>PGM Files (2D images)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="47"/>
+        <source>Aucun ItemDrawable du type CT_VirtualGrid2D&lt;int&gt;</source>
+        <translation>No ItemDrawable of type CT_VirtualGrid2D&lt;int&gt;</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="58"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="84"/>
+        <source>Impossible d&apos;enregistrer plusieurs images dans le meme fichier</source>
+        <translation>Unable to save multiple images in the same file</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ProfileExporter</name>
+    <message>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="28"/>
+        <source>Fichiers Profile (ASCII)</source>
+        <translation>Profile Files (ASCII)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="51"/>
+        <source>Aucun ItemDrawable du type CT_AbstractProfile</source>
+        <translation>No ItemDrawable of type CT_AbstractProfile</translation>
+    </message>
+    <message>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="62"/>
+        <source>Erreur</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepAddAffiliationID</name>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="48"/>
+        <source>Ajoute un identifiant d&apos;affiliation au groupe</source>
+        <translation>Adds an affiliate identifier to the group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="53"/>
+        <source>No detailled description for this step</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="67"/>
+        <source>Résultat à affilier</source>
+        <translation>Result to affiliate</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="75"/>
+        <source>Groupe à affilier</source>
+        <translation>Group to affiliate</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="81"/>
+        <source>Item de référence</source>
+        <translation>Item of reference</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="82"/>
+        <source>Si cet item est absent, aucun ID ne sera créé</source>
+        <translation>If this item is missing, no ID will be created</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="100"/>
+        <source>ID</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepComputeHitGrid</name>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="70"/>
+        <source>Créé une grille voxel de densité de points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="76"/>
+        <source>Cette étape génère une grille 3D à la &lt;b&gt;résolution&lt;/b&gt; spécifiée.&lt;br&gt;Chaque case reçoit le nombre de points de la scène d&apos;entrée qu&apos;elle contient.&lt;br&gt;Elle calcule également les profils 2D cumulés en XY, XZ et YZ. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="89"/>
+        <source>Scène(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="93"/>
+        <source>Scène</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
+        <source>Hits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="101"/>
+        <source>DensityXY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="102"/>
+        <source>DensityXZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="103"/>
+        <source>DensityYZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="104"/>
+        <source>ProfilX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="105"/>
+        <source>ProfilY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="106"/>
+        <source>ProfilZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="107"/>
+        <source>ProfilDiag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="114"/>
+        <source>Résolution de la grille</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="114"/>
+        <source>meters</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepFilterPointsByBoolGrid</name>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="41"/>
+        <source>Cette étape teste pour chaque point des scènes d&apos;entrée s&apos;il est contenu dans une case &quot;vraie&quot; de la grille booléenne choisie. Si oui, le point est conservé. Sinon, il n&apos;est pas conservé.&lt;br&gt;Plusieures scènes peuvent être traitées avec la même étape.&lt;br&gt;Chaque scène filtrée est ajoutée au groupe contenant la grille d&apos;entrée.Si le résultat d&apos;entrée contient plusieurs grilles, une scène est produite pour chacune (sur la base du cumul de toutes les scènes d&apos;entrée)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="59"/>
+        <source>Scènes à filtrer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="63"/>
+        <source>Scène</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="66"/>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="70"/>
+        <source>Grille(s) de filtrage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="78"/>
+        <source>Scène filtrée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="128"/>
+        <source>Grille %1, Scène %2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="133"/>
+        <source>La scène %1 points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="163"/>
+        <source>...%1 points ont été conservés</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepGenericExporter</name>
+    <message>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="166"/>
+        <source>Résultat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="172"/>
+        <source>Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="210"/>
+        <source>Exporter sous...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepGenericGroupExporter</name>
+    <message>
+        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="30"/>
+        <source>Exporte en txt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="43"/>
+        <source>Résultat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="52"/>
+        <source>Fichier d&apos;export :</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepGenericLoadFile</name>
+    <message>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="37"/>
+        <source>Charge un fichier du type</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadAsciiFile</name>
+    <message>
+        <location filename="../step/pb_steploadasciifile.cpp" line="122"/>
+        <source>Charge un fichier ascii</source>
+        <translation>Load an asciii file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile.cpp" line="319"/>
+        <source>Colonne %1</source>
+        <translation>Column %1</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadAsciiFile02</name>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="177"/>
+        <source>Charge un fichier ascii</source>
+        <translation>Load an ascii file</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadGrid3dFile</name>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
+        <source>Charge un fichier grid3d</source>
+        <translation>Load an Grid3D file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="74"/>
+        <source>Unable to convert the ascii format to a integer at line 1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="85"/>
+        <source>Unable to convert the ascii format to a integer at line 2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="96"/>
+        <source>Unable to convert the ascii format to a integer at line 3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="107"/>
+        <source>Unable to convert the ascii format to a floatting point at line 4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="118"/>
+        <source>Unable to convert the ascii format to a floatting point at line 5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="129"/>
+        <source>Unable to convert the ascii format to a floatting point at line 6</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="140"/>
+        <source>Unable to convert the ascii format to a floatting point at line 7</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="151"/>
+        <source>Unable to convert the ascii format to a floatting point at line 8</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadMultiXYBFiles</name>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
+        <source>IndividualScenes</source>
+        <translation>Individual Scenes</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
+        <source>g</source>
+        <translation>Group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
+        <source>IndividualScene</source>
+        <translation>Individual Scene</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
+        <source>IndividualIntensity</source>
+        <translation>Individual Intensity</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
+        <source>ScanPosition</source>
+        <translation>Scanner</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
+        <source>MergedScene</source>
+        <translation>Merged Scenes</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
+        <source>gm</source>
+        <translation>Group</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadObjFile</name>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="33"/>
+        <source>Charge un fichier .obj dans un Mesh</source>
+        <translation>Load an obj file in a Mesh</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="52"/>
+        <source>Rechercher les demis arêtes ? (accélère le chargement si non coché)</source>
+        <translation>Search half edges ? (accelerate the process if not checked)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="65"/>
+        <source>Mesh Document</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="67"/>
+        <source>Mesh Model</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadPbmFile</name>
+    <message>
+        <location filename="../step/pb_steploadpbmfile.cpp" line="35"/>
+        <source>Charge un fichier pbm</source>
+        <translation>Load an pbm file</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadPgmFile</name>
+    <message>
+        <location filename="../step/pb_steploadpgmfile.cpp" line="36"/>
+        <source>Charge un fichier pgm</source>
+        <translation>Load an pgm file</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepMeasureCrownAttributes</name>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="54"/>
+        <source>Cette étape permet de mesurer des attributs d&apos;un houppier</source>
+        <translation>This step can measure attributes from a crown</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="69"/>
+        <source>Result</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="76"/>
+        <source>Scène(s)</source>
+        <translation>Scene(s)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="82"/>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="84"/>
+        <source>Projection</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="91"/>
+        <source>Résolution de la grille</source>
+        <translation>Resolution of the grid</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="91"/>
+        <source>meters</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="180"/>
+        <source>Mesure des houppiers</source>
+        <translation>Measure of crowns</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="180"/>
+        <source>Bienvenue dans cet outils de mesure des houppiers.
+Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
+        <translation>Welcome to this measurement tools crowns. 
+Leave the mouse over a button to get info.</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepReducePointsDensity</name>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="67"/>
+        <source>Réduit la densité de scènes, sur la base d&apos;une grille régulière</source>
+        <translation>Reduced density scenes, on the basis of a regular grid</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="72"/>
+        <source>Créée une grille régulière de la &lt;b&gt;résolution&lt;/b&gt; choisie. Ne garde que le point le plus proche du centre dans chaque case. </source>
+        <translation>Created a regular grid of the desired &lt;b&gt;resolution&lt;/b&gt;. Keeps only the closest to the center point in each box.</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="85"/>
+        <source>Scène(s)</source>
+        <translation>Scene(s)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="90"/>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="101"/>
+        <source>Scène</source>
+        <translation>Scene</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="96"/>
+        <source>Scène à densité réduite</source>
+        <translation>Scene with reduced density</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="108"/>
+        <source>Résolution de la grille :</source>
+        <translation>Resolution of the grid:</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="142"/>
+        <source>La scène d&apos;entrée comporte %1 points.</source>
+        <translation>The input scene has %1 points.</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="211"/>
+        <source>La scène de densité réduite comporte %1 points.</source>
+        <translation>The scene with reduced density has %1 points.</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="214"/>
+        <source>Aucun point conservé pour cette scène</source>
+        <translation>No point retained for this scene</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepSegmentCrowns</name>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="52"/>
+        <source>Cette étape permet de segmenter des houppiers manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les houppiers. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque houppier. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (houppiers) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque houppier&lt;/li&gt;&lt;li&gt;Une scène de points extraite pour chaque houppier&lt;/li&gt;&lt;li&gt;Un polygone horizontal correspondant à l&apos;enveloppe convexe des pixels de chaque houppier&lt;/li&gt;&lt;li&gt;Deux métriques donnant respectivement la surface des pixels, et la surface de l&apos;enveloppe convexe pour chaque houppier&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="82"/>
+        <source>Scène(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="86"/>
+        <source>Scène</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="92"/>
+        <source>Densité, MNS et clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="95"/>
+        <source>MNS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="96"/>
+        <source>Densité</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="97"/>
+        <source>Clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="100"/>
+        <source>Scènes segmentées</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="101"/>
+        <source>ConvexHull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="102"/>
+        <source>Aire du houppier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="103"/>
+        <source>Aire du houppier convexe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="104"/>
+        <source>Z max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="158"/>
+        <source>Selection de l&apos;épaisseur des houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="189"/>
+        <source>Création des clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="202"/>
+        <source>Démarrage des post_traitements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="203"/>
+        <source>Elimination des clusters vides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="207"/>
+        <source>Création nuages de points par cluster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="222"/>
+        <source>Ajout des points aux scènes par cluster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="227"/>
+        <source>Enregistrement des clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="234"/>
+        <source>Création des Convex Hulls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="239"/>
+        <source>Calcul des métriques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="256"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="488"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="509"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="529"/>
+        <source>Segmentation des houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="256"/>
+        <source>Phase 2 (Segmentation des houppiers) impossible à réaliser.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="261"/>
+        <source>Post-Traitements terminés</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="488"/>
+        <source>Mode manuel.
+Phase 1 : Calcul de la carte de densité et du MNS.
+L&apos;initialisation peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="509"/>
+        <source>Mode manuel.
+Phase 2 : Segmentation des houppiers.
+La pré-segmentation automatique peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="529"/>
+        <source>Fin du mode manuel, démarrage des post-traitements
+Cela peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepSegmentGaps</name>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="53"/>
+        <source>Cette étape permet de segmenter des trouées manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les trouées. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque trouée. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (trouées) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque trouée&lt;/li&gt;&lt;li&gt;Une métrique donnant la surface des pixels pour chaque trouée&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="81"/>
+        <source>Scène(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="85"/>
+        <source>Scène</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="91"/>
+        <source>Densité, MNS et clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="94"/>
+        <source>MNS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="95"/>
+        <source>Densité</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="96"/>
+        <source>Clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="99"/>
+        <source>Aire de la trouée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="100"/>
+        <source>Identifiant de la trouée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="152"/>
+        <source>Selection de l&apos;épaisseur des houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="183"/>
+        <source>Création des clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="196"/>
+        <source>Démarrage des post_traitements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="197"/>
+        <source>Elimination des clusters vides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="200"/>
+        <source>Enregistrement des clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="206"/>
+        <source>Calcul des métriques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="220"/>
+        <source>Segmentation des houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="220"/>
+        <source>Phase 2 (Segmentation des houppiers) impossible à réaliser.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="225"/>
+        <source>Post-Traitements terminés</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="339"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="360"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="380"/>
+        <source>Segmentation des trouées</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="339"/>
+        <source>Mode manuel.
+Phase 1 : Calcul de la carte de densité et du MNS.
+L&apos;initialisation peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="360"/>
+        <source>Mode manuel.
+Phase 2 : Segmentation des trouées.
+La pré-segmentation automatique peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="380"/>
+        <source>Fin du mode manuel, démarrage des post-traitements
+Cela peut prendre un peu de temps...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepSelectCellsInGrid3D</name>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="59"/>
+        <source>Cette étape permet de générer une grille booléenne, représentant une séléction de cellules parmi celles de la grille de référence choisie en entrée.&lt;br&gt;Elle utilise un actionner, permettant de faire des séléction soit par plans horizontaux 2D, soit directement en 3D.&lt;br&gt;En sortie elle fournie également une copie de la grille d&apos;entrée pour laquelle toute les cases non sélectionnées sont réinitialisées à la valeur 0. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="76"/>
+        <source>Result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="84"/>
+        <source>Grille</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="112"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="113"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="116"/>
+        <source>Grille filtrée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="115"/>
+        <source>Cases séléctionnées</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
+        <source>Mode manuel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
+        <source>Bienvenue dans le mode manuel de cette étape de filtrage.
+Seuls les voxels séléctionés (Rouges) seront conservés.
+Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepSetAffiliationIDFromReference</name>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="63"/>
+        <source>Modifie les identifiants d&apos;affiliation de groupes, sur la base d&apos;une référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="68"/>
+        <source>No detailled description for this step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="81"/>
+        <source>Résultat de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="83"/>
+        <source>Groupe de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="84"/>
+        <source>ID de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="85"/>
+        <source>Item de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="87"/>
+        <source>Résultat à affilier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="89"/>
+        <source>Groupe à affilier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="90"/>
+        <source>ID à affilier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="91"/>
+        <source>Item à affilier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="98"/>
+        <source>Affiliation par position 2D (3D sinon)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="99"/>
+        <source>Correction des affiliations en mode manuel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="236"/>
+        <source>Modification des affiliations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="236"/>
+        <source>Mode manuel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepUserItemCopy</name>
+    <message>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="58"/>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="71"/>
+        <source>Result</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="64"/>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="76"/>
+        <source>Cylinder</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="167"/>
+        <source>Mode manuel</source>
+        <translation>Manual mode</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="167"/>
+        <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
+        <translation>Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepUserItemSelection</name>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="60"/>
+        <source>Result</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="68"/>
+        <source>Item</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="83"/>
+        <source>Supprimer les groupes ne contenant pas l&apos;ItemDrawable recherché</source>
+        <translation>Delete groups that do not contain the desired ItemDrawable</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="84"/>
+        <source>Supprimer les groupes parents si l&apos;ItemDrawable recherché n&apos;existe plus dans la structure sous-jacente</source>
+        <translation>Delete parents groups if desired ItemDrawable no longer exists in the underlying structure</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <source>Mode manuel</source>
+        <translation>Manual mode</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
+        <translation>Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
+    </message>
+</context>
+<context>
+    <name>PB_XYBExporter</name>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="35"/>
+        <source>Fichiers binaire de points .xyb</source>
+        <translation>XYB Files (Points binary encoded)</translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="53"/>
+        <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
+        <translation>- No item of type CT_IAccessPointCloud</translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="75"/>
+        <source>- Aucun points à exporter</source>
+        <translation>- No point to export</translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="192"/>
+        <source>Scanners</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../pb_steppluginmanager.cpp" line="102"/>
+        <source>Plugin_Base initialized</source>
+        <translation></translation>
+    </message>
+</context>
+</TS>

@@ -28,16 +28,16 @@
 
 #include "gguimanager.h"
 
-GGuiManager::GGuiManager(CDM_Internationalization *language)
+GGuiManager::GGuiManager(CDM_Internationalization *languageManager)
 {
     _uniqueInstance = this;
     _mainWindow = NULL;
-    m_language = language;
+    m_languageManager = languageManager;
 }
 
 GGuiManager::~GGuiManager()
 {
-    m_language->saveConfiguration();
+    m_languageManager->saveConfiguration();
     delete _mainWindow;
 }
 
@@ -64,6 +64,11 @@ CDM_StepManager* GGuiManager::getStepManager() const
 DM_ActionsManager* GGuiManager::getActionsManager() const
 {
     return (DM_ActionsManager*)_mainWindow->actionsManager();
+}
+
+CDM_Internationalization *GGuiManager::getLanguageManager() const
+{
+    return m_languageManager;
 }
 
 DM_MultipleItemDrawableModelManager* GGuiManager::getItemDrawableModelManager() const

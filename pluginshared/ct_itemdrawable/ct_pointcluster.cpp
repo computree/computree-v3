@@ -147,6 +147,35 @@ CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointClus
     return pMerged;
 }
 
+CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointCluster &pCLuster2, const QString &modelName, quint64 id, CT_AbstractResult &result, bool verifyDuplicated)
+{
+    Q_UNUSED(id)
+
+    CT_PointCluster *pMerged = new CT_PointCluster(modelName, &result);
+
+    const CT_AbstractCloudIndexT<CT_Point> *pIndex1 = pCLuster1.getPointCloudIndex();
+    const CT_AbstractCloudIndexT<CT_Point> *pIndex2 = pCLuster2.getPointCloudIndex();
+
+    size_t size = pIndex1->size();
+    size_t index;
+
+    for(size_t i=0; i<size; ++i)
+    {
+        pIndex1->indexAt(i, index);
+        pMerged->addPoint(index);
+    }
+
+    size = pIndex2->size();
+
+    for(size_t i=0; i<size; ++i)
+    {
+        pIndex2->indexAt(i, index);
+        pMerged->addPoint(index, verifyDuplicated);
+    }
+
+    return pMerged;
+}
+
 CT_AbstractItemDrawable* CT_PointCluster::copy(const CT_OutAbstractItemModel *model,
                                                const CT_AbstractResult *result,
                                                CT_ResultCopyModeList copyModeList)

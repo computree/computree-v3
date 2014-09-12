@@ -760,4 +760,7 @@ FORMS += \
     ct_view/tools/ct_textfileconfigurationdialog.ui \
     ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui
 
+TRANSLATIONS += languages/pluginshared_fr.ts \
+                languages/pluginshared_en.ts
+
 RESOURCES +=

@@ -10,6 +10,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_ASCRGB : public CT_AbstractReader
 {
+    Q_OBJECT
+
 public:
     CT_Reader_ASCRGB();
 

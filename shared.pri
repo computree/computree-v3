@@ -28,3 +28,27 @@ mac:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.dylib
 msvc:DEFINES += _USE_MATH_DEFINES
 
 INCLUDEPATH += $${PLUGIN_SHARED_INTERFACE_DIR}
+
+macx {
+    exists($${OUT_PWD}/scripts/postprocess_osx.sh) {
+        QMAKE_POST_LINK = $${OUT_PWD}/scripts/postprocess_osx.sh
+    } else {
+        message(optionnal scripts not found)
+    }
+} else {
+    unix{
+        exists($${OUT_PWD}/scripts/postprocess_unix.sh) {
+            QMAKE_POST_LINK = $${OUT_PWD}/scripts/postprocess_unix.sh
+        }else {
+            message(optionnal scripts not found)
+        }
+    }
+
+    win32 {
+        exists($${OUT_PWD}\\scripts\\postprocess_win.bat) {
+            QMAKE_POST_LINK = $${OUT_PWD}\\scripts\\postprocess_win.bat
+        } else {
+            message(optionnal scripts not found)
+        }
+    }
+}

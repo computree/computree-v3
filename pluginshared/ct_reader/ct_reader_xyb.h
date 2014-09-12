@@ -11,6 +11,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_XYB : public CT_AbstractReader
 {
+    Q_OBJECT
+
 public:
     CT_Reader_XYB();
 

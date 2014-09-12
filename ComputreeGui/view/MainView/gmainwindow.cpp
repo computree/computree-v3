@@ -408,6 +408,22 @@ void GMainWindow::initUI()
     actionStop->setEnabled(false);
     actionSaveScript->setEnabled(false);
 
+    QStringList dLA = GUI_MANAGER->getLanguageManager()->displayableLanguageAvailable();
+    QStringList lA = GUI_MANAGER->getLanguageManager()->languageAvailable();
+    int i = 0;
+
+    QActionGroup *actGroup = new QActionGroup(this);
+    actGroup->setExclusive(true);
+
+    foreach (QString l, dLA) {
+        QAction *languageAction = ui->menuLangue->addAction(QIcon(QString("./img") + QDir::separator() + "flag_" + lA.at(i) + ".png"), l, this, SLOT(changeLanguage()));
+        languageAction->setData(i);
+        languageAction->setCheckable(true);
+        languageAction->setChecked(GUI_MANAGER->getLanguageManager()->currentLanguage() == i);
+        actGroup->addAction(languageAction);
+        ++i;
+    }
+
     connect(actionNewDocument, SIGNAL(triggered()), this, SLOT(newDocument()));
     connect(actionNew2DDocument, SIGNAL(triggered()), this, SLOT(new2DDocument()));
     connect(actionNewItemModelDocument, SIGNAL(triggered()), this, SLOT(newItemModelDocument()));
@@ -762,6 +778,18 @@ QString GMainWindow::createScriptManagerExtension(QString fileExtension)
     }
 
     return fileExtension;
+}
+
+void GMainWindow::changeLanguage()
+{
+    int index = ((QAction*)sender())->data().toInt();
+
+    if(GUI_MANAGER->getLanguageManager()->currentLanguage() != index)
+    {
+        QMessageBox::information(this, tr("Information"), tr("Voud devez redémarrer l'application pour prendre en compte le changement de langue."));
+
+        GUI_MANAGER->getLanguageManager()->useLanguage(index);
+    }
 }
 
 void GMainWindow::documentToBeClosed(DM_DocumentView *view)

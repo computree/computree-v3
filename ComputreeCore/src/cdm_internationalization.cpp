@@ -14,21 +14,26 @@ CDM_Internationalization::CDM_Internationalization()
     m_languageDirectory = QString(".") + QDir::separator() + "languages";
 }
 
-QStringList CDM_Internationalization::languageAvailable() const
+CDM_Internationalization::~CDM_Internationalization()
+{
+    qDeleteAll(m_translators.begin(), m_translators.end());
+}
+
+QStringList CDM_Internationalization::displayableLanguageAvailable() const
 {
     QStringList r;
     QList<QString> l = m_languageAvailable.uniqueKeys();
 
     foreach (QString i, l) {
-        QFileInfo inf = m_languageAvailable.value(i);
-
-        QTranslator translator;
-        translator.load(inf.absoluteFilePath());
-
-        r.append(translator.translate("TranslationToString", "Unknown") + " ( " + i + " )");
+        r.append(QLocale::languageToString(QLocale(i).language()));
     }
 
     return r;
+}
+
+QStringList CDM_Internationalization::languageAvailable() const
+{
+    return m_languageAvailable.uniqueKeys();
 }
 
 int CDM_Internationalization::currentLanguage() const
@@ -69,7 +74,7 @@ void CDM_Internationalization::loadConfiguration()
     // Multiple translation files is used because we have at least one translation file by plugin
     // Each file must have this form : pluginName_XX_XX.qm where XX_XX can be fr or fr_ca or en etc...
     foreach (QFileInfo inf, il)
-        m_languageAvailable.insert(inf.baseName().mid(inf.baseName().indexOf('_')+1), inf);
+        m_languageAvailable.insert(inf.baseName().mid(inf.baseName().lastIndexOf('_')+1).toLower(), inf);
 
     m_currentLanguageIndex = currentLanguage();
 
@@ -87,10 +92,11 @@ void CDM_Internationalization::loadConfiguration()
     il = m_languageAvailable.values(m_currentLanguageBaseName);
 
     foreach (QFileInfo inf, il) {
-        QTranslator translator;
-        translator.load(inf.absoluteFilePath());
+        QTranslator *translator = new QTranslator();
+        m_translators.append(translator);
 
-        qApp->installTranslator(&translator);
+        if(translator->load(inf.absoluteFilePath()))
+            qApp->installTranslator(translator);
     }
 
     m_saveLanguageIndex = m_currentLanguageIndex;

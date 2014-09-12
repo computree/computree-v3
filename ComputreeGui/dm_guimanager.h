@@ -35,9 +35,11 @@
 #include "dm_context.h"
 #include "dm_mainwindow.h"
 #include "dm_documentmanagerview.h"
-#include "cdm_stepmanager.h"
 #include "dm_multipleitemdrawablemodelmanager.h"
 #include "dm_actionsmanager.h"
+
+#include "cdm_stepmanager.h"
+#include "cdm_internationalization.h"
 
 #include "tools/guimanager/dm_guimanagertoken.h"
 #include "tools/guimanager/dm_asyncoperation.h"
@@ -349,6 +351,11 @@ public:
      * @brief Return the actions manager
      */
     virtual DM_ActionsManager* getActionsManager() const = 0;
+
+    /**
+     * @brief Returns the language manager
+     */
+    virtual CDM_Internationalization* getLanguageManager() const = 0;
 
 protected:
 

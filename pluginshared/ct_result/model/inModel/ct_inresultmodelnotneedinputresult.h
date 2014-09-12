@@ -7,6 +7,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_InResultModelNotNeedInputResult : public CT_InAbstractResultModel
 {
+    Q_OBJECT
+
 public:
     CT_InResultModelNotNeedInputResult();
 

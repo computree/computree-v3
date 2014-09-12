@@ -141,3 +141,6 @@ FORMS += \
     views/actions/pb_actiondefineheightlayeroptions.ui \
     views/actions/pb_actionmodifyaffiliationsoptions.ui \
     views/actions/pb_actionsegmentgapsoptions.ui
+
+TRANSLATIONS += languages/pluginbase_fr.ts \
+                languages/pluginbase_en.ts

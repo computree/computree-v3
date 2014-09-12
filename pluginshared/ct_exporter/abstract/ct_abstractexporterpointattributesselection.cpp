@@ -14,7 +14,7 @@ bool CT_AbstractExporterPointAttributesSelection::configureExport()
 QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > CT_AbstractExporterPointAttributesSelection::getBuilders() const
 {
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > l;
-    l << QPair<QString, CT_AbstractItemDrawableCollectionBuilder*>(tr("Attributs"), (CT_AbstractItemDrawableCollectionBuilder*)&m_attributsBuilder);
+    l << QPair<QString, CT_AbstractItemDrawableCollectionBuilder*>(QObject::tr("Attributs"), (CT_AbstractItemDrawableCollectionBuilder*)&m_attributsBuilder);
 
     return l;
 }
