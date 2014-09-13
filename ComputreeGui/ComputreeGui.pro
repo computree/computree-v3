@@ -15,9 +15,8 @@ MOC_DIR = .moc
 UI_DIR  = .ui
 RCC_DIR = .rcc
 
-contains ( QT_VERSION, "^5.*" ) {
-    LIBS += -lQt5Concurrent
-}
+greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
+
 
 HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_graphicsviewsynchronizedgroup.h \

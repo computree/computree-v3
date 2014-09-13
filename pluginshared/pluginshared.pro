@@ -1,10 +1,7 @@
 TARGET = pluginShared
 QT += xml
 
-contains ( QT_VERSION, "^5.*" ) {
-    QT *= widgets
-    LIBS += -lQt5Concurrent
-}
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
 isEmpty(TEST_FEATURES) {
     TEMPLATE = lib

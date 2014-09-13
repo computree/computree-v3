@@ -45,9 +45,7 @@ TRANSLATIONS = qglviewer_fr.ts
 
 QT *= xml opengl
 
-contains ( $$[QT_VERSION], "^5.*" ) {
-	QT *= gui widgets
-}
+greaterThan(QT_MAJOR_VERSION, 4): QT += gui widgets
 
 !isEmpty( QGLVIEWER_STATIC ) {
   CONFIG *= staticlib
