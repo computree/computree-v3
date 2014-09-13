@@ -4,6 +4,7 @@
 #include "pluginShared_global.h"
 
 #include "ct_result/model/inModel/abstract/ct_inabstractresultmodel.h"
+#include "ct_model/outModel/abstract/ct_outabstractmodel.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_InResultModelNotNeedInputResult : public CT_InAbstractResultModel
 {
