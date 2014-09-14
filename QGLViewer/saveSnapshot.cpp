@@ -1,8 +1,8 @@
 /****************************************************************************
 
- Copyright (C) 2002-2013 Gilles Debunne. All rights reserved.
+ Copyright (C) 2002-2014 Gilles Debunne. All rights reserved.
 
- This file is part of the QGLViewer library version 2.5.2.
+ This file is part of the QGLViewer library version 2.5.3.
 
  http://www.libqglviewer.com - contact@libqglviewer.com
 
@@ -542,7 +542,7 @@ void QGLViewer::saveSnapshot(bool automatic, bool overwrite)
 		QString fileName;
 		QString selectedFormat = FDFormatString[snapshotFormat()];
 		fileName = QFileDialog::getSaveFileName(this, "Choose a file name to save under", snapshotFileName(), formats, &selectedFormat,
-                                                overwrite?QFileDialog::DontConfirmOverwrite:(QFileDialog::Option)0);
+												overwrite?QFileDialog::DontConfirmOverwrite:QFlags<QFileDialog::Option>(0));
 		setSnapshotFormat(Qtformat[selectedFormat]);
 
 		if (checkFileName(fileName, this, snapshotFormat()))

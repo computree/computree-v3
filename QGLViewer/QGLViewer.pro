@@ -6,7 +6,7 @@
 
 TEMPLATE = lib
 TARGET = QGLViewer
-VERSION = 2.5.2
+VERSION = 2.5.3
 CONFIG *= qt opengl warn_on shared thread create_prl rtti no_keywords
 
 include(../destdir.pri)
@@ -45,7 +45,9 @@ TRANSLATIONS = qglviewer_fr.ts
 
 QT *= xml opengl
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += gui widgets
+contains ( $$[QT_VERSION], "^5.*" ) {
+	QT *= gui widgets
+}
 
 !isEmpty( QGLVIEWER_STATIC ) {
   CONFIG *= staticlib
@@ -148,6 +150,8 @@ unix {
   !isEmpty( USE_GLUT ) {
 	QMAKE_LIBS_OPENGL *= -lglut
   }
+
+  QMAKE_LIBS_OPENGL *= -lGLU
 
   MOC_DIR = .moc
   OBJECTS_DIR = .obj
@@ -296,7 +300,7 @@ win32 {
   # support to RTTI and Exceptions, and generate debug info "program database".
   # Any feedback on these flags is welcome.
   !win32-g++ {
-	QMAKE_CXXFLAGS = -TP -GR -Zi
+        QMAKE_CXXFLAGS = -TP -GR -Zi -FS # -FS added to avoid multi pdb file writing (AP 14/19/2014)
 	DEFINES += NOMINMAX
 	win32-msvc {
 	  QMAKE_CXXFLAGS *= -GX
