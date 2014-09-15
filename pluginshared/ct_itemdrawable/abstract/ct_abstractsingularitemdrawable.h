@@ -161,11 +161,11 @@ private:
     // declare that we will add default item attributes in this class
     //  => We must add CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable) in top of cpp file
     CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_ID, &CT_AbstractSingularItemDrawable::id, tr("ID"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_DISPLAYABLE_NAME, &CT_AbstractSingularItemDrawable::displayableName, tr("Nom"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CX, &CT_AbstractSingularItemDrawable::getCenterX, tr("Centre X"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CY, &CT_AbstractSingularItemDrawable::getCenterY, tr("Centre Y"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::DATA_CZ, &CT_AbstractSingularItemDrawable::getCenterZ, tr("Centre Z"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataId(), &CT_AbstractSingularItemDrawable::id, tr("ID"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, tr("Nom"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, tr("Centre X"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, tr("Centre Y"))
+    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, tr("Centre Z"))
     CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)

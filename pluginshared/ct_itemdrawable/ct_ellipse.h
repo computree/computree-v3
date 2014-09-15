@@ -109,29 +109,29 @@ private:
     const static CT_StandardEllipseDrawManager  ELLIPSE_DRAW_MANAGER;
 
     CT_DEFAULT_IA_BEGIN(CT_Ellipse)
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP1X, tr("X1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP1Y, tr("Y1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP1Z, tr("Z1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisAP2X, tr("X2 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisAP2Y, tr("Y2 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisAP2Z, tr("Z2 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP1X, tr("X1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP1Y, tr("Y1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP1Z, tr("Z1 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP2X, tr("X2 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP2Y, tr("Y2 axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP2Z, tr("Z2 axe mineur"))
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP1X, tr("X1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP1Y, tr("Y1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP1Z, tr("Z1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_X, &CT_Ellipse::getAxisBP2X, tr("X2 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Y, &CT_Ellipse::getAxisBP2Y, tr("Y2 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_Z, &CT_Ellipse::getAxisBP2Z, tr("Z2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP1X, tr("X1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP1Y, tr("Y1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP1Z, tr("Z1 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP2X, tr("X2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP2Y, tr("Y2 axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP2Z, tr("Z2 axe majeur"))
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisALength, tr("Longueur axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_LENGTH, &CT_Ellipse::getAxisBLength, tr("Longueur axe majeur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisALength, tr("Longueur axe mineur"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisBLength, tr("Longueur axe majeur"))
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_R2, &CT_Ellipse::getError, tr("Erreur d'ajustement de l'ellipse"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataR2(), &CT_Ellipse::getError, tr("Erreur d'ajustement de l'ellipse"))
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_RATIO, &CT_Ellipse::getAxisRatio, tr("Ratio des axes"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataRatio(), &CT_Ellipse::getAxisRatio, tr("Ratio des axes"))
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, 0.0, tr("Angle de début"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::DATA_ANGLE, (2.0*M_PI), tr("Angle de fin"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), 0.0, tr("Angle de début"))
+    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), (2.0*M_PI), tr("Angle de fin"))
 
     CT_DEFAULT_IA_END(CT_Ellipse)
 

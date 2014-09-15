@@ -74,6 +74,7 @@ public:
     static const QString DATA_RADIUS;               // radius (equivalent to "DATA_VALUE")
     static const QString DATA_R2;                   // r² for fitting (equivalent to "DATA_VALUE")
     static const QString DATA_SIZE;                 // size (equivalent to "DATA_VALUE")
+    static const QString DATA_NUMBER;               // number of elemnts (equivalent to "DATA_SIZE")
     static const QString DATA_LENGTH;               // length (equivalent to "DATA_SIZE")
     static const QString DATA_WIDTH;                // width (equivalent to "DATA_LENGTH")
     static const QString DATA_HEIGHT;               // height (equivalent to "DATA_LENGTH")
@@ -167,6 +168,39 @@ public:
 
         return QString("UNKNOWN");
     }
+
+    static QString staticInitDataValue() { return "CT_VALUE"; }
+    static QString staticInitDataId() { return "CT_ID"; }
+    static QString staticInitDataDisplayableName() { return "CT_DISPLAYABLE_NAME"; }
+    static QString staticInitDataCoordinate() { return "CT_COORDINATE"; }
+    static QString staticInitDataX() { return "CT_X"; }
+    static QString staticInitDataY() { return "CT_Y"; }
+    static QString staticInitDataZ() { return "CT_Z"; }
+    static QString staticInitDataCx() { return "CT_CX"; }
+    static QString staticInitDataCy() { return "CT_CY"; }
+    static QString staticInitDataCz() { return "CT_CZ"; }
+    static QString staticInitDataDirection() { return "CT_DIRECTION"; }
+    static QString staticInitDataXDirection() { return "CT_X_DIRECTION"; }
+    static QString staticInitDataYDirection() { return "CT_Y_DIRECTION"; }
+    static QString staticInitDataZDirection() { return "CT_Z_DIRECTION"; }
+    static QString staticInitDataDimension() { return "CT_DIMENSION"; }
+    static QString staticInitDataXDimension() { return "CT_X_DIMENSION"; }
+    static QString staticInitDataYDimension() { return "CT_Y_DIMENSION"; }
+    static QString staticInitDataZDimension() { return "CT_Z_DIMENSION"; }
+    static QString staticInitDataRadius() { return "CT_RADIUS"; }
+    static QString staticInitDataR2() { return "CT_R2"; }
+    static QString staticInitDataSize() { return "CT_SIZE"; }
+    static QString staticInitDataNumber() { return "CT_NUMBER"; }
+    static QString staticInitDataLength() { return "CT_LENGTH"; }
+    static QString staticInitDataWidth() { return "CT_WIDTH"; }
+    static QString staticInitDataHeight() { return "CT_HEIGHT"; }
+    static QString staticInitDataAngle() { return "CT_ANGLE"; }
+    static QString staticInitDataRatio() { return "CT_RATIO"; }
+    static QString staticInitDataResolution() { return "CT_RESOLUTION"; }
+    static QString staticInitDataXResolution() { return "CT_X_RESOLUTION"; }
+    static QString staticInitDataYResolution() { return "CT_Y_RESOLUTION"; }
+    static QString staticInitDataZResolution() { return "CT_Z_RESOLUTION"; }
+    static QString staticInitDataNa() { return "CT_NA"; }
 
 private:
     QString         m_uName;

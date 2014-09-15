@@ -78,7 +78,7 @@ private:
     const static CT_StandardPolygon2DDrawManager POLYGON2D_DRAW_MANAGER;
 
     CT_DEFAULT_IA_BEGIN(CT_Polygon2D_Old)
-    CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::DATA_SIZE, &CT_Polygon2D_Old::getNumberOfVertices, tr("Number Of Vertices"))
+    CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::staticInitDataSize(), &CT_Polygon2D_Old::getNumberOfVertices, tr("Number Of Vertices"))
     CT_DEFAULT_IA_END(CT_Polygon2D_Old)
 };
 

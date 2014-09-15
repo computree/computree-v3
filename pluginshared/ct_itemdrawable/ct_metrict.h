@@ -94,7 +94,7 @@ protected:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_MetricT<T>)
-    CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::DATA_VALUE, &CT_MetricT<T>::getValue, QObject::tr("Value"))
+    CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::staticInitDataValue(), &CT_MetricT<T>::getValue, QObject::tr("Value"))
     CT_DEFAULT_IA_END(CT_MetricT<T>)
 };
 
