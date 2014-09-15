@@ -1311,42 +1311,42 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="107"/>
         <source>Hits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="101"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
         <source>DensityXY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="102"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="101"/>
         <source>DensityXZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="103"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="102"/>
         <source>DensityYZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="104"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="103"/>
         <source>ProfilX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="105"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="104"/>
         <source>ProfilY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="106"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="105"/>
         <source>ProfilZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="107"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="106"/>
         <source>ProfilDiag</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1358,7 +1358,7 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="114"/>
         <source>meters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mètres</translation>
     </message>
 </context>
 <context>
@@ -1521,38 +1521,38 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
 <context>
     <name>PB_StepLoadMultiXYBFiles</name>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
         <source>IndividualScenes</source>
         <translation>Scènes individuelles</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
         <source>g</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
         <source>IndividualScene</source>
         <translation>Scène individuelle</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
         <source>IndividualIntensity</source>
         <translation>Intensité individuelle</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
         <source>ScanPosition</source>
         <translation>Scanner</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
         <source>MergedScene</source>
         <translation>Scènes assemblées</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
         <source>gm</source>
         <translation>Groupe</translation>
     </message>
@@ -1966,7 +1966,7 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="76"/>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Résultat</translation>
     </message>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="84"/>
@@ -2008,7 +2008,7 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="68"/>
         <source>No detailled description for this step</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="81"/>

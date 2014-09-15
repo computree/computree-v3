@@ -922,7 +922,7 @@ p, li { white-space: pre-wrap; }
         <source>Une erreur est survenu lors de la lecture du script :
 
 %1</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="166"/>

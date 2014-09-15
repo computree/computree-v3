@@ -398,9 +398,9 @@
     </message>
 </context>
 <context>
-    <name>CT_Polygon2D</name>
+    <name>CT_Polygon2D_Old</name>
     <message>
-        <location filename="../ct_itemdrawable/ct_polygon2d.h" line="81"/>
+        <location filename="../ct_itemdrawable/ct_polygon2d_old.h" line="81"/>
         <source>Number Of Vertices</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1312,57 +1312,57 @@ In 3D mode, the tool only works on selected cells</translation>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="89"/>
         <source>Scène(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene(s)</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="93"/>
         <source>Scène</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="107"/>
         <source>Hits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="101"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
         <source>DensityXY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="102"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="101"/>
         <source>DensityXZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="103"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="102"/>
         <source>DensityYZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="104"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="103"/>
         <source>ProfilX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="105"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="104"/>
         <source>ProfilY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="106"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="105"/>
         <source>ProfilZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="107"/>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="106"/>
         <source>ProfilDiag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="114"/>
         <source>Résolution de la grille</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Resolution of the grid</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="114"/>
@@ -1385,7 +1385,7 @@ In 3D mode, the tool only works on selected cells</translation>
     <message>
         <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="63"/>
         <source>Scène</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene</translation>
     </message>
     <message>
         <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="66"/>
@@ -1530,38 +1530,38 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadMultiXYBFiles</name>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
         <source>IndividualScenes</source>
         <translation>Individual Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
         <source>g</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
         <source>IndividualScene</source>
         <translation>Individual Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
         <source>IndividualIntensity</source>
         <translation>Individual Intensity</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
         <source>ScanPosition</source>
         <translation>Scanner</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
         <source>MergedScene</source>
         <translation>Merged Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
         <source>gm</source>
         <translation>Group</translation>
     </message>
@@ -1710,12 +1710,12 @@ Leave the mouse over a button to get info.</translation>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="82"/>
         <source>Scène(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene(s)</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="86"/>
         <source>Scène</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="92"/>
@@ -1725,7 +1725,7 @@ Leave the mouse over a button to get info.</translation>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="95"/>
         <source>MNS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DSM</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="96"/>
@@ -1856,12 +1856,12 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="81"/>
         <source>Scène(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene(s)</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="85"/>
         <source>Scène</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Scene</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="91"/>
@@ -1871,7 +1871,7 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="94"/>
         <source>MNS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DSM</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="95"/>
@@ -1998,7 +1998,7 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
         <source>Mode manuel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manual mode</translation>
     </message>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
@@ -2038,17 +2038,17 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="85"/>
         <source>Item de référence</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Item of reference</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="87"/>
         <source>Résultat à affilier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Result to affiliate</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="89"/>
         <source>Groupe à affilier</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Group to affiliate</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="90"/>

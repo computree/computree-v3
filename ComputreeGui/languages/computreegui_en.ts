@@ -918,13 +918,19 @@ p, li { white-space: pre-wrap; }
         <translation>Error load script</translation>
     </message>
     <message>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation type="vanished">An error occured while reading the script:
+
+%1</translation>
+    </message>
+    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="149"/>
         <source>Une erreur est survenu lors de la lecture du script :
 
 %1</source>
-        <translation>An error occured while reading the script:
-
-%1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="166"/>
