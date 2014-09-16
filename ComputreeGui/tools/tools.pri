@@ -1,9 +1,4 @@
 HEADERS += \
-    tools/treeview/dm_iitemdrawablestandarditembuilder.h \
-    tools/treeview/dm_itemdrawabletreeviewcontroller.h \
-    tools/treeview/dm_itemdrawabletreeviewmodelbuilder.h \
-    tools/treeview/dm_itemdrawabletreeviewmodelresearcher.h \
-    tools/treeview/dm_itreeviewmanager.h \
     tools/worker/dm_abstractworker.h \
     tools/itemdrawable/dm_itemdrawableviewconfigurationbuilder.h \
     tools/guimanager/dm_abstractasyncoperationoptions.h \
@@ -29,12 +24,19 @@ HEADERS += \
     tools/graphicsview/dm_colorselectionmanagert.hpp \
     tools/treeview/dm_actionshandlerfortreeview.h \
     tools/itemdrawable/dm_itemdrawablebuildert.h \
-    tools/itemdrawable/dm_itemdrawablebuildert.hpp
+    tools/itemdrawable/dm_itemdrawablebuildert.hpp \
+    tools/treeview/dm_itemdrawabletreeviewmodelbuildert.h \
+    tools/treeview/dm_iitemdrawablestandarditembuildert.h \
+    tools/treeview/dm_itemdrawabletreeviewcontrollert.h \
+    tools/treeview/dm_itreeviewmanagert.h \
+    tools/treeview/dm_itemdrawabletreeviewmodelresearchert.h \
+    tools/treeview/dm_abstractitemtreeviewcontroller.h \
+    tools/itemdrawable/dm_abstractitemdrawablebuilder.h \
+    tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp \
+    tools/treeview/dm_itemdrawabletreeviewmodelbuildert.hpp \
+    tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp
 
 SOURCES += \
-    tools/treeview/dm_itemdrawabletreeviewcontroller.cpp \
-    tools/treeview/dm_itemdrawabletreeviewmodelbuilder.cpp \
-    tools/treeview/dm_itemdrawabletreeviewmodelresearcher.cpp \
     tools/worker/dm_abstractworker.cpp \
     tools/itemdrawable/dm_itemdrawableviewconfigurationbuilder.cpp \
     tools/guimanager/dm_abstractasyncoperationoptions.cpp \
@@ -51,5 +53,6 @@ SOURCES += \
     tools/graphicsview/dm_pointofviewmanager.cpp \
     tools/guimanager/dm_asyncoperation.cpp \
     tools/treeview/dm_sortfiltermathproxymodel.cpp \
-    tools/treeview/dm_actionshandlerfortreeview.cpp
+    tools/treeview/dm_actionshandlerfortreeview.cpp \
+    tools/treeview/dm_abstractitemtreeviewcontroller.cpp
 

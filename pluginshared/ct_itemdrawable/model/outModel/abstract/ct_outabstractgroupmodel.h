@@ -36,7 +36,7 @@ public:
     CT_AbstractItemGroup* group() const;
 
     // INHERITED FROM CT_OutAbstractItemModel //
-    CT_AbstractItemDrawable* itemDrawable() const;
+    virtual CT_AbstractItemDrawable* itemDrawable() const;
 };
 
 #endif // CT_OUTABSTRACTGROUPMODEL_H

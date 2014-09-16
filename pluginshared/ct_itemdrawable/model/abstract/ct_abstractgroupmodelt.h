@@ -36,14 +36,14 @@ public:
     /*!
      *  \brief Retourne le groupe racine
      */
-    CT_AbstractGroupModelT<ItemT,InheritedT>* rootGroup() const;
+    virtual CT_AbstractGroupModelT<ItemT,InheritedT>* rootGroup() const;
 
     /*!
      *  \brief Getter of the class
      *
      *  \return Retourne le groupe modèle parent
      */
-    CT_AbstractGroupModelT<ItemT,InheritedT>* parentGroup() const;
+    virtual CT_AbstractGroupModelT<ItemT,InheritedT>* parentGroup() const;
 
    /*!
     *  \brief Ajoute un groupe à ce groupe
@@ -52,7 +52,7 @@ public:
     *
     *  \return Retourne false et détruit le groupe de la mémoire si le groupe (modelName) ou que ses items (modelName) existe déjà dans l'arborescence
     */
-    bool addGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
+    virtual bool addGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
 
     /*!
      *  \brief Ajoute un groupe à ce groupe
@@ -67,7 +67,7 @@ public:
      *
      *  \return Retourne false et détruit le groupe de la mémoire si il y a eu une erreur, par exemple si le groupe n'était pas vide
      */
-    bool addGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group, CT_AutoRenameModels &autoName);
+    virtual bool addGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group, CT_AutoRenameModels &autoName);
 
     /*!
      *  \brief Supprime un groupe de ce groupe (supprime aussi de la mémoire)
@@ -76,7 +76,7 @@ public:
      *
      *  \return true si le groupe a été trouvé et supprimé
      */
-    bool removeGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
+    virtual bool removeGroup(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
 
    /*!
     *  \brief Ajoute un item à ce groupe
@@ -85,7 +85,7 @@ public:
     *
     *  \return Retourne false et détruit l'item de la mémoire si l'item (modelName OU itemType) existe déjà dans la liste des items de ce groupe
     */
-    bool addItem(ItemT *item);
+    virtual bool addItem(ItemT *item);
 
     /*!
      *  \brief Ajoute un item à ce groupe
@@ -98,7 +98,7 @@ public:
      *
      *  \return Retourne false et détruit l'item de la mémoire si il y a eu une erreur (normalement jamais)
      */
-    bool addItem(ItemT *item, CT_AutoRenameModels &autoName);
+    virtual bool addItem(ItemT *item, CT_AutoRenameModels &autoName);
 
     /*!
      *  \brief Supprime un item de ce groupe (supprime aussi de la mémoire)
@@ -107,16 +107,7 @@ public:
      *
      *  \return true si l'item a été trouvé et supprimé
      */
-    bool removeItem(ItemT *item);
-
-    /*!
-     *  \brief Vérifie si le nom du modèle passé en paramètre existe dans l'arborescence (test les groupes et les items).
-     *
-     *  \param modelName : le nom à tester à tester
-     *
-     *  \return Retourne false si aucun item ayant ce nom existe dans la liste
-     */
-    bool existInTree(const QString &modelName) const;
+    virtual bool removeItem(ItemT *item);
 
     /*!
      *  \brief Getter of the class
@@ -139,7 +130,7 @@ public:
      *
      *  \return Retourne le groupe modèle trouvé à partir de son nom. NULL si aucun modèle ne correspond.
      */
-    CT_AbstractGroupModelT<ItemT,InheritedT>* findGroup(const QString &modelName) const;
+    virtual CT_AbstractGroupModelT<ItemT,InheritedT>* findGroup(const QString &modelName) const;
 
     /*!
      *  \brief Getter of the class
@@ -148,26 +139,26 @@ public:
      *
      *  \return Retourne l'item modèle trouvé à partir de son nom. NULL si aucun modèle ne correspond.
      */
-    ItemT* findItem(const QString &modelName) const;
+    virtual ItemT* findItem(const QString &modelName) const;
 
     /*!
      *  \brief Supprime les groupes
      */
-    void clearGroups();
+    virtual void clearGroups();
 
     /*!
      *  \brief Supprime les items
      */
-    void clearItems();
+    virtual void clearItems();
 
     /*!
      *  \brief Supprime les groupes et les items
      */
-    void clear();
+    virtual void clear();
 
     // INHERITED FROM CT_AbstractModel
-    QList<CT_AbstractModel*> childrens() const;
-    bool isEmpty() const;
+    virtual QList<CT_AbstractModel*> childrens() const;
+    virtual bool isEmpty() const;
 
     /*!
      *  \brief Retourne une copie du groupes modèles et de ses modèles fils
@@ -181,14 +172,14 @@ protected:
      *
      *  \param group : le groupe à ajouter
      */
-    void addGroupWithoutVerification(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
+    virtual void addGroupWithoutVerification(CT_AbstractGroupModelT<ItemT,InheritedT> *group);
 
     /*!
      *  \brief Ajoute un item à ce groupe sans faire de vérification. Utile lors de la copie.
      *
      *  \param item : l'item à ajouter
      */
-    void addItemWithoutVerification(ItemT *item);
+    virtual void addItemWithoutVerification(ItemT *item);
 
     /**
      * @brief Called when a group is added

@@ -190,13 +190,13 @@ public:
     /**
      * @brief Returns values to backup this model and its children
      */
-    QList<SettingsNodeGroup*> getAllValues() const;
+    virtual QList<SettingsNodeGroup*> getAllValues() const;
 
     /**
      * @brief Restore this model and its children by values passed in parameter
      * @return false if it was an error in values
      */
-    bool setAllValues(const QList<SettingsNodeGroup*> &list);
+    virtual bool setAllValues(const QList<SettingsNodeGroup*> &list);
 
     /**
      * @brief Returns a copy of this model and its children.

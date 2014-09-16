@@ -9,6 +9,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_OutStdSingularItemModel : public DEF_CT_AbstractItemDrawableModelOut
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -33,7 +35,7 @@ public:
     /**
      * @brief Returns a copy of this model
      */
-    CT_OutAbstractModel* copy() const;
+    virtual CT_OutAbstractModel* copy() const;
 
 protected:
     /**

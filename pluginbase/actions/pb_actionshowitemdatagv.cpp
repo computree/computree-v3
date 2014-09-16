@@ -126,7 +126,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
     CT_AbstractSingularItemDrawable *sItem = NULL;
 
-    while(itS.hasNext() && (sItem != NULL))
+    while(itS.hasNext() && (sItem == NULL))
         sItem = dynamic_cast<CT_AbstractSingularItemDrawable*>(itS.next());
 
     if(sItem != NULL)

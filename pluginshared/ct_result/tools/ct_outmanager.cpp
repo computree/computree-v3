@@ -3,6 +3,9 @@
 #include "ct_turn/inTurn/tools/ct_inturnmanager.h"
 #include "ct_virtualabstractstep.h"
 
+#include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 CT_OutManager::CT_OutManager(CT_VirtualAbstractStep &step,
                              CT_InTurnManager &inTurnManager)
 {
@@ -60,11 +63,15 @@ bool CT_OutManager::createAllTurn()
 
     _inTurnManager->getTurnIndexManager()->resetTurnIndex();
 
+    PS_MODELS->clearCache();
+
     _step->preProcessCreateOutResultModelListProtected();
 
     for(int i=0; i<n; ++i)
     {
         _inTurnManager->createSearchModelListForCurrentTurn();
+
+        PS_MODELS->clearCache();
 
         // on demande à l'étape de créer ses modèles de sortie pour ce tour
         // il vont être ajouter au CT_ResultModelManager

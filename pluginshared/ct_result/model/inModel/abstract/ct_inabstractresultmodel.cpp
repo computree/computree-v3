@@ -75,39 +75,6 @@ bool CT_InAbstractResultModel::recursiveIsAtLeastOnePossibilitySelectedIfItDoes(
     return true;
 }
 
-bool CT_InAbstractResultModel::canSelectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively) const
-{
-    if(!CT_InAbstractModel::canSelectPossibilitiesByDefault(possibilitiesIndex, false))
-        return false;
-
-    if(selectChildrensTooRecursively)
-    {
-        // check if a children is not valid
-        foreach (int v, possibilitiesIndex) {
-            if(!((CT_InStdResultModelPossibility*)possibilitiesGroup()->getPossibilities().at(v))->inModel()->recursiveCanSelectPossibilitiesByDefault())
-                return false;
-        }
-    }
-
-    return true;
-}
-
-bool CT_InAbstractResultModel::selectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively)
-{
-    if(!canSelectPossibilitiesByDefault(possibilitiesIndex, selectChildrensTooRecursively))
-        return false;
-
-    if(selectChildrensTooRecursively)
-    {
-        foreach (int v, possibilitiesIndex) {
-            if(!((CT_InStdResultModelPossibility*)possibilitiesGroup()->getPossibilities().at(v))->inModel()->selectAllPossibilitiesByDefault())
-                return false;
-        }
-    }
-
-    return true;
-}
-
 CT_InAbstractModel* CT_InAbstractResultModel::findModelInTreeOfModelInPossibility(int pIndex, const QString &uniqueName) const
 {
     return (CT_InAbstractModel*)((CT_InStdResultModelPossibility*)possibilitiesGroup()->getPossibilities().at(pIndex))->inModel()->findModelInTree(uniqueName);
@@ -145,15 +112,18 @@ void CT_InAbstractResultModel::inModelComparisonResult(CT_AbstractModel *inModel
 {
     CT_InAbstractModel::inModelComparisonResult(inModel, ok, savePossibilities);
 
-    m_backupModel = NULL;
-
     if(savePossibilities)
     {
+        delete m_backupModel;
+        m_backupModel = NULL;
+
         if(!ok)
             delete inModel;
         else
             m_backupModel = (CT_InAbstractModel*)inModel;
     }
+    else
+        m_backupModel = NULL;
 }
 
 CT_InStdModelPossibility* CT_InAbstractResultModel::createNewPossibility() const

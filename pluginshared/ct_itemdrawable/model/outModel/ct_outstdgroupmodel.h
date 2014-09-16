@@ -12,6 +12,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_OutStdGroupModel : public CT_OutAbstractGroupModel
 {
+    Q_OBJECT
+
 public:
     /**
      * @brief Construct a model
@@ -33,10 +35,10 @@ public:
     /**
      * @brief Returns a copy of this model
      */
-    CT_OutAbstractModel* copy() const;
+    virtual CT_OutAbstractModel* copy() const;
 
     // HERITE DE CT_AbstractGroupModelT //
-    DEF_CT_AbstractGroupModelOut* copyGroup() const;
+    virtual DEF_CT_AbstractGroupModelOut* copyGroup() const;
 
 protected:
 

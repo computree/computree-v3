@@ -1,31 +1,30 @@
-#ifndef DM_ITEMDRAWABLETREEVIEWMODELRESEARCHER_H
-#define DM_ITEMDRAWABLETREEVIEWMODELRESEARCHER_H
+#ifndef DM_ITEMDRAWABLETREEVIEWMODELRESEARCHERT_H
+#define DM_ITEMDRAWABLETREEVIEWMODELRESEARCHERT_H
 
 #include <QVector>
 
 #include "tools/worker/dm_abstractworker.h"
-#include "tools/treeview/dm_itreeviewmanager.h"
+#include "tools/treeview/dm_itreeviewmanagert.h"
 
 /**
  * @brief This class is a worker (can call the method apply() with a thread) to transform a list of CT_AbstractItemDrawable to a list of QStandardItem (mapping).
  */
-class DM_ItemDrawableTreeViewModelResearcher : public DM_AbstractWorker
+template<class Item>
+class DM_ItemDrawableTreeViewModelResearcherT : public DM_AbstractWorker
 {
-    Q_OBJECT
-
 public:
-    DM_ItemDrawableTreeViewModelResearcher();
+    DM_ItemDrawableTreeViewModelResearcherT();
 
     /**
      * @brief Set the collection to manage. The collection will be resized to map the size of the list of CT_AbstractItemDrawable passed
      *        in method setItemDrawable(...) and will contains the result of the mapping made by the DM_ITreeViewManager (method 'getItem').
      */
-    void setCollection(const QVector< QList<QStandardItem*> > *collection);
+    void setCollection(const QVector< QList<Item*> > *collection);
 
     /**
      * @brief Set the manager who get a QStandardItem for a CT_AbstractItemDrawable
      */
-    void setTreeViewManager(const DM_ITreeViewManager *man);
+    void setTreeViewManager(const DM_ITreeViewManagerT<Item> *man);
 
     /**
      * @brief Set the list of CT_AbstractItemDrawable to transform
@@ -33,15 +32,17 @@ public:
     void setItemDrawable(const QList<CT_AbstractItemDrawable*> &list);
 
 private:
-    QVector< QList<QStandardItem*> >        *m_collection;
-    DM_ITreeViewManager                     *m_treeViewManager;
-    QList<CT_AbstractItemDrawable*>                    m_items;
+    QVector< QList<Item*> >             *m_collection;
+    DM_ITreeViewManagerT<Item>          *m_treeViewManager;
+    QList<CT_AbstractItemDrawable*>     m_items;
 
-public slots:
+public:
     /**
      * @brief Do the compute
      */
     void apply();
 };
 
-#endif // DM_ITEMDRAWABLETREEVIEWMODELRESEARCHER_H
+#include "tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp"
+
+#endif // DM_ITEMDRAWABLETREEVIEWMODELRESEARCHERT_H

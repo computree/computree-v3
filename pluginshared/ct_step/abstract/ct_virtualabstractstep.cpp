@@ -61,6 +61,8 @@
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 #include <QMutex>
 #include <QWaitCondition>
 #include <QDialog>
@@ -976,20 +978,6 @@ CT_InAbstractModel* CT_VirtualAbstractStep::getInModelForResearch(const QString 
     return getInModelForResearch((CT_OutAbstractResultModel*)p.at(possibilitySelectedIndex)->outModel(), uniqueName);
 }
 
-CT_InAbstractModel* CT_VirtualAbstractStep::getInModelForResearchIfUseCopy(const QString &inCopyResultUniqueName,
-                                                                               const QString &uniqueName,
-                                                                               int resultIndex) const
-{
-    CT_InResultModelGroupToCopy *resultModel = dynamic_cast<CT_InResultModelGroupToCopy*>(getInResultModel(inCopyResultUniqueName));
-
-    if(resultModel == NULL)
-        return NULL;
-
-    const CT_OutAbstractResultModelGroup *outModelForSearchInModel = resultModel->getOutResultModelForSearchInModel().at(resultIndex);
-
-    return _inManager->getTurnManager()->getInModel(*outModelForSearchInModel, uniqueName);
-}
-
 QList<CT_ResultGroup*> CT_VirtualAbstractStep::getInputResults() const
 {
     QList<CT_ResultGroup*> ret;
@@ -1503,6 +1491,7 @@ void CT_VirtualAbstractStep::createInResultModelList()
 {
     if(_inManager->getResultModelManager()->isEmpty())
     {
+        PS_MODELS->clearCache();
         _canChangeSetOneCompute = true;
         createInResultModelListProtected();
         _canChangeSetOneCompute = false;
@@ -1550,6 +1539,8 @@ void CT_VirtualAbstractStep::runProcessing(bool modificationMode)
             && canCompute)
     {
         m_firstCallToManualMode = true;
+
+        PS_MODELS->clearCache();
 
         // en fonction des resultats modeles de sortie on cree les resultats de sortie que l'etape
         // pourra utiliser dans sa methode compute.

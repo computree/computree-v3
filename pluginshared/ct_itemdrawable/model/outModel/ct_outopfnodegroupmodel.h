@@ -11,6 +11,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_OutOPFNodeGroupModel : public CT_OutStdGroupModel
 {
+    Q_OBJECT
+
 public:    
     /**
      * @brief Construct a model

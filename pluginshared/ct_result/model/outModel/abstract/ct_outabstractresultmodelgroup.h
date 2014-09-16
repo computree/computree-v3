@@ -23,8 +23,8 @@ public:
                                    const QString &resultName = "");
 
     // INHERITED FROM CT_AbstractModel //
-    QList<CT_AbstractModel*> childrens() const;
-    bool isEmpty() const;
+    virtual QList<CT_AbstractModel*> childrens() const;
+    virtual bool isEmpty() const;
     //                  //
 
     /**

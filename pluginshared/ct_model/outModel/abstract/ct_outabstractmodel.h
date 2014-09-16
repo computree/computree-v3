@@ -28,7 +28,7 @@ public:
     /**
      * @brief Returns the original model (recursively) if this model is a copy otherwise return 'this'
      */
-    CT_OutAbstractModel* originalModel() const;
+    virtual CT_OutAbstractModel* originalModel() const;
 
     /**
      * @brief Returns the original model (not recursively) if this model is a copy otherwise return 'this'
@@ -87,7 +87,7 @@ protected:
     /**
      * @brief Used by model to set the item
      */
-    void setItem(CT_AbstractItem *item);
+    virtual void setItem(CT_AbstractItem *item);
 
     /**
      * @brief Delete the item from this model

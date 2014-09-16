@@ -20,7 +20,7 @@ public:
      */
     virtual QString modelTypeDisplayable() const;
 
-    CT_OutAbstractModel* copy() const;
+    virtual CT_OutAbstractModel* copy() const;
 };
 
 #endif // CT_OUTSTDITEMATTRIBUTEMODEL_H

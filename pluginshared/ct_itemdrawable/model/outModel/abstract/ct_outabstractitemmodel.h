@@ -30,6 +30,13 @@ public:
      * @brief Returns the real item of this model
      */
     virtual CT_AbstractItemDrawable* itemDrawable() const = 0;
+
+protected:
+
+    /**
+     * @brief Used by model to set the item
+     */
+    virtual void setItem(CT_AbstractItem *item);
 };
 
 #endif // CT_OUTABSTRACTITEMMODEL_H

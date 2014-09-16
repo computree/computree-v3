@@ -322,12 +322,6 @@ void CT_AbstractGroupModelT<ItemT,InheritedT>::addItemWithoutVerification(ItemT 
 }
 
 template< class ItemT, class InheritedT >
-bool CT_AbstractGroupModelT<ItemT,InheritedT>::existInTree(const QString &modelName) const
-{
-    return internalExistInTree(rootGroup(), modelName);
-}
-
-template< class ItemT, class InheritedT >
 CT_AbstractGroupModelT<ItemT,InheritedT>* CT_AbstractGroupModelT<ItemT,InheritedT>::rootGroup() const
 {
     CT_AbstractGroupModelT<ItemT,InheritedT> *parent = (CT_AbstractGroupModelT<ItemT,InheritedT>*)this;

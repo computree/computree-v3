@@ -29,7 +29,7 @@ public:
     CT_AbstractSingularItemDrawable* singularItem() const;
 
     // INHERITED FROM CT_OutAbstractItemModel //
-    CT_AbstractItemDrawable* itemDrawable() const;
+    virtual CT_AbstractItemDrawable* itemDrawable() const;
 
     /**
      * @brief Returns all item attributes model contained in this model of item

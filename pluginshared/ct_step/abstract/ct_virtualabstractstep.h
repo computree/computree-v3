@@ -403,23 +403,6 @@ protected:
                                               const QString &uniqueName) const;
 
     /**
-     * @brief Returns the INPUT model that represent a item to search that correspond to the unique name passed in parameter.
-     * @param inCopyResultModelName : the unique name of the model that represent a result in which you want to search the model
-     *                                represented by the unique name passed in parameter. Typically a DEF_.... or result of the
-     *                                method "completeName()" of a CT_AutoRenameModels object. Example :
-     *
-     *                                CT_InAbstractModel *inItemDrawableModel = getInModelForResearch(DEF_InResult, DEF_InScene);
-     *
-     * @param uniqueName : the unique name of the model you search. Typically a DEF_.... or result of the method "completeName()"
-     *                     of a CT_AutoRenameModels object.
-     * @return NULL if the model was not found.
-     * @deprecated use the method "PS_MODELS->searchModel(....)"
-     */
-    Q_DECL_DEPRECATED CT_InAbstractModel* getInModelForResearchIfUseCopy(const QString &inCopyResultUniqueName,
-                                                       const QString &uniqueName,
-                                                       int resultIndex = 0) const;
-
-    /**
      * @brief Returns the list of results for the current turn. Use this method in your "compute" method.
      */
     QList<CT_ResultGroup *> getInputResults() const;

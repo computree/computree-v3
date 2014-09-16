@@ -40,7 +40,9 @@ SOURCES += \
     view/Tools/gcomboboxwithemptytitlewidget.cpp \
     view/DocumentView/GraphicsViews/3D/g3dfakepainterdrawwithnames.cpp \
     view/DocumentView/ItemModelViews/gtreeview.cpp \
-    view/DocumentView/ItemModelViews/gitemmodelview.cpp
+    view/DocumentView/ItemModelViews/gitemmodelview.cpp \
+    view/DocumentView/ItemModelViews/cg_customtreeitemmodel.cpp \
+    view/DocumentView/ItemModelViews/cg_customtreeitem.cpp
 
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -84,7 +86,9 @@ HEADERS += \
     view/Tools/gcomboboxwithemptytitlewidget.h \
     view/DocumentView/GraphicsViews/3D/g3dfakepainterdrawwithnames.h \
     view/DocumentView/ItemModelViews/gtreeview.h \
-    view/DocumentView/ItemModelViews/gitemmodelview.h
+    view/DocumentView/ItemModelViews/gitemmodelview.h \
+    view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h \
+    view/DocumentView/ItemModelViews/cg_customtreeitem.h
 
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

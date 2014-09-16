@@ -12,6 +12,8 @@ class CT_OutAbstractResultModelGroup;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InResultModelGroupToCopy : public CT_InResultModelGroup
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -67,14 +69,14 @@ public:
     virtual bool setAllValues(const QList<SettingsNodeGroup*> &list);
 
     // INHERITED FROM CT_InAbstractModel //
-    CT_InAbstractModel* copy(bool withPossibilities) const;
+    virtual CT_InAbstractModel* copy(bool withPossibilities) const;
 
 protected:
 
     /**
      * @brief Overload the superclass method to copy the out model of the possibility so it can be modified
      */
-    void possibilityCreated(CT_InStdModelPossibility *p);
+    virtual void possibilityCreated(CT_InStdModelPossibility *p);
 };
 
 #endif // CT_INRESULTMODELGROUPTOCOPY_H

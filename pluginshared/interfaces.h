@@ -34,7 +34,6 @@
 #include <QSharedPointer>
 #include <QWidget>
 #include <QPainter>
-#include <QStandardItem>
 #include <QAbstractItemView>
 
 #if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
@@ -740,16 +739,9 @@ public:
     virtual ~TreeViewInterface() {}
 
     /**
-     * @brief Returns a pointer to the QStandardItem associated with the given index.
-     *
-     * @warning Always use this method to get the real QStandardItem because the tree can be filtered !
+     * @brief Convert a QModelIndex to a CT_AbstractItemDrawable. Can return NULL if the QModelIndex is not valid.
      */
-    virtual QStandardItem* itemFromIndex(const QModelIndex &proxyIndex) const = 0;
-
-    /**
-     * @brief Convert a QStandardItem to a ItemDrawable. Can return NULL if the QStandardItem can't be converted to a ItemDrawable
-     */
-    virtual CT_AbstractItemDrawable* itemDrawableFromItem(const QStandardItem *item) const = 0;
+    virtual CT_AbstractItemDrawable* itemDrawableFromIndex(const QModelIndex &index) const = 0;
 
     /**
      * @brief Returns the model index of the item at the viewport coordinates point.
@@ -789,14 +781,14 @@ public:
     virtual void refreshAll() = 0;
 
     /**
-     * @brief Refresh only children of the list of QStandardItem passed in parameter
+     * @brief Refresh only children of the list of QModelIndex passed in parameter
      */
-    virtual void refreshItems(const QList<QStandardItem*> &items) = 0;
+    virtual void refreshItems(const QList<QModelIndex> &indexes) = 0;
 
     /**
-     * @brief Search the QStandardItem corresponding to the ItemDrawable passed in parameter
+     * @brief Search the QModelIndex corresponding to the ItemDrawable passed in parameter
      *        and refresh children for all ItemDrawable in the list
-     * @warning slow ! prefer the method "refreshItems" with QStandardItem or "refreshAll"
+     * @warning slow ! prefer the method "refreshItems" with QModelIndex or "refreshAll"
      */
     virtual void refreshItems(const QList<CT_AbstractItemDrawable*> &items) = 0;
 };

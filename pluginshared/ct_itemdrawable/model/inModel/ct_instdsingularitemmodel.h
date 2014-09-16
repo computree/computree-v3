@@ -8,6 +8,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InStdSingularItemModel : public DEF_CT_AbstractItemDrawableModelIn
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -31,18 +33,18 @@ public:
      */
     virtual QString modelTypeDisplayable() const;
 
-    CT_InAbstractModel* copy(bool withPossibilities) const;
+    virtual CT_InAbstractModel* copy(bool withPossibilities) const;
 
     /**
      * @brief Return true if this model can be compared with the OUTPUT model passed in parameter
      */
-    bool canBeComparedWith(const CT_OutAbstractModel &model) const;
+    virtual bool canBeComparedWith(const CT_OutAbstractModel &model) const;
 
 protected:
     /**
      * @brief Must return true if the model passed in parameter can be added in possibilities
      */
-    bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
+    virtual bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
 
 private:
 

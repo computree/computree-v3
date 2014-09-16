@@ -209,11 +209,10 @@ bool CT_InAbstractModel::canSelectPossibilitiesByDefault(const QList<int> &possi
     if(selectChildrensTooRecursively)
     {
         QList<CT_AbstractModel*> l = childrensOfPossibilities();
-        QListIterator<CT_AbstractModel*> it(l);
 
-        while(it.hasNext())
-        {
-            if(!((CT_InAbstractModel*)it.next())->recursiveCanSelectPossibilitiesByDefault())
+        // check if a children is not valid
+        foreach (int v, possibilitiesIndex) {
+            if(!((CT_InAbstractModel*)l.at(v))->recursiveCanSelectPossibilitiesByDefault())
                 return false;
         }
     }
@@ -260,11 +259,9 @@ bool CT_InAbstractModel::selectPossibilitiesByDefault(const QList<int> &possibil
     if(selectChildrensTooRecursively)
     {
         QList<CT_AbstractModel*> l = childrensOfPossibilities();
-        QListIterator<CT_AbstractModel*> it(l);
 
-        while(it.hasNext())
-        {
-            if(!((CT_InAbstractModel*)it.next())->recursiveCanSelectPossibilitiesByDefault())
+        foreach (int v, possibilitiesIndex) {
+            if(!((CT_InAbstractModel*)l.at(v))->recursiveSelectAllPossibilitiesByDefault())
                 return false;
         }
     }
@@ -322,6 +319,7 @@ QList<SettingsNodeGroup *> CT_InAbstractModel::getAllValues() const
     SettingsNodeGroup *root = new SettingsNodeGroup("CT_InAbstractModel_Values");
     root->addValue(new SettingsNodeValue("Version", 1));
     root->addValue(new SettingsNodeValue("ModelName", uniqueNamePlusTurn()));
+    root->addValue(new SettingsNodeValue("ModelType", metaObject()->className()));
     root->addValue(new SettingsNodeValue("ChoiceMode", (int)choiceMode()));
     root->addValue(new SettingsNodeValue("FinderMode", (int)finderMode()));
     retList.append(root);
@@ -335,7 +333,27 @@ QList<SettingsNodeGroup *> CT_InAbstractModel::getAllValues() const
         SettingsNodeGroup *groupResPossibility = new SettingsNodeGroup("Possibility");
         groupResPossibility->addValue(new SettingsNodeValue("IsSelected", possibility->isSelected() ? "true" : "false"));
         groupResPossibility->addValue(new SettingsNodeValue("OutModelName", possibility->outModel()->uniqueNamePlusTurn()));
+        groupResPossibility->addValue(new SettingsNodeValue("OutModelType", possibility->outModel()->metaObject()->className()));
         root->addGroup(groupResPossibility);
+    }
+
+    QList<CT_AbstractModel*> c = childrensOfPossibilities();
+    QListIterator<CT_AbstractModel*> itC(c);
+
+    int i = 0;
+
+    while(itC.hasNext())
+    {
+        SettingsNodeGroup *cGroup = new SettingsNodeGroup(QString("Children_%1").arg(i));
+        root->addGroup(cGroup);
+
+        QList<SettingsNodeGroup*> groups = ((CT_InAbstractModel*)itC.next())->getAllValues();
+
+        foreach (SettingsNodeGroup *gr, groups) {
+            cGroup->addGroup(gr);
+        }
+
+        ++i;
     }
 
     return retList;
@@ -409,6 +427,24 @@ bool CT_InAbstractModel::setAllValues(const QList<SettingsNodeGroup *> &list)
             return false;
 
         possibility->setSelected(values.first()->value().toString() == "true");
+
+        ++i;
+    }
+
+    QList<CT_AbstractModel*> c = childrensOfPossibilities();
+    QListIterator<CT_AbstractModel*> itC(c);
+
+    i=0;
+
+    while(itC.hasNext())
+    {
+        groups = root->groupsByTagName(QString("Children_%1").arg(i));
+
+        if(groups.isEmpty())
+            return false;
+
+        if(!((CT_InAbstractModel*)itC.next())->setAllValues(groups.first()->groups()))
+            return false;
 
         ++i;
     }

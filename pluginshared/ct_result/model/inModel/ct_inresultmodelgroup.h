@@ -12,6 +12,8 @@ class CT_OutAbstractResultModel;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InResultModelGroup : public CT_InAbstractResultModel
 {
+    Q_OBJECT
+
 public:
     /**
      * @brief Constructor
@@ -146,7 +148,7 @@ public:
      *
      * @return true if the group was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
      */
-    bool addGroupModel(const QString &parentGroupUniqueName,
+    virtual bool addGroupModel(const QString &parentGroupUniqueName,
                        CT_AutoRenameModels &autoUniqueName,
                        const QString &groupType = CT_AbstractItemGroup::staticGetType(),
                        const QString &displayableName = "Groupe",
@@ -167,7 +169,7 @@ public:
      *
      * @return true if the item was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
      */
-    bool addItemModel(const QString &parentGroupUniqueName,
+    virtual bool addItemModel(const QString &parentGroupUniqueName,
                       CT_AutoRenameModels &autoUniqueName,
                       const QString &itemType,
                       const QString &displayableName = "",
@@ -202,8 +204,8 @@ public:
 
 
     // INHERITED FROM CT_AbstractModel //
-    QList<CT_AbstractModel*> childrens() const;
-    bool isEmpty() const;
+    virtual QList<CT_AbstractModel*> childrens() const;
+    virtual bool isEmpty() const;
     //                  //
 
     /**
@@ -211,14 +213,14 @@ public:
      *        and recursively (go up in tree) if the parameter "isRecursive()" returns true.
      * @return An empty list if one of the model in the list of possibilities selected was not found or if there was no possibility selected.
      */
-    QList<CT_AbstractResult*> searchResultsInStepForPossibilitiesSelected(const CT_VirtualAbstractStep *step) const;
+    virtual QList<CT_AbstractResult*> searchResultsInStepForPossibilitiesSelected(const CT_VirtualAbstractStep *step) const;
 
     /**
      * @brief Search real results corresponding to the possibility passed in parameter from the step passed in parameter
      *        and recursively (go up in tree) if the parameter "isRecursive()" returns true.
      * @return NULL if the result was not found or if the possibility passed in parameter is not from this model
      */
-    CT_AbstractResult* searchResultsInStepForThisPossibility(const CT_VirtualAbstractStep *step,
+    virtual CT_AbstractResult* searchResultsInStepForThisPossibility(const CT_VirtualAbstractStep *step,
                                                              const CT_InStdModelPossibility *possibility) const;
 
     /**

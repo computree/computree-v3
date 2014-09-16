@@ -10,6 +10,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_OutResultModelGroupCopy : public CT_OutAbstractResultModelGroup
 {
+    Q_OBJECT
+
 public:
     /**
      * @brief Construct a OUTPUT model that represent a result
@@ -32,19 +34,19 @@ public:
     virtual QString modelTypeDisplayable() const;
 
     // OVERLOADED FROM CT_OutAbstractResultModelGroup //
-    void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup);
-    DEF_CT_AbstractGroupModelOut* rootGroup() const;
+    virtual void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup);
+    virtual DEF_CT_AbstractGroupModelOut* rootGroup() const;
 
     // INHERITED FROM CT_OutAbstractResultModel //
-    CT_AbstractResult* createResult(CT_ResultInitializeData &data) const;
+    virtual CT_AbstractResult* createResult(CT_ResultInitializeData &data) const;
 
     // INHERITED FROM CT_OutAbstractModel //
-    CT_OutAbstractModel* originalModel() const;
+    virtual CT_OutAbstractModel* originalModel() const;
 
     /**
      * @brief Returns a copy of this model
      */
-    CT_OutAbstractResultModel* copy() const;
+    virtual CT_OutAbstractResultModel* copy() const;
 
     /**
      * @brief Returns the possibility of the INPUT model that will be used to create the copy of the result.

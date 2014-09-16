@@ -56,10 +56,10 @@ size_t PB_CSVExporterColumn::size() const
             ++s;
     }
 
+    _iterator->toFront();
+
     if(_currentItem != NULL)
         _iterator->findNext(_currentItem);
-    else
-        _iterator->toFront();
 
     return s;
 }

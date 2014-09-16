@@ -10,9 +10,6 @@
 
 #include "dm_itemmodelviewsynchronizedgroup.h"
 
-#include "tools/treeview/dm_itemdrawabletreeviewcontroller.h"
-#include "tools/treeview/dm_iitemdrawablestandarditembuilder.h"
-
 #include <QTreeView>
 #include <QLabel>
 #include <QTimer>

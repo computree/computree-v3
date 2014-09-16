@@ -1,10 +1,10 @@
-#include "dm_itemdrawabletreeviewcontroller.h"
+#ifndef DM_ITEMDRAWABLETREEVIEWCONTROLLERT_HPP
+#define DM_ITEMDRAWABLETREEVIEWCONTROLLERT_HPP
 
-#include "dm_guimanager.h"
-#include "tools/treeview/dm_itemdrawabletreeviewmodelbuilder.h"
-#include "tools/treeview/dm_itemdrawabletreeviewmodelresearcher.h"
+#include "tools/treeview/dm_itemdrawabletreeviewcontrollert.h"
 
-DM_ItemDrawableTreeViewController::DM_ItemDrawableTreeViewController(QObject *parent) : QObject(parent)
+template<class Model, class Item>
+DM_ItemDrawableTreeViewControllerT<Model, Item>::DM_ItemDrawableTreeViewControllerT(QObject *parent) : DM_AbstractItemTreeViewController(parent)
 {
     m_standardItemBuilder = NULL;
     m_treeViewManager = NULL;
@@ -26,37 +26,44 @@ DM_ItemDrawableTreeViewController::DM_ItemDrawableTreeViewController(QObject *pa
     connect(&m_timerRemoveFromView, SIGNAL(timeout()), this, SLOT(slotRemoveTemporaryItemsInTable()), Qt::QueuedConnection);
 }
 
-void DM_ItemDrawableTreeViewController::setModel(const QStandardItemModel *model)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::setModel(const Model *model)
 {
-    m_model = (QStandardItemModel*)model;
+    m_model = (Model*)model;
 }
 
-void DM_ItemDrawableTreeViewController::setStandardItemBuilder(const DM_IItemDrawableStandardItemBuilder *builder)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::setStandardItemBuilder(const DM_IItemDrawableStandardItemBuilderT<Item> *builder)
 {
-    m_standardItemBuilder = (DM_IItemDrawableStandardItemBuilder*)builder;
+    m_standardItemBuilder = (DM_IItemDrawableStandardItemBuilderT<Item>*)builder;
 }
 
-void DM_ItemDrawableTreeViewController::setTreeViewManager(const DM_ITreeViewManager *manager)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::setTreeViewManager(const DM_ITreeViewManagerT<Item> *manager)
 {
-    m_treeViewManager = (DM_ITreeViewManager*)manager;
+    m_treeViewManager = (DM_ITreeViewManagerT<Item>*)manager;
 }
 
-void DM_ItemDrawableTreeViewController::setMaxRemoveToDoInGuiThread(const int &n)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::setMaxRemoveToDoInGuiThread(const int &n)
 {
     m_maxRemoveInGuiThread = n;
 }
 
-int DM_ItemDrawableTreeViewController::maxRemoveToDoInGuiThread() const
+template<class Model, class Item>
+int DM_ItemDrawableTreeViewControllerT<Model, Item>::maxRemoveToDoInGuiThread() const
 {
     return m_maxRemoveInGuiThread;
 }
 
-void DM_ItemDrawableTreeViewController::beginAddMultipleItemDrawable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::beginAddMultipleItemDrawable()
 {
     m_addMultiple = true;
 }
 
-void DM_ItemDrawableTreeViewController::addItemDrawable(CT_AbstractItemDrawable &item)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::addItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_tmpItemsToAdd.append(&item);
 
@@ -65,7 +72,8 @@ void DM_ItemDrawableTreeViewController::addItemDrawable(CT_AbstractItemDrawable 
         emit mustStartAddTimer();
 }
 
-void DM_ItemDrawableTreeViewController::endAddMultipleItemDrawable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::endAddMultipleItemDrawable()
 {
     m_addMultiple = false;
 
@@ -73,12 +81,14 @@ void DM_ItemDrawableTreeViewController::endAddMultipleItemDrawable()
         emit mustStartAddTimer();
 }
 
-void DM_ItemDrawableTreeViewController::beginRemoveMultipleItemDrawable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::beginRemoveMultipleItemDrawable()
 {
     m_removeMultiple = true;
 }
 
-void DM_ItemDrawableTreeViewController::removeItemDrawable(CT_AbstractItemDrawable &item)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
     m_tmpItemsToRemove.append(&item);
 
@@ -87,7 +97,8 @@ void DM_ItemDrawableTreeViewController::removeItemDrawable(CT_AbstractItemDrawab
         emit mustStartRemoveTimer();
 }
 
-void DM_ItemDrawableTreeViewController::endRemoveMultipleItemDrawable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::endRemoveMultipleItemDrawable()
 {
     m_removeMultiple = false;
 
@@ -95,13 +106,14 @@ void DM_ItemDrawableTreeViewController::endRemoveMultipleItemDrawable()
         emit mustStartRemoveTimer();
 }
 
-void DM_ItemDrawableTreeViewController::addElementsOfCollection()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::addElementsOfCollection()
 {
-    QVectorIterator< QList<QStandardItem*> > it(m_collection);
+    QVectorIterator< QList<Item*> > it(m_collection);
 
     while(it.hasNext())
     {
-        const QList<QStandardItem*> &ll = it.next();
+        const QList<Item*> &ll = it.next();
 
         if(!ll.isEmpty())
             m_model->appendRow(ll);
@@ -113,23 +125,24 @@ void DM_ItemDrawableTreeViewController::addElementsOfCollection()
     m_treeViewManager->refreshHeaders();
 }
 
-void DM_ItemDrawableTreeViewController::updateElemensOfCollection()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::updateElemensOfCollection()
 {
     if(m_tmpItemsToUpdate.size() == m_collectionUpdate.size())
     {
-        QVectorIterator< QList<QStandardItem*> > it(m_collectionUpdate);
-        QListIterator< QPair<QStandardItem *, CT_AbstractItemDrawable *> > itL(m_tmpItemsToUpdate);
+        QVectorIterator< QList<Item*> > it(m_collectionUpdate);
+        QListIterator< QPair<Item *, CT_AbstractItemDrawable *> > itL(m_tmpItemsToUpdate);
 
         while(it.hasNext()
                 && itL.hasNext())
         {
-            const QList<QStandardItem*> &ll = it.next();
-            const QPair<QStandardItem *, CT_AbstractItemDrawable *> &pair = itL.next();
+            const QList<Item*> &ll = it.next();
+            const QPair<Item *, CT_AbstractItemDrawable *> &pair = itL.next();
 
             if(!ll.isEmpty())
             {
-                QStandardItem *ii = pair.first;
-                QStandardItem *parent = ii->parent();
+                Item *ii = pair.first;
+                Item *parent = ii->parent();
                 int row = ii->row();
 
                 parent->removeRow(row);
@@ -147,7 +160,8 @@ void DM_ItemDrawableTreeViewController::updateElemensOfCollection()
     }
 }
 
-void DM_ItemDrawableTreeViewController::constructModel()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::constructModel()
 {
     m_timerAddToView.stop();
     m_tmpItemsToAdd.clear();
@@ -185,7 +199,7 @@ void DM_ItemDrawableTreeViewController::constructModel()
                 QThread *thread = new QThread();
 
                 // create a builder
-                DM_ItemDrawableTreeViewModelBuilder *builder = new DM_ItemDrawableTreeViewModelBuilder();
+                DM_ItemDrawableTreeViewModelBuilderT<Item> *builder = new DM_ItemDrawableTreeViewModelBuilderT<Item>();
                 builder->moveToThread(thread);
                 builder->addData(aop, true);
                 builder->setCollection(&m_collection);
@@ -222,7 +236,8 @@ void DM_ItemDrawableTreeViewController::constructModel()
     }
 }
 
-void DM_ItemDrawableTreeViewController::refresh(const QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > &list)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::refresh(const QList<QPair<Item *, CT_AbstractItemDrawable *> > &list)
 {
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("refresh a item in the Model"));
 
@@ -243,7 +258,7 @@ void DM_ItemDrawableTreeViewController::refresh(const QList<QPair<QStandardItem 
         QThread *thread = new QThread();
 
         // create a builder
-        DM_ItemDrawableTreeViewModelBuilder *builder = new DM_ItemDrawableTreeViewModelBuilder();
+        DM_ItemDrawableTreeViewModelBuilderT<Item> *builder = new DM_ItemDrawableTreeViewModelBuilderT<Item>();
         builder->moveToThread(thread);
         builder->addData(aop, true);
         builder->setCollection(&m_collectionUpdate);
@@ -262,7 +277,8 @@ void DM_ItemDrawableTreeViewController::refresh(const QList<QPair<QStandardItem 
     }
 }
 
-void DM_ItemDrawableTreeViewController::slotModelBuilderFinished(bool canceled)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotModelBuilderFinished(bool canceled)
 {
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("slotModelBuilderFinished : ") + (canceled ? "true" : "false"));
 
@@ -285,7 +301,8 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderFinished(bool canceled)
     m_treeViewManager->refreshHeaders();
 }
 
-void DM_ItemDrawableTreeViewController::slotModelBuilderUpdateFinished(bool canceled)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotModelBuilderUpdateFinished(bool canceled)
 {
     // if the builder was not canceled
     if(!canceled)
@@ -300,7 +317,8 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderUpdateFinished(bool canc
     m_treeViewManager->refreshHeaders();
 }
 
-void DM_ItemDrawableTreeViewController::slotModelBuilderAddFinished(bool canceled)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotModelBuilderAddFinished(bool canceled)
 {
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("slotModelBuilderAddFinished : ") + (canceled ? "true" : "false"));
 
@@ -322,7 +340,8 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderAddFinished(bool cancele
     m_treeViewManager->refreshHeaders();
 }
 
-void DM_ItemDrawableTreeViewController::slotModelBuilderRemoveFinished(bool canceled)
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotModelBuilderRemoveFinished(bool canceled)
 {
     //GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, QString("slotModelBuilderRemoveFinished : ") + (canceled ? "true" : "false"));
 
@@ -339,11 +358,11 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderRemoveFinished(bool canc
     else
     {
         // remove all elements
-        QVectorIterator< QList<QStandardItem*> > it(m_collection);
+        QVectorIterator< QList<Item*> > it(m_collection);
 
         while(it.hasNext())
         {
-            const QList<QStandardItem*> &ll = it.next();
+            const QList<Item*> &ll = it.next();
 
             if(!ll.isEmpty())
                 m_model->removeRow(ll.first()->row());
@@ -357,7 +376,8 @@ void DM_ItemDrawableTreeViewController::slotModelBuilderRemoveFinished(bool canc
     }
 }
 
-void DM_ItemDrawableTreeViewController::slotAddTemporaryItemsInTable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotAddTemporaryItemsInTable()
 {
     // add all CT_AbstractItemDrawable in the temporary list to the QTreeView
     DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
@@ -378,7 +398,7 @@ void DM_ItemDrawableTreeViewController::slotAddTemporaryItemsInTable()
             QThread *thread = new QThread();
 
             // create a builder
-            DM_ItemDrawableTreeViewModelBuilder *builder = new DM_ItemDrawableTreeViewModelBuilder();
+            DM_ItemDrawableTreeViewModelBuilderT<Item> *builder = new DM_ItemDrawableTreeViewModelBuilderT<Item>();
             builder->moveToThread(thread);
             builder->addData(aop, true);
             builder->setCollection(&m_collection);
@@ -402,7 +422,8 @@ void DM_ItemDrawableTreeViewController::slotAddTemporaryItemsInTable()
     }
 }
 
-void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
+template<class Model, class Item>
+void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotRemoveTemporaryItemsInTable()
 {
     // remvoe all CT_AbstractItemDrawable in the temporary list from the QTreeView
     /*DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
@@ -467,7 +488,7 @@ void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
         {
             CT_AbstractItemDrawable *item = m_tmpItemsToRemove.takeLast();
 
-            QStandardItem *si = m_treeViewManager->itemFromItemDrawable(item);
+            Item *si = m_treeViewManager->itemFromItemDrawable(item);
 
             if(si != NULL)
                 m_model->removeRow(si->row());
@@ -477,3 +498,5 @@ void DM_ItemDrawableTreeViewController::slotRemoveTemporaryItemsInTable()
         m_treeViewManager->refreshHeaders();
     }
 }
+
+#endif // DM_ITEMDRAWABLETREEVIEWCONTROLLERT_HPP

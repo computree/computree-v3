@@ -25,7 +25,7 @@ public:
      * @brief Add a model of item attribute
      * @return false and delete the model if the item attribute (modelName) already exist in hierarchy
      */
-    bool addItemAttribute(AttributModelT *attribute);
+    virtual bool addItemAttribute(AttributModelT *attribute);
 
     /**
      * @brief Add a model of item attribute
@@ -35,43 +35,43 @@ public:
      *
      * @return true in all case
      */
-    bool addItemAttribute(AttributModelT *attribute, CT_AutoRenameModels &autoName);
+    virtual bool addItemAttribute(AttributModelT *attribute, CT_AutoRenameModels &autoName);
 
     /**
      * @brief delete the item attribute from this item (and delete it from memory) (compare address)
      * @param attribute : item attribute to remove
      * @return true if the item attribute was found and deleted
      */
-    bool removeItemAttribute(AttributModelT *attribute);
+    virtual bool removeItemAttribute(AttributModelT *attribute);
 
     /**
      * @brief Returns the list of item attribute of the item
      */
-    const QList<AttributModelT*>& itemAttributes() const;
+    virtual const QList<AttributModelT*>& itemAttributes() const;
 
     /**
      * @brief Returns the item attribute corresponding with the modelName in the list. NULL if it was not founded.
      */
-    AttributModelT* findItemAttribute(const QString &uniqueModelName) const;
+    virtual AttributModelT* findItemAttribute(const QString &uniqueModelName) const;
 
     /**
      * @brief Delete all item attributes from memory and removed them from the list
      */
-    void clearItemAttributes();
+    virtual void clearItemAttributes();
 
     /*!
      * @brief Returns the parent group
      */
-    GroupModelT* parentGroup() const;
+    virtual GroupModelT* parentGroup() const;
 
     /*!
      * @brief Returns the root group
      */
-    GroupModelT* rootGroup() const;
+    virtual GroupModelT* rootGroup() const;
 
     // INHERITED FROM CT_AbstractModel
-    QList<CT_AbstractModel*> childrens() const;
-    bool isEmpty() const;
+    virtual QList<CT_AbstractModel*> childrens() const;
+    virtual bool isEmpty() const;
 
     /**
      * @brief Returns a copy of the item and a copy of all children

@@ -1,46 +1,49 @@
-#ifndef DM_ITEMDRAWABLETREEVIEWCONTROLLER_H
-#define DM_ITEMDRAWABLETREEVIEWCONTROLLER_H
+#ifndef DM_ITEMDRAWABLETREEVIEWCONTROLLERT_H
+#define DM_ITEMDRAWABLETREEVIEWCONTROLLERT_H
 
-#include <QStandardItemModel>
 #include <QTimer>
 
 #include "interfaces.h"
 
-#include "tools/treeview/dm_iitemdrawablestandarditembuilder.h"
-#include "tools/treeview/dm_itreeviewmanager.h"
+#include "tools/treeview/dm_abstractitemtreeviewcontroller.h"
+#include "tools/treeview/dm_iitemdrawablestandarditembuildert.h"
+#include "tools/treeview/dm_itreeviewmanagert.h"
+
+#include "dm_guimanager.h"
+#include "tools/treeview/dm_itemdrawabletreeviewmodelbuildert.h"
+#include "tools/treeview/dm_itemdrawabletreeviewmodelresearchert.h"
 
 /**
- * @brief Class that control the build/manage of a QStandardItemModel that must contains CT_AbstractItemDrawable. When you finish to add
+ * @brief Class that control the build/manage of a QAbstractItemModel that must contains CT_AbstractItemDrawable. When you finish to add
  *        CT_AbstractItemDrawable the controller request the gui manager a exclusive asynchronous operation to perform the creation of
  *        the list of QStandardItem in a thread. When the thread finish all QStandardItem will be added to the model.
  *
  *        You can call construcModel() to (re)construct completely the model. The controller request the list of
- *        CT_AbstractItemDrawable to add to the model at the DM_ITreeViewManager with the help of the method itemDrawableForTreeView().
+ *        CT_AbstractItemDrawable to add to the model at the DM_ITreeViewManagerT with the help of the method itemDrawableForTreeView().
  *
  *        When you finish to remove CT_AbstractItemDrawable the controller reconstruct the model if the number of CT_AbstractItemDrawable to remove
  *        is greater than the return of the method maxRemoveToDoInGuiThread().
  */
-class DM_ItemDrawableTreeViewController : public QObject
+template<class Model, class Item>
+class DM_ItemDrawableTreeViewControllerT : public DM_AbstractItemTreeViewController
 {
-    Q_OBJECT
-
 public:
-    DM_ItemDrawableTreeViewController(QObject *parent = 0);
+    DM_ItemDrawableTreeViewControllerT(QObject *parent = 0);
 
     /**
      * @brief Set the model of the TreeView
      */
-    void setModel(const QStandardItemModel *model);
+    void setModel(const Model *model);
 
     /**
      * @brief Set the QStandardItem builder
      */
-    void setStandardItemBuilder(const DM_IItemDrawableStandardItemBuilder *builder);
+    void setStandardItemBuilder(const DM_IItemDrawableStandardItemBuilderT<Item> *builder);
 
     /**
      * @brief Set the view that control the QTreeView
      */
-    void setTreeViewManager(const DM_ITreeViewManager *manager);
+    void setTreeViewManager(const DM_ITreeViewManagerT<Item> *manager);
 
     /**
      * @brief If the number of CT_AbstractItemDrawable to remove is greater than this parameter the controller recontruct the model instead
@@ -71,25 +74,25 @@ public:
 
 private:
 
-    QStandardItemModel                      *m_model;
+    Model                                           *m_model;
 
-    QVector< QList<QStandardItem*> >        m_collection;
-    QVector< QList<QStandardItem*> >        m_collectionUpdate;
+    QVector< QList<Item*> >                         m_collection;
+    QVector< QList<Item*> >                         m_collectionUpdate;
 
-    bool                                    m_addMultiple;
-    QList<CT_AbstractItemDrawable*>                    m_tmpItemsToAdd;
-    QTimer                                  m_timerAddToView;
+    bool                                            m_addMultiple;
+    QList<CT_AbstractItemDrawable*>                 m_tmpItemsToAdd;
+    QTimer                                          m_timerAddToView;
 
-    bool                                    m_removeMultiple;
-    QList<CT_AbstractItemDrawable*>                    m_tmpItemsToRemove;
-    QTimer                                  m_timerRemoveFromView;
+    bool                                            m_removeMultiple;
+    QList<CT_AbstractItemDrawable*>                 m_tmpItemsToRemove;
+    QTimer                                          m_timerRemoveFromView;
 
-    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> >  m_tmpItemsToUpdate;
+    QList<QPair<Item *, CT_AbstractItemDrawable *> >  m_tmpItemsToUpdate;
 
-    int                                     m_maxRemoveInGuiThread;
+    int                                             m_maxRemoveInGuiThread;
 
-    DM_IItemDrawableStandardItemBuilder     *m_standardItemBuilder;
-    DM_ITreeViewManager                     *m_treeViewManager;
+    DM_IItemDrawableStandardItemBuilderT<Item>     *m_standardItemBuilder;
+    DM_ITreeViewManagerT<Item>                     *m_treeViewManager;
 
     /**
      * @brief Called from slotModelBuilderFinished and slotModelBuilderAddFinished
@@ -101,7 +104,7 @@ private:
      */
     void updateElemensOfCollection();
 
-public slots:
+public:
 
     /**
      * @brief Call to (re)construct all the model
@@ -113,9 +116,9 @@ public slots:
      * @param item : the item to update
      * @param itemDrawable : the CT_AbstractItemDrawable represented by the QStandardItem
      */
-    void refresh(const QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > &list);
+    void refresh(const QList<QPair<Item *, CT_AbstractItemDrawable *> > &list);
 
-private slots:
+private:
 
     /**
      * @brief Called when the model builder is finished (called in the gui thread)
@@ -148,11 +151,8 @@ private slots:
      *        m_tmpItemsToRemove list from the treeview
      */
     void slotRemoveTemporaryItemsInTable();
-
-signals:
-    void mustStartAddTimer();
-    void mustStartRemoveTimer();
-    void updated();
 };
 
-#endif // DM_ITEMDRAWABLETREEVIEWCONTROLLER_H
+#include "tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp"
+
+#endif // DM_ITEMDRAWABLETREEVIEWCONTROLLERT_H

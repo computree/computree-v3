@@ -43,6 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InZeroOrMoreGroupModel : public CT_InAbstractGroupModel
 {
+    Q_OBJECT
+
 public:
 
     /*!
@@ -70,43 +72,43 @@ public:
     virtual bool canSelectPossibilitiesByDefault() const;
 
     // OVERLOADED FROM CT_AbstractItemModel //
-    bool canSetUniqueName(QString modelName) const { Q_UNUSED(modelName) return false; }
+    virtual bool canSetUniqueName(QString modelName) const { Q_UNUSED(modelName) return false; }
 
     /**
      * @brief Copy this model
      */
-    CT_InAbstractModel* copy(bool withPossibilities) const;
+    virtual CT_InAbstractModel* copy(bool withPossibilities) const;
 
     // INHERITED FROM CT_AbstractGroupModelT //
-    DEF_CT_AbstractGroupModelIn* copyGroup() const { return (DEF_CT_AbstractGroupModelIn*)copy(true); }
+    virtual DEF_CT_AbstractGroupModelIn* copyGroup() const { return (DEF_CT_AbstractGroupModelIn*)copy(true); }
 
     /**
      * @brief Return true if this model can be compared with the OUTPUT model passed in parameter
      */
-    bool canBeComparedWith(const CT_OutAbstractModel &model) const;
+    virtual bool canBeComparedWith(const CT_OutAbstractModel &model) const;
 
 protected:
     /**
      * @brief Must return true if the model passed in parameter can be added in possibilities
      */
-    bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
+    virtual bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
 
     /**
      * @brief Must return true if the current OUTPUT model can be compared with children of the OUTPUT model.
      */
-    bool mustCompareThisWithChildrenOfOutModel() const;
+    virtual bool mustCompareThisWithChildrenOfOutModel() const;
 
     /**
      * @brief Must return true if the current OUTPUT model must be compared with children of this INPUT model.
      */
-    bool mustCompareOutModelWithChildrenOfThisModel() const;
+    virtual bool mustCompareOutModelWithChildrenOfThisModel() const;
 
 
     // OVERLOADED FROM CT_AbstractGroupModelT //
-    void groupAdded(const DEF_CT_AbstractGroupModelIn *group) {  Q_UNUSED(group)  internalSetFinderMode(CT_InAbstractModel::F_IsObligatory);    }
-    void itemAdded(const CT_InAbstractSingularItemModel *item) { Q_UNUSED(item)   internalSetFinderMode(CT_InAbstractModel::F_IsObligatory);    }
-    void groupRemoved(const DEF_CT_AbstractGroupModelIn *group) { Q_UNUSED(group)     internalSetFinderMode(isEmpty() ? CT_InAbstractModel::F_IsOptional : CT_InAbstractModel::F_IsObligatory);    }
-    void itemRemoved(const CT_InAbstractSingularItemModel *item) { Q_UNUSED(item)     internalSetFinderMode(isEmpty() ? CT_InAbstractModel::F_IsOptional : CT_InAbstractModel::F_IsObligatory);    }
+    virtual void groupAdded(const DEF_CT_AbstractGroupModelIn *group) {  Q_UNUSED(group)  internalSetFinderMode(CT_InAbstractModel::F_IsObligatory);    }
+    virtual void itemAdded(const CT_InAbstractSingularItemModel *item) { Q_UNUSED(item)   internalSetFinderMode(CT_InAbstractModel::F_IsObligatory);    }
+    virtual void groupRemoved(const DEF_CT_AbstractGroupModelIn *group) { Q_UNUSED(group)     internalSetFinderMode(isEmpty() ? CT_InAbstractModel::F_IsOptional : CT_InAbstractModel::F_IsObligatory);    }
+    virtual void itemRemoved(const CT_InAbstractSingularItemModel *item) { Q_UNUSED(item)     internalSetFinderMode(isEmpty() ? CT_InAbstractModel::F_IsOptional : CT_InAbstractModel::F_IsObligatory);    }
 };
 
 #endif // CT_INZEROORMOREGROUPMODEL_H

@@ -69,7 +69,7 @@ MyQStandardItem::MyQStandardItem(CT_AbstractItemDrawable *id,
 MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
                                 CT_AbstractResult *res,
                                 MyQStandardItem::ColumnType type,
-                                const QVariant &value)
+                                const QVariant &value) : QStandardItem()
 {
     _step = step;
     _result = res;
@@ -88,7 +88,7 @@ MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
 
 MyQStandardItem::MyQStandardItem(CT_AbstractItemDrawable *id,
                                 MyQStandardItem::ColumnType type,
-                                const QVariant &value)
+                                const QVariant &value) : QStandardItem()
 {
     _step = NULL;
     _result = NULL;

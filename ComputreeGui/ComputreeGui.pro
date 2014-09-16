@@ -28,8 +28,7 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_itemmodelviewsynchronizedgroupoptions.h \
     dm_actionsmanager.h \
     dm_actionshandler.h \
-    imainprogressdialog.h \
-    tools/itemdrawable/dm_abstractitemdrawablebuilder.h
+    imainprogressdialog.h
 
 # OTHER
 SOURCES += main.cpp \

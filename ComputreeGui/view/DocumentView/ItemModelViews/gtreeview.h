@@ -2,16 +2,16 @@
 #define GTREEVIEW_H
 
 #include <QTreeView>
-#include <QStandardItemModel>
 #include <QLabel>
 #include <QMenu>
 
+#include <QStandardItemModel>
+#include "view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h"
 #include "view/DocumentView/ItemModelViews/gitemmodelview.h"
 
 #include "tools/itemdrawable/dm_itemdrawablebuildert.h"
 
-#include "tools/treeview/dm_itemdrawabletreeviewcontroller.h"
-#include "tools/treeview/dm_iitemdrawablestandarditembuilder.h"
+#include "tools/treeview/dm_itemdrawabletreeviewcontrollert.h"
 
 #include "tools/treeview/dm_actionshandlerfortreeview.h"
 
@@ -20,7 +20,7 @@
 #include "ct_attributes/abstract/ct_abstractitemattribute.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
-class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilder, public DM_ITreeViewManager
+class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilderT<QStandardItem>, public DM_ITreeViewManagerT<QStandardItem>
 {
     Q_OBJECT
 
@@ -38,8 +38,9 @@ public:
     DM_ActionsHandler* actionsHandler() const;
 
     // TreeViewInterface
-    QStandardItem* itemFromIndex(const QModelIndex &proxyIndex) const;
+    QStandardItem *itemFromIndex(const QModelIndex &proxyIndex) const;
     CT_AbstractItemDrawable* itemDrawableFromItem(const QStandardItem *item) const;
+    CT_AbstractItemDrawable* itemDrawableFromIndex(const QModelIndex &index) const;
     QModelIndex indexAt(const QPoint &point) const;
     QWidget* treeViewport() const;
     void setSelectionMode(QAbstractItemView::SelectionMode mode);
@@ -47,7 +48,7 @@ public:
     QModelIndexList selectedIndexes () const;
     QItemSelectionModel* selectionModel() const;
     void refreshAll();
-    void refreshItems(const QList<QStandardItem*> &items);
+    void refreshItems(const QList<QModelIndex> &indexes);
     void refreshItems(const QList<CT_AbstractItemDrawable*> &items);
 
     // DM_IItemDrawableStandardItemBuilder
@@ -69,25 +70,25 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private:
-    DM_ActionsHandlerForTreeView            *m_actionsHandler;
+    DM_ActionsHandlerForTreeView                                                    *m_actionsHandler;
 
-    QMenu                                   *m_contextMenu;
+    QMenu                                                                           *m_contextMenu;
 
-    QTreeView                               *m_treeView;
-    QStandardItemModel                      *m_model;
-    DM_ItemDrawableTreeViewController       m_treeViewController;
+    QTreeView                                                                       *m_treeView;
+    QStandardItemModel                                                          *m_model;
+    DM_ItemDrawableTreeViewControllerT<QStandardItemModel, QStandardItem>   m_treeViewController;
 
-    DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>       m_typeBuilder;
+    DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>      m_typeBuilder;
 
-    QList<CT_AbstractItemDrawable*>         m_expandedItems;
+    QList<CT_AbstractItemDrawable*>                                                 m_expandedItems;
 
-    QLineEdit                               *m_lineFilter;
+    QLineEdit                                                                       *m_lineFilter;
 
-    QList< CT_OutAbstractModel* >           m_dataReferencesToUse;
+    QList< CT_OutAbstractModel* >                                                   m_dataReferencesToUse;
 
-    DM_ItemDrawableManagerOptions           m_options;
+    DM_ItemDrawableManagerOptions                                                   m_options;
 
-    static int                              COLUMN_FIRST_DATA_VALUE;
+    static int                                                                      COLUMN_FIRST_DATA_VALUE;
 
     /**
      * @brief (re)Init the context menu

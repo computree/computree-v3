@@ -141,7 +141,7 @@ public:
     /**
      * @brief Returns true if the unique name passed in parameter exist in hierarchy (begin from the root model and go down recursively)
      */
-    bool existInTree(const QString &uniqueName) const;
+    virtual bool existInTree(const QString &uniqueName) const;
 
     /**
      * @brief Returns true if the unique name of the model passed in parameter or one of its children (recursively) exist

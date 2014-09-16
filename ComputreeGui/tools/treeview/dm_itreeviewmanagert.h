@@ -1,16 +1,16 @@
-#ifndef DM_ITREEVIEWMANAGER_H
-#define DM_ITREEVIEWMANAGER_H
+#ifndef DM_ITREEVIEWMANAGERT_H
+#define DM_ITREEVIEWMANAGERT_H
 
 #include "interfaces.h"
-#include <QStandardItem>
 
 /**
- * @brief You must inherit this class if you want to use the DM_ItemDrawableTreeViewController
+ * @brief You must inherit this class if you want to use the DM_ItemDrawableTreeViewControllerT
  */
-class DM_ITreeViewManager
+template<class Item>
+class DM_ITreeViewManagerT
 {
 public:
-    virtual ~DM_ITreeViewManager() {}
+    virtual ~DM_ITreeViewManagerT() {}
 
     /**
      * @brief Return true if we can (re)construct the model
@@ -28,9 +28,9 @@ public:
     virtual int nLevelToConstruct() const = 0;
 
     /**
-     * @brief Return the QStandardItem corresponding at the CT_AbstractItemDrawable passed in parameter
+     * @brief Return the Item corresponding to the CT_AbstractItemDrawable passed in parameter
      */
-    virtual QStandardItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const = 0;
+    virtual Item* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const = 0;
 
     /**
      * @brief Refresh headers of the view
@@ -38,4 +38,4 @@ public:
     virtual void refreshHeaders() = 0;
 };
 
-#endif // DM_ITREEVIEWMANAGER_H
+#endif // DM_ITREEVIEWMANAGERT_H

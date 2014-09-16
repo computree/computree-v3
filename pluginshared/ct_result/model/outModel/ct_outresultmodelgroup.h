@@ -10,6 +10,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_OutResultModelGroup : public CT_OutAbstractResultModelGroup
 {
+    Q_OBJECT
+
 public:
     /**
      * @brief Construct a OUTPUT model that represent a result
@@ -34,12 +36,12 @@ public:
     /**
      * @brief Return the root model that represent a group
      */
-    DEF_CT_AbstractGroupModelOut* rootGroup() const;
+    virtual DEF_CT_AbstractGroupModelOut* rootGroup() const;
 
     /**
      * @brief Set the root model that represent a group (delete the last root group from memory if exist).
      */
-    void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup);
+    virtual void setRootGroup(DEF_CT_AbstractGroupModelOut *rootGroup);
 
     /**
      * @brief Set the root group (delete the last root group from memory if exist).
@@ -49,7 +51,7 @@ public:
      * @param displayableName : displayable name that will be show in gui
      * @param description : description of the group model
      */
-    void setRootGroup(const QString &uniqueName,
+    virtual void setRootGroup(const QString &uniqueName,
                       CT_AbstractItemGroup *group = new CT_StandardItemGroup(),
                       const QString &displayableName = "",
                       const QString &description = "");
@@ -65,7 +67,7 @@ public:
      *
      * @return true if the group was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
      */
-    bool addGroupModel(const QString &parentGroupUniquelName,
+    virtual bool addGroupModel(const QString &parentGroupUniquelName,
                        const QString &uniqueName,
                        CT_AbstractItemGroup *group = new CT_StandardItemGroup(),
                        const QString &displayableName = "",
@@ -113,7 +115,7 @@ public:
      *
      * @return true if the item was added to the parent group. false if the unique name already exist in the hierarchy or if the parent group was not found.
      */
-    bool addItemModel(const QString &parentGroupUniqueName,
+    virtual bool addItemModel(const QString &parentGroupUniqueName,
                       const QString &uniqueName,
                       CT_AbstractSingularItemDrawable *item,
                       const QString &displayableName = "",
@@ -130,7 +132,7 @@ public:
      *
      * @return true if the item attribute was added to the parent item. false if the unique name already exist in the hierarchy or if the parent item was not found.
      */
-    bool addItemAttributeModel(const QString &parentItemUniqueName,
+    virtual bool addItemAttributeModel(const QString &parentItemUniqueName,
                                const QString &uniqueName,
                                CT_AbstractItemAttribute *ia,
                                const QString &displayableName = "",

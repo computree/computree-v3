@@ -8,6 +8,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InStdGroupModel : public CT_InAbstractGroupModel
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -35,21 +37,21 @@ public:
     /**
      * @brief Copy this model
      */
-    CT_InAbstractModel* copy(bool withPossibilities) const;
+    virtual CT_InAbstractModel* copy(bool withPossibilities) const;
 
     // INHERITED FROM CT_AbstractGroupModelT //
-    DEF_CT_AbstractGroupModelIn* copyGroup() const { return (DEF_CT_AbstractGroupModelIn*)copy(true); }
+    virtual DEF_CT_AbstractGroupModelIn* copyGroup() const { return (DEF_CT_AbstractGroupModelIn*)copy(true); }
 
     /**
      * @brief Return true if this model can be compared with the OUTPUT model passed in parameter
      */
-    bool canBeComparedWith(const CT_OutAbstractModel &model) const;
+    virtual bool canBeComparedWith(const CT_OutAbstractModel &model) const;
 
 protected:
     /**
      * @brief Must return true if the model passed in parameter can be added in possibilities
      */
-    bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
+    virtual bool canAddPossibilityForThisModel(const CT_OutAbstractModel &model) const;
 };
 
 #endif // CT_INSTDGROUPMODEL_H

@@ -14,9 +14,9 @@
 
 #include "dm_guimanager.h"
 
+#include "view/StepResultTreeView/myqstandarditem.h"
 #include "tools/treeview/dm_sortfiltermathproxymodel.h"
 
-#include "view/StepResultTreeView/myqstandarditem.h"
 #include "view/ItemDrawableView/gitemdrawablemanageroptionscolor.h"
 
 #include "ct_global/ct_context.h"
@@ -282,7 +282,7 @@ void GTreeView::slotResetColorLineFilter()
 
 void GTreeView::slotItemDataChanged(QStandardItem *item)
 {
-    MyQStandardItem *myItem = (MyQStandardItem*)item;
+    /*MyQStandardItem *myItem = static_cast<MyQStandardItem*>(item);
     CT_AbstractItemDrawable *itemDrawable = myItem->itemDrawable();
 
     if(itemDrawable != NULL)
@@ -297,7 +297,7 @@ void GTreeView::slotItemDataChanged(QStandardItem *item)
                 GUI_MANAGER->getDocumentManagerView()->redrawAllDocument();
             }
         }
-    }
+    }*/
 }
 
 void GTreeView::slotShowColorOptions()
@@ -418,6 +418,11 @@ CT_AbstractItemDrawable* GTreeView::itemDrawableFromItem(const QStandardItem *it
     return (CT_AbstractItemDrawable*)item->data().value<void*>();
 }
 
+CT_AbstractItemDrawable *GTreeView::itemDrawableFromIndex(const QModelIndex &index) const
+{
+    return (CT_AbstractItemDrawable*)m_model->itemFromIndex(((DM_SortFilterMathProxyModel*)m_treeView->model())->mapToSource(index))->data().value<void*>();
+}
+
 QModelIndex GTreeView::indexAt(const QPoint &point) const
 {
     return m_treeView->indexAt(point);
@@ -453,16 +458,16 @@ void GTreeView::refreshAll()
     construct();
 }
 
-void GTreeView::refreshItems(const QList<QStandardItem*> &items)
+void GTreeView::refreshItems(const QList<QModelIndex> &indexes)
 {
     QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > list;
 
-    QListIterator<QStandardItem*> it(items);
+    QListIterator<QModelIndex> it(indexes);
 
     while(it.hasNext())
     {
-        QStandardItem *i = it.next();
-        list << qMakePair(i, itemDrawableFromItem(i));
+        const QModelIndex &i = it.next();
+        list << qMakePair(itemFromIndex(i), itemDrawableFromIndex(i));
     }
 
     m_treeViewController.refresh(list);
@@ -516,6 +521,9 @@ QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &ite
     QObject::connect(&item, SIGNAL(selectChange(bool)), itemDisplay, SLOT(setBoolData(bool)), Qt::DirectConnection);
     QObject::connect(itemDisplay, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(slotItemDataChanged(QStandardItem*)), Qt::QueuedConnection);
     l << itemDisplay;
+    /*QStandardItem *itemDisplay = new QStandardItem();
+    itemDisplay->setData(qVariantFromValue((void*)&item), Qt::UserRole + 1);
+    l << itemDisplay;*/
 
     int s = m_dataReferencesToUse.size();
 
@@ -523,7 +531,7 @@ QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &ite
     {
         QStandardItem *ii = new QStandardItem();
         ii->setData(qVariantFromValue((void*)&item));
-        ii->setEditable(false);
+        //ii->setEditable(false);
         l << ii;
     }
 
