@@ -1,6 +1,7 @@
 #include "cg_customtreeitem.h"
 
 #include "view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h"
+#include "dm_guimanager.h"
 
 CG_CustomTreeItem::CG_CustomTreeItem()
 {
@@ -8,6 +9,10 @@ CG_CustomTreeItem::CG_CustomTreeItem()
     m_parent = NULL;
     m_column = 0;
     m_model = NULL;
+    m_fetchSize = 30;
+
+    setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled|Qt::ItemIsEditable
+             |Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
 }
 
 CG_CustomTreeItem::CG_CustomTreeItem(const QString &text)
@@ -16,6 +21,11 @@ CG_CustomTreeItem::CG_CustomTreeItem(const QString &text)
     m_parent = NULL;
     m_column = 0;
     m_model = NULL;
+    m_fetchSize = 30;
+
+    setText(text);
+    setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled|Qt::ItemIsEditable
+             |Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
 }
 
 CG_CustomTreeItem::~CG_CustomTreeItem()
@@ -64,12 +74,9 @@ void CG_CustomTreeItem::insertRow(int i, const QList<CG_CustomTreeItem *> &items
         model()->endInsertRows();
 }
 
-int CG_CustomTreeItem::columnCount() const
+bool CG_CustomTreeItem::hasChildren() const
 {
-    if(m_items.isEmpty())
-        return 0;
-
-    return m_items.first().size();
+    return !m_items.isEmpty();
 }
 
 int CG_CustomTreeItem::row() const
@@ -106,22 +113,119 @@ CG_CustomTreeItem* CG_CustomTreeItem::child(int row, int column)
 
 QVariant CG_CustomTreeItem::data(int role) const
 {
-    return "data";
+    role = (role == Qt::EditRole) ? Qt::DisplayRole : role;
+
+    return m_datas.value(role, QVariant());
 }
 
 void CG_CustomTreeItem::setData(const QVariant &value, int role)
 {
+    role = (role == Qt::EditRole) ? Qt::DisplayRole : role;
 
+    setDataWithoutSignal(value, role);
+
+    emit dataChanged(this, role, value);
+
+    if(role == Qt::CheckStateRole)
+        emit checkStateChanged(checkState());
 }
 
 void CG_CustomTreeItem::setText(const QString &text)
 {
-    setData(text, Qt::DisplayRole);
+    setDataWithoutSignal(text, Qt::DisplayRole);
+}
+
+void CG_CustomTreeItem::setFlags(Qt::ItemFlags flags)
+{
+    setDataWithoutSignal((int)flags, Qt::UserRole - 1);
+}
+
+Qt::ItemFlags CG_CustomTreeItem::flags() const
+{
+    QVariant v = data(Qt::UserRole - 1);
+
+    if (!v.isValid())
+        return (Qt::ItemIsSelectable|Qt::ItemIsEnabled|Qt::ItemIsEditable
+                |Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled);
+
+    return Qt::ItemFlags(v.toInt());
+}
+
+void CG_CustomTreeItem::setSelectable(bool e)
+{
+    changeFlags(e, Qt::ItemIsSelectable);
+}
+
+void CG_CustomTreeItem::setCheckable(bool e)
+{
+    if (e && !isCheckable()) {
+        // make sure there's data for the checkstate role
+        if (!data(Qt::CheckStateRole).isValid())
+            setDataWithoutSignal(Qt::Unchecked, Qt::CheckStateRole);
+    }
+
+    changeFlags(e, Qt::ItemIsUserCheckable);
+}
+
+void CG_CustomTreeItem::setTristate(bool e)
+{
+    changeFlags(e, Qt::ItemIsTristate);
+}
+
+void CG_CustomTreeItem::setDragEnabled(bool e)
+{
+    changeFlags(e, Qt::ItemIsDragEnabled);
+}
+
+void CG_CustomTreeItem::setDropEnabled(bool e)
+{
+    changeFlags(e, Qt::ItemIsDropEnabled);
+}
+
+void CG_CustomTreeItem::setEditable(bool e)
+{
+    changeFlags(e, Qt::ItemIsEditable);
+}
+
+void CG_CustomTreeItem::setEnabled(bool e)
+{
+    changeFlags(e, Qt::ItemIsEnabled);
+}
+
+bool CG_CustomTreeItem::isCheckable() const
+{
+    return (flags() & Qt::ItemIsUserCheckable) != 0;
+}
+
+void CG_CustomTreeItem::setCheckState(Qt::CheckState c)
+{
+    setDataWithoutSignal(c, Qt::CheckStateRole);
+}
+
+Qt::CheckState CG_CustomTreeItem::checkState() const
+{
+    return Qt::CheckState(qvariant_cast<int>(data(Qt::CheckStateRole)));
+}
+
+void CG_CustomTreeItem::setFetchSize(int n)
+{
+    if(n > 0)
+        m_fetchSize = n;
+}
+
+int CG_CustomTreeItem::fetchSize() const
+{
+    return m_fetchSize;
 }
 
 int CG_CustomTreeItem::rowCount() const
 {
     return m_count;
+}
+
+int CG_CustomTreeItem::nChildrens() const
+{
+    return m_items.size();
 }
 
 bool CG_CustomTreeItem::canFetchMore() const
@@ -132,25 +236,63 @@ bool CG_CustomTreeItem::canFetchMore() const
 void CG_CustomTreeItem::fetchMore()
 {
     int remainder = m_items.size() - m_count;
-    int itemsToFetch = qMin(10, remainder);
+    int itemsToFetch = qMin(m_fetchSize, remainder);
+
+    if(model() != NULL)
+        model()->beginInsertRows(model()->indexFromItem(this), m_count, m_count + itemsToFetch - 1);
 
     m_count += itemsToFetch;
+
+    if(model() != NULL)
+        model()->endInsertRows();
 }
 
 void CG_CustomTreeItem::clear()
 {
-    if(model() != NULL)
-        model()->beginRemoveRows(model()->indexFromItem(this), 0,rowCount()-1);
+    if(!m_items.isEmpty())
+    {
+        int n = rowCount();
 
-    foreach (const QList<CG_CustomTreeItem*> &l, m_items) {
-        qDeleteAll(l.begin(), l.end());
+        if((model() != NULL) && (n > 0))
+            model()->beginRemoveRows(model()->indexFromItem(this), 0, n-1);
+
+        foreach (const QList<CG_CustomTreeItem*> &l, m_items) {
+            qDeleteAll(l.begin(), l.end());
+        }
+
+        m_items.clear();
+        m_count = 0;
+
+        if((model() != NULL) && (n > 0))
+            model()->endRemoveRows();
     }
+}
 
-    m_items.clear();
-    m_count = 0;
+void CG_CustomTreeItem::setBoolData(bool e, Qt::ItemDataRole role)
+{
+    setDataWithoutSignal(e ? Qt::Checked : Qt::Unchecked, role);
+}
+
+void CG_CustomTreeItem::changeFlags(bool enable, Qt::ItemFlags f)
+{
+    Qt::ItemFlags fl = flags();
+
+    if (enable)
+        fl |= f;
+    else
+        fl &= ~f;
+
+    setFlags(fl);
+}
+
+void CG_CustomTreeItem::setDataWithoutSignal(const QVariant &value, int role)
+{
+    role = (role == Qt::EditRole) ? Qt::DisplayRole : role;
+
+    m_datas.insert(role, value);
 
     if(model() != NULL)
-        model()->endRemoveRows();
+        model()->dataOfCustomItemChanged(this);
 }
 
 void CG_CustomTreeItem::setParent(const CG_CustomTreeItem *p)

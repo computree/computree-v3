@@ -4,6 +4,7 @@
 #include <QTreeView>
 #include <QLabel>
 #include <QMenu>
+#include <QMessageBox>
 
 #include <QStandardItemModel>
 #include "view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h"
@@ -20,7 +21,7 @@
 #include "ct_attributes/abstract/ct_abstractitemattribute.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
-class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilderT<QStandardItem>, public DM_ITreeViewManagerT<QStandardItem>
+class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilderT<CG_CustomTreeItem>, public DM_ITreeViewManagerT<CG_CustomTreeItem>
 {
     Q_OBJECT
 
@@ -38,8 +39,8 @@ public:
     DM_ActionsHandler* actionsHandler() const;
 
     // TreeViewInterface
-    QStandardItem *itemFromIndex(const QModelIndex &proxyIndex) const;
-    CT_AbstractItemDrawable* itemDrawableFromItem(const QStandardItem *item) const;
+    CG_CustomTreeItem *itemFromIndex(const QModelIndex &proxyIndex) const;
+    CT_AbstractItemDrawable* itemDrawableFromItem(const CG_CustomTreeItem *item) const;
     CT_AbstractItemDrawable* itemDrawableFromIndex(const QModelIndex &index) const;
     QModelIndex indexAt(const QPoint &point) const;
     QWidget* treeViewport() const;
@@ -52,19 +53,22 @@ public:
     void refreshItems(const QList<CT_AbstractItemDrawable*> &items);
 
     // DM_IItemDrawableStandardItemBuilder
-    QList<QStandardItem*> createItems(const CT_AbstractItemDrawable &item, const int &level) const;
+    QList<CG_CustomTreeItem*> createItems(const CT_AbstractItemDrawable &item, const int &level) const;
 
     // DM_ITreeViewManager
     bool canConstructTheModel() const;
     QList<CT_AbstractItemDrawable*> itemDrawableForTreeView() const;
     int nLevelToConstruct() const;
     QList<CT_AbstractItemDrawable*> expandedItem() const;
-    QStandardItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const;
+    CG_CustomTreeItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const;
     void refreshHeaders();
 
     // THIS
     DM_ActionsHandlerForTreeView* actionsHandlerTreeView() const;
     QList<CT_AbstractItemDrawable*> itemDrawableFromRowSelected() const;
+
+    QMessageBox::StandardButton fetchAllQuestion(const QString &text, QMessageBox::StandardButtons buttons);
+    bool fetchAll();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -75,8 +79,8 @@ private:
     QMenu                                                                           *m_contextMenu;
 
     QTreeView                                                                       *m_treeView;
-    QStandardItemModel                                                          *m_model;
-    DM_ItemDrawableTreeViewControllerT<QStandardItemModel, QStandardItem>   m_treeViewController;
+    CG_CustomTreeItemModel                                                              *m_model;
+    DM_ItemDrawableTreeViewControllerT<CG_CustomTreeItemModel, CG_CustomTreeItem>           m_treeViewController;
 
     DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>      m_typeBuilder;
 
@@ -183,14 +187,19 @@ private slots:
     void slotShowHeaderContextMenu(const QPoint &p);
 
     /**
+     * @brief Called when the user click to a section on the horizontal header
+     */
+    void slotHeaderSectionClicked(int logicalIndex);
+
+    /**
      * @brief Called when the timer is finish and we must reset the color of the QLineEdit that filter the treeview
      */
     void slotResetColorLineFilter();
 
     /**
-     * @brief Called when a data of a QStandardItem in the model changed (per example when the itemDrawable is selected)
+     * @brief Called when a data of a CG_CustomTreeItem in the model changed (per example when the itemDrawable is selected)
      */
-    void slotItemDataChanged(QStandardItem *item);
+    void slotItemDataChanged(CG_CustomTreeItem *item, int role, QVariant value);
 
     /**
      * @brief Called when we must show the colors options dialog
@@ -198,17 +207,17 @@ private slots:
     void slotShowColorOptions();
 
     /**
-     * @brief Called when we must select CT_AbstractItemDrawable of QStandardItem selected
+     * @brief Called when we must select CT_AbstractItemDrawable of CG_CustomTreeItem selected
      */
     void slotSelect();
 
     /**
-     * @brief Called when we must de-select CT_AbstractItemDrawable of QStandardItem selected
+     * @brief Called when we must de-select CT_AbstractItemDrawable of CG_CustomTreeItem selected
      */
     void slotDeSelect();
 
     /**
-     * @brief Called when we must inverse the selection of QStandardItem selected
+     * @brief Called when we must inverse the selection of CG_CustomTreeItem selected
      */
     void slotInverseSelection();
 

@@ -9,6 +9,8 @@
 #include <QAction>
 #include <QEvent>
 #include <QHeaderView>
+#include <QProgressDialog>
+#include <QApplication>
 
 #include "qtcolorpicker/qtcolorpicker.h"
 
@@ -42,7 +44,7 @@ void GTreeView::init()
 
     m_contextMenu = new QMenu(this);
 
-    m_model = new QStandardItemModel();
+    m_model = new CG_CustomTreeItemModel();
     DM_SortFilterMathProxyModel *filterModel = new DM_SortFilterMathProxyModel();
     filterModel->setSourceModel(m_model);
     filterModel->setVariableInMathExpression("(val)");
@@ -129,6 +131,7 @@ void GTreeView::init()
 
     connect(m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotShowContextMenu(QPoint)), Qt::QueuedConnection);
     connect(m_treeView->header(), SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotShowHeaderContextMenu(QPoint)), Qt::QueuedConnection);
+    connect(m_treeView->header(), SIGNAL(sectionClicked(int)), this, SLOT(slotHeaderSectionClicked(int)), Qt::DirectConnection);
 
     connect(m_treeView, SIGNAL(activated(QModelIndex)), this, SLOT(slotActivated(QModelIndex)), Qt::DirectConnection);
     connect(m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(slotClicked(QModelIndex)), Qt::DirectConnection);
@@ -243,13 +246,50 @@ void GTreeView::slotSetTextFilter()
 
         if(!textToUse.contains(((DM_SortFilterMathProxyModel*)m_treeView->model())->variableInMathExpression()))
         {
-            ((QSortFilterProxyModel*)m_treeView->model())->setFilterFixedString(textToUse);
+            bool ok = true;
+            QMessageBox::StandardButton button = fetchAllQuestion(tr("Le modèle n'est pas chargé complètement, voulez vous le charger avant de faire la recherche ?"),
+                                                                  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 
-            setValidColorForLineFilter(true);
+            if(button == QMessageBox::Yes)
+            {
+                ((DM_SortFilterMathProxyModel*)m_treeView->model())->setAcceptRows(false);
+                ok = fetchAll();
+                ((DM_SortFilterMathProxyModel*)m_treeView->model())->setAcceptRows(true, false);
+            }
+            else if(button == QMessageBox::Cancel)
+                ok = false;
+
+            if(ok)
+            {
+                ((QSortFilterProxyModel*)m_treeView->model())->setFilterFixedString(textToUse);
+
+                setValidColorForLineFilter(true);
+            }
         }
         else
         {
-            setValidColorForLineFilter(((DM_SortFilterMathProxyModel*)m_treeView->model())->setMathExpression(textToUse));
+            if(((DM_SortFilterMathProxyModel*)m_treeView->model())->canSetMathExpression(textToUse))
+            {
+                bool ok = true;
+                QMessageBox::StandardButton button = fetchAllQuestion(tr("Le modèle n'est pas chargé complètement, voulez vous le charger avant de faire la recherche ?"),
+                                                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+
+                if(button == QMessageBox::Yes)
+                {
+                    ((DM_SortFilterMathProxyModel*)m_treeView->model())->setAcceptRows(false);
+                    ok = fetchAll();
+                    ((DM_SortFilterMathProxyModel*)m_treeView->model())->setAcceptRows(true, false);
+                }
+                else if(button == QMessageBox::Cancel)
+                    ok = false;
+
+                if(ok)
+                    setValidColorForLineFilter(((DM_SortFilterMathProxyModel*)m_treeView->model())->setMathExpression(textToUse));
+            }
+            else
+            {
+                setValidColorForLineFilter(false);
+            }
         }
 
         return;
@@ -275,19 +315,29 @@ void GTreeView::slotShowHeaderContextMenu(const QPoint &p)
     actionsHandlerTreeView()->showContextMenuOnHorizontalHeader(p);
 }
 
+void GTreeView::slotHeaderSectionClicked(int logicalIndex)
+{
+    Q_UNUSED(logicalIndex)
+
+    if(fetchAllQuestion(tr("Le modèle n'est pas chargé complètement, voulez vous le charger pour utiliser tous les éléments dans le tri ?\n\nAttention cette opération peut être lente."),
+                     QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+        fetchAll();
+}
+
 void GTreeView::slotResetColorLineFilter()
 {
     m_lineFilter->setStyleSheet("QLineEdit{background: white;}");
 }
 
-void GTreeView::slotItemDataChanged(QStandardItem *item)
+void GTreeView::slotItemDataChanged(CG_CustomTreeItem *item, int role, QVariant value)
 {
-    /*MyQStandardItem *myItem = static_cast<MyQStandardItem*>(item);
-    CT_AbstractItemDrawable *itemDrawable = myItem->itemDrawable();
+    Q_UNUSED(value)
+
+    CT_AbstractItemDrawable *itemDrawable = itemDrawableFromItem(item);
 
     if(itemDrawable != NULL)
     {
-        if(myItem->columnType() == MyQStandardItem::ItemDrawableSelection)
+        if(role == Qt::CheckStateRole)
         {
             bool selected = (item->checkState() == Qt::Checked);
 
@@ -297,7 +347,7 @@ void GTreeView::slotItemDataChanged(QStandardItem *item)
                 GUI_MANAGER->getDocumentManagerView()->redrawAllDocument();
             }
         }
-    }*/
+    }
 }
 
 void GTreeView::slotShowColorOptions()
@@ -408,12 +458,12 @@ DM_ActionsHandler* GTreeView::actionsHandler() const
     return m_actionsHandler;
 }
 
-QStandardItem* GTreeView::itemFromIndex(const QModelIndex &proxyIndex) const
+CG_CustomTreeItem* GTreeView::itemFromIndex(const QModelIndex &proxyIndex) const
 {
     return m_model->itemFromIndex(((DM_SortFilterMathProxyModel*)m_treeView->model())->mapToSource(proxyIndex));
 }
 
-CT_AbstractItemDrawable* GTreeView::itemDrawableFromItem(const QStandardItem *item) const
+CT_AbstractItemDrawable* GTreeView::itemDrawableFromItem(const CG_CustomTreeItem *item) const
 {
     return (CT_AbstractItemDrawable*)item->data().value<void*>();
 }
@@ -460,7 +510,7 @@ void GTreeView::refreshAll()
 
 void GTreeView::refreshItems(const QList<QModelIndex> &indexes)
 {
-    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > list;
+    QList<QPair<CG_CustomTreeItem *, CT_AbstractItemDrawable *> > list;
 
     QListIterator<QModelIndex> it(indexes);
 
@@ -475,7 +525,7 @@ void GTreeView::refreshItems(const QList<QModelIndex> &indexes)
 
 void GTreeView::refreshItems(const QList<CT_AbstractItemDrawable*> &items)
 {
-    QList<QPair<QStandardItem *, CT_AbstractItemDrawable *> > list;
+    QList<QPair<CG_CustomTreeItem *, CT_AbstractItemDrawable *> > list;
 
     QListIterator<CT_AbstractItemDrawable*> it(items);
 
@@ -488,9 +538,9 @@ void GTreeView::refreshItems(const QList<CT_AbstractItemDrawable*> &items)
     m_treeViewController.refresh(list);
 }
 
-QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &item, const int &level) const
+QList<CG_CustomTreeItem *> GTreeView::createItems(const CT_AbstractItemDrawable &item, const int &level) const
 {
-    QList<QStandardItem *> l;
+    QList<CG_CustomTreeItem *> l;
 
     // if we are synchronized with other documents
     if((level == 0)
@@ -514,24 +564,22 @@ QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &ite
     }
 
     // selectionné
-    MyQStandardItem *itemDisplay = new MyQStandardItem((CT_AbstractItemDrawable*)&item, MyQStandardItem::ItemDrawableSelection, QString(""));
+    CG_CustomTreeItem *itemDisplay = new CG_CustomTreeItem();
+    itemDisplay->setEditable(false);
     itemDisplay->setCheckable(true);
     itemDisplay->setCheckState(item.isSelected() ? Qt::Checked : Qt::Unchecked);
     itemDisplay->setData(qVariantFromValue((void*)&item), Qt::UserRole + 1);
     QObject::connect(&item, SIGNAL(selectChange(bool)), itemDisplay, SLOT(setBoolData(bool)), Qt::DirectConnection);
-    QObject::connect(itemDisplay, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(slotItemDataChanged(QStandardItem*)), Qt::QueuedConnection);
+    QObject::connect(itemDisplay, SIGNAL(dataChanged(CG_CustomTreeItem*,int,QVariant)), this, SLOT(slotItemDataChanged(CG_CustomTreeItem*,int,QVariant)), Qt::QueuedConnection);
     l << itemDisplay;
-    /*QStandardItem *itemDisplay = new QStandardItem();
-    itemDisplay->setData(qVariantFromValue((void*)&item), Qt::UserRole + 1);
-    l << itemDisplay;*/
 
     int s = m_dataReferencesToUse.size();
 
     for(int i=0; i<s; ++i)
     {
-        QStandardItem *ii = new QStandardItem();
+        CG_CustomTreeItem *ii = new CG_CustomTreeItem();
         ii->setData(qVariantFromValue((void*)&item));
-        //ii->setEditable(false);
+        ii->setEditable(false);
         l << ii;
     }
 
@@ -547,14 +595,14 @@ QList<QStandardItem *> GTreeView::createItems(const CT_AbstractItemDrawable &ite
 
             if(index != -1)
             {
-                QStandardItem *ii = l.at(index + GTreeView::COLUMN_FIRST_DATA_VALUE);
+                CG_CustomTreeItem *ii = l.at(index + GTreeView::COLUMN_FIRST_DATA_VALUE);
                 ii->setText(att->toString((const CT_AbstractSingularItemDrawable*)&item, NULL));
             }
         }
     }
     else
     {
-        itemDisplay->setText(tr("Groupe"));
+        itemDisplay->setText(item.model()->displayableName());
     }
 
     return l;
@@ -580,15 +628,15 @@ QList<CT_AbstractItemDrawable *> GTreeView::expandedItem() const
     return m_expandedItems;
 }
 
-QStandardItem* GTreeView::itemFromItemDrawable(const CT_AbstractItemDrawable *item) const
+CG_CustomTreeItem* GTreeView::itemFromItemDrawable(const CT_AbstractItemDrawable *item) const
 {
-    QStandardItem *root = m_model->invisibleRootItem();
+    CG_CustomTreeItem *root = m_model->invisibleRootItem();
 
     int size = root->rowCount();
 
     for(int i=0; i<size; ++i)
     {
-        QStandardItem *it = root->child(i, 0);
+        CG_CustomTreeItem *it = root->child(i, 0);
 
         if(itemDrawableFromItem(it) == item)
             return it;
@@ -617,6 +665,8 @@ void GTreeView::refreshHeaders()
     #else
     m_treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     #endif
+
+    m_model->finishAppendRows();
 }
 
 DM_ActionsHandlerForTreeView* GTreeView::actionsHandlerTreeView() const
@@ -640,6 +690,58 @@ QList<CT_AbstractItemDrawable *> GTreeView::itemDrawableFromRowSelected() const
     }
 
     return listItem;
+}
+
+QMessageBox::StandardButton GTreeView::fetchAllQuestion(const QString &text, QMessageBox::StandardButtons buttons)
+{
+    if(m_model->canFetchMore(QModelIndex()))
+    {
+        return QMessageBox::question(this,
+                                     tr("Question"),
+                                     text,
+                                     buttons);
+    }
+
+    return QMessageBox::No;
+}
+
+bool GTreeView::fetchAll()
+{
+    int fetchSize = m_model->invisibleRootItem()->fetchSize();
+
+    QProgressDialog pDialog(tr("Veuillez patienter pendant le chargement de la table..."), tr("Annuler"), 0, 100, this);
+    pDialog.setWindowModality(Qt::WindowModal);
+    pDialog.setValue(0);
+    pDialog.show();
+
+    int size = m_model->invisibleRootItem()->nChildrens();
+    int progress = 0;
+
+    m_model->invisibleRootItem()->setFetchSize(size/15);
+
+    while(m_model->canFetchMore(QModelIndex())
+          && !pDialog.wasCanceled())
+    {
+        m_model->fetchMore(QModelIndex());
+
+        int tmpProgress = (m_model->invisibleRootItem()->rowCount()*100)/size;
+
+        if(tmpProgress != progress)
+        {
+            progress = tmpProgress;
+            pDialog.setValue(progress);
+        }
+
+        qApp->processEvents();
+    }
+
+    bool c = pDialog.wasCanceled();
+
+    pDialog.close();
+
+    m_model->invisibleRootItem()->setFetchSize(fetchSize);
+
+    return !c;
 }
 
 bool GTreeView::eventFilter(QObject *obj, QEvent *event)

@@ -8,6 +8,7 @@ DM_SortFilterMathProxyModel::DM_SortFilterMathProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
 {
     m_parser.SetDecSep(QLocale::system().decimalPoint().toLatin1());
+    m_acceptRow = true;
 }
 
 void DM_SortFilterMathProxyModel::setVariableInMathExpression(const QString &var)
@@ -15,17 +16,13 @@ void DM_SortFilterMathProxyModel::setVariableInMathExpression(const QString &var
     m_var = var;
 }
 
-bool DM_SortFilterMathProxyModel::setMathExpression(const QString &expression)
+bool DM_SortFilterMathProxyModel::canSetMathExpression(const QString &expression, bool verbose)
 {
     if(m_var.isEmpty())
         return false;
 
     if(expression.isEmpty())
-    {
-        m_mathExpression = expression;
-        invalidateFilter();
         return true;
-    }
 
     if(!expression.contains(m_var))
         return false;
@@ -46,9 +43,29 @@ bool DM_SortFilterMathProxyModel::setMathExpression(const QString &expression)
     }
     catch(mu::Parser::exception_type &e)
     {
-        GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, tr("Erreur dans l'expression mathématique : ") + QString::fromStdString(e.GetMsg()));
+        if(verbose)
+            GUI_LOG->addMessage(LogInterface::debug, LogInterface::gui, tr("Erreur dans l'expression mathématique : ") + QString::fromStdString(e.GetMsg()));
+
         return false;
     }
+
+    return true;
+}
+
+bool DM_SortFilterMathProxyModel::setMathExpression(const QString &expression)
+{
+    if(m_var.isEmpty())
+        return false;
+
+    if(expression.isEmpty())
+    {
+        m_mathExpression = expression;
+        invalidateFilter();
+        return true;
+    }
+
+    if(!canSetMathExpression(expression, true))
+        return false;
 
     m_mathExpression = expression;
     m_mathExpression.replace('.', QLocale::system().decimalPoint());
@@ -64,8 +81,19 @@ QString DM_SortFilterMathProxyModel::variableInMathExpression() const
     return m_var;
 }
 
+void DM_SortFilterMathProxyModel::setAcceptRows(bool enable, bool invalidFilter)
+{
+    m_acceptRow = enable;
+
+    if(invalidFilter)
+        invalidateFilter();
+}
+
 bool DM_SortFilterMathProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
+    if(!m_acceptRow)
+        return false;
+
     if(m_mathExpression.isEmpty())
         return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 
