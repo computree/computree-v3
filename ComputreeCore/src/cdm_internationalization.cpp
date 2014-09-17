@@ -5,6 +5,7 @@
 #include <QTranslator>
 #include <QApplication>
 #include <QDir>
+#include <QLocale>
 
 CDM_Internationalization::CDM_Internationalization()
 {

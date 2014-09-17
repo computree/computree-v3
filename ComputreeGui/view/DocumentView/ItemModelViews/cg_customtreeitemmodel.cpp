@@ -1,5 +1,7 @@
 #include "cg_customtreeitemmodel.h"
 
+#include <QStringList>
+
 CG_CustomTreeItemModel::CG_CustomTreeItemModel(QObject *parent) :
     QAbstractItemModel(parent)
 {

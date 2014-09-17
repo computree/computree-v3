@@ -5,6 +5,8 @@
 
 #include <QWidget>
 #include <QReadWriteLock>
+#include <QHash>
+#include <QColor>
 
 namespace Ui {
 class GLogWidget;
