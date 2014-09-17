@@ -230,13 +230,14 @@ private:
     CT_VirtualAbstractStep                        *_beginStep;
     bool                        _stop;
     bool                        _debugMode;
+    bool                        _force;
 
     QList<CT_VirtualAbstractStep*>                _stepRootList;
     CT_VirtualAbstractStep*                       m_currentStep;
 
     QMutex                      _mutex;
 
-    bool recursiveExecuteStep(QString &scriptFileAndSerializedDirName, CT_VirtualAbstractStep &step, QList<CT_ResultGroup*> results, bool &restart, bool force = false);
+    bool recursiveExecuteStep(QString &scriptFileAndSerializedDirName, CT_VirtualAbstractStep &step, bool &restart, bool force = false);
 
     void recursiveClearResult(CT_VirtualAbstractStep &step);
 

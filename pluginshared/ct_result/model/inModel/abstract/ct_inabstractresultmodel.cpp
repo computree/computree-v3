@@ -2,6 +2,10 @@
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibilitygroup.h"
 #include "ct_result/model/inModel/tools/ct_instdresultmodelpossibility.h"
+#include "ct_step/abstract/ct_virtualabstractstep.h"
+#include "ct_abstractstepplugin.h"
+
+bool CT_InAbstractResultModel::FORCE_RECURSIVITY = false;
 
 CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
                                                    const QString &description,
@@ -10,7 +14,7 @@ CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
                                                                                         description,
                                                                                         displayableName)
 {
-    m_recursive = recursive;
+    m_recursive = recursive | FORCE_RECURSIVITY;
     m_backupModel = NULL;
 
     setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
@@ -18,11 +22,15 @@ CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
 
 void CT_InAbstractResultModel::setRecursive(bool r)
 {
-    m_recursive = r;
+    m_recursive = r | FORCE_RECURSIVITY;
 }
 
 bool CT_InAbstractResultModel::isRecursive() const
 {
+    // if step of this model is a step "model" (not used in a tree)
+    if(step()->getPlugin()->getStepFromKey(step()->getPlugin()->getKeyForStep(*step())) == step())
+        return m_recursive | FORCE_RECURSIVITY;
+
     return m_recursive;
 }
 

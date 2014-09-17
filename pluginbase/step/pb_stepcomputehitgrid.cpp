@@ -199,12 +199,10 @@ void PB_StepComputeHitGrid::compute()
         updateProgress();
     }
 
-    for (int i = 0 ; i < size ; ++i)
-    {
-        disconnect(_threadList.at(i), SIGNAL(progressChanged()), this, SLOT(updateProgress()));
-    }
-
+    _mutex.lock();
     qDeleteAll(_threadList);
+    _threadList.clear();
+    _mutex.unlock();
 
     setProgress(99);
 }
@@ -213,13 +211,18 @@ void PB_StepComputeHitGrid::updateProgress()
 {
     float progress = 0;
 
+    _mutex.lock();
     int size = _threadList.size();
     for (int i = 0 ; i < size ; ++i)
     {
         progress += _threadList.at(i)->getProgress();
     }
+    _mutex.unlock();
 
-    progress /= (float)size;
-    setProgress(progress);
+    if(size > 0)
+    {
+        progress /= (float)size;
+        setProgress(progress);
+    }
 }
 

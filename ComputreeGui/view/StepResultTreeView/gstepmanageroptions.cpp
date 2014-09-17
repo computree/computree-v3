@@ -29,6 +29,8 @@
 #include "gstepmanageroptions.h"
 #include "ui_gstepmanageroptions.h"
 
+#include "ct_result/model/inModel/abstract/ct_inabstractresultmodel.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -44,6 +46,8 @@ GStepManagerOptions::GStepManagerOptions(QWidget *parent) :
 
     ui->cb_locale->addItem("fr_FR");
     ui->cb_locale->addItem("en_GB");
+
+    ui->checkBoxForceInResultModelRecursivity->setChecked(CT_InAbstractResultModel::FORCE_RECURSIVITY);
 }
 
 GStepManagerOptions::~GStepManagerOptions()
@@ -113,6 +117,11 @@ void GStepManagerOptions::on_pushButtonAutoSave_clicked()
         _options.enableAutoSave(path);
         setOptions(_options);
     }
+}
+
+void GStepManagerOptions::on_checkBoxForceInResultModelRecursivity_toggled(bool e)
+{
+    CT_InAbstractResultModel::FORCE_RECURSIVITY = e;
 }
 
 void GStepManagerOptions::on_cb_locale_currentIndexChanged(const QString &arg1)

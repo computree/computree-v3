@@ -39,6 +39,7 @@ CDM_StepManager::CDM_StepManager(const CDM_ScriptManagerAbstract *scriptManager,
     _action = None;
     m_guiContext = NULL;
     m_actionsManager = (CDM_ActionsManager*)actionManager;
+    _force = false;
 
     _options.load();
     setDefaultQLocale(_options.getQLocale());
@@ -350,6 +351,7 @@ bool CDM_StepManager::internalExecuteStep(CT_VirtualAbstractStep *beginStep, boo
     _action = ExecuteStep;
     _debugMode = debugMode;
     _stop = false;
+    _force = (beginStep != NULL);
 
     emit started(true);
 
@@ -365,6 +367,7 @@ bool CDM_StepManager::internalExecuteModifyStep(CT_VirtualAbstractStep *beginSte
     _action = ExecuteModifyStep;
     _debugMode = debugMode;
     _stop = false;
+    _force = (beginStep != NULL);
 
     emit started(true);
 
@@ -403,8 +406,6 @@ void CDM_StepManager::run()
 {
     if(_action == ExecuteStep)
     {
-        QList<CT_ResultGroup*> results;
-
         QString scriptFileAndSerializedDirName = QString("serialization_%1").arg(QDateTime::currentDateTime().toString("dd-MM-yyyy_hh-mm-ss"));
 
         bool restart;
@@ -423,7 +424,7 @@ void CDM_StepManager::run()
                       && !restart
                       && it.hasNext())
                 {
-                    continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *it.next(), results, restart, false);
+                    continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *it.next(), restart, false);
                 }
 
                 if(restart)
@@ -431,13 +432,10 @@ void CDM_StepManager::run()
             }
             else
             {
-                if(_beginStep->parentStep() != NULL)
-                    results = _beginStep->parentStep()->getResults();
-
                 if(checkAutoSaveDisabledIfExecuteFromStep(*_beginStep))
                     _options.disableAutoSave();
 
-                recursiveExecuteStep(scriptFileAndSerializedDirName, *_beginStep, results, restart, false);
+                recursiveExecuteStep(scriptFileAndSerializedDirName, *_beginStep, restart, _force);
             }
 
         }while(restart);
@@ -467,7 +465,7 @@ void CDM_StepManager::run()
 
 ////////////// PRIVATE //////////////
 
-bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirName, CT_VirtualAbstractStep &step, QList<CT_ResultGroup*> results, bool &restart, bool force)
+bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirName, CT_VirtualAbstractStep &step, bool &restart, bool force)
 {
     bool continueLoop = true;
     bool forceAfterExecute = force;
@@ -486,8 +484,10 @@ bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirNa
         // OU
         // que l'tape n'a pas besoin de rsultat
         if((step.needInputResults()
-            && (results.size() > 0))
-            || (!step.needInputResults()))
+            && (step.parentStep() != NULL)
+            && !step.parentStep()->isStopped()
+            && (step.parentStep()->getErrorCode() == 0))
+            || !step.needInputResults())
         {
             _mutex.lock();
             m_currentStep = &step;
@@ -552,7 +552,7 @@ bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirNa
         {
             CT_VirtualAbstractStep *childStep = it.next();
 
-            continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *childStep, step.getResults(), restart, forceAfterExecute);
+            continueLoop = recursiveExecuteStep(scriptFileAndSerializedDirName, *childStep, restart, forceAfterExecute);
         }
 
         if(!restart)

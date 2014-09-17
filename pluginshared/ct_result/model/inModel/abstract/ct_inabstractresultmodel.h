@@ -11,6 +11,11 @@ public:
                              const QString &displayableName,
                              bool recursive);
     /**
+     * @brief Set to true if you want to force recursivity on all new model created.
+     */
+    static bool FORCE_RECURSIVITY;
+
+    /**
      * @brief Set to true if you want this model research recusively results in all step in the tree (go up in hierarchy) or false
      *        if you want just research in results of the step passed in parameter of the method "searchResultsInStep..."
      * @warning if you change this parameter you must recall method "searchResultsInStep..."

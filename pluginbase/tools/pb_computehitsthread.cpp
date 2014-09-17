@@ -53,6 +53,7 @@ void PB_ComputeHitsThread::run()
     size_t n_points = pointCloudIndex->size();
 
     size_t progressStep = n_points / 20;
+    size_t prog = 0;
 
     for (size_t i = 0 ; i < n_points; i++)
     {
@@ -77,7 +78,8 @@ void PB_ComputeHitsThread::run()
 
         if (i % progressStep == 0)
         {
-            _progress = 100*i/n_points;
+            prog = (((size_t)100)*i)/n_points;
+            _progress = prog;
             emit progressChanged();
         }
     }

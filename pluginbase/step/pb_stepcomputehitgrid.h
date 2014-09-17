@@ -34,6 +34,7 @@
 #include "ct_tools/model/ct_autorenamemodels.h"
 #include "ct_tools/ct_monitoredqthread.h"
 
+#include <QMutex>
 
 /** \class  PB_StepComputeHitGrid
     \brief Compute number of point for each cell of a Grid3D
@@ -133,6 +134,7 @@ private:
     CT_AutoRenameModels _itemOut_prdiag_ModelName;
 
     QList<CT_MonitoredQThread*>     _threadList;
+    QMutex                          _mutex;
 
 //********************************************//
 //              Attributes of LVox            //

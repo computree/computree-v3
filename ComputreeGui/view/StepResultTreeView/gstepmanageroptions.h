@@ -57,6 +57,7 @@ private:
 private slots:
 
     void on_pushButtonAutoSave_clicked();
+    void on_checkBoxForceInResultModelRecursivity_toggled(bool e);
     void on_cb_locale_currentIndexChanged(const QString &arg1);
 signals:
     void localeChanged(QString locale);
