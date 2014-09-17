@@ -20,7 +20,7 @@ CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::CT_CloudIndexRegistr
 template<typename T, class CloudIndexLessMemory>
 typename CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::CT_AbstractModifiableCIR CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::registerIndex(CT_AbstractModifiableCloudIndexT<T> *index)
 {
-    QMutexLocker locker(&this->m_mutex);
+    QMutexLocker locker(this->m_mutex);
 
     CT_AbstractModifiableCIR cir = CT_AbstractModifiableCIR(this->template createNewIndexRegistered< CT_StandardModifiableCloudIndexRegisteredT<T>, CT_AbstractModifiableCloudIndexT<T> >(index));
 
@@ -32,7 +32,7 @@ typename CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::CT_Abstract
 template<typename T, class CloudIndexLessMemory>
 typename CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::CT_AbstractNotModifiableCIR CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::mergeCloudContiguous(const QList< CT_AbstractCIR > &cir_collection)
 {
-    QMutexLocker locker(&this->m_mutex);
+    QMutexLocker locker(this->m_mutex);
 
     if(cir_collection.isEmpty())
         return CT_AbstractNotModifiableCIR(NULL);
@@ -67,7 +67,7 @@ void CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::cloudDeleted(co
 {
     this->lockAllDocuments();
 
-    QMutexLocker locker(&this->m_mutex);
+    QMutexLocker locker(this->m_mutex);
 
     syncModifiableIndexRegistered(beginIndex, size);
     syncLessMemoryIndexRegistered(beginIndex, size);

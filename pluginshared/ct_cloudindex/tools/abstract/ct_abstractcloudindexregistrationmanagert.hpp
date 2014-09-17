@@ -22,7 +22,7 @@ bool CT_AbstractCloudIndexRegistrationManagerT<T>::registerIndex(typename CT_Abs
 template<typename T>
 bool CT_AbstractCloudIndexRegistrationManagerT<T>::unregisterIndex(const CT_AbstractModifiableCloudIndexRegisteredT<T> *index)
 {
-    QMutexLocker locker(&m_mutex);
+    QMutexLocker locker(m_mutex);
 
     if(m_cirArray.removeOne((CT_AbstractModifiableCloudIndexRegisteredT<T>*)index))
         return true;
@@ -33,7 +33,7 @@ bool CT_AbstractCloudIndexRegistrationManagerT<T>::unregisterIndex(const CT_Abst
 template<typename T>
 bool CT_AbstractCloudIndexRegistrationManagerT<T>::unregisterIndex(const CT_AbstractNotModifiableCloudIndexRegisteredT<T> *index)
 {
-    QMutexLocker locker(&m_mutex);
+    QMutexLocker locker(m_mutex);
 
     if(m_cirMergedArray.removeOne((CT_AbstractNotModifiableCloudIndexRegisteredT<T>*)index))
         return true;

@@ -22,7 +22,7 @@ public:
     typedef QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<T> >  CT_AbstractNotModifiableCIR;
     typedef QSharedPointer< CT_AbstractCloudIndexRegisteredT<T> >               CT_AbstractCIR;
 
-    CT_AbstractCloudIndexRegistrationManagerT() : CT_AbstractCloudIndexRegistrationManager() {}
+    CT_AbstractCloudIndexRegistrationManagerT() : CT_AbstractCloudIndexRegistrationManager() { m_mutex = new QMutex(QMutex::Recursive); }
 
 protected:
 
@@ -32,7 +32,7 @@ protected:
     QList< CT_AbstractModifiableCloudIndexRegisteredT<T>* >     m_cirArray;
     QList< CT_AbstractNotModifiableCloudIndexRegisteredT<T>* >  m_cirMergedArray;
 
-    QMutex                                                      m_mutex;
+    QMutex                                                      *m_mutex;
 
     template<typename U> friend class CT_AbstractGlobalCloudManagerT;
     template<typename U> friend class CT_AbstractModifiableCloudIndexRegisteredT;

@@ -64,16 +64,15 @@ void PB_StepLoadMultiXYBFiles::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepLoadMultiXYBFiles::createOutResultModelListProtected()
 {
-
-    CT_OutResultModelGroup *resultOutModel_mergedScene = createNewOutResultModel(DEF_resultOut_mergedScene, tr("MergedScene"));
-    resultOutModel_mergedScene->setRootGroup(DEF_groupOut_gm, new CT_StandardItemGroup(), tr("gm"));
-    resultOutModel_mergedScene->addItemModel(DEF_groupOut_gm, DEF_itemOut_mergedScene, new CT_Scene(), tr("MergedScene"));
-
     CT_OutResultModelGroup *resultOut_individualScenes = createNewOutResultModel(DEF_resultOut_individualScenes, tr("IndividualScenes"));
     resultOut_individualScenes->setRootGroup(DEF_groupOut_g, new CT_StandardItemGroup(), tr("g"));
     resultOut_individualScenes->addItemModel(DEF_groupOut_g, DEF_itemOut_individualScene, new CT_Scene(), tr("IndividualScene"));
     resultOut_individualScenes->addItemModel(DEF_groupOut_g, DEF_itemOut_individualIntensity, new CT_PointsAttributesScalarTemplated<quint16>(), tr("IndividualIntensity"));
     resultOut_individualScenes->addItemModel(DEF_groupOut_g, DEF_itemOut_scanner, new CT_Scanner(), tr("ScanPosition"));
+
+    CT_OutResultModelGroup *resultOutModel_mergedScene = createNewOutResultModel(DEF_resultOut_mergedScene, tr("MergedScene"));
+    resultOutModel_mergedScene->setRootGroup(DEF_groupOut_gm, new CT_StandardItemGroup(), tr("gm"));
+    resultOutModel_mergedScene->addItemModel(DEF_groupOut_gm, DEF_itemOut_mergedScene, new CT_Scene(), tr("MergedScene"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -90,8 +89,8 @@ void PB_StepLoadMultiXYBFiles::compute()
 {
     QList<CT_ResultGroup*> outResultList = getOutResultList();
 
-    CT_ResultGroup* resultOut_individualScenes = outResultList.at(1);
-    CT_ResultGroup* resultOut_mergedScene = outResultList.at(0);
+    CT_ResultGroup* resultOut_individualScenes = outResultList.at(0);
+    CT_ResultGroup* resultOut_mergedScene = outResultList.at(1);
 
     if (!_radiusFiltered) {_radius = 0;}
 
