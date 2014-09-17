@@ -35,6 +35,8 @@
 
 #include "interfaces.h"
 
+#include "dm_abstractinfo.h"
+
 class CT_AbstractItemDrawable;
 
 class DM_DocumentManager;
@@ -81,6 +83,7 @@ class DM_Document : public DocumentInterface
 
 public:
     DM_Document(DM_DocumentManager &manager, QString title);
+    virtual ~DM_Document();
 
     /**
      * @brief Set the close filter for this document
@@ -188,9 +191,29 @@ public:
     const QList<CT_AbstractItemDrawable *>& getItemDrawable() const;
 
     /**
+     * @brief Return items informations
+     */
+    const QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> getItemsInformations() const;
+
+    /**
       * \brief Retourne la liste des CT_AbstractItemDrawable slectionn
       */
     QList<CT_AbstractItemDrawable*> getSelectedItemDrawable() const;
+
+    /**
+     * @brief Returns true if this document use item color. By default return false.
+     */
+    virtual bool useItemColor() const;
+
+    /**
+     * @brief Set the color of the item passed in parameter. By default do nothing.
+     */
+    virtual void setColor(const CT_AbstractItemDrawable *item, const QColor &color);
+
+    /**
+     * @brief Return the color of the item passed in parameter. By default return invalid color.
+     */
+    virtual QColor getColor(const CT_AbstractItemDrawable *item);
 
     /**
       * \brief Returns the number of CT_AbstractItemDrawable
@@ -238,10 +261,16 @@ public:
     static int              NUMBER;
 
 protected:
-    DM_DocumentManager              *_manager;
-    QList<CT_AbstractItemDrawable*>            _listItemDrawable;
-    QString                         _title;
-    int                             m_number;
+    DM_DocumentManager                                              *_manager;
+    QList<CT_AbstractItemDrawable*>                                 _listItemDrawable;
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>                m_itemsInformation;
+    QString                                                         _title;
+    int                                                             m_number;
+
+    /**
+     * @brief Overload this method if you want to create your own item information. By default return NULL;
+     */
+    virtual DM_AbstractInfo* createNewItemInformation(const CT_AbstractItemDrawable *item) const;
 
 private:
     DM_IDocumentCloseFilter         *m_closeFilter;
@@ -278,11 +307,11 @@ signals:
      */
     void defaultActionChanged(CT_AbstractAction *action);
 
-private slots:
+protected slots:
 
-    void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
-    void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
-    void slotItemDrawableSelectionChanged(bool select);
+    virtual void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
+    virtual void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
+    virtual void slotItemDrawableSelectionChanged(bool select);
 };
 
 #endif // DM_DOCUMENT_H

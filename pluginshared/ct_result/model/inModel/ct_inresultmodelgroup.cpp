@@ -282,6 +282,7 @@ QList<SettingsNodeGroup*> CT_InResultModelGroup::getAllValues() const
     root->addValue(new SettingsNodeValue("Version", 1));
     root->addValue(new SettingsNodeValue("GroupMiniNPSelect", possibilitiesGroup()->minimumNumberOfPossibilityThatMustBeSelected()));
     root->addValue(new SettingsNodeValue("GroupMaxiNPSelect", possibilitiesGroup()->maximumNumberOfPossibilityThatCanBeSelected()));
+    root->addValue(new SettingsNodeValue("IsRecursive", isRecursive()));
     retList.append(root);
 
     return retList;
@@ -289,8 +290,6 @@ QList<SettingsNodeGroup*> CT_InResultModelGroup::getAllValues() const
 
 bool CT_InResultModelGroup::setAllValues(const QList<SettingsNodeGroup*> &list)
 {
-    // TODO : verify compatibility with old script !!!
-
     SettingsNodeGroup *root = NULL;
 
     QListIterator<SettingsNodeGroup*> itS(list);
@@ -329,6 +328,54 @@ bool CT_InResultModelGroup::setAllValues(const QList<SettingsNodeGroup*> &list)
     if(!ok || (nMini > possibilitiesGroup()->minimumNumberOfPossibilityThatMustBeSelected()))
         return false;
 
+    values = root->valuesByTagName("IsRecursive");
+
+    if(values.isEmpty())
+        return false;
+
+    bool recursive = values.first()->value().toBool();
+
+    if(isRecursive() != recursive)
+    {
+        setRecursiveWithoutUseForceRecursivity(recursive);
+
+        CT_InAbstractResultModel *om = recursiveOriginalModel();
+
+        if(om != this)
+            staticSetRecursiveWithoutUseForceRecursivity(om, recursive);
+
+        recursiveClearPossibilitiesSaved();
+
+        CT_VirtualAbstractStep *sp = step();
+        bool continueLoop = true;
+
+        while(continueLoop
+              && (sp != NULL))
+        {
+            sp = sp->parentStep();
+
+            if(sp != NULL)
+            {
+                // get all OUTPUT models (sorted by turn) of this step that represent results
+                QList< QList<CT_OutAbstractResultModelGroup*> > outModelTurnList = sp->getAllOutResultModels();
+
+                QListIterator< QList<CT_OutAbstractResultModelGroup*> > itTurn(outModelTurnList);
+
+                // for each turn
+                while(itTurn.hasNext())
+                {
+                    QListIterator<CT_OutAbstractResultModelGroup*> outIt(itTurn.next());
+
+                    // for each models of this turn
+                    while(outIt.hasNext())
+                        recursiveFindAllPossibilitiesInModel(*outIt.next(), true);
+                }
+
+                continueLoop = recursive;
+            }
+        }
+    }
+
     return CT_InAbstractResultModel::setAllValues(list);
 }
 
@@ -341,6 +388,7 @@ CT_InAbstractModel* CT_InResultModelGroup::copy(bool withPossibilities) const
 
     CT_InResultModelGroup *cpy = new CT_InResultModelGroup(uniqueName(), rootCpy, description(), displayableName(), isRecursive());
     cpy->setStep(step());
+    cpy->setOriginalModel(this);
 
     if(withPossibilities)
         CT_InAbstractModel::staticCopyPossibilitiesToModel(this, cpy);

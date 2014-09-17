@@ -1,8 +1,10 @@
-#ifndef G3DFAKEPAINTERDRAWWITHNAMES_H
-#define G3DFAKEPAINTERDRAWWITHNAMES_H
+#ifndef G3DFAKEPAINTER_H
+#define G3DFAKEPAINTER_H
 
 #include "interfaces.h"
 #include "dm_graphicsviewoptions.h"
+
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 
 #include <QtOpenGL>
 
@@ -16,29 +18,52 @@
 /**
  * @brief A painter that draw only points or faces or edges with names (the name is the index of the point/face/edge)
  */
-class G3DFakePainterDrawWithNames : public PainterInterface
+class G3DFakePainter : public PainterInterface
 {
     Q_INTERFACES(PainterInterface)
 
 public:
     enum DrawMode {
         DrawNone = 0,
-        DrawPoints = 1,
-        DrawFaces = 2,
-        DrawEdges = 4,
-        CountPoints = 8,
-        CountEdges = 16,
-        CountFaces = 32,
-        BackupPointCloudIndex = 64,
-        BackupFaceCloudIndex = 128,
-        BackupEdgeCloudIndex = 256
+        DrawPoints = 1,                     // use this mode if you want to enable draw points
+        DrawFaces = 2,                      // use this mode if you want to enable draw faces
+        DrawEdges = 4,                      // use this mode if you want to enable draw edges
+        CountPoints = 8,                    // use this mode if you want to count points
+        CountEdges = 16,                    // use this mode if you want to count edges
+        CountFaces = 32,                    // use this mode if you want to count faces
+        BackupPointCloudIndex = 64,         // use this mode if you want to backup all points index in a list
+        BackupFaceCloudIndex = 128,         // use this mode if you want to backup all faces index in a list
+        BackupEdgeCloudIndex = 256,         // use this mode if you want to backup all edges index in a list
+        ApplyColorPoints = 512,             // use this mode if you want to apply a color to points
+        ApplyColorFaces = 1024,             // use this mode if you want to apply a color to faces
+        ApplyColorEdges = 2048              // use this mode if you want to apply a color to edges
     };
 
     Q_DECLARE_FLAGS(DrawModes, DrawMode)
 
-    G3DFakePainterDrawWithNames();
+    G3DFakePainter();
 
     void setGraphicsView(const GraphicsViewInterface *gv);
+
+    /**
+     * @brief Set the color to apply to points/faces/edges (depend on the mode ApplyColorXXX used)
+     */
+    void setApplyColor(const QColor &color);
+
+    /**
+     * @brief Set the points color cloud to use when you want to apply color on points
+     */
+    void setPointsColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> pColors);
+
+    /**
+     * @brief Set the edges color cloud to use when you want to apply color on edges
+     */
+    void setEdgesColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> eColors);
+
+    /**
+     * @brief Set the faces color cloud to use when you want to apply color on faces
+     */
+    void setFacesColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> fColors);
 
     void beginNewDraw();
     void endNewDraw() {}
@@ -202,23 +227,28 @@ public:
     }
 
 private:
-    DrawModes               m_drawMode;
-    bool                    m_drawFastest;
-    double                  m_defaultPointSize;
-    uint                    m_nCallEnableSetPointSize;
-    uint                    m_nCallEnableSetForcedPointSize;
-    bool                    m_drawMultipleLine;
-    bool                    m_drawMultipleTriangle;
-    size_t                  m_nPoints;
-    size_t                  m_nEdges;
-    size_t                  m_nFaces;
-    QList<CT_AbstractCloudIndex*>     m_pCloudIndexBackup;
-    QList<CT_AbstractCloudIndex*>     m_fCloudIndexBackup;
-    QList<CT_AbstractCloudIndex*>     m_eCloudIndexBackup;
+    DrawModes                                       m_drawMode;
+    bool                                            m_drawEnabled;
+    bool                                            m_drawFastest;
+    double                                          m_defaultPointSize;
+    uint                                            m_nCallEnableSetPointSize;
+    uint                                            m_nCallEnableSetForcedPointSize;
+    bool                                            m_drawMultipleLine;
+    bool                                            m_drawMultipleTriangle;
+    size_t                                          m_nPoints;
+    size_t                                          m_nEdges;
+    size_t                                          m_nFaces;
+    QList<CT_AbstractCloudIndex*>                   m_pCloudIndexBackup;
+    QList<CT_AbstractCloudIndex*>                   m_fCloudIndexBackup;
+    QList<CT_AbstractCloudIndex*>                   m_eCloudIndexBackup;
+    QColor                                          m_applyColor;
+    QSharedPointer<CT_StandardColorCloudRegistered> m_pColors;
+    QSharedPointer<CT_StandardColorCloudRegistered> m_eColors;
+    QSharedPointer<CT_StandardColorCloudRegistered> m_fColors;
 
     GraphicsViewInterface   *m_gv;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(G3DFakePainterDrawWithNames::DrawModes)
+Q_DECLARE_OPERATORS_FOR_FLAGS(G3DFakePainter::DrawModes)
 
-#endif // G3DFAKEPAINTERDRAWWITHNAMES_H
+#endif // G3DFAKEPAINTER_H

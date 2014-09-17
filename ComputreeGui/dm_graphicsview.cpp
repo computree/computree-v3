@@ -50,6 +50,11 @@ DM_DocumentView& DM_GraphicsView::getDocumentView() const
     return *_document;
 }
 
+DocumentInterface* DM_GraphicsView::document() const
+{
+    return _document;
+}
+
 void DM_GraphicsView::setOptions(const DM_GraphicsViewOptions &newOptions)
 {
     _options->updateFromOtherOptions(newOptions);

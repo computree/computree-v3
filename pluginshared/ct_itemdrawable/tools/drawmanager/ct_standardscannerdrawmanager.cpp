@@ -17,9 +17,6 @@ void CT_StandardScannerDrawManager::draw(GraphicsViewInterface &view, PainterInt
 {
     const CT_Scanner &item = dynamic_cast<const CT_Scanner&>(itemDrawable);
 
-    // Change color and draw elements from the CT_AbstractItemDrawableWithoutPointCloud class
-    painter.setColor( item.color() );
-
     CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(view, painter, itemDrawable);
 
     // Drawing the field of view

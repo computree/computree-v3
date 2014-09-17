@@ -39,8 +39,6 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable() : CT_AbstractItem()
     _id = 0;
     _selected = false;
     _displayed = false;
-    _color = QColor();
-    _drawing_position = -1;
     _centerCoordinate.setX(0);
     _centerCoordinate.setY(0);
     _centerCoordinate.setZ(0);
@@ -55,8 +53,6 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const CT_OutAbstractItemModel *
     _id = NEXTID++;
     _selected = false;
     _displayed = false;
-    _color = Qt::white;
-    _drawing_position = -1;
     _centerCoordinate.setX(0);
     _centerCoordinate.setY(0);
     _centerCoordinate.setZ(0);
@@ -71,8 +67,6 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const QString &modelUniqueName,
     _id = NEXTID++;
     _selected = false;
     _displayed = false;
-    _color = Qt::white;
-    _drawing_position = -1;
     _centerCoordinate.setX(0);
     _centerCoordinate.setY(0);
     _centerCoordinate.setZ(0);
@@ -134,8 +128,6 @@ void CT_AbstractItemDrawable::setDisplayed(bool value)
         {
             if(result() != NULL)
                 result()->decrementItemVisible();
-
-            _drawing_position = -1;
         }
 
         _displayed = value;
@@ -228,11 +220,6 @@ CT_AbstractItemDrawable* CT_AbstractItemDrawable::itemParent() const
     return _parent;
 }
 
-CT_AbstractItemDrawable* CT_AbstractItemDrawable::itemDrawableParent() const
-{
-    return itemParent();
-}
-
 void CT_AbstractItemDrawable::setAlternativeDrawManager(const CT_AbstractItemDrawableDrawManager *drawManager)
 {
     _alternativeDrawManager = (CT_AbstractItemDrawableDrawManager*)drawManager;
@@ -269,11 +256,6 @@ void CT_AbstractItemDrawable::setBaseDrawManager(const CT_AbstractItemDrawableDr
         _baseDrawManager->initDrawConfiguration();
 }
 
-bool CT_AbstractItemDrawable::isType(const QString &type) const
-{
-    return (type == getType());
-}
-
 bool CT_AbstractItemDrawable::isSelected() const
 {
     return _selected;
@@ -282,16 +264,6 @@ bool CT_AbstractItemDrawable::isSelected() const
 bool CT_AbstractItemDrawable::isDisplayed() const
 {
     return _displayed;
-}
-
-QColor CT_AbstractItemDrawable::color() const
-{
-    return _color;
-}
-
-int CT_AbstractItemDrawable::drawingPosition() const
-{
-    return _drawing_position;
 }
 
 void CT_AbstractItemDrawable::setCenterX(float x)
@@ -363,26 +335,6 @@ CT_ItemDrawableConfiguration* CT_AbstractItemDrawable::getViewConfiguration()
 QList<CT_ItemDrawableConfiguration*> CT_AbstractItemDrawable::getDependantViewConfigurations()
 {
     return QList<CT_ItemDrawableConfiguration*>();
-}
-
-void CT_AbstractItemDrawable::setColor(QColor color)
-{
-    if(_color != color)
-    {
-        _color = color;
-
-        emit colorChange(_color);
-    }
-}
-
-void CT_AbstractItemDrawable::setDrawingPosition(int pos)
-{
-    if(_drawing_position != pos)
-    {
-        _drawing_position = pos;
-
-        emit positionChange(pos);
-    }
 }
 
 bool CT_AbstractItemDrawable::isAutoDelete() const

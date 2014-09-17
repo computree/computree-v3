@@ -79,8 +79,8 @@ private:
     QMenu                                                                           *m_contextMenu;
 
     QTreeView                                                                       *m_treeView;
-    CG_CustomTreeItemModel                                                              *m_model;
-    DM_ItemDrawableTreeViewControllerT<CG_CustomTreeItemModel, CG_CustomTreeItem>           m_treeViewController;
+    CG_CustomTreeItemModel                                                          *m_model;
+    DM_ItemDrawableTreeViewControllerT<CG_CustomTreeItemModel, CG_CustomTreeItem>   m_treeViewController;
 
     DM_ItemDrawableBuilderT<CT_OutAbstractItemModel*, CT_AbstractItemDrawable>      m_typeBuilder;
 

@@ -49,7 +49,6 @@ private:
     CT_AbstractResult                          *_result;
     QStandardItemModel              _viewModel;
 
-    QMenu                           *_contextMenu;
     QtColorPicker                   *_colorPicker;
 
     DM_ItemDrawableManagerOptions   _colorOptions;

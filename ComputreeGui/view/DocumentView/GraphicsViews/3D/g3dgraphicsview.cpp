@@ -36,6 +36,8 @@
 #include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 
+#include "dm_iteminfoforgraphics.h"
+
 #include <limits>
 
 G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::SampleBuffers), parent), GGraphicsView()
@@ -201,7 +203,7 @@ void G3DGraphicsView::setAllPointsSelected(bool select)
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupPointCloudIndex);
+    m_fakeG.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -241,7 +243,7 @@ void G3DGraphicsView::setAllFacesSelected(bool select)
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupFaceCloudIndex);
+    m_fakeG.setDrawMode(G3DFakePainter::BackupFaceCloudIndex);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -281,7 +283,7 @@ void G3DGraphicsView::setAllEdgesSelected(bool select)
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupEdgeCloudIndex);
+    m_fakeG.setDrawMode(G3DFakePainter::BackupEdgeCloudIndex);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -300,7 +302,7 @@ size_t G3DGraphicsView::countPoints()
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountPoints);
+    m_fakeG.setDrawMode(G3DFakePainter::CountPoints);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -319,7 +321,7 @@ size_t G3DGraphicsView::countEdges()
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountEdges);
+    m_fakeG.setDrawMode(G3DFakePainter::CountEdges);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -338,7 +340,7 @@ size_t G3DGraphicsView::countFaces()
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::CountFaces);
+    m_fakeG.setDrawMode(G3DFakePainter::CountFaces);
 
     QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
@@ -789,11 +791,14 @@ void G3DGraphicsView::drawInternal()
 
     QColor selectedColor = getOptions().getSelectedColor();
 
-    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
+    QHashIterator<CT_AbstractItemDrawable*, DM_AbstractInfo*> it(getDocumentView().getItemsInformations());
 
     while(it.hasNext())
     {
-        CT_AbstractItemDrawable *item = it.next();
+        it.next();
+
+        CT_AbstractItemDrawable *item = it.key();
+        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(it.value());
 
         if(item->isSelected())
         {
@@ -807,21 +812,13 @@ void G3DGraphicsView::drawInternal()
 
             _g.enableSetColor(true);
         }
-        /*else if(item->color().isValid())
-        {
-            _g.setUseColorCloudForPoints(false);
-            _g.setUseColorCloudForFaces(false);
-            _g.setUseColorCloudForEdges(false);
-            _g.setColor(item->color());
-
-            item->draw(*this, _g);
-        }*/
         else
         {
             _g.setUseColorCloudForPoints(m_useColorCloud);
             _g.setUseColorCloudForFaces(m_useColorCloud);
             _g.setUseColorCloudForEdges(m_useColorCloud);
-            _g.setColor(item->color());
+
+            _g.setColor(info->color());
 
             item->draw(*this, _g);
         }
@@ -937,19 +934,19 @@ void G3DGraphicsView::drawWithNames()
     if(mustSelectPoints())
     {
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::DrawPoints);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawPoints);
         selectItems = false;
     }
     else if(mustSelectFaces())
     {
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::DrawFaces);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawFaces);
         selectItems = false;
     }
     else if(mustSelectEdges())
     {
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::DrawEdges);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawEdges);
         selectItems = false;
     }
 
@@ -1435,7 +1432,7 @@ void G3DGraphicsView::itemDrawableToBeRemoved(CT_AbstractItemDrawable &item)
     lockPaint();
 
     m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainterDrawWithNames::BackupPointCloudIndex | G3DFakePainterDrawWithNames::BackupFaceCloudIndex | G3DFakePainterDrawWithNames::BackupEdgeCloudIndex);
+    m_fakeG.setDrawMode(G3DFakePainter::BackupPointCloudIndex | G3DFakePainter::BackupFaceCloudIndex | G3DFakePainter::BackupEdgeCloudIndex);
 
     item.draw(*this, m_fakeG);
 

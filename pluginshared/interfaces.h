@@ -373,6 +373,11 @@ class InDocumentViewInterface
 {
 public:
     virtual ~InDocumentViewInterface() {}
+
+    /**
+     * @brief Returns the document that contains this view
+     */
+    virtual DocumentInterface* document() const = 0;
 };
 
 /**
@@ -888,6 +893,21 @@ public:
       * \brief Returns all ItemDrawable selected
       */
     virtual QList<CT_AbstractItemDrawable*> getSelectedItemDrawable() const = 0;
+
+    /**
+     * @brief Returns true if this document use item color.
+     */
+    virtual bool useItemColor() const = 0;
+
+    /**
+     * @brief Set the color of the item passed in parameter. Do nothing if useItemColor() return false.
+     */
+    virtual void setColor(const CT_AbstractItemDrawable *item, const QColor &color) = 0;
+
+    /**
+     * @brief Return the color of the item passed in parameter. Returns an invalid color if useItemColor() return false.
+     */
+    virtual QColor getColor(const CT_AbstractItemDrawable *item) = 0;
 
     /**
       * \brief Returns the number of ItemDrawable

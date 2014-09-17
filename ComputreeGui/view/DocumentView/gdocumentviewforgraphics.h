@@ -64,6 +64,21 @@ public:
 
     QString getType() const;
 
+    /**
+     * @brief Returns true if this document use item color.
+     */
+    virtual bool useItemColor() const;
+
+    /**
+     * @brief Set the color of the item passed in parameter.
+     */
+    virtual void setColor(const CT_AbstractItemDrawable *item, const QColor &color);
+
+    /**
+     * @brief Return the color of the item passed in parameter.
+     */
+    virtual QColor getColor(const CT_AbstractItemDrawable *item);
+
     template<typename Type>
     void createColorCloudRegistered() { }
 
@@ -87,16 +102,16 @@ public:
 
 private:
 
-    GGraphicsViewOptions                            *_graphicsOptionsView;
-    GCameraGraphicsOptions                          *_cameraOptionsView;
-    DM_AttributesManager                            m_attributesManager;
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_pColorCloudRegistered;
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_fColorCloudRegistered;
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_eColorCloudRegistered;
-    QSharedPointer<CT_StandardNormalCloudRegistered>  m_pNormalCloudRegistered;
-    QSharedPointer<CT_StandardNormalCloudRegistered>  m_fNormalCloudRegistered;
-    bool                                            m_useColorCloud;
-    bool                                            m_useNormalCloud;
+    GGraphicsViewOptions                                            *_graphicsOptionsView;
+    GCameraGraphicsOptions                                          *_cameraOptionsView;
+    DM_AttributesManager                                            m_attributesManager;
+    QSharedPointer<CT_StandardColorCloudRegistered>                 m_pColorCloudRegistered;
+    QSharedPointer<CT_StandardColorCloudRegistered>                 m_fColorCloudRegistered;
+    QSharedPointer<CT_StandardColorCloudRegistered>                 m_eColorCloudRegistered;
+    QSharedPointer<CT_StandardNormalCloudRegistered>                m_pNormalCloudRegistered;
+    QSharedPointer<CT_StandardNormalCloudRegistered>                m_fNormalCloudRegistered;
+    bool                                                            m_useColorCloud;
+    bool                                                            m_useNormalCloud;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;
@@ -125,6 +140,13 @@ private:
 
     void lockGraphics();
     void unlockGraphics();
+
+protected:
+
+    /**
+     * @brief Overloaded to create DM_ItemInfoForGraphics;
+     */
+    virtual DM_AbstractInfo* createNewItemInformation(const CT_AbstractItemDrawable *item) const;
 
 public slots:
 

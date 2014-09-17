@@ -497,17 +497,20 @@ bool DM_GuiManager::setColorOnAllItemDrawableOnAllDocumentsThatModelCorrespondin
         {
             DM_DocumentView *doc = getDocumentManagerView()->getDocumentView(i);
 
-            QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
-
-            while(it.hasNext())
+            if(doc->useItemColor())
             {
-                CT_AbstractItemDrawable *item = it.next();
+                QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
 
-                if(item->model() == model)
-                    item->setColor(color);
+                while(it.hasNext())
+                {
+                    CT_AbstractItemDrawable *item = it.next();
+
+                    if(item->model() == model)
+                        doc->setColor(item, color);
+                }
+
+                doc->redrawGraphics();
             }
-
-            doc->redrawGraphics();
         }
 
         return true;
@@ -530,23 +533,26 @@ bool DM_GuiManager::setColorListOnAllItemDrawableOnAllDocumentsThatModelCorrespo
         {
             DM_DocumentView *doc = getDocumentManagerView()->getDocumentView(i);
 
-            QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
-
-            while(it.hasNext())
+            if(doc->useItemColor())
             {
-                CT_AbstractItemDrawable *item = it.next();
+                QListIterator<CT_AbstractItemDrawable*> it(doc->getItemDrawable());
 
-                if(item->model() == model)
+                while(it.hasNext())
                 {
-                    item->setColor(colorList.at(j));
-                    ++j;
+                    CT_AbstractItemDrawable *item = it.next();
 
-                    if(j == cSize)
-                        j = 0;
+                    if(item->model() == model)
+                    {
+                        doc->setColor(item, colorList.at(j));
+                        ++j;
+
+                        if(j == cSize)
+                            j = 0;
+                    }
                 }
-            }
 
-            doc->redrawGraphics();
+                doc->redrawGraphics();
+            }
         }
 
         return true;

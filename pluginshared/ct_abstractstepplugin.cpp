@@ -119,6 +119,11 @@ bool CT_AbstractStepPlugin::initAfterAllPluginsLoaded()
     return ok;
 }
 
+void CT_AbstractStepPlugin::unload()
+{
+    aboutToBeUnloaded();
+}
+
 QList<CT_StepSeparator*> CT_AbstractStepPlugin::getGenericsStepAvailable() const
 {
     return _stepAvailable;

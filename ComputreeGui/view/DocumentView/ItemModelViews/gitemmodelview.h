@@ -34,7 +34,12 @@ public:
 
     virtual QWidget* getViewWidget() const = 0;
 
-    GDocumentView* document() const;
+    GDocumentView* documentView() const;
+
+    /**
+     * @brief Returns the document that contains this graphics view
+     */
+    DocumentInterface* document() const;
 
 private:
     GDocumentView                           *m_doc;

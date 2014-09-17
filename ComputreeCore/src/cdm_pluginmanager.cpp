@@ -256,10 +256,12 @@ void CDM_PluginManager::clearPlugins()
     QMapIterator<QString, QPluginLoader*> it(_plugins);
 
     while(it.hasNext())
-    {
-        it.next();
-        it.value()->unload();
-    }
+        qobject_cast<PluginEntryInterface*>(it.next().value()->instance())->getPlugin()->unload();
+
+    it.toFront();
+
+    while(it.hasNext())
+        it.next().value()->unload();
 
     qDeleteAll(_plugins.begin(), _plugins.end());
     _plugins.clear();

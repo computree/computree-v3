@@ -3,11 +3,15 @@
 #include "dm_guimanager.h"
 
 #include "view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h"
+#include "view/DocumentView/GraphicsViews/3D/g3dfakepainter.h"
+
 #include "cdm_tools.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
+
+#include "dm_iteminfoforgraphics.h"
 
 #include <QInputDialog>
 #include <QLineEdit>
@@ -273,14 +277,54 @@ void GDocumentViewForGraphics::removeActions(const QString &uniqueName) const
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->actionsHandler()->removeActions(uniqueName);
-    }
 }
 
 QString GDocumentViewForGraphics::getType() const
 {
     return _type;
+}
+
+bool GDocumentViewForGraphics::useItemColor() const
+{
+    return true;
+}
+
+void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, const QColor &color)
+{
+    DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(getItemsInformations().value((CT_AbstractItemDrawable*)item, NULL));
+
+    if(info != NULL)
+    {
+        info->setColor(color);
+
+        if(!_listGraphics.isEmpty())
+        {
+            createColorCloudRegistered<CT_AbstractPointsAttributes>();
+            createColorCloudRegistered<CT_AbstractFaceAttributes>();
+            createColorCloudRegistered<CT_AbstractEdgeAttributes>();
+
+            G3DFakePainter painter;
+            painter.setGraphicsView(_listGraphics.first());
+            painter.setDrawMode(G3DFakePainter::ApplyColorPoints | G3DFakePainter::ApplyColorEdges | G3DFakePainter::ApplyColorFaces);
+            painter.setApplyColor(color);
+            painter.setPointsColorCloud(colorCloudRegistered<CT_AbstractPointsAttributes>());
+            painter.setEdgesColorCloud(colorCloudRegistered<CT_AbstractEdgeAttributes>());
+            painter.setFacesColorCloud(colorCloudRegistered<CT_AbstractFaceAttributes>());
+
+            ((CT_AbstractItemDrawable*)item)->draw(*_listGraphics.first(), painter);
+        }
+    }
+}
+
+QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
+{
+    DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(getItemsInformations().value((CT_AbstractItemDrawable*)item, NULL));
+
+    if(info == NULL)
+        return QColor();
+
+    return info->color();
 }
 
 template<>
@@ -314,9 +358,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttribut
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setCurrentPointCloudColor(cc);
-    }
 
     unlock();
 }
@@ -331,9 +373,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setCurrentFaceCloudColor(cc);
-    }
 
     unlock();
 }
@@ -348,9 +388,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setCurrentEdgeCloudColor(cc);
-    }
 
     unlock();
 }
@@ -382,9 +420,7 @@ void GDocumentViewForGraphics::setUseColorCloud(bool use)
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setUseCloudColor(m_useColorCloud);
-    }
 
     unlock();
 }
@@ -404,9 +440,7 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttribu
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setCurrentPointCloudNormal(nn);
-    }
 
     unlock();
 }
@@ -421,9 +455,7 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttribute
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setCurrentFaceCloudNormal(nn);
-    }
 
     unlock();
 }
@@ -449,9 +481,7 @@ void GDocumentViewForGraphics::setUseNormalCloud(bool use)
     QListIterator<GGraphicsView*> it(_listGraphics);
 
     while(it.hasNext())
-    {
         it.next()->setUseCloudNormal(m_useNormalCloud);
-    }
 
     unlock();
 }
@@ -484,10 +514,9 @@ void GDocumentViewForGraphics::validateOptions()
     const DM_GraphicsViewOptions &options = _graphicsOptionsView->getOptions();
 
     QListIterator<GGraphicsView*> it(_listGraphics);
+
     while(it.hasNext())
-    {
         it.next()->setOptions(options);
-    }
 }
 
 
@@ -497,9 +526,7 @@ void GDocumentViewForGraphics::addActualPointOfView()
 
     // on limite  20 le nombre de point de vue
     if(listPof.size() == 20)
-    {
         _pofManager.removePointOfView(getKeyForPointOfViewManager(), listPof.takeLast());
-    }
 
     QString name = QInputDialog::getText(getSubWindow(), tr("Point de vue"), tr("Veuillez entrer un nom pour le point de vue :"), QLineEdit::Normal, QString("P%1").arg(_pofManager.numberPointOfViewAddedFromBeginning(getKeyForPointOfViewManager())+1));
 
@@ -871,4 +898,11 @@ void GDocumentViewForGraphics::unlockGraphics()
     _graphicsLocked = false;
 
     m_mutex->unlock();
+}
+
+DM_AbstractInfo* GDocumentViewForGraphics::createNewItemInformation(const CT_AbstractItemDrawable *item) const
+{
+    Q_UNUSED(item)
+
+    return new DM_ItemInfoForGraphics();
 }

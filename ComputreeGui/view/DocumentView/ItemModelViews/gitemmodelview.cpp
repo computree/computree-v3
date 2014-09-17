@@ -24,7 +24,7 @@ void GItemModelView::setCurrentAction(CT_AbstractActionForTreeView *action)
 {
     if(action != NULL)
     {
-        action->setDocument(document());
+        action->setDocument(documentView());
         action->setTreeView(this);
     }
 
@@ -35,7 +35,7 @@ void GItemModelView::setDefaultAction(CT_AbstractActionForTreeView *action)
 {
     if(action != NULL)
     {
-        action->setDocument(document());
+        action->setDocument(documentView());
         action->setTreeView(this);
     }
 
@@ -52,7 +52,12 @@ DM_ItemModelViewSynchronizedGroup* GItemModelView::syncGroup() const
     return m_syncGroup;
 }
 
-GDocumentView* GItemModelView::document() const
+GDocumentView* GItemModelView::documentView() const
 {
     return m_doc;
+}
+
+DocumentInterface* GItemModelView::document() const
+{
+    return documentView();
 }

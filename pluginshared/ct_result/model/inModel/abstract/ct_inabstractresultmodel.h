@@ -5,6 +5,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_InAbstractResultModel : public CT_InAbstractModel
 {
+    Q_OBJECT
+
 public:
     CT_InAbstractResultModel(const QString &uniqueName,
                              const QString &description,
@@ -84,6 +86,32 @@ public:
 protected:
 
     /**
+     * @brief Set the original model of this model if it was a copy
+     */
+    void setOriginalModel(const CT_InAbstractResultModel *om);
+
+    /**
+     * @brief Returns the original model of this model if it was a copy otherwise returns this
+     */
+    CT_InAbstractResultModel* originalModel() const;
+
+    /**
+     * @brief Returns the original model (recursively) of this model if it was a copy otherwise returns this
+     */
+    CT_InAbstractResultModel* recursiveOriginalModel() const;
+
+    /**
+     * @brief Set if this model must be recursive or not without use the FORCE_RECURSIVITY value.
+     */
+    void setRecursiveWithoutUseForceRecursivity(bool e);
+
+    /**
+     * @brief Set if the model passed in parameter must be recursive or not without use the
+     *        FORCE_RECURSIVITY value. Used by subclass.
+     */
+    static void staticSetRecursiveWithoutUseForceRecursivity(CT_InAbstractResultModel *model, bool e);
+
+    /**
      * @brief Returns all childrens (INPUT) that must be used to find possibilities in children of OUTPUT model. By
      *        default returns "childrens" method
      * @overload Overloaded to return a copy of all childrens if "savePossibilities" is true. A model that represent a result
@@ -128,6 +156,11 @@ protected:
 private:
     bool                        m_recursive;
     CT_InAbstractModel          *m_backupModel;
+    CT_InAbstractResultModel    *m_originalModel;
+
+protected slots:
+
+    virtual void originalModelDestroyed();
 };
 
 #endif // CT_INABSTRACTRESULTMODEL_H

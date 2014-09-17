@@ -20,6 +20,7 @@ CT_InAbstractModel* CT_InResultModelNotNeedInputResult::copy(bool withPossibilit
 
     CT_InResultModelNotNeedInputResult *cpy = new CT_InResultModelNotNeedInputResult();
     cpy->setStep(step());
+    cpy->setOriginalModel(this);
 
     return cpy;
 }
@@ -38,8 +39,6 @@ QList<SettingsNodeGroup*> CT_InResultModelNotNeedInputResult::getAllValues() con
 
 bool CT_InResultModelNotNeedInputResult::setAllValues(const QList<SettingsNodeGroup*> &list)
 {
-    // TODO : verify compatibility with old script !!!
-
     SettingsNodeGroup *root = NULL;
 
     QListIterator<SettingsNodeGroup*> itS(list);

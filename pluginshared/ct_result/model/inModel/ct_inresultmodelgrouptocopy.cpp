@@ -87,8 +87,6 @@ QList<SettingsNodeGroup *> CT_InResultModelGroupToCopy::getAllValues() const
 
 bool CT_InResultModelGroupToCopy::setAllValues(const QList<SettingsNodeGroup *> &list)
 {
-    // TODO : verify compatibility with old script !!!
-
     SettingsNodeGroup *root = NULL;
 
     QListIterator<SettingsNodeGroup*> itS(list);
@@ -117,6 +115,7 @@ CT_InAbstractModel* CT_InResultModelGroupToCopy::copy(bool withPossibilities) co
 
     CT_InResultModelGroupToCopy *cpy = new CT_InResultModelGroupToCopy(uniqueName(), rootCpy, displayableName(), description(), isRecursive());
     cpy->setStep(step());
+    cpy->setOriginalModel(this);
 
     if(withPossibilities)
         CT_InAbstractModel::staticCopyPossibilitiesToModel(this, cpy);

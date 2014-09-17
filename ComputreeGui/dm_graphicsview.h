@@ -44,6 +44,11 @@ public:
     virtual void setDocumentView(const DM_DocumentView *doc);
     DM_DocumentView& getDocumentView() const;
 
+    /**
+     * @brief Returns the document that contains this graphics view
+     */
+    DocumentInterface* document() const;
+
     virtual void setOptions(const DM_GraphicsViewOptions &newOptions);
     virtual GraphicsViewOptionsInterface& getOptions();
 

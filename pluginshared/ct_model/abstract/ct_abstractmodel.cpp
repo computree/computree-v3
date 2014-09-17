@@ -90,8 +90,11 @@ bool CT_AbstractModel::canSetUniqueName(const QString &uniqueName) const
 
 QList<CT_AbstractModel *> CT_AbstractModel::recursiveGetAllModels() const
 {
-    QList<CT_AbstractModel *> l = childrens();
-    QListIterator<CT_AbstractModel *> it(l);
+    QList<CT_AbstractModel *> l;
+    l.append(const_cast<CT_AbstractModel*>(this));
+
+    QList<CT_AbstractModel *> c = childrens();
+    QListIterator<CT_AbstractModel *> it(c);
 
     while(it.hasNext())
         l.append(it.next()->recursiveGetAllModels());

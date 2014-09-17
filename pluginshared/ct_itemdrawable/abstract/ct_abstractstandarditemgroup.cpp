@@ -554,34 +554,6 @@ void CT_AbstractStandardItemGroup::recursiveGetDependantViewConfigurations(QList
         recursiveGetDependantViewConfigurations(list, (CT_OutAbstractGroupModel*)itG.next());
 }
 
-void CT_AbstractStandardItemGroup::setColorToGroups(const QHash<QString, CT_Container*> &groups, const QColor &color)
-{
-    QHashIterator<QString, CT_Container*> itG(groups);
-
-    while(itG.hasNext())
-    {
-        itG.next();
-
-        QListIterator<CT_AbstractItemDrawable*> it(*itG.value()->getList());
-
-        while(it.hasNext())
-        {
-            it.next()->setColor(color);
-        }
-    }
-}
-
-void CT_AbstractStandardItemGroup::setColorToItems(const QHash<QString, CT_GroupItemDrawableContainer*> &items, const QColor &color)
-{
-    QHashIterator<QString, CT_GroupItemDrawableContainer*> itI(items);
-
-    while(itI.hasNext())
-    {
-        itI.next();
-        itI.value()->item()->setColor(color);
-    }
-}
-
 void CT_AbstractStandardItemGroup::recursiveSetComplete()
 {
     QMutableListIterator<CT_AbstractItemDrawable*> *itI;
@@ -711,21 +683,4 @@ void CT_AbstractStandardItemGroup::internalSetWillBeRemovedFromResult(const CT_A
 
     while(itB.hasNext())
         CT_AbstractItem::staticInternalSetWillBeRemoveFromResult(itB.next().value()->item(), result);
-}
-
-
-// SLOTS //
-
-void CT_AbstractStandardItemGroup::setColor(QColor color)
-{
-    if(this->color() != color)
-    {
-        CT_AbstractItemGroup::setColor(color);
-
-        setColorToGroups(groupsNew(), color);
-        setColorToGroups(groupsBackup(), color);
-        setColorToItems(itemsNew(), color);
-        setColorToItems(itemsBackup(), color);
-
-    }
 }

@@ -57,6 +57,7 @@ protected:
     bool loadReaders();
 
     bool loadAfterAllPluginsLoaded();
+    void aboutToBeUnloaded();
 
 private:
     CT_FileLogListener m_fileLog;

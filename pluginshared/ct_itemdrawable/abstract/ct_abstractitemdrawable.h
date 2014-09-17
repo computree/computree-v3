@@ -276,41 +276,6 @@ public:
      */
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList) = 0;
 
-    /****** DEPRECATED METHODS ********/
-
-    /**
-     * @brief Set the color of the item
-     * @deprecated will not be longer used since the item will have a color by document
-     */
-    Q_DECL_DEPRECATED virtual void setColor(QColor color);
-
-    /**
-     * @brief Returns the color of the item
-     * @deprecated will not be longer used since the item will have a color by document
-     */
-    Q_DECL_DEPRECATED QColor color() const;
-
-    /**
-     * @brief Check if the type of this item is the same that the type passed in parameter.
-     * @deprecated method not used
-     */
-    Q_DECL_DEPRECATED virtual bool isType(const QString &type) const;
-
-    /**
-     * @deprecated use the method "itemParent"
-     */
-    Q_DECL_DEPRECATED CT_AbstractItemDrawable *itemDrawableParent() const;
-
-    /**
-     * @deprecated not be used
-     */
-    Q_DECL_DEPRECATED int drawingPosition() const;
-
-    /**
-     * @deprecated not be used
-     */
-    Q_DECL_DEPRECATED virtual void setDrawingPosition(int pos);
-
 signals:
 
     /**
@@ -322,16 +287,6 @@ signals:
      * @brief Emitted when the display state change
      */
     void displayChange(bool value);
-
-    /**
-     * @deprecated will not be longer used since the item will have a color by document
-     */
-    Q_DECL_DEPRECATED void colorChange(QColor value);
-
-    /**
-     * @deprecated not be used
-     */
-    Q_DECL_DEPRECATED void positionChange(int value);
 
 protected:
 
@@ -366,8 +321,6 @@ private:
     QList<DocumentInterface*>   _documentList;
     bool                        _selected;
     bool                        _displayed;
-    QColor                      _color;
-    int                         _drawing_position;
     QVector3D                   _centerCoordinate;
     QString                     _name;
     bool                        _autoDelete;

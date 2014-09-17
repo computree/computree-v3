@@ -1100,6 +1100,7 @@ private:
 
     friend class CT_InResultModelManager;
     friend class CT_AbstractStepPlugin;
+    friend class CT_InResultModelGroup;
 
     int                             _uniqueId;
 

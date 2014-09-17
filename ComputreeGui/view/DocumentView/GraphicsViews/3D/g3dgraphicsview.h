@@ -30,7 +30,7 @@
 
 #include "GraphicsViews/ggraphicsview.h"
 #include "GraphicsViews/3D/g3dpainter.h"
-#include "GraphicsViews/3D/g3dfakepainterdrawwithnames.h"
+#include "GraphicsViews/3D/g3dfakepainter.h"
 #include "GraphicsViews/3D/g3dcameracontroller.h"
 
 #include <qglviewer.h>
@@ -160,7 +160,7 @@ private:
     QMutex                          *_mutex;
     QPainter                        *m_painter;
     G3DPainter                      _g;
-    G3DFakePainterDrawWithNames     m_fakeG;
+    G3DFakePainter                  m_fakeG;
     G3DCameraController             _cameraController;
     SelectionMode                   _selectionMode;
     DrawMode                        _drawModeToUse;

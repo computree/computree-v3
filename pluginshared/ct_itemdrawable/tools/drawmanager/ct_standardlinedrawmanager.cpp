@@ -34,7 +34,7 @@ void CT_StandardLineDrawManager::draw(GraphicsViewInterface &view, PainterInterf
 
         pen.setWidth(lineSize);
         pen.setStyle((Qt::PenStyle) lineStyle);
-        pen.setColor(item.color());
+        pen.setColor(view.document()->getColor(&itemDrawable));
     }
 
     painter.setPen(pen);

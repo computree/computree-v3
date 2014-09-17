@@ -52,17 +52,6 @@ public:
      */
     QString groupShortType() const;
 
-    /**
-     * @brief Returns values to backup this model and its children
-     */
-    virtual QList<SettingsNodeGroup*> getAllValues() const;
-
-    /**
-     * @brief Restore this model and its children by values passed in parameter
-     * @return false if it was an error in values
-     */
-    virtual bool setAllValues(const QList<SettingsNodeGroup*> &list);
-
 protected:
 
     /**

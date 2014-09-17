@@ -16,19 +16,21 @@ CT_InAbstractResultModel::CT_InAbstractResultModel(const QString &uniqueName,
 {
     m_recursive = recursive | FORCE_RECURSIVITY;
     m_backupModel = NULL;
+    m_originalModel = NULL;
 
     setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
 }
 
 void CT_InAbstractResultModel::setRecursive(bool r)
 {
-    m_recursive = r | FORCE_RECURSIVITY;
+    setRecursiveWithoutUseForceRecursivity(r | FORCE_RECURSIVITY);
 }
 
 bool CT_InAbstractResultModel::isRecursive() const
 {
     // if step of this model is a step "model" (not used in a tree)
-    if(step()->getPlugin()->getStepFromKey(step()->getPlugin()->getKeyForStep(*step())) == step())
+    if((step() != NULL)
+            && (step()->getPlugin()->getStepFromKey(step()->getPlugin()->getKeyForStep(*step())) == step()))
         return m_recursive | FORCE_RECURSIVITY;
 
     return m_recursive;
@@ -86,6 +88,43 @@ bool CT_InAbstractResultModel::recursiveIsAtLeastOnePossibilitySelectedIfItDoes(
 CT_InAbstractModel* CT_InAbstractResultModel::findModelInTreeOfModelInPossibility(int pIndex, const QString &uniqueName) const
 {
     return (CT_InAbstractModel*)((CT_InStdResultModelPossibility*)possibilitiesGroup()->getPossibilities().at(pIndex))->inModel()->findModelInTree(uniqueName);
+}
+
+void CT_InAbstractResultModel::setOriginalModel(const CT_InAbstractResultModel *om)
+{
+    if(m_originalModel != NULL)
+        disconnect(m_originalModel, NULL, this, NULL);
+
+    m_originalModel = (CT_InAbstractResultModel*)om;
+
+    if(m_originalModel != NULL)
+        connect(m_originalModel, SIGNAL(destroyed()), this, SLOT(originalModelDestroyed()), Qt::DirectConnection);
+}
+
+CT_InAbstractResultModel *CT_InAbstractResultModel::originalModel() const
+{
+    if(m_originalModel == NULL)
+        return const_cast<CT_InAbstractResultModel*>(this);
+
+    return m_originalModel;
+}
+
+CT_InAbstractResultModel* CT_InAbstractResultModel::recursiveOriginalModel() const
+{
+    if(m_originalModel == NULL)
+        return const_cast<CT_InAbstractResultModel*>(this);
+
+    return m_originalModel->recursiveOriginalModel();
+}
+
+void CT_InAbstractResultModel::setRecursiveWithoutUseForceRecursivity(bool e)
+{
+    m_recursive = e;
+}
+
+void CT_InAbstractResultModel::staticSetRecursiveWithoutUseForceRecursivity(CT_InAbstractResultModel *model, bool e)
+{
+    model->setRecursiveWithoutUseForceRecursivity(e);
 }
 
 QList<CT_AbstractModel *> CT_InAbstractResultModel::childrensToFindPossibilities(bool savePossibilities) const
@@ -151,4 +190,9 @@ void CT_InAbstractResultModel::possibilityNotCreated()
 {
     delete m_backupModel;
     m_backupModel = NULL;
+}
+
+void CT_InAbstractResultModel::originalModelDestroyed()
+{
+    m_originalModel = NULL;
 }

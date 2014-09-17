@@ -23,7 +23,6 @@ GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
 
     m_docManagerView = NULL;
     _result = NULL;
-    _contextMenu = constructContextMenu();
     _colorPicker = new QtColorPicker(NULL, -1, true, false);
 
     ui->treeView->setModel(&_viewModel);
@@ -158,8 +157,31 @@ QMenu* GItemDrawableModelManager::constructContextMenu()
 {
     QMenu *contextMenu = new QMenu(this);
 
-    contextMenu->addAction(tr("Couleur uni"), this, SLOT(setUniqueColorForModelSelected()));
-    contextMenu->addAction(tr("Couleur automatique"), this, SLOT(setAutomaticColorForModelSelected()));
+    QMenu *menu = contextMenu->addMenu(tr("Couleur uni"));
+
+    if(m_docManagerView != NULL)
+    {
+        int s = m_docManagerView->nbDocumentView();
+
+        for(int i=0; i<s; ++i)
+        {
+            QAction *action = menu->addAction(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()), this, SLOT(setUniqueColorForModelSelected()));
+            action->setData(i);
+        }
+    }
+
+    menu = contextMenu->addMenu(tr("Couleur automatique"));
+
+    if(m_docManagerView != NULL)
+    {
+        int s = m_docManagerView->nbDocumentView();
+
+        for(int i=0; i<s; ++i)
+        {
+            QAction *action = menu->addAction(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()), this, SLOT(setAutomaticColorForModelSelected()));
+            action->setData(i);
+        }
+    }
 
     return contextMenu;
 }
@@ -411,12 +433,18 @@ void GItemDrawableModelManager::showContextMenu(const QPoint &point)
         const CT_OutAbstractModel *iModel = dynamic_cast<const CT_OutAbstractModel*>(sModel.first());
 
         if(iModel != NULL)
-            _contextMenu->exec(ui->treeView->viewport()->mapToGlobal(point));
+        {
+            QMenu *menu = constructContextMenu();
+            menu->exec(ui->treeView->viewport()->mapToGlobal(point));
+            delete menu;
+        }
     }
 }
 
 void GItemDrawableModelManager::setUniqueColorForModelSelected()
 {
+    int docIndex = ((QAction*)sender())->data().toInt();
+
     CT_AbstractResult *res = result();
 
     if(res != NULL)
@@ -425,6 +453,7 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
         if(!sModel.isEmpty())
         {
+            DM_DocumentView *doc = m_docManagerView->getDocumentView(docIndex);
             _colorPicker->showColorDialog();
 
             if(!_colorPicker->isDialogCanceled())
@@ -433,12 +462,13 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
                 if(iModel != NULL)
                 {
+                    QColor color = _colorPicker->currentColor();
                     CT_ResultIterator it((CT_ResultGroup*)res, iModel);
 
                     while(it.hasNext())
-                        ((CT_AbstractItemDrawable*)it.next())->setColor(_colorPicker->currentColor());
+                        doc->setColor((CT_AbstractItemDrawable*)it.next(), color);
 
-                    GUI_MANAGER->getDocumentManagerView()->getActiveDocumentView()->redrawGraphics();
+                    doc->redrawGraphics();
                 }
             }
         }
@@ -447,6 +477,8 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
 void GItemDrawableModelManager::setAutomaticColorForModelSelected()
 {
+    int docIndex = ((QAction*)sender())->data().toInt();
+
     CT_AbstractResult *res = result();
 
     if(res != NULL)
@@ -459,12 +491,13 @@ void GItemDrawableModelManager::setAutomaticColorForModelSelected()
 
             if(iModel != NULL)
             {
+                DM_DocumentView *doc = m_docManagerView->getDocumentView(docIndex);
                 CT_ResultIterator it((CT_ResultGroup*)res, iModel);
 
                 while(it.hasNext())
-                    ((CT_AbstractItemDrawable*)it.next())->setColor(_colorOptions.getNextColor());
+                    doc->setColor((CT_AbstractItemDrawable*)it.next(), _colorOptions.getNextColor());
 
-                GUI_MANAGER->getDocumentManagerView()->getActiveDocumentView()->redrawGraphics();
+                doc->redrawGraphics();
             }
         }
     }

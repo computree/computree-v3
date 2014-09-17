@@ -338,3 +338,10 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 
     return true;
 }
+
+void PB_StepPluginManager::aboutToBeUnloaded()
+{
+    clearGenericsStep();
+    clearOpenFileStep();
+    clearCanBeAddedFirstStep();
+}

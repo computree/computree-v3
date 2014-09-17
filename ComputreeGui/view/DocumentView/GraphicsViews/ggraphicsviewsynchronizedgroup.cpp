@@ -177,7 +177,7 @@ void GGraphicsViewSynchronizedGroup::syncItemModelWith(const GItemModelView *vie
 {
     if(view != NULL)
     {
-        GDocumentView *documentView = view->document();
+        GDocumentView *documentView = view->documentView();
         QString type = documentView->getType();
 
         QTreeWidgetItem *pItem = getItemForType(type);

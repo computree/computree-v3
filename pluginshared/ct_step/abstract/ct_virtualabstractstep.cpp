@@ -1480,10 +1480,7 @@ void CT_VirtualAbstractStep::initInputResultConfiguration()
     if(_inManager->getTurnManager()->nTurn() == 0)
     {
         // on recherche les possibilités de résultats à partir de l'étape parente
-        if(!_inManager->getResultModelManager()->findAllOutputModelFromStepAndSavePossibilities(parentStep()))
-        {
-            qFatal("Erreur lors de la creation des possibilités");
-        }
+        _inManager->getResultModelManager()->findAllOutputModelFromStepAndSavePossibilities(parentStep());
     }
 }
 

@@ -361,8 +361,6 @@ QList<SettingsNodeGroup *> CT_InAbstractModel::getAllValues() const
 
 bool CT_InAbstractModel::setAllValues(const QList<SettingsNodeGroup *> &list)
 {
-    // TODO : verify compatibility with old script !!!
-
     SettingsNodeGroup *root = NULL;
 
     QListIterator<SettingsNodeGroup*> itS(list);

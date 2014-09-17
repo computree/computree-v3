@@ -28,7 +28,9 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_itemmodelviewsynchronizedgroupoptions.h \
     dm_actionsmanager.h \
     dm_actionshandler.h \
-    imainprogressdialog.h
+    imainprogressdialog.h \
+    dm_abstractinfo.h \
+    dm_iteminfoforgraphics.h
 
 # OTHER
 SOURCES += main.cpp \
@@ -51,7 +53,9 @@ SOURCES += main.cpp \
     dm_abstractviewsynchronizedgroup.cpp \
     dm_itemmodelviewsynchronizedgroupoptions.cpp \
     dm_actionsmanager.cpp \
-    dm_actionshandler.cpp
+    dm_actionshandler.cpp \
+    dm_abstractinfo.cpp \
+    dm_iteminfoforgraphics.cpp
 
 HEADERS += \
     dm_document.h \

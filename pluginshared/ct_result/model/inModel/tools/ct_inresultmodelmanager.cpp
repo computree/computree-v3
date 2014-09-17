@@ -97,7 +97,7 @@ bool CT_InResultModelManager::searchOneOrSearchMultipleAndSaveAllOutputModelFrom
     {
         // we clear all possibilities of models
         while(inIt.hasNext())
-            inIt.next()->clearPossibilitiesSaved();
+            inIt.next()->recursiveClearPossibilitiesSaved();
 
         inIt.toFront();
     }

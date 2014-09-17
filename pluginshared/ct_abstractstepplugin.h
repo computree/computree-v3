@@ -84,6 +84,11 @@ public:
     virtual bool initAfterAllPluginsLoaded();
 
     /**
+     * @brief Called from plugin manager when this plugin will be unloaded
+     */
+    virtual void unload();
+
+    /**
      * @brief Returns a list of step separator. A step separator group multiple step by a title. This
      *        separator contain standard step (can be added only in the middle of the tree)
      */
@@ -221,6 +226,11 @@ protected:
      *        another plugin). Use "addNewSeparator" method to create a new separator and a elements to it.
      */
     virtual bool loadAfterAllPluginsLoaded() { return true; }
+
+    /**
+     * @brief Inherit this method to delete step that have been created in method loadAfterAllPluginsLoaded()
+     */
+    virtual void aboutToBeUnloaded() { }
 
     /**
      * @brief Remove from memory all standard step

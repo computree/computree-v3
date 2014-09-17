@@ -50,6 +50,11 @@ DM_Document::DM_Document(DM_DocumentManager &manager, QString title)
     connect(this, SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), this, SLOT(slotItemDrawableAdded(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 }
 
+DM_Document::~DM_Document()
+{
+    qDeleteAll(m_itemsInformation.begin(), m_itemsInformation.end());
+}
+
 void DM_Document::setDocumentCloseFilter(const DM_IDocumentCloseFilter *filter)
 {
     m_closeFilter = (DM_IDocumentCloseFilter*)filter;
@@ -223,6 +228,11 @@ const QList<CT_AbstractItemDrawable*>& DM_Document::getItemDrawable() const
     return _listItemDrawable;
 }
 
+const QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> DM_Document::getItemsInformations() const
+{
+    return m_itemsInformation;
+}
+
 QList<CT_AbstractItemDrawable*> DM_Document::getSelectedItemDrawable() const
 {
     QList<CT_AbstractItemDrawable*> list;
@@ -238,6 +248,24 @@ QList<CT_AbstractItemDrawable*> DM_Document::getSelectedItemDrawable() const
     }
 
     return list;
+}
+
+bool DM_Document::useItemColor() const
+{
+    return false;
+}
+
+void DM_Document::setColor(const CT_AbstractItemDrawable *item, const QColor &color)
+{
+    Q_UNUSED(item)
+    Q_UNUSED(color)
+}
+
+QColor DM_Document::getColor(const CT_AbstractItemDrawable *item)
+{
+    Q_UNUSED(item)
+
+    return Qt::white;
 }
 
 size_t DM_Document::nItemDrawable() const
@@ -332,14 +360,27 @@ CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstract
     return NULL;
 }
 
+DM_AbstractInfo* DM_Document::createNewItemInformation(const CT_AbstractItemDrawable *item) const
+{
+    Q_UNUSED(item)
+
+    return NULL;
+}
+
 void DM_Document::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
     connect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)), Qt::DirectConnection);
+
+    DM_AbstractInfo *info = createNewItemInformation(&item);
+
+    if(info != NULL)
+        m_itemsInformation.insert(&item, info);
 }
 
 void DM_Document::slotItemToBeRemoved(CT_AbstractItemDrawable &item)
 {
     disconnect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)));
+    delete m_itemsInformation.take(&item);
 }
 
 /////////// PRIVATE ////////////

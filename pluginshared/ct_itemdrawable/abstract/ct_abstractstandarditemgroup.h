@@ -131,13 +131,6 @@ protected:
                    CT_AbstractStandardItemGroup &groupDest);
 
     void recursiveGetDependantViewConfigurations(QList<CT_ItemDrawableConfiguration*> &list, CT_OutAbstractGroupModel* gModel);
-
-    void setColorToGroups(const QHash<QString, CT_Container*> &groups, const QColor &color);
-    void setColorToItems(const QHash<QString, CT_GroupItemDrawableContainer*> &items, const QColor &color);
-
-public slots:
-
-    virtual void setColor(QColor color);
 };
 
 #endif // CT_ABSTRACTSTANDARDITEMGROUP_H
