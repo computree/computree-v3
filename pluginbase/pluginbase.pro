@@ -60,7 +60,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     exporters/profile/pb_profileexporter.h \
     step/pb_stepsegmentgaps.h \
     actions/pb_actionsegmentgaps.h \
-    views/actions/pb_actionsegmentgapsoptions.h
+    views/actions/pb_actionsegmentgapsoptions.h \
+    step/pb_stepslicepointcloud.h \
+    actions/pb_actionslicepointcloud.h \
+    views/actions/pb_actionslicepointcloudoptions.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -119,7 +122,10 @@ SOURCES += \
     exporters/profile/pb_profileexporter.cpp \
     step/pb_stepsegmentgaps.cpp \
     actions/pb_actionsegmentgaps.cpp \
-    views/actions/pb_actionsegmentgapsoptions.cpp
+    views/actions/pb_actionsegmentgapsoptions.cpp \
+    step/pb_stepslicepointcloud.cpp \
+    actions/pb_actionslicepointcloud.cpp \
+    views/actions/pb_actionslicepointcloudoptions.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -140,7 +146,8 @@ FORMS += \
     views/actions/pb_actionsegmentcrownsoptions.ui \
     views/actions/pb_actiondefineheightlayeroptions.ui \
     views/actions/pb_actionmodifyaffiliationsoptions.ui \
-    views/actions/pb_actionsegmentgapsoptions.ui
+    views/actions/pb_actionsegmentgapsoptions.ui \
+    views/actions/pb_actionslicepointcloudoptions.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts

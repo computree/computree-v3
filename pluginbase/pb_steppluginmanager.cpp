@@ -56,6 +56,7 @@
 #include "step/pb_stepsetaffiliationidfromreference.h"
 #include "step/pb_stepgenericgroupexporter.h"
 #include "step/pb_stepuseritemcopy.h"
+#include "step/pb_stepslicepointcloud.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -175,6 +176,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepMeasureCrownAttributes(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSlicePointCloud(*createNewStepInitializeData(NULL)));
 
     return true;
 }
