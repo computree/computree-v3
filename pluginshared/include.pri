@@ -1,4 +1,5 @@
-#Do the declaration in file use_pcl.ini in this order with quotes for all lines :
+# To use PCL =>
+# Do the declaration in file use_pcl.ini in this order with quotes for all lines :
 # example for ubuntu 13.10 (remove # symbols) :
 #"1.7"
 #"/usr/lib"
@@ -9,7 +10,7 @@
 #"/usr/lib/x86_64-linux-gnu"
 #"/usr/include"
 
-# example for windows, with external sub-directory (remove # symbols) :
+# example for windows, with external sub-directory (remove # symbols) WARNING : slash must be like this / :
 #"1.7"
 #"../../external/pcl/lib"
 #"../../external/pcl/include"
@@ -43,7 +44,7 @@ BOOS_LIB_FILESYSTEM_PATH =
 # A la place créer un use_pcl.ini dans le répertoire racine de computree si on veut utiliser PCL
 exists(../../use_pcl.ini) {
     DEFINES += USE_PCL
-    message( ------- use_pcl.ini detecté ------ )
+    message( ------- use_pcl.ini detected ------ )
 
     # Modif MK : permet de mettre les chemins dans le fichier use_pcl.ini
     TMP_CAT =
@@ -131,7 +132,7 @@ exists(../../use_pcl.ini) {
     #DEFINES += USE_BOOST
     #DEFINES += USE_BOOST_BINARY
 } else {
-    message( ------- use_pcl.ini NON detecté ------ )
+    message( ------- use_pcl.ini NOT detected ------ )
 }
 
 message( ------- include.pri ------ )

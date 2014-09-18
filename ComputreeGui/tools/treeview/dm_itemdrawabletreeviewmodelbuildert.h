@@ -2,6 +2,7 @@
 #define DM_ITEMDRAWABLETREEVIEWMODELBUILDERT_H
 
 #include <QVector>
+#include <QFutureWatcher>
 
 #include "tools/worker/dm_abstractworker.h"
 #include "tools/treeview/dm_iitemdrawablestandarditembuildert.h"
@@ -53,13 +54,33 @@ public:
     void setQStandardItemToUpdate(const QList< QPair<Item*, CT_AbstractItemDrawable*> > &list);
 
 private:
+    struct ConcurrentMapInfo
+    {
+    public:
+        int                                             m_nLevel;
+        int                                             m_level;
+        CT_AbstractItemDrawable                         *m_item;
+        DM_IItemDrawableStandardItemBuilderT<Item>      *m_itemModelBuilder;
+        QList<Item*>                                    m_itemsCreated;
+    };
+
     QVector< QList<Item*> >                                     *m_collection;
     DM_IItemDrawableStandardItemBuilderT<Item>                  *m_itemModelBuilder;
     QList<CT_AbstractItemDrawable*>                             m_items;
     QList< QPair<Item*, CT_AbstractItemDrawable*> >             m_itemsToUpdate;
     int                                                         m_nLevel;
+    QFutureWatcher<void>                                        m_watcher;
 
-    void recursiveCreateItemForNextLevel(CT_AbstractItemDrawable *item, Item *parent, const int &level);
+    static void staticRecursiveCreateItemForNextLevel(DM_IItemDrawableStandardItemBuilderT<Item> *itemModelBuilder,
+                                                      CT_AbstractItemDrawable *item,
+                                                      Item *parent,
+                                                      const int &level,
+                                                      const int &maxNLevel);
+
+    /**
+     * @brief Called from QtConcurrent
+     */
+    static void staticApply(ConcurrentMapInfo *info);
 
 public:
 
