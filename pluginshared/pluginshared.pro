@@ -330,7 +330,10 @@ SOURCES += \
     ct_model/tools/ct_modelsearchhelper.cpp \
     ct_item/tools/iterator/ct_childiterator.cpp \
     ct_itemdrawable/ct_polygon2d_old.cpp \
-    ct_shapedata/ct_polygon2ddata_old.cpp
+    ct_shapedata/ct_polygon2ddata_old.cpp \
+    ct_shapedata/ct_planarbsplinedata.cpp \
+    ct_itemdrawable/ct_planarbspline.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -712,7 +715,10 @@ HEADERS += interfaces.h \
     ct_model/tools/ct_modelsearchhelper.h \
     ct_item/tools/iterator/ct_childiterator.h \
     ct_itemdrawable/ct_polygon2d_old.h \
-    ct_shapedata/ct_polygon2ddata_old.h
+    ct_shapedata/ct_polygon2ddata_old.h \
+    ct_shapedata/ct_planarbsplinedata.h \
+    ct_itemdrawable/ct_planarbspline.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step
