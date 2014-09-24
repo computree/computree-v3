@@ -11,7 +11,7 @@ mkdir %DESTDIR%\img
 copy img_to_copy\*.png %DESTDIR%\img
 
 echo "Generating Translations"
-lrelease ComputreeGui.pro
+lrelease *.pro
 mkdir %DESTDIR%\languages 
 copy languages\*.qm %DESTDIR%\languages
 

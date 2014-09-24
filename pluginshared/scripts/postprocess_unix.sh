@@ -6,6 +6,6 @@ DESTDIR="`pwd`/../../ComputreeInstall"
 cd "$THISDIR"
 
 # Generate translations
-lrelease pluginshared.pro
+lrelease *.pro
 mkdir -p $DESTDIR/languages
 cp languages/*.qm $DESTDIR/languages
