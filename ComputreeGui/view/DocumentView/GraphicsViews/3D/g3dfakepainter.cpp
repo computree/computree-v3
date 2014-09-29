@@ -209,9 +209,12 @@ void G3DFakePainter::scale(double x, double y, double z)
 }
 
 void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
-                                                 const CT_AbstractCloudIndex *pci,
-                                                 int fastestIncrement)
+                                    const CT_AbstractCloudIndex *pci,
+                                    int fastestIncrement)
 {
+    if((pc == NULL) || (pci == NULL))
+        return;
+
     if(m_drawMode.testFlag(DrawPoints))
     {
         glColor3ub(255, 255, 255);
@@ -359,6 +362,9 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
         const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
+        if(fci == NULL)
+            return;
+
         size_t fIndex;
         size_t size = fci->size();
 
@@ -378,6 +384,9 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
         const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
+        if(fci == NULL)
+            return;
+
         m_nFaces += fci->size();
     }
     else if(m_drawMode.testFlag(BackupFaceCloudIndex))
@@ -391,6 +400,9 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
         if(scc != NULL)
         {
             const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
+
+            if(fci == NULL)
+                return;
 
             CT_AbstractColorCloud *cc = scc->abstractColorCloud();
 
@@ -430,6 +442,9 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
         const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
+        if(eci == NULL)
+            return;
+
         size_t eIndex;
         size_t size = eci->size();
 
@@ -449,6 +464,9 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
         const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
+        if(eci == NULL)
+            return;
+
         m_nEdges += eci->size();
     }
     else if(m_drawMode.testFlag(BackupEdgeCloudIndex))
@@ -462,6 +480,9 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
         if(scc != NULL)
         {
             const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
+
+            if(eci == NULL)
+                return;
 
             CT_AbstractColorCloud *cc = scc->abstractColorCloud();
 

@@ -55,6 +55,12 @@ QList<CT_AbstractItem *> CT_TNodeGroup::childrensForGui() const
     while(it.hasNext())
         r.append(it.next());
 
+    QHash<QString, CT_GroupItemDrawableContainer*> i = items();
+    QHashIterator<QString, CT_GroupItemDrawableContainer*> itI(i);
+
+    while(itI.hasNext())
+        r.append(itI.next().value()->item());
+
     return r;
 }
 

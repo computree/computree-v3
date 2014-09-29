@@ -316,8 +316,7 @@ void CT_AbstractItemDrawable::draw(GraphicsViewInterface &view, PainterInterface
 {
     if(_alternativeDrawManager != NULL)
         _alternativeDrawManager->draw(view, painter, *this);
-
-    if(_baseDrawManager != NULL)
+    else if(_baseDrawManager != NULL)
         _baseDrawManager->draw(view, painter, *this);
 }
 

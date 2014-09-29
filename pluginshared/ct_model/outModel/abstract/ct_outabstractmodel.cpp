@@ -188,15 +188,34 @@ void CT_OutAbstractModel::decrementVisibleInDocument(const DocumentInterface *do
 
 bool CT_OutAbstractModel::recursiveSetComplete()
 {
-    QList<CT_AbstractModel*> c = childrens();
-    QListIterator<CT_AbstractModel*> it(c);
-
-    while(it.hasNext())
+    if(setComplete())
     {
-        if(!((CT_OutAbstractModel*)it.next())->recursiveSetComplete())
-            return false;
+        CT_OutAbstractModel *thisModel = this;
+        CT_OutAbstractModel *oModel = currentOriginalModel();
+
+        while((oModel != NULL) && (oModel != thisModel))
+        {
+            oModel->setComplete();
+
+            thisModel = oModel;
+            oModel = oModel->currentOriginalModel();
+        }
+
+        QList<CT_AbstractModel*> c = childrens();
+        QListIterator<CT_AbstractModel*> it(c);
+
+        while(it.hasNext())
+        {
+            if(!((CT_OutAbstractModel*)it.next())->recursiveSetComplete())
+                return false;
+        }
     }
 
+    return true;
+}
+
+bool CT_OutAbstractModel::setComplete()
+{
     return true;
 }
 

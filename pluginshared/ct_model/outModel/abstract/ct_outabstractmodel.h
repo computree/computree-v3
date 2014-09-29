@@ -121,8 +121,16 @@ protected:
     /**
      * @brief Called from CT_OutTurnManager or parent model to make some
      *        change in models to complete it.
+     * @return true if it was no error.
      */
-    virtual bool recursiveSetComplete();
+    bool recursiveSetComplete();
+
+    /**
+     * @brief Called from this class to make some change in
+     *        this model to complete it. Do nothing by default.
+     * @return true if it was no error.
+     */
+    virtual bool setComplete();
 
 private:
     CT_OutAbstractModel             *m_originalModel;

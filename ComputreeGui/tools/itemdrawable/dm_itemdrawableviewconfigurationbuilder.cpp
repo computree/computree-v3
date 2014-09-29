@@ -33,12 +33,18 @@ void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(CT_AbstractItemDra
     QList<DM_ItemDrawableViewConfiguration> addL;
 
     CT_ItemDrawableConfiguration *t = pItem->getViewConfiguration();
-    size_t value = m_config.value(t, 0)+1;
 
-    m_config.insert(t, value);
+    size_t value = 0;
 
-    if(value == 1)
-        addL.append(DM_ItemDrawableViewConfiguration(t));
+    if(t != NULL)
+    {
+        value = m_config.value(t, 0)+1;
+
+        m_config.insert(t, value);
+
+        if(value == 1)
+            addL.append(DM_ItemDrawableViewConfiguration(t));
+    }
 
     if(m_searchInChildren)
     {
@@ -49,11 +55,15 @@ void DM_ItemDrawableViewConfigurationBuilder::addItemDrawable(CT_AbstractItemDra
         for(int i=0; i<size; ++i)
         {
             t = liste.at(i);
-            value = m_config.value(t, 0)+1;
-            m_config.insert(t, value);
 
-            if(value == 1)
-                addL.append(DM_ItemDrawableViewConfiguration(t));
+            if(t != NULL)
+            {
+                value = m_config.value(t, 0)+1;
+                m_config.insert(t, value);
+
+                if(value == 1)
+                    addL.append(DM_ItemDrawableViewConfiguration(t));
+            }
         }
     }
 
@@ -79,12 +89,19 @@ void DM_ItemDrawableViewConfigurationBuilder::removeItemDrawable(CT_AbstractItem
     QList<DM_ItemDrawableViewConfiguration> rL;
 
     CT_ItemDrawableConfiguration *t = pItem->getViewConfiguration();
-    size_t value = m_config.value(t, 0)-1;
 
-    m_config.insert(t, value);
+    size_t value = 0;
 
-    if(value == 0)
-        rL.append(DM_ItemDrawableViewConfiguration(t));
+    if(t != NULL)
+    {
+
+        value = m_config.value(t, 0)-1;
+
+        m_config.insert(t, value);
+
+        if(value == 0)
+            rL.append(DM_ItemDrawableViewConfiguration(t));
+    }
 
     if(m_searchInChildren)
     {
@@ -96,11 +113,14 @@ void DM_ItemDrawableViewConfigurationBuilder::removeItemDrawable(CT_AbstractItem
         {
             t = liste.at(i);
 
-            value = m_config.value(t, 0)-1;
-            m_config.insert(t, value);
+            if(t != NULL)
+            {
+                value = m_config.value(t, 0)-1;
+                m_config.insert(t, value);
 
-            if(value == 0)
-                rL.append(DM_ItemDrawableViewConfiguration(t));
+                if(value == 0)
+                    rL.append(DM_ItemDrawableViewConfiguration(t));
+            }
         }
     }
 

@@ -440,6 +440,9 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                                 const CT_AbstractCloudIndex *pci,
                                 int fastestIncrement)
 {
+    if((pc == NULL) || (pci == NULL))
+        return;
+
     if(!m_gv->getOptions().useColor())
         setCurrentColor();
 
@@ -614,45 +617,49 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
     if(m_useFColorCloud
             && (m_fColorCloud.data() != NULL))
     {
-        ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
-
-        CT_AbstractColorCloud *cc = m_fColorCloud->abstractColorCloud();
         const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
-        // W/ normals cloud
-        if(m_useFNormalCloud
-                && (m_fNormalCloud.data() != NULL))
+        if(fIndex != NULL)
         {
-            CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
+            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-            size_t size = fIndex->size();
-            size_t index;
+            CT_AbstractColorCloud *cc = m_fColorCloud->abstractColorCloud();
 
-            for(size_t i=0; i<size; ++i)
+            // W/ normals cloud
+            if(m_useFNormalCloud
+                    && (m_fNormalCloud.data() != NULL))
             {
-                index = fIndex->indexAt(i);
-                const CT_Color &color = cc->constColorAt(index);
-                glColor4ub(color.r, color.g, color.b, color.a);
-                glNormal3fv(nn->normalAt(index).vertex());
+                CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
 
-                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                size_t size = fIndex->size();
+                size_t index;
+
+                for(size_t i=0; i<size; ++i)
+                {
+                    fIndex->indexAt(i, index);
+                    const CT_Color &color = cc->constColorAt(index);
+                    glColor4ub(color.r, color.g, color.b, color.a);
+                    glNormal3fv(nn->normalAt(index).vertex());
+
+                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                }
             }
-        }
-        // W/O normals cloud
-        else
-        {
-            size_t size = fIndex->size();
-
-            for(size_t i=0; i<size; ++i)
+            // W/O normals cloud
+            else
             {
-                const CT_Color &color = cc->constColorAt(fIndex->indexAt(i));
-                glColor4ub(color.r, color.g, color.b, color.a);
+                size_t size = fIndex->size();
 
-                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                for(size_t i=0; i<size; ++i)
+                {
+                    const CT_Color &color = cc->constColorAt(fIndex->indexAt(i));
+                    glColor4ub(color.r, color.g, color.b, color.a);
+
+                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                }
             }
-        }
 
-        ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
+            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
+        }
     }
     else
     {
@@ -660,21 +667,25 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
         if(m_useFNormalCloud
                 && (m_fNormalCloud.data() != NULL))
         {
-            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
-
-            CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
             const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
-            size_t size = fIndex->size();
-
-            for(size_t i=0; i<size; ++i)
+            if(fIndex != NULL)
             {
-                glNormal3fv(nn->normalAt(fIndex->indexAt(i)).vertex());
+                ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-                ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
+
+                size_t size = fIndex->size();
+
+                for(size_t i=0; i<size; ++i)
+                {
+                    glNormal3fv(nn->normalAt(fIndex->indexAt(i)).vertex());
+
+                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                }
+
+                ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
             }
-
-            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
         }
         // W/O normals cloud
         else
@@ -695,22 +706,26 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
     if(m_useEColorCloud
             && (m_eColorCloud.data() != NULL))
     {
-        ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
-
-        CT_AbstractColorCloud *cc = m_eColorCloud->abstractColorCloud();
         const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
 
-        size_t size = eIndex->size();
-
-        for(size_t i=0; i<size; ++i)
+        if(eIndex != NULL)
         {
-            const CT_Color &color = cc->constColorAt(eIndex->indexAt(i));
-            glColor4ub(color.r, color.g, color.b, color.a);
+            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
 
-            ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(i, *m_gv, *this);
+            CT_AbstractColorCloud *cc = m_eColorCloud->abstractColorCloud();
+
+            size_t size = eIndex->size();
+
+            for(size_t i=0; i<size; ++i)
+            {
+                const CT_Color &color = cc->constColorAt(eIndex->indexAt(i));
+                glColor4ub(color.r, color.g, color.b, color.a);
+
+                ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(i, *m_gv, *this);
+            }
+
+            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleEdge(*m_gv, *this);
         }
-
-        ((CT_AbstractMeshModel*)mesh)->endDrawMultipleEdge(*m_gv, *this);
     }
     else
     {

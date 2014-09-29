@@ -601,7 +601,7 @@ QList<CG_CustomTreeItem *> GTreeView::createItems(const CT_AbstractItemDrawable 
         while(itIA.hasNext())
         {
             CT_AbstractItemAttribute *att = itIA.next();
-            int index = m_dataReferencesToUse.indexOf(att->model());
+            int index = m_dataReferencesToUse.indexOf(att->model()->originalModel());
 
             if(index != -1)
             {

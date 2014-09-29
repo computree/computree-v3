@@ -94,6 +94,11 @@ QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::defaultItemAt
     return PS_DIAM->itemAttributes(getType());
 }
 
+QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::notDefaultItemAttributes() const
+{
+    return m_itemAttributes.itemAttributes();
+}
+
 void CT_AbstractSingularItemDrawable::setBoundingBox(float minx, float miny, float minz, float maxx, float maxy, float maxz)
 {
     _minCoordinates.setX(minx);

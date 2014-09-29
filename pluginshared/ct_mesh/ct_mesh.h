@@ -47,6 +47,16 @@ public:
     CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractModifiableCIR registeredFace() const;
     CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractModifiableCIR registeredHedge() const;
 
+    /**
+     * @brief Change this mesh to a cylinder
+     */
+    void createCylinder(double radius, double height, int sides);
+
+    /**
+     * @brief Clear this mesh
+     */
+    void clear();
+
 protected:
 
     template<typename MeshType> friend class CT_MeshAllocatorT;

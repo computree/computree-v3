@@ -1372,7 +1372,7 @@ void G3DGraphicsView::checkAndShowOpenGLErrors()
     // check OpenGL error
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        GUI_LOG->addMessage(LogInterface::error, LogInterface::gui, QString("OpenGL error: %1").arg((char*)gluErrorString(err)));
+        GUI_LOG->addMessage(LogInterface::error, LogInterface::gui, QString("OpenGL error (%1) : %2").arg((int)err).arg((char*)gluErrorString(err)));
     }
 }
 

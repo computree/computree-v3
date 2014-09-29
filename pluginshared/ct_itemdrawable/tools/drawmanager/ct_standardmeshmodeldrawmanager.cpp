@@ -5,19 +5,39 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
+#include <QtOpenGL>
+
+// GLU was removed from Qt in version 4.8
+#ifdef Q_OS_MAC
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
+#endif
+
+
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_FACES = CT_StandardMeshModelDrawManager::staticInitConfigShowFaces();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_EDGES = CT_StandardMeshModelDrawManager::staticInitConfigShowEdges();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_POINTS = CT_StandardMeshModelDrawManager::staticInitConfigShowPoints();
 
-CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? "CT_MeshModel" : drawConfigurationName)
+CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_MeshModel" : drawConfigurationName)
 {
 }
 
+// add overloaded functions which call the underlying OpenGL function
+inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
+inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
+
+// add an overload for QMatrix4x4 for convenience
+inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
+
 void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
-    CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(view, painter, itemDrawable);
+    Q_UNUSED(view)
 
     const CT_AbstractMeshModel &item = dynamic_cast<const CT_AbstractMeshModel&>(itemDrawable);
+
+    glPushMatrix();
+    glMultMatrix(item.transformMatrix());
 
     bool showFaces = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_FACES).toBool();
     bool showEdges = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_EDGES).toBool();
@@ -31,6 +51,8 @@ void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterI
 
     if(showPoints)
         painter.drawPoints(&item, 4);
+
+    glPopMatrix();
 }
 
 void CT_StandardMeshModelDrawManager::drawFaces(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -119,7 +141,7 @@ CT_ItemDrawableConfiguration CT_StandardMeshModelDrawManager::createDrawConfigur
 {
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
-    item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
+    item.addAllConfigurationOf(CT_AbstractItemDrawableDrawManager::createDrawConfiguration(drawConfigurationName));
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowFaces(), "Faces", CT_ItemDrawableConfiguration::Bool, true);
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowEdges(), "Edges", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowPoints(), "Points", CT_ItemDrawableConfiguration::Bool, false);

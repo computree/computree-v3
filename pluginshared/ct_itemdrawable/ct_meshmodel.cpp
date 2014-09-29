@@ -91,10 +91,17 @@ void CT_MeshModel::clearMesh()
     m_mesh = NULL;
 }
 
+void CT_MeshModel::setTransformMatrix(const QMatrix4x4 &matrix)
+{
+    setMatrix4x4(matrix);
+}
+
 CT_AbstractItemDrawable* CT_MeshModel::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_MeshModel* meshm = new CT_MeshModel((const CT_OutAbstractSingularItemModel *)model, result, m_mesh);
     meshm->setAutoDeleteMesh(false);
+
+    meshm->setAlternativeDrawManager(getAlternativeDrawManager());
 
     return meshm;
 }
@@ -103,8 +110,7 @@ void CT_MeshModel::drawFaces(GraphicsViewInterface &view, PainterInterface &pain
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->drawFaces(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->drawFaces(view, painter, this->mesh());
 }
 
@@ -112,8 +118,7 @@ void CT_MeshModel::beginDrawMultipleFace(GraphicsViewInterface &view, PainterInt
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->beginDrawMultipleFace(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->beginDrawMultipleFace(view, painter, this->mesh());
 }
 
@@ -121,8 +126,7 @@ void CT_MeshModel::drawFaceAt(const size_t &index, GraphicsViewInterface &view, 
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->drawFaceAt(index, view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->drawFaceAt(index, view, painter, this->mesh());
 }
 
@@ -130,8 +134,7 @@ void CT_MeshModel::endDrawMultipleFace(GraphicsViewInterface &view, PainterInter
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->endDrawMultipleFace(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->endDrawMultipleFace(view, painter, this->mesh());
 }
 
@@ -139,8 +142,7 @@ void CT_MeshModel::drawEdges(GraphicsViewInterface &view, PainterInterface &pain
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->drawEdges(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->drawEdges(view, painter, this->mesh());
 }
 
@@ -148,8 +150,7 @@ void CT_MeshModel::beginDrawMultipleEdge(GraphicsViewInterface &view, PainterInt
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->beginDrawMultipleEdge(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->beginDrawMultipleEdge(view, painter, this->mesh());
 }
 
@@ -157,8 +158,7 @@ void CT_MeshModel::drawEdgeAt(const size_t &index, GraphicsViewInterface &view, 
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->drawEdgeAt(index, view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->drawEdgeAt(index, view, painter, this->mesh());
 }
 
@@ -166,8 +166,7 @@ void CT_MeshModel::endDrawMultipleEdge(GraphicsViewInterface &view, PainterInter
 {
     if(getAlternativeDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getAlternativeDrawManager())->endDrawMultipleEdge(view, painter, this->mesh());
-
-    if(getBaseDrawManager() != NULL)
+    else if(getBaseDrawManager() != NULL)
         ((CT_StandardMeshModelDrawManager*)getBaseDrawManager())->endDrawMultipleEdge(view, painter, this->mesh());
 }
 

@@ -42,9 +42,9 @@ CT_OutAbstractModel* CT_OutStdSingularItemModel::copy() const
     return cpy;
 }
 
-bool CT_OutStdSingularItemModel::recursiveSetComplete()
+bool CT_OutStdSingularItemModel::setComplete()
 {
-    if(item() != NULL)
+    if((item() != NULL) && m_autoRenameOfDefaultIA.isEmpty())
     {
         // get default item attributes of this item drawable
         QList<CT_AbstractItemAttribute*> l = PS_DIAM->itemAttributes(itemDrawable()->getType());
@@ -73,6 +73,5 @@ bool CT_OutStdSingularItemModel::recursiveSetComplete()
         }
     }
 
-    // continue recursively
-    return DEF_CT_AbstractItemDrawableModelOut::recursiveSetComplete();
+    return DEF_CT_AbstractItemDrawableModelOut::setComplete();
 }

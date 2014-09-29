@@ -88,7 +88,9 @@ HEADERS += \
     view/DocumentView/ItemModelViews/gitemmodelview.h \
     view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h \
     view/DocumentView/ItemModelViews/cg_customtreeitem.h \
-    view/DocumentView/GraphicsViews/3D/g3dfakepainter.h
+    view/DocumentView/GraphicsViews/3D/g3dfakepainter.h \
+    view/DocumentView/GraphicsViews/3D/Octree/octree.h \
+    view/DocumentView/GraphicsViews/3D/Octree/octree.hpp
 
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

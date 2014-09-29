@@ -34,10 +34,21 @@ protected:
       */
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 
+    /**
+     * @brief Set a draw configuration
+     */
+    void internalSetDrawConfiguration(CT_ItemDrawableConfiguration *configuration);
+
+    /**
+     * @brief Enable delete draw configuration. true by default.
+     */
+    void internalSetAutoDeleteDrawConfiguration(bool e);
+
 private:
 
     QString                         _drawConfigurationNameBackup;
     CT_ItemDrawableConfiguration    *_configuration;
+    bool                            m_autoDeleteConfig;
 };
 
 #endif // CT_ABSTRACTITEMDRAWABLEDRAWMANAGER_H

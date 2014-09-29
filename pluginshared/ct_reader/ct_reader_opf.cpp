@@ -2,10 +2,12 @@
 
 #include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.h"
-#include "ct_itemdrawable/ct_metrict.h"
-#include "ct_itemdrawable/ct_meshmodel.h"
+#include "ct_attributes/model/outModel/ct_outstditemattributemodel.h"
+#include "ct_itemdrawable/ct_itemattributelist.h"
 #include "ct_itemdrawable/ct_ttreegroup.h"
 #include "ct_itemdrawable/ct_topfnodegroup.h"
+#include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h"
+#include "ct_attributes/ct_stditemattributet.h"
 #include "ct_mesh/tools/ct_meshallocatort.h"
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
@@ -17,16 +19,151 @@
 #include <limits>
 
 const QVector<QString> CT_Reader_OPF::TOPOLOGY_NAMES = QVector<QString>() << "topology" << "decomp" << "follow" << "branch";
+CT_StandardMeshModelOPFDrawManager* CT_Reader_OPF::DRAW_MANAGER = NULL;
+CT_ItemDrawableConfiguration* CT_Reader_OPF::DRAW_CONFIGURATION = NULL;
+int CT_Reader_OPF::N_READER_OPF = 0;
 
 CT_Reader_OPF::CT_Reader_OPF() : CT_AbstractReader()
 {
+    ++N_READER_OPF;
+
+    if(DRAW_MANAGER == NULL)
+        DRAW_MANAGER = new CT_StandardMeshModelOPFDrawManager("OPF Mesh Model");
+
+    if(DRAW_CONFIGURATION == NULL)
+    {
+        DRAW_CONFIGURATION = new CT_ItemDrawableConfiguration(DRAW_MANAGER->createDrawConfiguration("OPF Mesh Model"));
+        DRAW_MANAGER->setDrawConfiguration(DRAW_CONFIGURATION);
+        DRAW_MANAGER->setAutoDeleteDrawConfiguration(false);
+    }
 }
 
 CT_Reader_OPF::~CT_Reader_OPF()
 {
+    clearDrawManagers();
     clearOtherModels();
     clearMeshes();
     clearShapes();
+
+    --N_READER_OPF;
+
+    if(N_READER_OPF == 0)
+    {
+        delete DRAW_CONFIGURATION;
+        DRAW_CONFIGURATION = NULL;
+
+        delete DRAW_MANAGER;
+        DRAW_MANAGER = NULL;
+    }
+}
+
+void CT_Reader_OPF::recursiveReadTopologyForModel(rapidxml::xml_node<> *node,
+                                                  int &totalNode,
+                                                  QHash<QString, CT_OPF_Type> &types,
+                                                  const QHash<QString, CT_OPF_Attribute> &attributes)
+{
+    ++totalNode;
+
+    QString nameT = node->first_attribute("class")->value();
+
+    CT_OPF_Type type = types.value(nameT, CT_OPF_Type(nameT,
+                                                      QString(node->first_attribute("scale")->value()).toInt(),
+                                                      QString(node->first_attribute("id")->value()).toInt()));
+
+    bool addAttributes = (type.m_attributes.size() != attributes.size());
+
+    rapidxml::xml_node<> *nextNode = node->first_node();
+
+    while(nextNode != NULL)
+    {
+        QString name = nextNode->name();
+
+        if(TOPOLOGY_NAMES.contains(name))
+        {
+            recursiveReadTopologyForModel(nextNode,
+                                          totalNode,
+                                          types,
+                                          attributes);
+        }
+        else if(addAttributes
+                && attributes.contains(name))
+        {
+            if(!type.m_attributes.contains(name))
+                type.m_attributes.insert(name, attributes.value(name));
+        }
+
+        nextNode = nextNode->next_sibling();
+    }
+
+    types.insert(nameT, type);
+}
+
+void CT_Reader_OPF::recursiveReadTopology(rapidxml::xml_node<> *xmlNode,
+                                          CT_TOPFNodeGroup *node,
+                                          int &nNodeReaded)
+{
+    ++nNodeReaded;
+
+    node->setOPFID(QString(xmlNode->first_attribute("id")->value()).toInt());
+    QString typeName = xmlNode->first_attribute("class")->value();
+
+    CT_ItemAttributeList *attList = new CT_ItemAttributeList();
+    attList->setModel((CT_OutAbstractItemModel*)m_models.value(typeName + "_attList", NULL));
+    node->addItemDrawable(attList);
+
+    rapidxml::xml_node<> *xmlChild = xmlNode->first_node();
+
+    while(xmlChild != NULL)
+    {
+        QString name = xmlChild->name();
+        CT_TOPFNodeGroup *newNode = NULL;
+
+        if(name == "geometry")
+        {
+            readGeometry(xmlChild, node, typeName);
+        }
+        else if(((name == "decomp") || (name == "follow")))
+        {
+            QString typeName = xmlChild->first_attribute("class")->value();
+
+            newNode = new CT_TOPFNodeGroup();
+            newNode->setModel(static_cast<CT_OutAbstractItemModel*>(m_models.value(typeName, NULL)));
+
+            node->addComponent(newNode);
+        }
+        else if(name == "branch")
+        {
+            QString typeName = xmlChild->first_attribute("class")->value();
+
+            newNode = new CT_TOPFNodeGroup();
+            newNode->setModel(static_cast<CT_OutAbstractItemModel*>(m_models.value(typeName, NULL)));
+
+            node->addBranch(newNode);
+        }
+        else if(m_attributes.contains(name))
+        {
+            CT_AbstractItemAttribute *att = staticCreateAttributeForType(m_attributes.value(name).m_type, xmlChild->value());
+
+            if(att != NULL)
+            {
+                CT_OutAbstractItemAttributeModel *model = static_cast<CT_OutAbstractItemAttributeModel*>(m_models.value(typeName + "_" + name, NULL));
+                att->setModel(model);
+
+                attList->addItemAttribute(att);
+            }
+        }
+
+        if(newNode != NULL)
+        {
+            recursiveReadTopology(xmlChild,
+                                  newNode,
+                                  nNodeReaded);
+        }
+
+        xmlChild = xmlChild->next_sibling();
+
+        setProgress((nNodeReaded*100)/m_totalNode);
+    }
 }
 
 bool CT_Reader_OPF::setFilePath(const QString &filepath)
@@ -37,90 +174,51 @@ bool CT_Reader_OPF::setFilePath(const QString &filepath)
     QHash<QString, CT_OPF_Type>         types;
     int                                 totalNode = 0;
 
-    QXmlStreamReader xml;
-
     // Test File validity
     if(QFile::exists(filepath))
     {
-        QFile f(filepath);
+        rapidxml::file<> xmlFile(filepath.toLatin1().data());
+        rapidxml::xml_document<> doc;
+        doc.parse<0>(xmlFile.data());
 
-        if(f.open(QIODevice::ReadOnly))
+        rapidxml::xml_node<> *root = doc.first_node("opf");
+
+        if(root != NULL)
         {
-            xml.setDevice(&f);
+            rapidxml::xml_node<> *node = NULL;
 
-            while (!xml.atEnd())
+            node = root->first_node();
+
+            while(node != NULL)
             {
-                if(xml.readNextStartElement())
+                QString nn = node->name();
+
+                if(nn == "attributeBDD")
                 {
-                    QString nn = xml.name().toString();
+                    rapidxml::xml_node<> *child = node->first_node();
 
-                    if(nn == "attributeBDD")
+                    while(child  != NULL)
                     {
-                        bool continueLoop = true;
+                        QString name = child->first_attribute("name")->value();
 
-                        while(!xml.atEnd()
-                                && continueLoop)
-                        {
-                            xml.readNext();
+                        attributes.insert(name, CT_OPF_Attribute(name, child->first_attribute("class")->value()));
 
-                            if(xml.isStartElement())
-                            {
-                                QString name = xml.attributes().value("name").toString();
-
-                                attributes.insert(name, CT_OPF_Attribute(name, xml.attributes().value("class").toString()));
-                            }
-                            else if(xml.isEndElement() && xml.name() == "attributeBDD")
-                            {
-                                continueLoop = false;
-                            }
-                        }
-                    }
-                    else if(TOPOLOGY_NAMES.contains(nn))
-                    {
-                        ++totalNode;
-
-                        while(!xml.atEnd())
-                        {
-                            QString nameT = xml.attributes().value("class").toString();
-
-                            CT_OPF_Type type = types.value(nameT, CT_OPF_Type(nameT,
-                                                                              xml.attributes().value("scale").toString().toInt(),
-                                                                              xml.attributes().value("id").toString().toInt()));
-
-                            bool addAttributes = (type.m_attributes.size() != attributes.size());
-                            bool continueLoop = true;
-
-                            while(!xml.atEnd()
-                                   && continueLoop)
-                            {
-                                if(xml.readNextStartElement())
-                                {
-                                    QString name = xml.name().toString();
-
-                                    if(TOPOLOGY_NAMES.contains(name))
-                                    {
-                                        ++totalNode;
-                                        continueLoop = false;
-                                    }
-                                    else if(addAttributes
-                                            && attributes.contains(name))
-                                    {
-                                        if(!type.m_attributes.contains(name))
-                                            type.m_attributes.insert(name, attributes.value(name));
-                                    }
-                                }
-                            }
-
-                            types.insert(nameT, type);
-                        }
+                        child = child->next_sibling();
                     }
                 }
-            }
+                else if(TOPOLOGY_NAMES.contains(nn))
+                {
+                    recursiveReadTopologyForModel(node,
+                                                  totalNode,
+                                                  types,
+                                                  attributes);
+                    node = NULL;
+                }
 
-            f.close();
+                if(node != NULL)
+                    node = node->next_sibling();
+            }
         }
-        else
-            PS_LOG->addErrorMessage(LogInterface::reader, tr("Unable to open file %1").arg(filepath));
     }
 
     if(!types.isEmpty())
@@ -141,21 +239,17 @@ CT_AbstractReader* CT_Reader_OPF::copy() const
     return new CT_Reader_OPF();
 }
 
-CT_AbstractMetric* CT_Reader_OPF::staticCreateMetricForType(const QString &type, const QString &value)
+CT_AbstractItemAttribute* CT_Reader_OPF::staticCreateAttributeForType(const QString &type, const QString &value)
 {
-    CT_AbstractMetric *metric = NULL;
+    CT_AbstractItemAttribute *att = NULL;
 
-    if(type == "String")
+    if((type == "String") || (type == "Color"))
     {
-        metric = new CT_MetricT<QString>();
-        ((CT_MetricT<QString>*)metric)->setValue(value);
+        att = new CT_StdItemAttributeT<QString>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_VALUE), NULL, value);
     }
     else if(type == "Integer")
     {
-        metric = new CT_MetricT<int>();
-
-        if(!value.isEmpty())
-            ((CT_MetricT<int>*)metric)->setValue(value.toInt());
+        att = new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_VALUE), NULL, value.toInt());
     }
     else if((type == "Double")
             || (type == "Metre")
@@ -163,32 +257,25 @@ CT_AbstractMetric* CT_Reader_OPF::staticCreateMetricForType(const QString &type,
             || (type == "Millimetre")
             || (type == "10E-5 Metre"))
     {
-        metric = new CT_MetricT<double>();
-
-        if(!value.isEmpty())
-            ((CT_MetricT<double>*)metric)->setValue(value.toDouble());
+        att = new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_VALUE), NULL, value.toDouble());
     }
     else if(type == "Boolean")
     {
-        metric = new CT_MetricT<bool>();
-
-        if(!value.isEmpty())
-            ((CT_MetricT<bool>*)metric)->setValue(value.toLower() == "true");
-    }
-    /*else if(type == "Color")
-    {
-        metric = new CT_MetricT<CT_Color>();
+        att = new CT_StdItemAttributeT<bool>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_VALUE), NULL, value.toLower() == "true");
     }
     else
     {
-        qWarning("CT_Reader_OPF::staticCreateMetricForType => Unknown Type");
-    }*/
+        PS_LOG->addWarningMessage(LogInterface::reader, "CT_Reader_OPF::staticCreateAttributeForType ( type = " + type + " ) => Unknown Type");
+    }
 
-    return metric;
+    return att;
 }
 
 void CT_Reader_OPF::clearOtherModels()
 {
+    qDeleteAll(m_attributesOriginalModels.begin(), m_attributesOriginalModels.end());
+    m_attributesOriginalModels.clear();
+
     m_models.clear();
 }
 
@@ -203,224 +290,205 @@ void CT_Reader_OPF::clearShapes()
     m_shapes.clear();
 }
 
-void CT_Reader_OPF::readMesh(QXmlStreamReader &xml)
+void CT_Reader_OPF::clearDrawManagers()
 {
-    int id = xml.attributes().value("Id").toString().toInt();
+    qDeleteAll(m_drawManager.begin(), m_drawManager.end());
+    m_drawManager.clear();
+}
+
+void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
+{
+    int id = QString(xmlNode->first_attribute("Id")->value()).toInt();
 
     CT_OPF_Mesh *mesh = new CT_OPF_Mesh();
-    bool continueLoop = true;
+    mesh->m_mesh = new CT_Mesh();
 
-    while(!xml.atEnd()
-          && continueLoop)
+    size_t debPointIndex = 0;
+
+    rapidxml::xml_node<> *xmlChild = xmlNode->first_node();
+
+    while(xmlChild != NULL)
     {
-        xml.readNext();
+        QString nn = xmlChild->name();
 
-        QString nn = xml.name().toString();
-
-        if(nn == "points" && xml.isStartElement())
+        if(nn == "points")
         {
-            QString tmp = xml.readElementText().trimmed();
+            QString tmp = QString(xmlChild->value()).trimmed();
             QStringList points = tmp.split(QRegExp("\\s+"));
 
             QListIterator<QString> it(points);
 
             int size = points.size()/3;
-            mesh->m_points.resize(size);
+
+            CT_Mesh::VertexIndexIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh->m_mesh, size);
+            debPointIndex = itP.cIndex();
 
             int i = 0;
 
             while(i<size)
             {
-                CT_Point &p = mesh->m_points[i];
+                CT_Point &p = itP.cT();
                 p.setX(it.next().toFloat());
                 p.setY(it.next().toFloat());
                 p.setZ(it.next().toFloat());
 
                 ++i;
+                ++itP;
             }
         }
-        else if(nn == "face" && xml.isStartElement())
+        else if(nn == "faces")
         {
-            CT_OPF_Face face;
+            rapidxml::xml_node<> *xmlFace = xmlChild->first_node("face");
 
-            QString tmp = xml.readElementText().trimmed();
-            QStringList points = tmp.split(QRegExp("\\s+"));
+            while(xmlFace != NULL)
+            {
+                //CT_OPF_Face face;
 
-            for(int i=0; i<3; ++i)
-                face.m_pointsIndex[i] = points.at(i).toInt();
+                QString tmp = QString(xmlFace->value()).trimmed();
+                QStringList points = tmp.split(QRegExp("\\s+"));
 
-            mesh->m_faces.push_back(face);
+                CT_Mesh::FaceIndexIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh->m_mesh, 1);
+
+                CT_Face &face = itF.cT();
+
+                CT_Mesh::HEdgeIndexIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh->m_mesh, 3);
+
+                size_t faceIndex = itF.cIndex();
+
+                size_t p0 = points.at(0).toInt() + debPointIndex;
+                size_t p1 = points.at(1).toInt() + debPointIndex;
+                size_t p2 = points.at(2).toInt() + debPointIndex;
+
+                size_t e1Index = beginHe.cIndex();
+                size_t e2Index;
+                size_t e3Index;
+
+                face.setEdge(e1Index);
+
+                CT_Edge &e1 = beginHe.cT();
+                e1.setPoint0(p0);
+                e1.setPoint1(p1);
+                e1.setFace(faceIndex);
+                ++beginHe;
+
+                CT_Edge &e2 = beginHe.cT();
+                e2.setPoint0(p1);
+                e2.setPoint1(p2);
+                e1.setFace(faceIndex);
+                e2Index = beginHe.cIndex();
+                ++beginHe;
+
+                CT_Edge &e3 = beginHe.cT();
+                e3.setPoint0(p2);
+                e3.setPoint1(p0);
+                e3.setFace(faceIndex);
+                e3Index = beginHe.cIndex();
+
+                e1.setNext(e2Index);
+                e1.setPrevious(e3Index);
+                e2.setNext(e3Index);
+                e2.setPrevious(e1Index);
+                e3.setNext(e1Index);
+                e3.setPrevious(e2Index);
+
+                xmlFace = xmlFace->next_sibling();
+            }
         }
-        else if(nn == "mesh")
-        {
-            continueLoop = false;
-        }
+
+        xmlChild = xmlChild->next_sibling();
     }
 
     m_meshes.insert(id, mesh);
 }
 
-void CT_Reader_OPF::readShape(QXmlStreamReader &xml)
+void CT_Reader_OPF::readShape(rapidxml::xml_node<> *xmlNode)
 {
-    int id = xml.attributes().value("Id").toString().toInt();
+    int id = QString(xmlNode->first_attribute("Id")->value()).toInt();
 
-    bool continueLoop = true;
+    rapidxml::xml_node<> *xmlChild = xmlNode->first_node("meshIndex");
 
-    while(!xml.atEnd()
-          && continueLoop)
-    {
-        xml.readNext();
-
-        QString nn = xml.name().toString();
-
-        if(nn == "meshIndex" && xml.isStartElement())
-            m_shapes.insert(id, m_meshes.value(xml.readElementText().toInt(), NULL));
-        else if(nn == "shape")
-            continueLoop = false;
-    }
+    if(xmlChild != NULL)
+        m_shapes.insert(id, m_meshes.value(QString(xmlChild->value()).toInt(), NULL));
 }
 
-void CT_Reader_OPF::readGeometry(QXmlStreamReader &xml, CT_TOPFNodeGroup *node, const QString &typeName)
+void CT_Reader_OPF::readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup *node, const QString &typeName)
 {
     CT_OPF_Mesh *mesh = NULL;
-    bool continueLoop = true;
     double dUp = 1, dDwn = 1;
 
-    while(!xml.atEnd()
-          && continueLoop)
+    rapidxml::xml_node<> *xmlChild = xmlNode->first_node();
+
+    while(xmlChild != NULL)
     {
-        xml.readNext();
+        QString nn = xmlChild->name();
 
-        QString nn = xml.name().toString();
-
-        if(nn == "shapeIndex" && xml.isStartElement())
+        if(nn == "shapeIndex")
         {
-            mesh = m_shapes.value(xml.readElementText().toInt(), NULL);
+            mesh = m_shapes.value(QString(xmlChild->value()).toInt(), NULL);
         }
-        else if(nn == "mat" && xml.isStartElement())
+        else if(nn == "mat")
         {
-            QStringList mat = xml.readElementText().simplified().split(QRegExp("\\s+"));
-            QMatrix4x4 matrix(mat.at(0).toDouble(), mat.at(1).toDouble(), mat.at(2).toDouble(), mat.at(3).toDouble(),
-                              mat.at(4).toDouble(), mat.at(5).toDouble(), mat.at(6).toDouble(), mat.at(7).toDouble(),
-                              mat.at(8).toDouble(), mat.at(9).toDouble(), mat.at(10).toDouble(), mat.at(11).toDouble(),
+            QStringList mat = QString(xmlChild->value()).simplified().split(QRegExp("\\s+"));
+            QMatrix4x4 matrix(mat.at(0).toDouble()/100.0, mat.at(1).toDouble()/100.0, mat.at(2).toDouble()/100.0, mat.at(3).toDouble()/100.0,
+                              mat.at(4).toDouble()/100.0, mat.at(5).toDouble()/100.0, mat.at(6).toDouble()/100.0, mat.at(7).toDouble()/100.0,
+                              mat.at(8).toDouble()/100.0, mat.at(9).toDouble()/100.0, mat.at(10).toDouble()/100.0, mat.at(11).toDouble()/100.0,
                               0,0,0,1);
 
             node->setOPFMatrix(matrix);
         }
-        else if(nn == "dUp" && xml.isStartElement())
+        else if(nn == "dUp")
         {
-            dUp = xml.readElementText().toDouble();
+            dUp = QString(xmlChild->value()).toDouble();
         }
-        else if(nn == "dDwn" && xml.isStartElement())
+        else if(nn == "dDwn")
         {
-            dDwn = xml.readElementText().toDouble();
+            dDwn = QString(xmlChild->value()).toDouble();
         }
-        else if(nn == "geometry")
-            continueLoop = false;
+
+        xmlChild = xmlChild->next_sibling();
     }
 
     if(mesh != NULL)
-        transformAndCreateMesh(mesh, node, dUp, dDwn, typeName);
+    {
+        QVector3D min, max;
+        mesh->getBoundingBox(min, max);
+
+        transformAndCreateMesh(mesh->m_mesh, min, max, node, dUp, dDwn, typeName);
+    }
+    else
+    {
+        if(m_cylinderMesh.m_mesh == NULL)
+        {
+            m_cylinderMesh.m_mesh = new CT_Mesh();
+            m_cylinderMesh.m_mesh->createCylinder(0.5,0.5,10);
+        }
+
+        QVector3D min, max;
+        m_cylinderMesh.getBoundingBox(min, max);
+
+        transformAndCreateMesh(m_cylinderMesh.m_mesh, min, max, node, dUp, dDwn, typeName);
+    }
+
 }
 
-void CT_Reader_OPF::transformAndCreateMesh(CT_OPF_Mesh *mesh, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName)
+void CT_Reader_OPF::transformAndCreateMesh(CT_Mesh *mesh, QVector3D &min, QVector3D &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName)
 {
-    CT_Mesh *newMesh = new CT_Mesh();
+    CT_MeshModel *mm = new CT_MeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, mesh);
+    mm->setAutoDeleteMesh(false);
+    mm->setBoundingBox(min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
+    mm->setTransformMatrix(node->transformMatrix());
 
-    QVector3D min, max;
-    mesh->getBoundingBox(min, max);
+    CT_StandardMeshModelOPFDrawManager *dM = new CT_StandardMeshModelOPFDrawManager("OPF Mesh Model");
+    dM->setDUp(dUp);
+    dM->setDDown(dDwn);
+    dM->setDrawConfiguration(DRAW_CONFIGURATION);
+    dM->setAutoDeleteDrawConfiguration(false);
 
-    double deltaX = max.x() - min.x();
+    m_drawManager.append(dM);
 
-    if(deltaX == 0)
-        return;
+    mm->setAlternativeDrawManager(dM);
 
-    const QMatrix4x4 &matrix = node->transformMatrix();
-
-    double deltaD = dDwn - dUp;
-
-    size_t nP = mesh->m_points.size();
-    size_t nF = mesh->m_faces.size();
-
-    CT_Mesh::VertexIndexIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*newMesh, nP);
-    CT_Mesh::FaceIndexIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*newMesh, nF);
-    std::vector<CT_Point>::const_iterator itO = mesh->m_points.begin();
-    std::list<CT_OPF_Face>::const_iterator itOF = mesh->m_faces.begin();
-
-    size_t debPointIndex = itP.cIndex();
-
-    for(size_t i=0; i<nP; ++i)
-    {
-        const CT_Point &oPoint = *itO;
-        CT_Point &point = itP.cT();
-
-        float dx = point.getX() - min.x();
-        float factorW = dDwn - (deltaD * (dx / deltaX));
-
-        point.setX(oPoint.getX());
-        point.setY(oPoint.getY() * factorW);
-        point.setZ(oPoint.getZ() * factorW);
-
-        CT_MathPoint::transform(matrix, point);
-
-        point.setX(point.getX()/100.0);
-        point.setY(point.getY()/100.0);
-        point.setZ(point.getZ()/100.0);
-
-        ++itP;
-        ++itO;
-    }
-
-    for(size_t i=0; i<nF; ++i)
-    {
-        const CT_OPF_Face &oFace = *itOF;
-        CT_Face &face = itF.cT();
-
-        CT_Mesh::HEdgeIndexIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*newMesh, 3);
-
-        size_t faceIndex = itF.cIndex();
-
-        size_t p0 = oFace.m_pointsIndex[0] + debPointIndex;
-        size_t p1 = oFace.m_pointsIndex[1] + debPointIndex;
-        size_t p2 = oFace.m_pointsIndex[2] + debPointIndex;
-
-        size_t e1Index = beginHe.cIndex();
-        size_t e2Index;
-        size_t e3Index;
-
-        face.setEdge(e1Index);
-
-        CT_Edge &e1 = beginHe.cT();
-        e1.setPoint0(p0);
-        e1.setPoint1(p1);
-        e1.setFace(faceIndex);
-        ++beginHe;
-
-        CT_Edge &e2 = beginHe.cT();
-        e2.setPoint0(p1);
-        e2.setPoint1(p2);
-        e1.setFace(faceIndex);
-        e2Index = beginHe.cIndex();
-        ++beginHe;
-
-        CT_Edge &e3 = beginHe.cT();
-        e3.setPoint0(p2);
-        e3.setPoint1(p0);
-        e3.setFace(faceIndex);
-        e3Index = beginHe.cIndex();
-
-        e1.setNext(e2Index);
-        e1.setPrevious(e3Index);
-        e2.setNext(e3Index);
-        e2.setPrevious(e1Index);
-        e3.setNext(e1Index);
-        e3.setPrevious(e2Index);
-
-        ++itOF;
-        ++itF;
-    }
-
-    node->addItemDrawable(new CT_MeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, newMesh));
+    node->addItemDrawable(mm);
 }
 
 void CT_Reader_OPF::protectedInit()
@@ -449,6 +517,18 @@ void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
         node->setOPFLevel(type.m_level);
         m_models.insert(node->uniqueName(), node);
 
+        // Mesh
+        CT_MeshModel *meshModel = new CT_MeshModel();
+        meshModel->setAlternativeDrawManager(DRAW_MANAGER);
+
+        CT_OutStdSingularItemModel *mesh = new CT_OutStdSingularItemModel(type.m_name + "_mesh", meshModel, tr("Mesh"));
+        m_models.insert(mesh->uniqueName(), mesh);
+
+
+        // Attribute list
+        CT_OutStdSingularItemModel *attList = new CT_OutStdSingularItemModel(type.m_name + "_attList", new CT_ItemAttributeList(), type.m_name);
+        m_models.insert(attList->uniqueName(), attList);
+
         QHashIterator<QString, CT_OPF_Attribute> itA(type.m_attributes);
 
         while(itA.hasNext())
@@ -457,23 +537,30 @@ void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
 
             const CT_OPF_Attribute &attribute = itA.value();
 
-            CT_AbstractMetric *metric = staticCreateMetricForType(attribute.m_type);
+            CT_AbstractItemAttribute *att = staticCreateAttributeForType(attribute.m_type);
 
-            if(metric != NULL)
+            if(att != NULL)
             {
-                // Metric for attribute
-                CT_OutStdSingularItemModel *att = new CT_OutStdSingularItemModel(type.m_name + "_" + attribute.m_name, metric, attribute.m_name);
-                m_models.insert(att->uniqueName(), att);
+                CT_OutAbstractItemAttributeModel *oAttModel = m_attributesOriginalModels.value(attribute.m_name, NULL);
 
-                node->addItem(att);
+                if(oAttModel == NULL)
+                {
+                    // Attribute
+                    oAttModel = new CT_OutStdItemAttributeModel(attribute.m_name, att, attribute.m_name);
+                    m_attributesOriginalModels.insert(oAttModel->uniqueName(), oAttModel);
+                }
+
+                oAttModel = (CT_OutAbstractItemAttributeModel*)oAttModel->copy();
+                oAttModel->setUniqueName(type.m_name + "_" + attribute.m_name);
+
+                m_models.insert(oAttModel->uniqueName(), oAttModel);
+
+                attList->addItemAttribute(oAttModel);
             }
         }
 
-        // Mesh
-        CT_OutStdSingularItemModel *mesh = new CT_OutStdSingularItemModel(type.m_name + "_mesh", new CT_MeshModel());
-        m_models.insert(mesh->uniqueName(), mesh);
-
         node->addItem(mesh);
+        node->addItem(attList);
         topology->addGroup(node);
     }
 
@@ -484,132 +571,76 @@ bool CT_Reader_OPF::protectedReadFile()
 {
     clearMeshes();
     clearShapes();
+    clearDrawManagers();
 
-    QXmlStreamReader xml;
-
-    QFile f(filepath());
-
-    if(f.open(QIODevice::ReadOnly))
+    // Test File validity
+    if(QFile::exists(filepath()))
     {
+        rapidxml::file<> xmlFile(filepath().toLatin1().data());
+        rapidxml::xml_document<> doc;
+        doc.parse<0>(xmlFile.data());
+
+        rapidxml::xml_node<> *xmlRoot = doc.first_node("opf");
+
         int nNodeReaded = 0;
 
-        CT_TTreeGroup *tree = new CT_TTreeGroup();
-        tree->setModel(outGroupsModel().first());
-
-        QStack<CT_TOPFNodeGroup*> stack;
-
-        xml.setDevice(&f);
-
-        if(!xml.atEnd() && xml.readNextStartElement())
+        if(xmlRoot != NULL)
         {
-            while (!xml.atEnd())
+            CT_TTreeGroup *tree = new CT_TTreeGroup();
+            tree->setModel(outGroupsModel().first());
+
+            rapidxml::xml_node<> *xmlNode = NULL;
+
+            xmlNode = xmlRoot->first_node();
+
+            while(xmlNode != NULL)
             {
-                QString nn = xml.name().toString();
                 CT_TOPFNodeGroup *node = NULL;
 
-                if(nn == "mesh" && xml.isStartElement())
+                QString nn = xmlNode->name();
+
+                if(nn == "meshBDD")
                 {
-                    readMesh(xml);
+                    rapidxml::xml_node<> *xmlMesh = xmlNode->first_node("mesh");
+
+                    while(xmlMesh != NULL)
+                    {
+                        readMesh(xmlMesh);
+                        xmlMesh = xmlMesh->next_sibling();
+                    }
                 }
-                else if(nn == "shape" && xml.isStartElement())
+                else if(nn == "shapeBDD")
                 {
-                    readShape(xml);
+                    rapidxml::xml_node<> *xmlShape = xmlNode->first_node("shape");
+
+                    while(xmlShape != NULL)
+                    {
+                        readShape(xmlShape);
+                        xmlShape = xmlShape->next_sibling();
+                    }
                 }
-                else if(nn == "topology" && xml.isStartElement())
+                else if(nn == "topology")
                 {
-                    QString typeName = xml.attributes().value("class").toString();
+                    QString typeName = xmlNode->first_attribute("class")->value();
 
                     node = new CT_TOPFNodeGroup();
-                    node->setModel(m_models.value(typeName, NULL));
+                    node->setModel(static_cast<CT_OutAbstractItemModel*>(m_models.value(typeName, NULL)));
 
                     tree->setRootNode(node);
-                }
-                else if(((nn == "decomp") || (nn == "follow")) && xml.isStartElement())
-                {
-                    QString typeName = xml.attributes().value("class").toString();
-
-                    node = new CT_TOPFNodeGroup();
-                    node->setModel(m_models.value(typeName, NULL));
-
-                    CT_TOPFNodeGroup *lastNode = stack.top();
-
-                    lastNode->addComponent(node);
-                }
-                else if(nn == "branch" && xml.isStartElement())
-                {
-                    QString typeName = xml.attributes().value("class").toString();
-
-                    node = new CT_TOPFNodeGroup();
-                    node->setModel(m_models.value(typeName, NULL));
-
-                    CT_TOPFNodeGroup *lastNode = stack.top();
-
-                    lastNode->addBranch(node);
-                }
-                else
-                {
-                    if(xml.isEndElement() && TOPOLOGY_NAMES.contains(nn))
-                        stack.pop();
-
-                    xml.readNext();
                 }
 
                 if(node != NULL)
                 {
-                    ++nNodeReaded;
-
-                    node->setOPFID(xml.attributes().value("id").toString().toInt());
-                    QString typeName = xml.attributes().value("class").toString();
-                    stack.push(node);
-
-                    bool continueLoop = true;
-
-                    while(!xml.atEnd()
-                           && continueLoop)
-                    {
-                        xml.readNext();
-
-                        if(xml.isStartElement())
-                        {
-                            QString name = xml.name().toString();
-
-                            if(name == "geometry")
-                            {
-                                readGeometry(xml, node, typeName);
-                            }
-                            else if(TOPOLOGY_NAMES.contains(name))
-                            {
-                                continueLoop = false;
-                            }
-                            else if(m_attributes.contains(name))
-                            {
-                                CT_AbstractMetric *metric = staticCreateMetricForType(m_attributes.value(name).m_type, xml.readElementText());
-
-                                if(metric != NULL)
-                                {
-                                    CT_OutAbstractItemModel *model = m_models.value(typeName + "_" + name, NULL);
-                                    metric->setModel(model);
-
-                                    node->addItemDrawable(metric);
-                                }
-                            }
-                        }
-                        else if(xml.isEndElement() && TOPOLOGY_NAMES.contains(xml.name().toString()))
-                        {
-                            stack.pop();
-                            xml.readNext();
-                            continueLoop = false;
-                        }
-                    }
-
-                    setProgress((nNodeReaded*100)/m_totalNode);
+                    recursiveReadTopology(xmlNode,
+                                          node,
+                                          nNodeReaded);
                 }
+
+                xmlNode = xmlNode->next_sibling();
             }
+
+            addOutGroup(DEF_CT_Reader_OPF_topologyOut, tree);
         }
-
-        addOutGroup(DEF_CT_Reader_OPF_topologyOut, tree);
-
-        f.close();
 
         return true;
     }
@@ -621,39 +652,47 @@ bool CT_Reader_OPF::protectedReadFile()
 
 void CT_OPF_Mesh::getBoundingBox(QVector3D &min, QVector3D &max) const
 {
-    min.setX(std::numeric_limits<double>::max());
-    min.setY(min.x());
-    min.setZ(min.x());
-
-    max.setX(-min.x());
-    max.setY(max.x());
-    max.setZ(max.x());
-
-    std::vector<CT_Point>::const_iterator it = m_points.begin();
-    std::vector<CT_Point>::const_iterator end = m_points.end();
-
-    while(it != end)
+    if(!m_bboxOK)
     {
-        const CT_Point &p = *it;
+        m_min.setX(std::numeric_limits<double>::max());
+        m_min.setY(m_min.x());
+        m_min.setZ(m_min.x());
 
-        if(p.getX() > max.x())
-            max.setX(p.getX());
+        m_max.setX(-m_min.x());
+        m_max.setY(m_max.x());
+        m_max.setZ(m_max.x());
 
-        if(p.getY() > max.y())
-            max.setY(p.getY());
+        CT_AbstractPointCloudIndex::ConstIterator it = m_mesh->abstractVert()->constBegin();
+        CT_AbstractPointCloudIndex::ConstIterator end = m_mesh->abstractVert()->constEnd();
 
-        if(p.getZ() > max.z())
-            max.setZ(p.getZ());
+        while(it != end)
+        {
+            const CT_Point &p = it.cT();
 
-        if(p.getX() < min.x())
-            min.setX(p.getX());
+            if(p.getX() > m_max.x())
+                m_max.setX(p.getX());
 
-        if(p.getY() < min.y())
-            min.setY(p.getY());
+            if(p.getY() > m_max.y())
+                m_max.setY(p.getY());
 
-        if(p.getZ() < min.z())
-            min.setZ(p.getZ());
+            if(p.getZ() > m_max.z())
+                m_max.setZ(p.getZ());
 
-        ++it;
+            if(p.getX() < m_min.x())
+                m_min.setX(p.getX());
+
+            if(p.getY() < m_min.y())
+                m_min.setY(p.getY());
+
+            if(p.getZ() < m_min.z())
+                m_min.setZ(p.getZ());
+
+            ++it;
+        }
+
+        m_bboxOK = true;
     }
+
+    min = m_min;
+    max = m_max;
 }

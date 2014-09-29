@@ -380,7 +380,7 @@ void CT_AbstractStandardItemGroup::draw(GraphicsViewInterface &view, PainterInte
 
     if(getAlternativeDrawManager() != NULL)
         getAlternativeDrawManager()->draw(view, painter, *this);
-    else
+    else if(getBaseDrawManager() != NULL)
         getBaseDrawManager()->draw(view, painter, *this);
 }
 

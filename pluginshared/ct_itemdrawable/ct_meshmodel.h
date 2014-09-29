@@ -67,6 +67,11 @@ public:
     void clearMesh();
 
     /**
+     * @brief Set the transform matrix of the mesh
+     */
+    void setTransformMatrix(const QMatrix4x4 &matrix);
+
+    /**
      * @brief Returns a copy of this item
      */
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

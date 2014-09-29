@@ -39,10 +39,10 @@ public:
 
 protected:
     /**
-     * @brief Called from parent model to make some
+     * @brief Called from CT_OutAbstractModel to make some
      *        change in models to complete it.
      */
-    virtual bool recursiveSetComplete();
+    virtual bool setComplete();
 
 private:
     QList<CT_AutoRenameModels*> m_autoRenameOfDefaultIA;

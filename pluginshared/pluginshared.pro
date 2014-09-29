@@ -1,5 +1,6 @@
 TARGET = pluginShared
 QT += xml
+QT += opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
@@ -333,7 +334,9 @@ SOURCES += \
     ct_shapedata/ct_polygon2ddata_old.cpp \
     ct_shapedata/ct_planarbsplinedata.cpp \
     ct_itemdrawable/ct_planarbspline.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp
+    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp \
+    ct_itemdrawable/ct_itemattributelist.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -718,7 +721,13 @@ HEADERS += interfaces.h \
     ct_shapedata/ct_polygon2ddata_old.h \
     ct_shapedata/ct_planarbsplinedata.h \
     ct_itemdrawable/ct_planarbspline.h \
-    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.h
+    ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.h \
+    ct_itemdrawable/ct_itemattributelist.h \
+    rapidxml/rapidxml.hpp \
+    rapidxml/rapidxml_iterators.hpp \
+    rapidxml/rapidxml_print.hpp \
+    rapidxml/rapidxml_utils.hpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_step

@@ -2,8 +2,12 @@
 #define CT_READER_OPF_H
 
 #include "ct_reader/abstract/ct_abstractreader.h"
-#include "ct_itemdrawable/abstract/ct_abstractmetric.h"
+#include "ct_attributes/abstract/ct_abstractitemattribute.h"
+#include "ct_itemdrawable/ct_meshmodel.h"
+#include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 #include "ct_point.h"
+
+#include "rapidxml/rapidxml_utils.hpp"
 
 #define DEF_CT_Reader_OPF_topologyOut     "ct_reader_opf_topology"
 
@@ -54,14 +58,22 @@ public:
 class CT_OPF_Mesh
 {
 public:
-    std::vector<CT_Point>   m_points;
-    std::list<CT_OPF_Face>  m_faces;
+    CT_Mesh                 *m_mesh;
+
+    CT_OPF_Mesh() { m_mesh = NULL; m_bboxOK = false; }
+    ~CT_OPF_Mesh() { delete m_mesh; }
 
     void getBoundingBox(QVector3D &min, QVector3D &max) const;
+
+private:
+    mutable QVector3D   m_min;
+    mutable QVector3D   m_max;
+    mutable bool        m_bboxOK;
 };
 
 class QXmlStreamReader;
 class CT_TOPFNodeGroup;
+class CT_StandardMeshModelOPFDrawManager;
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_OPF : public CT_AbstractReader
 {
@@ -75,27 +87,46 @@ public:
 
     CT_AbstractReader* copy() const;
 
-    static CT_AbstractMetric* staticCreateMetricForType(const QString &type, const QString &value = "");
+    static CT_AbstractItemAttribute* staticCreateAttributeForType(const QString &type, const QString &value = "");
 
 private:
-    QHash<QString, CT_OPF_Type>                 m_types;
-    QHash<QString, CT_OPF_Attribute>            m_attributes;
-    QHash<QString, CT_OutAbstractItemModel*>    m_models;
-    QHash<int, CT_OPF_Mesh*>                    m_meshes;
-    QHash<int, CT_OPF_Mesh*>                    m_shapes;
+    QHash<QString, CT_OPF_Type>                         m_types;
+    QHash<QString, CT_OPF_Attribute>                    m_attributes;
+    QHash<QString, CT_OutAbstractItemAttributeModel*>   m_attributesOriginalModels;
+    QHash<QString, CT_OutAbstractModel*>                m_models;
+    QHash<int, CT_OPF_Mesh*>                            m_meshes;
+    QHash<int, CT_OPF_Mesh*>                            m_shapes;
+    QList<CT_AbstractItemDrawableDrawManager*>          m_drawManager;
+    static CT_StandardMeshModelOPFDrawManager           *DRAW_MANAGER;
+    static CT_ItemDrawableConfiguration                 *DRAW_CONFIGURATION;
+    static int                                          N_READER_OPF;
 
-    int                                         m_totalNode;
+    int                                                 m_totalNode;
 
-    static const QVector<QString>               TOPOLOGY_NAMES;
+    CT_OPF_Mesh                                         m_cylinderMesh;
+
+    static const QVector<QString>                       TOPOLOGY_NAMES;
 
     void clearOtherModels();
     void clearMeshes();
     void clearShapes();
+    void clearDrawManagers();
 
-    void readMesh(QXmlStreamReader &xml);
-    void readShape(QXmlStreamReader &xml);
-    void readGeometry(QXmlStreamReader &xml, CT_TOPFNodeGroup *node, const QString &typeName);
-    void transformAndCreateMesh(CT_OPF_Mesh *mesh, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName);
+    void readMesh(rapidxml::xml_node<> *xmlNode);
+    void readShape(rapidxml::xml_node<> *xmlNode);
+    void readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup *node, const QString &typeName);
+    void transformAndCreateMesh(CT_Mesh *mesh, QVector3D &min, QVector3D &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName);
+
+    void recursiveReadTopologyForModel(rapidxml::xml_node<> *node,
+                                       int &totalNode,
+                                       QHash<QString,
+                                       CT_OPF_Type> &types,
+                                       const QHash<QString,
+                                       CT_OPF_Attribute> &attributes);
+
+    void recursiveReadTopology(rapidxml::xml_node<> *xmlNode,
+                               CT_TOPFNodeGroup *node,
+                               int &nNodeReaded);
 
 protected:
     void protectedInit();

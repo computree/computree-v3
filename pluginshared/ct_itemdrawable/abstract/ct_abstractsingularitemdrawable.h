@@ -75,6 +75,11 @@ public:
     QList<CT_AbstractItemAttribute*> defaultItemAttributes() const;
 
     /**
+     * @brief Return all item attributes (added by user) of this item drawable
+     */
+    QList<CT_AbstractItemAttribute*> notDefaultItemAttributes() const;
+
+    /**
      * @brief Returns true if this item has a bounding box. All singular item has a bounding box so returns true by default.
      */
     virtual bool hasBoundingBox() const {return true;}
