@@ -730,6 +730,17 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h
 
 INCLUDEPATH += .
+INCLUDEPATH += ./ct_actions
+INCLUDEPATH += ./ct_actions/abstract
+INCLUDEPATH += ./ct_attributes
+INCLUDEPATH += ./ct_attributes/abstract
+INCLUDEPATH += ./ct_attributes/model
+INCLUDEPATH += ./ct_attributes/model/abstract
+INCLUDEPATH += ./ct_attributes/model/inModel
+INCLUDEPATH += ./ct_attributes/model/inModel/abstract
+INCLUDEPATH += ./ct_attributes/model/outModel
+INCLUDEPATH += ./ct_attributes/model/outModel/abstract
+INCLUDEPATH += ./ct_attributes/tools
 INCLUDEPATH += ./ct_step
 INCLUDEPATH += ./ct_step/abstract
 INCLUDEPATH += ./ct_result

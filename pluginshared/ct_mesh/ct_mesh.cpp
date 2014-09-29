@@ -5,7 +5,10 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
 #include <math.h>
+#endif
 
 CT_Mesh::CT_Mesh()
 {
@@ -107,16 +110,16 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
     v.setY(radius);
     v.setZ(0);
 
-    int p = vi.cIndex();
+    size_t p = vi.cIndex();
 
-    for(int i=0; i<sides; ++i)
+    for(size_t i=0; i<sides; ++i)
     {
         CT_Point &v0 = vi.cT();
-        int p0 = vi.cIndex();
+        size_t p0 = vi.cIndex();
         ++vi;
 
         CT_Point &v1 = vi.cT();
-        int p1 = vi.cIndex();
+        size_t p1 = vi.cIndex();
         ++vi;
 
         v1.setX(minH);
@@ -125,8 +128,8 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
 
         theta += inc;
 
-        int p2;
-        int p3;
+        size_t p2;
+        size_t p3;
 
         if(i<sides-1)
         {
@@ -145,7 +148,7 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         }
 
         CT_Face &face1 = fi.cT();
-        int faceIndex = fi.cIndex();
+        size_t faceIndex = fi.cIndex();
 
         size_t e1Index = ei.cIndex();
         size_t e2Index;

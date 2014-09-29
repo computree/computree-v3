@@ -300,7 +300,7 @@ win32 {
   # support to RTTI and Exceptions, and generate debug info "program database".
   # Any feedback on these flags is welcome.
   !win32-g++ {
-        QMAKE_CXXFLAGS = -TP -GR -Zi -FS # -FS added to avoid multi pdb file writing (AP 14/19/2014)
+        QMAKE_CXXFLAGS += -TP -GR -Zi
 	DEFINES += NOMINMAX
 	win32-msvc {
 	  QMAKE_CXXFLAGS *= -GX
