@@ -35,6 +35,8 @@
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+#include "ct_mesh/ct_face.h"
+#include "ct_mesh/ct_edge.h"
 
 #include "dm_iteminfoforgraphics.h"
 
@@ -646,12 +648,44 @@ void G3DGraphicsView::setLastPointIdSelected(const GLuint &id)
 
 void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
 {
-    // TODO
+    const CT_Face &face = PS_REPOSITORY->globalCloud<CT_Face>()->constTAt(id);
+
+    float x = 0, y = 0, z = 0;
+
+    for(int i=0; i<3; ++i)
+    {
+        CT_Point *point = face.pointAt(i);
+
+        if(point == NULL)
+            return;
+
+        x += point->getX();
+        y += point->getY();
+        z += point->getZ();
+    }
+
+    _cameraController.setLastItemSelectedCameraCenter(x/3.0, y/3.0, z/3.0);
 }
 
 void G3DGraphicsView::setLastEdgeIdSelected(const GLuint &id)
 {
-    // TODO
+    const CT_Edge &edge = PS_REPOSITORY->globalCloud<CT_Edge>()->constTAt(id);
+
+    float x = 0, y = 0, z = 0;
+
+    for(int i=0; i<2; ++i)
+    {
+        CT_Point *point = edge.pointAt(i);
+
+        if(point == NULL)
+            return;
+
+        x += point->getX();
+        y += point->getY();
+        z += point->getZ();
+    }
+
+    _cameraController.setLastItemSelectedCameraCenter(x/2.0, y/2.0, z/2.0);
 }
 
 void G3DGraphicsView::removeIdFromSelection(const GLuint &id)
@@ -791,14 +825,21 @@ void G3DGraphicsView::drawInternal()
 
     QColor selectedColor = getOptions().getSelectedColor();
 
-    QHashIterator<CT_AbstractItemDrawable*, DM_AbstractInfo*> it(getDocumentView().getItemsInformations());
+    const QHash<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *> &ii = getDocumentView().getItemsInformations();
+
+    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
+
+    CT_AbstractResult *lastResult = NULL;
+    QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *hash = NULL;
 
     while(it.hasNext())
     {
-        it.next();
+        CT_AbstractItemDrawable *item = it.next();
 
-        CT_AbstractItemDrawable *item = it.key();
-        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(it.value());
+        if(lastResult != item->result())
+            hash = ii.value(item->result(), NULL);
+
+        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
 
         if(item->isSelected())
         {
@@ -818,7 +859,8 @@ void G3DGraphicsView::drawInternal()
             _g.setUseColorCloudForFaces(m_useColorCloud);
             _g.setUseColorCloudForEdges(m_useColorCloud);
 
-            _g.setColor(info->color());
+            if(info != NULL)
+                _g.setColor(info->color());
 
             item->draw(*this, _g);
         }

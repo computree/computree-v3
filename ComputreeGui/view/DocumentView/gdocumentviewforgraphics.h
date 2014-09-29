@@ -148,6 +148,13 @@ protected:
      */
     virtual DM_AbstractInfo* createNewItemInformation(const CT_AbstractItemDrawable *item) const;
 
+    /**
+     * @brief Recursive set color of childrens of this group
+     */
+    void recursiveSetColor(CT_AbstractItemGroup *group,
+                              QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *hash,
+                              const QColor &color);
+
 public slots:
 
     /**

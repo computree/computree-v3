@@ -31,8 +31,14 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+
 #include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
+
+#include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
+#include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
 
 int DM_Document::NUMBER = 1;
 
@@ -52,6 +58,14 @@ DM_Document::DM_Document(DM_DocumentManager &manager, QString title)
 
 DM_Document::~DM_Document()
 {
+    QHashIterator<CT_AbstractResult*, QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* > it(m_itemsInformation);
+
+    while(it.hasNext())
+    {
+        it.next();
+        qDeleteAll(it.value()->begin(), it.value()->end());
+    }
+
     qDeleteAll(m_itemsInformation.begin(), m_itemsInformation.end());
 }
 
@@ -228,7 +242,7 @@ const QList<CT_AbstractItemDrawable*>& DM_Document::getItemDrawable() const
     return _listItemDrawable;
 }
 
-const QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> DM_Document::getItemsInformations() const
+const QHash<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *>& DM_Document::getItemsInformations() const
 {
     return m_itemsInformation;
 }
@@ -360,6 +374,14 @@ CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstract
     return NULL;
 }
 
+void DM_Document::createItemInformationsForResult(CT_AbstractResult *result)
+{
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = new QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>();
+    m_itemsInformation.insert(result, hash);
+
+    connect(result, SIGNAL(destroyed(QObject*)), this, SLOT(slotResultDestroyed(QObject*)), Qt::DirectConnection);
+}
+
 DM_AbstractInfo* DM_Document::createNewItemInformation(const CT_AbstractItemDrawable *item) const
 {
     Q_UNUSED(item)
@@ -367,20 +389,95 @@ DM_AbstractInfo* DM_Document::createNewItemInformation(const CT_AbstractItemDraw
     return NULL;
 }
 
+void DM_Document::recursiveAddChildrensToInformationsCollection(const CT_AbstractItemGroup *group,
+                                                                QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash,
+                                                                const bool &searchInHashIfItemExist)
+{
+    CT_GroupIterator it(group);
+
+    while(it.hasNext())
+    {
+        const CT_AbstractItemGroup *child = it.next();
+
+        DM_AbstractInfo *childInfo = NULL;
+
+        if(searchInHashIfItemExist)
+            childInfo = hash->value((CT_AbstractItemGroup*)child, NULL);
+
+        if(childInfo == NULL)
+        {
+            childInfo = createNewItemInformation(child);
+
+            if(childInfo != NULL)
+                hash->insert((CT_AbstractItemGroup*)child, childInfo);
+        }
+
+        recursiveAddChildrensToInformationsCollection(child, hash, searchInHashIfItemExist);
+    }
+
+    CT_ItemIterator itI(group);
+
+    while(itI.hasNext())
+    {
+        const CT_AbstractSingularItemDrawable *child = itI.next();
+
+        DM_AbstractInfo *childInfo = NULL;
+
+        if(searchInHashIfItemExist)
+            childInfo = hash->value((CT_AbstractSingularItemDrawable*)child, NULL);
+
+        if(childInfo == NULL)
+        {
+            childInfo = createNewItemInformation(child);
+
+            if(childInfo != NULL)
+                hash->insert((CT_AbstractSingularItemDrawable*)child, childInfo);
+        }
+    }
+}
+
 void DM_Document::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
     connect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)), Qt::DirectConnection);
 
-    DM_AbstractInfo *info = createNewItemInformation(&item);
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = m_itemsInformation.value(item.result(), NULL);
+    DM_AbstractInfo *info = NULL;
 
-    if(info != NULL)
-        m_itemsInformation.insert(&item, info);
+    bool firstCreate = false;
+
+    if(hash == NULL)
+    {
+        firstCreate = true;
+
+        hash = new QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>();
+        m_itemsInformation.insert(item.result(), hash);
+
+        connect(item.result(), SIGNAL(destroyed(QObject*)), this, SLOT(slotResultDestroyed(QObject*)), Qt::DirectConnection);
+    }
+    else
+    {
+        info = hash->value(&item, NULL);
+    }
+
+    if(info == NULL)
+    {
+        info = createNewItemInformation(&item);
+
+        if(info != NULL)
+            hash->insert(&item, info);
+        else
+            return;
+    }
+
+    CT_AbstractItemGroup *group = dynamic_cast<CT_AbstractItemGroup*>(&item);
+
+    if(group != NULL)
+        recursiveAddChildrensToInformationsCollection(group, hash, !firstCreate);
 }
 
 void DM_Document::slotItemToBeRemoved(CT_AbstractItemDrawable &item)
 {
     disconnect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)));
-    delete m_itemsInformation.take(&item);
 }
 
 /////////// PRIVATE ////////////
@@ -390,4 +487,14 @@ void DM_Document::slotItemDrawableSelectionChanged(bool select)
     CT_AbstractItemDrawable *item = (CT_AbstractItemDrawable*)sender();
 
     emit itemDrawableSelectionChanged(item, select);
+}
+
+void DM_Document::slotResultDestroyed(QObject *result)
+{
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = m_itemsInformation.take((CT_AbstractResult*)result);
+
+    if(hash != NULL)
+        qDeleteAll(hash->begin(), hash->end());
+
+    delete hash;
 }

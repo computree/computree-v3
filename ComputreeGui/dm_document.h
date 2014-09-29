@@ -43,6 +43,9 @@ class DM_DocumentManager;
 class DM_ActionsHandler;
 class DM_Document;
 
+class CT_AbstractItemGroup;
+class CT_AbstractSingularItemDrawable;
+
 /**
  * @brief Class to filter the close of a document
  */
@@ -193,7 +196,7 @@ public:
     /**
      * @brief Return items informations
      */
-    const QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> getItemsInformations() const;
+    const QHash<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *>& getItemsInformations() const;
 
     /**
       * \brief Retourne la liste des CT_AbstractItemDrawable slectionn
@@ -261,16 +264,29 @@ public:
     static int              NUMBER;
 
 protected:
-    DM_DocumentManager                                              *_manager;
-    QList<CT_AbstractItemDrawable*>                                 _listItemDrawable;
-    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>                m_itemsInformation;
-    QString                                                         _title;
-    int                                                             m_number;
+    DM_DocumentManager                                                              *_manager;
+    QList<CT_AbstractItemDrawable*>                                                 _listItemDrawable;
+    QHash<CT_AbstractResult*, QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* >  m_itemsInformation;
+    QString                                                                         _title;
+    int                                                                             m_number;
+
+    /**
+     * @brief Create item informations in collection for the result passed in parameter.
+     * @warning Verify if informations don't exist for this result before call this method
+     */
+    void createItemInformationsForResult(CT_AbstractResult *result);
 
     /**
      * @brief Overload this method if you want to create your own item information. By default return NULL;
      */
     virtual DM_AbstractInfo* createNewItemInformation(const CT_AbstractItemDrawable *item) const;
+
+    /**
+     * @brief Add this group and this information to the collection, recursively add childrens item
+     */
+    void recursiveAddChildrensToInformationsCollection(const CT_AbstractItemGroup *group,
+                                                       QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash,
+                                                       const bool &searchInHashIfItemExist = true);
 
 private:
     DM_IDocumentCloseFilter         *m_closeFilter;
@@ -312,6 +328,7 @@ protected slots:
     virtual void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
     virtual void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
     virtual void slotItemDrawableSelectionChanged(bool select);
+    virtual void slotResultDestroyed(QObject *result);
 };
 
 #endif // DM_DOCUMENT_H

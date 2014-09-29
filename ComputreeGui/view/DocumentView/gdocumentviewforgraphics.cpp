@@ -11,6 +11,12 @@
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
 
+#include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
+#include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
+
+#include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+
 #include "dm_iteminfoforgraphics.h"
 
 #include <QInputDialog>
@@ -292,39 +298,58 @@ bool GDocumentViewForGraphics::useItemColor() const
 
 void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, const QColor &color)
 {
-    DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(getItemsInformations().value((CT_AbstractItemDrawable*)item, NULL));
+    if(!getItemsInformations().contains(item->result()))
+        createItemInformationsForResult(item->result());
 
-    if(info != NULL)
+    const QHash<CT_AbstractResult*, QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* > &ii = getItemsInformations();
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = ii.value(item->result(), NULL);
+
+    DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value((CT_AbstractItemDrawable*)item, NULL));
+
+    if(info == NULL)
     {
-        info->setColor(color);
-
-        if(!_listGraphics.isEmpty())
-        {
-            createColorCloudRegistered<CT_AbstractPointsAttributes>();
-            createColorCloudRegistered<CT_AbstractFaceAttributes>();
-            createColorCloudRegistered<CT_AbstractEdgeAttributes>();
-
-            G3DFakePainter painter;
-            painter.setGraphicsView(_listGraphics.first());
-            painter.setDrawMode(G3DFakePainter::ApplyColorPoints | G3DFakePainter::ApplyColorEdges | G3DFakePainter::ApplyColorFaces);
-            painter.setApplyColor(color);
-            painter.setPointsColorCloud(colorCloudRegistered<CT_AbstractPointsAttributes>());
-            painter.setEdgesColorCloud(colorCloudRegistered<CT_AbstractEdgeAttributes>());
-            painter.setFacesColorCloud(colorCloudRegistered<CT_AbstractFaceAttributes>());
-
-            ((CT_AbstractItemDrawable*)item)->draw(*_listGraphics.first(), painter);
-        }
+        info = static_cast<DM_ItemInfoForGraphics*>(createNewItemInformation(item));
+        hash->insert((CT_AbstractItemDrawable*)item, info);
     }
+
+    info->setColor(color);
+
+    if(!_listGraphics.isEmpty())
+    {
+        createColorCloudRegistered<CT_AbstractPointsAttributes>();
+        createColorCloudRegistered<CT_AbstractFaceAttributes>();
+        createColorCloudRegistered<CT_AbstractEdgeAttributes>();
+
+        G3DFakePainter painter;
+        painter.setGraphicsView(_listGraphics.first());
+        painter.setDrawMode(G3DFakePainter::ApplyColorPoints | G3DFakePainter::ApplyColorEdges | G3DFakePainter::ApplyColorFaces);
+        painter.setApplyColor(color);
+        painter.setPointsColorCloud(colorCloudRegistered<CT_AbstractPointsAttributes>());
+        painter.setEdgesColorCloud(colorCloudRegistered<CT_AbstractEdgeAttributes>());
+        painter.setFacesColorCloud(colorCloudRegistered<CT_AbstractFaceAttributes>());
+
+        ((CT_AbstractItemDrawable*)item)->draw(*_listGraphics.first(), painter);
+    }
+
+    CT_AbstractItemGroup *group = dynamic_cast<CT_AbstractItemGroup*>((CT_AbstractItemDrawable*)item);
+
+    if(group != NULL)
+        recursiveSetColor(group, hash, color);
 }
 
 QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
 {
-    DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(getItemsInformations().value((CT_AbstractItemDrawable*)item, NULL));
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = getItemsInformations().value(item->result(), NULL);
 
-    if(info == NULL)
-        return QColor();
+    if(hash != NULL)
+    {
+        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value((CT_AbstractItemDrawable*)item, NULL));
 
-    return info->color();
+        if(info != NULL)
+            return info->color();
+    }
+
+    return QColor();
 }
 
 template<>
@@ -905,4 +930,45 @@ DM_AbstractInfo* GDocumentViewForGraphics::createNewItemInformation(const CT_Abs
     Q_UNUSED(item)
 
     return new DM_ItemInfoForGraphics();
+}
+
+void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,
+                                                 QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash,
+                                                 const QColor &color)
+{
+    CT_GroupIterator itG(group);
+
+    while(itG.hasNext())
+    {
+        CT_AbstractItemGroup *child = (CT_AbstractItemGroup*)itG.next();
+
+        DM_ItemInfoForGraphics *childInfo = static_cast<DM_ItemInfoForGraphics*>(hash->value(child, NULL));
+
+        if(childInfo == NULL)
+        {
+            childInfo = static_cast<DM_ItemInfoForGraphics*>(createNewItemInformation(child));
+            hash->insert(child, childInfo);
+        }
+
+        childInfo->setColor(color);
+
+        recursiveSetColor(child, hash, color);
+    }
+
+    CT_ItemIterator itI(group);
+
+    while(itI.hasNext())
+    {
+        CT_AbstractSingularItemDrawable *child = (CT_AbstractSingularItemDrawable*)itI.next();
+
+        DM_ItemInfoForGraphics *childInfo = static_cast<DM_ItemInfoForGraphics*>(hash->value(child, NULL));
+
+        if(childInfo == NULL)
+        {
+            childInfo = static_cast<DM_ItemInfoForGraphics*>(createNewItemInformation(child));
+            hash->insert(child, childInfo);
+        }
+
+        childInfo->setColor(color);
+    }
 }
