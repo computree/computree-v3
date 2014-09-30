@@ -34,6 +34,8 @@
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardabstractitemdrawablewithpointclouddrawmanager.h"
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 /**
  * @brief Represent an singular item that contains a point cloud
  */

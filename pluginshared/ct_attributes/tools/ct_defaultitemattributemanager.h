@@ -83,7 +83,7 @@
     CT_StaticInitDefaultIAInvoker<ClassNameSI> ClassNameSI::INVOKER_DEFAULT_IA = CT_StaticInitDefaultIAInvoker<ClassNameSI>(&staticInitDefaultItemAttributes);
 
 template<typename ClassNameT>
-class PLUGINSHAREDSHARED_EXPORT CT_StaticInitDefaultIAInvoker
+class CT_StaticInitDefaultIAInvoker
 {
 public:
 

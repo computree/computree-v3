@@ -61,12 +61,12 @@ QString CT_PlanarBSpline::staticGetType()
 
 int CT_PlanarBSpline::getDegree() const
 {
-    return ((const CT_PlanarBSpline&)getData()).getDegree();
+    return ((const CT_PlanarBSplineData&)getData()).degree();
 }
 
 int CT_PlanarBSpline::getNCP() const
 {
-    return ((const CT_PlanarBSpline&)getData()).getNCP();
+    return ((const CT_PlanarBSplineData&)getData()).nCP();
 }
 
 void CT_PlanarBSpline::setPolyline(const QList<QVector3D> &list)

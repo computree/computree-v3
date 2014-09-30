@@ -1,9 +1,11 @@
 #ifndef CT_MODIFIABLECLOUDINDEXITERATORT_H
 #define CT_MODIFIABLECLOUDINDEXITERATORT_H
 
-#include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindext.h"
+#include <cstddef>
 
-template<typename T>
+template<typename T> class CT_AbstractModifiableCloudIndexT;
+
+template< typename T>
 class CT_ModifiableCloudIndexIteratorT
 {
 public:
@@ -36,8 +38,8 @@ public:
     bool operator!=(const self_type &other) const { return ((m_index != other.m_index) ||    (m_currentPos != other.m_currentPos)); }
 
 private:
-    CT_AbstractModifiableCloudIndexT<T> *m_index;
-    size_t                              m_currentPos;
+    CT_AbstractModifiableCloudIndexT<T>     *m_index;
+    size_t                                  m_currentPos;
 };
 
 #endif // CT_MODIFIABLECLOUDINDEXITERATORT_H

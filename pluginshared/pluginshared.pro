@@ -200,30 +200,11 @@ SOURCES += \
     ct_mesh/ct_mesh.cpp \
     ct_cloud/abstract/ct_abstractcloud.cpp \
     ct_cloud/registered/abstract/ct_abstractcloudregistered.cpp \
-    ct_cloud/ct_standardcloudstdvectort.cpp \
     ct_cloudindex/abstract/ct_abstractcloudindex.cpp \
-    ct_cloudindex/ct_cloudindexlessmemoryt.cpp \
-    ct_cloudindex/ct_cloudindexstdvectort.cpp \
-    ct_cloudindex/abstract/ct_abstractcloudindext.cpp \
-    ct_cloudindex/abstract/ct_abstractmodifiablecloudindext.cpp \
-    ct_cloud/abstract/ct_abstractcloudt.cpp \
-    ct_cloud/tools/ct_globalcloudmanagert.cpp \
     ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanager.cpp \
-    ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanagert.cpp \
-    ct_cloud/tools/ct_cloudsynctoglobalcloudmanagert.cpp \
     ct_cloudindex/registered/abstract/ct_abstractcloudindexregistered.cpp \
-    ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.cpp \
-    ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.cpp \
-    ct_cloudindex/registered/abstract/ct_abstractnotmodifiablecloudindexregisteredt.cpp \
-    ct_cloudindex/tools/ct_cloudindexregistrationmanagert.cpp \
-    ct_cloudindex/registered/ct_standardmodifiablecloudindexregisteredt.cpp \
-    ct_cloudindex/registered/ct_standardnotmodifiablecloudindexregisteredt.cpp \
     ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanager.cpp \
-    ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.cpp \
     ct_cloud/tools/ct_globalpointcloudmanager.cpp \
-    ct_cloud/tools/abstract/ct_abstractglobalcloudmanagert.cpp \
-    ct_mesh/tools/ct_meshallocatort.cpp \
-    ct_cloudindex/tools/ct_modifiablecloudindexiteratort.cpp \
     ct_itemdrawable/ct_meshmodel.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodeldrawmanager.cpp \
     ct_mesh/cloud/abstract/ct_abstractfacecloudindex.cpp \
@@ -240,8 +221,6 @@ SOURCES += \
     ct_itemdrawable/abstract/ct_abstractfaceattributes.cpp \
     ct_itemdrawable/abstract/ct_abstractedgeattributes.cpp \
     ct_itemdrawable/ct_faceattributescolor.cpp \
-    ct_itemdrawable/ct_faceattributesnormal.cpp \
-    ct_itemdrawable/ct_faceattributesscalart.cpp \
     ct_itemdrawable/ct_edgeattributescolor.cpp \
     ct_itemdrawable/ct_edgeattributesnormal.cpp \
     ct_itemdrawable/ct_edgeattributesscalart.cpp \
@@ -251,7 +230,6 @@ SOURCES += \
     ct_cloud/tools/ct_globaledgecloudmanager.cpp \
     ct_cloud/tools/ct_globalfacecloudmanager.cpp \
     ct_cloud/tools/iglobalcloudlistener.cpp \
-    ct_cloudindex/tools/ct_cloudindexiteratort.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardgrid2dxzdrawmanager.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardgrid2dyzdrawmanager.cpp \
     ct_itemdrawable/tools/gridtools/ct_grid3dbeamvisitor_indexlist.cpp \
@@ -261,13 +239,11 @@ SOURCES += \
     ct_exporter/ct_standardexporterseparator.cpp \
     ct_exporter/abstract/ct_abstractexporter.cpp \
     ct_reader/ct_standardreaderseparator.cpp \
-    ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.cpp \
     ct_tools/itemdrawable/ct_itemdrawablecollectionhierarchystep.cpp \
     ct_tools/itemdrawable/ct_itemdrawablecollectionhierarchyresult.cpp \
     ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp \
     ct_view/itemdrawable/ct_itemdrawablehierarchycollectionmodel.cpp \
     ct_view/itemdrawable/ct_itemdrawablehierarchycollectionselectionmodel.cpp \
-    ct_tools/attributes/ct_attributestocloudworkert.cpp \
     ct_tools/attributes/ct_abstractattributestocloudworker.cpp \
     ct_exporter/abstract/ct_abstractexporterattributesselection.cpp \
     ct_tools/itemdrawable/abstract/ct_abstractitemdrawablecollectionbuilder.cpp \
@@ -275,7 +251,6 @@ SOURCES += \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.cpp \
     ct_itemdrawable/abstract/ct_abstractmetric.cpp \
     ct_itemdrawable/ct_affiliationid.cpp \
-    ct_itemdrawable/ct_metrict.cpp \
     ct_itemdrawable/abstract/ct_abstractprofile.cpp \
     ct_itemdrawable/ct_profile.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardprofiledrawmanager.cpp \
@@ -336,7 +311,8 @@ SOURCES += \
     ct_itemdrawable/ct_planarbspline.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp \
     ct_itemdrawable/ct_itemattributelist.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp
+    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp \
+    ct_itemdrawable/ct_faceattributesnormal.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \

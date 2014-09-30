@@ -62,9 +62,9 @@ protected:
     typedef CT_CloudSyncToGlobalCloudManagerT<CT_Edge, CT_StandardColorCloudRegistered>     SyncEColorCloudManager;
 
 public:
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Point>                                      VertexIndexIterator;
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Face>                                       FaceIndexIterator;
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Edge>                                       EdgeIndexIterator;
+    typedef CT_ModifiableCloudIndexIteratorT<CT_Point >                                     VertexIndexIterator;
+    typedef CT_ModifiableCloudIndexIteratorT<CT_Face >                                      FaceIndexIterator;
+    typedef CT_ModifiableCloudIndexIteratorT<CT_Edge >                                      EdgeIndexIterator;
 
     typedef CT_CloudIndexIteratorT<CT_Point>                                                ConstVertexIndexIterator;
     typedef CT_CloudIndexIteratorT<CT_Face>                                                 ConstFaceIndexIterator;
