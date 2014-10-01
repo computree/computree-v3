@@ -19,8 +19,6 @@ Batch::Batch()
 
     connect(_stepManager, SIGNAL(started()), this, SIGNAL(started()), Qt::QueuedConnection);
     connect(_stepManager, SIGNAL(completed(bool)), this, SIGNAL(finished(bool)), Qt::QueuedConnection);
-
-    _pluginManager->load();
 }
 
 Batch::~Batch()
@@ -98,6 +96,9 @@ CDM_ActionsManager *Batch::getActionManager() const
 
 void Batch::initWithArgs()
 {
+    if(!_pluginManager->load())
+        emit loadError(_pluginManager->getError());
+
     QStringList args = QCoreApplication::arguments();
     int size = args.size();
 

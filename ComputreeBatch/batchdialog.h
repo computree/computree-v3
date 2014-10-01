@@ -43,6 +43,8 @@ private slots:
     void pluginSelectedStarted();
     void pluginSelectedFinished();
 
+    void batchLoadingError(QString error);
+
     void quit();
 };
 

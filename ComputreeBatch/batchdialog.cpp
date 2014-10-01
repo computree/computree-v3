@@ -14,6 +14,8 @@ BatchDialog::BatchDialog(QWidget *parent) :
     _batchPluginManager.load();
     _pluginSelected = NULL;
 
+    connect(_batch, SIGNAL(loadError(QString)), this, SLOT(batchLoadingError(QString)));
+
     initUi();
 
     _trayIcon->show();
@@ -146,6 +148,11 @@ void BatchDialog::pluginSelectedFinished()
     ui->pushButtonStart->setEnabled(true);
     ui->pushButtonStop->setEnabled(false);
     ui->pushButtonReload->setEnabled(true);
+}
+
+void BatchDialog::batchLoadingError(QString error)
+{
+    QMessageBox::critical(this, tr("Error"), tr("Error while loading :\r\n\r\n%1").arg(error));
 }
 
 void BatchDialog::quit()

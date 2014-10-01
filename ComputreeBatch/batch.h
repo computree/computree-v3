@@ -43,6 +43,7 @@ private:
 
 signals:
 
+    void loadError(QString error);
     void privateLoadScriptText();
     void privateLoadScriptFilePath();
     void privateRemoveAllStep();

@@ -95,6 +95,24 @@ public:
     }
 };
 
+class PLUGINSHAREDSHARED_EXPORT CT_DefaultItemAttributeManagerContainer
+{
+public:
+
+    CT_DefaultItemAttributeManagerContainer()
+    {
+        m_model = NULL;
+    }
+
+    ~CT_DefaultItemAttributeManagerContainer()
+    {
+        delete m_model;
+    }
+
+    CT_OutAbstractItemAttributeModel    *m_model;
+    QString                             m_userKey;
+};
+
 /**
  * @brief A class tools used by the CT_Context to all default item attributes created
  *        by singular item
@@ -219,26 +237,6 @@ public:
      * @return an empty list if item attributes don't exist
      */
     QList<CT_AbstractItemAttribute*> itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
-
-private:
-
-    class CT_DefaultItemAttributeManagerContainer
-    {
-    public:
-
-        CT_DefaultItemAttributeManagerContainer()
-        {
-            m_model = NULL;
-        }
-
-        ~CT_DefaultItemAttributeManagerContainer()
-        {
-            delete m_model;
-        }
-
-        CT_OutAbstractItemAttributeModel    *m_model;
-        QString                             m_userKey;
-    };
 
     /**
      * @brief A QMultiHash with a QString for key (name of the class of the item) and
