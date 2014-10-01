@@ -11,7 +11,11 @@ mkdir %DESTDIR%\img
 copy img_to_copy\*.png %DESTDIR%\img
 
 echo "Generating Translations"
-lrelease *.pro
+
+for %%f in (*.pro) do (
+	lrelease %%~nf.pro
+)
+
 mkdir %DESTDIR%\languages 
 copy languages\*.qm %DESTDIR%\languages
 
