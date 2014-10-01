@@ -80,8 +80,8 @@ private:
     QList<QVector3D>    _polyline;
 
     CT_DEFAULT_IA_BEGIN(CT_PlanarBSpline)
-    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getDegree, tr("Degré de polynome"))
-    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getNCP, tr("Nombre de points de contrôle"))
+    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getDegree, QObject::tr("Degré de polynome"))
+    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getNCP, QObject::tr("Nombre de points de contrôle"))
     CT_DEFAULT_IA_END(CT_PlanarBSpline)
 
     const static CT_StandardPlanarBSplineDrawManager   PLANARBSPLINE_DRAW_MANAGER;

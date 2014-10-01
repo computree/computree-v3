@@ -113,7 +113,7 @@ private:
     static size_t                               LASTID;
 
     CT_DEFAULT_IA_BEGIN(CT_AffiliationID)
-    CT_DEFAULT_IA_V2(CT_AffiliationID, CT_AbstractCategory::staticInitDataId(), &CT_AffiliationID::getValue, tr("Affiliation_ID"))
+    CT_DEFAULT_IA_V2(CT_AffiliationID, CT_AbstractCategory::staticInitDataId(), &CT_AffiliationID::getValue, QObject::tr("Affiliation_ID"))
     CT_DEFAULT_IA_END(CT_AffiliationID)
 };
 

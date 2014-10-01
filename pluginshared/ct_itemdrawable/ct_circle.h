@@ -88,8 +88,8 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Circle)
-    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle::getRadius, tr("Rayon du cercle"))
-    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataR2(), &CT_Circle::getError, tr("Erreur d'ajustement du cercle"))
+    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle::getRadius, QObject::tr("Rayon du cercle"))
+    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataR2(), &CT_Circle::getError, QObject::tr("Erreur d'ajustement du cercle"))
     CT_DEFAULT_IA_END(CT_Circle)
 
     const static CT_StandardCircleDrawManager   CIRCLE_DRAW_MANAGER;

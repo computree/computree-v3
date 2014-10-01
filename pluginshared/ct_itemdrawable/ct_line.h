@@ -95,16 +95,16 @@ private:
     const static CT_StandardLineDrawManager   LINE_DRAW_MANAGER;
 
     CT_DEFAULT_IA_BEGIN(CT_Line)
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP1_X, tr("X1"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP1_Y, tr("Y1"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP1_Z, tr("Z1"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP1_X, QObject::tr("X1"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP1_Y, QObject::tr("Y1"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP1_Z, QObject::tr("Z1"))
 
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP2_X, tr("X2"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP2_Y, tr("Y2"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP2_Z, tr("Z2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP2_X, QObject::tr("X2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP2_Y, QObject::tr("Y2"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP2_Z, QObject::tr("Z2"))
 
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataLength(), &CT_Line::getLength, tr("Longueur"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataR2(), &CT_Line::getError, tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataLength(), &CT_Line::getLength, QObject::tr("Longueur"))
+    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataR2(), &CT_Line::getError, QObject::tr("Erreur d'ajustement de la ligne"))
     CT_DEFAULT_IA_END(CT_Line)
 
 #ifdef USE_BOOST_OLD

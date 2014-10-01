@@ -19,8 +19,8 @@
  *
  * @example : private:
  *            CT_DEFAULT_IA_BEGIN(CT_Cylinder)
- *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getAngle, tr("Angle"))
- *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDatR2(), &CT_Cylinder::getR2, tr("R²"))
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getAngle, QObject::tr("Angle"))
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDatR2(), &CT_Cylinder::getR2, QObject::tr("R²"))
  *            CT_DEFAULT_IA_END(CT_Cylinder)
  *
  *            cpp file:
@@ -30,7 +30,7 @@
  *            -----~ OR IF YOUR CLASS IS TEMPLATED ~------
  *
  *            CT_USE_DEFAULT_IA(CT_MetricT<T>)
- *            CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::staticInitDataValue(), &CT_MetricT<T>::getValue, tr("Value"))
+ *            CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::staticInitDataValue(), &CT_MetricT<T>::getValue, QObject::tr("Value"))
  *
  *            hpp file:
  *
@@ -53,7 +53,7 @@
  * @param DisplayableName : a displayable name for your default attribute
  *
  * @example : private:
- *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getCenterX, tr("Angle"))
+ *            CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getAngle, QObject::tr("Angle"))
  */
 #define CT_DEFAULT_IA_V2(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName) \
     PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName);
@@ -68,7 +68,7 @@
  * @param UniqueKey : a unique key if you want to retreive your default attribute
  *
  * @example : private:
- *            CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getCenterX, tr("Angle"), DEF_CYL_ANGLE_KEY)
+ *            CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataAngle(), &CT_Cylinder::getAngle, QObject::tr("Angle"), DEF_CYL_ANGLE_KEY)
  */
 #define CT_DEFAULT_IA_V3(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey) \
     PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey);
@@ -93,24 +93,6 @@ public:
     {
         (*initMethod)();
     }
-};
-
-class PLUGINSHAREDSHARED_EXPORT CT_DefaultItemAttributeManagerContainer
-{
-public:
-
-    CT_DefaultItemAttributeManagerContainer()
-    {
-        m_model = NULL;
-    }
-
-    ~CT_DefaultItemAttributeManagerContainer()
-    {
-        delete m_model;
-    }
-
-    CT_OutAbstractItemAttributeModel    *m_model;
-    QString                             m_userKey;
 };
 
 /**
@@ -237,6 +219,25 @@ public:
      * @return an empty list if item attributes don't exist
      */
     QList<CT_AbstractItemAttribute*> itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
+
+private:
+    class CT_DefaultItemAttributeManagerContainer
+    {
+    public:
+
+        CT_DefaultItemAttributeManagerContainer()
+        {
+            m_model = NULL;
+        }
+
+        ~CT_DefaultItemAttributeManagerContainer()
+        {
+            delete m_model;
+        }
+
+        CT_OutAbstractItemAttributeModel    *m_model;
+        QString                             m_userKey;
+    };
 
     /**
      * @brief A QMultiHash with a QString for key (name of the class of the item) and
