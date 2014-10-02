@@ -57,7 +57,7 @@ void CT_StandardMeshModelOPFDrawManager::draw(GraphicsViewInterface &view, Paint
     {
         initShaders();
 
-        if(!SHADER_ERROR && (QOpenGLContext::currentContext() != NULL))
+        if(!SHADER_ERROR && (QT_GL_CONTEXT::currentContext() != NULL))
         {
             if(SHADER_PROG->isLinked())
             {
@@ -160,7 +160,7 @@ CT_ItemDrawableConfiguration CT_StandardMeshModelOPFDrawManager::createDrawConfi
 
 void CT_StandardMeshModelOPFDrawManager::initShaders() const
 {
-    if(!SHADER_ERROR && (QOpenGLContext::currentContext() != NULL))
+    if(!SHADER_ERROR && (QT_GL_CONTEXT::currentContext() != NULL))
     {
         if(SHADER == NULL)
         {

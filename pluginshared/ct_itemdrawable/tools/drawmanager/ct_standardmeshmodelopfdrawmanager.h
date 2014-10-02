@@ -7,10 +7,12 @@
 #include <QGLShaderProgram>
 #define QT_GL_SHADERPROGRAM QGLShaderProgram
 #define QT_GL_SHADER QGLShader
+#define QT_GL_CONTEXT QGLContext
 #else
 #include <QOpenGLShaderProgram>
 #define QT_GL_SHADERPROGRAM QOpenGLShaderProgram
 #define QT_GL_SHADER QOpenGLShader
+#define QT_GL_CONTEXT QOpenGLContext
 #endif
 
 class PLUGINSHAREDSHARED_EXPORT CT_StandardMeshModelOPFDrawManager : public CT_StandardMeshModelDrawManager
