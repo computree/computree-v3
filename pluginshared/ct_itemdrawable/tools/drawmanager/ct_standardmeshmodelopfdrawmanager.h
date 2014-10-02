@@ -3,7 +3,15 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodeldrawmanager.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QGLShaderProgram>
+#define QT_GL_SHADERPROGRAM QGLShaderProgram
+#define QT_GL_SHADER QGLShader
+#else
 #include <QOpenGLShaderProgram>
+#define QT_GL_SHADERPROGRAM QOpenGLShaderProgram
+#define QT_GL_SHADER QOpenGLShader
+#endif
 
 class PLUGINSHAREDSHARED_EXPORT CT_StandardMeshModelOPFDrawManager : public CT_StandardMeshModelDrawManager
 {
@@ -38,8 +46,8 @@ public:
 private:
     double                      m_dUp;
     double                      m_dDown;
-    static QOpenGLShaderProgram *SHADER_PROG;
-    static QOpenGLShader        *SHADER;
+    static QT_GL_SHADERPROGRAM  *SHADER_PROG;
+    static QT_GL_SHADER         *SHADER;
     static bool                 SHADER_ERROR;
     static int                  MATRIX_LOCATION;
     static int                  DELTAX_LOCATION;

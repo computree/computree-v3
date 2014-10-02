@@ -4,8 +4,8 @@
 
 #include <QtOpenGL>
 
-QOpenGLShaderProgram* CT_StandardMeshModelOPFDrawManager::SHADER_PROG = NULL;
-QOpenGLShader* CT_StandardMeshModelOPFDrawManager::SHADER = NULL;
+QT_GL_SHADERPROGRAM* CT_StandardMeshModelOPFDrawManager::SHADER_PROG = NULL;
+QT_GL_SHADER* CT_StandardMeshModelOPFDrawManager::SHADER = NULL;
 bool CT_StandardMeshModelOPFDrawManager::SHADER_ERROR = false;
 int CT_StandardMeshModelOPFDrawManager::MATRIX_LOCATION = -1;
 int CT_StandardMeshModelOPFDrawManager::DELTAX_LOCATION = -1;
@@ -21,7 +21,7 @@ CT_StandardMeshModelOPFDrawManager::CT_StandardMeshModelOPFDrawManager(QString d
     ++N_SHARED;
 
     if(SHADER_PROG == NULL)
-        SHADER_PROG = new QOpenGLShaderProgram();
+        SHADER_PROG = new QT_GL_SHADERPROGRAM();
 }
 
 CT_StandardMeshModelOPFDrawManager::~CT_StandardMeshModelOPFDrawManager()
@@ -164,7 +164,7 @@ void CT_StandardMeshModelOPFDrawManager::initShaders() const
     {
         if(SHADER == NULL)
         {
-            SHADER = new QOpenGLShader(QOpenGLShader::Vertex);
+            SHADER = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
 
             if(!SHADER->compileSourceFile("./shaders/opfMesh.vert"))
             {
