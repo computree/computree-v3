@@ -54,7 +54,6 @@
 #include "step/pb_stepreducepointsdensity.h"
 #include "step/pb_stepaddaffiliationid.h"
 #include "step/pb_stepsetaffiliationidfromreference.h"
-#include "step/pb_stepgenericgroupexporter.h"
 #include "step/pb_stepuseritemcopy.h"
 #include "step/pb_stepslicepointcloud.h"
 
@@ -167,7 +166,6 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSetAffiliationIDFromReference(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepGenericGroupExporter(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator("Action steps"));
     sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));

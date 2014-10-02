@@ -78,6 +78,7 @@ public:
     static const QString DATA_LENGTH;               // length (equivalent to "DATA_SIZE")
     static const QString DATA_WIDTH;                // width (equivalent to "DATA_LENGTH")
     static const QString DATA_HEIGHT;               // height (equivalent to "DATA_LENGTH")
+    static const QString DATA_AREA;                 // area (equivalent to "DATA_VALUE")
     static const QString DATA_ANGLE;                // angle (equivalent to "DATA_VALUE")
     static const QString DATA_RATIO;                // ratio (equivalent to "DATA_VALUE")
     static const QString DATA_RESOLUTION;           // generic resolution (equivalent to "DATA_VALUE")
@@ -194,6 +195,7 @@ public:
     static QString staticInitDataLength() { return "CT_LENGTH"; }
     static QString staticInitDataWidth() { return "CT_WIDTH"; }
     static QString staticInitDataHeight() { return "CT_HEIGHT"; }
+    static QString staticInitDataArea() { return "CT_AREA"; }
     static QString staticInitDataAngle() { return "CT_ANGLE"; }
     static QString staticInitDataRatio() { return "CT_RATIO"; }
     static QString staticInitDataResolution() { return "CT_RESOLUTION"; }

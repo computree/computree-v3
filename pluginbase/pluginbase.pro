@@ -48,7 +48,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionmodifyaffiliations.h \
     views/actions/pb_actionmodifyaffiliationsoptions.h \
     exporters/groupdata/pb_groupdataexporter.h \
-    step/pb_stepgenericgroupexporter.h \
     exporters/mesh/pb_meshobjexporter.h \
     step/pb_stepuseritemcopy.h \
     exporters/topology/pb_opfexporter.h \
@@ -110,7 +109,6 @@ SOURCES += \
     actions/pb_actionmodifyaffiliations.cpp \
     views/actions/pb_actionmodifyaffiliationsoptions.cpp \
     exporters/groupdata/pb_groupdataexporter.cpp \
-    step/pb_stepgenericgroupexporter.cpp \
     exporters/mesh/pb_meshobjexporter.cpp \
     step/pb_stepuseritemcopy.cpp \
     exporters/topology/pb_opfexporter.cpp \

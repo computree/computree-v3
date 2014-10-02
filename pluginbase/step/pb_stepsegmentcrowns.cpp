@@ -9,7 +9,7 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_triangulation/ct_nodet.h"
-#include "ct_itemdrawable/ct_metrict.h"
+#include "ct_itemdrawable/ct_attributeslist.h"
 
 #include <limits>
 #include <QMessageBox>
@@ -29,6 +29,7 @@
 #define DEF_SearchOutConvexHull "hull"
 #define DEF_SearchOutGroupScene "gscene"
 
+#define DEF_SearchOutCrownAttributes "crattributes"
 #define DEF_SearchOutCrownArea "crarea"
 #define DEF_SearchOutConvexCrownArea "cvxcrarea"
 #define DEF_SearchOutZmax "zmax"
@@ -99,9 +100,16 @@ void PB_StepSegmentCrowns::createOutResultModelListProtected()
     resultModel->addGroupModel(DEF_SearchOutGroup, DEF_SearchOutGroupScene);
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutScene, new CT_Scene(), tr("Scènes segmentées"));
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexHull, new CT_Polygon2D_Old(), tr("ConvexHull"));
-    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutCrownArea, new CT_MetricT<float>(), tr("Aire du houppier"));
-    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexCrownArea, new CT_MetricT<float>(), tr("Aire du houppier convexe"));
-    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutZmax, new CT_MetricT<float>(), tr("Z max"));
+    resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutCrownAttributes, new CT_AttributesList(), tr("Attributs du Houppier"));
+    resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutCrownArea,
+                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       tr("Aire du houppier"));
+    resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutConvexCrownArea,
+                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       tr("Aire du houppier convexe"));
+    resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutZmax,
+                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
+                                       tr("Z max"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -449,12 +457,17 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
         float convexHullArea = clusterConvexCounts.value(cluster, 0)*base_area;
         float zMax = clusterZMax.value(cluster, std::numeric_limits<float>::quiet_NaN());
 
-        CT_MetricT<float> *metric1 = new CT_MetricT<float>(DEF_SearchOutCrownArea, _outResult, crownArea);
-        CT_MetricT<float> *metric2 = new CT_MetricT<float>(DEF_SearchOutConvexCrownArea, _outResult, convexHullArea);
-        CT_MetricT<float> *metric3 = new CT_MetricT<float>(DEF_SearchOutZmax, _outResult, zMax);
-        groupScene->addItemDrawable(metric1);
-        groupScene->addItemDrawable(metric2);
-        groupScene->addItemDrawable(metric3);
+        CT_AttributesList* crAttributes= new CT_AttributesList(DEF_SearchOutCrownAttributes, _outResult);
+        groupScene->addItemDrawable(crAttributes);
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutCrownArea,
+                                                                       CT_AbstractCategory::DATA_AREA,
+                                                                       _outResult, crownArea));
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutConvexCrownArea,
+                                                                       CT_AbstractCategory::DATA_AREA,
+                                                                       _outResult, convexHullArea));
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutZmax,
+                                                                       CT_AbstractCategory::DATA_Z,
+                                                                       _outResult, zMax));
     }
 }
 

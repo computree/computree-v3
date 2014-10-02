@@ -312,7 +312,8 @@ SOURCES += \
     ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp \
     ct_itemdrawable/ct_itemattributelist.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp \
-    ct_itemdrawable/ct_faceattributesnormal.cpp
+    ct_itemdrawable/ct_faceattributesnormal.cpp \
+    ct_itemdrawable/ct_attributeslist.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -703,7 +704,8 @@ HEADERS += interfaces.h \
     rapidxml/rapidxml_iterators.hpp \
     rapidxml/rapidxml_print.hpp \
     rapidxml/rapidxml_utils.hpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h
+    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h \
+    ct_itemdrawable/ct_attributeslist.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

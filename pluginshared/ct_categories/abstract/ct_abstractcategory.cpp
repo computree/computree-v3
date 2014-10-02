@@ -31,6 +31,7 @@ const QString CT_AbstractCategory::DATA_NUMBER                  = CT_AbstractCat
 const QString CT_AbstractCategory::DATA_LENGTH                  = CT_AbstractCategory::staticInitDataLength();
 const QString CT_AbstractCategory::DATA_WIDTH                   = CT_AbstractCategory::staticInitDataWidth();
 const QString CT_AbstractCategory::DATA_HEIGHT                  = CT_AbstractCategory::staticInitDataHeight();
+const QString CT_AbstractCategory::DATA_AREA                    = CT_AbstractCategory::staticInitDataArea();
 const QString CT_AbstractCategory::DATA_ANGLE                   = CT_AbstractCategory::staticInitDataAngle();
 const QString CT_AbstractCategory::DATA_RATIO                   = CT_AbstractCategory::staticInitDataRatio();
 const QString CT_AbstractCategory::DATA_RESOLUTION              = CT_AbstractCategory::staticInitDataResolution();
