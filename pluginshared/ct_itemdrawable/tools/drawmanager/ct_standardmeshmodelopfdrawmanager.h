@@ -4,7 +4,7 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodeldrawmanager.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include <QGLShaderProgram>
+#include <QtOpenGL/QGLShaderProgram>
 #define QT_GL_SHADERPROGRAM QGLShaderProgram
 #define QT_GL_SHADER QGLShader
 #define QT_GL_CONTEXT QGLContext
