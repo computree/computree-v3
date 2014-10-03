@@ -36,6 +36,7 @@ CT_Context::CT_Context()
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataLength(), CT_AbstractCategory::staticInitDataSize()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataWidth(), CT_AbstractCategory::staticInitDataLength()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataHeight(), CT_AbstractCategory::staticInitDataLength()));
+    m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataArea(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataAngle(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataRatio(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataResolution(), CT_AbstractCategory::staticInitDataValue()));
