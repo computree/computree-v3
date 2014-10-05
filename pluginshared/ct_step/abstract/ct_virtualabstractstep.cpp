@@ -40,6 +40,7 @@
 
 #include "ct_abstractresult.h"
 #include "ct_abstractitemdrawable.h"
+#include "ct_abstractstepplugin.h"
 
 #include "ct_stepconfigurabledialog.h"
 
@@ -629,6 +630,11 @@ QString CT_VirtualAbstractStep::getStepDescription() const
 QString CT_VirtualAbstractStep::getStepDetailledDescription() const
 {
     return tr("No detailled description for this step");
+}
+
+QString CT_VirtualAbstractStep::getStepURL() const
+{
+    return getPlugin()->getPluginURL();
 }
 
 int CT_VirtualAbstractStep::nResult() const

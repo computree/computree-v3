@@ -155,8 +155,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>782</width>
-           <height>648</height>
+           <width>778</width>
+           <height>649</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -222,6 +222,9 @@
                <property name="margin">
                 <number>6</number>
                </property>
+               <property name="openExternalLinks">
+                <bool>true</bool>
+               </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                </property>
@@ -252,6 +255,9 @@
                </property>
                <property name="margin">
                 <number>6</number>
+               </property>
+               <property name="openExternalLinks">
+                <bool>true</bool>
                </property>
                <property name="textInteractionFlags">
                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>

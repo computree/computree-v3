@@ -117,6 +117,13 @@ public:
     virtual QString getStepDetailledDescription() const;
 
     /**
+     * @brief Inherit this method if you want to return your own step URL.
+     *
+     *        By default return the plugin URL
+     */
+    virtual QString getStepURL() const;
+
+    /**
      * @brief Inherit this method if you want to initialize something.
      *
      *        Called after you have created the step or after she has been added to the steps tree

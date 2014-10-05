@@ -59,6 +59,8 @@ public:
      */
     virtual QString getStepDetailledDescription() const;
 
+    virtual QString getStepURL() const;
+
     /*! \brief Step copy
      * 
      * Step copy, used when a step is added by step contextual menu

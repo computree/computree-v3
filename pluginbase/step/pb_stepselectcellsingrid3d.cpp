@@ -61,6 +61,11 @@ QString PB_StepSelectCellsInGrid3D::getStepDetailledDescription() const
               "En sortie elle fournie également une copie de la grille d'entrée pour laquelle toute les cases non sélectionnées sont réinitialisées à la valeur 0. ");
 }
 
+QString PB_StepSelectCellsInGrid3D::getStepURL() const
+{
+    return tr("http://rdinnovation.onf.fr/projects/plugin-base/wiki/Fr_action_selectcells");
+}
+
 // Step copy method
 CT_VirtualAbstractStep* PB_StepSelectCellsInGrid3D::createNewInstance(CT_StepInitializeData &dataInit)
 {

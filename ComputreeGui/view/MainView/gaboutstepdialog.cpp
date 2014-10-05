@@ -28,9 +28,12 @@ void GAboutStepDialog::initView(CT_VirtualAbstractStep *step)
     ui->pluginName->setText(pluginName);
     ui->stepName->setText(step->getStepName());
 
-    QString pageName = QString("%1_Steps_%2").arg("Fr").arg(pluginName);
-
-    ui->lb_wiki_link->setText(QString("Page wiki : <a href=\"%1/wiki/%2#%3\">%2</a>").arg(step->getPlugin()->getPluginURL()).arg(pageName).arg(step->getStepName()));
+    if (step->getPlugin()->getPluginURL() == step->getStepURL())
+    {
+        ui->lb_wiki_link->setText(QString("Aide en ligne : <a href=\"%1\">Page internet du plugin</a>").arg(step->getPlugin()->getPluginURL()));
+    } else {
+        ui->lb_wiki_link->setText(QString("Aide en ligne : <a href=\"%1\">Page internet de cette étape</a>").arg(step->getStepURL()));
+    }
 
     ui->briefDescription->setText(step->getStepDescription());
 

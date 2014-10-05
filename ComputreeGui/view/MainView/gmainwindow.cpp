@@ -40,6 +40,7 @@
 
 #include "gaboutdialog.h"
 #include "gaboutpluginsdialog.h"
+#include "gineedhelpdialog.h"
 
 #include "myqaction.h"
 
@@ -209,6 +210,12 @@ void GMainWindow::cleanItemDrawableOfAllDocuments()
     GUI_MANAGER->cleanItemDrawableOfAllDocuments();
 }
 
+void GMainWindow::showINeedHelpDialog()
+{
+    GINeedHelpDialog dialog;
+    dialog.exec();
+}
+
 GMainProgressDialog* GMainWindow::createWaitProgressDialog()
 {
     return new GMainProgressDialog(this);
@@ -293,6 +300,9 @@ void GMainWindow::initUI()
     QAction *actionCleanAllDocuments = new QAction(tr("Nettoyer toutes les vues"), this);
     actionCleanAllDocuments->setIcon(QIcon(":/Icones/Icones/broom.png"));
 
+    QAction *actionINeedHelp = new QAction(tr("J'ai besoin d'aide !!!"), this);
+    actionINeedHelp->setIcon(QIcon(":/Icones/Icones/help.png"));
+
     QAction *actionQuitter = new QAction(tr("Quitter"), this);
 
     QAction *actionShowStepManagerView = new QAction(ui->dockWidgetStepManager->windowTitle(), this);
@@ -351,6 +361,7 @@ void GMainWindow::initUI()
     ui->toolBar->addAction(actionStepManagerConfiguration);
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionCleanAllDocuments);
+    ui->toolBar->addAction(actionINeedHelp);
 
     ui->menuFichier->addAction(actionOpenFile);
     ui->menuFichier->addSeparator();
@@ -383,6 +394,7 @@ void GMainWindow::initUI()
 
     ui->menuAide->addAction(actionAPropos);
     ui->menuAide->addAction(actionAProposPlugin);
+    ui->menuAide->addAction(actionINeedHelp);
 
     ui->horizontalLayoutDocumentView->addWidget(_docManagerView);
 
@@ -443,6 +455,7 @@ void GMainWindow::initUI()
     connect(actionStepManagerConfiguration, SIGNAL(triggered()), _stepManagerView, SLOT(showStepManagerOptions()));
 
     connect(actionCleanAllDocuments, SIGNAL(triggered()), this, SLOT(cleanItemDrawableOfAllDocuments()));
+    connect(actionINeedHelp, SIGNAL(triggered()), this, SLOT(showINeedHelpDialog()));
 
     connect(actionShowStepManagerView, SIGNAL(triggered()), ui->dockWidgetStepManager, SLOT(showNormal()));
     connect(actionShowItemDrawableModelManagerView, SIGNAL(triggered()), ui->dockWidgetItemDrawableModelManager, SLOT(showNormal()));

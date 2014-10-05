@@ -42,7 +42,8 @@ SOURCES += \
     view/DocumentView/ItemModelViews/gitemmodelview.cpp \
     view/DocumentView/ItemModelViews/cg_customtreeitemmodel.cpp \
     view/DocumentView/ItemModelViews/cg_customtreeitem.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dfakepainter.cpp
+    view/DocumentView/GraphicsViews/3D/g3dfakepainter.cpp \
+    $$PWD/MainView/gineedhelpdialog.cpp
 
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -90,7 +91,8 @@ HEADERS += \
     view/DocumentView/ItemModelViews/cg_customtreeitem.h \
     view/DocumentView/GraphicsViews/3D/g3dfakepainter.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
-    view/DocumentView/GraphicsViews/3D/Octree/octree.hpp
+    view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
+    $$PWD/MainView/gineedhelpdialog.h
 
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
@@ -111,7 +113,8 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/MainView/gaboutstepdialog.ui \
     view/MainView/glogwidget.ui \
     view/MainView/gredmineparametersdialog.ui \
-    view/Tools/gcomboboxwithemptytitlewidget.ui
+    view/Tools/gcomboboxwithemptytitlewidget.ui \
+    $$PWD/MainView/gineedhelpdialog.ui
 
 INCLUDEPATH += view/DocumentView/GraphicsView
 INCLUDEPATH += view/DocumentView/GraphicsView/3D

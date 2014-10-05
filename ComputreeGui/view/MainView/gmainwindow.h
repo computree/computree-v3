@@ -80,6 +80,7 @@ public slots:
     void showAboutDialog();
     void showAboutPluginsDialog();
     void cleanItemDrawableOfAllDocuments();
+    void showINeedHelpDialog();
 
     void arrangeDocksInTabs();
     void arrangeDocksInColumn();

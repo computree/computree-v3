@@ -38,7 +38,7 @@ public:
     PB_StepPluginManager();
     ~PB_StepPluginManager();
 
-    QString getPluginURL() const {return QString("http://rdinnovation.onf.fr:8080/projects/plugin-base");}
+    QString getPluginURL() const {return QString("http://rdinnovation.onf.fr/projects/plugin-base/wiki");}
 
     bool init();
 
