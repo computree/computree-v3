@@ -33,6 +33,7 @@
 #define DEF_SearchOutCrownArea "crarea"
 #define DEF_SearchOutConvexCrownArea "cvxcrarea"
 #define DEF_SearchOutZmax "zmax"
+#define DEF_SearchOutClusterID "clusterID"
 
 // Constructor : initialization of parameters
 PB_StepSegmentCrowns::PB_StepSegmentCrowns(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -110,6 +111,9 @@ void PB_StepSegmentCrowns::createOutResultModelListProtected()
     resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutZmax,
                                        new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
                                        tr("Z max"));
+    resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutClusterID,
+                                       new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ID), NULL, 0),
+                                       tr("ClusterID"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -468,6 +472,9 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
         crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutZmax,
                                                                        CT_AbstractCategory::DATA_Z,
                                                                        _outResult, zMax));
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<int>(DEF_SearchOutClusterID,
+                                                                       CT_AbstractCategory::DATA_ID,
+                                                                       _outResult, cluster));
     }
 }
 
