@@ -1090,6 +1090,24 @@ In 3D mode, the tool only works on selected cells</translation>
     </message>
 </context>
 <context>
+    <name>PB_ActionSlicePointCloudOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionslicepointcloudoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionslicepointcloudoptions.ui" line="53"/>
+        <source>exemple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionslicepointcloudoptions.ui" line="60"/>
+        <source>Dessiner les scènes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PB_CSVExporter</name>
     <message>
         <location filename="../exporters/csv/pb_csvexporter.cpp" line="34"/>
@@ -1185,12 +1203,12 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_OPFExporter</name>
     <message>
-        <location filename="../exporters/topology/pb_opfexporter.cpp" line="30"/>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="36"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation>OPF Files (AmapStudio)</translation>
     </message>
     <message>
-        <location filename="../exporters/topology/pb_opfexporter.cpp" line="51"/>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="57"/>
         <source>Aucun ItemDrawable du type CT_TTreeGroup</source>
         <translation>No ItemDrawable of type CT_TTreeGroup</translation>
     </message>
@@ -1433,24 +1451,6 @@ In 3D mode, the tool only works on selected cells</translation>
     </message>
 </context>
 <context>
-    <name>PB_StepGenericGroupExporter</name>
-    <message>
-        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="30"/>
-        <source>Exporte en txt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="43"/>
-        <source>Résultat</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepgenericgroupexporter.cpp" line="52"/>
-        <source>Fichier d&apos;export :</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PB_StepGenericLoadFile</name>
     <message>
         <location filename="../step/pb_stepgenericloadfile.cpp" line="37"/>
@@ -1530,38 +1530,38 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadMultiXYBFiles</name>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="67"/>
         <source>IndividualScenes</source>
         <translation>Individual Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
         <source>g</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
         <source>IndividualScene</source>
         <translation>Individual Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
         <source>IndividualIntensity</source>
         <translation>Individual Intensity</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
         <source>ScanPosition</source>
         <translation>Scanner</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="68"/>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="70"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
         <source>MergedScene</source>
         <translation>Merged Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="69"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
         <source>gm</source>
         <translation>Group</translation>
     </message>
@@ -1703,144 +1703,154 @@ Leave the mouse over a button to get info.</translation>
 <context>
     <name>PB_StepSegmentCrowns</name>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="52"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="54"/>
         <source>Cette étape permet de segmenter des houppiers manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les houppiers. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque houppier. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (houppiers) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque houppier&lt;/li&gt;&lt;li&gt;Une scène de points extraite pour chaque houppier&lt;/li&gt;&lt;li&gt;Un polygone horizontal correspondant à l&apos;enveloppe convexe des pixels de chaque houppier&lt;/li&gt;&lt;li&gt;Deux métriques donnant respectivement la surface des pixels, et la surface de l&apos;enveloppe convexe pour chaque houppier&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="82"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="84"/>
         <source>Scène(s)</source>
         <translation type="unfinished">Scene(s)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="86"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="88"/>
         <source>Scène</source>
         <translation type="unfinished">Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="92"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="94"/>
         <source>Densité, MNS et clusters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="95"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="97"/>
         <source>MNS</source>
         <translation type="unfinished">DSM</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="96"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="98"/>
         <source>Densité</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="97"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="99"/>
         <source>Clusters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="100"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="102"/>
         <source>Scènes segmentées</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="101"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="103"/>
         <source>ConvexHull</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="102"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="104"/>
+        <source>Attributs du Houppier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="107"/>
         <source>Aire du houppier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="103"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="110"/>
         <source>Aire du houppier convexe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="104"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="113"/>
         <source>Z max</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="158"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="116"/>
+        <source>ClusterID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="170"/>
         <source>Selection de l&apos;épaisseur des houppiers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="189"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="201"/>
         <source>Création des clusters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="202"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="214"/>
         <source>Démarrage des post_traitements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="203"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="215"/>
         <source>Elimination des clusters vides</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="207"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="219"/>
         <source>Création nuages de points par cluster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="222"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="234"/>
         <source>Ajout des points aux scènes par cluster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="227"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="239"/>
         <source>Enregistrement des clusters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="234"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="246"/>
         <source>Création des Convex Hulls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="239"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="251"/>
         <source>Calcul des métriques</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="256"/>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="488"/>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="509"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="268"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="508"/>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="529"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="549"/>
         <source>Segmentation des houppiers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="256"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="268"/>
         <source>Phase 2 (Segmentation des houppiers) impossible à réaliser.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="261"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="273"/>
         <source>Post-Traitements terminés</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="488"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="508"/>
         <source>Mode manuel.
 Phase 1 : Calcul de la carte de densité et du MNS.
 L&apos;initialisation peut prendre un peu de temps...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="509"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="529"/>
         <source>Mode manuel.
 Phase 2 : Segmentation des houppiers.
 La pré-segmentation automatique peut prendre un peu de temps...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentcrowns.cpp" line="529"/>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="549"/>
         <source>Fin du mode manuel, démarrage des post-traitements
 Cela peut prendre un peu de temps...</source>
         <translation type="unfinished"></translation>
@@ -1974,34 +1984,39 @@ Cela peut prendre un peu de temps...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="76"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="66"/>
+        <source>http://rdinnovation.onf.fr/projects/plugin-base/wiki/Fr_action_selectcells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="81"/>
         <source>Result</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="84"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="89"/>
         <source>Grille</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="112"/>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="113"/>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="116"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="117"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="118"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="121"/>
         <source>Grille filtrée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="115"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="120"/>
         <source>Cases séléctionnées</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="204"/>
         <source>Mode manuel</source>
         <translation type="unfinished">Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="199"/>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="204"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage.
 Seuls les voxels séléctionés (Rouges) seront conservés.
 Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
@@ -2078,6 +2093,77 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="236"/>
         <source>Mode manuel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepSlicePointCloud</name>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="52"/>
+        <source>Découpe une scène en tranche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="58"/>
+        <source>Action manuelle permettant de découper une scène d&apos;entrée en tranches horizontales.&lt;br&gt;Il est possible d&apos;en régler intéractivement :&lt;br&gt;- L&apos;épaisseur (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;- L&apos;espacement entre deux tranches (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;&lt;br&gt;N.B. : Cette étape peut également fonctionner en mode non interactif, avec les paramètres choisis dans la boite de configuration. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="77"/>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="80"/>
+        <source>Scène à découper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="79"/>
+        <source>Groupe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="86"/>
+        <source>Scène découpée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="87"/>
+        <source>Tranche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="88"/>
+        <source>Points de la tranche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="96"/>
+        <source>Epaisseur des tranches :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="96"/>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="97"/>
+        <source>cm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="97"/>
+        <source>Espacement des tranches :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="98"/>
+        <source>Choix interactif des paramètres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="162"/>
+        <source>Mode manuel</source>
+        <translation type="unfinished">Manual mode</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepslicepointcloud.cpp" line="163"/>
+        <source>Bienvenue dans le mode manuel de cette étape.
+Veuillez sélectionner les paramètres pour réaliser les tranches.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

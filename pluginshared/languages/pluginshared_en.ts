@@ -89,16 +89,8 @@
 <context>
     <name>CT_AbstractItemDrawable</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp" line="104"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp" line="98"/>
         <source>Model passed in parameter is not a CT_OutAbstractItemModel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_AbstractItemDrawableWithPointCloud</name>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h" line="150"/>
-        <source>Nombre de points</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -113,185 +105,8 @@
 <context>
     <name>CT_AbstractSingularItemDrawable</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="120"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="125"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="164"/>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="165"/>
-        <source>Nom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="166"/>
-        <source>Centre X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="167"/>
-        <source>Centre Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="168"/>
-        <source>Centre Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_AffiliationID</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_affiliationid.h" line="116"/>
-        <source>Affiliation_ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_Circle</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_circle.h" line="91"/>
-        <source>Rayon du cercle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_circle.h" line="92"/>
-        <source>Erreur d&apos;ajustement du cercle</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_Cylinder</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="91"/>
-        <source>Direction X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="92"/>
-        <source>Direction Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="93"/>
-        <source>Direction Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="94"/>
-        <source>Rayon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
-        <source>Longueur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
-        <source>Erreur d&apos;ajustement du cercle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="97"/>
-        <source>Erreur d&apos;ajustement de la ligne</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_Ellipse</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="112"/>
-        <source>X1 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="113"/>
-        <source>Y1 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="114"/>
-        <source>Z1 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
-        <source>X2 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
-        <source>Y2 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
-        <source>Z2 axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
-        <source>X1 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="120"/>
-        <source>Y1 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="121"/>
-        <source>Z1 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
-        <source>X2 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
-        <source>Y2 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
-        <source>Z2 axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
-        <source>Longueur axe mineur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="127"/>
-        <source>Longueur axe majeur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
-        <source>Erreur d&apos;ajustement de l&apos;ellipse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="131"/>
-        <source>Ratio des axes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="133"/>
-        <source>Angle de début</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="134"/>
-        <source>Angle de fin</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -355,57 +170,6 @@
     </message>
 </context>
 <context>
-    <name>CT_Line</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="98"/>
-        <source>X1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="99"/>
-        <source>Y1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="100"/>
-        <source>Z1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="102"/>
-        <source>X2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="103"/>
-        <source>Y2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="104"/>
-        <source>Z2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="106"/>
-        <source>Longueur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="107"/>
-        <source>Erreur d&apos;ajustement de la ligne</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CT_Polygon2D_Old</name>
-    <message>
-        <location filename="../ct_itemdrawable/ct_polygon2d_old.h" line="81"/>
-        <source>Number Of Vertices</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CT_Reader_ASCRGB</name>
     <message>
         <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="62"/>
@@ -434,23 +198,23 @@
 <context>
     <name>CT_Reader_OPF</name>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="123"/>
-        <source>Unable to open file %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="134"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="232"/>
         <source>No types found in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="428"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="496"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="436"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="504"/>
         <source>Topologie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="524"/>
+        <source>Mesh</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -548,42 +312,42 @@
 <context>
     <name>CT_VirtualAbstractStep</name>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="462"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="465"/>
         <source> quit manual mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="533"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="536"/>
         <source>Erreur %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="536"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="539"/>
         <source>Aucune erreur detecte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="624"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="627"/>
         <source>No description for this step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="629"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="632"/>
         <source>No detailled description for this step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="838"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="846"/>
         <source> enter manual mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1524"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1516"/>
         <source> - Start computing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1621"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1615"/>
         <source> - Computing completed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -718,6 +482,234 @@
     <message>
         <location filename="../ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp" line="17"/>
         <source>Attributs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h" line="152"/>
+        <source>Nombre de points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="169"/>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="170"/>
+        <source>Nom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="171"/>
+        <source>Centre X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="172"/>
+        <source>Centre Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="173"/>
+        <source>Centre Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_affiliationid.h" line="116"/>
+        <source>Affiliation_ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_circle.h" line="91"/>
+        <source>Rayon du cercle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_circle.h" line="92"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
+        <source>Erreur d&apos;ajustement du cercle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="91"/>
+        <source>Direction X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="92"/>
+        <source>Direction Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="93"/>
+        <source>Direction Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="94"/>
+        <source>Rayon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="106"/>
+        <source>Longueur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="97"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="107"/>
+        <source>Erreur d&apos;ajustement de la ligne</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="112"/>
+        <source>X1 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="113"/>
+        <source>Y1 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="114"/>
+        <source>Z1 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
+        <source>X2 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
+        <source>Y2 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
+        <source>Z2 axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
+        <source>X1 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="120"/>
+        <source>Y1 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="121"/>
+        <source>Z1 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
+        <source>X2 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
+        <source>Y2 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
+        <source>Z2 axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
+        <source>Longueur axe mineur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="127"/>
+        <source>Longueur axe majeur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
+        <source>Erreur d&apos;ajustement de l&apos;ellipse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="131"/>
+        <source>Ratio des axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="133"/>
+        <source>Angle de début</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="134"/>
+        <source>Angle de fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="98"/>
+        <source>X1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="99"/>
+        <source>Y1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="100"/>
+        <source>Z1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="102"/>
+        <source>X2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="103"/>
+        <source>Y2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_line.h" line="104"/>
+        <source>Z2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_planarbspline.h" line="83"/>
+        <source>Degré de polynome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_planarbspline.h" line="84"/>
+        <source>Nombre de points de contrôle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_polygon2d_old.h" line="81"/>
+        <source>Number Of Vertices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="69"/>
+        <source>CT_StandardMeshModelOPFDrawManager =&gt; Bind error : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="171"/>
+        <source>CT_StandardMeshModelOPFDrawManager =&gt; Vertex shader compilation error : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="187"/>
+        <source>CT_StandardMeshModelOPFDrawManager =&gt; Link error : %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
