@@ -125,6 +125,11 @@ private:
      */
     void reconstructCompleter();
 
+    /**
+     * @brief Called in refreshExpanded to refresh children recursively
+     */
+    void recursiveRefreshExpanded(const QModelIndex &index, CG_CustomTreeItem *item, bool expanded);
+
 private slots:
 
     /**

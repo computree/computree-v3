@@ -688,10 +688,18 @@ void GTreeView::refreshExpanded()
     {
         QModelIndex child = m_treeView->model()->index(i, 0);
 
-        CT_AbstractItemDrawable *item = itemDrawableFromIndex(child);
+        CG_CustomTreeItem *ii = itemFromIndex(child);
+        CT_AbstractItemDrawable *item = itemDrawableFromItem(ii);
+
+        bool ex = false;
 
         if(item != NULL && m_expandedItems.contains(item))
+        {
+            ex = true;
             m_treeView->setExpanded(child, true);
+        }
+
+        recursiveRefreshExpanded(child, ii, ex);
     }
 }
 
@@ -1005,6 +1013,32 @@ void GTreeView::reconstructCompleter()
     m_lineFilter->setCompleter(completer);
 
     delete lastCompleter;
+}
+
+void GTreeView::recursiveRefreshExpanded(const QModelIndex &index, CG_CustomTreeItem *item, bool expanded)
+{
+    if(expanded && item->canFetchMore())
+        item->fetchMore();
+
+    int n = item->rowCount();
+
+    for(int i=0; i<n; ++i)
+    {
+        QModelIndex child = index.child(i, 0);
+
+        CG_CustomTreeItem *ii = itemFromIndex(child);
+        CT_AbstractItemDrawable *itemDrawable = itemDrawableFromItem(ii);
+
+        bool ex = false;
+
+        if(itemDrawable != NULL && m_expandedItems.contains(itemDrawable))
+        {
+            ex = true;
+            m_treeView->setExpanded(child, true);
+        }
+
+        recursiveRefreshExpanded(child, ii, ex);
+    }
 }
 
 void GTreeView::slotNewItemTypeDetected()
