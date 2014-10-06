@@ -28,7 +28,7 @@ void PB_StepLoadGrid3dFile::init()
 
 QString PB_StepLoadGrid3dFile::getStepDescription() const
 {
-    return tr("Charge un fichier grid3d");
+    return tr("Chargement d'un fichier grid3d");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadGrid3dFile::createNewInstance(CT_StepInitializeData &dataInit)

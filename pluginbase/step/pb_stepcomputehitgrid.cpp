@@ -67,7 +67,7 @@ PB_StepComputeHitGrid::PB_StepComputeHitGrid(CT_StepInitializeData &dataInit) : 
 QString PB_StepComputeHitGrid::getStepDescription() const
 {
     // Gives the descrption to print in the GUI
-    return tr("Créé une grille voxel de densité de points");
+    return tr("Création d'une grille 3D de densité de points");
 }
 
 // Step description (tooltip of contextual menu)

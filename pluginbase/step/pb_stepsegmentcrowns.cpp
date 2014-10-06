@@ -45,7 +45,7 @@ PB_StepSegmentCrowns::PB_StepSegmentCrowns(CT_StepInitializeData &dataInit) : CT
 // Step description (tooltip of contextual menu)
 QString PB_StepSegmentCrowns::getStepDescription() const
 {
-    return "Segment les houppiers";
+    return tr("Segmentation de houppiers en 2D");
 }
 
 // Step description (tooltip of contextual menu)

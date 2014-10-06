@@ -32,7 +32,7 @@ PB_StepLoadPbmFile::~PB_StepLoadPbmFile()
 
 QString PB_StepLoadPbmFile::getStepDescription() const
 {
-    return tr("Charge un fichier pbm");
+    return tr("Chargement d'un fichier pbm");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadPbmFile::createNewInstance(CT_StepInitializeData &dataInit)

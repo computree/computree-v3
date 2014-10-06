@@ -50,7 +50,7 @@ PB_StepSelectCellsInGrid3D::PB_StepSelectCellsInGrid3D(CT_StepInitializeData &da
 // Step description (tooltip of contextual menu)
 QString PB_StepSelectCellsInGrid3D::getStepDescription() const
 {
-    return "Séléction d'un ensemble de cases dans une grille";
+    return tr("Séléction d'un sous-ensemble d'une grille 3D");
 }
 
 // Step description (tooltip of contextual menu)

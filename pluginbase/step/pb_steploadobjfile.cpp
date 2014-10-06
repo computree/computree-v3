@@ -30,7 +30,7 @@ PB_StepLoadObjFile::PB_StepLoadObjFile(CT_StepInitializeData &data) : CT_Abstrac
 
 QString PB_StepLoadObjFile::getStepDescription() const
 {
-    return tr("Charge un fichier .obj dans un Mesh");
+    return tr("Chargement d'un fichier .obj (Mesh)");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadObjFile::createNewInstance(CT_StepInitializeData &dataInit)

@@ -44,7 +44,7 @@ PB_StepSegmentGaps::PB_StepSegmentGaps(CT_StepInitializeData &dataInit) : CT_Abs
 // Step description (tooltip of contextual menu)
 QString PB_StepSegmentGaps::getStepDescription() const
 {
-    return "Segmente les trouées";
+    return tr("Segmentation de trouées en 2D");
 }
 
 // Step description (tooltip of contextual menu)

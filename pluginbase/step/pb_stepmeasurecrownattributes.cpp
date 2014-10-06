@@ -45,7 +45,7 @@ PB_StepMeasureCrownAttributes::PB_StepMeasureCrownAttributes(CT_StepInitializeDa
 // Step description (tooltip of contextual menu)
 QString PB_StepMeasureCrownAttributes::getStepDescription() const
 {
-    return "Mesure des attributs d'un houppier";
+    return tr("Mesure des attributs d'un houppier");
 }
 
 // Step description (tooltip of contextual menu)

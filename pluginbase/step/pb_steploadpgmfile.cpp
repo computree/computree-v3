@@ -33,7 +33,7 @@ PB_StepLoadPgmFile::~PB_StepLoadPgmFile()
 
 QString PB_StepLoadPgmFile::getStepDescription() const
 {
-    return tr("Charge un fichier pgm");
+    return tr("Chargement d'un fichier pgm");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadPgmFile::createNewInstance(CT_StepInitializeData &dataInit)

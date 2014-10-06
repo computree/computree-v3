@@ -32,7 +32,7 @@ PB_StepFilterPointsByBoolGrid::PB_StepFilterPointsByBoolGrid(CT_StepInitializeDa
 // Step description (tooltip of contextual menu)
 QString PB_StepFilterPointsByBoolGrid::getStepDescription() const
 {
-    return "Utilise des grilles booléennes pour filtrer des scènes de points";
+    return tr("Filtrage d'un nuage de points // grille 3D booléenne");
 }
 
 // Step description (tooltip of contextual menu)

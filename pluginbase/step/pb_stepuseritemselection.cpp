@@ -42,7 +42,7 @@ PB_StepUserItemSelection::PB_StepUserItemSelection(CT_StepInitializeData &dataIn
 // Step description (tooltip of contextual menu)
 QString PB_StepUserItemSelection::getStepDescription() const
 {
-    return "Etape qui permet de sélectionner manuellement des ItemDrawable et génère un résultat de sortie avec les items sélectionnés";
+    return tr("Séléction d'un sous-ensemble d'items");
 }
 
 // Step copy method

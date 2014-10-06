@@ -64,7 +64,7 @@ PB_StepReducePointsDensity::PB_StepReducePointsDensity(CT_StepInitializeData &da
 
 QString PB_StepReducePointsDensity::getStepDescription() const
 {
-    return tr("Réduit la densité de scènes, sur la base d'une grille régulière");
+    return tr("Réduction de la densité de points");
 }
 
 QString PB_StepReducePointsDensity::getStepDetailledDescription() const

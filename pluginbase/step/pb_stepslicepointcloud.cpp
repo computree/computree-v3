@@ -49,7 +49,7 @@ PB_StepSlicePointCloud::~PB_StepSlicePointCloud()
 // Step description (tooltip of contextual menu)
 QString PB_StepSlicePointCloud::getStepDescription() const
 {
-    return tr("Découpe une scène en tranche");
+    return tr("Découpage d'une scène en tranches horizontales");
 }
 
 // Step detailled description

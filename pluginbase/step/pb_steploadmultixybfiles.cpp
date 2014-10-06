@@ -44,7 +44,7 @@ PB_StepLoadMultiXYBFiles::PB_StepLoadMultiXYBFiles(CT_StepInitializeData &dataIn
 // Step description (tooltip of contextual menu)
 QString PB_StepLoadMultiXYBFiles::getStepDescription() const
 {
-    return "Load multi-scans for a plot of given radius";
+    return tr("Chargement d'une liste de fichiers xyb");
 }
 
 // Step copy method

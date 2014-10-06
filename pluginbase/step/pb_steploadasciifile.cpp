@@ -119,7 +119,7 @@ bool PB_StepLoadAsciiFile::setAllSettings(const SettingsNodeGroup *settings)
 
 QString PB_StepLoadAsciiFile::getStepDescription() const
 {
-    return tr("Charge un fichier ascii");
+    return tr("Chargement d'un fichier ascii");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadAsciiFile::createNewInstance(CT_StepInitializeData &dataInit)

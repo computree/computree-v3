@@ -45,7 +45,7 @@ PB_StepAddAffiliationID::PB_StepAddAffiliationID(CT_StepInitializeData &dataInit
 
 QString PB_StepAddAffiliationID::getStepDescription() const
 {
-    return tr("Ajoute un identifiant d'affiliation au groupe");
+    return tr("Ajout d'un ID / groupe");
 }
 
 QString PB_StepAddAffiliationID::getStepDetailledDescription() const

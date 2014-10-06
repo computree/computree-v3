@@ -60,7 +60,7 @@ PB_StepSetAffiliationIDFromReference::PB_StepSetAffiliationIDFromReference(CT_St
 
 QString PB_StepSetAffiliationIDFromReference::getStepDescription() const
 {
-    return tr("Modifie les identifiants d'affiliation de groupes, sur la base d'une référence");
+    return tr("Mise en correspondance d'ID de deux résultats");
 }
 
 QString PB_StepSetAffiliationIDFromReference::getStepDetailledDescription() const
