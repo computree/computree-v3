@@ -869,8 +869,8 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
                     {
                         CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
-                        MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepName()), this);
-                        action->setToolTip(step->getStepDescription());
+                        MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
+                        action->setToolTip(step->getStepName());
                         action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
                         if(underMenu == NULL)
