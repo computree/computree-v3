@@ -26,6 +26,14 @@ CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &modelName,
 }
 
 template <typename VType>
+CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(NULL,
+                                                                                                                  PS_CATEGORY_MANAGER->findByUniqueName(categoryName),
+                                                                                                                  NULL)
+{
+    m_data = 0;
+}
+
+template <typename VType>
 CT_AbstractItemAttribute* CT_StdItemAttributeT<VType>::copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result)
 {
     return new CT_StdItemAttributeT<VType>(model, this->category(), result, m_data);

@@ -2,6 +2,8 @@
 #define CT_STDITEMATTRIBUTET_H
 
 #include "ct_attributes/abstract/ct_abstractitemattributet.h"
+#include "ct_global/ct_context.h"
+#include "ct_categories/tools/ct_categorymanager.h"
 
 /**
  * @brief An item attribute that contains a data that will not changed. Use
@@ -15,6 +17,11 @@ class CT_StdItemAttributeT : public CT_AbstractItemAttributeT<VType>
 public:
     CT_StdItemAttributeT(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractCategory *category, const CT_AbstractResult *result, const VType &data);
     CT_StdItemAttributeT(const QString &modelName, const QString &categoryName, const CT_AbstractResult *result, const VType &data);
+
+    /**
+     * @brief Use only this constructor for model !
+     */
+    CT_StdItemAttributeT(const QString &categoryName);
 
     CT_AbstractItemAttribute* copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result);
 

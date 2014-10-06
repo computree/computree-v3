@@ -36,6 +36,11 @@ public:
      * @brief Refresh headers of the view
      */
     virtual void refreshHeaders() = 0;
+
+    /**
+     * @brief Refresh expanded items
+     */
+    virtual void refreshExpanded() = 0;
 };
 
 #endif // DM_ITREEVIEWMANAGERT_H

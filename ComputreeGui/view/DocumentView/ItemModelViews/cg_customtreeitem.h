@@ -20,6 +20,7 @@ public:
     void appendRow(const QList<CG_CustomTreeItem *> &items);
     void removeRow(int row);
     void insertRow(int i, const QList<CG_CustomTreeItem *> &items);
+    void replaceRow(int row, const QList<CG_CustomTreeItem *> &items);
 
     int rowCount() const;
     int nChildrens() const;

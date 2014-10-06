@@ -62,6 +62,7 @@ public:
     QList<CT_AbstractItemDrawable*> expandedItem() const;
     CG_CustomTreeItem* itemFromItemDrawable(const CT_AbstractItemDrawable *item) const;
     void refreshHeaders();
+    void refreshExpanded();
 
     // THIS
     DM_ActionsHandlerForTreeView* actionsHandlerTreeView() const;
@@ -93,6 +94,11 @@ private:
     DM_ItemDrawableManagerOptions                                                   m_options;
 
     static int                                                                      COLUMN_FIRST_DATA_VALUE;
+
+    /**
+     * @brief Search recursively the item corresponding to the ItemDrawable
+     */
+    CG_CustomTreeItem* recursiveItemFromItemDrawable(CG_CustomTreeItem *parent, const CT_AbstractItemDrawable *item) const;
 
     /**
      * @brief (re)Init the context menu
@@ -235,6 +241,11 @@ private slots:
      * @brief Called from a QAction to add selected item to the document (data in QAction)
      */
     void slotAddSelectedToDocument();
+
+    /**
+     * @brief Called from a QAction to refresh the selected item
+     */
+    void slotRefreshSelected();
 
 public slots:
     /**

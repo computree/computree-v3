@@ -120,9 +120,6 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::addElementsOfCollection()
     }
 
     m_collection.clear();
-
-    // refresh headers
-    m_treeViewManager->refreshHeaders();
 }
 
 template<class Model, class Item>
@@ -145,18 +142,24 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::updateElemensOfCollection(
                 Item *parent = ii->parent();
                 int row = ii->row();
 
-                parent->removeRow(row);
-
-                parent->insertRow(row, ll);
+                parent->replaceRow(row, ll);
             }
         }
 
         m_collectionUpdate.clear();
         m_tmpItemsToUpdate.clear();
+    }
+    else
+    {
+        QVectorIterator< QList<Item*> > it(m_collectionUpdate);
 
-        // refresh headers
-        m_treeViewManager->refreshHeaders();
+        while(it.hasNext())
+        {
+            const QList<Item*> &ll = it.next();
+            qDeleteAll(ll.begin(), ll.end());
+        }
 
+        m_collectionUpdate.clear();
     }
 }
 
@@ -315,6 +318,9 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotModelBuilderUpdateFini
 
     // refresh headers
     m_treeViewManager->refreshHeaders();
+
+    // refresh expanded
+    m_treeViewManager->refreshExpanded();
 }
 
 template<class Model, class Item>

@@ -49,8 +49,10 @@ void CG_CustomTreeItem::appendRow(const QList<CG_CustomTreeItem *> &items)
 
 void CG_CustomTreeItem::removeRow(int row)
 {
-    if(model() != NULL)
-        model()->beginRemoveRows(model()->indexFromItem(this), row, row+1);
+    bool send = (m_count > row);
+
+    if((model() != NULL) && send)
+        model()->beginRemoveRows(model()->indexFromItem(this), row, row);
 
     QList<CG_CustomTreeItem *> items = m_items.takeAt(row);
 
@@ -59,19 +61,63 @@ void CG_CustomTreeItem::removeRow(int row)
         delete i;
     }
 
-    if(model() != NULL)
+    if(send)
+        --m_count;
+
+    if((model() != NULL) && send)
         model()->endRemoveRows();
 }
 
 void CG_CustomTreeItem::insertRow(int i, const QList<CG_CustomTreeItem *> &items)
 {
-    if(model() != NULL)
-        model()->beginInsertRows(model()->indexFromItem(this), i+1, i+2);
+    bool send = (m_count > i);
+
+    if((model() != NULL) && send)
+        model()->beginInsertRows(model()->indexFromItem(this), i, i);
+
+    int c = 0;
+
+    foreach (CG_CustomTreeItem *i, items) {
+        i->setParent(this);
+        i->setColumn(c);
+        i->setModel(model());
+        ++c;
+    }
 
     m_items.insert(i, items);
 
-    if(model() != NULL)
+    if(send)
+        ++m_count;
+
+    if((model() != NULL) && send)
         model()->endInsertRows();
+}
+
+void CG_CustomTreeItem::replaceRow(int row, const QList<CG_CustomTreeItem *> &items)
+{
+    if(model() != NULL)
+        model()->beginResetModel();
+
+    QList<CG_CustomTreeItem *> itemsT = m_items.takeAt(row);
+
+    foreach (CG_CustomTreeItem *i, itemsT) {
+        i->setModel(NULL);
+        delete i;
+    }
+
+    m_items.insert(row, items);
+
+    int c = 0;
+
+    foreach (CG_CustomTreeItem *i, items) {
+        i->setParent(this);
+        i->setColumn(c);
+        i->setModel(model());
+        ++c;
+    }
+
+    if(model() != NULL)
+        model()->endResetModel();
 }
 
 bool CG_CustomTreeItem::hasChildren() const

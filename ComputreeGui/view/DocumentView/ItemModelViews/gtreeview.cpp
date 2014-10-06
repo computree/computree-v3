@@ -101,7 +101,7 @@ void GTreeView::init()
     m_treeView->setModel(filterModel);
     m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_treeView->setExpandsOnDoubleClick(true);
-    m_treeView->setSortingEnabled(true);
+    //m_treeView->setSortingEnabled(true);
     m_treeView->setAcceptDrops(true);
     vLayout->addWidget(m_treeView);
 
@@ -178,6 +178,7 @@ void GTreeView::slotRemoveItemDrawable(CT_AbstractItemDrawable &item)
     m_typeBuilder.removeItemDrawable(item);
 
     m_treeViewController.removeItemDrawable(item);
+    m_expandedItems.removeOne(&item);
 }
 
 void GTreeView::endRemoveMultipleItemDrawable()
@@ -207,13 +208,17 @@ void GTreeView::slotDoubleClicked(const QModelIndex &index)
 
 void GTreeView::slotExpanded(const QModelIndex &index)
 {
-    m_expandedItems.append(itemDrawableFromItem(itemFromIndex(index)));
+    CT_AbstractItemDrawable *item = itemDrawableFromIndex(index);
+
+    if(!m_expandedItems.contains(item))
+        m_expandedItems.append(item);
+
     actionsHandlerTreeView()->indexExpandedEvent(index);
 }
 
 void GTreeView::slotCollapsed(const QModelIndex &index)
 {
-    m_expandedItems.removeOne(itemDrawableFromItem(itemFromIndex(index)));
+    m_expandedItems.removeOne(itemDrawableFromIndex(index));
     actionsHandlerTreeView()->indexCollapsedEvent(index);
 }
 
@@ -463,6 +468,12 @@ void GTreeView::slotAddSelectedToDocument()
     }
 }
 
+void GTreeView::slotRefreshSelected()
+{
+    QList<CT_AbstractItemDrawable *> items = itemDrawableFromRowSelected();
+    refreshItems(items);
+}
+
 DM_ActionsHandler* GTreeView::actionsHandler() const
 {
     return m_actionsHandler;
@@ -642,17 +653,7 @@ CG_CustomTreeItem* GTreeView::itemFromItemDrawable(const CT_AbstractItemDrawable
 {
     CG_CustomTreeItem *root = m_model->invisibleRootItem();
 
-    int size = root->rowCount();
-
-    for(int i=0; i<size; ++i)
-    {
-        CG_CustomTreeItem *it = root->child(i, 0);
-
-        if(itemDrawableFromItem(it) == item)
-            return it;
-    }
-
-    return NULL;
+    return recursiveItemFromItemDrawable(root, item);
 }
 
 void GTreeView::refreshHeaders()
@@ -677,6 +678,21 @@ void GTreeView::refreshHeaders()
     #endif
 
     m_model->finishAppendRows();
+}
+
+void GTreeView::refreshExpanded()
+{
+    int n = m_treeView->model()->rowCount();
+
+    for(int i=0; i<n; ++i)
+    {
+        QModelIndex child = m_treeView->model()->index(i, 0);
+
+        CT_AbstractItemDrawable *item = itemDrawableFromIndex(child);
+
+        if(item != NULL && m_expandedItems.contains(item))
+            m_treeView->setExpanded(child, true);
+    }
 }
 
 DM_ActionsHandlerForTreeView* GTreeView::actionsHandlerTreeView() const
@@ -821,6 +837,26 @@ bool GTreeView::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
+CG_CustomTreeItem *GTreeView::recursiveItemFromItemDrawable(CG_CustomTreeItem *parent, const CT_AbstractItemDrawable *item) const
+{
+    int size = parent->rowCount();
+
+    for(int i=0; i<size; ++i)
+    {
+        CG_CustomTreeItem *it = parent->child(i, 0);
+
+        if(itemDrawableFromItem(it) == item)
+            return it;
+
+        it = recursiveItemFromItemDrawable(it, item);
+
+        if(it != NULL)
+            return it;
+    }
+
+    return NULL;
+}
+
 void GTreeView::initContextMenu()
 {
     m_contextMenu->clear();
@@ -887,6 +923,10 @@ void GTreeView::initContextMenu()
             connect(action, SIGNAL(triggered()), this, SLOT(slotAddSelectedToDocument()));
         }
     }
+
+    m_contextMenu->addSeparator();
+    action = m_contextMenu->addAction(tr("Rafraichir"));
+    connect(action, SIGNAL(triggered()), this, SLOT(slotRefreshSelected()));
 }
 
 void GTreeView::setValidColorForLineFilter(bool valid)

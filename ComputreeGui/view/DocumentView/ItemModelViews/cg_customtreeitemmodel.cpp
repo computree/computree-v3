@@ -55,10 +55,13 @@ QVariant CG_CustomTreeItemModel::data(const QModelIndex &index, int role) const
 
     CG_CustomTreeItem *parent = static_cast<CG_CustomTreeItem*>(index.internalPointer())->parent();
 
-    CG_CustomTreeItem *item = parent;
+    CG_CustomTreeItem *item = NULL;
 
     if(parent != NULL)
         item = parent->child(index.row(), index.column());
+
+    if(item == NULL)
+        return QVariant();
 
     return item->data(role);
 }
