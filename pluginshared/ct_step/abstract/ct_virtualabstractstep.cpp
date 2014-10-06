@@ -592,7 +592,7 @@ QString CT_VirtualAbstractStep::getToolTip() const
 
     return str;*/
 
-    return "TODO !";
+    return getStepDescription();
 }
 
 QString CT_VirtualAbstractStep::getStepName() const

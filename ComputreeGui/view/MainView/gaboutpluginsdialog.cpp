@@ -213,7 +213,7 @@ void GAboutPluginsDialog::createItemsForExporter(QTreeWidgetItem *parent, CT_Abs
 void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, "Result : " + rModel->resultName() + " (" + rModel->modelTypeDisplayable() + ")");
+    item->setText(0, "Result : " + rModel->resultName());
 
     QList<CT_AbstractModel*> list = rModel->childrens();
     QListIterator<CT_AbstractModel*> it(list);
@@ -225,7 +225,7 @@ void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *pa
 void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, "Result : " + rModel->displayableName() + " (" + rModel->modelTypeDisplayable() + ")");
+    item->setText(0, "Result : " + rModel->displayableName());
 
     QList<CT_AbstractModel*> list = rModel->childrens();
     QListIterator<CT_AbstractModel*> it(list);
@@ -237,7 +237,7 @@ void GAboutPluginsDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *pa
 void GAboutPluginsDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_AbstractModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0,rModel->displayableName() + " (" + rModel->modelTypeDisplayable() + ")");
+    item->setText(0,rModel->displayableName());
 
     QList<CT_AbstractModel*> list = rModel->childrens();
     QListIterator<CT_AbstractModel*> it(list);
