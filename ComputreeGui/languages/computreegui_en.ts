@@ -76,6 +76,21 @@
     </message>
 </context>
 <context>
+    <name>DM_ItemDrawableTreeViewController</name>
+    <message>
+        <source>Veuillez patienter pendant la construction de la table</source>
+        <translation type="vanished">Please wait while the construction of the table</translation>
+    </message>
+    <message>
+        <source>Veuillez patienter pendant le rafraichissement de la table</source>
+        <translation type="vanished">Please wait while the refreshment of the table</translation>
+    </message>
+    <message>
+        <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
+        <translation type="vanished">Please wait while adding items to the table</translation>
+    </message>
+</context>
+<context>
     <name>DM_SortFilterMathProxyModel</name>
     <message>
         <location filename="../tools/treeview/dm_sortfiltermathproxymodel.cpp" line="47"/>
@@ -167,57 +182,57 @@ p, li { white-space: pre-wrap; }
         <translation>Step plugins</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="79"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="85"/>
         <source>Load File Step</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="97"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="103"/>
         <source>Can be added first Step</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="115"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="121"/>
         <source>Normal Step</source>
         <translation>Standard Step</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="133"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="139"/>
         <source>Action</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="151"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="157"/>
         <source>Exporter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="353"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="359"/>
         <source>h1. Etapes du plugin </source>
         <translation>h1. Plugin&apos;s Steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="363"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="369"/>
         <source>h1. Etapes de chargement</source>
         <translation>h1. Load file Steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="385"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="391"/>
         <source>h1. Etapes pouvant être ajoutées en premier</source>
         <translation>h1. Can be added first Steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="407"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="413"/>
         <source>h1. Etapes standard</source>
         <translation>h1. Standard Steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="438"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="444"/>
         <source>*_Description courte_* : *</source>
         <translation>*_Short description_* : *</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="439"/>
+        <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="445"/>
         <source>*_Description détaillée_* : </source>
         <translation>*_Detailed description_* : </translation>
     </message>
@@ -245,12 +260,12 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wiki page: &lt;a href=&quot;http://rdinnovation.onf.fr&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://rdinnovation.onf.fr&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.cpp" line="44"/>
+        <location filename="../view/MainView/gaboutstepdialog.cpp" line="53"/>
         <source>IN Models :</source>
         <translation>In Models:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.cpp" line="56"/>
+        <location filename="../view/MainView/gaboutstepdialog.cpp" line="65"/>
         <source>OUT Models :</source>
         <translation>OUT Models:</translation>
     </message>
@@ -669,41 +684,44 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../view/MainView/gineedhelpdialog.cpp" line="25"/>
+        <source>-&gt; Dans le sous-menu d&apos;insertion d&apos;étape du plugin, sur l&apos;étape, faire F1</source>
+        <translation>-&gt; In the plugin&apos;s sub-menu for step insertion, on the considered step, hit F1</translation>
+    </message>
+    <message>
         <source>-&gt; Dans la barre de menu, cliquer sur &lt;i&gt;Aide&lt;/i&gt;, puis &lt;i&gt;A propos des Plugins&lt;/i&gt;</source>
-        <translation>-&gt; In the menu bar, clic on &lt;i&gt;Help&lt;/i&gt;, and next on &lt;i&gt;About Plugins&lt;/i&gt;</translation>
+        <translation type="vanished">-&gt; In the menu bar, clic on &lt;i&gt;Help&lt;/i&gt;, and next on &lt;i&gt;About Plugins&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="26"/>
         <source>-&gt; Déplier &lt;i&gt;Plugins d&apos;étapes&lt;/i&gt;, déplier le plugin d&apos;intérêt, séléctionner l&apos;étape, puis cliquer sur &lt;i&gt;Info Etape&lt;/i&gt;</source>
-        <translation>-&gt; Unfold &lt;i&gt;Step plugins&lt;/i&gt;, unfold the concerned plugin, select the step and clic on &lt;i&gt;Step info&lt;/i&gt;</translation>
+        <translation type="vanished">-&gt; Unfold &lt;i&gt;Step plugins&lt;/i&gt;, unfold the concerned plugin, select the step and clic on &lt;i&gt;Step info&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="29"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="28"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;comment réaliser une tâche précise à l&apos;aide des étapes disponibles&lt;/b&gt; :</source>
         <translation>For help on &lt;b&gt;How to achieve some specific task with available steps&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="30"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="29"/>
         <source>-&gt; Consulter les tutoriels disponibles ici : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_tutorials&quot;&gt;Tutoriels thématiques (How To&apos;s)&lt;/a&gt;</source>
         <translation>-&gt; Consult How To&apos;s available here: &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_tutorials&quot;&gt;How To&apos;s (thematic tutorials)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="33"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="32"/>
         <source>Pour &lt;b&gt;signaler un bug&lt;/b&gt; ou &lt;b&gt;suggérer une amélioration&lt;/b&gt; :</source>
         <translation>To &lt;b&gt;report a bug&lt;/b&gt; or &lt;b&gt;propose an improvement&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="34"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="33"/>
         <source>-&gt; Créer une nouvelle demande : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/issues/new&quot;&gt;Nouvelle demande&lt;/a&gt;</source>
         <translation>-&gt; Create a new issue: &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/issues/new&quot;&gt;New issue&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="37"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="36"/>
         <source>Pour &lt;b&gt;poster un message sur le forum Computree&lt;/b&gt; :</source>
         <translation>To &lt;b&gt;post a message on Computree forum&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="38"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="37"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/boards&quot;&gt;Forum Computree&lt;/a&gt;</source>
         <translation>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/boards&quot;&gt;Computree Forum&lt;/a&gt;</translation>
     </message>
@@ -837,7 +855,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="168"/>
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="181"/>
         <source>%1</source>
-        <translation>Document %1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="173"/>
@@ -962,217 +980,221 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="90"/>
-        <location filename="../view/MainView/gmainwindow.cpp" line="92"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="91"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="93"/>
         <source>Attention</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="90"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="91"/>
         <source>Vous êtes dans le mode manuel, veuillez quitter ce mode avant de fermer l&apos;application.</source>
         <translation>You are in the manual mode, please exit this mode before close the application.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="92"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="93"/>
         <source>Une étape est en cours de traiements, veuillez terminer les traitements avant de fermer l&apos;application.</source>
         <translation>A step is under treatment, please complete the treatment before closing the application.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="136"/>
-        <location filename="../view/MainView/gmainwindow.cpp" line="265"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="137"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="266"/>
         <source>Ouvrir un fichier</source>
         <translation>Open a file</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="150"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="151"/>
         <source>Erreur chargement du script</source>
         <translation>Error load script</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="150"/>
         <source>Une erreur est survenu lors de la lecture du script :
 
 %1</source>
-        <translation>An error occured while reading the script:
+        <translation type="vanished">An error occured while reading the script:
 
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="167"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="168"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Save the tree steps as ...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="268"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="269"/>
         <source>Ajouter une étape</source>
         <translation>Add a step</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="269"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="270"/>
         <source>Ajouter une étape qui n&apos;a pas besoin de résultat en entrÞ</source>
         <translation>Add a step that can be added first</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="272"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="273"/>
         <source>Lancer les traitements</source>
         <translation>Start processes</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="275"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="276"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="278"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="279"/>
         <source>Valider le mode manuel et continuer les traitements automatiques</source>
         <translation>Enable manual mode and continue the automatic processes</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="282"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="283"/>
         <source>Lancer les traitements en mode debug ou avancer d&apos;un pas</source>
         <translation>Start processes in debug mode or go one step forward</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="285"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="286"/>
         <source>Lancer les traitements en mode debug ou avancer de N pas</source>
         <translation>Start processes in debug mode or go N step forward</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="288"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="289"/>
         <source>Ajouter un nouveau document</source>
         <translation>Add a new 3D document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="291"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="292"/>
         <source>Ajouter un nouveau document 2D</source>
         <translation>Add a new 2D document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="294"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="295"/>
         <source>Ajouter un nouveau document de type tableur</source>
         <translation>Add a new table view document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="297"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="298"/>
         <source>Configurer</source>
         <translation>Configure</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="300"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="301"/>
         <source>Nettoyer toutes les vues</source>
         <translation>Clean all views</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="303"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="304"/>
         <source>J&apos;ai besoin d&apos;aide !!!</source>
         <translation>I need help !!!</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="306"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="307"/>
         <source>Quitter</source>
         <translation>Quit</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="321"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="322"/>
         <source>Composants en onglets</source>
         <translation>Component in tabs</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="322"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="323"/>
         <source>Composants en colonne</source>
         <translation>Component in columns</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="324"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="325"/>
         <source>A propos de Computree...</source>
         <translation>About CompuTree...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="325"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="326"/>
         <source>A propos des plugins...</source>
         <translation>About plugins...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="327"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="328"/>
         <source>Sauvegarder l&apos;arbre des etapes</source>
         <translation>Save the tree steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="531"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="532"/>
         <source>Attention aucun plugin n&apos;a été trouvé dans :
 %1</source>
         <translation>Warning no plugin has been found in:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="532"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="533"/>
         <source>Voulez-vous spÜifier dans quel dossier rechercher les plugins ?</source>
         <translation>Do you want to specify where you want to search for plugins?</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="535"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="536"/>
         <source>Parcourir...</source>
         <translation>Browse...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="536"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="537"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="546"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="547"/>
         <source>Dossier contenant les plugins...</source>
         <translation>Folder containing the plugins ...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="564"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="565"/>
         <source>Attention il y a eu des erreurs lors du chargement des plugins du dossier :
 %1</source>
         <translation>Please note there were errors when loading plugins folder:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="571"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="572"/>
         <source>Succès</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="571"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="572"/>
         <source>Le plugin %1 a été chargé avec succès !</source>
         <translation>The plugin %1 was loaded with success!</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="680"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="681"/>
         <source>All Valid Files (</source>
         <translation>Tous les fichiers valides (</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="771"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="772"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="783"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="784"/>
         <source>Script File (*</source>
         <translation>Fichiers scripts (*</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="802"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="803"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="802"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="803"/>
         <source>Voud devez redémarrer l&apos;application pour prendre en compte le changement de langue.</source>
         <translation>You must restart the application to reflect the language change.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="872"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="879"/>
         <source>%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="893"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="880"/>
+        <source>%1 (F1 pour plus d&apos;info)</source>
+        <translation>%1 (F1 for more info)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="900"/>
         <source>Aucune action</source>
         <translation>No step</translation>
     </message>
@@ -1588,68 +1610,73 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GTreeStepContextMenu</name>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="87"/>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="153"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="89"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="155"/>
         <source>%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="197"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="90"/>
+        <source>%1 (F1 pour plus d&apos;info)</source>
+        <translation>%1 (F1 for more info)</translation>
+    </message>
+    <message>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="199"/>
         <source>ExÜuter</source>
         <translation>Execute</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="209"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="211"/>
         <source>Modifier (mode manuel)</source>
         <translation>Modify( manual mode)</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="216"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="218"/>
         <source>Informations sur l&apos;étape</source>
         <translation>Informations about step</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="222"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="224"/>
         <source>Configurer les résultats d&apos;entrÞ</source>
         <translation>Configure input results</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="222"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="224"/>
         <source>Voir la configuration des résultats d&apos;entrÞ</source>
         <translation>Show configuration of input results</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="228"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="230"/>
         <source>Configurer</source>
         <translation>Configure</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="236"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="238"/>
         <source>Supprimer</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="260"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="262"/>
         <source>Déplier</source>
         <translation>Expand</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="265"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="267"/>
         <source>Déplier toutes les étapes</source>
         <translation>Expand all steps</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="270"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="272"/>
         <source>Replier</source>
         <translation>Collapse</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="275"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="277"/>
         <source>Replier toutes les étapes</source>
         <translation>Collapse all steps</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="316"/>
+        <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="324"/>
         <source>Aucune action</source>
         <translation>No action</translation>
     </message>
@@ -1719,12 +1746,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="898"/>
         <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="911"/>
         <source>%1</source>
-        <translation>Document %1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="903"/>
         <source>Couleur automatique</source>
         <translation>Automatic color</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="936"/>
+        <source>Rafraichir</source>
+        <translation>Refresh</translation>
     </message>
     <message>
         <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="890"/>
@@ -1756,21 +1788,6 @@ Attention cette opération peut être lente.</source>
         <location filename="../dm_guimanager.cpp" line="683"/>
         <source>Suppression du resultat %1 des autres vues.</source>
         <translation>Remove result %1 from other views.</translation>
-    </message>
-    <message>
-        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="191"/>
-        <source>Veuillez patienter pendant la construction de la table</source>
-        <translation type="unfinished">Please wait while the construction of the table</translation>
-    </message>
-    <message>
-        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="253"/>
-        <source>Veuillez patienter pendant le rafraichissement de la table</source>
-        <translation type="unfinished">Please wait while the refreshment of the table</translation>
-    </message>
-    <message>
-        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="398"/>
-        <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
-        <translation type="unfinished">Please wait while adding items to the table</translation>
     </message>
 </context>
 <context>

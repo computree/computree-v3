@@ -8,7 +8,6 @@ GINeedHelpDialog::GINeedHelpDialog(QWidget *parent) :
     ui->setupUi(this);
 
 
-
     ui->content->append(tr("Pour le <b>sommaire de l'aide Computree</b> :"));
     ui->content->append(tr("-> <a href=\"http://rdinnovation.onf.fr/projects/computree/wiki\">Sommaire de la Wiki Computree</a>"));
     ui->content->append("<br>");
@@ -22,8 +21,7 @@ GINeedHelpDialog::GINeedHelpDialog(QWidget *parent) :
     ui->content->append("<br>");
 
     ui->content->append(tr("Pour de l'aide sur <b>une étape dans un plugin (pas encore insérée)</b> :"));
-    ui->content->append(tr("-> Dans la barre de menu, cliquer sur <i>Aide</i>, puis <i>A propos des Plugins</i>"));
-    ui->content->append(tr("-> Déplier <i>Plugins d'étapes</i>, déplier le plugin d'intérêt, séléctionner l'étape, puis cliquer sur <i>Info Etape</i>"));
+    ui->content->append(tr("-> Dans le sous-menu d'insertion d'étape du plugin, sur l'étape, faire F1"));
     ui->content->append("<br>");
 
     ui->content->append(tr("Pour de l'aide sur <b>comment réaliser une tâche précise à l'aide des étapes disponibles</b> :"));

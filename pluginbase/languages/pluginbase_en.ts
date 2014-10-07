@@ -1280,9 +1280,13 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepAddAffiliationID</name>
     <message>
-        <location filename="../step/pb_stepaddaffiliationid.cpp" line="48"/>
         <source>Ajoute un identifiant d&apos;affiliation au groupe</source>
-        <translation>Adds an affiliate identifier to the group</translation>
+        <translation type="vanished">Adds an affiliate identifier to the group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepaddaffiliationid.cpp" line="48"/>
+        <source>Ajout d&apos;un ID / groupe</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_stepaddaffiliationid.cpp" line="53"/>
@@ -1318,11 +1322,6 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepComputeHitGrid</name>
     <message>
-        <location filename="../step/pb_stepcomputehitgrid.cpp" line="70"/>
-        <source>Créé une grille voxel de densité de points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="76"/>
         <source>Cette étape génère une grille 3D à la &lt;b&gt;résolution&lt;/b&gt; spécifiée.&lt;br&gt;Chaque case reçoit le nombre de points de la scène d&apos;entrée qu&apos;elle contient.&lt;br&gt;Elle calcule également les profils 2D cumulés en XY, XZ et YZ. </source>
         <translation type="unfinished"></translation>
@@ -1345,6 +1344,11 @@ In 3D mode, the tool only works on selected cells</translation>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="100"/>
         <source>DensityXY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputehitgrid.cpp" line="70"/>
+        <source>Création d&apos;une grille 3D de densité de points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1390,6 +1394,11 @@ In 3D mode, the tool only works on selected cells</translation>
 </context>
 <context>
     <name>PB_StepFilterPointsByBoolGrid</name>
+    <message>
+        <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="35"/>
+        <source>Filtrage d&apos;un nuage de points // grille 3D booléenne</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="41"/>
         <source>Cette étape teste pour chaque point des scènes d&apos;entrée s&apos;il est contenu dans une case &quot;vraie&quot; de la grille booléenne choisie. Si oui, le point est conservé. Sinon, il n&apos;est pas conservé.&lt;br&gt;Plusieures scènes peuvent être traitées avec la même étape.&lt;br&gt;Chaque scène filtrée est ajoutée au groupe contenant la grille d&apos;entrée.Si le résultat d&apos;entrée contient plusieurs grilles, une scène est produite pour chacune (sur la base du cumul de toutes les scènes d&apos;entrée)</source>
@@ -1461,9 +1470,13 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadAsciiFile</name>
     <message>
-        <location filename="../step/pb_steploadasciifile.cpp" line="122"/>
         <source>Charge un fichier ascii</source>
-        <translation>Load an asciii file</translation>
+        <translation type="vanished">Load an asciii file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile.cpp" line="122"/>
+        <source>Chargement d&apos;un fichier ascii</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadasciifile.cpp" line="319"/>
@@ -1474,17 +1487,25 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadAsciiFile02</name>
     <message>
-        <location filename="../step/pb_steploadasciifile02.cpp" line="177"/>
         <source>Charge un fichier ascii</source>
-        <translation>Load an ascii file</translation>
+        <translation type="vanished">Load an ascii file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="177"/>
+        <source>Chargement d&apos;un fichier ascii</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PB_StepLoadGrid3dFile</name>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
         <source>Charge un fichier grid3d</source>
-        <translation>Load an Grid3D file</translation>
+        <translation type="vanished">Load an Grid3D file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
+        <source>Chargement d&apos;un fichier grid3d</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadgrid3dfile.cpp" line="74"/>
@@ -1530,6 +1551,11 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadMultiXYBFiles</name>
     <message>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="47"/>
+        <source>Chargement d&apos;une liste de fichiers xyb</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../step/pb_steploadmultixybfiles.cpp" line="67"/>
         <source>IndividualScenes</source>
         <translation>Individual Scenes</translation>
@@ -1569,9 +1595,13 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadObjFile</name>
     <message>
-        <location filename="../step/pb_steploadobjfile.cpp" line="33"/>
         <source>Charge un fichier .obj dans un Mesh</source>
-        <translation>Load an obj file in a Mesh</translation>
+        <translation type="vanished">Load an obj file in a Mesh</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="33"/>
+        <source>Chargement d&apos;un fichier .obj (Mesh)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadobjfile.cpp" line="52"/>
@@ -1592,21 +1622,34 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepLoadPbmFile</name>
     <message>
-        <location filename="../step/pb_steploadpbmfile.cpp" line="35"/>
         <source>Charge un fichier pbm</source>
-        <translation>Load an pbm file</translation>
+        <translation type="vanished">Load an pbm file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpbmfile.cpp" line="35"/>
+        <source>Chargement d&apos;un fichier pbm</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PB_StepLoadPgmFile</name>
     <message>
-        <location filename="../step/pb_steploadpgmfile.cpp" line="36"/>
         <source>Charge un fichier pgm</source>
-        <translation>Load an pgm file</translation>
+        <translation type="vanished">Load an pgm file</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpgmfile.cpp" line="36"/>
+        <source>Chargement d&apos;un fichier pgm</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PB_StepMeasureCrownAttributes</name>
+    <message>
+        <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="48"/>
+        <source>Mesure des attributs d&apos;un houppier</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../step/pb_stepmeasurecrownattributes.cpp" line="54"/>
         <source>Cette étape permet de mesurer des attributs d&apos;un houppier</source>
@@ -1654,9 +1697,13 @@ Leave the mouse over a button to get info.</translation>
 <context>
     <name>PB_StepReducePointsDensity</name>
     <message>
-        <location filename="../step/pb_stepreducepointsdensity.cpp" line="67"/>
         <source>Réduit la densité de scènes, sur la base d&apos;une grille régulière</source>
-        <translation>Reduced density scenes, on the basis of a regular grid</translation>
+        <translation type="vanished">Reduced density scenes, on the basis of a regular grid</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepreducepointsdensity.cpp" line="67"/>
+        <source>Réduction de la densité de points</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_stepreducepointsdensity.cpp" line="72"/>
@@ -1702,6 +1749,11 @@ Leave the mouse over a button to get info.</translation>
 </context>
 <context>
     <name>PB_StepSegmentCrowns</name>
+    <message>
+        <location filename="../step/pb_stepsegmentcrowns.cpp" line="48"/>
+        <source>Segmentation de houppiers en 2D</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="54"/>
         <source>Cette étape permet de segmenter des houppiers manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les houppiers. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque houppier. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (houppiers) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque houppier&lt;/li&gt;&lt;li&gt;Une scène de points extraite pour chaque houppier&lt;/li&gt;&lt;li&gt;Un polygone horizontal correspondant à l&apos;enveloppe convexe des pixels de chaque houppier&lt;/li&gt;&lt;li&gt;Deux métriques donnant respectivement la surface des pixels, et la surface de l&apos;enveloppe convexe pour chaque houppier&lt;/li&gt;&lt;/ul&gt;</source>
@@ -1859,6 +1911,11 @@ Cela peut prendre un peu de temps...</source>
 <context>
     <name>PB_StepSegmentGaps</name>
     <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="47"/>
+        <source>Segmentation de trouées en 2D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="53"/>
         <source>Cette étape permet de segmenter des trouées manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les trouées. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque trouée. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (trouées) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque trouée&lt;/li&gt;&lt;li&gt;Une métrique donnant la surface des pixels pour chaque trouée&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
@@ -1979,6 +2036,11 @@ Cela peut prendre un peu de temps...</source>
 <context>
     <name>PB_StepSelectCellsInGrid3D</name>
     <message>
+        <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="53"/>
+        <source>Séléction d&apos;un sous-ensemble d&apos;une grille 3D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="59"/>
         <source>Cette étape permet de générer une grille booléenne, représentant une séléction de cellules parmi celles de la grille de référence choisie en entrée.&lt;br&gt;Elle utilise un actionner, permettant de faire des séléction soit par plans horizontaux 2D, soit directement en 3D.&lt;br&gt;En sortie elle fournie également une copie de la grille d&apos;entrée pour laquelle toute les cases non sélectionnées sont réinitialisées à la valeur 0. </source>
         <translation type="unfinished"></translation>
@@ -2027,7 +2089,7 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
     <name>PB_StepSetAffiliationIDFromReference</name>
     <message>
         <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="63"/>
-        <source>Modifie les identifiants d&apos;affiliation de groupes, sur la base d&apos;une référence</source>
+        <source>Mise en correspondance d&apos;ID de deux résultats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2100,7 +2162,7 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</source>
     <name>PB_StepSlicePointCloud</name>
     <message>
         <location filename="../step/pb_stepslicepointcloud.cpp" line="52"/>
-        <source>Découpe une scène en tranche</source>
+        <source>Découpage d&apos;une scène en tranches horizontales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2170,6 +2232,11 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</source>
 <context>
     <name>PB_StepUserItemCopy</name>
     <message>
+        <location filename="../step/pb_stepuseritemcopy.cpp" line="43"/>
+        <source>Séléction d&apos;un sous-ensemble d&apos;items (dupliqués)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../step/pb_stepuseritemcopy.cpp" line="58"/>
         <location filename="../step/pb_stepuseritemcopy.cpp" line="71"/>
         <source>Result</source>
@@ -2194,6 +2261,11 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</source>
 </context>
 <context>
     <name>PB_StepUserItemSelection</name>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="45"/>
+        <source>Séléction d&apos;un sous-ensemble d&apos;items</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="60"/>
         <source>Result</source>

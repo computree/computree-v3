@@ -39,6 +39,8 @@
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 #include "ct_abstractstepplugin.h"
 
+#include "view/StepResultTreeView/myqmenu.h"
+
 GTreeStepContextMenu::GTreeStepContextMenu(CDM_StepManager &stepManager, QWidget *parent) : QMenu(parent)
 {
     _selectedStep = NULL;
@@ -59,7 +61,7 @@ CT_VirtualAbstractStep* GTreeStepContextMenu::selectedStep()
     return _selectedStep;
 }
 
-void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, QMenu *menuStep, bool insert)
+void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, MyQMenu *menuStep, bool insert)
 {
     QListIterator<CT_StepSeparator*> it(stepAvailable);
 
@@ -71,11 +73,11 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
 
         if(itStep.hasNext())
         {
-            QMenu *underMenu = NULL;
+            MyQMenu *underMenu = NULL;
 
             if(!sep->getTitle().isEmpty())
             {
-                underMenu = new QMenu(sep->getTitle(), this);
+                underMenu = new MyQMenu(sep->getTitle(), this);
                 /*underMenu->setStyleSheet("QMenu::item[isManual=\"true\"]{ background-color:rgb(255,0,0); }"
                                         "QMenu::item:selected { background-color: #654321; }");*/
             }
@@ -85,7 +87,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
                 CT_VirtualAbstractStep *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                action->setToolTip(step->getStepName());
+                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
                 if(!insert)
@@ -129,7 +131,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
     }
 }
 
-void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator *> stepAvailable, QMenu *menuStep)
+void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator *> stepAvailable, MyQMenu *menuStep)
 {
     QListIterator<CT_StepCanBeAddedFirstSeparator*> it(stepAvailable);
 
@@ -141,10 +143,10 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparato
 
         if(itStep.hasNext())
         {
-            QMenu *underMenu = NULL;
+            MyQMenu *underMenu = NULL;
 
             if(!sep->getTitle().isEmpty())
-                underMenu = new QMenu(sep->getTitle(), this);
+                underMenu = new MyQMenu(sep->getTitle(), this);
 
             while(itStep.hasNext())
             {
@@ -291,7 +293,7 @@ void GTreeStepContextMenu::reload()
                 pluginName.remove(0, 5);
             }
 
-            QMenu *menuStep = new QMenu(pluginName, this);
+            MyQMenu *menuStep = new MyQMenu(pluginName, this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
             /*menuStep->setStyleSheet("QMenu::item[isManual=\"true\"]{ background-color:rgb(255,0,0); }"
                                     "QMenu::action:selected { background-color: #654321; }");*/

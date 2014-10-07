@@ -43,6 +43,7 @@
 #include "gineedhelpdialog.h"
 
 #include "myqaction.h"
+#include "myqmenu.h"
 
 #include "ct_steploadfileseparator.h"
 #include "ct_stepcanbeaddedfirstseparator.h"
@@ -852,7 +853,7 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
                 pluginName.remove(0, 5);
             }
 
-            QMenu *menuStep = new QMenu(pluginName, this);
+            MyQMenu *menuStep = new MyQMenu(pluginName, this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
 
             QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
@@ -866,17 +867,17 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
 
                 if(itStep.hasNext())
                 {
-                    QMenu *underMenu = NULL;
+                    MyQMenu *underMenu = NULL;
 
                     if(!sep->getTitle().isEmpty())
-                        underMenu = new QMenu(sep->getTitle(), this);
+                        underMenu = new MyQMenu(sep->getTitle(), this);
 
                     while(itStep.hasNext())
                     {
                         CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                         MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                        action->setToolTip(step->getStepName());
+                        action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                         action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
                         if(underMenu == NULL)

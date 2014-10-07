@@ -31,6 +31,7 @@
 
 #include <QMenu>
 #include "myqaction.h"
+#include "view/StepResultTreeView/myqmenu.h"
 
 class CT_VirtualAbstractStep;
 class CT_AbstractStepSerializable;
@@ -60,8 +61,8 @@ private:
 
     CT_VirtualAbstractStep* selectedStep();
 
-    void addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, QMenu *menuStep, bool insert = false);
-    void addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable, QMenu *menuStep);
+    void addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, MyQMenu *menuStep, bool insert = false);
+    void addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable, MyQMenu *menuStep);
 
     /*!
      *  \brief Connecte les signaux de l'action aux slots de cette classe

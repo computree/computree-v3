@@ -43,7 +43,8 @@ SOURCES += \
     view/DocumentView/ItemModelViews/cg_customtreeitemmodel.cpp \
     view/DocumentView/ItemModelViews/cg_customtreeitem.cpp \
     view/DocumentView/GraphicsViews/3D/g3dfakepainter.cpp \
-    $$PWD/MainView/gineedhelpdialog.cpp
+    $$PWD/MainView/gineedhelpdialog.cpp \
+    $$PWD/StepResultTreeView/myqmenu.cpp
 
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -92,7 +93,8 @@ HEADERS += \
     view/DocumentView/GraphicsViews/3D/g3dfakepainter.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
-    $$PWD/MainView/gineedhelpdialog.h
+    $$PWD/MainView/gineedhelpdialog.h \
+    $$PWD/StepResultTreeView/myqmenu.h
 
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
