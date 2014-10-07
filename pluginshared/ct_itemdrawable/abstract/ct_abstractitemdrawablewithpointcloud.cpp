@@ -137,6 +137,9 @@ CT_AbstractItemDrawableWithPointCloud::CT_AbstractCIR CT_AbstractItemDrawableWit
 
 size_t CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize() const
 {
+    if(getPointCloudIndex() == NULL)
+        return 0;
+
     return getPointCloudIndex()->size();
 }
 

@@ -188,7 +188,7 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::constructModel()
         if(aop != NULL)
         {
             aop->progressDialog()->setCanClose(false);
-            aop->progressDialog()->setLabelText(tr("Veuillez patienter pendant la construction de la table"));
+            aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant la construction de la table"));
             aop->progressDialog()->setSecondLabelText("");
             aop->progressDialog()->setValue(0);
 
@@ -250,7 +250,7 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::refresh(const QList<QPair<
     if(aop != NULL)
     {
         aop->progressDialog()->setCanClose(false);
-        aop->progressDialog()->setLabelText(tr("Veuillez patienter pendant le rafraichissement de la table"));
+        aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant le rafraichissement de la table"));
         aop->progressDialog()->setSecondLabelText("");
         aop->progressDialog()->setValue(0);
         aop->progressDialog()->show();
@@ -395,7 +395,7 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotAddTemporaryItemsInTab
         if(aop != NULL)
         {
             aop->progressDialog()->setCanClose(false);
-            aop->progressDialog()->setLabelText(tr("Veuillez patienter pendant l'ajout des éléments à la table"));
+            aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant l'ajout des éléments à la table"));
             aop->progressDialog()->setSecondLabelText("");
             aop->progressDialog()->setValue(0);
             aop->progressDialog()->show();
@@ -441,7 +441,7 @@ void DM_ItemDrawableTreeViewControllerT<Model, Item>::slotRemoveTemporaryItemsIn
         if(aop != NULL)
         {
             aop->progressDialog()->setCanClose(false);
-            aop->progressDialog()->setLabelText(tr("Veuillez patienter pendant la suppression des éléments de la table"));
+            aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant la suppression des éléments de la table"));
             aop->progressDialog()->setSecondLabelText("");
             aop->progressDialog()->setValue(0);
             aop->progressDialog()->show();

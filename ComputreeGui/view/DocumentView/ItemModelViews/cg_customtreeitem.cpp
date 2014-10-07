@@ -47,14 +47,14 @@ void CG_CustomTreeItem::appendRow(const QList<CG_CustomTreeItem *> &items)
     }
 }
 
-void CG_CustomTreeItem::removeRow(int row)
+void CG_CustomTreeItem::removeRow(int r)
 {
-    bool send = (m_count > row);
+    bool send = (m_count > r);
 
     if((model() != NULL) && send)
-        model()->beginRemoveRows(model()->indexFromItem(this), row, row);
+        model()->beginRemoveRows(model()->indexFromItem(this), r, r);
 
-    QList<CG_CustomTreeItem *> items = m_items.takeAt(row);
+    QList<CG_CustomTreeItem *> items = m_items.takeAt(r);
 
     foreach (CG_CustomTreeItem *i, items) {
         i->setModel(NULL);
@@ -93,19 +93,19 @@ void CG_CustomTreeItem::insertRow(int i, const QList<CG_CustomTreeItem *> &items
         model()->endInsertRows();
 }
 
-void CG_CustomTreeItem::replaceRow(int row, const QList<CG_CustomTreeItem *> &items)
+void CG_CustomTreeItem::replaceRow(int r, const QList<CG_CustomTreeItem *> &items)
 {
     if(model() != NULL)
         model()->beginResetModel();
 
-    QList<CG_CustomTreeItem *> itemsT = m_items.takeAt(row);
+    QList<CG_CustomTreeItem *> itemsT = m_items.takeAt(r);
 
     foreach (CG_CustomTreeItem *i, itemsT) {
         i->setModel(NULL);
         delete i;
     }
 
-    m_items.insert(row, items);
+    m_items.insert(r, items);
 
     int c = 0;
 
@@ -284,12 +284,12 @@ void CG_CustomTreeItem::fetchMore()
     int remainder = m_items.size() - m_count;
     int itemsToFetch = qMin(m_fetchSize, remainder);
 
-    if(model() != NULL)
+    if((parent() == NULL) && (model() != NULL))
         model()->beginInsertRows(model()->indexFromItem(this), m_count, m_count + itemsToFetch - 1);
 
     m_count += itemsToFetch;
 
-    if(model() != NULL)
+    if((parent() == NULL) && (model() != NULL))
         model()->endInsertRows();
 }
 
@@ -354,6 +354,16 @@ void CG_CustomTreeItem::setColumn(int c)
 void CG_CustomTreeItem::setModel(const CG_CustomTreeItemModel *m)
 {
     m_model = (CG_CustomTreeItemModel*)m;
+
+    QListIterator< QList<CG_CustomTreeItem *> > it(m_items);
+
+    while(it.hasNext())
+    {
+        QListIterator<CG_CustomTreeItem *> it2(it.next());
+
+        while(it2.hasNext())
+            it2.next()->setModel(m);
+    }
 }
 
 CG_CustomTreeItemModel* CG_CustomTreeItem::model() const

@@ -932,9 +932,9 @@ void GTreeView::initContextMenu()
         }
     }
 
-    m_contextMenu->addSeparator();
+    /*m_contextMenu->addSeparator();
     action = m_contextMenu->addAction(tr("Rafraichir"));
-    connect(action, SIGNAL(triggered()), this, SLOT(slotRefreshSelected()));
+    connect(action, SIGNAL(triggered()), this, SLOT(slotRefreshSelected()));*/
 }
 
 void GTreeView::setValidColorForLineFilter(bool valid)

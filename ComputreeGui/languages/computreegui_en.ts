@@ -76,21 +76,6 @@
     </message>
 </context>
 <context>
-    <name>DM_ItemDrawableTreeViewController</name>
-    <message>
-        <source>Veuillez patienter pendant la construction de la table</source>
-        <translation type="vanished">Please wait while the construction of the table</translation>
-    </message>
-    <message>
-        <source>Veuillez patienter pendant le rafraichissement de la table</source>
-        <translation type="vanished">Please wait while the refreshment of the table</translation>
-    </message>
-    <message>
-        <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
-        <translation type="vanished">Please wait while adding items to the table</translation>
-    </message>
-</context>
-<context>
     <name>DM_SortFilterMathProxyModel</name>
     <message>
         <location filename="../tools/treeview/dm_sortfiltermathproxymodel.cpp" line="47"/>
@@ -852,7 +837,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="168"/>
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="181"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation>Document %1</translation>
     </message>
     <message>
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="173"/>
@@ -1004,10 +989,11 @@ p, li { white-space: pre-wrap; }
         <translation>Error load script</translation>
     </message>
     <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="150"/>
         <source>Une erreur est survenu lors de la lecture du script :
 
 %1</source>
-        <translation type="vanished">An error occured while reading the script:
+        <translation>An error occured while reading the script:
 
 %1</translation>
     </message>
@@ -1695,71 +1681,71 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Group</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="664"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="665"/>
         <source>Sel.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="710"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="734"/>
         <source>Question</source>
         <translation>Question</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="722"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="746"/>
         <source>Veuillez patienter pendant le chargement de la table...</source>
         <translation>Please wait during table loading...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="722"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="746"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="828"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="872"/>
         <source>Sélectionner</source>
         <translation>Select</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="832"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="876"/>
         <source>Dé-Sélectionner</source>
         <translation>DeSelect</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="836"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="880"/>
         <source>Inverser la sélection</source>
         <translation>Inverse the selection</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="854"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="867"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="898"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="911"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation>Document %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="859"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="903"/>
         <source>Couleur automatique</source>
         <translation>Automatic color</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="846"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="890"/>
         <source>Couleur unie</source>
         <translation>Plain color</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="250"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="274"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="255"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="279"/>
         <source>Le modèle n&apos;est pas chargé complètement, voulez vous le charger avant de faire la recherche ?</source>
         <translation>The model is not completely loaded, do you want to load it before lauching the search ?</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="322"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="327"/>
         <source>Le modèle n&apos;est pas chargé complètement, voulez vous le charger pour utiliser tous les éléments dans le tri ?
 
 Attention cette opération peut être lente.</source>
         <translation>The model is not completely loaded, do you want to load it before use all elements in sorting ?\nWarning: this operation could be long.</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="885"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="929"/>
         <source>Ajouter au </source>
         <translation>Add to </translation>
     </message>
@@ -1770,6 +1756,21 @@ Attention cette opération peut être lente.</source>
         <location filename="../dm_guimanager.cpp" line="683"/>
         <source>Suppression du resultat %1 des autres vues.</source>
         <translation>Remove result %1 from other views.</translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="191"/>
+        <source>Veuillez patienter pendant la construction de la table</source>
+        <translation type="unfinished">Please wait while the construction of the table</translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="253"/>
+        <source>Veuillez patienter pendant le rafraichissement de la table</source>
+        <translation type="unfinished">Please wait while the refreshment of the table</translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="398"/>
+        <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
+        <translation type="unfinished">Please wait while adding items to the table</translation>
     </message>
 </context>
 <context>
