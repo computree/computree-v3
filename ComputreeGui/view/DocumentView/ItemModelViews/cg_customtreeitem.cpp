@@ -181,6 +181,11 @@ void CG_CustomTreeItem::setText(const QString &text)
     setDataWithoutSignal(text, Qt::DisplayRole);
 }
 
+QString CG_CustomTreeItem::text() const
+{
+    return data(Qt::DisplayRole).toString();
+}
+
 void CG_CustomTreeItem::setFlags(Qt::ItemFlags flags)
 {
     setDataWithoutSignal((int)flags, Qt::UserRole - 1);

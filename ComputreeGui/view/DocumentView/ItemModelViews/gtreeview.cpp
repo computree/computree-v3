@@ -23,6 +23,8 @@
 
 #include "ct_global/ct_context.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
+#include "ct_itemdrawable/ct_itemattributelist.h"
 
 int GTreeView::COLUMN_FIRST_DATA_VALUE = 1;
 
@@ -624,6 +626,41 @@ QList<CG_CustomTreeItem *> GTreeView::createItems(const CT_AbstractItemDrawable 
     else
     {
         itemDisplay->setText(item.model()->displayableName());
+
+        const CT_AbstractItemGroup *group = dynamic_cast<const CT_AbstractItemGroup*>(&item);
+
+        if(group != NULL)
+        {
+            QList<CT_AbstractItem*> items = group->childrensForGui();
+            QListIterator<CT_AbstractItem*> it(items);
+
+            while(it.hasNext())
+            {
+                CT_ItemAttributeList *sI = dynamic_cast<CT_ItemAttributeList*>(it.next());
+
+                if(sI != NULL)
+                {
+                    QList<CT_AbstractItemAttribute*> lIA = sI->itemAttributes();
+                    QListIterator<CT_AbstractItemAttribute*> itIA(lIA);
+
+                    while(itIA.hasNext())
+                    {
+                        CT_AbstractItemAttribute *att = itIA.next();
+                        int index = m_dataReferencesToUse.indexOf(att->model()->originalModel());
+
+                        if(index != -1)
+                        {
+                            CG_CustomTreeItem *ii = l.at(index + GTreeView::COLUMN_FIRST_DATA_VALUE);
+
+                            if(!ii->text().isEmpty())
+                                ii->setText(ii->text() + " / ");
+
+                            ii->setText(ii->text() + att->toString(sI, NULL));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     return l;

@@ -36,6 +36,7 @@ public:
     void setData(const QVariant &value, int role = Qt::UserRole + 1);
 
     void setText(const QString &text);
+    QString text() const;
 
     void setFlags(Qt::ItemFlags flags);
     Qt::ItemFlags flags() const;
