@@ -846,7 +846,13 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
 
         for(int i=0; i<n; ++i)
         {
-            QMenu *menuStep = new QMenu(pluginManager->getPluginName(i), this);
+            QString pluginName = pluginManager->getPluginName(i);
+            if (pluginName.left(5) == "plug_")
+            {
+                pluginName.remove(0, 5);
+            }
+
+            QMenu *menuStep = new QMenu(pluginName, this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
 
             QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();

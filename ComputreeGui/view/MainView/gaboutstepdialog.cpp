@@ -28,6 +28,12 @@ void GAboutStepDialog::initView(CT_VirtualAbstractStep *step)
     ui->scrollArea->setWidgetResizable(true);
 
     QString pluginName = GUI_MANAGER->getPluginManager()->getPluginName(step->getPlugin());
+
+    if (pluginName.left(5) == "plug_")
+    {
+        pluginName.remove(0, 5);
+    }
+
     ui->pluginName->setText(pluginName);
     ui->stepName->setText(step->getStepName());
 

@@ -62,8 +62,14 @@ void GAboutPluginsDialog::initView()
 
     for(int i=0; i<n; ++i)
     {
+        QString pluginName = _pManager->getPluginName(i);
+        if (pluginName.left(5) == "plug_")
+        {
+            pluginName.remove(0, 5);
+        }
+
         QTreeWidgetItem *item = new QTreeWidgetItem(rootItem);
-        item->setData(0, Qt::DisplayRole, _pManager->getPluginName(i));
+        item->setData(0, Qt::DisplayRole, pluginName);
         item->setData(0, Qt::UserRole, I_Step);
         item->setData(0, Qt::UserRole+1, i);
 

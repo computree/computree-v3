@@ -285,7 +285,13 @@ void GTreeStepContextMenu::reload()
 
         for(int i=0; i<n; ++i)
         {
-            QMenu *menuStep = new QMenu(pluginManager->getPluginName(i), this);
+            QString pluginName = pluginManager->getPluginName(i);
+            if (pluginName.left(5) == "plug_")
+            {
+                pluginName.remove(0, 5);
+            }
+
+            QMenu *menuStep = new QMenu(pluginName, this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
             /*menuStep->setStyleSheet("QMenu::item[isManual=\"true\"]{ background-color:rgb(255,0,0); }"
                                     "QMenu::action:selected { background-color: #654321; }");*/

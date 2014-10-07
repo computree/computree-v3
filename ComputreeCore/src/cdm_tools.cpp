@@ -21,7 +21,13 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
 
         if(!separators.isEmpty())
         {
-            QMenu *sepMenu = new QMenu(m_pm->getPluginName(i));
+            QString pluginName = m_pm->getPluginName(i);
+            if (pluginName.left(5) == "plug_")
+            {
+                pluginName.remove(0, 5);
+            }
+
+            QMenu *sepMenu = new QMenu(pluginName);
 
             QListIterator<CT_StandardExporterSeparator*> itS(separators);
 
