@@ -640,72 +640,72 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="12"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="11"/>
         <source>Pour le &lt;b&gt;sommaire de l&apos;aide Computree&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="13"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="12"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki&quot;&gt;Sommaire de la Wiki Computree&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="16"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="15"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;l&apos;utilisation de l&apos;interface graphique&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="17"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="16"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_computreeGUI&quot;&gt;Wiki sur l&apos;interface utilisateur&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="20"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="19"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;une étape insérée&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="21"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="20"/>
         <source>-&gt; Faire un clic droit sur l&apos;étape insérée, puis &lt;i&gt;Informations sur l&apos;étape&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="24"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="23"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;une étape dans un plugin (pas encore insérée)&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="25"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="24"/>
         <source>-&gt; Dans le sous-menu d&apos;insertion d&apos;étape du plugin, sur l&apos;étape, faire F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="28"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="27"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;comment réaliser une tâche précise à l&apos;aide des étapes disponibles&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="29"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="28"/>
         <source>-&gt; Consulter les tutoriels disponibles ici : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_tutorials&quot;&gt;Tutoriels thématiques (How To&apos;s)&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="32"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="31"/>
         <source>Pour &lt;b&gt;signaler un bug&lt;/b&gt; ou &lt;b&gt;suggérer une amélioration&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="33"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="32"/>
         <source>-&gt; Créer une nouvelle demande : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/issues/new&quot;&gt;Nouvelle demande&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="36"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="35"/>
         <source>Pour &lt;b&gt;poster un message sur le forum Computree&lt;/b&gt; :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="37"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="36"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/boards&quot;&gt;Forum Computree&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1665,96 +1665,91 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GTreeView</name>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="63"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="65"/>
         <source>Sync with..</source>
         <translation>Synchroniser avec...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="66"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="68"/>
         <source>&lt;html&gt;&lt;p&gt;&lt;font size=&quot;4&quot;&gt;&lt;b&gt;Filtrer une colonne&lt;/b&gt;&lt;/font&gt;&lt;/p&gt;&lt;p&gt;Vous pouvez filtrer une colonne en écrivant son nom puis la valeur à rechercher.&lt;/p&gt;&lt;p&gt;&lt;i&gt;MaColonne : mot&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;Vous pouvez aussi filtrer une colonne contenant des nombres en utilisant des fonctions mathématiques. Pour celà il vous faut utiliser la syntaxe (val) qui sera remplacée par la valeur de la cellule de la colonne.&lt;/p&gt;&lt;p&gt;&lt;i&gt;MaColonne : (val) &amp;gt; 0 and (val) &amp;lt; 500&lt;/i&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="77"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="79"/>
         <source>Filtrer la colonne...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="91"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="93"/>
         <source>Valider</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="665"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="702"/>
         <source>Sel.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="734"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="771"/>
         <source>Question</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="746"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="783"/>
         <source>Veuillez patienter pendant le chargement de la table...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="746"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="783"/>
         <source>Annuler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="872"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="909"/>
         <source>Sélectionner</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="876"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="913"/>
         <source>Dé-Sélectionner</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="880"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="917"/>
         <source>Inverser la sélection</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="898"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="911"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="935"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="948"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="903"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="940"/>
         <source>Couleur automatique</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="936"/>
-        <source>Rafraichir</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="890"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="927"/>
         <source>Couleur unie</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="255"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="279"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="257"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="281"/>
         <source>Le modèle n&apos;est pas chargé complètement, voulez vous le charger avant de faire la recherche ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="327"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="329"/>
         <source>Le modèle n&apos;est pas chargé complètement, voulez vous le charger pour utiliser tous les éléments dans le tri ?
 
 Attention cette opération peut être lente.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="929"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="966"/>
         <source>Ajouter au </source>
         <translation></translation>
     </message>
@@ -1765,6 +1760,21 @@ Attention cette opération peut être lente.</source>
         <location filename="../dm_guimanager.cpp" line="683"/>
         <source>Suppression du resultat %1 des autres vues.</source>
         <translation>Suppression du résultat %1 des autres vues.</translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="191"/>
+        <source>Veuillez patienter pendant la construction de la table</source>
+        <translation type="unfinished">Veuillez patienter pendant la construction de la table</translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="253"/>
+        <source>Veuillez patienter pendant le rafraichissement de la table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="398"/>
+        <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
