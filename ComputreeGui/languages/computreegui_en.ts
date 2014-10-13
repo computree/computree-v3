@@ -349,29 +349,39 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="60"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="63"/>
         <source>Sync</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="79"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="82"/>
         <source>Centrer la vue sur l&apos;origine</source>
         <translation>Center the view on the origin</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="119"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="102"/>
+        <source>Déplacer la caméra</source>
+        <translation>Move the camera</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="125"/>
         <source>Centrer la vue sur le barycentre des éléments présents dans la vue</source>
         <translation>Center the view on the centroid of the elements in the view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="133"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="139"/>
         <source>Centrer la vue sur le barycentre des éléments sélectionnés</source>
         <translation>Center the view on the centroid of the selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="153"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="159"/>
         <source>Vue personnalisée</source>
         <translation>Personalized view</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="179"/>
+        <source>Ajuster la caméra aux éléments visibles</source>
+        <translation>Adjust camera to visible elements</translation>
     </message>
     <message>
         <location filename="../view/DocumentView/gcameragraphicsoptions.cpp" line="88"/>
@@ -379,6 +389,7 @@ p, li { white-space: pre-wrap; }
         <translation>Unsynchronize this document</translation>
     </message>
     <message>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="52"/>
         <location filename="../view/DocumentView/gcameragraphicsoptions.cpp" line="88"/>
         <source>Synchroniser ce document</source>
         <translation>Synchronize this document</translation>
@@ -413,43 +424,43 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GDocumentViewForGraphics</name>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="556"/>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="803"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="561"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="876"/>
         <source>Point de vue</source>
         <translation>Point of view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="556"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="561"/>
         <source>Veuillez entrer un nom pour le point de vue :</source>
         <translation>Please enter a name for the point of view:</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="763"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="836"/>
         <source>Exporter sous...</source>
         <translation>Export to...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="778"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="851"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="815"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="888"/>
         <source>Exporter les éléments sélectionnés</source>
         <translation>Export selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="822"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="895"/>
         <source>Configurer les couleurs des points</source>
         <translation>Configure colors of items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="828"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="901"/>
         <source>Changer la taille des pixels</source>
         <translation>Change pixels size</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="835"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="908"/>
         <source>Changer le mode de dessin :
 - Simplifié lors des déplacements
 - Toujours Simplifié- Jamais Simplifié</source>
@@ -459,7 +470,12 @@ p, li { white-space: pre-wrap; }
 - Never Simplified</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="849"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="915"/>
+        <source>(Re)construire un octree</source>
+        <translation>(Re)create octree</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="929"/>
         <source>Configurer l&apos;affichage</source>
         <translation>Configuring the display</translation>
     </message>
@@ -1013,13 +1029,6 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">An error occured while reading the script:
 
 %1</translation>
-    </message>
-    <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="151"/>
-        <source>Une erreur est survenu lors de la lecture du script :
-
-%1</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="168"/>
@@ -1798,17 +1807,22 @@ Attention cette opération peut être lente.</source>
     <message>
         <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="191"/>
         <source>Veuillez patienter pendant la construction de la table</source>
-        <translation type="unfinished">Please wait while the construction of the table</translation>
+        <translation>Please wait while the construction of the table</translation>
     </message>
     <message>
         <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="253"/>
         <source>Veuillez patienter pendant le rafraichissement de la table</source>
-        <translation type="unfinished">Please wait while the refreshment of the table</translation>
+        <translation>Please wait while the refreshment of the table</translation>
     </message>
     <message>
         <location filename="../tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp" line="398"/>
         <source>Veuillez patienter pendant l&apos;ajout des éléments à la table</source>
-        <translation type="unfinished">Please wait while adding items to the table</translation>
+        <translation>Please wait while adding items to the table</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="628"/>
+        <source>Veuillez patienter pendant la construction de l&apos;octree</source>
+        <translation>Please wait while octree creation</translation>
     </message>
 </context>
 <context>
