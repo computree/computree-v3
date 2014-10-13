@@ -282,6 +282,20 @@ QColor DM_Document::getColor(const CT_AbstractItemDrawable *item)
     return Qt::white;
 }
 
+bool DM_Document::useOctreeOfPoints() const
+{
+    return false;
+}
+
+OctreeInterface *DM_Document::octreeOfPoints() const
+{
+    return NULL;
+}
+
+void DM_Document::constructOctreeOfPoints()
+{
+}
+
 size_t DM_Document::nItemDrawable() const
 {
     return _listItemDrawable.size();

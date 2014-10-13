@@ -69,9 +69,9 @@ void G3DFakePainter::setDrawMode(DrawModes mode)
 {
     m_drawMode = mode;
 
-    m_drawEnabled = (m_drawMode.testFlag(DrawPoints)
-                        || m_drawMode.testFlag(DrawEdges)
-                        || m_drawMode.testFlag(DrawFaces));
+    m_drawEnabled = (m_drawMode.testFlag(DrawPointsWithName)
+                        || m_drawMode.testFlag(DrawEdgesWithName)
+                        || m_drawMode.testFlag(DrawFacesWithName));
 }
 
 bool G3DFakePainter::drawFastest() const
@@ -208,6 +208,34 @@ void G3DFakePainter::scale(double x, double y, double z)
         glScaled(x, y, z);
 }
 
+void G3DFakePainter::drawOctreeOfPoints(const OctreeInterface *octree, PainterInterface::DrawOctreeModes modes)
+{
+    if(!modes.testFlag(DrawElements) || (m_gv == NULL))
+        return;
+
+    GLdouble planeCoefficients[6][4];
+    m_gv->getCameraFrustumPlanesCoefficients(planeCoefficients);
+
+    int s = octree->numberOfCells();
+
+    for(int x=0; x<s; ++x)
+    {
+        for(int y=0; y<s; ++y)
+        {
+            for(int z=0; z<s; ++z)
+            {
+                const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+
+                if(indexes != NULL)
+                {
+                    if(octree->isCellVisibleInFrustrum(x, y, z, planeCoefficients))
+                        drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                }
+            }
+        }
+    }
+}
+
 void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                                     const CT_AbstractCloudIndex *pci,
                                     int fastestIncrement)
@@ -215,7 +243,7 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
     if((pc == NULL) || (pci == NULL))
         return;
 
-    if(m_drawMode.testFlag(DrawPoints))
+    if(m_drawMode.testFlag(DrawPointsWithName))
     {
         glColor3ub(255, 255, 255);
 
@@ -353,7 +381,7 @@ void G3DFakePainter::drawMesh(const CT_AbstractMeshModel *mesh)
 
 void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
 {
-    if(m_drawMode.testFlag(DrawFaces))
+    if(m_drawMode.testFlag(DrawFacesWithName))
     {
         glColor3ub(255, 255, 255);
 
@@ -433,7 +461,7 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
 void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
 {
-    if(m_drawMode.testFlag(DrawEdges))
+    if(m_drawMode.testFlag(DrawEdgesWithName))
     {
         glColor3ub(255, 255, 255);
 

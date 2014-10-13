@@ -154,6 +154,8 @@ void G3DPainter::beginNewDraw()
 
     m_drawMultipleLine = false;
     m_drawMultipleTriangle = false;
+
+    m_drawPointCloudEnabled = true;
 }
 
 void G3DPainter::endNewDraw()
@@ -363,6 +365,11 @@ void G3DPainter::enableSetForcedPointSize(bool enable)
     _nCallEnableSetForcedPointSize += (enable ? 1 : -1);
 }
 
+void G3DPainter::enableDrawPointCloud(bool enable)
+{
+    m_drawPointCloudEnabled = enable;
+}
+
 void G3DPainter::translate(double x, double y, double z)
 {
     glTranslated(x, y, z);
@@ -413,6 +420,55 @@ void G3DPainter::scale(double x, double y, double z)
     glScaled(x, y, z);
 }
 
+void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes)
+{
+    if((modes == 0) || (m_gv == NULL))
+        return;
+
+    GLdouble planesCoefficients[6][4];
+    m_gv->getCameraFrustumPlanesCoefficients(planesCoefficients);
+
+    QVector3D min = octree->octreeMinCorner();
+    QVector3D max = octree->octreeMaxCorner();
+
+    double cellSize = octree->cellsSize();
+
+    if(modes.testFlag(DrawOctree))
+        drawCube(min.x(), min.y(), min.z(), max.x(), max.y(), max.z(), GL_FRONT_AND_BACK, GL_LINE);
+
+    int s = octree->numberOfCells();
+
+    for(int x=0; x<s; ++x)
+    {
+        for(int y=0; y<s; ++y)
+        {
+            for(int z=0; z<s; ++z)
+            {
+                const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+
+                if(indexes != NULL)
+                {
+                    if(octree->isCellVisibleInFrustrum(x, y, z, planesCoefficients))
+                    {
+                        if(modes.testFlag(DrawOctree))
+                        {
+                            QVector3D p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
+                            QVector3D p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
+                            drawCube(p1.x(), p1.y(), p1.z(), p2.x(), p2.y(), p2.z(), GL_FRONT_AND_BACK, GL_LINE);
+                        }
+
+                        if(modes.testFlag(DrawElements))
+                        {
+                            drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                            glColor4ub(_color.red(), _color.green(), _color.blue(), _color.alpha());
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void G3DPainter::drawPoint(double x, double y, double z)
 {
     glBegin(GL_POINTS);
@@ -440,7 +496,7 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                                 const CT_AbstractCloudIndex *pci,
                                 int fastestIncrement)
 {
-    if((pc == NULL) || (pci == NULL))
+    if((pc == NULL) || (pci == NULL) || !m_drawPointCloudEnabled)
         return;
 
     if(!m_gv->getOptions().useColor())

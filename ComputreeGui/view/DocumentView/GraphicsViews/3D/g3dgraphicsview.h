@@ -122,7 +122,12 @@ public:
     void setSelectionMode(SelectionMode mode);
     GraphicsViewInterface::SelectionMode selectionMode() const;
     void select(const QPoint& point);
+
     bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const;
+    float distanceToFrustumPlane(int index, const double &x, const double &y, const double &z) const;
+    bool aaBoxIsVisible(const QVector3D& p1, const QVector3D& p2, bool *entirely) const;
+    bool sphereIsVisible(const QVector3D& center, float radius) const;
+
     QVector3D pointUnderPixel(const QPoint &pixel, bool &found) const;
     void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const;
     void addActionOptions(ActionOptionsInterface *options);
@@ -170,6 +175,11 @@ private:
     bool                            m_useColorCloud;
     bool                            _forceDrawMode;
     G3DGraphicsViewSignalEmitter    m_signalEmitter;
+    GLdouble                        m_planeCoefficients[6][4];
+    QPoint                          m_centerPointOfSelection;
+
+    bool                            m_selectOctreeCells;
+    QList<GLuint>                   m_octreeCellsSelected;
 
     DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>     *m_pointsSelectionManager;
     DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>      *m_facesSelectionManager;

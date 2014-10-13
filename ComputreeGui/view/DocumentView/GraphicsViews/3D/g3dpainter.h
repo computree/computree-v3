@@ -45,6 +45,7 @@ class G3DPainter : public PainterInterface
     Q_INTERFACES(PainterInterface)
 
 public:
+
     G3DPainter();
     virtual ~G3DPainter();
 
@@ -93,17 +94,20 @@ public:
     void setUseColorCloudForEdges(bool enable);
     QColor getColor();
 
-
     void enableSetColor(bool enable);
     void enableSetForcedColor(bool enable);
 
     void enableSetPointSize(bool enable);
     void enableSetForcedPointSize(bool enable);
 
+    void enableDrawPointCloud(bool enable);
+
     void translate(double x, double y, double z);
     void rotate(double alpha, double x, double y, double z);
     void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
     void scale(double x, double y, double z);
+
+    void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
     void drawPoint(double x, double y, double z);
     void drawPoint(double *p);
@@ -223,6 +227,7 @@ private:
     bool            m_useFColorCloud;
     bool            m_useFNormalCloud;
     bool            m_useEColorCloud;
+    bool            m_drawPointCloudEnabled;
 
     int             _nCallEnableSetColor;
     int             _nCallEnableSetForcedColor;

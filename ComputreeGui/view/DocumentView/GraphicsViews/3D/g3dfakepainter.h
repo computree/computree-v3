@@ -25,9 +25,9 @@ class G3DFakePainter : public PainterInterface
 public:
     enum DrawMode {
         DrawNone = 0,
-        DrawPoints = 1,                     // use this mode if you want to enable draw points
-        DrawFaces = 2,                      // use this mode if you want to enable draw faces
-        DrawEdges = 4,                      // use this mode if you want to enable draw edges
+        DrawPointsWithName = 1,             // use this mode if you want to enable draw points and draw it with name
+        DrawFacesWithName = 2,              // use this mode if you want to enable draw faces and draw it with name
+        DrawEdgesWithName = 4,              // use this mode if you want to enable draw edges and draw it with name
         CountPoints = 8,                    // use this mode if you want to count points
         CountEdges = 16,                    // use this mode if you want to count edges
         CountFaces = 32,                    // use this mode if you want to count faces
@@ -97,6 +97,8 @@ public:
     void translate(double x, double y, double z);
     void rotate(double alpha, double x, double y, double z);
     void scale(double x, double y, double z);
+
+    void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
     void drawPointCloud(const CT_AbstractPointCloud *pc,
                         const CT_AbstractCloudIndex *pci,
@@ -246,7 +248,7 @@ private:
     QSharedPointer<CT_StandardColorCloudRegistered> m_eColors;
     QSharedPointer<CT_StandardColorCloudRegistered> m_fColors;
 
-    GraphicsViewInterface   *m_gv;
+    GraphicsViewInterface                           *m_gv;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(G3DFakePainter::DrawModes)

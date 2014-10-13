@@ -56,6 +56,7 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     _drawModeUsed = FAST;
     _2dActive = false;
     _forceDrawMode = false;
+    m_selectOctreeCells = false;
 
     m_useColorCloud = true;
 
@@ -424,12 +425,55 @@ GraphicsViewInterface::SelectionMode G3DGraphicsView::selectionMode() const
 
 void G3DGraphicsView::select(const QPoint &point)
 {
+    m_centerPointOfSelection = point;
     QGLViewer::select(point);
 }
 
 bool G3DGraphicsView::getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const
 {
     return getCamera()->getCameraFrustumPlanesCoefficients(coef);
+}
+
+float G3DGraphicsView::distanceToFrustumPlane(int index, const double &x, const double &y, const double &z) const
+{
+    return qglviewer::Vec(x, y, z) * qglviewer::Vec(m_planeCoefficients[index]) - m_planeCoefficients[index][3];
+}
+
+bool G3DGraphicsView::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, bool *entirely) const
+{
+    bool allInForAllPlanes = true;
+    for (int i=0; i<6; ++i)
+      {
+        bool allOut = true;
+        for (unsigned int c=0; c<8; ++c)
+      {
+        if (distanceToFrustumPlane(i, (c&4)?p1.x():p2.x(), (c&2)?p1.y():p2.y(), (c&1)?p1.z():p2.z()) > 0.0)
+          allInForAllPlanes = false;
+        else
+          allOut = false;
+      }
+
+        // The eight points are on the outside side of this plane
+        if (allOut)
+      return false;
+      }
+
+    if (entirely)
+      // Entirely visible : the eight points are on the inside side of the 6 planes
+      *entirely = allInForAllPlanes;
+
+    // Too conservative, but tangent cases are too expensive to detect
+    return true;
+}
+
+bool G3DGraphicsView::sphereIsVisible(const QVector3D &center, float radius) const
+{
+    for (int i=0; i<6; ++i) {
+        if (distanceToFrustumPlane(i, center.x(), center.y(), center.z()) > radius)
+          return false;
+    }
+
+    return true;
 }
 
 QVector3D G3DGraphicsView::pointUnderPixel(const QPoint &pixel, bool &found) const
@@ -799,6 +843,8 @@ void G3DGraphicsView::initFromOptions()
 
 void G3DGraphicsView::draw()
 {
+    getCameraFrustumPlanesCoefficients(m_planeCoefficients);
+
     _g.setDrawFastest(mustDrawFastestNow());
 
     drawInternal();
@@ -822,6 +868,15 @@ void G3DGraphicsView::drawInternal()
     _g.setColor(Qt::white);
     _g.setPointSize(getOptions().getPointSize());
     _g.beginNewDraw();
+
+    OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
+
+    if(octreeC->hasElements() && !octreeC->mustBeReconstructed())
+    {
+        _g.setUseColorCloudForPoints(m_useColorCloud);
+        _g.drawOctreeOfPoints(octreeC, /*PainterInterface::DrawOctree | */PainterInterface::DrawElements);
+        _g.enableDrawPointCloud(false);
+    }
 
     QColor selectedColor = getOptions().getSelectedColor();
 
@@ -972,23 +1027,44 @@ void G3DGraphicsView::drawWithNames()
     lockPaint();
 
     bool selectItems = true;
+    bool hasOctree = false;
 
-    if(mustSelectPoints())
+    if(m_selectOctreeCells)
     {
+        m_selectOctreeCells = false;
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainter::DrawPoints);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawPointsWithName);
         selectItems = false;
+        hasOctree = true;
+    }
+    else if(mustSelectPoints())
+    {
+        selectItems = false;
+
+        OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
+        hasOctree = (octreeC->hasElements() && !octreeC->mustBeReconstructed());
+
+        if(hasOctree)
+        {
+            m_selectOctreeCells = true;
+            _g.beginNewDraw();
+        }
+        else
+        {
+            m_fakeG.beginNewDraw();
+            m_fakeG.setDrawMode(G3DFakePainter::DrawPointsWithName);
+        }
     }
     else if(mustSelectFaces())
     {
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainter::DrawFaces);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawFacesWithName);
         selectItems = false;
     }
     else if(mustSelectEdges())
     {
         m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainter::DrawEdges);
+        m_fakeG.setDrawMode(G3DFakePainter::DrawEdgesWithName);
         selectItems = false;
     }
 
@@ -1015,15 +1091,85 @@ void G3DGraphicsView::drawWithNames()
     }
     else
     {
-        m_fakeG.setDrawFastest(mustDrawFastestNow());
-        m_fakeG.setPointSize(getOptions().getPointSize());
+        if(!m_selectOctreeCells)
+        {
+            m_fakeG.setDrawFastest(mustDrawFastestNow());
+            m_fakeG.setPointSize(getOptions().getPointSize());
+        }
 
-        QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
+        if(!hasOctree)
+        {
+            QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
-        while(it.hasNext())
-            it.next()->draw(*this, m_fakeG);
+            while(it.hasNext())
+                it.next()->draw(*this, m_fakeG);
 
-        m_fakeG.endNewDraw();
+            m_fakeG.endNewDraw();
+        }
+        else
+        {
+            OctreeController *octree = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
+
+            if(m_selectOctreeCells)
+            {
+                QVector3D min = octree->octreeMinCorner();
+                double cellSize = octree->cellsSize();
+                int s = octree->numberOfCells();
+
+                GLuint i = 0;
+
+                for(int x=0; x<s; ++x)
+                {
+                    for(int y=0; y<s; ++y)
+                    {
+                        for(int z=0; z<s; ++z)
+                        {
+                            const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+
+                            if((indexes != NULL) && octree->isCellVisibleInFrustrum(x, y, z, m_planeCoefficients))
+                            {
+                                QVector3D p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
+                                QVector3D p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
+
+                                glPushName(i);
+                                _g.drawCube(p1.x(), p1.y(), p1.z(), p2.x(), p2.y(), p2.z(), GL_FRONT_AND_BACK, GL_FILL);
+                                glPopName();
+                            }
+
+                            ++i;
+                        }
+                    }
+                }
+
+                _g.endNewDraw();
+                m_octreeCellsSelected.clear();
+                endSelection(m_centerPointOfSelection);
+                postSelection(m_centerPointOfSelection);
+                select(m_centerPointOfSelection);
+            }
+            else
+            {
+                GLuint size = octree->numberOfCells();
+                GLuint size2 = size*size;
+                GLuint x, y ,z;
+                QListIterator<GLuint> it(m_octreeCellsSelected);
+
+                while(it.hasNext())
+                {
+                    GLuint index = it.next();
+
+                    x = index / size2;
+                    y = (index - (x * size2)) / size;
+                    z = index - (y*size) - (x*size2);
+
+                    const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+
+                    m_fakeG.drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                }
+
+                m_fakeG.endNewDraw();
+            }
+        }
     }
 
     unlockPaint();
@@ -1111,7 +1257,12 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
         if (nbHits > 0)
         {
-            if(mustSelectPoints())
+            if(m_selectOctreeCells)
+            {
+                for (int i=0; i<nbHits; ++i)
+                    m_octreeCellsSelected.append((selectBuffer())[4*i+3]);
+            }
+            else if(mustSelectPoints())
             {
                 if(mode == REMOVE)
                     m_pointsSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
@@ -1200,7 +1351,8 @@ void G3DGraphicsView::endSelection(const QPoint &p)
             }
         }
 
-        setSelectionMode(NONE);
+        if(!m_selectOctreeCells)
+            setSelectionMode(NONE);
     }
     else
     {
@@ -1223,12 +1375,18 @@ void G3DGraphicsView::postSelection(const QPoint& point)
 
         if(selectedName() != -1)
         {
-            if((mode == ADD_ONE)
+            if(m_selectOctreeCells)
+            {
+                m_octreeCellsSelected.append(selectedName());
+            }
+            else if((mode == ADD_ONE)
                 || (mode == SELECT_ONE))
             {
                 int s = selectedName();
                 addIdToSelection(s);
-                setLastItemIdSelected(s);
+
+                if(mustSelectItems())
+                    setLastItemIdSelected(s);
             }
             else if(mode == REMOVE_ONE)
             {
@@ -1237,7 +1395,8 @@ void G3DGraphicsView::postSelection(const QPoint& point)
         }
     }
 
-    setSelectionMode(NONE);
+    if(!m_selectOctreeCells)
+        setSelectionMode(NONE);
 
     QGLViewer::postSelection(point);
 }

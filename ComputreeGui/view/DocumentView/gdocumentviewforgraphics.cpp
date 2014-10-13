@@ -4,6 +4,7 @@
 
 #include "view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h"
 #include "view/DocumentView/GraphicsViews/3D/g3dfakepainter.h"
+#include "view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h"
 
 #include "cdm_tools.h"
 
@@ -77,18 +78,15 @@ void GDocumentViewForGraphics::beginAddMultipleItemDrawable()
 
 void GDocumentViewForGraphics::addItemDrawable(CT_AbstractItemDrawable &item)
 {
-    if(!_graphicsLocked)
-    {
+    bool locked = _graphicsLocked;
+
+    if(!locked)
         lockGraphics();
 
         GDocumentView::addItemDrawable(item);
 
+    if(!locked)
         unlockGraphics();
-    }
-    else
-    {
-        GDocumentView::addItemDrawable(item);
-    }
 }
 
 void GDocumentViewForGraphics::endAddMultipleItemDrawable()
@@ -103,18 +101,15 @@ void GDocumentViewForGraphics::beginRemoveMultipleItemDrawable()
 
 void GDocumentViewForGraphics::removeItemDrawable(CT_AbstractItemDrawable &item)
 {
-    if(!_graphicsLocked)
-    {
+    bool locked = _graphicsLocked;
+
+    if(!locked)
         lockGraphics();
 
-        GDocumentView::removeItemDrawable(item);
+    GDocumentView::removeItemDrawable(item);
 
+    if(!locked)
         unlockGraphics();
-    }
-    else
-    {
-        GDocumentView::removeItemDrawable(item);
-    }
 }
 
 void GDocumentViewForGraphics::endRemoveMultipleItemDrawable()
@@ -350,6 +345,16 @@ QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
     }
 
     return QColor();
+}
+
+bool GDocumentViewForGraphics::useOctreeOfPoints() const
+{
+    return true;
+}
+
+OctreeInterface* GDocumentViewForGraphics::octreeOfPoints() const
+{
+    return const_cast<OctreeController*>(&m_octreeController);
 }
 
 template<>
@@ -601,6 +606,40 @@ void GDocumentViewForGraphics::showPointsAttributesOptions()
     dialog.exec();
 }
 
+void GDocumentViewForGraphics::constructOctreeOfPoints()
+{
+    if(m_octreeController.mustBeReconstructed())
+    {
+        DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
+
+        if(aop != NULL)
+        {
+            // create a thread for the builder
+            QThread *thread = new QThread();
+
+            // create a builder
+            OctreeBuilder *builder = new OctreeBuilder();
+            builder->moveToThread(thread);
+            builder->addData(aop, true);
+            builder->setDocument(this);
+            builder->setOctreeController(&m_octreeController);
+
+            aop->progressDialog()->setCanClose(false);
+            aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant la construction de l'octree"));
+            aop->progressDialog()->setSecondLabelText("");
+            aop->progressDialog()->setValue(0);
+            aop->progressDialog()->show();
+
+            connect(builder, SIGNAL(progressChanged(int)), aop, SLOT(setProgress(int)), Qt::QueuedConnection);
+            connect(aop, SIGNAL(cancel()), builder, SLOT(cancel()), Qt::QueuedConnection);
+
+            DM_AbstractWorker::staticConnectWorkerToThread(builder, true, true, true);
+
+            thread->start();
+        }
+    }
+}
+
 void GDocumentViewForGraphics::changePixelSize()
 {
     DM_GraphicsViewOptions& options = (DM_GraphicsViewOptions&) _graphicsOptionsView->getOptions();
@@ -682,6 +721,40 @@ void GDocumentViewForGraphics::changeDrawMode(DM_GraphicsViewOptions::DrawFastes
     {
         _drawMode = DM_GraphicsViewOptions::Never;
         _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_never.png"));
+    }
+}
+
+void GDocumentViewForGraphics::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
+{
+    GDocumentView::slotItemDrawableAdded(item);
+
+    if(!getGraphicsList().isEmpty())
+    {
+        G3DFakePainter fakePainter;
+        fakePainter.setGraphicsView(getGraphicsList().first());
+        fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
+        item.draw(*getGraphicsList().first(), fakePainter);
+        QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());
+
+        while(it.hasNext())
+            m_octreeController.addPoints(dynamic_cast<CT_AbstractPointCloudIndex*>(it.next()));
+    }
+}
+
+void GDocumentViewForGraphics::slotItemToBeRemoved(CT_AbstractItemDrawable &item)
+{
+    GDocumentView::slotItemToBeRemoved(item);
+
+    if(!getGraphicsList().isEmpty())
+    {
+        G3DFakePainter fakePainter;
+        fakePainter.setGraphicsView(getGraphicsList().first());
+        fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
+        item.draw(*getGraphicsList().first(), fakePainter);
+        QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());
+
+        while(it.hasNext())
+            m_octreeController.removePoints(dynamic_cast<CT_AbstractPointCloudIndex*>(it.next()));
     }
 }
 
@@ -836,6 +909,13 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
     _buttonDrawMode->setEnabled(true);
 
+    _buttonConstructOctree = new QPushButton(widgetContainer);
+    _buttonConstructOctree->setMaximumWidth(33);
+    _buttonConstructOctree->setMinimumWidth(33);
+    _buttonConstructOctree->setToolTip(tr("(Re)construire un octree"));
+    //_buttonConstructOctree->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
+    _buttonConstructOctree->setText("OCTREE");
+    _buttonConstructOctree->setEnabled(false);
 
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(pluginExporterManagerReloaded()));
 
@@ -855,6 +935,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(buttonPointsAttributes);
     layout->addWidget(_buttonDrawMode);
     layout->addWidget(_buttonPixelSize);
+    layout->addWidget(_buttonConstructOctree);
     layout->addWidget(_cameraOptionsView);
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
@@ -868,6 +949,8 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
 
     connect(_cameraOptionsView, SIGNAL(syncGraphics(bool)), this, SLOT(syncChanged(bool)));
 
+    connect(&m_octreeController, SIGNAL(octreeMustBeReconstructed(bool)), _buttonConstructOctree, SLOT(setEnabled(bool)));
+    connect(_buttonConstructOctree, SIGNAL(clicked()), this, SLOT(constructOctreeOfPoints()));
 
     connect(_graphicsOptionsView, SIGNAL(pointSizeChanged(double)), this, SLOT(changePixelSize(double)));
     connect(_graphicsOptionsView, SIGNAL(drawModeChanged(DM_GraphicsViewOptions::DrawFastestMode)), this, SLOT(changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode)));

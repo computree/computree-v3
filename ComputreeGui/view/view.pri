@@ -44,8 +44,10 @@ SOURCES += \
     view/DocumentView/ItemModelViews/cg_customtreeitem.cpp \
     view/DocumentView/GraphicsViews/3D/g3dfakepainter.cpp \
     $$PWD/MainView/gineedhelpdialog.cpp \
-    $$PWD/StepResultTreeView/myqmenu.cpp
-
+    $$PWD/StepResultTreeView/myqmenu.cpp \    
+	view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.cpp \
+    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.cpp
+	
 HEADERS += \
     view/MainView/gmainwindow.h \
     view/MainView/gguimanager.h \
@@ -94,8 +96,12 @@ HEADERS += \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
     $$PWD/MainView/gineedhelpdialog.h \
-    $$PWD/StepResultTreeView/myqmenu.h
-
+    $$PWD/StepResultTreeView/myqmenu.h \
+    view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.h \
+    view/DocumentView/GraphicsViews/3D/Octree/octree.h \
+    view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
+    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h
+	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
     view/ItemDrawableView/gitemdrawablemanageroptionscolor.ui \

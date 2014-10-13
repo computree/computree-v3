@@ -219,6 +219,24 @@ public:
     virtual QColor getColor(const CT_AbstractItemDrawable *item);
 
     /**
+     * @brief Returns true if this document use octree for points. By default return false.
+     */
+    virtual bool useOctreeOfPoints() const;
+
+    /**
+     * @brief Returns the octree of points or NULL if usePointsOctree() return false. By default return NULL.
+     */
+    virtual OctreeInterface* octreeOfPoints() const;
+
+public slots:
+    /**
+     * @brief (Re)construct the octree. Do nothing by default.
+     */
+    virtual void constructOctreeOfPoints();
+
+public:
+
+    /**
       * \brief Returns the number of CT_AbstractItemDrawable
       */
     size_t nItemDrawable() const;

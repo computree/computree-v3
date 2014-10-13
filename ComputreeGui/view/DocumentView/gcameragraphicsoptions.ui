@@ -48,6 +48,9 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Synchroniser ce document</string>
+       </property>
        <property name="styleSheet">
         <string notr="true">QPushButton { color: red; }
 
@@ -94,6 +97,9 @@ QPushButton:checked
          <width>40</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>Déplacer la caméra</string>
        </property>
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContents</enum>
@@ -169,6 +175,9 @@ QPushButton:checked
      </item>
      <item row="0" column="3">
       <widget class="QPushButton" name="pushButtonFitBB">
+       <property name="toolTip">
+        <string>Ajuster la caméra aux éléments visibles</string>
+       </property>
        <property name="text">
         <string/>
        </property>

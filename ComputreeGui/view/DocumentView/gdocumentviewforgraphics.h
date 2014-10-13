@@ -9,6 +9,8 @@
 #include "gpointofviewdocumentmanager.h"
 #include "tools/attributes/worker/dm_attributesmanager.h"
 
+#include "GraphicsViews/3D/Octree/octreecontroller.h"
+
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
@@ -79,6 +81,16 @@ public:
      */
     virtual QColor getColor(const CT_AbstractItemDrawable *item);
 
+    /**
+     * @brief Returns true if this document use octree for points. By default return false.
+     */
+    virtual bool useOctreeOfPoints() const;
+
+    /**
+     * @brief Returns the octree of points or NULL if usePointsOctree() return false. By default return NULL.
+     */
+    virtual OctreeInterface* octreeOfPoints() const;
+
     template<typename Type>
     void createColorCloudRegistered() { }
 
@@ -112,6 +124,7 @@ private:
     QSharedPointer<CT_StandardNormalCloudRegistered>                m_fNormalCloudRegistered;
     bool                                                            m_useColorCloud;
     bool                                                            m_useNormalCloud;
+    OctreeController                                                m_octreeController;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;
@@ -124,6 +137,7 @@ private:
     QPushButton                 *_buttonExport;
     QPushButton                 *_buttonPixelSize;
     QPushButton                 *_buttonDrawMode;
+    QPushButton                 *_buttonConstructOctree;
 
     QString                     _type;
 
@@ -178,16 +192,27 @@ public slots:
      */
     void showPointsAttributesOptions();
 
+    /**
+     * @brief (Re)construct the octree. Do nothing by default.
+     */
+    virtual void constructOctreeOfPoints();
+
     void changePixelSize();
     void changePixelSize(double size);
     void changeDrawMode();
     void changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode mode);
+
+protected slots:
+
+    virtual void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
+    virtual void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
 
 private slots:
 
     void syncChanged(bool enable);
     void pluginExporterManagerReloaded();
     void exporterActionTriggered();
+
 
 signals:
 
