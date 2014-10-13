@@ -72,6 +72,73 @@ class CT_StandardNormalCloudRegistered;
 class CT_AbstractModifiableCloudIndexRegistered;
 class CT_AbstractModifiableCloudIndex;
 
+/**
+ * @brief Represent an octree used by graphics views
+ */
+class OctreeInterface  : public QObject
+{
+    Q_OBJECT
+
+public:
+    virtual ~OctreeInterface() {}
+
+    /**
+     * @brief Returns number of cells between min and max
+     */
+    virtual int numberOfCells() const = 0;
+
+    /**
+     * @brief Returns true if the octree has points
+     */
+    virtual bool hasElements() const = 0;
+
+    /**
+     * @brief Returns true if the octree has elements in the cell at x/y/z
+     */
+    virtual bool hasElementsAt(int x, int y, int z) const = 0;
+
+    /**
+     * @brief Returns cloud index in cell at x/y/z. NULL if cell is empty.
+     */
+    virtual const CT_AbstractCloudIndex* at(int x, int y, int z) const = 0;
+
+    /**
+     * @brief Returns true if the cell at x, y, z is visible in frustrum
+     */
+    virtual bool isCellVisibleInFrustrum(int x, int y, int z, GLdouble m_planeCoefficients[6][4]) const = 0;
+
+    /**
+     * @brief Returns the cells size
+     */
+    virtual double cellsSize() const = 0;
+
+    /**
+     * @brief The min corner of the octree
+     */
+    virtual QVector3D octreeMinCorner() const = 0;
+
+    /**
+     * @brief The max corner of the octree
+     */
+    virtual QVector3D octreeMaxCorner() const = 0;
+
+    /**
+     * @brief Returns true if the octree must be reconstructed. (If new min or max is greather or lower than old min or max OR if number of cells has changed)
+     */
+    virtual bool mustBeReconstructed() const = 0;
+
+signals:
+    /**
+     * @brief Emit when the octree must be reconstructed
+     */
+    void octreeMustBeReconstructed(bool val);
+
+    /**
+     * @brief Emit when the reconstruction progress changed
+     */
+    void constructionInProgress(int val);
+};
+
 /*!
  *  \brief Représente un objet qui doit être utilisé par les ItemDrawable
  *         pour dessiner leur élements 3D/2D.
@@ -93,6 +160,15 @@ public:
     {
         ITYPE_UNSIGNED_INT
     };
+
+    enum DrawOctreeMode {
+        DrawOctree = 1,
+        DrawElements = 2
+    };
+
+    Q_DECLARE_FLAGS(DrawOctreeModes, DrawOctreeMode)
+
+    virtual ~PainterInterface() {}
 
     virtual bool drawFastest() const = 0;
 
@@ -131,6 +207,8 @@ public:
     virtual void beginMultiplePoints() = 0;
     virtual void addPoint(float *p) = 0;
     virtual void endMultiplePoints() = 0;
+
+    virtual void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes) = 0;
 
     virtual void drawPointCloud(const CT_AbstractPointCloud *pc,
                                 const CT_AbstractCloudIndex *pci,
@@ -257,6 +335,8 @@ public:
     virtual void addPointToPolygon(float *p) = 0;
     virtual void endPolygon() = 0;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(PainterInterface::DrawOctreeModes)
 
 /*!
  *  \brief Représente les options de la vue
@@ -687,6 +767,27 @@ public:
     virtual bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const = 0;
 
     /**
+     * @brief Returns the distance of the point passed in parameter to the frustrum plane
+     * @param index : index of the frustrum plane (between 0 and 6 excluded)
+     * @param x/y/z : the point
+     */
+    virtual float distanceToFrustumPlane(int index, const double &x, const double &y, const double &z) const = 0;
+
+    /**
+     * @brief Returns true if the aaBox is visible by the camera
+     * @param minCorner / maxCorner : corners of the box
+     * @param entirely : set to true if the box is entirely visible
+     */
+    virtual bool aaBoxIsVisible(const QVector3D& minCorner, const QVector3D& maxCorner, bool *entirely = NULL) const = 0;
+
+    /**
+     * @brief Returns true if the sphere is visible by the camera
+     * @param center : center of the sphere
+     * @param radius : radius of the sphere
+     */
+    virtual bool sphereIsVisible(const QVector3D& center, float radius) const = 0;
+
+    /**
      * @brief Returns the coordinates of the 3D point located at pixel (x,y) on screen.
      *
      * Calls a glReadPixel to get the pixel depth and applies an unprojectedCoordinatesOf() to
@@ -805,6 +906,8 @@ public:
  */
 class DocumentInterface : public QObject
 {
+    Q_OBJECT
+
 public:
 
     virtual ~DocumentInterface() {}
@@ -909,6 +1012,23 @@ public:
      */
     virtual QColor getColor(const CT_AbstractItemDrawable *item) = 0;
 
+    /**
+     * @brief Returns true if this document use octree for points
+     */
+    virtual bool useOctreeOfPoints() const = 0;
+
+    /**
+     * @brief Returns the octree of points or NULL if usePointsOctree() return false.
+     */
+    virtual OctreeInterface* octreeOfPoints() const = 0;
+
+public slots:
+    /**
+     * @brief (Re)construct the octree
+     */
+    virtual void constructOctreeOfPoints() = 0;
+
+public:
     /**
       * \brief Returns the number of ItemDrawable
       */
@@ -1412,6 +1532,7 @@ public:
 #define GraphicsViewOptionsInterface_iid "com.krebs.michael.ONF.PluginSharedV2.GraphicsViewOptionsInterface"
 #define GraphicsViewSignalEmitterInterface_iid "com.krebs.michael.ONF.PluginSharedV2.GraphicsViewSignalEmitterInterface"
 #define CameraInterface_iid "com.krebs.michael.ONF.PluginSharedV2.CameraInterface"
+#define OctreeInterface_iid "com.krebs.michael.ONF.PluginSharedV2.OctreeInterface"
 #define PainterInterface_iid "com.krebs.michael.ONF.PluginSharedV2.PainterInterface"
 #define TreeViewInterface_iid "com.krebs.michael.ONF.PluginSharedV2.TreeViewInterface"
 #define ActionsManagerInterface_iid "com.krebs.michael.ONF.PluginSharedV2.ActionsManagerInterface"
@@ -1434,6 +1555,7 @@ Q_DECLARE_INTERFACE(GraphicsViewInterface, GraphicsViewInterface_iid)
 Q_DECLARE_INTERFACE(GraphicsViewOptionsInterface, GraphicsViewOptionsInterface_iid)
 Q_DECLARE_INTERFACE(GraphicsViewSignalEmitterInterface, GraphicsViewSignalEmitterInterface_iid)
 Q_DECLARE_INTERFACE(CameraInterface, CameraInterface_iid)
+Q_DECLARE_INTERFACE(OctreeInterface, OctreeInterface_iid)
 Q_DECLARE_INTERFACE(PainterInterface, PainterInterface_iid)
 Q_DECLARE_INTERFACE(TreeViewInterface, TreeViewInterface_iid)
 Q_DECLARE_INTERFACE(ActionsManagerInterface, ActionsManagerInterface_iid)
