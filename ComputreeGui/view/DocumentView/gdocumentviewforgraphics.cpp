@@ -857,6 +857,14 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     delete exCopy;
 }
 
+void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
+{
+    qDeleteAll(_listGraphics.begin(), _listGraphics.end());
+    _listGraphics.clear();
+
+    GDocumentView::closeEvent(closeEvent);
+}
+
 ///////////////// PRIVATE //////////////
 
 void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *parent)

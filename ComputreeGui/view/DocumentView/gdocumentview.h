@@ -134,9 +134,9 @@ signals:
 
     void closed(DM_DocumentView *view);
 
-private slots:
+protected slots:
 
-    void closeEvent(QCloseEvent *closeEvent);
+    virtual void closeEvent(QCloseEvent *closeEvent);
 };
 
 #endif // GDOCUMENTVIEW_H

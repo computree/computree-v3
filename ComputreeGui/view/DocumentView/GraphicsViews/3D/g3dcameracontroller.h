@@ -6,7 +6,7 @@
 #include "qglviewer.h"
 #include "dm_graphicsview.h"
 
-class G3DCameraController : public  DM_GraphicsViewCamera
+class G3DCameraController : public DM_GraphicsViewCamera
 {
 public:
     G3DCameraController();

@@ -206,13 +206,13 @@ protected slots:
 
     virtual void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
     virtual void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
+    virtual void closeEvent(QCloseEvent *closeEvent);
 
 private slots:
 
     void syncChanged(bool enable);
     void pluginExporterManagerReloaded();
     void exporterActionTriggered();
-
 
 signals:
 
