@@ -218,7 +218,9 @@ protected:
 
     void init();
     void initOptions();
+    void preDraw();
     void draw();
+    void postDraw();
     void fastDraw();
     void drawInternal();
     void drawOverlay(QPainter &painter);

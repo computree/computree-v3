@@ -47,6 +47,8 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
 
+    m_painter = NULL;
+
     _mutex = new QMutex(QMutex::Recursive);
     _g.setGraphicsView(this);
     m_fakeG.setGraphicsView(this);
@@ -799,9 +801,7 @@ void G3DGraphicsView::removeAllIdFromSelection()
 void G3DGraphicsView::init()
 {
     if(!_2dActive)
-    {
         restoreStateFromFile();
-    }
 
     initOptions();
 }
@@ -857,6 +857,53 @@ void G3DGraphicsView::initFromOptions()
     _g.setDefaultPointSize(options.getPointSize());
 }
 
+void G3DGraphicsView::preDraw()
+{
+    // Classical 3D drawing, usually performed by paintGL().
+    delete m_painter;
+    m_painter = new QPainter();
+
+    m_painter->begin(this);
+    m_painter->setRenderHint(QPainter::Antialiasing);
+
+    // Save current OpenGL state
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    // Reset OpenGL parameters
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
+
+    if(((const DM_GraphicsViewOptions&)getOptions()).useLight())
+    {
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+    }
+    else
+    {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+    }
+    //glEnable(GL_CULL_FACE);
+
+    if(getOptions().useTransparency())
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+
+    qglClearColor(backgroundColor());
+
+    QGLViewer::preDraw();
+}
+
 void G3DGraphicsView::draw()
 {
     getCameraFrustumPlanesCoefficients(m_planeCoefficients);
@@ -864,6 +911,27 @@ void G3DGraphicsView::draw()
     _g.setDrawFastest(mustDrawFastestNow());
 
     drawInternal();
+}
+
+void G3DGraphicsView::postDraw()
+{
+    // Restore OpenGL state
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glPopAttrib();
+
+    drawOverlay(*m_painter);
+
+    m_painter->end();
+
+    delete m_painter;
+    m_painter = NULL;
+
+    QGLViewer::postDraw();
+
+    _drawModeUsed = _drawModeToUse;
 }
 
 void G3DGraphicsView::fastDraw()
@@ -1194,62 +1262,10 @@ void G3DGraphicsView::drawWithNames()
 void G3DGraphicsView::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e)
-    QPainter painter;
-    painter.begin(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    // Save current OpenGL state
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-
-    // Reset OpenGL parameters
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH_TEST);
-
-    if(((const DM_GraphicsViewOptions&)getOptions()).useLight())
-    {
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-    }
-    else
-    {
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-    }
-    //glEnable(GL_CULL_FACE);
-
-    if(getOptions().useTransparency())
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-    else
-    {
-        glDisable(GL_BLEND);
-    }
-
-    qglClearColor(backgroundColor());
-
-    // Classical 3D drawing, usually performed by paintGL().
 
     preDraw();
     draw();
     postDraw();
-    // Restore OpenGL state
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glPopAttrib();
-
-    drawOverlay(painter);
-
-    painter.end();
-
-    _drawModeUsed = _drawModeToUse;
 }
 
 void G3DGraphicsView::endSelection(const QPoint &p)
