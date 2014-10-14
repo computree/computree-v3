@@ -13,7 +13,7 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_triangulation/ct_nodet.h"
-#include "ct_itemdrawable/ct_metrict.h"
+#include "ct_itemdrawable/ct_attributeslist.h"
 
 #include <limits>
 #include <QMessageBox>
@@ -30,6 +30,7 @@
 #define DEF_SearchOutMNSGrid "mns"
 #define DEF_SearchOutClustersGrid "cluster"
 
+#define DEF_SearchOutGapAttributes "grattributes"
 #define DEF_SearchOutGroupGap "gscene"
 #define DEF_SearchOutGapArea "gapArea"
 #define DEF_SearchOutGapClusterId "gapClusterId"
@@ -96,8 +97,13 @@ void PB_StepSegmentGaps::createOutResultModelListProtected()
     resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutClustersGrid, new CT_Grid2DXY<int>(), tr("Clusters"));
 
     resultModel->addGroupModel(DEF_SearchOutGroup, DEF_SearchOutGroupGap);
-    resultModel->addItemModel(DEF_SearchOutGroupGap, DEF_SearchOutGapArea, new CT_MetricT<float>(), tr("Aire de la trouée"));
-    resultModel->addItemModel(DEF_SearchOutGroupGap, DEF_SearchOutGapClusterId, new CT_MetricT<int>(), tr("Identifiant de la trouée"));
+    resultModel->addItemModel(DEF_SearchOutGroupGap, DEF_SearchOutGapAttributes, new CT_AttributesList(), tr("Attributs de la trouée"));
+    resultModel->addItemAttributeModel(DEF_SearchOutGapAttributes, DEF_SearchOutGapArea,
+                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       tr("Aire de trouée"));
+    resultModel->addItemAttributeModel(DEF_SearchOutGapAttributes, DEF_SearchOutGapClusterId,
+                                       new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ID), NULL, 0),
+                                       tr("ClusterID"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -298,15 +304,19 @@ void PB_StepSegmentGaps::computeMetrics(QMap<int, size_t> &clusterCounts, CT_Sta
     {
         it.next();
         int cluster = it.key();
-        float crownArea = it.value() * base_area;
+        float gapArea = it.value() * base_area;
 
         CT_StandardItemGroup* groupGap = new CT_StandardItemGroup(DEF_SearchOutGroupGap, _outResult);
-        baseGroup->addGroup(groupGap);
+        baseGroup->addGroup(groupGap);       
 
-        CT_MetricT<int>     *metric1 = new CT_MetricT<int>(DEF_SearchOutGapClusterId, _outResult, cluster, "IdGap");
-        CT_MetricT<float>   *metric2 = new CT_MetricT<float>(DEF_SearchOutGapArea, _outResult, crownArea, "GapArea");
-        groupGap->addItemDrawable(metric1);
-        groupGap->addItemDrawable(metric2);
+        CT_AttributesList* crAttributes= new CT_AttributesList(DEF_SearchOutGapAttributes, _outResult);
+        groupGap->addItemDrawable(crAttributes);
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutGapArea,
+                                                                       CT_AbstractCategory::DATA_AREA,
+                                                                       _outResult, gapArea));
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<int>(DEF_SearchOutGapClusterId,
+                                                                       CT_AbstractCategory::DATA_ID,
+                                                                       _outResult, cluster));
     }
 }
 
@@ -373,6 +383,7 @@ void PB_StepSegmentGaps::useManualMode(bool quit)
     {
         if(!quit)
         {
+            m_doc->removeAllItemDrawable();
             m_doc = NULL;
 
             quitManualMode();
