@@ -40,6 +40,11 @@ public:
     size_t attributesSize() const { return CT_AttributesColor::attributesSize(); }
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
+
+private:
+    CT_DEFAULT_IA_BEGIN(CT_FaceAttributesColor)
+    CT_DEFAULT_IA_V2(CT_FaceAttributesColor, CT_AbstractCategory::staticInitDataSize(), &CT_FaceAttributesColor::attributesSize, QObject::tr("Taille"))
+    CT_DEFAULT_IA_END(CT_FaceAttributesColor)
 };
 
 #endif // CT_FACEATTRIBUTESCOLOR_H

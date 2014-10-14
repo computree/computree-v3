@@ -1,6 +1,8 @@
 #include "ct_faceattributescolor.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 
+CT_DEFAULT_IA_INIT(CT_FaceAttributesColor)
+
 CT_FaceAttributesColor::CT_FaceAttributesColor() : CT_AbstractFaceAttributes(), CT_AttributesColor()
 {
 }
