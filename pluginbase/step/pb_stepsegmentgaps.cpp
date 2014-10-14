@@ -217,7 +217,7 @@ void PB_StepSegmentGaps::compute()
             }
 
         } else {
-            QMessageBox::information(NULL, tr("Segmentation des houppiers"), tr("Phase 2 (Segmentation des houppiers) impossible à réaliser."), QMessageBox::Ok);
+            QMessageBox::information(NULL, tr("Segmentation des trouées"), tr("Phase 2 (Segmentation des trouées) impossible à réaliser."), QMessageBox::Ok);
             m_status = 2;
             requestManualMode();
         }
