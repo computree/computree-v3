@@ -167,6 +167,13 @@ void GAboutPluginsDialog::initView()
     }
 
     ui->treeWidget->insertTopLevelItem(0, rootItem);
+
+    ui->pushButtonRecharger->setEnabled(GUI_MANAGER->getStepManager()->getStepRootList().isEmpty());
+
+    if(!ui->pushButtonRecharger->isEnabled())
+        ui->pushButtonRecharger->setToolTip(tr("Vous ne pouvez pas recharger les plugins tant que vous avez des étapes dans l'arbre des traitements"));
+    else
+        ui->pushButtonRecharger->setToolTip("");
 }
 
 void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step)
