@@ -405,11 +405,17 @@ size_t G3DGraphicsView::selectBufferSize() const
 
 void G3DGraphicsView::setSelectRegionWidth(int width)
 {
+    if(width <= 0)
+        width = 1;
+
     QGLViewer::setSelectRegionWidth(width);
 }
 
 void G3DGraphicsView::setSelectRegionHeight(int height)
 {
+    if(height <= 0)
+        height = 1;
+
     QGLViewer::setSelectRegionHeight(height);
 }
 
@@ -637,18 +643,13 @@ void G3DGraphicsView::removeActionOptions(ActionOptionsInterface *options)
 void G3DGraphicsView::addIdToSelection(const GLuint &id)
 {
     if(mustSelectPoints())
-        m_pointsSelectionManager->addIDToSelection(id);
+        addPointsIDToSelection(id);
     else if(mustSelectEdges())
-        m_edgesSelectionManager->addIDToSelection(id);
+        addEdgesIDToSelection(id);
     else if(mustSelectFaces())
-        m_facesSelectionManager->addIDToSelection(id);
+        addFacesIDToSelection(id);
     else
-    {
-        CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
-
-        if(item != NULL)
-            item->setSelected(true);
-    }
+        addItemsIDToSelection(id);
 }
 
 void G3DGraphicsView::addPointsIDToSelection(const GLuint &id)
@@ -671,7 +672,22 @@ void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
     CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
 
     if(item != NULL)
+    {
+        lockPaint();
+
+        m_fakeG.beginNewDraw();
+        m_fakeG.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
+
+        item->draw(*this, m_fakeG);
+
+        m_fakeG.endNewDraw();
+
+        m_pointsSelectionManager->addCloudIndexToSelection(m_fakeG.pointCloudIndexBackup());
+
+        unlockPaint();
+
         item->setSelected(true);
+    }
 }
 
 void G3DGraphicsView::setLastItemIdSelected(const GLuint &id)
@@ -871,12 +887,10 @@ void G3DGraphicsView::drawInternal()
 
     OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
 
-    if(octreeC->hasElements() && !octreeC->mustBeReconstructed())
-    {
-        _g.setUseColorCloudForPoints(m_useColorCloud);
-        _g.drawOctreeOfPoints(octreeC, /*PainterInterface::DrawOctree | */PainterInterface::DrawElements);
-        _g.enableDrawPointCloud(false);
-    }
+    const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
+
+    if(octreeC->hasElements() && !octreeC->mustBeReconstructed() && options.showOctree())
+        _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawOctree);
 
     QColor selectedColor = getOptions().getSelectedColor();
 

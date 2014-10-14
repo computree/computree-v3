@@ -525,7 +525,8 @@ void GDocumentViewForGraphics::showOptions()
 {
     if(_listGraphics.size() > 0)
     {
-        const DM_GraphicsViewOptions &opt = ((const GGraphicsView*)_listGraphics.at(0))->getOptions();
+        DM_GraphicsViewOptions &opt = (DM_GraphicsViewOptions&)((const GGraphicsView*)_listGraphics.at(0))->getOptions();
+        opt.setOctreeNumberOfCells(m_octreeController.numberOfCells());
 
         _graphicsOptionsView->setOptions(opt);
 
@@ -547,6 +548,8 @@ void GDocumentViewForGraphics::validateOptions()
 
     while(it.hasNext())
         it.next()->setOptions(options);
+
+    m_octreeController.setNumberOfCells(options.octreeNumberOfCells());
 }
 
 

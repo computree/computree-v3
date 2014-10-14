@@ -422,34 +422,38 @@ bool CT_AbstractStandardItemGroup::copyStructure(CT_AbstractStandardItemGroup *i
     QMutexLocker locker(_mutexAccessGroup);
 
     const CT_OutAbstractGroupModel *newModel = (const CT_OutAbstractGroupModel *)itemGroup->model();
-    CT_AbstractResult *result = itemGroup->result();
 
-    // copie des groupes backup de ce groupe vers les groupes backup du nouveau groupe
-    if(!copyGroups(result, *newModel, _groupsBackup, itemGroup->_groupsBackup, *itemGroup))
+    if(newModel != NULL)
     {
-        delete itemGroup;
-        return NULL;
-    }
+        CT_AbstractResult *result = itemGroup->result();
 
-    // copie des groupes new de ce groupe vers les groupes backup du nouveau groupe
-    if(!copyGroups(result, *newModel, _groupsNew, itemGroup->_groupsBackup, *itemGroup))
-    {
-        delete itemGroup;
-        return NULL;
-    }
+        // copie des groupes backup de ce groupe vers les groupes backup du nouveau groupe
+        if(!copyGroups(result, *newModel, _groupsBackup, itemGroup->_groupsBackup, *itemGroup))
+        {
+            delete itemGroup;
+            return NULL;
+        }
 
-    // copie des items backup de ce groupe vers les items backup du nouveau groupe
-    if(!copyItems(_itemsBackup, *newModel, *itemGroup))
-    {
-        delete itemGroup;
-        return NULL;
-    }
+        // copie des groupes new de ce groupe vers les groupes backup du nouveau groupe
+        if(!copyGroups(result, *newModel, _groupsNew, itemGroup->_groupsBackup, *itemGroup))
+        {
+            delete itemGroup;
+            return NULL;
+        }
 
-    // copie des items new de ce groupe vers les items backup du nouveau groupe
-    if(!copyItems(_itemsNew, *newModel, *itemGroup))
-    {
-        delete itemGroup;
-        return NULL;
+        // copie des items backup de ce groupe vers les items backup du nouveau groupe
+        if(!copyItems(_itemsBackup, *newModel, *itemGroup))
+        {
+            delete itemGroup;
+            return NULL;
+        }
+
+        // copie des items new de ce groupe vers les items backup du nouveau groupe
+        if(!copyItems(_itemsNew, *newModel, *itemGroup))
+        {
+            delete itemGroup;
+            return NULL;
+        }
     }
 
     return itemGroup;

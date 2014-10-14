@@ -13,6 +13,7 @@ OctreeController::OctreeController()
     m_min = m_newMin;
     m_max = m_newMax;
     m_size = 0;
+    m_forceMustBeReconstructed = false;
 }
 
 OctreeController::~OctreeController()
@@ -50,11 +51,8 @@ void OctreeController::addPoints(const CT_AbstractCloudIndexT<CT_Point> *index, 
             info.m_max = *max;
         }
 
-        if(m_newMin > info.m_min)
-            m_newMin = info.m_min;
-
-        if(m_newMax < info.m_max)
-            m_newMax = info.m_max;
+        adjustNewMin(info.m_min);
+        adjustNewMax(info.m_max);
 
         m_pointsToAdd.insert((CT_AbstractCloudIndexT<CT_Point>*)index, info);
         emit octreeMustBeReconstructed(true);
@@ -68,10 +66,9 @@ void OctreeController::removePoints(const CT_AbstractCloudIndexT<CT_Point> *inde
     if(inOctree)
     {
         removePoinsFromOctree(index);
-        computeNewMinAndMax();
 
-        if(mustBeReconstructed())
-            emit octreeMustBeReconstructed(true);
+        m_forceMustBeReconstructed = true;
+        emit octreeMustBeReconstructed(true);
     }
     else
     {
@@ -163,6 +160,8 @@ void OctreeController::construct()
 {
     if(mustBeReconstructed())
     {
+        m_forceMustBeReconstructed = false;
+
         delete m_octree;
         m_octree = new Octree< CT_Repository::CT_AbstractModifiablePCIR >(m_newNumberOfCells);
 
@@ -270,12 +269,33 @@ void OctreeController::computeNewMinAndMax()
     {
         PointsInfo info = it.next().value();
 
-        if(info.m_min < m_newMin)
-            m_newMin = info.m_min;
-
-        if(info.m_max > m_newMax)
-            m_newMax = info.m_max;
+        adjustNewMin(info.m_min);
+        adjustNewMax(info.m_max);
     }
+}
+
+void OctreeController::adjustNewMin(const OctreeController::Corner &min)
+{
+    if(m_newMin.x() > min.x())
+        m_newMin.setX(min.x());
+
+    if(m_newMin.y() > min.y())
+        m_newMin.setY(min.y());
+
+    if(m_newMin.z() > min.z())
+        m_newMin.setZ(min.z());
+}
+
+void OctreeController::adjustNewMax(const OctreeController::Corner &max)
+{
+    if(m_newMax.x() < max.x())
+        m_newMax.setX(max.x());
+
+    if(m_newMax.y() < max.y())
+        m_newMax.setY(max.y());
+
+    if(m_newMax.z() < max.z())
+        m_newMax.setZ(max.z());
 }
 
 void OctreeController::addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> *index)

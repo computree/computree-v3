@@ -29,6 +29,7 @@
 #include "ggraphicsviewoptions.h"
 #include "ui_ggraphicsviewoptions.h"
 
+#include <QTimer>
 #include <QMessageBox>
 
 GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
@@ -67,6 +68,34 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->buttonGroupViewType, SIGNAL(buttonClicked(QAbstractButton*)), this , SLOT(setCameraType(QAbstractButton*)));
 
     connect(ui->pushButtonSaveDefault, SIGNAL(clicked()), this, SLOT(saveDefault()));
+
+    connect(ui->groupBoxCameraCoordinates, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+    connect(ui->groupBoxColorAndSize, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+    connect(ui->groupBoxDrawing, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+    connect(ui->groupBoxOctree, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+    connect(ui->groupBoxOptim, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+    connect(ui->groupBoxView, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
+
+    connect(ui->checkBoxShowOctree, SIGNAL(toggled(bool)), this, SLOT(setShowOctree(bool)));
+    connect(ui->comboBoxOctreeNbCells, SIGNAL(currentTextChanged(QString)), this, SLOT(setOctreeNumberOfCells()));
+
+    QString style = QString("QGroupBox::indicator {"
+                                "width: 12px;"
+                                "height: 12px;"
+                            "}"
+                            "QGroupBox::indicator:unchecked {"
+                                "image: url(:/Icones/Icones/stylesheet-branch-closed.png);"
+                            "}"
+                            "QGroupBox::indicator:checked {"
+                                "image: url(:/Icones/Icones/stylesheet-branch-open.png);"
+                            "}");
+
+    ui->groupBoxCameraCoordinates->setStyleSheet(style);
+    ui->groupBoxColorAndSize->setStyleSheet(style);
+    ui->groupBoxDrawing->setStyleSheet(style);
+    ui->groupBoxOctree->setStyleSheet(style);
+    ui->groupBoxOptim->setStyleSheet(style);
+    ui->groupBoxView->setStyleSheet(style);
 
     //setFixedSize(size());
 }
@@ -147,6 +176,9 @@ void GGraphicsViewOptions::updateUiFromOptions()
     case CameraInterface::ORTHOGRAPHIC : ui->radioButtonOrthographic->setChecked(true);
         break;
     }
+
+    ui->comboBoxOctreeNbCells->setCurrentText(QString().setNum(_options->octreeNumberOfCells()));
+    ui->checkBoxShowOctree->setChecked(_options->showOctree());
 }
 
 void GGraphicsViewOptions::backgroundColor(QColor color)
@@ -243,6 +275,36 @@ void GGraphicsViewOptions::setCameraInfoPosition(QAbstractButton* button)
 void GGraphicsViewOptions::setCameraType(QAbstractButton *button)
 {
     _options->setCameraType((button == ui->radioButtonPerspective ? CameraInterface::PERSPECTIVE : CameraInterface::ORTHOGRAPHIC));
+}
+
+void GGraphicsViewOptions::setShowOctree(bool val)
+{
+    _options->setShowOctree(val);
+}
+
+void GGraphicsViewOptions::setOctreeNumberOfCells()
+{
+    _options->setOctreeNumberOfCells(ui->comboBoxOctreeNbCells->currentText().toInt());
+}
+
+void GGraphicsViewOptions::collapseOrExpandGroupBox(bool val)
+{
+   QGroupBox *box = (QGroupBox*)sender();
+
+   box->setMaximumHeight(1000);
+
+   if(!val)
+       box->setMaximumHeight(25);
+   else
+       box->adjustSize();
+
+   adjustSize();
+   QTimer::singleShot(5, this, SLOT(refreshDialog()));
+}
+
+void GGraphicsViewOptions::refreshDialog()
+{
+    resize(width()+1, height());
 }
 
 void GGraphicsViewOptions::saveDefault()

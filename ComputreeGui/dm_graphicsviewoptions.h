@@ -81,6 +81,8 @@ public:
     inline DM_GraphicsViewOptions::CameraInfoDisplayed getCameraInformationDisplayed() const { return _cameraInfoDisplayed; }
     inline DM_GraphicsViewOptions::CameraInfoPosition getCameraInformationPosition() const { return _cameraInfoPosition; }
     inline CameraInterface::CameraType getCameraType() const { return _cameraType; }
+    inline bool showOctree() const { return m_showOctree; }
+    inline int octreeNumberOfCells() const { return m_octreeNumberOfCells; }
 
     void setSelectedColor(QColor &color);
     void setBackgroudColor(QColor &color);
@@ -94,6 +96,8 @@ public:
     void setCameraInformationDisplayed(DM_GraphicsViewOptions::CameraInfoDisplayed info);
     void setCameraInformationPosition(DM_GraphicsViewOptions::CameraInfoPosition pos);
     void setCameraType(CameraInterface::CameraType type);
+    void setShowOctree(bool val);
+    void setOctreeNumberOfCells(int n);
     void updateFromOtherOptions(const DM_GraphicsViewOptions &options);
 
     bool load();
@@ -113,6 +117,8 @@ private:
     CameraInfoDisplayed         _cameraInfoDisplayed;
     CameraInfoPosition          _cameraInfoPosition;
     CameraInterface::CameraType _cameraType;
+    bool                        m_showOctree;
+    int                         m_octreeNumberOfCells;
 
 signals:
 

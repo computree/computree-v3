@@ -43,6 +43,8 @@ DM_GraphicsViewOptions::DM_GraphicsViewOptions()
     _cameraInfoDisplayed = DM_GraphicsViewOptions::CameraNone;
     _cameraInfoPosition = DM_GraphicsViewOptions::InfoInLowerRightCorner;
     _cameraType = CameraInterface::PERSPECTIVE;
+    m_octreeNumberOfCells = 32;
+    m_showOctree = false;
 }
 
 DM_GraphicsViewOptions::~DM_GraphicsViewOptions()
@@ -107,6 +109,20 @@ void DM_GraphicsViewOptions::setCameraInformationPosition(DM_GraphicsViewOptions
 void DM_GraphicsViewOptions::setCameraType(CameraInterface::CameraType type)
 {
     _cameraType = type;
+}
+
+void DM_GraphicsViewOptions::setShowOctree(bool val)
+{
+    m_showOctree = val;
+}
+
+void DM_GraphicsViewOptions::setOctreeNumberOfCells(int n)
+{
+    // must be a power of two
+    if(((n - 1) & n) != 0)
+        return;
+
+    m_octreeNumberOfCells = n;
 }
 
 void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions &options)
@@ -185,6 +201,18 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
+    if(m_showOctree != options.m_showOctree)
+    {
+        m_showOctree = options.m_showOctree;
+        emitChanged = true;
+    }
+
+    if(m_octreeNumberOfCells != options.m_octreeNumberOfCells)
+    {
+        m_octreeNumberOfCells = options.m_octreeNumberOfCells;
+        emitChanged = true;
+    }
+
     if(emitChanged)
         emit optionsChanged();
 }
@@ -205,6 +233,8 @@ bool DM_GraphicsViewOptions::load()
     _cameraInfoDisplayed = (CameraInfoDisplayed)CONFIG_FILE->value("cameraInfoDisplayed", _cameraInfoDisplayed.operator int()).toInt();
     _cameraInfoPosition = (CameraInfoPosition)CONFIG_FILE->value("cameraInfoPosition", (int)_cameraInfoPosition).toInt();
     _cameraType = (CameraInterface::CameraType)CONFIG_FILE->value("cameraType", (int)_cameraType).toInt();
+    m_showOctree = CONFIG_FILE->value("showOctree", m_showOctree).toBool();
+    setOctreeNumberOfCells(CONFIG_FILE->value("octreeNumberOfCells", m_octreeNumberOfCells).toInt());
 
     CONFIG_FILE->endGroup();
 
@@ -227,6 +257,8 @@ bool DM_GraphicsViewOptions::save()
     CONFIG_FILE->setValue("cameraInfoDisplayed", _cameraInfoDisplayed.operator int());
     CONFIG_FILE->setValue("cameraInfoPosition", (int)_cameraInfoPosition);
     CONFIG_FILE->setValue("cameraType", (int)_cameraType);
+    CONFIG_FILE->setValue("showOctree", _cameraType);
+    CONFIG_FILE->setValue("octreeNumberOfCells", m_octreeNumberOfCells);
 
     CONFIG_FILE->endGroup();
 

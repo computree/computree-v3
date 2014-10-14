@@ -37,6 +37,7 @@
 #include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_abstractstepplugin.h"
+#include "gaboutstepdialog.h"
 
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -1143,6 +1144,12 @@ void GStepManager::indexDoubleClicked(QModelIndex index)
 
         if(it->isEnabled())
             it->setCheckState(it->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+    }
+    else if((myItem != NULL)
+            && (myItem->step() != NULL))
+    {
+        GAboutStepDialog dialog(myItem->step());
+        dialog.exec();
     }
 }
 

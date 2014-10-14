@@ -155,6 +155,7 @@ private:
     size_t                                                              m_nPointsToAdd;
     size_t                                                              m_pointsAdded;
     size_t                                                              m_progress;
+    bool                                                                m_forceMustBeReconstructed;
 
     /**
      * @brief Return the distance between a point and a face of the frustrum
@@ -169,6 +170,10 @@ private:
     void resetNewMinAndMax();
 
     void computeNewMinAndMax();
+
+    void adjustNewMin(const Corner &min);
+
+    void adjustNewMax(const Corner &max);
 
     void addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> *index);
 

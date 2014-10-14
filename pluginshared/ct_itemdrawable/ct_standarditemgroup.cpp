@@ -39,9 +39,6 @@ CT_AbstractItemDrawable* CT_StandardItemGroup::copy(const CT_OutAbstractItemMode
 {
     const CT_OutAbstractGroupModel *newModel = dynamic_cast< const CT_OutAbstractGroupModel* >(model);
 
-    if(newModel == NULL)
-        return NULL;
-
     CT_StandardItemGroup *itemGroup = new CT_StandardItemGroup(newModel, result);
     itemGroup->setId(id());
     itemGroup->setAlternativeDrawManager(getAlternativeDrawManager());
