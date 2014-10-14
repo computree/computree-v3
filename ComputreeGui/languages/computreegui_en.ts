@@ -1031,6 +1031,13 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="151"/>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="168"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Save the tree steps as ...</translation>
