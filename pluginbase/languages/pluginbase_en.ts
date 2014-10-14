@@ -547,7 +547,7 @@ If pressed: the active cluster is drawn in red, even in cluster mode</translatio
 <context>
     <name>PB_ActionSegmentGaps</name>
     <message>
-        <location filename="../actions/pb_actionsegmentgaps.cpp" line="600"/>
+        <location filename="../actions/pb_actionsegmentgaps.cpp" line="645"/>
         <source>Caméra centrée en</source>
         <translation>Camera centered coordinate</translation>
     </message>
@@ -1911,82 +1911,80 @@ Cela peut prendre un peu de temps...</source>
 <context>
     <name>PB_StepSegmentGaps</name>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="47"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="51"/>
         <source>Segmentation de trouées en 2D</source>
         <translation>Segmentation of gaps in 2D</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="53"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="57"/>
         <source>Cette étape permet de segmenter des trouées manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les trouées. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque trouée. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (trouées) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque trouée&lt;/li&gt;&lt;li&gt;Une métrique donnant la surface des pixels pour chaque trouée&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="81"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="85"/>
         <source>Scène(s)</source>
         <translation>Scene(s)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="85"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="89"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="91"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="95"/>
         <source>Densité, MNS et clusters</source>
         <translation>Density, DSM and clusters</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="94"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="98"/>
         <source>MNS</source>
         <translation>DSM</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="95"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="99"/>
         <source>Densité</source>
         <translation>Density</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="96"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="100"/>
         <source>Clusters</source>
         <translation>Clusters</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="99"/>
         <source>Aire de la trouée</source>
-        <translation>Area of the gap</translation>
+        <translation type="vanished">Area of the gap</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="100"/>
         <source>Identifiant de la trouée</source>
-        <translation>ID of the gap</translation>
+        <translation type="vanished">ID of the gap</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="152"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="161"/>
         <source>Selection de l&apos;épaisseur des houppiers</source>
         <translation>Selection of crowns thickness</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="183"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="192"/>
         <source>Création des clusters</source>
         <translation>Creation of clusters</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="196"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="205"/>
         <source>Démarrage des post_traitements</source>
         <translation>Beginning of post_processing</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="197"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="206"/>
         <source>Elimination des clusters vides</source>
         <translation>Elimination of empty clusters</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="200"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="209"/>
         <source>Enregistrement des clusters</source>
         <translation>Recording clusters</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="206"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="215"/>
         <source>Calcul des métriques</source>
         <translation>Metrics computing</translation>
     </message>
@@ -1995,39 +1993,59 @@ Cela peut prendre un peu de temps...</source>
         <translation type="vanished">Segmentation of gaps</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="225"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="234"/>
         <source>Post-Traitements terminés</source>
         <translation>Post-processing achieved</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="220"/>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="339"/>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="360"/>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="380"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="229"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="351"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="372"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="393"/>
         <source>Segmentation des trouées</source>
         <translation>Segmentation of gaps in 2D</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="220"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="103"/>
+        <source>Attributs de la trouée</source>
+        <translation>Gap attributes</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="106"/>
+        <source>Aire de trouée</source>
+        <translation>Gap area</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="109"/>
+        <source>ClusterID</source>
+        <translation>ClusterID</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="117"/>
+        <source>Ne détécter les trouées que dans l&apos;enveloppe convexe des points</source>
+        <translation>Only detect gaps in convex hull of points</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="229"/>
         <source>Phase 2 (Segmentation des trouées) impossible à réaliser.</source>
         <translation>Phase 2 (gap segmentation) impossible to achieve.</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="339"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="351"/>
         <source>Mode manuel.
 Phase 1 : Calcul de la carte de densité et du MNS.
 L&apos;initialisation peut prendre un peu de temps...</source>
         <translation>Manual mode. Phase 1: Computing of density map and DSM. The initialization could take some time...</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="360"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="372"/>
         <source>Mode manuel.
 Phase 2 : Segmentation des trouées.
 La pré-segmentation automatique peut prendre un peu de temps...</source>
         <translation>Manual mode: Phase 2: Gaps segmentation. The automatic pre-segmentation could take some time...</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsegmentgaps.cpp" line="380"/>
+        <location filename="../step/pb_stepsegmentgaps.cpp" line="393"/>
         <source>Fin du mode manuel, démarrage des post-traitements
 Cela peut prendre un peu de temps...</source>
         <translation>End of manual mode, beginning of post_processing. It could take some time...</translation>

@@ -6,6 +6,8 @@
 // Inclusion of out models
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
+#include "ct_view/ct_stepconfigurabledialog.h"
+
 // Inclusion of results
 #include "ct_result/ct_resultgroup.h"
 
@@ -39,6 +41,7 @@
 PB_StepSegmentGaps::PB_StepSegmentGaps(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     m_doc = NULL;
+    _keepOnlyGapsInConvexHull = true;
     setManual(true);
 }
 
@@ -109,9 +112,9 @@ void PB_StepSegmentGaps::createOutResultModelListProtected()
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepSegmentGaps::createPostConfigurationDialog()
 {
-    //    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
+    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    //    configDialog->addDouble(tr("Résolution de la grille"),tr("m"),0.0001,10000,2, _res );
+    configDialog->addBool(tr("Ne détécter les trouées que dans l'enveloppe convexe des points"),"","", _keepOnlyGapsInConvexHull);
 }
 
 
@@ -307,7 +310,7 @@ void PB_StepSegmentGaps::computeMetrics(QMap<int, size_t> &clusterCounts, CT_Sta
         float gapArea = it.value() * base_area;
 
         CT_StandardItemGroup* groupGap = new CT_StandardItemGroup(DEF_SearchOutGroupGap, _outResult);
-        baseGroup->addGroup(groupGap);       
+        baseGroup->addGroup(groupGap);
 
         CT_AttributesList* crAttributes= new CT_AttributesList(DEF_SearchOutGapAttributes, _outResult);
         groupGap->addItemDrawable(crAttributes);
@@ -315,11 +318,10 @@ void PB_StepSegmentGaps::computeMetrics(QMap<int, size_t> &clusterCounts, CT_Sta
                                                                        CT_AbstractCategory::DATA_AREA,
                                                                        _outResult, gapArea));
         crAttributes->addItemAttribute(new CT_StdItemAttributeT<int>(DEF_SearchOutGapClusterId,
-                                                                       CT_AbstractCategory::DATA_ID,
-                                                                       _outResult, cluster));
+                                                                     CT_AbstractCategory::DATA_ID,
+                                                                     _outResult, cluster));
     }
 }
-
 
 void PB_StepSegmentGaps::initManualMode()
 {
@@ -347,8 +349,8 @@ void PB_StepSegmentGaps::useManualMode(bool quit)
         {
 
             QMessageBox::information(NULL, tr("Segmentation des trouées"), tr("Mode manuel.\n"
-                                                                                "Phase 1 : Calcul de la carte de densité et du MNS.\n"
-                                                                                "L'initialisation peut prendre un peu de temps..."), QMessageBox::Ok);
+                                                                              "Phase 1 : Calcul de la carte de densité et du MNS.\n"
+                                                                              "L'initialisation peut prendre un peu de temps..."), QMessageBox::Ok);
 
             _action = new PB_ActionDefineHeightLayer(_outResult,
                                                      DEF_SearchOutDensityGrid,
@@ -368,12 +370,12 @@ void PB_StepSegmentGaps::useManualMode(bool quit)
             getGuiContext()->actionsManager()->removeAction("PB_ActionDefineHeightLayer");
 
             QMessageBox::information(NULL, tr("Segmentation des trouées"), tr("Mode manuel.\n"
-                                                                                "Phase 2 : Segmentation des trouées.\n"
-                                                                                "La pré-segmentation automatique peut prendre un peu de temps..."), QMessageBox::Ok);
+                                                                              "Phase 2 : Segmentation des trouées.\n"
+                                                                              "La pré-segmentation automatique peut prendre un peu de temps..."), QMessageBox::Ok);
 
             _action = new PB_ActionSegmentGaps(_gridContainer->_densityGrid,
-                                                 _gridContainer->_mnsGrid,
-                                                 _clustersGrid);
+                                               _gridContainer->_mnsGrid,
+                                               _clustersGrid, _keepOnlyGapsInConvexHull);
 
             m_doc->setCurrentAction(_action);
             _action = NULL;
@@ -389,7 +391,7 @@ void PB_StepSegmentGaps::useManualMode(bool quit)
             quitManualMode();
 
             QMessageBox::information(NULL, tr("Segmentation des trouées"), tr("Fin du mode manuel, démarrage des post-traitements\n"
-                                                                                "Cela peut prendre un peu de temps..."), QMessageBox::Ok);
+                                                                              "Cela peut prendre un peu de temps..."), QMessageBox::Ok);
         }
     }
 }

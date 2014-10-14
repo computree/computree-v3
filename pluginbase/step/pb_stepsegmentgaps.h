@@ -119,6 +119,8 @@ private:
     PB_ActionDefineHeightLayer_gridContainer *_gridContainer;
     CT_Grid2DXY<int>                         *_clustersGrid;
 
+    bool                                      _keepOnlyGapsInConvexHull;
+
     float                       _xmin;
     float                       _ymin;
     float                       _zmin;

@@ -27,7 +27,7 @@ public:
         bool                _useNewClustersMap;
     };
 
-    PB_ActionSegmentGaps(const CT_Grid2DXY<int>* densityGrid, const CT_Grid2DXY<float>* mnsGrid, CT_Grid2DXY<int>* clustersGrid);
+    PB_ActionSegmentGaps(const CT_Grid2DXY<int>* densityGrid, const CT_Grid2DXY<float>* mnsGrid, CT_Grid2DXY<int>* clustersGrid, bool keepOnlyConvexHull = true);
 
     ~PB_ActionSegmentGaps();
 
@@ -91,6 +91,7 @@ private:
     CT_Grid2DXY<int>*                       _clustersGrid;
     size_t                                  _activeCol;
     size_t                                  _activeRow;
+    bool                                    _keepOnlyConvexHull;
 
     QMap<int, const QColor*>                _clusters;
     int                                     _lastCluster;

@@ -9,6 +9,8 @@
 
 #include <limits>
 
+#include "ct_shapedata/ct_polygon2ddata_old.h"
+
 
 PB_ActionSegmentGaps::UndoRedoContent::UndoRedoContent()
 {
@@ -41,13 +43,15 @@ void PB_ActionSegmentGaps::UndoRedoContent::addIndice(const size_t indice, const
     _useNewClustersMap = true;
 }
 
-PB_ActionSegmentGaps::PB_ActionSegmentGaps(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<float> *mnsGrid, CT_Grid2DXY<int> *clustersGrid) : CT_AbstractActionForGraphicsView()
+PB_ActionSegmentGaps::PB_ActionSegmentGaps(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<float> *mnsGrid, CT_Grid2DXY<int> *clustersGrid, bool keepOnlyConvexHull) : CT_AbstractActionForGraphicsView()
 {
     _densityGrid = densityGrid;
     _mnsGrid = mnsGrid;
     _clustersGrid = clustersGrid;
     _lastCluster = 0;
     _lastIndex = 0;
+
+    _keepOnlyConvexHull = keepOnlyConvexHull;
 
      _whiteColor = new QColor(255,255,255);
 
@@ -181,13 +185,50 @@ void PB_ActionSegmentGaps::initClusters()
     size_t colDim = _clustersGrid->colDim();
     size_t linDim = _clustersGrid->linDim();
 
+    if (_keepOnlyConvexHull)
+    {
+        QList<QVector2D*> filledCells;
+
+        // add all filled cell coordinates in a list (for convex hull computation)
+        for (size_t cx = 0 ; cx < colDim ; cx++)
+        {
+            for (size_t ly = 0 ; ly < linDim ; ly++)
+            {
+                int value = _densityGrid->value(cx, ly);
+                if (value > 0)
+                {
+                    filledCells.append(new QVector2D(_densityGrid->getCellCenterColCoord(cx), _densityGrid->getCellCenterLinCoord(ly)));
+                }
+            }
+        }
+
+        // compute convex hull
+        CT_Polygon2DData_Old* polygonData = CT_Polygon2DData_Old::createConvexHull(filledCells);
+
+        // exclude au cells outside of the convex hull
+        for (size_t cx = 0 ; cx < colDim ; cx++)
+        {
+            float xx = _clustersGrid->getCellCenterColCoord(cx);
+
+            for (size_t ly = 0 ; ly < linDim ; ly++)
+            {
+                float yy = _clustersGrid->getCellCenterLinCoord(ly);
+
+                if (!polygonData->contains(xx, yy))
+                {
+                    _clustersGrid->setValue(cx, ly, -2);
+                }
+            }
+        }
+    }
+
     for (size_t cx = 0 ; cx < colDim ; cx++)
     {
         for (size_t ly = 0 ; ly < linDim ; ly++)
         {
             int cluster = _clustersGrid->value(cx, ly);
 
-            if (cluster < 0)
+            if (cluster == -1)
             {
                 QList<size_t> liste = computeColonize(cx, ly);
 
@@ -199,6 +240,10 @@ void PB_ActionSegmentGaps::initClusters()
             }
         }
     }
+
+
+
+
     option->setClusterNumber(_lastCluster + 1);
     option->setActiveCluster(_lastCluster);
 
@@ -260,7 +305,7 @@ QList<size_t> PB_ActionSegmentGaps::computeColonize(size_t originColumn, size_t 
         return result;
     }
 
-    if (_densityGrid->valueAtIndex(index) == _densityGrid->NA()) {result.append(index);}
+    if (_densityGrid->valueAtIndex(index) == _densityGrid->NA() && (_clustersGrid->valueAtIndex(index) != -2)) {result.append(index);}
 
     int i = 0;
     while (i < result.size())
@@ -284,7 +329,7 @@ void PB_ActionSegmentGaps::appendIfNotNulValue(QList<size_t> &result, size_t col
     size_t index;
     if (_clustersGrid->index(col, lin, index))
     {
-        if (_densityGrid->valueAtIndex(index) == _densityGrid->NA() && !result.contains(index))
+        if (_densityGrid->valueAtIndex(index) == _densityGrid->NA()  && (_clustersGrid->valueAtIndex(index) != -2) && !result.contains(index))
         {
             result.append(index);
         }
@@ -877,5 +922,5 @@ void PB_ActionSegmentGaps::drawOverlay(GraphicsViewInterface &view, QPainter &pa
 
 CT_AbstractAction *PB_ActionSegmentGaps::copy() const
 {
-    return new PB_ActionSegmentGaps(_densityGrid, _mnsGrid, _clustersGrid);
+    return new PB_ActionSegmentGaps(_densityGrid, _mnsGrid, _clustersGrid, _keepOnlyConvexHull);
 }
