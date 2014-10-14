@@ -57,5 +57,6 @@
         <file>Icones/fast_never.png</file>
         <file>Icones/fast_onmove.png</file>
         <file>Icones/help.png</file>
+        <file>Icones/octree.png</file>
     </qresource>
 </RCC>

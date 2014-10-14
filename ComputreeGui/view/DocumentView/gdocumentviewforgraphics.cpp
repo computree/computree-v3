@@ -924,8 +924,8 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonConstructOctree->setMaximumWidth(33);
     _buttonConstructOctree->setMinimumWidth(33);
     _buttonConstructOctree->setToolTip(tr("(Re)construire un octree"));
-    //_buttonConstructOctree->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
-    _buttonConstructOctree->setText("OCTREE");
+    _buttonConstructOctree->setIcon(QIcon(":/Icones/Icones/octree.png"));
+    //_buttonConstructOctree->setText("OCTREE");
     _buttonConstructOctree->setEnabled(false);
 
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(pluginExporterManagerReloaded()));
