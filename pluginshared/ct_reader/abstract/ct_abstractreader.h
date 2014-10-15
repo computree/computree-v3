@@ -223,6 +223,12 @@ protected:
     void addNewReadableFormat(const FileFormat &format);
 
     /**
+     * @brief Called by derived class in "protectedReadFile()" to inform that this reader
+     *        don't used the coordinate system
+     */
+    void setNotNeedToUseCoordinateSystem();
+
+    /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the
      *        same ItemDrawable you must add multiple model with different name.
      */

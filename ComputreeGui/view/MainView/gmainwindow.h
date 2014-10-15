@@ -79,6 +79,7 @@ public slots:
     void saveScript(QString &saveDirectory);
     void showAboutDialog();
     void showAboutPluginsDialog();
+    void configureCurrentCoordinateSystem();
     void cleanItemDrawableOfAllDocuments();
     void showINeedHelpDialog();
 

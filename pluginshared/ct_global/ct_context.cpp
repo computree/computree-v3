@@ -4,6 +4,7 @@
 #include "ct_categories/tools/ct_categorymanager.h"
 #include "ct_categories/ct_stdcategory.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 CT_Context* CT_Context::UNIQUE_INSTANCE = NULL;
 
@@ -48,6 +49,7 @@ CT_Context::CT_Context()
     m_tmpLog = new CT_TemporaryLog();
     m_diam = new CT_DefaultItemAttributeManager();
     m_modelHelper = new CT_ModelSearchHelper();
+    m_csManager = new CT_CoordinateSystemManager();
 
     m_guiManager = NULL;
     m_coreInterface = NULL;
@@ -113,6 +115,11 @@ CT_DefaultItemAttributeManager* CT_Context::defaultItemAttributesManager() const
 CT_ModelSearchHelper* CT_Context::modelSearchHelper() const
 {
     return m_modelHelper;
+}
+
+CT_CoordinateSystemManager* CT_Context::coordinateSystemManager() const
+{
+    return m_csManager;
 }
 
 void CT_Context::setCoreInterface(const CoreInterface *core)

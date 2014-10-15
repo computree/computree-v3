@@ -11,6 +11,8 @@
 #define PS_LOG CT_Context::staticInstance()->log()
 #define PS_DIAM CT_Context::staticInstance()->defaultItemAttributesManager()
 #define PS_MODELS CT_Context::staticInstance()->modelSearchHelper()
+#define PS_COORDINATES_SYS_MANAGER CT_Context::staticInstance()->coordinateSystemManager()
+#define PS_COODINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
 
 #define CT_ABSTRACT_NMPCIR CT_Repository::CT_AbstractNotModifiablePCIR
 #define CT_ABSTRACT_MPCIR CT_Repository::CT_AbstractModifiablePCIR
@@ -20,6 +22,7 @@ class CT_DefaultItemAttributeManager;
 class CT_CategoryManager;
 class CT_TemporaryLog;
 class CT_ModelSearchHelper;
+class CT_CoordinateSystemManager;
 
 class PLUGINSHAREDSHARED_EXPORT CT_Context
 {
@@ -67,6 +70,11 @@ public:
     CT_ModelSearchHelper* modelSearchHelper() const;
 
     /**
+     * @brief Returns the coordinate system manager
+     */
+    CT_CoordinateSystemManager* coordinateSystemManager() const;
+
+    /**
      * @brief Returns the log (CORE)
      */
     LogInterface* log() const;
@@ -99,6 +107,7 @@ private:
     CT_TemporaryLog                 *m_tmpLog;
     CT_DefaultItemAttributeManager  *m_diam;
     CT_ModelSearchHelper            *m_modelHelper;
+    CT_CoordinateSystemManager      *m_csManager;
     CT_Context();
 };
 

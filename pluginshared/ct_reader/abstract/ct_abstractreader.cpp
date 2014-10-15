@@ -3,6 +3,8 @@
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
+#include "ct_global/ct_context.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 CT_AbstractReader::CT_AbstractReader()
 {
@@ -80,7 +82,12 @@ bool CT_AbstractReader::readFile()
     m_error = false;
     m_stop = false;
 
+    PS_COORDINATES_SYS_MANAGER->initUsedOfAllCoordinateSystem();
+
     m_error = protectedReadFile();
+
+    if(!PS_COODINATES_SYS->wasUsed())
+        PS_LOG->addErrorMessage(LogInterface::reader, tr("Reader error ! The reader has not used the coordinate system !"));
 
     emit finished();
 
@@ -370,6 +377,11 @@ QList<CT_AbstractItemGroup *> CT_AbstractReader::groupOfModel(const QString &mod
 void CT_AbstractReader::addNewReadableFormat(const FileFormat &format)
 {
     m_formats.append(format);
+}
+
+void CT_AbstractReader::setNotNeedToUseCoordinateSystem()
+{
+    PS_COODINATES_SYS->informThatUsed();
 }
 
 void CT_AbstractReader::addOutItemDrawableModel(CT_OutStdSingularItemModel *item)

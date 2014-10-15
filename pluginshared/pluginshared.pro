@@ -313,7 +313,10 @@ SOURCES += \
     ct_itemdrawable/ct_itemattributelist.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp \
     ct_itemdrawable/ct_faceattributesnormal.cpp \
-    ct_itemdrawable/ct_attributeslist.cpp
+    ct_itemdrawable/ct_attributeslist.cpp \
+    ct_coordinates/ct_defaultcoordinatesystem.cpp \
+    ct_coordinates/tools/ct_coordinatesystemmanager.cpp \
+    ct_coordinates/view/ct_gdefaultcoordinatesystem.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -705,7 +708,11 @@ HEADERS += interfaces.h \
     rapidxml/rapidxml_print.hpp \
     rapidxml/rapidxml_utils.hpp \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h \
-    ct_itemdrawable/ct_attributeslist.h
+    ct_itemdrawable/ct_attributeslist.h \
+    ct_coordinates/abstract/ct_abstractcoordinatesystem.h \
+    ct_coordinates/ct_defaultcoordinatesystem.h \
+    ct_coordinates/tools/ct_coordinatesystemmanager.h \
+    ct_coordinates/view/ct_gdefaultcoordinatesystem.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
@@ -759,7 +766,8 @@ FORMS += \
     ct_view/inModel/ctg_inturnmanager.ui \
     ct_view/inModel/ctg_inmodelpossibilitieschoice.ui \
     ct_view/tools/ct_textfileconfigurationdialog.ui \
-    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui
+    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui \
+    ct_coordinates/view/ct_gdefaultcoordinatesystem.ui
 
 TRANSLATIONS += languages/pluginshared_fr.ts \
                 languages/pluginshared_en.ts

@@ -202,6 +202,7 @@ public slots:
     bool removeItemDrawableOfResult(CT_AbstractResult *res);
 
     void showStepManagerOptions();
+
 private slots:
 
     void stepAdded(CT_VirtualAbstractStep *step);

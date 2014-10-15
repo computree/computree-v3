@@ -1,6 +1,8 @@
 #include "ct_abstractexporter.h"
 
 #include "private/ct_abstractexporter_p.h"
+#include "ct_global/ct_context.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 CT_AbstractExporter::CT_AbstractExporter() :
     d_ptr(new CT_AbstractExporterPrivate)
@@ -188,8 +190,13 @@ bool CT_AbstractExporter::exportToFile()
 
     d->_progress = 0;
 
+    PS_COORDINATES_SYS_MANAGER->initUsedOfAllCoordinateSystem();
+
     if(!protectedExportToFile())
         return false;
+
+    if(!PS_COODINATES_SYS->wasUsed())
+        PS_LOG->addErrorMessage(LogInterface::exporter, tr("Exporter error ! The exporter has not used the coordinate system !"));
 
     d->_progress = 100;
 
@@ -264,6 +271,11 @@ void CT_AbstractExporter::addNewExportFormat(const FileFormat &format)
     Q_D(CT_AbstractExporter);
 
     d->_formats.append(format);
+}
+
+void CT_AbstractExporter::setNotNeedToUseCoordinateSystem()
+{
+    PS_COODINATES_SYS->informThatUsed();
 }
 
 void CT_AbstractExporter::setExportProgress(int progress)

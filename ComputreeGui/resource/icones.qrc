@@ -58,5 +58,6 @@
         <file>Icones/fast_onmove.png</file>
         <file>Icones/help.png</file>
         <file>Icones/octree.png</file>
+        <file>Icones/maps.png</file>
     </qresource>
 </RCC>
