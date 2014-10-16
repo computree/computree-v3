@@ -3,6 +3,8 @@
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 #include "ct_coordinates/view/ct_gdefaultcoordinatesystem.h"
 
+#include <limits>
+
 CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
 {
     m_xOffset = 0;
