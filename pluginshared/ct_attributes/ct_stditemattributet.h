@@ -2,8 +2,6 @@
 #define CT_STDITEMATTRIBUTET_H
 
 #include "ct_attributes/abstract/ct_abstractitemattributet.h"
-#include "ct_global/ct_context.h"
-#include "ct_categories/tools/ct_categorymanager.h"
 
 /**
  * @brief An item attribute that contains a data that will not changed. Use

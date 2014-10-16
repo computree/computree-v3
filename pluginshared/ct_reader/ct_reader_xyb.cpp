@@ -7,6 +7,7 @@
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 #include <limits>
 
@@ -146,6 +147,13 @@ bool CT_Reader_XYB::protectedReadFile()
 {
     bool filter = (_filterRadius > 0);
 
+    float xc, yc, zc;
+
+    PS_COODINATES_SYS->convertImport(_xc, _yc, _zc, xc, yc, zc);
+    _xc = xc;
+    _yc = yc;
+    _zc = zc;
+
     // Test File validity
     if(QFile::exists(filepath()))
     {
@@ -207,16 +215,18 @@ bool CT_Reader_XYB::protectedReadFile()
                     {
                         CT_Point &p = mpcir->addPoint();
 
-                        p.setX((float)x);
-                        p.setY((float)y);
-                        p.setZ((float)z);
+                        PS_COODINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
-                        if (x<xmin) {xmin = (float)x;}
-                        if (x>xmax) {xmax = (float)x;}
-                        if (y<ymin) {ymin = (float)y;}
-                        if (y>ymax) {ymax = (float)y;}
-                        if (z<zmin) {zmin = (float)z;}
-                        if (z>zmax) {zmax = (float)z;}
+                        p.setX(xc);
+                        p.setY(yc);
+                        p.setZ(zc);
+
+                        if (xc<xmin) {xmin = xc;}
+                        if (xc>xmax) {xmax = xc;}
+                        if (yc<ymin) {ymin = yc;}
+                        if (yc>ymax) {ymax = yc;}
+                        if (zc<zmin) {zmin = zc;}
+                        if (zc>zmax) {zmax = zc;}
                         if (reflectance<imin) {imin = reflectance;}
                         if (reflectance>imax) {imax = reflectance;}
 
@@ -227,16 +237,18 @@ bool CT_Reader_XYB::protectedReadFile()
                 {
                     CT_Point &p = pcir->tAt(a);
 
-                    p.setX((float)x);
-                    p.setY((float)y);
-                    p.setZ((float)z);
+                    PS_COODINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
-                    if (x<xmin) {xmin = (float)x;}
-                    if (x>xmax) {xmax = (float)x;}
-                    if (y<ymin) {ymin = (float)y;}
-                    if (y>ymax) {ymax = (float)y;}
-                    if (z<zmin) {zmin = (float)z;}
-                    if (z>zmax) {zmax = (float)z;}
+                    p.setX(xc);
+                    p.setY(yc);
+                    p.setZ(zc);
+
+                    if (xc<xmin) {xmin = xc;}
+                    if (xc>xmax) {xmax = xc;}
+                    if (yc<ymin) {ymin = yc;}
+                    if (yc>ymax) {ymax = yc;}
+                    if (zc<zmin) {zmin = zc;}
+                    if (zc>zmax) {zmax = zc;}
                     if (reflectance<imin) {imin = reflectance;}
                     if (reflectance>imax) {imax = reflectance;}
 
@@ -272,16 +284,17 @@ bool CT_Reader_XYB::protectedReadFile()
             if (_rows<=0 || _cols<=0)
                 return true;
 
-            double hres = 150 / _rows;
-            double vres = 360 / _cols;
+            double hres = 150.0 / ((double)_rows);
+            double vres = 360.0 / ((double)_cols);
 
             // add the scanner
             addOutItemDrawable(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(NULL, NULL, 0, QVector3D(_xc, _yc, _zc), QVector3D(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
 
-
             return true;
         }
     }
+
+    setNotNeedToUseCoordinateSystem();
 
     return false;
 }

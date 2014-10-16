@@ -712,7 +712,11 @@ HEADERS += interfaces.h \
     ct_coordinates/abstract/ct_abstractcoordinatesystem.h \
     ct_coordinates/ct_defaultcoordinatesystem.h \
     ct_coordinates/tools/ct_coordinatesystemmanager.h \
-    ct_coordinates/view/ct_gdefaultcoordinatesystem.h
+    ct_coordinates/view/ct_gdefaultcoordinatesystem.h \
+    ct_attributes/ct_stditemattributecoordinatewrappert.h \
+    ct_attributes/ct_stditemattributecoordinatewrappert.hpp \
+    ct_attributes/ct_stditemattributecoordinatet.h \
+    ct_attributes/ct_stditemattributecoordinatet.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

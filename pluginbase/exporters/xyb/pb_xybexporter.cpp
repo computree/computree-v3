@@ -14,11 +14,13 @@
 #include "ct_itemdrawable/ct_scanner.h"
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
 #include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
     setCanExportItems(true);
     setCanExportPoints(true);
+    m_scanner = NULL;
 }
 
 PB_XYBExporter::~PB_XYBExporter()
@@ -212,16 +214,10 @@ bool PB_XYBExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget
         QList<CT_AbstractSingularItemDrawable*> list = selectorWidget->itemDrawableSelected();
         QListIterator<CT_AbstractSingularItemDrawable*> it(list);
 
-        while(it.hasNext())
-        {
-            CT_Scanner *scan = dynamic_cast<CT_Scanner*>(it.next());
+        m_scanner = NULL;
 
-            if(scan != NULL)
-            {
-                m_scanner = scan;
-                return true;
-            }
-        }
+        while(it.hasNext() && (m_scanner == NULL))
+            m_scanner = dynamic_cast<CT_Scanner*>(it.next());
 
         return true;
     }
@@ -252,15 +248,25 @@ bool PB_XYBExporter::protectedExportToFile()
 
         if(m_scanner != NULL)
         {
-            txtStream << "ScanPosition " << m_scanner->getPosition().x() << " " << m_scanner->getPosition().y() << " " << m_scanner->getPosition().z() << " \n";
+            CT_AbstractCoordinateSystem::realIm x, y, z;
+            CT_AbstractCoordinateSystem::realEx xc, yc, zc;
+            x = m_scanner->getPosition().x();
+            y = m_scanner->getPosition().y();
+            z = m_scanner->getPosition().z();
+
+            PS_COODINATES_SYS->convertExport(x, y, z, xc, yc, zc);
+
+            txtStream << "ScanPosition " << (double)xc << " " << (double)yc << " " << (double)zc << "\n";
+            txtStream << "Rows " << (m_scanner->getVFov()*RAD2DEG)/(m_scanner->getHRes()*RAD2DEG) << "\n";
+            txtStream << "Cols " << (m_scanner->getHFov()*RAD2DEG)/(m_scanner->getVRes()*RAD2DEG) << "\n";
         }
         else
         {
             txtStream << "ScanPosition 0.00000000 0.00000000 0.00000000 \n";
+            txtStream << "Rows 0\n";
+            txtStream << "Cols 0\n";
         }
 
-        txtStream << "Rows 0\n";
-        txtStream << "Cols 0\n";
         file.close();
     }
 
@@ -347,13 +353,17 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
     CT_AbstractCloudIndexT<CT_Point>::ConstIterator begin = constPCIndex->constBegin();
     CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = constPCIndex->constEnd();
 
+    CT_AbstractCoordinateSystem::realEx xc, yc, zc;
+
     while(begin != end)
     {
         const CT_Point &point = begin.cT();
 
-        stream << ((double)point.data[0]);
-        stream << ((double)point.data[1]);
-        stream << ((double)point.data[2]);
+        PS_COODINATES_SYS->convertExport(point.getX(), point.getY(), point.getZ(), xc, yc, zc);
+
+        stream << ((double)xc);
+        stream << ((double)yc);
+        stream << ((double)zc);
 
         if(cc == NULL)
         {

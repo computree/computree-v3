@@ -127,11 +127,23 @@ void GActionsManager::refreshView()
             QListIterator<CT_AbstractAction*> itA(actionsType);
 
             while(itA.hasNext())
-                menu->appendRow(createItemForAction(itA.next()));
+            {
+                CT_AbstractAction *act = itA.next();
 
-            m_model.appendRow(menu);
+                if((m_currentDoc != NULL) && m_currentDoc->acceptAction(act))
+                    menu->appendRow(createItemForAction(act));
+            }
 
-            ui->treeView->setExpanded(m_model.indexFromItem(menu), states.value(menu->data().toString(), true));
+            if(menu->rowCount() != 0)
+            {
+                m_model.appendRow(menu);
+
+                ui->treeView->setExpanded(m_model.indexFromItem(menu), states.value(menu->data().toString(), true));
+            }
+            else
+            {
+                delete menu;
+            }
         }
 
         // Continue create the model for actions added by step

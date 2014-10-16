@@ -30,7 +30,9 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_actionshandler.h \
     imainprogressdialog.h \
     dm_abstractinfo.h \
-    dm_iteminfoforgraphics.h
+    dm_iteminfoforgraphics.h \
+    dm_iprogresslistener.h \
+    dm_progresslistenermanager.h
 
 # OTHER
 SOURCES += main.cpp \
@@ -55,7 +57,8 @@ SOURCES += main.cpp \
     dm_actionsmanager.cpp \
     dm_actionshandler.cpp \
     dm_abstractinfo.cpp \
-    dm_iteminfoforgraphics.cpp
+    dm_iteminfoforgraphics.cpp \
+    dm_progresslistenermanager.cpp
 
 HEADERS += \
     dm_document.h \

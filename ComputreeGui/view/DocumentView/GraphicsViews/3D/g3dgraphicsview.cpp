@@ -675,7 +675,7 @@ void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
 
     if(item != NULL)
     {
-        lockPaint();
+        /*lockPaint();
 
         m_fakeG.beginNewDraw();
         m_fakeG.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
@@ -686,7 +686,7 @@ void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
 
         m_pointsSelectionManager->addCloudIndexToSelection(m_fakeG.pointCloudIndexBackup());
 
-        unlockPaint();
+        unlockPaint();*/
 
         item->setSelected(true);
     }

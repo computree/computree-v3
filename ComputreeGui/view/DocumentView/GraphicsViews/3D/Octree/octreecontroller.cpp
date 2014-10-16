@@ -167,6 +167,8 @@ void OctreeController::construct()
 
         if(m_newNumberOfCells > 0)
         {
+            setProgressRange(0, 100);
+
             QHashIterator<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo> itAdd(m_pointsToAdd);
 
             while(itAdd.hasNext())
@@ -174,8 +176,6 @@ void OctreeController::construct()
                 itAdd.next();
                 m_points.insert(itAdd.key(), itAdd.value());
             }
-
-            m_pointsToAdd.clear();
 
             double maxW = std::max(m_newMax.x() - m_newMin.x(), m_newMax.y() - m_newMin.y());
             maxW = std::max(maxW, m_newMax.z() - m_newMin.z());
@@ -199,6 +199,8 @@ void OctreeController::construct()
 
             while(it.hasNext())
                 addPointsToOctree(it.next().key());
+
+            m_pointsToAdd.clear();
 
             m_min = m_newMin;
             m_max = m_newMax;
@@ -332,6 +334,7 @@ void OctreeController::addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> 
         if(m_progress != progress)
         {
             m_progress = progress;
+            setProgress(m_progress);
             emit constructionInProgress(m_progress);
         }
     }

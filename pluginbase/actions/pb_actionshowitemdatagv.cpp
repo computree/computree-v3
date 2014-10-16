@@ -143,7 +143,23 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
             {
                 CT_AbstractItemAttribute *att = itAtt.next();
 
-                painter.drawText(2, y, QString("%1 = %2").arg(att->displayableName()).arg(att->toString(sItem, NULL)));
+                QString txt = att->displayableName() + " = ";
+
+                if(att->category()->isEquivalentTo(CT_AbstractCategory::DATA_COORDINATE))
+                {
+                    bool e = att->useCoordinateSystem();
+                    att->setUseCoordinateSystem(true);
+                    txt += att->toString(sItem, NULL);
+                    att->setUseCoordinateSystem(false);
+                    txt += " (" + att->toString(sItem, NULL) + ")";
+                    att->setUseCoordinateSystem(e);
+                }
+                else
+                {
+                    txt += att->toString(sItem, NULL);
+                }
+
+                painter.drawText(2, y, txt);
 
                 y += add;
             }

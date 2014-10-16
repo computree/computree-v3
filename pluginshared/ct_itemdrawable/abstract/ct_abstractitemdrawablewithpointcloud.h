@@ -149,7 +149,7 @@ private:
 
     // default attributes
     CT_DEFAULT_IA_BEGIN(CT_AbstractItemDrawableWithPointCloud)
-    CT_DEFAULT_IA_V2(CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, QObject::tr("Nombre de points"))
+    CT_DEFAULT_IA_V2(CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::staticInitDataNumber(), &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, QObject::tr("Nombre de points"))
     CT_DEFAULT_IA_END(CT_AbstractItemDrawableWithPointCloud)
 protected:
 

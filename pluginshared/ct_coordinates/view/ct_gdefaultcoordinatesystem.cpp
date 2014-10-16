@@ -17,6 +17,10 @@ CT_GDefaultCoordinateSystem::~CT_GDefaultCoordinateSystem()
 void CT_GDefaultCoordinateSystem::setCoordinateSystem(const CT_DefaultCoordinateSystem *cs)
 {
     m_cs = (CT_DefaultCoordinateSystem*)cs;
+
+    ui->dsbXOffset->setValue(cs->xOffset());
+    ui->dsbYOffset->setValue(cs->yOffset());
+    ui->dsbZOffset->setValue(cs->zOffset());
 }
 
 void CT_GDefaultCoordinateSystem::setReadOnly(bool val)

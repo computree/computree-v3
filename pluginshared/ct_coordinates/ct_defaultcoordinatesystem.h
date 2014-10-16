@@ -15,31 +15,33 @@ public:
      * @brief Returns true if coordinates passed in parameter can be converted to realIm (import). False
      *        if the capacity of a realIm is not sufficient.
      */
-    bool canConvertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                          const CT_AbstractCoordinateSystem::realEx &y,
-                          const CT_AbstractCoordinateSystem::realEx &z) const;
+    bool canConvertImport(CT_AbstractCoordinateSystem::realEx x,
+                          CT_AbstractCoordinateSystem::realEx y,
+                          CT_AbstractCoordinateSystem::realEx z) const;
 
     /**
      * @brief Convert a coordinate of type realEx to realIm. This method don't test if the realIm
      *        can accept the capacity of the converted value (if you want to know if its possible call
      *        the method "canConvertedForImport")
      */
-    void convertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                       const CT_AbstractCoordinateSystem::realEx &y,
-                       const CT_AbstractCoordinateSystem::realEx &z,
+    void convertImport(CT_AbstractCoordinateSystem::realEx x,
+                       CT_AbstractCoordinateSystem::realEx y,
+                       CT_AbstractCoordinateSystem::realEx z,
                        CT_AbstractCoordinateSystem::realIm &xOut,
                        CT_AbstractCoordinateSystem::realIm &yOut,
-                       CT_AbstractCoordinateSystem::realIm &zOut) const;
+                       CT_AbstractCoordinateSystem::realIm &zOut,
+                       CT_AbstractCoordinateSystem::DatasToConvert convert = CT_AbstractCoordinateSystem::CONVERT_ALL) const;
 
     /**
      * @brief Convert a coordinate of type realIm to realEx.
      */
-    void convertExport(const CT_AbstractCoordinateSystem::realIm &x,
-                       const CT_AbstractCoordinateSystem::realIm &y,
-                       const CT_AbstractCoordinateSystem::realIm &z,
+    void convertExport(CT_AbstractCoordinateSystem::realIm x,
+                       CT_AbstractCoordinateSystem::realIm y,
+                       CT_AbstractCoordinateSystem::realIm z,
                        CT_AbstractCoordinateSystem::realEx &xOut,
                        CT_AbstractCoordinateSystem::realEx &yOut,
-                       CT_AbstractCoordinateSystem::realEx &zOut) const;
+                       CT_AbstractCoordinateSystem::realEx &zOut,
+                       CT_AbstractCoordinateSystem::DatasToConvert convert = CT_AbstractCoordinateSystem::CONVERT_ALL) const;
 
     /**
      * @brief Configure the coordinate system.

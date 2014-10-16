@@ -115,6 +115,8 @@ public:
 
     bool isVisible() const;
 
+    bool canClose() const;
+
 private:
 
     MyQMdiSubWindow             *_subWindow;

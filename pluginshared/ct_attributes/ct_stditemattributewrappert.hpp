@@ -26,6 +26,12 @@ CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>::CT_StdItemAttributeWrapper
 }
 
 template <class ItemDrawableClass, typename VType>
+CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>::CT_StdItemAttributeWrapperT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(categoryName)
+{
+    m_gMethod = NULL;
+}
+
+template <class ItemDrawableClass, typename VType>
 CT_AbstractItemAttribute* CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>::copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result)
 {
     return new CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>(model, this->category(), result, m_gMethod);

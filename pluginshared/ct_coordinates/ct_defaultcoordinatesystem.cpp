@@ -12,9 +12,9 @@ CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
     m_zOffset = 0;
 }
 
-bool CT_DefaultCoordinateSystem::canConvertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                                                  const CT_AbstractCoordinateSystem::realEx &y,
-                                                  const CT_AbstractCoordinateSystem::realEx &z) const
+bool CT_DefaultCoordinateSystem::canConvertImport(CT_AbstractCoordinateSystem::realEx x,
+                                                  CT_AbstractCoordinateSystem::realEx y,
+                                                  CT_AbstractCoordinateSystem::realEx z) const
 {
     CT_AbstractCoordinateSystem::realEx max = std::numeric_limits<CT_AbstractCoordinateSystem::realIm>::max();
     CT_AbstractCoordinateSystem::realEx min = -max;
@@ -34,30 +34,42 @@ bool CT_DefaultCoordinateSystem::canConvertImport(const CT_AbstractCoordinateSys
     return ((tmp > max) || (tmp < min));
 }
 
-void CT_DefaultCoordinateSystem::convertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                                               const CT_AbstractCoordinateSystem::realEx &y,
-                                               const CT_AbstractCoordinateSystem::realEx &z,
+void CT_DefaultCoordinateSystem::convertImport(CT_AbstractCoordinateSystem::realEx x,
+                                               CT_AbstractCoordinateSystem::realEx y,
+                                               CT_AbstractCoordinateSystem::realEx z,
                                                CT_AbstractCoordinateSystem::realIm &xOut,
                                                CT_AbstractCoordinateSystem::realIm &yOut,
-                                               CT_AbstractCoordinateSystem::realIm &zOut) const
+                                               CT_AbstractCoordinateSystem::realIm &zOut,
+                                               CT_AbstractCoordinateSystem::DatasToConvert convert) const
 {
-    xOut = x-m_xOffset;
-    yOut = y-m_xOffset;
-    zOut = z-m_xOffset;
+    if(convert.testFlag(CONVERT_X))
+        xOut = x+m_xOffset;
+
+    if(convert.testFlag(CONVERT_Y))
+        yOut = y+m_yOffset;
+
+    if(convert.testFlag(CONVERT_Z))
+        zOut = z+m_zOffset;
 
     informThatUsed();
 }
 
-void CT_DefaultCoordinateSystem::convertExport(const CT_AbstractCoordinateSystem::realIm &x,
-                                               const CT_AbstractCoordinateSystem::realIm &y,
-                                               const CT_AbstractCoordinateSystem::realIm &z,
+void CT_DefaultCoordinateSystem::convertExport(CT_AbstractCoordinateSystem::realIm x,
+                                               CT_AbstractCoordinateSystem::realIm y,
+                                               CT_AbstractCoordinateSystem::realIm z,
                                                CT_AbstractCoordinateSystem::realEx &xOut,
                                                CT_AbstractCoordinateSystem::realEx &yOut,
-                                               CT_AbstractCoordinateSystem::realEx &zOut) const
+                                               CT_AbstractCoordinateSystem::realEx &zOut,
+                                               CT_AbstractCoordinateSystem::DatasToConvert convert) const
 {
-    xOut = x+m_xOffset;
-    yOut = y+m_xOffset;
-    zOut = z+m_xOffset;
+    if(convert.testFlag(CONVERT_X))
+        xOut = x-m_xOffset;
+
+    if(convert.testFlag(CONVERT_Y))
+        yOut = y-m_yOffset;
+
+    if(convert.testFlag(CONVERT_Z))
+        zOut = z-m_zOffset;
 
     informThatUsed();
 }
@@ -73,7 +85,7 @@ bool CT_DefaultCoordinateSystem::configure()
 
 void CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x,
                                            CT_AbstractCoordinateSystem::realEx y,
-                                           realEx z)
+                                           CT_AbstractCoordinateSystem::realEx z)
 {
     m_xOffset = x;
     m_yOffset = y;

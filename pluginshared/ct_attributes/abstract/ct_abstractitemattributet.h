@@ -11,6 +11,11 @@ public:
     CT_AbstractItemAttributeT(const QString &modelName, const QString &categoryName, const CT_AbstractResult *result);
 
     /**
+     * @brief Use only this constructor for model !
+     */
+    CT_AbstractItemAttributeT(const QString &categoryName);
+
+    /**
      * @brief ok = false if the specialization does not exist
      */
     bool toBool(const CT_AbstractItemDrawable *item, bool *ok) const;
@@ -105,6 +110,18 @@ inline long double CT_AbstractItemAttributeT<float>::toLongDouble(const CT_Abstr
 // SIGNED INTEGER -> SIGNED INTEGER
 template<>
 inline int CT_AbstractItemAttributeT<int>::toInt(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
+
+// SIGNED INTEGER -> FLOAT
+template<>
+inline float CT_AbstractItemAttributeT<int>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
+
+// SIGNED INTEGER -> DOUBLE
+template<>
+inline double CT_AbstractItemAttributeT<int>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
+
+// SIGNED INTEGER -> LONG DOUBLE
+template<>
+inline long double CT_AbstractItemAttributeT<int>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // UNSIGNED INTEGER 64bits -> UNSIGNED INTEGER 64bits

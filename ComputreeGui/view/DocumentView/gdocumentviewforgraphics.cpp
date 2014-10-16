@@ -859,8 +859,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
 void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
 {
-    qDeleteAll(_listGraphics.begin(), _listGraphics.end());
-    _listGraphics.clear();
+    if(canClose())
+    {
+        qDeleteAll(_listGraphics.begin(), _listGraphics.end());
+        _listGraphics.clear();
+    }
 
     GDocumentView::closeEvent(closeEvent);
 }
@@ -899,6 +902,8 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonExport->setToolTip(tr("Exporter les éléments sélectionnés"));
     _buttonExport->setIcon(QIcon(":/Icones/Icones/upload.png"));
     _buttonExport->setEnabled(false);
+
+    pluginExporterManagerReloaded();
 
     QPushButton *buttonPointsAttributes = new QPushButton(widgetContainer);
     buttonPointsAttributes->setMaximumWidth(33);

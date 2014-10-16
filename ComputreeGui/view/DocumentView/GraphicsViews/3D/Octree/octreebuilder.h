@@ -9,6 +9,7 @@ class OctreeBuilder : public DM_AbstractWorker
 {
 public:
     OctreeBuilder();
+    ~OctreeBuilder();
 
     /**
      * @brief Set the document who contains the octree controller

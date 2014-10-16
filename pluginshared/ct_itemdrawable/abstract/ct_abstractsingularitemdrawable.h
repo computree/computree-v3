@@ -168,9 +168,9 @@ private:
     CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
     CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataId(), &CT_AbstractSingularItemDrawable::id, QObject::tr("ID"))
     CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Nom"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Centre X"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Centre Y"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Z"))
+    CT_DEFAULT_IA_V2_COORDINATE(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, &CT_AbstractSingularItemDrawable::getCenterY, &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre X"))
+    CT_DEFAULT_IA_V2_COORDINATE(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterX, &CT_AbstractSingularItemDrawable::getCenterY, &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Y"))
+    CT_DEFAULT_IA_V2_COORDINATE(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterX, &CT_AbstractSingularItemDrawable::getCenterY, &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Z"))
     CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)

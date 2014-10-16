@@ -687,10 +687,13 @@ void GMainWindow::writeConfiguration()
 
         if(dynamic_cast<GDocumentViewForGraphics*>(docV) != NULL)
         {
-            if(((G3DGraphicsView*)((GDocumentViewForGraphics*)docV)->getGraphicsList().first())->is2DViewActived())
-                type = "2D";
-            else
-                type = "3D";
+            if(!((GDocumentViewForGraphics*)docV)->getGraphicsList().isEmpty())
+            {
+                if(((G3DGraphicsView*)((GDocumentViewForGraphics*)docV)->getGraphicsList().first())->is2DViewActived())
+                    type = "2D";
+                else
+                    type = "3D";
+            }
         }
         else if(dynamic_cast<GDocumentViewForItemModel*>(docV) != NULL)
         {

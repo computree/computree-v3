@@ -40,12 +40,28 @@ public:
      */
     CT_AbstractItemAttribute(const QString &modelName, const QString &categoryName, const CT_AbstractResult *result);
 
+
+    /**
+     * @brief Use only this constructor for model !
+     */
+    CT_AbstractItemAttribute(const QString &categoryName);
+
     virtual ~CT_AbstractItemAttribute();
 
     /**
       * @brief Value is valid ? if yes the type is different from CT_AbstractCategory::UNKNOWN.
       */
     bool isValid() const;
+
+    /**
+     * @brief Set if this item attribute must use the coordinate system to convert the data if it was a coordinate
+     */
+    void setUseCoordinateSystem(bool enable);
+
+    /**
+     * @brief Returns true if this item attribute use the coordinate system to convert the data if it was a coordinate. False by default
+     */
+    bool useCoordinateSystem() const;
 
     /**
       * @brief Type of value
@@ -173,7 +189,8 @@ protected:
     virtual void internalSetWillBeRemovedFromResult(const CT_AbstractResult *res) { Q_UNUSED(res) }
 
 private:
-    CT_AbstractCategory                 *m_category;
+    CT_AbstractCategory     *m_category;
+    bool                    m_useCoordinateSystem;
 };
 
 #endif // CT_ABSTRACTITEMATTRIBUTE_H

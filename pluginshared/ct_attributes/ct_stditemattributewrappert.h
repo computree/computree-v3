@@ -18,13 +18,16 @@ public:
     CT_StdItemAttributeWrapperT(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractCategory *category, const CT_AbstractResult *result, getter gMethod);
     CT_StdItemAttributeWrapperT(const QString &modelName, const QString &categoryName, const CT_AbstractResult *result, getter gMethod);
 
-    CT_AbstractItemAttribute* copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result);
+    /**
+     * @brief Use only this constructor for model !
+     */
+    CT_StdItemAttributeWrapperT(const QString &categoryName);
+
+    virtual CT_AbstractItemAttribute* copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result);
 
 protected:
-    VType data(const CT_AbstractItemDrawable *item) const;
+    virtual VType data(const CT_AbstractItemDrawable *item) const;
 
-private:
-    ItemDrawableClass   *m_item;
     getter              m_gMethod;
 };
 

@@ -26,9 +26,7 @@ CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &modelName,
 }
 
 template <typename VType>
-CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(NULL,
-                                                                                                                  PS_CATEGORY_MANAGER->findByUniqueName(categoryName),
-                                                                                                                  NULL)
+CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(categoryName)
 {
     m_data = 0;
 }

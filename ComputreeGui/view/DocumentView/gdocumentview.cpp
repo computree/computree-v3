@@ -37,7 +37,7 @@
 GDocumentView::GDocumentView(GDocumentManagerView &manager, QString title) : DM_DocumentView(manager, title)
 {
     _subWindow = new MyQMdiSubWindow(*this, &manager);
-    _subWindow->setMinimumSize(QSize(150, 150));
+    _subWindow->setMinimumSize(QSize(400, 100));
 
     connect(_subWindow, SIGNAL(toBeClosed(QCloseEvent*)), this, SLOT(closeEvent(QCloseEvent*)), Qt::DirectConnection);
 
@@ -97,6 +97,11 @@ bool GDocumentView::isVisible() const
     return getSubWindow()->isVisible();
 }
 
+bool GDocumentView::canClose() const
+{
+    return ((closeFilter() == NULL) || closeFilter()->canClose(this));
+}
+
 ///////////////// PROTECTED //////////////
 
 QWidget* GDocumentView::getCentralWidget() const
@@ -119,15 +124,14 @@ void GDocumentView::createAndAddItemDrawableWidgetContainer(QWidget *parent)
 
 void GDocumentView::closeEvent(QCloseEvent *closeEvent)
 {
-    if((closeFilter() != NULL)
-            && !closeFilter()->canClose(this))
-    {
-        closeEvent->ignore();
-    }
-    else
+    if(canClose())
     {
         removeAllItemDrawable();
 
         emit closed(this);
+    }
+    else
+    {
+        closeEvent->ignore();
     }
 }

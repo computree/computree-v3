@@ -24,6 +24,11 @@ CT_AbstractItemAttributeT<VType>::CT_AbstractItemAttributeT(const QString &model
 }
 
 template <typename VType>
+CT_AbstractItemAttributeT<VType>::CT_AbstractItemAttributeT(const QString &categoryName) : CT_AbstractItemAttribute(categoryName)
+{
+}
+
+template <typename VType>
 bool CT_AbstractItemAttributeT<VType>::toBool(const CT_AbstractItemDrawable *item, bool *ok) const
 {
     Q_UNUSED(item)

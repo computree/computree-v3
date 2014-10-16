@@ -24,7 +24,19 @@ public:
     /**
      * @brief Type of real exportable
      */
-    typedef long double     realEx;
+    typedef double          realEx;
+
+    /**
+     * @brief Data to convert
+     */
+    enum DataToConvert {
+        CONVERT_X = 1,
+        CONVERT_Y = 2,
+        CONVERT_Z = 4,
+        CONVERT_ALL = 7
+    };
+
+    Q_DECLARE_FLAGS(DatasToConvert, DataToConvert)
 
     virtual ~CT_AbstractCoordinateSystem() {}
 
@@ -32,31 +44,33 @@ public:
      * @brief Returns true if coordinates passed in parameter can be converted to realIm (import). False
      *        if the capacity of a realIm is not sufficient.
      */
-    virtual bool canConvertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                                  const CT_AbstractCoordinateSystem::realEx &y,
-                                  const CT_AbstractCoordinateSystem::realEx &z) const = 0;
+    virtual bool canConvertImport(CT_AbstractCoordinateSystem::realEx x,
+                                  CT_AbstractCoordinateSystem::realEx y,
+                                  CT_AbstractCoordinateSystem::realEx z) const = 0;
 
     /**
      * @brief Convert a coordinate of type realEx to realIm. This method don't test if the realIm
      *        can accept the capacity of the converted value (if you want to know if its possible call
      *        the method "canConvertedForImport")
      */
-    virtual void convertImport(const CT_AbstractCoordinateSystem::realEx &x,
-                               const CT_AbstractCoordinateSystem::realEx &y,
-                               const CT_AbstractCoordinateSystem::realEx &z,
+    virtual void convertImport(CT_AbstractCoordinateSystem::realEx x,
+                               CT_AbstractCoordinateSystem::realEx y,
+                               CT_AbstractCoordinateSystem::realEx z,
                                CT_AbstractCoordinateSystem::realIm &xOut,
                                CT_AbstractCoordinateSystem::realIm &yOut,
-                               CT_AbstractCoordinateSystem::realIm &zOut) const = 0;
+                               CT_AbstractCoordinateSystem::realIm &zOut,
+                               CT_AbstractCoordinateSystem::DatasToConvert convert = CT_AbstractCoordinateSystem::CONVERT_ALL) const = 0;
 
     /**
      * @brief Convert a coordinate of type realIm to realEx.
      */
-    virtual void convertExport(const CT_AbstractCoordinateSystem::realIm &x,
-                               const CT_AbstractCoordinateSystem::realIm &y,
-                               const CT_AbstractCoordinateSystem::realIm &z,
+    virtual void convertExport(CT_AbstractCoordinateSystem::realIm x,
+                               CT_AbstractCoordinateSystem::realIm y,
+                               CT_AbstractCoordinateSystem::realIm z,
                                CT_AbstractCoordinateSystem::realEx &xOut,
                                CT_AbstractCoordinateSystem::realEx &yOut,
-                               CT_AbstractCoordinateSystem::realEx &zOut) const = 0;
+                               CT_AbstractCoordinateSystem::realEx &zOut,
+                               CT_AbstractCoordinateSystem::DatasToConvert convert = CT_AbstractCoordinateSystem::CONVERT_ALL) const = 0;
 
     /**
      * @brief Configure the coordinate system.
@@ -88,5 +102,7 @@ protected:
      */
     bool wasUsed() const { return m_used; }
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(CT_AbstractCoordinateSystem::DatasToConvert)
 
 #endif // CT_ABSTRACTCOORDINATESYSTEM_H

@@ -4,6 +4,8 @@
 #include <QList>
 #include <QVector3D>
 
+#include "dm_progresslistenermanager.h"
+
 #include "view/DocumentView/GraphicsViews/3D/Octree/octree.h"
 
 #include "ct_cloudindex/abstract/ct_abstractcloudindext.h"
@@ -13,7 +15,7 @@
 /**
  * @brief Class that control the generic octree
  */
-class OctreeController : public OctreeInterface
+class OctreeController : public OctreeInterface, public DM_ProgressListenerManager
 {
     Q_INTERFACES(OctreeInterface)
     Q_OBJECT
