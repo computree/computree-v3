@@ -262,7 +262,7 @@ CT_ItemDrawableConfiguration CT_StandardGrid2DXYDrawManager<DataT>::createDrawCo
 
     item.addNewConfiguration(staticInitConfig3DModeEnabled(), "Mode 3D", CT_ItemDrawableConfiguration::Bool, !_defaultMapMode);
     item.addNewConfiguration(staticInitConfig3DModeLinkPointsEnabled(), "Mode 3D    : Relier les centres de cases", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), "Mode 3D    : Visualiser le relief", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), "Mode 3D    : Visualiser le relief", CT_ItemDrawableConfiguration::Bool, true);
     item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), "Mode 3D    : Mettre à l'échelle", CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
     item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), "Mode 3D    : Z min de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 0);
     item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), "Mode 3D    : Z max de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 5);

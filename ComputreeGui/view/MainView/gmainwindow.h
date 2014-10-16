@@ -84,6 +84,7 @@ public slots:
     void showINeedHelpDialog();
 
     void arrangeDocksInTabs();
+    void arrangeDocksInColumnWithLogAtBottom();
     void arrangeDocksInColumn();
 
 private:

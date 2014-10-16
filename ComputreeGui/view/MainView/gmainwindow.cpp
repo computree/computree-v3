@@ -66,6 +66,8 @@ GMainWindow::GMainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     initUI();
+
+    arrangeDocksInColumn();
 }
 
 GMainWindow::~GMainWindow()
@@ -234,19 +236,21 @@ void GMainWindow::arrangeDocksInTabs()
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetStepManager);
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetItemDrawableModelManager);
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetActionsManager);
-    addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetGraphicsViewSynchronizedGroup);
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetLog);
 
     tabifyDockWidget(ui->dockWidgetItemDrawableModelManager, ui->dockWidgetActionsManager);
-    tabifyDockWidget(ui->dockWidgetActionsManager, ui->dockWidgetGraphicsViewSynchronizedGroup);
-    tabifyDockWidget(ui->dockWidgetGraphicsViewSynchronizedGroup, ui->dockWidgetLog);
+    tabifyDockWidget(ui->dockWidgetActionsManager, ui->dockWidgetLog);
 
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetItemDrawableConfigurationManager);
+    addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetGraphicsViewSynchronizedGroup);
+    tabifyDockWidget(ui->dockWidgetItemDrawableConfigurationManager, ui->dockWidgetGraphicsViewSynchronizedGroup);
 
     ui->dockWidgetItemDrawableModelManager->raise();
+    ui->dockWidgetItemDrawableConfigurationManager->raise();
+    ui->dockWidgetStepManager->raise();
 }
 
-void GMainWindow::arrangeDocksInColumn()
+void GMainWindow::arrangeDocksInColumnWithLogAtBottom()
 {
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetStepManager);
     addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetItemDrawableModelManager);
@@ -255,6 +259,20 @@ void GMainWindow::arrangeDocksInColumn()
     addDockWidget(Qt::RightDockWidgetArea, ui->dockWidgetGraphicsViewSynchronizedGroup);
     addDockWidget(Qt::BottomDockWidgetArea, ui->dockWidgetLog);
 
+    ui->dockWidgetStepManager->raise();
+}
+
+void GMainWindow::arrangeDocksInColumn()
+{
+    addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetStepManager);
+    addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetItemDrawableModelManager);
+    addDockWidget(Qt::LeftDockWidgetArea, ui->dockWidgetItemDrawableConfigurationManager);
+    addDockWidget(Qt::RightDockWidgetArea, ui->dockWidgetActionsManager);
+    addDockWidget(Qt::RightDockWidgetArea, ui->dockWidgetLog);
+
+    tabifyDockWidget(ui->dockWidgetActionsManager, ui->dockWidgetGraphicsViewSynchronizedGroup);
+
+    ui->dockWidgetActionsManager->raise();
     ui->dockWidgetStepManager->raise();
 }
 
@@ -331,6 +349,7 @@ void GMainWindow::initUI()
 
     QAction *actionArrangeDocksInTabs = new QAction(tr("Composants en onglets"), this);
     QAction *actionArrangeDocksInColumn = new QAction(tr("Composants en colonne"), this);
+    QAction *actionArrangeDocksInColumnWithLogAtBottom = new QAction(tr("Composants en colonne (Log en bas)"), this);
 
     QAction *actionAPropos = new QAction(tr("A propos de Computree..."), this);
     actionAProposPlugin = new QAction(tr("A propos des plugins..."), this);
@@ -403,6 +422,7 @@ void GMainWindow::initUI()
     ui->menuFenetre->addAction(actionShowActionsManagerView);
     ui->menuFenetre->addAction(actionShowLog);
     ui->menuFenetre->addAction(actionArrangeDocksInTabs);
+    ui->menuFenetre->addAction(actionArrangeDocksInColumnWithLogAtBottom);
     ui->menuFenetre->addAction(actionArrangeDocksInColumn);
 
     ui->menuAide->addAction(actionAPropos);
@@ -479,6 +499,7 @@ void GMainWindow::initUI()
     connect(actionShowActionsManagerView, SIGNAL(triggered()), ui->dockWidgetActionsManager, SLOT(showNormal()));
     connect(actionShowLog, SIGNAL(triggered()), ui->dockWidgetLog, SLOT(showNormal()));
     connect(actionArrangeDocksInTabs, SIGNAL(triggered()), this, SLOT(arrangeDocksInTabs()));
+    connect(actionArrangeDocksInColumnWithLogAtBottom, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumnWithLogAtBottom()));
     connect(actionArrangeDocksInColumn, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumn()));
 
     connect(ui->actionCascade, SIGNAL(triggered()), _docManagerView, SLOT(cascadeSubWindows()));
