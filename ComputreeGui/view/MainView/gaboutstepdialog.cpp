@@ -39,9 +39,9 @@ void GAboutStepDialog::initView(CT_VirtualAbstractStep *step)
 
     if (step->getPlugin()->getPluginURL() == step->getStepURL())
     {
-        ui->lb_wiki_link->setText(QString("Aide en ligne : <a href=\"%1\">Page internet du plugin</a>").arg(step->getPlugin()->getPluginURL()));
+        ui->lb_wiki_link->setText(QString(tr("Aide en ligne : <a href=\"%1\">Page internet du plugin</a>")).arg(step->getPlugin()->getPluginURL()));
     } else {
-        ui->lb_wiki_link->setText(QString("Aide en ligne : <a href=\"%1\">Page internet de cette étape</a>").arg(step->getStepURL()));
+        ui->lb_wiki_link->setText(QString(tr("Aide en ligne : <a href=\"%1\">Page internet de cette étape</a>")).arg(step->getStepURL()));
     }
 
     ui->briefDescription->setText(step->getStepDescription());

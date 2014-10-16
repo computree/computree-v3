@@ -311,10 +311,10 @@ void GGraphicsViewOptions::saveDefault()
 {
     if(_options->save())
     {
-        QMessageBox::information(this, trUtf8("Sauvegarde r\xc3\xa9""ussi"), trUtf8("La sauvegarde de la configuration a r\xc3\xa9""ussi."));
+        QMessageBox::information(this, tr("Sauvegarde réussie"), tr("La sauvegarde de la configuration a réussi."));
     }
     else
     {
-        QMessageBox::critical(this, tr("Erreur lors de la sauvegarde"), trUtf8("La sauvegarde de la configuration a \xc3\xa9""chou\xc3\xa9""."));
+        QMessageBox::critical(this, tr("Erreur lors de la sauvegarde"), tr("La sauvegarde de la configuration a échoué."));
     }
 }

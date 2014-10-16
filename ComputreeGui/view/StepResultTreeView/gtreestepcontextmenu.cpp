@@ -196,7 +196,7 @@ void GTreeStepContextMenu::reload()
     // supprime toutes les actions
     clear();
 
-    MyQAction *action = new MyQAction(selectedStep(), trUtf8("Ex\xc3\xa9""cuter"), this);
+    MyQAction *action = new MyQAction(selectedStep(), tr("Exécuter"), this);
     action->setIcon(QIcon(":/Icones/Icones/play.png"));
     action->setEnabled((selectedStep() != NULL)
                        && ((!selectedStep()->needInputResults())
@@ -221,7 +221,7 @@ void GTreeStepContextMenu::reload()
     addAction(action);
     addSeparator();
 
-    action = new MyQAction(selectedStep(), (selectedStep()->getStepChildList().isEmpty() && selectedStep()->hasChoiceBetweenMultipleInputResults()) ? trUtf8("Configurer les r\xc3\xa9""sultats d'entr\xc3\xa9""e") : trUtf8("Voir la configuration des r\xc3\xa9""sultats d'entr\xc3\xa9""e"), this);
+    action = new MyQAction(selectedStep(), (selectedStep()->getStepChildList().isEmpty() && selectedStep()->hasChoiceBetweenMultipleInputResults()) ? tr("Configurer les résultats d'entrée") : tr("Voir la configuration des résultats d'entrée"), this);
     action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
     action->setEnabled(true);
     connect(action, SIGNAL(triggered()), this, SLOT(configureInputResultOfStepRequired()));
@@ -298,7 +298,7 @@ void GTreeStepContextMenu::reload()
             /*menuStep->setStyleSheet("QMenu::item[isManual=\"true\"]{ background-color:rgb(255,0,0); }"
                                     "QMenu::action:selected { background-color: #654321; }");*/
 
-            /*QMenu *insertStep = new QMenu(trUtf8("Ins\xc3\xa9rer"), this);
+            /*QMenu *insertStep = new QMenu(tr("Insérer"), this);
             insertStep->setIcon(QIcon(":/Icones/Icones/add.png"));*/
 
             QList<CT_StepSeparator*> stepAvailable = pluginManager->getPlugin(i)->getGenericsStepAvailable();

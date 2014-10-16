@@ -58,7 +58,7 @@ void GAboutPluginsDialog::initView()
 
     // plugins d'étapes
     QTreeWidgetItem *rootItem = new QTreeWidgetItem(ui->treeWidget);
-    rootItem->setData(0, Qt::DisplayRole, trUtf8("Plugins d'\xc3\xa9""tapes"));
+    rootItem->setData(0, Qt::DisplayRole, tr("Plugins"));
 
     for(int i=0; i<n; ++i)
     {

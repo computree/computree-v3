@@ -273,8 +273,8 @@ void GMainWindow::initUI()
     QAction *actionOpenFile = new QAction(tr("Ouvrir un fichier"), this);
     actionOpenFile->setIcon(QIcon(":/Icones/Icones/folder_add_32.png"));
 
-    menuNewStepCanBeAddedFirst = new QMenu(trUtf8("Ajouter une \xc3\xa9""tape"), this);
-    menuNewStepCanBeAddedFirst->setToolTip(trUtf8("Ajouter une \xc3\xa9""tape qui n'a pas besoin de r\xc3\xa9""sultat en entr\xc3\xa9""e"));
+    menuNewStepCanBeAddedFirst = new QMenu(tr("Ajouter une étape"), this);
+    menuNewStepCanBeAddedFirst->setToolTip(tr("Ajouter une étape qui n'a pas besoin de résultat en entrée"));
     menuNewStepCanBeAddedFirst->setIcon(QIcon(":/Icones/Icones/add.png"));
 
     QAction *actionStart = new QAction(tr("Lancer les traitements"), this);
@@ -543,8 +543,8 @@ void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)
             if((reload = (!pluginManager->isAPluginLoaded())) == true)
             {
                 QMessageBox msgBox(this);
-                msgBox.setText(trUtf8("Attention aucun plugin n'a \xc3\xa9""t\xc3\xa9"" trouv\xc3\xa9"" dans :\n%1").arg(pluginManager->getSearchPath()));
-                msgBox.setInformativeText(trUtf8("Voulez-vous sp\xc3\xa9""cifier dans quel dossier rechercher les plugins ?"));
+                msgBox.setText(tr("Attention aucun plugin n'a été trouvé dans :\n%1").arg(pluginManager->getSearchPath()));
+                msgBox.setInformativeText(tr("Voulez-vous spécifier dans quel dossier rechercher les plugins ?"));
                 msgBox.setDetailedText(QString("%1").arg(pluginManager->getError()));
                 msgBox.setIcon(QMessageBox::Warning);
                 msgBox.addButton(tr("Parcourir..."), QMessageBox::AcceptRole);
@@ -583,7 +583,7 @@ void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)
             }
             else if(!first)
             {
-                QMessageBox::information(this, trUtf8("Succ\xc3\xa8""s"), trUtf8("Le plugin %1 a \xc3\xa9""t\xc3\xa9"" charg\xc3\xa9"" avec succ\xc3\xa8""s !").arg(pluginManager->getPluginName()));
+                QMessageBox::information(this, tr("Succès"), tr("Le plugin %1 a été chargé avec succès !").arg(pluginManager->getPluginName()));
             }
         }
         else

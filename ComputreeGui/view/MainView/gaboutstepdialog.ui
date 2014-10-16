@@ -38,7 +38,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Plugin Name</string>
+         <string>Nom du plugin</string>
         </property>
        </widget>
       </item>
@@ -67,7 +67,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>CT_VirtualAbstractStep Name</string>
+         <string>Nom de l'étape</string>
         </property>
        </widget>
       </item>
@@ -155,8 +155,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>778</width>
-           <height>649</height>
+           <width>782</width>
+           <height>663</height>
           </rect>
          </property>
          <property name="sizePolicy">

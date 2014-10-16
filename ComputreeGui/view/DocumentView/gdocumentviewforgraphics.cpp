@@ -896,14 +896,14 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonExport = new QPushButton(widgetContainer);
     _buttonExport->setMaximumWidth(33);
     _buttonExport->setMinimumWidth(33);
-    _buttonExport->setToolTip(trUtf8("Exporter les \xc3\xa9l\xc3\xa9ments s\xc3\xa9lectionn\xc3\xa9s"));
+    _buttonExport->setToolTip(tr("Exporter les éléments sélectionnés"));
     _buttonExport->setIcon(QIcon(":/Icones/Icones/upload.png"));
     _buttonExport->setEnabled(false);
 
     QPushButton *buttonPointsAttributes = new QPushButton(widgetContainer);
     buttonPointsAttributes->setMaximumWidth(33);
     buttonPointsAttributes->setMinimumWidth(33);
-    buttonPointsAttributes->setToolTip(trUtf8("Configurer les couleurs des points"));
+    buttonPointsAttributes->setToolTip(tr("Configurer les couleurs des points"));
     buttonPointsAttributes->setIcon(QIcon(":/Icones/Icones/gradient.png"));
 
     _buttonPixelSize = new QPushButton(widgetContainer);
