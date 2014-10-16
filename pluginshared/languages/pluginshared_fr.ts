@@ -87,6 +87,14 @@
     </message>
 </context>
 <context>
+    <name>CT_AbstractExporter</name>
+    <message>
+        <location filename="../ct_exporter/abstract/ct_abstractexporter.cpp" line="199"/>
+        <source>Exporter error ! The exporter has not used the coordinate system !</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CT_AbstractItemDrawable</name>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp" line="98"/>
@@ -99,6 +107,14 @@
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_abstractitemgroup.cpp" line="242"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CT_AbstractReader</name>
+    <message>
+        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="90"/>
+        <source>Reader error ! The reader has not used the coordinate system !</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -130,6 +146,29 @@
     <message>
         <location filename="../ct_view/ct_filechoicebutton.cpp" line="175"/>
         <source>Fichier à créer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CT_GDefaultCoordinateSystem</name>
+    <message>
+        <location filename="../ct_coordinates/view/ct_gdefaultcoordinatesystem.ui" line="14"/>
+        <source>Configuration du système de coordonnée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_coordinates/view/ct_gdefaultcoordinatesystem.ui" line="24"/>
+        <source>Z Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_coordinates/view/ct_gdefaultcoordinatesystem.ui" line="31"/>
+        <source>Y Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_coordinates/view/ct_gdefaultcoordinatesystem.ui" line="38"/>
+        <source>X Offset</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -710,6 +749,11 @@
     <message>
         <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="187"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Link error : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_faceattributescolor.h" line="46"/>
+        <source>Taille</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

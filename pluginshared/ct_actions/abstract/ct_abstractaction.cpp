@@ -4,7 +4,7 @@
 
 #include <QEvent>
 
-QString CT_AbstractAction::TYPE_SELECTION = "Sélection";
+QString CT_AbstractAction::TYPE_SELECTION = "Selection";
 QString CT_AbstractAction::TYPE_MODIFICATION = "Modification";
 QString CT_AbstractAction::TYPE_INFORMATION = "Information";
 QString CT_AbstractAction::TYPE_MEASURE = "Mesure";
