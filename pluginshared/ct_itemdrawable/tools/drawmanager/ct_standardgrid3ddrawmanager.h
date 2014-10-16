@@ -21,7 +21,6 @@ protected:
     const static QString INDEX_CONFIG_LOW_THRESHOLDS_VALUE;
     const static QString INDEX_CONFIG_HIGH_THRESHOLDS_VALUE;
     const static QString INDEX_CONFIG_REDUCTION_COEF;
-    const static QString INDEX_CONFIG_TRANSPARENCY_ENABLED;
     const static QString INDEX_CONFIG_TRANSPARENCY_VALUE;
     const static QString INDEX_CONFIG_HIDE_PLANE_NB_XINF;
     const static QString INDEX_CONFIG_HIDE_PLANE_NB_XSUP;
@@ -37,7 +36,6 @@ protected:
     static QString staticInitConfigLowThresholdValue();
     static QString staticInitConfigHighThresholdValue();
     static QString staticInitConfigReductionCoef();
-    static QString staticInitConfigEnableTransparency();
     static QString staticInitConfigTransparencyValue();
     static QString staticInitConfigXinf();
     static QString staticInitConfigXsup();

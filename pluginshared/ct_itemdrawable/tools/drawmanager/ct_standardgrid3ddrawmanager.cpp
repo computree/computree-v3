@@ -15,7 +15,6 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
     GLenum  drawingMode;
     bool    wireMode = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_WIRE_MODE_ENABLED).toBool();
     double  reductionCoef = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_REDUCTION_COEF).toDouble();
-    bool    useTransparency = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_ENABLED).toBool();
     int     transparencyValue = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_VALUE).toInt();
     bool    showTrueOnly = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_TRUES_ONLY).toBool();
 
@@ -34,7 +33,7 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
     if (nYsup > item.ydim()) {nXsup = item.ydim();}
     if (nZsup > item.zdim()) {nXsup = item.zdim();}
 
-    if (!useTransparency || (transparencyValue > 255)) {transparencyValue = 255;}
+    if (transparencyValue > 255) {transparencyValue = 255;}
     if (transparencyValue < 0) {transparencyValue = 0;}
 
     if ( wireMode ) {drawingMode = GL_LINE;}
@@ -70,9 +69,9 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
                         {
                             if (data)
                             {
-                                painter.setColor(QColor(0,255,0));
+                                painter.setColor(QColor(0,255,0, transparencyValue));
                             } else {
-                                painter.setColor(QColor(255,0,0));
+                                painter.setColor(QColor(255,0,0, transparencyValue));
                             }
 
 
@@ -103,7 +102,6 @@ CT_ItemDrawableConfiguration CT_StandardGrid3DDrawManager<bool>::createDrawConfi
     item.addNewConfiguration(staticInitConfigWireModeEnabled(), "Mode filaire", CT_ItemDrawableConfiguration::Bool, true);             // Draw the grid in wire mode
     item.addNewConfiguration(staticInitConfigReductionCoef(), "Coef. de reduction", CT_ItemDrawableConfiguration::Double, 1);
     item.addNewConfiguration(staticInitConfigShowTrueOnly(), "Valeurs TRUE seulement", CT_ItemDrawableConfiguration::Bool, 1);
-    item.addNewConfiguration(staticInitConfigEnableTransparency(), "Activer transparence", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(staticInitConfigTransparencyValue(), "Valeur de transparence", CT_ItemDrawableConfiguration::Int, 100);
     item.addNewConfiguration(staticInitConfigXinf(), "Nb. Plans masqués X-", CT_ItemDrawableConfiguration::Int, 0);
     item.addNewConfiguration(staticInitConfigXsup(), "Nb. Plans masqués X+", CT_ItemDrawableConfiguration::Int, 0);

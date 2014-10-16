@@ -13,7 +13,6 @@ template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::IN
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_LOW_THRESHOLDS_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigLowThresholdValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIGH_THRESHOLDS_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigHighThresholdValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_REDUCTION_COEF = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigReductionCoef();
-template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_TRANSPARENCY_ENABLED = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigEnableTransparency();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_TRANSPARENCY_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigTransparencyValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIDE_PLANE_NB_XINF = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigXinf();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIDE_PLANE_NB_XSUP = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigXsup();
@@ -50,7 +49,6 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
     double  lowThresh = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_LOW_THRESHOLDS_VALUE).toDouble();
     double  highThresh = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIGH_THRESHOLDS_VALUE).toDouble();
     double  reductionCoef = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_REDUCTION_COEF).toDouble();
-    bool    useTransparency = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_ENABLED).toBool();
     int     transparencyValue = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_VALUE).toInt();
 
     size_t     nXinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XINF).toInt();
@@ -64,7 +62,7 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
     if (nYsup > item.ydim()) {nXsup = item.ydim();}
     if (nZsup > item.zdim()) {nXsup = item.zdim();}
 
-    if (!useTransparency || (transparencyValue > 255)) {transparencyValue = 255;}
+    if (transparencyValue > 255) {transparencyValue = 255;}
     if (transparencyValue < 0) {transparencyValue = 0;}
 
     if ( wireMode ) {drawingMode = GL_LINE;}
@@ -110,7 +108,7 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
                             double h = (int) qRound((data*scaling) + offset);
                             painter.setColor( QColor::fromHsv(h,255,255,transparencyValue) );
                         } else {
-                            painter.setColor(QColor(255,255,255));
+                            painter.setColor(QColor(255,255,255, transparencyValue));
                         }
 
                         xmin = item.getCellCenterX(xx) - demiRes;
@@ -142,7 +140,6 @@ CT_ItemDrawableConfiguration CT_StandardGrid3DDrawManager<DataT>::createDrawConf
     item.addNewConfiguration(staticInitConfigHighThresholdsEnabled(), "Forcer limite haute", CT_ItemDrawableConfiguration::Bool, false);     // Using thresholds or not
     item.addNewConfiguration(staticInitConfigHighThresholdValue(), "Limite haute (forcée)", CT_ItemDrawableConfiguration::Double, 100 );        // Voxels with value greater than this threshold will not be drawn
     item.addNewConfiguration(staticInitConfigReductionCoef(), "Coef. de reduction", CT_ItemDrawableConfiguration::Double, 1);
-    item.addNewConfiguration(staticInitConfigEnableTransparency(), "Activer transparence", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(staticInitConfigTransparencyValue(), "Valeur de transparence", CT_ItemDrawableConfiguration::Int, 100);
     item.addNewConfiguration(staticInitConfigXinf(), "Nb. Plans masqués X-", CT_ItemDrawableConfiguration::Int, 0);
     item.addNewConfiguration(staticInitConfigXsup(), "Nb. Plans masqués X+", CT_ItemDrawableConfiguration::Int, 0);
@@ -190,12 +187,6 @@ template< typename DataT >
 QString CT_StandardGrid3DDrawManager<DataT>::staticInitConfigReductionCoef()
 {
     return "A3DGD_RDC";
-}
-
-template< typename DataT >
-QString CT_StandardGrid3DDrawManager<DataT>::staticInitConfigEnableTransparency()
-{
-    return "A3DGD_ETR";
 }
 
 template< typename DataT >
