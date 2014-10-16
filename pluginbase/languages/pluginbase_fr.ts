@@ -734,6 +734,11 @@ Si enfoncé : le cluster actif est tracé en rouge, même en mode cluster</sourc
 <context>
     <name>PB_ActionSelectCellsInGrid3D</name>
     <message>
+        <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="44"/>
+        <source>Sélectionne des cases dans une grille 3D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../actions/pb_actionselectcellsingrid3d.cpp" line="461"/>
         <source>Extension validée</source>
         <translation></translation>
@@ -990,6 +995,19 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
         <location filename="../views/actions/pb_actionselectcellsingrid3doptions.cpp" line="40"/>
         <source>Facteur de réduction de la taille des cellules 3D</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionSelectItemDrawableGV</name>
+    <message>
+        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="26"/>
+        <source>Sélection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="31"/>
+        <source>Sélection d&apos;éléments</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

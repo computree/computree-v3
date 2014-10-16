@@ -20,6 +20,7 @@
  */
 class PB_ActionSelectItemDrawableGV : public CT_AbstractActionForGraphicsView
 {
+    Q_OBJECT
 public:
 
 //    enum SelectionDrawMode

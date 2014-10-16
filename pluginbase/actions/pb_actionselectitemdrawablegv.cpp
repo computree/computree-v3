@@ -23,12 +23,12 @@ QString PB_ActionSelectItemDrawableGV::uniqueName() const
 
 QString PB_ActionSelectItemDrawableGV::title() const
 {
-    return "Sélection";
+    return tr("Sélection");
 }
 
 QString PB_ActionSelectItemDrawableGV::description() const
 {
-    return "Sélection d'éléments";
+    return tr("Sélection d'éléments");
 }
 
 QIcon PB_ActionSelectItemDrawableGV::icon() const

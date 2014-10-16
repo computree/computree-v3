@@ -41,7 +41,7 @@ QString PB_ActionSelectCellsInGrid3D::title() const
 
 QString PB_ActionSelectCellsInGrid3D::description() const
 {
-    return "Sélectionne des cases dans une grille 3D";
+    return tr("Sélectionne des cases dans une grille 3D");
 }
 
 QIcon PB_ActionSelectCellsInGrid3D::icon() const
