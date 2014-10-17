@@ -144,7 +144,7 @@ public:
                                                       const VType &dataY,
                                                       const VType &dataZ)
     {
-        return new CT_StdItemAttributeCoordinateT<ItemDrawableClass, VType>(model, category, result, dataX, dataY, dataZ);
+        return new CT_StdItemAttributeCoordinateT<VType>(model, category, result, dataX, dataY, dataZ);
     }
 
     /**
@@ -167,7 +167,7 @@ public:
                                                       const VType &dataY,
                                                       const VType &dataZ)
     {
-        return new CT_StdItemAttributeCoordinateT<ItemDrawableClass, VType>(modelName, categoryName, result, dataX, dataY, dataZ);
+        return new CT_StdItemAttributeCoordinateT<VType>(modelName, categoryName, result, dataX, dataY, dataZ);
     }
 };
 
