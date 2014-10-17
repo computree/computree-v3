@@ -29,10 +29,29 @@ CT_OutAbstractModel* CT_OutStdSingularItemModel::copy() const
                                                                      displayableName(),
                                                                      description());
 
+    QList<CT_AbstractItemAttribute*> defaultIA;
+
+    if(itemDrawable() != NULL)
+        defaultIA = PS_DIAM->itemAttributes(itemDrawable()->getType());
+
     QListIterator<CT_OutAbstractItemAttributeModel*> itI(itemAttributes());
 
     while(itI.hasNext())
-        cpy->internalAddItemAttribute((CT_OutAbstractItemAttributeModel*)itI.next()->copy());
+    {
+        CT_OutAbstractItemAttributeModel *iaModel = itI.next();
+        CT_AbstractModel *originalModel = iaModel->originalModel();
+
+        bool found = false;
+
+        QListIterator<CT_AbstractItemAttribute*> itIA(defaultIA);
+
+        while(itIA.hasNext()
+              && !found)
+            found = (originalModel == itIA.next()->model());
+
+        if(!found)
+            cpy->internalAddItemAttribute((CT_OutAbstractItemAttributeModel*)iaModel->copy());
+    }
 
     if(itemDrawable() != NULL)
         cpy->setItem(itemDrawable()->copy(cpy, result(), CT_ResultCopyModeList()));

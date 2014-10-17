@@ -1092,7 +1092,15 @@ CT_OutResultModelGroupToCopyPossibilities* CT_VirtualAbstractStep::createNewOutR
     while(it.hasNext())
     {
         CT_OutResultModelGroupToCopyPossibility *outResModelToCopy = it.next();
+
         QString newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager());
+        QList<QString> generated;
+        generated.append(newResultModelName);
+
+        while(outResModelToCopy->outModelForModification()->existInTree(newResultModelName)) {
+            newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager(), generated);
+            generated.append(newResultModelName);
+        }
 
         CT_OutResultModelGroupCopy *rModel = new CT_OutResultModelGroupCopy(newResultModelName,
                                                                             outResModelToCopy);
