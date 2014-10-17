@@ -9,22 +9,15 @@ CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::CT_StdItemAttrib
                                                                                                       const CT_AbstractResult *result,
                                                                                                       getter gMethodX,
                                                                                                       getter gMethodY,
-                                                                                                      getter gMethodZ) : CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>(model,
-                                                                                                                                                                              category,
-                                                                                                                                                                              result,
-                                                                                                                                                                              gMethodX)
+                                                                                                      getter gMethodZ) : CT_AbstractItemAttributeT<VType>(model,
+                                                                                                                                                          category,
+                                                                                                                                                          result)
 {
-    m_gMethodY = gMethodY;
-    m_gMethodZ = gMethodZ;
+    m_gMethods[0] = gMethodX;
+    m_gMethods[1] = gMethodY;
+    m_gMethods[2] = gMethodZ;
 
-    CT_AbstractCategory *cat = this->category();
-
-    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
-    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
-    else
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+    initConvertionVariable();
 }
 
 template <class ItemDrawableClass, typename VType>
@@ -33,71 +26,84 @@ CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::CT_StdItemAttrib
                                                                                                       const CT_AbstractResult *result,
                                                                                                       getter gMethodX,
                                                                                                       getter gMethodY,
-                                                                                                      getter gMethodZ) : CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>(modelName,
-                                                                                                                                                                              categoryName,
-                                                                                                                                                                              result,
-                                                                                                                                                                              gMethodX)
+                                                                                                      getter gMethodZ) : CT_AbstractItemAttributeT<VType>(modelName,
+                                                                                                                                                          categoryName,
+                                                                                                                                                          result)
 {
-    m_gMethodY = gMethodY;
-    m_gMethodZ = gMethodZ;
+    m_gMethods[0] = gMethodX;
+    m_gMethods[1] = gMethodY;
+    m_gMethods[2] = gMethodZ;
 
-    CT_AbstractCategory *cat = this->category();
-
-    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
-    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
-    else
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+    initConvertionVariable();
 }
 
 template <class ItemDrawableClass, typename VType>
-CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::CT_StdItemAttributeCoordinateWrapperT(const QString &categoryName) : CT_StdItemAttributeWrapperT<ItemDrawableClass,VType>(categoryName)
+CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::CT_StdItemAttributeCoordinateWrapperT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(categoryName)
 {
-    m_gMethodY = NULL;
-    m_gMethodZ = NULL;
+    m_gMethods[0] = NULL;
+    m_gMethods[1] = NULL;
+    m_gMethods[2] = NULL;
     m_convert = 0;
+    m_index = 0;
+}
+
+template <class ItemDrawableClass, typename VType>
+bool CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::canUseCoordinateSystem() const
+{
+    return true;
 }
 
 template <class ItemDrawableClass, typename VType>
 CT_AbstractItemAttribute* CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result)
 {
-    return new CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>(model, this->category(), result, m_gMethod, m_gMethodY, m_gMethodZ);
+    return new CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>(model, this->category(), result, m_gMethods[0], m_gMethods[1], m_gMethods[2]);
 }
 
 template <class ItemDrawableClass, typename VType>
 VType CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::data(const CT_AbstractItemDrawable *item) const
 {
-    if(this->useCoordinateSystem())
+    return (((ItemDrawableClass*)item)->*m_gMethods[m_index])();
+}
+
+template <class ItemDrawableClass, typename VType>
+CT_AbstractCoordinateSystem::realEx CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::dataConverted(const CT_AbstractItemDrawable *item) const
+{
+    CT_AbstractCoordinateSystem::realEx c[3];
+    CT_AbstractCoordinateSystem::realIm z = 0;
+
+    if(m_gMethods[2] != NULL)
+        z = (((ItemDrawableClass*)item)->*m_gMethods[2])();
+
+    PS_COODINATES_SYS->convertExport((((ItemDrawableClass*)item)->*m_gMethods[0])(),
+                                     (((ItemDrawableClass*)item)->*m_gMethods[1])(),
+                                     z,
+                                     c[0],
+                                     c[1],
+                                     c[2],
+                                     m_convert);
+    return c[m_index];
+}
+
+template <class ItemDrawableClass, typename VType>
+void CT_StdItemAttributeCoordinateWrapperT<ItemDrawableClass,VType>::initConvertionVariable()
+{
+    CT_AbstractCategory *cat = this->category();
+
+    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
     {
-        CT_AbstractCoordinateSystem::realEx xc, yc, zc;
-        CT_AbstractCoordinateSystem::realIm z = 0;
-
-        if(m_gMethodZ != NULL)
-            z = (((ItemDrawableClass*)item)->*m_gMethodZ)();
-
-        PS_COODINATES_SYS->convertExport((((ItemDrawableClass*)item)->*m_gMethod)(),
-                                         (((ItemDrawableClass*)item)->*m_gMethodY)(),
-                                         z,
-                                         xc,
-                                         yc,
-                                         zc,
-                                         m_convert);
-
-        if(m_convert == CT_AbstractCoordinateSystem::CONVERT_X)
-            return xc;
-        else if(m_convert == CT_AbstractCoordinateSystem::CONVERT_Y)
-            return yc;
-
-        return zc;
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
+        m_index = 0;
     }
-
-    if(m_convert == CT_AbstractCoordinateSystem::CONVERT_X)
-        return (((ItemDrawableClass*)item)->*m_gMethod)();
-    else if(m_convert == CT_AbstractCoordinateSystem::CONVERT_Y)
-        return (((ItemDrawableClass*)item)->*m_gMethodY)();
-
-    return (((ItemDrawableClass*)item)->*m_gMethodZ)();
+    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
+    {
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
+        m_index = 1;
+    }
+    else
+    {
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+        m_index = 2;
+    }
 }
 
 #endif // CT_STDITEMATTRIBUTECOORDINATEWRAPPERT_HPP

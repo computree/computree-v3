@@ -54,7 +54,8 @@ public:
     bool isValid() const;
 
     /**
-     * @brief Set if this item attribute must use the coordinate system to convert the data if it was a coordinate
+     * @brief Set if this item attribute must use the coordinate system to convert the data if it was a coordinate.
+     * @warning The parameter is ignored if the method canUseCoordinateSystem() returns false.
      */
     void setUseCoordinateSystem(bool enable);
 
@@ -62,6 +63,11 @@ public:
      * @brief Returns true if this item attribute use the coordinate system to convert the data if it was a coordinate. False by default
      */
     bool useCoordinateSystem() const;
+
+    /**
+     * @brief Returns true if this item attribute can use the coordinate system. By default return false.
+     */
+    virtual bool canUseCoordinateSystem() const;
 
     /**
       * @brief Type of value

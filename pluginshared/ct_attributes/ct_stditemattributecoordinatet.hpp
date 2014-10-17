@@ -9,22 +9,15 @@ CT_StdItemAttributeCoordinateT<VType>::CT_StdItemAttributeCoordinateT(const CT_O
                                                                       const CT_AbstractResult *result,
                                                                       const VType &dataX,
                                                                       const VType &dataY,
-                                                                      const VType &dataZ) : CT_StdItemAttributeT<VType>(model,
-                                                                                                                        category,
-                                                                                                                        result,
-                                                                                                                        dataX)
+                                                                      const VType &dataZ) : CT_AbstractItemAttributeT<VType>(model,
+                                                                                                                             category,
+                                                                                                                             result)
 {
-    m_dataY = dataY;
-    m_dataZ = dataZ;
+    m_datas[0] = dataX;
+    m_datas[1] = dataY;
+    m_datas[2] = dataZ;
 
-    CT_AbstractCategory *cat = this->category();
-
-    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
-    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
-    else
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+    initConvertionVariable();
 }
 
 template <typename VType>
@@ -33,36 +26,37 @@ CT_StdItemAttributeCoordinateT<VType>::CT_StdItemAttributeCoordinateT(const QStr
                                                                       const CT_AbstractResult *result,
                                                                       const VType &dataX,
                                                                       const VType &dataY,
-                                                                      const VType &dataZ) : CT_StdItemAttributeT<VType>(modelName,
-                                                                                                                        categoryName,
-                                                                                                                        result,
-                                                                                                                        dataX)
+                                                                      const VType &dataZ) : CT_AbstractItemAttributeT<VType>(modelName,
+                                                                                                                             categoryName,
+                                                                                                                             result)
 {
-    m_dataY = dataY;
-    m_dataZ = dataZ;
+    m_datas[0] = dataX;
+    m_datas[1] = dataY;
+    m_datas[2] = dataZ;
 
-    CT_AbstractCategory *cat = this->category();
-
-    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
-    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
-    else
-        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+    initConvertionVariable();
 }
 
 template <typename VType>
-CT_StdItemAttributeCoordinateT<VType>::CT_StdItemAttributeCoordinateT(const QString &categoryName) : CT_StdItemAttributeT<VType>(categoryName)
+CT_StdItemAttributeCoordinateT<VType>::CT_StdItemAttributeCoordinateT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(categoryName)
 {
-    m_dataY = 0;
-    m_dataZ = 0;
+    m_datas[0] = VType(0);
+    m_datas[1] = VType(0);
+    m_datas[2] = VType(0);
     m_convert = 0;
+    m_index = 0;
+}
+
+template <typename VType>
+bool CT_StdItemAttributeCoordinateT<VType>::canUseCoordinateSystem() const
+{
+    return true;
 }
 
 template <typename VType>
 CT_AbstractItemAttribute* CT_StdItemAttributeCoordinateT<VType>::copy(const CT_OutAbstractItemAttributeModel *model, const CT_AbstractResult *result)
 {
-    return new CT_StdItemAttributeCoordinateT<VType>(model, this->category(), result, m_data, m_dataY, m_dataZ);
+    return new CT_StdItemAttributeCoordinateT<VType>(model, this->category(), result, m_datas[0], m_datas[1], m_datas[2]);
 }
 
 template <typename VType>
@@ -70,32 +64,47 @@ VType CT_StdItemAttributeCoordinateT<VType>::data(const CT_AbstractItemDrawable 
 {
     Q_UNUSED(item)
 
-    if(this->useCoordinateSystem())
+    return m_datas[m_index];
+}
+
+template <typename VType>
+CT_AbstractCoordinateSystem::realEx CT_StdItemAttributeCoordinateT<VType>::dataConverted(const CT_AbstractItemDrawable *item) const
+{
+    Q_UNUSED(item)
+
+    CT_AbstractCoordinateSystem::realEx c[3];
+
+    PS_COODINATES_SYS->convertExport(m_datas[0],
+                                     m_datas[1],
+                                     m_datas[2],
+                                     c[0],
+                                     c[1],
+                                     c[2],
+                                     m_convert);
+
+    return c[m_index];
+}
+
+template <typename VType>
+void CT_StdItemAttributeCoordinateT<VType>::initConvertionVariable()
+{
+    CT_AbstractCategory *cat = this->category();
+
+    if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataX()))
     {
-        CT_AbstractCoordinateSystem::realEx xc, yc, zc;
-
-        PS_COODINATES_SYS->convertExport(m_data,
-                                         m_dataY,
-                                         m_dataZ,
-                                         xc,
-                                         yc,
-                                         zc,
-                                         m_convert);
-
-        if(m_convert == CT_AbstractCoordinateSystem::CONVERT_X)
-            return xc;
-        else if(m_convert == CT_AbstractCoordinateSystem::CONVERT_Y)
-            return yc;
-
-        return zc;
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_X;
+        m_index = 0;
     }
-
-    if(m_convert == CT_AbstractCoordinateSystem::CONVERT_X)
-        return m_data;
-    else if(m_convert == CT_AbstractCoordinateSystem::CONVERT_Y)
-        return m_dataY;
-
-    return m_dataZ;
+    else if(cat->isEquivalentTo(CT_AbstractCategory::staticInitDataY()))
+    {
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_Y;
+        m_index = 1;
+    }
+    else
+    {
+        m_convert = CT_AbstractCoordinateSystem::CONVERT_Z;
+        m_index = 2;
+    }
 }
 
 #endif // CT_STDITEMATTRIBUTECOORDINATET_HPP

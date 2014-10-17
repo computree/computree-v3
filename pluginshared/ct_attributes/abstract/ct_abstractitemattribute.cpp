@@ -49,12 +49,18 @@ bool CT_AbstractItemAttribute::isValid() const
 
 void CT_AbstractItemAttribute::setUseCoordinateSystem(bool enable)
 {
-    m_useCoordinateSystem = enable;
+    if(canUseCoordinateSystem())
+        m_useCoordinateSystem = enable;
 }
 
 bool CT_AbstractItemAttribute::useCoordinateSystem() const
 {
     return m_useCoordinateSystem;
+}
+
+bool CT_AbstractItemAttribute::canUseCoordinateSystem() const
+{
+    return false;
 }
 
 QString CT_AbstractItemAttribute::displayableName() const

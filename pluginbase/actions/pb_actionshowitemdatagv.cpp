@@ -145,7 +145,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
                 QString txt = att->displayableName() + " = ";
 
-                if(att->category()->isEquivalentTo(CT_AbstractCategory::DATA_COORDINATE))
+                if(att->canUseCoordinateSystem())
                 {
                     bool e = att->useCoordinateSystem();
                     att->setUseCoordinateSystem(true);
