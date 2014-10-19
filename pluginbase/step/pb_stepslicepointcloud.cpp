@@ -26,11 +26,16 @@
 // Constructor : initialization of parameters
 PB_StepSlicePointCloud::PB_StepSlicePointCloud(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _zMin = 0;
-    _zMax = 0;
     _thickness = 0.02;
     _spacing = 0.20;
     _manual = true;
+
+    _xmin = 0;
+    _ymin = 0;
+    _zmin = 0;
+    _xmax = 0;
+    _ymax = 0;
+    _zmax = 0;
 
     setManual(_manual);
 
@@ -108,11 +113,30 @@ void PB_StepSlicePointCloud::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_resScene = outResultList.at(0);
 
+    _xmin = std::numeric_limits<float>::max();
+    _ymin = std::numeric_limits<float>::max();
+    _zmin = std::numeric_limits<float>::max();
+
+    _xmax = -std::numeric_limits<float>::max();
+    _ymax = -std::numeric_limits<float>::max();
+    _zmax = -std::numeric_limits<float>::max();
+
     CT_ResultItemIterator itIn_scene(resIn_resScene, this, DEFin_scene);
     while (itIn_scene.hasNext())
     {
         CT_Scene* itemIn_scene = (CT_Scene*) itIn_scene.next();
         _sceneList->append(itemIn_scene);
+
+        QVector3D min, max;
+        itemIn_scene->getBoundingBox(min, max);
+
+        if (min.x() < _xmin) {_xmin = min.x();}
+        if (min.y() < _ymin) {_ymin = min.y();}
+        if (min.z() < _zmin) {_zmin = min.z();}
+
+        if (max.x() > _xmax) {_xmax = max.x();}
+        if (max.y() > _ymax) {_ymax = max.y();}
+        if (max.z() > _zmax) {_zmax = max.z();}
     }
 
     requestManualMode();
@@ -153,7 +177,7 @@ void PB_StepSlicePointCloud::initManualMode()
         _m_doc = getGuiContext()->documentManager()->new3DDocument();
 
         // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-        _m_doc->setCurrentAction(new PB_ActionSlicePointCloud(_sceneList), false);
+        _m_doc->setCurrentAction(new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing), false);
     }
 
     _m_doc->removeAllItemDrawable();

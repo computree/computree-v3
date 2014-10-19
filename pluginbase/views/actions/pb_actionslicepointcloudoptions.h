@@ -18,18 +18,21 @@ public:
     explicit PB_ActionSlicePointCloudOptions(const PB_ActionSlicePointCloud *action);
     ~PB_ActionSlicePointCloudOptions();
 
-    bool shouldDrawScenes();
+    double getThickness() const;
+    double getSpacing() const;
+    double getIncrement() const;
+
+    void setThickness(double t) const;
+    void setSpacing(double s) const;
+    void setIncrement(double i) const;
+
 
 private:
     Ui::PB_ActionSlicePointCloudOptions *ui;
 
 signals:
     void parametersChanged();
-    void buttonPushed();
 
-private slots:
-    void on_pb_exemple_clicked();
-    void on_cb_drawScenes_clicked();
 };
 
 #endif // PB_ACTIONSLICEPOINTCLOUDOPTIONS_H

@@ -87,8 +87,12 @@ protected:
 private:
 
     // Step parameters
-    double       _zMin;
-    double       _zMax;
+    double       _xmin;
+    double       _ymin;
+    double       _zmin;
+    double       _xmax;
+    double       _ymax;
+    double       _zmax;
     double       _thickness;
     double       _spacing;
     bool         _manual;

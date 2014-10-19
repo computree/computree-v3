@@ -11,10 +11,8 @@ PB_ActionSlicePointCloudOptions::PB_ActionSlicePointCloudOptions(const PB_Action
 {
     ui->setupUi(this);
 
-    ui->pb_exemple->setToolTip("Add 1 (key A, CTRL-left-clic ou CTRL-wheel)");
-    ui->cb_drawScenes->setToolTip("Show green circle");
-
-    ui->cb_drawScenes->setChecked(true);
+    connect(ui->dsb_thickness, SIGNAL(valueChanged(double)), this, SIGNAL(parametersChanged()));
+    connect(ui->dsb_space, SIGNAL(valueChanged(double)), this, SIGNAL(parametersChanged()));
 }
 
 PB_ActionSlicePointCloudOptions::~PB_ActionSlicePointCloudOptions()
@@ -22,18 +20,33 @@ PB_ActionSlicePointCloudOptions::~PB_ActionSlicePointCloudOptions()
     delete ui;
 }
 
-bool PB_ActionSlicePointCloudOptions::shouldDrawScenes()
+double PB_ActionSlicePointCloudOptions::getThickness() const
 {
-    return ui->cb_drawScenes->isChecked();
+    return ui->dsb_thickness->value();
 }
 
-void PB_ActionSlicePointCloudOptions::on_pb_exemple_clicked()
+double PB_ActionSlicePointCloudOptions::getSpacing() const
 {
-    emit buttonPushed();
-    emit parametersChanged();
+    return ui->dsb_space->value();
 }
 
-void PB_ActionSlicePointCloudOptions::on_cb_drawScenes_clicked()
+double PB_ActionSlicePointCloudOptions::getIncrement() const
 {
-    emit parametersChanged();
+    return 0.01;
 }
+
+void PB_ActionSlicePointCloudOptions::setThickness(double t) const
+{
+    ui->dsb_thickness->setValue(t);
+}
+
+void PB_ActionSlicePointCloudOptions::setSpacing(double s) const
+{
+    ui->dsb_space->setValue(s);
+}
+
+void PB_ActionSlicePointCloudOptions::setIncrement(double i) const
+{
+
+}
+

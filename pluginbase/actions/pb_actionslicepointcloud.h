@@ -13,7 +13,7 @@ class PB_ActionSlicePointCloud : public CT_AbstractActionForGraphicsView
     Q_OBJECT
 public:
 
-    PB_ActionSlicePointCloud(QList<CT_Scene*>* sceneList);
+    PB_ActionSlicePointCloud(QList<CT_Scene*>* sceneList, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax, double thickness, double spacing);
 
     ~PB_ActionSlicePointCloud();
 
@@ -39,12 +39,22 @@ public:
     CT_AbstractAction* copy() const;
 
 public slots:
-    void toDoIfButtonPushed();
     void redraw();
 
 private:
-    int               _value;
     QList<CT_Scene*>* _sceneList;
+    double            _thickness;
+    double            _spacing;
+
+    float             _xmin;
+    float             _ymin;
+    float             _zmin;
+    float             _xmax;
+    float             _ymax;
+    float             _zmax;
+
+    float             _xwidth;
+    float             _ywidth;
 
 };
 
