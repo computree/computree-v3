@@ -90,6 +90,13 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
                 action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
+                if (step->isManual())
+                {
+                    QFont font;
+                    font.setItalic(true);
+                    action->setFont(font);
+                }
+
                 if(!insert)
                 {
                     action->setEnabled((selectedStep() != NULL) ? step->acceptAddAfterThisStep(selectedStep()) : false);
@@ -156,6 +163,13 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparato
                 action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
                 action->setEnabled(true);
+
+                if (step->isManual())
+                {
+                    QFont font;
+                    font.setItalic(true);
+                    action->setFont(font);
+                }
 
                 connectAction(action, false);
 

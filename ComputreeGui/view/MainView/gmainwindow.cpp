@@ -918,6 +918,13 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
                         action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                         action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
+                        if (step->isManual())
+                        {
+                            QFont font;
+                            font.setItalic(true);
+                            action->setFont(font);
+                        }
+
                         if(underMenu == NULL)
                             menuStep->addAction(action);
                         else
