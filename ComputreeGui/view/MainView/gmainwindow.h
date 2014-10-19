@@ -86,6 +86,7 @@ public slots:
     void arrangeDocksInTabs();
     void arrangeDocksInColumnWithLogAtBottom();
     void arrangeDocksInColumn();
+    void actionHovered();
 
 private:
     Ui::GMainWindow                         *ui;

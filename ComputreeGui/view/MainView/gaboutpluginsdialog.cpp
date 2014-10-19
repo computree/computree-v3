@@ -31,6 +31,8 @@ GAboutPluginsDialog::GAboutPluginsDialog(const CDM_PluginManager &pManager,
 {
     ui->setupUi(this);
 
+    ui->pb_redmineExport->setVisible(false);
+
     _pManager = (CDM_PluginManager*)&pManager;
     _mustReloadStep = false;
 

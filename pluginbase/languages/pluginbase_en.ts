@@ -1022,87 +1022,87 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_ActionSelectItemDrawableGVOptions</name>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="14"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="20"/>
         <source>Sélection</source>
         <translation>Selection</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="32"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="38"/>
         <source>Sélectionner un élément</source>
         <translation>Select an element</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="35"/>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="64"/>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="90"/>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="116"/>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="142"/>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="168"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="41"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="70"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="96"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="122"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="148"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="174"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="61"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="67"/>
         <source>Sélectionner de multiple éléments</source>
         <translation>Select multiple elements</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="87"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="93"/>
         <source>Ajouter un élément à la sélection</source>
         <translation>Add an element to the selection</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="113"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="119"/>
         <source>Ajouter de multiple éléments à la sélection</source>
         <translation>Add multiples elements to the selection</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="139"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="145"/>
         <source>Supprimer un élément de la sélection</source>
         <translation>Delete an element from the selection</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="165"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="171"/>
         <source>Supprimer de multiple éléments de la sélection</source>
         <translation>Delete multiple elements from the selection</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="198"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="204"/>
         <source>Action sur les ItemDrawable</source>
         <translation>Action to the ItemDrawable</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="201"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="207"/>
         <source>Items</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="214"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="220"/>
         <source>Action sur les points</source>
         <translation>Action on points</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="217"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="223"/>
         <source>Points</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="227"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="233"/>
         <source>Action sur les faces</source>
         <translation>Action on faces</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="230"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="236"/>
         <source>Faces</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="240"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="246"/>
         <source>Action sur les edges</source>
         <translation>Action on edges</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="243"/>
+        <location filename="../views/actions/pb_actionselectitemdrawablegvoptions.ui" line="249"/>
         <source>Edges</source>
         <translation></translation>
     </message>
@@ -2339,22 +2339,22 @@ Please select parameters for slicing.</translation>
 <context>
     <name>PB_XYBExporter</name>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="35"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="37"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation>XYB Files (Points binary encoded)</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="53"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="55"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation>- No item of type CT_IAccessPointCloud</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="75"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="77"/>
         <source>- Aucun points à exporter</source>
         <translation>- No point to export</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="192"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="194"/>
         <source>Scanners</source>
         <translation></translation>
     </message>

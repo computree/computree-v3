@@ -924,6 +924,7 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
                             underMenu->addAction(action);
 
                         connect(action, SIGNAL(triggered()), this, SLOT(addCanBeAddedFirstStepFromMyQAction()));
+                        connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
                     }
 
                     if(underMenu != NULL)
@@ -954,4 +955,16 @@ void GMainWindow::addCanBeAddedFirstStepFromMyQAction()
     {
         _stepManagerView->addCanBeAddedFirstStepAndConfigure(dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(action->step()));
     }
+}
+
+void GMainWindow::actionHovered()
+{
+    QAction *action = (QAction*)sender();
+
+    QPoint p = QCursor::pos();
+    QString s = action->toolTip();
+
+    p.setY(p.y() + 10);
+
+    QToolTip::showText(p, s);
 }

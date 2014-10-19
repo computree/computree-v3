@@ -260,22 +260,22 @@
 <context>
     <name>CT_Reader_XYB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="135"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="136"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="140"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="141"/>
         <source>Scène</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="141"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="142"/>
         <source>Intensité</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="142"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="143"/>
         <source>Scanner</source>
         <translation type="unfinished"></translation>
     </message>
@@ -381,12 +381,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1516"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1524"/>
         <source> - Start computing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1615"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1623"/>
         <source> - Computing completed</source>
         <translation type="unfinished"></translation>
     </message>

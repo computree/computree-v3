@@ -66,7 +66,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
     QListIterator<CT_StepSeparator*> it(stepAvailable);
 
     while(it.hasNext())
-    {        
+    {
         CT_StepSeparator *sep = it.next();
         QList<CT_VirtualAbstractStep*> stepList = sep->getStepList();
         QListIterator<CT_VirtualAbstractStep*> itStep(stepList);
@@ -97,8 +97,8 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
                 else
                 {
                     if(!_stepManager->isRunning()
-                        && (selectedStep() != NULL)
-                        && (step->acceptAddAfterThisStep(selectedStep())))
+                            && (selectedStep() != NULL)
+                            && (step->acceptAddAfterThisStep(selectedStep())))
                     {
                         bool ok = true;
 
@@ -153,7 +153,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparato
                 CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                action->setToolTip(step->getStepCustomName());
+                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
                 action->setEnabled(true);
 
@@ -196,95 +196,10 @@ void GTreeStepContextMenu::reload()
     // supprime toutes les actions
     clear();
 
-    MyQAction *action = new MyQAction(selectedStep(), tr("Exécuter"), this);
-    action->setIcon(QIcon(":/Icones/Icones/play.png"));
-    action->setEnabled((selectedStep() != NULL)
-                       && ((!selectedStep()->needInputResults())
-                           || ((selectedStep()->parentStep() != NULL)
-                               && (selectedStep()->parentStep()->nResult() > 0))));
-    connect(action, SIGNAL(triggered()), this, SLOT(executeStepRequired()));
-    addAction(action);
-    addSeparator();
-
-    if(selectedStep()->isModifiable())
-    {
-        action = new MyQAction(selectedStep(), tr("Modifier (mode manuel)"), this);
-        action->setIcon(QIcon(":/Icones/Icones/hand.png"));
-        connect(action, SIGNAL(triggered()), this, SLOT(executeModifyStepRequired()));
-        addAction(action);
-        addSeparator();
-    }
-
-    action = new MyQAction(selectedStep(), tr("Informations sur l'étape"), this);
-    action->setIcon(QIcon(":/Icones/Icones/info.png"));
-    connect(action, SIGNAL(triggered()), this, SLOT(showStepInformations()));
-    addAction(action);
-    addSeparator();
-
-    action = new MyQAction(selectedStep(), (selectedStep()->getStepChildList().isEmpty() && selectedStep()->hasChoiceBetweenMultipleInputResults()) ? tr("Configurer les résultats d'entrée") : tr("Voir la configuration des résultats d'entrée"), this);
-    action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
-    action->setEnabled(true);
-    connect(action, SIGNAL(triggered()), this, SLOT(configureInputResultOfStepRequired()));
-    addAction(action);
-
-    action = new MyQAction(selectedStep(), tr("Configurer"), this);
-    action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
-    action->setEnabled(selectedStep() != NULL);
-    connect(action, SIGNAL(triggered()), this, SLOT(configureStepRequired()));
-    addAction(action);
-
-    addSeparator();
-
-    action = new MyQAction(selectedStep(), tr("Supprimer"), this);
-    action->setIcon(QIcon(":/Icones/Icones/delete.png"));
-    action->setEnabled(selectedStep() != NULL);
-    connect(action, SIGNAL(triggered()), this, SLOT(deleteStepRequired()));
-    addAction(action);
-
-    addSeparator();
-
-    /*action = new MyQAction(selectedStep(), tr("Charger à partir du disque dur"), this);
-    action->setIcon(QIcon(":/Icones/Icones/upload.png"));
-    action->setEnabled(false);
-    CT_AbstractStepSerializable *selectedStepSerializable = dynamic_cast<CT_AbstractStepSerializable*>(selectedStep());
-
-    if(selectedStepSerializable != NULL)
-    {
-        CDM_ScriptStepObjectUserData *userData = dynamic_cast<CDM_ScriptStepObjectUserData*>(selectedStepSerializable->userData(0));
-
-        action->setEnabled((userData != NULL)
-                            && (selectedStepSerializable->canBeDeserialized(userData->getSerializedResultDirPath())));
-    }
-
-    connect(action, SIGNAL(triggered()), this, SLOT(loadResultRequired()));
-    addAction(action);*/
-
-    action = new MyQAction(selectedStep(), tr("Déplier"), this);
-    action->setIcon(QIcon(":/Icones/Icones/expand.png"));
-    connect(action, SIGNAL(triggered()), this, SIGNAL(expand()));
-    addAction(action);
-
-    action = new MyQAction(selectedStep(), tr("Déplier toutes les étapes"), this);
-    action->setIcon(QIcon(":/Icones/Icones/expand.png"));
-    connect(action, SIGNAL(triggered()), this, SIGNAL(expandAll()));
-    addAction(action);
-
-    action = new MyQAction(selectedStep(), tr("Replier"), this);
-    action->setIcon(QIcon(":/Icones/Icones/collapse.png"));
-    connect(action, SIGNAL(triggered()), this, SIGNAL(collapse()));
-    addAction(action);
-
-    action = new MyQAction(selectedStep(), tr("Replier toutes les étapes"), this);
-    action->setIcon(QIcon(":/Icones/Icones/collapse.png"));
-    connect(action, SIGNAL(triggered()), this, SIGNAL(collapseAll()));
-    addAction(action);
-
-    addSeparator();
-
+    // Ajout des étapes par plugin
     if(pluginManager->isAPluginLoaded())
     {
         int n = pluginManager->countPluginLoaded();
-
         for(int i=0; i<n; ++i)
         {
             QString pluginName = pluginManager->getPluginName(i);
@@ -295,25 +210,8 @@ void GTreeStepContextMenu::reload()
 
             MyQMenu *menuStep = new MyQMenu(pluginName, this);
             menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
-            /*menuStep->setStyleSheet("QMenu::item[isManual=\"true\"]{ background-color:rgb(255,0,0); }"
-                                    "QMenu::action:selected { background-color: #654321; }");*/
-
-            /*QMenu *insertStep = new QMenu(tr("Insérer"), this);
-            insertStep->setIcon(QIcon(":/Icones/Icones/add.png"));*/
 
             QList<CT_StepSeparator*> stepAvailable = pluginManager->getPlugin(i)->getGenericsStepAvailable();
-
-            /*addAllStepOnMenu(stepAvailable, insertStep, true);
-
-            if(!insertStep->actions().isEmpty())
-            {
-                menuStep->addMenu(insertStep);
-                menuStep->addSeparator();
-            }
-            else
-                delete insertStep;*/
-
-
             addAllStepOnMenu(stepAvailable, menuStep);
 
             QList<CT_StepCanBeAddedFirstSeparator*> stepAddeFirstAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
@@ -321,15 +219,79 @@ void GTreeStepContextMenu::reload()
 
             if(menuStep->actions().isEmpty())
             {
-                action = new MyQAction(NULL, tr("Aucune action"), this);
+                MyQAction* action = new MyQAction(NULL, tr("Aucune action"), this);
                 action->setEnabled(false);
 
                 menuStep->addAction(action);
             }
-
             addMenu(menuStep);
         }
     }
+    addSeparator();
+
+
+    MyQAction *action = new MyQAction(selectedStep(), tr("Exécuter"), this);
+    action->setIcon(QIcon(":/Icones/Icones/play.png"));
+    action->setEnabled((selectedStep() != NULL)
+                       && ((!selectedStep()->needInputResults())
+                           || ((selectedStep()->parentStep() != NULL)
+                               && (selectedStep()->parentStep()->nResult() > 0))));
+    connect(action, SIGNAL(triggered()), this, SLOT(executeStepRequired()));
+    addAction(action);
+
+    action = new MyQAction(selectedStep(), tr("Config. paramètres"), this);
+    action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
+    action->setEnabled(selectedStep() != NULL);
+    connect(action, SIGNAL(triggered()), this, SLOT(configureStepRequired()));
+    addAction(action);
+
+    action = new MyQAction(selectedStep(), tr("Config. résultats d'entrée"), this);
+    action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
+    action->setEnabled(true);
+    connect(action, SIGNAL(triggered()), this, SLOT(configureInputResultOfStepRequired()));
+    addAction(action);
+
+    if(selectedStep()->isModifiable())
+    {
+        action = new MyQAction(selectedStep(), tr("Modifier (mode manuel)"), this);
+        action->setIcon(QIcon(":/Icones/Icones/hand.png"));
+        connect(action, SIGNAL(triggered()), this, SLOT(executeModifyStepRequired()));
+        addAction(action);
+    }
+
+    action = new MyQAction(selectedStep(), tr("Supprimer"), this);
+    action->setIcon(QIcon(":/Icones/Icones/delete.png"));
+    action->setEnabled(selectedStep() != NULL);
+    connect(action, SIGNAL(triggered()), this, SLOT(deleteStepRequired()));
+    addAction(action);
+
+    action = new MyQAction(selectedStep(), tr("Documentation de l'étape"), this);
+    action->setIcon(QIcon(":/Icones/Icones/info.png"));
+    connect(action, SIGNAL(triggered()), this, SLOT(showStepInformations()));
+    addAction(action);
+
+    addSeparator();
+
+    //    action = new MyQAction(selectedStep(), tr("Déplier"), this);
+    //    action->setIcon(QIcon(":/Icones/Icones/expand.png"));
+    //    connect(action, SIGNAL(triggered()), this, SIGNAL(expand()));
+    //    addAction(action);
+
+    action = new MyQAction(selectedStep(), tr("Déplier toutes les étapes"), this);
+    action->setIcon(QIcon(":/Icones/Icones/expand.png"));
+    connect(action, SIGNAL(triggered()), this, SIGNAL(expandAll()));
+    addAction(action);
+
+    //    action = new MyQAction(selectedStep(), tr("Replier"), this);
+    //    action->setIcon(QIcon(":/Icones/Icones/collapse.png"));
+    //    connect(action, SIGNAL(triggered()), this, SIGNAL(collapse()));
+    //    addAction(action);
+
+    action = new MyQAction(selectedStep(), tr("Replier toutes les étapes"), this);
+    action->setIcon(QIcon(":/Icones/Icones/collapse.png"));
+    connect(action, SIGNAL(triggered()), this, SIGNAL(collapseAll()));
+    addAction(action);
+
 }
 
 void GTreeStepContextMenu::executeStepRequired()
@@ -394,7 +356,7 @@ void GTreeStepContextMenu::newStepRequired()
     MyQAction *action = (MyQAction*)sender();
 
     if((action->step() != NULL)
-        && (selectedStep() != NULL))
+            && (selectedStep() != NULL))
     {
         emit addStep(selectedStep(), action->step());
     }
@@ -405,7 +367,7 @@ void GTreeStepContextMenu::insertStepRequired()
     MyQAction *action = (MyQAction*)sender();
 
     if((action->step() != NULL)
-        && (selectedStep() != NULL))
+            && (selectedStep() != NULL))
     {
         emit insertStep(selectedStep(), action->step());
     }
@@ -415,11 +377,10 @@ void GTreeStepContextMenu::actionHovered()
 {
     QAction *action = (QAction*)sender();
 
-    if(action->isEnabled())
-    {
-        QPoint p = QCursor::pos();
-        QString s = action->toolTip();
+    QPoint p = QCursor::pos();
+    QString s = action->toolTip();
 
-        QToolTip::showText(p, s);
-    }
+    p.setY(p.y() + 10);
+
+    QToolTip::showText(p, s);
 }
