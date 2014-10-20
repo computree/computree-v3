@@ -77,6 +77,11 @@ CT_AbstractResult* GMultipleItemDrawableModelManager::currentResult() const
     return ui->widgetModelManager->result();
 }
 
+void GMultipleItemDrawableModelManager::reconstruct()
+{
+    ui->widgetModelManager->reconstruct();
+}
+
 int GMultipleItemDrawableModelManager::indexOfResultInComboBox(const CT_AbstractResult *res)
 {
     int count = ui->comboBoxResult->count();

@@ -15,6 +15,8 @@ public:
     virtual void removeResult(const CT_AbstractResult *res) = 0;
 
     virtual CT_AbstractResult* currentResult() const = 0;
+
+    virtual void reconstruct() = 0;
 };
 
 #endif // DM_MULTIPLEITEMDRAWABLEMODELMANAGER_H

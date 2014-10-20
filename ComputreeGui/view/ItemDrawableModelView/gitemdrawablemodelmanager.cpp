@@ -105,6 +105,11 @@ QList<const CT_AbstractModel*> GItemDrawableModelManager::getSelectedIModels() c
     return retList;
 }
 
+void GItemDrawableModelManager::reconstruct()
+{
+    constructModel();
+}
+
 // PRIVATE //
 
 void GItemDrawableModelManager::clearModel()

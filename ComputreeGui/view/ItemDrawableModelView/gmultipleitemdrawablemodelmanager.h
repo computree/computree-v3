@@ -27,6 +27,8 @@ public:
 
     CT_AbstractResult* currentResult() const;
 
+    void reconstruct();
+
 private:
     Ui::GMultipleItemDrawableModelManager   *ui;
 

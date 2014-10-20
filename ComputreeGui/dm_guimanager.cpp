@@ -588,6 +588,8 @@ bool DM_GuiManager::cleanItemDrawableOfAllDocuments()
             doc->redrawGraphics();
         }
 
+        getItemDrawableModelManager()->reconstruct();
+
         return true;
     }
 

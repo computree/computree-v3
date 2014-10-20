@@ -41,6 +41,8 @@ public:
 
     QList<const CT_AbstractModel*> getSelectedIModels() const;
 
+    void reconstruct();
+
 private:
     Ui::GItemDrawableModelManager   *ui;
 
