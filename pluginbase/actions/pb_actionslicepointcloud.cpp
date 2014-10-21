@@ -160,11 +160,14 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
         _sceneList->at(i)->draw(view, painter);
     }
 
+    QColor oldColor = painter.getColor();
+    painter.setColor(QColor(0,125,0,100));
+
     double z_current = _zmin;
     while (z_current <= _zmax)
     {
-        painter.drawRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current);
-        painter.drawRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current + _thickness);
+        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current);
+        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current + _thickness);
         painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_thickness), _ymin);
         painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_thickness), _ymax);
         painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_thickness), _xmin);
@@ -173,7 +176,7 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
         z_current += _thickness;
         z_current += _spacing;
     }
-
+    painter.setColor(oldColor);
     painter.restore();
 }
 

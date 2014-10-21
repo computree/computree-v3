@@ -609,7 +609,7 @@ protected:
      *
      * @param modified : true if you want to inform that settings is modified
      */
-    void setSettingsModified(bool modified);
+    virtual void setSettingsModified(bool modified);
 
     /************ TRAITEMENT ************/
 

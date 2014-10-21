@@ -57,6 +57,9 @@
 #include "step/pb_stepuseritemcopy.h"
 #include "step/pb_stepslicepointcloud.h"
 
+#include "ct_step/ct_stepbeginloop.h"
+#include "ct_step/ct_stependloop.h"
+
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
 
@@ -176,6 +179,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSlicePointCloud(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator());
+    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
+    sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
     return true;
 }
