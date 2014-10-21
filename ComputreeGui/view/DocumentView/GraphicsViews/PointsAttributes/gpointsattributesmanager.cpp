@@ -32,6 +32,8 @@ GPointsAttributesManager::GPointsAttributesManager(QWidget *parent) :
     m_itemEdgeRootNormal = NULL;
     m_internalSetColor = false;
 
+    ui->pushButtonAddColor->setEnabled(false);
+
     ui->treeView->setModel(&m_model);
     ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -467,6 +469,7 @@ void GPointsAttributesManager::editAttributesScalar(DM_AbstractAttributesScalar 
     }
 
     ui->layoutEditGradient->setEnabled(true);
+    ui->pushButtonAddColor->setEnabled(true);
     ui->pushButtonDeleteColor->setEnabled(ui->colorGradientView->nArrows() > 2);
 }
 
@@ -474,6 +477,8 @@ void GPointsAttributesManager::clearEditGradient()
 {
     ui->colorGradientView->clearArrows();
     ui->pushButtonSave->setEnabled(false);
+    ui->pushButtonDeleteColor->setEnabled(false);
+    ui->pushButtonAddColor->setEnabled(false);
     ui->layoutEditGradient->setEnabled(false);
 }
 

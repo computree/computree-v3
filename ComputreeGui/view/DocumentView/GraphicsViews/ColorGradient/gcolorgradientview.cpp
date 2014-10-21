@@ -204,11 +204,15 @@ int GColorGradientView::indexUnused() const
 
 qreal GColorGradientView::positionUnused() const
 {
-    if(m_arrows.size() > 1)
-    {
-        QList<GradientArrow> l = orderedArrows();
+    QList<GradientArrow> l = orderedArrows();
 
+    if(l.size() > 1)
+    {
         return l.first().position() + ((l.first().position() + l.at(1).position())/2.0);
+    }
+    else if(!l.isEmpty())
+    {
+        return (1-l.first().position())/2.0;
     }
 
     return 0;

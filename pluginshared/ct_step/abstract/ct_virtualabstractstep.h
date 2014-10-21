@@ -1020,7 +1020,7 @@ public:
      * @brief Return true if settings of the step was modified.
      * @warning Not intended for direct use by plugin developper
      */
-    bool isSettingsModified() const;
+    virtual bool isSettingsModified() const;
 
     /**
      * @brief Only clear result from memory. The results list is not modified.

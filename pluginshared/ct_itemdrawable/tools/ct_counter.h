@@ -2,8 +2,9 @@
 #define CT_COUNTER_H
 
 #include "stddef.h"
+#include "pluginShared_global.h"
 
-class CT_Counter
+class PLUGINSHAREDSHARED_EXPORT CT_Counter
 {
 public:
     CT_Counter(const size_t &nTurns);
