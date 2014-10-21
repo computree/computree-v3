@@ -75,7 +75,9 @@ public:
     void lockAllDocuments();
     void unlockAllDocuments();
 
-    DocumentInterface* new3DDocument();
+    DocumentInterface* new3DDocument();    
+    DocumentInterface* new3DDocument(const QMap<QString, QVariant> &param);
+
     DocumentInterface* new2DDocument();
     DocumentInterface* newTreeViewDocument();
     int nDocuments() const;

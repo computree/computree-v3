@@ -201,6 +201,7 @@ public slots:
     void changePixelSize(double size);
     void changeDrawMode();
     void changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode mode);
+    void setTransparencyActivated(bool activated);
 
 protected slots:
 

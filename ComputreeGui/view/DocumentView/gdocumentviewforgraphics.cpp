@@ -727,6 +727,14 @@ void GDocumentViewForGraphics::changeDrawMode(DM_GraphicsViewOptions::DrawFastes
     }
 }
 
+void GDocumentViewForGraphics::setTransparencyActivated(bool activated)
+{
+    DM_GraphicsViewOptions& options = (DM_GraphicsViewOptions&) _graphicsOptionsView->getOptions();
+
+    options.useTransparency(activated);
+    validateOptions();
+}
+
 void GDocumentViewForGraphics::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
     GDocumentView::slotItemDrawableAdded(item);

@@ -177,7 +177,12 @@ void GGraphicsViewOptions::updateUiFromOptions()
         break;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    ui->comboBoxOctreeNbCells->setCurrentIndex(ui->comboBoxOctreeNbCells->findText(QString().setNum(_options->octreeNumberOfCells())));
+#else
     ui->comboBoxOctreeNbCells->setCurrentText(QString().setNum(_options->octreeNumberOfCells()));
+#endif
+
     ui->checkBoxShowOctree->setChecked(_options->showOctree());
 }
 

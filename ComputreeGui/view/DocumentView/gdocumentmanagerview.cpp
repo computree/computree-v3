@@ -521,6 +521,19 @@ DocumentInterface* GDocumentManagerView::new3DDocument()
     return new3DDocument(false);
 }
 
+DocumentInterface *GDocumentManagerView::new3DDocument(const QMap<QString, QVariant> &param)
+{
+    GDocumentViewForGraphics* document = (GDocumentViewForGraphics*) new3DDocument(false);
+
+    QVariant variant;
+
+    variant = param.value("Transaprency");
+    document->setTransparencyActivated(variant.toBool());
+
+    return document;
+
+}
+
 DocumentInterface* GDocumentManagerView::new2DDocument()
 {
     return new2DDocument(false);

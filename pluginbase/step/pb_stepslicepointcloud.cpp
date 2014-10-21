@@ -12,6 +12,7 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include <QMessageBox>
+#include <limits>
 
 // Alias for indexing models
 #define DEFin_resScene "resScene"
@@ -173,8 +174,11 @@ void PB_StepSlicePointCloud::initManualMode()
 {
     if(_m_doc == NULL)
     {
+        QMap<QString, QVariant> param;
+        param.insert("Transparency", QVariant(true));
+
         // create a new 3D document
-        _m_doc = getGuiContext()->documentManager()->new3DDocument();
+        _m_doc = getGuiContext()->documentManager()->new3DDocument(param);
 
         // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
         _m_doc->setCurrentAction(new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing), false);
