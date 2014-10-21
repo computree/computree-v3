@@ -212,7 +212,7 @@ void GMainWindow::showAboutPluginsDialog()
 
 void GMainWindow::configureCurrentCoordinateSystem()
 {
-    PS_COODINATES_SYS->configure();
+    PS_COORDINATES_SYS->configure();
 }
 
 void GMainWindow::cleanItemDrawableOfAllDocuments()

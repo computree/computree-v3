@@ -178,6 +178,12 @@ public:
     virtual void startRestoreIdentityMatrix(GLdouble *matrix = NULL) = 0;
     virtual void stopRestoreIdentityMatrix() = 0;
 
+    virtual void enableMultMatrix(bool e) = 0;
+
+    virtual void pushMatrix() = 0;
+    virtual void multMatrix(const QMatrix4x4 &matrix) = 0;
+    virtual void popMatrix() = 0;
+
     virtual void setPointSize(double size) = 0;
     virtual void restoreDefaultPointSize() = 0;
 

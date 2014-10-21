@@ -316,7 +316,8 @@ SOURCES += \
     ct_itemdrawable/ct_attributeslist.cpp \
     ct_coordinates/ct_defaultcoordinatesystem.cpp \
     ct_coordinates/tools/ct_coordinatesystemmanager.cpp \
-    ct_coordinates/view/ct_gdefaultcoordinatesystem.cpp
+    ct_coordinates/view/ct_gdefaultcoordinatesystem.cpp \
+    ct_reader/ct_reader_las.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -716,7 +717,13 @@ HEADERS += interfaces.h \
     ct_attributes/ct_stditemattributecoordinatewrappert.h \
     ct_attributes/ct_stditemattributecoordinatewrappert.hpp \
     ct_attributes/ct_stditemattributecoordinatet.h \
-    ct_attributes/ct_stditemattributecoordinatet.hpp
+    ct_attributes/ct_stditemattributecoordinatet.hpp \
+    ct_reader/ct_reader_las.h \
+    ct_reader/ct_reader_opf_def_models.h \
+    ct_reader/ct_reader_ascrgb_def_models.h \
+    ct_reader/ct_reader_xyb_def_models.h \
+    ct_reader/ct_reader_larchitect_grid_def_models.h \
+    ct_reader/ct_reader_las_def_models.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

@@ -10,8 +10,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_Math
 {
 public:
 
-    template<class ForwardIt>
-    static std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last)
+    template<class ForwardIt, class Compare>
+    static std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last, Compare comp)
     {
         std::pair<ForwardIt, ForwardIt> result(first, first);
 

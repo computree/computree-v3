@@ -76,6 +76,12 @@ public:
     void startRestoreIdentityMatrix(GLdouble *matrix = NULL);
     void stopRestoreIdentityMatrix();
 
+    void enableMultMatrix(bool e);
+
+    void pushMatrix();
+    void multMatrix(const QMatrix4x4 &matrix);
+    void popMatrix();
+
     void setPointSize(double size);
     void setDefaultPointSize(double size);
     void restoreDefaultPointSize();
@@ -205,15 +211,15 @@ public:
                                float x4, float y4, float z4, int r4, int g4, int b4 );
 
 private:
-    CT_AbstractItemDrawable        *m_currentItem;
+    CT_AbstractItemDrawable                             *m_currentItem;
 
-    GraphicsViewInterface *m_gv;
+    GraphicsViewInterface                               *m_gv;
 
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_pColorCloud;
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_fColorCloud;
-    QSharedPointer<CT_StandardColorCloudRegistered>   m_eColorCloud;
-    QSharedPointer<CT_StandardNormalCloudRegistered>  m_pNormalCloud;
-    QSharedPointer<CT_StandardNormalCloudRegistered>  m_fNormalCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>     m_pColorCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>     m_fColorCloud;
+    QSharedPointer<CT_StandardColorCloudRegistered>     m_eColorCloud;
+    QSharedPointer<CT_StandardNormalCloudRegistered>    m_pNormalCloud;
+    QSharedPointer<CT_StandardNormalCloudRegistered>    m_fNormalCloud;
 
     QColor          _color;
     QColor          _forcedColor;
@@ -234,6 +240,8 @@ private:
 
     int             _nCallEnableSetPointSize;
     int             _nCallEnableSetForcedPointSize;
+
+    int             _nCallEnablePushMatrix;
     GLint           m_polygonMode;
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;

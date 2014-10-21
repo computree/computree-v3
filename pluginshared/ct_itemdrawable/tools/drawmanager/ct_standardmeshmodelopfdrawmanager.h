@@ -21,6 +21,8 @@ public:
     CT_StandardMeshModelOPFDrawManager(QString drawConfigurationName = "");
     virtual ~CT_StandardMeshModelOPFDrawManager();
 
+    virtual bool useItemTransformMatrix() const;
+
     virtual void draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const;
 
     void setDUp(double dUp);

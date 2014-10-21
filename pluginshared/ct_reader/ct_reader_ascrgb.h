@@ -5,8 +5,7 @@
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 
-#define DEF_CT_Reader_ASCRGB_sceneOut    "sce"
-#define DEF_CT_Reader_ASCRGB_colorOut    "co"
+#include "ct_reader/ct_reader_ascrgb_def_models.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_ASCRGB : public CT_AbstractReader
 {

@@ -74,13 +74,13 @@ CT_AbstractCoordinateSystem::realEx CT_StdItemAttributeCoordinateWrapperT<ItemDr
     if(m_gMethods[2] != NULL)
         z = (((ItemDrawableClass*)item)->*m_gMethods[2])();
 
-    PS_COODINATES_SYS->convertExport((((ItemDrawableClass*)item)->*m_gMethods[0])(),
-                                     (((ItemDrawableClass*)item)->*m_gMethods[1])(),
-                                     z,
-                                     c[0],
-                                     c[1],
-                                     c[2],
-                                     m_convert);
+    PS_COORDINATES_SYS->convertExport((((ItemDrawableClass*)item)->*m_gMethods[0])(),
+                                      (((ItemDrawableClass*)item)->*m_gMethods[1])(),
+                                      z,
+                                      c[0],
+                                      c[1],
+                                      c[2],
+                                      m_convert);
     return c[m_index];
 }
 

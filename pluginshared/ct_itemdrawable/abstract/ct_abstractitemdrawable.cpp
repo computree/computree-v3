@@ -315,9 +315,17 @@ QString CT_AbstractItemDrawable::getInfo()
 void CT_AbstractItemDrawable::draw(GraphicsViewInterface &view, PainterInterface &painter)
 {
     if(_alternativeDrawManager != NULL)
+    {
+        _alternativeDrawManager->preDraw(view, painter, *this);
         _alternativeDrawManager->draw(view, painter, *this);
+        _alternativeDrawManager->postDraw(view, painter, *this);
+    }
     else if(_baseDrawManager != NULL)
+    {
+        _baseDrawManager->preDraw(view, painter, *this);
         _baseDrawManager->draw(view, painter, *this);
+        _baseDrawManager->postDraw(view, painter, *this);
+    }
 }
 
 CT_ItemDrawableConfiguration* CT_AbstractItemDrawable::getViewConfiguration()

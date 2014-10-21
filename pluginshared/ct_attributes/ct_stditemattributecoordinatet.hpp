@@ -74,13 +74,13 @@ CT_AbstractCoordinateSystem::realEx CT_StdItemAttributeCoordinateT<VType>::dataC
 
     CT_AbstractCoordinateSystem::realEx c[3];
 
-    PS_COODINATES_SYS->convertExport(m_datas[0],
-                                     m_datas[1],
-                                     m_datas[2],
-                                     c[0],
-                                     c[1],
-                                     c[2],
-                                     m_convert);
+    PS_COORDINATES_SYS->convertExport(m_datas[0],
+                                      m_datas[1],
+                                      m_datas[2],
+                                      c[0],
+                                      c[1],
+                                      c[2],
+                                      m_convert);
 
     return c[m_index];
 }

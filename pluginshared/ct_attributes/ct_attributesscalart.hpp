@@ -19,7 +19,9 @@ CT_AttributesScalarT<SCALAR>::CT_AttributesScalarT(CT_StandardCloudStdVectorT<SC
 {
     m_collection = collection;
 
-    std::pair< typename std::vector<SCALAR>::iterator, typename std::vector<SCALAR>::iterator > res = CT_Math::minmax_element(m_collection->begin(), m_collection->end());
+    std::pair< typename std::vector<SCALAR>::iterator, typename std::vector<SCALAR>::iterator > res = CT_Math::minmax_element(m_collection->begin(),
+                                                                                                                              m_collection->end(),
+                                                                                                                              CT_AttributesScalarT<SCALAR>::staticCompareScalar);
 
     m_min = *res.first;
     m_max = *res.second;
@@ -110,6 +112,12 @@ void CT_AttributesScalarT<SCALAR>::initMinMax()
 {
     m_min = std::numeric_limits<SCALAR>::max();
     m_max = -std::numeric_limits<SCALAR>::max();
+}
+
+template<typename SCALAR>
+bool CT_AttributesScalarT<SCALAR>::staticCompareScalar(const SCALAR &a, const SCALAR &b)
+{
+    return a < b;
 }
 
 #endif // CT_ATTRIBUTESSCALART_HPP

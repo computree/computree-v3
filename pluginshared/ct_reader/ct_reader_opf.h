@@ -9,7 +9,7 @@
 
 #include "rapidxml/rapidxml_utils.hpp"
 
-#define DEF_CT_Reader_OPF_topologyOut     "ct_reader_opf_topology"
+#include "ct_reader/ct_reader_opf_def_models.h"
 
 class CT_OPF_Attribute
 {
@@ -75,6 +75,9 @@ class QXmlStreamReader;
 class CT_TOPFNodeGroup;
 class CT_StandardMeshModelOPFDrawManager;
 
+/**
+ * @brief Read OPF File (http://amapstudio.cirad.fr/)
+ */
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_OPF : public CT_AbstractReader
 {
     Q_OBJECT

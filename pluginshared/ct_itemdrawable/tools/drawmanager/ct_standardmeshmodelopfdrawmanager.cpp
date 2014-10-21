@@ -38,12 +38,10 @@ CT_StandardMeshModelOPFDrawManager::~CT_StandardMeshModelOPFDrawManager()
     }
 }
 
-// add overloaded functions which call the underlying OpenGL function
-inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
-inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
-
-// add an overload for QMatrix4x4 for convenience
-inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
+bool CT_StandardMeshModelOPFDrawManager::useItemTransformMatrix() const
+{
+    return true;
+}
 
 void CT_StandardMeshModelOPFDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
@@ -98,8 +96,8 @@ void CT_StandardMeshModelOPFDrawManager::draw(GraphicsViewInterface &view, Paint
     }
     else
     {
-        glPushMatrix();
-        glMultMatrix(item.transformMatrix());
+        painter.pushMatrix();
+        painter.multMatrix(item.transformMatrix());
     }
 
     bool showFaces = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_FACES).toBool();
@@ -116,7 +114,7 @@ void CT_StandardMeshModelOPFDrawManager::draw(GraphicsViewInterface &view, Paint
         painter.drawPoints(&item, 4);
 
     if(!ok)
-        glPopMatrix();
+        painter.popMatrix();
     else
         SHADER_PROG->release();
 }

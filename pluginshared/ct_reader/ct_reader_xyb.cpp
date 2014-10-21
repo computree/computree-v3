@@ -149,7 +149,7 @@ bool CT_Reader_XYB::protectedReadFile()
 
     float xc, yc, zc;
 
-    PS_COODINATES_SYS->convertImport(_xc, _yc, _zc, xc, yc, zc);
+    PS_COORDINATES_SYS->convertImport(_xc, _yc, _zc, xc, yc, zc);
     _xc = xc;
     _yc = yc;
     _zc = zc;
@@ -215,7 +215,7 @@ bool CT_Reader_XYB::protectedReadFile()
                     {
                         CT_Point &p = mpcir->addPoint();
 
-                        PS_COODINATES_SYS->convertImport(x, y, z, xc, yc, zc);
+                        PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
                         p.setX(xc);
                         p.setY(yc);
@@ -237,7 +237,7 @@ bool CT_Reader_XYB::protectedReadFile()
                 {
                     CT_Point &p = pcir->tAt(a);
 
-                    PS_COODINATES_SYS->convertImport(x, y, z, xc, yc, zc);
+                    PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
                     p.setX(xc);
                     p.setY(yc);

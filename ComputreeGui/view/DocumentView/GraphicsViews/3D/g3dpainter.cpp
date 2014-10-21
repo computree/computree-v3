@@ -146,6 +146,8 @@ void G3DPainter::beginNewDraw()
     _nCallEnableSetPointSize = 0;
     _nCallEnableSetForcedPointSize = 0;
 
+    _nCallEnablePushMatrix = 0;
+
     m_useColorCloud = true;
     m_useNormalCloud = true;
     m_useFColorCloud = true;
@@ -202,6 +204,36 @@ void G3DPainter::stopRestoreIdentityMatrix()
 
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+}
+
+void G3DPainter::enableMultMatrix(bool e)
+{
+    _nCallEnablePushMatrix += (e ? 1 : -1);
+}
+
+void G3DPainter::pushMatrix()
+{
+    if(_nCallEnablePushMatrix == 0)
+        glPushMatrix();
+}
+
+// add overloaded functions which call the underlying OpenGL function
+inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
+inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
+
+// add an overload for QMatrix4x4 for convenience
+inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
+
+void G3DPainter::multMatrix(const QMatrix4x4 &matrix)
+{
+    if(_nCallEnablePushMatrix == 0)
+        glMultMatrix(matrix);
+}
+
+void G3DPainter::popMatrix()
+{
+    if(_nCallEnablePushMatrix == 0)
+        glPopMatrix();
 }
 
 void G3DPainter::setPointSize(double size)

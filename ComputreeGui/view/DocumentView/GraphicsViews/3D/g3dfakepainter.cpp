@@ -53,6 +53,8 @@ void G3DFakePainter::beginNewDraw()
     m_nCallEnableSetPointSize = 0;
     m_nCallEnableSetForcedPointSize = 0;
 
+    m_nCallEnablePushMatrix = 0;
+
     m_drawMultipleLine = false;
     m_drawMultipleTriangle = false;
 
@@ -160,6 +162,36 @@ void G3DFakePainter::stopRestoreIdentityMatrix()
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
     }
+}
+
+void G3DFakePainter::enableMultMatrix(bool e)
+{
+    m_nCallEnablePushMatrix += (e ? 1 : -1);
+}
+
+void G3DFakePainter::pushMatrix()
+{
+    if(m_nCallEnablePushMatrix == 0)
+        glPushMatrix();
+}
+
+// add overloaded functions which call the underlying OpenGL function
+inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
+inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
+
+// add an overload for QMatrix4x4 for convenience
+inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
+
+void G3DFakePainter::multMatrix(const QMatrix4x4 &matrix)
+{
+    if(m_nCallEnablePushMatrix == 0)
+        glMultMatrix(matrix);
+}
+
+void G3DFakePainter::popMatrix()
+{
+    if(m_nCallEnablePushMatrix == 0)
+        glPopMatrix();
 }
 
 void G3DFakePainter::setPointSize(double size)

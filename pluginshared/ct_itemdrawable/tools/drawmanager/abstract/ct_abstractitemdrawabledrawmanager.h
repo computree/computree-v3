@@ -18,9 +18,25 @@ public:
     void initDrawConfiguration();
 
     /**
+     * @brief Returns true if this manager use the transform matrix of the item in method draw. If false
+     *        the preDraw method multiply the current matrix with the matrix of the itemDrawable. By default returns false.
+     */
+    virtual bool useItemTransformMatrix() const;
+
+    /**
+     * @brief Pre draw
+     */
+    virtual void preDraw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable);
+
+    /**
       * \brief Dessine l'ItemDrawable passé en paramètre.
       */
     virtual void draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const = 0;
+
+    /**
+     * @brief Post draw
+     */
+    virtual void postDraw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable);
 
     /**
       * \brief Retourne la configuration du dessin.

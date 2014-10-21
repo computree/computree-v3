@@ -87,6 +87,12 @@ public:
     void startRestoreIdentityMatrix(GLdouble *matrix = NULL);
     void stopRestoreIdentityMatrix();
 
+    void enableMultMatrix(bool e);
+
+    void pushMatrix();
+    void multMatrix(const QMatrix4x4 &matrix);
+    void popMatrix();
+
     void setPointSize(double size);
     void setDefaultPointSize(double size);
     void restoreDefaultPointSize();
@@ -235,6 +241,7 @@ private:
     double                                          m_defaultPointSize;
     uint                                            m_nCallEnableSetPointSize;
     uint                                            m_nCallEnableSetForcedPointSize;
+    int                                             m_nCallEnablePushMatrix;
     bool                                            m_drawMultipleLine;
     bool                                            m_drawMultipleTriangle;
     size_t                                          m_nPoints;

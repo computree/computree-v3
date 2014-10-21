@@ -5,9 +5,7 @@
 #include "ct_itemdrawable/ct_scanner.h"
 #include "ct_itemdrawable/ct_scene.h"
 
-#define DEF_CT_Reader_XYB_sceneOut     "sce"
-#define DEF_CT_Reader_XYB_intensityOut "int"
-#define DEF_CT_Reader_XYB_scannerOut   "sca"
+#include "ct_reader/ct_reader_xyb_def_models.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_XYB : public CT_AbstractReader
 {

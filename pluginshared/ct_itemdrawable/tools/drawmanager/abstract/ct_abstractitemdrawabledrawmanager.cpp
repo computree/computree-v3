@@ -1,6 +1,7 @@
 #include "ct_abstractitemdrawabledrawmanager.h"
 
 #include "ct_itemdrawable/ct_itemdrawableconfiguration.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
 CT_AbstractItemDrawableDrawManager::CT_AbstractItemDrawableDrawManager(const QString &drawConfigurationName)
 {
@@ -21,6 +22,35 @@ void CT_AbstractItemDrawableDrawManager::initDrawConfiguration()
         delete _configuration;
 
     _configuration = new CT_ItemDrawableConfiguration( createDrawConfiguration(_drawConfigurationNameBackup) );
+}
+
+bool CT_AbstractItemDrawableDrawManager::useItemTransformMatrix() const
+{
+    return false;
+}
+
+void CT_AbstractItemDrawableDrawManager::preDraw(GraphicsViewInterface &view,
+                                                 PainterInterface &painter,
+                                                 const CT_AbstractItemDrawable &itemDrawable)
+{
+    Q_UNUSED(view)
+
+    if(!useItemTransformMatrix())
+    {
+        painter.pushMatrix();
+        painter.multMatrix(itemDrawable.transformMatrix());
+    }
+}
+
+void CT_AbstractItemDrawableDrawManager::postDraw(GraphicsViewInterface &view,
+                                                  PainterInterface &painter,
+                                                  const CT_AbstractItemDrawable &itemDrawable)
+{
+    Q_UNUSED(view)
+    Q_UNUSED(itemDrawable)
+
+    if(!useItemTransformMatrix())
+        painter.popMatrix();
 }
 
 CT_ItemDrawableConfiguration* CT_AbstractItemDrawableDrawManager::getDrawConfiguration() const

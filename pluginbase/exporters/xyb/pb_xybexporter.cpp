@@ -254,7 +254,7 @@ bool PB_XYBExporter::protectedExportToFile()
             y = m_scanner->getPosition().y();
             z = m_scanner->getPosition().z();
 
-            PS_COODINATES_SYS->convertExport(x, y, z, xc, yc, zc);
+            PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
 
             txtStream << "ScanPosition " << (double)xc << " " << (double)yc << " " << (double)zc << "\n";
             txtStream << "Rows " << (m_scanner->getVFov()*RAD2DEG)/(m_scanner->getHRes()*RAD2DEG) << "\n";
@@ -359,7 +359,7 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
     {
         const CT_Point &point = begin.cT();
 
-        PS_COODINATES_SYS->convertExport(point.getX(), point.getY(), point.getZ(), xc, yc, zc);
+        PS_COORDINATES_SYS->convertExport(point.getX(), point.getY(), point.getZ(), xc, yc, zc);
 
         stream << ((double)xc);
         stream << ((double)yc);

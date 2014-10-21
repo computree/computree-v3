@@ -32,15 +32,11 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
                                 item.getFastestIncrement());
     }
 
+    painter.setColor(Qt::white);
+
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
-
-        painter.enableSetPointSize(false);
-        painter.enableSetColor(false);
-
-        painter.setColor(Qt::yellow);
-        painter.setPointSize(10);
         painter.drawPoint(item.minX(), item.minY(), item.minZ());
         painter.drawPoint(item.maxX(), item.minY(), item.minZ());
         painter.drawPoint(item.minX(), item.maxY(), item.minZ());
@@ -74,12 +70,6 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
         painter.drawLine(item.maxX(), item.minY(), item.maxZ(), item.maxX(), item.maxY(), item.maxZ());
         painter.drawLine(item.maxX(), item.maxY(), item.maxZ(), item.maxX(), item.maxY(), item.minZ());
         painter.drawLine(item.maxX(), item.maxY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
-
-
-        painter.enableSetColor(true);
-        painter.enableSetPointSize(true);
-
-        painter.restoreDefaultPointSize();
     }
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool())

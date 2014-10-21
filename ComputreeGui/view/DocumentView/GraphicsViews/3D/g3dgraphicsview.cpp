@@ -915,6 +915,8 @@ void G3DGraphicsView::draw()
 
 void G3DGraphicsView::postDraw()
 {
+    QGLViewer::postDraw();
+
     // Restore OpenGL state
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
@@ -928,8 +930,6 @@ void G3DGraphicsView::postDraw()
 
     delete m_painter;
     m_painter = NULL;
-
-    QGLViewer::postDraw();
 
     _drawModeUsed = _drawModeToUse;
 }
@@ -1662,16 +1662,18 @@ void G3DGraphicsView::itemDrawableToBeRemoved(CT_AbstractItemDrawable &item)
 {
     lockPaint();
 
-    m_fakeG.beginNewDraw();
-    m_fakeG.setDrawMode(G3DFakePainter::BackupPointCloudIndex | G3DFakePainter::BackupFaceCloudIndex | G3DFakePainter::BackupEdgeCloudIndex);
+    G3DFakePainter fakeP;
 
-    item.draw(*this, m_fakeG);
+    fakeP.beginNewDraw();
+    fakeP.setDrawMode(G3DFakePainter::BackupPointCloudIndex | G3DFakePainter::BackupFaceCloudIndex | G3DFakePainter::BackupEdgeCloudIndex);
 
-    m_fakeG.endNewDraw();
+    item.draw(*this, fakeP);
 
-    m_pointsSelectionManager->removeCloudIndexFromSelection(m_fakeG.pointCloudIndexBackup());
-    m_edgesSelectionManager->removeCloudIndexFromSelection(m_fakeG.edgeCloudIndexBackup());
-    m_facesSelectionManager->removeCloudIndexFromSelection(m_fakeG.faceCloudIndexBackup());
+    fakeP.endNewDraw();
+
+    m_pointsSelectionManager->removeCloudIndexFromSelection(fakeP.pointCloudIndexBackup());
+    m_edgesSelectionManager->removeCloudIndexFromSelection(fakeP.edgeCloudIndexBackup());
+    m_facesSelectionManager->removeCloudIndexFromSelection(fakeP.faceCloudIndexBackup());
 
     unlockPaint();
 }

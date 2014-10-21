@@ -5,12 +5,7 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 #include <QMap>
 
-#define DEF_CT_Reader_LArchitect_Grid_wood_surface    "ws"
-#define DEF_CT_Reader_LArchitect_Grid_leaf_surface    "ls"
-#define DEF_CT_Reader_LArchitect_Grid_wood_volume     "wv"
-#define DEF_CT_Reader_LArchitect_Grid_leaf_volume     "lv"
-#define DEF_CT_Reader_LArchitect_Grid_all_surface     "as"
-#define DEF_CT_Reader_LArchitect_Grid_all_volume      "av"
+#include "ct_reader/ct_reader_larchitect_grid_def_models.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_LArchitect_Grid : public CT_AbstractReader
 {

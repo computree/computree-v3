@@ -86,7 +86,7 @@ bool CT_AbstractReader::readFile()
 
     m_error = protectedReadFile();
 
-    if(!PS_COODINATES_SYS->wasUsed())
+    if(!m_error && !PS_COORDINATES_SYS->wasUsed())
         PS_LOG->addErrorMessage(LogInterface::reader, tr("Reader error ! The reader has not used the coordinate system !"));
 
     emit finished();
@@ -381,7 +381,7 @@ void CT_AbstractReader::addNewReadableFormat(const FileFormat &format)
 
 void CT_AbstractReader::setNotNeedToUseCoordinateSystem()
 {
-    PS_COODINATES_SYS->informThatUsed();
+    PS_COORDINATES_SYS->informThatUsed();
 }
 
 void CT_AbstractReader::addOutItemDrawableModel(CT_OutStdSingularItemModel *item)

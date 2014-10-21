@@ -81,6 +81,16 @@ CT_VirtualAbstractStep* PB_StepGenericLoadFile::createNewInstance(CT_StepInitial
     return new PB_StepGenericLoadFile(dataInit, m_reader->copy());
 }
 
+bool PB_StepGenericLoadFile::preConfigure()
+{
+    if(CT_AbstractStepLoadFile::preConfigure())
+    {
+        return m_reader->configure();
+    }
+
+    return false;
+}
+
 bool PB_StepGenericLoadFile::postConfigure()
 {
     if(CT_AbstractStepLoadFile::postConfigure())

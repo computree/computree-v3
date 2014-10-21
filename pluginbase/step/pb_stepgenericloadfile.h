@@ -24,6 +24,7 @@ public:
 
 protected:
 
+    bool preConfigure();
     bool postConfigure();
     bool protectedInitAfterConfiguration();
 

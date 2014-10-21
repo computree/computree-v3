@@ -77,6 +77,7 @@
 #include "ct_reader/ct_reader_ascrgb.h"
 #include "ct_reader/ct_reader_larchitect_grid.h"
 #include "ct_reader/ct_reader_opf.h"
+#include "ct_reader/ct_reader_las.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -283,6 +284,9 @@ bool PB_StepPluginManager::loadReaders()
 
     sep = addNewSeparator(new CT_StandardReaderSeparator("OPF Files"));
     sep->addReader(new CT_Reader_OPF());
+
+    sep = addNewSeparator(new CT_StandardReaderSeparator("LAS Files"));
+    sep->addReader(new CT_Reader_LAS());
 
     return true;
 }

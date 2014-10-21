@@ -12,7 +12,7 @@
 #define PS_DIAM CT_Context::staticInstance()->defaultItemAttributesManager()
 #define PS_MODELS CT_Context::staticInstance()->modelSearchHelper()
 #define PS_COORDINATES_SYS_MANAGER CT_Context::staticInstance()->coordinateSystemManager()
-#define PS_COODINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
+#define PS_COORDINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
 
 #define CT_ABSTRACT_NMPCIR CT_Repository::CT_AbstractNotModifiablePCIR
 #define CT_ABSTRACT_MPCIR CT_Repository::CT_AbstractModifiablePCIR

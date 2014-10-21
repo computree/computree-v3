@@ -55,6 +55,8 @@ protected:
 
     void initMinMax();
     CT_StandardCloudStdVectorT<SCALAR>* collection() const { return m_collection; }
+
+    static bool staticCompareScalar(const SCALAR &a, const SCALAR &b);
 };
 
 template<>
