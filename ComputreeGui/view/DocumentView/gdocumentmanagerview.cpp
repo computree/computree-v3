@@ -527,7 +527,7 @@ DocumentInterface *GDocumentManagerView::new3DDocument(const QMap<QString, QVari
 
     QVariant variant;
 
-    variant = param.value("Transaprency");
+    variant = param.value("Transparency");
     document->setTransparencyActivated(variant.toBool());
 
     return document;
