@@ -217,6 +217,7 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
 
     // Ajout d'une étape
+    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
