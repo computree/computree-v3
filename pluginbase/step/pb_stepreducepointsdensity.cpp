@@ -187,16 +187,20 @@ void PB_StepReducePointsDensity::compute()
         i = 0;
 
         CT_PointCloudIndexVector *resPointCloudIndex = new CT_PointCloudIndexVector(npts);
+        resPointCloudIndex->setSortType(CT_AbstractCloudIndex::NotSorted);
+
 
         while (it.hasNext() && (!isStopped()))
         {
             it.next();
 
-            resPointCloudIndex->replaceIndex(i, it.value(), false);
+            resPointCloudIndex->replaceIndex(i, it.value());
 
             if (i % 10000 == 0) {setProgress(50 + 49 * i / npts);}
             ++i;
         }
+
+        resPointCloudIndex->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
 
         if (resPointCloudIndex->size() > 0)
         {
