@@ -118,21 +118,36 @@ bool CT_TNodeGroup::addBranch(CT_TNodeGroup *son)
     return true;
 }
 
-bool CT_TNodeGroup::removeComponent(CT_TNodeGroup *component)
+bool CT_TNodeGroup::removeComponent(CT_TNodeGroup *component, bool recursively)
 {
-    if(component == m_rootComponent)
-    {
-        if(!recursiveRemoveNode(component))
-            return false;
-
-        m_rootComponent = NULL;
-        return true;
-    }
-
-    if(component->ancestor() != NULL)
+    if((component->ancestor() != NULL) && recursively)
         return component->ancestor()->setSuccessor(NULL);
 
-    return false;
+    CT_TNodeGroup *suc = component->successor();
+    CT_TNodeGroup *anc = component->ancestor();
+
+    if(!recursively)
+        component->internalSetSuccessor(NULL);
+    else
+        suc = NULL;
+
+    if(!recursiveRemoveNode(component))
+    {
+        if(!recursively)
+            component->internalSetSuccessor(suc);
+
+        return false;
+    }
+
+    if(anc != NULL)
+        anc->internalSetSuccessor(suc);
+    else if(component == m_rootComponent)
+        m_rootComponent = suc;
+
+    if(suc != NULL)
+        suc->setAncestor(anc);
+
+    return true;
 }
 
 bool CT_TNodeGroup::removeBranch(CT_TNodeGroup *son)
@@ -239,6 +254,11 @@ void CT_TNodeGroup::initConstructor()
 CT_TTreeGroup* CT_TNodeGroup::tree() const
 {
     return m_tree;
+}
+
+void CT_TNodeGroup::internalSetSuccessor(CT_TNodeGroup *successor)
+{
+    m_successor = successor;
 }
 
 void CT_TNodeGroup::setAncestor(CT_TNodeGroup *o)

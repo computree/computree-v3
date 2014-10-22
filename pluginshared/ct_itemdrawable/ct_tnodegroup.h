@@ -59,7 +59,7 @@ public:
     /**
      * @brief Remove the component passed in parameter
      */
-    bool removeComponent(CT_TNodeGroup *component);
+    bool removeComponent(CT_TNodeGroup *component, bool recursively = true);
 
     /**
      * @brief Remove the component passed in parameter
@@ -121,6 +121,8 @@ protected:
     void initConstructor();
 
     CT_TTreeGroup* tree() const;
+
+    void internalSetSuccessor(CT_TNodeGroup *successor);
 
     void setAncestor(CT_TNodeGroup *o);
     void setComplex(CT_TNodeGroup *o);
