@@ -171,7 +171,7 @@ void G3DFakePainter::enableMultMatrix(bool e)
 
 void G3DFakePainter::pushMatrix()
 {
-    if(m_nCallEnablePushMatrix == 0)
+    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
         glPushMatrix();
 }
 
@@ -184,19 +184,19 @@ inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
 
 void G3DFakePainter::multMatrix(const QMatrix4x4 &matrix)
 {
-    if(m_nCallEnablePushMatrix == 0)
+    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
         glMultMatrix(matrix);
 }
 
 void G3DFakePainter::popMatrix()
 {
-    if(m_nCallEnablePushMatrix == 0)
+    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
         glPopMatrix();
 }
 
 void G3DFakePainter::setPointSize(double size)
 {
-    if(m_nCallEnableSetPointSize == 0)
+    if(m_drawEnabled && (m_nCallEnableSetPointSize == 0))
         glPointSize(size);
 }
 
@@ -208,7 +208,7 @@ void G3DFakePainter::setDefaultPointSize(double size)
 
 void G3DFakePainter::restoreDefaultPointSize()
 {
-    if(m_nCallEnableSetPointSize == 0)
+    if(m_drawEnabled && (m_nCallEnableSetPointSize == 0))
         glPointSize(m_defaultPointSize);
 }
 
