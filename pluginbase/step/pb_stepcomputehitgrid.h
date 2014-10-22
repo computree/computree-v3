@@ -141,6 +141,10 @@ private:
 //********************************************//
 
     double          _res;                   /*!< size of a voxel*/
+    int             _gridMode;
+    double          _xBase;
+    double          _yBase;
+    double          _zBase;
 
 };
 

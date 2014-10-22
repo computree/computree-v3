@@ -50,6 +50,7 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QVector3D>
+#include <limits>
 
 #define DEF_SearchInResult "r"
 #define DEF_SearchInScene   "sc"
@@ -62,6 +63,11 @@
 PB_StepComputeHitGrid::PB_StepComputeHitGrid(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     _res = 0.5;
+    _gridMode = 1;
+    _xBase = 0;
+    _yBase = 0;
+    _zBase = 0;
+
 }
 
 QString PB_StepComputeHitGrid::getStepDescription() const
@@ -112,6 +118,16 @@ void PB_StepComputeHitGrid::createPostConfigurationDialog()
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
     configDialog->addDouble(tr("Résolution de la grille"),tr("meters"),0.0001,10000,2, _res );
+
+    configDialog->addText(tr("Callage du coin (minX, minY, minZ) :"),"", "");
+
+    CT_ButtonGroup &bg_gridMode = configDialog->addButtonGroup(_gridMode);
+    configDialog->addExcludeValue("", "", tr("Sur la boite englobante de la scène"), bg_gridMode, 0);
+    configDialog->addExcludeValue("", "", tr("Par rapport aux coordonnées suivantes :"), bg_gridMode, 1);
+
+    configDialog->addDouble(tr("Coordonnée X :"), "", -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 4, _xBase);
+    configDialog->addDouble(tr("Coordonnée Y :"), "", -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 4, _yBase);
+    configDialog->addDouble(tr("Coordonnée Z :"), "", -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 4, _zBase);
 }
 
 void PB_StepComputeHitGrid::compute()
@@ -131,44 +147,64 @@ void PB_StepComputeHitGrid::compute()
 
         if (scene!=NULL)
         {
+            float minX = _xBase;
+            float minY = _yBase;
+            float minZ = _zBase;
+
+            if (_gridMode == 0)
+            {
+                minX = scene->minX();
+                minY = scene->minY();
+                minZ = scene->minZ();
+            } else {
+
+                while (minX < scene->minX()) {minX += _res;};
+                while (minY < scene->minY()) {minY += _res;};
+                while (minZ < scene->minZ()) {minZ += _res;};
+
+                while (minX > scene->minX()) {minX -= _res;};
+                while (minY > scene->minY()) {minY -= _res;};
+                while (minZ > scene->minZ()) {minZ -= _res;};
+            }
+
             // Declaring the output grids
             CT_Grid3D<int>* hitGrid = CT_Grid3D<int>::createGrid3DFromXYZCoords(_hits_ModelName.completeName(), outResult,
-                                                                                scene->minX(), scene->minY(), scene->minZ(),
+                                                                                minX, minY, minZ,
                                                                                 scene->maxX(), scene->maxY(), scene->maxZ(),
                                                                                 _res, -1, 0);
 
             CT_Grid2DXY<int>* grxy = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(_itemOut_grxy_ModelName.completeName(), outResult,
-                                                                                  scene->minX(), scene->minY(),
+                                                                                  minX, minY,
                                                                                   scene->maxX(), scene->maxY(),
-                                                                                  _res, scene->minZ(), -1, 0);
+                                                                                  _res, minZ, -1, 0);
 
             CT_Grid2DXZ<int>* grxz = CT_Grid2DXZ<int>::createGrid2DXZFromXZCoords(_itemOut_grxz_ModelName.completeName(), outResult,
-                                                                                  scene->minX(), scene->minZ(),
+                                                                                  minX, minZ,
                                                                                   scene->maxX(), scene->maxZ(),
-                                                                                  _res, scene->minY(), -1, 0);
+                                                                                  _res, minY, -1, 0);
 
             CT_Grid2DYZ<int>* gryz = CT_Grid2DYZ<int>::createGrid2DYZFromYZCoords(_itemOut_gryz_ModelName.completeName(), outResult,
-                                                                                  scene->minY(), scene->minZ(),
+                                                                                  minY, minZ,
                                                                                   scene->maxY(), scene->maxZ(),
-                                                                                  _res, scene->minX(), -1, 0);
+                                                                                  _res, minX, -1, 0);
 
             CT_Profile<int>* proX = CT_Profile<int>::createProfileFromSegment(_itemOut_prx_ModelName.completeName(), outResult,
-                                                                              scene->minX(), scene->minY(), scene->minZ(),
-                                                                              scene->maxX(), scene->minY(), scene->minZ(),
+                                                                              minX, minY, minZ,
+                                                                              scene->maxX(), minY, minZ,
                                                                               _res, -1, 0);
 
             CT_Profile<int>* proY = CT_Profile<int>::createProfileFromSegment(_itemOut_pry_ModelName.completeName(), outResult,
-                                                                              scene->minX(), scene->minY(), scene->minZ(),
-                                                                              scene->minX(), scene->maxY(), scene->minZ(),
+                                                                              minX, minY, minZ,
+                                                                              minX, scene->maxY(), minZ,
                                                                               _res, -1, 0);
 
             CT_Profile<int>* proZ = CT_Profile<int>::createProfileFromSegment(_itemOut_prz_ModelName.completeName(), outResult,
-                                                                              scene->minX(), scene->minY(), scene->minZ(),
-                                                                              scene->minX(), scene->minY(), scene->maxZ(),
+                                                                              minX, minY, minZ,
+                                                                              minX, minY, scene->maxZ(),
                                                                               _res, -1, 0);
 
             CT_Profile<int>* proDiag = CT_Profile<int>::createProfileFromSegment(_itemOut_prdiag_ModelName.completeName(), outResult,
-                                                                              scene->minX(), scene->minY(), scene->minZ(),
+                                                                              minX, minY, minZ,
                                                                               scene->maxX(), scene->maxY(), scene->maxZ(),
                                                                               _res, -1, 0);
 
