@@ -16,12 +16,12 @@ public:
     /**
      * @brief Returns a const iterator to the beginning of the cloud
      */
-    ConstIterator constBegin() const { return ConstIterator(*this); }
+    ConstIterator constBegin() const;
 
     /**
      * @brief Returns a const iterator to the end of the cloud
      */
-    ConstIterator constEnd() const { return ConstIterator(*this, this->size()); }
+    ConstIterator constEnd() const;
 
     /**
      * @return value at index passed in parameter.

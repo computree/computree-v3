@@ -30,6 +30,10 @@
 #include "manipulatedCameraFrame.h"
 #include "dm_guimanager.h"
 #include "tools/graphicsview/dm_colorselectionmanagert.h"
+#include "tools/attributes/dm_attributesbuildingcollectiont.h"
+#include "tools/attributes/worker/dm_attributescolort.h"
+#include "tools/attributes/worker/dm_attributesnormalt.h"
+#include "tools/attributes/worker/dm_attributesscalart.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
@@ -37,6 +41,7 @@
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
+#include "ct_attributes/abstract/ct_abstractattributesscalar.h"
 
 #include "dm_iteminfoforgraphics.h"
 
@@ -71,6 +76,8 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     m_facesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>(CT_Repository::SyncWithFaceCloud);
     m_edgesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>(CT_Repository::SyncWithEdgeCloud);
 
+    m_vboManager = new DM_VBOManager();
+
     // 1000 lments slectionnable (4x1000 = 4000)
     setSelectBufferSize(4000);
     setSceneRadius(100); // 100 mètres
@@ -97,6 +104,8 @@ G3DGraphicsView::~G3DGraphicsView()
     delete m_pointsSelectionManager;
     delete m_facesSelectionManager;
     delete m_edgesSelectionManager;
+
+    delete m_vboManager;
 }
 
 QWidget* G3DGraphicsView::getViewWidget() const
@@ -548,15 +557,13 @@ DM_GraphicsViewOptions::DrawFastestMode G3DGraphicsView::drawFastest() const
 
 bool G3DGraphicsView::mustDrawFastestNow() const
 {
-    /*return ((getOptions().drawFastest() == DM_GraphicsViewOptions::Always)
-            || (((drawMode() == FAST) || (QGLViewer::camera()->frame()->isSpinning()))
-                && (getOptions().drawFastest() != DM_GraphicsViewOptions::Never)));*/
     return (drawModeToUse() == FAST);
 }
 
 void G3DGraphicsView::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     _g.setCurrentPointCloudColor(cc);
+    m_vboManager->setCurrentCloudColor(cc);
 }
 
 void G3DGraphicsView::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
@@ -628,6 +635,16 @@ void G3DGraphicsView::active2dView(bool enable)
 bool G3DGraphicsView::is2DViewActived() const
 {
     return _2dActive;
+}
+
+void G3DGraphicsView::showContextMenu(const QPoint &pos)
+{
+    QMenu *menu = constructContextMenu();
+
+    if(!menu->isEmpty())
+        menu->exec(pos);
+
+    delete menu;
 }
 
 void G3DGraphicsView::addActionOptions(ActionOptionsInterface *options)
@@ -804,6 +821,8 @@ void G3DGraphicsView::init()
         restoreStateFromFile();
 
     initOptions();
+
+    m_vboManager->initializeGL();
 }
 
 void G3DGraphicsView::initOptions()
@@ -855,10 +874,13 @@ void G3DGraphicsView::initFromOptions()
         options.setCameraType(CameraInterface::ORTHOGRAPHIC);
 
     _g.setDefaultPointSize(options.getPointSize());
+    m_fastestIncrementOptimizer.setMinFPS(options.getMinFPS());
 }
 
 void G3DGraphicsView::preDraw()
 {
+    m_fastestIncrementOptimizer.preDraw();
+
     // Classical 3D drawing, usually performed by paintGL().
     delete m_painter;
     m_painter = new QPainter();
@@ -901,6 +923,8 @@ void G3DGraphicsView::preDraw()
 
     qglClearColor(backgroundColor());
 
+    m_vboManager->preDraw();
+
     QGLViewer::preDraw();
 }
 
@@ -917,6 +941,9 @@ void G3DGraphicsView::postDraw()
 {
     QGLViewer::postDraw();
 
+    m_vboManager->postDraw();
+    m_fastestIncrementOptimizer.postDraw();
+
     // Restore OpenGL state
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
@@ -925,6 +952,11 @@ void G3DGraphicsView::postDraw()
     glPopAttrib();
 
     drawOverlay(*m_painter);
+
+    /*m_painter->setPen(Qt::white);
+    m_painter->drawText(10, 10, QString().setNum(m_fastestIncrementOptimizer.currentFPS()));
+    m_painter->drawText(10, 20, QString().setNum(m_fastestIncrementOptimizer.fastestIncrement()));
+    m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
 
     m_painter->end();
 
@@ -949,9 +981,10 @@ void G3DGraphicsView::drawInternal()
 
     lockPaint();
 
+    _g.beginNewDraw();
     _g.setColor(Qt::white);
     _g.setPointSize(getOptions().getPointSize());
-    _g.beginNewDraw();
+    _g.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
 
     OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
 
@@ -960,48 +993,57 @@ void G3DGraphicsView::drawInternal()
     if(octreeC->hasElements() && !octreeC->mustBeReconstructed() && options.showOctree())
         _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawOctree);
 
-    QColor selectedColor = getOptions().getSelectedColor();
+    // IF you uncomment this line you must add points selected to the selection manager otherwise
+    // elements selected wont be in selected color
+    /*if(octreeC->hasElements() && !octreeC->mustBeReconstructed()) {
+        _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawElements);
+    } else  {*/
 
-    const QHash<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *> &ii = getDocumentView().getItemsInformations();
+        QColor selectedColor = getOptions().getSelectedColor();
 
-    QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
+        const QHash<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *> &ii = getDocumentView().getItemsInformations();
 
-    CT_AbstractResult *lastResult = NULL;
-    QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *hash = NULL;
+        QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
-    while(it.hasNext())
-    {
-        CT_AbstractItemDrawable *item = it.next();
+        CT_AbstractResult *lastResult = NULL;
+        QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *hash = NULL;
 
-        if(lastResult != item->result())
-            hash = ii.value(item->result(), NULL);
-
-        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
-
-        if(item->isSelected())
+        while(it.hasNext())
         {
-            _g.setUseColorCloudForPoints(false);
-            _g.setUseColorCloudForFaces(false);
-            _g.setUseColorCloudForEdges(false);
-            _g.setColor(selectedColor);
-            _g.enableSetColor(false);
+            CT_AbstractItemDrawable *item = it.next();
 
-            item->draw(*this, _g);
+            if(lastResult != item->result())
+                hash = ii.value(item->result(), NULL);
 
-            _g.enableSetColor(true);
+            DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
+
+            if(item->isSelected())
+            {
+                m_vboManager->setUseCloudColor(false);
+                _g.setUseColorCloudForPoints(false);
+                _g.setUseColorCloudForFaces(false);
+                _g.setUseColorCloudForEdges(false);
+                _g.setColor(selectedColor);
+                _g.enableSetColor(false);
+
+                item->draw(*this, _g);
+
+                _g.enableSetColor(true);
+            }
+            else
+            {
+                m_vboManager->setUseCloudColor(m_useColorCloud);
+                _g.setUseColorCloudForPoints(m_useColorCloud);
+                _g.setUseColorCloudForFaces(m_useColorCloud);
+                _g.setUseColorCloudForEdges(m_useColorCloud);
+
+                if(info != NULL)
+                    _g.setColor(info->color());
+
+                item->draw(*this, _g);
+            }
         }
-        else
-        {
-            _g.setUseColorCloudForPoints(m_useColorCloud);
-            _g.setUseColorCloudForFaces(m_useColorCloud);
-            _g.setUseColorCloudForEdges(m_useColorCloud);
-
-            if(info != NULL)
-                _g.setColor(info->color());
-
-            item->draw(*this, _g);
-        }
-    }
+    //}
 
     CT_AbstractActionForGraphicsView *action = dynamic_cast<CT_AbstractActionForGraphicsView*>(actionsHandler()->currentAction());
 
@@ -1108,6 +1150,9 @@ void G3DGraphicsView::drawWithNames()
 {
     lockPaint();
 
+    m_vboManager->preDraw();
+    m_vboManager->setUseCloudColor(false);
+
     bool selectItems = true;
     bool hasOctree = false;
 
@@ -1155,6 +1200,7 @@ void G3DGraphicsView::drawWithNames()
         _g.beginNewDraw();
         _g.setDrawFastest(mustDrawFastestNow());
         _g.setPointSize(getOptions().getPointSize());
+        _g.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
 
         int i = 0;
 
@@ -1177,6 +1223,7 @@ void G3DGraphicsView::drawWithNames()
         {
             m_fakeG.setDrawFastest(mustDrawFastestNow());
             m_fakeG.setPointSize(getOptions().getPointSize());
+            m_fakeG.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
         }
 
         if(!hasOctree)
@@ -1253,6 +1300,8 @@ void G3DGraphicsView::drawWithNames()
             }
         }
     }
+
+    m_vboManager->postDraw();
 
     unlockPaint();
 
@@ -1459,7 +1508,12 @@ void G3DGraphicsView::mousePressEvent(QMouseEvent *e)
     _forceDrawMode = false;
 
     if(!actionsHandler()->mousePressEvent(e))
-        QGLViewer::mousePressEvent(e); 
+    {
+        if((e->button() == Qt::RightButton) && (e->modifiers() & Qt::CTRL))
+            showContextMenu(mapToGlobal(e->pos()));
+        else
+            QGLViewer::mousePressEvent(e);
+    }
 
     if(!_forceDrawMode)
     {
@@ -1613,6 +1667,91 @@ void G3DGraphicsView::startRedrawTimer()
         _timerChangeDrawMode.start();
 }
 
+QMenu* G3DGraphicsView::constructContextMenu() const
+{
+    GDocumentViewForGraphics *gv = dynamic_cast<GDocumentViewForGraphics*>(document());
+
+    QMenu *menu = new QMenu();
+    QMenu *menuColorPoints = menu->addMenu(tr("Colorer les points par..."));
+    QMenu *menuColorFaces = menu->addMenu(tr("Colorer les faces par..."));
+    QMenu *menuColorEdges = menu->addMenu(tr("Colorer les edges par..."));
+
+    QList<CT_VirtualAbstractStep*> steps = GUI_MANAGER->getStepManager()->getStepRootList();
+
+    while(!steps.isEmpty())
+    {
+        CT_VirtualAbstractStep *st = steps.takeFirst();
+
+        constructContextMenuAction<CT_AbstractPointsAttributes>(menuColorPoints, st);
+        constructContextMenuAction<CT_AbstractFaceAttributes>(menuColorFaces, st);
+        constructContextMenuAction<CT_AbstractEdgeAttributes>(menuColorEdges, st);
+    }
+
+    if(menuColorPoints->isEmpty())
+        delete menuColorPoints;
+    else {
+        menuColorPoints->addSeparator();
+        menuColorPoints->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+    }
+
+    if(menuColorFaces->isEmpty())
+        delete menuColorFaces;
+    else {
+        menuColorFaces->addSeparator();
+        menuColorFaces->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+    }
+
+    if(menuColorEdges->isEmpty())
+        delete menuColorEdges;
+    else {
+        menuColorEdges->addSeparator();
+        menuColorEdges->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+    }
+
+    return menu;
+}
+
+template<typename CT_TypeAttributes>
+void G3DGraphicsView::constructContextMenuAction(QMenu *menu, CT_VirtualAbstractStep *st) const
+{
+    DM_AttributesBuildingCollectionT<CT_TypeAttributes> builderPoints;
+    builderPoints.buildFrom(st);
+    QListIterator<CT_TypeAttributes*> it(builderPoints.attributesCollection());
+
+    while(it.hasNext())
+    {
+        CT_TypeAttributes *pa = it.next();
+        DM_AbstractAttributes *aa = attributesManager()->getAttributesFromInterface(pa);
+
+        if(aa == NULL)
+        {
+            if(dynamic_cast<CT_AbstractAttributesScalar*>(pa) != NULL) {
+                DM_AttributesScalarT<CT_TypeAttributes> *tmp = new DM_AttributesScalarT<CT_TypeAttributes>();
+                tmp->setTypeAttributes(pa, dynamic_cast<CT_AbstractAttributesScalar*>(pa));
+                aa = tmp;
+            } else if(dynamic_cast<CT_AttributesColor*>(pa) != NULL) {
+                DM_AttributesColorT<CT_TypeAttributes> *tmp = new DM_AttributesColorT<CT_TypeAttributes>();
+                tmp->setTypeAttributes(pa, dynamic_cast<CT_AttributesColor*>(pa));
+                aa = tmp;
+            }
+
+            if(aa != NULL)
+                attributesManager()->addAttributes(aa);
+        }
+        else
+        {
+            if(dynamic_cast<CT_AttributesNormal*>(aa->abstractAttributes()) != NULL)
+                aa = NULL;
+        }
+
+        if(aa != NULL)
+        {
+            QAction *act = menu->addAction(aa->displayableName(), this, SLOT(applyAttributes()));
+            act->setData(qVariantFromValue((void*)aa));
+        }
+    }
+}
+
 void G3DGraphicsView::internalSetDrawMode(GraphicsViewInterface::DrawMode dMode)
 {
     DM_GraphicsViewOptions &options = dynamic_cast<DM_GraphicsViewOptions&>(GGraphicsView::getOptions());
@@ -1676,6 +1815,15 @@ void G3DGraphicsView::itemDrawableToBeRemoved(CT_AbstractItemDrawable &item)
     m_facesSelectionManager->removeCloudIndexFromSelection(fakeP.faceCloudIndexBackup());
 
     unlockPaint();
+}
+
+void G3DGraphicsView::applyAttributes()
+{
+    QAction *act = (QAction*)sender();
+    DM_AbstractAttributes *aa = (DM_AbstractAttributes*)act->data().value<void*>();
+
+    GDocumentViewForGraphics *gv = dynamic_cast<GDocumentViewForGraphics*>(document());
+    gv->applyAttributes(aa);
 }
 
 // SIGNAL EMITTER

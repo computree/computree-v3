@@ -46,6 +46,11 @@ public:
     void setGraphicsView(const GraphicsViewInterface *gv);
 
     /**
+     * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
+     */
+    void setPointFastestIncrement(size_t inc);
+
+    /**
      * @brief Set the color to apply to points/faces/edges (depend on the mode ApplyColorXXX used)
      */
     void setApplyColor(const QColor &color);
@@ -254,6 +259,7 @@ private:
     QSharedPointer<CT_StandardColorCloudRegistered> m_pColors;
     QSharedPointer<CT_StandardColorCloudRegistered> m_eColors;
     QSharedPointer<CT_StandardColorCloudRegistered> m_fColors;
+    size_t                                          m_fastestIncrementPoint;
 
     GraphicsViewInterface                           *m_gv;
 };

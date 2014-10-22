@@ -36,6 +36,8 @@
 #include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
 #include "ct_normalcloud/abstract/ct_abstractnormalcloud.h"
 #include "ct_itemdrawable/ct_meshmodel.h"
+#include "ct_cloudindex/ct_cloudindexlessmemoryt.h"
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 #include <QQuaternion>
 
@@ -128,6 +130,16 @@ QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentEdgeCloudNor
     return QSharedPointer<CT_StandardNormalCloudRegistered>(NULL);
 }
 
+void G3DPainter::setPointFastestIncrement(size_t inc)
+{
+    m_fastestIncrementPoint = inc;
+}
+
+int G3DPainter::nOctreeCellsDrawed() const
+{
+    return m_octreeCellsDraw;
+}
+
 bool G3DPainter::drawFastest() const
 {
     return _drawFastest;
@@ -158,6 +170,9 @@ void G3DPainter::beginNewDraw()
     m_drawMultipleTriangle = false;
 
     m_drawPointCloudEnabled = true;
+    m_fastestIncrementPoint = 0;
+
+    m_octreeCellsDraw = 0;
 }
 
 void G3DPainter::endNewDraw()
@@ -454,6 +469,8 @@ void G3DPainter::scale(double x, double y, double z)
 
 void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes)
 {
+    m_octreeCellsDraw = 0;
+
     if((modes == 0) || (m_gv == NULL))
         return;
 
@@ -494,6 +511,8 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
                             drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
                             glColor4ub(_color.red(), _color.green(), _color.blue(), _color.alpha());
                         }
+
+                        ++m_octreeCellsDraw;
                     }
                 }
             }
@@ -531,84 +550,54 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
     if((pc == NULL) || (pci == NULL) || !m_drawPointCloudEnabled)
         return;
 
+    const CT_AbstractPointCloudIndex *indexes = dynamic_cast<const CT_AbstractPointCloudIndex*>(pci);
+
     if(!m_gv->getOptions().useColor())
         setCurrentColor();
 
     size_t n = 0;
-    size_t pIndex;
     size_t indexCount = pci->size();
     size_t increment = 1;
 
-    if(_drawFastest)
+    if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
         increment = fastestIncrement;
+    else if((m_fastestIncrementPoint != 0) && drawFastest())
+        increment = m_fastestIncrementPoint;
+
+    CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
 
     // FAST
-    if(increment != 1)
+    if(increment > 1)
     {
-        // W/ colors cloud
-        if(m_useColorCloud
-                && (m_pColorCloud.data() != NULL))
+        if(m_useNormalCloud
+                && (m_pNormalCloud.data() != NULL))
         {
-            // W/ normals cloud
-            if(m_useNormalCloud
-                    && (m_pNormalCloud.data() != NULL))
-            {
-                CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
-                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
+            if(it != end) {
+                n = 0;
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
-                    pci->indexAt(n, pIndex);
-                    const CT_Color &color = cc->constColorAt(pIndex);
-                    glColor4ub(color.r, color.g, color.b, color.a);
-                    glVertex3fv(pc->constTAt(pIndex).vertex());
-                    glVertex3fv(nn->normalAt(pIndex).vertex());
+                    glArrayElement(it.cIndex());
+                    glVertex3fv(nn->normalAt(it.cIndex()).vertex());
+                    it += increment;
                     n += increment;
                 }
                 glEnd();
             }
-
-            CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
-            n = 0;
-
-            glBegin(GL_POINTS);
-            while(n < indexCount)
-            {
-                pci->indexAt(n, pIndex);
-                const CT_Color &color = cc->constColorAt(pIndex);
-                glColor4ub(color.r, color.g, color.b, color.a);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
-                n += increment;
-            }
-            glEnd();
         }
-        // W/O colors cloud
-        else
-        {
-            // W/ normals cloud
-            if(m_useNormalCloud
-                    && (m_pNormalCloud.data() != NULL))
-            {
-                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
-                glBegin(GL_LINES);
-                while(n < indexCount)
-                {
-                    pci->indexAt(n, pIndex);
-                    glVertex3fv(pc->constTAt(pIndex).vertex());
-                    glVertex3fv(nn->normalAt(pIndex).vertex());
-                    n += increment;
-                }
-                glEnd();
-            }
+        CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
+        if(it != end) {
             n = 0;
             glBegin(GL_POINTS);
             while(n < indexCount)
             {
-                pci->indexAt(n, pIndex);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
+                glArrayElement(it.cIndex());
+                it += increment;
                 n += increment;
             }
             glEnd();
@@ -617,73 +606,56 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
     // NORMAL
     else
     {
-        // W/ colors cloud
-        if(m_useColorCloud
-                && (m_pColorCloud.data() != NULL))
+        if(m_useNormalCloud
+                && (m_pNormalCloud.data() != NULL))
         {
-            // W/ normals cloud
-            if(m_useNormalCloud
-                    && (m_pNormalCloud.data() != NULL))
-            {
-                CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
-                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
+            if(it != end) {
+                n = 0;
                 glBegin(GL_LINES);
                 while(n < indexCount)
                 {
-                    pci->indexAt(n, pIndex);
-                    const CT_Color &color = cc->constColorAt(pIndex);
-                    glColor4ub(color.r, color.g, color.b, color.a);
-                    glVertex3fv(pc->constTAt(pIndex).vertex());
-                    glVertex3fv(nn->normalAt(pIndex).vertex());
+                    glArrayElement(it.cIndex());
+                    glVertex3fv(nn->normalAt(it.cIndex()).vertex());
+                    ++it;
                     ++n;
                 }
                 glEnd();
             }
-
-            CT_AbstractColorCloud *cc = m_pColorCloud->abstractColorCloud();
-            n = 0;
-
-            glBegin(GL_POINTS);
-            while(n < indexCount)
-            {
-                pci->indexAt(n, pIndex);
-                const CT_Color &color = cc->constColorAt(pIndex);
-                glColor4ub(color.r, color.g, color.b, color.a);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
-                ++n;
-            }
-            glEnd();
         }
-        // W/O colors cloud
-        else
-        {
-            // W/ normals cloud
-            if(m_useNormalCloud
-                    && (m_pNormalCloud.data() != NULL))
-            {
-                CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
 
-                glBegin(GL_LINES);
-                while(n < indexCount)
+        if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
+            size_t fn = pci->first();
+            size_t completeSize = pci->size();
+            size_t fnSize = completeSize;
+            size_t maxVertices = 10000000;
+
+            if(maxVertices < completeSize)
+                fnSize = completeSize / ((size_t)maxVertices);
+
+            while(fnSize > 0) {
+                glDrawArrays(GL_POINTS, fn, fnSize);
+                fn += fnSize;
+
+                if((fn + fnSize) >= completeSize)
+                    fnSize = completeSize-fn;
+            }
+
+        } else {
+
+            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+
+            if(it != end) {
+                glBegin(GL_POINTS);
+                while(it != end)
                 {
-                    pci->indexAt(n, pIndex);
-                    glVertex3fv(pc->constTAt(pIndex).vertex());
-                    glVertex3fv(nn->normalAt(pIndex).vertex());
-                    ++n;
+                    glArrayElement(it.cIndex());
+                    ++it;
                 }
                 glEnd();
             }
-
-            n = 0;
-            glBegin(GL_POINTS);
-            while(n < indexCount)
-            {
-                pci->indexAt(n, pIndex);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
-                ++n;
-            }
-            glEnd();
         }
     }
 }

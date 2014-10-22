@@ -12,14 +12,17 @@
 #include <QPropertyAnimation>
 #include <QFutureWatcher>
 
-template<typename Type, typename TypeCloudIndex>
+template<typename Type>
 class DM_AttributesScalarT : public DM_AbstractAttributesScalar
 {
 public:
     DM_AttributesScalarT();
     ~DM_AttributesScalarT();
 
-    void checkAndSetColorCloudToDoc();
+    /**
+     * @brief Check if the doc has the necessary cloud (color cloud) or set it if not
+     */
+    void checkAndSetNecessaryCloudToDoc();
 
     // SETTER
     /**
@@ -106,7 +109,7 @@ private:
     public:
         QPropertyAnimation              m_interpolator;
         CT_AbstractAttributesScalar     *m_as;
-        const TypeCloudIndex            *m_index;
+        const CT_AbstractCloudIndex     *m_index;
         CT_AbstractColorCloud           *m_cc;
         double                  m_range;
         double                  m_manualMin;

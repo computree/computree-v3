@@ -23,6 +23,11 @@ void G3DFakePainter::setGraphicsView(const GraphicsViewInterface *gv)
     m_gv = (GraphicsViewInterface*)gv;
 }
 
+void G3DFakePainter::setPointFastestIncrement(size_t inc)
+{
+    m_fastestIncrementPoint = inc;
+}
+
 void G3DFakePainter::setApplyColor(const QColor &color)
 {
     m_applyColor = color;
@@ -65,6 +70,8 @@ void G3DFakePainter::beginNewDraw()
     m_pCloudIndexBackup.clear();
     m_fCloudIndexBackup.clear();
     m_eCloudIndexBackup.clear();
+
+    m_fastestIncrementPoint = 0;
 }
 
 void G3DFakePainter::setDrawMode(DrawModes mode)
@@ -284,8 +291,10 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         size_t indexCount = pci->size();
         size_t increment = 1;
 
-        if(drawFastest() && (fastestIncrement > 0))
+        if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
             increment = fastestIncrement;
+        else if((m_fastestIncrementPoint != 0) && drawFastest())
+            increment = m_fastestIncrementPoint;
 
         // FAST
         if(increment != 1)
@@ -297,7 +306,7 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                 glPushName(pIndex);
 
                 glBegin(GL_POINTS);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
+                glArrayElement(pIndex);
                 glEnd();
 
                 glPopName();
@@ -315,7 +324,7 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                 glPushName(pIndex);
 
                 glBegin(GL_POINTS);
-                glVertex3fv(pc->constTAt(pIndex).vertex());
+                glArrayElement(pIndex);
                 glEnd();
 
                 glPopName();

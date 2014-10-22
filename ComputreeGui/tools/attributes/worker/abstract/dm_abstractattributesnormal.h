@@ -12,8 +12,6 @@ public:
     void setSyncWithCloud(CT_Repository::SyncCloudWith syncWith);
     CT_Repository::SyncCloudWith syncWithCloud() const;
 
-    virtual void checkAndSetNormalCloudToDoc() = 0;
-
 private:
     CT_Repository::SyncCloudWith m_syncWith;
 };

@@ -11,7 +11,7 @@
 #define readRawData(Param, N, Err) if(stream.readRawData(Param, N) != N) { error = Err; return NULL; } else { filePos += N; }
 #define readData(Param, Err) if(stream.atEnd()) { error = Err; return NULL; } else { stream >> Param; filePos += sizeof(Param); }
 
-#define checkHeaderSize if(filePos >= header.m_headerSize) { new CT_LAS_Header(header); }
+#define checkHeaderSize if(filePos >= header.m_headerSize) { new CT_Reader_LAS_Header(header); }
 #define readRawDataAndCheckSize(Param, N, Err) if(stream.readRawData(Param, N) != N) { error = Err; return NULL; } else { filePos += N; checkHeaderSize; }
 #define readDataAndCheckSize(Param, Err) if(stream.atEnd()) { error = Err; return NULL; } else { stream >> Param; filePos += sizeof(Param); checkHeaderSize; }
 
@@ -40,7 +40,7 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
             QDataStream stream(&f);
             QString error;
 
-            CT_LAS_Header *header = readHeader(stream, error);
+            CT_Reader_LAS_Header *header = readHeader(stream, error);
 
             if(header != NULL)
                 ok = CT_AbstractReader::setFilePath(filepath);
@@ -57,12 +57,34 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
     return ok;
 }
 
-bool CT_Reader_LAS::configure()
+CT_Reader_LAS_Header* CT_Reader_LAS::readHeader(QString &error) const
+{
+    CT_Reader_LAS_Header *header = NULL;
+
+    // Test File validity
+    if(QFile::exists(filepath()))
+    {
+        QFile f(filepath());
+
+        if(f.open(QIODevice::ReadOnly))
+        {
+            QDataStream stream(&f);
+
+            header = readHeader(stream, error);
+        }
+
+        f.close();
+    }
+
+    return header;
+}
+
+/*bool CT_Reader_LAS::configure()
 {
     m_centerCloud = QMessageBox::question(NULL, tr("Question"), tr("Voulez vous centrer le nuage de points ?")) == QMessageBox::Yes;
 
     return true;
-}
+}*/
 
 CT_AbstractReader* CT_Reader_LAS::copy() const
 {
@@ -115,6 +137,9 @@ bool CT_Reader_LAS::protectedReadFile()
 
             CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
             CT_StandardCloudStdVectorT<quint16> *intensities = new CT_StandardCloudStdVectorT<quint16>(nPoints);
+            /*CT_StandardCloudStdVectorT<quint8> *classifications = new CT_StandardCloudStdVectorT<quint8>(nPoints);
+            CT_StandardCloudStdVectorT<quint8> *returns = new CT_StandardCloudStdVectorT<quint8>(nPoints);*/
+
 
             for(size_t i=0; i<nPoints; ++i) {
                 stream >> x >> y >> z >> intensities->tAt(i);
@@ -148,7 +173,7 @@ bool CT_Reader_LAS::protectedReadFile()
                 setProgress((i*100)/nPoints);
             }
 
-            float xmin, ymin, zmin, xmax, ymax, zmax;
+            CT_AbstractCoordinateSystem::realIm xmin, ymin, zmin, xmax, ymax, zmax;
 
             PS_COORDINATES_SYS->convertImport(m_centerCloud ? m_header->m_minX-center.x() : m_header->m_minX,
                                               m_centerCloud ? m_header->m_minY-center.y() : m_header->m_minY,
@@ -186,10 +211,10 @@ bool CT_Reader_LAS::protectedReadFile()
     return ok;
 }
 
-CT_Reader_LAS::CT_LAS_Header* CT_Reader_LAS::readHeader(QDataStream &stream, QString &error) const
+CT_Reader_LAS_Header* CT_Reader_LAS::readHeader(QDataStream &stream, QString &error) const
 {
     error = "";
-    CT_LAS_Header header;
+    CT_Reader_LAS_Header header;
 
     char        buf[40];
 
@@ -297,11 +322,11 @@ CT_Reader_LAS::CT_LAS_Header* CT_Reader_LAS::readHeader(QDataStream &stream, QSt
         header.m_numberOfPointsByReturn[i] = buf64;
     }
 
-    return new CT_LAS_Header(header);
+    return new CT_Reader_LAS_Header(header);
 }
 
 
-CT_Reader_LAS::CT_LAS_Header::CT_LAS_Header()
+CT_Reader_LAS_Header::CT_Reader_LAS_Header()
 {
     m_fileSourceID = 0;
     m_globalEncoding = 0;
@@ -344,7 +369,7 @@ CT_Reader_LAS::CT_LAS_Header::CT_LAS_Header()
         m_numberOfPointsByReturn[i] = 0;
 }
 
-size_t CT_Reader_LAS::CT_LAS_Header::getPointsRecordCount() const
+size_t CT_Reader_LAS_Header::getPointsRecordCount() const
 {
     if(m_legacyNumberOfPointRecord == 0)
         return m_numberOfPointRecords;
@@ -352,44 +377,14 @@ size_t CT_Reader_LAS::CT_LAS_Header::getPointsRecordCount() const
     return m_legacyNumberOfPointRecord;
 }
 
-bool CT_Reader_LAS::CT_LAS_Header::mustTransformPoints() const
+bool CT_Reader_LAS_Header::mustTransformPoints() const
 {
     return (m_xOffset != 0) || (m_yOffset != 0) || (m_zOffset != 0) || (m_xScaleFactor != 1) || (m_yScaleFactor != 1) || (m_zScaleFactor != 1);
 }
 
-void CT_Reader_LAS::CT_LAS_Header::transformPoint(const qint32 &x, const qint32 &y, const qint32 &z, double &xc, double &yc, double &zc) const
+void CT_Reader_LAS_Header::transformPoint(const qint32 &x, const qint32 &y, const qint32 &z, double &xc, double &yc, double &zc) const
 {
     xc = (((double)x)*m_xScaleFactor) + m_xOffset;
     yc = (((double)y)*m_yScaleFactor) + m_yOffset;
     zc = (((double)z)*m_zScaleFactor) + m_zOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::xMinT() const
-{
-    return (m_minX*m_xScaleFactor) + m_xOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::yMinT() const
-{
-    return (m_minY*m_yScaleFactor) + m_yOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::zMinT() const
-{
-    return (m_minZ*m_zScaleFactor) + m_zOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::xMaxT() const
-{
-    return (m_maxX*m_xScaleFactor) + m_xOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::yMaxT() const
-{
-    return (m_maxY*m_yScaleFactor) + m_yOffset;
-}
-
-double CT_Reader_LAS::CT_LAS_Header::zMaxT() const
-{
-    return (m_maxZ*m_zScaleFactor) + m_zOffset;
 }

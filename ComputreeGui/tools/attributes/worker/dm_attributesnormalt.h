@@ -9,13 +9,16 @@
 #include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
 #include "ct_normalcloud/abstract/ct_abstractnormalcloud.h"
 
-template<typename Type, typename TypeCloudIndex>
+template<typename Type>
 class DM_AttributesNormalT : public DM_AbstractAttributesNormal
 {
 public:
     DM_AttributesNormalT();
 
-    void checkAndSetNormalCloudToDoc();
+    /**
+     * @brief Check if the doc has the necessary cloud (normal cloud) or set it if not
+     */
+    void checkAndSetNecessaryCloudToDoc();
 
     /**
      * @brief accept only Type (Point, Face, etc...) and normals
@@ -44,10 +47,10 @@ private:
 
 // specialisation for points
 template<>
-bool DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc);
+bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewForGraphics *doc);
 
 template<>
-bool DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc);
+bool DM_AttributesNormalT<CT_AbstractFaceAttributes>::process(GDocumentViewForGraphics *doc);
 
 #include "tools/attributes/worker/dm_attributesnormalt.hpp"
 

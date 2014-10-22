@@ -28,7 +28,6 @@
 #ifndef G3DPAINTER_H
 #define G3DPAINTER_H
 
-#include "interfaces.h"
 #include "dm_graphicsviewoptions.h"
 
 #include <QtOpenGL>
@@ -63,6 +62,16 @@ public:
     QSharedPointer<CT_StandardNormalCloudRegistered> currentPointCloudNormal() const;
     QSharedPointer<CT_StandardNormalCloudRegistered> currentFaceCloudNormal() const;
     QSharedPointer<CT_StandardNormalCloudRegistered> currentEdgeCloudNormal() const;
+
+    /**
+     * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
+     */
+    void setPointFastestIncrement(size_t inc);
+
+    /**
+     * @brief Returns the number of cells of the octree drawed
+     */
+    int nOctreeCellsDrawed() const;
 
     bool drawFastest() const;
     void setDrawFastest(bool enable);
@@ -243,6 +252,9 @@ private:
 
     int             _nCallEnablePushMatrix;
     GLint           m_polygonMode;
+
+    size_t          m_fastestIncrementPoint;
+    int             m_octreeCellsDraw;
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
     static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 5;

@@ -45,6 +45,7 @@ DM_GraphicsViewOptions::DM_GraphicsViewOptions()
     _cameraType = CameraInterface::PERSPECTIVE;
     m_octreeNumberOfCells = 32;
     m_showOctree = false;
+    m_minFPS = 7;
 }
 
 DM_GraphicsViewOptions::~DM_GraphicsViewOptions()
@@ -94,6 +95,12 @@ void DM_GraphicsViewOptions::setPointSize(float size)
 void DM_GraphicsViewOptions::setFastDrawTime(int time)
 {
     _fastDrawTime = time;
+}
+
+void DM_GraphicsViewOptions::setMinFPS(int fps)
+{
+    if(fps > 0)
+        m_minFPS = fps;
 }
 
 void DM_GraphicsViewOptions::setCameraInformationDisplayed(DM_GraphicsViewOptions::CameraInfoDisplayed info)
@@ -213,6 +220,12 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
+    if(m_minFPS != options.m_minFPS)
+    {
+        m_minFPS = options.m_minFPS;
+        emitChanged = true;
+    }
+
     if(emitChanged)
         emit optionsChanged();
 }
@@ -235,6 +248,7 @@ bool DM_GraphicsViewOptions::load()
     _cameraType = (CameraInterface::CameraType)CONFIG_FILE->value("cameraType", (int)_cameraType).toInt();
     m_showOctree = CONFIG_FILE->value("showOctree", m_showOctree).toBool();
     setOctreeNumberOfCells(CONFIG_FILE->value("octreeNumberOfCells", m_octreeNumberOfCells).toInt());
+    setMinFPS(CONFIG_FILE->value("minFPS", m_minFPS).toInt());
 
     CONFIG_FILE->endGroup();
 
@@ -259,6 +273,7 @@ bool DM_GraphicsViewOptions::save()
     CONFIG_FILE->setValue("cameraType", (int)_cameraType);
     CONFIG_FILE->setValue("showOctree", _cameraType);
     CONFIG_FILE->setValue("octreeNumberOfCells", m_octreeNumberOfCells);
+    CONFIG_FILE->setValue("minFPS", m_minFPS);
 
     CONFIG_FILE->endGroup();
 

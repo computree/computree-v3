@@ -11,8 +11,8 @@
 #include <QtConcurrent/QtConcurrentMap>
 #endif
 
-template<typename Type, typename TypeCloudIndex>
-DM_AttributesScalarT<Type, TypeCloudIndex>::DM_AttributesScalarT() : DM_AbstractAttributesScalar()
+template<typename Type>
+DM_AttributesScalarT<Type>::DM_AttributesScalarT() : DM_AbstractAttributesScalar()
 {
     m_as = NULL;
     m_autoAdjust = true;
@@ -25,13 +25,13 @@ DM_AttributesScalarT<Type, TypeCloudIndex>::DM_AttributesScalarT() : DM_Abstract
     connect(this, SIGNAL(canceled()), &m_watcher, SLOT(cancel()));
 }
 
-template<typename Type, typename TypeCloudIndex>
-DM_AttributesScalarT<Type, TypeCloudIndex>::~DM_AttributesScalarT()
+template<typename Type>
+DM_AttributesScalarT<Type>::~DM_AttributesScalarT()
 {
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::checkAndSetColorCloudToDoc()
+template<typename Type>
+void DM_AttributesScalarT<Type>::checkAndSetNecessaryCloudToDoc()
 {
     GDocumentViewForGraphics *doc = document();
 
@@ -40,8 +40,8 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::checkAndSetColorCloudToDoc()
 }
 
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::setAutoAdjust(bool automatic)
+template<typename Type>
+void DM_AttributesScalarT<Type>::setAutoAdjust(bool automatic)
 {
     m_autoAdjust = automatic;
 
@@ -49,34 +49,34 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::setAutoAdjust(bool automatic)
         autoAdjustMinMax();
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::setMin(double min)
+template<typename Type>
+void DM_AttributesScalarT<Type>::setMin(double min)
 {
     m_manualMin = min;
     setAutoAdjust(false);
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::setMax(double max)
+template<typename Type>
+void DM_AttributesScalarT<Type>::setMax(double max)
 {
     m_manualMax = max;
     setAutoAdjust(false);
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::setGradient(const QLinearGradient &gradient)
+template<typename Type>
+void DM_AttributesScalarT<Type>::setGradient(const QLinearGradient &gradient)
 {
     m_gradient = gradient;
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::setUseSharedGradient(bool val)
+template<typename Type>
+void DM_AttributesScalarT<Type>::setUseSharedGradient(bool val)
 {
     m_useSharedGradient = val;
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const CT_AbstractAttributesScalar *as)
+template<typename Type>
+bool DM_AttributesScalarT<Type>::setTypeAttributes(const Type *ta, const CT_AbstractAttributesScalar *as)
 {
     if(ta != dynamic_cast<const Type*>(as))
         return false;
@@ -90,44 +90,44 @@ bool DM_AttributesScalarT<Type, TypeCloudIndex>::setTypeAttributes(const Type *t
     return true;
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::isUsedSharedGradient() const
+template<typename Type>
+bool DM_AttributesScalarT<Type>::isUsedSharedGradient() const
 {
     return m_useSharedGradient;
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::isAutoAdjust() const
+template<typename Type>
+bool DM_AttributesScalarT<Type>::isAutoAdjust() const
 {
     return m_autoAdjust;
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::autoAdjust() const
+template<typename Type>
+bool DM_AttributesScalarT<Type>::autoAdjust() const
 {
     return m_autoAdjust;
 }
 
-template<typename Type, typename TypeCloudIndex>
-double DM_AttributesScalarT<Type, TypeCloudIndex>::min() const
+template<typename Type>
+double DM_AttributesScalarT<Type>::min() const
 {
     return m_manualMin;
 }
 
-template<typename Type, typename TypeCloudIndex>
-double DM_AttributesScalarT<Type, TypeCloudIndex>::max() const
+template<typename Type>
+double DM_AttributesScalarT<Type>::max() const
 {
     return m_manualMax;
 }
 
-template<typename Type, typename TypeCloudIndex>
-QLinearGradient DM_AttributesScalarT<Type, TypeCloudIndex>::gradient() const
+template<typename Type>
+QLinearGradient DM_AttributesScalarT<Type>::gradient() const
 {
     return m_gradient;
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesScalarT<Type, TypeCloudIndex>::process(GDocumentViewForGraphics *doc)
+template<typename Type>
+bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
 {
     if(m_as == NULL)
         return false;
@@ -137,12 +137,12 @@ bool DM_AttributesScalarT<Type, TypeCloudIndex>::process(GDocumentViewForGraphic
     if(range == 0)
         range = 1;
 
-    double granularity = 10000000;
+    double granularity = 1000;
 
     QPropertyAnimation interpolator;
     constructColorInterpolator(interpolator, granularity);
 
-    const TypeCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
+    const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
     size_t size = index->size();
 
     QSharedPointer<CT_StandardColorCloudRegistered> spcc = doc->colorCloudRegistered<Type>();
@@ -177,7 +177,11 @@ bool DM_AttributesScalarT<Type, TypeCloudIndex>::process(GDocumentViewForGraphic
             list << info;
         };
 
-        QtConcurrent::blockingMap(list, staticApply);
+        //QtConcurrent::blockingMap(list, staticApply);
+        QFuture<void> future = QtConcurrent::map(list, staticApply);
+        m_watcher.setFuture(future);
+
+        future.waitForFinished();
 
         qDeleteAll(list.begin(), list.end());
 
@@ -190,33 +194,33 @@ bool DM_AttributesScalarT<Type, TypeCloudIndex>::process(GDocumentViewForGraphic
 }
 
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::attributesDeleted()
+template<typename Type>
+void DM_AttributesScalarT<Type>::attributesDeleted()
 {
     m_as = NULL;
 }
 
-template<typename Type, typename TypeCloudIndex>
-CT_AbstractAttributesScalar* DM_AttributesScalarT<Type, TypeCloudIndex>::scalarAttributes() const
+template<typename Type>
+CT_AbstractAttributesScalar* DM_AttributesScalarT<Type>::scalarAttributes() const
 {
     return m_as;
 }
 
-template<typename Type, typename TypeCloudIndex>
-Type* DM_AttributesScalarT<Type, TypeCloudIndex>::abstractTypeAttributes() const
+template<typename Type>
+Type* DM_AttributesScalarT<Type>::abstractTypeAttributes() const
 {
     return dynamic_cast<Type*>(abstractAttributes());
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::autoAdjustMinMax()
+template<typename Type>
+void DM_AttributesScalarT<Type>::autoAdjustMinMax()
 {
     m_manualMin = m_as->dMin();
     m_manualMax = m_as->dMax();
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::constructColorInterpolator(QPropertyAnimation &interpolator, int granularity) const
+template<typename Type>
+void DM_AttributesScalarT<Type>::constructColorInterpolator(QPropertyAnimation &interpolator, int granularity) const
 {
     interpolator.setEasingCurve(QEasingCurve::Linear);
     interpolator.setDuration(granularity);
@@ -254,8 +258,8 @@ void DM_AttributesScalarT<Type, TypeCloudIndex>::constructColorInterpolator(QPro
     }
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesScalarT<Type, TypeCloudIndex>::staticApply(ConcurrentMapInfo *info)
+template<typename Type>
+void DM_AttributesScalarT<Type>::staticApply(ConcurrentMapInfo *info)
 {
     size_t indexP;
 

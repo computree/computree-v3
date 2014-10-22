@@ -59,6 +59,7 @@ void GDocumentViewForGraphics::init()
 void GDocumentViewForGraphics::addGraphics(GGraphicsView *graphics)
 {
     graphics->setDocumentView(this);
+    graphics->setAttributesManager(&m_attributesManager);
 
     _listGraphics.append(graphics);
     _layoutGraphics->addWidget(graphics->getViewWidget());
@@ -521,6 +522,35 @@ bool GDocumentViewForGraphics::useNormalCloud() const
     return m_useNormalCloud;
 }
 
+void GDocumentViewForGraphics::applyAttributes(DM_AbstractAttributes *dpa)
+{
+    QProgressDialog dialog(tr("Veuillez patienter pendant le traitement..."), "", 0, 100);
+    dialog.setWindowModality(Qt::ApplicationModal);
+    dialog.setCancelButton(NULL);
+    dialog.show();
+
+    dpa->setDocument(this);
+    dpa->checkAndSetNecessaryCloudToDoc();
+
+    QEventLoop event;
+
+    QThread *thread = dpa->thread();
+
+    DM_AbstractWorker::staticConnectWorkerToThread(dpa, false, false, true);
+
+    connect(dpa, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
+    connect(thread, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
+    connect(dpa, SIGNAL(progressChanged(int)), &dialog, SLOT(setValue(int)), Qt::QueuedConnection);
+
+    thread->start();
+    event.exec();
+
+    dialog.close();
+
+    disconnect(thread, NULL, dpa, NULL);
+    disconnect(dpa, NULL, thread, NULL);
+}
+
 void GDocumentViewForGraphics::showOptions()
 {
     if(_listGraphics.size() > 0)
@@ -597,7 +627,7 @@ void GDocumentViewForGraphics::setPointOfView(DM_PointOfView *pof)
     }
 }
 
-void GDocumentViewForGraphics::showPointsAttributesOptions()
+void GDocumentViewForGraphics::showAttributesOptions()
 {
     GPointsAttributesManager dialog;
     dialog.setManager(&m_attributesManager);
@@ -965,7 +995,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
 
     connect(buttonShowOptions, SIGNAL(clicked()), this, SLOT(showOptions()));
-    connect(buttonPointsAttributes, SIGNAL(clicked()), this, SLOT(showPointsAttributesOptions()));
+    connect(buttonPointsAttributes, SIGNAL(clicked()), this, SLOT(showAttributesOptions()));
     connect(_buttonPixelSize, SIGNAL(clicked()), this, SLOT(changePixelSize()));
     connect(_buttonDrawMode, SIGNAL(clicked()), this, SLOT(changeDrawMode()));
     connect(_pointOfViewMenu, SIGNAL(addActualPointOfView()), this, SLOT(addActualPointOfView()));

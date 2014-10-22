@@ -32,6 +32,7 @@
 #include "dm_documentview.h"
 #include "dm_graphicsviewoptions.h"
 #include "dm_graphicsviewcamera.h"
+#include "tools/attributes/worker/dm_attributesmanager.h"
 
 class DM_GraphicsView : public GraphicsViewInterface
 {
@@ -43,6 +44,9 @@ public:
 
     virtual void setDocumentView(const DM_DocumentView *doc);
     DM_DocumentView& getDocumentView() const;
+
+    void setAttributesManager(const DM_AttributesManager *manager);
+    DM_AttributesManager* attributesManager() const;
 
     /**
      * @brief Returns the document that contains this graphics view
@@ -74,6 +78,7 @@ protected:
 
     DM_DocumentView         *_document;
     DM_GraphicsViewOptions  *_options;
+    DM_AttributesManager    *m_attributesManager;
 };
 
 #endif // DM_GRAPHICSVIEW_H

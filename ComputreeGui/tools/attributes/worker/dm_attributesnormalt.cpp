@@ -3,7 +3,7 @@
 #include "ct_global/ct_context.h"
 
 template<>
-bool DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc)
+bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewForGraphics *doc)
 {
     if(m_an == NULL)
         return false;
@@ -44,7 +44,7 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>::p
 }
 
 template<>
-bool DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>::process(GDocumentViewForGraphics *doc)
+bool DM_AttributesNormalT<CT_AbstractFaceAttributes>::process(GDocumentViewForGraphics *doc)
 {
     if(m_an == NULL)
         return false;
@@ -80,5 +80,5 @@ bool DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>::pro
     return false;
 }
 
-template class DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>;
-template class DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>;
+template class DM_AttributesNormalT<CT_AbstractPointsAttributes>;
+template class DM_AttributesNormalT<CT_AbstractFaceAttributes>;

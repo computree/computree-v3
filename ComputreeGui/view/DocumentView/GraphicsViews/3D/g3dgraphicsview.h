@@ -33,6 +33,9 @@
 #include "GraphicsViews/3D/g3dfakepainter.h"
 #include "GraphicsViews/3D/g3dcameracontroller.h"
 
+#include "dm_fastestincrementoptimizer.h"
+#include "dm_vbomanager.h"
+
 #include <qglviewer.h>
 
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
@@ -160,6 +163,8 @@ public:
     void active2dView(bool enable);
     bool is2DViewActived() const;
 
+    void showContextMenu(const QPoint &pos);
+
 private:
 
     QMutex                          *_mutex;
@@ -181,9 +186,12 @@ private:
     bool                            m_selectOctreeCells;
     QList<GLuint>                   m_octreeCellsSelected;
 
-    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>     *m_pointsSelectionManager;
-    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>      *m_facesSelectionManager;
-    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>      *m_edgesSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>      *m_pointsSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>        *m_facesSelectionManager;
+    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>        *m_edgesSelectionManager;
+
+    DM_FastestIncrementOptimizer                                m_fastestIncrementOptimizer;
+    DM_VBOManager                                               *m_vboManager;
 
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);
@@ -212,6 +220,11 @@ private:
     void checkAndShowOpenGLErrors();
 
     void startRedrawTimer();
+
+    QMenu* constructContextMenu() const;
+
+    template<typename CT_TypeAttributes>
+    void constructContextMenuAction(QMenu *menu, CT_VirtualAbstractStep *st) const;
 
 protected:
     void internalSetDrawMode(DrawMode dMode);
@@ -254,6 +267,7 @@ private slots:
     void changeDrawMethodToNormal();
     void initIndexCloudRegistered();
     void itemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
+    void applyAttributes();
 };
 
 #endif // G3DGRAPHICSVIEW_H

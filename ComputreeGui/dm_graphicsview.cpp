@@ -33,6 +33,7 @@ DM_GraphicsView::DM_GraphicsView()
     _options = new DM_GraphicsViewOptions();
     _options->load();
     _document = NULL;
+    m_attributesManager = NULL;
 }
 
 DM_GraphicsView::~DM_GraphicsView()
@@ -48,6 +49,16 @@ void DM_GraphicsView::setDocumentView(const DM_DocumentView *doc)
 DM_DocumentView& DM_GraphicsView::getDocumentView() const
 {
     return *_document;
+}
+
+void DM_GraphicsView::setAttributesManager(const DM_AttributesManager *manager)
+{
+    m_attributesManager = (DM_AttributesManager*)manager;
+}
+
+DM_AttributesManager* DM_GraphicsView::attributesManager() const
+{
+    return m_attributesManager;
 }
 
 DocumentInterface* DM_GraphicsView::document() const

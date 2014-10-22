@@ -49,6 +49,11 @@ public:
      */
     GDocumentViewForGraphics* document() const;
 
+    /**
+     * @brief Check if the doc has the necessary cloud or set it if not
+     */
+    virtual void checkAndSetNecessaryCloudToDoc() = 0;
+
 public slots:
 
     /**

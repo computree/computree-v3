@@ -11,8 +11,6 @@ class DM_AbstractAttributesScalar : public DM_AbstractAttributes
 public:
     DM_AbstractAttributesScalar();
 
-    virtual void checkAndSetColorCloudToDoc() = 0;
-
     // GETTER
     /**
      * @brief set auto adjust gradient from min() and max() values of points attributes

@@ -2,6 +2,7 @@
 
 #include "ct_cloudindex/ct_cloudindexstdvectort.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 #include <qglviewer.h>
 
@@ -37,10 +38,10 @@ int OctreeController::numberOfCells() const
     return m_octree->size();
 }
 
-void OctreeController::addPoints(const CT_AbstractCloudIndexT<CT_Point> *index, QVector3D *min, QVector3D *max)
+void OctreeController::addPoints(const CT_AbstractPointCloudIndex *index, QVector3D *min, QVector3D *max)
 {
-    if(!m_points.contains((CT_AbstractCloudIndexT<CT_Point>*)index)
-            && !m_pointsToAdd.contains((CT_AbstractCloudIndexT<CT_Point>*)index))
+    if(!m_points.contains((CT_AbstractPointCloudIndex*)index)
+            && !m_pointsToAdd.contains((CT_AbstractPointCloudIndex*)index))
     {
         PointsInfo info;
 
@@ -54,14 +55,14 @@ void OctreeController::addPoints(const CT_AbstractCloudIndexT<CT_Point> *index, 
         adjustNewMin(info.m_min);
         adjustNewMax(info.m_max);
 
-        m_pointsToAdd.insert((CT_AbstractCloudIndexT<CT_Point>*)index, info);
+        m_pointsToAdd.insert((CT_AbstractPointCloudIndex*)index, info);
         emit octreeMustBeReconstructed(true);
     }
 }
 
-void OctreeController::removePoints(const CT_AbstractCloudIndexT<CT_Point> *index)
+void OctreeController::removePoints(const CT_AbstractPointCloudIndex *index)
 {
-    bool inOctree = m_points.remove((CT_AbstractCloudIndexT<CT_Point>*)index);
+    bool inOctree = m_points.remove((CT_AbstractPointCloudIndex*)index);
 
     if(inOctree)
     {
@@ -72,7 +73,7 @@ void OctreeController::removePoints(const CT_AbstractCloudIndexT<CT_Point> *inde
     }
     else
     {
-        m_pointsToAdd.remove((CT_AbstractCloudIndexT<CT_Point>*)index);
+        m_pointsToAdd.remove((CT_AbstractPointCloudIndex*)index);
     }
 }
 
@@ -116,6 +117,11 @@ const CT_AbstractCloudIndexT<CT_Point>* OctreeController::pointsAt(int x, int y,
         return NULL;
 
     return m->abstractCloudIndexT();
+}
+
+const CT_AbstractCloudIndex* OctreeController::at(int x, int y, int z) const
+{
+    return pointsAt(x, y, z);
 }
 
 bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble planeCoefficients[6][4]) const
@@ -167,9 +173,7 @@ void OctreeController::construct()
 
         if(m_newNumberOfCells > 0)
         {
-            setProgressRange(0, 100);
-
-            QHashIterator<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo> itAdd(m_pointsToAdd);
+            QHashIterator<CT_AbstractPointCloudIndex*, PointsInfo> itAdd(m_pointsToAdd);
 
             while(itAdd.hasNext())
             {
@@ -190,7 +194,7 @@ void OctreeController::construct()
             m_pointsAdded = 0;
             m_progress = 0;
 
-            QHashIterator<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo> it(m_points);
+            QHashIterator<CT_AbstractPointCloudIndex*, PointsInfo> it(m_points);
 
             while(it.hasNext())
                 m_nPointsToAdd += it.next().key()->size();
@@ -265,7 +269,7 @@ void OctreeController::computeNewMinAndMax()
 {
     resetNewMinAndMax();
 
-    QHashIterator<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo> it(m_points);
+    QHashIterator<CT_AbstractPointCloudIndex*, PointsInfo> it(m_points);
 
     while(it.hasNext())
     {
@@ -300,10 +304,10 @@ void OctreeController::adjustNewMax(const OctreeController::Corner &max)
         m_newMax.setZ(max.z());
 }
 
-void OctreeController::addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> *index)
+void OctreeController::addPointsToOctree(const CT_AbstractPointCloudIndex *index)
 {
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator begin = index->constBegin();
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = index->constEnd();
+    CT_AbstractPointCloudIndex::ConstIterator begin = index->constBegin();
+    CT_AbstractPointCloudIndex::ConstIterator end = index->constEnd();
 
     int xPos, yPos, zPos;
 
@@ -334,18 +338,17 @@ void OctreeController::addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> 
         if(m_progress != progress)
         {
             m_progress = progress;
-            setProgress(m_progress);
             emit constructionInProgress(m_progress);
         }
     }
 }
 
-void OctreeController::removePoinsFromOctree(const CT_AbstractCloudIndexT<CT_Point> *index)
+void OctreeController::removePoinsFromOctree(const CT_AbstractPointCloudIndex *index)
 {
     Q_UNUSED(index)
 
-    /*CT_AbstractCloudIndexT<CT_Point>::ConstIterator begin = index->constBegin();
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = index->constEnd();
+    /*CT_AbstractPointCloudIndex::ConstIterator begin = index->constBegin();
+    CT_AbstractPointCloudIndex::ConstIterator end = index->constEnd();
 
     int xPos, yPos, zPos;
 
@@ -374,7 +377,7 @@ void OctreeController::removePoinsFromOctree(const CT_AbstractCloudIndexT<CT_Poi
     construct();
 }
 
-void OctreeController::staticComputeMinMax(const CT_AbstractCloudIndexT<CT_Point> *index, OctreeController::PointsInfo &info)
+void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *index, OctreeController::PointsInfo &info)
 {
     info.m_min.setX(std::numeric_limits<float>::max());
     info.m_min.setY(info.m_min.x());
@@ -383,8 +386,8 @@ void OctreeController::staticComputeMinMax(const CT_AbstractCloudIndexT<CT_Point
     info.m_max.setY(info.m_max.x());
     info.m_max.setZ(info.m_max.x());
 
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator begin = index->constBegin();
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = index->constEnd();
+    CT_AbstractPointCloudIndex::ConstIterator begin = index->constBegin();
+    CT_AbstractPointCloudIndex::ConstIterator end = index->constEnd();
 
     while(begin != end) {
         const CT_Point &p = begin.cT();

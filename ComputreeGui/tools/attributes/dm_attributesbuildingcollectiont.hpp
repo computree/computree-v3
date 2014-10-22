@@ -59,7 +59,12 @@ void DM_AttributesBuildingCollectionT<Type>::recursiveBuildAttributesFromModels(
             CT_ResultIterator it((CT_ResultGroup*)((CT_OutAbstractModel*)model)->result(), model);
 
             while(it.hasNext())
-                m_collection.append((Type*)it.next());
+            {
+                Type *tt = (Type*)it.next();
+
+                if(!m_collection.contains(tt))
+                    m_collection.append(tt);
+            }
         }
 
         recursiveBuildAttributesFromModels(model->childrens());

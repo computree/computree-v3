@@ -112,6 +112,11 @@ public:
     void setUseNormalCloud(bool use);
     bool useNormalCloud() const;
 
+    /**
+     * @brief Apply the attributes (scalar, color or normal for points/faces/edges) to array of this document.
+     */
+    void applyAttributes(DM_AbstractAttributes *dpa);
+
 private:
 
     GGraphicsViewOptions                                            *_graphicsOptionsView;
@@ -190,7 +195,7 @@ public slots:
     /**
      * @brief Show points attributes manager
      */
-    void showPointsAttributesOptions();
+    void showAttributesOptions();
 
     /**
      * @brief (Re)construct the octree. Do nothing by default.

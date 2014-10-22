@@ -290,7 +290,6 @@ bool PB_XYBExporter::protectedExportToFile()
         int totalToExport = itemDrawableToExport().size();
 
         const QList<CT_AbstractCloudIndex*> &pointsSelected = pointsToExport();
-        totalToExport = pointsSelected.size();
 
         int nExported = 0;
 
@@ -311,6 +310,7 @@ bool PB_XYBExporter::protectedExportToFile()
         }
 
         QListIterator<CT_AbstractCloudIndex*> itCI(pointsSelected);
+        totalToExport = pointsSelected.size();
 
         while(itCI.hasNext())
         {

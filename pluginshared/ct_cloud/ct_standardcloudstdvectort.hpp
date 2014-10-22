@@ -130,6 +130,15 @@ void CT_StandardCloudStdVectorT<T>::internalCopyData(const size_t &destIndex, co
     memcpy(dst, src, sizeof(T)*size);
 }
 
+template<typename T>
+void CT_StandardCloudStdVectorT<T>::copyDataFromTo(T* src, const size_t &destIndex, const size_t &size)
+{
+    T *data = &pTAt(0);
+    T *dst = data+destIndex;
+
+    memcpy(dst, src, sizeof(T)*size);
+}
+
 #ifdef USE_PCL
 template<typename T>
 boost::shared_ptr< pcl::PointCloud<T> > CT_StandardCloudStdVectorT<T>::getPCLCloud() const

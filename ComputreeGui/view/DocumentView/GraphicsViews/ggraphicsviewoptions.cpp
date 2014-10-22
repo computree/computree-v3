@@ -79,6 +79,8 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->checkBoxShowOctree, SIGNAL(toggled(bool)), this, SLOT(setShowOctree(bool)));
     connect(ui->comboBoxOctreeNbCells, SIGNAL(currentTextChanged(QString)), this, SLOT(setOctreeNumberOfCells()));
 
+    connect(ui->spinBoxMinFPS, SIGNAL(valueChanged(int)), this, SLOT(setMinFPS(int)));
+
     QString style = QString("QGroupBox::indicator {"
                                 "width: 12px;"
                                 "height: 12px;"
@@ -184,6 +186,8 @@ void GGraphicsViewOptions::updateUiFromOptions()
 #endif
 
     ui->checkBoxShowOctree->setChecked(_options->showOctree());
+
+    ui->spinBoxMinFPS->setValue(_options->getMinFPS());
 }
 
 void GGraphicsViewOptions::backgroundColor(QColor color)
@@ -238,6 +242,11 @@ void GGraphicsViewOptions::useLight(bool e)
 void GGraphicsViewOptions::fastDrawTime(int t)
 {
     _options->setFastDrawTime(t);
+}
+
+void GGraphicsViewOptions::setMinFPS(int fps)
+{
+    _options->setMinFPS(fps);
 }
 
 void GGraphicsViewOptions::setCameraInfoDisplayed()

@@ -6,6 +6,18 @@
 #include "ct_global/ct_context.h"
 
 template<typename T>
+CT_CloudIndexIteratorT<T> CT_AbstractCloudIndexT<T>::constBegin() const
+{
+    return CT_AbstractCloudIndexT<T>::ConstIterator(*this);
+}
+
+template<typename T>
+CT_CloudIndexIteratorT<T> CT_AbstractCloudIndexT<T>::constEnd() const
+{
+    return CT_AbstractCloudIndexT<T>::ConstIterator(*this, this->size());
+}
+
+template<typename T>
 T& CT_AbstractCloudIndexT<T>::tAt(const size_t &index) const
 {
     return (*PS_REPOSITORY->globalCloud<T>())[ indexAt(index) ];

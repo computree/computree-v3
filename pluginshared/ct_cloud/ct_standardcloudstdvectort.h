@@ -38,6 +38,12 @@ public:
     boost::shared_ptr< pcl::PointCloud<T> > getPCLCloud() const;
 #endif
 
+    /**
+     * @brief Copy data of other source
+     * @warning No verification is defined for the validity of size and destIndex
+     */
+    void copyDataFromTo(T* src, const size_t &destIndex, const size_t &size);
+
     virtual CT_AbstractCloud* copy() const;
 
 protected:

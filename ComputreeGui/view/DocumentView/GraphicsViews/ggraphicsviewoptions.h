@@ -68,6 +68,7 @@ private slots:
     void useTransparency(bool e);
     void useLight(bool e);
     void fastDrawTime(int t);
+    void setMinFPS(int fps);
     void setCameraInfoDisplayed();
     void setCameraInfoPosition(QAbstractButton* button);
     void setCameraType(QAbstractButton* button);

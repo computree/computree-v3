@@ -4,18 +4,16 @@
 #include <QList>
 #include <QVector3D>
 
-#include "dm_progresslistenermanager.h"
-
 #include "view/DocumentView/GraphicsViews/3D/Octree/octree.h"
 
-#include "ct_cloudindex/abstract/ct_abstractcloudindext.h"
-
 #include "ct_global/ct_context.h"
+
+class CT_AbstractPointCloudIndex;
 
 /**
  * @brief Class that control the generic octree
  */
-class OctreeController : public OctreeInterface, public DM_ProgressListenerManager
+class OctreeController : public OctreeInterface
 {
     Q_INTERFACES(OctreeInterface)
     Q_OBJECT
@@ -40,12 +38,12 @@ public:
      * @param min : NULL if you want than min and max value was calculated otherwise pass a pointer to the min corner
      * @param max : NULL if you want than min and max value was calculated otherwise pass a pointer to the max corner
      */
-    void addPoints(const CT_AbstractCloudIndexT<CT_Point> *index, QVector3D *min = NULL, QVector3D *max = NULL);
+    void addPoints(const CT_AbstractPointCloudIndex *index, QVector3D *min = NULL, QVector3D *max = NULL);
 
     /**
      * @brief Remove points from the octree.
      */
-    void removePoints(const CT_AbstractCloudIndexT<CT_Point> *index);
+    void removePoints(const CT_AbstractPointCloudIndex *index);
 
     /**
      * @brief Get the index of the point in the octree
@@ -66,7 +64,7 @@ public:
      * @brief Returns point cloud index in cell at x/y/z. NULL if cell is empty.
      */
     const CT_AbstractCloudIndexT<CT_Point>* pointsAt(int x, int y, int z) const;
-    const CT_AbstractCloudIndex* at(int x, int y, int z) const { return pointsAt(x, y, z); }
+    const CT_AbstractCloudIndex* at(int x, int y, int z) const;
 
     /**
      * @brief Returns true if the cell at x, y, z is visible in frustrum
@@ -143,8 +141,8 @@ private:
         Corner   m_max;
     };
 
-    QHash<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo>                m_points;           // collection of points in the octree
-    QHash<CT_AbstractCloudIndexT<CT_Point>*, PointsInfo>                m_pointsToAdd;      // collection of points not added
+    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_points;           // collection of points in the octree
+    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_pointsToAdd;      // collection of points not added
     Octree< CT_Repository::CT_AbstractModifiablePCIR >                  *m_octree;          // octree
     double                                                              m_size;             // size of a cells (in meters)
     Corner                                                              m_min;              // minimum corner of the complete octree
@@ -177,11 +175,11 @@ private:
 
     void adjustNewMax(const Corner &max);
 
-    void addPointsToOctree(const CT_AbstractCloudIndexT<CT_Point> *index);
+    void addPointsToOctree(const CT_AbstractPointCloudIndex *index);
 
-    void removePoinsFromOctree(const CT_AbstractCloudIndexT<CT_Point> *index);
+    void removePoinsFromOctree(const CT_AbstractPointCloudIndex *index);
 
-    static void staticComputeMinMax(const CT_AbstractCloudIndexT<CT_Point> *index, PointsInfo &info);
+    static void staticComputeMinMax(const CT_AbstractPointCloudIndex *index, PointsInfo &info);
 };
 
 #endif // OCTREECONTROLLER_H

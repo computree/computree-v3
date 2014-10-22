@@ -3,17 +3,26 @@
 
 #include "tools/attributes/worker/abstract/dm_abstractattributescolor.h"
 
+#include "dm_guimanager.h"
+
 #include "view/DocumentView/gdocumentviewforgraphics.h"
 
 #include "ct_attributes/ct_attributescolor.h"
 
-template<typename Type, typename TypeCloudIndex>
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+#include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_cloudindex/ct_cloudindexlessmemoryt.h"
+
+template<typename Type>
 class DM_AttributesColorT : public DM_AbstractAttributesColor
 {
 public:
     DM_AttributesColorT();
 
-    void checkAndSetColorCloudToDoc();
+    /**
+     * @brief Check if the doc has the necessary cloud (color cloud) or set it if not
+     */
+    void checkAndSetNecessaryCloudToDoc();
 
     /**
      * @brief accept only Type (Point, Face, etc...) and colors

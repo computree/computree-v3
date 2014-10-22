@@ -5,14 +5,14 @@
 
 #include "ct_global/ct_context.h"
 
-template<typename Type, typename TypeCloudIndex>
-DM_AttributesNormalT<Type, TypeCloudIndex>::DM_AttributesNormalT() : DM_AbstractAttributesNormal()
+template<typename Type>
+DM_AttributesNormalT<Type>::DM_AttributesNormalT() : DM_AbstractAttributesNormal()
 {
     m_an = NULL;
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesNormalT<Type, TypeCloudIndex>::checkAndSetNormalCloudToDoc()
+template<typename Type>
+void DM_AttributesNormalT<Type>::checkAndSetNecessaryCloudToDoc()
 {
     GDocumentViewForGraphics *doc = document();
 
@@ -20,8 +20,8 @@ void DM_AttributesNormalT<Type, TypeCloudIndex>::checkAndSetNormalCloudToDoc()
         doc->setNormalCloudRegistered<Type>(PS_REPOSITORY->createNewNormalCloud(this->syncWithCloud()));
 }
 
-template<typename Type, typename TypeCloudIndex>
-bool DM_AttributesNormalT<Type, TypeCloudIndex>::setTypeAttributes(const Type *ta, const CT_AttributesNormal *an)
+template<typename Type>
+bool DM_AttributesNormalT<Type>::setTypeAttributes(const Type *ta, const CT_AttributesNormal *an)
 {
     if(ta != dynamic_cast<const Type*>(an))
         return false;
@@ -32,20 +32,20 @@ bool DM_AttributesNormalT<Type, TypeCloudIndex>::setTypeAttributes(const Type *t
     return true;
 }
 
-template<typename Type, typename TypeCloudIndex>
-void DM_AttributesNormalT<Type, TypeCloudIndex>::attributesDeleted()
+template<typename Type>
+void DM_AttributesNormalT<Type>::attributesDeleted()
 {
     m_an = NULL;
 }
 
-template<typename Type, typename TypeCloudIndex>
-CT_AttributesNormal* DM_AttributesNormalT<Type, TypeCloudIndex>::normalAttributes() const
+template<typename Type>
+CT_AttributesNormal* DM_AttributesNormalT<Type>::normalAttributes() const
 {
     return m_an;
 }
 
-template<typename Type, typename TypeCloudIndex>
-Type* DM_AttributesNormalT<Type, TypeCloudIndex>::abstractTypeAttributes() const
+template<typename Type>
+Type* DM_AttributesNormalT<Type>::abstractTypeAttributes() const
 {
     return dynamic_cast<Type*>(abstractAttributes());
 }

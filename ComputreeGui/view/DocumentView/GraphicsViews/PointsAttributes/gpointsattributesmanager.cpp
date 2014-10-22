@@ -75,17 +75,17 @@ void GPointsAttributesManager::closeEvent(QCloseEvent *e)
 
 void GPointsAttributesManager::initTreeView()
 {
-    typedef DM_AttributesScalarT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>    PointAttributesScalar;
-    typedef DM_AttributesColorT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     PointAttributesColor;
-    typedef DM_AttributesNormalT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>    PointAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractPointsAttributes>    PointAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractPointsAttributes>     PointAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractPointsAttributes>    PointAttributesNormal;
 
-    typedef DM_AttributesScalarT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>      FaceAttributesScalar;
-    typedef DM_AttributesColorT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>       FaceAttributesColor;
-    typedef DM_AttributesNormalT<CT_AbstractFaceAttributes, CT_AbstractCloudIndex>      FaceAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractFaceAttributes>      FaceAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractFaceAttributes>       FaceAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractFaceAttributes>      FaceAttributesNormal;
 
-    typedef DM_AttributesScalarT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>      EdgeAttributesScalar;
-    typedef DM_AttributesColorT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>       EdgeAttributesColor;
-    typedef DM_AttributesNormalT<CT_AbstractEdgeAttributes, CT_AbstractCloudIndex>      EdgeAttributesNormal;
+    typedef DM_AttributesScalarT<CT_AbstractEdgeAttributes>      EdgeAttributesScalar;
+    typedef DM_AttributesColorT<CT_AbstractEdgeAttributes>       EdgeAttributesColor;
+    typedef DM_AttributesNormalT<CT_AbstractEdgeAttributes>      EdgeAttributesNormal;
 
     m_model.clear();
     constructHeader();
@@ -563,69 +563,15 @@ void GPointsAttributesManager::on_pushButtonSave_clicked()
 
 void GPointsAttributesManager::pushButtonApplyClicked()
 {
-    QProgressDialog dialog(tr("Veuillez patienter pendant le traitement..."), "", 0, 100);
-    dialog.setWindowModality(Qt::ApplicationModal);
-    dialog.setCancelButton(NULL);
-    dialog.show();
-
     QPushButton *pushButton = (QPushButton*)sender();
     DM_AbstractAttributes *dpa = (DM_AbstractAttributes*)pushButton->property("userdata").value<void*>();
-    bool isGradient = false;
 
     DM_AbstractAttributesScalar *as = dynamic_cast<DM_AbstractAttributesScalar*>(attributesSelected());
 
     if(dpa == as)
-    {
-        isGradient = true;
         saveCurrentGradientTo((DM_AbstractAttributesScalar*)dpa);
-    }
 
-
-    if(dpa != NULL)
-    {
-        dpa->setDocument(m_doc);
-
-        if(isGradient)
-        {
-            as->checkAndSetColorCloudToDoc();
-        }
-        else
-        {
-            DM_AbstractAttributesColor *ac = dynamic_cast<DM_AbstractAttributesColor*>(dpa);
-
-            if(ac != NULL)
-            {
-                ac->checkAndSetColorCloudToDoc();
-            }
-            else
-            {
-                DM_AbstractAttributesNormal *an = dynamic_cast<DM_AbstractAttributesNormal*>(dpa);
-
-                if(an != NULL)
-                {
-                    an->checkAndSetNormalCloudToDoc();
-                }
-            }
-        }
-
-        QEventLoop event;
-
-        QThread *thread = dpa->thread();
-
-        DM_AbstractWorker::staticConnectWorkerToThread(dpa, false, false, true);
-
-        connect(dpa, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
-        connect(thread, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
-        connect(dpa, SIGNAL(progressChanged(int)), &dialog, SLOT(setValue(int)), Qt::QueuedConnection);
-
-        thread->start();
-        event.exec();
-
-        dialog.close();
-
-        disconnect(thread, NULL, dpa, NULL);
-        disconnect(dpa, NULL, thread, NULL);
-    }
+    m_doc->applyAttributes(dpa);
 }
 
 void GPointsAttributesManager::pushButtonConfigureClicked()

@@ -78,6 +78,7 @@ public:
     inline bool useTransparency() const { return _useTransparency; }
     inline bool useLight() const { return _useLight; }
     inline int getFastDrawTime() const { return _fastDrawTime; }
+    inline int getMinFPS() const { return m_minFPS; }
     inline DM_GraphicsViewOptions::CameraInfoDisplayed getCameraInformationDisplayed() const { return _cameraInfoDisplayed; }
     inline DM_GraphicsViewOptions::CameraInfoPosition getCameraInformationPosition() const { return _cameraInfoPosition; }
     inline CameraInterface::CameraType getCameraType() const { return _cameraType; }
@@ -93,6 +94,7 @@ public:
     void useLight(bool use);
     void drawFastest(DM_GraphicsViewOptions::DrawFastestMode mode);
     void setFastDrawTime(int time);
+    void setMinFPS(int fps);
     void setCameraInformationDisplayed(DM_GraphicsViewOptions::CameraInfoDisplayed info);
     void setCameraInformationPosition(DM_GraphicsViewOptions::CameraInfoPosition pos);
     void setCameraType(CameraInterface::CameraType type);
@@ -119,6 +121,7 @@ private:
     CameraInterface::CameraType _cameraType;
     bool                        m_showOctree;
     int                         m_octreeNumberOfCells;
+    int                         m_minFPS;
 
 signals:
 
