@@ -47,6 +47,7 @@ public:
     CDM_StepManager* getStepManager() const;
     DM_ActionsManager* getActionsManager() const;
     CDM_Internationalization* getLanguageManager() const;
+    DM_VertexVBOManager* vertexVBOManager() const;
 
 protected:
 

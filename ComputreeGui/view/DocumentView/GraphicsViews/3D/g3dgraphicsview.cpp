@@ -76,8 +76,6 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     m_facesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>(CT_Repository::SyncWithFaceCloud);
     m_edgesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>(CT_Repository::SyncWithEdgeCloud);
 
-    m_vboManager = new DM_VBOManager();
-
     // 1000 lments slectionnable (4x1000 = 4000)
     setSelectBufferSize(4000);
     setSceneRadius(100); // 100 mètres
@@ -104,8 +102,6 @@ G3DGraphicsView::~G3DGraphicsView()
     delete m_pointsSelectionManager;
     delete m_facesSelectionManager;
     delete m_edgesSelectionManager;
-
-    delete m_vboManager;
 }
 
 QWidget* G3DGraphicsView::getViewWidget() const
@@ -563,7 +559,6 @@ bool G3DGraphicsView::mustDrawFastestNow() const
 void G3DGraphicsView::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
 {
     _g.setCurrentPointCloudColor(cc);
-    m_vboManager->setCurrentCloudColor(cc);
 }
 
 void G3DGraphicsView::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
@@ -822,7 +817,8 @@ void G3DGraphicsView::init()
 
     initOptions();
 
-    m_vboManager->initializeGL();
+    if(colorVBOManager() != NULL)
+        colorVBOManager()->initializeGL();
 }
 
 void G3DGraphicsView::initOptions()
@@ -923,7 +919,8 @@ void G3DGraphicsView::preDraw()
 
     qglClearColor(backgroundColor());
 
-    m_vboManager->preDraw();
+    if(colorVBOManager() != NULL)
+        colorVBOManager()->preDraw();
 
     QGLViewer::preDraw();
 }
@@ -941,8 +938,8 @@ void G3DGraphicsView::postDraw()
 {
     QGLViewer::postDraw();
 
-    m_vboManager->postDraw();
-    m_fastestIncrementOptimizer.postDraw();
+    if(colorVBOManager() != NULL)
+        colorVBOManager()->postDraw();
 
     // Restore OpenGL state
     glMatrixMode(GL_MODELVIEW);
@@ -964,6 +961,8 @@ void G3DGraphicsView::postDraw()
     m_painter = NULL;
 
     _drawModeUsed = _drawModeToUse;
+
+    m_fastestIncrementOptimizer.postDraw();
 }
 
 void G3DGraphicsView::fastDraw()
@@ -1019,7 +1018,9 @@ void G3DGraphicsView::drawInternal()
 
             if(item->isSelected())
             {
-                m_vboManager->setUseCloudColor(false);
+                if(colorVBOManager() != NULL)
+                    colorVBOManager()->setUseColorCloud(false);
+
                 _g.setUseColorCloudForPoints(false);
                 _g.setUseColorCloudForFaces(false);
                 _g.setUseColorCloudForEdges(false);
@@ -1032,7 +1033,9 @@ void G3DGraphicsView::drawInternal()
             }
             else
             {
-                m_vboManager->setUseCloudColor(m_useColorCloud);
+                if(colorVBOManager() != NULL)
+                    colorVBOManager()->setUseColorCloud(m_useColorCloud);
+
                 _g.setUseColorCloudForPoints(m_useColorCloud);
                 _g.setUseColorCloudForFaces(m_useColorCloud);
                 _g.setUseColorCloudForEdges(m_useColorCloud);
@@ -1150,8 +1153,10 @@ void G3DGraphicsView::drawWithNames()
 {
     lockPaint();
 
-    m_vboManager->preDraw();
-    m_vboManager->setUseCloudColor(false);
+    if(colorVBOManager() != NULL) {
+        colorVBOManager()->preDraw();
+        colorVBOManager()->setUseColorCloud(false);
+    }
 
     bool selectItems = true;
     bool hasOctree = false;
@@ -1301,7 +1306,8 @@ void G3DGraphicsView::drawWithNames()
         }
     }
 
-    m_vboManager->postDraw();
+    if(colorVBOManager() != NULL)
+        colorVBOManager()->postDraw();
 
     unlockPaint();
 

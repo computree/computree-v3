@@ -37,6 +37,7 @@
 #include "dm_documentmanagerview.h"
 #include "dm_multipleitemdrawablemodelmanager.h"
 #include "dm_actionsmanager.h"
+#include "dm_vertexvbomanager.h"
 
 #include "cdm_stepmanager.h"
 #include "cdm_internationalization.h"
@@ -336,6 +337,11 @@ public:
     void redrawAllDocuments();
 
     CDM_PluginManager* getPluginManager() const;
+
+    /**
+     * @brief Returns the vertex vbo manager
+     */
+    virtual DM_VertexVBOManager* vertexVBOManager() const = 0;
 
     /**
       * \brief Retourne la vue qui gre les documents (gestionnaire de document)

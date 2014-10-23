@@ -34,7 +34,6 @@
 #include "GraphicsViews/3D/g3dcameracontroller.h"
 
 #include "dm_fastestincrementoptimizer.h"
-#include "dm_vbomanager.h"
 
 #include <qglviewer.h>
 
@@ -191,7 +190,7 @@ private:
     DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>        *m_edgesSelectionManager;
 
     DM_FastestIncrementOptimizer                                m_fastestIncrementOptimizer;
-    DM_VBOManager                                               *m_vboManager;
+    DM_ColorVBOManager                                          *m_colorVboManager;
 
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);

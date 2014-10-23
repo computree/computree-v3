@@ -65,6 +65,8 @@ GMainWindow::GMainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_vertexVBOManager = new DM_VertexVBOManager();
+
     initUI();
 
     arrangeDocksInColumn();
@@ -75,6 +77,8 @@ GMainWindow::~GMainWindow()
     delete ui;
 
     writeConfiguration();
+
+    delete m_vertexVBOManager;
 
     delete _stepManagerView;
     delete _docManagerView;
@@ -229,6 +233,11 @@ void GMainWindow::showINeedHelpDialog()
 GMainProgressDialog* GMainWindow::createWaitProgressDialog()
 {
     return new GMainProgressDialog(this);
+}
+
+DM_VertexVBOManager* GMainWindow::vertexVBOManager() const
+{
+    return m_vertexVBOManager;
 }
 
 void GMainWindow::arrangeDocksInTabs()

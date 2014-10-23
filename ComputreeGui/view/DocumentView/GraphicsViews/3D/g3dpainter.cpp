@@ -628,14 +628,12 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
         if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
             size_t fn = pci->first();
-            size_t completeSize = pci->size();
-            size_t fnSize = completeSize;
+            size_t fnSize = pci->size();
+            size_t completeSize = fn + fnSize;
             size_t maxVertices = 10000000;
 
-            if(maxVertices < completeSize)
-                fnSize = completeSize / ((size_t)maxVertices);
-
-            completeSize += fn;
+            if(maxVertices < fnSize)
+                fnSize = maxVertices;
 
             while(fnSize > 0) {
                 glDrawArrays(GL_POINTS, fn, fnSize);

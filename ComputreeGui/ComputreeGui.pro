@@ -34,7 +34,8 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_iprogresslistener.h \
     dm_progresslistenermanager.h \
     dm_fastestincrementoptimizer.h \
-    dm_vbomanager.h
+    dm_colorvbomanager.h \
+    dm_vertexvbomanager.h
 
 # OTHER
 SOURCES += main.cpp \
@@ -62,7 +63,8 @@ SOURCES += main.cpp \
     dm_iteminfoforgraphics.cpp \
     dm_progresslistenermanager.cpp \
     dm_fastestincrementoptimizer.cpp \
-    dm_vbomanager.cpp
+    dm_colorvbomanager.cpp \
+    dm_vertexvbomanager.cpp
 
 HEADERS += \
     dm_document.h \

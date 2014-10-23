@@ -102,7 +102,7 @@ private:
     GGraphicsViewSynchronizedGroup  *m_syncMan;
     QMdiSubWindow                   *m_lastDocumentActivated;
     bool                            m_manualModeEnabled;
-    CT_VirtualAbstractStep*                           m_manualModeEnabledByStep;
+    CT_VirtualAbstractStep*         m_manualModeEnabledByStep;
     QList<GDocumentView*>           m_docAddedInNormalMode;
     QList<GDocumentView*>           m_docFromGuiAddedInManualMode;
     QList<GDocumentView*>           m_docToCloseAfterQuitManualMode;

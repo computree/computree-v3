@@ -130,6 +130,7 @@ private:
     bool                                                            m_useColorCloud;
     bool                                                            m_useNormalCloud;
     OctreeController                                                m_octreeController;
+    DM_ColorVBOManager                                              *m_colorVboManager;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;

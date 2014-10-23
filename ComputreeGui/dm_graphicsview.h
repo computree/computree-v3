@@ -34,6 +34,8 @@
 #include "dm_graphicsviewcamera.h"
 #include "tools/attributes/worker/dm_attributesmanager.h"
 
+#include "dm_colorvbomanager.h"
+
 class DM_GraphicsView : public GraphicsViewInterface
 {
     Q_INTERFACES(GraphicsViewInterface)
@@ -44,6 +46,9 @@ public:
 
     virtual void setDocumentView(const DM_DocumentView *doc);
     DM_DocumentView& getDocumentView() const;
+
+    void setColorVBOManager(const DM_ColorVBOManager *cVbo);
+    DM_ColorVBOManager* colorVBOManager() const;
 
     void setAttributesManager(const DM_AttributesManager *manager);
     DM_AttributesManager* attributesManager() const;
@@ -79,6 +84,7 @@ protected:
     DM_DocumentView         *_document;
     DM_GraphicsViewOptions  *_options;
     DM_AttributesManager    *m_attributesManager;
+    DM_ColorVBOManager      *m_vboManager;
 };
 
 #endif // DM_GRAPHICSVIEW_H

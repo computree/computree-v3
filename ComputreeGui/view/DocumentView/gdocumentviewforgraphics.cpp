@@ -37,6 +37,7 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     m_useNormalCloud = true;
     _pixelSize = PX_1;
     _drawMode = DM_GraphicsViewOptions::Normal;
+    m_colorVboManager = new DM_ColorVBOManager();
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -59,6 +60,7 @@ void GDocumentViewForGraphics::init()
 void GDocumentViewForGraphics::addGraphics(GGraphicsView *graphics)
 {
     graphics->setDocumentView(this);
+    graphics->setColorVBOManager(m_colorVboManager);
     graphics->setAttributesManager(&m_attributesManager);
 
     _listGraphics.append(graphics);
@@ -385,6 +387,7 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttribut
     lock();
 
     m_pColorCloudRegistered = cc;
+    m_colorVboManager->setCurrentColorCloud(cc);
 
     QListIterator<GGraphicsView*> it(_listGraphics);
 
@@ -549,6 +552,8 @@ void GDocumentViewForGraphics::applyAttributes(DM_AbstractAttributes *dpa)
 
     disconnect(thread, NULL, dpa, NULL);
     disconnect(dpa, NULL, thread, NULL);
+
+    m_colorVboManager->refresh();
 }
 
 void GDocumentViewForGraphics::showOptions()
@@ -899,6 +904,9 @@ void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
 {
     if(canClose())
     {
+        delete m_colorVboManager;
+        m_colorVboManager = NULL;
+
         qDeleteAll(_listGraphics.begin(), _listGraphics.end());
         _listGraphics.clear();
     }
