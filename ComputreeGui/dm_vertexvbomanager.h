@@ -1,6 +1,8 @@
 #ifndef DM_VERTEXVBOMANAGER_H
 #define DM_VERTEXVBOMANAGER_H
 
+#include <qglobal.h>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QGLFunctions>
 #define QT_GL_FUNCTIONS QGLFunctions

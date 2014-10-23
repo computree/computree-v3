@@ -1,7 +1,17 @@
 #ifndef DM_COLORVBOMANAGER_H
 #define DM_COLORVBOMANAGER_H
 
-#include "dm_vertexvbomanager.h"
+#include <qglobal.h>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QGLFunctions>
+#define QT_GL_FUNCTIONS QGLFunctions
+#define QT_GL_INIT_FUNCTIONS initializeGLFunctions
+#else
+#include <QOpenGLFunctions>
+#define QT_GL_FUNCTIONS QOpenGLFunctions
+#define QT_GL_INIT_FUNCTIONS initializeOpenGLFunctions
+#endif
 
 #include "interfaces.h"
 
