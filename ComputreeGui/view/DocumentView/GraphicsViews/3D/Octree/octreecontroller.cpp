@@ -5,6 +5,7 @@
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 #include <qglviewer.h>
+#include <limits>
 
 OctreeController::OctreeController()
 {
