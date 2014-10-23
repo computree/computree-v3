@@ -635,6 +635,8 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
             if(maxVertices < completeSize)
                 fnSize = completeSize / ((size_t)maxVertices);
 
+            completeSize += fn;
+
             while(fnSize > 0) {
                 glDrawArrays(GL_POINTS, fn, fnSize);
                 fn += fnSize;
