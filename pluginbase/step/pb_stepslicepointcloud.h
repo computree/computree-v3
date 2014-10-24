@@ -3,6 +3,7 @@
 
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_itemdrawable/ct_scene.h"
+#include "actions/pb_actionslicepointcloud.h"
 
 /*!
  * \class PB_StepSlicePointCloud
@@ -95,11 +96,14 @@ private:
     double       _zmax;
     double       _thickness;
     double       _spacing;
+    double       _zBase;
     bool         _manual;
 
     DocumentInterface*      _m_doc;
     int                     _m_status;
     QList<CT_Scene*>* _sceneList;
+
+    PB_ActionSlicePointCloud*   _action;
 
 };
 

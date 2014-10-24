@@ -38,6 +38,10 @@ public:
 
     CT_AbstractAction* copy() const;
 
+    inline float getZMin() {return _zmin;}
+    inline float getThickness() {return _thickness;}
+    inline float getSpacing() {return _spacing;}
+
 public slots:
     void redraw();
 

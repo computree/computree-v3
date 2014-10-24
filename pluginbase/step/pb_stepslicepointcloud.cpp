@@ -7,9 +7,8 @@
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
-#include "actions/pb_actionslicepointcloud.h"
-
 #include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
 #include <QMessageBox>
 #include <limits>
@@ -37,6 +36,7 @@ PB_StepSlicePointCloud::PB_StepSlicePointCloud(CT_StepInitializeData &dataInit) 
     _xmax = 0;
     _ymax = 0;
     _zmax = 0;
+    _zBase = 0;
 
     setManual(_manual);
 
@@ -140,8 +140,17 @@ void PB_StepSlicePointCloud::compute()
         if (max.z() > _zmax) {_zmax = max.z();}
     }
 
+    _zBase = _zmin;
+
     requestManualMode();
     _m_status = 1;
+
+    QMap<QPair<float, float>, CT_PointCluster*> levels;
+
+    for (float base = _zBase ; base < _zmax ; base = (base + _thickness + _spacing))
+    {
+        levels.insert(QPair<float, float>(base, base + _thickness), new CT_PointCluster(DEFout_cluster, res_resScene));
+    }
 
     // Do the slices
     for (int sc = 0 ; sc < _sceneList->size() ; sc++)
@@ -155,10 +164,43 @@ void PB_StepSlicePointCloud::compute()
         {
             size_t index;
             const CT_Point &point = PCI_itemIn_scene->constTAt(i, index);
-        }
 
+            bool found = false;
+
+            QMapIterator<QPair<float, float>, CT_PointCluster*> it(levels);
+            while (!found && it.hasNext())
+            {
+                it.next();
+                float zminLevel = it.key().first;
+                float zmaxLevel = it.key().second;
+                CT_PointCluster* cluster = it.value();
+
+                if ((point.getZ() >= zminLevel) && (point.getZ() < zmaxLevel))
+                {
+                    cluster->addPoint(index, false);
+                    found = true;
+                }
+            }
+        }
     }
 
+    QMapIterator<QPair<float, float>, CT_PointCluster*> it(levels);
+    while (it.hasNext())
+    {
+        it.next();
+        CT_PointCluster* cluster = it.value();
+
+        if (cluster->getPointCloudIndex()->size() > 0)
+        {
+            CT_StandardItemGroup* group = new CT_StandardItemGroup(DEFout_slice, res_resScene);
+            res_resScene->addGroup(group);
+            group->addItemDrawable(cluster);
+        } else {
+            delete cluster;
+        }
+    }
+
+    levels.clear();
 
     // OUT results creation (move it to the appropried place in the code)
 //    CT_StandardItemGroup* grp_slice= new CT_StandardItemGroup(DEFout_slice, res_resScene);
@@ -180,8 +222,9 @@ void PB_StepSlicePointCloud::initManualMode()
         // create a new 3D document
         _m_doc = getGuiContext()->documentManager()->new3DDocument(param);
 
+        _action = new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing);
         // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-        _m_doc->setCurrentAction(new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing), false);
+        _m_doc->setCurrentAction(_action, false);
     }
 
     _m_doc->removeAllItemDrawable();
@@ -199,12 +242,19 @@ void PB_StepSlicePointCloud::useManualMode(bool quit)
     {
         if(quit)
         {
+            if (_action != NULL)
+            {
+                _thickness = _action->getThickness();
+                _spacing = _action->getSpacing();
+                _zBase = _action->getZMin();
+            }
         }
     }
     else if(_m_status == 1)
     {
         if(!quit)
         {
+            _action = NULL;
             _m_doc = NULL;
             quitManualMode();
         }
