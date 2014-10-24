@@ -26,8 +26,10 @@
 // Constructor : initialization of parameters
 PB_StepSlicePointCloud::PB_StepSlicePointCloud(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _thickness = 0.02;
-    _spacing = 0.20;
+    _dataContainer = new PB_ActionSlicePointCloud_dataContainer();
+    _dataContainer->_thickness = 0.1;
+    _dataContainer->_spacing = 0.2;
+    _dataContainer->_zBase = 0;
     _manual = true;
 
     _xmin = 0;
@@ -36,7 +38,6 @@ PB_StepSlicePointCloud::PB_StepSlicePointCloud(CT_StepInitializeData &dataInit) 
     _xmax = 0;
     _ymax = 0;
     _zmax = 0;
-    _zBase = 0;
 
     setManual(_manual);
 
@@ -50,6 +51,7 @@ PB_StepSlicePointCloud::~PB_StepSlicePointCloud()
 {
     _sceneList->clear();
     delete _sceneList;
+    delete _dataContainer;
 }
 
 // Step description (tooltip of contextual menu)
@@ -99,8 +101,8 @@ void PB_StepSlicePointCloud::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *dialog = newStandardPostConfigurationDialog();
 
-    dialog->addDouble(tr("Epaisseur des tranches :"), tr("cm"), 0.1, 100000, 2, _thickness, 100);
-    dialog->addDouble(tr("Espacement des tranches :"), tr("cm"), 0.1, 100000, 2, _spacing, 100);
+    dialog->addDouble(tr("Epaisseur des tranches :"), tr("cm"), 0.1, 100000, 2, _dataContainer->_thickness, 100);
+    dialog->addDouble(tr("Espacement des tranches :"), tr("cm"), 0.1, 100000, 2, _dataContainer->_spacing, 100);
     dialog->addBool("","",tr("Choix interactif des paramètres"), _manual);
 }
 
@@ -140,16 +142,16 @@ void PB_StepSlicePointCloud::compute()
         if (max.z() > _zmax) {_zmax = max.z();}
     }
 
-    _zBase = _zmin;
+    _dataContainer->_zBase = _zmin;
 
     requestManualMode();
     _m_status = 1;
 
     QMap<QPair<float, float>, CT_PointCluster*> levels;
 
-    for (float base = _zBase ; base < _zmax ; base = (base + _thickness + _spacing))
+    for (float base = _dataContainer->_zBase ; base < _zmax ; base = (base + _dataContainer->_thickness + _dataContainer->_spacing))
     {
-        levels.insert(QPair<float, float>(base, base + _thickness), new CT_PointCluster(DEFout_cluster, res_resScene));
+        levels.insert(QPair<float, float>(base, base + _dataContainer->_thickness), new CT_PointCluster(DEFout_cluster, res_resScene));
     }
 
     // Do the slices
@@ -222,9 +224,9 @@ void PB_StepSlicePointCloud::initManualMode()
         // create a new 3D document
         _m_doc = getGuiContext()->documentManager()->new3DDocument(param);
 
-        _action = new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing);
+        PB_ActionSlicePointCloud* action = new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _dataContainer);
         // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-        _m_doc->setCurrentAction(_action, false);
+        _m_doc->setCurrentAction(action, false);
     }
 
     _m_doc->removeAllItemDrawable();
@@ -242,19 +244,12 @@ void PB_StepSlicePointCloud::useManualMode(bool quit)
     {
         if(quit)
         {
-            if (_action != NULL)
-            {
-                _thickness = _action->getThickness();
-                _spacing = _action->getSpacing();
-                _zBase = _action->getZMin();
-            }
         }
     }
     else if(_m_status == 1)
     {
         if(!quit)
         {
-            _action = NULL;
             _m_doc = NULL;
             quitManualMode();
         }

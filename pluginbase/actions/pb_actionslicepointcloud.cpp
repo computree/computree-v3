@@ -7,9 +7,16 @@
 
 #include "math.h"
 
+
+PB_ActionSlicePointCloud_dataContainer::PB_ActionSlicePointCloud_dataContainer()
+{
+    _thickness = 0;
+    _spacing = 0;
+}
+
 PB_ActionSlicePointCloud::PB_ActionSlicePointCloud(QList<CT_Scene *> *sceneList,
                                                    float xmin, float ymin, float zmin, float xmax, float ymax, float zmax,
-                                                   double thickness, double spacing) : CT_AbstractActionForGraphicsView()
+                                                   PB_ActionSlicePointCloud_dataContainer *dataContainer) : CT_AbstractActionForGraphicsView()
 {
     _sceneList = sceneList;
     _xmin = xmin;
@@ -23,8 +30,7 @@ PB_ActionSlicePointCloud::PB_ActionSlicePointCloud(QList<CT_Scene *> *sceneList,
     _xwidth = std::abs(_xmax - _xmin);
     _ywidth = std::abs(_ymax - _ymin);
 
-    _thickness = thickness;
-    _spacing = spacing;
+    _dataContainer = dataContainer;
 }
 
 PB_ActionSlicePointCloud::~PB_ActionSlicePointCloud()
@@ -68,7 +74,10 @@ void PB_ActionSlicePointCloud::init()
         // add the options to the graphics view
         graphicsView()->addActionOptions(option);
 
-        connect(option, SIGNAL(parametersChanged()), this, SLOT(redraw()));
+        option->setThickness(_dataContainer->_thickness);
+        option->setSpacing(_dataContainer->_spacing);
+
+        connect(option, SIGNAL(parametersChanged()), this, SLOT(update()));
 
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
@@ -80,8 +89,13 @@ void PB_ActionSlicePointCloud::init()
 
 
 
-void PB_ActionSlicePointCloud::redraw()
+void PB_ActionSlicePointCloud::update()
 {
+    PB_ActionSlicePointCloudOptions *option = (PB_ActionSlicePointCloudOptions*)optionAt(0);
+
+    _dataContainer->_thickness = option->getThickness();
+    _dataContainer->_spacing = option->getSpacing();
+
     document()->redrawGraphics();
 }
 
@@ -109,25 +123,25 @@ bool PB_ActionSlicePointCloud::wheelEvent(QWheelEvent *e)
 
     if (e->modifiers()  & Qt::ControlModifier)
     {
-        if (e->delta()>0)
+        if (e->delta() > 0)
         {
             option->setThickness(option->getThickness() + option->getIncrement());
-        } else if (e->delta()>0)
+        } else if (e->delta() < 0)
         {
             option->setThickness(option->getThickness() - option->getIncrement());
         }
-        redraw();
+        update();
         return true;
     } else if (e->modifiers()  & Qt::ShiftModifier)
     {
-        if (e->delta()>0)
+        if (e->delta() > 0)
         {
             option->setSpacing(option->getSpacing() + option->getIncrement());
-        } else if (e->delta()>0)
+        } else if (e->delta() < 0)
         {
             option->setSpacing(option->getSpacing() - option->getIncrement());
         }
-        redraw();
+        update();
         return true;
     }
 
@@ -151,7 +165,7 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
 {
     Q_UNUSED(view)
 
-    PB_ActionSlicePointCloudOptions *option = (PB_ActionSlicePointCloudOptions*)optionAt(0);
+    if (_dataContainer->_thickness == 0) {return;}
 
     painter.save();
 
@@ -167,14 +181,14 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
     while (z_current <= _zmax)
     {
         painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current);
-        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current + _thickness);
-        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_thickness), _ymin);
-        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_thickness), _ymax);
-        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_thickness), _xmin);
-        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_thickness), _xmax);
+        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current + _dataContainer->_thickness);
+        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_dataContainer->_thickness), _ymin);
+        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_dataContainer->_thickness), _ymax);
+        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_dataContainer->_thickness), _xmin);
+        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_dataContainer->_thickness), _xmax);
 
-        z_current += _thickness;
-        z_current += _spacing;
+        z_current += _dataContainer->_thickness;
+        z_current += _dataContainer->_spacing;
     }
     painter.setColor(oldColor);
     painter.restore();
@@ -188,5 +202,5 @@ void PB_ActionSlicePointCloud::drawOverlay(GraphicsViewInterface &view, QPainter
 
 CT_AbstractAction* PB_ActionSlicePointCloud::copy() const
 {
-    return new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _thickness, _spacing);
+    return new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _dataContainer);
 }

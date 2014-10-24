@@ -94,16 +94,13 @@ private:
     double       _xmax;
     double       _ymax;
     double       _zmax;
-    double       _thickness;
-    double       _spacing;
-    double       _zBase;
     bool         _manual;
+
+    PB_ActionSlicePointCloud_dataContainer*     _dataContainer;
 
     DocumentInterface*      _m_doc;
     int                     _m_status;
     QList<CT_Scene*>* _sceneList;
-
-    PB_ActionSlicePointCloud*   _action;
 
 };
 

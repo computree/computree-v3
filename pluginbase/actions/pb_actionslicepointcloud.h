@@ -8,12 +8,21 @@
 
 #include <QRect>
 
+class PB_ActionSlicePointCloud_dataContainer
+{
+public:
+    PB_ActionSlicePointCloud_dataContainer();
+    double            _thickness;
+    double            _spacing;
+    double            _zBase;
+};
+
 class PB_ActionSlicePointCloud : public CT_AbstractActionForGraphicsView
 {
     Q_OBJECT
 public:
 
-    PB_ActionSlicePointCloud(QList<CT_Scene*>* sceneList, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax, double thickness, double spacing);
+    PB_ActionSlicePointCloud(QList<CT_Scene*>* sceneList, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax, PB_ActionSlicePointCloud_dataContainer* dataContainer);
 
     ~PB_ActionSlicePointCloud();
 
@@ -38,17 +47,11 @@ public:
 
     CT_AbstractAction* copy() const;
 
-    inline float getZMin() {return _zmin;}
-    inline float getThickness() {return _thickness;}
-    inline float getSpacing() {return _spacing;}
-
 public slots:
-    void redraw();
+    void update();
 
 private:
     QList<CT_Scene*>* _sceneList;
-    double            _thickness;
-    double            _spacing;
 
     float             _xmin;
     float             _ymin;
@@ -59,6 +62,8 @@ private:
 
     float             _xwidth;
     float             _ywidth;
+
+    PB_ActionSlicePointCloud_dataContainer* _dataContainer;
 
 };
 
