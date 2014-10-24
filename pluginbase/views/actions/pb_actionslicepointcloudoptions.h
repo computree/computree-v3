@@ -24,14 +24,18 @@ public:
 
     void setThickness(double t) const;
     void setSpacing(double s) const;
-    void setIncrement(double i) const;
 
+    void increaseIncrement();
+    void decreaseIncrement();
 
 private:
     Ui::PB_ActionSlicePointCloudOptions *ui;
 
 signals:
     void parametersChanged();
+
+private slots:
+    void changeSingleStep(int button);
 
 };
 

@@ -101,7 +101,23 @@ void PB_ActionSlicePointCloud::update()
 
 bool PB_ActionSlicePointCloud::mousePressEvent(QMouseEvent *e)
 {
-    Q_UNUSED(e);
+    PB_ActionSlicePointCloudOptions *option = (PB_ActionSlicePointCloudOptions*)optionAt(0);
+
+    if ((e->modifiers() & Qt::ControlModifier) || (e->modifiers()  & Qt::ShiftModifier))
+    {
+        if (e->buttons() & Qt::LeftButton)
+        {
+            option->decreaseIncrement();
+            update();
+            return true;
+        } else if (e->buttons() & Qt::RightButton)
+        {
+            option->increaseIncrement();
+            update();
+            return true;
+        }
+    }
+
     return false;
 }
 
