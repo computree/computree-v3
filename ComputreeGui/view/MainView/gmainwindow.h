@@ -39,6 +39,8 @@
 #include "gmultipleitemdrawablemodelmanager.h"
 #include "gitemdrawableconfigurationmanagerview.h"
 #include "GraphicsViews/ggraphicsviewsynchronizedgroup.h"
+#include "dm_vertexvbomanager.h"
+
 
 namespace Ui {
     class GMainWindow;
