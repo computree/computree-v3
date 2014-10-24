@@ -3,7 +3,9 @@
 
 #include "view/DocumentView/gdocumentviewforgraphics.h"
 
-#include "ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h"
+//#include "ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h"
+#include "ct_cloud/registered/ct_stdcloudregisteredt.h"
+#include "ct_cloud/ct_standardcloudstdvectort.h"
 
 /**
  * Class that manage colors for selected TYPE (points, faces, edges, etc...) in a graphics view
@@ -66,19 +68,56 @@ public:
     void clearSelection();
 
     /**
+     * @brief Set all selected elements invisible
+     */
+    void setAllSelectedInvisible();
+
+    /**
+     * @brief Returns the information cloud
+     */
+    CT_StandardCloudStdVectorT<GLuint>* informations() const;
+
+    /**
+     * @brief Returns an GLuint to check if the element in the information cloud is selected or not
+     * @example GLuint s = checkSelected();
+     *          if(info.constTAt(i) & s) {
+     *              // element is selected
+     *          }
+     */
+    GLuint checkSelected() const;
+
+    /**
+     * @brief Returns an GLuint to check if the element in the information cloud is visible or not
+     * @example GLuint v = checkInvisible();
+     *          if(info.constTAt(i) & v) {
+     *              // element 'i' is invisible
+     *          }
+     */
+    GLuint checkInvisible() const;
+
+    /**
      * @brief Returns the index cloud of selected TYPE
      */
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selected() const;
 
 private:
     CT_Repository::SyncCloudWith                                m_syncWith;
-    GDocumentViewForGraphics                                    *m_document;
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>   m_selected;
-    CT_AbstractModifiableIndexCloudColorMap                     *m_indexCloudColor;
-    std::vector<size_t>                                         m_multipleVector;
-    size_t                                                      m_multipleCurrentPos;
+    //GDocumentViewForGraphics                                    *m_document;
 
-    QSharedPointer<CT_StandardColorCloudRegistered> createDocumentColorCloudForTypeIfNotExist();
+    QSharedPointer<CT_StdCloudRegisteredT<GLuint> >             m_infoR;
+    CT_StandardCloudStdVectorT<GLuint>                          *m_infoCloud;
+
+    GLuint                                                      m_enableSelection;
+    GLuint                                                      m_disableSelection;
+    GLuint                                                      m_enableInvisibility;
+    GLuint                                                      m_disableInvisibility;
+
+    //QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>   m_selected;
+    //CT_AbstractModifiableIndexCloudColorMap                     *m_indexCloudColor;
+    //std::vector<size_t>                                         m_multipleVector;
+    //size_t                                                      m_multipleCurrentPos;
+
+    //QSharedPointer<CT_StandardColorCloudRegistered> createDocumentColorCloudForTypeIfNotExist();
 };
 
 #include "tools/graphicsview/dm_colorselectionmanagert.hpp"

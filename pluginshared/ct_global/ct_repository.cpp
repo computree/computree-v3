@@ -1,6 +1,6 @@
 #include "ct_repository.h"
 
-#include "ct_cloud/tools/ct_cloudsynctoglobalcloudmanagert.h"
+#include "ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h"
 #include "ct_cloudindex/tools/ct_cloudindexregistrationmanagert.h"
 
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
@@ -40,25 +40,18 @@ CT_AbstractUndefinedSizePointCloud* CT_Repository::createNewUndefinedSizePointCl
 CT_Repository::CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith, bool withAlphaInformation)
 {
     if(syncWith == SyncWithPointCloud)
-        return m_pColorCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
+        return m_syncPointCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
     else if(syncWith == SyncWithFaceCloud)
-        return m_fColorCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
+        return m_syncFaceCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
     else if(syncWith == SyncWithEdgeCloud)
-        return m_eColorCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
+        return m_syncEdgeCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
 
     return CT_Repository::CT_CCR(NULL);
 }
 
 CT_Repository::CT_NCR CT_Repository::createNewNormalCloud(SyncCloudWith syncWith)
 {
-    if(syncWith == SyncWithPointCloud)
-        return m_pNormalCloudManager->createNewCloud<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>();
-    else if(syncWith == SyncWithFaceCloud)
-        return m_fNormalCloudManager->createNewCloud<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>();
-    else if(syncWith == SyncWithEdgeCloud)
-        return m_eNormalCloudManager->createNewCloud<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>();
-
-    return CT_Repository::CT_NCR(NULL);
+    return createNewSyncCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>(syncWith);
 }
 
 QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> CT_Repository::createNewIndexCloud(CT_Repository::SyncCloudWith syncWith)
@@ -148,14 +141,9 @@ CT_Repository::CT_Repository()
     m_fcirManager = new FaceCloudIndexRegistrationManager(*m_gfcManager);
     m_ecirManager = new EdgeCloudIndexRegistrationManager(*m_gecManager);
 
-    m_pColorCloudManager = new SyncPColorCloudManager(*m_gpcManager);
-    m_pNormalCloudManager = new SyncPNormalCloudManager(*m_gpcManager);
-
-    m_fColorCloudManager = new SyncFColorCloudManager(*m_gfcManager);
-    m_fNormalCloudManager = new SyncFNormalCloudManager(*m_gfcManager);
-
-    m_eColorCloudManager = new SyncEColorCloudManager(*m_gecManager);
-    m_eNormalCloudManager = new SyncENormalCloudManager(*m_gecManager);
+    m_syncPointCloudManager = new SyncPointCloudManager(*m_gpcManager);
+    m_syncFaceCloudManager = new SyncFaceCloudManager(*m_gfcManager);
+    m_syncEdgeCloudManager = new SyncEdgeCloudManager(*m_gecManager);
 }
 
 CT_Repository::~CT_Repository()
@@ -164,14 +152,9 @@ CT_Repository::~CT_Repository()
     delete m_fcirManager;
     delete m_ecirManager;
 
-    delete m_pColorCloudManager;
-    delete m_pNormalCloudManager;
-
-    delete m_fColorCloudManager;
-    delete m_fNormalCloudManager;
-
-    delete m_eColorCloudManager;
-    delete m_eNormalCloudManager;
+    delete m_syncPointCloudManager;
+    delete m_syncFaceCloudManager;
+    delete m_syncEdgeCloudManager;
 
     delete m_gfcManager;
     delete m_gecManager;

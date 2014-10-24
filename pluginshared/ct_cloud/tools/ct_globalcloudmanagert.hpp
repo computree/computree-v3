@@ -118,7 +118,13 @@ typename CT_GlobalCloudManagerT<T, CLOUD>::CT_AbstractNotModifiableCIR CT_Global
 }
 
 template<typename T, typename CLOUD>
-CT_AbstractCloudT<T>* CT_GlobalCloudManagerT<T, CLOUD>::globalAbstractCloud() const
+CT_AbstractCloud *CT_GlobalCloudManagerT<T, CLOUD>::globalAbstractCloud() const
+{
+    return (CT_AbstractCloud*)&m_cloud;
+}
+
+template<typename T, typename CLOUD>
+CT_AbstractCloudT<T>* CT_GlobalCloudManagerT<T, CLOUD>::globalAbstractCloudT() const
 {
     return (CT_AbstractCloudT<T>*)&m_cloud;
 }

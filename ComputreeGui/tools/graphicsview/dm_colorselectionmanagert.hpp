@@ -11,10 +11,14 @@
 template<typename T>
 DM_ColorSelectionManagerT<T>::DM_ColorSelectionManagerT(CT_Repository::SyncCloudWith syncWith)
 {
-    m_document = NULL;
-    m_indexCloudColor = NULL;
+    m_infoCloud = NULL;
     m_syncWith = syncWith;
-    m_multipleCurrentPos = 0;
+
+    m_enableSelection = 1;
+    m_disableSelection = std::numeric_limits<GLuint>::max()-m_enableSelection;
+
+    m_enableInvisibility = 2;
+    m_disableInvisibility = std::numeric_limits<GLuint>::max()-m_enableInvisibility;
 }
 
 template<typename T>
@@ -25,48 +29,30 @@ DM_ColorSelectionManagerT<T>::~DM_ColorSelectionManagerT()
 template<typename T>
 void DM_ColorSelectionManagerT<T>::init()
 {
-    if(m_selected.data() == NULL)
-    {
-        m_selected = PS_REPOSITORY->createNewMapIndexCloudColor(m_syncWith);
-        m_indexCloudColor = dynamic_cast<CT_AbstractModifiableIndexCloudColorMap*>(m_selected->abstractModifiableCloudIndex());
+    if(m_infoR.isNull()){
+        m_infoR = PS_REPOSITORY->createNewSyncCloudT<CT_StdCloudRegisteredT<GLuint>, CT_StandardCloudStdVectorT<GLuint> >(m_syncWith);
+        m_infoCloud = dynamic_cast<CT_StandardCloudStdVectorT<GLuint>*>(m_infoR->abstractCloud());
     }
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::setDocument(const GDocumentViewForGraphics *doc)
 {
-    m_document = (GDocumentViewForGraphics*)doc;
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::addIDToSelection(const GLuint &id)
 {
-    if(m_indexCloudColor != NULL)
-    {
-        QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
-
-        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
-
-        CT_Color &col = cc->colorAt(id);
-
-        m_indexCloudColor->insertIndexAndColor(id, col);
-
-        col.b = 0;
-        col.g = 0;
-        col.r = 255;
-        col.a = 0;
+    if(m_infoCloud != NULL) {
+        GLuint &info = m_infoCloud->tAt(id);
+        info |= m_enableSelection;
     }
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::addCloudIndexToSelection(const QList<CT_AbstractCloudIndex*> &listID)
 {
-    if(m_indexCloudColor != NULL)
-    {
-        QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
-
-        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
-
+    if(m_infoCloud != NULL) {
         QListIterator<CT_AbstractCloudIndex*> it(listID);
 
         size_t globalIndex;
@@ -81,14 +67,8 @@ void DM_ColorSelectionManagerT<T>::addCloudIndexToSelection(const QList<CT_Abstr
             {
                 ci->indexAt(i, globalIndex);
 
-                CT_Color &col = cc->colorAt(globalIndex);
-
-                m_indexCloudColor->insertIndexAndColor(globalIndex, col);
-
-                col.b = 0;
-                col.g = 0;
-                col.r = 255;
-                col.a = 0;
+                GLuint &info = m_infoCloud->tAt(globalIndex);
+                info |= m_enableSelection;
             }
         }
     }
@@ -97,99 +77,97 @@ void DM_ColorSelectionManagerT<T>::addCloudIndexToSelection(const QList<CT_Abstr
 template<typename T>
 void DM_ColorSelectionManagerT<T>::beginRemoveMultipleIDFromSelection(const size_t &n)
 {
-    m_multipleVector.resize(n);
-    m_multipleCurrentPos = 0;
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::removeIDFromSelection(const GLuint &id)
 {
-    if(m_indexCloudColor != NULL)
-    {
-        if(!m_multipleVector.empty())
-        {
-            m_multipleVector[m_multipleCurrentPos] = id;
-            ++m_multipleCurrentPos;
-        }
-        else
-        {
-            QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
-
-            if(ccr.data() != NULL)
-            {
-                CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
-
-                CT_Color *colBackup = m_indexCloudColor->colorAtGlobalIndex(id, NULL);
-
-                if(colBackup != NULL)
-                {
-                    CT_Color &col = cc->colorAt(id);
-                    col.setColor(*colBackup);
-
-                    m_indexCloudColor->removeIndex(id);
-                }
-            }
-        }
+    if(m_infoCloud != NULL) {
+        GLuint &info = m_infoCloud->tAt(id);
+        info &= m_disableSelection;
     }
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::endRemoveMultipleIDFromSelection()
 {
-    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
-
-    if(ccr.data() != NULL)
-    {
-        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
-
-        m_indexCloudColor->copyColorsOfKeys(cc, m_multipleVector, true);
-    }
-
-    m_multipleVector.resize(0);
-    m_multipleCurrentPos = 0;
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::removeCloudIndexFromSelection(const QList<CT_AbstractCloudIndex*> &listID)
 {
-    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
+    if(m_infoCloud != NULL) {
+        QListIterator<CT_AbstractCloudIndex*> it(listID);
 
-    if(ccr.data() != NULL)
-    {
-        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
+        size_t globalIndex;
 
-        m_indexCloudColor->copyColorsOfCloudIndex(cc, listID, true);
+        while(it.hasNext())
+        {
+            CT_AbstractCloudIndex *ci = it.next();
+
+            size_t size = ci->size();
+
+            for(size_t i=0; i<size; ++i)
+            {
+                ci->indexAt(i, globalIndex);
+
+                GLuint &info = m_infoCloud->tAt(globalIndex);
+                info &= m_disableSelection;
+            }
+        }
     }
 }
 
 template<typename T>
 void DM_ColorSelectionManagerT<T>::clearSelection()
 {
-    QSharedPointer<CT_StandardColorCloudRegistered> ccr = createDocumentColorCloudForTypeIfNotExist();
+    if(m_infoCloud != NULL) {
+        size_t size = m_infoCloud->size();
 
-    if(ccr.data() != NULL)
-    {
-        CT_AbstractColorCloud *cc = ccr->abstractColorCloud();
-
-        m_indexCloudColor->copyColors(cc);
+        for(size_t i=0; i<size; ++i) {
+            GLuint &info = m_infoCloud->tAt(i);
+            info &= m_disableSelection;
+        }
     }
+}
 
-    m_indexCloudColor->clear();
+template<typename T>
+void DM_ColorSelectionManagerT<T>::setAllSelectedInvisible()
+{
+    if(m_infoCloud != NULL) {
+        size_t size = m_infoCloud->size();
+
+        for(size_t i=0; i<size; ++i) {
+            GLuint &info = m_infoCloud->tAt(i);
+
+            if(info & m_enableSelection)
+                info |= m_enableInvisibility;
+        }
+    }
+}
+
+template<typename T>
+CT_StandardCloudStdVectorT<GLuint>* DM_ColorSelectionManagerT<T>::informations() const
+{
+    return m_infoCloud;
+}
+
+template<typename T>
+GLuint DM_ColorSelectionManagerT<T>::checkSelected() const
+{
+    return m_enableSelection;
+}
+
+template<typename T>
+GLuint DM_ColorSelectionManagerT<T>::checkInvisible() const
+{
+    return m_enableInvisibility;
 }
 
 template<typename T>
 QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> DM_ColorSelectionManagerT<T>::selected() const
 {
-    return m_selected;
-}
-
-template<typename T>
-QSharedPointer<CT_StandardColorCloudRegistered> DM_ColorSelectionManagerT<T>::createDocumentColorCloudForTypeIfNotExist()
-{
-    if(m_document->colorCloudRegistered<T>().data() == NULL)
-        m_document->createColorCloudRegistered<T>();
-
-    return m_document->colorCloudRegistered<T>();
+    return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
 }
 
 #endif // DM_COLORSELECTIONMANAGERT_HPP

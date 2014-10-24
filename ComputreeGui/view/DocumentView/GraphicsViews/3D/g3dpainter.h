@@ -39,7 +39,27 @@
 # include <GL/glu.h>
 #endif
 
-class G3DPainter : public PainterInterface
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#include <QtOpenGL/QGLShaderProgram>
+#include <QGLFunctions>
+#define QT_GL_SHADERPROGRAM QGLShaderProgram
+#define QT_GL_SHADER QGLShader
+#define QT_GL_CONTEXT QGLContext
+#define QT_GL_FUNCTIONS QGLFunctions
+#define QT_GL_INIT_FUNCTIONS initializeGLFunctions
+#else
+#include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions>
+#define QT_GL_SHADERPROGRAM QOpenGLShaderProgram
+#define QT_GL_SHADER QOpenGLShader
+#define QT_GL_CONTEXT QOpenGLContext
+#define QT_GL_FUNCTIONS QOpenGLFunctions
+#define QT_GL_INIT_FUNCTIONS initializeOpenGLFunctions
+#endif
+
+class G3DGraphicsView;
+
+class G3DPainter : public PainterInterface, public QOpenGLFunctions
 {
     Q_INTERFACES(PainterInterface)
 
@@ -48,135 +68,143 @@ public:
     G3DPainter();
     virtual ~G3DPainter();
 
-    void setGraphicsView(const GraphicsViewInterface *gv);
-    void setCurrentItemDrawable(const CT_AbstractItemDrawable *item);
-    void setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
-    void setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
+    /**
+     * @brief Set the graphics view to access to point/face/edge cloud
+     *        color, point/face/edge cloud informations, etc...
+     */
+    void setGraphicsView(const G3DGraphicsView *gv);
+    G3DGraphicsView* graphicsView() const;
 
-    QSharedPointer<CT_StandardColorCloudRegistered> currentPointCloudColor() const;
-    QSharedPointer<CT_StandardColorCloudRegistered> currentFaceCloudColor() const;
-    QSharedPointer<CT_StandardColorCloudRegistered> currentEdgeCloudColor() const;
-    QSharedPointer<CT_StandardNormalCloudRegistered> currentPointCloudNormal() const;
-    QSharedPointer<CT_StandardNormalCloudRegistered> currentFaceCloudNormal() const;
-    QSharedPointer<CT_StandardNormalCloudRegistered> currentEdgeCloudNormal() const;
+    /**
+     * @brief Call this functions in your method initializeOpenGL
+     */
+    void initializeGl();
+
+    /**
+     * @brief Begin a new draw (call this functions in beginning of your draw method)
+     *        Restore value to default
+     */
+    void beginNewDraw();
+
+    /**
+     * @brief End new draw (call this functions in ending of your draw method)
+     *        Do nothing by default
+     */
+    void endNewDraw();
 
     /**
      * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
      */
     void setPointFastestIncrement(size_t inc);
+    size_t pointFastestIncrement() const;
 
     /**
      * @brief Returns the number of cells of the octree drawed
      */
     int nOctreeCellsDrawed() const;
 
-    bool drawFastest() const;
+    /**
+     * @brief Set if must draw fastest (with the fastest increment)
+     */
     void setDrawFastest(bool enable);
+    bool drawFastest() const;
 
-    void beginNewDraw();
-    void endNewDraw();
+    virtual void save();
+    virtual void restore();
 
-    void save();
-    void restore();
+    virtual void startRestoreIdentityMatrix(GLdouble *matrix = NULL);
+    virtual void stopRestoreIdentityMatrix();
 
-    void startRestoreIdentityMatrix(GLdouble *matrix = NULL);
-    void stopRestoreIdentityMatrix();
+    virtual void enableMultMatrix(bool e);
 
-    void enableMultMatrix(bool e);
+    virtual void pushMatrix();
+    virtual void multMatrix(const QMatrix4x4 &matrix);
+    virtual void popMatrix();
 
-    void pushMatrix();
-    void multMatrix(const QMatrix4x4 &matrix);
-    void popMatrix();
+    virtual void setPointSize(double size);
+    virtual void setDefaultPointSize(double size);
+    virtual void restoreDefaultPointSize();
 
-    void setPointSize(double size);
-    void setDefaultPointSize(double size);
-    void restoreDefaultPointSize();
+    virtual void setPen(const QPen &pen);
+    virtual void restoreDefaultPen();
 
-    void setPen(const QPen &pen);
-    void restoreDefaultPen();
+    virtual void setColor(int r, int g, int b);
+    virtual void setColor(QColor color);
+    virtual void setForcedColor(int r, int g, int b);
+    virtual void setForcedColor(QColor color);
+    virtual void setUseColorCloudForPoints(bool enable);
+    virtual void setUseNormalCloudForPoints(bool enable);
+    virtual void setUseColorCloudForFaces(bool enable);
+    virtual void setUseNormalCloudForFaces(bool enable);
+    virtual void setUseColorCloudForEdges(bool enable);
+    virtual QColor getColor();
 
-    void setColor(int r, int g, int b);
-    void setColor(QColor color);
-    void setForcedColor(int r, int g, int b);
-    void setForcedColor(QColor color);
-    void setUseColorCloudForPoints(bool enable);
-    void setUseNormalCloudForPoints(bool enable);
-    void setUseColorCloudForFaces(bool enable);
-    void setUseNormalCloudForFaces(bool enable);
-    void setUseColorCloudForEdges(bool enable);
-    QColor getColor();
+    virtual void enableSetColor(bool enable);
+    virtual void enableSetForcedColor(bool enable);
 
-    void enableSetColor(bool enable);
-    void enableSetForcedColor(bool enable);
+    virtual void enableSetPointSize(bool enable);
+    virtual void enableSetForcedPointSize(bool enable);
 
-    void enableSetPointSize(bool enable);
-    void enableSetForcedPointSize(bool enable);
+    virtual void translate(double x, double y, double z);
+    virtual void rotate(double alpha, double x, double y, double z);
+    virtual void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
+    virtual void scale(double x, double y, double z);
 
-    void enableDrawPointCloud(bool enable);
+    virtual void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
-    void translate(double x, double y, double z);
-    void rotate(double alpha, double x, double y, double z);
-    void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
-    void scale(double x, double y, double z);
+    virtual void drawPoint(double x, double y, double z);
+    virtual void drawPoint(double *p);
+    virtual void drawPoint(float *p);
 
-    void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
-
-    void drawPoint(double x, double y, double z);
-    void drawPoint(double *p);
-    void drawPoint(float *p);
-
-    void drawPointCloud(const CT_AbstractPointCloud *pc,
+    virtual void drawPointCloud(const CT_AbstractPointCloud *pc,
                         const CT_AbstractCloudIndex *pci,
                         int fastestIncrement);
 
-    void drawMesh(const CT_AbstractMeshModel *mesh);
-    void drawFaces(const CT_AbstractMeshModel *mesh);
-    void drawEdges(const CT_AbstractMeshModel *mesh);
-    void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
+    virtual void drawMesh(const CT_AbstractMeshModel *mesh);
+    virtual void drawFaces(const CT_AbstractMeshModel *mesh);
+    virtual void drawEdges(const CT_AbstractMeshModel *mesh);
+    virtual void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
 
-    void beginMultiplePoints();
-    void addPoint(float *p);
-    void endMultiplePoints();
+    virtual void beginMultiplePoints();
+    virtual void addPoint(float *p);
+    virtual void endMultiplePoints();
 
-    void beginDrawMultipleLine();
-    void drawLine(double x1, double y1, double z1, double x2, double y2, double z2);
-    void drawLine(const float *p1, const float *p2);
-    void endDrawMultipleLine();
+    virtual void beginDrawMultipleLine();
+    virtual void drawLine(double x1, double y1, double z1, double x2, double y2, double z2);
+    virtual void drawLine(const float *p1, const float *p2);
+    virtual void endDrawMultipleLine();
 
-    void drawCircle(double x, double y, double z, double radius);
-    void drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius);
+    virtual void drawCircle(double x, double y, double z, double radius);
+    virtual void drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius);
 
-    void drawCylinder(double x, double y, double z, double radius, double height);
-    void drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height);
+    virtual void drawCylinder(double x, double y, double z, double radius, double height);
+    virtual void drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height);
 
-    void drawEllipse(double x, double y, double z, double radiusA, double radiusB);
+    virtual void drawEllipse(double x, double y, double z, double radiusA, double radiusB);
 
-    void beginDrawMultipleTriangle();
-    void drawTriangle(double x1, double y1, double z1,
+    virtual void beginDrawMultipleTriangle();
+    virtual void drawTriangle(double x1, double y1, double z1,
                                   double x2, double y2, double z2,
                                   double x3, double y3, double z3);
-    void drawTriangle(const float *p1,
+    virtual void drawTriangle(const float *p1,
                               const float *p2,
                               const float *p3);
-    void endDrawMultipleTriangle();
+    virtual void endDrawMultipleTriangle();
 
 
     /**  \brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
       *
       */
-    void drawCube(double x1, double y1, double z1, double x2, double y2, double z2);
+    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2);
 
     /**  \brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
       *  The drawing mode is given by the user (GL_POINT, GL_LINE or GL_FILL)
       */
-    inline void drawCube(double x1, double y1, double z1, double x2, double y2, double z2, GLenum faces, GLenum mode ) { glPolygonMode(faces, mode); drawCube(x1, y1, z1, x2, y2, z2); }
+    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2, GLenum faces, GLenum mode ) { glPolygonMode(faces, mode); drawCube(x1, y1, z1, x2, y2, z2); }
 
     /**  \brief Draw a pyramid given its top point and its base
       */
-    void drawPyramid(double topX, double topY, double topZ,
+    virtual void drawPyramid(double topX, double topY, double topZ,
                      double base1X, double base1Y, double base1Z,
                      double base2X, double base2Y, double base2Z,
                      double base3X, double base3Y, double base3Z,
@@ -184,20 +212,20 @@ public:
 
     /**  \brief Draw a part of a sphere given the angles bounds
       */
-    void drawPartOfSphere ( double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians = true );
+    virtual void drawPartOfSphere ( double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians = true );
 
-    void drawRectXY(const QRectF &rectangle, double z);
-    void fillRectXY(const QRectF &rectangle, double z);
+    virtual void drawRectXY(const QRectF &rectangle, double z);
+    virtual void fillRectXY(const QRectF &rectangle, double z);
 
-    void drawRectXZ(const QRectF &rectangle, double y);
-    void fillRectXZ(const QRectF &rectangle, double y);
+    virtual void drawRectXZ(const QRectF &rectangle, double y);
+    virtual void fillRectXZ(const QRectF &rectangle, double y);
 
-    void drawRectYZ(const QRectF &rectangle, double x);
-    void fillRectYZ(const QRectF &rectangle, double x);
+    virtual void drawRectYZ(const QRectF &rectangle, double x);
+    virtual void fillRectYZ(const QRectF &rectangle, double x);
 
-    void beginPolygon();
-    void addPointToPolygon(float *p);
-    void endPolygon();
+    virtual void beginPolygon();
+    virtual void addPointToPolygon(float *p);
+    virtual void endPolygon();
 
     virtual void drawQuadFace( float x1, float y1, float z1,
                                float x2, float y2, float z2,
@@ -219,42 +247,104 @@ public:
                                float x3, float y3, float z3, int r3, int g3, int b3,
                                float x4, float y4, float z4, int r4, int g4, int b4 );
 
+protected:
+
+    /**
+     * @brief Init shader for points if is not already initialized
+     */
+    void initPointShader();
+
+    /**
+     * @brief Init shader for faces if is not already initialized
+     */
+    void initFaceShader();
+
+    /**
+     * @brief Init shader for edges if is not already initialized
+     */
+    void initEdgeShader();
+
+    /**
+     * @brief Bind the point shader
+     * @return false bind is ok
+     */
+    bool bindPointShader();
+
+    /**
+     * @brief Release the point shader
+     */
+    void releasePointShader(bool bindOk);
+
+    /**
+     * @brief Bind the face shader
+     * @return false bind is ok
+     */
+    bool bindFaceShader();
+
+    /**
+     * @brief Release the face shader
+     */
+    void releaseFaceShader(bool bindOk);
+
+    /**
+     * @brief Bind the edge shader
+     * @return false bind is ok
+     */
+    bool bindEdgeShader();
+
+    /**
+     * @brief Release the edge shader
+     */
+    void releaseEdgeShader(bool bindOk);
+
 private:
-    CT_AbstractItemDrawable                             *m_currentItem;
+    G3DGraphicsView                     *m_gv;                  // Graphics View that used the painter
 
-    GraphicsViewInterface                               *m_gv;
+    QT_GL_SHADERPROGRAM                 *m_shaderProgPoint;     // Shader program used for points
+    QT_GL_SHADERPROGRAM                 *m_shaderProgFace;      // Shader program used for faces
+    QT_GL_SHADERPROGRAM                 *m_shaderProgEdge;      // Shader program used for edges
 
-    QSharedPointer<CT_StandardColorCloudRegistered>     m_pColorCloud;
-    QSharedPointer<CT_StandardColorCloudRegistered>     m_fColorCloud;
-    QSharedPointer<CT_StandardColorCloudRegistered>     m_eColorCloud;
-    QSharedPointer<CT_StandardNormalCloudRegistered>    m_pNormalCloud;
-    QSharedPointer<CT_StandardNormalCloudRegistered>    m_fNormalCloud;
+    bool                                m_shaderProgPointError;
+    bool                                m_shaderProgFaceError;
+    bool                                m_shaderProgEdgeError;
 
-    QColor          _color;
-    QColor          _forcedColor;
-    GLUquadric      *_quadric;
-    double          _defaultPointSize;
-    bool            _drawFastest;
+    bool                                m_shaderProgPointSet;
+    bool                                m_shaderProgFaceSet;
+    bool                                m_shaderProgEdgeSet;
+
+    static QT_GL_SHADER                 *SHADER_POINT;
+    static QT_GL_SHADER                 *SHADER_FACE;
+    static QT_GL_SHADER                 *SHADER_EDGE;
+    static bool                         SHADER_POINT_ERROR;
+    static bool                         SHADER_FACE_ERROR;
+    static bool                         SHADER_EDGE_ERROR;
+    static int                          N_3D_PAINTER;           // N painter to know when delete shaders from memory
+
+    QColor                              _color;                 // Color used in setCurrentColor method
+    QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
+    GLUquadric                          *_quadric;              // Quadric used to draw cylinder with gluCylinder
+    double                              _defaultPointSize;      // Default point size
+    bool                                _drawFastest;           // True if we must draw fastest
+    bool                                m_usePColorCloud;       // True if we must use color cloud for points
+    bool                                m_usePNormalCloud;      // True if we must use normal cloud for points
+    bool                                m_useFColorCloud;       // True if we must use color cloud for faces
+    bool                                m_useFNormalCloud;      // True if we must use normal cloud for faces
+    bool                                m_useEColorCloud;       // True if we must use color cloud for edges
+    bool                                m_drawPointCloudEnabled;// True if we must draw points
     bool            m_drawMultipleLine;
     bool            m_drawMultipleTriangle;
-    bool            m_useColorCloud;
-    bool            m_useNormalCloud;
-    bool            m_useFColorCloud;
-    bool            m_useFNormalCloud;
-    bool            m_useEColorCloud;
-    bool            m_drawPointCloudEnabled;
 
-    int             _nCallEnableSetColor;
-    int             _nCallEnableSetForcedColor;
+    int                                 _nCallEnableSetColor;       // count how many times the enableSetColor was called
+    int                                 _nCallEnableSetForcedColor; // count how many times the enableSetForcedColor was called
 
-    int             _nCallEnableSetPointSize;
-    int             _nCallEnableSetForcedPointSize;
+    int                                 _nCallEnableSetPointSize;       // count how many times the enableSetPointSize was called
+    int                                 _nCallEnableSetForcedPointSize; // count how many times the enableSetForcedPointSize was called
 
-    int             _nCallEnablePushMatrix;
-    GLint           m_polygonMode;
+    int                                 _nCallEnablePushMatrix;         // count how many times the enablePushMatrix was called
+    GLint                               m_polygonMode;                  // Polygon Mode backup
 
-    size_t          m_fastestIncrementPoint;
-    int             m_octreeCellsDraw;
+    size_t                              m_fastestIncrementPoint;        // fastest increment to use if drawFastest() return true
+    int                                 m_octreeCellsDraw;              // count how many octree cells was draw
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
     static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 5;

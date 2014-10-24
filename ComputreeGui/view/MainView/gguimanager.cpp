@@ -73,7 +73,7 @@ CDM_Internationalization *GGuiManager::getLanguageManager() const
 
 DM_VertexVBOManager* GGuiManager::vertexVBOManager() const
 {
-    return _mainWindow->vertexVBOManager();
+    return GDocumentViewForGraphics::staticUniqueVertexVBOManager();
 }
 
 DM_MultipleItemDrawableModelManager* GGuiManager::getItemDrawableModelManager() const

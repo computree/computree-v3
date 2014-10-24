@@ -5,12 +5,11 @@
 
 #include "interfaces.h"
 
+#include "ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h"
 #include "ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.h"
 #include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
 
 #include "ct_point.h"
-
-template<typename T, class CRI> class CT_CloudSyncToGlobalCloudManagerT;
 
 template<typename T> class CT_AbstractGlobalCloudManagerT;
 template<typename T, typename CLOUD> class CT_GlobalCloudManagerT;
@@ -52,14 +51,9 @@ protected:
     typedef CT_CloudIndexRegistrationManagerT<CT_Face, CT_FaceCloudIndexLessMemory >        FaceCloudIndexRegistrationManager;
     typedef CT_CloudIndexRegistrationManagerT<CT_Edge, CT_EdgeCloudIndexLessMemory >        EdgeCloudIndexRegistrationManager;
 
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Point, CT_StandardNormalCloudRegistered>   SyncPNormalCloudManager;
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Point, CT_StandardColorCloudRegistered>    SyncPColorCloudManager;
-
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Face, CT_StandardNormalCloudRegistered>    SyncFNormalCloudManager;
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Face, CT_StandardColorCloudRegistered>     SyncFColorCloudManager;
-
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Edge, CT_StandardNormalCloudRegistered>    SyncENormalCloudManager;
-    typedef CT_CloudSyncToGlobalCloudManagerT<CT_Edge, CT_StandardColorCloudRegistered>     SyncEColorCloudManager;
+    typedef CT_CloudSyncToGlobalCloudManager                                                SyncPointCloudManager;
+    typedef CT_CloudSyncToGlobalCloudManager                                                SyncFaceCloudManager;
+    typedef CT_CloudSyncToGlobalCloudManager                                                SyncEdgeCloudManager;
 
 public:
     typedef CT_ModifiableCloudIndexIteratorT<CT_Point >                                     VertexIndexIterator;
@@ -139,6 +133,31 @@ public:
      * @return return the normals cloud registered
      */
     CT_NCR createNewNormalCloud(SyncCloudWith syncWith);
+
+    /**
+     * @brief Create a new cloud of type CloudT that will be synchronized with the global XXX cloud (defined by syncWith param). This
+     *        means that the size of the cloud index will always be sync with the global cloud and indices will be automatically modified if
+     *        a cloud is deleted.
+     *
+     * @param syncWith : define what cloud sync
+     * @example : create a cloud of quint8 that is synchorinzed with the global points cloud :
+     *
+     *            QSharedPointer<> sp = createNewSyncCloudT<CT_StandardCloudStdVectorT<quint8> >(CT_Repository::SyncWithPointCloud);
+     *
+     * @return return the CloudT cloud registered
+     */
+    template<class CloudRegistered, class CloudT >
+    QSharedPointer<CloudRegistered> createNewSyncCloudT(SyncCloudWith syncWith)
+    {
+        if(syncWith == SyncWithPointCloud)
+            return m_syncPointCloudManager->createNewCloud<CloudRegistered, CloudT >();
+        else if(syncWith == SyncWithFaceCloud)
+            return m_syncFaceCloudManager->createNewCloud<CloudRegistered, CloudT >();
+        else if(syncWith == SyncWithEdgeCloud)
+            return m_syncEdgeCloudManager->createNewCloud<CloudRegistered, CloudT >();
+
+        return QSharedPointer<CloudRegistered>(NULL);
+    }
 
     /**
      * @brief Create a new index cloud whose indices is synchronized with index of cloud passed in parameter. This means that
@@ -318,18 +337,11 @@ private:
     FaceCloudIndexRegistrationManager       *m_fcirManager;
     EdgeCloudIndexRegistrationManager       *m_ecirManager;
 
-    SyncPColorCloudManager                  *m_pColorCloudManager;
-    SyncPNormalCloudManager                 *m_pNormalCloudManager;
-
-    SyncFColorCloudManager                  *m_fColorCloudManager;
-    SyncFNormalCloudManager                 *m_fNormalCloudManager;
-
-    SyncEColorCloudManager                  *m_eColorCloudManager;
-    SyncENormalCloudManager                 *m_eNormalCloudManager;
+    SyncPointCloudManager                   *m_syncPointCloudManager;
+    SyncFaceCloudManager                    *m_syncFaceCloudManager;
+    SyncEdgeCloudManager                    *m_syncEdgeCloudManager;
 
     QMutex                                  m_mutexUSPC;
-
-
 };
 
 template<>

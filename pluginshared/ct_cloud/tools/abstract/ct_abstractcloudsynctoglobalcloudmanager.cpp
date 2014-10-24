@@ -2,15 +2,22 @@
 
 #include "ct_global/ct_context.h"
 
-CT_AbstractCloudSyncToGlobalCloudManager::CT_AbstractCloudSyncToGlobalCloudManager()
+CT_AbstractCloudSyncToGlobalCloudManager::CT_AbstractCloudSyncToGlobalCloudManager(const CT_AbstractGlobalCloudManager &gcManager)
 {
     m_syncProgress = 0;
+    m_gcManager = (CT_AbstractGlobalCloudManager*)&gcManager;
+    m_gcManager->addGlobalCloudListener(this);
 }
 
 CT_AbstractCloudSyncToGlobalCloudManager::~CT_AbstractCloudSyncToGlobalCloudManager()
 {
     while(!m_crArray.isEmpty())
         m_crArray.takeLast()->setSyncCloudManager(NULL);
+}
+
+CT_AbstractGlobalCloudManager* CT_AbstractCloudSyncToGlobalCloudManager::globalCloudManager() const
+{
+    return m_gcManager;
 }
 
 void CT_AbstractCloudSyncToGlobalCloudManager::setSyncProgress(int progress)

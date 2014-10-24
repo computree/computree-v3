@@ -24,7 +24,7 @@ public:
 
 protected:
 
-    template <typename T, class CRI> friend class CT_CloudSyncToGlobalCloudManagerT;
+    friend class CT_CloudSyncToGlobalCloudManager;
 
     CT_StandardNormalCloudRegistered(CT_AbstractNormalCloud *normalCloud);
 

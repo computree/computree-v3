@@ -2,7 +2,7 @@
 #define CT_ABSTRACTCLOUDSYNCTOGLOBALCLOUDMANAGER_H
 
 #include "ct_cloud/registered/abstract/ct_abstractcloudregistered.h"
-#include "ct_cloud/tools/iglobalcloudlistener.h"
+#include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.h"
 
 #include <QObject>
 #include <QMutex>
@@ -12,8 +12,13 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudSyncToGlobalCloudManager : publi
     Q_OBJECT
 
 public:
-    CT_AbstractCloudSyncToGlobalCloudManager();
+    CT_AbstractCloudSyncToGlobalCloudManager(const CT_AbstractGlobalCloudManager &gcManager);
     virtual ~CT_AbstractCloudSyncToGlobalCloudManager();
+
+    /**
+     * @brief Return the global cloud manager
+     */
+    CT_AbstractGlobalCloudManager* globalCloudManager() const;
 
     /**
      * @brief Called when the global cloud is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
@@ -33,6 +38,11 @@ protected:
     bool internalUnregisterCloud(const CT_AbstractCloudRegistered *cr);
 
 private:
+
+    /**
+     * @brief Global cloud manager
+     */
+    CT_AbstractGlobalCloudManager   *m_gcManager;
 
     /**
      * @brief la liste des nuages enregistrés (à synchroniser)

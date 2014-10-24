@@ -72,6 +72,11 @@ public:
     bool isCellVisibleInFrustrum(int x, int y, int z, GLdouble planeCoefficients[6][4]) const;
 
     /**
+     * @brief Returns true if the cell at x, y, z is visible in frustrum
+     */
+    bool isCellVisibleInFrustrum(int x, int y, int z, GLdouble planeCoefficients[6][4], bool &entirely) const;
+
+    /**
      * @brief Returns the cells size
      */
     double cellsSize() const;

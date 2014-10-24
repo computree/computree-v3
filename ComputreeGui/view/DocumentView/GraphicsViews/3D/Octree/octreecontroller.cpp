@@ -138,6 +138,19 @@ bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble pla
     return aaBoxIsVisible(p1, p2, planeCoefficients);
 }
 
+bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble planeCoefficients[6][4], bool &entirely) const
+{
+    if(m_octree == NULL)
+        return false;
+
+    double cellSize = cellsSize();
+
+    QVector3D p1(m_octreeMinCorner.x()+(x*cellSize), m_octreeMinCorner.y()+(y*cellSize), m_octreeMinCorner.z()+(z*cellSize));
+    QVector3D p2(m_octreeMinCorner.x()+((x+1)*cellSize), m_octreeMinCorner.y()+((y+1)*cellSize), m_octreeMinCorner.z()+((z+1)*cellSize));
+
+    return aaBoxIsVisible(p1, p2, planeCoefficients, &entirely);
+}
+
 double OctreeController::cellsSize() const
 {
     return m_size;

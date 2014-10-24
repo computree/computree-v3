@@ -1,8 +1,8 @@
 #ifndef CT_ABSTRACTGLOBALCLOUDMANAGERT_H
 #define CT_ABSTRACTGLOBALCLOUDMANAGERT_H
 
+#include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.h"
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
-#include "ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanagert.h"
 
 /**
  * Utility class who manage a global cloud of T (point, face, etc...). It will inform the CT_AbstractCloudIndexRegistrationManagerT and all
@@ -10,7 +10,7 @@
  * other cloud with this global cloud.
  */
 template<typename T>
-class CT_AbstractGlobalCloudManagerT
+class CT_AbstractGlobalCloudManagerT : public CT_AbstractGlobalCloudManager
 {
 public:
 
@@ -24,27 +24,17 @@ public:
     };
 
     CT_AbstractGlobalCloudManagerT();
-    virtual ~CT_AbstractGlobalCloudManagerT() {}
 
     /**
-     * @brief Add listener of global cloud change
+     * @brief Returns the global cloud of T
      */
-    void addGlobalCloudListener(const IGlobalCloudListener *listener);
-
-    /**
-     * @brief globalCloud
-     * @return Retourne le nuage global (il contient tout les nuages créés)
-     */
-    virtual CT_AbstractCloudT<T>* globalAbstractCloud() const = 0;
+    virtual CT_AbstractCloudT<T>* globalAbstractCloudT() const = 0;
 
 protected:
 
-    QList< IGlobalCloudListener* >                                  m_listener;
     QList< CT_AbstractCloudIndexRegisteredT<T>* >                   m_cirArray;
     QList< CT_AbstractCloudIndexRegisteredT<T>* >                   m_cirArrayUnsync;
 
-    void informThatCloudAdded(const size_t &size);
-    void informThatCloudDeleted(const size_t &begin, const size_t &size);
     void shiftAllCloudIndexFrom(const int &from, const size_t &offset, const bool &negativeOffset);
 
     void lockAllDocuments();

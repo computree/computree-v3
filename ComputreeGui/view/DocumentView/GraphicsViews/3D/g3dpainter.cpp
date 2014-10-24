@@ -29,6 +29,10 @@
 
 #include "dm_guimanager.h"
 
+#include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
+
+#include "tools/graphicsview/dm_colorselectionmanagert.h"
+
 #include "ct_global/ct_context.h"
 #include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
@@ -38,6 +42,7 @@
 #include "ct_itemdrawable/ct_meshmodel.h"
 #include "ct_cloudindex/ct_cloudindexlessmemoryt.h"
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
 #include <QQuaternion>
 
@@ -46,10 +51,19 @@
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_FASTEST = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE);
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_NORMAL = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_NORMAL_SIZE);
 
+QT_GL_SHADER*           G3DPainter::SHADER_POINT = NULL;
+bool                    G3DPainter::SHADER_POINT_ERROR = false;
+QT_GL_SHADER*           G3DPainter::SHADER_FACE = NULL;
+bool                    G3DPainter::SHADER_FACE_ERROR = false;
+QT_GL_SHADER*           G3DPainter::SHADER_EDGE = NULL;
+bool                    G3DPainter::SHADER_EDGE_ERROR = false;
+
+int                     G3DPainter::N_3D_PAINTER = 0;
+
 G3DPainter::G3DPainter()
 {
-    m_currentItem = NULL;
     m_gv = NULL;
+    m_shaderProgPoint = NULL;
 
     _quadric = gluNewQuadric();
     _color = Qt::white;
@@ -57,82 +71,69 @@ G3DPainter::G3DPainter()
     _defaultPointSize = 1.0;
     _drawFastest = false;
 
+    ++N_3D_PAINTER;
+
+    m_shaderProgPoint = new QT_GL_SHADERPROGRAM();
+    m_shaderProgFace = new QT_GL_SHADERPROGRAM();
+    m_shaderProgEdge = new QT_GL_SHADERPROGRAM();
+
+    m_shaderProgPointError = false;
+    m_shaderProgFaceError = false;
+    m_shaderProgEdgeError = false;
+
     beginNewDraw();
 }
 
 G3DPainter::~G3DPainter()
 {
     gluDeleteQuadric(_quadric);
+
+    delete m_shaderProgPoint;
+    m_shaderProgPoint = NULL;
+
+    delete m_shaderProgFace;
+    m_shaderProgFace = NULL;
+
+    delete m_shaderProgEdge;
+    m_shaderProgEdge = NULL;
+
+    --N_3D_PAINTER;
+
+    if(N_3D_PAINTER == 0) {
+        delete SHADER_POINT;
+        SHADER_POINT = NULL;
+
+        delete SHADER_FACE;
+        SHADER_FACE = NULL;
+
+        delete SHADER_EDGE;
+        SHADER_EDGE = NULL;
+    }
 }
 
-void G3DPainter::setGraphicsView(const GraphicsViewInterface *gv)
+void G3DPainter::setGraphicsView(const G3DGraphicsView *gv)
 {
-    m_gv = (GraphicsViewInterface*)gv;
+    m_gv = (G3DGraphicsView*)gv;
 }
 
-void G3DPainter::setCurrentItemDrawable(const CT_AbstractItemDrawable *item)
+G3DGraphicsView* G3DPainter::graphicsView() const
 {
-    m_currentItem = (CT_AbstractItemDrawable*)item;
+    return m_gv;
 }
 
-void G3DPainter::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
+void G3DPainter::initializeGl()
 {
-    m_pColorCloud = cc;
-}
-
-void G3DPainter::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    m_fColorCloud = cc;
-}
-
-void G3DPainter::setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    m_eColorCloud = cc;
-}
-
-void G3DPainter::setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    m_pNormalCloud = nn;
-}
-
-void G3DPainter::setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    m_fNormalCloud = nn;
-}
-
-QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentPointCloudColor() const
-{
-    return m_pColorCloud;
-}
-
-QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentFaceCloudColor() const
-{
-    return m_fColorCloud;
-}
-
-QSharedPointer<CT_StandardColorCloudRegistered> G3DPainter::currentEdgeCloudColor() const
-{
-    return m_eColorCloud;
-}
-
-QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentPointCloudNormal() const
-{
-    return m_pNormalCloud;
-}
-
-QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentFaceCloudNormal() const
-{
-    return m_fNormalCloud;
-}
-
-QSharedPointer<CT_StandardNormalCloudRegistered> G3DPainter::currentEdgeCloudNormal() const
-{
-    return QSharedPointer<CT_StandardNormalCloudRegistered>(NULL);
+    QT_GL_INIT_FUNCTIONS();
 }
 
 void G3DPainter::setPointFastestIncrement(size_t inc)
 {
     m_fastestIncrementPoint = inc;
+}
+
+size_t G3DPainter::pointFastestIncrement() const
+{
+    return m_fastestIncrementPoint;
 }
 
 int G3DPainter::nOctreeCellsDrawed() const
@@ -160,8 +161,8 @@ void G3DPainter::beginNewDraw()
 
     _nCallEnablePushMatrix = 0;
 
-    m_useColorCloud = true;
-    m_useNormalCloud = true;
+    m_usePColorCloud = true;
+    m_usePNormalCloud = true;
     m_useFColorCloud = true;
     m_useFNormalCloud = true;
     m_useEColorCloud = true;
@@ -169,10 +170,13 @@ void G3DPainter::beginNewDraw()
     m_drawMultipleLine = false;
     m_drawMultipleTriangle = false;
 
-    m_drawPointCloudEnabled = true;
     m_fastestIncrementPoint = 0;
 
     m_octreeCellsDraw = 0;
+
+    m_shaderProgPointSet = false;
+    m_shaderProgFaceSet = false;
+    m_shaderProgEdgeSet = false;
 }
 
 void G3DPainter::endNewDraw()
@@ -369,12 +373,12 @@ void G3DPainter::setForcedColor(QColor color)
 
 void G3DPainter::setUseColorCloudForPoints(bool enable)
 {
-    m_useColorCloud = enable;
+    m_usePColorCloud = enable;
 }
 
 void G3DPainter::setUseNormalCloudForPoints(bool enable)
 {
-    m_useNormalCloud = enable;
+    m_usePNormalCloud = enable;
 }
 
 void G3DPainter::setUseColorCloudForFaces(bool enable)
@@ -410,11 +414,6 @@ void G3DPainter::enableSetPointSize(bool enable)
 void G3DPainter::enableSetForcedPointSize(bool enable)
 {
     _nCallEnableSetForcedPointSize += (enable ? 1 : -1);
-}
-
-void G3DPainter::enableDrawPointCloud(bool enable)
-{
-    m_drawPointCloudEnabled = enable;
 }
 
 void G3DPainter::translate(double x, double y, double z)
@@ -547,8 +546,10 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                                 const CT_AbstractCloudIndex *pci,
                                 int fastestIncrement)
 {
-    if((pc == NULL) || (pci == NULL) || !m_drawPointCloudEnabled)
+    if((pc == NULL) || (pci == NULL))
         return;
+
+    bool bindOk = bindPointShader();
 
     const CT_AbstractPointCloudIndex *indexes = dynamic_cast<const CT_AbstractPointCloudIndex*>(pci);
 
@@ -565,14 +566,15 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         increment = m_fastestIncrementPoint;
 
     CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
+    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NPointCloud);
 
     // FAST
     if(increment > 1)
     {
-        if(m_useNormalCloud
-                && (m_pNormalCloud.data() != NULL))
+        if(m_usePNormalCloud
+                && (normalCloud.data() != NULL))
         {
-            CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
             CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
             if(it != end) {
@@ -606,10 +608,10 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
     // NORMAL
     else
     {
-        if(m_useNormalCloud
-                && (m_pNormalCloud.data() != NULL))
+        if(m_usePNormalCloud
+                && (normalCloud.data() != NULL))
         {
-            CT_AbstractNormalCloud *nn = m_pNormalCloud->abstractNormalCloud();
+            CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
             CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
             if(it != end) {
@@ -658,6 +660,8 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
             }
         }
     }
+
+    releasePointShader(bindOk);
 }
 
 void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
@@ -670,12 +674,17 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
     if(mesh == NULL)
         return;
 
+    bool bindOk = bindFaceShader();
+
     if(!m_gv->getOptions().useColor())
         setCurrentColor();
 
+    QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CFaceCloud);
+    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NFaceCloud);
+
     // W/ colors cloud
     if(m_useFColorCloud
-            && (m_fColorCloud.data() != NULL))
+            && (colorCloud.data() != NULL))
     {
         const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
@@ -683,13 +692,13 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
         {
             ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-            CT_AbstractColorCloud *cc = m_fColorCloud->abstractColorCloud();
+            CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
 
             // W/ normals cloud
             if(m_useFNormalCloud
-                    && (m_fNormalCloud.data() != NULL))
+                    && (normalCloud.data() != NULL))
             {
-                CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
 
                 size_t size = fIndex->size();
                 size_t index;
@@ -725,7 +734,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
     {
         // W/ normals cloud
         if(m_useFNormalCloud
-                && (m_fNormalCloud.data() != NULL))
+                && (normalCloud.data() != NULL))
         {
             const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
@@ -733,7 +742,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
             {
                 ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
 
-                CT_AbstractNormalCloud *nn = m_fNormalCloud->abstractNormalCloud();
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
 
                 size_t size = fIndex->size();
 
@@ -753,6 +762,8 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
             ((CT_AbstractMeshModel*)mesh)->drawFaces(*m_gv, *this);
         }
     }
+
+    releaseFaceShader(bindOk);
 }
 
 void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
@@ -760,11 +771,16 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
     if(mesh == NULL)
         return;
 
+    bool bindOk = bindEdgeShader();
+
     if(!m_gv->getOptions().useColor())
         setCurrentColor();
 
+    QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CEdgeCloud);
+    //QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NEdgeCloud);
+
     if(m_useEColorCloud
-            && (m_eColorCloud.data() != NULL))
+            && (colorCloud.data() != NULL))
     {
         const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
 
@@ -772,7 +788,7 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
         {
             ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
 
-            CT_AbstractColorCloud *cc = m_eColorCloud->abstractColorCloud();
+            CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
 
             size_t size = eIndex->size();
 
@@ -791,6 +807,8 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
     {
         ((CT_AbstractMeshModel*)mesh)->drawEdges(*m_gv, *this);
     }
+
+    releaseEdgeShader(bindOk);
 }
 
 void G3DPainter::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
@@ -1256,7 +1274,7 @@ void G3DPainter::fillQuadFace(float x1, float y1, float z1, int r1, int g1, int 
          glColor3ub(r4, g4, b4);
          glVertex3d(x4, y4, z4 );
 
-     glEnd();
+         glEnd();
 }
 
 void G3DPainter::drawQuadFace(float x1, float y1, float z1,
@@ -1294,6 +1312,249 @@ void G3DPainter::drawQuadFace(float x1, float y1, float z1, int r1, int g1, int 
          glVertex3d(x4, y4, z4 );
 
      glEnd();
+}
+
+
+//////////// PROTECTED ///////////
+
+void G3DPainter::initPointShader()
+{
+    if(QT_GL_CONTEXT::currentContext() != NULL)
+    {
+        if(!SHADER_POINT_ERROR)
+        {
+            if(SHADER_POINT == NULL)
+            {
+                SHADER_POINT = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+                if(!SHADER_POINT->compileSourceFile("./shaders/points.vert"))
+                {
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(SHADER_POINT->log()));
+
+                    delete SHADER_POINT;
+                    SHADER_POINT = NULL;
+
+                    SHADER_POINT_ERROR = true;
+                }
+            }
+        }
+
+        if(!SHADER_POINT_ERROR
+                && !m_shaderProgPointError
+                && m_shaderProgPoint->shaders().isEmpty())
+        {
+            m_shaderProgPointError = !m_shaderProgPoint->addShader(SHADER_POINT);
+
+            if(!m_shaderProgPointError && !m_shaderProgPoint->link())
+            {
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Link error : %1").arg(m_shaderProgPoint->log()));
+                m_shaderProgPointError = true;
+            }
+        }
+    }
+}
+
+void G3DPainter::initFaceShader()
+{
+    if(QT_GL_CONTEXT::currentContext() != NULL)
+    {
+        if(!SHADER_FACE_ERROR)
+        {
+            if(SHADER_FACE == NULL)
+            {
+                SHADER_FACE = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+                if(!SHADER_FACE->compileSourceFile("./shaders/faces.vert"))
+                {
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Vertex shader compilation error : %1").arg(SHADER_FACE->log()));
+
+                    delete SHADER_FACE;
+                    SHADER_FACE = NULL;
+
+                    SHADER_FACE_ERROR = true;
+                }
+            }
+        }
+
+        if(!SHADER_FACE_ERROR
+                && !m_shaderProgFaceError
+                && m_shaderProgFace->shaders().isEmpty())
+        {
+            m_shaderProgFaceError = !m_shaderProgFace->addShader(SHADER_FACE);
+
+            if(!m_shaderProgFaceError && !m_shaderProgFace->link())
+            {
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Link error : %1").arg(m_shaderProgFace->log()));
+                m_shaderProgFaceError = true;
+            }
+        }
+    }
+}
+
+void G3DPainter::initEdgeShader()
+{
+    if(QT_GL_CONTEXT::currentContext() != NULL)
+    {
+        if(!SHADER_EDGE_ERROR)
+        {
+            if(SHADER_EDGE == NULL)
+            {
+                SHADER_EDGE = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+                if(!SHADER_EDGE->compileSourceFile("./shaders/faces.vert"))
+                {
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Vertex shader compilation error : %1").arg(SHADER_EDGE->log()));
+
+                    delete SHADER_EDGE;
+                    SHADER_EDGE = NULL;
+
+                    SHADER_EDGE_ERROR = true;
+                }
+            }
+        }
+
+        if(!SHADER_EDGE_ERROR
+                && !m_shaderProgEdgeError
+                && m_shaderProgEdge->shaders().isEmpty())
+        {
+            m_shaderProgEdgeError = !m_shaderProgEdge->addShader(SHADER_EDGE);
+
+            if(!m_shaderProgEdgeError && !m_shaderProgEdge->link())
+            {
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Link error : %1").arg(m_shaderProgEdge->log()));
+                m_shaderProgEdgeError = true;
+            }
+        }
+    }
+}
+
+bool G3DPainter::bindPointShader()
+{
+    initPointShader();
+
+    if(!SHADER_POINT_ERROR
+            && !m_shaderProgPointError
+            && (QT_GL_CONTEXT::currentContext() != NULL))
+    {
+        if(!m_shaderProgPoint->bind())
+        {
+            QString log;
+            QString tmp;
+
+            while(!(tmp = m_shaderProgPoint->log()).isEmpty())
+                log += tmp;
+
+            if(!log.isEmpty())
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Bind error : %1").arg(m_shaderProgPoint->log()));
+
+            m_shaderProgPointError = true;
+        }
+        else
+        {
+            if(!m_shaderProgPointSet) {
+                QColor sColor = m_gv->getOptions().getSelectedColor();
+                m_shaderProgPoint->setUniformValue("selectionColor", QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
+
+                m_shaderProgPoint->setUniformValue("checkSelected", (GLuint)m_gv->pointsInformationManager()->checkSelected());
+                m_shaderProgPoint->setUniformValue("checkInvisible", (GLuint)m_gv->pointsInformationManager()->checkInvisible());
+
+                m_shaderProgPoint->enableAttributeArray("info");
+                CT_StandardCloudStdVectorT<GLuint> *infos = m_gv->pointsInformationManager()->informations();
+                int loc = m_shaderProgPoint->attributeLocation("info");
+                glVertexAttribPointer(loc, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &infos->constTAt(0));
+
+                m_shaderProgPointSet = true;
+
+            } else {
+                m_shaderProgPoint->enableAttributeArray("info");
+            }
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void G3DPainter::releasePointShader(bool bindOk)
+{
+    if(bindOk)
+    {
+        m_shaderProgPoint->disableAttributeArray("info");
+        m_shaderProgPoint->release();
+    }
+}
+
+bool G3DPainter::bindFaceShader()
+{
+    initFaceShader();
+
+    if(!SHADER_FACE_ERROR
+            && !m_shaderProgFaceError
+            && (QT_GL_CONTEXT::currentContext() != NULL))
+    {
+        if(!m_shaderProgFace->bind())
+        {
+            QString log;
+            QString tmp;
+
+            while(!(tmp = m_shaderProgFace->log()).isEmpty())
+                log += tmp;
+
+            if(!log.isEmpty())
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Bind error : %1").arg(m_shaderProgFace->log()));
+
+            m_shaderProgFaceError = true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void G3DPainter::releaseFaceShader(bool bindOk)
+{
+    if(bindOk)
+        m_shaderProgFace->release();
+}
+
+bool G3DPainter::bindEdgeShader()
+{
+    initEdgeShader();
+
+    if(!SHADER_EDGE_ERROR
+            && !m_shaderProgEdgeError
+            && (QT_GL_CONTEXT::currentContext() != NULL))
+    {
+        if(!m_shaderProgEdge->bind())
+        {
+            QString log;
+            QString tmp;
+
+            while(!(tmp = m_shaderProgEdge->log()).isEmpty())
+                log += tmp;
+
+            if(!log.isEmpty())
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Bind error : %1").arg(m_shaderProgEdge->log()));
+
+            m_shaderProgEdgeError = true;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void G3DPainter::releaseEdgeShader(bool bindOk)
+{
+    if(bindOk)
+        m_shaderProgEdge->release();
 }
 
 //////////// PRIVATE ///////////

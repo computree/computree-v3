@@ -27,6 +27,10 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 
+
+DM_VertexVBOManager* GDocumentViewForGraphics::VERTEX_VBO_MANAGER = NULL;
+int GDocumentViewForGraphics::N_DOCUMENT_VIEW_FOR_GRAPHICS = 0;
+
 GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager, QString title, QString type) : GDocumentView(manager, title)
 {
     m_mutex = new QMutex(QMutex::Recursive);
@@ -38,6 +42,11 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     _pixelSize = PX_1;
     _drawMode = DM_GraphicsViewOptions::Normal;
     m_colorVboManager = new DM_ColorVBOManager();
+
+    ++N_DOCUMENT_VIEW_FOR_GRAPHICS;
+
+    if(VERTEX_VBO_MANAGER == NULL)
+        VERTEX_VBO_MANAGER = new DM_VertexVBOManager();
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -333,6 +342,8 @@ void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, con
 
     if(group != NULL)
         recursiveSetColor(group, hash, color);
+
+    m_colorVboManager->refresh();
 }
 
 QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
@@ -389,11 +400,6 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttribut
     m_pColorCloudRegistered = cc;
     m_colorVboManager->setCurrentColorCloud(cc);
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setCurrentPointCloudColor(cc);
-
     unlock();
 }
 
@@ -404,11 +410,6 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes
 
     m_fColorCloudRegistered = cc;
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setCurrentFaceCloudColor(cc);
-
     unlock();
 }
 
@@ -418,11 +419,6 @@ void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes
     lock();
 
     m_eColorCloudRegistered = cc;
-
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setCurrentEdgeCloudColor(cc);
 
     unlock();
 }
@@ -471,11 +467,6 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttribu
 
     m_pNormalCloudRegistered = nn;
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setCurrentPointCloudNormal(nn);
-
     unlock();
 }
 
@@ -485,11 +476,6 @@ void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttribute
     lock();
 
     m_fNormalCloudRegistered = nn;
-
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setCurrentFaceCloudNormal(nn);
 
     unlock();
 }
@@ -904,6 +890,14 @@ void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
 {
     if(canClose())
     {
+        --N_DOCUMENT_VIEW_FOR_GRAPHICS;
+
+        if(N_DOCUMENT_VIEW_FOR_GRAPHICS == 0)
+        {
+            delete VERTEX_VBO_MANAGER;
+            VERTEX_VBO_MANAGER = NULL;
+        }
+
         delete m_colorVboManager;
         m_colorVboManager = NULL;
 

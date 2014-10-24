@@ -3,6 +3,8 @@
 
 #include "gdocumentview.h"
 
+#include "dm_vertexvbomanager.h"
+
 #include "GraphicsViews/ggraphicsview.h"
 #include "GraphicsViews/ggraphicsviewoptions.h"
 #include "gcameragraphicsoptions.h"
@@ -117,6 +119,11 @@ public:
      */
     void applyAttributes(DM_AbstractAttributes *dpa);
 
+    /**
+     * @brief Returns the unique vertex VBO manager
+     */
+    static DM_VertexVBOManager* staticUniqueVertexVBOManager() { return VERTEX_VBO_MANAGER; }
+
 private:
 
     GGraphicsViewOptions                                            *_graphicsOptionsView;
@@ -131,6 +138,9 @@ private:
     bool                                                            m_useNormalCloud;
     OctreeController                                                m_octreeController;
     DM_ColorVBOManager                                              *m_colorVboManager;
+
+    static DM_VertexVBOManager                                      *VERTEX_VBO_MANAGER;
+    static int                                                      N_DOCUMENT_VIEW_FOR_GRAPHICS;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;

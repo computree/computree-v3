@@ -67,11 +67,6 @@ public:
 
     GMainProgressDialog* createWaitProgressDialog();
 
-    /**
-     * @brief Returns the vertex vbo manager
-     */
-    DM_VertexVBOManager* vertexVBOManager() const;
-
     void loadConfiguration();
     void writeConfiguration();
 
@@ -111,8 +106,6 @@ private:
     QMenu                                   *menuNewStepCanBeAddedFirst;
 
     QLabel                                  *_permanentLabelForMessage;
-
-    DM_VertexVBOManager                     *m_vertexVBOManager;
 
     void initUI();
     void loadPlugins(bool showMessageIfNoPluginsFounded = true);

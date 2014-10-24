@@ -4,35 +4,11 @@
 #include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanagert.h"
 
 template<typename T>
-CT_AbstractGlobalCloudManagerT<T>::CT_AbstractGlobalCloudManagerT()
+CT_AbstractGlobalCloudManagerT<T>::CT_AbstractGlobalCloudManagerT() : CT_AbstractGlobalCloudManager()
 {
-}
-
-template<typename T>
-void CT_AbstractGlobalCloudManagerT<T>::addGlobalCloudListener(const IGlobalCloudListener *listener)
-{
-    m_listener.append((IGlobalCloudListener*)listener);
 }
 
 // protected //
-
-template<typename T>
-void CT_AbstractGlobalCloudManagerT<T>::informThatCloudAdded(const size_t &size)
-{
-    QListIterator< IGlobalCloudListener* > it(m_listener);
-
-    while(it.hasNext())
-        it.next()->cloudAdded(size);
-}
-
-template<typename T>
-void CT_AbstractGlobalCloudManagerT<T>::informThatCloudDeleted(const size_t &begin, const size_t &size)
-{
-    QListIterator< IGlobalCloudListener* > it(m_listener);
-
-    while(it.hasNext())
-        it.next()->cloudDeleted(begin, size);
-}
 
 template<typename T>
 void CT_AbstractGlobalCloudManagerT<T>::shiftAllCloudIndexFrom(const int &from, const size_t &offset, const bool &negativeOffset)

@@ -321,7 +321,9 @@ SOURCES += \
     ct_itemdrawable/tools/ct_counter.cpp \
     ct_itemdrawable/ct_loopcounter.cpp \
     ct_step/ct_stepbeginloop.cpp \
-    ct_step/ct_stependloop.cpp
+    ct_step/ct_stependloop.cpp \
+    ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.cpp \
+    ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -527,10 +529,6 @@ HEADERS += interfaces.h \
     ct_cloud/abstract/ct_abstractcloudt.h \
     ct_cloud/tools/ct_globalcloudmanagert.h \
     ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanager.h \
-    ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanagert.h \
-    ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanagert.hpp \
-    ct_cloud/tools/ct_cloudsynctoglobalcloudmanagert.h \
-    ct_cloud/tools/ct_cloudsynctoglobalcloudmanagert.hpp \
     ct_cloudindex/registered/abstract/ct_abstractcloudindexregistered.h \
     ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h \
     ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.hpp \
@@ -731,7 +729,11 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/ct_counter.h \
     ct_itemdrawable/ct_loopcounter.h \
     ct_step/ct_stepbeginloop.h \
-    ct_step/ct_stependloop.h
+    ct_step/ct_stependloop.h \
+    ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.h \
+    ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h \
+    ct_cloud/registered/ct_stdcloudregisteredt.h \
+    ct_cloud/registered/ct_stdcloudregisteredt.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

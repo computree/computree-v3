@@ -41,6 +41,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
 
+class GDocumentViewForGraphics;
 class G3DGraphicsView;
 template<typename T> class DM_ColorSelectionManagerT;
 
@@ -146,12 +147,6 @@ public:
     DM_GraphicsViewOptions::DrawFastestMode drawFastest() const;
     bool mustDrawFastestNow() const;
 
-    void setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-    void setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
-    void setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
-
     void setUseCloudColor(bool use);
     void setUseCloudNormal(bool use);
 
@@ -164,8 +159,13 @@ public:
 
     void showContextMenu(const QPoint &pos);
 
+    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>* pointsInformationManager() const;
+    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>* facesInformationManager() const;
+    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>* edgesInformationManager() const;
+
 private:
 
+    GDocumentViewForGraphics        *m_docGV;
     QMutex                          *_mutex;
     QPainter                        *m_painter;
     G3DPainter                      _g;
@@ -182,8 +182,7 @@ private:
     GLdouble                        m_planeCoefficients[6][4];
     QPoint                          m_centerPointOfSelection;
 
-    bool                            m_selectOctreeCells;
-    QList<GLuint>                   m_octreeCellsSelected;
+    QList<CT_AbstractCloudIndex*>   m_idToAddInSelection;
 
     DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>      *m_pointsSelectionManager;
     DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>        *m_facesSelectionManager;
@@ -191,6 +190,11 @@ private:
 
     DM_FastestIncrementOptimizer                                m_fastestIncrementOptimizer;
     DM_ColorVBOManager                                          *m_colorVboManager;
+
+    GLint viewport_[4];
+    GLdouble modelViewMatrix_[16];
+    GLdouble projectionMatrix_[16];
+
 
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);

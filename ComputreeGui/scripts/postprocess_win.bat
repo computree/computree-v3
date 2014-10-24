@@ -19,4 +19,7 @@ for %%f in (*.pro) do (
 mkdir %DESTDIR%\languages 
 copy languages\*.qm %DESTDIR%\languages
 
+mkdir %DESTDIR%\shaders
+copy shaders\*.* %DESTDIR%\shaders
+
 cd %PWD%

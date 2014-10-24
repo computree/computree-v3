@@ -38,7 +38,7 @@ void DM_VertexVBOManager::initializeGL()
         QT_GL_INIT_FUNCTIONS();
 
         // create a vbo
-        //glGenBuffers(1, &m_vbo);
+        glGenBuffers(1, &m_vbo);
 
         m_initialized = true;
     }

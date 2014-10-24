@@ -52,6 +52,7 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
 
+    m_docGV = NULL;
     m_painter = NULL;
 
     _mutex = new QMutex(QMutex::Recursive);
@@ -63,7 +64,6 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     _drawModeUsed = FAST;
     _2dActive = false;
     _forceDrawMode = false;
-    m_selectOctreeCells = false;
 
     m_useColorCloud = true;
 
@@ -111,13 +111,13 @@ QWidget* G3DGraphicsView::getViewWidget() const
 
 void G3DGraphicsView::setDocumentView(const DM_DocumentView *doc)
 {
-    GDocumentViewForGraphics *gv = dynamic_cast<GDocumentViewForGraphics*>((DM_DocumentView*)doc);
+    m_docGV = dynamic_cast<GDocumentViewForGraphics*>((DM_DocumentView*)doc);
 
-    m_pointsSelectionManager->setDocument(gv);
-    m_facesSelectionManager->setDocument(gv);
-    m_edgesSelectionManager->setDocument(gv);
+    m_pointsSelectionManager->setDocument(m_docGV);
+    m_facesSelectionManager->setDocument(m_docGV);
+    m_edgesSelectionManager->setDocument(m_docGV);
 
-    connect(gv, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(m_docGV, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
     GGraphicsView::setDocumentView(doc);
 }
@@ -153,11 +153,11 @@ GraphicsViewSignalEmitterInterface* G3DGraphicsView::signalEmitter() const
 QSharedPointer<CT_StandardColorCloudRegistered> G3DGraphicsView::colorCloudOf(GraphicsViewInterface::ColorCloudType type) const
 {
     if(type == GraphicsViewInterface::CPointCloud)
-        return _g.currentPointCloudColor();
+        return m_docGV->colorCloudRegistered<CT_AbstractPointsAttributes>();
     else if(type == GraphicsViewInterface::CFaceCloud)
-        return _g.currentFaceCloudColor();
+        return m_docGV->colorCloudRegistered<CT_AbstractFaceAttributes>();
     else if(type == GraphicsViewInterface::CEdgeCloud)
-        return _g.currentEdgeCloudColor();
+        return m_docGV->colorCloudRegistered<CT_AbstractEdgeAttributes>();
 
     return QSharedPointer<CT_StandardColorCloudRegistered>(NULL);
 }
@@ -165,11 +165,11 @@ QSharedPointer<CT_StandardColorCloudRegistered> G3DGraphicsView::colorCloudOf(Gr
 QSharedPointer<CT_StandardNormalCloudRegistered> G3DGraphicsView::normalCloudOf(GraphicsViewInterface::NormalCloudType type) const
 {
     if(type == GraphicsViewInterface::NPointCloud)
-        return _g.currentPointCloudNormal();
+        return m_docGV->normalCloudRegistered<CT_AbstractPointsAttributes>();
     else if(type == GraphicsViewInterface::NFaceCloud)
-        return _g.currentFaceCloudNormal();
+        return m_docGV->normalCloudRegistered<CT_AbstractFaceAttributes>();
     else if(type == GraphicsViewInterface::NEdgeCloud)
-        return _g.currentEdgeCloudNormal();
+        return m_docGV->normalCloudRegistered<CT_AbstractEdgeAttributes>();
 
     return QSharedPointer<CT_StandardNormalCloudRegistered>(NULL);
 }
@@ -438,6 +438,10 @@ GraphicsViewInterface::SelectionMode G3DGraphicsView::selectionMode() const
 
 void G3DGraphicsView::select(const QPoint &point)
 {
+    QGLViewer::camera()->getModelViewMatrix(modelViewMatrix_);
+    QGLViewer::camera()->getProjectionMatrix(projectionMatrix_);
+    QGLViewer::camera()->getViewport(viewport_);
+
     m_centerPointOfSelection = point;
     QGLViewer::select(point);
 }
@@ -556,31 +560,6 @@ bool G3DGraphicsView::mustDrawFastestNow() const
     return (drawModeToUse() == FAST);
 }
 
-void G3DGraphicsView::setCurrentPointCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    _g.setCurrentPointCloudColor(cc);
-}
-
-void G3DGraphicsView::setCurrentFaceCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    _g.setCurrentFaceCloudColor(cc);
-}
-
-void G3DGraphicsView::setCurrentEdgeCloudColor(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    _g.setCurrentEdgeCloudColor(cc);
-}
-
-void G3DGraphicsView::setCurrentPointCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    _g.setCurrentPointCloudNormal(nn);
-}
-
-void G3DGraphicsView::setCurrentFaceCloudNormal(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    _g.setCurrentFaceCloudNormal(nn);
-}
-
 void G3DGraphicsView::setUseCloudColor(bool use)
 {
     m_useColorCloud = use;
@@ -640,6 +619,21 @@ void G3DGraphicsView::showContextMenu(const QPoint &pos)
         menu->exec(pos);
 
     delete menu;
+}
+
+DM_ColorSelectionManagerT<CT_AbstractPointsAttributes> *G3DGraphicsView::pointsInformationManager() const
+{
+    return m_pointsSelectionManager;
+}
+
+DM_ColorSelectionManagerT<CT_AbstractFaceAttributes> *G3DGraphicsView::facesInformationManager() const
+{
+    return m_facesSelectionManager;
+}
+
+DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes> *G3DGraphicsView::edgesInformationManager() const
+{
+    return m_edgesSelectionManager;
 }
 
 void G3DGraphicsView::addActionOptions(ActionOptionsInterface *options)
@@ -812,6 +806,8 @@ void G3DGraphicsView::removeAllIdFromSelection()
 
 void G3DGraphicsView::init()
 {
+    _g.initializeGl();
+
     if(!_2dActive)
         restoreStateFromFile();
 
@@ -950,10 +946,10 @@ void G3DGraphicsView::postDraw()
 
     drawOverlay(*m_painter);
 
-    /*m_painter->setPen(Qt::white);
+    m_painter->setPen(Qt::white);
     m_painter->drawText(10, 10, QString().setNum(m_fastestIncrementOptimizer.currentFPS()));
     m_painter->drawText(10, 20, QString().setNum(m_fastestIncrementOptimizer.fastestIncrement()));
-    m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
+    /*m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
 
     m_painter->end();
 
@@ -985,7 +981,7 @@ void G3DGraphicsView::drawInternal()
     _g.setPointSize(getOptions().getPointSize());
     _g.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
 
-    OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
+    OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
 
@@ -1159,32 +1155,88 @@ void G3DGraphicsView::drawWithNames()
     }
 
     bool selectItems = true;
-    bool hasOctree = false;
 
-    if(m_selectOctreeCells)
+    if(mustSelectPoints())
     {
-        m_selectOctreeCells = false;
-        m_fakeG.beginNewDraw();
-        m_fakeG.setDrawMode(G3DFakePainter::DrawPointsWithName);
-        selectItems = false;
-        hasOctree = true;
-    }
-    else if(mustSelectPoints())
-    {
-        selectItems = false;
+        m_idToAddInSelection.clear();
 
-        OctreeController *octreeC = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
-        hasOctree = (octreeC->hasElements() && !octreeC->mustBeReconstructed());
+        OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
-        if(hasOctree)
+        if((octreeC->hasElements() && !octreeC->mustBeReconstructed()))
         {
-            m_selectOctreeCells = true;
-            _g.beginNewDraw();
+            QRect rect(m_centerPointOfSelection.x()-(selectRegionWidth()/2),
+                       m_centerPointOfSelection.y()-(selectRegionHeight()/2),
+                       selectRegionWidth(),
+                       selectRegionHeight());
+
+            m_fakeG.beginNewDraw();
+            m_fakeG.setDrawMode(G3DFakePainter::DrawPointsWithName);
+            m_fakeG.setDrawFastest(mustDrawFastestNow());
+            m_fakeG.setPointSize(getOptions().getPointSize());
+            m_fakeG.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
+
+            QVector3D min = octreeC->octreeMinCorner();
+            double cellSize = octreeC->cellsSize();
+            int s = octreeC->numberOfCells();
+
+            GLdouble xx[8];
+            GLdouble yy[8];
+            GLdouble zz[8];
+
+            for(int x=0; x<s; ++x)
+            {
+                for(int y=0; y<s; ++y)
+                {
+                    for(int z=0; z<s; ++z)
+                    {
+                        const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octreeC->at(x, y, z));
+
+                        if((indexes != NULL)/* && octreeC->isCellVisibleInFrustrum(x, y, z, planeCoefficients, entirely)*/)
+                        {
+                            qglviewer::Vec p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
+                            qglviewer::Vec p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
+
+                            gluProject(p1.x,p1.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[0],&yy[0],&zz[0]);
+                            gluProject(p2.x,p1.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[1],&yy[1],&zz[1]);
+                            gluProject(p2.x,p2.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[2],&yy[2],&zz[2]);
+                            gluProject(p1.x,p2.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[3],&yy[3],&zz[3]);
+                            gluProject(p1.x,p1.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[4],&yy[4],&zz[4]);
+                            gluProject(p2.x,p1.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[5],&yy[5],&zz[5]);
+                            gluProject(p2.x,p2.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[6],&yy[6],&zz[6]);
+                            gluProject(p1.x,p2.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[7],&yy[7],&zz[7]);
+
+                            int nnn = 0;
+
+                            for(int iii=0; iii<8; ++iii)
+                            {
+                                if(rect.contains(xx[iii], yy[iii], false))
+                                    ++nnn;
+                            }
+
+                            if(nnn == 8)
+                                m_idToAddInSelection << (CT_AbstractCloudIndexT<CT_Point>*)indexes;
+                            else if (nnn > 0)
+                                m_fakeG.drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                        }
+                    }
+                }
+            }
+
+            m_fakeG.endNewDraw();
+
+            if(colorVBOManager() != NULL)
+                colorVBOManager()->postDraw();
+
+            unlockPaint();
+
+            checkAndShowOpenGLErrors();
+            return;
         }
         else
         {
             m_fakeG.beginNewDraw();
             m_fakeG.setDrawMode(G3DFakePainter::DrawPointsWithName);
+            selectItems = false;
         }
     }
     else if(mustSelectFaces())
@@ -1224,86 +1276,16 @@ void G3DGraphicsView::drawWithNames()
     }
     else
     {
-        if(!m_selectOctreeCells)
-        {
-            m_fakeG.setDrawFastest(mustDrawFastestNow());
-            m_fakeG.setPointSize(getOptions().getPointSize());
-            m_fakeG.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
-        }
+        m_fakeG.setDrawFastest(mustDrawFastestNow());
+        m_fakeG.setPointSize(getOptions().getPointSize());
+        m_fakeG.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
 
-        if(!hasOctree)
-        {
-            QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
+        QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
-            while(it.hasNext())
-                it.next()->draw(*this, m_fakeG);
+        while(it.hasNext())
+            it.next()->draw(*this, m_fakeG);
 
-            m_fakeG.endNewDraw();
-        }
-        else
-        {
-            OctreeController *octree = (OctreeController*)(((GDocumentViewForGraphics&)getDocumentView()).octreeOfPoints());
-
-            if(m_selectOctreeCells)
-            {
-                QVector3D min = octree->octreeMinCorner();
-                double cellSize = octree->cellsSize();
-                int s = octree->numberOfCells();
-
-                GLuint i = 0;
-
-                for(int x=0; x<s; ++x)
-                {
-                    for(int y=0; y<s; ++y)
-                    {
-                        for(int z=0; z<s; ++z)
-                        {
-                            const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
-
-                            if((indexes != NULL) && octree->isCellVisibleInFrustrum(x, y, z, m_planeCoefficients))
-                            {
-                                QVector3D p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
-                                QVector3D p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
-
-                                glPushName(i);
-                                _g.drawCube(p1.x(), p1.y(), p1.z(), p2.x(), p2.y(), p2.z(), GL_FRONT_AND_BACK, GL_FILL);
-                                glPopName();
-                            }
-
-                            ++i;
-                        }
-                    }
-                }
-
-                _g.endNewDraw();
-                m_octreeCellsSelected.clear();
-                endSelection(m_centerPointOfSelection);
-                postSelection(m_centerPointOfSelection);
-                select(m_centerPointOfSelection);
-            }
-            else
-            {
-                GLuint size = octree->numberOfCells();
-                GLuint size2 = size*size;
-                GLuint x, y ,z;
-                QListIterator<GLuint> it(m_octreeCellsSelected);
-
-                while(it.hasNext())
-                {
-                    GLuint index = it.next();
-
-                    x = index / size2;
-                    y = (index - (x * size2)) / size;
-                    z = index - (y*size) - (x*size2);
-
-                    const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
-
-                    m_fakeG.drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
-                }
-
-                m_fakeG.endNewDraw();
-            }
-        }
+        m_fakeG.endNewDraw();
     }
 
     if(colorVBOManager() != NULL)
@@ -1340,104 +1322,120 @@ void G3DGraphicsView::endSelection(const QPoint &p)
         if(mode == GraphicsViewInterface::SELECT)
             removeAllIdFromSelection();
 
-        if (nbHits > 0)
+        if(mustSelectPoints())
         {
-            if(m_selectOctreeCells)
-            {
-                for (int i=0; i<nbHits; ++i)
-                    m_octreeCellsSelected.append((selectBuffer())[4*i+3]);
-            }
-            else if(mustSelectPoints())
-            {
-                if(mode == REMOVE)
-                    m_pointsSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
+            if(mode == REMOVE)
+                m_pointsSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
 
-                // Interpret results : each object created 4 values in the selectBuffer().
-                // (selectBuffer())[4*i+3] is the id pushed on the stack.
-                for (int i=0; i<nbHits; ++i)
+            // Interpret results : each object created 4 values in the selectBuffer().
+            // (selectBuffer())[4*i+3] is the id pushed on the stack.
+            for (int i=0; i<nbHits; ++i)
+            {
+                switch (mode)
                 {
-                    switch (mode)
-                    {
-                        case GraphicsViewInterface::SELECT :
-                        case ADD    : addPointsIDToSelection((selectBuffer())[4*i+3]); break;
-                        case REMOVE : removePointsIDFromSelection((selectBuffer())[4*i+3]);  break;
-                        default : break;
-                    }
+                    case GraphicsViewInterface::SELECT :
+                    case ADD    : addPointsIDToSelection((selectBuffer())[4*i+3]); break;
+                    case REMOVE : removePointsIDFromSelection((selectBuffer())[4*i+3]);  break;
+                    default : break;
                 }
+            }
 
-                if(mode == REMOVE)
-                    m_pointsSelectionManager->endRemoveMultipleIDFromSelection();
-                else if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
+            if(mode == REMOVE)
+            {
+                m_pointsSelectionManager->endRemoveMultipleIDFromSelection();
+                m_pointsSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
+            }
+            else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
+            {
+                m_pointsSelectionManager->addCloudIndexToSelection(m_idToAddInSelection);
+
+                if(nbHits > 0)
                     setLastPointIdSelected((selectBuffer())[4*(nbHits-1)+3]);
             }
-            else if(mustSelectFaces())
+        }
+        else if(mustSelectFaces())
+        {
+            if(mode == REMOVE)
+                m_facesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
+
+            // Interpret results : each object created 4 values in the selectBuffer().
+            // (selectBuffer())[4*i+3] is the id pushed on the stack.
+            for (int i=0; i<nbHits; ++i)
             {
-                if(mode == REMOVE)
-                    m_facesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
-
-                // Interpret results : each object created 4 values in the selectBuffer().
-                // (selectBuffer())[4*i+3] is the id pushed on the stack.
-                for (int i=0; i<nbHits; ++i)
+                switch (mode)
                 {
-                    switch (mode)
-                    {
-                        case GraphicsViewInterface::SELECT :
-                        case ADD    : addFacesIDToSelection((selectBuffer())[4*i+3]); break;
-                        case REMOVE : removeFacesIDFromSelection((selectBuffer())[4*i+3]);  break;
-                        default : break;
-                    }
+                    case GraphicsViewInterface::SELECT :
+                    case ADD    : addFacesIDToSelection((selectBuffer())[4*i+3]); break;
+                    case REMOVE : removeFacesIDFromSelection((selectBuffer())[4*i+3]);  break;
+                    default : break;
                 }
+            }
 
-                if(mode == REMOVE)
-                    m_facesSelectionManager->endRemoveMultipleIDFromSelection();
-                else if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
+            if(mode == REMOVE)
+            {
+                m_facesSelectionManager->endRemoveMultipleIDFromSelection();
+                m_facesSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
+            }
+            else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
+            {
+                m_facesSelectionManager->addCloudIndexToSelection(m_idToAddInSelection);
+
+                if(nbHits > 0)
                     setLastFaceIdSelected((selectBuffer())[4*(nbHits-1)+3]);
             }
-            else if(mustSelectEdges())
+        }
+        else if(mustSelectEdges())
+        {
+            if(mode == REMOVE)
+                m_edgesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
+
+            // Interpret results : each object created 4 values in the selectBuffer().
+            // (selectBuffer())[4*i+3] is the id pushed on the stack.
+            for (int i=0; i<nbHits; ++i)
             {
-                if(mode == REMOVE)
-                    m_edgesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
-
-                // Interpret results : each object created 4 values in the selectBuffer().
-                // (selectBuffer())[4*i+3] is the id pushed on the stack.
-                for (int i=0; i<nbHits; ++i)
+                switch (mode)
                 {
-                    switch (mode)
-                    {
-                        case GraphicsViewInterface::SELECT :
-                        case ADD    : addEdgesIDToSelection((selectBuffer())[4*i+3]); break;
-                        case REMOVE : removeEdgesIDFromSelection((selectBuffer())[4*i+3]);  break;
-                        default : break;
-                    }
+                    case GraphicsViewInterface::SELECT :
+                    case ADD    : addEdgesIDToSelection((selectBuffer())[4*i+3]); break;
+                    case REMOVE : removeEdgesIDFromSelection((selectBuffer())[4*i+3]);  break;
+                    default : break;
                 }
+            }
 
-                if(mode == REMOVE)
-                    m_edgesSelectionManager->endRemoveMultipleIDFromSelection();
-                else if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
+            if(mode == REMOVE)
+            {
+                m_edgesSelectionManager->endRemoveMultipleIDFromSelection();
+                m_edgesSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
+            }
+            else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
+            {
+                m_edgesSelectionManager->addCloudIndexToSelection(m_idToAddInSelection);
+
+                if(nbHits > 0)
                     setLastEdgeIdSelected((selectBuffer())[4*(nbHits-1)+3]);
             }
-            else
+        }
+        else
+        {
+            // Interpret results : each object created 4 values in the selectBuffer().
+            // (selectBuffer())[4*i+3] is the id pushed on the stack.
+            for (int i=0; i<nbHits; ++i)
             {
-                // Interpret results : each object created 4 values in the selectBuffer().
-                // (selectBuffer())[4*i+3] is the id pushed on the stack.
-                for (int i=0; i<nbHits; ++i)
+                switch (mode)
                 {
-                    switch (mode)
-                    {
-                        case GraphicsViewInterface::SELECT :
-                        case ADD    : addItemsIDToSelection((selectBuffer())[4*i+3]); break;
-                        case REMOVE : removeItemsIDFromSelection((selectBuffer())[4*i+3]);  break;
-                        default : break;
-                    }
+                    case GraphicsViewInterface::SELECT :
+                    case ADD    : addItemsIDToSelection((selectBuffer())[4*i+3]); break;
+                    case REMOVE : removeItemsIDFromSelection((selectBuffer())[4*i+3]);  break;
+                    default : break;
                 }
-
-                if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
-                    setLastItemIdSelected((selectBuffer())[4*(nbHits-1)+3]);
             }
+
+            if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
+                setLastItemIdSelected((selectBuffer())[4*(nbHits-1)+3]);
         }
 
-        if(!m_selectOctreeCells)
-            setSelectionMode(NONE);
+        setSelectionMode(NONE);
+        m_idToAddInSelection.clear();
     }
     else
     {
@@ -1460,11 +1458,7 @@ void G3DGraphicsView::postSelection(const QPoint& point)
 
         if(selectedName() != -1)
         {
-            if(m_selectOctreeCells)
-            {
-                m_octreeCellsSelected.append(selectedName());
-            }
-            else if((mode == ADD_ONE)
+            if((mode == ADD_ONE)
                 || (mode == SELECT_ONE))
             {
                 int s = selectedName();
@@ -1480,8 +1474,7 @@ void G3DGraphicsView::postSelection(const QPoint& point)
         }
     }
 
-    if(!m_selectOctreeCells)
-        setSelectionMode(NONE);
+    setSelectionMode(NONE);
 
     QGLViewer::postSelection(point);
 }
@@ -1588,6 +1581,13 @@ void G3DGraphicsView::wheelEvent(QWheelEvent *e)
 
 void G3DGraphicsView::keyPressEvent(QKeyEvent *e)
 {
+    /*if(e->key() == Qt::Key_Delete)
+    {
+        m_pointsSelectionManager->setAllSelectedInvisible();
+        redraw();
+        return;
+    }*/
+
     if(!actionsHandler()->keyPressEvent(e))
         QGLViewer::keyPressEvent(e);
 }
@@ -1675,8 +1675,6 @@ void G3DGraphicsView::startRedrawTimer()
 
 QMenu* G3DGraphicsView::constructContextMenu() const
 {
-    GDocumentViewForGraphics *gv = dynamic_cast<GDocumentViewForGraphics*>(document());
-
     QMenu *menu = new QMenu();
     QMenu *menuColorPoints = menu->addMenu(tr("Colorer les points par..."));
     QMenu *menuColorFaces = menu->addMenu(tr("Colorer les faces par..."));
@@ -1697,21 +1695,21 @@ QMenu* G3DGraphicsView::constructContextMenu() const
         delete menuColorPoints;
     else {
         menuColorPoints->addSeparator();
-        menuColorPoints->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+        menuColorPoints->addAction(tr("Configurer"), m_docGV, SLOT(showAttributesOptions()));
     }
 
     if(menuColorFaces->isEmpty())
         delete menuColorFaces;
     else {
         menuColorFaces->addSeparator();
-        menuColorFaces->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+        menuColorFaces->addAction(tr("Configurer"), m_docGV, SLOT(showAttributesOptions()));
     }
 
     if(menuColorEdges->isEmpty())
         delete menuColorEdges;
     else {
         menuColorEdges->addSeparator();
-        menuColorEdges->addAction(tr("Configurer"), gv, SLOT(showAttributesOptions()));
+        menuColorEdges->addAction(tr("Configurer"), m_docGV, SLOT(showAttributesOptions()));
     }
 
     return menu;
@@ -1828,8 +1826,7 @@ void G3DGraphicsView::applyAttributes()
     QAction *act = (QAction*)sender();
     DM_AbstractAttributes *aa = (DM_AbstractAttributes*)act->data().value<void*>();
 
-    GDocumentViewForGraphics *gv = dynamic_cast<GDocumentViewForGraphics*>(document());
-    gv->applyAttributes(aa);
+    m_docGV->applyAttributes(aa);
 }
 
 // SIGNAL EMITTER

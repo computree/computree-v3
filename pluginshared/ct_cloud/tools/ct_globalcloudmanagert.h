@@ -95,7 +95,13 @@ public:
      * @brief globalAbstractCloud
      * @return Retourne le nuage global (il contient tout les nuages créés)
      */
-    CT_AbstractCloudT<T>* globalAbstractCloud() const;
+    CT_AbstractCloud* globalAbstractCloud() const;
+
+    /**
+     * @brief globalAbstractCloud
+     * @return Retourne le nuage global (il contient tout les nuages créés)
+     */
+    CT_AbstractCloudT<T>* globalAbstractCloudT() const;
 
     /**
      * @brief globalCloud

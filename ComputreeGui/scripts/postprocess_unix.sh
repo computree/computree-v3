@@ -13,3 +13,6 @@ cp img_to_copy/*.png $DESTDIR/img
 lrelease *.pro
 mkdir -p $DESTDIR/languages
 cp languages/*.qm $DESTDIR/languages
+
+mkdir -p $DESTDIR/shaders
+cp shaders/*.* $DESTDIR/shaders
