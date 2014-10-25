@@ -40,5 +40,9 @@
         <file>icons/cursor_remove_multi.png</file>
         <file>icons/cursor_add.png</file>
         <file>icons/cursor_multi_add.png</file>
+        <file>icons/select_addMode.png</file>
+        <file>icons/select_intersectMode.png</file>
+        <file>icons/select_removeMode.png</file>
+        <file>icons/select_replaceMode.png</file>
     </qresource>
 </RCC>

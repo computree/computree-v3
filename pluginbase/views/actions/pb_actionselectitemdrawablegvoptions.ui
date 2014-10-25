@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>625</width>
+    <width>678</width>
     <height>36</height>
    </rect>
   </property>
@@ -88,16 +88,52 @@
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="toolButtonAddOne">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="toolButtonReplaceMode">
      <property name="toolTip">
-      <string>Ajouter un élément à la sélection</string>
+      <string>Remplacer la séléction</string>
      </property>
      <property name="text">
       <string>...</string>
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor_add.png</normaloff>:/icons/cursor_add.png</iconset>
+       <normaloff>:/icons/select_replaceMode.png</normaloff>:/icons/select_replaceMode.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroupMode</string>
+     </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="toolButtonAddMode">
+     <property name="toolTip">
+      <string>Ajouter à la séléction</string>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../resource.qrc">
+       <normaloff>:/icons/select_addMode.png</normaloff>:/icons/select_addMode.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -109,21 +145,21 @@
       <bool>true</bool>
      </property>
      <attribute name="buttonGroup">
-      <string notr="true">buttonGroupSelection</string>
+      <string notr="true">buttonGroupMode</string>
      </attribute>
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="toolButtonAddMulti">
+    <widget class="QToolButton" name="toolButtonRemoveMode">
      <property name="toolTip">
-      <string>Ajouter de multiple éléments à la sélection</string>
+      <string>Supprimer de la séléction</string>
      </property>
      <property name="text">
       <string>...</string>
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor_multi_add.png</normaloff>:/icons/cursor_multi_add.png</iconset>
+       <normaloff>:/icons/select_removeMode.png</normaloff>:/icons/select_removeMode.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -135,64 +171,12 @@
       <bool>true</bool>
      </property>
      <attribute name="buttonGroup">
-      <string notr="true">buttonGroupSelection</string>
+      <string notr="true">buttonGroupMode</string>
      </attribute>
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="toolButtonRemoveOne">
-     <property name="toolTip">
-      <string>Supprimer un élément de la sélection</string>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor_remove.png</normaloff>:/icons/cursor_remove.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <attribute name="buttonGroup">
-      <string notr="true">buttonGroupSelection</string>
-     </attribute>
-    </widget>
-   </item>
-   <item>
-    <widget class="QToolButton" name="toolButtonRemoveMulti">
-     <property name="toolTip">
-      <string>Supprimer de multiple éléments de la sélection</string>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor_remove_multi.png</normaloff>:/icons/cursor_remove_multi.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <attribute name="buttonGroup">
-      <string notr="true">buttonGroupSelection</string>
-     </attribute>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
+    <widget class="Line" name="line_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -273,6 +257,7 @@
  </resources>
  <connections/>
  <buttongroups>
+  <buttongroup name="buttonGroupMode"/>
   <buttongroup name="buttonGroupType"/>
   <buttongroup name="buttonGroupSelection"/>
  </buttongroups>

@@ -27,7 +27,7 @@ private:
 private slots:
     void on_buttonGroupSelection_buttonReleased(int id);
     void on_buttonGroupType_buttonReleased(int id);
-//    void on_buttonGroupOptimization_buttonReleased(int id);
+    void on_buttonGroupMode_buttonReleased(int id);
 
 public slots:
 
