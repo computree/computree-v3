@@ -42,7 +42,8 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor.png</normaloff>:/icons/cursor.png</iconset>
+       <normaloff>:/icons/cursor.png</normaloff>
+       <normalon>:/icons/cursor_checked.png</normalon>:/icons/cursor.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -71,7 +72,8 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/cursor_multi.png</normaloff>:/icons/cursor_multi.png</iconset>
+       <normaloff>:/icons/cursor_multi.png</normaloff>
+       <normalon>:/icons/cursor_multi_Checked.png</normalon>:/icons/cursor_multi.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -104,7 +106,8 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/select_replaceMode.png</normaloff>:/icons/select_replaceMode.png</iconset>
+       <normaloff>:/icons/select_replaceMode.png</normaloff>
+       <normalon>:/icons/select_replaceMode_checked.png</normalon>:/icons/select_replaceMode.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -133,7 +136,8 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/select_addMode.png</normaloff>:/icons/select_addMode.png</iconset>
+       <normaloff>:/icons/select_addMode.png</normaloff>
+       <normalon>:/icons/select_addMode_checked.png</normalon>:/icons/select_addMode.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -159,7 +163,8 @@
      </property>
      <property name="icon">
       <iconset resource="../../resource.qrc">
-       <normaloff>:/icons/select_removeMode.png</normaloff>:/icons/select_removeMode.png</iconset>
+       <normaloff>:/icons/select_removeMode.png</normaloff>
+       <normalon>:/icons/select_removeMode_checked.png</normalon>:/icons/select_removeMode.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -258,7 +263,7 @@
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroupMode"/>
-  <buttongroup name="buttonGroupType"/>
   <buttongroup name="buttonGroupSelection"/>
+  <buttongroup name="buttonGroupType"/>
  </buttongroups>
 </ui>
