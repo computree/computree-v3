@@ -4,6 +4,8 @@
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
 
+#include <limits>
+
 DM_ElementInfoManager::DM_ElementInfoManager(CT_Repository::SyncCloudWith syncWith)
 {
     m_syncWith = syncWith;
