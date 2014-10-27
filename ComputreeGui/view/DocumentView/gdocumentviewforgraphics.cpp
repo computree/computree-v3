@@ -444,15 +444,6 @@ QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorC
 void GDocumentViewForGraphics::setUseColorCloud(bool use)
 {
     m_useColorCloud = use;
-
-    lock();
-
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setUseCloudColor(m_useColorCloud);
-
-    unlock();
 }
 
 bool GDocumentViewForGraphics::useColorCloud() const
@@ -495,15 +486,6 @@ QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::norma
 void GDocumentViewForGraphics::setUseNormalCloud(bool use)
 {
     m_useNormalCloud = use;
-
-    lock();
-
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setUseCloudNormal(m_useNormalCloud);
-
-    unlock();
 }
 
 bool GDocumentViewForGraphics::useNormalCloud() const

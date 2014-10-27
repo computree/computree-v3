@@ -63,9 +63,6 @@ public:
 
     virtual const DM_GraphicsViewOptions& getOptions() const;
 
-    virtual void setUseCloudColor(bool use) = 0;
-    virtual void setUseCloudNormal(bool use) = 0;
-
     virtual void lockPaint() = 0;
     virtual void unlockPaint() = 0;
 

@@ -529,7 +529,7 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
         {
             for(int z=0; z<s; ++z)
             {
-                const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+                const CT_AbstractCloudIndex *indexes = octree->at(x, y, z);
 
                 if(indexes != NULL)
                 {
@@ -598,25 +598,27 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         if(pci == NULL)
             return;
 
+        size_t indexCount = pci->size();
+
+        if(indexCount == 0)
+            return;
+
         startDrawMultiple();
 
         bool bindOk = bindPointShader(false);
-
-        const CT_AbstractPointCloudIndex *indexes = dynamic_cast<const CT_AbstractPointCloudIndex*>(pci);
 
         if(!m_gv->getOptions().useColor())
             setCurrentColor();
 
         size_t n = 0;
-        size_t indexCount = pci->size();
         size_t increment = 1;
+        size_t globalIndex;
 
         if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
             increment = fastestIncrement;
         else if((m_fastestIncrementPoint != 0) && drawFastest())
             increment = m_fastestIncrementPoint;
 
-        CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
         QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NPointCloud);
 
         DM_ElementInfoManager *infos = m_gv->pointsInformationManager();
@@ -629,48 +631,41 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                     && ((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE)))
             {
                 CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
-                if(it != end) {
+                beginDrawMultipleLine();
 
-                    beginDrawMultipleLine();
+                n = 0;
+                while(n < indexCount)
+                {
+                    pci->indexAt(n, globalIndex);
 
-                    n = 0;
-                    while(n < indexCount)
-                    {
-                        if(!infos->inlineIsInvisible(it.cIndex())) {
-                            glArrayElement(it.cIndex());
-                            glVertex3fv(nn->normalAt(it.cIndex()).vertex());
-                        }
-
-                        it += increment;
-                        n += increment;
+                    if(!infos->inlineIsInvisible(globalIndex)) {
+                        glArrayElement(globalIndex);
+                        glVertex3fv(nn->normalAt(globalIndex).vertex());
                     }
 
-                    endDrawMultipleLine();
+                    n += increment;
                 }
+
+                endDrawMultipleLine();
             }
 
             if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
             {
-                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+                beginMultiplePoints();
 
-                if(it != end) {
+                n = 0;
+                while(n < indexCount)
+                {
+                    pci->indexAt(n, globalIndex);
 
-                    beginMultiplePoints();
+                    if(!infos->inlineIsInvisible(globalIndex))
+                        glArrayElement(globalIndex);
 
-                    n = 0;
-                    while(n < indexCount)
-                    {
-                        if(!infos->inlineIsInvisible(it.cIndex()))
-                            glArrayElement(it.cIndex());
-
-                        it += increment;
-                        n += increment;
-                    }
-
-                    endMultiplePoints();
+                    n += increment;
                 }
+
+                endMultiplePoints();
             }
         }
         // NORMAL
@@ -682,25 +677,23 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
             {
 
                 CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
 
-                if(it != end) {
-                    beginDrawMultipleLine();
+                beginDrawMultipleLine();
 
-                    n = 0;
-                    while(n < indexCount)
-                    {
-                        if(!infos->inlineIsInvisible(it.cIndex())) {
-                            glArrayElement(it.cIndex());
-                            glVertex3fv(nn->normalAt(it.cIndex()).vertex());
-                        }
+                n = 0;
+                while(n < indexCount)
+                {
+                    pci->indexAt(n, globalIndex);
 
-                        ++it;
-                        ++n;
+                    if(!infos->inlineIsInvisible(globalIndex)) {
+                        glArrayElement(globalIndex);
+                        glVertex3fv(nn->normalAt(globalIndex).vertex());
                     }
 
-                    endDrawMultipleLine();
+                    ++n;
                 }
+
+                endDrawMultipleLine();
             }
 
             /*if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
@@ -724,21 +717,20 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
                 if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
                 {
-                    CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+                    beginMultiplePoints();
 
-                    if(it != end) {
-                        beginMultiplePoints();
+                    n = 0;
+                    while(n < indexCount)
+                    {
+                        pci->indexAt(n, globalIndex);
 
-                        while(it != end)
-                        {
-                            if(!infos->inlineIsInvisible(it.cIndex()))
-                                glArrayElement(it.cIndex());
+                        if(!infos->inlineIsInvisible(globalIndex))
+                            glArrayElement(globalIndex);
 
-                            ++it;
-                        }
-
-                        endMultiplePoints();
+                        ++n;
                     }
+
+                    endMultiplePoints();
                 }
             //}
         }

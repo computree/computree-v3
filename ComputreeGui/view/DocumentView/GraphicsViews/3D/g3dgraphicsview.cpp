@@ -65,8 +65,6 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     _2dActive = false;
     _forceDrawMode = false;
 
-    m_useColorCloud = true;
-
     _cameraController.setRealCamera(QGLViewer::camera());
     _cameraController.setView(this);
 
@@ -546,17 +544,6 @@ bool G3DGraphicsView::mustDrawFastestNow() const
     return (drawModeToUse() == FAST);
 }
 
-void G3DGraphicsView::setUseCloudColor(bool use)
-{
-    m_useColorCloud = use;
-}
-
-void G3DGraphicsView::setUseCloudNormal(bool use)
-{
-    _g.setUseNormalCloudForPoints(use);
-    _g.setUseNormalCloudForFaces(use);
-}
-
 DM_GraphicsViewCamera* G3DGraphicsView::getCamera() const
 {
     return (DM_GraphicsViewCamera*)&_cameraController;
@@ -932,10 +919,10 @@ void G3DGraphicsView::postDraw()
 
     drawOverlay(*m_painter);
 
-    /*m_painter->setPen(Qt::white);
+    m_painter->setPen(Qt::white);
     m_painter->drawText(10, 10, QString().setNum(m_fastestIncrementOptimizer.currentFPS()));
     m_painter->drawText(10, 20, QString().setNum(m_fastestIncrementOptimizer.fastestIncrement()));
-    m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
+    /*m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
 
     m_painter->end();
 
@@ -966,6 +953,8 @@ void G3DGraphicsView::drawInternal()
     _g.setColor(Qt::white);
     _g.setPointSize(getOptions().getPointSize());
     _g.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
+    _g.setUseNormalCloudForPoints(m_docGV->useNormalCloud());
+    _g.setUseNormalCloudForFaces(m_docGV->useNormalCloud());
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
@@ -974,8 +963,7 @@ void G3DGraphicsView::drawInternal()
     if(octreeC->hasElements() && !octreeC->mustBeReconstructed() && options.showOctree())
         _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawOctree);
 
-    // IF you uncomment this line you must add points selected to the selection manager otherwise
-    // elements selected wont be in selected color
+    //_g.setDrawOnly(G3DPainter::POINT_CLOUD);
     /*if(octreeC->hasElements() && !octreeC->mustBeReconstructed()) {
         _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawElements);
     } else  {*/
@@ -1016,11 +1004,11 @@ void G3DGraphicsView::drawInternal()
             else
             {
                 if(colorVBOManager() != NULL)
-                    colorVBOManager()->setUseColorCloud(m_useColorCloud);
+                    colorVBOManager()->setUseColorCloud(m_docGV->useColorCloud());
 
-                _g.setUseColorCloudForPoints(m_useColorCloud);
-                _g.setUseColorCloudForFaces(m_useColorCloud);
-                _g.setUseColorCloudForEdges(m_useColorCloud);
+                _g.setUseColorCloudForPoints(m_docGV->useColorCloud());
+                _g.setUseColorCloudForFaces(m_docGV->useColorCloud());
+                _g.setUseColorCloudForEdges(m_docGV->useColorCloud());
 
                 if(info != NULL)
                     _g.setColor(info->color());
@@ -1175,7 +1163,7 @@ void G3DGraphicsView::drawWithNames()
                 {
                     for(int z=0; z<s; ++z)
                     {
-                        const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octreeC->at(x, y, z));
+                        const CT_AbstractCloudIndex *indexes = octreeC->at(x, y, z);
 
                         if((indexes != NULL)/* && octreeC->isCellVisibleInFrustrum(x, y, z, planeCoefficients, entirely)*/)
                         {
@@ -1205,7 +1193,7 @@ void G3DGraphicsView::drawWithNames()
                             QRectF bounding = poly.boundingRect();
 
                             if(nnn == 8)
-                                m_idToAddInSelection << (CT_AbstractCloudIndexT<CT_Point>*)indexes;
+                                m_idToAddInSelection << dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>((CT_AbstractCloudIndex*)indexes);
                             else if ((nnn > 0)
                                      || bounding.contains(rect.topLeft())
                                      || bounding.contains(rect.topRight())

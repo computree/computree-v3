@@ -147,9 +147,6 @@ public:
     DM_GraphicsViewOptions::DrawFastestMode drawFastest() const;
     bool mustDrawFastestNow() const;
 
-    void setUseCloudColor(bool use);
-    void setUseCloudNormal(bool use);
-
     CameraInterface* camera() const { return getCamera(); }
     DM_GraphicsViewCamera* getCamera() const;
 
@@ -176,7 +173,6 @@ private:
     DrawMode                        _drawModeUsed;
     QTimer                          _timerChangeDrawMode;
     bool                            _2dActive;
-    bool                            m_useColorCloud;
     bool                            _forceDrawMode;
     G3DGraphicsViewSignalEmitter    m_signalEmitter;
     GLdouble                        m_planeCoefficients[6][4];
