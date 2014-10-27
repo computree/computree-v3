@@ -43,7 +43,7 @@
 
 class GDocumentViewForGraphics;
 class G3DGraphicsView;
-template<typename T> class DM_ColorSelectionManagerT;
+class DM_ElementInfoManager;
 
 class G3DGraphicsViewSignalEmitter : public GraphicsViewSignalEmitterInterface
 {
@@ -159,9 +159,9 @@ public:
 
     void showContextMenu(const QPoint &pos);
 
-    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>* pointsInformationManager() const;
-    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>* facesInformationManager() const;
-    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>* edgesInformationManager() const;
+    DM_ElementInfoManager* pointsInformationManager() const;
+    DM_ElementInfoManager* facesInformationManager() const;
+    DM_ElementInfoManager* edgesInformationManager() const;
 
 private:
 
@@ -184,12 +184,12 @@ private:
 
     QList<CT_AbstractCloudIndex*>   m_idToAddInSelection;
 
-    DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>      *m_pointsSelectionManager;
-    DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>        *m_facesSelectionManager;
-    DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>        *m_edgesSelectionManager;
+    DM_ElementInfoManager           *m_pointsSelectionManager;
+    DM_ElementInfoManager           *m_facesSelectionManager;
+    DM_ElementInfoManager           *m_edgesSelectionManager;
 
-    DM_FastestIncrementOptimizer                                m_fastestIncrementOptimizer;
-    DM_ColorVBOManager                                          *m_colorVboManager;
+    DM_FastestIncrementOptimizer    m_fastestIncrementOptimizer;
+    DM_ColorVBOManager              *m_colorVboManager;
 
     GLint viewport_[4];
     GLdouble modelViewMatrix_[16];
@@ -268,7 +268,6 @@ private slots:
 
     void setDrawModeStartTimerAndRedraw();
     void changeDrawMethodToNormal();
-    void initIndexCloudRegistered();
     void itemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
     void applyAttributes();
 };

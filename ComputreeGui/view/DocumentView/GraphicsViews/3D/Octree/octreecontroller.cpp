@@ -2,7 +2,7 @@
 
 #include "ct_cloudindex/ct_cloudindexstdvectort.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
 #include <qglviewer.h>
 #include <limits>

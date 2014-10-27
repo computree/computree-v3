@@ -688,30 +688,35 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
     double size = selected.size();
 
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = _view->getSelectedPoints();
-    CT_AbstractCloudIndex *index = selec->abstractModifiableCloudIndex();
 
-    size_t sizeP = index->size();
-    size_t increment = log10(sizeP);
-
-    if(increment < 3)
-        increment = 1;
-    else
-        increment = pow(10, increment)/10;
-
-    const CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
-
-    size_t i=0;
-
-    while(i<sizeP)
+    if(!selec.isNull()
+            && (selec->abstractModifiableCloudIndex() != NULL))
     {
-        const CT_Point &point = pc->constTAt(index->indexAt(i));
+        CT_AbstractCloudIndex *index = selec->abstractModifiableCloudIndex();
 
-        bx += point.getX();
-        by += point.getY();
-        bz += point.getZ();
+        size_t sizeP = index->size();
+        size_t increment = log10(sizeP);
 
-        ++size;
-        i += increment;
+        if(increment < 3)
+            increment = 1;
+        else
+            increment = pow(10, increment)/10;
+
+        const CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
+
+        size_t i=0;
+
+        while(i<sizeP)
+        {
+            const CT_Point &point = pc->constTAt(index->indexAt(i));
+
+            bx += point.getX();
+            by += point.getY();
+            bz += point.getZ();
+
+            ++size;
+            i += increment;
+        }
     }
 
     qglviewer::Vec vec;

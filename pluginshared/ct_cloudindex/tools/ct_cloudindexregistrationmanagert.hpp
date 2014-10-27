@@ -22,6 +22,9 @@ typename CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::CT_Abstract
 {
     QMutexLocker locker(this->m_mutex);
 
+    if(index == NULL)
+        return CT_AbstractModifiableCIR(NULL);
+
     CT_AbstractModifiableCIR cir = CT_AbstractModifiableCIR(this->template createNewIndexRegistered< CT_StandardModifiableCloudIndexRegisteredT<T>, CT_AbstractModifiableCloudIndexT<T> >(index));
 
     CT_AbstractCloudIndexRegistrationManagerT<T>::registerIndex(cir);

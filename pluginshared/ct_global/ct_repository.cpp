@@ -23,6 +23,9 @@
 #include "ct_mesh/cloud/ct_edgecloudindexvector.h"
 #include "ct_mesh/cloud/ct_facecloudindexvector.h"
 
+#include "ct_mesh/ct_face.h"
+#include "ct_mesh/ct_edge.h"
+
 #include <QMutexLocker>
 
 CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim)
@@ -103,6 +106,16 @@ CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::mergePointCloudContig
 CT_Repository::CT_AbstractModifiablePCIR CT_Repository::registerPointCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index)
 {
     return registerCloudIndex<CT_Point>(index);
+}
+
+CT_Repository::CT_AbstractModifiableFCIR CT_Repository::registerFaceCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index)
+{
+    return registerCloudIndex<CT_Face>(index);
+}
+
+CT_Repository::CT_AbstractModifiableECIR CT_Repository::registerEdgeCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index)
+{
+    return registerCloudIndex<CT_Edge>(index);
 }
 
 CT_AbstractPointCloud* CT_Repository::globalPointCloud() const

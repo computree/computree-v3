@@ -20,8 +20,6 @@ HEADERS += \
     tools/graphicsview/dm_pointofviewmanager.h \
     tools/guimanager/dm_asyncoperation.h \
     tools/treeview/dm_sortfiltermathproxymodel.h \
-    tools/graphicsview/dm_colorselectionmanagert.h \
-    tools/graphicsview/dm_colorselectionmanagert.hpp \
     tools/treeview/dm_actionshandlerfortreeview.h \
     tools/itemdrawable/dm_itemdrawablebuildert.h \
     tools/itemdrawable/dm_itemdrawablebuildert.hpp \
@@ -34,7 +32,8 @@ HEADERS += \
     tools/itemdrawable/dm_abstractitemdrawablebuilder.h \
     tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp \
     tools/treeview/dm_itemdrawabletreeviewmodelbuildert.hpp \
-    tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp
+    tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp \
+    tools/graphicsview/dm_elementinfomanager.h
 
 SOURCES += \
     tools/worker/dm_abstractworker.cpp \
@@ -54,5 +53,6 @@ SOURCES += \
     tools/guimanager/dm_asyncoperation.cpp \
     tools/treeview/dm_sortfiltermathproxymodel.cpp \
     tools/treeview/dm_actionshandlerfortreeview.cpp \
-    tools/treeview/dm_abstractitemtreeviewcontroller.cpp
+    tools/treeview/dm_abstractitemtreeviewcontroller.cpp \
+    tools/graphicsview/dm_elementinfomanager.cpp
 

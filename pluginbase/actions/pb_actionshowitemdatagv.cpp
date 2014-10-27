@@ -95,7 +95,8 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
     bool result = m_selectAction->mouseReleaseEvent(e);
 
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
-    if(pcir.data() != NULL)
+    if((pcir.data() != NULL)
+            && (pcir->abstractModifiableCloudIndex() != NULL))
     {
         CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
         size_t size = pci->size();
@@ -172,7 +173,8 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
 
-    if(pcir.data() != NULL)
+    if((pcir.data() != NULL)
+            && (pcir->abstractModifiableCloudIndex() != NULL))
     {
         CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
         size_t size = pci->size();
@@ -196,7 +198,8 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> fcir = graphicsView()->getSelectedFaces();
 
-    if(pcir.data() != NULL)
+    if((fcir.data() != NULL)
+            && (fcir->abstractModifiableCloudIndex() != NULL))
     {
         CT_AbstractModifiableCloudIndex *fci = fcir->abstractModifiableCloudIndex();
         size_t size = fci->size();
@@ -226,7 +229,8 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> ecir = graphicsView()->getSelectedEdges();
 
-    if(pcir.data() != NULL)
+    if((ecir.data() != NULL)
+            && (ecir->abstractModifiableCloudIndex() != NULL))
     {
         CT_AbstractModifiableCloudIndex *eci = ecir->abstractModifiableCloudIndex();
         size_t size = eci->size();

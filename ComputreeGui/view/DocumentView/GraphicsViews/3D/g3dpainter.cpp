@@ -31,7 +31,7 @@
 
 #include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
 
-#include "tools/graphicsview/dm_colorselectionmanagert.h"
+#include "tools/graphicsview/dm_elementinfomanager.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
@@ -51,19 +51,9 @@
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_FASTEST = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE);
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_NORMAL = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_NORMAL_SIZE);
 
-QT_GL_SHADER*           G3DPainter::SHADER_POINT = NULL;
-bool                    G3DPainter::SHADER_POINT_ERROR = false;
-QT_GL_SHADER*           G3DPainter::SHADER_FACE = NULL;
-bool                    G3DPainter::SHADER_FACE_ERROR = false;
-QT_GL_SHADER*           G3DPainter::SHADER_EDGE = NULL;
-bool                    G3DPainter::SHADER_EDGE_ERROR = false;
-
-int                     G3DPainter::N_3D_PAINTER = 0;
-
 G3DPainter::G3DPainter()
 {
     m_gv = NULL;
-    m_shaderProgPoint = NULL;
 
     _quadric = gluNewQuadric();
     _color = Qt::white;
@@ -71,15 +61,25 @@ G3DPainter::G3DPainter()
     _defaultPointSize = 1.0;
     _drawFastest = false;
 
-    ++N_3D_PAINTER;
-
     m_shaderProgPoint = new QT_GL_SHADERPROGRAM();
-    m_shaderProgFace = new QT_GL_SHADERPROGRAM();
-    m_shaderProgEdge = new QT_GL_SHADERPROGRAM();
+    /*m_shaderProgFace = new QT_GL_SHADERPROGRAM();
+    m_shaderProgEdge = new QT_GL_SHADERPROGRAM();*/
 
     m_shaderProgPointError = false;
-    m_shaderProgFaceError = false;
-    m_shaderProgEdgeError = false;
+    /*m_shaderProgFaceError = false;
+    m_shaderProgEdgeError = false;*/
+
+    m_ShaderPoint = NULL;
+    /*m_ShaderFace = NULL;
+    m_ShaderEdge = NULL;*/
+
+    m_shaderPointError = false;
+    /*m_shaderFaceError = false;
+    m_shaderEdgeError = false;*/
+
+    m_pointCloud = PS_REPOSITORY->globalCloud<CT_Point>();
+    m_faceCloud = PS_REPOSITORY->globalCloud<CT_Face>();
+    m_edgeCloud = PS_REPOSITORY->globalCloud<CT_Edge>();
 
     beginNewDraw();
 }
@@ -90,25 +90,16 @@ G3DPainter::~G3DPainter()
 
     delete m_shaderProgPoint;
     m_shaderProgPoint = NULL;
+    delete m_ShaderPoint;
 
-    delete m_shaderProgFace;
+    /*delete m_shaderProgFace;
     m_shaderProgFace = NULL;
+    delete m_ShaderFace;
 
     delete m_shaderProgEdge;
     m_shaderProgEdge = NULL;
+    delete m_ShaderEdge;*/
 
-    --N_3D_PAINTER;
-
-    if(N_3D_PAINTER == 0) {
-        delete SHADER_POINT;
-        SHADER_POINT = NULL;
-
-        delete SHADER_FACE;
-        SHADER_FACE = NULL;
-
-        delete SHADER_EDGE;
-        SHADER_EDGE = NULL;
-    }
 }
 
 void G3DPainter::setGraphicsView(const G3DGraphicsView *gv)
@@ -169,34 +160,59 @@ void G3DPainter::beginNewDraw()
 
     m_drawMultipleLine = false;
     m_drawMultipleTriangle = false;
+    m_drawMultiplePoint = false;
+
+    m_beginMultipleEnable = false;
 
     m_fastestIncrementPoint = 0;
 
     m_octreeCellsDraw = 0;
 
     m_shaderProgPointSet = false;
-    m_shaderProgFaceSet = false;
-    m_shaderProgEdgeSet = false;
+    /*m_shaderProgFaceSet = false;
+    m_shaderProgEdgeSet = false;*/
+
+    m_bindShaderPointOK = false;
+
+    // DRAW ALL elements
+    m_drawOnly = DRAW_ALL;
 }
 
 void G3DPainter::endNewDraw()
 {
+    resetDrawMultiple();
+}
+
+void G3DPainter::setDrawOnly(G3DPainter::MultiDrawableType type)
+{
+    resetDrawMultiple();
+
+    // the new type to draw
+    m_drawOnly = type;
+
+    startDrawMultiple();
 }
 
 void G3DPainter::save()
 {
+    stopDrawMultiple();
+
     glPushMatrix();
     glGetIntegerv(GL_POLYGON_MODE, &m_polygonMode);
 }
 
 void G3DPainter::restore()
 {
+    stopDrawMultiple();
+
     glPopMatrix();
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
 }
 
 void G3DPainter::startRestoreIdentityMatrix(GLdouble *matrix)
 {
+    stopDrawMultiple();
+
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -218,6 +234,8 @@ void G3DPainter::startRestoreIdentityMatrix(GLdouble *matrix)
 
 void G3DPainter::stopRestoreIdentityMatrix()
 {
+    stopDrawMultiple();
+
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
@@ -233,7 +251,10 @@ void G3DPainter::enableMultMatrix(bool e)
 void G3DPainter::pushMatrix()
 {
     if(_nCallEnablePushMatrix == 0)
+    {
+        stopDrawMultiple();
         glPushMatrix();
+    }
 }
 
 // add overloaded functions which call the underlying OpenGL function
@@ -246,19 +267,26 @@ inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
 void G3DPainter::multMatrix(const QMatrix4x4 &matrix)
 {
     if(_nCallEnablePushMatrix == 0)
+    {
+        stopDrawMultiple();
         glMultMatrix(matrix);
+    }
 }
 
 void G3DPainter::popMatrix()
 {
     if(_nCallEnablePushMatrix == 0)
+    {
+        stopDrawMultiple();
         glPopMatrix();
+    }
 }
 
 void G3DPainter::setPointSize(double size)
 {
     if(_nCallEnableSetPointSize == 0)
     {
+        stopDrawMultiple();
         glPointSize(size);
     }
 }
@@ -266,21 +294,22 @@ void G3DPainter::setPointSize(double size)
 void G3DPainter::setDefaultPointSize(double size)
 {
     if(_nCallEnableSetPointSize == 0)
-    {
         _defaultPointSize = size;
-    }
 }
 
 void G3DPainter::restoreDefaultPointSize()
 {
     if(_nCallEnableSetPointSize == 0)
     {
+        stopDrawMultiple();
         glPointSize(_defaultPointSize);
     }
 }
 
 void G3DPainter::restoreDefaultPen()
 {
+    stopDrawMultiple();
+
     glLineWidth(1);
     glDisable(GL_LINE_STIPPLE);
 
@@ -292,6 +321,8 @@ void G3DPainter::setPen(const QPen &pen)
 {
     if(_nCallEnableSetColor == 0)
     {
+        stopDrawMultiple();
+
         _color = pen.color();
         setCurrentColor();
 
@@ -418,16 +449,20 @@ void G3DPainter::enableSetForcedPointSize(bool enable)
 
 void G3DPainter::translate(double x, double y, double z)
 {
+    stopDrawMultiple();
     glTranslated(x, y, z);
 }
 
 void G3DPainter::rotate(double alpha, double x, double y, double z)
 {
+    stopDrawMultiple();
     glRotated(alpha, x, y, z);
 }
 
 void G3DPainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
 {
+    stopDrawMultiple();
+
     //direction is the direction you want the object to point at
     //up- first guess
     QVector3D up;
@@ -463,6 +498,8 @@ void G3DPainter::translateThenRotateToDirection(const QVector3D &translation, co
 
 void G3DPainter::scale(double x, double y, double z)
 {
+    stopDrawMultiple();
+
     glScaled(x, y, z);
 }
 
@@ -507,7 +544,7 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
 
                         if(modes.testFlag(DrawElements))
                         {
-                            drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                            drawPointCloud(NULL, indexes, 10);
                             glColor4ub(_color.red(), _color.green(), _color.blue(), _color.alpha());
                         }
 
@@ -521,11 +558,16 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
 
 void G3DPainter::drawPoint(double x, double y, double z)
 {
-    glBegin(GL_POINTS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
+    {
+        startDrawMultiple();
 
-    glVertex3d(x, y, z);
+        beginMultiplePoints();
 
-    glEnd();
+        glVertex3d(x, y, z);
+
+        endMultiplePoints();
+    }
 }
 
 void G3DPainter::drawPoint(double *p)
@@ -535,133 +577,174 @@ void G3DPainter::drawPoint(double *p)
 
 void G3DPainter::drawPoint(float *p)
 {
-    glBegin(GL_POINTS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
+    {
+        startDrawMultiple();
 
-    glVertex3f(p[0], p[1], p[2]);
+        beginMultiplePoints();
 
-    glEnd();
+        glVertex3f(p[0], p[1], p[2]);
+
+        endMultiplePoints();
+    }
 }
 
 void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
                                 const CT_AbstractCloudIndex *pci,
                                 int fastestIncrement)
 {
-    if((pc == NULL) || (pci == NULL))
-        return;
-
-    bool bindOk = bindPointShader();
-
-    const CT_AbstractPointCloudIndex *indexes = dynamic_cast<const CT_AbstractPointCloudIndex*>(pci);
-
-    if(!m_gv->getOptions().useColor())
-        setCurrentColor();
-
-    size_t n = 0;
-    size_t indexCount = pci->size();
-    size_t increment = 1;
-
-    if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
-        increment = fastestIncrement;
-    else if((m_fastestIncrementPoint != 0) && drawFastest())
-        increment = m_fastestIncrementPoint;
-
-    CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
-    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NPointCloud);
-
-    // FAST
-    if(increment > 1)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD) || (m_drawOnly == LINE))
     {
-        if(m_usePNormalCloud
-                && (normalCloud.data() != NULL))
+        if(pci == NULL)
+            return;
+
+        startDrawMultiple();
+
+        bool bindOk = bindPointShader(false);
+
+        const CT_AbstractPointCloudIndex *indexes = dynamic_cast<const CT_AbstractPointCloudIndex*>(pci);
+
+        if(!m_gv->getOptions().useColor())
+            setCurrentColor();
+
+        size_t n = 0;
+        size_t indexCount = pci->size();
+        size_t increment = 1;
+
+        if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
+            increment = fastestIncrement;
+        else if((m_fastestIncrementPoint != 0) && drawFastest())
+            increment = m_fastestIncrementPoint;
+
+        CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
+        QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NPointCloud);
+
+        DM_ElementInfoManager *infos = m_gv->pointsInformationManager();
+
+        // FAST
+        if(increment > 1)
         {
-            CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
-
-            if(it != end) {
-                n = 0;
-                glBegin(GL_LINES);
-                while(n < indexCount)
-                {
-                    glArrayElement(it.cIndex());
-                    glVertex3fv(nn->normalAt(it.cIndex()).vertex());
-                    it += increment;
-                    n += increment;
-                }
-                glEnd();
-            }
-        }
-
-        CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
-
-        if(it != end) {
-            n = 0;
-            glBegin(GL_POINTS);
-            while(n < indexCount)
+            if(m_usePNormalCloud
+                    && (normalCloud.data() != NULL)
+                    && ((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE)))
             {
-                glArrayElement(it.cIndex());
-                it += increment;
-                n += increment;
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
+                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+
+                if(it != end) {
+
+                    beginDrawMultipleLine();
+
+                    n = 0;
+                    while(n < indexCount)
+                    {
+                        if(!infos->inlineIsInvisible(it.cIndex())) {
+                            glArrayElement(it.cIndex());
+                            glVertex3fv(nn->normalAt(it.cIndex()).vertex());
+                        }
+
+                        it += increment;
+                        n += increment;
+                    }
+
+                    endDrawMultipleLine();
+                }
             }
-            glEnd();
+
+            if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
+            {
+                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+
+                if(it != end) {
+
+                    beginMultiplePoints();
+
+                    n = 0;
+                    while(n < indexCount)
+                    {
+                        if(!infos->inlineIsInvisible(it.cIndex()))
+                            glArrayElement(it.cIndex());
+
+                        it += increment;
+                        n += increment;
+                    }
+
+                    endMultiplePoints();
+                }
+            }
         }
-    }
-    // NORMAL
-    else
-    {
-        if(m_usePNormalCloud
-                && (normalCloud.data() != NULL))
+        // NORMAL
+        else
         {
-            CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+            if(m_usePNormalCloud
+                    && (normalCloud.data() != NULL)
+                    && ((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE)))
+            {
 
-            if(it != end) {
-                n = 0;
-                glBegin(GL_LINES);
-                while(n < indexCount)
-                {
-                    glArrayElement(it.cIndex());
-                    glVertex3fv(nn->normalAt(it.cIndex()).vertex());
-                    ++it;
-                    ++n;
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
+                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+
+                if(it != end) {
+                    beginDrawMultipleLine();
+
+                    n = 0;
+                    while(n < indexCount)
+                    {
+                        if(!infos->inlineIsInvisible(it.cIndex())) {
+                            glArrayElement(it.cIndex());
+                            glVertex3fv(nn->normalAt(it.cIndex()).vertex());
+                        }
+
+                        ++it;
+                        ++n;
+                    }
+
+                    endDrawMultipleLine();
                 }
-                glEnd();
             }
+
+            /*if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
+                size_t fn = pci->first();
+                size_t fnSize = pci->size();
+                size_t completeSize = fn + fnSize;
+                size_t maxVertices = 10000000;
+
+                if(maxVertices < fnSize)
+                    fnSize = maxVertices;
+
+                while(fnSize > 0) {
+                    glDrawArrays(GL_POINTS, fn, fnSize);
+                    fn += fnSize;
+
+                    if((fn + fnSize) >= completeSize)
+                        fnSize = completeSize-fn;
+                }
+
+            } else {*/
+
+                if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
+                {
+                    CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
+
+                    if(it != end) {
+                        beginMultiplePoints();
+
+                        while(it != end)
+                        {
+                            if(!infos->inlineIsInvisible(it.cIndex()))
+                                glArrayElement(it.cIndex());
+
+                            ++it;
+                        }
+
+                        endMultiplePoints();
+                    }
+                }
+            //}
         }
 
-        if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
-            size_t fn = pci->first();
-            size_t fnSize = pci->size();
-            size_t completeSize = fn + fnSize;
-            size_t maxVertices = 10000000;
-
-            if(maxVertices < fnSize)
-                fnSize = maxVertices;
-
-            while(fnSize > 0) {
-                glDrawArrays(GL_POINTS, fn, fnSize);
-                fn += fnSize;
-
-                if((fn + fnSize) >= completeSize)
-                    fnSize = completeSize-fn;
-            }
-
-        } else {
-
-            CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
-
-            if(it != end) {
-                glBegin(GL_POINTS);
-                while(it != end)
-                {
-                    glArrayElement(it.cIndex());
-                    ++it;
-                }
-                glEnd();
-            }
-        }
+        releasePointShader(bindOk);
     }
-
-    releasePointShader(bindOk);
 }
 
 void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
@@ -671,27 +754,36 @@ void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
 
 void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 {
-    if(mesh == NULL)
-        return;
-
-    bool bindOk = bindFaceShader();
-
-    if(!m_gv->getOptions().useColor())
-        setCurrentColor();
-
-    QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CFaceCloud);
-    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NFaceCloud);
-
-    // W/ colors cloud
-    if(m_useFColorCloud
-            && (colorCloud.data() != NULL))
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == FACE))
     {
+        if(mesh == NULL)
+            return;
+
         const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
 
-        if(fIndex != NULL)
-        {
-            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
+        if(fIndex == NULL)
+            return;
 
+        startDrawMultiple();
+
+        //bool bindOk = bindFaceShader();
+
+        if(!m_gv->getOptions().useColor())
+            setCurrentColor();
+
+        QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CFaceCloud);
+        QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NFaceCloud);
+        QColor selColor = m_gv->getOptions().getSelectedColor();
+        DM_ElementInfoManager *infos = m_gv->facesInformationManager();
+        size_t globalIndex;
+        size_t size = fIndex->size();
+
+        beginDrawMultipleTriangle();
+
+        // W/ colors cloud
+        if(m_useFColorCloud
+                && (colorCloud.data() != NULL))
+        {
             CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
 
             // W/ normals cloud
@@ -700,436 +792,574 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
             {
                 CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
 
-                size_t size = fIndex->size();
-                size_t index;
-
                 for(size_t i=0; i<size; ++i)
                 {
-                    fIndex->indexAt(i, index);
-                    const CT_Color &color = cc->constColorAt(index);
-                    glColor4ub(color.r, color.g, color.b, color.a);
-                    glNormal3fv(nn->normalAt(index).vertex());
+                    fIndex->indexAt(i, globalIndex);
 
-                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                    if(!infos->inlineIsInvisible(globalIndex))
+                    {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            const CT_Color &color = cc->constColorAt(globalIndex);
+                            glColor4ub(color.r, color.g, color.b, color.a);
+                        }
+
+                        glNormal3fv(nn->normalAt(globalIndex).vertex());
+
+                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        glArrayElement(face.iPointAt(0));
+                        glArrayElement(face.iPointAt(1));
+                        glArrayElement(face.iPointAt(2));
+                    }
                 }
             }
             // W/O normals cloud
             else
             {
-                size_t size = fIndex->size();
-
                 for(size_t i=0; i<size; ++i)
                 {
-                    const CT_Color &color = cc->constColorAt(fIndex->indexAt(i));
-                    glColor4ub(color.r, color.g, color.b, color.a);
+                    fIndex->indexAt(i, globalIndex);
 
-                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
+                    if(!infos->inlineIsInvisible(globalIndex))
+                    {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            const CT_Color &color = cc->constColorAt(globalIndex);
+                            glColor4ub(color.r, color.g, color.b, color.a);
+                        }
+
+                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        glArrayElement(face.iPointAt(0));
+                        glArrayElement(face.iPointAt(1));
+                        glArrayElement(face.iPointAt(2));
+                    }
                 }
             }
-
-            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
         }
-    }
-    else
-    {
-        // W/ normals cloud
-        if(m_useFNormalCloud
-                && (normalCloud.data() != NULL))
-        {
-            const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
-
-            if(fIndex != NULL)
-            {
-                ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleFace(*m_gv, *this);
-
-                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-
-                size_t size = fIndex->size();
-
-                for(size_t i=0; i<size; ++i)
-                {
-                    glNormal3fv(nn->normalAt(fIndex->indexAt(i)).vertex());
-
-                    ((CT_AbstractMeshModel*)mesh)->drawFaceAt(i, *m_gv, *this);
-                }
-
-                ((CT_AbstractMeshModel*)mesh)->endDrawMultipleFace(*m_gv, *this);
-            }
-        }
-        // W/O normals cloud
         else
         {
-            ((CT_AbstractMeshModel*)mesh)->drawFaces(*m_gv, *this);
-        }
-    }
+            // W/ normals cloud
+            if(m_useFNormalCloud
+                    && (normalCloud.data() != NULL))
+            {
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
 
-    releaseFaceShader(bindOk);
+                for(size_t i=0; i<size; ++i)
+                {
+                    fIndex->indexAt(i, globalIndex);
+
+                    if(!infos->inlineIsInvisible(globalIndex))
+                    {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            setCurrentColor();
+                        }
+
+                        glNormal3fv(nn->normalAt(globalIndex).vertex());
+
+                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        glArrayElement(face.iPointAt(0));
+                        glArrayElement(face.iPointAt(1));
+                        glArrayElement(face.iPointAt(2));
+                    }
+                }
+            }
+            // W/O normals cloud
+            else
+            {
+                for(size_t i=0; i<size; ++i)
+                {
+                    fIndex->indexAt(i, globalIndex);
+
+                    if(!infos->inlineIsInvisible(globalIndex))
+                    {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            setCurrentColor();
+                        }
+
+                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        glArrayElement(face.iPointAt(0));
+                        glArrayElement(face.iPointAt(1));
+                        glArrayElement(face.iPointAt(2));
+                    }
+                }
+            }
+        }
+
+        endDrawMultipleTriangle();
+
+        //releaseFaceShader(bindOk);
+    }
 }
 
 void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
 {
-    if(mesh == NULL)
-        return;
-
-    bool bindOk = bindEdgeShader();
-
-    if(!m_gv->getOptions().useColor())
-        setCurrentColor();
-
-    QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CEdgeCloud);
-    //QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NEdgeCloud);
-
-    if(m_useEColorCloud
-            && (colorCloud.data() != NULL))
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == EDGE))
     {
+        if(mesh == NULL)
+            return;
+
         const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
 
-        if(eIndex != NULL)
+        if(eIndex == NULL)
+            return;
+
+        startDrawMultiple();
+
+        //bool bindOk = bindEdgeShader();
+
+        if(!m_gv->getOptions().useColor())
+            setCurrentColor();
+
+        QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CEdgeCloud);
+        //QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NEdgeCloud);
+        QColor selColor = m_gv->getOptions().getSelectedColor();
+        DM_ElementInfoManager *infos = m_gv->edgesInformationManager();
+        size_t size = eIndex->size();
+        size_t globalIndex;
+
+        beginDrawMultipleLine();
+
+        if(m_useEColorCloud
+                && (colorCloud.data() != NULL))
         {
-            ((CT_AbstractMeshModel*)mesh)->beginDrawMultipleEdge(*m_gv, *this);
-
             CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
-
-            size_t size = eIndex->size();
 
             for(size_t i=0; i<size; ++i)
             {
-                const CT_Color &color = cc->constColorAt(eIndex->indexAt(i));
-                glColor4ub(color.r, color.g, color.b, color.a);
+                eIndex->indexAt(i, globalIndex);
 
-                ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(i, *m_gv, *this);
+                if(!infos->inlineIsInvisible(globalIndex))
+                {
+                    if(infos->inlineIsSelected(globalIndex)) {
+                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                    } else {
+                        const CT_Color &color = cc->constColorAt(globalIndex);
+                        glColor4ub(color.r, color.g, color.b, color.a);
+                    }
+
+                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    glArrayElement(edge.iPointAt(0));
+                    glArrayElement(edge.iPointAt(1));
+                }
             }
-
-            ((CT_AbstractMeshModel*)mesh)->endDrawMultipleEdge(*m_gv, *this);
         }
-    }
-    else
-    {
-        ((CT_AbstractMeshModel*)mesh)->drawEdges(*m_gv, *this);
-    }
+        else
+        {
+            for(size_t i=0; i<size; ++i)
+            {
+                eIndex->indexAt(i, globalIndex);
 
-    releaseEdgeShader(bindOk);
+                if(!infos->inlineIsInvisible(globalIndex))
+                {
+                    if(infos->inlineIsSelected(globalIndex)) {
+                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                    } else {
+                        setCurrentColor();
+                    }
+
+                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    glArrayElement(edge.iPointAt(0));
+                    glArrayElement(edge.iPointAt(1));
+                }
+            }
+        }
+
+        endDrawMultipleLine();
+        //releaseEdgeShader(bindOk);
+    }
 }
 
 void G3DPainter::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
 {
-    drawPointCloud(PS_REPOSITORY->globalPointCloud(), mesh->getPointCloudIndex(), fastestIncrement);
+    drawPointCloud(NULL, mesh->getPointCloudIndex(), fastestIncrement);
 }
 
 void G3DPainter::beginMultiplePoints()
 {
-   glBegin(GL_POINTS);
+    if(m_drawOnly == DRAW_ALL)
+        glBegin(GL_POINTS);
+
+    m_drawMultiplePoint = true;
 }
 
 void G3DPainter::addPoint(float *p)
 {
-    glVertex3fv(p);
+    startDrawMultiple();
+
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
+        glVertex3fv(p);
 }
 
 void G3DPainter::endMultiplePoints()
 {
-    glEnd();
+    if(m_drawOnly == DRAW_ALL)
+        glEnd();
+
+    m_drawMultiplePoint = false;
 }
 
 void G3DPainter::drawRectXY(const QRectF &rectangle, double z)
 {
-    glBegin(GL_LINE_LOOP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin(GL_LINE_LOOP);
 
         glVertex3d(rectangle.left(), rectangle.top(), z);
         glVertex3d(rectangle.right(), rectangle.top(), z);
         glVertex3d(rectangle.right(), rectangle.bottom(), z);
         glVertex3d(rectangle.left(), rectangle.bottom(), z);
 
-    glEnd();
+        glEnd();
+    }
 }
 
 void G3DPainter::fillRectXY(const QRectF &rectangle, double z)
 {
-    glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
+
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
 
         glVertex3d(rectangle.left(), rectangle.top(), z);
         glVertex3d(rectangle.right(), rectangle.top(), z);
         glVertex3d(rectangle.right(), rectangle.bottom(), z);
         glVertex3d(rectangle.left(), rectangle.bottom(), z);
 
-    glEnd();
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+    }
 }
 
 void G3DPainter::drawRectXZ(const QRectF &rectangle, double y)
 {
-    glBegin(GL_LINE_LOOP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin(GL_LINE_LOOP);
 
         glVertex3d(rectangle.left(), y, rectangle.top());
         glVertex3d(rectangle.right(), y, rectangle.top());
         glVertex3d(rectangle.right(), y, rectangle.bottom());
         glVertex3d(rectangle.left(), y, rectangle.bottom());
 
-    glEnd();
+        glEnd();
+    }
 }
 
 void G3DPainter::fillRectXZ(const QRectF &rectangle, double y)
 {
-    glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
 
-    glVertex3d(rectangle.left(), y, rectangle.top());
-    glVertex3d(rectangle.right(), y, rectangle.top());
-    glVertex3d(rectangle.right(), y, rectangle.bottom());
-    glVertex3d(rectangle.left(), y, rectangle.bottom());
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
 
-    glEnd();
+        glVertex3d(rectangle.left(), y, rectangle.top());
+        glVertex3d(rectangle.right(), y, rectangle.top());
+        glVertex3d(rectangle.right(), y, rectangle.bottom());
+        glVertex3d(rectangle.left(), y, rectangle.bottom());
+
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+    }
 }
 
 void G3DPainter::drawRectYZ(const QRectF &rectangle, double x)
 {
-    glBegin(GL_LINE_LOOP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin(GL_LINE_LOOP);
 
         glVertex3d(x, rectangle.left(), rectangle.top());
         glVertex3d(x, rectangle.right(), rectangle.top());
         glVertex3d(x, rectangle.right(), rectangle.bottom());
         glVertex3d(x, rectangle.left(), rectangle.bottom());
 
-    glEnd();
+        glEnd();
+    }
 }
 
 void G3DPainter::fillRectYZ(const QRectF &rectangle, double x)
 {
-    glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
 
-    glVertex3d(x, rectangle.left(), rectangle.top());
-    glVertex3d(x, rectangle.right(), rectangle.top());
-    glVertex3d(x, rectangle.right(), rectangle.bottom());
-    glVertex3d(x, rectangle.left(), rectangle.bottom());
-    glEnd();
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
+
+        glVertex3d(x, rectangle.left(), rectangle.top());
+        glVertex3d(x, rectangle.right(), rectangle.top());
+        glVertex3d(x, rectangle.right(), rectangle.bottom());
+        glVertex3d(x, rectangle.left(), rectangle.bottom());
+
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+    }
 }
 
 void G3DPainter::beginPolygon()
 {
-    glBegin(GL_LINE_STRIP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+        glBegin(GL_LINE_STRIP);
 }
 
 void G3DPainter::addPointToPolygon(float *p)
 {
-    glVertex3fv(p);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+        glVertex3fv(p);
 }
 
 void G3DPainter::endPolygon()
 {
-    glEnd();
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+        glEnd();
 }
 
 void G3DPainter::beginDrawMultipleLine()
 {
-    glBegin(GL_LINES);
+    if(m_drawOnly == DRAW_ALL)
+        glBegin(GL_LINES);
+
     m_drawMultipleLine = true;
 }
 
 void G3DPainter::drawLine(double x1, double y1, double z1, double x2, double y2, double z2)
 {
-    if(m_drawMultipleLine)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE))
     {
-        glVertex3d(x1, y1, z1);
-        glVertex3d(x2, y2, z2);
-    }
-    else
-    {
-        glBegin(GL_LINES);
+        startDrawMultiple();
+
+        beginDrawMultipleLine();
 
         glVertex3d(x1, y1, z1);
         glVertex3d(x2, y2, z2);
 
-        glEnd();
+        endDrawMultipleLine();
     }
 }
 
 void G3DPainter::drawLine(const float *p1, const float *p2)
 {
-    if(m_drawMultipleLine)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE))
     {
+        startDrawMultiple();
+
+        beginDrawMultipleLine();
+
         glVertex3fv(p1);
         glVertex3fv(p2);
-    }
-    else
-    {
-        glVertex3fv(p1);
-        glVertex3fv(p2);
+
+        endDrawMultipleLine();
     }
 }
 
 void G3DPainter::endDrawMultipleLine()
 {
-    glEnd();
+    if(m_drawOnly == DRAW_ALL)
+        glEnd();
+
     m_drawMultipleLine = false;
 }
 
 void G3DPainter::drawCircle(double x, double y, double z, double radius)
 {
-    QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
-
-    if(_drawFastest)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
-        cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(_drawFastest)
+        {
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+        }
+
+        int size = cosSinA->size();
+
+        glBegin(GL_LINE_LOOP);
+
+        float inc = M_PI_MULT_2/((double)size);
+        float a = -M_PI;
+
+        for(int i=0; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            glVertex3d((pair.first*radius) + x, (pair.second*radius) + y, z);
+            a += inc;
+        }
+
+        glEnd();
     }
-
-    int size = cosSinA->size();
-
-    glBegin(GL_LINE_LOOP);
-
-    float inc = M_PI_MULT_2/((double)size);
-    float a = -M_PI;
-
-    for(int i=0; i<size; ++i)
-    {
-        const QPair<double, double> &pair = (*cosSinA)[i];
-
-        glVertex3d((pair.first*radius) + x, (pair.second*radius) + y, z);
-        a += inc;
-    }
-
-    glEnd();
 }
 
 void G3DPainter::drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius)
 {
-    QVector3D u(0,0,0);
-
-    if(fabs(direction.x()) >= fabs(direction.y()))
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
-        double factor = 1.0/sqrt(direction.x()*direction.x()+direction.z()*direction.z());
-        u.setX(-direction.z()*factor);
-        u.setZ(direction.x()*factor);
+        QVector3D u(0,0,0);
+
+        if(fabs(direction.x()) >= fabs(direction.y()))
+        {
+            double factor = 1.0/sqrt(direction.x()*direction.x()+direction.z()*direction.z());
+            u.setX(-direction.z()*factor);
+            u.setZ(direction.x()*factor);
+        }
+        else
+        {
+            double factor = 1.0/sqrt(direction.y()*direction.y()+direction.z()*direction.z());
+            u.setY(direction.z()*factor);
+            u.setZ(-direction.y()*factor);
+        }
+
+        QVector3D v = QVector3D::crossProduct(direction, u);
+        v.normalize();
+
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(_drawFastest)
+        {
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+        }
+
+        int size = cosSinA->size();
+
+        glBegin(GL_LINE_LOOP);
+
+        for(int i=0; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            glVertex3d(center.x() + (radius*pair.first)*u.x() + (radius*pair.second)*v.x(),
+                       center.y() + (radius*pair.first)*u.y() + (radius*pair.second)*v.y(),
+                       center.z() + (radius*pair.first)*u.z() + (radius*pair.second)*v.z());
+        }
+
+        glEnd();
     }
-    else
-    {
-        double factor = 1.0/sqrt(direction.y()*direction.y()+direction.z()*direction.z());
-        u.setY(direction.z()*factor);
-        u.setZ(-direction.y()*factor);
-    }
-
-    QVector3D v = QVector3D::crossProduct(direction, u);
-    v.normalize();
-
-    QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
-
-    if(_drawFastest)
-    {
-        cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
-    }
-
-    int size = cosSinA->size();
-
-    glBegin(GL_LINE_LOOP);
-
-    for(int i=0; i<size; ++i)
-    {
-        const QPair<double, double> &pair = (*cosSinA)[i];
-
-        glVertex3d(center.x() + (radius*pair.first)*u.x() + (radius*pair.second)*v.x(),
-                   center.y() + (radius*pair.first)*u.y() + (radius*pair.second)*v.y(),
-                   center.z() + (radius*pair.first)*u.z() + (radius*pair.second)*v.z());
-    }
-
-    glEnd();
 }
 
 void G3DPainter::drawCylinder(double x, double y, double z, double radius, double height)
 {
-    save();
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        save();
 
-    translate(x, y, z);
+        translate(x, y, z);
 
-    gluCylinder(_quadric, radius, radius, height, 20, 1);
+        gluCylinder(_quadric, radius, radius, height, 20, 1);
 
-    restore();
+        restore();
+    }
 }
 
 void G3DPainter::drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height)
 {
-    save();
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        save();
 
-    float delta = - height/2.0;
-    translateThenRotateToDirection(QVector3D(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
+        float delta = - height/2.0;
+        translateThenRotateToDirection(QVector3D(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
 
-    gluCylinder(_quadric, radius, radius, height, 20, 1);
+        gluCylinder(_quadric, radius, radius, height, 20, 1);
 
-    restore();
+        restore();
+    }
 }
 
 void G3DPainter::drawEllipse(double x, double y, double z, double radiusA, double radiusB)
 {
-    QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
-
-    if(_drawFastest)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
-        cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(_drawFastest)
+        {
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+        }
+
+        int size = cosSinA->size();
+
+        glBegin(GL_LINE_LOOP);
+
+        for(int i=0; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            glVertex3d((pair.first*radiusA)+x,
+                       (pair.second*radiusB)+y,
+                       z);
+        }
+
+        glEnd();
     }
-
-    int size = cosSinA->size();
-
-    glBegin(GL_LINE_LOOP);
-
-    for(int i=0; i<size; ++i)
-    {
-        const QPair<double, double> &pair = (*cosSinA)[i];
-
-        glVertex3d((pair.first*radiusA)+x,
-                   (pair.second*radiusB)+y,
-                   z);
-    }
-
-    glEnd();
 }
 
 void G3DPainter::beginDrawMultipleTriangle()
 {
-    glBegin( GL_TRIANGLES );
+    if(m_drawOnly == DRAW_ALL)
+        glBegin( GL_TRIANGLES );
+
     m_drawMultipleTriangle = true;
 }
 
 void G3DPainter::drawTriangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3)
 {
-    if(m_drawMultipleTriangle)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == TRIANGLE))
     {
+        startDrawMultiple();
+
+        beginDrawMultipleTriangle();
+
         glVertex3d(x1, y1, z1);
         glVertex3d(x2, y2, z2);
         glVertex3d(x3, y3, z3);
-    }
-    else
-    {
-        glBegin( GL_TRIANGLES );
-        glVertex3d(x1, y1, z1);
-        glVertex3d(x2, y2, z2);
-        glVertex3d(x3, y3, z3);
-        glEnd();
+
+        endDrawMultipleTriangle();
     }
 }
 
 void G3DPainter::drawTriangle(const float *p1, const float *p2, const float *p3)
 {
-    if(m_drawMultipleTriangle)
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == TRIANGLE))
     {
+        startDrawMultiple();
+
+        beginDrawMultipleTriangle();
+
         glVertex3fv(p1);
         glVertex3fv(p2);
         glVertex3fv(p3);
-    }
-    else
-    {
-        glBegin( GL_TRIANGLES );
-        glVertex3fv(p1);
-        glVertex3fv(p2);
-        glVertex3fv(p3);
-        glEnd();
+
+        endDrawMultipleTriangle();
     }
 }
 
 void G3DPainter::endDrawMultipleTriangle()
 {
-    glEnd();
+    if(m_drawOnly == DRAW_ALL)
+        glEnd();
+
     m_drawMultipleTriangle = false;
 }
 
 void G3DPainter::drawCube(double x1, double y1, double z1, double x2, double y2, double z2)
 {
-    glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
+
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
+
         // Bottom
         glVertex3f(x1, y1, z1);
         glVertex3f(x2, y1, z1);
@@ -1165,78 +1395,87 @@ void G3DPainter::drawCube(double x1, double y1, double z1, double x2, double y2,
         glVertex3f(x2, y2, z1);
         glVertex3f(x2, y2, z2);
         glVertex3f(x1, y2, z2);
-    glEnd();
+
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+    }
 }
 
 void G3DPainter::drawPyramid(double topX, double topY, double topZ, double base1X, double base1Y, double base1Z, double base2X, double base2Y, double base2Z, double base3X, double base3Y, double base3Z, double base4X, double base4Y, double base4Z)
 {
-    glBegin( GL_TRIANGLE_FAN );
-        glVertex3f(topX, topY, topZ);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin( GL_TRIANGLE_FAN );
+            glVertex3f(topX, topY, topZ);
 
-        glVertex3f(base1X, base1Y, base1Z);
-        glVertex3f(base2X, base2Y, base2Z);
-        glVertex3f(base3X, base3Y, base3Z);
-        glVertex3f(base4X, base4Y, base4Z);
+            glVertex3f(base1X, base1Y, base1Z);
+            glVertex3f(base2X, base2Y, base2Z);
+            glVertex3f(base3X, base3Y, base3Z);
+            glVertex3f(base4X, base4Y, base4Z);
 
-        glVertex3f(base1X, base1Y, base1Z);
-    glEnd();
+            glVertex3f(base1X, base1Y, base1Z);
+        glEnd();
 
-    glBegin( GL_QUADS );
-        glVertex3f(base1X, base1Y, base1Z);
-        glVertex3f(base2X, base2Y, base2Z);
-        glVertex3f(base3X, base3Y, base3Z);
-        glVertex3f(base4X, base4Y, base4Z);
-    glEnd();
+        glBegin( GL_QUADS );
+            glVertex3f(base1X, base1Y, base1Z);
+            glVertex3f(base2X, base2Y, base2Z);
+            glVertex3f(base3X, base3Y, base3Z);
+            glVertex3f(base4X, base4Y, base4Z);
+        glEnd();
+    }
 }
 
 void G3DPainter::drawPartOfSphere(double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians)
 {
-    if ( !radians )
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
-        initTheta *= M_PI/180.0;
-        endTheta *= M_PI/180.0;
-        initPhi *= M_PI/180.0;
-        endPhi *= M_PI/180.0;
-    }
-
-    float nbSteps = 60;
-    float stepTheta = fabs(endTheta-initTheta) / nbSteps;
-    float stepPhi = fabs(endPhi-initPhi) / nbSteps;
-
-    float cosPhi, sinPhi, cosTheta, sinTheta;
-
-    for ( float currentTheta = initTheta ; currentTheta <= endTheta ;  currentTheta += stepTheta )
-    {
-        glBegin( GL_LINE_STRIP );
-        for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
+        if ( !radians )
         {
-                sinPhi = sin (currentPhi);
-                cosPhi = cos (currentPhi);
-                sinTheta = sin (currentTheta);
-                cosTheta = cos (currentTheta);
-
-                glVertex3f( radius*sinPhi*cosTheta + centerX,
-                            radius*sinPhi*sinTheta + centerY,
-                            radius*cosPhi + centerZ);
+            initTheta *= M_PI/180.0;
+            endTheta *= M_PI/180.0;
+            initPhi *= M_PI/180.0;
+            endPhi *= M_PI/180.0;
         }
-        glEnd();
-    }
 
-    for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
-    {
-        glBegin( GL_LINE_STRIP );
+        float nbSteps = 60;
+        float stepTheta = fabs(endTheta-initTheta) / nbSteps;
+        float stepPhi = fabs(endPhi-initPhi) / nbSteps;
+
+        float cosPhi, sinPhi, cosTheta, sinTheta;
+
         for ( float currentTheta = initTheta ; currentTheta <= endTheta ;  currentTheta += stepTheta )
         {
-                sinPhi = sin (currentPhi);
-                cosPhi = cos (currentPhi);
-                sinTheta = sin (currentTheta);
-                cosTheta = cos (currentTheta);
+            glBegin( GL_LINE_STRIP );
+            for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
+            {
+                    sinPhi = sin (currentPhi);
+                    cosPhi = cos (currentPhi);
+                    sinTheta = sin (currentTheta);
+                    cosTheta = cos (currentTheta);
 
-                glVertex3f( radius*sinPhi*cosTheta + centerX,
-                            radius*sinPhi*sinTheta + centerY,
-                            radius*cosPhi + centerZ);
+                    glVertex3f( radius*sinPhi*cosTheta + centerX,
+                                radius*sinPhi*sinTheta + centerY,
+                                radius*cosPhi + centerZ);
+            }
+            glEnd();
         }
-        glEnd();
+
+        for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
+        {
+            glBegin( GL_LINE_STRIP );
+            for ( float currentTheta = initTheta ; currentTheta <= endTheta ;  currentTheta += stepTheta )
+            {
+                    sinPhi = sin (currentPhi);
+                    cosPhi = cos (currentPhi);
+                    sinTheta = sin (currentTheta);
+                    cosTheta = cos (currentTheta);
+
+                    glVertex3f( radius*sinPhi*cosTheta + centerX,
+                                radius*sinPhi*sinTheta + centerY,
+                                radius*cosPhi + centerZ);
+            }
+            glEnd();
+        }
     }
 }
 
@@ -1245,14 +1484,21 @@ void G3DPainter::fillQuadFace(float x1, float y1, float z1,
                                float x3, float y3, float z3,
                                float x4, float y4, float z4)
 {
-     glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
 
-         glVertex3d(x1, y1, z1 );
-         glVertex3d(x2, y2, z2 );
-         glVertex3d(x3, y3, z3 );
-         glVertex3d(x4, y4, z4 );
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
 
-     glEnd();
+        glVertex3d(x1, y1, z1 );
+        glVertex3d(x2, y2, z2 );
+        glVertex3d(x3, y3, z3 );
+        glVertex3d(x4, y4, z4 );
+
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+    }
 }
 
 void G3DPainter::fillQuadFace(float x1, float y1, float z1, int r1, int g1, int b1,
@@ -1260,21 +1506,28 @@ void G3DPainter::fillQuadFace(float x1, float y1, float z1, int r1, int g1, int 
                                float x3, float y3, float z3, int r3, int g3, int b3,
                                float x4, float y4, float z4, int r4, int g4, int b4)
 {
-     glBegin(GL_QUADS);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
+    {
+        startDrawMultiple();
 
-         glColor3ub(r1, g1, b1);
-         glVertex3d(x1, y1, z1 );
+        if(m_drawOnly == DRAW_ALL)
+            glBegin(GL_QUADS);
 
-         glColor3ub(r2, g2, b2);
-         glVertex3d(x2, y2, z2 );
+        glColor3ub(r1, g1, b1);
+        glVertex3d(x1, y1, z1 );
 
-         glColor3ub(r3, g3, b3);
-         glVertex3d(x3, y3, z3 );
+        glColor3ub(r2, g2, b2);
+        glVertex3d(x2, y2, z2 );
 
-         glColor3ub(r4, g4, b4);
-         glVertex3d(x4, y4, z4 );
+        glColor3ub(r3, g3, b3);
+        glVertex3d(x3, y3, z3 );
 
-         glEnd();
+        glColor3ub(r4, g4, b4);
+        glVertex3d(x4, y4, z4 );
+
+        if(m_drawOnly == DRAW_ALL)
+            glEnd();
+     }
 }
 
 void G3DPainter::drawQuadFace(float x1, float y1, float z1,
@@ -1282,14 +1535,17 @@ void G3DPainter::drawQuadFace(float x1, float y1, float z1,
                                float x3, float y3, float z3,
                                float x4, float y4, float z4)
 {
-     glBegin(GL_LINE_STRIP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin(GL_LINE_STRIP);
 
-         glVertex3d(x1, y1, z1 );
-         glVertex3d(x2, y2, z2 );
-         glVertex3d(x3, y3, z3 );
-         glVertex3d(x4, y4, z4 );
+        glVertex3d(x1, y1, z1 );
+        glVertex3d(x2, y2, z2 );
+        glVertex3d(x3, y3, z3 );
+        glVertex3d(x4, y4, z4 );
 
-     glEnd();
+        glEnd();
+    }
 }
 
 void G3DPainter::drawQuadFace(float x1, float y1, float z1, int r1, int g1, int b1,
@@ -1297,21 +1553,24 @@ void G3DPainter::drawQuadFace(float x1, float y1, float z1, int r1, int g1, int 
                                float x3, float y3, float z3, int r3, int g3, int b3,
                                float x4, float y4, float z4, int r4, int g4, int b4)
 {
-     glBegin(GL_LINE_STRIP);
+    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    {
+        glBegin(GL_LINE_STRIP);
 
-         glColor3ub(r1, g1, b1);
-         glVertex3d(x1, y1, z1 );
+        glColor3ub(r1, g1, b1);
+        glVertex3d(x1, y1, z1 );
 
-         glColor3ub(r2, g2, b2);
-         glVertex3d(x2, y2, z2 );
+        glColor3ub(r2, g2, b2);
+        glVertex3d(x2, y2, z2 );
 
-         glColor3ub(r3, g3, b3);
-         glVertex3d(x3, y3, z3 );
+        glColor3ub(r3, g3, b3);
+        glVertex3d(x3, y3, z3 );
 
-         glColor3ub(r4, g4, b4);
-         glVertex3d(x4, y4, z4 );
+        glColor3ub(r4, g4, b4);
+        glVertex3d(x4, y4, z4 );
 
-     glEnd();
+        glEnd();
+    }
 }
 
 
@@ -1321,29 +1580,26 @@ void G3DPainter::initPointShader()
 {
     if(QT_GL_CONTEXT::currentContext() != NULL)
     {
-        if(!SHADER_POINT_ERROR)
+        if(!m_shaderPointError && m_ShaderPoint == NULL)
         {
-            if(SHADER_POINT == NULL)
+            m_ShaderPoint = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+            if(!m_ShaderPoint->compileSourceFile("./shaders/points.vert"))
             {
-                SHADER_POINT = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(m_ShaderPoint->log()));
 
-                if(!SHADER_POINT->compileSourceFile("./shaders/points.vert"))
-                {
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(SHADER_POINT->log()));
+                delete m_ShaderPoint;
+                m_ShaderPoint = NULL;
 
-                    delete SHADER_POINT;
-                    SHADER_POINT = NULL;
-
-                    SHADER_POINT_ERROR = true;
-                }
+                m_shaderPointError = true;
             }
         }
 
-        if(!SHADER_POINT_ERROR
+        if(!m_shaderPointError
                 && !m_shaderProgPointError
                 && m_shaderProgPoint->shaders().isEmpty())
         {
-            m_shaderProgPointError = !m_shaderProgPoint->addShader(SHADER_POINT);
+            m_shaderProgPointError = !m_shaderProgPoint->addShader(m_ShaderPoint);
 
             if(!m_shaderProgPointError && !m_shaderProgPoint->link())
             {
@@ -1354,33 +1610,30 @@ void G3DPainter::initPointShader()
     }
 }
 
-void G3DPainter::initFaceShader()
+/*void G3DPainter::initFaceShader()
 {
     if(QT_GL_CONTEXT::currentContext() != NULL)
     {
-        if(!SHADER_FACE_ERROR)
+        if(!m_shaderFaceError && (m_ShaderFace == NULL))
         {
-            if(SHADER_FACE == NULL)
+            m_ShaderFace = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+            if(!m_ShaderFace->compileSourceFile("./shaders/faces.vert"))
             {
-                SHADER_FACE = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Vertex shader compilation error : %1").arg(m_ShaderFace->log()));
 
-                if(!SHADER_FACE->compileSourceFile("./shaders/faces.vert"))
-                {
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Vertex shader compilation error : %1").arg(SHADER_FACE->log()));
+                delete m_ShaderFace;
+                m_ShaderFace = NULL;
 
-                    delete SHADER_FACE;
-                    SHADER_FACE = NULL;
-
-                    SHADER_FACE_ERROR = true;
-                }
+                m_shaderFaceError = true;
             }
         }
 
-        if(!SHADER_FACE_ERROR
+        if(!m_shaderFaceError
                 && !m_shaderProgFaceError
                 && m_shaderProgFace->shaders().isEmpty())
         {
-            m_shaderProgFaceError = !m_shaderProgFace->addShader(SHADER_FACE);
+            m_shaderProgFaceError = !m_shaderProgFace->addShader(m_ShaderFace);
 
             if(!m_shaderProgFaceError && !m_shaderProgFace->link())
             {
@@ -1395,29 +1648,26 @@ void G3DPainter::initEdgeShader()
 {
     if(QT_GL_CONTEXT::currentContext() != NULL)
     {
-        if(!SHADER_EDGE_ERROR)
+        if(!m_shaderEdgeError && (m_ShaderEdge == NULL))
         {
-            if(SHADER_EDGE == NULL)
+            m_ShaderEdge = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+            if(!m_ShaderEdge->compileSourceFile("./shaders/edges.vert"))
             {
-                SHADER_EDGE = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Vertex shader compilation error : %1").arg(m_ShaderEdge->log()));
 
-                if(!SHADER_EDGE->compileSourceFile("./shaders/faces.vert"))
-                {
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Vertex shader compilation error : %1").arg(SHADER_EDGE->log()));
+                delete m_ShaderEdge;
+                m_ShaderEdge = NULL;
 
-                    delete SHADER_EDGE;
-                    SHADER_EDGE = NULL;
-
-                    SHADER_EDGE_ERROR = true;
-                }
+                m_shaderEdgeError = true;
             }
         }
 
-        if(!SHADER_EDGE_ERROR
+        if(!m_shaderEdgeError
                 && !m_shaderProgEdgeError
                 && m_shaderProgEdge->shaders().isEmpty())
         {
-            m_shaderProgEdgeError = !m_shaderProgEdge->addShader(SHADER_EDGE);
+            m_shaderProgEdgeError = !m_shaderProgEdge->addShader(m_ShaderEdge);
 
             if(!m_shaderProgEdgeError && !m_shaderProgEdge->link())
             {
@@ -1426,50 +1676,54 @@ void G3DPainter::initEdgeShader()
             }
         }
     }
-}
+}*/
 
-bool G3DPainter::bindPointShader()
+bool G3DPainter::bindPointShader(bool force)
 {
-    initPointShader();
-
-    if(!SHADER_POINT_ERROR
-            && !m_shaderProgPointError
-            && (QT_GL_CONTEXT::currentContext() != NULL))
+    if((m_drawOnly != POINT_CLOUD) || force)
     {
-        if(!m_shaderProgPoint->bind())
+        initPointShader();
+
+        if(!m_shaderPointError
+                && !m_shaderProgPointError
+                && (QT_GL_CONTEXT::currentContext() != NULL))
         {
-            QString log;
-            QString tmp;
+            if(!m_shaderProgPoint->bind())
+            {
+                QString log;
+                QString tmp;
 
-            while(!(tmp = m_shaderProgPoint->log()).isEmpty())
-                log += tmp;
+                while(!(tmp = m_shaderProgPoint->log()).isEmpty())
+                    log += tmp;
 
-            if(!log.isEmpty())
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Bind error : %1").arg(m_shaderProgPoint->log()));
+                if(!log.isEmpty())
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Bind error : %1").arg(m_shaderProgPoint->log()));
 
-            m_shaderProgPointError = true;
-        }
-        else
-        {
-            if(!m_shaderProgPointSet) {
-                QColor sColor = m_gv->getOptions().getSelectedColor();
-                m_shaderProgPoint->setUniformValue("selectionColor", QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
-
-                m_shaderProgPoint->setUniformValue("checkSelected", (GLuint)m_gv->pointsInformationManager()->checkSelected());
-                m_shaderProgPoint->setUniformValue("checkInvisible", (GLuint)m_gv->pointsInformationManager()->checkInvisible());
-
-                m_shaderProgPoint->enableAttributeArray("info");
-                CT_StandardCloudStdVectorT<GLuint> *infos = m_gv->pointsInformationManager()->informations();
-                int loc = m_shaderProgPoint->attributeLocation("info");
-                glVertexAttribPointer(loc, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &infos->constTAt(0));
-
-                m_shaderProgPointSet = true;
-
-            } else {
-                m_shaderProgPoint->enableAttributeArray("info");
+                m_shaderProgPointError = true;
             }
+            else
+            {
+                if(!m_shaderProgPointSet) {
+                    if(m_gv->pointsInformationManager()->informations()->size() > 0)
+                    {
+                        QColor sColor = m_gv->getOptions().getSelectedColor();
+                        m_shaderProgPoint->setUniformValue("selectionColor", QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
 
-            return true;
+                        m_shaderProgPoint->setUniformValue("checkSelected", (GLuint)m_gv->pointsInformationManager()->checkSelected());
+
+                        m_shaderProgPoint->enableAttributeArray("info");
+                        int loc = m_shaderProgPoint->attributeLocation("info");
+                        glVertexAttribPointer(loc, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+
+                        m_shaderProgPointSet = true;
+                    }
+
+                } else {
+                    m_shaderProgPoint->enableAttributeArray("info");
+                }
+
+                return true;
+            }
         }
     }
 
@@ -1485,11 +1739,11 @@ void G3DPainter::releasePointShader(bool bindOk)
     }
 }
 
-bool G3DPainter::bindFaceShader()
+/*bool G3DPainter::bindFaceShader()
 {
     initFaceShader();
 
-    if(!SHADER_FACE_ERROR
+    if(!m_shaderFaceError
             && !m_shaderProgFaceError
             && (QT_GL_CONTEXT::currentContext() != NULL))
     {
@@ -1525,7 +1779,7 @@ bool G3DPainter::bindEdgeShader()
 {
     initEdgeShader();
 
-    if(!SHADER_EDGE_ERROR
+    if(!m_shaderEdgeError
             && !m_shaderProgEdgeError
             && (QT_GL_CONTEXT::currentContext() != NULL))
     {
@@ -1555,7 +1809,7 @@ void G3DPainter::releaseEdgeShader(bool bindOk)
 {
     if(bindOk)
         m_shaderProgEdge->release();
-}
+}*/
 
 //////////// PRIVATE ///////////
 
@@ -1586,4 +1840,64 @@ QVector< QPair<double, double> > G3DPainter::staticInitCircleVector(int size)
     }
 
     return vector;
+}
+
+void G3DPainter::startDrawMultiple()
+{
+    if(!m_beginMultipleEnable)
+    {
+        // if we must only draw point or point cloud
+        if((m_drawOnly == POINT) || (m_drawOnly == POINT_CLOUD))
+        {
+            if((m_drawOnly == POINT_CLOUD) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader(true);
+
+            glBegin(GL_POINTS);
+
+            m_beginMultipleEnable = true;
+        }
+        else if((m_drawOnly == TRIANGLE) || (m_drawOnly == FACE))
+        {
+            glBegin(GL_TRIANGLES);
+            m_beginMultipleEnable = true;
+        }
+        else if((m_drawOnly == LINE) || (m_drawOnly == EDGE))
+                {
+            glBegin(GL_LINES);
+            m_beginMultipleEnable = true;
+        }
+        else if(m_drawOnly == QUADS)
+        {
+            glBegin(GL_QUADS);
+            m_beginMultipleEnable = true;
+        }
+    }
+
+    // if we must draw other elements or all elements we don't call glBegin
+}
+
+void G3DPainter::stopDrawMultiple()
+{
+    if(m_beginMultipleEnable)
+    {
+        glEnd();
+        m_beginMultipleEnable = false;
+    }
+}
+
+void G3DPainter::resetDrawMultiple()
+{
+    // if we have draw a specific type we must call glEnd() before call a glBegin(...)
+    if((m_drawOnly != NO_MULTI_AVAILABLE) && (m_drawOnly != DRAW_ALL))
+    {
+        if(m_beginMultipleEnable)
+            glEnd();
+
+        if(m_drawOnly == POINT_CLOUD)
+            releasePointShader(m_bindShaderPointOK);
+
+        m_bindShaderPointOK = false;
+    }
+
+    m_drawOnly = DRAW_ALL;
 }

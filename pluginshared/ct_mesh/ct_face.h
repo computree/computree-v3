@@ -1,9 +1,10 @@
 #ifndef CT_FACE_H
 #define CT_FACE_H
 
-#include "ct_global/ct_context.h"
+#include "pluginShared_global.h"
 
 class CT_Edge;
+class CT_Point;
 
 /**
  * A Face for a mesh. You can create Face with the help of the class CT_MeshAllocatorT.

@@ -35,7 +35,7 @@ void CT_AbstractItemDrawableDrawManager::preDraw(GraphicsViewInterface &view,
 {
     Q_UNUSED(view)
 
-    if(!useItemTransformMatrix())
+    if(!useItemTransformMatrix() && !itemDrawable.transformMatrix().isIdentity())
     {
         painter.pushMatrix();
         painter.multMatrix(itemDrawable.transformMatrix());
@@ -49,7 +49,7 @@ void CT_AbstractItemDrawableDrawManager::postDraw(GraphicsViewInterface &view,
     Q_UNUSED(view)
     Q_UNUSED(itemDrawable)
 
-    if(!useItemTransformMatrix())
+    if(!useItemTransformMatrix() && !itemDrawable.transformMatrix().isIdentity())
         painter.popMatrix();
 }
 

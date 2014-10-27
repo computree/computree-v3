@@ -29,7 +29,7 @@
 #include "gdocumentview.h"
 #include "manipulatedCameraFrame.h"
 #include "dm_guimanager.h"
-#include "tools/graphicsview/dm_colorselectionmanagert.h"
+#include "tools/graphicsview/dm_elementinfomanager.h"
 #include "tools/attributes/dm_attributesbuildingcollectiont.h"
 #include "tools/attributes/worker/dm_attributescolort.h"
 #include "tools/attributes/worker/dm_attributesnormalt.h"
@@ -72,9 +72,9 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
 
     m_signalEmitter.setGraphicsView(this);
 
-    m_pointsSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractPointsAttributes>(CT_Repository::SyncWithPointCloud);
-    m_facesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractFaceAttributes>(CT_Repository::SyncWithFaceCloud);
-    m_edgesSelectionManager = new DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes>(CT_Repository::SyncWithEdgeCloud);
+    m_pointsSelectionManager = new DM_ElementInfoManager(CT_Repository::SyncWithPointCloud);
+    m_facesSelectionManager = new DM_ElementInfoManager(CT_Repository::SyncWithFaceCloud);
+    m_edgesSelectionManager = new DM_ElementInfoManager(CT_Repository::SyncWithEdgeCloud);
 
     // 1000 lments slectionnable (4x1000 = 4000)
     setSelectBufferSize(4000);
@@ -86,10 +86,6 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     connect(QGLViewer::camera()->frame(), SIGNAL(spun()), QGLViewer::camera()->frame(), SLOT(stopSpinning()));
 
     changeStateFileName();
-
-    connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(initIndexCloudRegistered()));
-
-    initIndexCloudRegistered();
 
     initFromOptions();
 }
@@ -112,10 +108,6 @@ QWidget* G3DGraphicsView::getViewWidget() const
 void G3DGraphicsView::setDocumentView(const DM_DocumentView *doc)
 {
     m_docGV = dynamic_cast<GDocumentViewForGraphics*>((DM_DocumentView*)doc);
-
-    m_pointsSelectionManager->setDocument(m_docGV);
-    m_facesSelectionManager->setDocument(m_docGV);
-    m_edgesSelectionManager->setDocument(m_docGV);
 
     connect(m_docGV, SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SLOT(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
@@ -189,7 +181,6 @@ QList<CT_AbstractItemDrawable *> G3DGraphicsView::getSelectedItems() const
 
 void G3DGraphicsView::beginRemoveMultiplePointsFromSelection(const size_t &n)
 {
-    m_pointsSelectionManager->beginRemoveMultipleIDFromSelection(n);
 }
 
 void G3DGraphicsView::removePointFromSelection(const size_t &globalIndex)
@@ -199,7 +190,6 @@ void G3DGraphicsView::removePointFromSelection(const size_t &globalIndex)
 
 void G3DGraphicsView::endRemoveMultiplePointsFromSelection()
 {
-    m_pointsSelectionManager->endRemoveMultipleIDFromSelection();
 }
 
 void G3DGraphicsView::setAllPointsSelected(bool select)
@@ -229,7 +219,6 @@ void G3DGraphicsView::setAllPointsSelected(bool select)
 
 void G3DGraphicsView::beginRemoveMultipleFacesFromSelection(const size_t &n)
 {
-    m_facesSelectionManager->beginRemoveMultipleIDFromSelection(n);
 }
 
 void G3DGraphicsView::removeFaceFromSelection(const size_t &globalIndex)
@@ -239,7 +228,6 @@ void G3DGraphicsView::removeFaceFromSelection(const size_t &globalIndex)
 
 void G3DGraphicsView::endRemoveMultipleFacesFromSelection()
 {
-    m_facesSelectionManager->endRemoveMultipleIDFromSelection();
 }
 
 void G3DGraphicsView::setAllFacesSelected(bool select)
@@ -269,7 +257,6 @@ void G3DGraphicsView::setAllFacesSelected(bool select)
 
 void G3DGraphicsView::beginRemoveMultipleEdgesFromSelection(const size_t &n)
 {
-    m_edgesSelectionManager->beginRemoveMultipleIDFromSelection(n);
 }
 
 void G3DGraphicsView::removeEdgeFromSelection(const size_t &globalIndex)
@@ -279,7 +266,6 @@ void G3DGraphicsView::removeEdgeFromSelection(const size_t &globalIndex)
 
 void G3DGraphicsView::endRemoveMultipleEdgesFromSelection()
 {
-    m_edgesSelectionManager->endRemoveMultipleIDFromSelection();
 }
 
 void G3DGraphicsView::setAllEdgesSelected(bool select)
@@ -621,17 +607,17 @@ void G3DGraphicsView::showContextMenu(const QPoint &pos)
     delete menu;
 }
 
-DM_ColorSelectionManagerT<CT_AbstractPointsAttributes> *G3DGraphicsView::pointsInformationManager() const
+DM_ElementInfoManager *G3DGraphicsView::pointsInformationManager() const
 {
     return m_pointsSelectionManager;
 }
 
-DM_ColorSelectionManagerT<CT_AbstractFaceAttributes> *G3DGraphicsView::facesInformationManager() const
+DM_ElementInfoManager *G3DGraphicsView::facesInformationManager() const
 {
     return m_facesSelectionManager;
 }
 
-DM_ColorSelectionManagerT<CT_AbstractEdgeAttributes> *G3DGraphicsView::edgesInformationManager() const
+DM_ElementInfoManager *G3DGraphicsView::edgesInformationManager() const
 {
     return m_edgesSelectionManager;
 }
@@ -946,10 +932,10 @@ void G3DGraphicsView::postDraw()
 
     drawOverlay(*m_painter);
 
-    m_painter->setPen(Qt::white);
+    /*m_painter->setPen(Qt::white);
     m_painter->drawText(10, 10, QString().setNum(m_fastestIncrementOptimizer.currentFPS()));
     m_painter->drawText(10, 20, QString().setNum(m_fastestIncrementOptimizer.fastestIncrement()));
-    /*m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
+    m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
 
     m_painter->end();
 
@@ -1205,17 +1191,26 @@ void G3DGraphicsView::drawWithNames()
                             gluProject(p2.x,p2.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[6],&yy[6],&zz[6]);
                             gluProject(p1.x,p2.y,p2.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[7],&yy[7],&zz[7]);
 
+                            QPolygonF poly;
                             int nnn = 0;
 
                             for(int iii=0; iii<8; ++iii)
                             {
                                 if(rect.contains(xx[iii], yy[iii], false))
                                     ++nnn;
+
+                                poly.append(QPointF(xx[iii], yy[iii]));
                             }
+
+                            QRectF bounding = poly.boundingRect();
 
                             if(nnn == 8)
                                 m_idToAddInSelection << (CT_AbstractCloudIndexT<CT_Point>*)indexes;
-                            else if (nnn > 0)
+                            else if ((nnn > 0)
+                                     || bounding.contains(rect.topLeft())
+                                     || bounding.contains(rect.topRight())
+                                     || bounding.contains(rect.bottomLeft())
+                                     || bounding.contains(rect.bottomRight()))
                                 m_fakeG.drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
                         }
                     }
@@ -1324,9 +1319,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
         if(mustSelectPoints())
         {
-            if(mode == REMOVE)
-                m_pointsSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
-
             // Interpret results : each object created 4 values in the selectBuffer().
             // (selectBuffer())[4*i+3] is the id pushed on the stack.
             for (int i=0; i<nbHits; ++i)
@@ -1342,7 +1334,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
             if(mode == REMOVE)
             {
-                m_pointsSelectionManager->endRemoveMultipleIDFromSelection();
                 m_pointsSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
             }
             else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
@@ -1355,9 +1346,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
         }
         else if(mustSelectFaces())
         {
-            if(mode == REMOVE)
-                m_facesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
-
             // Interpret results : each object created 4 values in the selectBuffer().
             // (selectBuffer())[4*i+3] is the id pushed on the stack.
             for (int i=0; i<nbHits; ++i)
@@ -1373,7 +1361,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
             if(mode == REMOVE)
             {
-                m_facesSelectionManager->endRemoveMultipleIDFromSelection();
                 m_facesSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
             }
             else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
@@ -1386,9 +1373,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
         }
         else if(mustSelectEdges())
         {
-            if(mode == REMOVE)
-                m_edgesSelectionManager->beginRemoveMultipleIDFromSelection(nbHits);
-
             // Interpret results : each object created 4 values in the selectBuffer().
             // (selectBuffer())[4*i+3] is the id pushed on the stack.
             for (int i=0; i<nbHits; ++i)
@@ -1404,7 +1388,6 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
             if(mode == REMOVE)
             {
-                m_edgesSelectionManager->endRemoveMultipleIDFromSelection();
                 m_edgesSelectionManager->removeCloudIndexFromSelection(m_idToAddInSelection);
             }
             else if((mode == ADD) || (mode == GraphicsViewInterface::SELECT))
@@ -1792,13 +1775,6 @@ void G3DGraphicsView::changeDrawMethodToNormal()
 
     if(drawMode() != NORMAL)
         emit mustRedraw();
-}
-
-void G3DGraphicsView::initIndexCloudRegistered()
-{
-    m_pointsSelectionManager->init();
-    m_facesSelectionManager->init();
-    m_edgesSelectionManager->init();
 }
 
 void G3DGraphicsView::itemDrawableToBeRemoved(CT_AbstractItemDrawable &item)

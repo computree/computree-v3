@@ -67,6 +67,8 @@ public:
     typedef QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> >                    CT_AbstractPCIR;
     typedef QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> >       CT_AbstractNotModifiablePCIR;
     typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> >          CT_AbstractModifiablePCIR;
+    typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Face> >           CT_AbstractModifiableFCIR;
+    typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Edge> >           CT_AbstractModifiableECIR;
     typedef QSharedPointer< CT_StandardColorCloudRegistered >                               CT_CCR;
     typedef QSharedPointer< CT_StandardNormalCloudRegistered >                              CT_NCR;
 
@@ -243,6 +245,8 @@ public:
      * @return Retourne un objet contenant le nuage de points (global) et le nuage d'index du nuage de points.
      */
     CT_AbstractModifiablePCIR registerPointCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index);
+    CT_AbstractModifiableFCIR registerFaceCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index);
+    CT_AbstractModifiableECIR registerEdgeCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index);
 
     /**
      * @brief globalPointCloud

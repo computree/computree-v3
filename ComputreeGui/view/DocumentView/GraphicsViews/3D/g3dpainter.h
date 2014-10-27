@@ -30,6 +30,10 @@
 
 #include "dm_graphicsviewoptions.h"
 
+#include "ct_point.h"
+#include "ct_mesh/ct_face.h"
+#include "ct_mesh/ct_edge.h"
+
 #include <QtOpenGL>
 
 // GLU was removed from Qt in version 4.8
@@ -58,12 +62,32 @@
 #endif
 
 class G3DGraphicsView;
+template<typename T> class CT_AbstractCloudT;
 
 class G3DPainter : public PainterInterface, public QOpenGLFunctions
 {
     Q_INTERFACES(PainterInterface)
 
 public:
+
+    /**
+     * @brief Element in this painter that can be draw with
+     *        no call to glBegin multiple times.
+     */
+    enum MultiDrawableType {
+        POINT_CLOUD = 0,    // is at hand because it uses a shader      (draw only point cloud)
+        FACE,               // is at hand because it CAN uses a shader  (draw only face)
+        EDGE,               // is at hand because it CAN uses a shader  (draw only edge)
+
+        POINT,              // (draw only point)
+        LINE,               // (draw only line)
+        TRIANGLE,           // (draw only triangle)
+        QUADS,              // (draw only quads)
+
+        NO_MULTI_AVAILABLE, // (draw only othe elements)
+
+        DRAW_ALL            // (draw all)
+    };
 
     G3DPainter();
     virtual ~G3DPainter();
@@ -91,6 +115,15 @@ public:
      *        Do nothing by default
      */
     void endNewDraw();
+
+    /**
+     * @brief Call this function to draw only type passed in parameter. This function
+     *        optimize call to glBegin to improve the speed of draw for all itemdrawable to draw.
+     *
+     *        If you want to draw ALL don't call this method.
+     *        If you want to draw only element that was not multi drawable call this method with NO_MULTI_AVAILABLE
+     */
+    void setDrawOnly(G3DPainter::MultiDrawableType type);
 
     /**
      * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
@@ -257,18 +290,18 @@ protected:
     /**
      * @brief Init shader for faces if is not already initialized
      */
-    void initFaceShader();
+    //void initFaceShader();
 
     /**
      * @brief Init shader for edges if is not already initialized
      */
-    void initEdgeShader();
+    //void initEdgeShader();
 
     /**
      * @brief Bind the point shader
      * @return false bind is ok
      */
-    bool bindPointShader();
+    bool bindPointShader(bool force);
 
     /**
      * @brief Release the point shader
@@ -279,46 +312,39 @@ protected:
      * @brief Bind the face shader
      * @return false bind is ok
      */
-    bool bindFaceShader();
+    //bool bindFaceShader();
 
     /**
      * @brief Release the face shader
      */
-    void releaseFaceShader(bool bindOk);
+    //void releaseFaceShader(bool bindOk);
 
     /**
      * @brief Bind the edge shader
      * @return false bind is ok
      */
-    bool bindEdgeShader();
+    //bool bindEdgeShader();
 
     /**
      * @brief Release the edge shader
      */
-    void releaseEdgeShader(bool bindOk);
+    //void releaseEdgeShader(bool bindOk);
 
 private:
     G3DGraphicsView                     *m_gv;                  // Graphics View that used the painter
 
+    CT_AbstractCloudT<CT_Point>         *m_pointCloud;
+    CT_AbstractCloudT<CT_Face>          *m_faceCloud;
+    CT_AbstractCloudT<CT_Edge>          *m_edgeCloud;
+
+    G3DPainter::MultiDrawableType       m_drawOnly;
+
     QT_GL_SHADERPROGRAM                 *m_shaderProgPoint;     // Shader program used for points
-    QT_GL_SHADERPROGRAM                 *m_shaderProgFace;      // Shader program used for faces
-    QT_GL_SHADERPROGRAM                 *m_shaderProgEdge;      // Shader program used for edges
-
+    QT_GL_SHADER                        *m_ShaderPoint;
     bool                                m_shaderProgPointError;
-    bool                                m_shaderProgFaceError;
-    bool                                m_shaderProgEdgeError;
-
     bool                                m_shaderProgPointSet;
-    bool                                m_shaderProgFaceSet;
-    bool                                m_shaderProgEdgeSet;
-
-    static QT_GL_SHADER                 *SHADER_POINT;
-    static QT_GL_SHADER                 *SHADER_FACE;
-    static QT_GL_SHADER                 *SHADER_EDGE;
-    static bool                         SHADER_POINT_ERROR;
-    static bool                         SHADER_FACE_ERROR;
-    static bool                         SHADER_EDGE_ERROR;
-    static int                          N_3D_PAINTER;           // N painter to know when delete shaders from memory
+    bool                                m_shaderPointError;
+    bool                                m_bindShaderPointOK;
 
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
@@ -330,9 +356,12 @@ private:
     bool                                m_useFColorCloud;       // True if we must use color cloud for faces
     bool                                m_useFNormalCloud;      // True if we must use normal cloud for faces
     bool                                m_useEColorCloud;       // True if we must use color cloud for edges
-    bool                                m_drawPointCloudEnabled;// True if we must draw points
-    bool            m_drawMultipleLine;
-    bool            m_drawMultipleTriangle;
+
+    bool                                m_drawMultipleLine;
+    bool                                m_drawMultipleTriangle;
+    bool                                m_drawMultiplePoint;
+
+    bool                                m_beginMultipleEnable;
 
     int                                 _nCallEnableSetColor;       // count how many times the enableSetColor was called
     int                                 _nCallEnableSetForcedColor; // count how many times the enableSetForcedColor was called
@@ -356,6 +385,10 @@ private:
     void setCurrentForcedColor();
 
     static QVector< QPair<double, double> > staticInitCircleVector(int size);
+
+    void startDrawMultiple();
+    void stopDrawMultiple();
+    void resetDrawMultiple();
 };
 
 #endif // G3DPAINTER_H
