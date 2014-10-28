@@ -105,7 +105,7 @@ void PB_StepReducePointsDensity::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addDouble(tr("Résolution de la grille :"), "cm", 0, 10000, 2, _resolution, 100);
+    configDialog->addDouble(tr("Résolution de la grille :"), "cm", 0, 10000, 3, _resolution, 100);
 }
 
 void PB_StepReducePointsDensity::compute()
