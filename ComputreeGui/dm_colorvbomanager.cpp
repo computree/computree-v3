@@ -92,7 +92,7 @@ void DM_ColorVBOManager::preDraw()
         m_refresh = false;
         m_useVbo = false;
 
-        size_t nBytes = size*sizeof(CT_Color);
+        /*size_t nBytes = size*sizeof(CT_Color);
 
         // select the vbo
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -113,7 +113,7 @@ void DM_ColorVBOManager::preDraw()
         }
 
         // deselect the vbo
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 
         m_lastSize = size;
 

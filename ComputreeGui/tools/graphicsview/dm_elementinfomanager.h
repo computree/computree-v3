@@ -99,7 +99,7 @@ public:
     /**
      * @brief Returns the index cloud of selected TYPE
      */
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selected() const;
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selected();
 
 private:
     QSharedPointer<CT_StdCloudRegisteredT<GLubyte> >            m_infoR;
@@ -111,6 +111,10 @@ private:
     GLubyte                                                     m_disableSelection;
     GLubyte                                                     m_enableInvisibility;
     GLubyte                                                     m_disableInvisibility;
+
+    bool                                                        m_selectionChanged;
+
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>   m_selectedBackup;
 
     template<typename T>
     CT_AbstractModifiableCloudIndexT<T>* selectedT() const;

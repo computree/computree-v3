@@ -641,7 +641,13 @@ void GDocumentViewForGraphics::constructOctreeOfPoints()
 
             DM_AbstractWorker::staticConnectWorkerToThread(builder, true, true, true);
 
+            QEventLoop event;
+
+            connect(builder, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
+            connect(thread, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
+
             thread->start();
+            event.exec();
         }
     }
 }

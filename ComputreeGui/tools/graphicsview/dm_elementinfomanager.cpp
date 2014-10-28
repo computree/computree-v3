@@ -18,6 +18,8 @@ DM_ElementInfoManager::DM_ElementInfoManager(CT_Repository::SyncCloudWith syncWi
 
     m_infoR = PS_REPOSITORY->createNewSyncCloudT<CT_StdCloudRegisteredT<GLubyte>, CT_StandardCloudStdVectorT<GLubyte> >(m_syncWith);
     m_infoCloud = dynamic_cast<CT_StandardCloudStdVectorT<GLubyte>*>(m_infoR->abstractCloud());
+
+    m_selectionChanged = false;
 }
 
 void DM_ElementInfoManager::addIDToSelection(const size_t &id)
@@ -25,6 +27,7 @@ void DM_ElementInfoManager::addIDToSelection(const size_t &id)
     if(m_infoCloud != NULL) {
         GLubyte &info = m_infoCloud->tAt(id);
         info |= m_enableSelection;
+        m_selectionChanged = true;
     }
 }
 
@@ -40,6 +43,9 @@ void DM_ElementInfoManager::addCloudIndexToSelection(const QList<CT_AbstractClou
             CT_AbstractCloudIndex *ci = it.next();
 
             size_t size = ci->size();
+
+            if(size > 0)
+                m_selectionChanged = true;
 
             for(size_t i=0; i<size; ++i)
             {
@@ -57,6 +63,7 @@ void DM_ElementInfoManager::removeIDFromSelection(const size_t &id)
     if(m_infoCloud != NULL) {
         GLubyte &info = m_infoCloud->tAt(id);
         info &= m_disableSelection;
+        m_selectionChanged = true;
     }
 }
 
@@ -72,6 +79,9 @@ void DM_ElementInfoManager::removeCloudIndexFromSelection(const QList<CT_Abstrac
             CT_AbstractCloudIndex *ci = it.next();
 
             size_t size = ci->size();
+
+            if(size > 0)
+                m_selectionChanged = true;
 
             for(size_t i=0; i<size; ++i)
             {
@@ -104,6 +114,9 @@ void DM_ElementInfoManager::clearSelection()
 {
     if(m_infoCloud != NULL) {
         size_t size = m_infoCloud->size();
+
+        if(size > 0)
+            m_selectionChanged = true;
 
         for(size_t i=0; i<size; ++i) {
             GLubyte &info = m_infoCloud->tAt(i);
@@ -153,16 +166,18 @@ GLubyte DM_ElementInfoManager::checkInvisible() const
     return m_enableInvisibility;
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> DM_ElementInfoManager::selected() const
+QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> DM_ElementInfoManager::selected()
 {
-    if(m_syncWith == CT_Repository::SyncWithPointCloud)
-        return PS_REPOSITORY->registerPointCloudIndex(selectedT<CT_Point>());
-    else if(m_syncWith == CT_Repository::SyncWithEdgeCloud)
-        return PS_REPOSITORY->registerEdgeCloudIndex(selectedT<CT_Edge>());
-    else if(m_syncWith == CT_Repository::SyncWithFaceCloud)
-        return PS_REPOSITORY->registerFaceCloudIndex(selectedT<CT_Face>());
+    if(m_selectionChanged) {
+        if(m_syncWith == CT_Repository::SyncWithPointCloud)
+            m_selectedBackup = PS_REPOSITORY->registerPointCloudIndex(selectedT<CT_Point>());
+        else if(m_syncWith == CT_Repository::SyncWithEdgeCloud)
+            m_selectedBackup = PS_REPOSITORY->registerEdgeCloudIndex(selectedT<CT_Edge>());
+        else if(m_syncWith == CT_Repository::SyncWithFaceCloud)
+            m_selectedBackup = PS_REPOSITORY->registerFaceCloudIndex(selectedT<CT_Face>());
+    }
 
-    return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
+    return m_selectedBackup;
 }
 
 template<typename T>

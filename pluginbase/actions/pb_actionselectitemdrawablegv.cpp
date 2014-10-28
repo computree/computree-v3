@@ -64,10 +64,6 @@ bool PB_ActionSelectItemDrawableGV::mousePressEvent(QMouseEvent *e)
     if(e->button() != Qt::LeftButton)
         return false;
 
-    m_mousePressed = true;
-    m_status = 1;
-    m_selectionRectangle.setSize(QSize(0,0));
-
     GraphicsViewInterface *view = graphicsView();
 
 //    m_backupDrawMode = view->drawMode();
@@ -77,6 +73,18 @@ bool PB_ActionSelectItemDrawableGV::mousePressEvent(QMouseEvent *e)
     view->setSelectionMode(selectionMode());
 
     GraphicsViewInterface::SelectionMode mode = selectionModeToBasic(view->selectionMode());
+
+    if((mode != GraphicsViewInterface::NONE) && view->mustSelectPoints())
+    {
+        document()->constructOctreeOfPoints();
+
+        if(m_status > 0)
+            return mouseReleaseEvent(e);
+    }
+
+    m_mousePressed = true;
+    m_status = 1;
+    m_selectionRectangle.setSize(QSize(0,0));
 
     if(((mode == GraphicsViewInterface::SELECT)
             || (mode == GraphicsViewInterface::ADD)
