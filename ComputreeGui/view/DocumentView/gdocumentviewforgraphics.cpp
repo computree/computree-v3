@@ -816,7 +816,13 @@ void GDocumentViewForGraphics::exporterActionTriggered()
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            points.append(it.next()->getSelectedPoints()->abstractModifiableCloudIndex());
+        {
+            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedPoints();
+
+            if(!selec.isNull()
+                    && (selec->abstractModifiableCloudIndex() != NULL))
+                points.append(selec->abstractModifiableCloudIndex());
+        }
 
         exCopy->setPointsToExport(points);
     }
@@ -828,7 +834,13 @@ void GDocumentViewForGraphics::exporterActionTriggered()
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            faces.append(it.next()->getSelectedFaces()->abstractModifiableCloudIndex());
+        {
+            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedFaces();
+
+            if(!selec.isNull()
+                    && (selec->abstractModifiableCloudIndex() != NULL))
+                faces.append(selec->abstractModifiableCloudIndex());
+        }
 
         exCopy->setFacesToExport(faces);
     }
@@ -840,7 +852,13 @@ void GDocumentViewForGraphics::exporterActionTriggered()
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            edges.append(it.next()->getSelectedEdges()->abstractModifiableCloudIndex());
+        {
+            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedEdges();
+
+            if(!selec.isNull()
+                    && (selec->abstractModifiableCloudIndex() != NULL))
+                edges.append(selec->abstractModifiableCloudIndex());
+        }
 
         exCopy->setEdgesToExport(edges);
     }

@@ -27,6 +27,8 @@
 
 #include "g3dgraphicsview.h"
 #include "gdocumentview.h"
+#include "gstepmanager.h"
+
 #include "manipulatedCameraFrame.h"
 #include "dm_guimanager.h"
 #include "tools/graphicsview/dm_elementinfomanager.h"
@@ -919,10 +921,10 @@ void G3DGraphicsView::postDraw()
 
     drawOverlay(*m_painter);
 
-    m_painter->setPen(Qt::white);
+    /*m_painter->setPen(Qt::white);
     m_painter->drawText(10, 10, QString().setNum(m_fastestIncrementOptimizer.currentFPS()));
     m_painter->drawText(10, 20, QString().setNum(m_fastestIncrementOptimizer.fastestIncrement()));
-    /*m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
+    m_painter->drawText(10, 30, QString().setNum(_g.nOctreeCellsDrawed()));*/
 
     m_painter->end();
 
@@ -1721,7 +1723,7 @@ void G3DGraphicsView::constructContextMenuAction(QMenu *menu, CT_VirtualAbstract
 
         if(aa != NULL)
         {
-            QAction *act = menu->addAction(aa->displayableName(), this, SLOT(applyAttributes()));
+            QAction *act = menu->addAction(aa->displayableName() + " (" + GStepManager::staticGetStepName(*st) + ")", this, SLOT(applyAttributes()));
             act->setData(qVariantFromValue((void*)aa));
         }
     }
