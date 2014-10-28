@@ -80,6 +80,7 @@ private:
 
     CT_DEFAULT_IA_BEGIN(CT_Polygon2D_Old)
     CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::staticInitDataSize(), &CT_Polygon2D_Old::getNumberOfVertices, QObject::tr("Number Of Vertices"))
+    CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::staticInitDataArea(), &CT_Polygon2D_Old::getArea, QObject::tr("Polygon Area"))
     CT_DEFAULT_IA_END(CT_Polygon2D_Old)
 };
 

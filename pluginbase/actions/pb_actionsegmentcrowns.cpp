@@ -877,7 +877,16 @@ void PB_ActionSegmentCrowns::drawPencil(PainterInterface &painter, PB_ActionSegm
 void PB_ActionSegmentCrowns::drawOverlay(GraphicsViewInterface &view, QPainter &painter)
 {
     Q_UNUSED(view);
-    Q_UNUSED(painter);
+
+    int lineHeight = painter.fontMetrics().height()+2;
+
+    painter.save();
+    painter.setPen(QColor(200,200,200));
+    painter.drawText(2, lineHeight,   tr("Cluster = %1").arg(_clustersGrid->value(_activeCol, _activeRow)));
+    painter.drawText(2, 2*lineHeight, tr("MNS     = %1").arg(_mnsGrid->value(_activeCol, _activeRow)));
+    painter.drawText(2, 3*lineHeight, tr("Densité = %1").arg(_densityGrid->value(_activeCol, _activeRow)));
+    painter.restore();
+
 }
 
 CT_AbstractAction *PB_ActionSegmentCrowns::copy() const
