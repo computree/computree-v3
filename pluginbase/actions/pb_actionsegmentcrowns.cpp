@@ -883,8 +883,8 @@ void PB_ActionSegmentCrowns::drawOverlay(GraphicsViewInterface &view, QPainter &
     painter.save();
     painter.setPen(QColor(200,200,200));
     painter.drawText(2, lineHeight,   tr("Cluster = %1").arg(_clustersGrid->value(_activeCol, _activeRow)));
-    painter.drawText(2, 2*lineHeight, tr("MNS     = %1").arg(_mnsGrid->value(_activeCol, _activeRow)));
-    painter.drawText(2, 3*lineHeight, tr("Densité = %1").arg(_densityGrid->value(_activeCol, _activeRow)));
+    painter.drawText(2, 2*lineHeight, tr("MNS : Z = %1 m").arg(_mnsGrid->value(_activeCol, _activeRow)));
+    painter.drawText(2, 3*lineHeight, tr("Densité = %1 pts").arg(_densityGrid->value(_activeCol, _activeRow)));
     painter.restore();
 
 }
