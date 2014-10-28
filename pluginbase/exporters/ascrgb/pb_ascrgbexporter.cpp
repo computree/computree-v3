@@ -22,7 +22,7 @@ PB_ASCRGBExporter::~PB_ASCRGBExporter()
 
 QString PB_ASCRGBExporter::getExporterCustomName() const
 {
-    return "Ascii (X,Y,Z,R,G,B)";
+    return "Points, ASCII(X,Y,Z,R,G,B)";
 }
 
 void PB_ASCRGBExporter::init()

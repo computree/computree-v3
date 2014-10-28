@@ -29,7 +29,7 @@ PB_XYBExporter::~PB_XYBExporter()
 
 QString PB_XYBExporter::getExporterCustomName() const
 {
-    return "Points (X,Y,Z,I), format xyb";
+    return "Points, XYB (X,Y,Z,I)";
 }
 
 void PB_XYBExporter::init()

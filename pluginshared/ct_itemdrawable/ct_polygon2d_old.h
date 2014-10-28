@@ -63,7 +63,8 @@ public:
     const QVector<QVector2D*>& getVertices() const;
 
     inline int getNumberOfVertices() const {return getVertices().size();}
-    inline float getArea() const {return ((CT_Polygon2DData_Old*) getDataNotConst())->getAreaIfNotSelfIntersecting();}
+    inline float getArea() const {return ((CT_Polygon2DData_Old*) getDataNotConst())->getAreaIfNotSelfIntersecting();}   
+    inline void computeCentroid() const {((CT_Polygon2DData_Old*) getDataNotConst())->computeCentroid();}
 
     /**
       * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.

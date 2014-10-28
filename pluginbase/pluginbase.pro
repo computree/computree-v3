@@ -62,7 +62,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/actions/pb_actionsegmentgapsoptions.h \
     step/pb_stepslicepointcloud.h \
     actions/pb_actionslicepointcloud.h \
-    views/actions/pb_actionslicepointcloudoptions.h
+    views/actions/pb_actionslicepointcloudoptions.h \
+    exporters/polygon2d/pb_polygon2dexporter.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -123,7 +124,8 @@ SOURCES += \
     views/actions/pb_actionsegmentgapsoptions.cpp \
     step/pb_stepslicepointcloud.cpp \
     actions/pb_actionslicepointcloud.cpp \
-    views/actions/pb_actionslicepointcloudoptions.cpp
+    views/actions/pb_actionslicepointcloudoptions.cpp \
+    exporters/polygon2d/pb_polygon2dexporter.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

@@ -75,6 +75,7 @@
 #include "exporters/topology/pb_opfexporter.h"
 #include "exporters/pbm/pb_pbmexporter.h"
 #include "exporters/pgm/pb_pgmexporter.h"
+#include "exporters/polygon2d/pb_polygon2dexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -246,6 +247,12 @@ bool PB_StepPluginManager::loadExporters()
     sep = addNewSeparator(new CT_StandardExporterSeparator("GroupData"));
     sep->addExporter(new PB_GroupDataExporter());
 
+    sep = addNewSeparator(new CT_StandardExporterSeparator("XYB"));
+    sep->addExporter(new PB_XYBExporter());
+
+    sep = addNewSeparator(new CT_StandardExporterSeparator("ASCRGB"));
+    sep->addExporter(new PB_ASCRGBExporter());
+
     sep = addNewSeparator(new CT_StandardExporterSeparator("PROFILE"));
     sep->addExporter(new PB_ProfileExporter());
 
@@ -256,11 +263,8 @@ bool PB_StepPluginManager::loadExporters()
     sep->addExporter(new PB_Grid3DExporter());
     sep->addExporter(new PB_Grid3DAsTableExporter());
 
-    sep = addNewSeparator(new CT_StandardExporterSeparator("XYB"));
-    sep->addExporter(new PB_XYBExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("ASCRGB"));
-    sep->addExporter(new PB_ASCRGBExporter());
+    sep = addNewSeparator(new CT_StandardExporterSeparator("POLYGON2D"));
+    sep->addExporter(new PB_Polygon2DExporter());
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("MESH"));
     sep->addExporter(new PB_MeshObjExporter());

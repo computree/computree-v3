@@ -25,7 +25,7 @@ QString PB_Grid2DExporter::getExporterCustomName() const
 
 void PB_Grid2DExporter::init()
 {
-    addNewExportFormat(FileFormat("GRD2D", tr("Fichiers Grid 2D (ASCII)")));
+    addNewExportFormat(FileFormat("ASC", tr("Fichiers Grid 2D (ASCII)")));
 }
 
 bool PB_Grid2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
@@ -78,7 +78,7 @@ bool PB_Grid2DExporter::protectedExportToFile()
     QFileInfo exportPathInfo = QFileInfo(exportFilePath());
     QString path = exportPathInfo.path();
     QString baseName = exportPathInfo.baseName();
-    QString suffix = "GRD2D";
+    QString suffix = "asc";
 
     QString indice = "";
     if (itemDrawableToExport().size() > 1) {indice = "_0";}
