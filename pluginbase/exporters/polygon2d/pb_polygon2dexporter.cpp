@@ -10,6 +10,8 @@
 
 PB_Polygon2DExporter::PB_Polygon2DExporter() : CT_AbstractExporter()
 {
+    setCanExportItems(true);
+    setCanExportPoints(false);
 }
 
 PB_Polygon2DExporter::~PB_Polygon2DExporter()
@@ -89,7 +91,10 @@ bool PB_Polygon2DExporter::protectedExportToFile()
         // write header
         stream << "# 2D Polygons export from Computree v3\n";
         stream << "# Format:\n";
-        stream << "PolygonId AreaOfPolygon Xcenter Ycenter NumberOfVertice(N) Xvertice1 Yvertice1 Xvertice2 Yvertice2  ...  XverticeN YverticeN\n";
+        stream << "PolygonId\tAreaOfPolygon\tXcenter\tYcenter\tNumberOfVertice(N)\tXvertice1\tYvertice1\tXvertice2\tYvertice2\t...\tXverticeN\tYverticeN\n";
+
+        CT_AbstractCoordinateSystem::realIm x, y, z;
+        CT_AbstractCoordinateSystem::realEx xc, yc, zc;
 
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
         while (it.hasNext())
@@ -97,21 +102,33 @@ bool PB_Polygon2DExporter::protectedExportToFile()
             CT_Polygon2D_Old* item = dynamic_cast<CT_Polygon2D_Old*>(it.next());
             item->computeCentroid();
 
-            stream << item->id() << " ";
-            stream << item->getArea() << " ";
-            stream << item->getCenterX() << " ";
-            stream << item->getCenterY() << " ";
+            x = item->getCenterX();
+            y = item->getCenterY();
+            z = item->getCenterZ();
+
+            PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
+
+            stream << item->id() << "\t";
+            stream << item->getArea() << "\t";
+            stream << (double)xc << "\t";
+            stream << (double)yc << "\t";
             stream << item->getNumberOfVertices();
 
             if (item->getNumberOfVertices() > 0)
             {
                 const QVector<QVector2D*> &vertices = item->getVertices();
-                for (size_t i = 0 ; i < vertices.size() ; i++)
+                for (int i = 0 ; i < vertices.size() ; i++)
                 {
-                    stream << " ";
                     QVector2D* vertice = vertices.at(i);
-                    stream << vertice->x() << " ";
-                    stream << vertice->y();
+                    x = vertice->x();
+                    y = vertice->y();
+                    z = item->getCenterZ();
+
+                    PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
+
+                    stream << "\t";
+                    stream << (double)xc << "\t";
+                    stream << (double)yc;
                 }
             }
             stream << "\n";
