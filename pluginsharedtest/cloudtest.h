@@ -20,6 +20,8 @@ private slots:
     void testCloudIndexSyncRemoveMiddle();
     void testColorCloudSyncRemoveMiddle();
     void testMapColorCloudSyncRemoveMiddle();
+    void benchmarkCloudIndexLoop();
+    void benchmarkCloudIndexLoopDynamicCast();
     //void cleanupTestCase();
 
 private:

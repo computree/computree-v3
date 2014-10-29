@@ -272,6 +272,38 @@ void CloudTest::testMapColorCloudSyncRemoveMiddle()
     QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)5);
 }
 
+void CloudTest::benchmarkCloudIndexLoop()
+{
+    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(15000, 0);
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
+
+    QBENCHMARK {
+        CT_AbstractModifiableCloudIndex *index = cir->abstractModifiableCloudIndex();
+
+        size_t size = index->size();
+
+        for(size_t i=0; i<size; ++i) {
+            index->constIndexAt(i);
+        }
+    }
+}
+
+void CloudTest::benchmarkCloudIndexLoopDynamicCast()
+{
+    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(15000, 0);
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
+
+    QBENCHMARK {
+        const CT_AbstractCloudIndexT<CT_Point> *index = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(cir->abstractModifiableCloudIndex());
+
+        size_t size = index->size();
+
+        for(size_t i=0; i<size; ++i) {
+            index->constIndexAt(i);
+        }
+    }
+}
+
 CT_Repository::CT_AbstractNotModifiablePCIR CloudTest::createPointCloud(size_t size, int initVar) const
 {
     CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(size);

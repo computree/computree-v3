@@ -64,7 +64,7 @@
 class G3DGraphicsView;
 template<typename T> class CT_AbstractCloudT;
 
-class G3DPainter : public PainterInterface, public QOpenGLFunctions
+class G3DPainter : public PainterInterface, public QT_GL_FUNCTIONS
 {
     Q_INTERFACES(PainterInterface)
 

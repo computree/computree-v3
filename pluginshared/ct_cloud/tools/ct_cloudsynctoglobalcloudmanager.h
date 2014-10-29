@@ -3,6 +3,8 @@
 
 #include "ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanager.h"
 
+#include <QSharedPointer>
+
 /**
  * Utility class who can create a cloud of T (color, normal, etc....) that will be sync with
  * the global cloud in the CT_AbstractGlobalCloudManager (per example a cloud of point or a cloud of face, etc...).
