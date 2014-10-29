@@ -1,4 +1,4 @@
-#version 130
+#version 120
 
 // selection color of points
 uniform mediump vec4 selectionColor;
@@ -11,9 +11,10 @@ attribute float info;
 
 void main()
 {
-    uint infoUint = uint(info);
+    //uint infoUint = uint(info);
 
-    if((infoUint & uint(checkSelected)) > 0u)
+    //if((infoUint & uint(checkSelected)) > 0u)
+	if(info == int(checkSelected))
     {
         gl_FrontColor = selectionColor;
     }
