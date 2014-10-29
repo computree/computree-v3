@@ -140,7 +140,16 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
 
 void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator *> stepAvailable, MyQMenu *menuStep)
 {
+    QMenu *baseMenu = new QMenu(tr("Etapes de début de script"), menuStep);
+
     QListIterator<CT_StepCanBeAddedFirstSeparator*> it(stepAvailable);
+
+    if (it.hasNext())
+    {
+        menuStep->addMenu(baseMenu);
+    } else {
+        delete baseMenu;
+    }
 
     while(it.hasNext())
     {
@@ -174,15 +183,15 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparato
                 connectAction(action, false);
 
                 if(underMenu == NULL)
-                    menuStep->addAction(action);
+                    baseMenu->addAction(action);
                 else
                     underMenu->addAction(action);
             }
 
             if(underMenu != NULL)
-                menuStep->addMenu(underMenu);
+                baseMenu->addMenu(underMenu);
 
-            menuStep->addSeparator();
+            //menuStep->addSeparator();
         }
     }
 }

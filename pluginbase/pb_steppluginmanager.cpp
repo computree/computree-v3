@@ -42,7 +42,6 @@
 #include "step/pb_stepuseritemselection.h"
 #include "step/pb_stepcomputehitgrid.h"
 #include "step/pb_stepselectcellsingrid3d.h"
-#include "step/pb_stepmeasurecrownattributes.h"
 #include "step/pb_stepsegmentcrowns.h"
 #include "step/pb_stepsegmentgaps.h"
 #include "step/pb_stepfilterpointsbyboolgrid.h"
@@ -166,22 +165,26 @@ bool PB_StepPluginManager::loadGenericsStep()
 
     CT_StepSeparator *sep = addNewSeparator(new CT_StepSeparator());
 
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Nuages de points")));
     sep->addStep(new PB_StepReducePointsDensity(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSetAffiliationIDFromReference(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepSeparator("Action steps"));
-    sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepUserItemCopy(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepMeasureCrownAttributes(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSlicePointCloud(*createNewStepInitializeData(NULL)));
 
-    sep = addNewSeparator(new CT_StepSeparator());
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
+    sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Houppiers, Trouées")));
+    sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Gestion des items")));
+    sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSetAffiliationIDFromReference(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepUserItemCopy(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 

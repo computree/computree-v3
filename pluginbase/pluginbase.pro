@@ -22,9 +22,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/actions/pb_actionselectcellsingrid3dcolonizedialog.h \
     step/pb_steploadgrid3dfile.h \
     step/pb_stepfilterpointsbyboolgrid.h \
-    actions/pb_actionmeasurecrownattributes.h \
-    step/pb_stepmeasurecrownattributes.h \
-    views/actions/pb_actionmeasurecrownattributesoptions.h \
     exporters/xyb/pb_xybexporter.h \
     exporters/csv/pb_csvexporter.h \
     exporters/csv/pb_csvexportercolumn.h \
@@ -84,9 +81,6 @@ SOURCES += \
     views/actions/pb_actionselectcellsingrid3dcolonizedialog.cpp \
     step/pb_steploadgrid3dfile.cpp \
     step/pb_stepfilterpointsbyboolgrid.cpp \
-    actions/pb_actionmeasurecrownattributes.cpp \
-    step/pb_stepmeasurecrownattributes.cpp \
-    views/actions/pb_actionmeasurecrownattributesoptions.cpp \
     exporters/xyb/pb_xybexporter.cpp \
     exporters/csv/pb_csvexporter.cpp \
     exporters/csv/pb_csvexportercolumn.cpp \
@@ -139,7 +133,6 @@ FORMS += \
     views/actions/pb_actionselectitemdrawablegvoptions.ui \
     views/actions/pb_actionselectcellsingrid3doptions.ui \
     views/actions/pb_actionselectcellsingrid3dcolonizedialog.ui \
-    views/actions/pb_actionmeasurecrownattributesoptions.ui \
     views/exporters/csv/pbg_csvconfigurationdialog.ui \
     views/exporters/csv/pbg_csvdatareflistwidget.ui \
     views/exporters/csv/pbg_csvpreviewwidget.ui \
