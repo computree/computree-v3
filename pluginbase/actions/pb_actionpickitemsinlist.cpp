@@ -27,12 +27,12 @@ QString PB_ActionPickItemsInList::uniqueName() const
 
 QString PB_ActionPickItemsInList::title() const
 {
-    return "Action Exemple";
+    return tr("Picking d'item");
 }
 
 QString PB_ActionPickItemsInList::description() const
 {
-    return "Exemple d'action";
+    return tr("Picking d'item");
 }
 
 QIcon PB_ActionPickItemsInList::icon() const
@@ -58,6 +58,8 @@ void PB_ActionPickItemsInList::init()
         graphicsView()->addActionOptions(option);
 
         connect(option, SIGNAL(parametersChanged()), this, SLOT(redraw()));
+        connect(option, SIGNAL(allClicked()), this, SLOT(selectAll()));
+        connect(option, SIGNAL(noneClicked()), this, SLOT(selectNone()));
 
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
@@ -72,23 +74,30 @@ void PB_ActionPickItemsInList::redraw()
     document()->redrawGraphics();
 }
 
+void PB_ActionPickItemsInList::selectAll()
+{
+    _selectedItems->clear();
+    _selectedItems->append(_itemList);
+    redraw();
+}
+
+void PB_ActionPickItemsInList::selectNone()
+{
+    _selectedItems->clear();
+    redraw();
+}
+
 
 bool PB_ActionPickItemsInList::mousePressEvent(QMouseEvent *e)
 {
-    PB_ActionPickItemsInListOptions *option = (PB_ActionPickItemsInListOptions*)optionAt(0);
-
-    if (e->buttons() & Qt::LeftButton)
+    if (e->modifiers() & Qt::ShiftModifier)
     {
-        if (option->isInAddMode())
-        {
-            addItemToSelection(e->pos());
-        } else {
-            removeItemFromSelection(e->pos());
-        }
-
-        redraw();
-        return true;
+        _buttonsPressed = e->buttons();
+    } else  {
+        _buttonsPressed = Qt::NoButton;
     }
+
+    _oldPos = e->pos();
     return false;
 }
 
@@ -99,8 +108,19 @@ bool PB_ActionPickItemsInList::mouseMoveEvent(QMouseEvent *e)
 }
 
 bool PB_ActionPickItemsInList::mouseReleaseEvent(QMouseEvent *e)
-{
-    Q_UNUSED(e);
+{   
+    QPoint point = e->pos() - _oldPos;
+
+    if (point.manhattanLength() <= 3)
+    {
+        if (_buttonsPressed == Qt::LeftButton)
+        {
+            addItemToSelection(e->pos());
+        } else if (_buttonsPressed == Qt::RightButton){
+            removeItemFromSelection(e->pos());
+        }
+        redraw();
+    }
     return false;
 }
 

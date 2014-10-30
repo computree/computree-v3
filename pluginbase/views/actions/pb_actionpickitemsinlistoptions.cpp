@@ -11,6 +11,7 @@ PB_ActionPickItemsInListOptions::PB_ActionPickItemsInListOptions(const PB_Action
 {
     ui->setupUi(this);
     _itemColor = QColor(0, 250, 0);
+    ui->pb_color->setStyleSheet("QPushButton { background-color: " + _itemColor.name() + "; }");
 }
 
 PB_ActionPickItemsInListOptions::~PB_ActionPickItemsInListOptions()
@@ -21,11 +22,6 @@ PB_ActionPickItemsInListOptions::~PB_ActionPickItemsInListOptions()
 QColor PB_ActionPickItemsInListOptions::getColor()
 {
     return _itemColor;
-}
-
-bool PB_ActionPickItemsInListOptions::isInAddMode()
-{
-    return ui->pb_add->isChecked();
 }
 
 float PB_ActionPickItemsInListOptions::getMaxDist()
@@ -46,4 +42,14 @@ void PB_ActionPickItemsInListOptions::on_pb_color_clicked()
 void PB_ActionPickItemsInListOptions::on_dsb_maxDist_valueChanged(double arg1)
 {
     emit parametersChanged();
+}
+
+void PB_ActionPickItemsInListOptions::on_pb_all_clicked()
+{
+    emit allClicked();
+}
+
+void PB_ActionPickItemsInListOptions::on_pb_none_clicked()
+{
+    emit noneClicked();
 }

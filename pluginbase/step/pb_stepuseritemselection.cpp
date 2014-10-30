@@ -178,8 +178,12 @@ void PB_StepUserItemSelection::initManualMode()
 {
     if(m_doc == NULL)
     {
+
+        QMap<QString, QVariant> param;
+        param.insert("Transparency", QVariant(true));
+
         // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument();
+        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
 
     }
     m_itemDrawableSelected.clear();

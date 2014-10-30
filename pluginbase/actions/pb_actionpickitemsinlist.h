@@ -44,9 +44,13 @@ public:
 
 public slots:
     void redraw();
+    void selectAll();
+    void selectNone();
 
 private:
     float       _maxDist;
+    QPoint      _oldPos;
+    Qt::MouseButtons  _buttonsPressed;
 
     QList<CT_AbstractItemDrawable*> _itemList;
     QList<CT_AbstractItemDrawable*> *_selectedItems;

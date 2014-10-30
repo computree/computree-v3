@@ -19,7 +19,6 @@ public:
     ~PB_ActionPickItemsInListOptions();
 
     QColor getColor();
-    bool isInAddMode();
     float getMaxDist();
 
 private:
@@ -27,11 +26,17 @@ private:
 
 signals:
     void parametersChanged();
+    void allClicked();
+    void noneClicked();
 
 private slots:
     void on_pb_color_clicked();
 
     void on_dsb_maxDist_valueChanged(double arg1);
+
+    void on_pb_all_clicked();
+
+    void on_pb_none_clicked();
 
 private:
     QColor _itemColor;
