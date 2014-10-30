@@ -1134,6 +1134,13 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="172"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Sauvegarder l&apos;arbre des étapes sous...</translation>
@@ -1146,13 +1153,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Ajouter une étape qui n&apos;a pas besoin de résultat en entrÞ</source>
         <translation type="vanished">Ajouter une étape qui peut être ajoutée en premier</translation>
-    </message>
-    <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
-        <source>Une erreur est survenu lors de la lecture du script :
-
-%1</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="295"/>
@@ -1933,17 +1933,17 @@ Attention cette opération peut être lente.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1581"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1595"/>
         <source>G3DPainter (points) =&gt; Vertex shader compilation error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de compilation des Vertex Shader: %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1598"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1623"/>
         <source>G3DPainter (points) =&gt; Link error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de linkage (Link error) : %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1692"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1719"/>
         <source>G3DPainter (points) =&gt; Bind error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de liaison (Bind error) : %1</translation>
     </message>

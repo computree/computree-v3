@@ -94,7 +94,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>CTRL + Clic Gauche (Ajout) ou Clic Droit (Suppression)</string>
+            <string>SHIFT + Clic Gauche (Ajout) ou Clic Droit (Suppression)</string>
            </property>
           </widget>
          </item>
@@ -147,7 +147,4 @@
  </widget>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="bg_mode"/>
- </buttongroups>
 </ui>

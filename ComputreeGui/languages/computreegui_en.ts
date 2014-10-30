@@ -1996,17 +1996,17 @@ Attention cette opération peut être lente.</source>
         <translation>Please wait while octree creation</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1581"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1595"/>
         <source>G3DPainter (points) =&gt; Vertex shader compilation error : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1598"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1623"/>
         <source>G3DPainter (points) =&gt; Link error : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1692"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1719"/>
         <source>G3DPainter (points) =&gt; Bind error : %1</source>
         <translation></translation>
     </message>

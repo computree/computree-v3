@@ -226,6 +226,48 @@
     </message>
 </context>
 <context>
+    <name>PB_ActionPickItemsInList</name>
+    <message>
+        <location filename="../actions/pb_actionpickitemsinlist.cpp" line="30"/>
+        <location filename="../actions/pb_actionpickitemsinlist.cpp" line="35"/>
+        <source>Picking d&apos;item</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionPickItemsInListOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulaire</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="60"/>
+        <source>Distance</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="83"/>
+        <source>m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="97"/>
+        <source>SHIFT + Clic Gauche (Ajout) ou Clic Droit (Suppression)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="110"/>
+        <source>Tous</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="123"/>
+        <source>Aucun</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>PB_ActionSegmentCrowns</name>
     <message>
         <location filename="../actions/pb_actionsegmentcrowns.cpp" line="600"/>
@@ -1063,7 +1105,7 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
     </message>
     <message>
         <location filename="../exporters/csv/pb_csvexporter.cpp" line="54"/>
-        <source>Aucun Groupe</source>
+        <source>Aucun Singular Item</source>
         <translation></translation>
     </message>
 </context>
@@ -2224,37 +2266,37 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
 <context>
     <name>PB_StepUserItemSelection</name>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="45"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="48"/>
         <source>Séléction d&apos;un sous-ensemble d&apos;items</source>
         <translation>Séléction d&apos;un sous-ensemble d&apos;items</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="60"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="63"/>
         <source>Result</source>
         <translation>Résultat</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="68"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="71"/>
         <source>Item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="83"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="86"/>
         <source>Supprimer les groupes ne contenant pas l&apos;ItemDrawable recherché</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="84"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="87"/>
         <source>Supprimer les groupes parents si l&apos;ItemDrawable recherché n&apos;existe plus dans la structure sous-jacente</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="211"/>
         <source>Mode manuel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="211"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
         <translation></translation>
     </message>

@@ -6,7 +6,7 @@
     <message>
         <location filename="../views/exporters/csv/pbg_csvconfigurationdialog.ui" line="14"/>
         <source>Configuration de l&apos;exportation</source>
-        <translation>Exportation configuration</translation>
+        <translation>Exportation of configuration</translation>
     </message>
 </context>
 <context>
@@ -256,6 +256,48 @@
         <translation>Enable selection (S): 
 - Left click = select an item of reference 
 - Right click = select an item to join</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionPickItemsInList</name>
+    <message>
+        <location filename="../actions/pb_actionpickitemsinlist.cpp" line="30"/>
+        <location filename="../actions/pb_actionpickitemsinlist.cpp" line="35"/>
+        <source>Picking d&apos;item</source>
+        <translation>Item Picking</translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionPickItemsInListOptions</name>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="60"/>
+        <source>Distance</source>
+        <translation>Distance</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="83"/>
+        <source>m</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="97"/>
+        <source>SHIFT + Clic Gauche (Ajout) ou Clic Droit (Suppression)</source>
+        <translation>SHIFT + Left Clic (Add) or Right Clic (Remove)</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="110"/>
+        <source>Tous</source>
+        <translation>All</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="123"/>
+        <source>Aucun</source>
+        <translation>None</translation>
     </message>
 </context>
 <context>
@@ -1119,8 +1161,12 @@ In 3D mode, the tool only works on selected cells</translation>
     </message>
     <message>
         <location filename="../exporters/csv/pb_csvexporter.cpp" line="54"/>
+        <source>Aucun Singular Item</source>
+        <translation>No singular item</translation>
+    </message>
+    <message>
         <source>Aucun Groupe</source>
-        <translation>No group</translation>
+        <translation type="vanished">No group</translation>
     </message>
 </context>
 <context>
@@ -2316,37 +2362,37 @@ Please select parameters for slicing.</translation>
 <context>
     <name>PB_StepUserItemSelection</name>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="45"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="48"/>
         <source>Séléction d&apos;un sous-ensemble d&apos;items</source>
         <translation>Selection of a subset of items</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="60"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="63"/>
         <source>Result</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="68"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="71"/>
         <source>Item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="83"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="86"/>
         <source>Supprimer les groupes ne contenant pas l&apos;ItemDrawable recherché</source>
         <translation>Delete groups that do not contain the desired ItemDrawable</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="84"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="87"/>
         <source>Supprimer les groupes parents si l&apos;ItemDrawable recherché n&apos;existe plus dans la structure sous-jacente</source>
         <translation>Delete parents groups if desired ItemDrawable no longer exists in the underlying structure</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="211"/>
         <source>Mode manuel</source>
         <translation>Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="187"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="211"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
         <translation>Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
     </message>
