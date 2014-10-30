@@ -163,6 +163,8 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
             && (e->button() == Qt::LeftButton))
     {
         m_status = 0;
+        //m_backupDrawMode = view->drawMode();
+        //view->setDrawMode(GraphicsViewInterface::NORMAL);
 
         if((mode == GraphicsViewInterface::ADD_ONE)
             || (mode == GraphicsViewInterface::REMOVE_ONE)
@@ -172,6 +174,8 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
             view->setSelectRegionHeight(3);
 
             view->select(e->pos());
+
+            //view->setDrawMode(m_backupDrawMode);
         }
         else if(mode != GraphicsViewInterface::NONE)
         {
@@ -184,6 +188,7 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
             view->select(m_selectionRectangle.center());
 
 //            setBackupDrawMode();
+            //view->setDrawMode(m_backupDrawMode);
             document()->redrawGraphics();
 
             return true;

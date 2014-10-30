@@ -61,9 +61,9 @@ G3DPainter::G3DPainter()
     _defaultPointSize = 1.0;
     _drawFastest = false;
 
-    m_shaderProgPoint = new QT_GL_SHADERPROGRAM();
-    /*m_shaderProgFace = new QT_GL_SHADERPROGRAM();
-    m_shaderProgEdge = new QT_GL_SHADERPROGRAM();*/
+    m_shaderProgPoint = NULL;
+    /*m_shaderProgFace = NULL;
+    m_shaderProgEdge = NULL;*/
 
     m_shaderProgPointError = false;
     /*m_shaderProgFaceError = false;
@@ -89,15 +89,12 @@ G3DPainter::~G3DPainter()
     gluDeleteQuadric(_quadric);
 
     delete m_shaderProgPoint;
-    m_shaderProgPoint = NULL;
     delete m_ShaderPoint;
 
     /*delete m_shaderProgFace;
-    m_shaderProgFace = NULL;
     delete m_ShaderFace;
 
     delete m_shaderProgEdge;
-    m_shaderProgEdge = NULL;
     delete m_ShaderEdge;*/
 
 }
@@ -1576,9 +1573,26 @@ void G3DPainter::initPointShader()
         {
             m_ShaderPoint = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
 
-            if(!m_ShaderPoint->compileSourceFile("./shaders/points.vert"))
+            GLint version;
+            glGetIntegerv(GL_MAJOR_VERSION, &version);
+
+            bool compileOk = false;
+
+            if(version >= 3)
+                compileOk = m_ShaderPoint->compileSourceFile("./shaders/points.vert");
+            else
+                compileOk = m_ShaderPoint->compileSourceFile("./shaders/points_120.vert");
+
+            if(!compileOk)
             {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(m_ShaderPoint->log()));
+                QString log;
+                QString tmp;
+
+                while(!(tmp = m_ShaderPoint->log()).isEmpty())
+                    log += tmp;
+
+                if(!log.isEmpty())
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(log));
 
                 delete m_ShaderPoint;
                 m_ShaderPoint = NULL;
@@ -1588,15 +1602,28 @@ void G3DPainter::initPointShader()
         }
 
         if(!m_shaderPointError
-                && !m_shaderProgPointError
-                && m_shaderProgPoint->shaders().isEmpty())
+                && !m_shaderProgPointError)
         {
-            m_shaderProgPointError = !m_shaderProgPoint->addShader(m_ShaderPoint);
+            if(m_shaderProgPoint == NULL)
+                m_shaderProgPoint = new QT_GL_SHADERPROGRAM();
 
-            if(!m_shaderProgPointError && !m_shaderProgPoint->link())
+            if(m_shaderProgPoint->shaders().isEmpty())
             {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Link error : %1").arg(m_shaderProgPoint->log()));
-                m_shaderProgPointError = true;
+                m_shaderProgPointError = !m_shaderProgPoint->addShader(m_ShaderPoint);
+
+                if(!m_shaderProgPointError && !m_shaderProgPoint->link())
+                {
+                    QString log;
+                    QString tmp;
+
+                    while(!(tmp = m_ShaderPoint->log()).isEmpty())
+                        log += tmp;
+
+                    if(!log.isEmpty())
+                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Link error : %1").arg(log));
+
+                    m_shaderProgPointError = true;
+                }
             }
         }
     }

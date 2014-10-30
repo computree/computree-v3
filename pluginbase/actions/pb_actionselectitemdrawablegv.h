@@ -74,7 +74,7 @@ private:
     bool                                    m_mousePressed;
 
 //    SelectionDrawMode                       m_drawMode;
-//    GraphicsViewInterface::DrawMode         m_backupDrawMode;
+    GraphicsViewInterface::DrawMode         m_backupDrawMode;
 
 //    void setNewDrawMode();
 //    void setBackupDrawMode();
