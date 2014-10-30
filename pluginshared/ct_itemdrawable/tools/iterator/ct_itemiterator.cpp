@@ -26,6 +26,7 @@ CT_ItemIterator::CT_ItemIterator(const CT_AbstractItemGroup *parent)
 
     m_parent = (CT_AbstractItemGroup*)parent;
     m_current = NULL;
+    m_hasNextCalled = false;
 }
 
 CT_ItemIterator::CT_ItemIterator(const CT_AbstractItemGroup *parent, const CT_InAbstractSingularItemModel *inModel)
@@ -126,6 +127,7 @@ void CT_ItemIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_
 
     m_parent = (CT_AbstractItemGroup*)parent;
     m_current = NULL;
+    m_hasNextCalled = false;
 }
 
 void CT_ItemIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_OutAbstractSingularItemModel *outModel)
@@ -135,4 +137,5 @@ void CT_ItemIterator::initIterator(const CT_AbstractItemGroup *parent, const CT_
 
     m_parent = (CT_AbstractItemGroup*)parent;
     m_current = NULL;
+    m_hasNextCalled = false;
 }

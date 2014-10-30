@@ -51,7 +51,7 @@ bool PB_CSVExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable
 
     if(myList.isEmpty())
     {
-        setErrorMessage(tr("Aucun Groupe"));
+        setErrorMessage(tr("Aucun Singular Item"));
         return false;
     }
 
@@ -93,6 +93,8 @@ bool PB_CSVExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable
         }
 
         _mapItemToExport = newMap;
+
+        configureExportWithLastConfigurationAndNewItemToExport();
 
         return !_mapItemToExport.isEmpty();
     }
@@ -257,106 +259,187 @@ CT_AbstractExporter* PB_CSVExporter::copy() const
 
 bool PB_CSVExporter::protectedExportToFile()
 {
-    QFileInfo exportPathInfo = QFileInfo(exportFilePath());
-    QString path = exportPathInfo.path();
-    QString baseName = exportPathInfo.baseName();
-    QString suffix = "csv";
-    QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
-
-    QFile file(filePath);
-
-    if(file.open(QFile::WriteOnly))
+    if(!_mapKeyChanged)
     {
-        QTextStream stream(&file);
+        QFileInfo exportPathInfo = QFileInfo(exportFilePath());
+        QString path = exportPathInfo.path();
+        QString baseName = exportPathInfo.baseName();
+        QString suffix = "csv";
+        QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
 
-        QList<PB_CSVExporterColumn*> columns;
+        QFile file(filePath);
 
-        // ecriture de l'header
-        QListIterator< QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > it(_configuration->getColumns());
-
-        while(it.hasNext())
+        if(file.open(QFile::WriteOnly))
         {
-            const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = it.next();
-            stream << column.second->displayableName() << ";";
+            QTextStream stream(&file);
 
-            QList<CT_AbstractItemDrawable*> *lToConvert = _mapItemToExport.value(column.first);
-            QList<CT_AbstractSingularItemDrawable*> lToPass;
+            QList<PB_CSVExporterColumn*> columns;
 
-            foreach (CT_AbstractItemDrawable *itemD, *lToConvert) {
-                lToPass.append((CT_AbstractSingularItemDrawable*)itemD);
-            }
+            // ecriture de l'header
+            QListIterator< QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > it(_configuration->getColumns());
 
-            columns.append(new PB_CSVExporterColumn(lToPass, column.second));
-        }
-
-        // ecriture des données
-        int currentItemIndex = 0;
-        int lastCurrentItemIndex;
-        bool hasAtLeastOneNextValue;
-
-        size_t completeSize = 0;
-        size_t currentPos = 0;
-
-        QListIterator<PB_CSVExporterColumn*> itC(columns);
-
-        while(itC.hasNext())
-            completeSize += itC.next()->size();
-
-        do
-        {
-            stream << "\r\n";
-
-            itC.toFront();
-            lastCurrentItemIndex = std::numeric_limits<int>::max();
-            hasAtLeastOneNextValue = false;
-
-            // pour chaque colonne
-            while(itC.hasNext())
+            while(it.hasNext())
             {
-                PB_CSVExporterColumn *column = itC.next();
+                const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = it.next();
+                stream << column.second->displayableName() << ";";
 
-                // si cette colonne va exporter une valeur
-                // d'un item dont l'index dans la liste est le même
-                // que les autres colonnes
-                if((column->currentItemIndex() == currentItemIndex)
-                        && column->hasNextValue())
-                {
-                    // on exporte la valeur
-                    stream << column->nextValueToString() << ";";
+                QList<CT_AbstractItemDrawable*> *lToConvert = _mapItemToExport.value(column.first);
+                QList<CT_AbstractSingularItemDrawable*> lToPass;
 
-                    // on garde en mémoire l'index de l'item
-                    if(column->currentItemIndex() < lastCurrentItemIndex)
-                        lastCurrentItemIndex = column->currentItemIndex();
-
-                    // si il y aura encore une valeur a exporter
-                    if(column->hasNextValue()
-                            && !hasAtLeastOneNextValue)
-                        hasAtLeastOneNextValue = true;
-
-
-                    ++currentPos;
-                    setExportProgress((currentPos*95)/completeSize);
+                foreach (CT_AbstractItemDrawable *itemD, *lToConvert) {
+                    lToPass.append((CT_AbstractSingularItemDrawable*)itemD);
                 }
-                else
-                {
-                    stream << ";";
-                }
+
+                columns.append(new PB_CSVExporterColumn(lToPass, column.second));
             }
 
-            currentItemIndex = lastCurrentItemIndex;
+            // ecriture des données
+            int currentItemIndex = 0;
+            int lastCurrentItemIndex;
+            bool hasAtLeastOneNextValue;
 
-        // tant qu'il reste au moins une valeur à exporter
-        }while(hasAtLeastOneNextValue);
+            size_t completeSize = 0;
+            size_t currentPos = 0;
 
-        qDeleteAll(columns.begin(), columns.end());
+            QListIterator<PB_CSVExporterColumn*> itC(columns);
 
-        file.close();
-        setExportProgress(100);
+            while(itC.hasNext())
+                completeSize += itC.next()->size();
 
-        return true;
+            do
+            {
+                stream << "\r\n";
+
+                itC.toFront();
+                lastCurrentItemIndex = std::numeric_limits<int>::max();
+                hasAtLeastOneNextValue = false;
+
+                // pour chaque colonne
+                while(itC.hasNext())
+                {
+                    PB_CSVExporterColumn *column = itC.next();
+
+                    // si cette colonne va exporter une valeur
+                    // d'un item dont l'index dans la liste est le même
+                    // que les autres colonnes
+                    if((column->currentItemIndex() == currentItemIndex)
+                            && column->hasNextValue())
+                    {
+                        // on exporte la valeur
+                        stream << column->nextValueToString() << ";";
+
+                        // on garde en mémoire l'index de l'item
+                        if(column->currentItemIndex() < lastCurrentItemIndex)
+                            lastCurrentItemIndex = column->currentItemIndex();
+
+                        // si il y aura encore une valeur a exporter
+                        if(column->hasNextValue()
+                                && !hasAtLeastOneNextValue)
+                            hasAtLeastOneNextValue = true;
+
+
+                        ++currentPos;
+                        setExportProgress((currentPos*95)/completeSize);
+                    }
+                    else
+                    {
+                        stream << ";";
+                    }
+                }
+
+                currentItemIndex = lastCurrentItemIndex;
+
+            // tant qu'il reste au moins une valeur à exporter
+            }while(hasAtLeastOneNextValue);
+
+            qDeleteAll(columns.begin(), columns.end());
+
+            file.close();
+            setExportProgress(100);
+
+            return true;
+        }
     }
 
     return false;
+}
+
+bool PB_CSVExporter::configureExportWithLastConfigurationAndNewItemToExport()
+{
+    if(_mapKeyChanged && (_configuration != NULL))
+    {
+        QList<CT_OutAbstractSingularItemModel*> list = _mapItemToExport.keys();
+
+        QList<QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > columns = _configuration->getColumns();
+        QList<QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > newColumns = columns;
+        QVector<bool> replaced(columns.size());
+
+        QListIterator<CT_OutAbstractSingularItemModel*> it(list);
+
+        while(it.hasNext())
+        {
+            CT_OutAbstractSingularItemModel *model = it.next();
+            QListIterator<CT_OutAbstractItemAttributeModel*> itA(model->itemAttributes());
+
+            int index = 0;
+
+            QListIterator<QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > itC(columns);
+
+            while(itC.hasNext())
+            {
+                const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = itC.next();
+
+                // if same original model
+                if(column.first->originalModel() == model->originalModel())
+                {
+                    itA.toFront();
+
+                    bool ok = false;
+                    while(itA.hasNext()
+                          && !ok)
+                    {
+                        CT_OutAbstractItemAttributeModel *attModel = itA.next();
+
+                        // if same original model
+                        if(column.second->originalModel() == attModel->originalModel())
+                        {
+                            // we can replace this pair by this model
+                            replaced.replace(index, true);
+
+                            newColumns.replace(index, qMakePair(model, attModel));
+
+                            ok = true;
+                        }
+                    }
+                }
+
+                ++index;
+            }
+        }
+
+        QVectorIterator<bool> itV(replaced);
+
+        while(itV.hasNext())
+        {
+            if(itV.next() == false)
+                return false;
+        }
+
+        _configuration->clearColumns();
+
+        QListIterator<QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> > itC(newColumns);
+
+        while(itC.hasNext())
+        {
+            const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = itC.next();
+
+            _configuration->addColumn(column.first, column.second);
+        }
+
+        _mapKeyChanged = false;
+    }
+
+    return !_mapKeyChanged;
 }
 
 void PB_CSVExporter::clearMap()

@@ -305,11 +305,11 @@ bool GDocumentViewForGraphics::useItemColor() const
 
 void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, const QColor &color)
 {
-    if(!getItemsInformations().contains(item->result()))
-        createItemInformationsForResult(item->result());
-
     const QHash<CT_AbstractResult*, QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* > &ii = getItemsInformations();
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = ii.value(item->result(), NULL);
+
+    if(hash == NULL)
+        hash = createItemInformationsForResult(item->result());
 
     DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value((CT_AbstractItemDrawable*)item, NULL));
 
@@ -341,7 +341,7 @@ void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, con
     CT_AbstractItemGroup *group = dynamic_cast<CT_AbstractItemGroup*>((CT_AbstractItemDrawable*)item);
 
     if(group != NULL)
-        recursiveSetColor(group, hash, color);
+        recursiveSetColor(group, color);
 
     m_colorVboManager->refresh();
 }
@@ -1078,14 +1078,26 @@ DM_AbstractInfo* GDocumentViewForGraphics::createNewItemInformation(const CT_Abs
 }
 
 void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,
-                                                 QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash,
                                                  const QColor &color)
 {
+    CT_AbstractResult *lastResult = NULL;
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = NULL;
+
     CT_GroupIterator itG(group);
 
     while(itG.hasNext())
     {
         CT_AbstractItemGroup *child = (CT_AbstractItemGroup*)itG.next();
+
+        if(lastResult != child->result())
+        {
+            lastResult = child->result();
+
+            hash = getItemsInformations().value(lastResult);
+
+            if(hash == NULL)
+                hash = createItemInformationsForResult(lastResult);
+        }
 
         DM_ItemInfoForGraphics *childInfo = static_cast<DM_ItemInfoForGraphics*>(hash->value(child, NULL));
 
@@ -1097,7 +1109,7 @@ void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,
 
         childInfo->setColor(color);
 
-        recursiveSetColor(child, hash, color);
+        recursiveSetColor(child, color);
     }
 
     CT_ItemIterator itI(group);
@@ -1105,6 +1117,17 @@ void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,
     while(itI.hasNext())
     {
         CT_AbstractSingularItemDrawable *child = (CT_AbstractSingularItemDrawable*)itI.next();
+
+        if(lastResult != child->result())
+        {
+            lastResult = child->result();
+
+            hash = getItemsInformations().value(lastResult);
+
+            if(hash == NULL)
+                hash = createItemInformationsForResult(lastResult);
+
+        }
 
         DM_ItemInfoForGraphics *childInfo = static_cast<DM_ItemInfoForGraphics*>(hash->value(child, NULL));
 

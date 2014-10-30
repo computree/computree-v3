@@ -32,6 +32,8 @@ protected:
 
     bool protectedExportToFile();
 
+    bool configureExportWithLastConfigurationAndNewItemToExport();
+
 private:
 
     PB_CSVExporterConfiguration                                                 *_configuration;

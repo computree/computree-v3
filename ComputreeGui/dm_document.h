@@ -292,7 +292,7 @@ protected:
      * @brief Create item informations in collection for the result passed in parameter.
      * @warning Verify if informations don't exist for this result before call this method
      */
-    void createItemInformationsForResult(CT_AbstractResult *result);
+    QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *createItemInformationsForResult(CT_AbstractResult *result);
 
     /**
      * @brief Overload this method if you want to create your own item information. By default return NULL;

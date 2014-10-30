@@ -388,12 +388,14 @@ CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstract
     return NULL;
 }
 
-void DM_Document::createItemInformationsForResult(CT_AbstractResult *result)
+QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* DM_Document::createItemInformationsForResult(CT_AbstractResult *result)
 {
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = new QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>();
     m_itemsInformation.insert(result, hash);
 
     connect(result, SIGNAL(destroyed(QObject*)), this, SLOT(slotResultDestroyed(QObject*)), Qt::DirectConnection);
+
+    return hash;
 }
 
 DM_AbstractInfo* DM_Document::createNewItemInformation(const CT_AbstractItemDrawable *item) const

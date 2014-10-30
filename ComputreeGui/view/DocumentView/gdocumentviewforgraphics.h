@@ -182,7 +182,6 @@ protected:
      * @brief Recursive set color of childrens of this group
      */
     void recursiveSetColor(CT_AbstractItemGroup *group,
-                              QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *hash,
                               const QColor &color);
 
 public slots:

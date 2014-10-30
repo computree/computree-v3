@@ -983,11 +983,6 @@ void G3DGraphicsView::drawInternal()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            if(lastResult != item->result())
-                hash = ii.value(item->result(), NULL);
-
-            DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
-
             if(item->isSelected())
             {
                 if(colorVBOManager() != NULL)
@@ -1005,6 +1000,11 @@ void G3DGraphicsView::drawInternal()
             }
             else
             {
+                if(lastResult != item->result())
+                    hash = ii.value(item->result(), NULL);
+
+                DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
+
                 if(colorVBOManager() != NULL)
                     colorVBOManager()->setUseColorCloud(m_docGV->useColorCloud());
 
