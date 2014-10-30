@@ -60,7 +60,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepslicepointcloud.h \
     actions/pb_actionslicepointcloud.h \
     views/actions/pb_actionslicepointcloudoptions.h \
-    exporters/polygon2d/pb_polygon2dexporter.h
+    exporters/polygon2d/pb_polygon2dexporter.h \
+    actions/pb_actionpickitemsinlist.h \
+    views/actions/pb_actionpickitemsinlistoptions.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -119,7 +121,9 @@ SOURCES += \
     step/pb_stepslicepointcloud.cpp \
     actions/pb_actionslicepointcloud.cpp \
     views/actions/pb_actionslicepointcloudoptions.cpp \
-    exporters/polygon2d/pb_polygon2dexporter.cpp
+    exporters/polygon2d/pb_polygon2dexporter.cpp \
+    actions/pb_actionpickitemsinlist.cpp \
+    views/actions/pb_actionpickitemsinlistoptions.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -140,7 +144,8 @@ FORMS += \
     views/actions/pb_actiondefineheightlayeroptions.ui \
     views/actions/pb_actionmodifyaffiliationsoptions.ui \
     views/actions/pb_actionsegmentgapsoptions.ui \
-    views/actions/pb_actionslicepointcloudoptions.ui
+    views/actions/pb_actionslicepointcloudoptions.ui \
+    views/actions/pb_actionpickitemsinlistoptions.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts

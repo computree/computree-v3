@@ -17,6 +17,7 @@
 
 //Inclusion of actions
 #include "actions/pb_actionselectitemdrawablegv.h"
+#include "actions/pb_actionpickitemsinlist.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
@@ -35,6 +36,8 @@ PB_StepUserItemSelection::PB_StepUserItemSelection(CT_StepInitializeData &dataIn
     m_doc = NULL;
     m_removeGroupsWithoutItemResearched = true;
     m_removeParents = true;
+
+    _mode = 1;
 
     setManual(true);
 }
@@ -82,6 +85,13 @@ void PB_StepUserItemSelection::createPostConfigurationDialog()
 
     dialog->addBool("", "", tr("Supprimer les groupes ne contenant pas l'ItemDrawable recherché"), m_removeGroupsWithoutItemResearched);
     dialog->addBool("", "", tr("Supprimer les groupes parents si l'ItemDrawable recherché n'existe plus dans la structure sous-jacente"), m_removeParents);
+
+    dialog->addEmpty();
+    dialog->addText("Mode de séléction des items", "", "");
+    CT_ButtonGroup &bg_mode = dialog->addButtonGroup(_mode);
+
+    dialog->addExcludeValue("", "", "Séléction classique", bg_mode, 0);
+    dialog->addExcludeValue("", "", "Par proximité des centres des items", bg_mode, 1);
 }
 
 void PB_StepUserItemSelection::compute()
@@ -171,18 +181,28 @@ void PB_StepUserItemSelection::initManualMode()
         // create a new 3D document
         m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-        m_doc->setCurrentAction(new PB_ActionSelectItemDrawableGV());
     }
-
     m_itemDrawableSelected.clear();
     m_doc->removeAllItemDrawable();
 
-    // TODO add async with GuiManagerInterface
-    QHashIterator<CT_AbstractItemDrawable*, CT_AbstractItemGroup*> it(m_itemDrawableToAdd);
 
-    while(it.hasNext())
-        m_doc->addItemDrawable(*it.next().key());
+    if (_mode == 0)
+    {
+        // TODO add async with GuiManagerInterface
+        QHashIterator<CT_AbstractItemDrawable*, CT_AbstractItemGroup*> it(m_itemDrawableToAdd);
+
+        while(it.hasNext())
+            m_doc->addItemDrawable(*it.next().key());
+
+        // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
+        m_doc->setCurrentAction(new PB_ActionSelectItemDrawableGV());
+    } else {
+
+        QList<CT_AbstractItemDrawable*> keys = m_itemDrawableToAdd.keys();
+        m_doc->setCurrentAction(new PB_ActionPickItemsInList(keys, &m_itemDrawableSelected));
+
+    }
+
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette "
                                                          "étape de filtrage. Veuillez sélectionner les "
@@ -197,7 +217,10 @@ void PB_StepUserItemSelection::useManualMode(bool quit)
     {
         if(quit)
         {
-            m_itemDrawableSelected = m_doc->getSelectedItemDrawable();
+            if (_mode == 0)
+            {
+                m_itemDrawableSelected = m_doc->getSelectedItemDrawable();
+            }
         }
     }
     else if(m_status == 1)

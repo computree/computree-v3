@@ -96,6 +96,8 @@ private:
     bool                                                        m_removeGroupsWithoutItemResearched;
     bool                                                        m_removeParents;
 
+    int                                                         _mode;
+
     void recursiveRemoveGroup(CT_AbstractItemGroup *parent, CT_AbstractItemGroup *group) const;
 };
 
