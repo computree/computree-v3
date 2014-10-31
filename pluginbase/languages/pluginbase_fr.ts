@@ -2167,7 +2167,7 @@ Laisser la souris au-dessus d&apos;un bouton pour avoir des infos.</translation>
     <message>
         <location filename="../step/pb_stepslicepointcloud.cpp" line="66"/>
         <source>Action manuelle permettant de découper une scène d&apos;entrée en tranches horizontales.&lt;br&gt;Il est possible d&apos;en régler intéractivement :&lt;br&gt;- L&apos;épaisseur (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;- L&apos;espacement entre deux tranches (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;&lt;br&gt;N.B. : Cette étape peut également fonctionner en mode non interactif, avec les paramètres choisis dans la boite de configuration. </source>
-        <translation>Action manuelle permettant de découper une scène d&apos;entrée en tranches horizontales.&lt;br&gt;Il est possible d&apos;en régler intéractivement :&lt;br&gt;- L&apos;épaisseur (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;- L&apos;espacement entre deux tranches (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;&lt;br&gt;N.B. : Cette étape peut également fonctionner en mode non interactif, avec les paramètres choisis dans la boite de configuration. </translation>
+        <translation>Action manuelle permettant de découper une scène d&apos;entrée en tranches horizontales.&lt;br&gt;Il est possible de régler intéractivement :&lt;br&gt;- L&apos;épaisseur (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;- L&apos;espacement entre deux tranches (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;&lt;br&gt;N.B. : Cette étape peut également fonctionner en mode non interactif, avec les paramètres choisis dans la boite de configuration. </translation>
     </message>
     <message>
         <location filename="../step/pb_stepslicepointcloud.cpp" line="85"/>
@@ -2329,7 +2329,7 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
     <message>
         <location filename="../pb_steppluginmanager.cpp" line="106"/>
         <source>Plugin_Base initialized</source>
-        <translation>Plugi_nBase initialisé</translation>
+        <translation>Plugin_Base initialisé</translation>
     </message>
     <message>
         <location filename="../pb_steppluginmanager.cpp" line="168"/>

@@ -1391,7 +1391,7 @@ In 3D mode, the tool only works on selected cells</translation>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="82"/>
         <source>Cette étape génère une grille 3D à la &lt;b&gt;résolution&lt;/b&gt; spécifiée.&lt;br&gt;Chaque case reçoit le nombre de points de la scène d&apos;entrée qu&apos;elle contient.&lt;br&gt;Elle calcule également les profils 2D cumulés en XY, XZ et YZ. </source>
-        <translation type="unfinished"></translation>
+        <translation>This step generates a 3D grid with the specified &lt;b&gt;Resolution&lt;/ b&gt;. &lt;br&gt; Each cell get the number of points of the input scene contained in the cell. &lt;br&gt; It also calculates 2D profiles projected to XY, XZ and YZ planes.</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputehitgrid.cpp" line="95"/>
@@ -1499,7 +1499,7 @@ In 3D mode, the tool only works on selected cells</translation>
     <message>
         <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="41"/>
         <source>Cette étape teste pour chaque point des scènes d&apos;entrée s&apos;il est contenu dans une case &quot;vraie&quot; de la grille booléenne choisie. Si oui, le point est conservé. Sinon, il n&apos;est pas conservé.&lt;br&gt;Plusieures scènes peuvent être traitées avec la même étape.&lt;br&gt;Chaque scène filtrée est ajoutée au groupe contenant la grille d&apos;entrée.Si le résultat d&apos;entrée contient plusieurs grilles, une scène est produite pour chacune (sur la base du cumul de toutes les scènes d&apos;entrée)</source>
-        <translation type="unfinished"></translation>
+        <translation>This step tests for each point of input scenes if it is contained in a &quot;real&quot; case of the chosen Boolean grid. If so, the point is retained. Otherwise, it is dropped. &lt;br&gt;Several scenes can be treated with the same step. &lt;br&gt;Each filtered scene is added to the group containing the input grid.Si the input result contains multiple grids, one scene is produced for each one (based on the combination of all input scenes)</translation>
     </message>
     <message>
         <location filename="../step/pb_stepfilterpointsbyboolgrid.cpp" line="59"/>
@@ -1832,7 +1832,20 @@ Leave the mouse over a button to get info.</translation>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="54"/>
         <source>Cette étape permet de segmenter des houppiers manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les houppiers. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque houppier. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (houppiers) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque houppier&lt;/li&gt;&lt;li&gt;Une scène de points extraite pour chaque houppier&lt;/li&gt;&lt;li&gt;Un polygone horizontal correspondant à l&apos;enveloppe convexe des pixels de chaque houppier&lt;/li&gt;&lt;li&gt;Deux métriques donnant respectivement la surface des pixels, et la surface de l&apos;enveloppe convexe pour chaque houppier&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>This step allows to manually segment crowns in a horizontal plane. &lt;br&gt;
+The first phase allows to manually choose the slice on which the points will be analyzed. It defines a minimum Z level, a maximum Z level and a resolution for working rasters: 
+&lt;ul&gt;
+&lt;li&gt;Digital Surface Model (DSM) = height of the highest point for each cell&lt;/li&gt;
+&lt;li&gt;The dot density per cell &lt;/li&gt;
+&lt;/ul&gt;
+Rasters are then used in a second phase to segment crowns. A color system allows to semi-automatically define the horizontal projection for each crown. On the basis of a pre-segmentation, the operator can modify clusters (crown) by merging or dividing&lt;br&gt;
+As output, this step products:
+&lt;ul&gt;
+&lt;li&gt;A raster with an integer value different for each crown&lt;/li&gt;
+&lt;li&gt;A scene of points extracted for each crown&lt;/li&gt;
+&lt;li&gt;A horizontal polygon corresponding to the convex hull of the pixels of each crown&lt;/li&gt;
+&lt;li&gt;Metrics giving the maximum height for the delimited crown, the projected surface (sum of pixels areas) and the surface of the convex hull for each crown&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentcrowns.cpp" line="84"/>
@@ -1993,7 +2006,18 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="57"/>
         <source>Cette étape permet de segmenter des trouées manuellement dans un plan horizontal.&lt;br&gt;Une première phase manuelle permet de déteminer la tranche verticale sur laquelle les points seront analysés. On y définit un niveau Z minimum, un niveau Z maximum, ainsi qu&apos;une résolution pour les rasters de travail :&lt;ul&gt;&lt;li&gt;Le Modèle Numérique de Surface (MNS) = hauteur du point le plus haut pour chaque case&lt;/li&gt;&lt;li&gt;La densité de point par case&lt;/li&gt;&lt;/ul&gt;Les rasters sont ensuite utilisés dans une seconde phase, afin de segmenter les trouées. Un système par couleurs permet de façon semi-automatique de délimiter l&apos;emprise horizontale de chaque trouée. Sur la base d&apos;une pré-segmentation, l&apos;opérateur peut modifier les groupes (trouées) en les fusionnant ou en les divisant.&lt;br&gt;En sortie, cette étapes produit :&lt;ul&gt;&lt;li&gt;Un raster avec une valeur entière différente pour chaque trouée&lt;/li&gt;&lt;li&gt;Une métrique donnant la surface des pixels pour chaque trouée&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>This step allows to manually segment gaps in a horizontal plane. &lt;br&gt;
+The first phase allows to manually choose the slice on which the points will be analyzed. It defines a minimum Z level, a maximum Z level and a resolution for working rasters: 
+&lt;ul&gt;
+&lt;li&gt;Digital Surface Model (DSM) = height of the highest point for each cell&lt;/li&gt;
+&lt;li&gt;The dot density per cell &lt;/li&gt;
+&lt;/ul&gt;
+Rasters are then used in a second phase to segment gaps. A color system allows to semi-automatically define the horizontal projection for each gap. On the basis of a pre-segmentation, the operator can modify clusters (gaps) by merging or dividing&lt;br&gt;
+As output, this step products:
+&lt;ul&gt;
+&lt;li&gt;A raster with an integer value different for each gap&lt;/li&gt;
+&lt;li&gt;A Metric giving the the projected surface (sum of pixels areas) for each gap&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../step/pb_stepsegmentgaps.cpp" line="85"/>
@@ -2136,7 +2160,9 @@ Cela peut prendre un peu de temps...</source>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="59"/>
         <source>Cette étape permet de générer une grille booléenne, représentant une séléction de cellules parmi celles de la grille de référence choisie en entrée.&lt;br&gt;Elle utilise un actionner, permettant de faire des séléction soit par plans horizontaux 2D, soit directement en 3D.&lt;br&gt;En sortie elle fournie également une copie de la grille d&apos;entrée pour laquelle toute les cases non sélectionnées sont réinitialisées à la valeur 0. </source>
-        <translation type="unfinished"></translation>
+        <translation>This step will generate a Boolean grid, representing a selection of cells from a reference grid chosen as input.&lt;br&gt;
+It uses an action to make selection, either by 2D horizontal planes, or directly in 3D.&lt;br&gt;
+As output it also provide a copy of the input grid where any non-selected cell is set to 0.</translation>
     </message>
     <message>
         <location filename="../step/pb_stepselectcellsingrid3d.cpp" line="66"/>
@@ -2263,7 +2289,11 @@ Keep mouse on a button to obtain more informations.</translation>
     <message>
         <location filename="../step/pb_stepslicepointcloud.cpp" line="66"/>
         <source>Action manuelle permettant de découper une scène d&apos;entrée en tranches horizontales.&lt;br&gt;Il est possible d&apos;en régler intéractivement :&lt;br&gt;- L&apos;épaisseur (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;- L&apos;espacement entre deux tranches (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;&lt;br&gt;N.B. : Cette étape peut également fonctionner en mode non interactif, avec les paramètres choisis dans la boite de configuration. </source>
-        <translation type="unfinished"></translation>
+        <translation>Manual action to cut a scene into horizontal slices.&lt;br&gt;
+It is possible to adjust interactively:&lt;br&gt;
+- The thickness (&lt;b&gt;_thickness&lt;/b&gt;)&lt;br&gt;
+- Spacing between two slices (&lt;b&gt;_spacing&lt;/b&gt;)&lt;br&gt;
+NB: This step can also work in non-interactive mode, with the selected parameters in configuration dialog.</translation>
     </message>
     <message>
         <location filename="../step/pb_stepslicepointcloud.cpp" line="85"/>
