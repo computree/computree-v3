@@ -767,6 +767,15 @@ void G3DCameraController::fitCameraToVisibleItems()
             if (maxBB.x() > max.x) {max.x = maxBB.x();}
             if (maxBB.y() > max.y) {max.y = maxBB.y();}
             if (maxBB.z() > max.z) {max.z = maxBB.z();}
+
+            // If boundingBox not defined : take center
+            if (item->getCenterX() < min.x) {min.x = item->getCenterX();}
+            if (item->getCenterY() < min.y) {min.y = item->getCenterY();}
+            if (item->getCenterZ() < min.z) {min.z = item->getCenterZ();}
+
+            if (item->getCenterX() > max.x) {max.x = item->getCenterX();}
+            if (item->getCenterY() > max.y) {max.y = item->getCenterY();}
+            if (item->getCenterZ() > max.z) {max.z = item->getCenterZ();}
         }
     }
 

@@ -90,14 +90,15 @@ void PB_ActionPickItemsInList::selectNone()
 
 bool PB_ActionPickItemsInList::mousePressEvent(QMouseEvent *e)
 {
+    _oldPos = e->pos();
+
     if (e->modifiers() & Qt::ShiftModifier)
     {
         _buttonsPressed = e->buttons();
+        return true;
     } else  {
         _buttonsPressed = Qt::NoButton;
     }
-
-    _oldPos = e->pos();
     return false;
 }
 
@@ -109,17 +110,35 @@ bool PB_ActionPickItemsInList::mouseMoveEvent(QMouseEvent *e)
 
 bool PB_ActionPickItemsInList::mouseReleaseEvent(QMouseEvent *e)
 {   
+    PB_ActionPickItemsInListOptions *option = (PB_ActionPickItemsInListOptions*)optionAt(0);
+
     QPoint point = e->pos() - _oldPos;
 
     if (point.manhattanLength() <= 3)
     {
         if (_buttonsPressed == Qt::LeftButton)
         {
-            addItemToSelection(e->pos());
+            CT_AbstractItemDrawable* item = addItemToSelection(e->pos());
+            if (item!=NULL && option->souldAutoCenterCamera())
+            {
+                graphicsView()->camera()->setCX(item->getCenterX());
+                graphicsView()->camera()->setCY(item->getCenterY());
+                graphicsView()->camera()->setCZ(item->getCenterZ());
+            }
+            redraw();
+            return true;
         } else if (_buttonsPressed == Qt::RightButton){
-            removeItemFromSelection(e->pos());
+            CT_AbstractItemDrawable* item = removeItemFromSelection(e->pos());
+
+            if (item!=NULL && option->souldAutoCenterCamera())
+            {
+                graphicsView()->camera()->setCX(item->getCenterX());
+                graphicsView()->camera()->setCY(item->getCenterY());
+                graphicsView()->camera()->setCZ(item->getCenterZ());
+            }
+            redraw();
+            return true;
         }
-        redraw();
     }
     return false;
 }
@@ -180,7 +199,7 @@ CT_AbstractAction* PB_ActionPickItemsInList::copy() const
     return new PB_ActionPickItemsInList(_itemList, _selectedItems, _maxDist);
 }
 
-void PB_ActionPickItemsInList::addItemToSelection(const QPoint &point)
+CT_AbstractItemDrawable* PB_ActionPickItemsInList::addItemToSelection(const QPoint &point)
 {
     QVector3D origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
@@ -206,9 +225,10 @@ void PB_ActionPickItemsInList::addItemToSelection(const QPoint &point)
     {
         _selectedItems->append(pickedItem);
     }
+    return pickedItem;
 }
 
-void PB_ActionPickItemsInList::removeItemFromSelection(const QPoint &point)
+CT_AbstractItemDrawable *PB_ActionPickItemsInList::removeItemFromSelection(const QPoint &point)
 {
     QVector3D origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
@@ -234,4 +254,6 @@ void PB_ActionPickItemsInList::removeItemFromSelection(const QPoint &point)
     {
         _selectedItems->removeOne(pickedItem);
     }
+
+    return pickedItem;
 }

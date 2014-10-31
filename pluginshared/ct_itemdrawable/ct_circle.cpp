@@ -27,6 +27,8 @@
 
 #include "ct_circle.h"
 
+#include "math.h"
+
 const CT_StandardCircleDrawManager CT_Circle::CIRCLE_DRAW_MANAGER;
 
 CT_DEFAULT_IA_INIT(CT_Circle)
@@ -40,12 +42,14 @@ CT_Circle::CT_Circle(const CT_OutAbstractSingularItemModel *model,
                      const CT_AbstractResult *result, CT_CircleData *data) : CT_AbstractShape(model, result, data)
 {
     setBaseDrawManager(&CIRCLE_DRAW_MANAGER);
+//    if (data!=NULL) {computeBoundingBox();}
 }
 
 CT_Circle::CT_Circle(const QString &modelName,
                      const CT_AbstractResult *result, CT_CircleData *data) : CT_AbstractShape(modelName, result, data)
 {
     setBaseDrawManager(&CIRCLE_DRAW_MANAGER);
+//    if (data!=NULL) {computeBoundingBox();}
 }
 
 QString CT_Circle::getType() const
@@ -96,6 +100,42 @@ CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutA
 
     return new CT_Circle((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
+
+// Code non vérifié...
+//void CT_Circle::computeBoundingBox()
+//{
+//    const CT_CircleData &data = (const CT_CircleData&)getData();
+
+//    const QVector3D &center = data.getCenter();
+//    const QVector3D &direction = data.getDirection();
+//    float radius = data.getRadius();
+
+//    QVector3D u(0,0,0);
+
+//    if(fabs(direction.x()) >= fabs(direction.y()))
+//    {
+//        double factor = 1.0/sqrt(direction.x()*direction.x()+direction.z()*direction.z());
+//        u.setX(-direction.z()*factor);
+//        u.setZ(direction.x()*factor);
+//    }
+//    else
+//    {
+//        double factor = 1.0/sqrt(direction.y()*direction.y()+direction.z()*direction.z());
+//        u.setY(direction.z()*factor);
+//        u.setZ(-direction.y()*factor);
+//    }
+
+//    QVector3D v = QVector3D::crossProduct(direction, u);
+//    v.normalize();
+
+//    _minCoordinates.setX(center.x() - radius*u.x() - radius*v.x());
+//    _minCoordinates.setY(center.y() - radius*u.y() - radius*v.y());
+//    _minCoordinates.setZ(center.z() - radius*u.z() - radius*v.z());
+
+//    _maxCoordinates.setX(center.x() + radius*u.x() + radius*v.x());
+//    _maxCoordinates.setY(center.y() + radius*u.y() + radius*v.y());
+//    _maxCoordinates.setZ(center.z() + radius*u.z() + radius*v.z());
+//}
 
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_CircleData)

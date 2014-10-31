@@ -376,7 +376,7 @@ private:
     int                                 m_octreeCellsDraw;              // count how many octree cells was draw
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
-    static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 5;
+    static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 25;
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_NORMAL;
     static const int                        VECTOR_CIRCLE_NORMAL_SIZE = 100;

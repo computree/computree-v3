@@ -29,6 +29,11 @@ float PB_ActionPickItemsInListOptions::getMaxDist()
     return (float) ui->dsb_maxDist->value();
 }
 
+bool PB_ActionPickItemsInListOptions::souldAutoCenterCamera()
+{
+    return ui->cb_centerCamera->isChecked();
+}
+
 void PB_ActionPickItemsInListOptions::on_pb_color_clicked()
 {
     _itemColor = QColorDialog::getColor(_itemColor);

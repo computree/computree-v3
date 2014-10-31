@@ -39,8 +39,8 @@ public:
 
     CT_AbstractAction* copy() const;
 
-    void addItemToSelection(const QPoint &point);
-    void removeItemFromSelection(const QPoint &point);
+    CT_AbstractItemDrawable* addItemToSelection(const QPoint &point);
+    CT_AbstractItemDrawable* removeItemFromSelection(const QPoint &point);
 
 public slots:
     void redraw();

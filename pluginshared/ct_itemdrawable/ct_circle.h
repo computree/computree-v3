@@ -94,6 +94,8 @@ private:
 
     const static CT_StandardCircleDrawManager   CIRCLE_DRAW_MANAGER;
 
+//    void computeBoundingBox();
+
 #ifdef USE_BOOST_OLD
 private:
 

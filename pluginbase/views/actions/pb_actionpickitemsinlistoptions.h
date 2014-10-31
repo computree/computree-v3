@@ -20,6 +20,7 @@ public:
 
     QColor getColor();
     float getMaxDist();
+    bool souldAutoCenterCamera();
 
 private:
     Ui::PB_ActionPickItemsInListOptions *ui;
