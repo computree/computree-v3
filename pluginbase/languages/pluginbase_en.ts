@@ -275,29 +275,52 @@
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="60"/>
         <source>Distance</source>
-        <translation>Distance</translation>
+        <translation type="vanished">Distance</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="83"/>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="228"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="97"/>
         <source>SHIFT + Clic Gauche (Ajout) ou Clic Droit (Suppression)</source>
-        <translation>SHIFT + Left Clic (Add) or Right Clic (Remove)</translation>
+        <translation type="vanished">SHIFT + Left Clic (Add) or Right Clic (Remove)</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="110"/>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="89"/>
+        <source>&lt;b&gt;AJOUT&lt;/b&gt; : SHIFT + Clic Gauche</source>
+        <translation>&lt;b&gt;ADD&lt;/b&gt; : SHIFT + Left Clic</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="103"/>
+        <source>&lt;b&gt;SUPPRESSION&lt;/b&gt; : SHIFT + Clic Droit</source>
+        <translation>&lt;b&gt;REMOVE&lt;/b&gt; : SHIFT + Right Clic</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="123"/>
         <source>Tous</source>
         <translation>All</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="123"/>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="136"/>
         <source>Aucun</source>
         <translation>None</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="184"/>
+        <source>Couleur items :</source>
+        <translation>Items color:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="205"/>
+        <source>Distance de recherche :</source>
+        <translation>Search distance:</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="242"/>
+        <source>Centre caméra synchronisé sur la séléction</source>
+        <translation>Camera center synchronized with selection</translation>
     </message>
 </context>
 <context>

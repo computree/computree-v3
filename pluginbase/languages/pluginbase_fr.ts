@@ -242,28 +242,43 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="60"/>
-        <source>Distance</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="83"/>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="228"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="97"/>
-        <source>SHIFT + Clic Gauche (Ajout) ou Clic Droit (Suppression)</source>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="89"/>
+        <source>&lt;b&gt;AJOUT&lt;/b&gt; : SHIFT + Clic Gauche</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="110"/>
-        <source>Tous</source>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="103"/>
+        <source>&lt;b&gt;SUPPRESSION&lt;/b&gt; : SHIFT + Clic Droit</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="123"/>
+        <source>Tous</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="136"/>
         <source>Aucun</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="184"/>
+        <source>Couleur items :</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="205"/>
+        <source>Distance de recherche :</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionpickitemsinlistoptions.ui" line="242"/>
+        <source>Centre caméra synchronisé sur la séléction</source>
         <translation></translation>
     </message>
 </context>

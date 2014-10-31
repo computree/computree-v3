@@ -1134,13 +1134,6 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
-        <source>Une erreur est survenu lors de la lecture du script :
-
-%1</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="172"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Sauvegarder l&apos;arbre des étapes sous...</translation>
@@ -1153,6 +1146,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Ajouter une étape qui n&apos;a pas besoin de résultat en entrÞ</source>
         <translation type="vanished">Ajouter une étape qui peut être ajoutée en premier</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="295"/>
