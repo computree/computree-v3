@@ -281,7 +281,9 @@ bool PB_CSVExporter::protectedExportToFile()
             while(it.hasNext())
             {
                 const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = it.next();
-                stream << column.second->displayableName() << ";";
+                stream << column.second->displayableName();
+
+                if (it.hasNext()) {stream << ";";}
 
                 QList<CT_AbstractItemDrawable*> *lToConvert = _mapItemToExport.value(column.first);
                 QList<CT_AbstractSingularItemDrawable*> lToPass;
@@ -326,7 +328,9 @@ bool PB_CSVExporter::protectedExportToFile()
                             && column->hasNextValue())
                     {
                         // on exporte la valeur
-                        stream << column->nextValueToString() << ";";
+                        stream << column->nextValueToString();
+
+                        if (itC.hasNext()) {stream << ";";}
 
                         // on garde en mémoire l'index de l'item
                         if(column->currentItemIndex() < lastCurrentItemIndex)
@@ -343,7 +347,7 @@ bool PB_CSVExporter::protectedExportToFile()
                     }
                     else
                     {
-                        stream << ";";
+                        if (itC.hasNext()) {stream << ";";}
                     }
                 }
 
