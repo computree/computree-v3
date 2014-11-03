@@ -11,6 +11,11 @@ bool CT_AbstractExporterPointAttributesSelection::configureExport()
     return selectAttributes();
 }
 
+CT_ItemDrawableHierarchyCollectionWidget::CloudType CT_AbstractExporterPointAttributesSelection::cloudType() const
+{
+    return CT_ItemDrawableHierarchyCollectionWidget::POINTS;
+}
+
 QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > CT_AbstractExporterPointAttributesSelection::getBuilders() const
 {
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > l;

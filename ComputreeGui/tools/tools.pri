@@ -33,7 +33,8 @@ HEADERS += \
     tools/treeview/dm_itemdrawabletreeviewcontrollert.hpp \
     tools/treeview/dm_itemdrawabletreeviewmodelbuildert.hpp \
     tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp \
-    tools/graphicsview/dm_elementinfomanager.h
+    tools/graphicsview/dm_elementinfomanager.h \
+    tools/graphicsview/dm_colorlinearinterpolator.h
 
 SOURCES += \
     tools/worker/dm_abstractworker.cpp \
@@ -54,5 +55,6 @@ SOURCES += \
     tools/treeview/dm_sortfiltermathproxymodel.cpp \
     tools/treeview/dm_actionshandlerfortreeview.cpp \
     tools/treeview/dm_abstractitemtreeviewcontroller.cpp \
-    tools/graphicsview/dm_elementinfomanager.cpp
+    tools/graphicsview/dm_elementinfomanager.cpp \
+    tools/graphicsview/dm_colorlinearinterpolator.cpp
 

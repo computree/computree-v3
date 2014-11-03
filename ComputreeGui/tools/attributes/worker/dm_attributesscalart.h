@@ -2,6 +2,7 @@
 #define DM_ATTRIBUTESSCALART_H
 
 #include "tools/attributes/worker/abstract/dm_abstractattributesscalar.h"
+#include "tools/graphicsview/dm_colorlinearinterpolator.h"
 
 #include "view/DocumentView/gdocumentviewforgraphics.h"
 
@@ -107,27 +108,26 @@ private:
     struct ConcurrentMapInfo
     {
     public:
-        QPropertyAnimation              m_interpolator;
+        DM_ColorLinearInterpolator      *m_interpolator;
         CT_AbstractAttributesScalar     *m_as;
         const CT_AbstractCloudIndex     *m_index;
         CT_AbstractColorCloud           *m_cc;
-        double                  m_range;
-        double                  m_manualMin;
-        double                  m_granularity;
-        size_t                  m_begin;
-        size_t                  m_end;
+        double                          m_range;
+        double                          m_manualMin;
+        size_t                          m_begin;
+        size_t                          m_end;
     };
 
-    CT_AbstractAttributesScalar         *m_as;
-    bool                        m_autoAdjust;
-    double                      m_manualMin;
-    double                      m_manualMax;
-    QLinearGradient             m_gradient;
-    bool                        m_useSharedGradient;
-    QFutureWatcher<void>        m_watcher;
+    CT_AbstractAttributesScalar     *m_as;
+    bool                            m_autoAdjust;
+    double                          m_manualMin;
+    double                          m_manualMax;
+    QLinearGradient                 m_gradient;
+    bool                            m_useSharedGradient;
+    QFutureWatcher<void>            m_watcher;
 
     void autoAdjustMinMax();
-    void constructColorInterpolator(QPropertyAnimation &interpolator, int granularity) const;
+    void constructColorInterpolator(DM_ColorLinearInterpolator &interpolator) const;
 
     static void staticApply(ConcurrentMapInfo *info);
 };

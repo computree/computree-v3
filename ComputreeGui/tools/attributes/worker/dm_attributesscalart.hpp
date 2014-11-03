@@ -137,10 +137,8 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
     if(range == 0)
         range = 1;
 
-    double granularity = 1000;
-
-    QPropertyAnimation interpolator;
-    constructColorInterpolator(interpolator, granularity);
+    DM_ColorLinearInterpolator interpolator;
+    constructColorInterpolator(interpolator);
 
     const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
     size_t size = index->size();
@@ -168,9 +166,8 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
 
             info->m_end = i;
             info->m_cc = cc;
-            info->m_granularity = granularity;
             info->m_index = index;
-            constructColorInterpolator(info->m_interpolator, granularity);
+            info->m_interpolator = &interpolator;
             info->m_manualMin = m_manualMin;
             info->m_range = range;
 
@@ -220,11 +217,8 @@ void DM_AttributesScalarT<Type>::autoAdjustMinMax()
 }
 
 template<typename Type>
-void DM_AttributesScalarT<Type>::constructColorInterpolator(QPropertyAnimation &interpolator, int granularity) const
+void DM_AttributesScalarT<Type>::constructColorInterpolator(DM_ColorLinearInterpolator &interpolator) const
 {
-    interpolator.setEasingCurve(QEasingCurve::Linear);
-    interpolator.setDuration(granularity);
-
     QGradientStops stops = m_gradient.stops();
 
     if(!stops.isEmpty())
@@ -249,13 +243,9 @@ void DM_AttributesScalarT<Type>::constructColorInterpolator(QPropertyAnimation &
             if(stop.first < firstStop.first)
                 firstStop = stop;
         }
-
-        if(interpolator.keyValueAt(1).isNull())
-            interpolator.setKeyValueAt(1, lastStop.second);
-
-        if(interpolator.keyValueAt(0).isNull())
-            interpolator.setKeyValueAt(0, firstStop.second);
     }
+
+    interpolator.finalize();
 }
 
 template<typename Type>
@@ -266,20 +256,19 @@ void DM_AttributesScalarT<Type>::staticApply(ConcurrentMapInfo *info)
     for(size_t i=info->m_begin; i<info->m_end; ++i)
     {
         double vv = info->m_as->dValueAt(i);
-        // convert the value to be between 0 and granularity
-        int time = ((vv-info->m_manualMin)*info->m_granularity)/info->m_range;
-        info->m_interpolator.setCurrentTime(time);
+        // convert the value to be between 0 and 1
+        double key = (vv-info->m_manualMin)/info->m_range;
 
-        // get the color
-        QVariant val = info->m_interpolator.currentValue();
-        QColor color = val.value<QColor>();
+        // get the intermediate color
+        QColor color = info->m_interpolator->intermediateColor(key);
+
         info->m_index->indexAt(i, indexP);
-
         // set the color of the point at this document
         CT_Color &colorC = info->m_cc->colorAt(indexP);
         colorC.b = (color.blueF()*255.0);
         colorC.g = (color.greenF()*255.0);
         colorC.r = (color.redF()*255.0);
+        colorC.a = (color.alphaF()*255.0);
     }
 }
 

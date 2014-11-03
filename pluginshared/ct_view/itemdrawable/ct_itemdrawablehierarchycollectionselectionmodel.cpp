@@ -34,3 +34,8 @@ bool CT_ItemDrawableHierarchyCollectionSelectionModel::mustExcludeModel(const in
 {
     return m_exclude.contains(index);
 }
+
+QList<int> CT_ItemDrawableHierarchyCollectionSelectionModel::excludedModels() const
+{
+    return m_exclude;
+}

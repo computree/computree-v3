@@ -4,6 +4,9 @@
 #include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
+/**
+ * @brief A collection of itemdrawable in a result that can be exported
+ */
 class PLUGINSHAREDSHARED_EXPORT CT_ItemDrawableCollectionHierarchyResult
 {
 public:

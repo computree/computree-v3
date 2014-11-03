@@ -24,6 +24,11 @@ public:
      */
     bool selectAttributes();
 
+    /**
+     * @brief Returns the cloud type to use (points, faces, edges or none)
+     */
+    virtual CT_ItemDrawableHierarchyCollectionWidget::CloudType cloudType() const = 0;
+
 protected:
 
     /**

@@ -30,7 +30,7 @@ bool CT_AbstractExporterAttributesSelection::selectAttributes()
 
     QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                      Qt::Vertical);
-    CT_ItemDrawableHierarchyCollectionWidget *selectorWidget = new CT_ItemDrawableHierarchyCollectionWidget(&dialog);
+    CT_ItemDrawableHierarchyCollectionWidget *selectorWidget = new CT_ItemDrawableHierarchyCollectionWidget(cloudType(), &dialog);
     selectorWidget->setDocumentManager(documentManager());
 
     QHBoxLayout *layout = new QHBoxLayout(&dialog);
@@ -87,6 +87,7 @@ void CT_AbstractExporterAttributesSelection::buildAttributesCollection()
 
     if(parent != NULL)
     {
+        // get builders from the derivate class
         QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > builders = getBuilders();
         QListIterator< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > it(builders);
 
@@ -97,6 +98,7 @@ void CT_AbstractExporterAttributesSelection::buildAttributesCollection()
 
             if(builder->buildFrom(dynamic_cast<CT_VirtualAbstractStep*>(parent)))
             {
+                // let the derivate class post configure the builder (per example to remove certains elements)
                 postConfigureAttributesBuilder(builder);
 
                 m_buildersResults.append(pair);
@@ -122,6 +124,7 @@ CT_ItemDrawableHierarchyCollectionModel* CT_AbstractExporterAttributesSelection:
         if(!pair.second->collection().isEmpty())
             sModel->setCollection(pair.second->collection());
 
+        // let the derivate class add the exclude information for this selection model
         setExcludeConfiguration(pair, sModel);
 
         model->addModel(sModel);
@@ -131,6 +134,36 @@ CT_ItemDrawableHierarchyCollectionModel* CT_AbstractExporterAttributesSelection:
     {
         delete model;
         model = NULL;
+    }
+    else
+    {
+        int currentIndex = 0;
+
+        // add excluded model to other models
+        QListIterator<CT_ItemDrawableHierarchyCollectionSelectionModel*> itM(model->models());
+
+        while(itM.hasNext())
+        {
+            CT_ItemDrawableHierarchyCollectionSelectionModel *sModel = itM.next();
+
+            // excluded modes of this selection model
+            QList<int> excluded = sModel->excludedModels();
+
+            foreach (int index, excluded)
+            {
+                if((index != currentIndex) && (index >= 0))
+                {
+                    // model excluded from this selection model
+                    CT_ItemDrawableHierarchyCollectionSelectionModel *sModelExcluded = model->models().at(index);
+
+                    // if this model has not already the current selection model in excluded list
+                    if(!sModelExcluded->mustExcludeModel(currentIndex))
+                        sModelExcluded->addExcludeModel(currentIndex);  // we add it
+                }
+            }
+
+            ++currentIndex;
+        }
     }
 
     return model;

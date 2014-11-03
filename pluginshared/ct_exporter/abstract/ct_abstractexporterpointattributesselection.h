@@ -6,6 +6,9 @@
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
 
+/**
+ * @brief Inherits from this class if you want that your exporter can use attributes for points (like colors, etc...)
+ */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractExporterPointAttributesSelection : public CT_AbstractExporterAttributesSelection
 {
 public:
@@ -13,6 +16,7 @@ public:
 
     virtual bool configureExport();
 
+    virtual CT_ItemDrawableHierarchyCollectionWidget::CloudType cloudType() const;
     virtual QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > getBuilders() const;
     virtual void postConfigureAttributesBuilder(CT_AbstractItemDrawableCollectionBuilder *builder);
     virtual void setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const;
