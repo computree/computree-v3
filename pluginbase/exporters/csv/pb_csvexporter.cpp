@@ -281,7 +281,16 @@ bool PB_CSVExporter::protectedExportToFile()
             while(it.hasNext())
             {
                 const QPair<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> &column = it.next();
-                stream << column.second->displayableName();
+
+                QString dispName = column.second->displayableName() .remove(" ")
+                                                                    .remove('\'')
+                                                                    .remove('\"')
+                                                                    .remove('\t')
+                                                                    .remove(';')
+                                                                    .remove(':')
+                                                                    .remove(',')
+                                                                    .remove('.');
+                stream << dispName;
 
                 if (it.hasNext()) {stream << ";";}
 
