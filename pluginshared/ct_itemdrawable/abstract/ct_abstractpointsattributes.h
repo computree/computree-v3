@@ -44,18 +44,18 @@ public:
     /**
       * \brief Retourne les index du nuage de points.
       */
-    const CT_AbstractPointCloudIndex* getPointCloudIndex() const;
+    virtual const CT_AbstractPointCloudIndex* getPointCloudIndex() const;
 
     /**
       * \brief Retourne les index du nuage de points.
       */
-    const CT_AbstractCloudIndexT<CT_Point>* getPointCloudIndexT() const;
+    virtual const CT_AbstractCloudIndexT<CT_Point>* getPointCloudIndexT() const;
 
     /**
      * @brief PointCloudIndexRegistered getter
      * @return retourne le nuage de points enregistré
      */
-    CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR getPointCloudIndexRegistered() const;
+    virtual CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR getPointCloudIndexRegistered() const;
 
     /**
       * \brief Retourne le nombre de point  sauter lorsqu'il faut dessiner rapidement (par dfaut 16).

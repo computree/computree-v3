@@ -323,7 +323,10 @@ SOURCES += \
     ct_step/ct_stepbeginloop.cpp \
     ct_step/ct_stependloop.cpp \
     ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.cpp \
-    ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.cpp
+    ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.cpp \
+    ct_itemdrawable/ct_stdpointsattributescontainer.cpp \
+    ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.cpp \
+    ct_itemdrawable/ct_stdlaspointsattributescontainer.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -733,7 +736,12 @@ HEADERS += interfaces.h \
     ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.h \
     ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h \
     ct_cloud/registered/ct_stdcloudregisteredt.h \
-    ct_cloud/registered/ct_stdcloudregisteredt.hpp
+    ct_cloud/registered/ct_stdcloudregisteredt.hpp \
+    ct_itemdrawable/ct_pointsattributesscalarmaskt.h \
+    ct_itemdrawable/ct_pointsattributesscalarmaskt.hpp \
+    ct_itemdrawable/ct_stdpointsattributescontainer.h \
+    ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.h \
+    ct_itemdrawable/ct_stdlaspointsattributescontainer.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

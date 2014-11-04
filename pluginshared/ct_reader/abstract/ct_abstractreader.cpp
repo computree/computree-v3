@@ -284,6 +284,11 @@ QList<CT_AbstractSingularItemDrawable *> CT_AbstractReader::itemDrawableOfModel(
     return l;
 }
 
+CT_AbstractSingularItemDrawable *CT_AbstractReader::firstItemDrawableOfModel(const QString &modelName) const
+{
+    return m_outItems.value(modelName, NULL);
+}
+
 QList<CT_AbstractItemGroup *> CT_AbstractReader::takeGroupOfModel(const QString &modelName, const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
 {
     QList<CT_AbstractItemGroup*> l;
@@ -391,7 +396,8 @@ void CT_AbstractReader::addOutItemDrawableModel(CT_OutStdSingularItemModel *item
 
 void CT_AbstractReader::addOutItemDrawable(const QString &modelName, CT_AbstractSingularItemDrawable *item)
 {
-    m_outItems.insert(modelName, item);
+    if(item != NULL)
+        m_outItems.insert(modelName, item);
 }
 
 void CT_AbstractReader::addOutGroupModel(CT_OutStdGroupModel *gr)
@@ -401,7 +407,21 @@ void CT_AbstractReader::addOutGroupModel(CT_OutStdGroupModel *gr)
 
 void CT_AbstractReader::addOutGroup(const QString &modelName, CT_AbstractItemGroup *gr)
 {
-    m_outGroups.insert(modelName, gr);
+    if(gr != NULL)
+        m_outGroups.insert(modelName, gr);
+}
+
+bool CT_AbstractReader::containsItemDrawableModel(const QString &uniqueName) const
+{
+    QListIterator<CT_OutStdSingularItemModel*> it(m_outItemsModel);
+
+    while(it.hasNext())
+    {
+        if(it.next()->uniqueName() == uniqueName)
+            return true;
+    }
+
+    return false;
 }
 
 void CT_AbstractReader::setProgress(int progress)

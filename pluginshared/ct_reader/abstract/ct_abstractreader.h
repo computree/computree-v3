@@ -159,6 +159,15 @@ public:
     QList<CT_AbstractSingularItemDrawable*> itemDrawableOfModel(const QString &modelName) const;
 
     /**
+     * @brief Return the first ItemDrawable created in the method "readFile" that have the modelName passed in parameter.
+     *
+     *        example : firstItemDrawableOfModel( DEF_Reader_XXX_OutScene )
+     *
+     * @warning this method DON'T remove ItemDrawable from the reader, it will be deleted by the reader in the destructor !
+     */
+    CT_AbstractSingularItemDrawable* firstItemDrawableOfModel(const QString &modelName) const;
+
+    /**
      * @brief Return the list of out Group created in the method "readFile" that have the type passed in parameter and remove
      *        them from this reader. Set the model and change the result of the Group returned if result != NULL or model != NULL.
      *
@@ -249,6 +258,11 @@ protected:
      * @brief Add a new out Group you have created in the method "protectedReadFile" for the model name "modelName"
      */
     void addOutGroup(const QString &modelName, CT_AbstractItemGroup *gr);
+
+    /**
+     * @brief Returns true if the model with the unique name is contained in this reader
+     */
+    bool containsItemDrawableModel(const QString &uniqueName) const;
 
     /**
       * \brief Set the progression when you read the file

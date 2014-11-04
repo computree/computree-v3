@@ -43,6 +43,40 @@ public:
 
         return result;
     }
+
+    template<class ForwardIt, class Compare>
+    static std::pair<ForwardIt, ForwardIt> minmax_element(ForwardIt first, ForwardIt last, void *context, Compare comp)
+    {
+        std::pair<ForwardIt, ForwardIt> result(first, first);
+
+        if (first == last) return result;
+        if (++first == last) return result;
+
+        if (comp(*first, *result.first, context)) {
+            result.second = result.first;
+            result.first = first;
+        } else {
+            result.second = first;
+        }
+        while (++first != last) {
+            ForwardIt i = first;
+            if (++first == last) {
+                if (comp(*i, *result.first, context)) result.first = i;
+                else if (!(comp(*i, *result.second, context))) result.second = i;
+                break;
+            } else {
+                if (comp(*first, *i, context)) {
+                    if (comp(*first, *result.first, context)) result.first = first;
+                    if (!(comp(*i, *result.second, context))) result.second = i;
+                } else {
+                    if (comp(*i, *result.first, context)) result.first = i;
+                    if (!(comp(*first, *result.second, context))) result.second = first;
+                }
+            }
+        }
+
+        return result;
+    }
 };
 
 #endif // CT_MATH_H

@@ -69,6 +69,22 @@ class PLUGINSHAREDSHARED_EXPORT CT_Reader_LAS : public CT_AbstractReader
     Q_OBJECT
 
 public:
+
+    struct PointCore0_5
+    { 
+        quint8  entire; // Edge of Flight Line (1 bit) - Scan Direction Flag (1 bit) - Number of Returns (3 bits) - Return Number (3 bits)
+
+        typedef quint8 MASK;
+    };
+
+    struct PointCore6_10
+    {
+        quint16 entire; // Number of Returns (4 bits) - Return Number (4 bits)
+                        // Edge of Flight Line (1 bit) - Scan Direction Flag (1 bit) - Scanner Channel (2 bits) - Classification Flags (4 bits)
+
+        typedef quint16 MASK;
+    };
+
     CT_Reader_LAS();
     virtual ~CT_Reader_LAS();
 
