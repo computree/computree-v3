@@ -57,8 +57,8 @@ CT_PointsAttributesScalarMaskT<StructType>::CT_PointsAttributesScalarMaskT(const
     m_mask = mask;
     m_shiftRight = shiftRight;
 
-    std::pair< typename std::vector<StructType>::iterator, typename std::vector<StructType>::iterator > res = CT_Math::minmax_element(m_manager->collection()->begin(),
-                                                                                                                                      m_manager->collection()->end(),
+    std::pair< typename std::vector<StructType>::iterator, typename std::vector<StructType>::iterator > res = CT_Math::minmax_element(m_collection->begin(),
+                                                                                                                                      m_collection->end(),
                                                                                                                                       (void*)this,
                                                                                                                                       CT_PointsAttributesScalarMaskT<StructType>::staticCompareStruct);
 
