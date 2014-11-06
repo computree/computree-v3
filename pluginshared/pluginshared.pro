@@ -344,7 +344,16 @@ SOURCES += \
     ct_reader/tools/las/ct_lasgpspacket.cpp \
     ct_reader/tools/las/ct_laspointformat9.cpp \
     ct_reader/tools/las/ct_laspointformat10.cpp \
-    ct_reader/tools/las/ct_lasheader.cpp
+    ct_reader/tools/las/ct_lasheader.cpp \
+    ct_shape2ddata/ct_box2ddata.cpp \
+    ct_shape2ddata/ct_circle2ddata.cpp \
+    ct_shape2ddata/ct_line2ddata.cpp \
+    ct_shape2ddata/ct_polygon2ddata.cpp \
+    ct_shape2ddata/ct_shape2ddata.cpp \
+    ct_shape2ddata/ct_polyline2ddata.cpp \
+    ct_shape2ddata/ct_areashape2ddata.cpp \
+    ct_itemdrawable/abstract/ct_abstractshape2d.cpp
+
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -760,6 +769,7 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_stdpointsattributescontainer.h \
     ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.h \
     ct_itemdrawable/ct_stdlaspointsattributescontainer.h \
+    ct_itemdrawable/ct_stdlaspointsattributescontainer.h \
     ct_reader/tools/las/abstract/ct_abstractlaspointformat.h \
     ct_reader/tools/las/ct_laspointformat0.h \
     ct_reader/tools/las/ct_lasdefine.h \
@@ -778,7 +788,16 @@ HEADERS += interfaces.h \
     ct_reader/tools/las/ct_lasgpspacket.h \
     ct_reader/tools/las/ct_laspointformat9.h \
     ct_reader/tools/las/ct_laspointformat10.h \
-    ct_reader/tools/las/ct_lasheader.h
+    ct_reader/tools/las/ct_lasheader.h \
+    ct_shape2ddata/ct_box2ddata.h \
+    ct_shape2ddata/ct_circle2ddata.h \
+    ct_shape2ddata/ct_line2ddata.h \
+    ct_shape2ddata/ct_polygon2ddata.h \
+    ct_shape2ddata/ct_shape2ddata.h \
+    ct_shape2ddata/ct_polyline2ddata.h \
+    ct_shape2ddata/ct_areashape2ddata.h \
+    ct_itemdrawable/abstract/ct_abstractshape2d.h
+
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
@@ -822,6 +841,7 @@ INCLUDEPATH += ./ct_view/tools
 INCLUDEPATH += ./ct_math
 INCLUDEPATH += ./ct_triangulation
 INCLUDEPATH += ./ct_shapedata
+INCLUDEPATH += ./ct_shapedata2d
 INCLUDEPATH += ./ct_tools
 INCLUDEPATH += ./ct_tools/model
 
