@@ -97,6 +97,30 @@ bool CT_CloudIndexStdVectorT<T>::contains(const size_t &index) const
 }
 
 template<typename T>
+size_t CT_CloudIndexStdVectorT<T>::indexOf(const size_t &index) const
+{
+    if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
+    {
+        typename std::vector<size_type>::iterator first = _vector->begin();
+        typename std::vector<size_type>::iterator last = _vector->end();
+
+        first = std::lower_bound(first, last, index);
+
+        if(first!=last && !(index<(*first)))
+            return *first;
+    }
+    else
+    {
+        std::vector<size_t>::const_iterator it = std::find(_vector->begin(), _vector->end(), index);
+
+        if(it != _vector->end())
+            return *it;
+    }
+
+    return size();
+}
+
+template<typename T>
 size_t CT_CloudIndexStdVectorT<T>::lowerBound(const size_t &value) const
 {
     typename std::vector<size_type>::iterator it;

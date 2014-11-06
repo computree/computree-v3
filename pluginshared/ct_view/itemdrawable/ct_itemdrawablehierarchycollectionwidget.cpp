@@ -11,6 +11,9 @@ CT_ItemDrawableHierarchyCollectionWidget::CT_ItemDrawableHierarchyCollectionWidg
 {
     ui->setupUi(this);
 
+    m_canSelectColors = true;
+    m_canSelectNormals = true;
+
     m_cloudType = cloudType;
 
     if(cloudType == POINTS) {
@@ -25,7 +28,7 @@ CT_ItemDrawableHierarchyCollectionWidget::CT_ItemDrawableHierarchyCollectionWidg
     }
 
     m_dm = NULL;
-    m_choice = false;
+    m_nChoice = 0;
 
     m_modelCollection = NULL;
 
@@ -41,6 +44,16 @@ CT_ItemDrawableHierarchyCollectionWidget::~CT_ItemDrawableHierarchyCollectionWid
     delete m_modelCollection;
     delete m_selectionModelForPointCloud;
     delete m_selectionModelForNormalCloud;
+}
+
+void CT_ItemDrawableHierarchyCollectionWidget::setCanSelectColors(bool enable)
+{
+    m_canSelectColors = enable;
+}
+
+void CT_ItemDrawableHierarchyCollectionWidget::setCanSelectNormals(bool enable)
+{
+    m_canSelectNormals = enable;
 }
 
 void CT_ItemDrawableHierarchyCollectionWidget::setDocumentManager(const DocumentManagerInterface *dm)
@@ -61,7 +74,7 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
 
     disconnect(&m_model, NULL, this, NULL);
     m_model.clear();
-    m_choice = false;
+    m_nChoice = 0;
 
     constructHeader();
 
@@ -69,8 +82,6 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
     {
         int index = 0;
         QListIterator<CT_ItemDrawableHierarchyCollectionSelectionModel*> it(m_modelCollection->models());
-
-        m_choice = it.hasNext();
 
         while(it.hasNext())
         {
@@ -85,13 +96,16 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
             QList<QStandardItem*> items = createItems(sm, index);
 
             if(!items.isEmpty())
+            {
                 m_model.invisibleRootItem()->appendRow(items);
+                ++m_nChoice;
+            }
 
             ++index;
         }
     }
 
-    if((m_dm != NULL) && (m_cloudType != NONE))
+    if((m_dm != NULL) && (m_cloudType != NONE) && (m_canSelectColors || m_canSelectNormals))
     {
         QStandardItem *root = new QStandardItem();
         root->setEditable(false);
@@ -115,34 +129,40 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
 
                 if(view != NULL)
                 {
-                    QSharedPointer<CT_StandardColorCloudRegistered> colors = view->colorCloudOf(m_colorCloudType);
-
-                    if(!colors.isNull())
+                    if(m_canSelectColors)
                     {
-                        if(iDoc == NULL)
-                        {
-                            iDoc = new QStandardItem();
-                            iDoc->setEditable(false);
-                            iDoc->setText(doc->getTitle());
-                        }
+                        QSharedPointer<CT_StandardColorCloudRegistered> colors = view->colorCloudOf(m_colorCloudType);
 
-                        iDoc->appendRow(createItemsForColorCloud(colors));
-                        m_choice = true;
+                        if(!colors.isNull())
+                        {
+                            if(iDoc == NULL)
+                            {
+                                iDoc = new QStandardItem();
+                                iDoc->setEditable(false);
+                                iDoc->setText(doc->getTitle());
+                            }
+
+                            iDoc->appendRow(createItemsForColorCloud(colors));
+                            ++m_nChoice;
+                        }
                     }
 
-                    QSharedPointer<CT_StandardNormalCloudRegistered> normals = view->normalCloudOf(m_normalCloudType);
-
-                    if(!normals.isNull())
+                    if(m_canSelectNormals)
                     {
-                        if(iDoc == NULL)
-                        {
-                            iDoc = new QStandardItem();
-                            iDoc->setEditable(false);
-                            iDoc->setText(doc->getTitle());
-                        }
+                        QSharedPointer<CT_StandardNormalCloudRegistered> normals = view->normalCloudOf(m_normalCloudType);
 
-                        iDoc->appendRow(createItemsForNormalCloud(normals));
-                        m_choice = true;
+                        if(!normals.isNull())
+                        {
+                            if(iDoc == NULL)
+                            {
+                                iDoc = new QStandardItem();
+                                iDoc->setEditable(false);
+                                iDoc->setText(doc->getTitle());
+                            }
+
+                            iDoc->appendRow(createItemsForNormalCloud(normals));
+                            ++m_nChoice;
+                        }
                     }
                 }
             }
@@ -164,7 +184,27 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
 
 bool CT_ItemDrawableHierarchyCollectionWidget::hasChoice() const
 {
-    return m_choice;
+    return (m_nChoice > 0);
+}
+
+bool CT_ItemDrawableHierarchyCollectionWidget::canChoiceBeSelectedByDefault() const
+{
+    return (m_nChoice <= 1);
+}
+
+bool CT_ItemDrawableHierarchyCollectionWidget::selectChoiceByDefault()
+{
+    QList<QStandardItem*> checkable = checkableItems(m_model.invisibleRootItem());
+
+    if(checkable.isEmpty())
+        return true;
+
+    if(checkable.size() > 1)
+        return false;
+
+    checkable.first()->setCheckState(Qt::Checked);
+
+    return true;
 }
 
 QSharedPointer<CT_StandardColorCloudRegistered> CT_ItemDrawableHierarchyCollectionWidget::colorCloudSelected() const
@@ -473,6 +513,35 @@ QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::recursiveItemsS
             {
                 l.append(recursiveItemsSelected(checkableItem));
             }
+        }
+    }
+
+    return l;
+}
+
+QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::checkableItems(QStandardItem *root) const
+{
+    QList<QStandardItem *> l;
+
+    int s = root->rowCount();
+
+    for(int i=0; i<s; ++i)
+    {
+        QStandardItem *checkableItem = root->child(i, 1);
+
+        if(checkableItem != NULL)
+        {
+            if(checkableItem->isCheckable())
+                l.append(checkableItem);
+
+            l.append(checkableItems(checkableItem));
+        }
+        else
+        {
+            checkableItem = root->child(i, 0);
+
+            if(checkableItem != NULL)
+                l.append(checkableItems(checkableItem));
         }
     }
 

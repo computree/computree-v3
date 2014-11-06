@@ -67,6 +67,11 @@ public:
     bool isStopped() const;
 
     /**
+     * @brief Returns a tooltip to show in GUI. None by default.
+     */
+    QString toolTip() const;
+
+    /**
      * @brief Return the error message. You can set them by a call to the method setErrorMessage()
      */
     QString errorMessage() const;
@@ -238,6 +243,11 @@ protected:
     void setNotNeedToUseCoordinateSystem();
 
     /**
+     * @brief Set the tooltip to show in gui
+     */
+    void setToolTip(const QString &t);
+
+    /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the
      *        same ItemDrawable you must add multiple model with different name.
      */
@@ -292,6 +302,7 @@ protected:
 private:
     QString                                                 m_filePath;
     QList<FileFormat>                                       m_formats;
+    QString                                                 m_tooltip;
     QString                                                 m_errorMess;
     QList<CT_OutStdSingularItemModel*>                      m_outItemsModel;
     QList<CT_OutStdGroupModel*>                             m_outGroupsModel;

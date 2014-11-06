@@ -75,6 +75,7 @@
 #include "exporters/pbm/pb_pbmexporter.h"
 #include "exporters/pgm/pb_pgmexporter.h"
 #include "exporters/polygon2d/pb_polygon2dexporter.h"
+#include "exporters/las/pb_lasexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -280,6 +281,9 @@ bool PB_StepPluginManager::loadExporters()
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("PGM"));
     sep->addExporter(new PB_PgmExporter());
+
+    sep = addNewSeparator(new CT_StandardExporterSeparator("LAS"));
+    sep->addExporter(new PB_LASExporter());
 
     return true;
 }

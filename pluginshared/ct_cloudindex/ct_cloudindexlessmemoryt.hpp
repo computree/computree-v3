@@ -66,6 +66,15 @@ bool CT_CloudIndexLessMemoryT<T>::contains(const size_t &index) const
 }
 
 template<typename T>
+size_t CT_CloudIndexLessMemoryT<T>::indexOf(const size_t &index) const
+{
+    if((index >= m_begin) && (index <= last()))
+        return index;
+
+    return size();
+}
+
+template<typename T>
 size_t CT_CloudIndexLessMemoryT<T>::lowerBound(const size_t &value) const
 {
     if((value >= m_begin) && (value <= last()))

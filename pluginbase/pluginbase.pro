@@ -62,7 +62,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/actions/pb_actionslicepointcloudoptions.h \
     exporters/polygon2d/pb_polygon2dexporter.h \
     actions/pb_actionpickitemsinlist.h \
-    views/actions/pb_actionpickitemsinlistoptions.h
+    views/actions/pb_actionpickitemsinlistoptions.h \
+    exporters/las/pb_lasexporter.h \
+    exporters/las/pb_laspointformat.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -123,7 +125,8 @@ SOURCES += \
     views/actions/pb_actionslicepointcloudoptions.cpp \
     exporters/polygon2d/pb_polygon2dexporter.cpp \
     actions/pb_actionpickitemsinlist.cpp \
-    views/actions/pb_actionpickitemsinlistoptions.cpp
+    views/actions/pb_actionpickitemsinlistoptions.cpp \
+    exporters/las/pb_lasexporter.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

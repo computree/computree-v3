@@ -20,6 +20,8 @@ PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
     setCanExportItems(true);
     setCanExportPoints(true);
+    setCanExportWithColors(true);
+    setCanExportWithNormals(false);
     m_scanner = NULL;
 }
 

@@ -37,6 +37,11 @@ protected:
      * @brief Insert a CT_AbstractPointsAttributes at key in the map
      */
     void internalInsertAttributes(const int &key, const CT_AbstractPointsAttributes *att);
+
+    /**
+     * @brief Returns the map
+     */
+    const QHash<int, CT_AbstractPointsAttributes*>& internalAttributes() const;
 };
 
 #endif // CT_ABSTRACTPOINTSATTRIBUTESCONTAINER_H

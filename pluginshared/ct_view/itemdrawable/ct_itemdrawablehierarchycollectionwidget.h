@@ -30,6 +30,16 @@ public:
     ~CT_ItemDrawableHierarchyCollectionWidget();
 
     /**
+     * @brief Call this method before 'setModel' to enable/disable the use of document's colors)
+     */
+    void setCanSelectColors(bool enable);
+
+    /**
+     * @brief Call this method before 'setModel' to enable/disable the use of document's normals
+     */
+    void setCanSelectNormals(bool enable);
+
+    /**
      * @brief Set the document manager (if exist)
      */
     void setDocumentManager(const DocumentManagerInterface *dm);
@@ -43,6 +53,16 @@ public:
      * @brief Returns true if at least one element can be selected (if at least one element is present in the selection model)
      */
     bool hasChoice() const;
+
+    /**
+     * @brief Returns true if choice can be selected by default
+     */
+    bool canChoiceBeSelectedByDefault() const;
+
+    /**
+     * @brief Select choice by default
+     */
+    bool selectChoiceByDefault();
 
     /**
      * @brief Returns the color cloud selected (NULL if it was not selected)
@@ -67,9 +87,11 @@ private:
     DocumentManagerInterface                                *m_dm;
     CT_ItemDrawableHierarchyCollectionModel                 *m_modelCollection;
     QStandardItemModel                                      m_model;
-    bool                                                    m_choice;
+    int                                                     m_nChoice;
     CT_ItemDrawableHierarchyCollectionSelectionModel        *m_selectionModelForPointCloud;
     CT_ItemDrawableHierarchyCollectionSelectionModel        *m_selectionModelForNormalCloud;
+    bool                                                    m_canSelectColors;
+    bool                                                    m_canSelectNormals;
 
     void constructHeader();
     QList<QStandardItem*> createItems(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm, const int &index) const;
@@ -79,6 +101,11 @@ private:
 
     void recursiveUncheckAllItemsExcept(QStandardItem *root, const QStandardItem *item, const CT_ItemDrawableHierarchyCollectionSelectionModel *sm);
     QList<QStandardItem*> recursiveItemsSelected(QStandardItem *root) const;
+
+    /**
+     * @brief Returns all checkable QStandardItem
+     */
+    QList<QStandardItem*> checkableItems(QStandardItem *root) const;
 
 private slots:
     void itemChanged(QStandardItem *item);

@@ -326,7 +326,25 @@ SOURCES += \
     ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.cpp \
     ct_itemdrawable/ct_stdpointsattributescontainer.cpp \
     ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.cpp \
-    ct_itemdrawable/ct_stdlaspointsattributescontainer.cpp
+    ct_itemdrawable/ct_stdlaspointsattributescontainer.cpp \
+    ct_reader/tools/las/abstract/ct_abstractlaspointformat.cpp \
+    ct_reader/tools/las/ct_laspointformat0.cpp \
+    ct_reader/tools/las/ct_laspointinfo.cpp \
+    ct_reader/tools/las/ct_laspointformat1.cpp \
+    ct_reader/tools/las/ct_laspointformat2.cpp \
+    ct_reader/tools/las/ct_laspointformat3.cpp \
+    ct_reader/tools/las/ct_laspointformat4.cpp \
+    ct_reader/tools/las/ct_laspointformat5.cpp \
+    ct_reader/tools/las/ct_laspointformat6.cpp \
+    ct_reader/tools/las/ct_laspointformat7.cpp \
+    ct_reader/tools/las/ct_laspointformat8.cpp \
+    ct_reader/tools/las/ct_laswavepacket.cpp \
+    ct_reader/tools/las/ct_lascolorpacket.cpp \
+    ct_reader/tools/las/ct_lasnirpacket.cpp \
+    ct_reader/tools/las/ct_lasgpspacket.cpp \
+    ct_reader/tools/las/ct_laspointformat9.cpp \
+    ct_reader/tools/las/ct_laspointformat10.cpp \
+    ct_reader/tools/las/ct_lasheader.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -741,7 +759,26 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_pointsattributesscalarmaskt.hpp \
     ct_itemdrawable/ct_stdpointsattributescontainer.h \
     ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.h \
-    ct_itemdrawable/ct_stdlaspointsattributescontainer.h
+    ct_itemdrawable/ct_stdlaspointsattributescontainer.h \
+    ct_reader/tools/las/abstract/ct_abstractlaspointformat.h \
+    ct_reader/tools/las/ct_laspointformat0.h \
+    ct_reader/tools/las/ct_lasdefine.h \
+    ct_reader/tools/las/ct_laspointinfo.h \
+    ct_reader/tools/las/ct_laspointformat1.h \
+    ct_reader/tools/las/ct_laspointformat2.h \
+    ct_reader/tools/las/ct_laspointformat3.h \
+    ct_reader/tools/las/ct_laspointformat4.h \
+    ct_reader/tools/las/ct_laspointformat5.h \
+    ct_reader/tools/las/ct_laspointformat6.h \
+    ct_reader/tools/las/ct_laspointformat7.h \
+    ct_reader/tools/las/ct_laspointformat8.h \
+    ct_reader/tools/las/ct_laswavepacket.h \
+    ct_reader/tools/las/ct_lascolorpacket.h \
+    ct_reader/tools/las/ct_lasnirpacket.h \
+    ct_reader/tools/las/ct_lasgpspacket.h \
+    ct_reader/tools/las/ct_laspointformat9.h \
+    ct_reader/tools/las/ct_laspointformat10.h \
+    ct_reader/tools/las/ct_lasheader.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

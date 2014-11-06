@@ -7,6 +7,8 @@
 
 CT_AbstractExporterAttributesSelection::CT_AbstractExporterAttributesSelection() : CT_AbstractExporter()
 {
+    m_canSelectColors = false;
+    m_canSelectNormals = false;
 }
 
 bool CT_AbstractExporterAttributesSelection::configureExport()
@@ -31,6 +33,8 @@ bool CT_AbstractExporterAttributesSelection::selectAttributes()
     QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                                      Qt::Vertical);
     CT_ItemDrawableHierarchyCollectionWidget *selectorWidget = new CT_ItemDrawableHierarchyCollectionWidget(cloudType(), &dialog);
+    selectorWidget->setCanSelectColors(m_canSelectColors);
+    selectorWidget->setCanSelectNormals(m_canSelectNormals);
     selectorWidget->setDocumentManager(documentManager());
 
     QHBoxLayout *layout = new QHBoxLayout(&dialog);
@@ -46,13 +50,15 @@ bool CT_AbstractExporterAttributesSelection::selectAttributes()
 
     if(selectorWidget->hasChoice())
     {
-        if(dialog.exec() == QDialog::Rejected)
-            return false;
-
-        return useSelection(selectorWidget);
+        if((selectorWidget->canChoiceBeSelectedByDefault() && !selectorWidget->selectChoiceByDefault())
+                || !selectorWidget->canChoiceBeSelectedByDefault())
+        {
+            if(dialog.exec() == QDialog::Rejected)
+                return false;
+        }
     }
 
-    return true;
+    return useSelection(selectorWidget);
 }
 
 CT_VirtualAbstractStep *CT_AbstractExporterAttributesSelection::rootStep() const
@@ -71,12 +77,29 @@ CT_VirtualAbstractStep *CT_AbstractExporterAttributesSelection::rootStep() const
             if(id->result() != NULL)
                 parent = id->result()->parentStep();
         }
+
+        if(parent == NULL)
+        {
+            DocumentInterface *doc = myDocument();
+
+            if(doc != NULL)
+            {
+                it = doc->getItemDrawable();
+
+                while(it.hasNext()
+                      && (parent == NULL))
+                {
+                    CT_AbstractItemDrawable *id = it.next();
+
+                    if(id->result() != NULL)
+                        parent = id->result()->parentStep();
+                }
+            }
+        }
     }
 
     if(parent != NULL)
-    {
         parent = dynamic_cast<CT_VirtualAbstractStep*>(parent)->rootStep();
-    }
 
     return dynamic_cast<CT_VirtualAbstractStep*>(parent);
 }
@@ -167,4 +190,14 @@ CT_ItemDrawableHierarchyCollectionModel* CT_AbstractExporterAttributesSelection:
     }
 
     return model;
+}
+
+void CT_AbstractExporterAttributesSelection::setCanExportWithColors(bool enable)
+{
+    m_canSelectColors = enable;
+}
+
+void CT_AbstractExporterAttributesSelection::setCanExportWithNormals(bool enable)
+{
+    m_canSelectNormals = enable;
 }

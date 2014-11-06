@@ -70,6 +70,11 @@ bool CT_AbstractReader::isStopped() const
     return m_stop;
 }
 
+QString CT_AbstractReader::toolTip() const
+{
+    return m_tooltip;
+}
+
 bool CT_AbstractReader::readFile()
 {
     emit started();
@@ -387,6 +392,11 @@ void CT_AbstractReader::addNewReadableFormat(const FileFormat &format)
 void CT_AbstractReader::setNotNeedToUseCoordinateSystem()
 {
     PS_COORDINATES_SYS->informThatUsed();
+}
+
+void CT_AbstractReader::setToolTip(const QString &t)
+{
+    m_tooltip = t;
 }
 
 void CT_AbstractReader::addOutItemDrawableModel(CT_OutStdSingularItemModel *item)

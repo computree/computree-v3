@@ -79,6 +79,20 @@ bool CT_CloudIndexStdMapT<T, ValueT>::contains(const size_t &index) const
 }
 
 template<typename T, typename ValueT>
+size_t CT_CloudIndexStdMapT<T, ValueT>::indexOf(const size_t &index) const
+{
+    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<size_type,ValueT >::iterator l = m_collection->end();
+
+    f = m_collection->lower_bound(index);
+
+    if(f!=l && !(index < f->first))
+        return f->first;
+
+    return size();
+}
+
+template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::lowerBound(const size_t &value) const
 {
     typename std::map<size_type,ValueT >::iterator it;

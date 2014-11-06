@@ -6,7 +6,7 @@
 /**
  *  This class is a standard container for points attributes
  */
-class CT_StdPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
+class PLUGINSHAREDSHARED_EXPORT CT_StdPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
 public:
     CT_StdPointsAttributesContainer();

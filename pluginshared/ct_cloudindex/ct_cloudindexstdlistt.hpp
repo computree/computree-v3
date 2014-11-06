@@ -94,6 +94,30 @@ bool CT_CloudIndexStdListT<T>::contains(const size_t &index) const
 }
 
 template<typename T>
+size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
+{
+    if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
+    {
+        typename std::list<size_type>::iterator first = m_collection->begin();
+        typename std::list<size_type>::iterator last = m_collection->end();
+
+        first = std::lower_bound(first, last, index);
+
+        if(first!=last && !(index<(*first)))
+           return *first;
+    }
+    else
+    {
+        std::list<size_t>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
+
+        if(it != m_collection->end())
+            return *it;
+    }
+
+    return size();
+}
+
+template<typename T>
 size_t CT_CloudIndexStdListT<T>::lowerBound(const size_t &value) const
 {
     typename std::list<size_type>::iterator it;

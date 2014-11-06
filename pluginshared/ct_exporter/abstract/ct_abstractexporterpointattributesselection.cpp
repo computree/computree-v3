@@ -2,6 +2,7 @@
 
 CT_AbstractExporterPointAttributesSelection::CT_AbstractExporterPointAttributesSelection() : CT_AbstractExporterAttributesSelection()
 {
+    setCanExportWithColors(true);
 }
 
 bool CT_AbstractExporterPointAttributesSelection::configureExport()

@@ -53,7 +53,7 @@ protected:
      * @brief Configure the builder after the call of "buildFrom" method. Per example if you want only keeps
      *        special types of attributes.
      */
-    virtual void postConfigureAttributesBuilder(CT_AbstractItemDrawableCollectionBuilder *builder) {}
+    virtual void postConfigureAttributesBuilder(CT_AbstractItemDrawableCollectionBuilder *builder) { Q_UNUSED(builder) }
 
     /**
      * @brief Return the model to pass to the CT_ItemDrawableHierarchyCollectionWidget
@@ -70,8 +70,20 @@ protected:
      */
     virtual bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget) = 0;
 
+    /**
+     * @brief Call this method in your constructor to enable/disable the use of document's colors in the selector (dialog)
+     */
+    void setCanExportWithColors(bool enable);
+
+    /**
+     * @brief Call this method in your constructor to enable/disable the use of document's normals in the selector (dialog)
+     */
+    void setCanExportWithNormals(bool enable);
+
 private:
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> >  m_buildersResults;
+    bool                                                                m_canSelectColors;
+    bool                                                                m_canSelectNormals;
 };
 
 #endif // CT_ABSTRACTEXPORTERATTRIBUTESSELECTION_H

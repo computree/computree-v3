@@ -34,6 +34,7 @@ public:
     size_t first() const;
     size_t last() const;
     bool contains(const size_t &index) const;
+    size_t indexOf(const size_t &index) const;
     size_t lowerBound(const size_t &value) const;
     size_t upperBound(const size_t &value) const;
 

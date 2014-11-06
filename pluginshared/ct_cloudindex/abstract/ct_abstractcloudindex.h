@@ -89,6 +89,11 @@ public:
     virtual bool contains(const size_t &index) const = 0;
 
     /**
+     * @brief Return the index (local) of the index (global) passed in parameter
+     */
+    virtual size_t indexOf(const size_t &index) const = 0;
+
+    /**
      * @brief return the location of the first element that is greater or egual the value passed as a parameter
      * @param value : value to search
      */
