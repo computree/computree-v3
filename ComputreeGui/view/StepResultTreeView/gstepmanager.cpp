@@ -1146,7 +1146,8 @@ void GStepManager::indexDoubleClicked(QModelIndex index)
             it->setCheckState(it->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
     }
     else if((myItem != NULL)
-            && (myItem->step() != NULL))
+            && (myItem->step() != NULL)
+            && (myItem->columnType() != MyQStandardItem::StepName))
     {
         GAboutStepDialog dialog(myItem->step());
         dialog.exec();

@@ -41,6 +41,29 @@ enum RotationAxis
 
 typedef enum RotationAxis RotationAxis;
 
+//#define USE_EIGEN_POINT
+
+#ifdef USE_EIGEN_POINT
+#include <Eigen/Core>
+
+class CT_Point : public Eigen::Vector3f {
+
+public:
+    inline float& getX() { return (*this)(0); }
+    inline float& getY() { return (*this)(1); }
+    inline float& getZ() { return (*this)(2); }
+
+    inline float getX() const { return (*this)(0); }
+    inline float getY() const { return (*this)(1); }
+    inline float getZ() const { return (*this)(2); }
+
+    inline void setX(const float &_x) { (*this)(0) = _x; }
+    inline void setY(const float &_y) { (*this)(1) = _y; }
+    inline void setZ(const float &_z) { (*this)(2) = _z; }
+};
+
+#else
+
 #ifdef USE_PCL
 
 #define PCL_NO_PRECOMPILE
@@ -301,5 +324,6 @@ inline void copyCtPoint( CT_Point &dest, const CT_Point &src)
     dest.y = src.y;
     dest.z = src.z;
 }
+#endif
 
 #endif // CT_POINT_H

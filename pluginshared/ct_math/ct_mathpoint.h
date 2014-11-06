@@ -345,12 +345,12 @@ class CT_Point;
 
 // specialization for CT_Point
 template<>
-inline float CT_MathPoint::pX(const CT_Point &p) { return p.x; }
+inline float CT_MathPoint::pX(const CT_Point &p) { return p.getX(); }
 
 template<>
-inline float CT_MathPoint::pY(const CT_Point &p) { return p.y; }
+inline float CT_MathPoint::pY(const CT_Point &p) { return p.getY(); }
 
 template<>
-inline float CT_MathPoint::pZ(const CT_Point &p) { return p.z; }
+inline float CT_MathPoint::pZ(const CT_Point &p) { return p.getZ(); }
 
 #endif // CT_MATHPOINT_H

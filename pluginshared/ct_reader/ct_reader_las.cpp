@@ -356,14 +356,14 @@ bool CT_Reader_LAS::protectedReadFile()
                         zc -= center.z();
                     }
 
-                    PS_COORDINATES_SYS->convertImport(xc, yc, zc, p.x, p.y, p.z);
+                    PS_COORDINATES_SYS->convertImport(xc, yc, zc, p.getX(), p.getY(), p.getZ());
                 }
                 else
                 {
                     if(m_centerCloud)
-                        PS_COORDINATES_SYS->convertImport(((double)x)-center.x(), ((double)y)-center.y(), ((double)z)-center.z(), p.x, p.y, p.z);
+                        PS_COORDINATES_SYS->convertImport(((double)x)-center.x(), ((double)y)-center.y(), ((double)z)-center.z(), p.getX(), p.getY(), p.getZ());
                     else
-                        PS_COORDINATES_SYS->convertImport(x, y, z, p.x, p.y, p.z);
+                        PS_COORDINATES_SYS->convertImport(x, y, z, p.getX(), p.getY(), p.getZ());
                 }
 
                 pos += m_header->m_pointDataRecordLength;

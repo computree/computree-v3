@@ -96,9 +96,9 @@ private:
 
         void preProcessing(const CT_Point &point, CT_Point &newPoint)
         {
-            double x = point.x + _translation.x();
-            double y = point.y + _translation.y();
-            double z = point.z + _translation.z();
+            double x = point.getX() + _translation.x();
+            double y = point.getY() + _translation.y();
+            double z = point.getZ() + _translation.z();
 
             // rotation autour de l'axe z
             double xp = x*_cosRotationZ - y*_sinRotationZ;
@@ -112,14 +112,14 @@ private:
             newPoint.setY(yp);
             newPoint.setZ(zs);
 
-            if(newPoint.z < _zMin)
+            if(newPoint.getZ() < _zMin)
             {
-                _zMin = newPoint.z;
+                _zMin = newPoint.getZ();
             }
 
-            if(newPoint.z > _zMax)
+            if(newPoint.getZ() > _zMax)
             {
-                _zMax = newPoint.z;
+                _zMax = newPoint.getZ();
             }
         }
 

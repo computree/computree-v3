@@ -85,7 +85,7 @@ void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsVi
 
     const CT_Face &face = mesh->face().constTAt(index);
 
-    painter.drawTriangle(&(face.pointAt(0)->data[0]), &(face.pointAt(1)->data[0]), &(face.pointAt(2)->data[0]));
+    painter.drawTriangle(&(face.pointAt(0)->getX()), &(face.pointAt(1)->getX()), &(face.pointAt(2)->getX()));
 }
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleFace(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -126,7 +126,7 @@ void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsVi
 
     const CT_Edge &edge = mesh->hedge().constTAt(index);
 
-    painter.drawLine(&(edge.pointAt(0)->data[0]), &(edge.pointAt(1)->data[0]));
+    painter.drawLine(&(edge.pointAt(0)->getX()), &(edge.pointAt(1)->getX()));
 }
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)

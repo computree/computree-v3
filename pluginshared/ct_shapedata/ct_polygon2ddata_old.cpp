@@ -201,7 +201,7 @@ CT_Polygon2DData_Old* CT_Polygon2DData_Old::createConvexHull(const CT_PointCloud
     for (size_t i = 0 ; i < size ; i++)
     {
         CT_Point &point = indices->tAt(i);
-        float* pt = &point.data[0];
+        float* pt = &point.getX();
 
         delaunay.insertNode(CT_NodeT::create(pt, NULL, false));
     }

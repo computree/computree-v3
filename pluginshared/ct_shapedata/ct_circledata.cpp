@@ -132,13 +132,13 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
 
             preProcessingAction->preProcessing(p, newP);
 
-            x = newP.x;
-            y = newP.y;
+            x = newP.getX();
+            y = newP.getY();
         }
         else
         {
-            x = p.x;
-            y = p.y;
+            x = p.getX();
+            y = p.getY();
         }
 
         x_au_carre = x*x;
@@ -178,8 +178,8 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
         for(int i=0; i<size; ++i)
         {
             const CT_Point &p = (*newPointCloud)[i];
-            x = p.x;
-            y = p.y;
+            x = p.getX();
+            y = p.getY();
 
             float xma = x-a;
             float ymb = y-b;
@@ -194,8 +194,8 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
         for(int i=0; i<size; ++i)
         {
             const CT_Point &p = pointCloudIndex.constTAt(i);
-            x = p.x;
-            y = p.y;
+            x = p.getX();
+            y = p.getY();
 
             float xma = x-a;
             float ymb = y-b;
