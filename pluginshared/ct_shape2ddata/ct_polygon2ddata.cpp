@@ -37,7 +37,7 @@ CT_Polygon2DData::CT_Polygon2DData() : CT_AreaShape2DData()
 {
 }
 
-CT_Polygon2DData::CT_Polygon2DData(const QVector<QVector2D*> &vertices) : CT_AreaShape2DData()
+CT_Polygon2DData::CT_Polygon2DData(const QVector<QVector2D*> &vertices, bool copy) : CT_AreaShape2DData()
 {
 
     int size = vertices.size();
@@ -45,7 +45,12 @@ CT_Polygon2DData::CT_Polygon2DData(const QVector<QVector2D*> &vertices) : CT_Are
     for (int i = 0 ; i < size ; i++)
     {
         QVector2D* source = vertices.at(i);
-        _vertices[i] = new QVector2D(source->x(), source->y());
+        if (copy)
+        {
+            _vertices[i] = new QVector2D(source->x(), source->y());
+        } else {
+            _vertices[i] = vertices.at(i);
+        }
     }
 
     // Compute Centroid and affect to center

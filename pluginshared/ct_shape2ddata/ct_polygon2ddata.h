@@ -44,7 +44,7 @@ public:
 
     CT_Polygon2DData();
 
-    CT_Polygon2DData(const QVector<QVector2D *> &vertices);
+    CT_Polygon2DData(const QVector<QVector2D *> &vertices, bool copy = true);
 
     ~CT_Polygon2DData();
 

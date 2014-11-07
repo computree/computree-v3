@@ -13,10 +13,8 @@ public:
 
 protected:
 
-    const static QString INDEX_CONFIG_DRAW_CENTER;
     const static QString INDEX_CONFIG_DRAW_BOX;
 
-    static QString staticInitConfigDrawCenter();
     static QString staticInitConfigDrawBox();
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;

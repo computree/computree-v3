@@ -4,7 +4,6 @@
 #include "ct_global/ct_context.h"
 
 
-const QString CT_StandardCircle2DDrawManager::INDEX_CONFIG_DRAW_CENTER = CT_StandardCircle2DDrawManager::staticInitConfigDrawCenter();
 const QString CT_StandardCircle2DDrawManager::INDEX_CONFIG_DRAW_CIRCLE = CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle();
 
 CT_StandardCircle2DDrawManager::CT_StandardCircle2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Circle2D" : drawConfigurationName)
@@ -22,18 +21,12 @@ void CT_StandardCircle2DDrawManager::draw(GraphicsViewInterface &view, PainterIn
 
     const CT_Circle2D &item = dynamic_cast<const CT_Circle2D&>(itemDrawable);
 
-    bool drawCenter = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_CENTER).toBool();
     bool drawCircle = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_CIRCLE).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
     float zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toFloat();
 
     float zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal) {zPlane = zVal;}
-
-    if (drawCenter)
-    {
-        painter.drawPoint(item.getCenterX(), item.getCenterY(), zPlane);
-    }
 
     if (drawCircle)
     {
@@ -46,18 +39,12 @@ CT_ItemDrawableConfiguration CT_StandardCircle2DDrawManager::createDrawConfigura
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardCircle2DDrawManager::staticInitConfigDrawCenter() ,"Dessiner le centre", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle() ,"Dessiner le cercle", CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }
 
 // PROTECTED //
-
-QString CT_StandardCircle2DDrawManager::staticInitConfigDrawCenter()
-{
-    return "C2D_CT";
-}
 
 QString CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle()
 {

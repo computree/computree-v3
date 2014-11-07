@@ -34,7 +34,7 @@ CT_Box2DData::CT_Box2DData() : CT_AreaShape2DData()
 CT_Box2DData::CT_Box2DData(const QVector2D &center, float height, float width) : CT_AreaShape2DData(center)
 {
     _height = height;
-    _width = width;
+    _width = width;        
 }
 
 float CT_Box2DData::getHeight() const
@@ -49,19 +49,19 @@ float CT_Box2DData::getWidth() const
 
 void CT_Box2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
 {
-    min.setX(_center.x() - _width);
-    min.setY(_center.y() - _height);
-    max.setX(_center.x() + _width);
-    max.setY(_center.y() + _height);
+    min.setX(_center.x() - _width/2.0);
+    min.setY(_center.y() - _height/2.0);
+    max.setX(_center.x() + _width/2.0);
+    max.setY(_center.y() + _height/2.0);
 }
 
 bool CT_Box2DData::contains(float x, float y) const
 {
-    if (x < (_center.x() - _width)) {return false;}
-    if (x > (_center.x() + _width)) {return false;}
+    if (x <= (_center.x() - _width/2.0)) {return false;}
+    if (x >= (_center.x() + _width/2.0)) {return false;}
 
-    if (y < (_center.y() - _height)) {return false;}
-    if (y > (_center.y() + _height)) {return false;}
+    if (y <= (_center.y() - _height/2.0)) {return false;}
+    if (y >= (_center.y() + _height/2.0)) {return false;}
 
     return true;
 }

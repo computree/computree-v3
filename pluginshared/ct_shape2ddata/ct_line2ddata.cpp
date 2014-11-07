@@ -35,7 +35,7 @@ CT_Line2DData::CT_Line2DData() : CT_Shape2DData()
 {
 }
 
-CT_Line2DData::CT_Line2DData(const QVector2D &p1, const QVector2D &p2) : CT_Shape2DData(p1)
+CT_Line2DData::CT_Line2DData(const QVector2D &p1, const QVector2D &p2) : CT_Shape2DData(QVector2D((float)((p1.x() + p2.x())/2.0), (float)((p1.y() + p2.y())/2.0)))
 {
     _p1 = p1;
     _p2 = p2;
