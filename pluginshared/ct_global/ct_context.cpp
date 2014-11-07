@@ -56,6 +56,8 @@ CT_Context::CT_Context()
 
     // initialisation du gestionnaire de dépot
     m_repositoryManager = new CT_RepositoryManager();
+
+    m_ZPlaneFor2DShapes = 0;
 }
 
 CT_Context::~CT_Context()
@@ -100,6 +102,16 @@ PluginManagerInterface* CT_Context::pluginManager() const
         return NULL;
 
     return m_coreInterface->pluginManager();
+}
+
+float CT_Context::getZPlaneFor2DShapes() const
+{
+    return m_ZPlaneFor2DShapes;
+}
+
+void CT_Context::setZPlaneFor2DShapes(float z)
+{
+    m_ZPlaneFor2DShapes = z;
 }
 
 CT_CategoryManager* CT_Context::categoryManager() const

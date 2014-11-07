@@ -9,7 +9,7 @@
 
 #include <limits>
 
-#include "ct_shapedata/ct_polygon2ddata_old.h"
+#include "ct_shape2ddata/ct_polygon2ddata.h"
 
 
 PB_ActionSegmentGaps::UndoRedoContent::UndoRedoContent()
@@ -203,7 +203,7 @@ void PB_ActionSegmentGaps::initClusters()
         }
 
         // compute convex hull
-        CT_Polygon2DData_Old* polygonData = CT_Polygon2DData_Old::createConvexHull(filledCells);
+        CT_Polygon2DData* polygonData = CT_Polygon2DData::createConvexHull(filledCells);
 
         // exclude au cells outside of the convex hull
         for (size_t cx = 0 ; cx < colDim ; cx++)

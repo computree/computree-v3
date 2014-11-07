@@ -6,7 +6,7 @@
 
  Contact : alexandre.piboule@onf.fr
 
- Developers : Michal KREBS (ARTS/ENSAM)
+ Developers : Alexandre PIBOULE (ONF)
 
  This file is part of PluginShared library 2.0.
 

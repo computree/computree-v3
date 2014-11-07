@@ -84,6 +84,16 @@ public:
      */
     PluginManagerInterface* pluginManager() const;
 
+    /**
+     * @brief Returns the Z coordinate of the plane for 2D shapes drawing
+     */
+    float getZPlaneFor2DShapes() const;
+
+    /**
+     * @brief Returns the Z coordinate of the plane for 2D shapes drawing
+     */
+    void setZPlaneFor2DShapes(float z);
+
 protected:
 
     friend class CT_AbstractStepPlugin;
@@ -108,6 +118,7 @@ private:
     CT_DefaultItemAttributeManager  *m_diam;
     CT_ModelSearchHelper            *m_modelHelper;
     CT_CoordinateSystemManager      *m_csManager;
+    float                           m_ZPlaneFor2DShapes;
     CT_Context();
 };
 

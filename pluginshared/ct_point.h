@@ -137,6 +137,10 @@ public:
     inline float getY() const { return y; }
     inline float getZ() const { return z; }
 
+    inline float& getX() { return x; }
+    inline float& getY() { return y; }
+    inline float& getZ() { return z; }
+
     inline void setX(const float &_x) { x = _x; }
     inline void setY(const float &_y) { y = _y; }
     inline void setZ(const float &_z) { z = _z; }

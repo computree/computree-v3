@@ -6,7 +6,7 @@
 
  Contact : alexandre.piboule@onf.fr
 
- Developers : Michal KREBS (ARTS/ENSAM)
+ Developers : Alexandre PIBOULE (ONF)
 
  This file is part of PluginShared library 2.0.
 
@@ -64,7 +64,7 @@ private:
     float               _minY;
     float               _maxY;
 
-    friend class CT_Polygon2D_Old;
+    friend class CT_Polyline2D;
 
 };
 

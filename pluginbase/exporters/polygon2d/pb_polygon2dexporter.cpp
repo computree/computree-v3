@@ -1,5 +1,5 @@
 #include "pb_polygon2dexporter.h"
-#include "ct_itemdrawable/ct_polygon2d_old.h"
+#include "ct_itemdrawable/ct_polygon2d.h"
 #include <math.h>
 #include <QMessageBox>
 #include <QFile>
@@ -40,7 +40,7 @@ bool PB_Polygon2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDr
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
-        if(dynamic_cast<CT_Polygon2D_Old*>(item) != NULL)
+        if(dynamic_cast<CT_Polygon2D*>(item) != NULL)
         {
             myList.append(item);
             ++nProfiles;
@@ -49,7 +49,7 @@ bool PB_Polygon2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDr
 
     if(nProfiles == 0)
     {
-        setErrorMessage(tr("Aucun ItemDrawable du type CT_Polygon2D_Old"));
+        setErrorMessage(tr("Aucun ItemDrawable du type CT_Polygon2D"));
         return false;
     }
 
@@ -99,7 +99,7 @@ bool PB_Polygon2DExporter::protectedExportToFile()
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
         while (it.hasNext())
         {
-            CT_Polygon2D_Old* item = dynamic_cast<CT_Polygon2D_Old*>(it.next());
+            CT_Polygon2D* item = dynamic_cast<CT_Polygon2D*>(it.next());
             item->computeCentroid();
 
             x = item->getCenterX();

@@ -25,34 +25,24 @@
 
 *****************************************************************************/
 
-#ifndef CT_SHAPE2DDATA_H
-#define CT_SHAPE2DDATA_H
+#ifndef CT_POINT2DDATA_H
+#define CT_POINT2DDATA_H
 
-#include "pluginShared_global.h"
-#include <QVector2D>
+#include "ct_shape2ddata.h"
 
-/**
-  * Reprsente les donnes d'une forme géomtrique 2D
-  */
-class PLUGINSHAREDSHARED_EXPORT CT_Shape2DData
+class PLUGINSHAREDSHARED_EXPORT CT_Point2DData : public CT_Shape2DData
 {
 public:
+    CT_Point2DData();
+    CT_Point2DData(const QVector2D &point);
 
-    CT_Shape2DData();
-    CT_Shape2DData(const QVector2D &center);
-    virtual ~CT_Shape2DData();
+    double x() const;
+    double y() const;
 
-    const QVector2D& getCenter() const;
-    void setCenter(const QVector2D &center);
+    void getBoundingBox(QVector2D &min, QVector2D &max) const;
 
-    virtual void getBoundingBox(QVector2D &min, QVector2D &max) const = 0;
-
-protected:
-
-    QVector2D   _center;
-
-    friend class CT_AbstractShape2D;
+    CT_Point2DData* clone() const;
 
 };
 
-#endif // CT_SHAPE2DDATA_H
+#endif // CT_POINT2DDATA_H

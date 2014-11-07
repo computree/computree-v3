@@ -1,7 +1,7 @@
 /****************************************************************************
 
  Copyright (C) 2010-2012 the Office National des Forêts (ONF), France
-                     and the Association de Recherche Technologie et Sciences (ARTS), Ecole Nationale Suprieure d'Arts et Métiers (ENSAM), Cluny, France.
+                     and the Association de Recherche Technologie et Sciences (ARTS), Ecole Nationale Supérieure d'Arts et Métiers (ENSAM), Cluny, France.
                      All rights reserved.
 
  Contact : alexandre.piboule@onf.fr
@@ -25,34 +25,35 @@
 
 *****************************************************************************/
 
-#ifndef CT_SHAPE2DDATA_H
-#define CT_SHAPE2DDATA_H
+#include "ct_point2ddata.h"
 
-#include "pluginShared_global.h"
-#include <QVector2D>
-
-/**
-  * Reprsente les donnes d'une forme géomtrique 2D
-  */
-class PLUGINSHAREDSHARED_EXPORT CT_Shape2DData
+CT_Point2DData::CT_Point2DData() : CT_Shape2DData()
 {
-public:
+}
 
-    CT_Shape2DData();
-    CT_Shape2DData(const QVector2D &center);
-    virtual ~CT_Shape2DData();
+CT_Point2DData::CT_Point2DData(const QVector2D &point) : CT_Shape2DData(point)
+{
+}
 
-    const QVector2D& getCenter() const;
-    void setCenter(const QVector2D &center);
+double CT_Point2DData::x() const
+{
+    return getCenter().x();
+}
 
-    virtual void getBoundingBox(QVector2D &min, QVector2D &max) const = 0;
+double CT_Point2DData::y() const
+{
+    return getCenter().y();
+}
 
-protected:
+void CT_Point2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+{
+    min.setX(x());
+    min.setY(y());
+    max.setX(x());
+    max.setY(y());
+}
 
-    QVector2D   _center;
-
-    friend class CT_AbstractShape2D;
-
-};
-
-#endif // CT_SHAPE2DDATA_H
+CT_Point2DData* CT_Point2DData::clone() const
+{
+    return new CT_Point2DData(getCenter());
+}

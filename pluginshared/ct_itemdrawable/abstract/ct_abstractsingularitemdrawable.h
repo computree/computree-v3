@@ -87,7 +87,7 @@ public:
     /**
      * @brief Get the bounding box of the item
      */
-    void getBoundingBox(QVector3D &min, QVector3D &max) const;
+    virtual void getBoundingBox(QVector3D &min, QVector3D &max) const;
 
     /**
      * @brief Get the bounding box of the item but scaled

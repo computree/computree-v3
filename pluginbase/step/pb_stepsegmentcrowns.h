@@ -15,7 +15,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractgrid3d.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_grid2dxy.h"
-#include "ct_itemdrawable/ct_polygon2d_old.h"
+#include "ct_itemdrawable/ct_polygon2d.h"
 
 
 class CT_AbstractSingularItemDrawable;
@@ -146,10 +146,10 @@ private:
 
     void createConvexHulls(QMap<int, QList<QVector2D *> *> &cellsMapByCluster,
                            const QMap<int, CT_StandardItemGroup *> &sceneGroupMap,
-                           QMap<int, CT_Polygon2DData_Old *> &convexHullsMap);
+                           QMap<int, CT_Polygon2DData *> &convexHullsMap);
 
     void computeMetrics(const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
-                        const QMap<int, CT_Polygon2DData_Old *> &convexHullsMap,
+                        const QMap<int, CT_Polygon2DData *> &convexHullsMap,
                         const QMap<int, size_t> &clusterCounts,
                         const QMap<int, float> &clusterZMax);
 

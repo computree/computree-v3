@@ -25,16 +25,17 @@
 
 *****************************************************************************/
 
-#ifndef CT_ABSTRACTSHAPE2D_H
-#define CT_ABSTRACTSHAPE2D_H
+#ifndef CT_ABSTRACTAREASHAPE2D_H
+#define CT_ABSTRACTAREASHAPE2D_H
 
 #include "ct_abstractitemdrawablewithoutpointcloud.h"
-#include "ct_shape2ddata/ct_shape2ddata.h"
+#include "ct_shape2ddata/ct_areashape2ddata.h"
+#include "ct_itemdrawable/abstract/CT_AbstractShape2D.h"
 
 /**
-  * Représente une forme géomtrique 2D
+  * Représente une forme géomtrique 2D surfacique
   */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractShape2D : public CT_AbstractItemDrawableWithoutPointCloud
+class PLUGINSHAREDSHARED_EXPORT CT_AbstractAreaShape2D : public CT_AbstractShape2D
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
@@ -43,19 +44,19 @@ public:
     /**
       * \brief Contructeur vide (seulement pour la srialisation avec BOOST).
       */
-    CT_AbstractShape2D();
+    CT_AbstractAreaShape2D();
     /**
-      * \brief Contructeur avec une instance des donnes (CT_Shape2DData*), ne peut être NULL ! (Supprime dans le destructeur de la classe).
+      * \brief Contructeur avec une instance des donnes (CT_AreaShape2DData*), ne peut être NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_AbstractShape2D(const CT_OutAbstractSingularItemModel *model,
+    CT_AbstractAreaShape2D(const CT_OutAbstractSingularItemModel *model,
                      const CT_AbstractResult *result,
-                     CT_Shape2DData *data);
+                     CT_AreaShape2DData *data);
 
-    CT_AbstractShape2D(const QString &modelName,
+    CT_AbstractAreaShape2D(const QString &modelName,
                      const CT_AbstractResult *result,
-                     CT_Shape2DData *data);
+                     CT_AreaShape2DData *data);
 
-    virtual ~CT_AbstractShape2D();
+    virtual ~CT_AbstractAreaShape2D();
 
     /**
       * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
@@ -63,26 +64,17 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    void setCenterX(float x);
-    void setCenterY(float y);
+    virtual bool contains(float x, float y) const;
+    virtual double getArea() const;
 
-    float getCenterX() const;
-    float getCenterY() const;
+    const CT_AreaShape2DData* getPointerAreaData() const;
+    const CT_AreaShape2DData& getAreaData() const;
 
-    const CT_Shape2DData* getPointerData() const;
-    const CT_Shape2DData& getData() const;
-    const QVector2D& getCenter() const;
-
-    void getBoundingBox(QVector3D &min, QVector3D &max) const;
-
-private:
-
-    CT_Shape2DData   *_data;
 
 protected:
 
-    CT_Shape2DData* getDataNotConst() const;
+    CT_AreaShape2DData* getAreaDataNotConst() const;
 
 };
 
-#endif // CT_ABSTRACTSHAPE2D_H
+#endif // CT_ABSTRACTAREASHAPE2D_H

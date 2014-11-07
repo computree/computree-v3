@@ -26,6 +26,7 @@
 *****************************************************************************/
 
 #include "ct_abstractshape2d.h"
+#include "ct_global/ct_context.h"
 
 
 CT_AbstractShape2D::CT_AbstractShape2D() : CT_AbstractItemDrawableWithoutPointCloud()
@@ -38,6 +39,19 @@ CT_AbstractShape2D::CT_AbstractShape2D(const CT_OutAbstractSingularItemModel *mo
                                    CT_Shape2DData *data) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _data = data;
+    if (_data != NULL)
+    {
+        QVector2D min, max;
+        data->getBoundingBox(min, max);
+
+        _minCoordinates.setX(min.x());
+        _minCoordinates.setY(min.y());
+        _minCoordinates.setZ(0);
+
+        _maxCoordinates.setX(max.x());
+        _maxCoordinates.setY(max.y());
+        _maxCoordinates.setZ(0);
+    }
 }
 
 CT_AbstractShape2D::CT_AbstractShape2D(const QString &modelName,
@@ -45,6 +59,19 @@ CT_AbstractShape2D::CT_AbstractShape2D(const QString &modelName,
                                    CT_Shape2DData *data) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     _data = data;
+    if (_data != NULL)
+    {
+        QVector2D min, max;
+        data->getBoundingBox(min, max);
+
+        _minCoordinates.setX(min.x());
+        _minCoordinates.setY(min.y());
+        _minCoordinates.setZ(0);
+
+        _maxCoordinates.setX(max.x());
+        _maxCoordinates.setY(max.y());
+        _maxCoordinates.setZ(0);
+    }
 }
 
 CT_AbstractShape2D::~CT_AbstractShape2D()
@@ -95,6 +122,15 @@ const CT_Shape2DData& CT_AbstractShape2D::getData() const
 const QVector2D &CT_AbstractShape2D::getCenter() const
 {
     return _data->getCenter();
+}
+
+void CT_AbstractShape2D::getBoundingBox(QVector3D &min, QVector3D &max) const
+{
+    CT_AbstractItemDrawableWithoutPointCloud::getBoundingBox(min, max);
+    float zplane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+
+    min.setZ(zplane);
+    max.setZ(zplane);
 }
 
 CT_Shape2DData* CT_AbstractShape2D::getDataNotConst() const

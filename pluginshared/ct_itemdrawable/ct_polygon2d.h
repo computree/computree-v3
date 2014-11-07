@@ -25,46 +25,45 @@
 
 *****************************************************************************/
 
-#ifndef CT_POLYGON2D_OLD_H
-#define CT_POLYGON2D_OLD_H
+#ifndef CT_POLYGON2D_H
+#define CT_POLYGON2D_H
 
-#include "ct_itemdrawable/abstract/ct_abstractshape.h"
+#include "ct_itemdrawable/abstract/ct_abstractareashape2d.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.h"
 
-#include "ct_shapedata/ct_polygon2ddata_old.h"
+#include "ct_shape2ddata/ct_polygon2ddata.h"
 
 /*!
- * \class CT_Polygon2D_Old
+ * \class CT_Polygon2D
  * \ingroup PluginShared_Items
- * \brief <b>ItemDrawable managing a CT_Polygon2D_OldData</b>
+ * \brief <b>ItemDrawable managing a CT_Polygon2DData</b>
  *
  * It represents a polygon in 2D.
  *
  */
-class PLUGINSHAREDSHARED_EXPORT CT_Polygon2D_Old : public CT_AbstractShape
+class PLUGINSHAREDSHARED_EXPORT CT_Polygon2D : public CT_AbstractAreaShape2D
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
 
 public:    
 
-    CT_Polygon2D_Old();
+    CT_Polygon2D();
     /**
-      * \brief Contructeur avec une instance des donnes (CT_Polygon2D_OldData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
+      * \brief Contructeur avec une instance des donnes (CT_Polygon2DData*), ne peut tre NULL ! (Supprime dans le destructeur de la classe).
       */
-    CT_Polygon2D_Old(const CT_OutAbstractSingularItemModel *model,
+    CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result,
-                CT_Polygon2DData_Old *data);
+                CT_Polygon2DData *data);
 
-    CT_Polygon2D_Old(const QString &modelName,
+    CT_Polygon2D(const QString &modelName,
                 const CT_AbstractResult *result,
-                CT_Polygon2DData_Old *data);
+                CT_Polygon2DData *data);
 
     const QVector<QVector2D*>& getVertices() const;
 
     inline int getNumberOfVertices() const {return getVertices().size();}
-    inline float getArea() const {return ((CT_Polygon2DData_Old*) getDataNotConst())->getAreaIfNotSelfIntersecting();}   
-    inline void computeCentroid() const {((CT_Polygon2DData_Old*) getDataNotConst())->computeCentroid();}
+    inline void computeCentroid() const {((CT_Polygon2DData*) getDataNotConst())->computeCentroid();}
 
     /**
       * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
@@ -78,10 +77,10 @@ public:
 private:
     const static CT_StandardPolygon2DDrawManager POLYGON2D_DRAW_MANAGER;
 
-    CT_DEFAULT_IA_BEGIN(CT_Polygon2D_Old)
-    CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::staticInitDataSize(), &CT_Polygon2D_Old::getNumberOfVertices, QObject::tr("Number Of Vertices"))
-    CT_DEFAULT_IA_V2(CT_Polygon2D_Old, CT_AbstractCategory::staticInitDataArea(), &CT_Polygon2D_Old::getArea, QObject::tr("Polygon Area"))
-    CT_DEFAULT_IA_END(CT_Polygon2D_Old)
+    CT_DEFAULT_IA_BEGIN(CT_Polygon2D)
+    CT_DEFAULT_IA_V2(CT_Polygon2D, CT_AbstractCategory::staticInitDataSize(), &CT_Polygon2D::getNumberOfVertices, QObject::tr("Number Of Vertices"))
+    CT_DEFAULT_IA_V2(CT_Polygon2D, CT_AbstractCategory::staticInitDataArea(), &CT_Polygon2D::getArea, QObject::tr("Polygon Area"))
+    CT_DEFAULT_IA_END(CT_Polygon2D)
 };
 
-#endif // CT_POLYGON2D_OLD_H
+#endif // CT_POLYGON2D_H

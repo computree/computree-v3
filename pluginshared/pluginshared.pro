@@ -305,8 +305,6 @@ SOURCES += \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.cpp \
     ct_model/tools/ct_modelsearchhelper.cpp \
     ct_item/tools/iterator/ct_childiterator.cpp \
-    ct_itemdrawable/ct_polygon2d_old.cpp \
-    ct_shapedata/ct_polygon2ddata_old.cpp \
     ct_shapedata/ct_planarbsplinedata.cpp \
     ct_itemdrawable/ct_planarbspline.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp \
@@ -352,7 +350,21 @@ SOURCES += \
     ct_shape2ddata/ct_shape2ddata.cpp \
     ct_shape2ddata/ct_polyline2ddata.cpp \
     ct_shape2ddata/ct_areashape2ddata.cpp \
-    ct_itemdrawable/abstract/ct_abstractshape2d.cpp
+    ct_itemdrawable/abstract/ct_abstractshape2d.cpp \
+    ct_itemdrawable/abstract/ct_abstractareashape2d.cpp \
+    ct_itemdrawable/ct_circle2d.cpp \
+    ct_itemdrawable/ct_box2d.cpp \
+    ct_itemdrawable/ct_line2d.cpp \
+    ct_itemdrawable/ct_polygon2d.cpp \
+    ct_itemdrawable/ct_polyline2d.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardabstractshape2ddrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardbox2ddrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardcircle2ddrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardline2ddrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardpolyline2ddrawmanager.cpp \
+    ct_shape2ddata/ct_point2ddata.cpp \
+    ct_itemdrawable/ct_point2d.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -730,8 +742,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/model/inModel/abstract/ct_inabstractitemmodel.h \
     ct_model/tools/ct_modelsearchhelper.h \
     ct_item/tools/iterator/ct_childiterator.h \
-    ct_itemdrawable/ct_polygon2d_old.h \
-    ct_shapedata/ct_polygon2ddata_old.h \
     ct_shapedata/ct_planarbsplinedata.h \
     ct_itemdrawable/ct_planarbspline.h \
     ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.h \
@@ -796,7 +806,21 @@ HEADERS += interfaces.h \
     ct_shape2ddata/ct_shape2ddata.h \
     ct_shape2ddata/ct_polyline2ddata.h \
     ct_shape2ddata/ct_areashape2ddata.h \
-    ct_itemdrawable/abstract/ct_abstractshape2d.h
+    ct_itemdrawable/abstract/ct_abstractshape2d.h \
+    ct_itemdrawable/abstract/ct_abstractareashape2d.h \
+    ct_itemdrawable/ct_circle2d.h \
+    ct_itemdrawable/ct_box2d.h \
+    ct_itemdrawable/ct_line2d.h \
+    ct_itemdrawable/ct_polygon2d.h \
+    ct_itemdrawable/ct_polyline2d.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardabstractshape2ddrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardbox2ddrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardcircle2ddrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardline2ddrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardpolyline2ddrawmanager.h \
+    ct_shape2ddata/ct_point2ddata.h \
+    ct_itemdrawable/ct_point2d.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.h
 
 
 INCLUDEPATH += .

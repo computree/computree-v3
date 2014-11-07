@@ -146,23 +146,26 @@ void CT_AbstractSingularItemDrawable::getBoundingBox(QVector3D &min, QVector3D &
 
 void CT_AbstractSingularItemDrawable::getScaledBoundingBox(double xCoeff, double yCoeff, double zCoeff, QVector3D &min, QVector3D &max)
 {
-    max.setX(getCenterX() + (fabs(_maxCoordinates.x()-getCenterX()) * xCoeff));
-    max.setY(getCenterY() + (fabs(_maxCoordinates.y()-getCenterY()) * yCoeff));
-    max.setZ(getCenterZ() + (fabs(_maxCoordinates.z()-getCenterZ()) * zCoeff));
+    getBoundingBox(min, max);
 
-    min.setX(getCenterX() - (fabs(_minCoordinates.x()-getCenterX()) * xCoeff));
-    min.setY(getCenterY() - (fabs(_minCoordinates.y()-getCenterY()) * yCoeff));
-    min.setZ(getCenterZ() - (fabs(_minCoordinates.z()-getCenterZ()) * zCoeff));
+    min.setX(getCenterX() - (fabs(min.x()-getCenterX()) * xCoeff));
+    min.setY(getCenterY() - (fabs(min.y()-getCenterY()) * yCoeff));
+    min.setZ(getCenterZ() - (fabs(min.z()-getCenterZ()) * zCoeff));
 
+    max.setX(getCenterX() + (fabs(max.x()-getCenterX()) * xCoeff));
+    max.setY(getCenterY() + (fabs(max.y()-getCenterY()) * yCoeff));
+    max.setZ(getCenterZ() + (fabs(max.z()-getCenterZ()) * zCoeff));
 }
 
 void CT_AbstractSingularItemDrawable::getBufferedBoundingBox(double xMeters, double yMeters, double zMeters, QVector3D &min, QVector3D &max)
 {
-    min.setX(_minCoordinates.x() - xMeters);
-    min.setY(_minCoordinates.y() - yMeters);
-    min.setZ(_minCoordinates.z() - zMeters);
+    getBoundingBox(min, max);
 
-    max.setX(_maxCoordinates.x() + xMeters);
-    max.setY(_maxCoordinates.y() + yMeters);
-    max.setZ(_maxCoordinates.z() + zMeters);
+    min.setX(min.x() - xMeters);
+    min.setY(min.y() - yMeters);
+    min.setZ(min.z() - zMeters);
+
+    max.setX(max.x() + xMeters);
+    max.setY(max.y() + yMeters);
+    max.setZ(max.z() + zMeters);
 }
