@@ -1172,6 +1172,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Add a step that can be added first</translation>
     </message>
     <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="295"/>
         <source>Ajouter une étape qui n&apos;a pas besoin de résultat en entrée</source>
         <translation>Add a step which doesn&apos;t need input result</translation>

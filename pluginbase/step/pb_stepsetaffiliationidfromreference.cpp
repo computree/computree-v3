@@ -86,9 +86,9 @@ void PB_StepSetAffiliationIDFromReference::createInResultModelListProtected()
 
     CT_InResultModelGroupToCopy *inResultAffCopy = createNewInResultModelForCopy(DEF_SearchInTargetResult, tr("Résultat à affilier"), "", true);
     inResultAffCopy->setZeroOrMoreRootGroup();
-    inResultRefCopy->addGroupModel("", DEF_SearchInTargetGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe à affilier"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    inResultRefCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetId, CT_AffiliationID::staticGetType(), tr("ID à affilier"));
-    inResultRefCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à affilier"));
+    inResultAffCopy->addGroupModel("", DEF_SearchInTargetGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe à affilier"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
+    inResultAffCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetId, CT_AffiliationID::staticGetType(), tr("ID à affilier"));
+    inResultAffCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à affilier"));
 }
 
 void PB_StepSetAffiliationIDFromReference::createPostConfigurationDialog()

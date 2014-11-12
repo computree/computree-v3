@@ -1192,6 +1192,29 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
     </message>
 </context>
 <context>
+    <name>PB_LASExporter</name>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="39"/>
+        <source>Fichiers LAS .las</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="57"/>
+        <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="79"/>
+        <source>- Aucun points à exporter</source>
+        <translation type="unfinished">- Aucun point à exporter</translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="173"/>
+        <source>Problème lors de l&apos;écriture de l&apos;en-tête du fichier</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PB_MeshObjExporter</name>
     <message>
         <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="22"/>
@@ -1272,8 +1295,8 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
     </message>
     <message>
         <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="52"/>
-        <source>Aucun ItemDrawable du type CT_Polygon2D_Old</source>
-        <translation></translation>
+        <source>Aucun ItemDrawable du type CT_Polygon2D</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="63"/>
@@ -1510,7 +1533,7 @@ En mode 3D, cet outil ne fonctionne que sur des cellules séléctionnées</sourc
 <context>
     <name>PB_StepGenericLoadFile</name>
     <message>
-        <location filename="../step/pb_stepgenericloadfile.cpp" line="37"/>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="45"/>
         <source>Charge un fichier du type</source>
         <translation>Charge un fichier du type</translation>
     </message>
@@ -2319,22 +2342,22 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
 <context>
     <name>PB_XYBExporter</name>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="37"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="39"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="55"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="57"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="77"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="79"/>
         <source>- Aucun points à exporter</source>
         <translation>- Aucun point à exporter</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="194"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="196"/>
         <source>Scanners</source>
         <translation></translation>
     </message>
@@ -2342,34 +2365,39 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="106"/>
+        <location filename="../pb_steppluginmanager.cpp" line="107"/>
         <source>Plugin_Base initialized</source>
         <translation>Plugin_Base initialisé</translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="168"/>
+        <location filename="../pb_steppluginmanager.cpp" line="169"/>
         <source>Nuages de points</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="172"/>
+        <location filename="../pb_steppluginmanager.cpp" line="173"/>
         <source>Voxels</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="177"/>
+        <location filename="../pb_steppluginmanager.cpp" line="178"/>
         <source>Houppiers, Trouées</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="181"/>
+        <location filename="../pb_steppluginmanager.cpp" line="182"/>
         <source>Gestion des items</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="187"/>
+        <location filename="../pb_steppluginmanager.cpp" line="188"/>
         <source>Boucles de scripts</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="94"/>
+        <source>Attributs</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
