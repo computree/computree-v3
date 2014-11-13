@@ -133,6 +133,8 @@ public:
 
     QVector3D pointUnderPixel(const QPoint &pixel, bool &found) const;
     void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const;
+    void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const;
+
     void addActionOptions(ActionOptionsInterface *options);
     void removeActionOptions(ActionOptionsInterface *options);
     int width() const;

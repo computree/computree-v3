@@ -82,6 +82,16 @@ CT_AbstractItemDrawable* CT_Circle::copy(const CT_OutAbstractItemModel *model, c
     return circle;
 }
 
+CT_AbstractItemDrawable* CT_Circle::copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
+{
+    Q_UNUSED(copyModeList);
+    CT_Circle *circle = new CT_Circle(modelName, result, (getPointerData() != NULL) ? ((const CT_CircleData&)getData()).clone() : NULL);
+    circle->setId(id());
+    circle->setAlternativeDrawManager(getAlternativeDrawManager());
+
+    return circle;
+}
+
 CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                    quint64 id,
                                                                    const CT_AbstractResult *result,

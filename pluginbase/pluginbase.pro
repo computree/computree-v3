@@ -64,7 +64,11 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionpickitemsinlist.h \
     views/actions/pb_actionpickitemsinlistoptions.h \
     exporters/las/pb_lasexporter.h \
-    exporters/las/pb_laspointformat.h
+    exporters/las/pb_laspointformat.h \
+    step/pb_stepmanualinventory.h \
+    actions/pb_actionmanualinventory.h \
+    views/actions/pb_actionmanualinventoryoptions.h \
+    views/actions/pb_actionmanualinventoryattributesdialog.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -126,7 +130,11 @@ SOURCES += \
     exporters/polygon2d/pb_polygon2dexporter.cpp \
     actions/pb_actionpickitemsinlist.cpp \
     views/actions/pb_actionpickitemsinlistoptions.cpp \
-    exporters/las/pb_lasexporter.cpp
+    exporters/las/pb_lasexporter.cpp \
+    step/pb_stepmanualinventory.cpp \
+    actions/pb_actionmanualinventory.cpp \
+    views/actions/pb_actionmanualinventoryoptions.cpp \
+    views/actions/pb_actionmanualinventoryattributesdialog.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -148,7 +156,9 @@ FORMS += \
     views/actions/pb_actionmodifyaffiliationsoptions.ui \
     views/actions/pb_actionsegmentgapsoptions.ui \
     views/actions/pb_actionslicepointcloudoptions.ui \
-    views/actions/pb_actionpickitemsinlistoptions.ui
+    views/actions/pb_actionpickitemsinlistoptions.ui \
+    views/actions/pb_actionmanualinventoryoptions.ui \
+    views/actions/pb_actionmanualinventoryattributesdialog.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts

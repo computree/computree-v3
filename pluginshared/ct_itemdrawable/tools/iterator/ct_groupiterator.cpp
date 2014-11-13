@@ -60,6 +60,7 @@ CT_GroupIterator::CT_GroupIterator(const CT_AbstractItemGroup *parent, const CT_
         qFatal("You created a CT_GroupIterator with a modelName but the model was not a group model");
 }
 
+
 CT_GroupIterator::~CT_GroupIterator()
 {
     qDeleteAll(m_iterators.begin(), m_iterators.end());

@@ -55,6 +55,7 @@
 #include "step/pb_stepsetaffiliationidfromreference.h"
 #include "step/pb_stepuseritemcopy.h"
 #include "step/pb_stepslicepointcloud.h"
+#include "step/pb_stepmanualinventory.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -184,6 +185,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepSetAffiliationIDFromReference(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepUserItemCopy(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepManualInventory(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));

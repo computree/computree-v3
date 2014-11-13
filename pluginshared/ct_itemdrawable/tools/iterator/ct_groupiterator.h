@@ -14,6 +14,8 @@ class CT_ContainerIterator;
 
 class CT_VirtualAbstractStep;
 
+class CT_ResultGroup;
+
 /**
  * @brief Class tools to iterate over groups in a group
  *
