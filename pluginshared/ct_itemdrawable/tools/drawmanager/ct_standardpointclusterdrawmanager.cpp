@@ -36,7 +36,7 @@ void CT_StandardPointClusterDrawManager::draw(GraphicsViewInterface &view, Paint
             const CT_Point& p1 = cloudIndex->constTAt(i);
             const CT_Point& p2 = cloudIndex->constTAt(i+1);
 
-            painter.drawLine(p1.getX(), p1.getY(), p1.getZ(), p2.getX(), p2.getY(), p2.getZ());
+            painter.drawLine(p1(0), p1(1), p1(2), p2(0), p2(1), p2(2));
         }
     }
 }

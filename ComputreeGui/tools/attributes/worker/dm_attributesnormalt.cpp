@@ -28,9 +28,9 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
 
             // set the normal of the point at this document
             CT_Normal &nxnynz = nn->normalAt(indexP);
-            nxnynz.normal_x = xyz.getX() + nxnynz_pa.normal_x;
-            nxnynz.normal_y = xyz.getY() + nxnynz_pa.normal_y;
-            nxnynz.normal_z = xyz.getZ() + nxnynz_pa.normal_z;
+            nxnynz.normal_x = xyz(0) + nxnynz_pa.normal_x;
+            nxnynz.normal_y = xyz(1) + nxnynz_pa.normal_y;
+            nxnynz.normal_z = xyz(2) + nxnynz_pa.normal_z;
 
             setProgress((i*100)/size);
         }

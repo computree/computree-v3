@@ -251,10 +251,10 @@ void PB_ActionDefineHeightLayer::computeCrownProjection()
         {
             const CT_Point &point = pointCloudIndex->constTAt(i);
 
-            if (point.z >= _gridContainer->_zmin && point.z <= _gridContainer->_zmax)
+            if (point(2) >= _gridContainer->_zmin && point(2) <= _gridContainer->_zmax)
             {
-                _gridContainer->_densityGrid->addValueAtXY(point.x, point.y, 1);
-                _gridContainer->_mnsGrid->setMaxValueAtXY(point.x, point.y, point.z);
+                _gridContainer->_densityGrid->addValueAtXY(point(0), point(1), 1);
+                _gridContainer->_mnsGrid->setMaxValueAtXY(point(0), point(1), point(2));
             }
         }
     }

@@ -69,7 +69,7 @@ void DM_VertexVBOManager::preDraw()
         if((glGetError() == GL_NO_ERROR) && (size > 0)) {
 
             // copy the points cloud in this vbo
-            glBufferSubData(GL_ARRAY_BUFFER, 0, nBytes, points->constTAt(0).vertex());
+            glBufferSubData(GL_ARRAY_BUFFER, 0, nBytes, points->tAt(0).vertex());
 
             // set use vbo to true
             if(glGetError() == GL_NO_ERROR)
@@ -106,7 +106,7 @@ void DM_VertexVBOManager::preDraw()
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         else // define the address of the points cloud in RAM
-            glVertexPointer(sizeof(CT_Point)/sizeof(float), GL_FLOAT, 0, points->constTAt(0).vertex());
+            glVertexPointer(sizeof(CT_Point)/sizeof(float), GL_FLOAT, 0, points->tAt(0).vertex());
     }
 }
 

@@ -15,6 +15,8 @@
 #include "ct_itemdrawable/ct_grid3d.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_triangulation/ct_nodet.h"
+#include "ct_triangulation/ct_trianglet.h"
+#include "ct_triangulation/ct_edget.h"
 #include "ct_itemdrawable/ct_attributeslist.h"
 
 #include <limits>

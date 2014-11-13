@@ -105,7 +105,7 @@ void DM_ColorVBOManager::preDraw()
         if((glGetError() == GL_NO_ERROR) && (size > 0)) {
 
             // copy the colors cloud in this vbo
-            glBufferSubData(GL_ARRAY_BUFFER, 0, nBytes, &cc->constColorAt(0).rgba);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, nBytes, &cc->constColorAt(0)(0));
 
             // set use vbo to true
             if(glGetError() == GL_NO_ERROR)
@@ -141,7 +141,7 @@ void DM_ColorVBOManager::preDraw()
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         else // define the address of the colors cloud in RAM
-            glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, 0, &m_cc->abstractColorCloud()->colorAt(0).rgba);
+            glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, 0, &m_cc->abstractColorCloud()->colorAt(0)(0));
 
         // enable color array
         setUseColorCloud(true);

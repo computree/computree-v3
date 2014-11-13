@@ -328,9 +328,9 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
             while(i<size)
             {
                 CT_Point &p = itP.cT();
-                p.setX(it.next().toFloat());
-                p.setY(it.next().toFloat());
-                p.setZ(it.next().toFloat());
+                p(0) = it.next().toFloat();
+                p(1) = it.next().toFloat();
+                p(2) = it.next().toFloat();
 
                 ++i;
                 ++itP;
@@ -669,23 +669,23 @@ void CT_OPF_Mesh::getBoundingBox(QVector3D &min, QVector3D &max) const
         {
             const CT_Point &p = it.cT();
 
-            if(p.getX() > m_max.x())
-                m_max.setX(p.getX());
+            if(p(0) > m_max.x())
+                m_max.setX(p(0));
 
-            if(p.getY() > m_max.y())
-                m_max.setY(p.getY());
+            if(p(1) > m_max.y())
+                m_max.setY(p(1));
 
-            if(p.getZ() > m_max.z())
-                m_max.setZ(p.getZ());
+            if(p(2) > m_max.z())
+                m_max.setZ(p(2));
 
-            if(p.getX() < m_min.x())
-                m_min.setX(p.getX());
+            if(p(0) < m_min.x())
+                m_min.setX(p(0));
 
-            if(p.getY() < m_min.y())
-                m_min.setY(p.getY());
+            if(p(1) < m_min.y())
+                m_min.setY(p(1));
 
-            if(p.getZ() < m_min.z())
-                m_min.setZ(p.getZ());
+            if(p(2) < m_min.z())
+                m_min.setZ(p(2));
 
             ++it;
         }

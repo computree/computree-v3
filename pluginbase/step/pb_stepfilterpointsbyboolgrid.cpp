@@ -140,9 +140,9 @@ void PB_StepFilterPointsByBoolGrid::compute()
                 {
                     size_t index;
                     const CT_Point &point = pointCloudIndex->constTAt(i, index);
-                    float x = point.getX();
-                    float y = point.getY();
-                    float z = point.getZ();
+                    float x = point(0);
+                    float y = point(1);
+                    float z = point(2);
 
                     if (boolGrid->valueAtXYZ(x, y, z))
                     {

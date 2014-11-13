@@ -167,9 +167,9 @@ QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyli
     const CT_Point &first = indexCloud->constTAt(0);
     const CT_Point &last = indexCloud->constTAt(indexCloud->size() - 1);
 
-    QVector2D v1(first.getX(), first.getY());
-    QVector2D v2(last.getX(),  last.getY());
-    QVector2D v3((first.getX() + last.getX())/2, (first.getY() + last.getY())/2);
+    QVector2D v1(first(0), first(1));
+    QVector2D v2(last(0),  last(1));
+    QVector2D v3((first(0) + last(0))/2, (first(1) + last(1))/2);
     QVector2D v4;
 
     chord = CT_MathPoint::distance2D(first, last);
@@ -189,8 +189,8 @@ QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyli
         const CT_Point &p1 = indexCloud->constTAt(i);
         const CT_Point &p2 = indexCloud->constTAt(i+1);
 
-        QVector2D v5(p1.getX(), p1.getY());
-        QVector2D v6(p2.getX(), p2.getY());
+        QVector2D v5(p1(0), p1(1));
+        QVector2D v6(p2(0), p2(1));
         QVector2D intersection;
         float r, s;
 

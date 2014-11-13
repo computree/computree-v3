@@ -50,21 +50,21 @@ bool CT_MathBoundingShape::aabbIntersects2D(const QVector3D &min1, const QVector
 
 bool CT_MathBoundingShape::containsPoint(const QVector3D &min, const QVector3D &max, const CT_Point& point)
 {
-    if (point.getX() < min.x()) {return false;}
-    if (point.getX() > max.x()) {return false;}
-    if (point.getY() < min.y()) {return false;}
-    if (point.getY() > max.y()) {return false;}
-    if (point.getZ() < min.z()) {return false;}
-    if (point.getZ() > max.z()) {return false;}
+    if (point(0) < min.x()) {return false;}
+    if (point(0) > max.x()) {return false;}
+    if (point(1) < min.y()) {return false;}
+    if (point(1) > max.y()) {return false;}
+    if (point(2) < min.z()) {return false;}
+    if (point(2) > max.z()) {return false;}
     return true;
 }
 
 bool CT_MathBoundingShape::containsPointIn2D(const QVector3D &min, const QVector3D &max, const CT_Point& point)
 {
-    if (point.getX() < min.x()) {return false;}
-    if (point.getX() > max.x()) {return false;}
-    if (point.getY() < min.y()) {return false;}
-    if (point.getY() > max.y()) {return false;}
+    if (point(0) < min.x()) {return false;}
+    if (point(0) > max.x()) {return false;}
+    if (point(1) < min.y()) {return false;}
+    if (point(1) > max.y()) {return false;}
     return true;
 }
 

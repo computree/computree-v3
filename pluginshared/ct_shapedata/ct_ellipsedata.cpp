@@ -138,9 +138,9 @@ CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointClou
     {
         const CT_Point &point = pointCloudIndex->constTAt(i-1);
 
-        tx = point.getX();
-        ty = point.getY();
-        zm += point.getZ();
+        tx = point(0);
+        ty = point(1);
+        zm += point(2);
         D[i][1] = tx*tx;
         D[i][2] = tx*ty;
         D[i][3] = ty*ty;

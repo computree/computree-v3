@@ -361,7 +361,7 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
     {
         const CT_Point &point = begin.cT();
 
-        PS_COORDINATES_SYS->convertExport(point.getX(), point.getY(), point.getZ(), xc, yc, zc);
+        PS_COORDINATES_SYS->convertExport(point(0), point(1), point(2), xc, yc, zc);
 
         stream << ((double)xc);
         stream << ((double)yc);

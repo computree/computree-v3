@@ -72,9 +72,9 @@ public:
 
     void addPoint(const CT_Point &p)
     {
-        _backupSum[0] += p.getX();
-        _backupSum[1] += p.getY();
-        _backupSum[2] += p.getZ();
+        _backupSum[0] += p(0);
+        _backupSum[1] += p(1);
+        _backupSum[2] += p(2);
 
         ++_size;
 

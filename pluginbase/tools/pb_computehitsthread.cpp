@@ -60,17 +60,17 @@ void PB_ComputeHitsThread::run()
         const CT_Point &point = pointCloudIndex->constTAt(i);
         size_t indice;
 
-        if (_grilleHits->indexAtXYZ(point.x, point.y, point.z, indice))
+        if (_grilleHits->indexAtXYZ(point(0), point(1), point(2), indice))
         {
             // Hits Computing
             _grilleHits->addValueAtIndex(indice, 1);
-            _grdXY->addValueAtXY(point.x, point.y, 1);
-            _grdXZ->addValueAtXZ(point.x, point.z, 1);
-            _grdYZ->addValueAtYZ(point.y, point.z, 1);
-            _proX->addValueForXYZ(point.x, point.y, point.z, 1);
-            _proY->addValueForXYZ(point.x, point.y, point.z, 1);
-            _proZ->addValueForXYZ(point.x, point.y, point.z, 1);
-            _proDiag->addValueForXYZ(point.x, point.y, point.z, 1);
+            _grdXY->addValueAtXY(point(0), point(1), 1);
+            _grdXZ->addValueAtXZ(point(0), point(2), 1);
+            _grdYZ->addValueAtYZ(point(1), point(2), 1);
+            _proX->addValueForXYZ(point(0), point(1), point(2), 1);
+            _proY->addValueForXYZ(point(0), point(1), point(2), 1);
+            _proZ->addValueForXYZ(point(0), point(1), point(2), 1);
+            _proDiag->addValueForXYZ(point(0), point(1), point(2), 1);
         } else
         {
             qDebug() << "Le point "<< i << " de la scene n'est pas dans la grille";

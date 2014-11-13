@@ -65,7 +65,7 @@ public:
                                   const size_t &offset, const bool &negativeOffset);
 
 #ifdef USE_PCL
-    boost::shared_ptr< std::list<int> > getPCLIndices() const;
+    boost::shared_ptr< std::vector<int> > getPCLIndices() const;
 #endif
 
     CT_AbstractCloudIndex* copy() const;

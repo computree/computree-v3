@@ -168,9 +168,9 @@ void PB_StepLoadObjFile::compute()
                             if(sl.size() >= 4)
                             {
                                 CT_Point &p = beginV.cT();
-                                p.data[0] = sl.at(1).toFloat();
-                                p.data[1] = sl.at(2).toFloat();
-                                p.data[2] = sl.at(3).toFloat();
+                                p(0) = sl.at(1).toFloat();
+                                p(1) = sl.at(2).toFloat();
+                                p(2) = sl.at(3).toFloat();
 
                                 ++beginV;
                             }

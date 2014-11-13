@@ -34,37 +34,46 @@
 #include <cmath>
 #include "pluginShared_global.h"
 
-enum RotationAxis
-{
-    OX, OY, OZ
-};
-
-typedef enum RotationAxis RotationAxis;
-
-//#define USE_EIGEN_POINT
-
-#ifdef USE_EIGEN_POINT
+#ifndef USE_PCL
 #include <Eigen/Core>
 
-class CT_Point : public Eigen::Vector3f {
-
+class CT_Point : public Eigen::Vector3f
+{
 public:
-    inline float& getX() { return (*this)(0); }
-    inline float& getY() { return (*this)(1); }
-    inline float& getZ() { return (*this)(2); }
+    inline CT_Point(void):Eigen::Vector3f() {}
+    typedef Eigen::Vector3f Base;
+    // This constructor allows you to construct CT_Point from Eigen expressions
+    template<typename OtherDerived>
+    inline CT_Point(const Eigen::MatrixBase<OtherDerived>& other)
+        : Eigen::Vector3f(other)
+    { }
+    // This method allows you to assign Eigen expressions to CT_Point
+    template<typename OtherDerived>
+    inline CT_Point & operator= (const Eigen::MatrixBase <OtherDerived>& other)
+    {
+        this->Base::operator=(other);
+        return *this;
+    }
 
-    inline float getX() const { return (*this)(0); }
-    inline float getY() const { return (*this)(1); }
-    inline float getZ() const { return (*this)(2); }
+    inline void copy(CT_Point &point) const
+    {
+        point(0) = (*this)(0);
+        point(1) = (*this)(1);
+        point(2) = (*this)(2);
+    }
 
-    inline void setX(const float &_x) { (*this)(0) = _x; }
-    inline void setY(const float &_y) { (*this)(1) = _y; }
-    inline void setZ(const float &_z) { (*this)(2) = _z; }
+    inline void setPoint(const CT_Point &point)
+    {
+        point.copy(*this);
+    }
+
+    inline float* vertex() const
+    {
+        return const_cast<float*>(&(*this)(0));
+    }
 };
 
 #else
-
-#ifdef USE_PCL
 
 #define PCL_NO_PRECOMPILE
 #include <pcl/point_types.h>
@@ -76,78 +85,50 @@ public:
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/impl/statistical_outlier_removal.hpp>
 
-struct _CT_Point
-{
-    union EIGEN_ALIGN16 {
-        float data[4];
-        struct {
-            float x;
-            float y;
-            float z;
-        };
-    };
-    inline Eigen::Map<Eigen::Vector3f> getVector3fMap () { return (Eigen::Vector3f::Map (data)); }
-    inline const Eigen::Map<const Eigen::Vector3f> getVector3fMap () const { return (Eigen::Vector3f::Map (data)); }
-    inline Eigen::Map<Eigen::Vector4f, Eigen::Aligned> getVector4fMap () { return (Eigen::Vector4f::MapAligned (data)); }
-    inline const Eigen::Map<const Eigen::Vector4f, Eigen::Aligned> getVector4fMap () const { return (Eigen::Vector4f::MapAligned (data)); }
-    inline Eigen::Map<Eigen::Array3f> getArray3fMap () { return (Eigen::Array3f::Map (data)); }
-    inline const Eigen::Map<const Eigen::Array3f> getArray3fMap () const { return (Eigen::Array3f::Map (data)); }
-    inline Eigen::Map<Eigen::Array4f, Eigen::Aligned> getArray4fMap () { return (Eigen::Array4f::MapAligned (data)); }
-    inline const Eigen::Map<const Eigen::Array4f, Eigen::Aligned> getArray4fMap () const { return (Eigen::Array4f::MapAligned (data)); }
-
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-};
-
-struct EIGEN_ALIGN16 CT_Point : public _CT_Point
-{
-
-#else
-class PLUGINSHAREDSHARED_EXPORT CT_Point
+class EIGEN_ALIGN16 CT_Point : public pcl::_PointXYZ
 {
 public:
-    union {
-        float data[3];
-        struct {
-            float x;
-            float y;
-            float z;
-        };
-    };
-#endif
-
     inline CT_Point()
     {
-        x = y = z = 0.0f;
-        #ifdef USE_PCL
-        data[3] = 1.0f;
-        #endif
+        pcl::_PointXYZ::x = pcl::_PointXYZ::y = pcl::_PointXYZ::z = 0.0f;
     }
 
     inline CT_Point(float _x, float _y, float _z)
     {
-        x = _x;
-        y = _y;
-        z = _z;
-        #ifdef USE_PCL
-        data[3] = 1.0f;
-        #endif
+        pcl::_PointXYZ::x = _x;
+        pcl::_PointXYZ::y = _y;
+        pcl::_PointXYZ::z = _z;
     }
 
-    inline float getX() const { return x; }
-    inline float getY() const { return y; }
-    inline float getZ() const { return z; }
+    // This constructor allows construct CT_Point from Eigen expressions
+    template<typename OtherDerived>
+    inline CT_Point(const Eigen::MatrixBase<OtherDerived>& other)
+    {
+        Eigen::Vector3f v(other);
+        pcl::_PointXYZ::x = v(0);
+        pcl::_PointXYZ::y = v(1);
+        pcl::_PointXYZ::z = v(2);
+    }
 
-    inline float& getX() { return x; }
-    inline float& getY() { return y; }
-    inline float& getZ() { return z; }
+    // This method allows assign Eigen expressions to CT_Point
+    template<typename OtherDerived>
+    inline CT_Point & operator= (const Eigen::MatrixBase <OtherDerived>& other)
+    {
+        Eigen::Vector3f v(other);
+        pcl::_PointXYZ::x = v(0);
+        pcl::_PointXYZ::y = v(1);
+        pcl::_PointXYZ::z = v(2);
 
-    inline void setX(const float &_x) { x = _x; }
-    inline void setY(const float &_y) { y = _y; }
-    inline void setZ(const float &_z) { z = _z; }
+        return *this;
+    }
 
-    inline float* vertex() const { return const_cast<float*>(&x); }
+    // TO BE COMPATIBLE DON'T USE variable x, y, z or data but method "[index]" or "(index)"
+    inline float& operator[](int i) { return data[i]; }
+    inline const float& operator[](int i) const { return data[i]; }
 
-    #ifndef USE_PCL
+    inline float& operator()(int i) { return data[i]; }
+    inline const float& operator()(int i) const { return data[i]; }
+
     inline CT_Point& operator+= (const CT_Point& o) { x += o.x; y += o.y; z += o.z; return *this; }
     inline CT_Point& operator-= (const CT_Point& o) { x -= o.x; y -= o.y; z -= o.z; return *this; }
     inline CT_Point& operator/= (const CT_Point& o) { x /= o.x; y /= o.y; z /= o.z; return *this; }
@@ -169,165 +150,50 @@ public:
     inline CT_Point operator* (const float& o) const { CT_Point t; t.x = x * o; t.y = y * o; t.z = z * o; return t; }
 
     inline CT_Point& operator= (const CT_Point& o) { x = o.x; y = o.y; z = o.z; return *this; }
-    #endif
 
-    // For Mesh
-    inline CT_Point& P() { return *this; }
-
-    inline float dot (const CT_Point &p) const { return ( p.x*x + p.y*y + p.z*z ); }
-
-    static inline float dotProduct(const CT_Point &p1, const CT_Point &p2) { return p1.dot(p2); }
-
-    inline CT_Point cross (const CT_Point &p) const
+    inline void copy(CT_Point &point) const
     {
-        CT_Point rslt;
-        rslt.x = y*p.z - z*p.y;
-        rslt.y = z*p.x - x*p.z;
-        rslt.z = x*p.y - y*p.x;
-        return rslt;
+        point(0) = (*this)(0);
+        point(1) = (*this)(1);
+        point(2) = (*this)(2);
     }
 
-    static inline CT_Point crossProduct(const CT_Point &p1, const CT_Point &p2) { return p1.cross(p2); }
-
-    inline float length() const { return ( sqrt( x*x + y*y + z*z ) ); }
-
-    inline void  normalize ()
+    inline void setPoint(const CT_Point &point)
     {
-        if ( x != 0 || y != 0 || z != 0 )
-        {
-            float norme = length();
-            x /= norme;
-            y /= norme;
-            z /= norme;
-        }
+        point.copy(*this);
     }
 
-    inline CT_Point  normalized () const
+    inline float* vertex() const
     {
-        CT_Point p(*this);
-
-        if ( p.x != 0 || p.y != 0 || p.z != 0 )
-        {
-            float norme = length();
-            p.x /= norme;
-            p.y /= norme;
-            p.z /= norme;
-        }
-
-        return p;
+        return const_cast<float*>(&(*this)(0));
     }
 
-    inline void rotate(const RotationAxis &axis, const float &cosAlpha, const float &sinAlpha)
-    {
-        int mapY, mapZ;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW         // make sure our new allocators are aligned
+} EIGEN_ALIGN16;                            // enforce SSE padding for correct memory alignment
 
-        switch ( axis )
-        {
-            case OX :
-            {
-                mapY = 1;
-                mapZ = 2;
-                break;
-            }
+/*
+POINT_CLOUD_REGISTER_POINT_STRUCT (CT_Point,
+    (float, x, x)
+    (float, y, y)
+    (float, z, z)
+)*/
 
-            case OY :
-            {
-                mapY = 2;
-                mapZ = 0;
-                break;
-            }
+POINT_CLOUD_REGISTER_POINT_WRAPPER(CT_Point, pcl::_PointXYZ)
 
-            case OZ :
-            {
-                mapY = 0;
-                mapZ = 1;
-                break;
-            }
-
-            default :
-                break;
-        }
-
-        CT_Point tmp;
-        for ( int i = 0 ; i < 3 ; i++ )
-            tmp.data[i] = data[i];
-
-        data[mapY] = (tmp.data[mapY] * cosAlpha) + ( tmp.data[mapZ] * (-sinAlpha) );
-        data[mapZ] = (tmp.data[mapY] * sinAlpha) + ( tmp.data[mapZ] * cosAlpha );
-    }
-
-    inline void rotate(const RotationAxis &axis, const float &alpha)
-    {
-        float c = cos( alpha );
-        float s = sin( alpha );
-        rotate( axis, c, s );
-    }
-
-    inline void rotate(const CT_Point& unitRotationAxis, const float &cosAlpha, const float &sinAlpha)
-    {
-        // Copie du point courant
-        CT_Point tmp;
-        for ( int i = 0 ; i < 3 ; i++ )
-            tmp.data[i] = data[i];
-
-        x = ( ( (unitRotationAxis.x * unitRotationAxis.x) + ( (1 - (unitRotationAxis.x * unitRotationAxis.x) ) * cosAlpha) ) * (tmp.x) ) +
-            ( ( (unitRotationAxis.x * unitRotationAxis.y * ( 1 - cosAlpha ) ) - (unitRotationAxis.z * sinAlpha) ) * (tmp.y) ) +
-            ( ( (unitRotationAxis.x * unitRotationAxis.z * ( 1 - cosAlpha ) ) + (unitRotationAxis.y * sinAlpha) ) * (tmp.z) );
-
-        y = ( ( (unitRotationAxis.x * unitRotationAxis.y * ( 1 - cosAlpha ) ) + (unitRotationAxis.z * sinAlpha) ) * (tmp.x) ) +
-            ( ( (unitRotationAxis.y * unitRotationAxis.y) + ( (1 - (unitRotationAxis.y * tmp.y) ) * cosAlpha) ) * (tmp.y) ) +
-            ( ( (unitRotationAxis.y * unitRotationAxis.z * ( 1 - cosAlpha ) ) - (unitRotationAxis.x * sinAlpha) ) * (tmp.z) );
-
-        z = ( ( (unitRotationAxis.x * unitRotationAxis.z * ( 1 - cosAlpha ) ) - (unitRotationAxis.y * sinAlpha) ) * (tmp.x) ) +
-            ( ( (unitRotationAxis.y * unitRotationAxis.z * ( 1 - cosAlpha ) ) + (unitRotationAxis.x * sinAlpha) ) * (tmp.y) ) +
-            ( ( (unitRotationAxis.z * unitRotationAxis.z) + ( (1 - (unitRotationAxis.z * unitRotationAxis.z) ) * cosAlpha) ) * (tmp.z) );
-    }
-
-    inline void rotate( const CT_Point& rotationAxis, const float &alpha)
-    {
-        float c = cos( alpha );
-        float s = sin( alpha );
-
-        // Normalisation de l,axe de rotation
-        CT_Point rotationUnitAxis;
-        for ( int i = 0 ; i < 3 ; i++ )
-             rotationUnitAxis.data[i] = rotationAxis.data[i] / rotationAxis.length();
-
-        rotate( rotationUnitAxis, c, s );
-    }
-
-    inline void print( const std::string &labelBefore = "", const std::string &labelAfter = "") const
-    {
-        std::cout << labelBefore.c_str() << "(" << x << "," << y << "," << z << ")" << labelAfter << std::endl;
-    }
-
-#ifdef USE_PCL
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW       // make sure our new allocators are aligned
-} EIGEN_ALIGN16;                        // enforce SSE padding for correct memory alignment
-
-POINT_CLOUD_REGISTER_POINT_STRUCT (CT_Point,           // here we assume a XYZ
-                                   (float, x, x)
-                                   (float, y, y)
-                                   (float, z, z))
-
-POINT_CLOUD_REGISTER_POINT_WRAPPER(CT_Point, _CT_Point)
-#else
-};
 #endif
 
 inline CT_Point createCtPoint(const float &x = 0, const float &y = 0, const float &z = 0)
 {
     CT_Point result;
-    result.x = x; result.y = y; result.z = z;
+    result(0) = x; result(1) = y; result(2) = z;
     return result;
 }
 
 inline void copyCtPoint( CT_Point &dest, const CT_Point &src)
 {
-    dest.x = src.x;
-    dest.y = src.y;
-    dest.z = src.z;
+    dest(0) = src(0);
+    dest(1) = src(1);
+    dest(2) = src(2);
 }
-#endif
 
 #endif // CT_POINT_H

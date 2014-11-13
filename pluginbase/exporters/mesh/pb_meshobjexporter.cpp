@@ -96,7 +96,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
                     const CT_Point &point = beginP.cT();
                     hashTablePoint.insert(beginP.cIndex(), i+1);
 
-                    stream << "v " << ((double)point.data[0]) << " " << ((double)point.data[1]) << " " << ((double)point.data[2]) << endl;
+                    stream << "v " << ((double)point(0)) << " " << ((double)point(1)) << " " << ((double)point(2)) << endl;
 
                     ++beginP;
                     ++i;

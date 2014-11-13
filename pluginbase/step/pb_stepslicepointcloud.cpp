@@ -177,7 +177,7 @@ void PB_StepSlicePointCloud::compute()
                 float zmaxLevel = it.key().second;
                 CT_PointCluster* cluster = it.value();
 
-                if ((point.getZ() >= zminLevel) && (point.getZ() < zmaxLevel))
+                if ((point(2) >= zminLevel) && (point(2) < zmaxLevel))
                 {
                     cluster->addPoint(index, false);
                     found = true;

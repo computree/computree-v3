@@ -108,7 +108,7 @@ size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
     }
     else
     {
-        std::list<size_t>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
+        std::list<size_type>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
 
         if(it != m_collection->end())
             return *it;
@@ -350,9 +350,23 @@ void CT_CloudIndexStdListT<T>::eraseBetweenAndShiftRest(const size_t &eraseBegin
 
 #ifdef USE_PCL
 template<typename T>
-boost::shared_ptr< std::list<int> > CT_CloudIndexStdListT<T>::getPCLIndices() const
+boost::shared_ptr< std::vector<int> > CT_CloudIndexStdListT<T>::getPCLIndices() const
 {
-    return m_collection;
+    boost::shared_ptr< std::vector<int> > indices = boost::shared_ptr< std::vector<int> >(new std::vector<int>(size()));
+
+    typename std::list<int>::iterator f = m_collection->begin();
+    typename std::list<int>::iterator l = m_collection->end();
+
+    size_t i = 0;
+
+    while(f != l)
+    {
+        (*indices.get())[i] = *f;
+        ++f;
+        ++i;
+    }
+
+    return indices;
 }
 #endif
 

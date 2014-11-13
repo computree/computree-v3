@@ -28,6 +28,10 @@
 #include "ct_circle2ddata.h"
 #include "ct_pointcloud/ct_pointcloudstdvector.h"
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <math.h>
 #include "ct_math/ct_mathpoint.h"
 

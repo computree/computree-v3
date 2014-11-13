@@ -106,9 +106,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
     double maxH = height;
 
     CT_Point &v = vi.cT();
-    v.setX(maxH);
-    v.setY(radius);
-    v.setZ(0);
+    v(0) = maxH;
+    v(1) = radius;
+    v(2) = 0;
 
     size_t p = vi.cIndex();
 
@@ -122,9 +122,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         size_t p1 = vi.cIndex();
         ++vi;
 
-        v1.setX(minH);
-        v1.setY(v0.getY());
-        v1.setZ(v0.getZ());
+        v1(0) = minH;
+        v1(1) = v0(1);
+        v1(2) = v0(2);
 
         theta += inc;
 
@@ -137,9 +137,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
             p2 = vi.cIndex();
             p3 = p2+1;
 
-            v2.setX(maxH);
-            v2.setY(radius * cos(theta));
-            v2.setZ(radius * sin(theta));
+            v2(0) = maxH;
+            v2(1) = radius * cos(theta);
+            v2(2) = radius * sin(theta);
         }
         else
         {

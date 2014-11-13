@@ -103,9 +103,9 @@ bool PB_ASCRGBExporter::protectedExportToFile()
             {
                 const CT_Point &point = begin.cT();
 
-                txtStream << point.data[0] << " ";
-                txtStream << point.data[1] << " ";
-                txtStream << point.data[2] << " ";
+                txtStream << point(0) << " ";
+                txtStream << point(1) << " ";
+                txtStream << point(2) << " ";
 
                 if(cc == NULL)
                 {

@@ -710,9 +710,9 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
         {
             const CT_Point &point = pc->constTAt(index->indexAt(i));
 
-            bx += point.getX();
-            by += point.getY();
-            bz += point.getZ();
+            bx += point(0);
+            by += point(1);
+            bz += point(2);
 
             ++size;
             i += increment;

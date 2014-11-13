@@ -152,7 +152,7 @@ void PB_StepReducePointsDensity::compute()
             const CT_Point &point = pointCloudIndex->constTAt(i, pointIndex);
 
             size_t col, row, levz;
-            size_t grdIndex = gridIndex(point.getX(), point.getY(), point.getZ(), col, row, levz);
+            size_t grdIndex = gridIndex(point(0), point(1), point(2), col, row, levz);
 
             size_t previousPointIndex = indexMap.value(grdIndex, std::numeric_limits<size_t>::max());
 
@@ -164,11 +164,11 @@ void PB_StepReducePointsDensity::compute()
                 float gridx, gridy, gridz;
                 cellCoordinates(col, row, levz, gridx, gridy, gridz);
 
-                float distance = pow(point.getX() - gridx, 2) + pow(point.getY() - gridy, 2) + pow(point.getZ() - gridz, 2);
+                float distance = pow(point(0) - gridx, 2) + pow(point(1) - gridy, 2) + pow(point(2) - gridz, 2);
 
                 const CT_Point &previousPoint = pointCloudIndex->constTAtGlobalIndex(previousPointIndex);
 
-                float previousDistance = pow(previousPoint.getX() - gridx, 2) + pow(previousPoint.getY() - gridy, 2) + pow(previousPoint.getZ() - gridz, 2);
+                float previousDistance = pow(previousPoint(0) - gridx, 2) + pow(previousPoint(1) - gridy, 2) + pow(previousPoint(2) - gridz, 2);
 
                 if (distance < previousDistance)
                 {

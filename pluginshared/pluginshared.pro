@@ -870,7 +870,6 @@ INCLUDEPATH += ./ct_shapedata
 INCLUDEPATH += ./ct_shapedata2d
 INCLUDEPATH += ./ct_tools
 INCLUDEPATH += ./ct_tools/model
-INCLUDEPATH += eigen
 
 FORMS += \
     ct_view/inModel/ctg_inresultmodelpossibilities.ui \

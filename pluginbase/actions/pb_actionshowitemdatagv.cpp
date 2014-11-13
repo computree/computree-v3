@@ -105,7 +105,7 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
         {
             CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
             const CT_Point &p = pc->constTAt(pci->indexAt(0));
-            PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p.getX()).arg(p.getY()).arg(p.getZ()));
+            PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p(0)).arg(p(1)).arg(p(2)));
         }
     }
 
@@ -188,7 +188,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
             painter.setPen(QColor(255,255,255,127));
             painter.drawText(2, y, QString("Nombre de points sélectionnés = %1").arg(size));
             y += add;
-            painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p.getX()).arg(p.getY()).arg(p.getZ()));
+            painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p(0)).arg(p(1)).arg(p(2)));
             y += add;
             painter.drawText(2, y, QString("..."));
             painter.restore();
@@ -217,9 +217,9 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
             painter.setPen(QColor(255,255,255,127));
             painter.drawText(2, y, QString("Nombre de faces sélectionnés = %1").arg(size));
             y += add;
-            painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg(p1->getX()).arg(p1->getY()).arg(p1->getZ())
-                             .arg(p2->getX()).arg(p2->getY()).arg(p2->getZ())
-                             .arg(p3->getX()).arg(p3->getY()).arg(p3->getZ()));
+            painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg((*p1)(0)).arg((*p1)(1)).arg((*p1)(2))
+                             .arg((*p2)(0)).arg((*p2)(1)).arg((*p2)(2))
+                             .arg((*p3)(0)).arg((*p3)(1)).arg((*p3)(2)));
             y += add;
             painter.drawText(2, y, QString("..."));
             painter.restore();
@@ -245,9 +245,9 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
             painter.save();
             painter.setPen(QColor(255,255,255,127));
-            painter.drawText(2, y, QString("Nombre d'edges sélectionnés = %1").arg(size));
+            painter.drawText(2, y, QString("Nombre d'arêtes sélectionnés = %1").arg(size));
             y += add;
-            painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg(p1->getX()).arg(p1->getY()).arg(p1->getZ()).arg(p2->getX()).arg(p2->getY()).arg(p2->getZ()));
+            painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg((*p1)(0)).arg((*p1)(1)).arg((*p1)(2)).arg((*p2)(0)).arg((*p2)(1)).arg((*p2)(2)));
             y += add;
             painter.drawText(2, y, QString("..."));
             painter.restore();

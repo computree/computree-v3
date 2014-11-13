@@ -281,23 +281,23 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
             while(itP != end) {
                 const CT_Point &p = itP.cT();
 
-                if(p.getX() > max.x())
-                    max.setX(p.getX());
+                if(p(0) > max.x())
+                    max.setX(p(0));
 
-                if(p.getY() > max.y())
-                    max.setY(p.getY());
+                if(p(1) > max.y())
+                    max.setY(p(1));
 
-                if(p.getZ() > max.z())
-                    max.setZ(p.getZ());
+                if(p(2) > max.z())
+                    max.setZ(p(2));
 
-                if(p.getX() < min.x())
-                    min.setX(p.getX());
+                if(p(0) < min.x())
+                    min.setX(p(0));
 
-                if(p.getY() < min.y())
-                    min.setY(p.getY());
+                if(p(1) < min.y())
+                    min.setY(p(1));
 
-                if(p.getZ() < min.z())
-                    min.setZ(p.getZ());
+                if(p(2) < min.z())
+                    min.setZ(p(2));
 
                 if(rnIndex != NULL) {
                     size_t i = rnIndex->indexOf(itP.cIndex());
@@ -327,8 +327,13 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
         header->m_projectIDGuidData4 = 0;
         header->m_versionMajor = 1;  // format 1.4
         header->m_versionMinor = 4;
-        strcpy_s(header->m_systemID, "COMPUTREE EXPORT");
-        strcpy_s(header->m_sofwareID, "COMPUTREE");
+        #ifdef _MSC_VER
+        strcpy_s(header->m_systemID, "EXPORT");
+        strcpy_s(header->m_sofwareID, "Computree 3.0");
+        #else
+        strcpy(header->m_systemID, "EXPORT");
+        strcpy(header->m_sofwareID, "Computree 3.0");
+        #endif
         header->m_fileCreationDayOfYear = date.dayOfYear();
         header->m_fileCreationYear = date.year();
         header->m_headerSize = 0; // Automatically compute in "write" of the header

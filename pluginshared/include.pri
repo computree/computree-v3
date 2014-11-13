@@ -91,43 +91,38 @@ exists(../../use_pcl.ini) {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.so.$${PCL_LIB_VERSION}
         }
 
-        BOOST_LIB_SERIALIZATION_PATH = $${BOOST_LIB_DIR_PATH}/libboost_serialization*.so*
-        BOOST_LIB_FILESYSTEM_PATH = $${BOOST_LIB_DIR_PATH}/libboost_filesystem*.so*
+        BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.so*
     }
 
     # windows
     win32 {
         msvc {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/pcl_*.lib
-            BOOST_LIB_SERIALIZATION_PATH = $${BOOST_LIB_DIR_PATH}/libboost_serialization*.lib
-            BOOST_LIB_FILESYSTEM_PATH = $${BOOST_LIB_DIR_PATH}/libboost_filesystem*.lib
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.lib
         }
 
         mingw {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dll.a
-            BOOST_LIB_SERIALIZATION_PATH = $${BOOST_LIB_DIR_PATH}/libboost_serialization*.dll.a
-            BOOST_LIB_FILESYSTEM_PATH = $${BOOST_LIB_DIR_PATH}/libboost_filesystem*.dll.a
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.dll.a
         }
     }
 
     # mac
     mac {
         PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dylib
-        BOOST_LIB_SERIALIZATION_PATH = $${BOOST_LIB_DIR_PATH}/libboost_serialization*.dylib
-        BOOST_LIB_FILESYSTEM_PATH = $${BOOST_LIB_DIR_PATH}/libboost_filesystem*.dylib
+        BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.dylib
     }
 
     message(PCL LIB VERSION : $$PCL_LIB_VERSION)
     message(PCL LIB DIRECTORY : $$PCL_LIB_DIR_PATH)
     message(PCL INCLUDE DIRECTORY : $$PCL_INCLUDE_DIR_PATH)
-    message(PCL LIB PATH : $$PCL_LIB_PATH)
+    message(PCL LIB TO LINK : $$PCL_LIB_PATH)
     message(EIGEN INCLUDE DIRECTORY : $$EIGEN_INCLUDE_DIR_PATH)
     message(QHULL INCLUDE DIRECTORY : $$QHULL_INCLUDE_DIR_PATH)
     message(FLANN INCLUDE DIRECTORY : $$FLANN_INCLUDE_DIR_PATH)
     message(BOOST LIB DIRECTORY : $$BOOST_LIB_DIR_PATH)
     message(BOOST INCLUDE DIRECTORY : $$BOOST_INCLUDE_DIR_PATH)
-    message(BOOST LIB SERIALIZATION PATH : $$BOOST_LIB_SERIALIZATION_PATH)
-    message(BOOST LIB FILESYSTEM PATH : $$BOOST_LIB_FILESYSTEM_PATH)
+    message(BOOST LIB TO LINK : $$BOOST_LIB_TO_LINK)
 
     #DEFINES += USE_BOOST
     #DEFINES += USE_BOOST_BINARY
@@ -161,7 +156,6 @@ contains( DEFINES, USE_PCL ) {
     INCLUDEPATH += $${PCL_INCLUDE_DIR_PATH}
     LIBS += $${PCL_LIB_PATH}
 
-
     ###############################################
 
     # EIGEN DIRECTORY
@@ -188,6 +182,17 @@ contains( DEFINES, USE_PCL ) {
     }
 
     INCLUDEPATH += $${FLANN_INCLUDE_DIR_PATH}
+} else {
+    DEFINES += USE_EIGEN_POINT
+
+    contains(DEFINES, USE_EIGEN_POINT) {
+
+        isEmpty(PLUGIN_SHARED_DIR) {
+            INCLUDEPATH += ./eigen
+        } else {
+            INCLUDEPATH += $${PLUGIN_SHARED_DIR}/eigen
+        }
+    }
 }
 
 # BOOST
@@ -203,16 +208,7 @@ contains(DEFINES, USE_BOOST) {
         error( "BOOST LIB directory not found ! =>" $${BOOST_LIB_DIR_PATH})
     }
 
-    !exists($${BOOST_LIB_SERIALIZATION_PATH}) {
-        error( "BOOST LIB serialization not found ! =>" $${BOOST_LIB_SERIALIZATION_PATH})
-    }
-
-    !exists($${BOOST_LIB_FILESYSTEM_PATH}) {
-        error( "BOOST LIB filesystem not found ! =>" $${BOOST_LIB_FILESYSTEM_PATH})
-    }
-
     INCLUDEPATH += $${BOOST_INCLUDE_DIR_PATH}
 
-    LIBS += $${BOOST_LIB_SERIALIZATION_PATH}
-    LIBS += $${BOOST_LIB_FILESYSTEM_PATH}
+    LIBS += $${BOOST_LIB_TO_LINK}
 }

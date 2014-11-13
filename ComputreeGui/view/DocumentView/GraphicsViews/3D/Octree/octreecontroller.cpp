@@ -80,9 +80,9 @@ void OctreeController::removePoints(const CT_AbstractPointCloudIndex *index)
 
 void OctreeController::indexOfPoint(const CT_Point &point, int &x, int &y, int &z)
 {
-    x = ((point.getX() - m_octreeMinCorner.x()) / m_size);
-    y = ((point.getY() - m_octreeMinCorner.y()) / m_size);
-    z = ((point.getZ() - m_octreeMinCorner.z()) / m_size);
+    x = ((point(0) - m_octreeMinCorner.x()) / m_size);
+    y = ((point(1) - m_octreeMinCorner.y()) / m_size);
+    z = ((point(2) - m_octreeMinCorner.z()) / m_size);
 
     if(x == m_newNumberOfCells)
         x = m_newNumberOfCells-1;
@@ -406,23 +406,23 @@ void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *ind
     while(begin != end) {
         const CT_Point &p = begin.cT();
 
-        if(p.getX() < info.m_min.x())
-            info.m_min.setX(p.getX());
+        if(p(0) < info.m_min.x())
+            info.m_min.setX(p(0));
 
-        if(p.getY() < info.m_min.y())
-            info.m_min.setY(p.getY());
+        if(p(1) < info.m_min.y())
+            info.m_min.setY(p(1));
 
-        if(p.getZ() < info.m_min.z())
-           info. m_min.setZ(p.getZ());
+        if(p(2) < info.m_min.z())
+           info. m_min.setZ(p(2));
 
-        if(p.getX() > info.m_max.x())
-            info.m_max.setX(p.getX());
+        if(p(0) > info.m_max.x())
+            info.m_max.setX(p(0));
 
-        if(p.getY() > info.m_max.y())
-            info.m_max.setY(p.getY());
+        if(p(1) > info.m_max.y())
+            info.m_max.setY(p(1));
 
-        if(p.getZ() > info.m_max.z())
-            info.m_max.setZ(p.getZ());
+        if(p(2) > info.m_max.z())
+            info.m_max.setZ(p(2));
 
         ++begin;
     }

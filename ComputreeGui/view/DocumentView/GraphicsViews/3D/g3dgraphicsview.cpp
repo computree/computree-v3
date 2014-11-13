@@ -702,7 +702,7 @@ void G3DGraphicsView::setLastPointIdSelected(const GLuint &id)
 {
     const CT_Point &point = PS_REPOSITORY->globalPointCloud()->constTAt(id);
 
-    _cameraController.setLastItemSelectedCameraCenter(point.getX(), point.getY(), point.getZ());
+    _cameraController.setLastItemSelectedCameraCenter(point(0), point(1), point(2));
 }
 
 void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
@@ -718,9 +718,9 @@ void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
         if(point == NULL)
             return;
 
-        x += point->getX();
-        y += point->getY();
-        z += point->getZ();
+        x += (*point)(0);
+        y += (*point)(1);
+        z += (*point)(2);
     }
 
     _cameraController.setLastItemSelectedCameraCenter(x/3.0, y/3.0, z/3.0);
@@ -739,9 +739,9 @@ void G3DGraphicsView::setLastEdgeIdSelected(const GLuint &id)
         if(point == NULL)
             return;
 
-        x += point->getX();
-        y += point->getY();
-        z += point->getZ();
+        x += (*point)(0);
+        y += (*point)(1);
+        z += (*point)(2);
     }
 
     _cameraController.setLastItemSelectedCameraCenter(x/2.0, y/2.0, z/2.0);

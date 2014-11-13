@@ -3,6 +3,7 @@
 
 #include "ct_reader/tools/las/ct_lasdefine.h"
 #include "ct_itemdrawable/abstract/ct_abstractpointattributesscalar.h"
+#include <QPair>
 
 /**
  * @brief Class tool to backup attributes for a point

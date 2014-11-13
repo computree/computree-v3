@@ -101,13 +101,13 @@ void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
     for (size_t i = 0 ; i < size ; i++)
     {
         const CT_Point& point = pointCloudIndex->constTAt(i);
-        if (point.getX() < _minCoordinates.x()) {_minCoordinates.setX(point.getX());}
-        if (point.getY() < _minCoordinates.y()) {_minCoordinates.setY(point.getY());}
-        if (point.getZ() < _minCoordinates.z()) {_minCoordinates.setZ(point.getZ());}
+        if (point(0) < _minCoordinates.x()) {_minCoordinates.setX(point(0));}
+        if (point(1) < _minCoordinates.y()) {_minCoordinates.setY(point(1));}
+        if (point(2) < _minCoordinates.z()) {_minCoordinates.setZ(point(2));}
 
-        if (point.getX() > _maxCoordinates.x()) {_maxCoordinates.setX(point.getX());}
-        if (point.getY() > _maxCoordinates.y()) {_maxCoordinates.setY(point.getY());}
-        if (point.getZ() > _maxCoordinates.z()) {_maxCoordinates.setZ(point.getZ());}
+        if (point(0) > _maxCoordinates.x()) {_maxCoordinates.setX(point(0));}
+        if (point(1) > _maxCoordinates.y()) {_maxCoordinates.setY(point(1));}
+        if (point(2) > _maxCoordinates.z()) {_maxCoordinates.setZ(point(2));}
     }
 
     updateCenterFromBoundingBox();

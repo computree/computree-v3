@@ -4,8 +4,6 @@
 #include "ct_global/ct_context.h"
 #include "ct_face.h"
 
-class CT_Point;
-
 /**
  * A Edge for a mesh. You can create Edge with the help of the class CT_MeshAllocatorT.
  */

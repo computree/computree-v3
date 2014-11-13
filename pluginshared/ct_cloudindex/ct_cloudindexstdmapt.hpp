@@ -267,9 +267,23 @@ void CT_CloudIndexStdMapT<T, ValueT>::eraseBetweenAndShiftRest(const size_t &era
 
 #ifdef USE_PCL
 template<typename T, typename ValueT>
-boost::shared_ptr< std::map<int, ValueT > > CT_CloudIndexStdMapT<T, ValueT>::getPCLIndices() const
+boost::shared_ptr< std::vector<int> > CT_CloudIndexStdMapT<T, ValueT>::getPCLIndices() const
 {
-    return m_collection;
+    boost::shared_ptr< std::vector<int> > indices = boost::shared_ptr< std::vector<int> >(new std::vector<int>(size()));
+
+    typename std::map<int,ValueT >::iterator f = m_collection->begin();
+    typename std::map<int,ValueT >::iterator l = m_collection->end();
+
+    size_t i = 0;
+
+    while(f != l)
+    {
+        (*indices.get())[i] = f->first;
+        ++f;
+        ++i;
+    }
+
+    return indices;
 }
 #endif
 

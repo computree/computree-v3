@@ -141,9 +141,9 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
         //getShort(d_data); // reflectance
 
         CT_Point &p = pcir->tAt(a);
-        p.setX((float)x);
-        p.setY((float)y);
-        p.setZ((float)z);
+        p(0) = (float)x;
+        p(1) = (float)y;
+        p(2) = (float)z;
 
         if (x<xmin) {xmin = (float)x;}
 

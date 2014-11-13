@@ -137,9 +137,9 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                         {
                             CT_Point &p = pointCloud->addPoint();
 
-                            p.setX((float)x);
-                            p.setY((float)y);
-                            p.setZ((float)z);
+                            p(0) = x;
+                            p(1) = y;
+                            p(2) = z;
 
                             if (x<xmin) {xmin = (float)x;}
                             if (x>xmax) {xmax = (float)x;}

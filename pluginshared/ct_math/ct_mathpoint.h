@@ -289,9 +289,9 @@ public:
     inline static void sphericalToCartesian ( const xyzPoint& spher, xyzPoint& cart )
     {
         // En spherique on stocke r, theta, phi
-        cart.setX( spher.getX() * cos( spher.getY() ) * sin( spher.getZ() ) );
-        cart.setY( spher.getX() * sin( spher.getY() ) * sin( spher.getZ() ) );
-        cart.setZ( spher.getX() * cos( spher.getZ() ) );
+        cart.setX( spher(0) * cos( spher(1) ) * sin( spher(2) ) );
+        cart.setY( spher(0) * sin( spher(1) ) * sin( spher(2) ) );
+        cart.setZ( spher(0) * cos( spher(2) ) );
     }
 
 
@@ -341,16 +341,16 @@ public:
 
 };
 
-class CT_Point;
+//typename CT_Point;
 
 // specialization for CT_Point
 template<>
-inline float CT_MathPoint::pX(const CT_Point &p) { return p.getX(); }
+inline float CT_MathPoint::pX(const CT_Point &p) { return p(0); }
 
 template<>
-inline float CT_MathPoint::pY(const CT_Point &p) { return p.getY(); }
+inline float CT_MathPoint::pY(const CT_Point &p) { return p(1); }
 
 template<>
-inline float CT_MathPoint::pZ(const CT_Point &p) { return p.getZ(); }
+inline float CT_MathPoint::pZ(const CT_Point &p) { return p(2); }
 
 #endif // CT_MATHPOINT_H

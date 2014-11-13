@@ -16,7 +16,7 @@ CT_LasPointInfo* CT_LASPointFormat6::write(QDataStream &stream, const size_t &gl
 
     const CT_Point &point = m_pCloud->constTAt(globalIndex);
 
-    PS_COORDINATES_SYS->convertExport(point.getX(), point.getY(), point.getZ(), m_xc, m_yc, m_zc);
+    PS_COORDINATES_SYS->convertExport(point(0), point(1), point(2), m_xc, m_yc, m_zc);
 
     header()->inverseTransformPoint(m_xc, m_yc, m_zc, m_x, m_y, m_z);
 

@@ -2,26 +2,26 @@
 
 CT_LasPointInfo::CT_LasPointInfo()
 {
-    m_i = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_rn = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_nor = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_cf = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_sc = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_sdf = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_efl = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_c = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_sar = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_ud = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_psID = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_gpsT = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_red = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_green = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_blue = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_nir = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_wpdi = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_bowd = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_wpsb = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
-    m_rpwl = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, 0);
+    m_i = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_rn = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_nor = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_cf = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_sc = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_sdf = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_efl = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_c = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_sar = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_ud = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_psID = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_gpsT = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_red = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_green = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_blue = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_nir = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_wpdi = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_bowd = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_wpsb = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
+    m_rpwl = qMakePair((const CT_AbstractPointAttributesScalar*)NULL, (size_t)0);
 }
 
 bool CT_LasPointInfo::setAttribute(CT_LasDefine::LASPointAttributesType type, const CT_AbstractPointAttributesScalar *scalar, const size_t &index)

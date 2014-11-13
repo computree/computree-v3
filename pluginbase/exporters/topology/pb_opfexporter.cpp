@@ -264,7 +264,7 @@ bool PB_OPFExporter::writeMesh(QTextStream &stream, CT_Mesh *mesh, const int &in
         {
             const CT_Point &p = itP.cT();
 
-            stream << p.getX() << " " << p.getY() << " " << p.getZ() << " ";
+            stream << p(0) << " " << p(1) << " " << p(2) << " ";
 
             if(itP.cIndex() < pBeginIndex)
                 pBeginIndex = itP.cIndex();

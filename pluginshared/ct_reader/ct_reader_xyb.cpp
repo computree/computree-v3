@@ -217,9 +217,9 @@ bool CT_Reader_XYB::protectedReadFile()
 
                         PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
-                        p.setX(xc);
-                        p.setY(yc);
-                        p.setZ(zc);
+                        p(0) = xc;
+                        p(1) = yc;
+                        p(2) = zc;
 
                         if (xc<xmin) {xmin = xc;}
                         if (xc>xmax) {xmax = xc;}
@@ -239,9 +239,9 @@ bool CT_Reader_XYB::protectedReadFile()
 
                     PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
-                    p.setX(xc);
-                    p.setY(yc);
-                    p.setZ(zc);
+                    p(0) = xc;
+                    p(1) = yc;
+                    p(2) = zc;
 
                     if (xc<xmin) {xmin = xc;}
                     if (xc>xmax) {xmax = xc;}

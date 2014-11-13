@@ -324,9 +324,9 @@ void PB_StepSegmentCrowns::addPointsToExtractedScenes(CT_ResultGroup *resultIn,
             size_t index;
             const CT_Point &point = pointCloudIndex->constTAt(i, index);
 
-            if (point.getZ() >= _zmin && point.getZ() <= _zmax)
+            if (point(2) >= _zmin && point(2) <= _zmax)
             {
-                int cluster = _clustersGrid->valueAtXY(point.getX(), point.getY());
+                int cluster = _clustersGrid->valueAtXY(point(0), point(1));
 
                 if (cluster >= 0)
                 {

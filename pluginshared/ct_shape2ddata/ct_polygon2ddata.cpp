@@ -28,6 +28,8 @@
 #include "ct_polygon2ddata.h"
 
 #include "ct_triangulation/ct_nodet.h"
+#include "ct_triangulation/ct_trianglet.h"
+#include "ct_triangulation/ct_edget.h"
 
 #include <math.h>
 #include <limits>
@@ -218,7 +220,7 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVec
     for (size_t i = 0 ; i < size ; i++)
     {
         CT_Point &point = indices->tAt(i);
-        float* pt = &point.data[0];
+        float* pt = &point(0);
 
         delaunay.insertNode(CT_NodeT::create(pt, NULL, false));
     }

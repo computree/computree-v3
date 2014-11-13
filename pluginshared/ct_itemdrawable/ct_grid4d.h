@@ -504,7 +504,7 @@ private:
     CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Grid4D<DataT>::minZ, QObject::tr("Z min"))
     CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Grid4D<DataT>::wres, QObject::tr("Resolution W"))
     CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataXResolution(), &CT_Grid4D<DataT>::xres, QObject::tr("Resolution X"))
-    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataYResolution(), CT_Grid4D<DataT>::yres, QObject::tr("Resolution Y"))
+    CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataYResolution(), &CT_Grid4D<DataT>::yres, QObject::tr("Resolution Y"))
     CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataZResolution(), &CT_Grid4D<DataT>::zres, QObject::tr("Resolution Z"))
     CT_DEFAULT_IA_V2(CT_Grid4D<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid4D<DataT>::NA, QObject::tr("NA"))
     CT_DEFAULT_IA_END(CT_Grid4D<DataT>)
