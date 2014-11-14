@@ -583,6 +583,20 @@ void CTG_InModelPossibilitiesChoice::recursiveSetWhereIsSelectable(DEF_CT_Abstra
             recursiveSearchAndRefreshSelectedItem(_viewModel.invisibleRootItem(),
                                                   item,
                                                   list);
+
+        QListIterator<CT_InAbstractItemAttributeModel*> itAtt(item->itemAttributes());
+
+        while(itAtt.hasNext())
+        {
+            CT_InAbstractItemAttributeModel *itemAtt = itAtt.next();
+
+            list = itemAtt->getPossibilitiesSaved();
+
+            if(!list.isEmpty())
+                recursiveSearchAndRefreshSelectedItem(_viewModel.invisibleRootItem(),
+                                                      itemAtt,
+                                                      list);
+        }
     }
 }
 
