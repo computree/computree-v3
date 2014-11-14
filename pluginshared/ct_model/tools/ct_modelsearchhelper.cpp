@@ -55,10 +55,13 @@ CT_AbstractModel* CT_ModelSearchHelper::searchModel(const QString &inOrOutModelU
                 // Two possibility : search a OUT model or search a IN model
 
                 // Search first the out model
-                model = inOrOutResult->parentStep()->getOutModelForCreation((CT_ResultGroup*)inOrOutResult, inOrOutModelUniqueName);
+                model = yourStep->getOutModelForCreation((CT_ResultGroup*)inOrOutResult, inOrOutModelUniqueName);
 
-                // This model contains the possibility wish was used for create the out result (a copy of the in result). Here we want to
-                //
+                // if founded we must check if it was a new model created in this step
+                if((model != NULL) && (model->step() != yourStep)) // if no
+                    model = NULL; // seach a in model
+
+                // we search a in model if a out model was not found
                 if(model == NULL)
                     model = yourStep->getInModelForResearch(outCopyModel->outResultModelCopy()->outModelForSearch(), inOrOutModelUniqueName);
             }

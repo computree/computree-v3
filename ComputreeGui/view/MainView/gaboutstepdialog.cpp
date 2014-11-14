@@ -172,7 +172,7 @@ void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *paren
 void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_OutAbstractItemModel *iModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")");
+    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" /*+ ") " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable()*/);
 
     createForChildrens(item, iModel);
 }

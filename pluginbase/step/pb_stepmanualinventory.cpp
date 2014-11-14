@@ -26,14 +26,6 @@
 #define DEFin_circle "circle"
 #define DEFin_scene "scene"
 
-#define DEF_outatt_dbh "attdbh"
-#define DEF_outatt_x "attx"
-#define DEF_outatt_y "atty"
-#define DEF_outatt_h "atth"
-#define DEF_outatt_sp "attsp"
-#define DEF_outatt_id "attid"
-
-
 // Constructor : initialization of parameters
 PB_StepManualInventory::PB_StepManualInventory(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
@@ -81,22 +73,22 @@ void PB_StepManualInventory::createOutResultModelListProtected()
     resCpy_scres->addItemModel(DEFin_scBase, _dbhcircle_ModelName, new CT_Circle(), tr("Cercle du DHP"));
     resCpy_scres->addItemModel(DEFin_scBase, _attributes_ModelName, new CT_AttributesList(), tr("Attributs"));
 
-    resCpy_scres->addItemAttributeModel(DEF_outatt_dbh,_attribute_dbh_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_dbh_ModelName,
                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
                                        tr("DHP (cm)"));
-    resCpy_scres->addItemAttributeModel(DEF_outatt_x,_attribute_x_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_x_ModelName,
                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_X),
                                        tr("X"));
-    resCpy_scres->addItemAttributeModel(DEF_outatt_y,_attribute_y_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_y_ModelName,
                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_Y),
                                        tr("Y"));
-    resCpy_scres->addItemAttributeModel(DEF_outatt_h,_attribute_h_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h_ModelName,
                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_HEIGHT),
                                        tr("Hauteur"));
-    resCpy_scres->addItemAttributeModel(DEF_outatt_sp,_attribute_sp_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_sp_ModelName,
                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
                                        tr("Espèce"));
-    resCpy_scres->addItemAttributeModel(DEF_outatt_id,_attribute_id_ModelName,
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_id_ModelName,
                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
                                        tr("IDterrain"));
 }

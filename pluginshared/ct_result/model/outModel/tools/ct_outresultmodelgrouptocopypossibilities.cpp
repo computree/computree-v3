@@ -239,6 +239,38 @@ bool CT_OutResultModelGroupToCopyPossibilities::addItemAttributeModel(const QStr
     return true;
 }
 
+bool CT_OutResultModelGroupToCopyPossibilities::addItemAttributeModel(const CT_AutoRenameModels &parentItemUniqueName, CT_AutoRenameModels &autoUniqueName, CT_AbstractItemAttribute *itemAttribute, const QString &displayableName, const QString &description)
+{
+    QListIterator<CT_OutResultModelGroupCopy*> it(m_models);
+
+    while(it.hasNext())
+    {
+        CT_OutResultModelGroupCopy *model = it.next();
+
+        CT_OutResultModelGroupToCopyPossibility *poss = model->outResultModelCopy();
+        CT_VirtualAbstractStep *step = model->step();
+
+        if((step == NULL) || (poss == NULL))
+            return false;
+
+        CT_OutStdItemAttributeModel *itemAttModel = new CT_OutStdItemAttributeModel("", itemAttribute->copy(NULL, NULL), displayableName, description);
+
+        CT_OutModelCopyActionAddModelItemAttributeInItem action(parentItemUniqueName,
+                                                                itemAttModel,
+                                                                autoUniqueName);
+
+        if(!action.execute(step, poss))
+        {
+            delete itemAttribute;
+            return false;
+        }
+    }
+
+    delete itemAttribute;
+
+    return true;
+}
+
 void CT_OutResultModelGroupToCopyPossibilities::addResulModel(CT_OutResultModelGroupCopy *rModel)
 {
     m_models.append(rModel);
