@@ -108,7 +108,7 @@ size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
     }
     else
     {
-        std::list<size_type>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
+        typename std::list<size_type>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
 
         if(it != m_collection->end())
             return *it;

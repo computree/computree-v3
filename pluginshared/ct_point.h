@@ -40,6 +40,13 @@
 class CT_Point : public Eigen::Vector3f
 {
 public:
+
+    enum PVAR {
+        X = 0,
+        Y = 1,
+        Z = 2
+    };
+
     inline CT_Point(void):Eigen::Vector3f() {}
     typedef Eigen::Vector3f Base;
     // This constructor allows you to construct CT_Point from Eigen expressions

@@ -111,7 +111,7 @@ size_t CT_CloudIndexStdVectorT<T>::indexOf(const size_t &index) const
     }
     else
     {
-        std::vector<size_type>::const_iterator it = std::find(_vector->begin(), _vector->end(), index);
+        typename std::vector<size_type>::const_iterator it = std::find(_vector->begin(), _vector->end(), index);
 
         if(it != _vector->end())
             return *it;
