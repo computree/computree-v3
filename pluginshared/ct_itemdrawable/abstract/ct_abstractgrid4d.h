@@ -301,7 +301,7 @@ public:
      * \param index Index of cell to modify
      * \param value Double value to cast in effective type
      */
-    virtual void setValueAtIndexFromDouble(const size_t index, double value) = 0;
+    virtual void setValueAtIndexFromDouble(const size_t &index, const double &value) = 0;
 
 //**********************************************//
 //                Generic Tools                 //

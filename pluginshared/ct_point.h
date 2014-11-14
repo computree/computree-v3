@@ -69,6 +69,12 @@ public:
         point(2) = (*this)(2);
     }
 
+    inline void setX(float x) { (*this)(0) = x; }
+    inline void setY(float y) { (*this)(1) = y; }
+    inline void setZ(float z) { (*this)(2) = z; }
+
+    inline float length() const { return ( sqrt( (*this)(0)*(*this)(0) + (*this)(1)*(*this)(1) + (*this)(2)*(*this)(2) ) ); }
+
     inline void setPoint(const CT_Point &point)
     {
         point.copy(*this);

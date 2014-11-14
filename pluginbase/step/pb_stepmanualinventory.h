@@ -95,6 +95,12 @@ private:
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _dbhcircle_ModelName;
     CT_AutoRenameModels    _attributes_ModelName;
+    CT_AutoRenameModels    _attribute_dbh_ModelName;
+    CT_AutoRenameModels    _attribute_x_ModelName;
+    CT_AutoRenameModels    _attribute_y_ModelName;
+    CT_AutoRenameModels    _attribute_h_ModelName;
+    CT_AutoRenameModels    _attribute_sp_ModelName;
+    CT_AutoRenameModels    _attribute_id_ModelName;
 
     // Step parameters
     QStringList    _speciesFileName;

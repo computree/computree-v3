@@ -104,6 +104,23 @@ public:
      */
     bool removeItemModel(const QString &inItemModelName);
 
+    /**
+     * @brief Add a new ItemAttribute model to a item model in the result.
+     *
+     * @param parentItemUniqueName : the unique name of the IN model of the parent item (typically DEF_....)
+     * @param autoUniqueName : object that automatically renames the new item attribute model to avoid the same modelName exists in the hierarchy
+     * @param itemAttribute : the ItemAttribute that represent the attribute (example : new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER))
+     * @param displayableName: displayable name that will be show in gui
+     * @param description : description of the item attribute model
+     *
+     * @return true if the item attribute was added to the parent item. false if the unique name already exist in the hierarchy or if the parent item was not found.
+     */
+    bool addItemAttributeModel(const QString &parentItemUniqueName,
+                               CT_AutoRenameModels &autoUniqueName,
+                               CT_AbstractItemAttribute *itemAttribute,
+                               const QString &displayableName = "",
+                               const QString &description = "");
+
 protected:
 
     friend class CT_VirtualAbstractStep;

@@ -328,7 +328,7 @@ public:
      * \param index Index of cell to modify
      * \param value Double value to cast in effective type
      */
-    inline virtual void setValueAtIndexFromDouble(const size_t index, const double value) { setValueAtIndex(index, (DataT) value); }
+    inline virtual void setValueAtIndexFromDouble(const size_t &index, const double &value) { setValueAtIndex(index, (DataT) value); }
 
     /*!
      * \brief Set value at specified index

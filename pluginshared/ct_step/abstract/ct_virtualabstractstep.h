@@ -251,8 +251,10 @@ protected:
     friend class CT_OutManager;
     friend class CT_OutModelCopyActionAddModelItemInGroup;
     friend class CT_OutModelCopyActionAddModelGroupInGroup;
+    friend class CT_OutModelCopyActionAddModelItemAttributeInItem;
     friend class CT_OutModelCopyActionRemoveModelItemInGroup;
     friend class CT_OutModelCopyActionRemoveModelGroupInGroup;
+    friend class CT_OutModelCopyActionRemoveModelItemAttributeInItem;
     friend class CT_InTurnManager;
     friend class CT_AbstractItem;
     friend class CT_AbstractItemAttribute;

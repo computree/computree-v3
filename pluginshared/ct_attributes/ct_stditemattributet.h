@@ -30,6 +30,10 @@ private:
     VType    m_data;
 };
 
+// specialisation for QString
+template<>
+PLUGINSHAREDSHARED_EXPORT CT_StdItemAttributeT<QString>::CT_StdItemAttributeT(const QString &categoryName);
+
 #include "ct_attributes/ct_stditemattributet.hpp"
 
 #endif // CT_STDITEMATTRIBUTET_H

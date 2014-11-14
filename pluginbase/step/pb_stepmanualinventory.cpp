@@ -64,7 +64,7 @@ void PB_StepManualInventory::createInResultModelListProtected()
     resIn_mntres->setRootGroup(DEFin_mntgrp, CT_AbstractItemGroup::staticGetType(), tr("MNT"));
     resIn_mntres->addItemModel(DEFin_mntgrp, DEFin_mnt, CT_Grid2DXY<float>::staticGetType(), tr("MNT"));
 
-    CT_InResultModelGroup *resIn_scres = createNewInResultModel(DEFin_scres, tr("Scènes"));
+    CT_InResultModelGroupToCopy *resIn_scres = createNewInResultModelForCopy(DEFin_scres, tr("Scènes"));
     resIn_scres->setZeroOrMoreRootGroup();
     resIn_scres->addGroupModel("", DEFin_scBase, CT_AbstractItemGroup::staticGetType(), tr("Groupe de base"));
     resIn_scres->addGroupModel(DEFin_scBase, DEFin_layer, CT_AbstractItemGroup::staticGetType(), tr("Niveau Z"));
@@ -76,31 +76,29 @@ void PB_StepManualInventory::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepManualInventory::createOutResultModelListProtected()
 {
-//    CT_OutResultModelGroupToCopyPossibilities *resCpy_scres = createNewOutResultModelToCopy(DEFin_scres);
+    CT_OutResultModelGroupToCopyPossibilities *resCpy_scres = createNewOutResultModelToCopy(DEFin_scres);
 
-//    resCpy_scres->addItemModel(DEFin_scBase, _dbhcircle_ModelName, new CT_Circle(), tr("Cercle du DHP"));
-//    resCpy_scres->addItemModel(DEFin_scBase, _attributes_ModelName, new CT_AttributesList(), tr("Attributs"));
+    resCpy_scres->addItemModel(DEFin_scBase, _dbhcircle_ModelName, new CT_Circle(), tr("Cercle du DHP"));
+    resCpy_scres->addItemModel(DEFin_scBase, _attributes_ModelName, new CT_AttributesList(), tr("Attributs"));
 
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_dbh,
-    //                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_NUMBER), NULL, 0),
-    //                                       tr("DHP (cm)"));
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_x,
-    //                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_X), NULL, 0),
-    //                                       tr("X"));
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_y,
-    //                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Y), NULL, 0),
-    //                                       tr("Y"));
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_h,
-    //                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_HEIGHT), NULL, 0),
-    //                                       tr("Hauteur"));
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_sp,
-    //                                       new CT_StdItemAttributeT<QString>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_VALUE), NULL, 0),
-    //                                       tr("Espèce"));
-    //    resCpy_scres->addItemAttributeModel(_attributes_ModelName, DEF_outatt_id,
-    //                                       new CT_StdItemAttributeT<QString>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ID), NULL, 0),
-    //                                       tr("IDterrain"));
-
-
+    resCpy_scres->addItemAttributeModel(DEF_outatt_dbh,_attribute_dbh_ModelName,
+                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                       tr("DHP (cm)"));
+    resCpy_scres->addItemAttributeModel(DEF_outatt_x,_attribute_x_ModelName,
+                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_X),
+                                       tr("X"));
+    resCpy_scres->addItemAttributeModel(DEF_outatt_y,_attribute_y_ModelName,
+                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_Y),
+                                       tr("Y"));
+    resCpy_scres->addItemAttributeModel(DEF_outatt_h,_attribute_h_ModelName,
+                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_HEIGHT),
+                                       tr("Hauteur"));
+    resCpy_scres->addItemAttributeModel(DEF_outatt_sp,_attribute_sp_ModelName,
+                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
+                                       tr("Espèce"));
+    resCpy_scres->addItemAttributeModel(DEF_outatt_id,_attribute_id_ModelName,
+                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
+                                       tr("IDterrain"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -115,8 +113,8 @@ void PB_StepManualInventory::compute()
     m_doc = NULL;
     m_status = 0;
 
-//    QList<CT_ResultGroup*> outResultList = getOutResultList();
-//    CT_ResultGroup* resCpy_scres = outResultList.at(0);
+    QList<CT_ResultGroup*> outResultList = getOutResultList();
+    CT_ResultGroup* resCpy_scres = outResultList.at(0);
 
 
 
@@ -124,7 +122,7 @@ void PB_StepManualInventory::compute()
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_mntres = inResultList.at(0);
 
-    CT_ResultGroup* resCpy_scres = inResultList.at(1);
+    //CT_ResultGroup* resCpy_scres = inResultList.at(1);
 
     CT_ResultItemIterator itIn_mntgrp(resIn_mntres, this, DEFin_mnt);
     if (itIn_mntgrp.hasNext())
@@ -332,9 +330,9 @@ float PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
         size_t index;
         const CT_Point &point = pointCloudIndex->constTAt(i, index);
 
-        if (point.getZ() > zmax)
+        if (point(CT_Point::Z) > zmax)
         {
-            zmax = point.getZ();
+            zmax = point(CT_Point::Z);
         }
     }
 

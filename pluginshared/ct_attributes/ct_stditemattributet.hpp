@@ -28,7 +28,7 @@ CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &modelName,
 template <typename VType>
 CT_StdItemAttributeT<VType>::CT_StdItemAttributeT(const QString &categoryName) : CT_AbstractItemAttributeT<VType>(categoryName)
 {
-    m_data = 0;
+    m_data = VType(0);
 }
 
 template <typename VType>

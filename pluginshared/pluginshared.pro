@@ -365,7 +365,9 @@ SOURCES += \
     ct_shape2ddata/ct_point2ddata.cpp \
     ct_itemdrawable/ct_point2d.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.cpp \
-    ct_itemdrawable/ct_jsonobject.cpp
+    ct_itemdrawable/ct_jsonobject.cpp \
+    ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.cpp \
+    ct_attributes/ct_stditemattributet.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -822,7 +824,8 @@ HEADERS += interfaces.h \
     ct_shape2ddata/ct_point2ddata.h \
     ct_itemdrawable/ct_point2d.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.h \
-    ct_itemdrawable/ct_jsonobject.h
+    ct_itemdrawable/ct_jsonobject.h \
+    ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h
 
 
 INCLUDEPATH += .

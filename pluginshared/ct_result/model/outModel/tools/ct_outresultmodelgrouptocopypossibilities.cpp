@@ -2,6 +2,7 @@
 
 #include "ct_tools/model/ct_outmodelcopyactionaddmodelgroupingroup.h"
 #include "ct_tools/model/ct_outmodelcopyactionaddmodelitemingroup.h"
+#include "ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h"
 #include "ct_tools/model/ct_outmodelcopyactionremovemodelgroupingroup.h"
 #include "ct_tools/model/ct_outmodelcopyactionremovemodelitemingroup.h"
 
@@ -198,6 +199,42 @@ bool CT_OutResultModelGroupToCopyPossibilities::removeItemModel(const QString &i
         if(!action.execute(step, poss))
             return false;
     }
+
+    return true;
+}
+
+bool CT_OutResultModelGroupToCopyPossibilities::addItemAttributeModel(const QString &parentItemUniqueName,
+                                                                      CT_AutoRenameModels &autoUniqueName,
+                                                                      CT_AbstractItemAttribute *itemAttribute,
+                                                                      const QString &displayableName,
+                                                                      const QString &description)
+{
+    QListIterator<CT_OutResultModelGroupCopy*> it(m_models);
+
+    while(it.hasNext())
+    {
+        CT_OutResultModelGroupCopy *model = it.next();
+
+        CT_OutResultModelGroupToCopyPossibility *poss = model->outResultModelCopy();
+        CT_VirtualAbstractStep *step = model->step();
+
+        if((step == NULL) || (poss == NULL))
+            return false;
+
+        CT_OutStdItemAttributeModel *itemAttModel = new CT_OutStdItemAttributeModel("", itemAttribute->copy(NULL, NULL), displayableName, description);
+
+        CT_OutModelCopyActionAddModelItemAttributeInItem action(parentItemUniqueName,
+                                                                itemAttModel,
+                                                                autoUniqueName);
+
+        if(!action.execute(step, poss))
+        {
+            delete itemAttribute;
+            return false;
+        }
+    }
+
+    delete itemAttribute;
 
     return true;
 }
