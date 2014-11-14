@@ -182,8 +182,10 @@ void PB_StepManualInventory::compute()
                 float dbh = bestCircle->getRadius() * 200.0;
                 float x = bestCircle->getCenterX();
                 float y = bestCircle->getCenterY();
-                float height = computeMaxZ(itemCpy_scene) - _itemIn_mnt->value(x, y);
-                if (height < 0) {height = 0;}
+                float mntZ = _itemIn_mnt->valueAtXY(x, y);
+                float height = computeMaxZ(itemCpy_scene) - mntZ;
+
+                if ((height < 0) || (mntZ == _itemIn_mnt->NA())) {height = 0;}
 
                 QString species = _species->value(itemCpy_scene, "");
                 QString id = _ids->value(itemCpy_scene, "");
