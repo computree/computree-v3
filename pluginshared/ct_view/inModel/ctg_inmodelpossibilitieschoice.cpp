@@ -490,9 +490,7 @@ void CTG_InModelPossibilitiesChoice::recursiveCreateItemsForGroupModel(QStandard
     QListIterator< DEF_CT_AbstractGroupModelOut* > itG(group->groups());
 
     while(itG.hasNext())
-    {
         recursiveCreateItemsForGroupModel(rootItem, itG.next());
-    }
 
     QListIterator<CT_OutAbstractSingularItemModel*> itI(group->items());
 
@@ -521,6 +519,37 @@ void CTG_InModelPossibilitiesChoice::recursiveCreateItemsForGroupModel(QStandard
         comboBoxItemItem->setEnabled(!m_readOnly);
         comboBoxItemItem->_outModel = item;
         list2.append(comboBoxItemItem);
+
+        QListIterator<CT_OutAbstractItemAttributeModel*> itAtt(item->itemAttributes());
+
+        while(itAtt.hasNext())
+        {
+            QList<QStandardItem*> list3;
+
+            CT_OutAbstractItemAttributeModel *itemAtt = itAtt.next();
+
+            // le nom du modèle de sortie
+            CTG_InModelPossibilitiesChoiceItem *itemItemAtt = new CTG_InModelPossibilitiesChoiceItem(itemAtt->displayableName());
+            itemItemAtt->setEditable(false);
+            itemItemAtt->_outModel = itemAtt;
+            list3.append(itemItemAtt);
+
+            // un item pour la sélection (case à cocher)
+            CTG_InModelPossibilitiesChoiceItem *checkableItemItemAtt = new CTG_InModelPossibilitiesChoiceItem("");
+            checkableItemItemAtt->setEditable(false);
+            checkableItemItemAtt->setEnabled(!m_readOnly);
+            checkableItemItemAtt->_outModel = itemAtt;
+            list3.append(checkableItemItemAtt);
+
+            // un item pour la sélection du modèle d'entrée si il y en a plusieurs (combobox)
+            CTG_InModelPossibilitiesChoiceItemCombo *comboBoxItemItemAtt = new CTG_InModelPossibilitiesChoiceItemCombo("");
+            comboBoxItemItemAtt->setEditable(false);
+            comboBoxItemItemAtt->setEnabled(!m_readOnly);
+            comboBoxItemItemAtt->_outModel = itemAtt;
+            list3.append(comboBoxItemItemAtt);
+
+            itemItem->appendRow(list3);
+        }
 
         rootItem->appendRow(list2);
     }
@@ -634,8 +663,9 @@ void CTG_InModelPossibilitiesChoice::itemChanged(QStandardItem *item)
                 {
                     _itemChangedSlotIsEnabled = false;
 
-                    // sélection des parents seulement si c'est un item (sélectionne les parents qui n'ont pas au moins un modèle déjà sélectionné)
-                    if(dynamic_cast<CT_OutAbstractSingularItemModel*>(checkableItem->_outModel) != NULL)
+                    // sélection des parents seulement si c'est un item ou un attribut d'item (sélectionne les parents qui n'ont pas au moins un modèle déjà sélectionné)
+                    if((dynamic_cast<CT_OutAbstractSingularItemModel*>(checkableItem->_outModel) != NULL)
+                            || (dynamic_cast<CT_OutAbstractItemAttributeModel*>(checkableItem->_outModel) != NULL))
                     {
                         setCheckedParent(item->parent(), true);
 

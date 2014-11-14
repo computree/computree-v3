@@ -43,7 +43,7 @@ public:
     const QList<CT_InAbstractModel*>& getInModels() const;
     const QList<CT_InAbstractModel*>& getDontChooseInModels() const;
 
-    CT_OutAbstractItemModel         *_outModel;
+    CT_OutAbstractModel         *_outModel;
 
 private:
 
@@ -94,7 +94,7 @@ public:
     const QList<CT_InAbstractModel*>& getDontChooseInModels() const;
     CT_InAbstractModel* getInModelSelected() const;
 
-    CT_OutAbstractItemModel             *_outModel;
+    CT_OutAbstractModel             *_outModel;
 
 private:
 
