@@ -58,7 +58,7 @@ CT_AbstractModel* CT_ModelSearchHelper::searchModel(const QString &inOrOutModelU
                 model = yourStep->getOutModelForCreation((CT_ResultGroup*)inOrOutResult, inOrOutModelUniqueName);
 
                 // if founded we must check if it was a new model created in this step
-                if((model != NULL) && (model->step() != yourStep)) // if no
+                if((model != NULL) && (dynamic_cast<CT_OutAbstractModel*>(model)->lastOriginalModelWithAStep()->step() != yourStep)) // if no
                     model = NULL; // seach a in model
 
                 // we search a in model if a out model was not found

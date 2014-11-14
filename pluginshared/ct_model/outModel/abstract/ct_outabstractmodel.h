@@ -43,6 +43,13 @@ public:
     CT_OutAbstractModel* lastOriginalModelWithAResult() const;
 
     /**
+     * @brief Returns the original model (recursively) with a step not null. If this model
+     *        is not a copy and had a result the method return 'this'. If this model
+     *        is not a copy and don't had a result the method return NULL.
+     */
+    CT_OutAbstractModel* lastOriginalModelWithAStep() const;
+
+    /**
      * @brief Returns true if at least one element that use this model is visible in a document
      */
     bool isVisible() const;

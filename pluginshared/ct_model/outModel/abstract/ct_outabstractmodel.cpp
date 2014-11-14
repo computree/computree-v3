@@ -53,6 +53,23 @@ CT_OutAbstractModel* CT_OutAbstractModel::lastOriginalModelWithAResult() const
     return lastModel;
 }
 
+CT_OutAbstractModel *CT_OutAbstractModel::lastOriginalModelWithAStep() const
+{
+    CT_OutAbstractModel *lastModel = NULL;
+
+    CT_OutAbstractModel *oModel = const_cast<CT_OutAbstractModel*>(this);
+
+    while(oModel != NULL)
+    {
+        if(oModel->step() != NULL)
+            lastModel = oModel;
+
+        oModel = oModel->m_originalModel;
+    }
+
+    return lastModel;
+}
+
 bool CT_OutAbstractModel::isVisible() const
 {
     bool val = !m_visibleInDocuments.isEmpty();
