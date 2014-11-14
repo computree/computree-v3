@@ -22,7 +22,7 @@
 #define DEFin_scres "scres"
 #define DEFin_scBase "scBase"
 #define DEFin_layer "layer"
-#define DEFin_cluster "cluster"
+#define DEFin_cluster "cluster2"
 #define DEFin_circle "circle"
 #define DEFin_scene "scene"
 
@@ -74,23 +74,23 @@ void PB_StepManualInventory::createOutResultModelListProtected()
     resCpy_scres->addItemModel(DEFin_scBase, _attributes_ModelName, new CT_AttributesList(), tr("Attributs"));
 
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_dbh_ModelName,
-                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
-                                       tr("DHP (cm)"));
+                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                        tr("DHP (cm)"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_x_ModelName,
-                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_X),
-                                       tr("X"));
+                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_X),
+                                        tr("X"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_y_ModelName,
-                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_Y),
-                                       tr("Y"));
+                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_Y),
+                                        tr("Y"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h_ModelName,
-                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_HEIGHT),
-                                       tr("Hauteur"));
+                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_HEIGHT),
+                                        tr("Hauteur"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_sp_ModelName,
-                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
-                                       tr("Espèce"));
+                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
+                                        tr("Espèce"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_id_ModelName,
-                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
-                                       tr("IDterrain"));
+                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
+                                        tr("IDterrain"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -162,13 +162,10 @@ void PB_StepManualInventory::compute()
         // remplit _selectedDbh
         findBestCircleForEachScene();
 
-
-
-
         // request the manual mode
         requestManualMode();
 
-        /*
+
         CT_ResultGroupIterator itCpy_scBaseOut(resCpy_scres, this, DEFin_scBase);
         while (itCpy_scBaseOut.hasNext() && !isStopped())
         {
@@ -194,29 +191,29 @@ void PB_StepManualInventory::compute()
                 CT_AttributesList* itemCpy_attributes = new CT_AttributesList(_attributes_ModelName.completeName(), resCpy_scres);
                 grpCpy_scBase->addItemDrawable(itemCpy_attributes);
 
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_outatt_dbh,
-                //                                                                                     CT_AbstractCategory::DATA_NUMBER,
-                //                                                                                     resCpy_scres, dbh));
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_outatt_x,
-                //                                                                                     CT_AbstractCategory::DATA_X,
-                //                                                                                     resCpy_scres, x));
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_outatt_y,
-                //                                                                                     CT_AbstractCategory::DATA_Y,
-                //                                                                                     resCpy_scres, y));
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_outatt_h,
-                //                                                                                     CT_AbstractCategory::DATA_HEIGHT,
-                //                                                                                     resCpy_scres, height));
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(DEF_outatt_sp,
-                //                                                                                     CT_AbstractCategory::DATA_VALUE,
-                //                                                                                     resCpy_scres, species));
-                //                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(DEF_outatt_id,
-                //                                                                                     CT_AbstractCategory::DATA_ID,
-                //                                                                                     resCpy_scres, id));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_dbh_ModelName.completeName(),
+                                                                                     CT_AbstractCategory::DATA_NUMBER,
+                                                                                     resCpy_scres, dbh));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_x_ModelName.completeName(),
+                                                                                     CT_AbstractCategory::DATA_X,
+                                                                                     resCpy_scres, x));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_y_ModelName.completeName(),
+                                                                                     CT_AbstractCategory::DATA_Y,
+                                                                                     resCpy_scres, y));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_h_ModelName.completeName(),
+                                                                                     CT_AbstractCategory::DATA_HEIGHT,
+                                                                                     resCpy_scres, height));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(_attribute_sp_ModelName.completeName(),
+                                                                                       CT_AbstractCategory::DATA_VALUE,
+                                                                                       resCpy_scres, species));
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(_attribute_id_ModelName.completeName(),
+                                                                                       CT_AbstractCategory::DATA_ID,
+                                                                                       resCpy_scres, id));
 
             }
 
         }
-        */
+
 
         m_status = 1;
         requestManualMode();
