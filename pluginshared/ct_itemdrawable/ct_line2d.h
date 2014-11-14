@@ -31,7 +31,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractshape2d.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardline2ddrawmanager.h"
 
-#include "ct_shape2ddata/CT_Line2Ddata.h"
+#include "ct_shape2ddata/ct_line2ddata.h"
 
 /*!
  * \class CT_Line2D

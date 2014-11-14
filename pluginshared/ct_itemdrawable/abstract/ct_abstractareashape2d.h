@@ -30,7 +30,7 @@
 
 #include "ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_shape2ddata/ct_areashape2ddata.h"
-#include "ct_itemdrawable/abstract/CT_AbstractShape2D.h"
+#include "ct_itemdrawable/abstract/ct_abstractshape2d.h"
 
 /**
   * Représente une forme géomtrique 2D surfacique
