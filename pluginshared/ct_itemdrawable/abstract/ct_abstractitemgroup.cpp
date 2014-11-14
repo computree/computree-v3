@@ -121,7 +121,7 @@ CT_AbstractSingularItemDrawable* CT_AbstractItemGroup::itemByOUTModelName(const 
 {
     CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup itemByOUTModelName", "You search a item with a modelName but the model was not found");
 
     CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
     CT_OutAbstractSingularItemModel *outModel = NULL;
@@ -140,7 +140,7 @@ QList<CT_AbstractSingularItemDrawable *> CT_AbstractItemGroup::itemsByINModelNam
 {
     CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup itemsByINModelName", "You search a item with a modelName but the model was not found");
 
     CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
     CT_OutAbstractSingularItemModel *outModel = NULL;
@@ -161,7 +161,7 @@ CT_AbstractSingularItemDrawable* CT_AbstractItemGroup::firstItemByINModelName(co
 {
     CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
 
-    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup containsItemDrawableByModelName", "You search a item with a modelName but the model was not found");
+    Q_ASSERT_X(model != NULL, "CT_AbstractItemGroup firstItemByINModelName", "You search a item with a modelName but the model was not found");
 
     CT_InAbstractSingularItemModel *inModel = dynamic_cast<CT_InAbstractSingularItemModel*>(model);
     CT_OutAbstractSingularItemModel *outModel = NULL;

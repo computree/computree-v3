@@ -344,6 +344,12 @@ public:
      */
     QList<CT_AbstractItemAttribute*> itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
 
+    /**
+     * @brief Returns the first item attribute corresponding to the possibility selected of the INPUT model passed in parameter
+     * @return an empty list if item attributes don't exist
+     */
+    CT_AbstractItemAttribute* firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
+
 private:
     class CT_DefaultItemAttributeManagerContainer
     {

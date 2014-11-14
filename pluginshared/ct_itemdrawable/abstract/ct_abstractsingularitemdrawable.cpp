@@ -2,6 +2,8 @@
 #include <limits>
 #include "math.h"
 
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 // initialize default item attributes of this class for each unique number declared
 CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable)
 
@@ -69,6 +71,25 @@ CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::itemAttribute(const C
     return m_itemAttributes.itemAttributeFromModel(outModel);
 }
 
+CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::itemAttributeByOUTModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
+{
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractSingularItemDrawable itemAttributeByOUTModelName", "You search a item attribute with a modelName but the model was not found");
+
+    CT_InAbstractItemAttributeModel *inModel = dynamic_cast<CT_InAbstractItemAttributeModel*>(model);
+    CT_OutAbstractItemAttributeModel *outModel = NULL;
+
+    if(inModel != NULL)
+        return firstItemAttribute(inModel);
+    else if((outModel = dynamic_cast<CT_OutAbstractItemAttributeModel*>(model)) != NULL)
+        return itemAttribute(outModel);
+    else
+        qFatal("You search a item attribute with a model name but it was not a item attribute model");
+
+    return NULL;
+}
+
 QList<CT_AbstractItemAttribute*> CT_AbstractSingularItemDrawable::itemAttributes(const CT_InAbstractItemAttributeModel *inModel) const
 {
     QList<CT_AbstractItemAttribute*> l = m_itemAttributes.itemAttributesFromModel(inModel);
@@ -87,6 +108,35 @@ QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttribute
     l.append(m_itemAttributes.itemAttributes());
 
     return l;
+}
+
+CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::firstItemAttribute(const CT_InAbstractItemAttributeModel *inModel) const
+{
+    CT_AbstractItemAttribute *l = m_itemAttributes.firstItemAttributeFromModel(inModel);
+
+    if(l == NULL)
+        return PS_DIAM->firstItemAttributeFromModel(inModel, getType());
+
+    return l;
+}
+
+CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::firstItemAttributeByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
+{
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractSingularItemDrawable firstItemAttributeByINModelName", "You search a item attribute with a modelName but the model was not found");
+
+    CT_InAbstractItemAttributeModel *inModel = dynamic_cast<CT_InAbstractItemAttributeModel*>(model);
+    CT_OutAbstractItemAttributeModel *outModel = NULL;
+
+    if(inModel != NULL)
+        return firstItemAttribute(inModel);
+    else if((outModel = dynamic_cast<CT_OutAbstractItemAttributeModel*>(model)) != NULL)
+        return itemAttribute(outModel);
+    else
+        qFatal("You search a item attribute with a model name but it was not a item attribute model");
+
+    return NULL;
 }
 
 QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::defaultItemAttributes() const

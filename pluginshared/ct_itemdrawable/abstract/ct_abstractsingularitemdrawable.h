@@ -59,6 +59,18 @@ public:
     CT_AbstractItemAttribute* itemAttribute(const CT_OutAbstractItemAttributeModel *outModel) const;
 
     /**
+     * @brief Returns the item attribute corresponding to the OUTPUT model searched by modelName.
+     *
+     * @param modelName : typically a DEF_... in your step
+     * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     *
+     * @warning if you pass a modelName that correspond to a IN model the method returns the value of the method "firstItemAttribute(IN model)"
+     *
+     * @return NULL if no item will be found
+     */
+    CT_AbstractItemAttribute* itemAttributeByOUTModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const;
+
+    /**
      * @brief Returns a list of item attributes corresponding to the possibility selected of the INPUT model passed in parameter
      * @return NULL if item attribute don't exist in this singular item
      */
@@ -68,6 +80,29 @@ public:
      * @brief Return all item attributes of this item drawable
      */
     QList<CT_AbstractItemAttribute*> itemAttributes() const;
+
+    /**
+     * @brief Returns the first item attribute that match with a possibility of the IN model.
+     *
+     *        An IN model can have a number of possibilities > 1 if you set Choose_MultipleIfMultiple. A
+     *        group can contains items that match with one or two or etc... possibility of the model so he must
+     *        return a list of ItemDrawable. This method test the first possibility, if a ItemDrawable is found,
+     *        it will be returned otherwise the method continue to search with the next possibility, etc...
+     *
+     * @return NULL if no item will be found
+     */
+    CT_AbstractItemAttribute* firstItemAttribute(const CT_InAbstractItemAttributeModel *inModel) const;
+
+    /**
+     * @brief Returns the item attribute corresponding to the IN model searched by modelName
+     * @param modelName : typically a DEF_... in your step
+     * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     *
+     * @warning if you pass a modelName that correspond to a OUT model the method returns the value of the method "item(OUT model)"
+     *
+     * @return NULL if no item attribute will be found
+     */
+    CT_AbstractItemAttribute* firstItemAttributeByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const;
 
     /**
      * @brief Return all default item attributes of this item drawable

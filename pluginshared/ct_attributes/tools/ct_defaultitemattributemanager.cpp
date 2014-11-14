@@ -135,3 +135,37 @@ QList<CT_AbstractItemAttribute*> CT_DefaultItemAttributeManager::itemAttributesF
 
     return l;
 }
+
+CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const
+{
+    QStringList types = itemType.split("/");
+
+    QList<CT_InStdModelPossibility*> p = inModel->getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> itP(p);
+
+    while(itP.hasNext())
+    {
+        CT_OutAbstractModel *orModel = itP.next()->outModel()->originalModel();
+        bool ok = false;
+
+        foreach (const QString &t, types) {
+
+            if(ok || (t == "CT_AbstractSingularItemDrawable"))
+            {
+                ok = true;
+
+                QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(t);
+
+                if(container != NULL)
+                {
+                    foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
+                        if(c->m_model == orModel)
+                            return c->m_model->itemAttribute();
+                    }
+                }
+            }
+        }
+    }
+
+    return NULL;
+}

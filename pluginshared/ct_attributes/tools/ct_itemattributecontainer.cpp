@@ -135,6 +135,38 @@ QList<CT_AbstractItemAttribute*> CT_ItemAttributeContainer::itemAttributesFromMo
     return l;
 }
 
+CT_AbstractItemAttribute *CT_ItemAttributeContainer::firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel) const
+{
+    QHashIterator<CT_AbstractResult*, QList<CT_AbstractItemAttribute*>*> it(m_attributes);
+
+    QList<CT_InStdModelPossibility*> p = inModel->getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> itP(p);
+
+    while(itP.hasNext())
+    {
+        QString uName = itP.next()->outModel()->uniqueName();
+
+        it.toFront();
+
+        while(it.hasNext())
+        {
+            it.next();
+
+            QListIterator<CT_AbstractItemAttribute*> itL(*it.value());
+
+            while(itL.hasNext())
+            {
+                CT_AbstractItemAttribute *att = itL.next();
+
+                if(att->model()->uniqueName() == uName)
+                    return att;
+            }
+        }
+    }
+
+    return NULL;
+}
+
 void CT_ItemAttributeContainer::clear()
 {
     QHashIterator<CT_AbstractResult*, QList<CT_AbstractItemAttribute *>* > it(m_attributes);

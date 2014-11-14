@@ -57,6 +57,12 @@ public:
     QList<CT_AbstractItemAttribute*> itemAttributesFromModel(const CT_InAbstractItemAttributeModel *inModel) const;
 
     /**
+     * @brief Returns the first item attribute corresponding to the possibility selected of the INPUT model passed in parameter
+     * @return NULL if item attribute don't exist in this singular item
+     */
+    CT_AbstractItemAttribute* firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel) const;
+
+    /**
      * @brief Clear all attributes from the container
      */
     void clear();
