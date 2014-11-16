@@ -35,7 +35,7 @@
 #include "pluginShared_global.h"
 
 #ifndef USE_PCL
-#include <Eigen/Core>
+#include "eigen/Eigen/Core"
 
 class CT_Point : public Eigen::Vector3f
 {

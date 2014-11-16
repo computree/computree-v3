@@ -30,23 +30,27 @@ public:
      * @brief Type of value (boolean or number or string, etc...)
      */
     enum ValueType {
-        BOOLEAN       = 0,    // a boolean
+        BOOLEAN       = 1,    // a boolean
 
-        NUMBER        = 63,   // a number
+        DOUBLE        = 2,    // a double (it's a NUMBER_REAL too)
+        FLOAT         = 4,    // un float (it's a NUMBER_REAL too)
+        LONG_DOUBLE   = 8,    // un long double (it's a NUMBER_REAL too)
 
-        NUMBER_REAL   = 7,    // a real number (it's a ISDVT_NUMBER too)
-        DOUBLE        = 1,    // a double (it's a ISDVT_NUMBERREAL too)
-        FLOAT         = 2,    // un float (it's a ISDVT_NUMBERREAL too)
-        LONG_DOUBLE   = 4,    // un long double
+        NUMBER_REAL   = 14,   // a real number (it's a NUMBER too)
 
-        NUMBER_INT    = 56,   // a integer (it's a ISDVT_NUMBER too)
-        INT           = 8,    // a signed integer 32 or 64 bits (depending the compilation plateforme) (it's a integer too)
-        UINT64        = 16,   // a unsigned integer 64 bits (it's a number too)
-        SIZE_T        = 32,   // un entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation)
+        INT           = 16,   // a signed integer 32 or 64 bits (depending the compilation plateforme) (it's a NUMBER_INT too)
+        UINT64        = 32,   // a unsigned integer 64 bits (it's a NUMBER_INT too)
+        SIZE_T        = 64,   // un entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation) (it's a NUMBER_INT too)
 
-        STRING        = 256,  // a string
+        NUMBER_INT    = 112,  // a integer (it's a NUMBER too)
 
-        UNKNOWN       = 1024  // a unknown type
+        NUMBER        = 126,  // a number
+
+        STRING        = 128,  // a string
+
+        UNKNOWN       = 256,  // a unknown type
+
+        ANY           = 511   // Any ValueType (including UNKNOWN)
     };
     Q_ENUMS(ValueType)
 
