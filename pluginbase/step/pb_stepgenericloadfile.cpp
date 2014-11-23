@@ -144,7 +144,14 @@ void PB_StepGenericLoadFile::createOutResultModelListProtected()
         root->addGroup((CT_OutStdGroupModel*)model->copy());
     }
 
+    const CT_OutStdSingularItemModel* headerModel = m_reader->outHeaderModel();
+    if (headerModel != NULL)
+    {
+        root->addItem((CT_OutStdSingularItemModel*)headerModel->copy());
+    }
+
     addOutResultModel(new CT_OutResultModelGroup(DEF_SearchResult, root, "Result"));
+
 }
 
 void PB_StepGenericLoadFile::compute()
@@ -180,6 +187,19 @@ void PB_StepGenericLoadFile::compute()
 
             while(itI.hasNext())
                 group->addGroup(itI.next());
+        }
+
+
+        CT_FileHeader* header = m_reader->getHeader();
+        if (header != NULL)
+        {
+            CT_OutAbstractItemModel *headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(m_reader->outHeaderModel()->uniqueName(), out_res);
+            if (headerModel != NULL)
+            {
+                header->setModel(headerModel);
+                header->changeResult(out_res);
+                group->addItemDrawable(header);
+            }
         }
 
         out_res->addGroup(group);

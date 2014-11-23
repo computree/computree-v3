@@ -9,7 +9,9 @@
 #define readRawDataAndCheckSize(Param, N, Err) if(stream.readRawData(Param, N) != N) { error = Err; return false; } else { filePos += N; checkHeaderSize; }
 #define readDataAndCheckSize(Param, Err) if(stream.atEnd()) { error = Err; return false; } else { stream >> Param; filePos += sizeof(Param); checkHeaderSize; }
 
-CT_LASHeader::CT_LASHeader()
+CT_DEFAULT_IA_INIT(CT_LASHeader)
+
+CT_LASHeader::CT_LASHeader() : CT_FileHeader()
 {
     for(int i=0; i<4; ++i)
         m_fileSignature[i] = ' ';
@@ -63,6 +65,175 @@ CT_LASHeader::CT_LASHeader()
     for(int i=0; i<15; ++i)
         m_numberOfPointsByReturn[i] = 0;
 }
+
+CT_LASHeader::CT_LASHeader(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_FileHeader(model, result)
+{
+    for(int i=0; i<4; ++i)
+        m_fileSignature[i] = ' ';
+
+    m_fileSourceID = 0;
+    m_globalEncoding = 0;
+
+    m_projectIDGuidData1 = 0;
+    m_projectIDGuidData2 = 0;
+    m_projectIDGuidData3 = 0;
+    m_projectIDGuidData4 = 0;
+
+    m_versionMajor = 0;
+    m_versionMinor = 0;
+
+    for(int i=0; i<32; ++i)
+        m_systemID[i] = ' ';
+
+    for(int i=0; i<32; ++i)
+        m_sofwareID[i] = ' ';
+
+    m_fileCreationDayOfYear = 0;
+    m_fileCreationYear = 0;
+    m_headerSize = 0;
+    m_offsetToPointData = 0;
+    m_numberOfVariableLengthRecords = 0;
+    m_pointDataRecordFormat = 0;
+    m_pointDataRecordLength = 0;
+    m_legacyNumberOfPointRecord = 0;
+
+    for(int i=0; i<5; ++i)
+        m_legacyNumberOfPointsByReturn[i] = 0;
+
+    m_xScaleFactor = 1;
+    m_yScaleFactor = 1;
+    m_zScaleFactor = 1;
+    m_xOffset = 0;
+    m_yOffset = 0;
+    m_zOffset = 0;
+    m_maxX = 0;
+    m_minX = 0;
+    m_maxY = 0;
+    m_minY = 0;
+    m_maxZ = 0;
+    m_minZ = 0;
+    m_startOfWaveformDataPacketRecord = 0;
+    m_startOfFirstExtendedVariableLengthRecord = 0;
+    m_numberOfExtendedVariableLengthRecords = 0;
+    m_numberOfPointRecords = 0;
+
+    for(int i=0; i<15; ++i)
+        m_numberOfPointsByReturn[i] = 0;
+}
+
+CT_LASHeader::CT_LASHeader(const QString &modelName, const CT_AbstractResult *result) : CT_FileHeader(modelName, result)
+{
+    for(int i=0; i<4; ++i)
+        m_fileSignature[i] = ' ';
+
+    m_fileSourceID = 0;
+    m_globalEncoding = 0;
+
+    m_projectIDGuidData1 = 0;
+    m_projectIDGuidData2 = 0;
+    m_projectIDGuidData3 = 0;
+    m_projectIDGuidData4 = 0;
+
+    m_versionMajor = 0;
+    m_versionMinor = 0;
+
+    for(int i=0; i<32; ++i)
+        m_systemID[i] = ' ';
+
+    for(int i=0; i<32; ++i)
+        m_sofwareID[i] = ' ';
+
+    m_fileCreationDayOfYear = 0;
+    m_fileCreationYear = 0;
+    m_headerSize = 0;
+    m_offsetToPointData = 0;
+    m_numberOfVariableLengthRecords = 0;
+    m_pointDataRecordFormat = 0;
+    m_pointDataRecordLength = 0;
+    m_legacyNumberOfPointRecord = 0;
+
+    for(int i=0; i<5; ++i)
+        m_legacyNumberOfPointsByReturn[i] = 0;
+
+    m_xScaleFactor = 1;
+    m_yScaleFactor = 1;
+    m_zScaleFactor = 1;
+    m_xOffset = 0;
+    m_yOffset = 0;
+    m_zOffset = 0;
+    m_maxX = 0;
+    m_minX = 0;
+    m_maxY = 0;
+    m_minY = 0;
+    m_maxZ = 0;
+    m_minZ = 0;
+    m_startOfWaveformDataPacketRecord = 0;
+    m_startOfFirstExtendedVariableLengthRecord = 0;
+    m_numberOfExtendedVariableLengthRecords = 0;
+    m_numberOfPointRecords = 0;
+
+    for(int i=0; i<15; ++i)
+        m_numberOfPointsByReturn[i] = 0;
+}
+
+QString CT_LASHeader::getType() const
+{
+    return staticGetType();
+}
+
+QString CT_LASHeader::staticGetType()
+{
+    return CT_FileHeader::staticGetType() + "/CT_LASHeader";
+}
+
+CT_AbstractItemDrawable *CT_LASHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
+{
+    Q_UNUSED(copyModeList);
+
+    CT_LASHeader *cpy =  new CT_LASHeader((CT_OutAbstractSingularItemModel*) model, result);
+    cpy->setFile(_fileInfo.filePath());
+
+    for (int i = 0 ; i < 4 ; i++) {cpy->m_fileSignature[i] = m_fileSignature[i];}
+    cpy->m_fileSourceID = m_fileSourceID;
+    cpy->m_globalEncoding = m_globalEncoding;
+    cpy->m_projectIDGuidData1 = m_projectIDGuidData1;
+    cpy->m_projectIDGuidData2 = m_projectIDGuidData2;
+    cpy->m_projectIDGuidData3 = m_projectIDGuidData3;
+    cpy->m_projectIDGuidData4 = m_projectIDGuidData4;
+    cpy->m_versionMajor = m_versionMajor;
+    cpy->m_versionMinor = m_versionMinor;
+    for (int i = 0 ; i < 32 ; i++) {cpy->m_systemID[i] = m_systemID[i];}
+    for (int i = 0 ; i < 32 ; i++) {cpy->m_sofwareID[i] = m_sofwareID[i];}
+    cpy->m_fileCreationDayOfYear = m_fileCreationDayOfYear;
+    cpy->m_fileCreationYear = m_fileCreationYear;
+    cpy->m_headerSize = m_headerSize;
+    cpy->m_offsetToPointData = m_offsetToPointData;
+    cpy->m_numberOfVariableLengthRecords = m_numberOfVariableLengthRecords;
+    cpy->m_pointDataRecordFormat = m_pointDataRecordFormat;
+    cpy->m_pointDataRecordLength = m_pointDataRecordLength;
+    cpy->m_legacyNumberOfPointRecord = m_legacyNumberOfPointRecord;
+    for (int i = 0 ; i < 5 ; i++) {cpy->m_legacyNumberOfPointsByReturn[i] = m_legacyNumberOfPointsByReturn[i];}
+    cpy->m_xScaleFactor = m_xScaleFactor;
+    cpy->m_yScaleFactor = m_yScaleFactor;
+    cpy->m_zScaleFactor = m_zScaleFactor;
+    cpy->m_xOffset = m_xOffset;
+    cpy->m_yOffset = m_yOffset;
+    cpy->m_zOffset = m_zOffset;
+    cpy->m_maxX = m_maxX;
+    cpy->m_minX = m_minX;
+    cpy->m_maxY = m_maxY;
+    cpy->m_minY = m_minY;
+    cpy->m_maxZ = m_maxZ;
+    cpy->m_minZ = m_minZ;
+    cpy->m_startOfWaveformDataPacketRecord = m_startOfWaveformDataPacketRecord;
+    cpy->m_startOfFirstExtendedVariableLengthRecord = m_startOfFirstExtendedVariableLengthRecord;
+    cpy->m_numberOfExtendedVariableLengthRecords = m_numberOfExtendedVariableLengthRecords;
+    cpy->m_numberOfPointRecords = m_numberOfPointRecords;
+    for (int i = 0 ; i < 15 ; i++) {cpy->m_numberOfPointsByReturn[i] = m_numberOfPointsByReturn[i];}
+
+    return cpy;
+}
+
 
 size_t CT_LASHeader::sizeInBytes() const
 {
@@ -224,6 +395,21 @@ bool CT_LASHeader::read(QDataStream &stream, QString &error)
     readData(m_minY, QObject::tr("Min Y invalid"));
     readData(m_maxZ, QObject::tr("Max Z invalid"));
     readData(m_minZ, QObject::tr("Min Z invalid"));
+
+    float x, y, z;
+    PS_COORDINATES_SYS->convertImport(m_minX, m_minY, m_minZ, x, y, z);
+    _minCoordinates.setX(x);
+    _minCoordinates.setY(y);
+    _minCoordinates.setZ(z);
+    PS_COORDINATES_SYS->convertImport(m_maxX, m_maxY, m_maxZ, x, y, z);
+    _maxCoordinates.setX(x);
+    _maxCoordinates.setY(y);
+    _maxCoordinates.setZ(z);
+
+    setCenterX((maxX() + minX())/2.0);
+    setCenterY((maxY() + minY())/2.0);
+    setCenterZ((maxZ() + minZ())/2.0);
+
     readDataAndCheckSize(m_startOfWaveformDataPacketRecord, QObject::tr("Start of Waveform Data Packet Record invalid"));
     readDataAndCheckSize(m_startOfFirstExtendedVariableLengthRecord, QObject::tr("Start Of First Extended Variable Length Record invalid"));
     readDataAndCheckSize(m_numberOfExtendedVariableLengthRecords, QObject::tr("Number Of Extended Variable Length Records invalid"));
@@ -364,5 +550,27 @@ QString CT_LASHeader::toString() const
     str += QObject::tr("Number of point records : %1").arg(m_numberOfPointRecords) + "\r\n";
     str += QObject::tr("Number of points by return : %1 / ...").arg(m_numberOfPointsByReturn[0]) + "\r\n";
 
+    return str;
+}
+
+QString CT_LASHeader::m_legacyNumberOfPointsByReturn_ToString() const
+{
+    QString str = "";
+    for (int i = 0 ; i < 5 ; i++)
+    {
+        str.append(QString::number(m_legacyNumberOfPointsByReturn[i]));
+        if (i < 4) {str.append(" ");}
+    }
+    return str;
+}
+
+QString CT_LASHeader::m_numberOfPointsByReturn_ToString() const
+{
+    QString str = "";
+    for (int i = 0 ; i < 15 ; i++)
+    {
+        str.append(QString::number(m_numberOfPointsByReturn[i]));
+        if (i < 14) {str.append(" ");}
+    }
     return str;
 }

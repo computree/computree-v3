@@ -3,6 +3,7 @@
 
 #include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/ct_fileheader.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractReader : public QObject
 {
@@ -28,6 +29,20 @@ public:
     QString filepath() const;
 
     /**
+      * \brief Return the header object
+      *
+      * \param deleteHeader If set true, the reader will delete the header object in destructor
+      *
+      */
+    CT_FileHeader* getHeader(bool deleteHeader = false);
+
+    /**
+      * \brief Return a const reference on the header
+      *
+      */
+    const CT_FileHeader& getConstHeader() const;
+
+    /**
       * \brief Configure the reader.
       *
       *        Called after the method "setFilePath" and before the method "protectedCreateOutItemDrawableModelList"
@@ -50,6 +65,11 @@ public:
       * \brief Return the list of out group model
       */
     const QList<CT_OutStdGroupModel*>& outGroupsModel() const;
+
+    /**
+      * \brief Return the out itemdrawable model for header
+      */
+    const CT_OutStdSingularItemModel* outHeaderModel() const;
 
     /**
       * \brief Return all readable formats
@@ -248,6 +268,11 @@ protected:
     void setToolTip(const QString &t);
 
     /**
+      * \brief Set the out itemdrawable model for header
+      */
+    const void setOutHeaderModel(CT_OutStdSingularItemModel *headerModel);
+
+    /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the
      *        same ItemDrawable you must add multiple model with different name.
      */
@@ -299,6 +324,10 @@ protected:
      */
     virtual bool protectedReadFile() = 0;
 
+
+
+    CT_FileHeader*                                          m_header;
+
 private:
     QString                                                 m_filePath;
     QList<FileFormat>                                       m_formats;
@@ -306,11 +335,13 @@ private:
     QString                                                 m_errorMess;
     QList<CT_OutStdSingularItemModel*>                      m_outItemsModel;
     QList<CT_OutStdGroupModel*>                             m_outGroupsModel;
+    CT_OutStdSingularItemModel*                             m_outHeaderModel;
     QMultiMap<QString, CT_AbstractSingularItemDrawable*>    m_outItems;
     QMultiMap<QString, CT_AbstractItemGroup*>               m_outGroups;
     int                                                     m_progress;
     bool                                                    m_error;
     bool                                                    m_stop;
+    bool                                                    m_deleteHeader;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();

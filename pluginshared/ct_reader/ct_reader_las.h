@@ -2,7 +2,7 @@
 #define CT_READER_LAS_H
 
 #include "ct_reader/abstract/ct_abstractreader.h"
-#include "ct_reader/tools/las/ct_lasheader.h"
+#include "ct_reader/headers/ct_lasheader.h"
 
 #include "ct_reader/ct_reader_las_def_models.h"
 
@@ -52,7 +52,6 @@ protected:
     bool protectedReadFile();
 
 private:
-    CT_LASHeader   *m_header;
     bool            m_centerCloud;
 };
 

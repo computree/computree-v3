@@ -8,6 +8,9 @@
 
 CT_AbstractReader::CT_AbstractReader()
 {
+    m_deleteHeader = true;
+    m_header = NULL;
+    m_outHeaderModel = NULL;
 }
 
 CT_AbstractReader::~CT_AbstractReader()
@@ -17,6 +20,16 @@ CT_AbstractReader::~CT_AbstractReader()
 
     clearOutGroupsModel();
     clearOutGroups();
+
+    if (m_deleteHeader && m_header!=NULL)
+    {
+        delete m_header;
+    }
+
+    if (m_outHeaderModel != NULL)
+    {
+        delete m_outHeaderModel;
+    }
 }
 
 void CT_AbstractReader::init(bool initOutItemDrawableList)
@@ -38,6 +51,17 @@ QString CT_AbstractReader::filepath() const
     return m_filePath;
 }
 
+CT_FileHeader *CT_AbstractReader::getHeader(bool deleteHeader)
+{
+    m_deleteHeader = deleteHeader;
+    return m_header;
+}
+
+const CT_FileHeader &CT_AbstractReader::getConstHeader() const
+{
+    return *m_header;
+}
+
 void CT_AbstractReader::createOutItemDrawableModelList()
 {
     clearOutItemDrawableModel();
@@ -53,6 +77,16 @@ const QList<CT_OutStdSingularItemModel*>& CT_AbstractReader::outItemDrawableMode
 const QList<CT_OutStdGroupModel*>& CT_AbstractReader::outGroupsModel() const
 {
     return m_outGroupsModel;
+}
+
+const CT_OutStdSingularItemModel* CT_AbstractReader::outHeaderModel() const
+{
+    return m_outHeaderModel;
+}
+
+const void CT_AbstractReader::setOutHeaderModel(CT_OutStdSingularItemModel* headerModel)
+{
+    m_outHeaderModel = headerModel;
 }
 
 const QList<FileFormat>& CT_AbstractReader::readableFormats() const

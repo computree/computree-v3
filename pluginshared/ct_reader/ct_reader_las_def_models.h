@@ -5,6 +5,7 @@
   * DEFINITION OF MODELS USED BY THE LAS READER
   */
 
+#define DEF_CT_Reader_LAS_header                    "headerLAS"
 #define DEF_CT_Reader_LAS_sceneOut                  "sce"
 #define DEF_CT_Reader_LAS_attributesOut             "atts"
 #define DEF_CT_Reader_LAS_intensityOut              "int"

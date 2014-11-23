@@ -13,15 +13,13 @@
 #include <QDataStream>
 #include <QDate>
 
-CT_Reader_LAS::CT_Reader_LAS()
+CT_Reader_LAS::CT_Reader_LAS() : CT_AbstractReader()
 {
-    m_header = NULL;
     m_centerCloud = false;
 }
 
 CT_Reader_LAS::~CT_Reader_LAS()
 {
-    delete m_header;
 }
 
 bool CT_Reader_LAS::setFilePath(const QString &filepath)
@@ -39,6 +37,7 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
             QString error;
 
             CT_LASHeader *header = new CT_LASHeader();
+            header->setFile(filepath);
 
             if(header->read(stream, error))
                 ok = CT_AbstractReader::setFilePath(filepath);
@@ -47,10 +46,13 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
             {
                 m_header = header;
 
-                setToolTip(m_header->toString());
+                setToolTip(((CT_LASHeader*)m_header)->toString());
             }
             else
+            {
                 delete header;
+                header = NULL;
+            }
         }
 
         f.close();
@@ -73,6 +75,7 @@ CT_LASHeader* CT_Reader_LAS::readHeader(QString &error) const
             QDataStream stream(&f);
 
             header = new CT_LASHeader();
+            header->setFile(filepath());
             header->read(stream, error);
         }
 
@@ -101,11 +104,13 @@ void CT_Reader_LAS::protectedInit()
 
 void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
 {
+    setOutHeaderModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_header, new CT_LASHeader(), tr("LAS Header")));
+
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_sceneOut, new CT_Scene(), tr("Scène")));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_attributesOut, new CT_StdLASPointsAttributesContainer(), tr("All Attributs")));
 
     // CORE of file format from 0 to 5
-    if(m_header->m_pointDataRecordFormat < 6)
+    if(((CT_LASHeader*)m_header)->m_pointDataRecordFormat < 6)
     {
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_returnNumberOut, new CT_PointsAttributesScalarMaskT<PointCore0_5>(), tr("Return Number")));
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_numberOfReturnsOut, new CT_PointsAttributesScalarMaskT<PointCore0_5>(), tr("Number of Returns")));
@@ -130,23 +135,23 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
 
     // Other options (depend on file format)
 
-    if(m_header->m_pointDataRecordFormat < 6)
+    if(((CT_LASHeader*)m_header)->m_pointDataRecordFormat < 6)
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_scanAngleRankOut, new CT_PointsAttributesScalarTemplated<qint8>(), tr("Scan Angle Rank")));
     else
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_scanAngleRankOut, new CT_PointsAttributesScalarTemplated<qint16>(), tr("Scan Angle")));
 
     // GPS Time
-    if((m_header->m_pointDataRecordFormat == 1)
-            || (m_header->m_pointDataRecordFormat > 2))
+    if((((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 1)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat > 2))
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_gpsTimeOut, new CT_PointsAttributesScalarTemplated<double>(), tr("GPS Time")));
 
     // Color
-    if((m_header->m_pointDataRecordFormat == 2)
-            || (m_header->m_pointDataRecordFormat == 3)
-            || (m_header->m_pointDataRecordFormat == 5)
-            || (m_header->m_pointDataRecordFormat == 7)
-            || (m_header->m_pointDataRecordFormat == 8)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 2)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 3)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 5)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 7)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 8)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 10))
     {
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_colorOut, new CT_PointsAttributesColor(), tr("Color")));
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_colorROut, new CT_PointsAttributesScalarTemplated<quint16>(), tr("Red")));
@@ -155,10 +160,10 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
     }
 
     // Wave Packets
-    if((m_header->m_pointDataRecordFormat == 4)
-            || (m_header->m_pointDataRecordFormat == 5)
-            || (m_header->m_pointDataRecordFormat == 9)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 4)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 5)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 9)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 10))
     {
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_wavePacketOut, new CT_PointsAttributesScalarTemplated<quint8>(), tr("Wave Packet Descriptor Index")));
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_byteOffsetWaveformOut, new CT_PointsAttributesScalarTemplated<quint64>(), tr("Byte offset to waveform data")));
@@ -167,14 +172,14 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
     }
 
     // NIR
-    if((m_header->m_pointDataRecordFormat == 8)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 8)
+            || (((CT_LASHeader*)m_header)->m_pointDataRecordFormat == 10))
         addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LAS_nirOut, new CT_PointsAttributesScalarTemplated<quint16>(), tr("NIR")));
 }
 
 bool CT_Reader_LAS::protectedReadFile()
 {
-    size_t nPoints = m_header->getPointsRecordCount();
+    size_t nPoints = ((CT_LASHeader*)m_header)->getPointsRecordCount();
 
     if(nPoints == 0)
     {
@@ -196,9 +201,9 @@ bool CT_Reader_LAS::protectedReadFile()
             delete m_header;
             m_header = readHeader(error);
 
-            setToolTip(m_header->toString());
+            setToolTip(((CT_LASHeader*)m_header)->toString());
 
-            f.seek(m_header->m_offsetToPointData);
+            f.seek(((CT_LASHeader*)m_header)->m_offsetToPointData);
 
             QDataStream stream(&f);
             stream.setByteOrder(QDataStream::LittleEndian);
@@ -207,10 +212,10 @@ bool CT_Reader_LAS::protectedReadFile()
             double xc, yc, zc;
 
             quint64 pos = f.pos();
-            bool mustTransformPoint = m_header->mustTransformPoints();
-            QVector3D center((m_header->m_maxX+m_header->m_minX)/2.0,
-                             (m_header->m_maxY+m_header->m_minY)/2.0,
-                             (m_header->m_maxZ+m_header->m_minZ)/2.0);
+            bool mustTransformPoint = ((CT_LASHeader*)m_header)->mustTransformPoints();
+            QVector3D center((((CT_LASHeader*)m_header)->m_maxX+((CT_LASHeader*)m_header)->m_minX)/2.0,
+                             (((CT_LASHeader*)m_header)->m_maxY+((CT_LASHeader*)m_header)->m_minY)/2.0,
+                             (((CT_LASHeader*)m_header)->m_maxZ+((CT_LASHeader*)m_header)->m_minZ)/2.0);
 
             CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
 
@@ -220,7 +225,7 @@ bool CT_Reader_LAS::protectedReadFile()
             CT_StandardCloudStdVectorT<qint16> *scanAngleRankV6_10 = NULL;
             CT_StandardCloudStdVectorT<PointCore6_10> *mask6_10V = NULL;
 
-            if(m_header->m_pointDataRecordFormat < 6)
+            if(((CT_LASHeader*)m_header)->m_pointDataRecordFormat < 6)
             {
                 mask0_5V = new CT_StandardCloudStdVectorT<PointCore0_5>(nPoints);
                 scanAngleRankV0_5 = new CT_StandardCloudStdVectorT<qint8>(nPoints);
@@ -347,7 +352,7 @@ bool CT_Reader_LAS::protectedReadFile()
 
                 if(mustTransformPoint)
                 {
-                    m_header->transformPoint(x, y, z, xc, yc, zc);
+                    ((CT_LASHeader*)m_header)->transformPoint(x, y, z, xc, yc, zc);
 
                     if(m_centerCloud)
                     {
@@ -366,7 +371,7 @@ bool CT_Reader_LAS::protectedReadFile()
                         PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
                 }
 
-                pos += m_header->m_pointDataRecordLength;
+                pos += ((CT_LASHeader*)m_header)->m_pointDataRecordLength;
                 f.seek(pos);
 
                 setProgress((i*100)/nPoints);
@@ -374,16 +379,16 @@ bool CT_Reader_LAS::protectedReadFile()
 
             CT_AbstractCoordinateSystem::realIm xmin, ymin, zmin, xmax, ymax, zmax;
 
-            PS_COORDINATES_SYS->convertImport(m_centerCloud ? m_header->m_minX-center.x() : m_header->m_minX,
-                                              m_centerCloud ? m_header->m_minY-center.y() : m_header->m_minY,
-                                              m_centerCloud ? m_header->m_minZ-center.z() : m_header->m_minZ,
+            PS_COORDINATES_SYS->convertImport(m_centerCloud ? ((CT_LASHeader*)m_header)->m_minX-center.x() : ((CT_LASHeader*)m_header)->m_minX,
+                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_minY-center.y() : ((CT_LASHeader*)m_header)->m_minY,
+                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_minZ-center.z() : ((CT_LASHeader*)m_header)->m_minZ,
                                               xmin,
                                               ymin,
                                               zmin);
 
-            PS_COORDINATES_SYS->convertImport(m_centerCloud ? m_header->m_maxX-center.x() : m_header->m_maxX,
-                                              m_centerCloud ? m_header->m_maxY-center.y() : m_header->m_maxY,
-                                              m_centerCloud ? m_header->m_maxZ-center.z() : m_header->m_maxZ,
+            PS_COORDINATES_SYS->convertImport(m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxX-center.x() : ((CT_LASHeader*)m_header)->m_maxX,
+                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxY-center.y() : ((CT_LASHeader*)m_header)->m_maxY,
+                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxZ-center.z() : ((CT_LASHeader*)m_header)->m_maxZ,
                                               xmax,
                                               ymax,
                                               zmax);

@@ -342,7 +342,6 @@ SOURCES += \
     ct_reader/tools/las/ct_lasgpspacket.cpp \
     ct_reader/tools/las/ct_laspointformat9.cpp \
     ct_reader/tools/las/ct_laspointformat10.cpp \
-    ct_reader/tools/las/ct_lasheader.cpp \
     ct_shape2ddata/ct_box2ddata.cpp \
     ct_shape2ddata/ct_circle2ddata.cpp \
     ct_shape2ddata/ct_line2ddata.cpp \
@@ -366,7 +365,10 @@ SOURCES += \
     ct_itemdrawable/ct_point2d.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.cpp \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.cpp \
-    ct_attributes/ct_stditemattributet.cpp
+    ct_attributes/ct_stditemattributet.cpp \
+    ct_itemdrawable/abstract/ct_abstractdatasource.cpp \
+    ct_itemdrawable/ct_fileheader.cpp \
+    ct_reader/headers/ct_lasheader.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -800,7 +802,6 @@ HEADERS += interfaces.h \
     ct_reader/tools/las/ct_lasgpspacket.h \
     ct_reader/tools/las/ct_laspointformat9.h \
     ct_reader/tools/las/ct_laspointformat10.h \
-    ct_reader/tools/las/ct_lasheader.h \
     ct_shape2ddata/ct_box2ddata.h \
     ct_shape2ddata/ct_circle2ddata.h \
     ct_shape2ddata/ct_line2ddata.h \
@@ -823,7 +824,10 @@ HEADERS += interfaces.h \
     ct_shape2ddata/ct_point2ddata.h \
     ct_itemdrawable/ct_point2d.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.h \
-    ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h
+    ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h \
+    ct_itemdrawable/abstract/ct_abstractdatasource.h \
+    ct_itemdrawable/ct_fileheader.h \
+    ct_reader/headers/ct_lasheader.h
 
 
 INCLUDEPATH += .
