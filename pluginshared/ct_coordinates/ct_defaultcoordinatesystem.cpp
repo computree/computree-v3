@@ -2,6 +2,7 @@
 
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 #include "ct_coordinates/view/ct_gdefaultcoordinatesystem.h"
+#include "ct_global/ct_context.h"
 
 #include <limits>
 
@@ -43,13 +44,13 @@ void CT_DefaultCoordinateSystem::convertImport(CT_AbstractCoordinateSystem::real
                                                CT_AbstractCoordinateSystem::DatasToConvert convert) const
 {
     if(convert.testFlag(CONVERT_X))
-        xOut = x+m_xOffset;
+        xOut = x-m_xOffset;
 
     if(convert.testFlag(CONVERT_Y))
-        yOut = y+m_yOffset;
+        yOut = y-m_yOffset;
 
     if(convert.testFlag(CONVERT_Z))
-        zOut = z+m_zOffset;
+        zOut = z-m_zOffset;
 
     informThatUsed();
 }
@@ -63,13 +64,13 @@ void CT_DefaultCoordinateSystem::convertExport(CT_AbstractCoordinateSystem::real
                                                CT_AbstractCoordinateSystem::DatasToConvert convert) const
 {
     if(convert.testFlag(CONVERT_X))
-        xOut = x-m_xOffset;
+        xOut = x+m_xOffset;
 
     if(convert.testFlag(CONVERT_Y))
-        yOut = y-m_yOffset;
+        yOut = y+m_yOffset;
 
     if(convert.testFlag(CONVERT_Z))
-        zOut = z-m_zOffset;
+        zOut = z+m_zOffset;
 
     informThatUsed();
 }
@@ -83,11 +84,16 @@ bool CT_DefaultCoordinateSystem::configure()
     return (dialog.exec() == QDialog::Accepted);
 }
 
-void CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x,
+bool CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x,
                                            CT_AbstractCoordinateSystem::realEx y,
                                            CT_AbstractCoordinateSystem::realEx z)
 {
+    if(PS_REPOSITORY->globalPointCloud()->size() != 0)
+        return false;
+
     m_xOffset = x;
     m_yOffset = y;
     m_zOffset = z;
+
+    return true;
 }

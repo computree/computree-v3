@@ -201,6 +201,8 @@ bool CT_Reader_LAS::protectedReadFile()
             delete m_header;
             m_header = readHeader(error);
 
+            PS_COORDINATES_SYS->setOffset(m_header->minX(), m_header->minY(), m_header->minZ());
+
             setToolTip(((CT_LASHeader*)m_header)->toString());
 
             f.seek(((CT_LASHeader*)m_header)->m_offsetToPointData);

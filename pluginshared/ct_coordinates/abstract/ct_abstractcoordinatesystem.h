@@ -78,6 +78,11 @@ public:
      */
     virtual bool configure() = 0;
 
+    /**
+     * @brief Modify offset of this coordinate system
+     */
+    virtual bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z) = 0;
+
 private:
     mutable bool        m_used;
 

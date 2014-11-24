@@ -149,6 +149,8 @@ bool CT_Reader_XYB::protectedReadFile()
 
     float xc, yc, zc;
 
+    PS_COORDINATES_SYS->setOffset(_xc, _yc, _zc);
+
     PS_COORDINATES_SYS->convertImport(_xc, _yc, _zc, xc, yc, zc);
     _xc = xc;
     _yc = yc;

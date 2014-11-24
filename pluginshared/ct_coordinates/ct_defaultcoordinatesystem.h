@@ -52,7 +52,7 @@ public:
     /**
      * @brief Modify offset of this coordinate system
      */
-    void setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z);
+    bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z);
 
     /**
      * @brief X Offset
