@@ -116,8 +116,8 @@ public:
     inline quint16 get_projectIDGuidData2() const {return m_projectIDGuidData2;}
     inline quint16 get_projectIDGuidData3() const {return m_projectIDGuidData3;}
     inline quint64 get_projectIDGuidData4() const {return m_projectIDGuidData4;}
-    inline quint8 get_versionMajor() const {return m_versionMajor;}
-    inline quint8 get_versionMinor() const {return m_versionMinor;}
+    inline quint16 get_versionMajor() const {return m_versionMajor;}
+    inline quint16 get_versionMinor() const {return m_versionMinor;}
     inline QString get_systemID() const {return QString(m_systemID);} //
     inline QString get_sofwareID() const {return QString(m_sofwareID);} //
     inline quint16 get_fileCreationDayOfYear() const {return m_fileCreationDayOfYear;}
@@ -125,7 +125,7 @@ public:
     inline quint16 get_headerSize() const {return m_headerSize;}
     inline quint32 get_offsetToPointData() const {return m_offsetToPointData;}
     inline quint32 get_numberOfVariableLengthRecords() const {return m_numberOfVariableLengthRecords;}
-    inline quint8 get_pointDataRecordFormat() const {return m_pointDataRecordFormat;}
+    inline quint16 get_pointDataRecordFormat() const {return m_pointDataRecordFormat;}
     inline quint16 get_pointDataRecordLength() const {return m_pointDataRecordLength;}
     inline quint32 get_legacyNumberOfPointRecord() const {return m_legacyNumberOfPointRecord;}
     inline QString get_legacyNumberOfPointsByReturn() const {return m_legacyNumberOfPointsByReturn_ToString();} //
