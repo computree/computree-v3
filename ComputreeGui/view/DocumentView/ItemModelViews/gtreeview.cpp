@@ -723,6 +723,8 @@ void GTreeView::refreshHeaders()
     m_treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     #endif
 
+    m_treeView->header()->setStretchLastSection(false);
+
     m_model->finishAppendRows();
 }
 
