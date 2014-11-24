@@ -85,10 +85,10 @@ private:
 
     CT_DEFAULT_IA_BEGIN(CT_Line2D)
     CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataLength(), &CT_Line2D::length, QObject::tr("Longueur de la ligne"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataCoordinate(), &CT_Line2D::x1, QObject::tr("X1"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataCoordinate(), &CT_Line2D::y1, QObject::tr("Y1"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataCoordinate(), &CT_Line2D::x2, QObject::tr("X2"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataCoordinate(), &CT_Line2D::y2, QObject::tr("Y2"))
+    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x1, QObject::tr("X1"))
+    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y1, QObject::tr("Y1"))
+    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x2, QObject::tr("X2"))
+    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y2, QObject::tr("Y2"))
     CT_DEFAULT_IA_END(CT_Line2D)
 
     const static CT_StandardLine2DDrawManager  LINE2D_DRAW_MANAGER;
