@@ -70,4 +70,6 @@ exists(../use_gdal.ini) {
 
 } else {
     message( ------- use_gdal.ini NOT detected ------ )
+    message( if you want to use it you can download the lastest version with svn at https://svn.osgeo.org/gdal/trunk/gdal )
+    message( ---------------------------------------- )
 }

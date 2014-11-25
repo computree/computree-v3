@@ -829,7 +829,8 @@ HEADERS += interfaces.h \
     ct_itemdrawable/abstract/ct_abstractdatasource.h \
     ct_itemdrawable/ct_fileheader.h \
     ct_reader/headers/ct_lasheader.h \
-    ct_reader/ct_reader_gdal.h
+    ct_reader/ct_reader_gdal.h \
+    ct_reader/ct_reader_gdal_def_models.h
 
 
 INCLUDEPATH += .

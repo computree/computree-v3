@@ -2,6 +2,7 @@
 #define CT_READER_GDAL_H
 
 #include "ct_reader/abstract/ct_abstractreader.h"
+#include "ct_reader/ct_reader_gdal_def_models.h"
 
 #ifdef USE_GDAL
 #include "gdal_priv.h"
@@ -33,7 +34,8 @@ protected:
 
 #ifdef USE_GDAL
 private:
-    GDALDriver *m_driver;
+    GDALDriver                                      *m_driver;
+    QHash<QString, CT_OutStdSingularItemModel*>     m_models;
 
     /**
      * @brief Return true if the file can be opened by this driver
@@ -45,6 +47,11 @@ private:
      * @return NULL if the file can not be read or is was an error
      */
     GDALDataset* getDataSet(const QString &filepath) const;
+
+    /**
+     * @brief Convert the poGeometry to a CT_XXX object and add it to a new group for the layer 'layerIndex'
+     */
+    void convertGeometryToCT(OGRGeometry *poGeometry, int layerIndex);
 #endif
 };
 
