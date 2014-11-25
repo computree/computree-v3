@@ -14,6 +14,11 @@ public:
 
     void init();
 
+    /**
+     * @brief Inherited to return the name of the reader
+     */
+    virtual QString getStepName() const;
+
     QString getStepDescription() const;
 
     QList<QString> getFileExtensionAccepted() const;

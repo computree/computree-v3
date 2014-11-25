@@ -714,7 +714,10 @@ QString GMainWindow::createFileExtensionAvailable()
 {
     CDM_PluginManager *pluginManager = getStepManager()->getScriptManager()->getPluginManager();
 
-    QString fileExtension;
+    static QString fileExtension;
+
+    if(!fileExtension.isEmpty())
+        return fileExtension;
 
     fileExtension += tr("All Valid Files (");
 

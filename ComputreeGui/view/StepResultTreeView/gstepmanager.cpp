@@ -450,7 +450,7 @@ QString GStepManager::staticGetStepName(CT_VirtualAbstractStep &step)
         QString filePath = stepLF->getFilePath();
         QFileInfo info(filePath);
 
-        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepCustomName() == step.getStepName() ? info.fileName() : step.getStepCustomName());
+        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(((step.getStepCustomName() == step.getStepName()) && !info.fileName().isEmpty()) ? info.fileName() : step.getStepCustomName());
     }
 
     return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepCustomName() == step.getStepName() ? step.getStepExtendedName() : step.getStepCustomName());
@@ -633,7 +633,7 @@ void GStepManager::addOpenFileStep(QString filePath)
             {
                 CT_AbstractStepLoadFile *stepLf = itLf.next();
 
-                cb->addItem(stepLf->getStepName() + " (" + pluginManager->getPluginName(stepLf->getPlugin()) + ")");
+                cb->addItem(GStepManager::staticGetStepName(*stepLf) + " (" + pluginManager->getPluginName(stepLf->getPlugin()) + ")");
             }
 
             if(dialog.exec() == 1)

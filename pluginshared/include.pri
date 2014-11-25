@@ -20,6 +20,8 @@
 #"../../external/boost/lib"
 #"../../external/boost/include"
 
+include(../include_gdal.pri)
+
 contains(QMAKE_TARGET.arch, x86_64) {
     DEFINES += ENVIRONMENT64
 } else {

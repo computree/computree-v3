@@ -35,8 +35,6 @@ public:
 
     bool setFilePath(const QString &filepath);
 
-    //bool configure();
-
     /**
      * @brief Read the header and return it if it was no error. Otherwise return NULL.
      *        You are responsible to delete the header returned by this method.
@@ -50,9 +48,6 @@ protected:
     void protectedInit();
     void protectedCreateOutItemDrawableModelList();
     bool protectedReadFile();
-
-private:
-    bool            m_centerCloud;
 };
 
 #endif // CT_READER_LAS_H

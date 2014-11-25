@@ -84,10 +84,15 @@
 #include "ct_reader/ct_reader_larchitect_grid.h"
 #include "ct_reader/ct_reader_opf.h"
 #include "ct_reader/ct_reader_las.h"
+#include "ct_reader/ct_reader_gdal.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
 #include <QMessageBox>
+
+#ifdef USE_GDAL
+#include "gdal_priv.h"
+#endif
 
 #define DEF_ExporterSeparatorTitle "Exporters"
 
@@ -96,6 +101,10 @@ PB_StepPluginManager::PB_StepPluginManager() : CT_AbstractStepPlugin()
     m_fileLog.setFilePath("./logPB.txt");
     m_fileLog.setSeverityAccepted(QVector<int>() << LogInterface::debug);
     m_fileLog.setFilter("pb");
+
+    #ifdef USE_GDAL
+    CPLSetErrorHandler(PB_StepPluginManager::staticGdalErrorHandler);
+    #endif
 }
 
 PB_StepPluginManager::~PB_StepPluginManager()
@@ -316,6 +325,32 @@ bool PB_StepPluginManager::loadReaders()
 
 bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 {
+    // load gdal drivers and create readers
+#ifdef USE_GDAL
+    GDALAllRegister();
+    GDALDriverManager *driverManager = GetGDALDriverManager();
+
+    int count = driverManager->GetDriverCount();
+
+    if(count > 0) {
+
+        CT_StandardReaderSeparator *sep;
+
+        for(int i=0; i<count; ++i) {
+            GDALDriver *driver = driverManager->GetDriver(i);
+            QString suffix = QString(driver->GetMetadataItem(GDAL_DMD_EXTENSION));
+            QString name = QString(driver->GetMetadataItem(GDAL_DMD_LONGNAME));
+            name.remove(QRegExp("\\(\\..*\\)"));
+
+            if(!suffix.isEmpty() && !name.isEmpty()) {
+                sep = addNewSeparator(new CT_StandardReaderSeparator(name));
+                sep->addReader(new CT_Reader_GDAL(driver));
+            }
+        }
+    }
+#endif
+
+    // create step for exporter and readers
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
 
     CT_StepSeparator *sepGE = addNewSeparator(new CT_StepSeparator(DEF_ExporterSeparatorTitle));
@@ -372,3 +407,26 @@ void PB_StepPluginManager::aboutToBeUnloaded()
     clearOpenFileStep();
     clearCanBeAddedFirstStep();
 }
+
+#ifdef USE_GDAL
+void PB_StepPluginManager::staticGdalErrorHandler(CPLErr eErrClass, int err_no, const char *msg)
+{
+    int severity = LogInterface::trace;
+
+    switch(eErrClass) {
+    case CE_Debug : severity = LogInterface::debug;
+        break;
+
+    case CE_Warning: severity = LogInterface::warning;
+        break;
+
+    case CE_Failure: severity = LogInterface::error;
+        break;
+
+    case CE_Fatal: severity = LogInterface::fatal;
+        break;
+    }
+
+    PS_LOG->addMessage(severity, LogInterface::plugin, QString(msg));
+}
+#endif

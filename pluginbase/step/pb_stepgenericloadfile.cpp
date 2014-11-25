@@ -30,6 +30,16 @@ void PB_StepGenericLoadFile::init()
     CT_AbstractStepLoadFile::init();
 }
 
+QString PB_StepGenericLoadFile::getStepName() const
+{
+    const QList<FileFormat> &list = m_reader->readableFormats();
+
+    if(list.isEmpty())
+        return CT_AbstractStepLoadFile::getStepName();
+
+    return list.first().description();
+}
+
 QString PB_StepGenericLoadFile::getStepDescription() const
 {
     if(m_reader != NULL)

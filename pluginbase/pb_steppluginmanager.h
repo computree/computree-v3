@@ -32,6 +32,10 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_log/ct_fileloglistener.h"
 
+#ifdef USE_GDAL
+#include "gdal.h"
+#endif
+
 class PB_StepPluginManager : public CT_AbstractStepPlugin
 {
 public:
@@ -61,6 +65,10 @@ protected:
 
 private:
     CT_FileLogListener m_fileLog;
+
+    #ifdef USE_GDAL
+    static void staticGdalErrorHandler(CPLErr eErrClass, int err_no, const char *msg);
+    #endif
 };
 
 #endif // PB_STEPPLUGINMANAGER_H

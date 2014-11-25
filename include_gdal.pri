@@ -7,6 +7,8 @@
 # example for windows (remove # symbols) WARNING : slash must be like this / :
 #"C:/gdal"
 
+# the variable USE_GDAL is defined if all elements of gdal was found
+
 exists(../use_gdal.ini) {
     message( ------- use_gdal.ini detected ------ )
     TMP_CAT =
@@ -56,9 +58,11 @@ exists(../use_gdal.ini) {
 
         INCLUDEPATH += $$GDAL_INCLUDE_PATH
         LIBS += $$GDAL_LIB_PATH
-        LIBS += -lws2_32
-        LIBS += -lz
-        LIBS += -liconv
+        #LIBS += -lws2_32
+        #LIBS += -lz
+        #LIBS += -liconv
+
+        DEFINES += USE_GDAL
 
     } else {
         message( ------- Path of GDAL NOT found : $$GDAL_PATH ------- )

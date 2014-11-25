@@ -15,7 +15,6 @@
 
 CT_Reader_LAS::CT_Reader_LAS() : CT_AbstractReader()
 {
-    m_centerCloud = false;
 }
 
 CT_Reader_LAS::~CT_Reader_LAS()
@@ -84,13 +83,6 @@ CT_LASHeader* CT_Reader_LAS::readHeader(QString &error) const
 
     return header;
 }
-
-/*bool CT_Reader_LAS::configure()
-{
-    m_centerCloud = QMessageBox::question(NULL, tr("Question"), tr("Voulez vous centrer le nuage de points ?")) == QMessageBox::Yes;
-
-    return true;
-}*/
 
 CT_AbstractReader* CT_Reader_LAS::copy() const
 {
@@ -356,21 +348,11 @@ bool CT_Reader_LAS::protectedReadFile()
                 {
                     ((CT_LASHeader*)m_header)->transformPoint(x, y, z, xc, yc, zc);
 
-                    if(m_centerCloud)
-                    {
-                        xc -= center.x();
-                        yc -= center.y();
-                        zc -= center.z();
-                    }
-
                     PS_COORDINATES_SYS->convertImport(xc, yc, zc, p(0), p(1), p(2));
                 }
                 else
                 {
-                    if(m_centerCloud)
-                        PS_COORDINATES_SYS->convertImport(((double)x)-center.x(), ((double)y)-center.y(), ((double)z)-center.z(), p(0), p(1), p(2));
-                    else
-                        PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
+                    PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
                 }
 
                 pos += ((CT_LASHeader*)m_header)->m_pointDataRecordLength;
@@ -381,16 +363,16 @@ bool CT_Reader_LAS::protectedReadFile()
 
             CT_AbstractCoordinateSystem::realIm xmin, ymin, zmin, xmax, ymax, zmax;
 
-            PS_COORDINATES_SYS->convertImport(m_centerCloud ? ((CT_LASHeader*)m_header)->m_minX-center.x() : ((CT_LASHeader*)m_header)->m_minX,
-                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_minY-center.y() : ((CT_LASHeader*)m_header)->m_minY,
-                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_minZ-center.z() : ((CT_LASHeader*)m_header)->m_minZ,
+            PS_COORDINATES_SYS->convertImport(((CT_LASHeader*)m_header)->m_minX,
+                                              ((CT_LASHeader*)m_header)->m_minY,
+                                              ((CT_LASHeader*)m_header)->m_minZ,
                                               xmin,
                                               ymin,
                                               zmin);
 
-            PS_COORDINATES_SYS->convertImport(m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxX-center.x() : ((CT_LASHeader*)m_header)->m_maxX,
-                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxY-center.y() : ((CT_LASHeader*)m_header)->m_maxY,
-                                              m_centerCloud ? ((CT_LASHeader*)m_header)->m_maxZ-center.z() : ((CT_LASHeader*)m_header)->m_maxZ,
+            PS_COORDINATES_SYS->convertImport(((CT_LASHeader*)m_header)->m_maxX,
+                                              ((CT_LASHeader*)m_header)->m_maxY,
+                                              ((CT_LASHeader*)m_header)->m_maxZ,
                                               xmax,
                                               ymax,
                                               zmax);

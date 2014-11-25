@@ -368,7 +368,8 @@ SOURCES += \
     ct_attributes/ct_stditemattributet.cpp \
     ct_itemdrawable/abstract/ct_abstractdatasource.cpp \
     ct_itemdrawable/ct_fileheader.cpp \
-    ct_reader/headers/ct_lasheader.cpp
+    ct_reader/headers/ct_lasheader.cpp \
+    ct_reader/ct_reader_gdal.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -827,7 +828,8 @@ HEADERS += interfaces.h \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h \
     ct_itemdrawable/abstract/ct_abstractdatasource.h \
     ct_itemdrawable/ct_fileheader.h \
-    ct_reader/headers/ct_lasheader.h
+    ct_reader/headers/ct_lasheader.h \
+    ct_reader/ct_reader_gdal.h
 
 
 INCLUDEPATH += .
@@ -914,3 +916,5 @@ macx {
         }
     }
 }
+
+OTHER_FILES +=
