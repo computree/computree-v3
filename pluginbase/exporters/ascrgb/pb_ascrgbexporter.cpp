@@ -109,7 +109,7 @@ bool PB_ASCRGBExporter::protectedExportToFile()
 
                 if(cc == NULL)
                 {
-                    txtStream << "0 0 0";
+                    txtStream << "0 0 0\n";
                 }
                 else
                 {
