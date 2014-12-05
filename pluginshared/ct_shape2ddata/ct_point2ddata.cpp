@@ -35,6 +35,10 @@ CT_Point2DData::CT_Point2DData(const QVector2D &point) : CT_Shape2DData(point)
 {
 }
 
+CT_Point2DData::CT_Point2DData(const float &x, const float &y) : CT_Shape2DData(x, y)
+{
+}
+
 double CT_Point2DData::x() const
 {
     return getCenter().x();

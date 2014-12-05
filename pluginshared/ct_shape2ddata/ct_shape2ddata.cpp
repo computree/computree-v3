@@ -34,6 +34,12 @@ CT_Shape2DData::CT_Shape2DData(const QVector2D &center)
     _center = center;
 }
 
+CT_Shape2DData::CT_Shape2DData(const float &x, const float &y)
+{
+    _center.setX(x);
+    _center.setY(y);
+}
+
 CT_Shape2DData::~CT_Shape2DData() {}
 
 const QVector2D &CT_Shape2DData::getCenter() const

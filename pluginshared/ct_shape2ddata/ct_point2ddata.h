@@ -35,6 +35,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_Point2DData : public CT_Shape2DData
 public:
     CT_Point2DData();
     CT_Point2DData(const QVector2D &point);
+    CT_Point2DData(const float &x, const float &y);
 
     double x() const;
     double y() const;

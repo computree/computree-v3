@@ -40,6 +40,7 @@ public:
 
     CT_Shape2DData();
     CT_Shape2DData(const QVector2D &center);
+    CT_Shape2DData(const float &x, const float &y);
     virtual ~CT_Shape2DData();
 
     const QVector2D& getCenter() const;

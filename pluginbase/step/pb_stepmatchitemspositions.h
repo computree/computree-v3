@@ -86,6 +86,9 @@ private:
     double    _distThreshold;    /*!<  */
     double    _relativeSizeThreshold;    /*!<  */
     double    _minRelativeSize;    /*!<  */
+    double     _coef_nbRwc;
+    double     _coef_nbTwc;
+    double     _coef_nbSim;
 
 };
 

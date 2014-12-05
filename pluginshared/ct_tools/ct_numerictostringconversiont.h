@@ -36,4 +36,31 @@ inline QString CT_NumericToStringConversionT<bool>::toString(const bool &i, char
     return i ? "true" : "false";
 }
 
+template<>
+inline QString CT_NumericToStringConversionT<float>::toString(const float &i, char f, int prec)
+{
+    Q_UNUSED(f)
+    Q_UNUSED(prec)
+
+    return QString::number(i, 'g', 10);
+}
+
+template<>
+inline QString CT_NumericToStringConversionT<double>::toString(const double &i, char f, int prec)
+{
+    Q_UNUSED(f)
+    Q_UNUSED(prec)
+
+    return QString::number(i, 'g', 20);
+}
+
+template<>
+inline QString CT_NumericToStringConversionT<long double>::toString(const long double &i, char f, int prec)
+{
+    Q_UNUSED(f)
+    Q_UNUSED(prec)
+
+    return QString::number(i, 'g', 40);
+}
+
 #endif // CT_NUMERICTOSTRINGCONVERSIONT_H

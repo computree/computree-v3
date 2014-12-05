@@ -141,7 +141,11 @@ public:
     *
     *  \return Returns the position of the scanner
     */
-    inline QVector3D getPosition() const { return _position; }
+    inline QVector3D getPosition() const { return QVector3D(getCenterX(), getCenterY(), getCenterZ()); }
+
+    inline float getPositionX() const {return getCenterX();}
+    inline float getPositionY() const {return getCenterY();}
+    inline float getPositionZ() const {return getCenterZ();}
 
     /*!
     *  \brief Getter of the class
@@ -149,6 +153,11 @@ public:
     *  \return Returns the ID of the scanner
     */
     inline QVector3D getZVector() const { return _zVector; }
+
+    inline float getZVectorX() const {return _zVector.x();}
+    inline float getZVectorY() const {return _zVector.y();}
+    inline float getZVectorZ() const {return _zVector.z();}
+
 
     /*!
     *  \brief Getter of the class
@@ -224,7 +233,7 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setPosition ( const QVector3D& position ) { _position = position; }
+    inline void setPosition ( const QVector3D& position ) { setCenterX(position.x());setCenterY(position.y());setCenterZ(position.z()); }
 
     /*!
     *  \brief Setter of the class
@@ -334,7 +343,6 @@ public :
 
 private :
     int			_scanID;        /*!< ID of the scan*/
-    QVector3D	_position;		/*!< position of the scan in the world coordinate system (usually based on the scan with ID 0)*/
     QVector3D	_zVector;		/*!< direction of the scan's vertica in the world coordinate system*/
     double		_hFov;			/*!< horizontal field of view*/
     double		_vFov;			/*!< vertical field of view*/
@@ -345,6 +353,27 @@ private :
     int			_nHRays;		/*!< number of ray on a entire horizontal move of the scan*/
     int			_nVRays;		/*!< number of ray on a entire horizontal move of the scan*/
     bool        _clockWise;     /*!< Whether the scan has been done in clockwise or not*/
+
+    CT_DEFAULT_IA_BEGIN(CT_Scanner)
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getHFov, QObject::tr("HFov"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getVFov, QObject::tr("VFov"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getHRes, QObject::tr("HRes"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getVRes, QObject::tr("VRes"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitTheta, QObject::tr("InitTheta"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitPhi, QObject::tr("InitPhi"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNHRays, QObject::tr("NHRays"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNVRays, QObject::tr("NVRays"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataValue(), &CT_Scanner::getClockWise, QObject::tr("ClockWise"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataX(), &CT_Scanner::getPositionX, QObject::tr("PositionX"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataY(), &CT_Scanner::getPositionY, QObject::tr("PositionY"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataZ(), &CT_Scanner::getPositionZ, QObject::tr("PositionZ"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataXDirection(), &CT_Scanner::getZVectorX, QObject::tr("ZVectorX"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataYDirection(), &CT_Scanner::getZVectorY, QObject::tr("ZVectorY"))
+    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataZDirection(), &CT_Scanner::getZVectorZ, QObject::tr("ZVectorZ"))
+    CT_DEFAULT_IA_END(CT_Scanner)
+
+
 
     const static CT_StandardScannerDrawManager CT_SCANNER_DRAW_MANAGER;
 };

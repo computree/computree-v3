@@ -33,13 +33,17 @@
 #include <math.h>
 #endif
 
+CT_DEFAULT_IA_INIT(CT_Scanner)
+
 // Initializing the draw manager
 const CT_StandardScannerDrawManager CT_Scanner::CT_SCANNER_DRAW_MANAGER;
 
 CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud()
 {
     _scanID = scanID;
-    _position = QVector3D(0,0,0);
+    setCenterX(0);
+    setCenterY(0);
+    setCenterZ(0);
     _zVector = QVector3D(0,0,1);
     _hFov = 0;
     _vFov = 0;
@@ -51,18 +55,15 @@ CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWith
     _nVRays = 0;
     _clockWise = clockWise;
 
-    // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _position.x() );
-    setCenterY( _position.y() );
-    setCenterZ( _position.z() );
-
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
 CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
 {
     _scanID = scanId;
-    _position = QVector3D(0,0,0);
+    setCenterX(0);
+    setCenterY(0);
+    setCenterZ(0);
     _zVector = QVector3D(0,0,1);
     _hFov = 0;
     _vFov = 0;
@@ -73,11 +74,6 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_Ab
     _nHRays = 0;
     _nVRays = 0;
     _clockWise = clocWise;
-
-    // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _position.x() );
-    setCenterY( _position.y() );
-    setCenterZ( _position.z() );
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -97,7 +93,9 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
                        bool radians) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
 {
     _scanID = scanID;
-    _position = origin;
+    setCenterX(origin.x());
+    setCenterY(origin.y());
+    setCenterZ(origin.z());
     _zVector = zVector;
     _clockWise = clockWise;
 
@@ -128,11 +126,6 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
     _nHRays = (int)ceil(fabs(_hFov/_hRes));
     _nVRays = (int)ceil(fabs(_vFov/_vRes));
 
-    // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _position.x() );
-    setCenterY( _position.y() );
-    setCenterZ( _position.z() );
-
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
@@ -141,7 +134,9 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
 CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
 {
     _scanID = scanId;
-    _position = QVector3D(0,0,0);
+    setCenterX(0);
+    setCenterY(0);
+    setCenterZ(0);
     _zVector = QVector3D(0,0,1);
     _hFov = 0;
     _vFov = 0;
@@ -152,11 +147,6 @@ CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result
     _nHRays = 0;
     _nVRays = 0;
     _clockWise = clocWise;
-
-    // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _position.x() );
-    setCenterY( _position.y() );
-    setCenterZ( _position.z() );
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -176,7 +166,10 @@ CT_Scanner::CT_Scanner(const QString &modelName,
                        bool radians) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
 {
     _scanID = scanID;
-    _position = origin;
+    setCenterX(origin.x());
+    setCenterY(origin.y());
+    setCenterZ(origin.z());
+
     _zVector = zVector;
     _clockWise = clockWise;
 
@@ -206,11 +199,6 @@ CT_Scanner::CT_Scanner(const QString &modelName,
     // Calculates the number of horizontal and vertical rays
     _nHRays = (int)ceil(fabs(_hFov/_hRes));
     _nVRays = (int)ceil(fabs(_vFov/_vRes));
-
-    // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _position.x() );
-    setCenterY( _position.y() );
-    setCenterZ( _position.z() );
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -242,9 +230,9 @@ CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
 
     QVector3D position, direction;
     // The position has to be parsed from Qvector3D to CT_Point
-    position.setX(_position.x());
-    position.setY(_position.y());
-    position.setZ(_position.z());
+    position.setX(getCenterX());
+    position.setY(getCenterY());
+    position.setZ(getCenterZ());
 
     if ( moreStability )
     {
@@ -286,9 +274,9 @@ void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
 
     QVector3D position, direction;
     // The position has to be parsed from Qvector3D to CT_Point
-    position.setX(_position.x());
-    position.setY(_position.y());
-    position.setZ(_position.z());
+    position.setX(getCenterX());
+    position.setY(getCenterY());
+    position.setZ(getCenterZ());
 
     if ( moreStability )
     {
@@ -323,7 +311,7 @@ CT_Scanner* CT_Scanner::copy(const CT_OutAbstractItemModel *model,
                              const CT_AbstractResult *result,
                              CT_ResultCopyModeList copyModeList)
 {
-    CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model, result, _scanID, _position, _zVector, _hFov, _vFov, _hRes, _vRes, _initTheta, _initPhi, _clockWise);
+    CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model, result, _scanID, getPosition(), _zVector, _hFov, _vFov, _hRes, _vRes, _initTheta, _initPhi, _clockWise);
     sc->setId(id());
     sc->setAlternativeDrawManager(getAlternativeDrawManager());
 
