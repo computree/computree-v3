@@ -190,7 +190,7 @@ void PB_StepMatchItemsPositions::compute()
 
     Eigen::Vector2f rotationCenter;
     Eigen::Vector2f translationVector;
-    float thetaRotation = 0;
+    Eigen::Matrix2f rotationMatrix;
 
 
     // Points Matching algorithm
@@ -247,7 +247,7 @@ void PB_StepMatchItemsPositions::compute()
                                     for (int k = 0 ; k < transPositions.size() ; k++)
                                     {
                                         Eigen::Vector2f &transPos_k = transPositions[i].first;
-                                        transPos_k = rotation*(transPos_k - transPos_i) + transPos_i;
+                                        transPos_k = rotation*(transPos_k - refPos) + refPos;
                                     }
 
                                     // Compute match scores
@@ -312,8 +312,8 @@ void PB_StepMatchItemsPositions::compute()
                                     {
                                         bestScore = globalScore;
                                         rotationCenter = refPos;
-                                        thetaRotation = theta;
-                                        translationVector = -delta;
+                                        rotationMatrix = rotation;
+                                        translationVector = delta;
                                     }
 
                                 }
@@ -326,37 +326,39 @@ void PB_StepMatchItemsPositions::compute()
     }
 
     // Compute transformation matrix
-    Eigen::Matrix<float, 3, 3> transformationMatrix;
-    transformationMatrix << cos(thetaRotation), -sin(thetaRotation), (rotationCenter[0]*(1 - cos(thetaRotation)) + rotationCenter[1]*sin(thetaRotation) + translationVector[0]),
-                            sin(thetaRotation),  cos(thetaRotation), (rotationCenter[1]*(1 - cos(thetaRotation)) - rotationCenter[0]*sin(thetaRotation) + translationVector[1]),
-                            0                 , 0                  , 1                                                                                                         ;
+//    Eigen::Matrix<float, 3, 3> transformationMatrix;
+//    transformationMatrix << cos(thetaRotation), -sin(thetaRotation), (rotationCenter[0]*(1 - cos(thetaRotation)) + rotationCenter[1]*sin(thetaRotation) + translationVector[0]),
+//                            sin(thetaRotation),  cos(thetaRotation), (rotationCenter[1]*(1 - cos(thetaRotation)) - rotationCenter[0]*sin(thetaRotation) + translationVector[1]),
+//                            0                 , 0                  , 1                                                                                                         ;
 
-
-    Eigen::Matrix2f rotation;
-    rotation << cos(thetaRotation), -sin(thetaRotation),
-                sin(thetaRotation),  cos(thetaRotation);
+    qDebug() << "cos(theta) =" << rotationMatrix(0,0);
+    qDebug() << "-sin(theta)=" << rotationMatrix(0,1);
+    qDebug() << "sin(theta) =" << rotationMatrix(1,0);
+    qDebug() << "cos(theta) =" << rotationMatrix(1,1);
 
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
-        Eigen::Vector3f tmp;
-        tmp[0] = transPositions[i].first[0];
-        tmp[1] = transPositions[i].first[1];
-        tmp[2] = 1;
-        tmp = transformationMatrix*tmp;
+//        Eigen::Vector3f tmp;
+//        tmp[0] = transPositions[i].first[0];
+//        tmp[1] = transPositions[i].first[1];
+//        tmp[2] = 1;
+//        tmp = transformationMatrix*tmp;
 
-        transPositions[i].first[0] = tmp[0];
-        transPositions[i].first[1] = tmp[1];
+//        transPositions[i].first[0] = tmp[0];
+//        transPositions[i].first[1] = tmp[1];
 
 
-//        transPositions[i].first -= translationVector;
-//        transPositions[i].first = rotation*(transPositions[i].first - rotationCenter) + rotationCenter;
+        transPositions[i].first -= translationVector;
+        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
+
 
         // OUT results creation (move it to the appropried place in the code)
         CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_trans);
         res_trans->addGroup(grp_grp);
 
-        CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(tmp[0], tmp[1]));
+//        CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(tmp[0], tmp[1]));
+        CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(transPositions[i].first[0], transPositions[i].first[1]));
         grp_grp->addItemDrawable(item_transpos);
     }
 
