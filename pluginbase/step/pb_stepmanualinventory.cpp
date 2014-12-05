@@ -22,7 +22,7 @@
 #define DEFin_scres "scres"
 #define DEFin_scBase "scBase"
 #define DEFin_layer "layer"
-#define DEFin_cluster "cluster2"
+#define DEFin_cluster "cluster"
 #define DEFin_circle "circle"
 #define DEFin_scene "scene"
 
