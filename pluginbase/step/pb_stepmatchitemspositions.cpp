@@ -36,7 +36,7 @@
 // Constructor : initialization of parameters
 PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _distThreshold = 0.2;
+    _distThreshold = 3;
     _relativeSizeThreshold = 0.2;
     _minRelativeSize = 0;
     _coef_nbRwc = 1;
@@ -106,7 +106,7 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
     configDialog->addDouble("Distance maximale entre points appariés :", "m", 0, 100, 3, _distThreshold, 1);
-    configDialog->addDouble("Taille relative minimum entre items appariés :", "", 0, 1, 2, _relativeSizeThreshold, 1);
+    configDialog->addDouble("Seuil de taille relative minimum entre items appariés :", "", 0, 1, 2, _relativeSizeThreshold, 1);
     configDialog->addDouble("Taille relative minimale :", "", 0, 1, 2, _minRelativeSize, 1);
     configDialog->addDouble("Poid du critère Nb. pos. de référence ayant une pos. transformée proche :", "", 0, 1000, 2, _coef_nbRwc);
     configDialog->addDouble("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :", "", 0, 1000, 2, _coef_nbTwc);
@@ -124,13 +124,14 @@ void PB_StepMatchItemsPositions::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_trans = outResultList.at(0);
 
-    QList<QPair<Eigen::Vector2f, double> > refPositions;
-    QList<QPair<Eigen::Vector2f, double> > transPositions;
+    QList<QPair<Eigen::Vector2f, float> > refPositions;
+    QList<QPair<Eigen::Vector2f, float> > transPositions;
+    QList<QPair<Eigen::Vector2f, float> > transPositionsTmp;
 
-    double minRefValue = std::numeric_limits<double>::max();
-    double maxRefValue = -std::numeric_limits<double>::max();
-    double minTransValue = std::numeric_limits<double>::max();
-    double maxTransValue = -std::numeric_limits<double>::max();
+    float minRefValue = std::numeric_limits<float>::max();
+    float maxRefValue = -std::numeric_limits<float>::max();
+    float minTransValue = std::numeric_limits<float>::max();
+    float maxTransValue = -std::numeric_limits<float>::max();
 
     // create refPositions List
     CT_ResultGroupIterator itIn_grpref(resIn_refpos, this, DEFin_grpref);
@@ -143,12 +144,12 @@ void PB_StepMatchItemsPositions::compute()
         {            
             float xRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refx)->toFloat(itemIn_refpos, NULL);
             float yRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refy)->toFloat(itemIn_refpos, NULL);
-            float valRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refvalue)->toDouble(itemIn_refpos, NULL);
+            float valRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refvalue)->toFloat(itemIn_refpos, NULL);
 
             if (valRef < minRefValue) {minRefValue = valRef;}
             if (valRef > maxRefValue) {maxRefValue = valRef;}
 
-            refPositions.append(QPair<Eigen::Vector2f, double>(Eigen::Vector2f(xRef, yRef), valRef));
+            refPositions.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xRef, yRef), valRef));
         }
     }
     
@@ -163,26 +164,28 @@ void PB_StepMatchItemsPositions::compute()
         {
             float xTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transx)->toFloat(itemIn_transpos, NULL);
             float yTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transy)->toFloat(itemIn_transpos, NULL);
-            float valTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transvalue)->toDouble(itemIn_transpos, NULL);
+            float valTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transvalue)->toFloat(itemIn_transpos, NULL);
 
             if (valTrans < minTransValue) {minTransValue = valTrans;}
             if (valTrans > maxTransValue) {maxTransValue = valTrans;}
 
-            transPositions.append(QPair<Eigen::Vector2f, double>(Eigen::Vector2f(xTrans, yTrans), valTrans));
+            transPositions.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xTrans, yTrans), valTrans));
+            transPositionsTmp.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xTrans, yTrans), valTrans));
         }
     }
     
     // Convert values to relatives values
-    double deltaRef = maxRefValue - minRefValue;
+    float deltaRef = maxRefValue - minRefValue;
     for (int i = 0 ; i < refPositions.size() ; i++)
     {
         refPositions[i].second = (refPositions.at(i).second - minRefValue) / deltaRef;
     }
 
-    double deltaTrans = maxTransValue - minTransValue;
+    float deltaTrans = maxTransValue - minTransValue;
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
         transPositions[i].second = (transPositions.at(i).second - minTransValue) / deltaTrans;
+        transPositionsTmp[i].second = (transPositionsTmp.at(i).second - minTransValue) / deltaTrans;
     }
 
 
@@ -201,17 +204,10 @@ void PB_StepMatchItemsPositions::compute()
         for (int transCounter = 0 ; transCounter < transPositions.size() ; transCounter++)
         {
             const Eigen::Vector2f &transPos = transPositions.at(transCounter).first;
-            double transVal = transPositions.at(transCounter).second;
+            float transVal = transPositions.at(transCounter).second;
 
             if (transVal >= _relativeSizeThreshold)
             {
-                // Do translation of trans data
-                Eigen::Vector2f delta = transPos - refPos;
-                for (int i = 0 ; i < transPositions.size() ; i++)
-                {
-                    transPositions[i].first -= delta;
-                }
-
                 // Search for second trans point
                 for (int i = 0 ; i < transPositions.size() ; i++)
                 {
@@ -231,11 +227,16 @@ void PB_StepMatchItemsPositions::compute()
 
                                 // If distances have the same value +- _distThreshold
                                 if (fabs(vectRef.norm() - vectTrans.norm()) < _distThreshold)
-                                {
-                                    float cosTheta = vectTrans.dot(vectRef)/(vectTrans.norm()*vectRef.norm());
-                                    float theta = acos(cosTheta);
+                                {                                    
 
-                                    float orientation = vectRef.x()*vectTrans.y() - vectRef.y()*vectTrans.x();
+                                    // Compute translation for trans points
+                                    Eigen::Vector2f delta = transPos - refPos;
+
+                                    // Compute rotation for trans points
+                                    double cosTheta = vectTrans.dot(vectRef)/(vectTrans.norm()*vectRef.norm());
+                                    double theta = acos(cosTheta);
+
+                                    double orientation = vectRef.x()*vectTrans.y() - vectRef.y()*vectTrans.x();
 
                                     if (orientation < 0) {theta = 3.0*M_PI/2.0 + (M_PI/2.0 - theta);}
 
@@ -243,11 +244,11 @@ void PB_StepMatchItemsPositions::compute()
                                     rotation << cos(theta), -sin(theta),
                                                 sin(theta),  cos(theta);
 
-                                    // Apply rotation to all trans points
-                                    for (int k = 0 ; k < transPositions.size() ; k++)
+                                    // Apply translation and rotation to all trans points
+                                    for (int k = 0 ; k < transPositionsTmp.size() ; k++)
                                     {
-                                        Eigen::Vector2f &transPos_k = transPositions[i].first;
-                                        transPos_k = rotation*(transPos_k - refPos) + refPos;
+                                        transPositionsTmp[k].first = transPositions[k].first - delta;
+                                        transPositionsTmp[k].first = rotation*(transPositionsTmp[k].first - refPos) + refPos;
                                     }
 
                                     // Compute match scores
@@ -264,9 +265,9 @@ void PB_StepMatchItemsPositions::compute()
                                         const Eigen::Vector2f &rfPos = refPositions.at(rf).first;
                                         bool trFound = false;
 
-                                        for (int tr = 0 ; tr < transPositions.size() && !trFound; tr++)
+                                        for (int tr = 0 ; tr < transPositionsTmp.size() && !trFound; tr++)
                                         {
-                                            const Eigen::Vector2f &trPos = transPositions.at(tr).first;
+                                            const Eigen::Vector2f &trPos = transPositionsTmp.at(tr).first;
                                             float dist = (trPos - rfPos).norm();
 
                                             if (dist < _distThreshold)
@@ -277,16 +278,16 @@ void PB_StepMatchItemsPositions::compute()
                                         }
                                     }
 
-                                    for (int tr = 0 ; tr < transPositions.size(); tr++)
+                                    for (int tr = 0 ; tr < transPositionsTmp.size(); tr++)
                                     {
-                                        const Eigen::Vector2f &trPos = transPositions.at(tr).first;
-                                        double trVal = transPositions.at(tr).second;
+                                        const Eigen::Vector2f &trPos = transPositionsTmp.at(tr).first;
+                                        float trVal = transPositionsTmp.at(tr).second;
                                         bool rfSimilar = false;
 
                                         for (int rf = 0 ; rf < refPositions.size() && !rfSimilar; rf++)
                                         {
                                             const Eigen::Vector2f &rfPos = refPositions.at(rf).first;
-                                            double rfVal = refPositions.at(rf).second;
+                                            float rfVal = refPositions.at(rf).second;
                                             float dist = (trPos - rfPos).norm();
 
                                             if (dist < _distThreshold)
@@ -304,16 +305,16 @@ void PB_StepMatchItemsPositions::compute()
                                     }
 
                                     // Compute global score
-                                    float globalScore = _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
-                                                        _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositions.size()) +
-                                                        _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositions.size()) ;
+                                    float globalScore = _coef_nbRwc * ((float)Nbref_with_Corresp    / (float)refPositions.size())   +
+                                                        _coef_nbTwc * ((float)Nbtrans_with_Corresp  / (float)transPositionsTmp.size()) +
+                                                        _coef_nbSim * ((float)NbtransRef_Similarity / (float)transPositionsTmp.size()) ;
 
                                     if (globalScore > bestScore)
                                     {
                                         bestScore = globalScore;
-                                        rotationCenter = refPos;
-                                        rotationMatrix = rotation;
                                         translationVector = delta;
+                                        rotationMatrix = rotation;
+                                        rotationCenter = refPos;
                                     }
 
                                 }
@@ -331,11 +332,6 @@ void PB_StepMatchItemsPositions::compute()
 //                            sin(thetaRotation),  cos(thetaRotation), (rotationCenter[1]*(1 - cos(thetaRotation)) - rotationCenter[0]*sin(thetaRotation) + translationVector[1]),
 //                            0                 , 0                  , 1                                                                                                         ;
 
-    qDebug() << "cos(theta) =" << rotationMatrix(0,0);
-    qDebug() << "-sin(theta)=" << rotationMatrix(0,1);
-    qDebug() << "sin(theta) =" << rotationMatrix(1,0);
-    qDebug() << "cos(theta) =" << rotationMatrix(1,1);
-
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
@@ -348,18 +344,137 @@ void PB_StepMatchItemsPositions::compute()
 //        transPositions[i].first[0] = tmp[0];
 //        transPositions[i].first[1] = tmp[1];
 
-
-        transPositions[i].first -= translationVector;
+        transPositions[i].first = transPositions[i].first - translationVector;
         transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
+    }
 
 
+
+    // Find matching points pairs
+    // first: compute all ref/trans distances
+    QMultiMap<float, QPair<int, int> > distances;
+    for (int refCounter = 0 ; refCounter < refPositions.size() ; refCounter++)
+    {
+        const Eigen::Vector2f &refPos = refPositions.at(refCounter).first;
+
+        for (int transCounter = 0 ; transCounter < transPositions.size() ; transCounter++)
+        {
+            const Eigen::Vector2f &transPos = transPositions.at(transCounter).first;
+
+             Eigen::Vector2f delta = (transPos - refPos);
+             distances.insert(delta.norm(), QPair<int, int>(refCounter, transCounter));
+        }
+    }
+
+    // second: keep only one correspondance for each ref/trans
+    QList<QPair<int, int> > candidates = distances.values();
+    QMap<int, int> correspondances;
+    while (!candidates.isEmpty())
+    {
+        QPair<int, int> pair = candidates.takeFirst();
+
+        float refVal = refPositions.at(pair.first).second;
+        float transVal = transPositions.at(pair.second).second;
+
+        float sizeDiff = fabs(refVal - transVal);
+
+        if (sizeDiff < _relativeSizeThreshold)
+        {
+            correspondances.insert(pair.first, pair.second);
+
+            for (int i = candidates.size() - 1 ; i >= 0 ; i--)
+            {
+                const QPair<int, int> &pair2 = candidates.at(i);
+                if (pair.first == pair2.first || pair.second == pair2.second)
+                {
+                    candidates.removeAt(i);
+                }
+            }
+        }
+    }
+
+    int nbMatches = correspondances.size();
+
+    // compute ref / trans centroids
+    Eigen::Vector2f centroidRef;
+    Eigen::Vector2f centroidTrans;
+    QMapIterator<int, int> it(correspondances);
+    while (it.hasNext())
+    {
+        it.next();
+
+        const Eigen::Vector2f &refPos = refPositions.at(it.key()).first;
+        const Eigen::Vector2f &transPos = transPositions.at(it.value()).first;
+
+        centroidRef += refPos;
+        centroidTrans += transPos;
+    }
+    centroidRef /= (float)nbMatches;
+    centroidTrans /= (float)nbMatches;
+
+
+
+
+
+    // Export transmorfed coordiantes
+    for (int i = 0 ; i < transPositions.size() ; i++)
+    {
         // OUT results creation (move it to the appropried place in the code)
         CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_trans);
         res_trans->addGroup(grp_grp);
 
-//        CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(tmp[0], tmp[1]));
         CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(transPositions[i].first[0], transPositions[i].first[1]));
         grp_grp->addItemDrawable(item_transpos);
     }
+
+}
+
+void PB_StepMatchItemsPositions::Kabsch(Eigen::MatrixXf &P, Eigen::MatrixXf &Q, Eigen::Matrix4f &OPT, int ile)
+{
+    float MEAN[6];
+    // Shift to center
+    for(int j=0;j<6;j++) MEAN[j] = 0.0f;
+
+    for(int j=0;j<ile;j++)
+    {
+        for(int h=0;h<3;h++) MEAN[h] += P(j,h);
+        for(int h=0;h<3;h++) MEAN[h+3] += Q(j,h);
+    }
+    for(int j=0;j<6;j++) MEAN[j] /= ile;
+
+    // After counting, we must subtract the arithmetic
+    for(int j=0;j<ile;j++)
+    {
+        for(int h=0;h<3;h++) P(j,h) -= MEAN[h];
+        for(int h=0;h<3;h++) Q(j,h) -= MEAN[h+3];
+    }
+
+    // counting transpose P * Q
+    Eigen::MatrixXf A = P.transpose() * Q;
+
+    // SVD
+    Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Eigen::MatrixXf V = svd.matrixU(), W = svd.matrixV();
+
+    // Do a right-handed
+    Eigen::Matrix3f U = Eigen::MatrixXf::Identity(3,3);
+    U(2,2) = sgn(A.determinant());
+
+    // Rotation matrix is:
+    U = W * U * V.transpose();
+
+    // shift
+    Eigen::Vector3f T;
+    T[0] = - MEAN[0];
+    T[1] = - MEAN[1];
+    T[2] = - MEAN[2];
+    T = U*T;
+    T[0] += MEAN[3];
+    T[1] += MEAN[4];
+    T[2] += MEAN[5];
+
+    OPT <<  Eigen::Matrix4f::Identity();
+    OPT.block<3,3>(0,0) = U.block<3,3>(0,0);
+    OPT.block<3,1>(0,3) = T.head<3>();
 
 }

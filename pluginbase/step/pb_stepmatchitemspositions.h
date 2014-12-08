@@ -2,6 +2,8 @@
 #define PB_STEPMATCHITEMSPOSITIONS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include <Eigen/Eigen>
+#include <math.h>
 
 /*!
  * \class PB_StepMatchItemsPositions
@@ -89,6 +91,14 @@ private:
     double     _coef_nbRwc;
     double     _coef_nbTwc;
     double     _coef_nbSim;
+
+
+    template <typename T> int sgn(T val)
+    {
+        return (val > T(0)) - (val < T(0));
+    }
+
+    void Kabsch(Eigen::MatrixXf &P, Eigen::MatrixXf &Q, Eigen::Matrix4f &OPT, int ile);
 
 };
 
