@@ -327,27 +327,26 @@ void PB_StepMatchItemsPositions::compute()
     }
 
     // Compute transformation matrix
-//    Eigen::Matrix<float, 3, 3> transformationMatrix;
-//    transformationMatrix << cos(thetaRotation), -sin(thetaRotation), (rotationCenter[0]*(1 - cos(thetaRotation)) + rotationCenter[1]*sin(thetaRotation) + translationVector[0]),
-//                            sin(thetaRotation),  cos(thetaRotation), (rotationCenter[1]*(1 - cos(thetaRotation)) - rotationCenter[0]*sin(thetaRotation) + translationVector[1]),
-//                            0                 , 0                  , 1                                                                                                         ;
+    Eigen::Matrix3f transformationMatrix = computeTransfMatrix2D(rotationCenter, translationVector, rotationMatrix);
+
+    qDebug() << transformationMatrix(0,0) << " " << transformationMatrix(0,1) << "" << transformationMatrix(0,2);
+    qDebug() << transformationMatrix(1,0) << " " << transformationMatrix(1,1) << "" << transformationMatrix(1,2);
+    qDebug() << transformationMatrix(2,0) << " " << transformationMatrix(2,1) << "" << transformationMatrix(2,2);
 
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
-//        Eigen::Vector3f tmp;
-//        tmp[0] = transPositions[i].first[0];
-//        tmp[1] = transPositions[i].first[1];
-//        tmp[2] = 1;
-//        tmp = transformationMatrix*tmp;
+                Eigen::Vector3f tmp;
+                tmp[0] = transPositions[i].first[0];
+                tmp[1] = transPositions[i].first[1];
+                tmp[2] = 1;
+                tmp = transformationMatrix*tmp;
 
-//        transPositions[i].first[0] = tmp[0];
-//        transPositions[i].first[1] = tmp[1];
-
-        transPositions[i].first = transPositions[i].first - translationVector;
-        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
+                transPositions[i].first[0] = tmp[0];
+                transPositions[i].first[1] = tmp[1];
+//        transPositions[i].first = transPositions[i].first - translationVector;
+//        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
     }
-
 
 
     // Find matching points pairs
@@ -395,10 +394,12 @@ void PB_StepMatchItemsPositions::compute()
 
     int nbMatches = correspondances.size();
 
-    // compute ref / trans centroids
-    Eigen::Vector2f centroidRef;
-    Eigen::Vector2f centroidTrans;
+    Eigen::MatrixXf refMat(3,nbMatches);
+    Eigen::MatrixXf transMat(3,nbMatches);
+
+    // put coordinates in matrices
     QMapIterator<int, int> it(correspondances);
+    int cpt = 0;
     while (it.hasNext())
     {
         it.next();
@@ -406,17 +407,58 @@ void PB_StepMatchItemsPositions::compute()
         const Eigen::Vector2f &refPos = refPositions.at(it.key()).first;
         const Eigen::Vector2f &transPos = transPositions.at(it.value()).first;
 
-        centroidRef += refPos;
-        centroidTrans += transPos;
+        refMat(0, cpt) = refPos(0);
+        refMat(1, cpt) = refPos(1);
+        refMat(2, cpt) = 0;
+
+        transMat(0, cpt) = transPos(0);
+        transMat(1, cpt) = transPos(1);
+        transMat(2, cpt) = 0;
+        ++cpt;
     }
-    centroidRef /= (float)nbMatches;
-    centroidTrans /= (float)nbMatches;
+
+    Eigen::Vector3f center3D;
+    Eigen::Vector3f translation3D;
+
+    Eigen::Matrix3f rotationMatrix3D = Kabsch(refMat, transMat, nbMatches, center3D, translation3D);
+    Eigen::Matrix2f rotationMatrix2D = rotationMatrix3D.block<2,2>(0,0);
+
+    qDebug() << "U";
+    qDebug() << rotationMatrix3D(0,0) << " " << rotationMatrix3D(0,1) << "" << rotationMatrix3D(0,2);
+    qDebug() << rotationMatrix3D(1,0) << " " << rotationMatrix3D(1,1) << "" << rotationMatrix3D(1,2);
+    qDebug() << rotationMatrix3D(2,0) << " " << rotationMatrix3D(2,1) << "" << rotationMatrix3D(2,2);
+    qDebug();
 
 
+    Eigen::Vector2f rotationCenter2D;
+    Eigen::Vector2f translationVector2D;
+    rotationCenter2D[0] = center3D[0];
+    rotationCenter2D[1] = center3D[1];
+    translationVector2D[0] = translation3D[0];
+    translationVector2D[1] = translation3D[1];
 
+    Eigen::Matrix3f transformationMatrix2 = computeTransfMatrix2D(rotationCenter2D, translationVector2D, rotationMatrix2D);
 
+    // Apply selected transformation to trans data
+    for (int i = 0 ; i < transPositions.size() ; i++)
+    {
+                Eigen::Vector3f tmp;
+                tmp[0] = transPositions[i].first[0];
+                tmp[1] = transPositions[i].first[1];
+                tmp[2] = 1;
+                tmp = transformationMatrix2*tmp;
 
-    // Export transmorfed coordiantes
+                transPositions[i].first[0] = tmp[0];
+                transPositions[i].first[1] = tmp[1];
+    }
+
+    qDebug();
+    qDebug() << transformationMatrix2(0,0) << " " << transformationMatrix2(0,1) << "" << transformationMatrix2(0,2);
+    qDebug() << transformationMatrix2(1,0) << " " << transformationMatrix2(1,1) << "" << transformationMatrix2(1,2);
+    qDebug() << transformationMatrix2(2,0) << " " << transformationMatrix2(2,1) << "" << transformationMatrix2(2,2);
+    qDebug();
+
+    // Export transmorfed coordinates
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
         // OUT results creation (move it to the appropried place in the code)
@@ -429,52 +471,69 @@ void PB_StepMatchItemsPositions::compute()
 
 }
 
-void PB_StepMatchItemsPositions::Kabsch(Eigen::MatrixXf &P, Eigen::MatrixXf &Q, Eigen::Matrix4f &OPT, int ile)
-{
-    float MEAN[6];
+// Algorithm from https://github.com/MichalNowicki/Scientific/tree/master/TrackSLAM/Matching
+Eigen::Matrix3f PB_StepMatchItemsPositions::Kabsch(Eigen::MatrixXf &refPositions, Eigen::MatrixXf &transPositions, int pointsNumber, Eigen::Vector3f &center, Eigen::Vector3f &translation)
+{        
+    float means[6];
     // Shift to center
-    for(int j=0;j<6;j++) MEAN[j] = 0.0f;
+    for(int j=0;j<6;j++) means[j] = 0.0f;
 
-    for(int j=0;j<ile;j++)
+    for(int j=0;j<pointsNumber;j++)
     {
-        for(int h=0;h<3;h++) MEAN[h] += P(j,h);
-        for(int h=0;h<3;h++) MEAN[h+3] += Q(j,h);
+        for(int h=0;h<3;h++) means[h] += transPositions(h, j);
+        for(int h=0;h<3;h++) means[h+3] += refPositions(h, j);
     }
-    for(int j=0;j<6;j++) MEAN[j] /= ile;
+    for(int j=0;j<6;j++) means[j] /= pointsNumber;
 
     // After counting, we must subtract the arithmetic
-    for(int j=0;j<ile;j++)
+    for(int j=0;j<pointsNumber;j++)
     {
-        for(int h=0;h<3;h++) P(j,h) -= MEAN[h];
-        for(int h=0;h<3;h++) Q(j,h) -= MEAN[h+3];
+        for(int h=0;h<3;h++) transPositions(h, j) -= means[h];
+        for(int h=0;h<3;h++) refPositions(h, j) -= means[h+3];
     }
 
     // counting transpose P * Q
-    Eigen::MatrixXf A = P.transpose() * Q;
+    Eigen::MatrixXf A = transPositions * refPositions.transpose();
 
     // SVD
     Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
-    Eigen::MatrixXf V = svd.matrixU(), W = svd.matrixV();
+    Eigen::MatrixXf V = svd.matrixU();
+    Eigen::MatrixXf W = svd.matrixV();
 
     // Do a right-handed
-    Eigen::Matrix3f U = Eigen::MatrixXf::Identity(3,3);
+    Eigen::Matrix3f U = Eigen::Matrix3f::Identity(3,3);
     U(2,2) = sgn(A.determinant());
 
     // Rotation matrix is:
     U = W * U * V.transpose();
 
-    // shift
-    Eigen::Vector3f T;
-    T[0] = - MEAN[0];
-    T[1] = - MEAN[1];
-    T[2] = - MEAN[2];
-    T = U*T;
-    T[0] += MEAN[3];
-    T[1] += MEAN[4];
-    T[2] += MEAN[5];
+    for(int h=0;h<3;h++) center[h] = means[h+3];
+    for(int h=0;h<3;h++) translation[h] = means[h] - means[h+3];
 
-    OPT <<  Eigen::Matrix4f::Identity();
-    OPT.block<3,3>(0,0) = U.block<3,3>(0,0);
-    OPT.block<3,1>(0,3) = T.head<3>();
+    return U;
+}
 
+Eigen::Matrix3f PB_StepMatchItemsPositions::computeTransfMatrix2D(const Eigen::Vector2f &center, const Eigen::Vector2f &tranlation, const Eigen::Matrix2f &rotMat)
+{
+    Eigen::Vector2f T;
+    T[0] = 0;
+    T[1] = 0;
+
+    T -= center;
+    T -= tranlation;
+    T = rotMat*T;
+
+    T[0] += center[0];
+    T[1] += center[1];
+
+    Eigen::Matrix3f transfMat =  Eigen::Matrix3f::Identity(3,3);
+
+    transfMat(0,0) = rotMat(0,0);
+    transfMat(0,1) = rotMat(0,1);
+    transfMat(1,0) = rotMat(1,0);
+    transfMat(1,1) = rotMat(1,1);
+    transfMat(0,2) = T[0];
+    transfMat(1,2) = T[1];
+
+    return transfMat;
 }

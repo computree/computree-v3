@@ -98,7 +98,9 @@ private:
         return (val > T(0)) - (val < T(0));
     }
 
-    void Kabsch(Eigen::MatrixXf &P, Eigen::MatrixXf &Q, Eigen::Matrix4f &OPT, int ile);
+    Eigen::Matrix3f Kabsch(Eigen::MatrixXf &refPositions, Eigen::MatrixXf &transPositions, int pointsNumber, Eigen::Vector3f &center, Eigen::Vector3f &translation);
+
+    Eigen::Matrix3f computeTransfMatrix2D(const Eigen::Vector2f &center, const Eigen::Vector2f &tranlation, const Eigen::Matrix2f &rotMat);
 
 };
 
