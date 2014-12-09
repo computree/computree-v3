@@ -691,9 +691,12 @@ void PB_StepMatchItemsPositions::compute()
             const Eigen::Vector2f &refPos = refPositions.at(refCounter).first;
             float refVal = refPositions.at(refCounter).second;
 
+            double xr, yr, zr;
+            PS_COORDINATES_SYS->convertExport(refPos[0], refPos[1], 0, xr, yr, zr);
+
             stream << refIds.value(refCounter, "");
-            stream << "\t" << refPos[0];
-            stream << "\t" << refPos[1];
+            stream << "\t" << QString::number(xr, 'f', 4);
+            stream << "\t" << QString::number(yr, 'f', 4);
             stream << "\t" << refVal;
 
             int transIndice = correspondances.value(refCounter, -1);
@@ -702,9 +705,12 @@ void PB_StepMatchItemsPositions::compute()
                 const Eigen::Vector2f &transPos = transPositions.at(transIndice).first;
                 float transVal = transPositions.at(transIndice).second;
 
+                double xt, yt, zt;
+                PS_COORDINATES_SYS->convertExport(transPos[0], transPos[1], 0, xt, yt, zt);
+
                 stream << "\t" << transIds.value(transIndice, "");
-                stream << "\t" << transPos[0];
-                stream << "\t" << transPos[1];
+                stream << "\t" << QString::number(xt, 'f', 4);
+                stream << "\t" << QString::number(yt, 'f', 4);
                 stream << "\t" << transVal;
                 stream << "\t" << deltaDistMap.value(refCounter);
                 stream << "\t" << deltaValMap.value(refCounter);
@@ -721,12 +727,15 @@ void PB_StepMatchItemsPositions::compute()
             const Eigen::Vector2f &transPos = transPositions.at(transCounter).first;
             float transVal = transPositions.at(transCounter).second;
 
+            double xt, yt, zt;
+            PS_COORDINATES_SYS->convertExport(transPos[0], transPos[1], 0, xt, yt, zt);
+
             if (correspondances.key(transCounter, -1) < 0)
             {
                 stream << "\t\t\t";
                 stream << "\t" << transIds.value(transCounter, "");
-                stream << "\t" << transPos[0];
-                stream << "\t" << transPos[1];
+                stream << "\t" << QString::number(xt, 'f', 4);
+                stream << "\t" << QString::number(yt, 'f', 4);
                 stream << "\t" << transVal;
                 stream << "\t\t\n";
             }

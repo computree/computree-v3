@@ -69,7 +69,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionmanualinventory.h \
     views/actions/pb_actionmanualinventoryoptions.h \
     views/actions/pb_actionmanualinventoryattributesdialog.h \
-    step/pb_stepmatchitemspositions.h
+    step/pb_stepmatchitemspositions.h \
+    step/pb_stepimportsegmafilesformatching.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -136,7 +137,8 @@ SOURCES += \
     actions/pb_actionmanualinventory.cpp \
     views/actions/pb_actionmanualinventoryoptions.cpp \
     views/actions/pb_actionmanualinventoryattributesdialog.cpp \
-    step/pb_stepmatchitemspositions.cpp
+    step/pb_stepmatchitemspositions.cpp \
+    step/pb_stepimportsegmafilesformatching.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

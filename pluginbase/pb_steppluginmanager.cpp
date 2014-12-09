@@ -57,6 +57,7 @@
 #include "step/pb_stepslicepointcloud.h"
 #include "step/pb_stepmanualinventory.h"
 #include "step/pb_stepmatchitemspositions.h"
+#include "step/pb_stepimportsegmafilesformatching.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -237,6 +238,7 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     // Ajout d'une étape
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;
