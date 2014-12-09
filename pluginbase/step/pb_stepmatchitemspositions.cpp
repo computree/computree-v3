@@ -3,6 +3,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 #include "ct_itemdrawable/ct_referencepoint.h"
 #include "ct_itemdrawable/ct_line.h"
+#include "ct_itemdrawable/ct_attributeslist.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
@@ -13,6 +14,8 @@
 #include <eigen/Eigen/Core>
 #include <eigen/Eigen/Dense>
 #include <eigen/Eigen/Geometry>
+#include <QFile>
+#include <QTextStream>
 
 // Alias for indexing models
 #define DEFin_Resrefpos "Resrefpos"
@@ -31,6 +34,12 @@
 #define DEFin_transvalue "transvalue"
 #define DEFin_transid "transid"
 
+#define DEFout_rootGrp "rootGrp"
+#define DEFout_attributes "attributes"
+#define DEFout_attRmseDist "attRmseDist"
+#define DEFout_attRmseVal "attRmseVal"
+#define DEFout_attMaxDist "attMaxDist"
+#define DEFout_attMaxDistDiff "attMaxDistDiff"
 #define DEFout_trans "trans"
 #define DEFout_grp "grp"
 #define DEFout_transpos "transpos"
@@ -58,6 +67,8 @@ PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &da
     _relativeMode = 0;
     _minval = 0;
     _maxval = 5;
+    _exportReport = true;
+    _reportFileName.append("matchingReport.txt");
 }
 
 // Step description (tooltip of contextual menu)
@@ -112,7 +123,22 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
 void PB_StepMatchItemsPositions::createOutResultModelListProtected()
 {
     CT_OutResultModelGroup *res_trans2 = createNewOutResultModel(DEFout_trans2, tr("Positions transformées"));
-    res_trans2->setRootGroup(DEFout_grp2, new CT_StandardItemGroup(), tr("Groupe"));
+    res_trans2->setRootGroup(DEFout_rootGrp, new CT_StandardItemGroup(), tr("Groupe racine"));
+    res_trans2->addItemModel(DEFout_rootGrp, DEFout_attributes, new CT_AttributesList(), tr("Qualité de Matching"));
+    res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attRmseDist,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("RMSE Dist"));
+    res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attRmseVal,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("RMSE Val"));
+    res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attMaxDist,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("Max Dist"));
+    res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attMaxDistDiff,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("Max Val diff"));
+
+    res_trans2->addGroupModel(DEFout_rootGrp, DEFout_grp2, new CT_StandardItemGroup(), tr("Groupe"));
     res_trans2->addItemModel(DEFout_grp2, DEFout_transpos2, new CT_ReferencePoint(), tr("Position transformée"));
     res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_transId,
                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
@@ -142,28 +168,32 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addDouble("Distance maximale entre points appariés :", "m", 0, 100, 3, _distThreshold, 1);
-    configDialog->addDouble("Seuil de taille relative minimum entre items appariés :", "", 0, 1, 2, _relativeSizeThreshold, 1);
-    configDialog->addDouble("Taille relative minimale :", "", 0, 1, 2, _minRelativeSize, 1);
-    configDialog->addDouble("Poid du critère Nb. pos. de référence ayant une pos. transformée proche :", "", 0, 1000, 2, _coef_nbRwc);
-    configDialog->addDouble("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :", "", 0, 1000, 2, _coef_nbTwc);
-    configDialog->addDouble("Poid du critère Nb. pos. transformées ayant une pos. de référence proche avec une taille similaire :", "", 0, 1000, 2, _coef_nbSim);
+    configDialog->addDouble(tr("Distance maximale entre points appariés :"), "m", 0, 100, 3, _distThreshold, 1);
+    configDialog->addDouble(tr("Seuil de taille relative minimum entre items appariés :"), "", 0, 1, 2, _relativeSizeThreshold, 1);
+    configDialog->addDouble(tr("Taille relative minimale :"), "", 0, 1, 2, _minRelativeSize, 1);
+    configDialog->addDouble(tr("Poid du critère Nb. pos. de référence ayant une pos. transformée proche :"), "", 0, 1000, 2, _coef_nbRwc);
+    configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :"), "", 0, 1000, 2, _coef_nbTwc);
+    configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche avec une taille similaire :"), "", 0, 1000, 2, _coef_nbSim);
 
-    configDialog->addText("Mode de représentation :", "", "");
+    configDialog->addText(tr("Mode de représentation :"), "", "");
 
     CT_ButtonGroup &bg_drawMode = configDialog->addButtonGroup(_drawMode);
 
-    configDialog->addExcludeValue("", "", "Valeur Z", bg_drawMode, 0);
-    configDialog->addExcludeValue("", "", "Cercle", bg_drawMode, 1);
-    configDialog->addText("Comment représenter en Z la variable de taille ?", "", "");
+    configDialog->addExcludeValue("", "", tr("Valeur Z"), bg_drawMode, 0);
+    configDialog->addExcludeValue("", "", tr("Cercle"), bg_drawMode, 1);
+    configDialog->addText(tr("Comment représenter en Z la variable de taille ?"), "", "");
 
     CT_ButtonGroup &bg_relativeMode = configDialog->addButtonGroup(_relativeMode);
 
-    configDialog->addExcludeValue("", "", "Valeur absolue", bg_relativeMode, 0);
-    configDialog->addExcludeValue("", "", "Valeur relative", bg_relativeMode, 1);
-    configDialog->addText("En cas de valeur relative :", "", "");
-    configDialog->addDouble("Valeur de Z/Rayon minimum", "m", -1e+09, 1e+09, 2, _minval, 1);
-    configDialog->addDouble("Valeur de Z/Rayon maximum", "m", -1e+09, 1e+09, 2, _maxval, 1);
+    configDialog->addExcludeValue("", "", tr("Valeur absolue"), bg_relativeMode, 0);
+    configDialog->addExcludeValue("", "", tr("Valeur relative"), bg_relativeMode, 1);
+    configDialog->addText(tr("En cas de valeur relative :"), "", "");
+    configDialog->addDouble(tr("Valeur de Z/Rayon minimum"), "m", -1e+09, 1e+09, 2, _minval, 1);
+    configDialog->addDouble(tr("Valeur de Z/Rayon maximum"), "m", -1e+09, 1e+09, 2, _maxval, 1);
+
+    configDialog->addEmpty();
+    configDialog->addBool(tr("Exporter un rapport de Recalage"), "", "", _exportReport);
+    configDialog->addFileChoice(tr("Fichier d'export du rapport de Recalage"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _reportFileName);
 
 }
 
@@ -177,6 +207,8 @@ void PB_StepMatchItemsPositions::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_trans = outResultList.at(1);
     CT_ResultGroup* res_trans2 = outResultList.at(0);
+    CT_StandardItemGroup *rootGroup = new CT_StandardItemGroup(DEFout_rootGrp,res_trans2);
+    res_trans2->addGroup(rootGroup);
 
     QList<QPair<Eigen::Vector2f, float> > refPositions;
     QList<QPair<Eigen::Vector2f, float> > transPositions;
@@ -184,6 +216,8 @@ void PB_StepMatchItemsPositions::compute()
 
     QMap<int, QString> refIds;
     QMap<int, QString> transIds;
+    QMap<int, float> deltaDistMap;
+    QMap<int, float> deltaValMap;
 
     float minRefValue = std::numeric_limits<float>::max();
     float maxRefValue = -std::numeric_limits<float>::max();
@@ -511,6 +545,12 @@ void PB_StepMatchItemsPositions::compute()
                 transPositions[i].first[1] = tmp[1];
     }
 
+    // Quality criteria
+    float rmseDist = 0;
+    float rmseVal = 0;
+    float maxDist = 0;
+    float maxVal = 0;
+
     // Export transformed coordinates
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
@@ -520,7 +560,7 @@ void PB_StepMatchItemsPositions::compute()
 
         // OUT results creation (move it to the appropried place in the code)
         CT_StandardItemGroup* grp_grp2= new CT_StandardItemGroup(DEFout_grp2, res_trans2);
-        res_trans2->addGroup(grp_grp2);
+        rootGroup->addGroup(grp_grp2);
 
         CT_ReferencePoint* item_transpos2;
         float zValTrans = transVal;
@@ -546,7 +586,7 @@ void PB_StepMatchItemsPositions::compute()
 
 
         int refIndice = correspondances.key(i, -1);
-        if (refIndice > 0)
+        if (refIndice >= 0)
         {
             const Eigen::Vector2f &refPos = refPositions.at(refIndice).first;
             float refVal = refPositions.at(refIndice).second;
@@ -578,6 +618,15 @@ void PB_StepMatchItemsPositions::compute()
             item_transpos2->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_deltaValue,CT_AbstractCategory::DATA_NUMBER,res_trans2, deltaVal));
             item_transpos2->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_distance,CT_AbstractCategory::DATA_NUMBER,res_trans2, distance));
 
+            deltaDistMap.insert(refIndice, distance);
+            deltaValMap.insert(refIndice, deltaVal);
+
+            rmseDist += distance*distance;
+            rmseVal += deltaVal*deltaVal;
+
+            if (distance > maxDist) {maxDist = distance;}
+            if (fabs(deltaVal) > maxVal) {maxVal = fabs(deltaVal);}
+
             CT_Line *line;
             if (_drawMode == 0)
             {
@@ -588,6 +637,103 @@ void PB_StepMatchItemsPositions::compute()
             grp_grp2->addItemDrawable(line);
 
         }
+    }
+
+    rmseDist = sqrt(rmseDist/(float)nbMatches);
+    rmseVal  = sqrt(rmseVal/(float)nbMatches);
+
+    CT_AttributesList *attributes = new CT_AttributesList(DEFout_attributes, res_trans2);
+    rootGroup->addItemDrawable(attributes);
+
+    attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attRmseDist,CT_AbstractCategory::DATA_NUMBER,res_trans2, rmseDist));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attRmseVal,CT_AbstractCategory::DATA_NUMBER,res_trans2, rmseVal));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attMaxDist,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxDist));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attMaxDistDiff,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxVal));
+
+    Eigen::Matrix3f resultingMatrix = transformationMatrix*transformationMatrix2;
+
+    QFile f(_reportFileName.first());
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream stream(&f);
+
+        stream << "# Computree Matching report (generated by PluginBase/PB_StepMatchItemsPositions)\n";
+        stream << "\n";
+        stream << "# Transformation Matrix:\n";
+        stream << resultingMatrix(0,0) << "\t" << resultingMatrix(0,1) << "\t" << resultingMatrix(0,2) << "\n";
+        stream << resultingMatrix(1,0) << "\t" << resultingMatrix(1,1) << "\t" << resultingMatrix(1,2) << "\n";
+        stream << resultingMatrix(2,0) << "\t" << resultingMatrix(2,1) << "\t" << resultingMatrix(2,2) << "\n";
+        stream << "\n";
+        stream << "# Matching quality criteria:\n";
+        stream << "Number of reference positions                   :" << "\t" << refPositions.size() << "\n";
+        stream << "Number of transformed positions                 :" << "\t" << transPositions.size() << "\n";
+        stream << "Number of matching positions                    :" << "\t" << nbMatches << "\n";
+        stream << "RMSE of matching distances (m)                  :" << "\t" << rmseDist << "\n";
+        stream << "RMSE of differences between matching size values:" << "\t" << rmseVal << "\n";
+        stream << "Maximum matching distance (m)                   :" << "\t" << maxDist << "\n";
+        stream << "Maximum difference between matching size values :" << "\t" << maxVal << "\n";
+        stream << "\n";
+        stream << "# Matching algorithm parameters:\n";
+        stream << "Maximum distance between matching positions (m)                           :" << "\t" << _distThreshold << "\n";
+        stream << "Maximum allowed relative difference between size values to accept matching:" << "\t" << _relativeSizeThreshold << "\n";
+        stream << "Minimum size value to consider transformed position in matching           :" << "\t" << _minRelativeSize << "\n";
+        stream << "Score weight for reference positions positive matching                    :" << "\t" << _coef_nbRwc << "\n";
+        stream << "Score weight for transformed positions positive matching                  :" << "\t" << _coef_nbTwc << "\n";
+        stream << "Score weight for size similarity                                          :" << "\t" << _coef_nbSim << "\n";
+        stream << "\n";
+        stream << "# Positions data:\n";
+        stream << "IDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";
+
+
+
+        for (int refCounter = 0 ; refCounter < refPositions.size() ; refCounter++)
+        {
+            const Eigen::Vector2f &refPos = refPositions.at(refCounter).first;
+            float refVal = refPositions.at(refCounter).second;
+
+            stream << refIds.value(refCounter, "");
+            stream << "\t" << refPos[0];
+            stream << "\t" << refPos[1];
+            stream << "\t" << refVal;
+
+            int transIndice = correspondances.value(refCounter, -1);
+            if (transIndice >= 0)
+            {
+                const Eigen::Vector2f &transPos = transPositions.at(transIndice).first;
+                float transVal = transPositions.at(transIndice).second;
+
+                stream << "\t" << transIds.value(transIndice, "");
+                stream << "\t" << transPos[0];
+                stream << "\t" << transPos[1];
+                stream << "\t" << transVal;
+                stream << "\t" << deltaDistMap.value(refCounter);
+                stream << "\t" << deltaValMap.value(refCounter);
+
+            } else {
+                stream << "\t\t\t\t\t\t";
+            }
+
+            stream << "\n";
+        }
+
+        for (int transCounter = 0 ; transCounter < transPositions.size() ; transCounter++)
+        {
+            const Eigen::Vector2f &transPos = transPositions.at(transCounter).first;
+            float transVal = transPositions.at(transCounter).second;
+
+            if (correspondances.key(transCounter, -1) < 0)
+            {
+                stream << "\t\t\t";
+                stream << "\t" << transIds.value(transCounter, "");
+                stream << "\t" << transPos[0];
+                stream << "\t" << transPos[1];
+                stream << "\t" << transVal;
+                stream << "\t\t\n";
+            }
+        }
+
+        stream << "\n";
+        f.close();
     }
 
 }

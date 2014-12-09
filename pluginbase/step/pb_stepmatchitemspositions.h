@@ -85,16 +85,18 @@ protected:
 private:
 
     // Step parameters
-    double    _distThreshold;
-    double    _relativeSizeThreshold;
-    double    _minRelativeSize;
-    double     _coef_nbRwc;
-    double     _coef_nbTwc;
-    double     _coef_nbSim;
-    int    _drawMode;
-    int    _relativeMode;
-    double    _minval;
-    double    _maxval;
+    double      _distThreshold;
+    double      _relativeSizeThreshold;
+    double      _minRelativeSize;
+    double      _coef_nbRwc;
+    double      _coef_nbTwc;
+    double      _coef_nbSim;
+    int         _drawMode;
+    int         _relativeMode;
+    double      _minval;
+    double      _maxval;
+    bool        _exportReport;
+    QStringList _reportFileName;
 
 
     template <typename T> int sgn(T val)
