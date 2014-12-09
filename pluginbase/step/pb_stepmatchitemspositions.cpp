@@ -1,7 +1,8 @@
 #include "pb_stepmatchitemspositions.h"
 
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
-#include "ct_itemdrawable/ct_point2d.h"
+#include "ct_itemdrawable/ct_referencepoint.h"
+#include "ct_itemdrawable/ct_line.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
@@ -20,6 +21,7 @@
 #define DEFin_refx "refx"
 #define DEFin_refy "refy"
 #define DEFin_refvalue "refvalue"
+#define DEFin_refid "refid"
 
 #define DEFin_Restranspos "Restranspos"
 #define DEFin_grptrans "grptrans"
@@ -27,11 +29,21 @@
 #define DEFin_transx "transx"
 #define DEFin_transy "transy"
 #define DEFin_transvalue "transvalue"
+#define DEFin_transid "transid"
 
 #define DEFout_trans "trans"
 #define DEFout_grp "grp"
 #define DEFout_transpos "transpos"
 
+#define DEFout_trans2 "trans2"
+#define DEFout_grp2 "grp2"
+#define DEFout_transpos2 "transpos2"
+#define DEFout_transposCorresp "transposCorresp"
+#define DEFout_correspLine "correspLine"
+#define DEFout_transId "transId"
+#define DEFout_refCorrespId "refCorespId"
+#define DEFout_deltaValue "deltaValue"
+#define DEFout_distance "distance"
 
 // Constructor : initialization of parameters
 PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -42,7 +54,10 @@ PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &da
     _coef_nbRwc = 1;
     _coef_nbTwc = 1;
     _coef_nbSim = 1;
-
+    _drawMode = 0;
+    _relativeMode = 0;
+    _minval = 0;
+    _maxval = 5;
 }
 
 // Step description (tooltip of contextual menu)
@@ -81,6 +96,7 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refx, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::FLOAT, tr("Coordonnée X"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refy, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::FLOAT, tr("Coordonnée Y"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refvalue, QList<QString>() << CT_AbstractCategory::DATA_NUMBER, CT_AbstractCategory::NUMBER, tr("Valeur"));
+    resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
 
     CT_InResultModelGroup *resIn_transpos = createNewInResultModel(DEFin_Restranspos, tr("Positions à transformer"));
     resIn_transpos->setRootGroup(DEFin_grptrans, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
@@ -88,15 +104,36 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transx, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::FLOAT, tr("Coordonnée X"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transy, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::FLOAT, tr("Coordonnée Y"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transvalue, QList<QString>() << CT_AbstractCategory::DATA_NUMBER, CT_AbstractCategory::NUMBER, tr("Valeur"));
+    resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
 
 }
 
 // Creation and affiliation of OUT models
 void PB_StepMatchItemsPositions::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_trans = createNewOutResultModel(DEFout_trans, tr("Positions transformées"));
+    CT_OutResultModelGroup *res_trans2 = createNewOutResultModel(DEFout_trans2, tr("Positions transformées"));
+    res_trans2->setRootGroup(DEFout_grp2, new CT_StandardItemGroup(), tr("Groupe"));
+    res_trans2->addItemModel(DEFout_grp2, DEFout_transpos2, new CT_ReferencePoint(), tr("Position transformée"));
+    res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_transId,
+                                      new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
+                                      tr("ID position transformée"));
+    res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_refCorrespId,
+                                      new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
+                                      tr("ID position de référence"));
+    res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_deltaValue,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("Ecart ValTrans - ValRef"));
+    res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_distance,
+                                      new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                      tr("Distance 2D Trans - Ref"));
+
+
+    res_trans2->addItemModel(DEFout_grp2, DEFout_transposCorresp, new CT_ReferencePoint(), tr("Position de référence correspondante"));
+    res_trans2->addItemModel(DEFout_grp2, DEFout_correspLine, new CT_Line(), tr("Ligne de correspondance"));
+
+    CT_OutResultModelGroup *res_trans = createNewOutResultModel(DEFout_trans, tr("Positions intermédiaires"));
     res_trans->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
-    res_trans->addItemModel(DEFout_grp, DEFout_transpos, new CT_Point2D(), tr("Positions transformées"));
+    res_trans->addItemModel(DEFout_grp, DEFout_transpos, new CT_ReferencePoint(), tr("Positions intermédiaires"));
 
 }
 
@@ -112,6 +149,22 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
     configDialog->addDouble("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :", "", 0, 1000, 2, _coef_nbTwc);
     configDialog->addDouble("Poid du critère Nb. pos. transformées ayant une pos. de référence proche avec une taille similaire :", "", 0, 1000, 2, _coef_nbSim);
 
+    configDialog->addText("Mode de représentation :", "", "");
+
+    CT_ButtonGroup &bg_drawMode = configDialog->addButtonGroup(_drawMode);
+
+    configDialog->addExcludeValue("", "", "Valeur Z", bg_drawMode, 0);
+    configDialog->addExcludeValue("", "", "Cercle", bg_drawMode, 1);
+    configDialog->addText("Comment représenter en Z la variable de taille ?", "", "");
+
+    CT_ButtonGroup &bg_relativeMode = configDialog->addButtonGroup(_relativeMode);
+
+    configDialog->addExcludeValue("", "", "Valeur absolue", bg_relativeMode, 0);
+    configDialog->addExcludeValue("", "", "Valeur relative", bg_relativeMode, 1);
+    configDialog->addText("En cas de valeur relative :", "", "");
+    configDialog->addDouble("Valeur de Z/Rayon minimum", "m", -1e+09, 1e+09, 2, _minval, 1);
+    configDialog->addDouble("Valeur de Z/Rayon maximum", "m", -1e+09, 1e+09, 2, _maxval, 1);
+
 }
 
 void PB_StepMatchItemsPositions::compute()
@@ -122,11 +175,15 @@ void PB_StepMatchItemsPositions::compute()
     CT_ResultGroup* resIn_transpos = inResultList.at(1);
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* res_trans = outResultList.at(0);
+    CT_ResultGroup* res_trans = outResultList.at(1);
+    CT_ResultGroup* res_trans2 = outResultList.at(0);
 
     QList<QPair<Eigen::Vector2f, float> > refPositions;
     QList<QPair<Eigen::Vector2f, float> > transPositions;
     QList<QPair<Eigen::Vector2f, float> > transPositionsTmp;
+
+    QMap<int, QString> refIds;
+    QMap<int, QString> transIds;
 
     float minRefValue = std::numeric_limits<float>::max();
     float maxRefValue = -std::numeric_limits<float>::max();
@@ -134,6 +191,7 @@ void PB_StepMatchItemsPositions::compute()
     float maxTransValue = -std::numeric_limits<float>::max();
 
     // create refPositions List
+    int cptRef = 0;
     CT_ResultGroupIterator itIn_grpref(resIn_refpos, this, DEFin_grpref);
     while (itIn_grpref.hasNext() && !isStopped())
     {
@@ -145,16 +203,20 @@ void PB_StepMatchItemsPositions::compute()
             float xRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refx)->toFloat(itemIn_refpos, NULL);
             float yRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refy)->toFloat(itemIn_refpos, NULL);
             float valRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refvalue)->toFloat(itemIn_refpos, NULL);
+            QString idRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refid)->toString(itemIn_refpos, NULL);
 
             if (valRef < minRefValue) {minRefValue = valRef;}
             if (valRef > maxRefValue) {maxRefValue = valRef;}
 
             refPositions.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xRef, yRef), valRef));
+            refIds.insert(cptRef, idRef);
         }
+        cptRef++;
     }
     
     // create transPositions List
     CT_ResultGroupIterator itIn_grptrans(resIn_transpos, this, DEFin_grptrans);
+    int cptTrans = 0;
     while (itIn_grptrans.hasNext() && !isStopped())
     {
         const CT_AbstractItemGroup* grpIn_grptrans = (CT_AbstractItemGroup*) itIn_grptrans.next();
@@ -165,13 +227,16 @@ void PB_StepMatchItemsPositions::compute()
             float xTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transx)->toFloat(itemIn_transpos, NULL);
             float yTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transy)->toFloat(itemIn_transpos, NULL);
             float valTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transvalue)->toFloat(itemIn_transpos, NULL);
+            QString idTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transid)->toString(itemIn_transpos, NULL);
 
             if (valTrans < minTransValue) {minTransValue = valTrans;}
             if (valTrans > maxTransValue) {maxTransValue = valTrans;}
 
             transPositions.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xTrans, yTrans), valTrans));
             transPositionsTmp.append(QPair<Eigen::Vector2f, float>(Eigen::Vector2f(xTrans, yTrans), valTrans));
+            transIds.insert(cptTrans, idTrans);
         }
+        cptTrans++;
     }
     
     // Convert values to relatives values
@@ -230,7 +295,7 @@ void PB_StepMatchItemsPositions::compute()
                                 {                                    
 
                                     // Compute translation for trans points
-                                    Eigen::Vector2f delta = transPos - refPos;
+                                    Eigen::Vector2f delta = refPos - transPos;
 
                                     // Compute rotation for trans points
                                     double cosTheta = vectTrans.dot(vectRef)/(vectTrans.norm()*vectRef.norm());
@@ -247,7 +312,7 @@ void PB_StepMatchItemsPositions::compute()
                                     // Apply translation and rotation to all trans points
                                     for (int k = 0 ; k < transPositionsTmp.size() ; k++)
                                     {
-                                        transPositionsTmp[k].first = transPositions[k].first - delta;
+                                        transPositionsTmp[k].first = transPositions[k].first + delta;
                                         transPositionsTmp[k].first = rotation*(transPositionsTmp[k].first - refPos) + refPos;
                                     }
 
@@ -329,10 +394,6 @@ void PB_StepMatchItemsPositions::compute()
     // Compute transformation matrix
     Eigen::Matrix3f transformationMatrix = computeTransfMatrix2D(rotationCenter, translationVector, rotationMatrix);
 
-    qDebug() << transformationMatrix(0,0) << " " << transformationMatrix(0,1) << "" << transformationMatrix(0,2);
-    qDebug() << transformationMatrix(1,0) << " " << transformationMatrix(1,1) << "" << transformationMatrix(1,2);
-    qDebug() << transformationMatrix(2,0) << " " << transformationMatrix(2,1) << "" << transformationMatrix(2,2);
-
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
@@ -344,10 +405,20 @@ void PB_StepMatchItemsPositions::compute()
 
                 transPositions[i].first[0] = tmp[0];
                 transPositions[i].first[1] = tmp[1];
-//        transPositions[i].first = transPositions[i].first - translationVector;
+//        transPositions[i].first = transPositions[i].first + translationVector;
 //        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
     }
 
+    // Export transmorfed coordinates
+    for (int i = 0 ; i < transPositions.size() ; i++)
+    {
+        // OUT results creation (move it to the appropried place in the code)
+        CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_trans);
+        res_trans->addGroup(grp_grp);
+
+        CT_ReferencePoint* item_transpos = new CT_ReferencePoint(DEFout_transpos, res_trans, transPositions[i].first[0], transPositions[i].first[1], 0, 0);
+        grp_grp->addItemDrawable(item_transpos);
+    }
 
     // Find matching points pairs
     // first: compute all ref/trans distances
@@ -361,7 +432,11 @@ void PB_StepMatchItemsPositions::compute()
             const Eigen::Vector2f &transPos = transPositions.at(transCounter).first;
 
              Eigen::Vector2f delta = (transPos - refPos);
-             distances.insert(delta.norm(), QPair<int, int>(refCounter, transCounter));
+
+             if (delta.norm() < _distThreshold)
+             {
+                 distances.insert(delta.norm(), QPair<int, int>(refCounter, transCounter));
+             }
         }
     }
 
@@ -370,32 +445,23 @@ void PB_StepMatchItemsPositions::compute()
     QMap<int, int> correspondances;
     while (!candidates.isEmpty())
     {
-        QPair<int, int> pair = candidates.takeFirst();
+        QPair<int, int> pair = candidates.takeFirst();       
+        correspondances.insert(pair.first, pair.second);
 
-        float refVal = refPositions.at(pair.first).second;
-        float transVal = transPositions.at(pair.second).second;
-
-        float sizeDiff = fabs(refVal - transVal);
-
-        if (sizeDiff < _relativeSizeThreshold)
+        for (int i = candidates.size() - 1 ; i >= 0 ; i--)
         {
-            correspondances.insert(pair.first, pair.second);
-
-            for (int i = candidates.size() - 1 ; i >= 0 ; i--)
+            const QPair<int, int> &pair2 = candidates.at(i);
+            if (pair.first == pair2.first || pair.second == pair2.second)
             {
-                const QPair<int, int> &pair2 = candidates.at(i);
-                if (pair.first == pair2.first || pair.second == pair2.second)
-                {
-                    candidates.removeAt(i);
-                }
+                candidates.removeAt(i);
             }
         }
     }
 
     int nbMatches = correspondances.size();
 
-    Eigen::MatrixXf refMat(3,nbMatches);
-    Eigen::MatrixXf transMat(3,nbMatches);
+    Eigen::MatrixXf refMat(nbMatches, 3);
+    Eigen::MatrixXf transMat(nbMatches, 3);
 
     // put coordinates in matrices
     QMapIterator<int, int> it(correspondances);
@@ -407,13 +473,13 @@ void PB_StepMatchItemsPositions::compute()
         const Eigen::Vector2f &refPos = refPositions.at(it.key()).first;
         const Eigen::Vector2f &transPos = transPositions.at(it.value()).first;
 
-        refMat(0, cpt) = refPos(0);
-        refMat(1, cpt) = refPos(1);
-        refMat(2, cpt) = 0;
+        refMat(cpt, 0) = refPos(0);
+        refMat(cpt, 1) = refPos(1);
+        refMat(cpt, 2) = 0;
 
-        transMat(0, cpt) = transPos(0);
-        transMat(1, cpt) = transPos(1);
-        transMat(2, cpt) = 0;
+        transMat(cpt, 0) = transPos(0);
+        transMat(cpt, 1) = transPos(1);
+        transMat(cpt, 2) = 0;
         ++cpt;
     }
 
@@ -422,13 +488,6 @@ void PB_StepMatchItemsPositions::compute()
 
     Eigen::Matrix3f rotationMatrix3D = Kabsch(refMat, transMat, nbMatches, center3D, translation3D);
     Eigen::Matrix2f rotationMatrix2D = rotationMatrix3D.block<2,2>(0,0);
-
-    qDebug() << "U";
-    qDebug() << rotationMatrix3D(0,0) << " " << rotationMatrix3D(0,1) << "" << rotationMatrix3D(0,2);
-    qDebug() << rotationMatrix3D(1,0) << " " << rotationMatrix3D(1,1) << "" << rotationMatrix3D(1,2);
-    qDebug() << rotationMatrix3D(2,0) << " " << rotationMatrix3D(2,1) << "" << rotationMatrix3D(2,2);
-    qDebug();
-
 
     Eigen::Vector2f rotationCenter2D;
     Eigen::Vector2f translationVector2D;
@@ -452,21 +511,83 @@ void PB_StepMatchItemsPositions::compute()
                 transPositions[i].first[1] = tmp[1];
     }
 
-    qDebug();
-    qDebug() << transformationMatrix2(0,0) << " " << transformationMatrix2(0,1) << "" << transformationMatrix2(0,2);
-    qDebug() << transformationMatrix2(1,0) << " " << transformationMatrix2(1,1) << "" << transformationMatrix2(1,2);
-    qDebug() << transformationMatrix2(2,0) << " " << transformationMatrix2(2,1) << "" << transformationMatrix2(2,2);
-    qDebug();
-
-    // Export transmorfed coordinates
+    // Export transformed coordinates
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
-        // OUT results creation (move it to the appropried place in the code)
-        CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_trans);
-        res_trans->addGroup(grp_grp);
+        const Eigen::Vector2f &transPos = transPositions.at(i).first;
+        float transVal = transPositions.at(i).second;
+        QString transId = transIds.value(i, "");
 
-        CT_Point2D* item_transpos = new CT_Point2D(DEFout_transpos, res_trans, new CT_Point2DData(transPositions[i].first[0], transPositions[i].first[1]));
-        grp_grp->addItemDrawable(item_transpos);
+        // OUT results creation (move it to the appropried place in the code)
+        CT_StandardItemGroup* grp_grp2= new CT_StandardItemGroup(DEFout_grp2, res_trans2);
+        res_trans2->addGroup(grp_grp2);
+
+        CT_ReferencePoint* item_transpos2;
+        float zValTrans = transVal;
+        float transValAbs = transVal*deltaTrans + minTransValue;
+        float delta = _maxval - _minval;
+
+        if (_relativeMode == 0) // absolute value
+        {
+            zValTrans = transValAbs;
+        } else {
+            zValTrans = zValTrans*delta + _minval;
+        }
+
+        if (_drawMode == 0)
+        {
+            item_transpos2 = new CT_ReferencePoint(DEFout_transpos2, res_trans2, transPos[0], transPos[1], zValTrans, 0);
+        } else {
+            item_transpos2 = new CT_ReferencePoint(DEFout_transpos2, res_trans2, transPos[0], transPos[1], 0, zValTrans);
+        }
+        grp_grp2->addItemDrawable(item_transpos2);
+
+        item_transpos2->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_transId,CT_AbstractCategory::DATA_ID,res_trans2, transId));
+
+
+        int refIndice = correspondances.key(i, -1);
+        if (refIndice > 0)
+        {
+            const Eigen::Vector2f &refPos = refPositions.at(refIndice).first;
+            float refVal = refPositions.at(refIndice).second;
+            QString refId = refIds.value(refIndice);
+            float distance = (refPos - transPos).norm();
+
+            CT_ReferencePoint* item_refposCorresp;
+            float zValRef = refVal;
+            float refValAbs = refVal*deltaRef + minRefValue;
+
+            float deltaVal = transValAbs - refValAbs;
+
+            if (_relativeMode == 0) // absolute value
+            {
+                zValRef = refValAbs;
+            } else {
+                zValRef = zValRef*delta + _minval;
+            }
+
+            if (_drawMode == 0)
+            {
+                item_refposCorresp = new CT_ReferencePoint(DEFout_transposCorresp, res_trans2, refPos[0], refPos[1], zValRef, 0);
+            } else {
+                item_refposCorresp = new CT_ReferencePoint(DEFout_transposCorresp, res_trans2, refPos[0], refPos[1], 0, zValRef);
+            }
+            grp_grp2->addItemDrawable(item_refposCorresp);
+
+            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_refCorrespId,CT_AbstractCategory::DATA_ID,res_trans2, refId));
+            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_deltaValue,CT_AbstractCategory::DATA_NUMBER,res_trans2, deltaVal));
+            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_distance,CT_AbstractCategory::DATA_NUMBER,res_trans2, distance));
+
+            CT_Line *line;
+            if (_drawMode == 0)
+            {
+                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(QVector3D(transPos[0], transPos[1], zValTrans), QVector3D(refPos[0], refPos[1], zValRef)));
+            } else {
+                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(QVector3D(transPos[0], transPos[1], 0), QVector3D(refPos[0], refPos[1], 0)));
+            }
+            grp_grp2->addItemDrawable(line);
+
+        }
     }
 
 }
@@ -480,20 +601,20 @@ Eigen::Matrix3f PB_StepMatchItemsPositions::Kabsch(Eigen::MatrixXf &refPositions
 
     for(int j=0;j<pointsNumber;j++)
     {
-        for(int h=0;h<3;h++) means[h] += transPositions(h, j);
-        for(int h=0;h<3;h++) means[h+3] += refPositions(h, j);
+        for(int h=0;h<3;h++) means[h] += transPositions(j, h);
+        for(int h=0;h<3;h++) means[h+3] += refPositions(j, h);
     }
     for(int j=0;j<6;j++) means[j] /= pointsNumber;
 
     // After counting, we must subtract the arithmetic
     for(int j=0;j<pointsNumber;j++)
     {
-        for(int h=0;h<3;h++) transPositions(h, j) -= means[h];
-        for(int h=0;h<3;h++) refPositions(h, j) -= means[h+3];
+        for(int h=0;h<3;h++) transPositions(j, h) -= means[h];
+        for(int h=0;h<3;h++) refPositions(j, h) -= means[h+3];
     }
 
     // counting transpose P * Q
-    Eigen::MatrixXf A = transPositions * refPositions.transpose();
+    Eigen::MatrixXf A = transPositions.transpose() * refPositions;
 
     // SVD
     Eigen::JacobiSVD<Eigen::MatrixXf> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
@@ -508,7 +629,7 @@ Eigen::Matrix3f PB_StepMatchItemsPositions::Kabsch(Eigen::MatrixXf &refPositions
     U = W * U * V.transpose();
 
     for(int h=0;h<3;h++) center[h] = means[h+3];
-    for(int h=0;h<3;h++) translation[h] = means[h] - means[h+3];
+    for(int h=0;h<3;h++) translation[h] = means[h+3] - means[h];
 
     return U;
 }
@@ -520,11 +641,10 @@ Eigen::Matrix3f PB_StepMatchItemsPositions::computeTransfMatrix2D(const Eigen::V
     T[1] = 0;
 
     T -= center;
-    T -= tranlation;
+    T += tranlation;
     T = rotMat*T;
 
-    T[0] += center[0];
-    T[1] += center[1];
+    T += center;
 
     Eigen::Matrix3f transfMat =  Eigen::Matrix3f::Identity(3,3);
 
