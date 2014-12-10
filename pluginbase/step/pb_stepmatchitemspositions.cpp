@@ -690,6 +690,7 @@ void PB_StepMatchItemsPositions::compute()
         {
             const Eigen::Vector2f &refPos = refPositions.at(refCounter).first;
             float refVal = refPositions.at(refCounter).second;
+            float refValAbs = refVal*deltaRef + minRefValue;
 
             double xr, yr, zr;
             PS_COORDINATES_SYS->convertExport(refPos[0], refPos[1], 0, xr, yr, zr);
@@ -697,13 +698,14 @@ void PB_StepMatchItemsPositions::compute()
             stream << refIds.value(refCounter, "");
             stream << "\t" << QString::number(xr, 'f', 4);
             stream << "\t" << QString::number(yr, 'f', 4);
-            stream << "\t" << refVal;
+            stream << "\t" << refValAbs;
 
             int transIndice = correspondances.value(refCounter, -1);
             if (transIndice >= 0)
             {
                 const Eigen::Vector2f &transPos = transPositions.at(transIndice).first;
                 float transVal = transPositions.at(transIndice).second;
+                float transValAbs = transVal*deltaTrans + minTransValue;
 
                 double xt, yt, zt;
                 PS_COORDINATES_SYS->convertExport(transPos[0], transPos[1], 0, xt, yt, zt);
@@ -711,7 +713,7 @@ void PB_StepMatchItemsPositions::compute()
                 stream << "\t" << transIds.value(transIndice, "");
                 stream << "\t" << QString::number(xt, 'f', 4);
                 stream << "\t" << QString::number(yt, 'f', 4);
-                stream << "\t" << transVal;
+                stream << "\t" << transValAbs;
                 stream << "\t" << deltaDistMap.value(refCounter);
                 stream << "\t" << deltaValMap.value(refCounter);
 
