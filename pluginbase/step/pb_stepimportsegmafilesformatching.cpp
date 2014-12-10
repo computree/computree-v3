@@ -165,9 +165,6 @@ void PB_StepImportSegmaFilesForMatching::compute()
 
 
 
-    double xOffsetTrans = 0;
-    double yOffsetTrans = 0;
-
     if(QFile::exists(_transFile.first()))
     {
         QFile fTrans(_transFile.first());
@@ -178,7 +175,6 @@ void PB_StepImportSegmaFilesForMatching::compute()
 
             stream.readLine();
 
-            bool first = true;
             size_t cpt = 1;
             while (!stream.atEnd())
             {
@@ -199,15 +195,8 @@ void PB_StepImportSegmaFilesForMatching::compute()
                             // offset creation
                             if (_addOffset)
                             {
-                                if (first)
-                                {
-                                    first = false;
-                                    xOffsetTrans = (long long)x;
-                                    xOffsetTrans = (long long)y;
-                                }
-
-                                x = x - xOffsetTrans + xOffsetRef;
-                                y = y - yOffsetTrans + yOffsetRef;
+                                x = x + xOffsetRef;
+                                y = y + yOffsetRef;
                             }
 
                             float xc, yc, zc;
