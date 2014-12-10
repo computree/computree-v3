@@ -650,7 +650,7 @@ void PB_StepMatchItemsPositions::compute()
     attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attMaxDist,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxDist));
     attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attMaxDistDiff,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxVal));
 
-    Eigen::Matrix3f resultingMatrix = transformationMatrix*transformationMatrix2;
+    Eigen::Matrix3f resultingMatrix = transformationMatrix2*transformationMatrix;
 
     QFile f(_reportFileName.first());
     if (f.open(QIODevice::WriteOnly | QIODevice::Text))
