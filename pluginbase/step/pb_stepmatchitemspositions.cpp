@@ -4,6 +4,7 @@
 #include "ct_itemdrawable/ct_referencepoint.h"
 #include "ct_itemdrawable/ct_line.h"
 #include "ct_itemdrawable/ct_attributeslist.h"
+#include "ct_itemdrawable/ct_transformationmatrix.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
@@ -35,6 +36,7 @@
 #define DEFin_transid "transid"
 
 #define DEFout_rootGrp "rootGrp"
+#define DEFout_trMat "trMat"
 #define DEFout_attributes "attributes"
 #define DEFout_attRmseDist "attRmseDist"
 #define DEFout_attRmseVal "attRmseVal"
@@ -124,6 +126,7 @@ void PB_StepMatchItemsPositions::createOutResultModelListProtected()
 {
     CT_OutResultModelGroup *res_trans2 = createNewOutResultModel(DEFout_trans2, tr("Positions transformées"));
     res_trans2->setRootGroup(DEFout_rootGrp, new CT_StandardItemGroup(), tr("Groupe racine"));
+    res_trans2->addItemModel(DEFout_rootGrp, DEFout_trMat, new CT_TransformationMatrix(), tr("Matrice de transformation"));
     res_trans2->addItemModel(DEFout_rootGrp, DEFout_attributes, new CT_AttributesList(), tr("Qualité de Matching"));
     res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attRmseDist,
                                       new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
@@ -651,6 +654,8 @@ void PB_StepMatchItemsPositions::compute()
     attributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_attMaxDistDiff,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxVal));
 
     Eigen::Matrix3f resultingMatrix = transformationMatrix2*transformationMatrix;
+
+    rootGroup->addItemDrawable(new CT_TransformationMatrix(DEFout_trMat, res_trans2, resultingMatrix));
 
     QFile f(_reportFileName.first());
     if (f.open(QIODevice::WriteOnly | QIODevice::Text))

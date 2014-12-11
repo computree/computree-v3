@@ -369,7 +369,8 @@ SOURCES += \
     ct_itemdrawable/abstract/ct_abstractdatasource.cpp \
     ct_itemdrawable/ct_fileheader.cpp \
     ct_reader/headers/ct_lasheader.cpp \
-    ct_reader/ct_reader_gdal.cpp
+    ct_reader/ct_reader_gdal.cpp \
+    ct_itemdrawable/ct_transformationmatrix.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -830,7 +831,8 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_fileheader.h \
     ct_reader/headers/ct_lasheader.h \
     ct_reader/ct_reader_gdal.h \
-    ct_reader/ct_reader_gdal_def_models.h
+    ct_reader/ct_reader_gdal_def_models.h \
+    ct_itemdrawable/ct_transformationmatrix.h
 
 
 INCLUDEPATH += .
