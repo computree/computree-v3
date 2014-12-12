@@ -17,7 +17,7 @@ struct CT_Color : pcl::RGB {
 
 class PLUGINSHAREDSHARED_EXPORT CT_Color
 {
-private:
+public:
     union
     {
         struct

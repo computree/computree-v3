@@ -14,7 +14,7 @@ struct CT_Normal : pcl::Normal {
 
 class PLUGINSHAREDSHARED_EXPORT CT_Normal
 {
-private:
+public:
     union
     {
         float data_n[4];
