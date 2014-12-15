@@ -686,6 +686,15 @@ void PB_StepMatchItemsPositions::compute()
         stream << "Score weight for transformed positions positive matching                  :" << "\t" << _coef_nbTwc << "\n";
         stream << "Score weight for size similarity                                          :" << "\t" << _coef_nbSim << "\n";
         stream << "\n";
+
+        double xc, yc, zc;
+        PS_COORDINATES_SYS->convertExport(0, 0, 0, xc, yc, zc);
+        stream << "# Computree Offsets for the session:\n";
+        stream << "X Offset" << "\t" << QString::number(xc, 'f', 10) << "\n";
+        stream << "Y Offset" << "\t" << QString::number(yc, 'f', 10) << "\n";
+        stream << "Z Offset" << "\t" << QString::number(zc, 'f', 10) << "\n";
+        stream << "\n";
+
         stream << "# Positions data:\n";
         stream << "IDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";
 
