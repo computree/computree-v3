@@ -689,10 +689,10 @@ void PB_StepMatchItemsPositions::compute()
 
         double xc, yc, zc;
         PS_COORDINATES_SYS->convertExport(0, 0, 0, xc, yc, zc);
-        stream << "# Computree Offsets for the session:\n";
-        stream << "X Offset" << "\t" << QString::number(xc, 'f', 10) << "\n";
-        stream << "Y Offset" << "\t" << QString::number(yc, 'f', 10) << "\n";
-        stream << "Z Offset" << "\t" << QString::number(zc, 'f', 10) << "\n";
+        stream << "# Computree Offsets for the session (X, Y, Z):\n";
+        stream << QString::number(xc, 'f', 10) << "\n";
+        stream << QString::number(yc, 'f', 10) << "\n";
+        stream << QString::number(zc, 'f', 10) << "\n";
         stream << "\n";
 
         stream << "# Positions data:\n";
