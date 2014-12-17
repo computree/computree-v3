@@ -194,6 +194,15 @@ bool CT_Reader_LArchitect_Grid::protectedReadFile()
     if ((wood_surface!=NULL || wood_volume!=NULL) && wood_index==-1) {return false; qDebug() << "CT_Reader_LArchitect_Grid: pas d'index bois dans le fichier";}
     if ((leaf_surface!=NULL || leaf_volume!=NULL) && leaf_index==-1) {return false; qDebug() << "CT_Reader_LArchitect_Grid: pas d'index feuille dans le fichier";}
 
+
+    bool wood_surface_Exist = wood_surface!=NULL;
+    bool wood_volume_Exist = wood_volume!=NULL;
+    bool leaf_surface_Exist = leaf_surface!=NULL;
+    bool leaf_volume_Exist = leaf_volume!=NULL;
+    bool all_surface_Exist = all_surface!=NULL;
+    bool all_volume_Exist = all_volume!=NULL;
+
+
     // Test File validity
     if(QFile::exists(filepath()))
     {
@@ -211,59 +220,67 @@ bool CT_Reader_LArchitect_Grid::protectedReadFile()
                 stream.readLine();
             }
 
+            size_t increment = _dimx / 20;
+            bool ok;
+            bool okSurf, okVol;
+            float surface, volume;
+            int pos, code;
+            size_t index;
+            QString line;
+            QStringList list;
+
             for (size_t xx = 0 ; xx < _dimx ; xx++)
             {
                 for (size_t yy = 0 ; yy < _dimy ; yy++)
                 {
                     for (size_t zz = 0 ; zz < _dimz && !stream.atEnd(); zz++)
                     {
-                        size_t index;
-
-                        QString line = stream.readLine();
-                        QStringList list = line.split(" ");
+                        line = stream.readLine();
+                        list = line.split(" ");
 
                         if (refGrid->index(xx, yy, zz, index))
                         {
                             for (int i = 0 ; i < _nmat ; i++)
                             {
-                                int pos = 3*i;
+                                pos = 3*i;
                                 if (list.size() >= (pos + 1))
                                 {
-                                    bool ok;
-                                    int code = list.at(pos).toInt(&ok);
+                                    code = list.at(pos).toInt(&ok);
                                     if (ok)
                                     {
                                         if (code == wood_index && list.size() >= pos + 3)
                                         {
-                                            bool okSurf, okVol;
-                                            float surface = list.at(pos+1).toFloat(&okSurf);
-                                            float volume = list.at(pos+2).toFloat(&okVol);
+                                            surface = list.at(pos+1).toFloat(&okSurf);
+                                            volume = list.at(pos+2).toFloat(&okVol);
 
-                                            if (wood_surface!=NULL && okSurf) {wood_surface->setValueAtIndex(index, surface);}
-                                            if (wood_volume!=NULL && okVol)  {wood_volume->setValueAtIndex(index, volume);}
-                                            if (all_surface!=NULL && okSurf)  {all_surface->addValueAtIndex(index, surface);}
-                                            if (all_volume!=NULL && okVol)   {all_volume->addValueAtIndex(index, volume);}
+                                            if (wood_surface_Exist && okSurf) {wood_surface->setValueAtIndex(index, surface);}
+                                            if (wood_volume_Exist && okVol)  {wood_volume->setValueAtIndex(index, volume);}
+                                            if (all_surface_Exist && okSurf)  {all_surface->addValueAtIndex(index, surface);}
+                                            if (all_volume_Exist && okVol)   {all_volume->addValueAtIndex(index, volume);}
 
 
                                         } else if (code == leaf_index && list.size() >= pos + 3)
                                         {
-                                            bool okSurf, okVol;
-                                            float surface = list.at(pos+1).toFloat(&okSurf);
-                                            float volume = list.at(pos+2).toFloat(&okVol);
+                                            surface = list.at(pos+1).toFloat(&okSurf);
+                                            volume = list.at(pos+2).toFloat(&okVol);
 
-                                            if (leaf_surface!=NULL && okSurf) {leaf_surface->setValueAtIndex(index, surface);}
-                                            if (leaf_volume!=NULL && okVol)  {leaf_volume->setValueAtIndex(index, volume);}
-                                            if (all_surface!=NULL && okSurf)  {all_surface->addValueAtIndex(index, surface);}
-                                            if (all_volume!=NULL && okVol)   {all_volume->addValueAtIndex(index, volume);}
+                                            if (leaf_surface_Exist && okSurf) {leaf_surface->setValueAtIndex(index, surface);}
+                                            if (leaf_volume_Exist && okVol)  {leaf_volume->setValueAtIndex(index, volume);}
+                                            if (all_surface_Exist && okSurf)  {all_surface->addValueAtIndex(index, surface);}
+                                            if (all_volume_Exist && okVol)   {all_volume->addValueAtIndex(index, volume);}
 
                                         }
                                     }
                                 }
                             }
                         } else {qDebug() << "Indice hors grille";}
-
-                        setProgress(stream.pos()*100/fileSize);
+                        list.clear();
                     }
+                }
+
+                if ((xx % increment) == 0)
+                {
+                    setProgress(stream.pos()*100/fileSize);
                 }
             }
 
@@ -283,12 +300,12 @@ bool CT_Reader_LArchitect_Grid::protectedReadFile()
         return false;
     }
 
-    if (wood_surface != NULL) {wood_surface->computeMinMax();}
-    if (wood_volume != NULL) {wood_volume->computeMinMax();}
-    if (leaf_surface != NULL) {leaf_surface->computeMinMax();}
-    if (leaf_volume != NULL) {leaf_volume->computeMinMax();}
-    if (all_surface != NULL) {all_surface->computeMinMax();}
-    if (all_volume != NULL) {all_volume->computeMinMax();}
+    if (wood_surface_Exist) {wood_surface->computeMinMax();}
+    if (wood_volume_Exist) {wood_volume->computeMinMax();}
+    if (leaf_surface_Exist) {leaf_surface->computeMinMax();}
+    if (leaf_volume_Exist) {leaf_volume->computeMinMax();}
+    if (all_surface_Exist) {all_surface->computeMinMax();}
+    if (all_volume_Exist) {all_volume->computeMinMax();}
 
     addOutItemDrawable(DEF_CT_Reader_LArchitect_Grid_all_surface, all_surface);
     addOutItemDrawable(DEF_CT_Reader_LArchitect_Grid_all_volume, all_volume);
