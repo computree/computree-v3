@@ -56,6 +56,8 @@
 #include "step/pb_stepuseritemcopy.h"
 #include "step/pb_stepslicepointcloud.h"
 #include "step/pb_stepmanualinventory.h"
+#include "step/pb_stepvalidateinventory.h"
+#include "step/pb_stepselectgroupsbyreferenceheight.h"
 #include "step/pb_stepmatchitemspositions.h"
 #include "step/pb_stepimportsegmafilesformatching.h"
 
@@ -197,6 +199,8 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepUserItemCopy(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepManualInventory(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSelectGroupsByReferenceHeight(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));

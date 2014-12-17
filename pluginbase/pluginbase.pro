@@ -70,7 +70,12 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/actions/pb_actionmanualinventoryoptions.h \
     views/actions/pb_actionmanualinventoryattributesdialog.h \
     step/pb_stepmatchitemspositions.h \
-    step/pb_stepimportsegmafilesformatching.h
+    step/pb_stepimportsegmafilesformatching.h \
+    step/pb_stepvalidateinventory.h \
+    actions/pb_actionvalidateinventory.h \
+    views/actions/pb_actionvalidateinventoryoptions.h \
+    views/actions/pb_actionvalidateinventoryattributesdialog.h \
+    step/pb_stepselectgroupsbyreferenceheight.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -138,7 +143,12 @@ SOURCES += \
     views/actions/pb_actionmanualinventoryoptions.cpp \
     views/actions/pb_actionmanualinventoryattributesdialog.cpp \
     step/pb_stepmatchitemspositions.cpp \
-    step/pb_stepimportsegmafilesformatching.cpp
+    step/pb_stepimportsegmafilesformatching.cpp \
+    step/pb_stepvalidateinventory.cpp \
+    actions/pb_actionvalidateinventory.cpp \
+    views/actions/pb_actionvalidateinventoryoptions.cpp \
+    views/actions/pb_actionvalidateinventoryattributesdialog.cpp \
+    step/pb_stepselectgroupsbyreferenceheight.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -162,7 +172,9 @@ FORMS += \
     views/actions/pb_actionslicepointcloudoptions.ui \
     views/actions/pb_actionpickitemsinlistoptions.ui \
     views/actions/pb_actionmanualinventoryoptions.ui \
-    views/actions/pb_actionmanualinventoryattributesdialog.ui
+    views/actions/pb_actionmanualinventoryattributesdialog.ui \
+    views/actions/pb_actionvalidateinventoryoptions.ui \
+    views/actions/pb_actionvalidateinventoryattributesdialog.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts
