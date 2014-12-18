@@ -83,14 +83,15 @@ void PB_StepSelectGroupsByReferenceHeight::compute()
 
     QList<CT_AbstractItemGroup*> groupsToRemove;
 
-
     CT_ResultGroupIterator itG(resultOut_R, this, DEFin_scBase);
     while(itG.hasNext() && !isStopped())
     {
         const CT_AbstractItemGroup *groupOut_G = itG.next();
+
         if (groupOut_G != NULL)
         {
-            CT_ReferencePoint *dtmRefPoint = (CT_ReferencePoint*) groupOut_G->firstItemByINModelName(this, DEFin_item);
+
+            CT_ReferencePoint *dtmRefPoint = (CT_ReferencePoint*) groupOut_G->firstItemByINModelName(this, DEFin_dtmValue);
 
             if (dtmRefPoint != NULL)
             {
@@ -102,6 +103,7 @@ void PB_StepSelectGroupsByReferenceHeight::compute()
                 CT_GroupIterator itG2(groupOut_G, this, DEFin_group);
                 while(itG2.hasNext() && !isStopped())
                 {
+
                     const CT_AbstractItemGroup *groupOut_G2 = itG2.next();
 
                     if (groupOut_G2 != NULL)
