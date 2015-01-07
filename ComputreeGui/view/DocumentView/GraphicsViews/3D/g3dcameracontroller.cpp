@@ -13,6 +13,8 @@
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
 
+#include "view/DocumentView/GraphicsViews/3D/g3dcamera.h"
+
 G3DCameraController::G3DCameraController() : DM_GraphicsViewCamera()
 {
     _realCamera = NULL;
@@ -25,8 +27,6 @@ void G3DCameraController::setRealCamera(const qglviewer::Camera *camera)
         disconnect(_realCamera->frame(), NULL, this, NULL);
 
     _realCamera = (qglviewer::Camera*)camera;
-
-    _realCamera->setZNearCoefficient(0.000005);
 
     if(_realCamera != NULL)
         connect(_realCamera->frame(), SIGNAL(manipulated()), this, SIGNAL(coordinatesChanged()), Qt::DirectConnection);
@@ -786,7 +786,7 @@ void G3DCameraController::fitCameraToVisibleItems()
             (max.y > -std::numeric_limits<float>::max()) &&
             (max.z > -std::numeric_limits<float>::max()))
     {
-        _realCamera->setSceneBoundingBox(min, max);
+        ((G3DCamera*)_realCamera)->setBoundingBox(min, max);
         _realCamera->fitBoundingBox(min, max);
         redrawTheView();
     }

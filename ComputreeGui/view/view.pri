@@ -46,7 +46,8 @@ SOURCES += \
     $$PWD/MainView/gineedhelpdialog.cpp \
     $$PWD/StepResultTreeView/myqmenu.cpp \    
 	view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.cpp \
-    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.cpp
+    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.cpp \
+    view/DocumentView/GraphicsViews/3D/g3dcamera.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -100,7 +101,8 @@ HEADERS += \
     view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
-    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h
+    view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h \
+    view/DocumentView/GraphicsViews/3D/g3dcamera.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

@@ -10,6 +10,13 @@ public:
 
     virtual float zNear() const;
     virtual float zFar() const;
+
+    void setBoundingBox(const qglviewer::Vec& min, const qglviewer::Vec& max);
+private:
+    qglviewer::Vec     _min;
+    qglviewer::Vec     _max;
+
+    float getZNearDistance() const;
 };
 
 #endif // G3DCAMERA_H

@@ -29,6 +29,8 @@
 #include "gdocumentview.h"
 #include "gstepmanager.h"
 
+#include "view/DocumentView/GraphicsViews/3D/g3dcamera.h"
+
 #include "manipulatedCameraFrame.h"
 #include "dm_guimanager.h"
 #include "tools/graphicsview/dm_elementinfomanager.h"
@@ -51,6 +53,8 @@
 
 G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::SampleBuffers), parent), GGraphicsView()
 {
+    setCamera(new G3DCamera());
+
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
 
