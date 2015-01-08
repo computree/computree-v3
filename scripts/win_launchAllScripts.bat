@@ -18,6 +18,16 @@ for /d %%X in (%~dp0\..\..\plugin*) do (
 	)
 )
 
+echo;
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo "If you have problem with lupdate or lrelease (not found) please call this script in a QT preconfigured console"
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo;
+
 :launch
 
 for %%f in (%~1\*.pro) do (
