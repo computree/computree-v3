@@ -17,6 +17,7 @@ private:
     qglviewer::Vec     _max;
 
     float getZNearDistance() const;
+    float getZFarDistance() const;
 };
 
 #endif // G3DCAMERA_H
