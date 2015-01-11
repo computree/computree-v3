@@ -62,32 +62,32 @@ QString CT_AbstractShape::staticGetType()
     return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractShape";
 }
 
-void CT_AbstractShape::setCenterX(float x)
+void CT_AbstractShape::setCenterX(double x)
 {
-    getDataNotConst()->_center.setX(x);
+    getDataNotConst()->_center(0) = x;
 }
 
-void CT_AbstractShape::setCenterY(float y)
+void CT_AbstractShape::setCenterY(double y)
 {
-    getDataNotConst()->_center.setY(y);
+    getDataNotConst()->_center(1) = y;
 }
 
-void CT_AbstractShape::setCenterZ(float z)
+void CT_AbstractShape::setCenterZ(double z)
 {
-    getDataNotConst()->_center.setZ(z);
+    getDataNotConst()->_center(2) = z;
 }
 
-float CT_AbstractShape::getCenterX() const
+double CT_AbstractShape::getCenterX() const
 {
     return getDataNotConst()->getCenter().x();
 }
 
-float CT_AbstractShape::getCenterY() const
+double CT_AbstractShape::getCenterY() const
 {
     return getDataNotConst()->getCenter().y();
 }
 
-float CT_AbstractShape::getCenterZ() const
+double CT_AbstractShape::getCenterZ() const
 {
     return getDataNotConst()->getCenter().z();
 }
@@ -102,12 +102,12 @@ const CT_ShapeData& CT_AbstractShape::getData() const
     return *_data;
 }
 
-const QVector3D& CT_AbstractShape::getCenter() const
+const Eigen::Vector3d& CT_AbstractShape::getCenter() const
 {
     return _data->getCenter();
 }
 
-const QVector3D& CT_AbstractShape::getDirection() const
+const Eigen::Vector3d& CT_AbstractShape::getDirection() const
 {
     return _data->getDirection();
 }

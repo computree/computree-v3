@@ -34,10 +34,10 @@ class PLUGINSHAREDSHARED_EXPORT CT_Line2DData : public CT_Shape2DData
 {
 public:
     CT_Line2DData();
-    CT_Line2DData(const QVector2D &p1, const QVector2D &p2);
+    CT_Line2DData(const Eigen::Vector2d &p1, const Eigen::Vector2d &p2);
 
-    const QVector2D &getP1() const;
-    const QVector2D &getP2() const;
+    const Eigen::Vector2d &getP1() const;
+    const Eigen::Vector2d &getP2() const;
 
     double x1() const;
     double y1() const;
@@ -47,14 +47,14 @@ public:
 
     double length() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     CT_Line2DData* clone() const;
 
 private:
 
-    QVector2D   _p1;
-    QVector2D   _p2;
+    Eigen::Vector2d   _p1;
+    Eigen::Vector2d   _p2;
 
 };
 

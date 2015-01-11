@@ -106,11 +106,11 @@ bool PB_ProfileExporter::protectedExportToFile()
             stream << "Yorigin\t" << item->minY() << "\n";
             stream << "Zorigin\t" << item->minZ() << "\n";
 
-            const QVector3D &direction = item->getDirection();
+            const Eigen::Vector3d &direction = item->getDirection();
 
-            stream << "Xdirection\t" << direction.x() << "\n";
-            stream << "Ydirection\t" << direction.y() << "\n";
-            stream << "Zdirection\t" << direction.z() << "\n";
+            stream << "Xdirection\t" << direction(0) << "\n";
+            stream << "Ydirection\t" << direction(1) << "\n";
+            stream << "Zdirection\t" << direction(2) << "\n";
 
             stream << "Resolution\t" << item->resolution() << "\n";
             stream << "NODATA_value\t" << item->NAAsString() << "\n";
@@ -120,14 +120,14 @@ bool PB_ProfileExporter::protectedExportToFile()
             // write data
             for (size_t index = 0 ; index < dim ; index++)
             {
-                QVector3D cellCenter;
+                Eigen::Vector3d cellCenter;
                 item->getCellCenterXYZ(index, cellCenter);
 
                 stream << index << "\t";
                 stream << item->lengthForIndex(index) << "\t";
-                stream << cellCenter.x() << "\t";
-                stream << cellCenter.y() << "\t";
-                stream << cellCenter.z() << "\t";
+                stream << cellCenter(0) << "\t";
+                stream << cellCenter(1) << "\t";
+                stream << cellCenter(2) << "\t";
                 stream << item->valueAtIndexAsString(index) << "\n";
             }
 

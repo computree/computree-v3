@@ -69,12 +69,12 @@ int CT_PlanarBSpline::getNCP() const
     return ((const CT_PlanarBSplineData&)getData()).nCP();
 }
 
-void CT_PlanarBSpline::setPolyline(const QList<QVector3D> &list)
+void CT_PlanarBSpline::setPolyline(const QList<Eigen::Vector3d> &list)
 {
     _polyline << list;
 }
 
-const QList<QVector3D> &CT_PlanarBSpline::getPolyline() const
+const QList<Eigen::Vector3d> &CT_PlanarBSpline::getPolyline() const
 {
     return _polyline;
 }

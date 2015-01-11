@@ -61,22 +61,22 @@ QString CT_Cylinder::staticGetType()
     return CT_AbstractShape::staticGetType() + "/CT_Cylinder";
 }
 
-float CT_Cylinder::getRadius() const
+double CT_Cylinder::getRadius() const
 {
     return ((const CT_CylinderData&)getData()).getRadius();
 }
 
-float CT_Cylinder::getHeight() const
+double CT_Cylinder::getHeight() const
 {
     return ((const CT_CylinderData&)getData()).getHeight();
 }
 
-float CT_Cylinder::getLineError() const
+double CT_Cylinder::getLineError() const
 {
     return ((const CT_CylinderData&)getData()).getLineError();
 }
 
-float CT_Cylinder::getCircleError() const
+double CT_Cylinder::getCircleError() const
 {
     return ((const CT_CylinderData&)getData()).getCircleError();
 }
@@ -99,7 +99,7 @@ CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstr
                                                                const CT_AbstractResult *result,
                                                                const CT_AbstractPointCloud &pointCloud,
                                                                const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                               const QVector3D &pointCloudBarycenter)
+                                                               const Eigen::Vector3d &pointCloudBarycenter)
 {
     Q_UNUSED(id)
 

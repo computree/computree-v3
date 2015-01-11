@@ -144,7 +144,7 @@ void PB_StepImportSegmaFilesForMatching::compute()
                             CT_StandardItemGroup* grp_grpRef= new CT_StandardItemGroup(DEFout_grpRef, res_refRes);
                             res_refRes->addGroup(grp_grpRef);
 
-                            CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(QVector2D(xc,yc)));
+                            CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(xc,yc));
                             grp_grpRef->addItemDrawable(item_ref);
 
                             item_ref->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_refVal, CT_AbstractCategory::DATA_NUMBER, res_refRes, val));
@@ -205,7 +205,7 @@ void PB_StepImportSegmaFilesForMatching::compute()
                             CT_StandardItemGroup* grp_grpTrans= new CT_StandardItemGroup(DEFout_grpTrans, res_transRes);
                             res_transRes->addGroup(grp_grpTrans);
 
-                            CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(QVector2D(xc,yc)));
+                            CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(xc,yc));
                             grp_grpTrans->addItemDrawable(item_trans);
 
                             item_trans->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_transVal, CT_AbstractCategory::DATA_NUMBER, res_transRes, val));

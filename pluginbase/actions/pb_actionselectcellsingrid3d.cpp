@@ -270,7 +270,7 @@ bool PB_ActionSelectCellsInGrid3D::mouseMoveEvent(QMouseEvent *e)
 
 bool PB_ActionSelectCellsInGrid3D::getCoordsInActiveLevelForMousePosition(const QMouseEvent *e, float &x, float &y, float &z)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     GraphicsViewInterface *view = graphicsView();
     view->convertClickToLine(e->pos(), origin, direction);
 
@@ -289,7 +289,7 @@ bool PB_ActionSelectCellsInGrid3D::getCoordsInActiveLevelForMousePosition(const 
 
 bool PB_ActionSelectCellsInGrid3D::getIndexInGridForMousePosition(const QMouseEvent *e, size_t &index)
 {
-    QVector3D origin, direction, nearP, farP, bot, top;
+    Eigen::Vector3d origin, direction, nearP, farP, bot, top;
     GraphicsViewInterface *view = graphicsView();
     view->convertClickToLine(e->pos(), origin, direction);
 

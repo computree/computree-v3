@@ -31,6 +31,7 @@
 #include "ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_shapedata/ct_shapedata.h"
 
+
 /**
   * Reprsente une forme gomtrique 2D ou 3D
   */
@@ -63,18 +64,18 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    void setCenterX(float x);
-    void setCenterY(float y);
-    void setCenterZ(float z);
+    void setCenterX(double x);
+    void setCenterY(double y);
+    void setCenterZ(double z);
 
-    float getCenterX() const;
-    float getCenterY() const;
-    float getCenterZ() const;
+    double getCenterX() const;
+    double getCenterY() const;
+    double getCenterZ() const;
 
     const CT_ShapeData* getPointerData() const;
     const CT_ShapeData& getData() const;
-    const QVector3D& getCenter() const;
-    const QVector3D& getDirection() const;
+    const Eigen::Vector3d& getCenter() const;
+    const Eigen::Vector3d& getDirection() const;
     double getDirectionX() const;
     double getDirectionY() const;
     double getDirectionZ() const;

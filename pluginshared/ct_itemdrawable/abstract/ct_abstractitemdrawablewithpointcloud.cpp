@@ -85,13 +85,13 @@ QString CT_AbstractItemDrawableWithPointCloud::staticGetType()
 
 void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
 {
-    _minCoordinates.setX(std::numeric_limits<float>::max());
-    _minCoordinates.setY(std::numeric_limits<float>::max());
-    _minCoordinates.setZ(std::numeric_limits<float>::max());
+    _minCoordinates(0) = std::numeric_limits<double>::max();
+    _minCoordinates(1) = std::numeric_limits<double>::max();
+    _minCoordinates(2) = std::numeric_limits<double>::max();
 
-    _maxCoordinates.setX(-std::numeric_limits<float>::max());
-    _maxCoordinates.setY(-std::numeric_limits<float>::max());
-    _maxCoordinates.setZ(-std::numeric_limits<float>::max());
+    _maxCoordinates(0) = -std::numeric_limits<double>::max();
+    _maxCoordinates(1) = -std::numeric_limits<double>::max();
+    _maxCoordinates(2) = -std::numeric_limits<double>::max();
 
     const CT_AbstractCloudIndexT<CT_Point>* pointCloudIndex = getPointCloudIndexT();
 
@@ -101,13 +101,13 @@ void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
     for (size_t i = 0 ; i < size ; i++)
     {
         const CT_Point& point = pointCloudIndex->constTAt(i);
-        if (point(0) < _minCoordinates.x()) {_minCoordinates.setX(point(0));}
-        if (point(1) < _minCoordinates.y()) {_minCoordinates.setY(point(1));}
-        if (point(2) < _minCoordinates.z()) {_minCoordinates.setZ(point(2));}
+        if (point(0) < _minCoordinates(0)) {_minCoordinates(0) = point(0);}
+        if (point(1) < _minCoordinates(1)) {_minCoordinates(1) = point(1);}
+        if (point(2) < _minCoordinates(2)) {_minCoordinates(2) = point(2);}
 
-        if (point(0) > _maxCoordinates.x()) {_maxCoordinates.setX(point(0));}
-        if (point(1) > _maxCoordinates.y()) {_maxCoordinates.setY(point(1));}
-        if (point(2) > _maxCoordinates.z()) {_maxCoordinates.setZ(point(2));}
+        if (point(0) > _maxCoordinates(0)) {_maxCoordinates(0) = point(0);}
+        if (point(1) > _maxCoordinates(1)) {_maxCoordinates(1) = point(1);}
+        if (point(2) > _maxCoordinates(2)) {_maxCoordinates(2) = point(2);}
     }
 
     updateCenterFromBoundingBox();

@@ -29,7 +29,7 @@
 #define CT_SHAPE2DDATA_H
 
 #include "pluginShared_global.h"
-#include <QVector2D>
+#include <eigen/Eigen/Core>
 
 /**
   * Reprsente les donnes d'une forme géomtrique 2D
@@ -39,18 +39,18 @@ class PLUGINSHAREDSHARED_EXPORT CT_Shape2DData
 public:
 
     CT_Shape2DData();
-    CT_Shape2DData(const QVector2D &center);
-    CT_Shape2DData(const float &x, const float &y);
+    CT_Shape2DData(const Eigen::Vector2d &center);
+    CT_Shape2DData(const double &x, const double &y);
     virtual ~CT_Shape2DData();
 
-    const QVector2D& getCenter() const;
-    void setCenter(const QVector2D &center);
+    const Eigen::Vector2d& getCenter() const;
+    void setCenter(const Eigen::Vector2d &center);
 
-    virtual void getBoundingBox(QVector2D &min, QVector2D &max) const = 0;
+    virtual void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
 
 protected:
 
-    QVector2D   _center;
+    Eigen::Vector2d   _center;
 
     friend class CT_AbstractShape2D;
 

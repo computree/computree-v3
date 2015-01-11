@@ -46,14 +46,14 @@ const CT_StandardProfileDrawManager<DataT> CT_Profile<DataT>::ABSPROFILE_DRAW_MA
 template< typename DataT>
 CT_Profile<DataT>::CT_Profile() : CT_AbstractProfile()
 {
-    _minCoordinates.setX(0);
-    _minCoordinates.setY(0);
-    _minCoordinates.setZ(0);
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
     _res = 1;
     _dim = 0;
-    _maxCoordinates.setX(0);
-    _maxCoordinates.setY(0);
-    _maxCoordinates.setZ(0);
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
     _NAdata = -1;
     _dataMax = -1;
     _dataMin = -1;
@@ -66,24 +66,24 @@ CT_Profile<DataT>::CT_Profile() : CT_AbstractProfile()
 template< typename DataT>
 CT_Profile<DataT>::CT_Profile(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              float xmin,
-                              float ymin,
-                              float zmin,
-                              float xdir,
-                              float ydir,
-                              float zdir,
+                              double xmin,
+                              double ymin,
+                              double zmin,
+                              double xdir,
+                              double ydir,
+                              double zdir,
                               size_t dim,
-                              float resolution,
+                              double resolution,
                               DataT na,
                               DataT initValue) : CT_AbstractProfile(model, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
 
-    _direction.setX(xdir);
-    _direction.setY(ydir);
-    _direction.setZ(zdir);
+    _direction(0) = xdir;
+    _direction(1) = ydir;
+    _direction(2) = zdir;
 
     _direction.normalize();
 
@@ -91,9 +91,9 @@ CT_Profile<DataT>::CT_Profile(const CT_OutAbstractSingularItemModel *model,
     _dim = dim;
     _maxLength = _dim * _res;
 
-    _maxCoordinates.setX(xmin + _res * _dim * _direction.x());
-    _maxCoordinates.setY(ymin + _res * _dim * _direction.y());
-    _maxCoordinates.setZ(zmin + _res * _dim * _direction.z());
+    _maxCoordinates(0) = xmin + _res * _dim * _direction.x();
+    _maxCoordinates(1) = ymin + _res * _dim * _direction.y();
+    _maxCoordinates(2) = zmin + _res * _dim * _direction.z();
 
     _NAdata = na;
 
@@ -111,24 +111,24 @@ CT_Profile<DataT>::CT_Profile(const CT_OutAbstractSingularItemModel *model,
 template< typename DataT>
 CT_Profile<DataT>::CT_Profile(const QString &modelName,
                               const CT_AbstractResult *result,
-                              float xmin,
-                              float ymin,
-                              float zmin,
-                              float xdir,
-                              float ydir,
-                              float zdir,
+                              double xmin,
+                              double ymin,
+                              double zmin,
+                              double xdir,
+                              double ydir,
+                              double zdir,
                               size_t dim,
-                              float resolution,
+                              double resolution,
                               DataT na,
                               DataT initValue) : CT_AbstractProfile(modelName, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
 
-    _direction.setX(xdir);
-    _direction.setY(ydir);
-    _direction.setZ(zdir);
+    _direction(0) = xdir;
+    _direction(1) = ydir;
+    _direction(2) = zdir;
 
     _direction.normalize();
 
@@ -136,9 +136,9 @@ CT_Profile<DataT>::CT_Profile(const QString &modelName,
     _dim = dim;
     _maxLength = _dim * _res;
 
-    _maxCoordinates.setX(xmin + _res * _dim * _direction.x());
-    _maxCoordinates.setY(ymin + _res * _dim * _direction.y());
-    _maxCoordinates.setZ(zmin + _res * _dim * _direction.z());
+    _maxCoordinates(0) = xmin + _res * _dim * _direction.x();
+    _maxCoordinates(1) = ymin + _res * _dim * _direction.y();
+    _maxCoordinates(2) = zmin + _res * _dim * _direction.z();
 
     _NAdata = na;
 
@@ -156,21 +156,21 @@ CT_Profile<DataT>::CT_Profile(const QString &modelName,
 template< typename DataT>
 CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstractSingularItemModel *model,
                                                                const CT_AbstractResult *result,
-                                                               float xmin,
-                                                               float ymin,
-                                                               float zmin,
-                                                               float xmax,
-                                                               float ymax,
-                                                               float zmax,
-                                                               float resolution,
+                                                               double xmin,
+                                                               double ymin,
+                                                               double zmin,
+                                                               double xmax,
+                                                               double ymax,
+                                                               double zmax,
+                                                               double resolution,
                                                                DataT na,
                                                                DataT initValue)
 {
-    float xdir = xmax - xmin;
-    float ydir = ymax - ymin;
-    float zdir = zmax - zmin;
+    double xdir = xmax - xmin;
+    double ydir = ymax - ymin;
+    double zdir = zmax - zmin;
 
-    float length = sqrt(xdir*xdir + ydir*ydir + zdir*zdir);
+    double length = sqrt(xdir*xdir + ydir*ydir + zdir*zdir);
 
     int dim = ceil(length/resolution);
 
@@ -188,21 +188,21 @@ CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const CT_OutAbstr
 template< typename DataT>
 CT_Profile<DataT>* CT_Profile<DataT>::createProfileFromSegment(const QString &modelName,
                                                                const CT_AbstractResult *result,
-                                                               float xmin,
-                                                               float ymin,
-                                                               float zmin,
-                                                               float xmax,
-                                                               float ymax,
-                                                               float zmax,
-                                                               float resolution,
+                                                               double xmin,
+                                                               double ymin,
+                                                               double zmin,
+                                                               double xmax,
+                                                               double ymax,
+                                                               double zmax,
+                                                               double resolution,
                                                                DataT na,
                                                                DataT initValue)
 {
-    float xdir = xmax - xmin;
-    float ydir = ymax - ymin;
-    float zdir = zmax - zmin;
+    double xdir = xmax - xmin;
+    double ydir = ymax - ymin;
+    double zdir = zmax - zmin;
 
-    float length = sqrt(xdir*xdir + ydir*ydir + zdir*zdir);
+    double length = sqrt(xdir*xdir + ydir*ydir + zdir*zdir);
 
     int dim = ceil(length/resolution);
 
@@ -292,7 +292,7 @@ bool CT_Profile<DataT>::setValueAtIndex(const size_t &index, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setValueAtLength(const float &l, const DataT &value)
+bool CT_Profile<DataT>::setValueAtLength(const double &l, const DataT &value)
 {
     size_t index;
     if (indexForLength(l, index))
@@ -303,7 +303,7 @@ bool CT_Profile<DataT>::setValueAtLength(const float &l, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setValueForXYZ(const float &x, const float &y, const float &z, const DataT &value)
+bool CT_Profile<DataT>::setValueForXYZ(const double &x, const double &y, const double &z, const DataT &value)
 {
     size_t index;
     if (indexForXYZ(x, y, z, index))
@@ -322,12 +322,12 @@ DataT CT_Profile<DataT>::valueAtIndex(const size_t &index) const
 }
 
 template< typename DataT>
-float CT_Profile<DataT>::ratioValueAtIndex(const size_t &index) const
+double CT_Profile<DataT>::ratioValueAtIndex(const size_t &index) const
 {
     if (_dataMax <= _dataMin) {return 1;}
     DataT value = valueAtIndex(index);
     if (value == NA()) {return -1;}
-    return (float) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
+    return (double) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
 }
 
 template< typename DataT>
@@ -352,7 +352,7 @@ QString CT_Profile<DataT>::NAAsString() const
 }
 
 template< typename DataT>
-DataT CT_Profile<DataT>::valueForXYZ(const float &x, const float &y, const float &z) const
+DataT CT_Profile<DataT>::valueForXYZ(const double &x, const double &y, const double &z) const
 {
     size_t index;
     if (indexForXYZ(x, y, z, index))
@@ -377,7 +377,7 @@ bool CT_Profile<DataT>::setMaxValueAtIndex(const size_t &index, const DataT &val
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setMaxValueAtLength(const float &l, const DataT &value)
+bool CT_Profile<DataT>::setMaxValueAtLength(const double &l, const DataT &value)
 {
     size_t index;
     if (indexForLength(l, index))
@@ -388,7 +388,7 @@ bool CT_Profile<DataT>::setMaxValueAtLength(const float &l, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setMaxValueForXYZ(const float &x, const float &y, const float &z, const DataT &value)
+bool CT_Profile<DataT>::setMaxValueForXYZ(const double &x, const double &y, const double &z, const DataT &value)
 {
     size_t index;
     if (indexForXYZ(x, y, z, index))
@@ -413,7 +413,7 @@ bool CT_Profile<DataT>::setMinValueAtIndex(const size_t &index, const DataT &val
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setMinValueAtLength(const float &l, const DataT &value)
+bool CT_Profile<DataT>::setMinValueAtLength(const double &l, const DataT &value)
 {
     size_t index;
     if (indexForLength(l, index))
@@ -424,7 +424,7 @@ bool CT_Profile<DataT>::setMinValueAtLength(const float &l, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::setMinValueForXYZ(const float &x, const float &y, const float &z, const DataT &value)
+bool CT_Profile<DataT>::setMinValueForXYZ(const double &x, const double &y, const double &z, const DataT &value)
 {
     size_t index;
     if (indexForXYZ(x, y, z, index))
@@ -452,7 +452,7 @@ bool CT_Profile<DataT>::addValueAtIndex(const size_t &index, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::addValueAtLength(const float &l, const DataT &value)
+bool CT_Profile<DataT>::addValueAtLength(const double &l, const DataT &value)
 {
     size_t index;
     if (indexForLength(l, index))
@@ -463,7 +463,7 @@ bool CT_Profile<DataT>::addValueAtLength(const float &l, const DataT &value)
 }
 
 template< typename DataT>
-bool CT_Profile<DataT>::addValueForXYZ(const float &x, const float &y, const float &z, const DataT &value)
+bool CT_Profile<DataT>::addValueForXYZ(const double &x, const double &y, const double &z, const DataT &value)
 {
     size_t index;
     if (indexForXYZ(x, y, z, index))

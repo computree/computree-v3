@@ -47,24 +47,24 @@ CT_Grid2DYZ<DataT>::CT_Grid2DYZ() : CT_VirtualGrid2D<DataT>()
 template< typename DataT>
 CT_Grid2DYZ<DataT>::CT_Grid2DYZ(const CT_OutAbstractSingularItemModel *model,
                                 const CT_AbstractResult *result,
-                                float ymin,
-                                float zmin,
+                                double ymin,
+                                double zmin,
                                 size_t dimy,
                                 size_t dimz,
-                                float resolution,
-                                float xlevel,
+                                double resolution,
+                                double xlevel,
                                 DataT na,
                                 DataT initValue) : CT_VirtualGrid2D<DataT>(model, result)
 {
-    this->_minCoordinates.setX(xlevel);
-    this->_minCoordinates.setY(ymin);
-    this->_minCoordinates.setZ(zmin);
+    this->_minCoordinates(0) = xlevel;
+    this->_minCoordinates(1) = ymin;
+    this->_minCoordinates(2) = zmin;
     this->_res = resolution;
     this->_dimCol = dimy;
     this->_dimLin = dimz;
-    this->_maxCoordinates.setX(xlevel);
-    this->_maxCoordinates.setY(this->minY() + this->_res * this->_dimCol);
-    this->_maxCoordinates.setZ(this->minZ() + this->_res * this->_dimLin);
+    this->_maxCoordinates(0) = xlevel;
+    this->_maxCoordinates(1) = this->minY() + this->_res * this->_dimCol;
+    this->_maxCoordinates(2) = this->minZ() + this->_res * this->_dimLin;
 
     this->_minColCoord = ymin;
     this->_minLinCoord = zmin;
@@ -85,24 +85,24 @@ CT_Grid2DYZ<DataT>::CT_Grid2DYZ(const CT_OutAbstractSingularItemModel *model,
 template< typename DataT>
 CT_Grid2DYZ<DataT>::CT_Grid2DYZ(const QString &modelName,
                                 const CT_AbstractResult *result,
-                                float ymin,
-                                float zmin,
+                                double ymin,
+                                double zmin,
                                 size_t dimy,
                                 size_t dimz,
-                                float resolution,
-                                float xlevel,
+                                double resolution,
+                                double xlevel,
                                 DataT na,
                                 DataT initValue) : CT_VirtualGrid2D<DataT>(modelName, result)
 {
-    this->_minCoordinates.setX(xlevel);
-    this->_minCoordinates.setY(ymin);
-    this->_minCoordinates.setZ(zmin);
+    this->_minCoordinates(0) = xlevel;
+    this->_minCoordinates(1) = ymin;
+    this->_minCoordinates(2) = zmin;
     this->_res = resolution;
     this->_dimCol = dimy;
     this->_dimLin = dimz;
-    this->_maxCoordinates.setX(xlevel);
-    this->_maxCoordinates.setY(this->minY() + this->_res * this->_dimCol);
-    this->_maxCoordinates.setZ(this->minZ() + this->_res * this->_dimLin);
+    this->_maxCoordinates(0) = xlevel;
+    this->_maxCoordinates(1) = this->minY() + this->_res * this->_dimCol;
+    this->_maxCoordinates(2) = this->minZ() + this->_res * this->_dimLin;
 
     this->_minColCoord = ymin;
     this->_minLinCoord = zmin;
@@ -123,12 +123,12 @@ CT_Grid2DYZ<DataT>::CT_Grid2DYZ(const QString &modelName,
 template< typename DataT>
 CT_Grid2DYZ<DataT>* CT_Grid2DYZ<DataT>::createGrid2DYZFromYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                                    const CT_AbstractResult *result,
-                                                                   float ymin,
-                                                                   float zmin,
-                                                                   float ymax,
-                                                                   float zmax,
-                                                                   float resolution,
-                                                                   float xlevel,
+                                                                   double ymin,
+                                                                   double zmin,
+                                                                   double ymax,
+                                                                   double zmax,
+                                                                   double resolution,
+                                                                   double xlevel,
                                                                    DataT na,
                                                                    DataT initValue)
 {
@@ -152,12 +152,12 @@ CT_Grid2DYZ<DataT>* CT_Grid2DYZ<DataT>::createGrid2DYZFromYZCoords(const CT_OutA
 template< typename DataT>
 CT_Grid2DYZ<DataT>* CT_Grid2DYZ<DataT>::createGrid2DYZFromYZCoords(const QString &modelName,
                                                                    const CT_AbstractResult *result,
-                                                                   float ymin,
-                                                                   float zmin,
-                                                                   float ymax,
-                                                                   float zmax,
-                                                                   float resolution,
-                                                                   float xlevel,
+                                                                   double ymin,
+                                                                   double zmin,
+                                                                   double ymax,
+                                                                   double zmax,
+                                                                   double resolution,
+                                                                   double xlevel,
                                                                    DataT na,
                                                                    DataT initValue)
 {

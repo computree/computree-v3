@@ -29,25 +29,25 @@
 
 CT_Shape2DData::CT_Shape2DData() {}
 
-CT_Shape2DData::CT_Shape2DData(const QVector2D &center)
+CT_Shape2DData::CT_Shape2DData(const Eigen::Vector2d &center)
 {
     _center = center;
 }
 
-CT_Shape2DData::CT_Shape2DData(const float &x, const float &y)
+CT_Shape2DData::CT_Shape2DData(const double &x, const double &y)
 {
-    _center.setX(x);
-    _center.setY(y);
+    _center(0) = x;
+    _center(1) = y;
 }
 
 CT_Shape2DData::~CT_Shape2DData() {}
 
-const QVector2D &CT_Shape2DData::getCenter() const
+const Eigen::Vector2d &CT_Shape2DData::getCenter() const
 {
     return _center;
 }
 
-void CT_Shape2DData::setCenter(const QVector2D &center)
+void CT_Shape2DData::setCenter(const Eigen::Vector2d &center)
 {
     _center = center;
 }

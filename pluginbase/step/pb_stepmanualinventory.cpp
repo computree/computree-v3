@@ -299,7 +299,7 @@ void PB_StepManualInventory::findBestCircleForEachScene()
             float y = scene->getCenterZ();
             float z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
 
-            CT_Circle* tmpCircle = new CT_Circle(NULL, NULL, new CT_CircleData(QVector3D(x, y, z), QVector3D(0, 0, 1), 0.05, -9999));
+            CT_Circle* tmpCircle = new CT_Circle(NULL, NULL, new CT_CircleData(Eigen::Vector3d(x, y, z), Eigen::Vector3d(0, 0, 1), 0.05, -9999));
             _selectedDbh->insert(scene, tmpCircle);
             _temporaryCircles.append(tmpCircle);
         } else
@@ -321,9 +321,9 @@ float PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
         size_t index;
         const CT_Point &point = pointCloudIndex->constTAt(i, index);
 
-        if (point(CT_Point::Z) > zmax)
+        if (point(2) > zmax)
         {
-            zmax = point(CT_Point::Z);
+            zmax = point(2);
         }
     }
 

@@ -34,13 +34,13 @@ class PLUGINSHAREDSHARED_EXPORT CT_Point2DData : public CT_Shape2DData
 {
 public:
     CT_Point2DData();
-    CT_Point2DData(const QVector2D &point);
-    CT_Point2DData(const float &x, const float &y);
+    CT_Point2DData(const Eigen::Vector2d &point);
+    CT_Point2DData(const double &x, const double &y);
 
     double x() const;
     double y() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     CT_Point2DData* clone() const;
 

@@ -472,7 +472,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h \
     interfacessettings.h \
     ct_itemdrawable/ct_referencepoint.h \
-    ct_shapedata/ct_linedata.hpp \
     ct_view/tools/ct_textfileconfigurationdialog.h \
     ct_math/ct_math2dlines.h \
     ct_math/ct_sphericalline3d.h \

@@ -31,7 +31,7 @@ CT_BoxData::CT_BoxData() : CT_ShapeData()
 {
 }
 
-CT_BoxData::CT_BoxData(const QVector3D &center, const QVector3D &direction, const QVector3D &widthDirection, float height, float width, float depth) : CT_ShapeData(center, direction)
+CT_BoxData::CT_BoxData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const Eigen::Vector3d &widthDirection, double height, double width, double depth) : CT_ShapeData(center, direction)
 {
     _widthDirection = widthDirection;
     _height = height;
@@ -39,7 +39,7 @@ CT_BoxData::CT_BoxData(const QVector3D &center, const QVector3D &direction, cons
     _depth = depth;
 }
 
-const QVector3D& CT_BoxData::getWidthDirection() const
+const Eigen::Vector3d &CT_BoxData::getWidthDirection() const
 {
     return _widthDirection;
 }

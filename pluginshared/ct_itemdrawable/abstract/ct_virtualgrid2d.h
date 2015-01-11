@@ -32,8 +32,6 @@
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
 #include "ct_math/ct_math.h"
 
-#include "qvector2d.h"
-
 template< typename DataT > class CT_StandardGrid2DDrawManager;
 
 /*!
@@ -188,9 +186,9 @@ public:
     /*!
      * \brief Generic [0;1]  (or -1 for NA) value accessor for use as CT_AbstractGrid3D
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value), or -1 for NA
+     * \return A double value between 0 (min value) and 1 (max value), or -1 for NA
      */
-    virtual float ratioValueAtIndex(const size_t index) const;
+    virtual double ratioValueAtIndex(const size_t index) const;
 
 
     /*!
@@ -235,7 +233,7 @@ protected:
       * \param lin Y coordinate
       * \return Value at (x,y)
       */
-    DataT valueAtCoords(const float x, const float y) const;
+    DataT valueAtCoords(const double x, const double y) const;
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value
@@ -244,7 +242,7 @@ protected:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setValueAtCoords(const float x, const float y, const DataT value);
+    bool setValueAtCoords(const double x, const double y, const DataT value);
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value, if value is superior to actual one
@@ -253,7 +251,7 @@ protected:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMaxValueAtCoords(const float x, const float y, const DataT value);
+    bool setMaxValueAtCoords(const double x, const double y, const DataT value);
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value, if value is inferior to actual one
@@ -262,7 +260,7 @@ protected:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMinValueAtCoords(const float x, const float y, const DataT value);
+    bool setMinValueAtCoords(const double x, const double y, const DataT value);
 
     /**
       * \brief Add value to the cell containing (x,y) coordinate
@@ -271,7 +269,7 @@ protected:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    bool addValueAtCoords(const float x, const float y, const DataT value);
+    bool addValueAtCoords(const double x, const double y, const DataT value);
 
     DataT               _NAdata;    /*!< Valeur codant NA */
 
@@ -298,7 +296,7 @@ template<>
 PLUGINSHAREDSHARED_EXPORT void CT_VirtualGrid2D<bool>::computeMinMax();
 
 template<>
-PLUGINSHAREDSHARED_EXPORT float CT_VirtualGrid2D<bool>::ratioValueAtIndex(const size_t index) const;
+PLUGINSHAREDSHARED_EXPORT double CT_VirtualGrid2D<bool>::ratioValueAtIndex(const size_t index) const;
 
 template<>
 PLUGINSHAREDSHARED_EXPORT double CT_VirtualGrid2D<bool>::valueAtIndexAsDouble(const size_t index) const;

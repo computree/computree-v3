@@ -34,14 +34,14 @@ class PLUGINSHAREDSHARED_EXPORT CT_Box2DData : public CT_AreaShape2DData
 {
 public:
     CT_Box2DData();
-    CT_Box2DData(const QVector2D &center, float height, float width);
+    CT_Box2DData(const Eigen::Vector2d &center, double height, double width);
 
-    float getHeight() const;
-    float getWidth() const;
+    double getHeight() const;
+    double getWidth() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
-    bool contains(float x, float y) const;
+    bool contains(double x, double y) const;
     virtual double getArea() const;
 
     CT_Box2DData* clone() const;
@@ -50,8 +50,8 @@ public:
 
 private:
 
-    float       _width;  // selon l'axe de x
-    float       _height; // selon l'axe de y
+    double       _width;  // selon l'axe de x
+    double       _height; // selon l'axe de y
 };
 
 #endif // CT_BOX2DDATA_H

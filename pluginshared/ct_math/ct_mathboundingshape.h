@@ -29,17 +29,18 @@
 #define CT_MATHBOUNDINGSHAPE_H
 
 #include "pluginShared_global.h"
-#include "qvector3d.h"
 #include "ct_point.h"
+
+#include <eigen/Eigen/Core>
 
 class PLUGINSHAREDSHARED_EXPORT CT_MathBoundingShape
 {
 public:
 
-    static bool aabbIntersects(const QVector3D &min1, const QVector3D &max1, const QVector3D &min2, const QVector3D &max2);
-    static bool aabbIntersects2D(const QVector3D &min1, const QVector3D &max1, const QVector3D &min2, const QVector3D &max2);
-    static bool containsPoint(const QVector3D &min, const QVector3D &max, const CT_Point &point);
-    static bool containsPointIn2D(const QVector3D &min, const QVector3D &max, const CT_Point& point);
+    static bool aabbIntersects(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2);
+    static bool aabbIntersects2D(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2);
+    static bool containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f &point);
+    static bool containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point);
 
 };
 

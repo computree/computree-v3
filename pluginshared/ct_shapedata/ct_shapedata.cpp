@@ -29,30 +29,31 @@
 
 CT_ShapeData::CT_ShapeData() {}
 
-CT_ShapeData::CT_ShapeData(const QVector3D &center, const QVector3D &direction)
+CT_ShapeData::CT_ShapeData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction)
 {
     _center = center;
     _direction = direction;
+    _direction.normalize();
 }
 
 CT_ShapeData::~CT_ShapeData() {}
 
-const QVector3D& CT_ShapeData::getCenter() const
+const Eigen::Vector3d &CT_ShapeData::getCenter() const
 {
     return _center;
 }
 
-const QVector3D& CT_ShapeData::getDirection() const
+const Eigen::Vector3d& CT_ShapeData::getDirection() const
 {
     return _direction;
 }
 
-void CT_ShapeData::setCenter(const QVector3D &center)
+void CT_ShapeData::setCenter(const Eigen::Vector3d &center)
 {
     _center = center;
 }
 
-void CT_ShapeData::setDirection(const QVector3D &direction)
+void CT_ShapeData::setDirection(const Eigen::Vector3d &direction)
 {
     _direction = direction;
 }

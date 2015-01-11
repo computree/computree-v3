@@ -66,8 +66,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    inline const QVector3D& getP1() const {return ((const CT_LineData&)getData()).getP1();}
-    inline const QVector3D& getP2() const {return ((const CT_LineData&)getData()).getP2();}
+    inline const Eigen::Vector3d& getP1() const {return ((const CT_LineData&)getData()).getP1();}
+    inline const Eigen::Vector3d& getP2() const {return ((const CT_LineData&)getData()).getP2();}
 
     inline double getP1_X() const {return ((const CT_LineData&)getData()).x1();}
     inline double getP1_Y() const {return ((const CT_LineData&)getData()).y1();}
@@ -76,7 +76,7 @@ public:
     inline double getP2_Y() const {return ((const CT_LineData&)getData()).y2();}
     inline double getP2_Z() const {return ((const CT_LineData&)getData()).z2();}
     inline double getLength() const {return ((const CT_LineData&)getData()).length();}
-    inline float getError() const {return ((const CT_LineData&)getData()).getError();}
+    inline double getError() const {return ((const CT_LineData&)getData()).getError();}
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 

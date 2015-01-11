@@ -32,6 +32,9 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardellipsedrawmanager.h"
 #include "ct_shapedata/ct_ellipsedata.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 /*!
  * \class CT_Ellipse
  * \ingroup PluginShared_Items
@@ -67,7 +70,7 @@ public:
 
     const CT_LineData& getAxisA() const;
     const CT_LineData& getAxisB() const;
-    float getError() const;
+    double getError() const;
     double getAxisRatio() const;
 
     double getAxisAP1X() const;

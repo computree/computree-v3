@@ -132,7 +132,7 @@ private:
 
     int dropEmptyClusters();
 
-    void registerClusterCells(QMap<int, QList<QVector2D*> *> &cellsMapByCluster,
+    void registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster,
                               QMap<int, size_t> &clusterCounts);
 
     void computeMetrics(QMap<int, size_t> &clusterCounts, CT_StandardItemGroup *baseGroup);

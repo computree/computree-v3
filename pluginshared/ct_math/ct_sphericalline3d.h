@@ -32,14 +32,15 @@
 #include "ct_mathpoint.h"
 #include "ct_shapedata/ct_linedata.h"
 
-template<typename xyzPoint>
+#include <eigen/Eigen/Core>
+
 class CT_SphericalLine3D
 {
 public:
 
-    CT_SphericalLine3D(xyzPoint* p1, xyzPoint* p2, bool orderByZ)
+    CT_SphericalLine3D(Eigen::Vector3d* p1, Eigen::Vector3d* p2, bool orderByZ)
     {
-        if (orderByZ && (CT_MathPoint::pZ<xyzPoint>(*p1) > CT_MathPoint::pZ<xyzPoint>(*p2)))
+        if (orderByZ && ((*p1)(2) > (*p2)(2)))
         {
             _p1 = p2;
             _p2 = p1;
@@ -54,31 +55,31 @@ public:
 
     inline CT_LineData* getLineData()
     {
-        return new CT_LineData(QVector3D(CT_MathPoint::pX<xyzPoint>(*_p1), CT_MathPoint::pY<xyzPoint>(*_p1), CT_MathPoint::pZ<xyzPoint>(*_p1)), QVector3D(CT_MathPoint::pX<xyzPoint>(*_p2), CT_MathPoint::pY<xyzPoint>(*_p2), CT_MathPoint::pZ<xyzPoint>(*_p2)));
+        return new CT_LineData(*_p1, *_p2);
     }
 
     // champs
-    xyzPoint*   _p1;        /*!< Point le plus bas */
-    xyzPoint*   _p2;        /*!< Point le plus haut*/
-    float       _phi;       /*!< Angle zénithal (du haut vers le bas)*/
-    float       _theta;     /*!< Angle azimuthal (en sens anti-horaire)*/
-    float       _length;    /*!< Longueur de segment*/
+    Eigen::Vector3d*    _p1;        /*!< Point le plus bas */
+    Eigen::Vector3d*    _p2;        /*!< Point le plus haut*/
+    float               _phi;       /*!< Angle zénithal (du haut vers le bas)*/
+    float               _theta;     /*!< Angle azimuthal (en sens anti-horaire)*/
+    float               _length;    /*!< Longueur de segment*/
 
 
 
     // Méthodes statiques
 
-    inline static QList<CT_SphericalLine3D*> getLinesFromPoints(const QList<xyzPoint*> &points, float minZenithalAngle = 0, float maxZenithalAngle = M_PI_2, bool orderByZ = true)
+    inline static QList<CT_SphericalLine3D*> getLinesFromPoints(const QList<Eigen::Vector3d*> &points, float minZenithalAngle = 0, float maxZenithalAngle = M_PI_2, bool orderByZ = true)
     {
         QList<CT_SphericalLine3D*> liste;
         int size = points.size();
 
         for (int i = 0 ; i < size ; i++)
         {
-            xyzPoint* pi = points.at(i);
+            Eigen::Vector3d* pi = points.at(i);
             for (int j = i+1 ; j < size ; j++)
             {
-                xyzPoint* pj = points.at(j);
+                Eigen::Vector3d* pj = points.at(j);
                 CT_SphericalLine3D* line = new CT_SphericalLine3D(pi, pj, orderByZ);
                 if ((line->_phi >= minZenithalAngle) && (line->_phi <= maxZenithalAngle))
                 {
@@ -92,11 +93,11 @@ public:
         return liste;
     }
 
-    inline static void convertToSphericalCoordinates(const xyzPoint* p1, const xyzPoint* p2, float &phi, float &theta, float &length)
+    inline static void convertToSphericalCoordinates(const Eigen::Vector3d* p1, const Eigen::Vector3d* p2, float &phi, float &theta, float &length)
     {
-        float x = (CT_MathPoint::pX<xyzPoint>(*p2) - CT_MathPoint::pX<xyzPoint>(*p1));
-        float y = (CT_MathPoint::pY<xyzPoint>(*p2) - CT_MathPoint::pY<xyzPoint>(*p1));
-        float z = (CT_MathPoint::pZ<xyzPoint>(*p2) - CT_MathPoint::pZ<xyzPoint>(*p1));
+        float x = ((*p2)(0) - (*p1)(0));
+        float y = ((*p2)(1) - (*p1)(1));
+        float z = ((*p2)(2) - (*p1)(2));
 
         convertToSphericalCoordinates(x, y, z, phi, theta, length);
     }

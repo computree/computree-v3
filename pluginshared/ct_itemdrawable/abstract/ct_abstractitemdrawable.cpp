@@ -39,9 +39,9 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable() : CT_AbstractItem()
     _id = 0;
     _selected = false;
     _displayed = false;
-    _centerCoordinate.setX(0);
-    _centerCoordinate.setY(0);
-    _centerCoordinate.setZ(0);
+    _centerCoordinate(0) = 0;
+    _centerCoordinate(1) = 0;
+    _centerCoordinate(2) = 0;
     _autoDelete = true;
     _parent = NULL;
     _baseDrawManager = NULL;
@@ -53,9 +53,9 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const CT_OutAbstractItemModel *
     _id = NEXTID++;
     _selected = false;
     _displayed = false;
-    _centerCoordinate.setX(0);
-    _centerCoordinate.setY(0);
-    _centerCoordinate.setZ(0);
+    _centerCoordinate(0) = 0;
+    _centerCoordinate(1) = 0;
+    _centerCoordinate(2) = 0;
     _autoDelete = true;
     _parent = NULL;
     _baseDrawManager = NULL;
@@ -67,9 +67,9 @@ CT_AbstractItemDrawable::CT_AbstractItemDrawable(const QString &modelUniqueName,
     _id = NEXTID++;
     _selected = false;
     _displayed = false;
-    _centerCoordinate.setX(0);
-    _centerCoordinate.setY(0);
-    _centerCoordinate.setZ(0);
+    _centerCoordinate(0) = 0;
+    _centerCoordinate(1) = 0;
+    _centerCoordinate(2) = 0;
     _autoDelete = true;
     _parent = NULL;
     _baseDrawManager = NULL;
@@ -266,45 +266,45 @@ bool CT_AbstractItemDrawable::isDisplayed() const
     return _displayed;
 }
 
-void CT_AbstractItemDrawable::setCenterX(float x)
+void CT_AbstractItemDrawable::setCenterX(double x)
 {
-    _centerCoordinate.setX(x);
+    _centerCoordinate(0) = x;
 }
 
-void CT_AbstractItemDrawable::setCenterY(float y)
+void CT_AbstractItemDrawable::setCenterY(double y)
 {
-    _centerCoordinate.setY(y);
+    _centerCoordinate(1) = y;
 }
 
-void CT_AbstractItemDrawable::setCenterZ(float z)
+void CT_AbstractItemDrawable::setCenterZ(double z)
 {
-    _centerCoordinate.setZ(z);
+    _centerCoordinate(2) = z;
 }
 
-float CT_AbstractItemDrawable::getCenterX() const
+double CT_AbstractItemDrawable::getCenterX() const
 {
-    return _centerCoordinate.x();
+    return _centerCoordinate(0);
 }
 
-float CT_AbstractItemDrawable::getCenterY() const
+double CT_AbstractItemDrawable::getCenterY() const
 {
-    return _centerCoordinate.y();
+    return _centerCoordinate(1);
 }
 
-float CT_AbstractItemDrawable::getCenterZ() const
+double CT_AbstractItemDrawable::getCenterZ() const
 {
-    return _centerCoordinate.z();
+    return _centerCoordinate(2);
 }
 
-void CT_AbstractItemDrawable::getBoundingBox(QVector3D &min, QVector3D &max) const
+void CT_AbstractItemDrawable::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(0);
-    min.setY(0);
-    min.setZ(0);
+    min(0) = 0;
+    min(1) = 0;
+    min(2) = 0;
 
-    max.setX(0);
-    max.setY(0);
-    max.setZ(0);
+    max(0) = 0;
+    max(1) = 0;
+    max(2) = 0;
 }
 
 QString CT_AbstractItemDrawable::getInfo()

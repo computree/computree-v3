@@ -60,7 +60,7 @@ QString CT_Circle2D::staticGetType()
     return CT_AbstractAreaShape2D::staticGetType() + "/CT_Circle2D";
 }
 
-float CT_Circle2D::getRadius() const
+double CT_Circle2D::getRadius() const
 {
     return ((const CT_Circle2DData&)getData()).getRadius();
 }

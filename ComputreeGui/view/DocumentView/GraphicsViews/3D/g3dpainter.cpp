@@ -46,6 +46,9 @@
 
 #include <QQuaternion>
 
+#include <eigen/Eigen/Core>
+#include <eigen/Eigen/Dense>
+
 #define M_PI_MULT_2 6.28318530717958647692
 
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_FASTEST = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE);
@@ -456,39 +459,41 @@ void G3DPainter::rotate(double alpha, double x, double y, double z)
     glRotated(alpha, x, y, z);
 }
 
-void G3DPainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
+void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction)
 {
     stopDrawMultiple();
 
     //direction is the direction you want the object to point at
     //up- first guess
-    QVector3D up;
+    Eigen::Vector3d up;
 
     //If x and z are really small
-    if((fabs(direction.x())< 0.00001) && (fabs(direction.z()) < 0.00001))
+    if((fabs(direction(0))< 0.00001) && (fabs(direction(2)) < 0.00001))
     {
-        if(direction.y() > 0)
-            up = QVector3D(0.0, 0.0, -1.0); //if direction points in +y direction
+        if(direction(1) > 0)
+            up = Eigen::Vector3d(0.0, 0.0, -1.0); //if direction points in +y direction
         else
-            up = QVector3D(0.0, 0.0, 1.0); //if direction points in -y direction
+            up = Eigen::Vector3d(0.0, 0.0, 1.0); //if direction points in -y direction
     }
     else
     {
-        up = QVector3D(0.0, 1.0, 0.0); //y-axis is the general up direction
+        up = Eigen::Vector3d(0.0, 1.0, 0.0); //y-axis is the general up direction
     }
 
     //left
-    QVector3D left = QVector3D::crossProduct(direction, up);
+    Eigen::Vector3d left = direction.cross(up);
     left.normalize();
 
     //final up
-    up = QVector3D::crossProduct(left, direction);
+    up = left.cross(direction);
     up.normalize();
 
-    float matrix[]={left.x(), left.y(), left.z(), 0.0f,     //LEFT
-                    up.x(), up.y(), up.z(), 0.0f,                       //UP
-                    direction.x(), direction.y(), direction.z(), 0.0f,  //FORWARD
-                    translation.x(), translation.y(), translation.z(), 1.0f};    //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
+    // TODO : soustraire l'offset
+
+    float matrix[]={left(0)         , left(1)       , left(2)       , 0.0f,  //LEFT
+                    up(0)           , up(1)         , up(2)         , 0.0f,  //UP
+                    direction(0)    , direction(1)  , direction(2)  , 0.0f,  //FORWARD
+                    translation(0)  , translation(1), translation(2), 1.0f}; //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
 
     glMultMatrixf(matrix);
 }
@@ -1189,26 +1194,26 @@ void G3DPainter::drawCircle(double x, double y, double z, double radius)
     }
 }
 
-void G3DPainter::drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius)
+void G3DPainter::drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius)
 {
     if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
-        QVector3D u(0,0,0);
+        Eigen::Vector3d u(0,0,0);
 
-        if(fabs(direction.x()) >= fabs(direction.y()))
+        if(fabs(direction(0)) >= fabs(direction(1)))
         {
-            double factor = 1.0/sqrt(direction.x()*direction.x()+direction.z()*direction.z());
-            u.setX(-direction.z()*factor);
-            u.setZ(direction.x()*factor);
+            double factor = 1.0/sqrt(direction(0)*direction(0)+direction(2)*direction(2));
+            u(0) = -direction(2)*factor;
+            u(2) = direction(0)*factor;
         }
         else
         {
-            double factor = 1.0/sqrt(direction.y()*direction.y()+direction.z()*direction.z());
-            u.setY(direction.z()*factor);
-            u.setZ(-direction.y()*factor);
+            double factor = 1.0/sqrt(direction(1)*direction(1)+direction(2)*direction(2));
+            u(1) = direction(2)*factor;
+            u(2) = -direction(1)*factor;
         }
 
-        QVector3D v = QVector3D::crossProduct(direction, u);
+        Eigen::Vector3d v = direction.cross(u);
         v.normalize();
 
         QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
@@ -1226,9 +1231,9 @@ void G3DPainter::drawCircle3D(const QVector3D &center, const QVector3D &directio
         {
             const QPair<double, double> &pair = (*cosSinA)[i];
 
-            glVertex3d(center.x() + (radius*pair.first)*u.x() + (radius*pair.second)*v.x(),
-                       center.y() + (radius*pair.first)*u.y() + (radius*pair.second)*v.y(),
-                       center.z() + (radius*pair.first)*u.z() + (radius*pair.second)*v.z());
+            glVertex3d(center(0) + (radius*pair.first)*u(0) + (radius*pair.second)*v(0),
+                       center(1) + (radius*pair.first)*u(1) + (radius*pair.second)*v(1),
+                       center(2) + (radius*pair.first)*u(2) + (radius*pair.second)*v(2));
         }
 
         glEnd();
@@ -1249,14 +1254,15 @@ void G3DPainter::drawCylinder(double x, double y, double z, double radius, doubl
     }
 }
 
-void G3DPainter::drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height)
+void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height)
 {
     if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
     {
         save();
 
-        float delta = - height/2.0;
-        translateThenRotateToDirection(QVector3D(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
+        double delta = - height/2.0;
+        Eigen::Vector3d translation = center + delta*direction;
+        translateThenRotateToDirection(translation, direction);
 
         gluCylinder(_quadric, radius, radius, height, 20, 1);
 

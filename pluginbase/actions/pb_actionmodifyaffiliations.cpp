@@ -7,8 +7,9 @@
 #include <QIcon>
 #include <QPainter>
 #include <QDebug>
-#include <QVector3D>
 #include <limits>
+
+#include <eigen/Eigen/Core>
 
 
 PB_ActionModifyAffiliations::PB_ActionModifyAffiliations(const QList<CT_AbstractSingularItemDrawable*> *sourceList,
@@ -26,13 +27,13 @@ PB_ActionModifyAffiliations::PB_ActionModifyAffiliations(const QList<CT_Abstract
     for (int i = 0 ; i < _sourceList->size() ; i++)
     {
         CT_AbstractSingularItemDrawable* item = _sourceList->at(i);
-        _itemCenters.insert(item, QVector3D(item->getCenterX(), item->getCenterY(), item->getCenterZ()));
+        _itemCenters.insert(item, Eigen::Vector3d(item->getCenterX(), item->getCenterY(), item->getCenterZ()));
     }
 
     for (int i = 0 ; i < _targetList->size() ; i++)
     {
         CT_AbstractSingularItemDrawable* item = _targetList->at(i);
-        _itemCenters.insert(item, QVector3D(item->getCenterX(), item->getCenterY(), item->getCenterZ()));
+        _itemCenters.insert(item, Eigen::Vector3d(item->getCenterX(), item->getCenterY(), item->getCenterZ()));
     }
 
     _activeSource = NULL;
@@ -94,7 +95,7 @@ void PB_ActionModifyAffiliations::init()
 CT_AbstractSingularItemDrawable * PB_ActionModifyAffiliations::closetItemFromClickDirection(QMouseEvent *e,
                                                                                             const QList<CT_AbstractSingularItemDrawable*> *itemList)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     GraphicsViewInterface *view = graphicsView();
     view->convertClickToLine(e->pos(), origin, direction);
 
@@ -105,9 +106,9 @@ CT_AbstractSingularItemDrawable * PB_ActionModifyAffiliations::closetItemFromCli
     for (int i = 0 ; i < size ; i++)
     {
         CT_AbstractSingularItemDrawable* item = itemList->at(i);
-        const QVector3D &center = _itemCenters.value(item);
+        const Eigen::Vector3d &center = _itemCenters.value(item);
 
-        float distance = CT_MathPoint::distancePointLine<QVector3D>(center, direction, origin);
+        double distance = CT_MathPoint::distancePointLine(center, direction, origin);
         if (distance < minDist)
         {
             minDist = distance;
@@ -352,21 +353,21 @@ void PB_ActionModifyAffiliations::draw(GraphicsViewInterface &view, PainterInter
     painter.restore();
 }
 
-void PB_ActionModifyAffiliations::drawSourceItem(PainterInterface &painter, const QVector3D &position)
+void PB_ActionModifyAffiliations::drawSourceItem(PainterInterface &painter, const Eigen::Vector3d &position)
 {
-    painter.drawLine(position.x() - _symbolSize, position.y(), position.z(), position.x() + _symbolSize, position.y(), position.z());
-    painter.drawLine(position.x(), position.y() - _symbolSize, position.z(), position.x(), position.y() + _symbolSize, position.z());
+    painter.drawLine(position(0) - _symbolSize, position(1), position(2), position(0) + _symbolSize, position(1), position(2));
+    painter.drawLine(position(0), position(1) - _symbolSize, position(2), position(0), position(1) + _symbolSize, position(2));
 }
 
-void PB_ActionModifyAffiliations::drawTargetItem(PainterInterface &painter, const QVector3D &position)
+void PB_ActionModifyAffiliations::drawTargetItem(PainterInterface &painter, const Eigen::Vector3d &position)
 {
-    painter.drawLine(position.x() - _symbolSize, position.y() - _symbolSize, position.z(), position.x() + _symbolSize, position.y() + _symbolSize, position.z());
-    painter.drawLine(position.x() - _symbolSize, position.y() + _symbolSize, position.z(), position.x() + _symbolSize, position.y() - _symbolSize, position.z());
+    painter.drawLine(position(0) - _symbolSize, position(1) - _symbolSize, position(2), position(0) + _symbolSize, position(1) + _symbolSize, position(2));
+    painter.drawLine(position(0) - _symbolSize, position(1) + _symbolSize, position(2), position(0) + _symbolSize, position(1) - _symbolSize, position(2));
 }
 
-void PB_ActionModifyAffiliations::drawAffiliation(PainterInterface &painter, const QVector3D &source, const QVector3D &target)
+void PB_ActionModifyAffiliations::drawAffiliation(PainterInterface &painter, const Eigen::Vector3d &source, const Eigen::Vector3d &target)
 {
-    painter.drawLine(source.x(), source.y(), source.z(), target.x(), target.y(), target.z());
+    painter.drawLine(source(0), source(1), source(2), target(0), target(1), target(2));
 }
 
 void PB_ActionModifyAffiliations::drawOverlay(GraphicsViewInterface &view, QPainter &painter)

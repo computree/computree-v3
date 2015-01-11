@@ -132,7 +132,7 @@ public:
     bool sphereIsVisible(const QVector3D& center, float radius) const;
 
     QVector3D pointUnderPixel(const QPoint &pixel, bool &found) const;
-    void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const;
+    void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const;
     void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const;
 
     void addActionOptions(ActionOptionsInterface *options);

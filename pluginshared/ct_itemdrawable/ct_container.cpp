@@ -115,7 +115,7 @@ void CT_Container::updateCenter()
 
     if(size > 0)
     {
-        QVector3D c(0,0,0);
+        Eigen::Vector3d c(0,0,0);
 
         QListIterator<CT_AbstractItemDrawable*> it(_list);
 
@@ -123,14 +123,13 @@ void CT_Container::updateCenter()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            c.setX(c.x() + item->getCenterX());
-            c.setY(c.y() + item->getCenterY());
-            c.setZ(c.z() + item->getCenterZ());
+            c += item->getCenterCoordinate();
         }
 
-        setCenterX(c.x() / ((double)size));
-        setCenterY(c.y() / ((double)size));
-        setCenterZ(c.z() / ((double)size));
+        c /= (double)size;
+        setCenterX(c(0));
+        setCenterY(c(1));
+        setCenterZ(c(2));
     }
 }
 

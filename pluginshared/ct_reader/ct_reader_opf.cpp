@@ -450,7 +450,7 @@ void CT_Reader_OPF::readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup
 
     if(mesh != NULL)
     {
-        QVector3D min, max;
+        Eigen::Vector3d min, max;
         mesh->getBoundingBox(min, max);
 
         transformAndCreateMesh(mesh->m_mesh, min, max, node, dUp, dDwn, typeName);
@@ -463,7 +463,7 @@ void CT_Reader_OPF::readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup
             m_cylinderMesh.m_mesh->createCylinder(0.5,0.5,10);
         }
 
-        QVector3D min, max;
+        Eigen::Vector3d min, max;
         m_cylinderMesh.getBoundingBox(min, max);
 
         transformAndCreateMesh(m_cylinderMesh.m_mesh, min, max, node, dUp, dDwn, typeName);
@@ -471,7 +471,7 @@ void CT_Reader_OPF::readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup
 
 }
 
-void CT_Reader_OPF::transformAndCreateMesh(CT_Mesh *mesh, QVector3D &min, QVector3D &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName)
+void CT_Reader_OPF::transformAndCreateMesh(CT_Mesh *mesh, Eigen::Vector3d &min, Eigen::Vector3d &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName)
 {
     CT_MeshModel *mm = new CT_MeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, mesh);
     mm->setAutoDeleteMesh(false);
@@ -650,17 +650,17 @@ bool CT_Reader_OPF::protectedReadFile()
 
 // CT_OPF_Mesh //
 
-void CT_OPF_Mesh::getBoundingBox(QVector3D &min, QVector3D &max) const
+void CT_OPF_Mesh::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
     if(!m_bboxOK)
     {
-        m_min.setX(std::numeric_limits<double>::max());
-        m_min.setY(m_min.x());
-        m_min.setZ(m_min.x());
+        m_min(0) = std::numeric_limits<double>::max();
+        m_min(1) = m_min.x();
+        m_min(2) = m_min.x();
 
-        m_max.setX(-m_min.x());
-        m_max.setY(m_max.x());
-        m_max.setZ(m_max.x());
+        m_max(0) = -m_min.x();
+        m_max(1) = m_max.x();
+        m_max(2) = m_max.x();
 
         CT_AbstractPointCloudIndex::ConstIterator it = m_mesh->abstractVert()->constBegin();
         CT_AbstractPointCloudIndex::ConstIterator end = m_mesh->abstractVert()->constEnd();
@@ -670,22 +670,22 @@ void CT_OPF_Mesh::getBoundingBox(QVector3D &min, QVector3D &max) const
             const CT_Point &p = it.cT();
 
             if(p(0) > m_max.x())
-                m_max.setX(p(0));
+                m_max(0) = p(0);
 
             if(p(1) > m_max.y())
-                m_max.setY(p(1));
+                m_max(1) = p(1);
 
             if(p(2) > m_max.z())
-                m_max.setZ(p(2));
+                m_max(2) = p(2);
 
             if(p(0) < m_min.x())
-                m_min.setX(p(0));
+                m_min(0) = p(0);
 
             if(p(1) < m_min.y())
-                m_min.setY(p(1));
+                m_min(1) = p(1);
 
             if(p(2) < m_min.z())
-                m_min.setZ(p(2));
+                m_min(2) = p(2);
 
             ++it;
         }

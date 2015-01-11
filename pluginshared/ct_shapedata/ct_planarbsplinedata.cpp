@@ -53,18 +53,18 @@ void CT_PlanarBSplineData::reset(int nCP, int degree)
     _nodalSequence.resize(_nCP);
 }
 
-void CT_PlanarBSplineData::setCP(int index, float x, float y, float z)
+void CT_PlanarBSplineData::setCP(int index, double x, double y, double z)
 {
     Q_ASSERT_X(index > 0 && index <= _nCP, "CT_PlanarBSplineData", "When getting control point, you must choose a valid index");
 
-    _controlPoints[index].setX(x);
-    _controlPoints[index].setY(y);
-    _controlPoints[index].setZ(z);
+    _controlPoints[index](0) = x;
+    _controlPoints[index](1) = y;
+    _controlPoints[index](2) = z;
 }
 
-void CT_PlanarBSplineData::setCP(int index, const QVector3D &value)
+void CT_PlanarBSplineData::setCP(int index, const Eigen::Vector3d &value)
 {
-    setCP(index, value.x(), value.y(), value.z());
+    setCP(index, value(0), value(1), value(2));
 }
 
 void CT_PlanarBSplineData::setNodalValue(int index, double value)
@@ -74,7 +74,7 @@ void CT_PlanarBSplineData::setNodalValue(int index, double value)
     _nodalSequence[index] = value;
 }
 
-const QVector3D &CT_PlanarBSplineData::getCPAt(int index) const
+const Eigen::Vector3d &CT_PlanarBSplineData::getCPAt(int index) const
 {
     Q_ASSERT_X(index > 0 && index <= _nCP, "CT_PlanarBSplineData", "When getting control point, you must choose a valid index");
 

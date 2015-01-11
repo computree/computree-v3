@@ -31,37 +31,39 @@ CT_Box2DData::CT_Box2DData() : CT_AreaShape2DData()
 {
 }
 
-CT_Box2DData::CT_Box2DData(const QVector2D &center, float height, float width) : CT_AreaShape2DData(center)
+CT_Box2DData::CT_Box2DData(const Eigen::Vector2d &center, double height, double width) : CT_AreaShape2DData(center)
 {
     _height = height;
     _width = width;        
 }
 
-float CT_Box2DData::getHeight() const
+double CT_Box2DData::getHeight() const
 {
     return _height;
 }
 
-float CT_Box2DData::getWidth() const
+double CT_Box2DData::getWidth() const
 {
     return _width;
 }
 
-void CT_Box2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+void CT_Box2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(_center.x() - _width/2.0);
-    min.setY(_center.y() - _height/2.0);
-    max.setX(_center.x() + _width/2.0);
-    max.setY(_center.y() + _height/2.0);
+    min(0) = _center(0) - _width/2.0;
+    min(1) = _center(1) - _height/2.0;
+    min(2) = 0;
+    max(0) = _center(0) + _width/2.0;
+    max(1) = _center(1) + _height/2.0;
+    max(2) = 0;
 }
 
-bool CT_Box2DData::contains(float x, float y) const
+bool CT_Box2DData::contains(double x, double y) const
 {
-    if (x <= (_center.x() - _width/2.0)) {return false;}
-    if (x >= (_center.x() + _width/2.0)) {return false;}
+    if (x <= (_center(0) - _width/2.0)) {return false;}
+    if (x >= (_center(0) + _width/2.0)) {return false;}
 
-    if (y <= (_center.y() - _height/2.0)) {return false;}
-    if (y >= (_center.y() + _height/2.0)) {return false;}
+    if (y <= (_center(1) - _height/2.0)) {return false;}
+    if (y >= (_center(1) + _height/2.0)) {return false;}
 
     return true;
 }

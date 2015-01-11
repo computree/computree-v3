@@ -741,16 +741,16 @@ void G3DCameraController::fitCameraToVisibleItems()
     qglviewer::Vec min;
     qglviewer::Vec max;
 
-    QVector3D minBB;
-    QVector3D maxBB;
+    Eigen::Vector3d minBB;
+    Eigen::Vector3d maxBB;
 
-    min.x = std::numeric_limits<float>::max();
-    min.y = std::numeric_limits<float>::max();
-    min.z = std::numeric_limits<float>::max();
+    min.x = std::numeric_limits<double>::max();
+    min.y = std::numeric_limits<double>::max();
+    min.z = std::numeric_limits<double>::max();
 
-    max.x = -std::numeric_limits<float>::max();
-    max.y = -std::numeric_limits<float>::max();
-    max.z = -std::numeric_limits<float>::max();
+    max.x = -std::numeric_limits<double>::max();
+    max.y = -std::numeric_limits<double>::max();
+    max.z = -std::numeric_limits<double>::max();
 
     while(it.hasNext())
     {
@@ -760,13 +760,13 @@ void G3DCameraController::fitCameraToVisibleItems()
         {
             item->getBoundingBox(minBB, maxBB);
 
-            if (minBB.x() < min.x) {min.x = minBB.x();}
-            if (minBB.y() < min.y) {min.y = minBB.y();}
-            if (minBB.z() < min.z) {min.z = minBB.z();}
+            if (minBB(0) < min.x) {min.x = minBB(0);}
+            if (minBB(1) < min.y) {min.y = minBB(1);}
+            if (minBB(2) < min.z) {min.z = minBB(2);}
 
-            if (maxBB.x() > max.x) {max.x = maxBB.x();}
-            if (maxBB.y() > max.y) {max.y = maxBB.y();}
-            if (maxBB.z() > max.z) {max.z = maxBB.z();}
+            if (maxBB(0) > max.x) {max.x = maxBB(0);}
+            if (maxBB(1) > max.y) {max.y = maxBB(1);}
+            if (maxBB(2) > max.z) {max.z = maxBB(2);}
 
             // If boundingBox not defined : take center
             if (item->getCenterX() < min.x) {min.x = item->getCenterX();}
@@ -779,13 +779,15 @@ void G3DCameraController::fitCameraToVisibleItems()
         }
     }
 
-    if ((min.x < std::numeric_limits<float>::max()) &&
-            (min.y < std::numeric_limits<float>::max()) &&
-            (min.z < std::numeric_limits<float>::max()) &&
-            (max.x > -std::numeric_limits<float>::max()) &&
-            (max.y > -std::numeric_limits<float>::max()) &&
-            (max.z > -std::numeric_limits<float>::max()))
+    if ((min.x < std::numeric_limits<double>::max()) &&
+            (min.y < std::numeric_limits<double>::max()) &&
+            (min.z < std::numeric_limits<double>::max()) &&
+            (max.x > -std::numeric_limits<double>::max()) &&
+            (max.y > -std::numeric_limits<double>::max()) &&
+            (max.z > -std::numeric_limits<double>::max()))
     {
+        //TODO : soutraire l'offset avant de passer à la caméra
+
         ((G3DCamera*)_realCamera)->setBoundingBox(min, max);
         _realCamera->fitBoundingBox(min, max);
         redrawTheView();

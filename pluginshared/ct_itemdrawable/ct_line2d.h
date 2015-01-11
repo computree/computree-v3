@@ -67,8 +67,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    const QVector2D &getP1() const;
-    const QVector2D &getP2() const;
+    const Eigen::Vector2d &getP1() const;
+    const Eigen::Vector2d &getP2() const;
 
     double x1() const;
     double y1() const;

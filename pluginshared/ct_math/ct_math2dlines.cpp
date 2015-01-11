@@ -1,34 +1,34 @@
 #include "ct_math2dlines.h"
 #include "ct_math/ct_mathpoint.h"
 
-bool CT_Math2DLines::intersectSegments(QVector2D &a, QVector2D &b, QVector2D &c, QVector2D &d, float &r, float &s, QVector2D &intersection)
+bool CT_Math2DLines::intersectSegments(Eigen::Vector2d &a, Eigen::Vector2d &b, Eigen::Vector2d &c, Eigen::Vector2d &d, double &r, double &s, Eigen::Vector2d &intersection)
 {
-    float denom = (b.x()-a.x())*(d.y()-c.y()) - (b.y()-a.y())*(d.x()-c.x());
+    double denom = (b(0)-a(0))*(d(1)-c(1)) - (b(1)-a(1))*(d(0)-c(0));
     if (denom==0) {return false;} // droites parallèles ou coincidentes
 
-    r = ((a.y()-c.y())*(d.x()-c.x()) - (a.x()-c.x())*(d.y()-c.y())) / denom; // position sur le segment AB (inclus si entre 0 et 1)
-    s = ((a.y()-c.y())*(b.x()-a.x()) - (a.x()-c.x())*(b.y()-a.y())) / denom; // position sur le segment CD (inclus si entre 0 et 1)
+    r = ((a(1)-c(1))*(d(0)-c(0)) - (a(0)-c(0))*(d(1)-c(1))) / denom; // position sur le segment AB (inclus si entre 0 et 1)
+    s = ((a(1)-c(1))*(b(0)-a(0)) - (a(0)-c(0))*(b(1)-a(1))) / denom; // position sur le segment CD (inclus si entre 0 et 1)
 
-    intersection.setX(a.x() + r*(b.x()-a.x()));
-    intersection.setY(a.y() + r*(b.y()-a.y()));
+    intersection(0) = a(0) + r*(b(0)-a(0));
+    intersection(1) = a(1) + r*(b(1)-a(1));
     return true;
 }
 
 
-void CT_Math2DLines::computePerpendicularSegment(QVector2D &a, QVector2D &b, QVector2D &c, QVector2D &d, float length, bool clockwise)
+void CT_Math2DLines::computePerpendicularSegment(Eigen::Vector2d &a, Eigen::Vector2d &b, Eigen::Vector2d &c, Eigen::Vector2d &d, double length, bool clockwise)
 {
-    float k = 1;
-    if (length >0)
+    double k = 1;
+    if (length > 0)
     {
-        k = length/CT_MathPoint::distance2D(a, b);
+        k = length/CT_Math2DLines::distance2D(a, b);
     }
 
     if (clockwise)
     {
-        d.setX(c.x() + k*(a.y() - b.y()));
-        d.setY(c.y() + k*(b.x() - a.x()));
+        d(0) = c(0) + k*(a(1) - b(1));
+        d(1) = c(1) + k*(b(0) - a(0));
     } else {
-        d.setX(c.x() + k*(b.y() - a.y()));
-        d.setY(c.y() + k*(a.x() - b.x()));
+        d(0) = c(0) + k*(b(1) - a(1));
+        d(1) = c(1) + k*(a(0) - b(0));
     }
 }

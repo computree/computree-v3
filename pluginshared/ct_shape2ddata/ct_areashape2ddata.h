@@ -30,7 +30,6 @@
 
 #include "pluginShared_global.h"
 #include "ct_shape2ddata.h"
-#include <QVector2D>
 
 /**
   * Reprsente les donnes d'une forme géomtrique 2D
@@ -40,11 +39,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_AreaShape2DData : public CT_Shape2DData
 public:
 
     CT_AreaShape2DData();
-    CT_AreaShape2DData(const QVector2D &center);
+    CT_AreaShape2DData(const Eigen::Vector2d &center);
 
     virtual ~CT_AreaShape2DData();
 
-    virtual bool contains(float x, float y) const = 0;
+    virtual bool contains(double x, double y) const = 0;
     virtual double getArea() const = 0;
 };
 

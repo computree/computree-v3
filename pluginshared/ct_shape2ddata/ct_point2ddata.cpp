@@ -31,30 +31,32 @@ CT_Point2DData::CT_Point2DData() : CT_Shape2DData()
 {
 }
 
-CT_Point2DData::CT_Point2DData(const QVector2D &point) : CT_Shape2DData(point)
+CT_Point2DData::CT_Point2DData(const Eigen::Vector2d &point) : CT_Shape2DData(point)
 {
 }
 
-CT_Point2DData::CT_Point2DData(const float &x, const float &y) : CT_Shape2DData(x, y)
+CT_Point2DData::CT_Point2DData(const double &x, const double &y) : CT_Shape2DData(x, y)
 {
 }
 
 double CT_Point2DData::x() const
 {
-    return getCenter().x();
+    return getCenter()(0);
 }
 
 double CT_Point2DData::y() const
 {
-    return getCenter().y();
+    return getCenter()(1);
 }
 
-void CT_Point2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+void CT_Point2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(x());
-    min.setY(y());
-    max.setX(x());
-    max.setY(y());
+    min(0) = getCenter()(0);
+    min(1) = getCenter()(1);
+    min(2) = 0;
+    max(0) = getCenter()(0);
+    max(1) = getCenter()(1);
+    max(2) = 0;
 }
 
 CT_Point2DData* CT_Point2DData::clone() const

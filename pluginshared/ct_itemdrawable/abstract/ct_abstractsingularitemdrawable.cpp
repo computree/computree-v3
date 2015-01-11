@@ -9,37 +9,37 @@ CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable)
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable() : CT_AbstractItemDrawable()
 {
-    _minCoordinates.setX(std::numeric_limits<float>::max());
-    _minCoordinates.setY(std::numeric_limits<float>::max());
-    _minCoordinates.setZ(std::numeric_limits<float>::max());
+    _minCoordinates(0) = std::numeric_limits<double>::max();
+    _minCoordinates(1) = std::numeric_limits<double>::max();
+    _minCoordinates(2) = std::numeric_limits<double>::max();
 
-    _maxCoordinates.setX(-std::numeric_limits<float>::max());
-    _maxCoordinates.setY(-std::numeric_limits<float>::max());
-    _maxCoordinates.setZ(-std::numeric_limits<float>::max());
+    _maxCoordinates(0) = -std::numeric_limits<double>::max();
+    _maxCoordinates(1) = -std::numeric_limits<double>::max();
+    _maxCoordinates(2) = -std::numeric_limits<double>::max();
 }
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const CT_OutAbstractSingularItemModel *model,
                                                                  const CT_AbstractResult *result) : CT_AbstractItemDrawable(model, result)
 {
-    _minCoordinates.setX(std::numeric_limits<float>::max());
-    _minCoordinates.setY(std::numeric_limits<float>::max());
-    _minCoordinates.setZ(std::numeric_limits<float>::max());
+    _minCoordinates(0) = std::numeric_limits<double>::max();
+    _minCoordinates(1) = std::numeric_limits<double>::max();
+    _minCoordinates(2) = std::numeric_limits<double>::max();
 
-    _maxCoordinates.setX(-std::numeric_limits<float>::max());
-    _maxCoordinates.setY(-std::numeric_limits<float>::max());
-    _maxCoordinates.setZ(-std::numeric_limits<float>::max());
+    _maxCoordinates(0) = -std::numeric_limits<double>::max();
+    _maxCoordinates(1) = -std::numeric_limits<double>::max();
+    _maxCoordinates(2) = -std::numeric_limits<double>::max();
 }
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const QString &modelName,
                                                                  const CT_AbstractResult *result) : CT_AbstractItemDrawable(modelName, result)
 {
-    _minCoordinates.setX(std::numeric_limits<float>::max());
-    _minCoordinates.setY(std::numeric_limits<float>::max());
-    _minCoordinates.setZ(std::numeric_limits<float>::max());
+    _minCoordinates(0) = std::numeric_limits<double>::max();
+    _minCoordinates(1) = std::numeric_limits<double>::max();
+    _minCoordinates(2) = std::numeric_limits<double>::max();
 
-    _maxCoordinates.setX(-std::numeric_limits<float>::max());
-    _maxCoordinates.setY(-std::numeric_limits<float>::max());
-    _maxCoordinates.setZ(-std::numeric_limits<float>::max());
+    _maxCoordinates(0) = -std::numeric_limits<double>::max();
+    _maxCoordinates(1) = -std::numeric_limits<double>::max();
+    _maxCoordinates(2) = -std::numeric_limits<double>::max();
 }
 
 QString CT_AbstractSingularItemDrawable::staticGetType()
@@ -149,24 +149,22 @@ QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::notDefaultIte
     return m_itemAttributes.itemAttributes();
 }
 
-void CT_AbstractSingularItemDrawable::setBoundingBox(float minx, float miny, float minz, float maxx, float maxy, float maxz)
+void CT_AbstractSingularItemDrawable::setBoundingBox(double minx, double miny, double minz, double maxx, double maxy, double maxz)
 {
-    _minCoordinates.setX(minx);
-    _minCoordinates.setY(miny);
-    _minCoordinates.setZ(minz);
+    _minCoordinates(0) = minx;
+    _minCoordinates(1) = miny;
+    _minCoordinates(2) = minz;
 
-    _maxCoordinates.setX(maxx);
-    _maxCoordinates.setY(maxy);
-    _maxCoordinates.setZ(maxz);
+    _maxCoordinates(0) = maxx;
+    _maxCoordinates(1) = maxy;
+    _maxCoordinates(2) = maxz;
 
     updateCenterFromBoundingBox();
 }
 
 void CT_AbstractSingularItemDrawable::updateCenterFromBoundingBox()
 {
-    setCenterX((_maxCoordinates.x() + _minCoordinates.x())/2);
-    setCenterY((_maxCoordinates.y() + _minCoordinates.y())/2);
-    setCenterZ((_maxCoordinates.z() + _minCoordinates.z())/2);
+    _centerCoordinate = (_maxCoordinates + _minCoordinates) / 2.0;
 }
 
 QString CT_AbstractSingularItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const
@@ -182,40 +180,35 @@ void CT_AbstractSingularItemDrawable::internalSetWillBeRemovedFromResult(const C
     m_itemAttributes.removeItemAttributeFromResult(res);
 }
 
-void CT_AbstractSingularItemDrawable::getBoundingBox(QVector3D &min, QVector3D &max) const
+void CT_AbstractSingularItemDrawable::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(_minCoordinates.x());
-    min.setY(_minCoordinates.y());
-    min.setZ(_minCoordinates.z());
-
-    max.setX(_maxCoordinates.x());
-    max.setY(_maxCoordinates.y());
-    max.setZ(_maxCoordinates.z());
+    min = _minCoordinates;
+    max = _maxCoordinates;
 }
 
 
-void CT_AbstractSingularItemDrawable::getScaledBoundingBox(double xCoeff, double yCoeff, double zCoeff, QVector3D &min, QVector3D &max)
+void CT_AbstractSingularItemDrawable::getScaledBoundingBox(double xCoeff, double yCoeff, double zCoeff, Eigen::Vector3d &min, Eigen::Vector3d &max)
 {
     getBoundingBox(min, max);
 
-    min.setX(getCenterX() - (fabs(min.x()-getCenterX()) * xCoeff));
-    min.setY(getCenterY() - (fabs(min.y()-getCenterY()) * yCoeff));
-    min.setZ(getCenterZ() - (fabs(min.z()-getCenterZ()) * zCoeff));
+    min(0) = getCenterX() - (fabs(min.x()-getCenterX()) * xCoeff);
+    min(1) = getCenterY() - (fabs(min.y()-getCenterY()) * yCoeff);
+    min(2) = getCenterZ() - (fabs(min.z()-getCenterZ()) * zCoeff);
 
-    max.setX(getCenterX() + (fabs(max.x()-getCenterX()) * xCoeff));
-    max.setY(getCenterY() + (fabs(max.y()-getCenterY()) * yCoeff));
-    max.setZ(getCenterZ() + (fabs(max.z()-getCenterZ()) * zCoeff));
+    max(0) = getCenterX() + (fabs(max.x()-getCenterX()) * xCoeff);
+    max(1) = getCenterY() + (fabs(max.y()-getCenterY()) * yCoeff);
+    max(2) = getCenterZ() + (fabs(max.z()-getCenterZ()) * zCoeff);
 }
 
-void CT_AbstractSingularItemDrawable::getBufferedBoundingBox(double xMeters, double yMeters, double zMeters, QVector3D &min, QVector3D &max)
+void CT_AbstractSingularItemDrawable::getBufferedBoundingBox(double xMeters, double yMeters, double zMeters, Eigen::Vector3d &min, Eigen::Vector3d &max)
 {
     getBoundingBox(min, max);
 
-    min.setX(min.x() - xMeters);
-    min.setY(min.y() - yMeters);
-    min.setZ(min.z() - zMeters);
+    min(0) -= xMeters;
+    min(1) -= yMeters;
+    min(2) -= zMeters;
 
-    max.setX(max.x() + xMeters);
-    max.setY(max.y() + yMeters);
-    max.setZ(max.z() + zMeters);
+    max(0) += xMeters;
+    max(1) += yMeters;
+    max(2) += zMeters;
 }

@@ -116,12 +116,12 @@ bool PB_Polygon2DExporter::protectedExportToFile()
 
             if (item->getNumberOfVertices() > 0)
             {
-                const QVector<QVector2D*> &vertices = item->getVertices();
+                const QVector<Eigen::Vector2d*> &vertices = item->getVertices();
                 for (int i = 0 ; i < vertices.size() ; i++)
                 {
-                    QVector2D* vertice = vertices.at(i);
-                    x = vertice->x();
-                    y = vertice->y();
+                    Eigen::Vector2d* vertice = vertices.at(i);
+                    x = (*vertice)(0);
+                    y = (*vertice)(1);
                     z = item->getCenterZ();
 
                     PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);

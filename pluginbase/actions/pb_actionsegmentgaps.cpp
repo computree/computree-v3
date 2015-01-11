@@ -187,7 +187,7 @@ void PB_ActionSegmentGaps::initClusters()
 
     if (_keepOnlyConvexHull)
     {
-        QList<QVector2D*> filledCells;
+        QList<Eigen::Vector2d*> filledCells;
 
         // add all filled cell coordinates in a list (for convex hull computation)
         for (size_t cx = 0 ; cx < colDim ; cx++)
@@ -197,7 +197,7 @@ void PB_ActionSegmentGaps::initClusters()
                 int value = _densityGrid->value(cx, ly);
                 if (value > 0)
                 {
-                    filledCells.append(new QVector2D(_densityGrid->getCellCenterColCoord(cx), _densityGrid->getCellCenterLinCoord(ly)));
+                    filledCells.append(new Eigen::Vector2d(_densityGrid->getCellCenterColCoord(cx), _densityGrid->getCellCenterLinCoord(ly)));
                 }
             }
         }
@@ -600,7 +600,7 @@ bool PB_ActionSegmentGaps::getCoordsForMousePosition(const QMouseEvent *e, float
 {
     PB_ActionSegmentGapsOptions *option = (PB_ActionSegmentGapsOptions*)optionAt(0);
 
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     GraphicsViewInterface *view = graphicsView();
     view->convertClickToLine(e->pos(), origin, direction);
 
@@ -907,10 +907,10 @@ void PB_ActionSegmentGaps::drawPencil(PainterInterface &painter, PB_ActionSegmen
     int size = option->getPencilSize();
     float width = resolution*size;
 
-    QVector2D bottom;
+    Eigen::Vector2d bottom;
     _clustersGrid->getCellBottomLeftCorner(_activeCol, _activeRow, bottom);
 
-    QRectF rect(bottom.x(), bottom.y(), width, width);
+    QRectF rect(bottom(0), bottom(1), width, width);
     painter.drawRectXY(rect, z_val + 0.0001);
 }
 

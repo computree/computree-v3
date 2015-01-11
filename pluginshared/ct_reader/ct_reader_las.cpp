@@ -207,9 +207,9 @@ bool CT_Reader_LAS::protectedReadFile()
 
             quint64 pos = f.pos();
             bool mustTransformPoint = ((CT_LASHeader*)m_header)->mustTransformPoints();
-            QVector3D center((((CT_LASHeader*)m_header)->m_maxX+((CT_LASHeader*)m_header)->m_minX)/2.0,
-                             (((CT_LASHeader*)m_header)->m_maxY+((CT_LASHeader*)m_header)->m_minY)/2.0,
-                             (((CT_LASHeader*)m_header)->m_maxZ+((CT_LASHeader*)m_header)->m_minZ)/2.0);
+            Eigen::Vector3d center( (((CT_LASHeader*)m_header)->m_maxX+((CT_LASHeader*)m_header)->m_minX)/2.0,
+                                    (((CT_LASHeader*)m_header)->m_maxY+((CT_LASHeader*)m_header)->m_minY)/2.0,
+                                    (((CT_LASHeader*)m_header)->m_maxZ+((CT_LASHeader*)m_header)->m_minZ)/2.0);
 
             CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
 

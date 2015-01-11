@@ -46,9 +46,9 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
     int xdim = item.xdim();
     int ydim = item.ydim();
     int zdim = item.zdim();
-    float demiRes = reductionCoef*item.resolution() / 2.0;
+    double demiRes = reductionCoef*item.resolution() / 2.0;
 
-    float xmin, ymin, zmin, xmax, ymax, zmax;
+    double xmin, ymin, zmin, xmax, ymax, zmax;
 
     // For each voxel of the grid
     for (size_t xx = nXinf ; xx < (xdim - nXsup) ; xx++)

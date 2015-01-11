@@ -66,10 +66,10 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    float getRadius() const;
-    float getHeight() const;
-    float getLineError() const;
-    float getCircleError() const;
+    double getRadius() const;
+    double getHeight() const;
+    double getLineError() const;
+    double getCircleError() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
@@ -83,7 +83,7 @@ public:
                                                              const CT_AbstractResult *result,
                                                              const CT_AbstractPointCloud &pointCloud,
                                                              const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                             const QVector3D &pointCloudBarycenter);
+                                                             const Eigen::Vector3d &pointCloudBarycenter);
 
 private:
 

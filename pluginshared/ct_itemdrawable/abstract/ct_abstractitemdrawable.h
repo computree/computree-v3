@@ -32,7 +32,7 @@
 #include "ct_result/ct_resultcopymodelist.h"
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 
-#include <QVector3D>
+#include <eigen/Eigen/Core>
 #include <QMatrix4x4>
 
 class CT_OutAbstractItemModel;
@@ -173,32 +173,34 @@ public:
     /**
      * @brief Set the x center coordinate of this item
      */
-    virtual void setCenterX(float x);
+    virtual void setCenterX(double x);
 
     /**
      * @brief Set the y center coordinate of this item
      */
-    virtual void setCenterY(float y);
+    virtual void setCenterY(double y);
 
     /**
      * @brief Set the z center coordinate of this item
      */
-    virtual void setCenterZ(float z);
+    virtual void setCenterZ(double z);
 
     /**
      * @brief Returns the x center coordinate of this item
      */
-    virtual float getCenterX() const;
+    double getCenterX() const;
 
     /**
      * @brief Returns the y center coordinate of this item
      */
-    virtual float getCenterY() const;
+    double getCenterY() const;
 
     /**
      * @brief Returns the z center coordinate of this item
      */
-    virtual float getCenterZ() const;
+    double getCenterZ() const;
+
+    inline const Eigen::Vector3d& getCenterCoordinate() const {return _centerCoordinate;}
 
     /**
      * @brief Returns true if this item has a bounding box. By default returns false.
@@ -213,7 +215,7 @@ public:
      * @param min : min point to be modified
      * @param max : max point to be modified
      */
-    virtual void getBoundingBox(QVector3D &min, QVector3D &max) const;
+    virtual void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     /**
      * @brief Set the draw manager that must draw the item. Typically create a static draw manager in your item class
@@ -314,6 +316,8 @@ protected:
      * @brief Overloaded to cast the model to check the validity.
      */
     virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
+protected:
+    Eigen::Vector3d             _centerCoordinate;
 
 private:
 
@@ -321,7 +325,6 @@ private:
     QList<DocumentInterface*>   _documentList;
     bool                        _selected;
     bool                        _displayed;
-    QVector3D                   _centerCoordinate;
     QString                     _name;
     bool                        _autoDelete;
     CT_AbstractItemDrawable     *_parent;

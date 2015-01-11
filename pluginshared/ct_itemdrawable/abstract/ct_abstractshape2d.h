@@ -63,17 +63,17 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    void setCenterX(float x);
-    void setCenterY(float y);
+    void setCenterX(double x);
+    void setCenterY(double y);
 
-    float getCenterX() const;
-    float getCenterY() const;
+    double getCenterX() const;
+    double getCenterY() const;
 
     const CT_Shape2DData* getPointerData() const;
     const CT_Shape2DData& getData() const;
-    const QVector2D& getCenter() const;
+    const Eigen::Vector2d& getCenter() const;
 
-    void getBoundingBox(QVector3D &min, QVector3D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
 private:
 

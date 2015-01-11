@@ -43,8 +43,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_CircleData : public CT_ShapeData
 {
 public:
     CT_CircleData();
-    CT_CircleData(const QVector3D &center, const QVector3D &direction, float radius);
-    CT_CircleData(const QVector3D &center, const QVector3D &direction, float radius, float error);
+    CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius);
+    CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double error);
 
     void setRadius(float radius);
     void setError(float error);
@@ -78,8 +78,8 @@ public:
                                                                                             double z = 0);
 private:
 
-    float _radius;
-    float _error;
+    double _radius;
+    double _error;
 
 #ifdef USE_BOOST_OLD
 private:

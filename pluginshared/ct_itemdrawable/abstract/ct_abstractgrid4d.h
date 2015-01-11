@@ -4,8 +4,8 @@
 // The grid is an itemDrawableWithoutPointCloud
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 
-// Using QVector4D to store bounding box
-#include <QVector4D>
+// Using vector4d to store bounding box
+#include <eigen/Eigen/Core>
 
 // Using floor()
 #include <math.h>
@@ -82,37 +82,37 @@ public:
       * \brief Gives the length of a voxel along the w dimension w level
       * \return Lenght of a voxel along w dimension
       */
-    inline float wres() const {return _resw;}
+    inline double wres() const {return _resw;}
 
     /**
       * \brief Gives the length of a voxel along the x dimension x level
       * \return Lenght of a voxel along x dimension
       */
-    inline float xres() const {return _resx;}
+    inline double xres() const {return _resx;}
 
     /**
       * \brief Gives the length of a voxel along the y dimension y level
       * \return Lenght of a voxel along y dimension
       */
-    inline float yres() const {return _resy;}
+    inline double yres() const {return _resy;}
 
     /**
       * \brief Gives the length of a voxel along the z dimension z level
       * \return Lenght of a voxel along z dimension
       */
-    inline float zres() const {return _resz;}
+    inline double zres() const {return _resz;}
 
     /**
       * \brief Getter
       * \return the lower w coordinate of the grid
       */
-    inline float minW() const {return _bot.w();}
+    inline double minW() const {return _bot(0);}
 
     /**
       * \brief Getter
       * \return the upper w coordinate of the grid
       */
-    inline float maxW() const {return _top.w();}
+    inline double maxW() const {return _top(0);}
 
 //**********************************************//
 //              Getters Tools                   //
@@ -126,56 +126,50 @@ public:
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value)
+     * \return A double value between 0 (min value) and 1 (max value)
      */
-    virtual float ratioValueAtIndex(const size_t index) const = 0;
+    virtual double ratioValueAtIndex(const size_t index) const = 0;
 
     /**
      * \brief getMinCoordinates
      * \param min Min coordinates of the grid (bottom left corner)
      */
-    inline void getMinCoordinates(QVector4D &min) const
+    inline void getMinCoordinates(Eigen::Vector4d &min) const
     {
-        min.setW( _bot.w() );
-        min.setX( _bot.x() );
-        min.setY( _bot.y() );
-        min.setZ( _bot.z() );
+        min = _bot;
     }
 
     /**
      * \brief getMaxCoordinates
      * \param max Max coordinates of the grid (upper right corner)
      */
-    inline void getMaxCoordinates(QVector4D &max) const
+    inline void getMaxCoordinates(Eigen::Vector4d &max) const
     {
-        max.setW( _top.w() );
-        max.setX( _top.x() );
-        max.setY( _top.y() );
-        max.setZ( _top.z() );
+        max = _top;
     }
 
     /**
      * \brief getResolutions
      * \param res Resolutions of the grid (size of voxel along each axis)
      */
-    inline void getResolutions(QVector4D &res) const
+    inline void getResolutions(Eigen::Vector4d &res) const
     {
-        res.setW( _resw );
-        res.setX( _resx );
-        res.setY( _resy );
-        res.setZ( _resz );
+        res(0) = _resw;
+        res(1) = _resx;
+        res(2) = _resy;
+        res(3) = _resz;
     }
 
     /**
      * \brief getDimensions
      * \param res Dimensions of the grid (size of voxel along each axis)
      */
-    inline void getDimensions(QVector4D &dim) const
+    inline void getDimensions(Eigen::Vector4d &dim) const
     {
-        dim.setW( _dimw );
-        dim.setX( _dimx );
-        dim.setY( _dimy );
-        dim.setZ( _dimz );
+        dim(0) = _dimw;
+        dim(1) = _dimx;
+        dim(2) = _dimy;
+        dim(3) = _dimz;
     }
 
     /*!
@@ -183,9 +177,9 @@ public:
      * \param levw Column, first one is 0
      * \return W coordinate
      */
-    inline float getCellCenterW(const size_t levw) const
+    inline double getCellCenterW(const size_t levw) const
     {
-        return _bot.w() + ((double)levw)*_resw + _resw/2;
+        return _bot(0) + ((double)levw)*_resw + _resw/2;
     }
 
     /*!
@@ -193,9 +187,9 @@ public:
      * \param levx Column, first one is 0
      * \return X coordinate
      */
-    inline float getCellCenterX(const size_t levx) const
+    inline double getCellCenterX(const size_t levx) const
     {
-        return _bot.x() + ((double)levx)*_resx + _resx/2;
+        return _bot(1) + ((double)levx)*_resx + _resx/2;
     }
 
     /*!
@@ -203,9 +197,9 @@ public:
      * \param levy Column, first one is 0
      * \return Y coordinate
      */
-    inline float getCellCenterY(const size_t levy) const
+    inline double getCellCenterY(const size_t levy) const
     {
-        return _bot.y() + ((double)levy)*_resy + _resy/2;
+        return _bot(2) + ((double)levy)*_resy + _resy/2;
     }
 
     /*!
@@ -213,9 +207,9 @@ public:
      * \param levz Column, first one is 0
      * \return Z coordinate
      */
-    inline float getCellCenterZ(const size_t levz) const
+    inline double getCellCenterZ(const size_t levz) const
     {
-        return _bot.z() + ((double)levz)*_resz + _resz/2;
+        return _bot(3) + ((double)levz)*_resz + _resz/2;
     }
 
     /*!
@@ -225,7 +219,7 @@ public:
      * \param top Max coordinates
      * \return true if index is in the grid
      */
-    inline bool getCellCoordinates(const size_t index, QVector4D &bottom, QVector4D &top) const
+    inline bool getCellCoordinates(const size_t index, Eigen::Vector4d &bottom, Eigen::Vector4d &top) const
     {
         size_t levw, levx, levy, levz;
         if( !indexToGrid(index, levw, levx, levy, levz) )
@@ -233,15 +227,15 @@ public:
             return false;
         }
 
-        bottom.setW( _bot.w() + levw*_resw);
-        bottom.setX( _bot.x() + levx*_resx);
-        bottom.setY( _bot.y() + levy*_resy);
-        bottom.setZ( _bot.z() + levz*_resz);
+        bottom(0) = _bot(0) + levw*_resw;
+        bottom(1) = _bot(1) + levx*_resx;
+        bottom(2) = _bot(2) + levy*_resy;
+        bottom(3) = _bot(3) + levz*_resz;
 
-        top.setW(bottom.w() + _resw);
-        top.setX(bottom.x() + _resx);
-        top.setY(bottom.y() + _resy);
-        top.setZ(bottom.z() + _resz);
+        top(0) = bottom(0) + _resw;
+        top(1) = bottom(1) + _resx;
+        top(2) = bottom(2) + _resy;
+        top(3) = bottom(3) + _resz;
 
         return true;
     }
@@ -253,19 +247,19 @@ public:
      * \param levy Y level
      * \param levz Z level
      * \param bottom Output coordinates
-     * \return A QVector3D coordinates for the bottom left corner
+     * \return A Eigen::Vector4d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCorner(const size_t levw, const size_t levx, const size_t levy, const size_t levz, QVector4D &bottom) const
+    inline bool getCellBottomLeftCorner(const size_t levw, const size_t levx, const size_t levy, const size_t levz, Eigen::Vector4d &bottom) const
     {
         if( (levw >= _dimw) || (levx >= _dimx) || (levy >= _dimy) || (levz >= _dimz) )
         {
             return false;
         }
 
-        bottom.setW( _bot.w() + levw*_resw);
-        bottom.setX( _bot.x() + levx*_resx);
-        bottom.setY( _bot.y() + levy*_resy);
-        bottom.setZ( _bot.z() + levz*_resz);
+        bottom(0) = _bot(0) + levw*_resw;
+        bottom(1) = _bot(1) + levx*_resx;
+        bottom(2) = _bot(2) + levy*_resy;
+        bottom(3) = _bot(3) + levz*_resz;
 
         return true;
     }
@@ -277,15 +271,15 @@ public:
      * \param y Y coordinate
      * \param z Z coordinate
      * \param bottom Output coordinates
-     * \return A QVector3D coordinates for the bottom left corner
+     * \return A Eigen::Vector4d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCornerAtXYZ(const float w, const float x, const float y, const float z, QVector4D &bottom) const
+    inline bool getCellBottomLeftCornerAtXYZ(const double w, const double x, const double y, const double z, Eigen::Vector4d &bottom) const
     {
 
-        return getCellBottomLeftCorner( (size_t) floor( (w - _bot.w() ) / _resw),
-                                        (size_t) floor( (x - _bot.x() ) / _resx),
-                                        (size_t) floor( (y - _bot.y() ) / _resy),
-                                        (size_t) floor( (z - _bot.z() ) / _resz),
+        return getCellBottomLeftCorner( (size_t) floor( (w - _bot(0) ) / _resw),
+                                        (size_t) floor( (x - _bot(1) ) / _resx),
+                                        (size_t) floor( (y - _bot(2) ) / _resy),
+                                        (size_t) floor( (z - _bot(3) ) / _resz),
                                         bottom);
     }
 
@@ -343,21 +337,21 @@ public:
      * \param levw Returned level on W containing w
      * \return false if w invalid
      */
-    inline bool levW(const float w, size_t &levw) const
+    inline bool levW(const double w, size_t &levw) const
     {
-        if ( w < _bot.w() || w > _top.w() )
+        if ( w < _bot(0) || w > _top(0) )
         {
             return false;
         }
 
-        if ( w == _top.w() )
+        if ( w == _top(0) )
         {
             levw =  _dimw - 1;
         }
 
         else
         {
-            levw = (size_t) floor( (w - _bot.w()) / _resw );
+            levw = (size_t) floor( (w - _bot(0)) / _resw );
         }
         return true;
     }
@@ -368,21 +362,21 @@ public:
      * \param levx Returned level on X containing x
      * \return false if x invalid
      */
-    inline bool levX(const float x, size_t &levx) const
+    inline bool levX(const double x, size_t &levx) const
     {
-        if ( x < _bot.x() || x > _top.x() )
+        if ( x < _bot(1) || x > _top(1) )
         {
             return false;
         }
 
-        if ( x == _top.x() )
+        if ( x == _top(1) )
         {
             levx =  _dimx - 1;
         }
 
         else
         {
-            levx = (size_t) floor( (x - _bot.x()) / _resx );
+            levx = (size_t) floor( (x - _bot(1)) / _resx );
         }
         return true;
     }
@@ -393,21 +387,21 @@ public:
      * \param levy Returned level on Y containing y
      * \return false if y invalid
      */
-    inline bool levY(const float y, size_t &levy) const
+    inline bool levY(const double y, size_t &levy) const
     {
-        if ( y < _bot.y() || y > _top.y() )
+        if ( y < _bot(2) || y > _top(2) )
         {
             return false;
         }
 
-        if ( y == _top.y() )
+        if ( y == _top(2) )
         {
             levy =  _dimy - 1;
         }
 
         else
         {
-            levy = (size_t) floor( (y - _bot.y()) / _resy );
+            levy = (size_t) floor( (y - _bot(2)) / _resy );
         }
         return true;
     }
@@ -418,21 +412,21 @@ public:
      * \param levz Returned level on Z containing z
      * \return false if z invalid
      */
-    inline bool levZ(const float z, size_t &levz) const
+    inline bool levZ(const double z, size_t &levz) const
     {
-        if ( z < _bot.z() || z > _top.z() )
+        if ( z < _bot(3) || z > _top(3) )
         {
             return false;
         }
 
-        if ( z == _top.z() )
+        if ( z == _top(3) )
         {
             levz =  _dimz - 1;
         }
 
         else
         {
-            levz = (size_t) floor( (z - _bot.z()) / _resz );
+            levz = (size_t) floor( (z - _bot(3)) / _resz );
         }
         return true;
     }
@@ -478,7 +472,7 @@ public:
      * \param index Returned index
      * \return false if index is invalid
      */
-    inline bool indexAtWXYZ(const float w, const float x, const float y, const float z, size_t &returnedIndex) const
+    inline bool indexAtWXYZ(const double w, const double x, const double y, const double z, size_t &returnedIndex) const
     {
         size_t levw, levx, levy, levz;
         if ( !levW(w, levw) || !levX(x, levx) || !levY(y, levy) || !levZ(z, levz) )
@@ -515,16 +509,16 @@ protected:
 //**********************************************//
 //                  Attributes                  //
 //**********************************************//
-    QVector4D       _bot;       /*!< 4D Bounding box of the Grid*/
-    QVector4D       _top;       /*!< 4D Bounding box of the Grid*/
-    size_t          _dimw;      /*!< Nombre de cases selon w du grid*/
-    size_t          _dimx;      /*!< Nombre de cases selon x du grid*/
-    size_t          _dimy;      /*!< Nombre de cases selon y du grid*/
-    size_t          _dimz;      /*!< Nombre de cases selon z du grid*/
-    float           _resx;      /*!< Resolution de la grille (taille d'une case en x) */
-    float           _resy;      /*!< Resolution de la grille (taille d'une case en y) */
-    float           _resz;      /*!< Resolution de la grille (taille d'une case en z) */
-    float           _resw;      /*!< Resolution de la grille (taille d'une case en r) */
+    Eigen::Vector4d     _bot;       /*!< 4D Bounding box of the Grid*/
+    Eigen::Vector4d     _top;       /*!< 4D Bounding box of the Grid*/
+    size_t              _dimw;      /*!< Nombre de cases selon w du grid*/
+    size_t              _dimx;      /*!< Nombre de cases selon x du grid*/
+    size_t              _dimy;      /*!< Nombre de cases selon y du grid*/
+    size_t              _dimz;      /*!< Nombre de cases selon z du grid*/
+    double              _resx;      /*!< Resolution de la grille (taille d'une case en x) */
+    double              _resy;      /*!< Resolution de la grille (taille d'une case en y) */
+    double              _resz;      /*!< Resolution de la grille (taille d'une case en z) */
+    double              _resw;      /*!< Resolution de la grille (taille d'une case en r) */
 
 };
 

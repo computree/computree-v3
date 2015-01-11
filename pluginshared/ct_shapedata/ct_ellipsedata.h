@@ -37,12 +37,12 @@ class PLUGINSHAREDSHARED_EXPORT CT_EllipseData : public CT_ShapeData
 {
 public:
     CT_EllipseData();
-    CT_EllipseData(const QVector3D &center, const CT_LineData &axisA, const CT_LineData &axisB);
-    CT_EllipseData(const QVector3D &center, const CT_LineData &axisA, const CT_LineData &axisB, float error);
+    CT_EllipseData(const Eigen::Vector3d &center, const CT_LineData &axisA, const CT_LineData &axisB);
+    CT_EllipseData(const Eigen::Vector3d &center, const CT_LineData &axisA, const CT_LineData &axisB, double error);
 
     const CT_LineData& getAxisA() const;
     const CT_LineData& getAxisB() const;
-    float getError() const;
+    double getError() const;
 
     CT_EllipseData* clone() const;
 
@@ -58,16 +58,16 @@ private:
 
     CT_LineData _axisA;
     CT_LineData _axisB;
-    float       _error;
+    double       _error;
 
     static void staticInitMatrix(double **m, int nlig, int ncol);
     static void staticDeleteMatrix(double **m, int nlig);
-    static void staticGetCenter(double *pvec, float *cx, float *cy);
-    static void staticGetAxisA(double *pvec, float cx, float cy, float *_x1, float *_y1, float *_x2, float *_y2);
-    static void staticGetAxisB(double *pvec, float cx, float cy, float *_x1, float *_y1, float *_x2, float *_y2);
-    static float staticIsZero(float x);
-    static float staticGetQ(double *pvec);
-    static void staticGetLine(float q, float xc, float yc, double *pvec, float *_x1, float *_y1, float *_x2, float *_y2);
+    static void staticGetCenter(double *pvec, double *cx, double *cy);
+    static void staticGetAxisA(double *pvec, double cx, double cy, double *_x1, double *_y1, double *_x2, double *_y2);
+    static void staticGetAxisB(double *pvec, double cx, double cy, double *_x1, double *_y1, double *_x2, double *_y2);
+    static double staticIsZero(double x);
+    static double staticGetQ(double *pvec);
+    static void staticGetLine(double q, double xc, double yc, double *pvec, double *_x1, double *_y1, double *_x2, double *_y2);
     static void staticMultMatrix(double **m, double **g, double **mg);
     static void staticRotate(double **a, int i, int j, int k, int l, double tau, double s);
     static void staticJacobi(double **a, int n, double *d , double **v, int nrot);
@@ -80,8 +80,8 @@ private:
     static void staticAperB_T(double **_A, double **_B, double **_res,
                          int _righA, int _colA, int _righB, int _colB);
 
-    static const float EL_INFINITY;
-    static const float EL_ZERO;
+    static const double EL_INFINITY;
+    static const double EL_ZERO;
 
 #ifdef USE_BOOST_OLD
 private:

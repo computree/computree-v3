@@ -30,7 +30,6 @@
 
 #include "ct_shapedata.h"
 
-#include <QVector3D>
 #include <QVector>
 
 class PLUGINSHAREDSHARED_EXPORT CT_PlanarBSplineData : public CT_ShapeData
@@ -41,27 +40,27 @@ public:
 
     void reset(int nCP, int degree);
 
-    void setCP(int index, float x, float y, float z);
-    void setCP(int index, const QVector3D &value);
+    void setCP(int index, double x, double y, double z);
+    void setCP(int index, const Eigen::Vector3d &value);
     void setNodalValue(int index, double value);
 
-    const QVector3D &getCPAt(int index) const;
+    const Eigen::Vector3d &getCPAt(int index) const;
     double getNodalValueAt(int index) const;
 
 
     inline int nCP() const {return _nCP;}
     inline int degree() const {return _degree;}
 
-    inline const QVector<QVector3D> &getControlPoints() const {return _controlPoints;}
+    inline const QVector<Eigen::Vector3d> &getControlPoints() const {return _controlPoints;}
     inline const QVector<double> &getNodalValues() const {return _nodalSequence;}
 
     CT_PlanarBSplineData *clone() const;
 
 private:
-    int                 _degree;
-    int                 _nCP;
-    QVector<QVector3D>  _controlPoints;
-    QVector<double>     _nodalSequence;
+    int                         _degree;
+    int                         _nCP;
+    QVector<Eigen::Vector3d>    _controlPoints;
+    QVector<double>             _nodalSequence;
 };
 
 #endif // CT_PLANARBSPLINEDATA_H

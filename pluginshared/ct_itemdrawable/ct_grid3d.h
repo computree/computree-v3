@@ -82,25 +82,25 @@ public:
      */
     CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
-              float xmin,
-              float ymin,
-              float zmin,
+              double xmin,
+              double ymin,
+              double zmin,
               size_t dimx,
               size_t dimy,
               size_t dimz,
-              float resolution,
+              double resolution,
               DataT na,
               DataT initValue);
 
     CT_Grid3D(const QString &modelName,
               const CT_AbstractResult *result,
-              float xmin,
-              float ymin,
-              float zmin,
+              double xmin,
+              double ymin,
+              double zmin,
               size_t dimx,
               size_t dimy,
               size_t dimz,
-              float resolution,
+              double resolution,
               DataT na,
               DataT initValue);
 
@@ -123,25 +123,25 @@ public:
      */
     static CT_Grid3D<DataT>* createGrid3DFromXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                           const CT_AbstractResult *result,
-                                                          float xmin,
-                                                          float ymin,
-                                                          float zmin,
-                                                          float xmax,
-                                                          float ymax,
-                                                          float zmax,
-                                                          float resolution,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double zmin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double zmax,
+                                                          double resolution,
                                                           DataT na,
                                                           DataT initValue);
 
     static CT_Grid3D<DataT>* createGrid3DFromXYZCoords(const QString &modelName,
                                                           const CT_AbstractResult *result,
-                                                          float xmin,
-                                                          float ymin,
-                                                          float zmin,
-                                                          float xmax,
-                                                          float ymax,
-                                                          float zmax,
-                                                          float resolution,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double zmin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double zmax,
+                                                          double resolution,
                                                           DataT na,
                                                           DataT initValue);
 
@@ -245,7 +245,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    bool setValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
 
     /*!
@@ -258,9 +258,9 @@ public:
     /*!
      * \brief Generic [0;1]  (or -1 for NA) value accessor for use as CT_AbstractGrid3D
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value), or -1 for NA
+     * \return A double value between 0 (min value) and 1 (max value), or -1 for NA
      */
-    virtual float ratioValueAtIndex(const size_t index) const;
+    virtual double ratioValueAtIndex(const size_t index) const;
 
 
     /*!
@@ -306,7 +306,7 @@ public:
       * \param z Z coordinate
       * \return Value at (x,y,z)
       */
-    DataT valueAtXYZ(const float x, const float y, const float z) const;
+    DataT valueAtXYZ(const double x, const double y, const double z) const;
 
 
     /**
@@ -325,7 +325,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMaxValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    bool setMaxValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
     /**
       * \brief Set the value for the cell at specified index, if value is inferior to actual one
@@ -343,7 +343,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMinValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    bool setMinValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
     /**
       * \brief Add value to the cell at the specified index
@@ -361,7 +361,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    bool addValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    bool addValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
     /**
       * \brief Gives neighbours values
@@ -406,7 +406,7 @@ template<>
 PLUGINSHAREDSHARED_EXPORT void CT_Grid3D<bool>::computeMinMax();
 
 template<>
-PLUGINSHAREDSHARED_EXPORT float CT_Grid3D<bool>::ratioValueAtIndex(const size_t index) const;
+PLUGINSHAREDSHARED_EXPORT double CT_Grid3D<bool>::ratioValueAtIndex(const size_t index) const;
 
 template<>
 PLUGINSHAREDSHARED_EXPORT double CT_Grid3D<bool>::valueAtIndexAsDouble(const size_t index) const;

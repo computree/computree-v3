@@ -36,13 +36,13 @@ CT_CircleData::CT_CircleData() : CT_ShapeData()
     _error = 0;
 }
 
-CT_CircleData::CT_CircleData(const QVector3D &center, const QVector3D &direction, float radius) : CT_ShapeData(center, direction)
+CT_CircleData::CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius) : CT_ShapeData(center, direction)
 {
     _radius = radius;
     _error = 0;
 }
 
-CT_CircleData::CT_CircleData(const QVector3D &center, const QVector3D &direction, float radius, float error) : CT_ShapeData(center, direction)
+CT_CircleData::CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double error) : CT_ShapeData(center, direction)
 {
     _radius = radius;
     _error = error;
@@ -210,8 +210,8 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
 
     delete newPointCloud;
 
-    return new CT_CircleData(QVector3D(a, b, z),
-                             QVector3D(0, 0, 1),
+    return new CT_CircleData(Eigen::Vector3d(a, b, z),
+                             Eigen::Vector3d(0, 0, 1),
                              radiusT,
                              r2);
 }

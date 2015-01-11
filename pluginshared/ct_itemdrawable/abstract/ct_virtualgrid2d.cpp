@@ -39,7 +39,7 @@ void CT_VirtualGrid2D<bool>::computeMinMax()
 }
 
 template<>
-float CT_VirtualGrid2D<bool>::ratioValueAtIndex(const size_t index) const
+double CT_VirtualGrid2D<bool>::ratioValueAtIndex(const size_t index) const
 {
     bool value = valueAtIndex(index);
     if (value) {return 1;}

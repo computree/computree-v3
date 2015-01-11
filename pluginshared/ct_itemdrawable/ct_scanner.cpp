@@ -44,7 +44,7 @@ CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWith
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = QVector3D(0,0,1);
+    _zVector = Eigen::Vector3d(0,0,1);
     _hFov = 0;
     _vFov = 0;
     _hRes = 0;
@@ -64,7 +64,7 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_Ab
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = QVector3D(0,0,1);
+    _zVector = Eigen::Vector3d(0,0,1);
     _hFov = 0;
     _vFov = 0;
     _hRes = 0;
@@ -81,8 +81,8 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_Ab
 CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
                        const CT_AbstractResult *result,
                        int scanID,
-                       const QVector3D &origin,
-                       const QVector3D &zVector,
+                       const Eigen::Vector3d &origin,
+                       const Eigen::Vector3d &zVector,
                        double hFov,
                        double vFov,
                        double hRes,
@@ -137,7 +137,7 @@ CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = QVector3D(0,0,1);
+    _zVector = Eigen::Vector3d(0,0,1);
     _hFov = 0;
     _vFov = 0;
     _hRes = 0;
@@ -154,8 +154,8 @@ CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result
 CT_Scanner::CT_Scanner(const QString &modelName,
                        const CT_AbstractResult *result,
                        int scanID,
-                       const QVector3D &origin,
-                       const QVector3D &zVector,
+                       const Eigen::Vector3d &origin,
+                       const Eigen::Vector3d &zVector,
                        double hFov,
                        double vFov,
                        double hRes,
@@ -166,9 +166,9 @@ CT_Scanner::CT_Scanner(const QString &modelName,
                        bool radians) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
 {
     _scanID = scanID;
-    setCenterX(origin.x());
-    setCenterY(origin.y());
-    setCenterZ(origin.z());
+    setCenterX(origin(0));
+    setCenterY(origin(1));
+    setCenterZ(origin(2));
 
     _zVector = zVector;
     _clockWise = clockWise;
@@ -223,33 +223,29 @@ CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
     }
 
     // The direction is calculated using spherical coordinates, the origin is the scaning position
-    float sinPhi = sin( phi );
-    float cosPhi = cos ( phi );
-    float sinTheta = sin ( theta );
-    float cosTheta = cos ( theta );
+    double sinPhi = sin( phi );
+    double cosPhi = cos ( phi );
+    double sinTheta = sin ( theta );
+    double cosTheta = cos ( theta );
 
-    QVector3D position, direction;
-    // The position has to be parsed from Qvector3D to CT_Point
-    position.setX(getCenterX());
-    position.setY(getCenterY());
-    position.setZ(getCenterZ());
+    Eigen::Vector3d direction;
 
     if ( moreStability )
     {
         // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction.setX(sinPhi*cosTheta) : direction.setZ(0);
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction.setY(sinPhi*sinTheta) : direction.setZ(0);
-        fabs(cosPhi) > SCANNER_EPSILON ? direction.setZ(cosPhi) : direction.setZ(0);
+        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(2) = 0;
+        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(2) = 0;
+        fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
     }
 
     else
     {
-        direction.setX(sinPhi*cosTheta);
-        direction.setY(sinPhi*sinTheta);
-        direction.setZ(cosPhi);
+        direction(0) = sinPhi*cosTheta;
+        direction(1) = sinPhi*sinTheta;
+        direction(2) = cosPhi;
     }
 
-    return new CT_Beam(NULL, NULL, position, direction );
+    return new CT_Beam(NULL, NULL, getCenterCoordinate(), direction);
 }
 
 void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
@@ -267,33 +263,29 @@ void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
     }
 
     // The direction is calculated using spherical coordinates, the origin is the scaning position
-    float sinPhi = sin( phi );
-    float cosPhi = cos ( phi );
-    float sinTheta = sin ( theta );
-    float cosTheta = cos ( theta );
+    double sinPhi = sin( phi );
+    double cosPhi = cos ( phi );
+    double sinTheta = sin ( theta );
+    double cosTheta = cos ( theta );
 
-    QVector3D position, direction;
-    // The position has to be parsed from Qvector3D to CT_Point
-    position.setX(getCenterX());
-    position.setY(getCenterY());
-    position.setZ(getCenterZ());
+    Eigen::Vector3d direction;
 
     if ( moreStability )
     {
         // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction.setX(sinPhi*cosTheta) : direction.setZ(0);
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction.setY(sinPhi*sinTheta) : direction.setZ(0);
-        fabs(cosPhi) > SCANNER_EPSILON ? direction.setZ(cosPhi) : direction.setZ(0);
+        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(2) = 0;
+        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(2) = 0;
+        fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
     }
 
     else
     {
-        direction.setX(sinPhi*cosTheta);
-        direction.setY(sinPhi*sinTheta);
-        direction.setZ(cosPhi);
+        direction(0) = sinPhi*cosTheta;
+        direction(1) = sinPhi*sinTheta;
+        direction(2) = cosPhi;
     }
 
-    beam.setOrigin(position);
+    beam.setOrigin(getCenterCoordinate());
     beam.setDirection(direction);
 }
 

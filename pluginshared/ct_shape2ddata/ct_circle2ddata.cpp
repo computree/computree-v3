@@ -40,32 +40,34 @@ CT_Circle2DData::CT_Circle2DData() : CT_AreaShape2DData()
     _radius = 0;
 }
 
-CT_Circle2DData::CT_Circle2DData(const QVector2D &center,float radius) : CT_AreaShape2DData(center)
+CT_Circle2DData::CT_Circle2DData(const Eigen::Vector2d &center, double radius) : CT_AreaShape2DData(center)
 {
     _radius = radius;
 }
 
-void CT_Circle2DData::setRadius(float radius)
+void CT_Circle2DData::setRadius(double radius)
 {
     _radius = radius;
 }
 
-float CT_Circle2DData::getRadius() const
+double CT_Circle2DData::getRadius() const
 {
     return _radius;
 }
 
-void CT_Circle2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+void CT_Circle2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(_center.x() - _radius);
-    min.setY(_center.y() - _radius);
-    max.setX(_center.x() + _radius);
-    max.setY(_center.y() + _radius);
+    min(0) = _center(0) - _radius;
+    min(1) = _center(1) - _radius;
+    min(2) = 0;
+    max(0) = _center(0) + _radius;
+    max(1) = _center(1) + _radius;
+    max(2) = 0;
 }
 
-bool CT_Circle2DData::contains(float x, float y) const
+bool CT_Circle2DData::contains(double x, double y) const
 {
-    float distance = sqrt(pow(_center.x() - x, 2) + pow(_center.y() - y, 2));
+    double distance = sqrt(pow(_center(0) - x, 2) + pow(_center(1) - y, 2));
     return (distance <= _radius);
 }
 

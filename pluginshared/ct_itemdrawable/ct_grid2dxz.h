@@ -31,8 +31,6 @@
 #include "ct_math/ct_math.h"
 #include "ct_itemdrawable/abstract/ct_virtualgrid2d.h"
 
-#include <QVector2D>
-
 template< typename DataT > class CT_StandardGrid2DXZDrawManager;
 
 /*!
@@ -69,23 +67,23 @@ public:
      */
     CT_Grid2DXZ(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              float xmin,
-                              float zmin,
+                              double xmin,
+                              double zmin,
                               size_t dimx,
                               size_t dimz,
-                              float resolution,
-                              float ylevel,
+                              double resolution,
+                              double ylevel,
                               DataT na,
                               DataT initValue);
 
     CT_Grid2DXZ(const QString &modelName,
                               const CT_AbstractResult *result,
-                              float xmin,
-                              float zmin,
+                              double xmin,
+                              double zmin,
                               size_t dimx,
                               size_t dimz,
-                              float resolution,
-                              float ylevel,
+                              double resolution,
+                              double ylevel,
                               DataT na,
                               DataT initValue);
 
@@ -108,23 +106,23 @@ public:
      */
     static CT_Grid2DXZ<DataT>* createGrid2DXZFromXZCoords(const CT_OutAbstractSingularItemModel *model,
                                                                        const CT_AbstractResult *result,
-                                                                       float xmin,
-                                                                       float zmin,
-                                                                       float xmax,
-                                                                       float zmax,
-                                                                       float resolution,
-                                                                       float ylevel,
+                                                                       double xmin,
+                                                                       double zmin,
+                                                                       double xmax,
+                                                                       double zmax,
+                                                                       double resolution,
+                                                                       double ylevel,
                                                                        DataT na,
                                                                        DataT initValue);
 
     static CT_Grid2DXZ<DataT>* createGrid2DXZFromXZCoords(const QString &modelName,
                                                                        const CT_AbstractResult *result,
-                                                                       float xmin,
-                                                                       float zmin,
-                                                                       float xmax,
-                                                                       float zmax,
-                                                                       float resolution,
-                                                                       float ylevel,
+                                                                       double xmin,
+                                                                       double zmin,
+                                                                       double xmax,
+                                                                       double zmax,
+                                                                       double resolution,
+                                                                       double ylevel,
                                                                        DataT na,
                                                                        DataT initValue);
 
@@ -158,7 +156,7 @@ public:
       * \param lin Z coordinate
       * \return Value at (x,z)
       */
-    inline DataT valueAtXZ(const float x, const float z) const {return this->valueAtCoords(x, z);}
+    inline DataT valueAtXZ(const double x, const double z) const {return this->valueAtCoords(x, z);}
 
     /**
       * \brief Set the value for the cell containing (x,z) coordinate to value
@@ -167,7 +165,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setValueAtXZ(const float x, const float z, const DataT value) {return this->setValueAtCoords(x, z, value);}
+    inline bool setValueAtXZ(const double x, const double z, const DataT value) {return this->setValueAtCoords(x, z, value);}
 
     /**
       * \brief Set the value for the cell containing (x,z) coordinate to value, if value is superior to actual one
@@ -176,7 +174,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setMaxValueAtXZ(const float x, const float z, const DataT value) {return this->setMaxValueAtCoords(x, z, value);}
+    inline bool setMaxValueAtXZ(const double x, const double z, const DataT value) {return this->setMaxValueAtCoords(x, z, value);}
 
     /**
       * \brief Set the value for the cell containing (x,z) coordinate to value, if value is inferior to actual one
@@ -185,7 +183,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setMinValueAtXZ(const float x, const float z, const DataT value) {return this->setMinValueAtCoords(x, z, value);}
+    inline bool setMinValueAtXZ(const double x, const double z, const DataT value) {return this->setMinValueAtCoords(x, z, value);}
 
     /**
       * \brief Add value to the cell containing (x,z) coordinate
@@ -194,7 +192,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    inline bool addValueAtXZ(const float x, const float z, const DataT value) {return this->addValueAtCoords(x, z, value);}
+    inline bool addValueAtXZ(const double x, const double z, const DataT value) {return this->addValueAtCoords(x, z, value);}
 
     const static CT_StandardGrid2DXZDrawManager<DataT> ABSGRID2DXZ_DRAW_MANAGER;
 };

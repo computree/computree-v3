@@ -122,7 +122,7 @@ public:
     /**
      * @brief Get the bounding box of the item
      */
-    virtual void getBoundingBox(QVector3D &min, QVector3D &max) const;
+    virtual void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     /**
      * @brief Get the bounding box of the item but scaled
@@ -130,7 +130,7 @@ public:
      *        operation example ===> maxX = cx + (abs(maxX - cx) * xCoeff)
      *        operation example ===> minX = cx - (abs(minX - cx) * xCoeff)
      */
-    void getScaledBoundingBox(double xCoeff, double yCoeff, double zCoeff, QVector3D &min, QVector3D &max);
+    void getScaledBoundingBox(double xCoeff, double yCoeff, double zCoeff, Eigen::Vector3d &min, Eigen::Vector3d &max);
 
     /**
      * @brief Get the bounding box of the item but scaled
@@ -138,12 +138,12 @@ public:
      *        operation example ===> maxX = maxX + xMeters
      *        operation example ===> minX = minX - xMeters
      */
-    void getBufferedBoundingBox(double xMeters, double yMeters, double zMeters, QVector3D &min, QVector3D &max);
+    void getBufferedBoundingBox(double xMeters, double yMeters, double zMeters, Eigen::Vector3d &min, Eigen::Vector3d &max);
 
     /**
      * @brief Change the bounding box
      */
-    void setBoundingBox(float minx, float miny, float minz, float maxx, float maxy, float maxz);
+    void setBoundingBox(double minx, double miny, double minz, double maxx, double maxy, double maxz);
 
     /**
      * @brief Change the center of the item from coordinates of the bounding box
@@ -153,36 +153,36 @@ public:
     /**
      * @brief Get min X coordinate of the bounding box
      */
-    inline float minX() const {return _minCoordinates.x();}
+    inline double minX() const {return _minCoordinates(0);}
 
     /**
      * @brief Get min Y coordinate of the bounding box
      */
-    inline float minY() const {return _minCoordinates.y();}
+    inline double minY() const {return _minCoordinates(1);}
 
     /**
      * @brief Get min Z coordinate of the bounding box
      */
-    inline float minZ() const {return _minCoordinates.z();}
+    inline double minZ() const {return _minCoordinates(2);}
 
     /**
      * @brief Get max X coordinate of the bounding box
      */
-    inline float maxX() const {return _maxCoordinates.x();}
+    inline double maxX() const {return _maxCoordinates(0);}
 
     /**
      * @brief Get max Y coordinate of the bounding box
      */
-    inline float maxY() const {return _maxCoordinates.y();}
+    inline double maxY() const {return _maxCoordinates(1);}
 
     /**
      * @brief Get max Z coordinate of the bounding box
      */
-    inline float maxZ() const {return _maxCoordinates.z();}
+    inline double maxZ() const {return _maxCoordinates(2);}
 
 protected:
-    QVector3D   _minCoordinates;
-    QVector3D   _maxCoordinates;
+    Eigen::Vector3d   _minCoordinates;
+    Eigen::Vector3d   _maxCoordinates;
 
     /**
      * @brief Overloaded to cast the model to check the validity.

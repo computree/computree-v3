@@ -26,15 +26,15 @@ void CT_StandardPlanarBSplineDrawManager::draw(GraphicsViewInterface &view, Pain
     bool drawPolyline = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_POLYLINE).toBool();
 
 
-    const QVector<QVector3D> &cps = data.getControlPoints();
-    const QList<QVector3D> &polyline = item.getPolyline();
+    const QVector<Eigen::Vector3d> &cps = data.getControlPoints();
+    const QList<Eigen::Vector3d> &polyline = item.getPolyline();
 
     if (drawCP)
     {
         painter.setPointSize(CPsize);
         for (int i = 0 ; i < cps.size() ; i++)
         {
-            painter.drawPoint(cps[i].x(), cps[i].y(), cps[i].z());
+            painter.drawPoint(cps[i](0), cps[i](1), cps[i](2));
         }
         painter.restoreDefaultPointSize();
     }
@@ -46,9 +46,9 @@ void CT_StandardPlanarBSplineDrawManager::draw(GraphicsViewInterface &view, Pain
         {
             for (int i = 0 ; i < size - 1 ; i++)
             {
-                painter.drawLine(polyline[i].x(), polyline[i].y(), polyline[i].z(),polyline[i+1].x(), polyline[i+1].y(), polyline[i+1].z());
+                painter.drawLine(polyline[i](0), polyline[i](1), polyline[i](2),polyline[i+1](0), polyline[i+1](1), polyline[i+1](2));
             }
-            painter.drawLine(polyline[size-1].x(), polyline[size-1].y(), polyline[size-1].z(),polyline[0].x(), polyline[0].y(), polyline[0].z());
+            painter.drawLine(polyline[size-1](0), polyline[size-1](1), polyline[size-1](2),polyline[0](0), polyline[0](1), polyline[0](2));
         }
     }
 

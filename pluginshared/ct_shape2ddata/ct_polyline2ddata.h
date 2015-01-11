@@ -35,7 +35,6 @@
 
 
 #include <QVector>
-#include <QVector2D>
 #include <QStack>
 
 class PLUGINSHAREDSHARED_EXPORT CT_Polyline2DData : public CT_Shape2DData
@@ -44,25 +43,25 @@ public:
 
     CT_Polyline2DData();
 
-    CT_Polyline2DData(const QVector<QVector2D *> &vertices, bool copy = true);
+    CT_Polyline2DData(const QVector<Eigen::Vector2d *> &vertices, bool copy = true);
 
     ~CT_Polyline2DData();
 
     CT_Polyline2DData* clone() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
-    inline const QVector<QVector2D*>& getVertices() const {return _vertices;}
+    inline const QVector<Eigen::Vector2d*>& getVertices() const {return _vertices;}
     inline int getVerticesNumber() {return _vertices.size();}
 
 
 private:
-    QVector<QVector2D*> _vertices;
+    QVector<Eigen::Vector2d*> _vertices;
 
-    float               _minX;
-    float               _maxX;
-    float               _minY;
-    float               _maxY;
+    double               _minX;
+    double               _maxX;
+    double               _minY;
+    double               _maxY;
 
     friend class CT_Polyline2D;
 

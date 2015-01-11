@@ -38,13 +38,13 @@ class PLUGINSHAREDSHARED_EXPORT CT_CylinderData : public CT_ShapeData
 {
 public:
     CT_CylinderData();
-    CT_CylinderData(const QVector3D &center, const QVector3D &direction, float radius, float h);
-    CT_CylinderData(const QVector3D &center, const QVector3D &direction, float radius, float h, float lineError, float circleError);
+    CT_CylinderData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double h);
+    CT_CylinderData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double h, double lineError, double circleError);
 
-    float getRadius() const;
-    float getHeight() const;
-    float getLineError() const;
-    float getCircleError() const;
+    double getRadius() const;
+    double getHeight() const;
+    double getLineError() const;
+    double getCircleError() const;
 
     CT_CylinderData* clone() const;
 
@@ -55,20 +55,20 @@ public:
       */
     static CT_CylinderData* staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
                                                                      const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                                     const QVector3D &pointCloudBarycenter);
+                                                                     const Eigen::Vector3d &pointCloudBarycenter);
 
     static CT_CylinderData* staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloud &pointCloud,
                                                                                  const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                                                 const QVector3D &pointCloudBarycenter,
+                                                                                 const Eigen::Vector3d &pointCloudBarycenter,
                                                                                  const CT_LineData &direction,
                                                                                  CT_CircleData *outCircleData = NULL);
 
 private:
 
-    float   _radius;
-    float   _h;
-    float   _lineError;
-    float   _circleError;
+    double   _radius;
+    double   _h;
+    double   _lineError;
+    double   _circleError;
 
     static const double M_PI_X2;
 
@@ -79,7 +79,7 @@ private:
     {
     public:
 
-        CircleDataPreProcessingAction(const QVector3D &translation,
+        CircleDataPreProcessingAction(const Eigen::Vector3d &translation,
                                       double cosRotationZ,
                                       double sinRotationZ,
                                       double cosRotationY,
@@ -96,9 +96,9 @@ private:
 
         void preProcessing(const CT_Point &point, CT_Point &newPoint)
         {
-            double x = point(0) + _translation.x();
-            double y = point(1) + _translation.y();
-            double z = point(2) + _translation.z();
+            double x = point(0) + _translation(0);
+            double y = point(1) + _translation(1);
+            double z = point(2) + _translation(2);
 
             // rotation autour de l'axe z
             double xp = x*_cosRotationZ - y*_sinRotationZ;
@@ -130,19 +130,19 @@ private:
         double getCosRotationY() const { return _cosRotationY; }
         double getSinRotationZ() const { return _sinRotationZ; }
         double getSinRotationY() const { return _sinRotationY; }
-        double getTranslationX() const { return _translation.x(); }
-        double getTranslationY() const { return _translation.y(); }
-        double getTranslationZ() const { return _translation.z(); }
+        double getTranslationX() const { return _translation(0); }
+        double getTranslationY() const { return _translation(1); }
+        double getTranslationZ() const { return _translation(2); }
 
     private:
 
-        QVector3D   _translation;
-        double      _cosRotationZ;
-        double      _sinRotationZ;
-        double      _cosRotationY;
-        double      _sinRotationY;
-        double      _zMin;
-        double      _zMax;
+        Eigen::Vector3d _translation;
+        double          _cosRotationZ;
+        double          _sinRotationZ;
+        double          _cosRotationY;
+        double          _sinRotationY;
+        double          _zMin;
+        double          _zMax;
     };
 
 #ifdef USE_BOOST_OLD

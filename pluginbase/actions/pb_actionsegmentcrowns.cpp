@@ -555,7 +555,7 @@ bool PB_ActionSegmentCrowns::getCoordsForMousePosition(const QMouseEvent *e, flo
 {
     PB_ActionSegmentCrownsOptions *option = (PB_ActionSegmentCrownsOptions*)optionAt(0);
 
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     GraphicsViewInterface *view = graphicsView();
     view->convertClickToLine(e->pos(), origin, direction);
 
@@ -867,7 +867,7 @@ void PB_ActionSegmentCrowns::drawPencil(PainterInterface &painter, PB_ActionSegm
     int size = option->getPencilSize();
     float width = resolution*size;
 
-    QVector2D bottom;
+    Eigen::Vector2d bottom;
     _clustersGrid->getCellBottomLeftCorner(_activeCol, _activeRow, bottom);
 
     QRectF rect(bottom.x(), bottom.y(), width, width);

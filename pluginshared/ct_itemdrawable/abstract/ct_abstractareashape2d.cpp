@@ -58,7 +58,7 @@ QString CT_AbstractAreaShape2D::staticGetType()
     return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractAreaShape2D";
 }
 
-bool CT_AbstractAreaShape2D::contains(float x, float y) const
+bool CT_AbstractAreaShape2D::contains(double x, double y) const
 {
     return getAreaData().contains(x, y);
 }

@@ -137,13 +137,13 @@ void PB_StepSegmentCrowns::compute()
 
     m_itemDrawableToAdd.clear();
 
-    _xmin = std::numeric_limits<float>::max();
-    _ymin = std::numeric_limits<float>::max();
-    _zmin = std::numeric_limits<float>::max();
+    _xmin = std::numeric_limits<double>::max();
+    _ymin = std::numeric_limits<double>::max();
+    _zmin = std::numeric_limits<double>::max();
 
-    _xmax = -std::numeric_limits<float>::max();
-    _ymax = -std::numeric_limits<float>::max();
-    _zmax = -std::numeric_limits<float>::max();
+    _xmax = -std::numeric_limits<double>::max();
+    _ymax = -std::numeric_limits<double>::max();
+    _zmax = -std::numeric_limits<double>::max();
 
     _clustersGrid = NULL;
 
@@ -237,7 +237,7 @@ void PB_StepSegmentCrowns::compute()
 
 
             PS_LOG->addMessage(LogInterface::info, LogInterface::step,tr("Enregistrement des clusters"));
-            QMap<int, QList<QVector2D*>*> cellsMapByCluster;
+            QMap<int, QList<Eigen::Vector2d*>*> cellsMapByCluster;
             QMap<int, size_t> clusterCounts;
             QMap<int, float> clusterZMax;
             registerClusterCells(cellsMapByCluster, clusterCounts, clusterZMax);
@@ -254,11 +254,11 @@ void PB_StepSegmentCrowns::compute()
                            clusterCounts,
                            clusterZMax);
 
-            QMapIterator<int, QList<QVector2D *> *> it(cellsMapByCluster);
+            QMapIterator<int, QList<Eigen::Vector2d *> *> it(cellsMapByCluster);
             while (it.hasNext())
             {
                 it.next();
-                QList<QVector2D*> *cells = it.value();
+                QList<Eigen::Vector2d*> *cells = it.value();
 
                 qDeleteAll(*cells);
                 delete cells;
@@ -362,13 +362,13 @@ void PB_StepSegmentCrowns::registerScenes(const QMap<int, CT_PointCloudIndexVect
     }
 }
 
-void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<QVector2D*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts, QMap<int, float> &clusterZMax)
+void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts, QMap<int, float> &clusterZMax)
 {
     for (size_t c = 0 ; c < _clustersGrid->colDim() ; c++)
     {
         for (size_t l = 0 ; l < _clustersGrid->linDim() ; l++)
         {
-            QVector2D* point = new QVector2D(_clustersGrid->getCellCenterColCoord(c), _clustersGrid->getCellCenterLinCoord(l));
+            Eigen::Vector2d* point = new Eigen::Vector2d(_clustersGrid->getCellCenterColCoord(c), _clustersGrid->getCellCenterLinCoord(l));
 
             int cluster = _clustersGrid->value(c, l);
             float z = _gridContainer->_mnsGrid->value(c, l);
@@ -377,10 +377,10 @@ void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<QVector2D*> *> &
             {
                 clusterCounts.insert(cluster, clusterCounts.value(cluster, 0) + 1);
 
-                QList<QVector2D*> *liste = cellsMapByCluster.value(cluster, NULL);
+                QList<Eigen::Vector2d*> *liste = cellsMapByCluster.value(cluster, NULL);
                 if (liste == NULL)
                 {
-                    liste = new QList<QVector2D*>();
+                    liste = new QList<Eigen::Vector2d*>();
                     cellsMapByCluster.insert(cluster, liste);
                 }
                 liste->append(point);
@@ -392,16 +392,16 @@ void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<QVector2D*> *> &
     }
 }
 
-void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<QVector2D *> *> &cellsMapByCluster,
+void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<Eigen::Vector2d *> *> &cellsMapByCluster,
                                              const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
                                              QMap<int, CT_Polygon2DData *> &convexHullsMap)
 {
-    QMapIterator<int, QList<QVector2D *> *> it(cellsMapByCluster);
+    QMapIterator<int, QList<Eigen::Vector2d *> *> it(cellsMapByCluster);
     while (it.hasNext())
     {
         it.next();
         int cluster = it.key();
-        QList<QVector2D*> *cells = it.value();
+        QList<Eigen::Vector2d*> *cells = it.value();
         //CT_Polygon2DData::orderPointsByXY(cells); // Normalement inutile
         CT_Polygon2DData* polygonData = CT_Polygon2DData::createConvexHull(*cells);
 

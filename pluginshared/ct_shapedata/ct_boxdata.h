@@ -34,9 +34,9 @@ class PLUGINSHAREDSHARED_EXPORT CT_BoxData : public CT_ShapeData
 {
 public:
     CT_BoxData();
-    CT_BoxData(const QVector3D &center, const QVector3D &direction, const QVector3D &widthDirection, float height, float width, float depth);
+    CT_BoxData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const Eigen::Vector3d &widthDirection, double height, double width, double depth);
 
-    const QVector3D& getWidthDirection() const;
+    const Eigen::Vector3d& getWidthDirection() const;
     float getHeight() const;
     float getWidth() const;
     float getDepth() const;
@@ -45,10 +45,10 @@ public:
 
 private:
 
-    QVector3D   _widthDirection;
-    float       _width;  // selon l'axe de _widthDirection
-    float       _height; // selon l'axe de _direction
-    float       _depth;
+    Eigen::Vector3d   _widthDirection;
+    double            _width;  // selon l'axe de _widthDirection
+    double            _height; // selon l'axe de _direction
+    double            _depth;
 
 #ifdef USE_BOOST_OLD
 private:

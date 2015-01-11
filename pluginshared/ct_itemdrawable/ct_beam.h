@@ -85,11 +85,11 @@ public:
     *  \param origin : origin of the ray
     *  \param direction : direction of the ray
     */
-    CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult* result, const QVector3D& origin, const QVector3D& direction );
+    CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult* result, const Eigen::Vector3d &origin, const Eigen::Vector3d &direction );
 
     CT_Beam(const QString &modelName, const CT_AbstractResult *result);
 
-    CT_Beam(const QString &modelName, const CT_AbstractResult *result, const QVector3D& origin, const QVector3D& direction );
+    CT_Beam(const QString &modelName, const CT_AbstractResult *result, const Eigen::Vector3d& origin, const Eigen::Vector3d& direction );
 
 
     /*!
@@ -111,15 +111,9 @@ public:
     *
     *  \return Returns the point of the ray at a given time
     */
-    inline QVector3D operator() (double t) const
+    inline Eigen::Vector3d operator() (double t) const
     {
-        QVector3D result;
-
-        result.setX(_origin.x() + _direction.x()*t);
-        result.setY(_origin.y() + _direction.y()*t);
-        result.setZ(_origin.z() + _direction.z()*t);
-
-        return result;
+        return _origin + _direction*t;
     }
 
 //********************************************//
@@ -130,14 +124,14 @@ public:
     *
     *  \return Returns the origin of the ray
     */
-    inline QVector3D getOrigin () const { return _origin; }
+    inline Eigen::Vector3d getOrigin () const { return _origin; }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the direction of the ray
     */
-    inline QVector3D getDirection () const { return _direction; }
+    inline Eigen::Vector3d getDirection () const { return _direction; }
 
 //********************************************//
 //                  Setters                   //
@@ -145,23 +139,18 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setOrigin ( const QVector3D& origin )
+    inline void setOrigin ( const Eigen::Vector3d& origin )
     {
-        _origin.setX(origin.x());
-        _origin.setY(origin.y());
-        _origin.setZ(origin.z());
+        _origin = origin;
     }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setDirection ( const QVector3D& direction )
+    inline void setDirection ( const Eigen::Vector3d& direction )
     {
-        assert( !(direction.x() == 0 && direction.y() == 0 && direction.z() == 0) );
-
-        _direction.setX(direction.x());
-        _direction.setY(direction.y());
-        _direction.setZ(direction.z());
+        assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
+        _direction = direction;
     }
 
 //********************************************//
@@ -189,7 +178,7 @@ public:
     *
     *  \return Returns false if no intersection was found, true else
     */
-    bool intersect ( const QVector3D& bot, const QVector3D& top, QVector3D& nearP, QVector3D& farP ) const;
+    bool intersect ( const Eigen::Vector3d& bot, const Eigen::Vector3d& top, Eigen::Vector3d& nearP, Eigen::Vector3d& farP ) const;
 
     /*!
     *  \brief Test the intersection between a grid and a ray
@@ -207,7 +196,7 @@ public:
     *
     *  \return Returns false if no intersection was found, true else
     */
-    bool intersect ( const QVector3D& bot, const QVector3D& top ) const;
+    bool intersect (const Eigen::Vector3d &bot, const Eigen::Vector3d &top ) const;
 
     /*!
      * \brief Utilitary function for intersect
@@ -245,8 +234,8 @@ public:
                          CT_ResultCopyModeList copyModeList);
 
 private :
-    QVector3D _origin;          /*!< Origin of the ray*/
-    QVector3D _direction;       /*!< Direction of the ray*/
+    Eigen::Vector3d _origin;          /*!< Origin of the ray*/
+    Eigen::Vector3d _direction;       /*!< Direction of the ray*/
 
     const static CT_StandardBeamDrawManager BEAM_DRAW_MANAGER;      /*!< Static attribute of the class :
                                                                    *  Draw manager of a ray.

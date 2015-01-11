@@ -60,12 +60,12 @@ QString CT_Line2D::staticGetType()
     return CT_AbstractShape2D::staticGetType() + "/CT_Line2D";
 }
 
-const QVector2D &CT_Line2D::getP1() const
+const Eigen::Vector2d &CT_Line2D::getP1() const
 {
     return ((const CT_Line2DData&)getData()).getP1();
 }
 
-const QVector2D &CT_Line2D::getP2() const
+const Eigen::Vector2d &CT_Line2D::getP2() const
 {
     return ((const CT_Line2DData&)getData()).getP2();
 }

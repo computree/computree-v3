@@ -44,26 +44,26 @@ public:
 
 private:
     const CT_AbstractGrid3D*                _calibrationGrid; /*!< Calibration grid */
-    QVector3D                               _gridBottom;      /*!< bottom left coordinates of the calibration grid*/
-    QVector3D                               _gridTop;         /*!< upper right coordinates of the calibration grid*/
-    float                                   _gridRes;         /*!< Resolution of the calibration grid*/
+    Eigen::Vector3d                         _gridBottom;      /*!< bottom left coordinates of the calibration grid*/
+    Eigen::Vector3d                         _gridTop;         /*!< upper right coordinates of the calibration grid*/
+    double                                   _gridRes;         /*!< Resolution of the calibration grid*/
     bool                                    _keepFirst;       /*! Should be te cell containing the beam origin be kept*/
     QList<CT_AbstractGrid3DBeamVisitor* >   _visitorList;
     int                                     _numberOfVisitors;
 
     // Working variables
-    QVector3D _start;
-    QVector3D _end;
-    QVector3D _boundary;
-    size_t _currentCol;   /*!< current voxel column all along the algorithm (grid coordinate system)*/
-    size_t _currentLin;   /*!< current voxel row all along the algorithm (grid coordinate system)*/
-    size_t _currentLevz;  /*!< current voxel z level all along the algorithm (grid coordinate system)*/
-    QVector3D _stepAxis;     /*!< indicates for each axis wether the ray goes forward (in the same direction than the base vector => 1) or backward (the opposite direction => -1)*/
-    QVector3D _tMax;         /*!< "the value of t at which the ray crosses the first voxel boundary (along each direction)"*/
-    QVector3D _tDel;         /*!< "how far along the ray we must move (in units of t)" for each component "of such a movement to equal the width of a voxel"*/
-    bool      _intersects;   /*!< When creating or resetting the algorithm, this value indicates wether the ray intersects the box or not. If not, the run method won't do anything.*/
-    int		_chooseAxis[8];
-    int		_nextStepAxis;
+    Eigen::Vector3d     _start;
+    Eigen::Vector3d     _end;
+    Eigen::Vector3d     _boundary;
+    size_t              _currentCol;   /*!< current voxel column all along the algorithm (grid coordinate system)*/
+    size_t              _currentLin;   /*!< current voxel row all along the algorithm (grid coordinate system)*/
+    size_t              _currentLevz;  /*!< current voxel z level all along the algorithm (grid coordinate system)*/
+    Eigen::Vector3d     _stepAxis;     /*!< indicates for each axis wether the ray goes forward (in the same direction than the base vector => 1) or backward (the opposite direction => -1)*/
+    Eigen::Vector3d     _tMax;         /*!< "the value of t at which the ray crosses the first voxel boundary (along each direction)"*/
+    Eigen::Vector3d     _tDel;         /*!< "how far along the ray we must move (in units of t)" for each component "of such a movement to equal the width of a voxel"*/
+    bool        _intersects;   /*!< When creating or resetting the algorithm, this value indicates wether the ray intersects the box or not. If not, the run method won't do anything.*/
+    int         _chooseAxis[8];
+    int         _nextStepAxis;
 
 
 

@@ -209,7 +209,7 @@ void PB_StepSegmentGaps::compute()
             dropEmptyClusters();
 
             PS_LOG->addMessage(LogInterface::info, LogInterface::step,tr("Enregistrement des clusters"));
-            QMap<int, QList<QVector2D*>*> cellsMapByCluster;
+            QMap<int, QList<Eigen::Vector2d*>*> cellsMapByCluster;
             QMap<int, size_t> clusterCounts;
             registerClusterCells(cellsMapByCluster, clusterCounts);
 
@@ -217,11 +217,11 @@ void PB_StepSegmentGaps::compute()
             PS_LOG->addMessage(LogInterface::info, LogInterface::step,tr("Calcul des métriques"));
             computeMetrics(clusterCounts, group);
 
-            QMapIterator<int, QList<QVector2D *> *> it(cellsMapByCluster);
+            QMapIterator<int, QList<Eigen::Vector2d *> *> it(cellsMapByCluster);
             while (it.hasNext())
             {
                 it.next();
-                QList<QVector2D*> *cells = it.value();
+                QList<Eigen::Vector2d*> *cells = it.value();
 
                 qDeleteAll(*cells);
                 delete cells;
@@ -271,13 +271,13 @@ int PB_StepSegmentGaps::dropEmptyClusters()
 }
 
 
-void PB_StepSegmentGaps::registerClusterCells(QMap<int, QList<QVector2D*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts)
+void PB_StepSegmentGaps::registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts)
 {
     for (size_t c = 0 ; c < _clustersGrid->colDim() ; c++)
     {
         for (size_t l = 0 ; l < _clustersGrid->linDim() ; l++)
         {
-            QVector2D* point = new QVector2D(_clustersGrid->getCellCenterColCoord(c), _clustersGrid->getCellCenterLinCoord(l));
+            Eigen::Vector2d* point = new Eigen::Vector2d(_clustersGrid->getCellCenterColCoord(c), _clustersGrid->getCellCenterLinCoord(l));
 
             int cluster = _clustersGrid->value(c, l);
 
@@ -285,10 +285,10 @@ void PB_StepSegmentGaps::registerClusterCells(QMap<int, QList<QVector2D*> *> &ce
             {
                 clusterCounts.insert(cluster, clusterCounts.value(cluster, 0) + 1);
 
-                QList<QVector2D*> *liste = cellsMapByCluster.value(cluster, NULL);
+                QList<Eigen::Vector2d*> *liste = cellsMapByCluster.value(cluster, NULL);
                 if (liste == NULL)
                 {
-                    liste = new QList<QVector2D*>();
+                    liste = new QList<Eigen::Vector2d*>();
                     cellsMapByCluster.insert(cluster, liste);
                 }
                 liste->append(point);

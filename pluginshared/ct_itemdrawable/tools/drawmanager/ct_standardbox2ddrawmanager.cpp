@@ -23,17 +23,17 @@ void CT_StandardBox2DDrawManager::draw(GraphicsViewInterface &view, PainterInter
 
     bool drawBox = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_BOX).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
-    float zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toFloat();
+    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
-    float zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+    double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal) {zPlane = zVal;}
 
     if (drawBox)
     {
-        QVector2D min, max;
+        Eigen::Vector3d min, max;
         item.getData().getBoundingBox(min, max);
 
-        painter.drawRectXY(QRectF(min.x(), min.y(), item.getWidth(), item.getHeight()), zPlane);
+        painter.drawRectXY(QRectF(min(0), min(1), item.getWidth(), item.getHeight()), zPlane);
     }
 }
 

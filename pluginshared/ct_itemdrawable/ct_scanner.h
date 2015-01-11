@@ -36,7 +36,6 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"                           // Inherits from CT_abstractItemDrawableWithoutPointCloud
 #include "ct_point.h"                                                           // Used to get rays from a scanner
-#include <QVector3D>                                                            // Some attributes are QVector3D
 #include <math.h>                                                               // Used for M_PI constant
 #include "ct_itemdrawable/ct_beam.h"                                                             // A scan creates some rays
 #include "ct_itemdrawable/tools/drawmanager/ct_standardscannerdrawmanager.h"
@@ -110,12 +109,12 @@ public:
     *  \param initPhi : (vertical) angle between the first vertical ray and the Oz axis
     *  \param radians : type of angle (radians or degrees), degrees by default
     */
-    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanID, const QVector3D& position, const QVector3D& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
+    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanID, const Eigen::Vector3d &position, const Eigen::Vector3d &zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
 
     CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
 
-    CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanID, const QVector3D& position, const QVector3D& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
+    CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanID, const Eigen::Vector3d& position, const Eigen::Vector3d& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
 
     /*!
@@ -141,22 +140,22 @@ public:
     *
     *  \return Returns the position of the scanner
     */
-    inline QVector3D getPosition() const { return QVector3D(getCenterX(), getCenterY(), getCenterZ()); }
+    inline Eigen::Vector3d getPosition() const { return getCenterCoordinate(); }
 
-    inline float getPositionX() const {return getCenterX();}
-    inline float getPositionY() const {return getCenterY();}
-    inline float getPositionZ() const {return getCenterZ();}
+    inline double getPositionX() const {return getCenterX();}
+    inline double getPositionY() const {return getCenterY();}
+    inline double getPositionZ() const {return getCenterZ();}
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the ID of the scanner
     */
-    inline QVector3D getZVector() const { return _zVector; }
+    inline Eigen::Vector3d getZVector() const { return _zVector; }
 
-    inline float getZVectorX() const {return _zVector.x();}
-    inline float getZVectorY() const {return _zVector.y();}
-    inline float getZVectorZ() const {return _zVector.z();}
+    inline double getZVectorX() const {return _zVector(0);}
+    inline double getZVectorY() const {return _zVector(1);}
+    inline double getZVectorZ() const {return _zVector(2);}
 
 
     /*!
@@ -238,7 +237,7 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setZVector ( const QVector3D& zVector ) { _zVector = zVector; }
+    inline void setZVector ( const Eigen::Vector3d& zVector ) { _zVector = zVector; }
 
     /*!
     *  \brief Setter of the class
@@ -342,17 +341,17 @@ public :
     void beam ( int i, int j, CT_Beam &beam, bool moreStability = false ) const;
 
 private :
-    int			_scanID;        /*!< ID of the scan*/
-    QVector3D	_zVector;		/*!< direction of the scan's vertica in the world coordinate system*/
-    double		_hFov;			/*!< horizontal field of view*/
-    double		_vFov;			/*!< vertical field of view*/
-    double		_hRes;			/*!< horizontal angle resolution of the scan*/
-    double		_vRes;			/*!< vertical angle resolution of the scan*/
-    double		_initTheta;		/*!< initial horizontal angle of the measurement in the world coordinate system*/
-    double		_initPhi;		/*!< initial vertical angle of the measurement in the world coordinate system*/
-    int			_nHRays;		/*!< number of ray on a entire horizontal move of the scan*/
-    int			_nVRays;		/*!< number of ray on a entire horizontal move of the scan*/
-    bool        _clockWise;     /*!< Whether the scan has been done in clockwise or not*/
+    int             _scanID;        /*!< ID of the scan*/
+    Eigen::Vector3d	_zVector;		/*!< direction of the scan's vertica in the world coordinate system*/
+    double          _hFov;			/*!< horizontal field of view*/
+    double          _vFov;			/*!< vertical field of view*/
+    double          _hRes;			/*!< horizontal angle resolution of the scan*/
+    double          _vRes;			/*!< vertical angle resolution of the scan*/
+    double          _initTheta;		/*!< initial horizontal angle of the measurement in the world coordinate system*/
+    double          _initPhi;		/*!< initial vertical angle of the measurement in the world coordinate system*/
+    int             _nHRays;		/*!< number of ray on a entire horizontal move of the scan*/
+    int             _nVRays;		/*!< number of ray on a entire horizontal move of the scan*/
+    bool            _clockWise;     /*!< Whether the scan has been done in clockwise or not*/
 
     CT_DEFAULT_IA_BEGIN(CT_Scanner)
     CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"))

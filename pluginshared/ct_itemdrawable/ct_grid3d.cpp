@@ -39,7 +39,7 @@ void CT_Grid3D<bool>::computeMinMax()
 }
 
 template<>
-float CT_Grid3D<bool>::ratioValueAtIndex(const size_t index) const
+double CT_Grid3D<bool>::ratioValueAtIndex(const size_t index) const
 {
     bool value = valueAtIndex(index);
     if (value) {return 1;}

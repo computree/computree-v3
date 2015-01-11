@@ -31,7 +31,7 @@ CT_AreaShape2DData::CT_AreaShape2DData() : CT_Shape2DData()
 {
 }
 
-CT_AreaShape2DData::CT_AreaShape2DData(const QVector2D &center) : CT_Shape2DData(center)
+CT_AreaShape2DData::CT_AreaShape2DData(const Eigen::Vector2d &center) : CT_Shape2DData(center)
 {
 }
 

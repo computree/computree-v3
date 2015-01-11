@@ -63,12 +63,12 @@ public:
     CT_OPF_Mesh() { m_mesh = NULL; m_bboxOK = false; }
     ~CT_OPF_Mesh() { delete m_mesh; }
 
-    void getBoundingBox(QVector3D &min, QVector3D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
 private:
-    mutable QVector3D   m_min;
-    mutable QVector3D   m_max;
-    mutable bool        m_bboxOK;
+    mutable Eigen::Vector3d   m_min;
+    mutable Eigen::Vector3d   m_max;
+    mutable bool              m_bboxOK;
 };
 
 class QXmlStreamReader;
@@ -118,7 +118,7 @@ private:
     void readMesh(rapidxml::xml_node<> *xmlNode);
     void readShape(rapidxml::xml_node<> *xmlNode);
     void readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup *node, const QString &typeName);
-    void transformAndCreateMesh(CT_Mesh *mesh, QVector3D &min, QVector3D &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName);
+    void transformAndCreateMesh(CT_Mesh *mesh, Eigen::Vector3d &min, Eigen::Vector3d &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName);
 
     void recursiveReadTopologyForModel(rapidxml::xml_node<> *node,
                                        int &totalNode,

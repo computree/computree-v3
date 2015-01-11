@@ -31,7 +31,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_math/ct_math.h"
 
-#include <QVector3D>
+#include <eigen/Eigen/Core>
 #include <QMutex>
 
 /*!
@@ -64,9 +64,9 @@ public:
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value)
+     * \return A double value between 0 (min value) and 1 (max value)
      */
-    virtual float ratioValueAtIndex(const size_t index) const = 0;
+    virtual double ratioValueAtIndex(const size_t index) const = 0;
 
     /*!
      * \brief Return a double value for any type (or NAN for NA)
@@ -115,7 +115,7 @@ public:
      * \param colx Returned column
      * \return false if x invalid
      */
-    inline bool colX(const float x, size_t &colx) const
+    inline bool colX(const double x, size_t &colx) const
     {
         if (x < minX() || x > maxX()) {return false;}
         if (x == maxX())
@@ -133,7 +133,7 @@ public:
      * \param liny Returned row
      * \return false if y invalid
      */
-    inline bool linY(const float y, size_t &liny) const
+    inline bool linY(const double y, size_t &liny) const
     {
         if (y < minY() || y > maxY()) {return false;}
         if (y == maxY())
@@ -151,7 +151,7 @@ public:
      * \param levz Returned z level
      * \return false if z invalid
      */
-    inline bool levelZ(const float z, size_t &levz) const
+    inline bool levelZ(const double z, size_t &levz) const
     {
         if (z < minZ() || z > maxZ()) {return false;}
         if (z == maxZ())
@@ -194,7 +194,7 @@ public:
      * \param index Returned index
      * \return false if index is invalid
      */
-    inline bool indexAtXYZ(const float x, const float y, const float z, size_t &returnedIndex) const
+    inline bool indexAtXYZ(const double x, const double y, const double z, size_t &returnedIndex) const
     {
         size_t colx, liny, levz;
         if (!colX(x, colx) || !linY(y, liny) || !levelZ(z, levz)) {return false;}
@@ -218,28 +218,24 @@ public:
       * \brief Gives the resolution
       * \return Resolution (m)
       */
-    inline float resolution() const {return _res;}
+    inline double resolution() const {return _res;}
 
     /**
      * \brief getMinCoordinates
      * \param min Min coordinates of the grid (bottom left corner)
      */
-    inline void getMinCoordinates(QVector3D &min) const
+    inline void getMinCoordinates(Eigen::Vector3d &min) const
     {
-        min.setX(minX());
-        min.setY(minY());
-        min.setZ(minZ());
+        min = _minCoordinates;
     }
 
     /**
      * \brief getMaxCoordinates
      * \param max Max coordinates of the grid (upper right corner)
      */
-    inline void getMaxCoordinates(QVector3D &max) const
+    inline void getMaxCoordinates(Eigen::Vector3d &max) const
     {
-        max.setX(maxX());
-        max.setY(maxY());
-        max.setZ(maxZ());
+        max = _maxCoordinates;
     }
 
     /**
@@ -271,7 +267,7 @@ public:
      * \param colx Column, first one is 0
      * \return X coordinate
      */
-    inline float getCellCenterX(const size_t colx) const
+    inline double getCellCenterX(const size_t colx) const
     {
         return minX() + ((double)colx)*_res + _res/2;
     }
@@ -281,7 +277,7 @@ public:
      * \param liny Row, first one is 0
      * \return Y coordinate
      */
-    inline float getCellCenterY(const size_t liny) const
+    inline double getCellCenterY(const size_t liny) const
     {
         return minY() + ((double)liny)*_res + _res/2;
     }
@@ -291,7 +287,7 @@ public:
      * \param levz z level, first one is 0
      * \return Z coordinate
      */
-    inline float getCellCenterZ(const size_t levz) const
+    inline double getCellCenterZ(const size_t levz) const
     {
         return minZ() + ((double)levz)*_res + _res/2;
     }
@@ -303,17 +299,17 @@ public:
      * \param top Max coordinates
      * \return true if index is in the grid
      */
-    inline bool getCellCoordinates(const size_t index, QVector3D &bottom, QVector3D &top) const
+    inline bool getCellCoordinates(const size_t index, Eigen::Vector3d &bottom, Eigen::Vector3d &top) const
     {
         size_t colx, liny, levz;
         if (!indexToGrid(index, colx, liny, levz)) {return false;}
-        bottom.setX(minX() + colx*_res);
-        bottom.setY(minY() + liny*_res);
-        bottom.setZ(minZ() + levz*_res);
+        bottom(0) = minX() + colx*_res;
+        bottom(1) = minY() + liny*_res;
+        bottom(2) = minZ() + levz*_res;
 
-        top.setX(bottom.x() + _res);
-        top.setY(bottom.y() + _res);
-        top.setZ(bottom.z() + _res);
+        top(0) = bottom(0) + _res;
+        top(1) = bottom(1) + _res;
+        top(2) = bottom(2) + _res;
         return true;
     }
 
@@ -323,14 +319,14 @@ public:
      * \param liny Row
      * \param levz Z level
      * \param bottom Output coordinates
-     * \return A QVector3D coordinates for the bottom left corner
+     * \return A Eigen::Vector3d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCorner(const size_t colx, const size_t liny, const size_t levz, QVector3D &bottom) const
+    inline bool getCellBottomLeftCorner(const size_t colx, const size_t liny, const size_t levz, Eigen::Vector3d &bottom) const
     {
         if ((colx >= _dimx) || (liny >= _dimy) || (levz >= _dimz)) {return false;}
-        bottom.setX(minX() + colx*_res);
-        bottom.setY(minY() + liny*_res);
-        bottom.setZ(minZ() + levz*_res);
+        bottom(0) = minX() + colx*_res;
+        bottom(1) = minY() + liny*_res;
+        bottom(2) = minZ() + levz*_res;
 
         return true;
     }
@@ -341,9 +337,9 @@ public:
      * \param y Y coordinate
      * \param z Z coordinate
      * \param bottom Output coordinates
-     * \return A QVector3D coordinates for the bottom left corner
+     * \return A Eigen::Vector3d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCornerAtXYZ(const float x, const float y, const float z, QVector3D &bottom) const
+    inline bool getCellBottomLeftCornerAtXYZ(const double x, const double y, const double z, Eigen::Vector3d &bottom) const
     {
 
         return getCellBottomLeftCorner((size_t) floor((x - minX()) / _res),
@@ -356,7 +352,7 @@ protected:
     size_t         _dimx;      /*!< Nombre de cases selon x du grid*/
     size_t         _dimy;      /*!< Nombre de cases selon y du grid*/
     size_t         _dimz;      /*!< Nombre de cases selon z du grid*/
-    float          _res;       /*!< Resolution de la grille (taille d'une case*/
+    double          _res;       /*!< Resolution de la grille (taille d'une case*/
 
 };
 

@@ -53,14 +53,14 @@ private:
     const QList<CT_AbstractSingularItemDrawable*>     *_sourceList;
     const QList<CT_AbstractSingularItemDrawable*>     *_targetList;
     QMap<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*>    *_correspondances; // (key=target, value=source)
-    QMap<CT_AbstractSingularItemDrawable*, QVector3D>   _itemCenters;
+    QMap<CT_AbstractSingularItemDrawable*, Eigen::Vector3d>   _itemCenters;
     CT_AbstractSingularItemDrawable*                    _activeSource;
     CT_AbstractSingularItemDrawable*                    _activeTarget;
 
 
-    void drawSourceItem(PainterInterface &painter, const QVector3D &position);
-    void drawTargetItem(PainterInterface &painter, const QVector3D &position);
-    void drawAffiliation(PainterInterface &painter, const QVector3D &source, const QVector3D &target);
+    void drawSourceItem(PainterInterface &painter, const Eigen::Vector3d &position);
+    void drawTargetItem(PainterInterface &painter, const Eigen::Vector3d &position);
+    void drawAffiliation(PainterInterface &painter, const Eigen::Vector3d &source, const Eigen::Vector3d &target);
 
 };
 

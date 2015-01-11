@@ -123,12 +123,12 @@ private:
     CT_Grid2DXY<int>                         *_clustersGrid;
 
     QList<CT_Scene*>            _sceneList;
-    float                       _xmin;
-    float                       _ymin;
-    float                       _zmin;
-    float                       _xmax;
-    float                       _ymax;
-    float                       _zmax;
+    double                       _xmin;
+    double                       _ymin;
+    double                       _zmin;
+    double                       _xmax;
+    double                       _ymax;
+    double                       _zmax;
 
 
 
@@ -140,11 +140,11 @@ private:
     void registerScenes(const QMap<int, CT_PointCloudIndexVector *> &indexVectorMap,
                         const QMap<int, CT_StandardItemGroup *> &sceneGroupMap);
 
-    void registerClusterCells(QMap<int, QList<QVector2D*> *> &cellsMapByCluster,
+    void registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster,
                               QMap<int, size_t> &clusterCounts,
                               QMap<int, float> &clusterZMax);
 
-    void createConvexHulls(QMap<int, QList<QVector2D *> *> &cellsMapByCluster,
+    void createConvexHulls(QMap<int, QList<Eigen::Vector2d *> *> &cellsMapByCluster,
                            const QMap<int, CT_StandardItemGroup *> &sceneGroupMap,
                            QMap<int, CT_Polygon2DData *> &convexHullsMap);
 

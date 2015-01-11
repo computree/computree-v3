@@ -68,8 +68,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    float getRadius() const;
-    float getError() const;
+    double getRadius() const;
+    double getError() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
     virtual CT_AbstractItemDrawable *copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

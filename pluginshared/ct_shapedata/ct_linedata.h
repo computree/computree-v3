@@ -29,6 +29,7 @@
 #define CT_LINEDATA_H
 
 #include "ct_shapedata.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
@@ -37,12 +38,12 @@ class PLUGINSHAREDSHARED_EXPORT CT_LineData : public CT_ShapeData
 {
 public:
     CT_LineData();
-    CT_LineData(const QVector3D &p1, const QVector3D &p2);
-    CT_LineData(const QVector3D &p1, const QVector3D &p2, float error, int n);
+    CT_LineData(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2);
+    CT_LineData(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2, double error, int n);
 
-    const QVector3D& getP1() const;
-    const QVector3D& getP2() const;
-    float getError() const;
+    const Eigen::Vector3d& getP1() const;
+    const Eigen::Vector3d& getP2() const;
+    double getError() const;
 
     double x1() const;
     double y1() const;
@@ -62,7 +63,7 @@ public:
         return sqrt(getMSE());
     }
 
-    bool intersectionWithRect3D  (float plan_x, float plan_y, float plan_z, QVector3D &vect_plan, float *xi, float *yi, float *zi);
+    bool intersectionWithRect3D  (double plan_x, double plan_y, double plan_z, Eigen::Vector3d &vect_plan, double *xi, double *yi, double *zi);
 
     CT_LineData* clone() const;
 
@@ -74,15 +75,17 @@ public:
     static CT_LineData* staticCreateLineDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
                                                            const CT_AbstractPointCloudIndex &pointCloudIndex);
 
-    template<typename XYZpoint>
-    static CT_LineData* staticCreateLineDataFromPointCloud(QList<XYZpoint*> &l_gp);
+
+    static CT_LineData* staticCreateLineDataFromPointCloud(const QList<Eigen::Vector3d> &l_gp);
+
+    static CT_LineData* staticCreateLineDataFromItemCenters(const QList<CT_AbstractSingularItemDrawable *> &items);
 
 private:
 
-    QVector3D   _p1;
-    QVector3D   _p2;
+    Eigen::Vector3d   _p1;
+    Eigen::Vector3d   _p2;
     int         _n_points;
-    float       _error;
+    double       _error;
 
 
 #ifdef USE_BOOST_OLD
@@ -134,8 +137,5 @@ BOOST_CLASS_EXPORT_KEY(CT_LineData)
 #else
 };
 #endif
-
-// Includes the template implementations
-#include "ct_shapedata/ct_linedata.hpp"
 
 #endif // CT_LINEDATA_H

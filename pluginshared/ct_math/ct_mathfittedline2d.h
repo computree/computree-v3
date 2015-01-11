@@ -33,11 +33,12 @@
 #include "qmap.h"
 #include "ct_mathpoint.h"
 
-template<typename xyPoint>
+#include "eigen/Eigen/Core"
+
 class CT_MathFittedLine2D
 {
 public:
-    CT_MathFittedLine2D(QList<xyPoint*> &l_p)
+    CT_MathFittedLine2D(QList<Eigen::Vector2d*> &l_p)
     {
         int nb_points = l_p.size();
 
@@ -55,9 +56,9 @@ public:
             // somme des x et y
             while(n < nb_points)
             {
-                xyPoint* point = l_p.at(n);
-                xi = CT_MathPoint::pX<xyPoint>(*point);
-                yi = CT_MathPoint::pY<xyPoint>(*point);
+                Eigen::Vector2d* point = l_p.at(n);
+                xi = (*point)(0);
+                yi = (*point)(1);
 
                 somme_produit_xi_yi += (xi * yi);
 
@@ -80,9 +81,9 @@ public:
 
             while(n < nb_points)
             {
-                xyPoint* point = l_p.at(n);
+                Eigen::Vector2d* point = l_p.at(n);
 
-                double xi_moins_moyenne = CT_MathPoint::pX<xyPoint>(*point) - x_moyenne;
+                double xi_moins_moyenne = (*point)(0) - x_moyenne;
                 a_denum += (xi_moins_moyenne*xi_moins_moyenne);
 
                 ++n;
@@ -97,8 +98,8 @@ public:
 
             while(n < nb_points)
             {
-                xyPoint* point = l_p.at(n);
-                yi_est = (_a*CT_MathPoint::pX<xyPoint>(*point) + _b);
+                Eigen::Vector2d* point = l_p.at(n);
+                yi_est = (_a*(*point)(0) + _b);
 
                 _predictedValues.insert(point, yi_est);
                 ++n;
@@ -132,12 +133,12 @@ public:
         double sce = 0;
         double sct = 0;
 
-        QMapIterator<xyPoint*, double> it(_predictedValues);
+        QMapIterator<Eigen::Vector2d*, double> it(_predictedValues);
         while(it.hasNext())
         {
             it.next();
-            xyPoint* point = it.key();
-            double yi = CT_MathPoint::pY<xyPoint>(*point);
+            Eigen::Vector2d* point = it.key();
+            double yi = (*point)(1);
             double yi_est = it.value();
 
             sct += (yi - _ymean)*(yi - _ymean);
@@ -169,12 +170,12 @@ public:
         // calcul des sommes de carres
         double scr = 0;
 
-        QMapIterator<xyPoint*, double> it(_predictedValues);
+        QMapIterator<Eigen::Vector2d*, double> it(_predictedValues);
         while(it.hasNext())
         {
             it.next();
-            xyPoint* point = it.key();
-            double yi = CT_MathPoint::pY<xyPoint>(*point);
+            Eigen::Vector2d* point = it.key();
+            double yi = (*point)(1);
             double yi_est = it.value();
 
             scr += (yi - yi_est)*(yi - yi_est);
@@ -198,21 +199,21 @@ public:
     /*!
      * \brief Calcule l'erreur maximale pour un point
      *
-     * \param  (xyPoint*) Point générant l'erreur maximale
+     * \param  (Eigen::Vector2d*) Point générant l'erreur maximale
      * \return (double) Valeur absolue de l'erreur maximale
      */
-    double getMaxError(xyPoint* errorPoint = NULL)
+    double getMaxError(Eigen::Vector2d* errorPoint = NULL)
     {
         if (_n() < 2) {return 0;}
 
         double maxError = 0;
 
-        QMapIterator<xyPoint*, double> it(_predictedValues);
+        QMapIterator<Eigen::Vector2d*, double> it(_predictedValues);
         while(it.hasNext())
         {
             it.next();
-            xyPoint* point = it.key();
-            double yi = CT_MathPoint::pY<xyPoint>(*point);
+            Eigen::Vector2d* point = it.key();
+            double yi = (*point)(1);
             double yi_est = it.value();
 
             double error = fabs(yi - yi_est);
@@ -230,22 +231,22 @@ public:
     /*!
      * \brief Calcule les résidus de la régression linéaire
      *
-     * \param  (QMap<xyPoint*,double>) Points de la régression avec leurs résidus
+     * \param  (QMap<Eigen::Vector2d*,double>) Points de la régression avec leurs résidus
      */
 
-    void getResiduals(QMap<xyPoint *, double> &residuals)
+    void getResiduals(QMap<Eigen::Vector2d *, double> &residuals)
     {
         residuals.clear();
         if (_n() < 2) {return;}
 
         // Evaluation successive de chaque point
-        QMapIterator<xyPoint*, double> it(_predictedValues);
+        QMapIterator<Eigen::Vector2d*, double> it(_predictedValues);
         while (it.hasNext())
         {
             it.next();
-            xyPoint* point = it.key();
+            Eigen::Vector2d* point = it.key();
 
-            double residual = CT_MathPoint::pY<xyPoint>(*point) - it.value();
+            double residual = (*point)(1) - it.value();
 
             residuals.insert(point, residual);
         }
@@ -254,22 +255,22 @@ public:
     /*!
      * \brief Calcule les distances de cook pour les points de la régression linéaire
      *
-     * \param  (QMap<xyPoint*,double>) Points de la régression avec leurs distances de cook
+     * \param  (QMap<Eigen::Vector2d*,double>) Points de la régression avec leurs distances de cook
      */
-    void getCookDistances(QMap<xyPoint *, double> &cook)
+    void getCookDistances(QMap<Eigen::Vector2d *, double> &cook)
     {
         cook.clear();
         if (_n() < 2) {return;}
 
         // Evaluation successive de chaque point
-        QMapIterator<xyPoint*, double> it(_predictedValues);
+        QMapIterator<Eigen::Vector2d*, double> it(_predictedValues);
         while (it.hasNext())
         {
             it.next();
-            xyPoint* point = it.key();
+            Eigen::Vector2d* point = it.key();
 
             // copie de la liste des points
-            QList<xyPoint*> l_p_out = _predictedValues.keys();
+            QList<Eigen::Vector2d*> l_p_out = _predictedValues.keys();
             // suppression du point en cours d'examen
             l_p_out.removeOne(point);
 
@@ -279,7 +280,7 @@ public:
             // Calcul de la distance de cook pour le point en cours d'examen
             double cook_dist = 0;
 
-            QMapIterator<xyPoint*, double> it_out(fitted_out._predictedValues);
+            QMapIterator<Eigen::Vector2d*, double> it_out(fitted_out._predictedValues);
             while (it_out.hasNext())
             {
                 it_out.next();
@@ -294,7 +295,7 @@ public:
 
     double                            _a;                 /*!< Pente de la régression linéaire */
     double                            _b;                 /*!< Ordonnée à l'origine de la régression linéaire */
-    QMap<xyPoint*, double>          _predictedValues;	 /*!< Map<Points, Valeurs prédites> */
+    QMap<Eigen::Vector2d*, double>    _predictedValues;	 /*!< Map<Points, Valeurs prédites> */
     double                            _ymean;             /*!< Valeur moyenne des y> */
 
 };

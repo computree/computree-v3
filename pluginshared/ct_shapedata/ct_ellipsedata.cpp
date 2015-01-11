@@ -28,33 +28,24 @@
 #include "ct_ellipsedata.h"
 
 #include <math.h>
+#include <eigen/Eigen/Dense>
 
-const float CT_EllipseData::EL_INFINITY = 1.0e10;
-const float CT_EllipseData::EL_ZERO = 1.0e-10;
+const double CT_EllipseData::EL_INFINITY = 1.0e10;
+const double CT_EllipseData::EL_ZERO = 1.0e-10;
 
 CT_EllipseData::CT_EllipseData() : CT_ShapeData()
 {
     _error = 0;
 }
 
-CT_EllipseData::CT_EllipseData(const QVector3D &center, const CT_LineData &axisA, const CT_LineData &axisB) : CT_ShapeData(center, QVector3D::crossProduct(QVector3D(axisA.x1() - axisA.x2(),
-                                                                                                                                                                     axisA.y1() - axisA.y2(),
-                                                                                                                                                                     axisA.z1() - axisA.z2()).normalized(),
-                                                                                                                                                           QVector3D(axisB.x1() - axisB.x2(),
-                                                                                                                                                                     axisB.y1() - axisB.y2(),
-                                                                                                                                                                     axisB.z1() - axisB.z2()).normalized()).normalized())
+CT_EllipseData::CT_EllipseData(const Eigen::Vector3d &center, const CT_LineData &axisA, const CT_LineData &axisB) : CT_ShapeData(center, ((axisA.getP1() - axisA.getP2()).normalized().cross((axisB.getP1() - axisB.getP2()).normalized()).normalized()))
 {
     _axisA = axisA;
     _axisB = axisB;
     _error = 0;
 }
 
-CT_EllipseData::CT_EllipseData(const QVector3D &center, const CT_LineData &axisA, const CT_LineData &axisB, float error) : CT_ShapeData(center, QVector3D::crossProduct(QVector3D(axisA.x1() - axisA.x2(),
-                                                                                                                                                                                  axisA.y1() - axisA.y2(),
-                                                                                                                                                                                  axisA.z1() - axisA.z2()).normalized(),
-                                                                                                                                                                        QVector3D(axisB.x1() - axisB.x2(),
-                                                                                                                                                                                  axisB.y1() - axisB.y2(),
-                                                                                                                                                                                  axisB.z1() - axisB.z2()).normalized()).normalized())
+CT_EllipseData::CT_EllipseData(const Eigen::Vector3d &center, const CT_LineData &axisA, const CT_LineData &axisB, double error) : CT_ShapeData(center,((axisA.getP1() - axisA.getP2()).normalized().cross((axisB.getP1() - axisB.getP2()).normalized()).normalized()))
 {
     _axisA = axisA;
     _axisB = axisB;
@@ -71,7 +62,7 @@ const CT_LineData& CT_EllipseData::getAxisB() const
     return _axisB;
 }
 
-float CT_EllipseData::getError() const
+double CT_EllipseData::getError() const
 {
     return _error;
 }
@@ -90,7 +81,7 @@ CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointClou
         return NULL;
     }
 
-    int np = pointCloudIndex->size()+1;
+    size_t np = pointCloudIndex->size()+1;
 
     if(np < 7)
     {
@@ -207,29 +198,29 @@ CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointClou
     staticDeleteMatrix(sol, 7);
     staticDeleteMatrix(Const, 7);
 
-    float cx, cy, x1, y1, x2, y2, x3, y3, x4, y4;
+    double cx, cy, x1, y1, x2, y2, x3, y3, x4, y4;
 
     staticGetCenter(pvec, &cx, &cy);
     staticGetAxisA(pvec, cx, cy, &x1, &y1, &x2, &y2);
     staticGetAxisB(pvec, cx, cy, &x3, &y3, &x4, &y4);
 
-    CT_LineData axisA(QVector3D(x1, y1, zm),
-                      QVector3D(x2, y2, zm));
+    CT_LineData axisA(Eigen::Vector3d(x1, y1, zm),
+                      Eigen::Vector3d(x2, y2, zm));
 
-    CT_LineData axisB(QVector3D(x3, y3, zm),
-                      QVector3D(x4, y4, zm));
+    CT_LineData axisB(Eigen::Vector3d(x3, y3, zm),
+                      Eigen::Vector3d(x4, y4, zm));
 
     // si l'axe B est plus long que l'axe A
     if(axisB.length() > axisA.length())
     {
         // l'axe A est l'axe mineur
-        return new CT_EllipseData(QVector3D(cx, cy, zm),
+        return new CT_EllipseData(Eigen::Vector3d(cx, cy, zm),
                                   axisA,
                                   axisB, 0);
     }
 
     // l'axe B est l'axe mineur
-    return new CT_EllipseData(QVector3D(cx, cy, zm),
+    return new CT_EllipseData(Eigen::Vector3d(cx, cy, zm),
                               axisB,
                               axisA, 0);
 }
@@ -257,46 +248,46 @@ void CT_EllipseData::staticDeleteMatrix(double **m, int nlig)
     delete [] m;
 }
 
-void CT_EllipseData::staticGetCenter(double *pvec, float *cx, float *cy)
+void CT_EllipseData::staticGetCenter(double *pvec, double *cx, double *cy)
 {
-    float A = pvec[1];
-    float B = pvec[2];
-    float C = pvec[3];
-    float D = pvec[4];
-    float E = pvec[5];
+    double A = pvec[1];
+    double B = pvec[2];
+    double C = pvec[3];
+    double D = pvec[4];
+    double E = pvec[5];
     *cx = ((2*C*D-E*B)/(B*B-4*A*C));
     *cy = ((-B*D+2*A*E)/(B*B-4*A*C));
 }
 
-void CT_EllipseData::staticGetAxisA(double *pvec, float cx, float cy, float *_x1, float *_y1, float *_x2, float *_y2)
+void CT_EllipseData::staticGetAxisA(double *pvec, double cx, double cy, double *_x1, double *_y1, double *_x2, double *_y2)
 {
     staticGetLine(staticGetQ(pvec), cx, cy, pvec, _x1, _y1, _x2, _y2);
 }
 
-void CT_EllipseData::staticGetAxisB(double *pvec, float cx, float cy, float *_x1, float *_y1, float *_x2, float *_y2)
+void CT_EllipseData::staticGetAxisB(double *pvec, double cx, double cy, double *_x1, double *_y1, double *_x2, double *_y2)
 {
-    float q = staticGetQ(pvec);
+    double q = staticGetQ(pvec);
     if (staticIsZero(q)) q = EL_INFINITY;
 
     staticGetLine(-1.0/q, cx, cy, pvec, _x1, _y1, _x2, _y2);
 }
 
-float CT_EllipseData::staticIsZero(float x)
+double CT_EllipseData::staticIsZero(double x)
 {
     return (fabs(x) < CT_EllipseData::EL_ZERO);
 }
 
-float CT_EllipseData::staticGetQ(double *pvec)
+double CT_EllipseData::staticGetQ(double *pvec)
 {
     if (staticIsZero(pvec[2])) return CT_EllipseData::EL_INFINITY;
 
-    float q = (pvec[3]-pvec[1])/pvec[2];
-    q = (float)(sqrt(q*q+1)+q);
+    double q = (pvec[3]-pvec[1])/pvec[2];
+    q = (double)(sqrt(q*q+1)+q);
 
     return q;
 }
 
-void CT_EllipseData::staticGetLine(float q, float xc, float yc, double *pvec, float *_x1, float *_y1, float *_x2, float *_y2)
+void CT_EllipseData::staticGetLine(double q, double xc, double yc, double *pvec, double *_x1, double *_y1, double *_x2, double *_y2)
 {
     // the slope is q
 
@@ -307,62 +298,62 @@ void CT_EllipseData::staticGetLine(float q, float xc, float yc, double *pvec, fl
         else q = -CT_EllipseData::EL_ZERO;
     }
 
-    float A = pvec[1];
-    float B = pvec[2];
-    float C = pvec[3];
-    float D = pvec[4];
-    float E = pvec[5];
-    float F = pvec[6];
+    double A = pvec[1];
+    double B = pvec[2];
+    double C = pvec[3];
+    double D = pvec[4];
+    double E = pvec[5];
+    double F = pvec[6];
 
     // these are pretty ugly calculations (and maybe inefficient)
     // but i'm just too lazy to compute the results by hand so
     // this is what Maple gave me.
 
-    float x1 = (0.5*(B*q*xc-2*C*q*yc-B*yc+2*C*q*q*xc-D-E*q+
+    double x1 = (0.5*(B*q*xc-2*C*q*yc-B*yc+2*C*q*q*xc-D-E*q+
                          sqrt(-4*B*q*F+8*A*C*q*xc*yc-4*A*C*yc*yc+
                                    2*B*q*q*xc*E-2*B*yc*E*q-2*B*q*xc*D+
                                    4*C*q*yc*D-4*C*q*q*xc*D-4*A*C*q*q*xc*xc+
                                    4*A*E*q*xc-4*A*E*yc-4*C*q*q*F+B*B*yc*yc+
                                    D*D+E*E*q*q-4*A*F+2*D*E*q-2*B*B*q*xc*yc+
                                    B*B*q*q*xc*xc+
-                                   2*B*yc*D))/(float)(A+B*q+C*q*q));
+                                   2*B*yc*D))/(double)(A+B*q+C*q*q));
 
-    float x2 = (0.5*(B*q*xc-2*C*q*yc-B*yc+2*C*q*q*xc-D-E*q-
+    double x2 = (0.5*(B*q*xc-2*C*q*yc-B*yc+2*C*q*q*xc-D-E*q-
                          sqrt(-4*B*q*F+8*A*C*q*xc*yc-4*A*C*yc*yc+
                                    2*B*q*q*xc*E-2*B*yc*E*q-2*B*q*xc*D+
                                    4*C*q*yc*D-4*C*q*q*xc*D-4*A*C*q*q*xc*xc+
                                    4*A*E*q*xc-4*A*E*yc-4*C*q*q*F+B*B*yc*yc+
                                    D*D+E*E*q*q-4*A*F+2*D*E*q-2*B*B*q*xc*yc+
                                    B*B*q*q*xc*xc+
-                                   2*B*yc*D))/(float)(A+B*q+C*q*q));
+                                   2*B*yc*D))/(double)(A+B*q+C*q*q));
 
-    float y1A = (-0.5*(E+B*x1-
+    double y1A = (-0.5*(E+B*x1-
                             sqrt(E*E+2*E*B*x1+B*B*x1*x1-
                                       4*C*A*x1*x1-4*C*F-
-                                      4*C*D*x1))/(float)C);
+                                      4*C*D*x1))/(double)C);
 
-    float y1B = (-0.5*(E+B*x1+
+    double y1B = (-0.5*(E+B*x1+
                             sqrt(E*E+2*E*B*x1+B*B*x1*x1-
                                       4*C*A*x1*x1-
-                                      4*C*F-4*C*D*x1))/(float)C);
+                                      4*C*F-4*C*D*x1))/(double)C);
 
-    float y2A = (-0.5*(E+B*x2-
+    double y2A = (-0.5*(E+B*x2-
                             sqrt(E*E+2*E*B*x2+B*B*x2*x2-
                                       4*C*A*x2*x2-4*C*F-
-                                      4*C*D*x2))/(float)C);
+                                      4*C*D*x2))/(double)C);
 
-    float y2B = (-0.5*(E+B*x2+
+    double y2B = (-0.5*(E+B*x2+
                             sqrt(E*E+2*E*B*x2+B*B*x2*x2-
                                       4*C*A*x2*x2-4*C*F-
-                                      4*C*D*x2))/(float)C);
+                                      4*C*D*x2))/(double)C);
 
-    float s1A = ((float)(y1A-yc))/((float)(x1-xc));
-    //float s1B = ((float)(y1B-yc))/((float)(line.x1-xc));
-    float s2A = ((float)(y2A-yc))/((float)(x2-xc));
-    //float s2B = ((float)(y2B-yc))/((float)(line.x2-xc));
+    double s1A = ((double)(y1A-yc))/((double)(x1-xc));
+    //double s1B = ((double)(y1B-yc))/((double)(line.x1-xc));
+    double s2A = ((double)(y2A-yc))/((double)(x2-xc));
+    //double s2B = ((double)(y2B-yc))/((double)(line.x2-xc));
 
-    float y1 = ( fabs(s1A-q) < 1.0e-4 ? y1A : y1B );
-    float y2 = ( fabs(s2A-q) < 1.0e-4 ? y2A : y2B );
+    double y1 = ( fabs(s1A-q) < 1.0e-4 ? y1A : y1B );
+    double y2 = ( fabs(s2A-q) < 1.0e-4 ? y2A : y2B );
 
     *_x1 = x1;
     *_x2 = x2;
@@ -547,8 +538,8 @@ int CT_EllipseData::staticInverse(double **TB, double **InvB, int N) {
       for (j=1;j<=N+1;j++)
         A[k][j]=B[k][j];
       for (j=N+2;j<=2*N+1;j++)
-        A[k][j]=(float)0;
-      A[k][k-1+N+2]=(float)1;
+        A[k][j]=(double)0;
+      A[k][k-1+N+2]=(double)1;
     }
   for (k=1;k<=N;k++)
     {

@@ -30,8 +30,8 @@
 
 #include "pluginShared_global.h"
 #include "serialization.h"
-#include "qvector3d.h"
 
+#include <eigen/Eigen/Core>
 /**
   * Reprsente les donnes d'une forme gomtrique
   */
@@ -40,19 +40,19 @@ class PLUGINSHAREDSHARED_EXPORT CT_ShapeData
 public:
 
     CT_ShapeData();
-    CT_ShapeData(const QVector3D &center, const QVector3D &direction);
+    CT_ShapeData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction);
     virtual ~CT_ShapeData();
 
-    const QVector3D& getCenter() const;
-    const QVector3D& getDirection() const;
+    const Eigen::Vector3d& getCenter() const;
+    const Eigen::Vector3d &getDirection() const;
 
-    void setCenter(const QVector3D &center);
-    void setDirection(const QVector3D &direction);
+    void setCenter(const Eigen::Vector3d &center);
+    void setDirection(const Eigen::Vector3d &direction);
 
 private:
 
-    QVector3D   _center;
-    QVector3D   _direction;
+    Eigen::Vector3d   _center;
+    Eigen::Vector3d   _direction;
 
     friend class CT_AbstractShape;
 

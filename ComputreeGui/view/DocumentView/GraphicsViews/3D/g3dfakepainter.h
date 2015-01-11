@@ -154,10 +154,10 @@ public:
     void endMultiplePoints() {}
 
     void drawCircle(double x, double y, double z, double radius) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) }
-    void drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) }
+    void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) }
 
     void drawCylinder(double x, double y, double z, double radius, double height) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) Q_UNUSED(height) }
-    void drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) Q_UNUSED(height) }
+    void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) Q_UNUSED(height) }
 
     void drawEllipse(double x, double y, double z, double radiusA, double radiusB) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radiusA) Q_UNUSED(radiusB) }
 

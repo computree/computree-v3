@@ -5,7 +5,8 @@
 #include <QIcon>
 #include <QPainter>
 #include <limits>
-#include <QVector3D>
+
+#include <eigen/Eigen/Core>
 
 #include "ct_math/ct_mathpoint.h"
 
@@ -201,7 +202,7 @@ CT_AbstractAction* PB_ActionPickItemsInList::copy() const
 
 CT_AbstractItemDrawable* PB_ActionPickItemsInList::addItemToSelection(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -211,8 +212,7 @@ CT_AbstractItemDrawable* PB_ActionPickItemsInList::addItemToSelection(const QPoi
     while (it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
-        QVector3D point(item->getCenterX(), item->getCenterY(), item->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(item->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist && dist < _maxDist)
         {
@@ -230,7 +230,7 @@ CT_AbstractItemDrawable* PB_ActionPickItemsInList::addItemToSelection(const QPoi
 
 CT_AbstractItemDrawable *PB_ActionPickItemsInList::removeItemFromSelection(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -240,8 +240,7 @@ CT_AbstractItemDrawable *PB_ActionPickItemsInList::removeItemFromSelection(const
     while (it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
-        QVector3D point(item->getCenterX(), item->getCenterY(), item->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(item->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist && dist < _maxDist)
         {

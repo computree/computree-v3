@@ -254,7 +254,7 @@ CT_AbstractAction* PB_ActionManualInventory::copy() const
 
 const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -268,8 +268,7 @@ const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
         const CT_Scene* scene = it.key();
         const CT_Circle* circle = it.value();
 
-        QVector3D point(circle->getCenterX(), circle->getCenterY(), circle->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {
@@ -289,7 +288,7 @@ const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
 
 const CT_Circle* PB_ActionManualInventory::chooseForAttributes(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -303,8 +302,7 @@ const CT_Circle* PB_ActionManualInventory::chooseForAttributes(const QPoint &poi
         const CT_Scene* scene = it.key();
         const CT_Circle* circle = it.value();
 
-        QVector3D point(circle->getCenterX(), circle->getCenterY(), circle->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {

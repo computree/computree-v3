@@ -11,29 +11,29 @@ G3DCamera::G3DCamera() : qglviewer::Camera()
 
 float G3DCamera::zNear() const
 {
-    if (type() == Camera::PERSPECTIVE)
-    {
-        float z = 0.95f*getZNearDistance();
-        if (z < 1.0f) {z = 1.0f;}
-        return z;
-    } else {
+//    if (type() == Camera::PERSPECTIVE)
+//    {
+//        float z = 0.95f*getZNearDistance();
+//        if (z < 1.0f) {z = 1.0f;}
+//        return z;
+//    } else {
         const float zNearScene = zClippingCoefficient() * sceneRadius();
         float z = distanceToSceneCenter() - zNearScene;
         const float zMin = zNearCoefficient() * zNearScene;
         if (z < zMin){z = 0.0;}
         return z;
-    }
+//    }
 }
 
 float G3DCamera::zFar() const
 {
-    if (type() == Camera::PERSPECTIVE)
-    {
-        float z = 1.05 * getZFarDistance();
-        return z;
-    } else {
+//    if (type() == Camera::PERSPECTIVE)
+//    {
+//        float z = 1.05 * getZFarDistance();
+//        return z;
+//    } else {
         return distanceToSceneCenter() + zClippingCoefficient() * sceneRadius();
-    }
+//    }
 }
 
 void G3DCamera::setBoundingBox(const qglviewer::Vec& min, const qglviewer::Vec& max)

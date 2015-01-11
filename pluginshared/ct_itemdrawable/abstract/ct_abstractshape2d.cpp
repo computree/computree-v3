@@ -41,16 +41,7 @@ CT_AbstractShape2D::CT_AbstractShape2D(const CT_OutAbstractSingularItemModel *mo
     _data = data;
     if (_data != NULL)
     {
-        QVector2D min, max;
-        data->getBoundingBox(min, max);
-
-        _minCoordinates.setX(min.x());
-        _minCoordinates.setY(min.y());
-        _minCoordinates.setZ(0);
-
-        _maxCoordinates.setX(max.x());
-        _maxCoordinates.setY(max.y());
-        _maxCoordinates.setZ(0);
+        data->getBoundingBox(_minCoordinates, _maxCoordinates);
     }
 }
 
@@ -61,16 +52,10 @@ CT_AbstractShape2D::CT_AbstractShape2D(const QString &modelName,
     _data = data;
     if (_data != NULL)
     {
-        QVector2D min, max;
-        data->getBoundingBox(min, max);
+        data->getBoundingBox(_minCoordinates, _maxCoordinates);
 
-        _minCoordinates.setX(min.x());
-        _minCoordinates.setY(min.y());
-        _minCoordinates.setZ(0);
-
-        _maxCoordinates.setX(max.x());
-        _maxCoordinates.setY(max.y());
-        _maxCoordinates.setZ(0);
+        _minCoordinates(2) = 0;
+        _maxCoordinates(2) = 0;
     }
 }
 
@@ -89,24 +74,24 @@ QString CT_AbstractShape2D::staticGetType()
     return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractShape2D";
 }
 
-void CT_AbstractShape2D::setCenterX(float x)
+void CT_AbstractShape2D::setCenterX(double x)
 {
-    getDataNotConst()->_center.setX(x);
+    getDataNotConst()->_center(0) = x;
 }
 
-void CT_AbstractShape2D::setCenterY(float y)
+void CT_AbstractShape2D::setCenterY(double y)
 {
-    getDataNotConst()->_center.setY(y);
+    getDataNotConst()->_center(1) = y;
 }
 
-float CT_AbstractShape2D::getCenterX() const
+double CT_AbstractShape2D::getCenterX() const
 {
-    return getDataNotConst()->getCenter().x();
+    return getDataNotConst()->getCenter()(0);
 }
 
-float CT_AbstractShape2D::getCenterY() const
+double CT_AbstractShape2D::getCenterY() const
 {
-    return getDataNotConst()->getCenter().y();
+    return getDataNotConst()->getCenter()(1);
 }
 
 const CT_Shape2DData* CT_AbstractShape2D::getPointerData() const
@@ -119,18 +104,18 @@ const CT_Shape2DData& CT_AbstractShape2D::getData() const
     return *_data;
 }
 
-const QVector2D &CT_AbstractShape2D::getCenter() const
+const Eigen::Vector2d &CT_AbstractShape2D::getCenter() const
 {
     return _data->getCenter();
 }
 
-void CT_AbstractShape2D::getBoundingBox(QVector3D &min, QVector3D &max) const
+void CT_AbstractShape2D::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
     CT_AbstractItemDrawableWithoutPointCloud::getBoundingBox(min, max);
-    float zplane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+    double zplane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
 
-    min.setZ(zplane);
-    max.setZ(zplane);
+    min(2) = zplane;
+    max(2) = zplane;
 }
 
 CT_Shape2DData* CT_AbstractShape2D::getDataNotConst() const

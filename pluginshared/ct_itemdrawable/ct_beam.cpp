@@ -34,13 +34,13 @@ const CT_StandardBeamDrawManager CT_Beam::BEAM_DRAW_MANAGER;
 
 CT_Beam::CT_Beam() : CT_AbstractItemDrawableWithoutPointCloud()
 {
-    _origin.setX(0);
-    _origin.setY(0);
-    _origin.setZ(0);
+    _origin(0) = 0;
+    _origin(1) = 0;
+    _origin(2) = 0;
 
-    _direction.setX(1);
-    _direction.setY(0);
-    _direction.setZ(0);
+    _direction(0) = 1;
+    _direction(1) = 0;
+    _direction(2) = 0;
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -52,13 +52,13 @@ CT_Beam::CT_Beam() : CT_AbstractItemDrawableWithoutPointCloud()
 
 CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    _origin.setX(0);
-    _origin.setY(0);
-    _origin.setZ(0);
+    _origin(0) = 0;
+    _origin(1) = 0;
+    _origin(2) = 0;
 
-    _direction.setX(1);
-    _direction.setY(0);
-    _direction.setZ(0);
+    _direction(0) = 1;
+    _direction(1) = 0;
+    _direction(2) = 0;
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -68,24 +68,17 @@ CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_Abstract
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const QVector3D &origin, const QVector3D &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const Eigen::Vector3d &origin, const Eigen::Vector3d &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    assert( !(direction.x() == 0 && direction.y() == 0 && direction.z() == 0) );
+    assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
 
-    _origin.setX(origin.x());
-    _origin.setY(origin.y());
-    _origin.setZ(origin.z());
+    _origin = origin;
 
     // Normalizing direction
-    QVector3D normedDir = direction.normalized();
-    _direction.setX(normedDir.x());
-    _direction.setY(normedDir.y());
-    _direction.setZ(normedDir.z());
+    _direction = direction.normalized();
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _origin.x() );
-    setCenterY( _origin.y() );
-    setCenterZ( _origin.z() );
+    _centerCoordinate = _origin;
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
@@ -93,13 +86,13 @@ CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_Abstract
 
 CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
-    _origin.setX(0);
-    _origin.setY(0);
-    _origin.setZ(0);
+    _origin(0) = 0;
+    _origin(1) = 0;
+    _origin(2) = 0;
 
-    _direction.setX(1);
-    _direction.setY(0);
-    _direction.setZ(0);
+    _direction(0) = 1;
+    _direction(1) = 0;
+    _direction(2) = 0;
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -109,24 +102,17 @@ CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result) : CT
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result, const QVector3D &origin, const QVector3D &direction) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result, const Eigen::Vector3d &origin, const Eigen::Vector3d &direction) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
-    assert( !(direction.x() == 0 && direction.y() == 0 && direction.z() == 0) );
+    assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
 
-    _origin.setX(origin.x());
-    _origin.setY(origin.y());
-    _origin.setZ(origin.z());
+    _origin = origin;
 
     // Normalizing direction
-    QVector3D normedDir = direction.normalized();
-    _direction.setX(normedDir.x());
-    _direction.setY(normedDir.y());
-    _direction.setZ(normedDir.z());
+    _direction = direction.normalized();
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterX( _origin.x() );
-    setCenterY( _origin.y() );
-    setCenterZ( _origin.z() );
+    _centerCoordinate = _origin;
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
@@ -137,34 +123,30 @@ CT_Beam::~CT_Beam()
     // The destructor does not do anything. The destructor from the CT_AbstractItemDrawableWithoutPointCloud class will also be called
 }
 
-bool CT_Beam::intersect(const QVector3D& bot, const QVector3D& top, QVector3D &nearP, QVector3D &farP) const
+bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top, Eigen::Vector3d &nearP, Eigen::Vector3d &farP) const
 {
     double t0 = 0;
     double t1 = std::numeric_limits<double>::max();
 
-    if (!updateIntervals(bot.x(), top.x(), _origin.x(), _direction.x(), t0, t1)) {return false;}
-    if (!updateIntervals(bot.y(), top.y(), _origin.y(), _direction.y(), t0, t1)) {return false;}
-    if (!updateIntervals(bot.z(), top.z(), _origin.z(), _direction.z(), t0, t1)) {return false;}
+    if (!updateIntervals(bot(0), top(0), _origin(0), _direction(0), t0, t1)) {return false;}
+    if (!updateIntervals(bot(1), top(1), _origin(1), _direction(1), t0, t1)) {return false;}
+    if (!updateIntervals(bot(2), top(2), _origin(2), _direction(2), t0, t1)) {return false;}
 
-    nearP.setX(_origin.x() + _direction.x()*t0);
-    nearP.setY(_origin.y() + _direction.y()*t0);
-    nearP.setZ(_origin.z() + _direction.z()*t0);
 
-    farP.setX(_origin.x() + _direction.x()*t1);
-    farP.setY(_origin.y() + _direction.y()*t1);
-    farP.setZ(_origin.z() + _direction.z()*t1);
+    nearP = _origin + _direction*t0;
+    farP  = _origin + _direction*t1;
 
     return true;
 }
 
-bool CT_Beam::intersect(const QVector3D& bot, const QVector3D& top) const
+bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top) const
 {
     double t0 = 0;
     double t1 = std::numeric_limits<double>::max();
 
-    if (!updateIntervals(bot.x(), top.x(), _origin.x(), _direction.x(), t0, t1)) {return false;}
-    if (!updateIntervals(bot.y(), top.y(), _origin.y(), _direction.y(), t0, t1)) {return false;}
-    if (!updateIntervals(bot.z(), top.z(), _origin.z(), _direction.z(), t0, t1)) {return false;}
+    if (!updateIntervals(bot(0), top(0), _origin(0), _direction(0), t0, t1)) {return false;}
+    if (!updateIntervals(bot(1), top(1), _origin(1), _direction(1), t0, t1)) {return false;}
+    if (!updateIntervals(bot(2), top(2), _origin(2), _direction(2), t0, t1)) {return false;}
 
     return true;
 }

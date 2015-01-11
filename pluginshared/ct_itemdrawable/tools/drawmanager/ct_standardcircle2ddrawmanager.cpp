@@ -23,9 +23,9 @@ void CT_StandardCircle2DDrawManager::draw(GraphicsViewInterface &view, PainterIn
 
     bool drawCircle = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_CIRCLE).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
-    float zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toFloat();
+    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
-    float zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+    double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal) {zPlane = zVal;}
 
     if (drawCircle)

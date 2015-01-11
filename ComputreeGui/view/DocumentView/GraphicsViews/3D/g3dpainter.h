@@ -180,7 +180,7 @@ public:
 
     virtual void translate(double x, double y, double z);
     virtual void rotate(double alpha, double x, double y, double z);
-    virtual void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
+    virtual void translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction);
     virtual void scale(double x, double y, double z);
 
     virtual void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
@@ -208,10 +208,10 @@ public:
     virtual void endDrawMultipleLine();
 
     virtual void drawCircle(double x, double y, double z, double radius);
-    virtual void drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius);
+    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius);
 
     virtual void drawCylinder(double x, double y, double z, double radius, double height);
-    virtual void drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height);
+    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height);
 
     virtual void drawEllipse(double x, double y, double z, double radiusA, double radiusB);
 

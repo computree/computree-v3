@@ -70,14 +70,14 @@ public:
     int getDegree() const;
     int getNCP() const;
 
-    void setPolyline(const QList<QVector3D> &list);
-    const QList<QVector3D> &getPolyline() const;
+    void setPolyline(const QList<Eigen::Vector3d> &list);
+    const QList<Eigen::Vector3d> &getPolyline() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 private:
 
-    QList<QVector3D>    _polyline;
+    QList<Eigen::Vector3d>    _polyline;
 
     CT_DEFAULT_IA_BEGIN(CT_PlanarBSpline)
     CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getDegree, QObject::tr("Degré de polynome"))

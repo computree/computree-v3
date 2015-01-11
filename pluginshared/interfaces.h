@@ -36,6 +36,8 @@
 #include <QPainter>
 #include <QAbstractItemView>
 
+#include <eigen/Eigen/Core>
+
 #if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
 #include <GL/gl.h>
 #else
@@ -231,10 +233,10 @@ public:
     virtual void endDrawMultipleLine() = 0;
 
     virtual void drawCircle(double x, double y, double z, double radius) = 0;
-    virtual void drawCircle3D(const QVector3D &center, const QVector3D &direction, double radius) = 0;
+    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius) = 0;
 
     virtual void drawCylinder(double x, double y, double z, double radius, double height) = 0;
-    virtual void drawCylinder3D(const QVector3D &center, const QVector3D &direction, double radius, double height) = 0;
+    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height) = 0;
 
     virtual void drawEllipse(double x, double y, double z, double radiusA, double radiusB) = 0;
 
@@ -813,7 +815,7 @@ public:
      *
      * This method is useful for analytical intersection in a selection method.
      */
-    virtual void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const = 0;
+    virtual void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const = 0;
 
     virtual void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const = 0;
 

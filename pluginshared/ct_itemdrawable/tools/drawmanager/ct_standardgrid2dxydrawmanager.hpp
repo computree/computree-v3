@@ -56,7 +56,7 @@ void CT_StandardGrid2DXYDrawManager<DataT>::draw(GraphicsViewInterface &view, Pa
         if ( relief )
         {
             double value;
-            float x0, x1, y0, y1, z0, z1, z2, z3;
+            double x0, x1, y0, y1, z0, z1, z2, z3;
             int c0, c1, c2, c3;
 
             for (size_t cx = 0 ; cx < item.colDim()-1 ; cx++)

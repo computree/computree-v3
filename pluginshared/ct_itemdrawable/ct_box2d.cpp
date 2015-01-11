@@ -60,12 +60,12 @@ QString CT_Box2D::staticGetType()
     return CT_AbstractAreaShape2D::staticGetType() + "/CT_Box2D";
 }
 
-float CT_Box2D::getWidth() const
+double CT_Box2D::getWidth() const
 {
     return ((const CT_Box2DData&)getData()).getWidth();
 }
 
-float CT_Box2D::getHeight() const
+double CT_Box2D::getHeight() const
 {
     return ((const CT_Box2DData&)getData()).getHeight();
 }

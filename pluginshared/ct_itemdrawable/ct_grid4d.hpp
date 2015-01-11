@@ -20,22 +20,23 @@ CT_Grid4D<DataT>::CT_Grid4D() : CT_AbstractGrid4D()
 {
     // _minCoord and _maxCoord comes fromabstractsingularitemdrawable
     // Mainly used for visualisation purpose (display a bbox and center camera)
-    _minCoordinates.setX(0);
-    _minCoordinates.setY(0);
-    _minCoordinates.setZ(0);
-    _maxCoordinates.setX(0);
-    _maxCoordinates.setY(0);
-    _maxCoordinates.setZ(0);
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
 
     // We also set the 4D bounding box from the class
-    _bot.setW(0);
-    _bot.setX(0);
-    _bot.setY(0);
-    _bot.setZ(0);
-    _top.setW(0);
-    _top.setX(0);
-    _top.setY(0);
-    _top.setZ(0);
+    _bot(0) =0;
+    _bot(1) =0;
+    _bot(2) =0;
+    _bot(3) =0;
+
+    _top(0) =0;
+    _top(1) =0;
+    _top(2) =0;
+    _top(3) =0;
 
     _resw = 0;
     _resx = 0;
@@ -55,37 +56,37 @@ CT_Grid4D<DataT>::CT_Grid4D() : CT_AbstractGrid4D()
 template< typename DataT>
 CT_Grid4D<DataT>::CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
-                            float wmin,
-                            float xmin,
-                            float ymin,
-                            float zmin,
+                            double wmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
                             size_t dimw,
                             size_t dimx,
                             size_t dimy,
                             size_t dimz,
-                            float resw,
-                            float resx,
-                            float resy,
-                            float resz,
+                            double resw,
+                            double resx,
+                            double resy,
+                            double resz,
                             DataT na,
                             DataT initValue) : CT_AbstractGrid4D(model, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
-    _maxCoordinates.setX(minX() + resx * dimx);
-    _maxCoordinates.setY(minY() + resy * dimy);
-    _maxCoordinates.setZ(minZ() + resz * dimz);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
+    _maxCoordinates(0) = minX() + resx * dimx;
+    _maxCoordinates(1) = minY() + resy * dimy;
+    _maxCoordinates(2) = minZ() + resz * dimz;
 
-    _bot.setW( wmin );
-    _bot.setX( xmin );
-    _bot.setY( ymin );
-    _bot.setZ( zmin );
+    _bot(0) = wmin;
+    _bot(1) = xmin;
+    _bot(2) = ymin;
+    _bot(3) = zmin;
 
-    _top.setW( wmin + resw * dimw );
-    _top.setX( xmin + resx * dimx );
-    _top.setY( ymin + resy * dimy );
-    _top.setZ( zmin + resz * dimz );
+    _top(0) = wmin + resw * dimw;
+    _top(1) = xmin + resx * dimx;
+    _top(2) = ymin + resy * dimy;
+    _top(3) = zmin + resz * dimz;
 
     _dimw = dimw;
     _dimx = dimx;
@@ -112,37 +113,37 @@ CT_Grid4D<DataT>::CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
 template< typename DataT>
 CT_Grid4D<DataT>::CT_Grid4D(const QString &modelName,
                             const CT_AbstractResult *result,
-                            float wmin,
-                            float xmin,
-                            float ymin,
-                            float zmin,
+                            double wmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
                             size_t dimw,
                             size_t dimx,
                             size_t dimy,
                             size_t dimz,
-                            float resw,
-                            float resx,
-                            float resy,
-                            float resz,
+                            double resw,
+                            double resx,
+                            double resy,
+                            double resz,
                             DataT na,
                             DataT initValue) : CT_AbstractGrid4D(modelName, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
-    _maxCoordinates.setX(minX() + resx * dimx);
-    _maxCoordinates.setY(minY() + resy * dimy);
-    _maxCoordinates.setZ(minZ() + resz * dimz);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
+    _maxCoordinates(0) = minX() + resx * dimx;
+    _maxCoordinates(1) = minY() + resy * dimy;
+    _maxCoordinates(2) = minZ() + resz * dimz;
 
-    _bot.setW( wmin );
-    _bot.setX( xmin );
-    _bot.setY( ymin );
-    _bot.setZ( zmin );
+    _bot(0) = wmin;
+    _bot(1) = xmin;
+    _bot(2) = ymin;
+    _bot(3) = zmin;
 
-    _top.setW( wmin + resw * dimw );
-    _top.setX( xmin + resx * dimx );
-    _top.setY( ymin + resy * dimy );
-    _top.setZ( zmin + resz * dimz );
+    _top(0) = wmin + resw * dimw;
+    _top(1) = xmin + resx * dimx;
+    _top(2) = ymin + resy * dimy;
+    _top(3) = zmin + resz * dimz;
 
     _dimw = dimw;
     _dimx = dimx;
@@ -170,18 +171,18 @@ CT_Grid4D<DataT>::CT_Grid4D(const QString &modelName,
 template< typename DataT>
 CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                     const CT_AbstractResult *result,
-                                                    float wmin,
-                                                    float xmin,
-                                                    float ymin,
-                                                    float zmin,
-                                                    float wmax,
-                                                    float xmax,
-                                                    float ymax,
-                                                    float zmax,
-                                                    float resw,
-                                                    float resx,
-                                                    float resy,
-                                                    float resz,
+                                                    double wmin,
+                                                    double xmin,
+                                                    double ymin,
+                                                    double zmin,
+                                                    double wmax,
+                                                    double xmax,
+                                                    double ymax,
+                                                    double zmax,
+                                                    double resw,
+                                                    double resx,
+                                                    double resy,
+                                                    double resz,
                                                     DataT na,
                                                     DataT initValue)
 {
@@ -217,18 +218,18 @@ CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstr
 template< typename DataT>
 CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const QString &modelName,
                                                     const CT_AbstractResult *result,
-                                                    float wmin,
-                                                    float xmin,
-                                                    float ymin,
-                                                    float zmin,
-                                                    float wmax,
-                                                    float xmax,
-                                                    float ymax,
-                                                    float zmax,
-                                                    float resw,
-                                                    float resx,
-                                                    float resy,
-                                                    float resz,
+                                                    double wmin,
+                                                    double xmin,
+                                                    double ymin,
+                                                    double zmin,
+                                                    double wmax,
+                                                    double xmax,
+                                                    double ymax,
+                                                    double zmax,
+                                                    double resw,
+                                                    double resx,
+                                                    double resy,
+                                                    double resz,
                                                     DataT na,
                                                     DataT initValue)
 {
@@ -279,7 +280,7 @@ void CT_Grid4D<DataT>::initGridWithValue(const DataT val)
 }
 
 template< typename DataT>
-float CT_Grid4D<DataT>::ratioValueAtIndex(const size_t index) const
+double CT_Grid4D<DataT>::ratioValueAtIndex(const size_t index) const
 {
     if (_dataMax <= _dataMin)
     {
@@ -293,7 +294,7 @@ float CT_Grid4D<DataT>::ratioValueAtIndex(const size_t index) const
         return -1;
     }
 
-    return (float) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
+    return (double) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
 }
 
 template< typename DataT>
@@ -308,7 +309,7 @@ DataT CT_Grid4D<DataT>::value(const size_t levw, const size_t levx, const size_t
 }
 
 template< typename DataT>
-DataT CT_Grid4D<DataT>::valueAtWXYZ(const float w, const float x, const float y, const float z) const
+DataT CT_Grid4D<DataT>::valueAtWXYZ(const double w, const double x, const double y, const double z) const
 {
     size_t i;
     if ( indexAtWXYZ(w, x, y, z, i) )
@@ -342,7 +343,7 @@ bool CT_Grid4D<DataT>::addValueAtIndex(const size_t index, const DataT value)
 }
 
 template< typename DataT>
-bool CT_Grid4D<DataT>::addValueAtWXYZ(const float w, const float x, const float y, const float z, const DataT value)
+bool CT_Grid4D<DataT>::addValueAtWXYZ(const double w, const double x, const double y, const double z, const DataT value)
 {
     size_t i;
 

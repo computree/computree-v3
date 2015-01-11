@@ -61,12 +61,12 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
 
     double amplitude = item.dataMax() - item.dataMin();
     double scaling = 2*scaleCoeff / amplitude;
-    float orientationRad = M_PI * (orientation % 360) / 180.0;
-    const QVector3D &direction = item.getDirection();
+    double orientationRad = M_PI * (orientation % 360) / 180.0;
+    const Eigen::Vector3d &direction = item.getDirection();
 
-    float lastX = 0;
-    float lastY = 0;
-    float lastZ = 0;
+    double lastX = 0;
+    double lastY = 0;
+    double lastZ = 0;
     bool lastNa = false;
 
     for (size_t index = 0 ; index < item.nCells() ; index++)
@@ -74,7 +74,7 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
         bool isNa = (item.valueAtIndex(index) == item.NA());
         double value = item.valueAtIndexAsDouble(index);
 
-        QVector3D center;
+        Eigen::Vector3d center;
 
         if (item.getCellCenterXYZ(index, center))
         {
@@ -89,7 +89,7 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
                     painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
                 }
 
-                painter.drawPoint(center.x(), center.y(), center.z());
+                painter.drawPoint(center(0), center(1), center(2));
                 painter.drawCylinder3D(center, direction, radius, item.resolution());
             }
             painter.setColor(color);
@@ -98,20 +98,20 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
             {
                 if (scale) {value = (value - (double)item.dataMin()) * scaling;}
 
-                QVector3D normalVector;
-                if ((direction.x() >= direction.y()) && (direction.x() >= direction.z()))
+                Eigen::Vector3d normalVector;
+                if ((direction(0) >= direction(1)) && (direction(0) >= direction(2)))
                 {
-                    normalVector.setX(0); // = 0
-                    normalVector.setY(cos(orientationRad));
-                    normalVector.setZ(-sin(orientationRad));
-                } else if ((direction.y() >= direction.x()) && (direction.y() >= direction.z())){
-                    normalVector.setX(sin(orientationRad));
-                    normalVector.setY(0); // = 0
-                    normalVector.setZ(cos(orientationRad));
+                    normalVector(0) = 0; // = 0
+                    normalVector(1) = cos(orientationRad);
+                    normalVector(2) = -sin(orientationRad);
+                } else if ((direction(1) >= direction(0)) && (direction(1) >= direction(2))){
+                    normalVector(0) = sin(orientationRad);
+                    normalVector(1) = 0; // = 0
+                    normalVector(2) = cos(orientationRad);
                 } else {
-                    normalVector.setX(cos(orientationRad));
-                    normalVector.setY(-sin(orientationRad));
-                    normalVector.setZ(0); // = 0
+                    normalVector(0) = cos(orientationRad);
+                    normalVector(1) = -sin(orientationRad);
+                    normalVector(2) = 0; // = 0
                 }
                 normalVector.normalize();
 
@@ -123,30 +123,25 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
 
                 if (drawBars)
                 {
-                    QVector3D pt1, pt2, pt3, pt4;
+                    Eigen::Vector3d pt1, pt2, pt3, pt4;
 
                     if (item.getCellCoordinates(index, pt1, pt2))
                     {
-                        pt3.setX(pt2.x() + normalVector.x()*value);
-                        pt3.setY(pt2.y() + normalVector.y()*value);
-                        pt3.setZ(pt2.z() + normalVector.z()*value);
+                        pt3 = pt2 + normalVector*value;
+                        pt4 = pt1 + normalVector*value;
 
-                        pt4.setX(pt1.x() + normalVector.x()*value);
-                        pt4.setY(pt1.y() + normalVector.y()*value);
-                        pt4.setZ(pt1.z() + normalVector.z()*value);
-
-                        painter.drawLine(pt1.x(), pt1.y(), pt1.z(), pt2.x(), pt2.y(), pt2.z());
-                        painter.drawLine(pt2.x(), pt2.y(), pt2.z(), pt3.x(), pt3.y(), pt3.z());
-                        painter.drawLine(pt3.x(), pt3.y(), pt3.z(), pt4.x(), pt4.y(), pt4.z());
-                        painter.drawLine(pt4.x(), pt4.y(), pt4.z(), pt1.x(), pt1.y(), pt1.z());
+                        painter.drawLine(pt1(0), pt1(1), pt1(2), pt2(0), pt2(1), pt2(2));
+                        painter.drawLine(pt2(0), pt2(1), pt2(2), pt3(0), pt3(1), pt3(2));
+                        painter.drawLine(pt3(0), pt3(1), pt3(2), pt4(0), pt4(1), pt4(2));
+                        painter.drawLine(pt4(0), pt4(1), pt4(2), pt1(0), pt1(1), pt1(2));
                     }
                 }
 
                 if (drawPoints || drawCurve)
                 {
-                    float x = center.x() + normalVector.x()*value;
-                    float y = center.y() + normalVector.y()*value;
-                    float z = center.z() + normalVector.z()*value;
+                    double x = center(0) + normalVector(0)*value;
+                    double y = center(1) + normalVector(1)*value;
+                    double z = center(2) + normalVector(2)*value;
 
                     if (drawCurve && index > 0)
                     {

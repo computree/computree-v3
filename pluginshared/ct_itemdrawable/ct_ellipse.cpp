@@ -69,7 +69,7 @@ const CT_LineData& CT_Ellipse::getAxisB() const
     return ((const CT_EllipseData&)getData()).getAxisB();
 }
 
-float CT_Ellipse::getError() const
+double CT_Ellipse::getError() const
 {
     return ((const CT_EllipseData&)getData()).getError();
 }

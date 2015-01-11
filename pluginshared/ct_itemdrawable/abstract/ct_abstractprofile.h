@@ -31,7 +31,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_math/ct_math.h"
 
-#include <QVector3D>
+#include <eigen/Eigen/Core>
 #include <QMutex>
 
 /*!
@@ -64,9 +64,9 @@ public:
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value)
+     * \return A double value between 0 (min value) and 1 (max value)
      */
-    virtual float ratioValueAtIndex(const size_t &index) const = 0;
+    virtual double ratioValueAtIndex(const size_t &index) const = 0;
 
     /*!
      * \brief Return a double value for any type (or NAN for NA)
@@ -95,7 +95,7 @@ public:
      * \param index Returned index
      * \return false if length invalid
      */
-    inline bool indexForLength(const float &l, size_t &index) const
+    inline bool indexForLength(const double &l, size_t &index) const
     {
         if (l < 0 || l > maxLength()) {return false;}
         if (l == maxLength())
@@ -113,9 +113,9 @@ public:
      * \param index Returned index
      * \return false if length invalid
      */
-    inline bool indexForXYZ(const float &x, const float &y, const float &z, size_t &index) const
+    inline bool indexForXYZ(const double &x, const double &y, const double &z, size_t &index) const
     {
-        float length = _direction.x()*(x - minX()) + _direction.y()*(y - minY()) + _direction.z()*(z - minZ());
+        double length = _direction.x()*(x - minX()) + _direction.y()*(y - minY()) + _direction.z()*(z - minZ());
         return indexForLength(length, index);
     }
 
@@ -135,28 +135,28 @@ public:
       * \brief Gives the resolution
       * \return Resolution (m)
       */
-    inline float resolution() const {return _res;}
+    inline double resolution() const {return _res;}
 
     /**
      * \brief getMinCoordinates
      * \param min Min coordinates of the grid (bottom left corner)
      */
-    inline void getMinCoordinates(QVector3D &min) const
+    inline void getMinCoordinates(Eigen::Vector3d &min) const
     {
-        min.setX(minX());
-        min.setY(minY());
-        min.setZ(minZ());
+        min(0) = minX();
+        min(1) = minY();
+        min(2) = minZ();
     }
 
     /**
      * \brief getMaxCoordinates
      * \param max Max coordinates of the grid (upper right corner)
      */
-    inline void getMaxCoordinates(QVector3D &max) const
+    inline void getMaxCoordinates(Eigen::Vector3d &max) const
     {
-        max.setX(maxX());
-        max.setY(maxY());
-        max.setZ(maxZ());
+        max(0) = maxX();
+        max(1) = maxY();
+        max(2) = maxZ();
     }
 
 
@@ -164,7 +164,7 @@ public:
      * \brief Profil length on along the axis
      * \return Max Lenght
      */
-    inline float maxLength() const {return _maxLength;}
+    inline double maxLength() const {return _maxLength;}
 
 
     /*!
@@ -178,7 +178,7 @@ public:
      * \param index
      * \return length (could be outside of the profil range)
      */
-    inline float lengthForIndex(const size_t &index) const
+    inline double lengthForIndex(const size_t &index) const
     {
         if (index >= _dim) {return maxLength();}
         return (index * _res) + _res / 2.0;
@@ -188,9 +188,9 @@ public:
      * \brief Gives the X coordinate of the center of cells at index
      * \return X coordinate
      */
-    inline float getCellCenterX(const size_t &index) const
+    inline double getCellCenterX(const size_t &index) const
     {
-        float length = lengthForIndex(index) ;
+        double length = lengthForIndex(index) ;
         return minX() + length * _direction.x();
     }
 
@@ -198,9 +198,9 @@ public:
      * \brief Gives the Y coordinate of the center of cells at index
      * \return Y coordinate
      */
-    inline float getCellCenterY(const size_t &index) const
+    inline double getCellCenterY(const size_t &index) const
     {
-        float length = lengthForIndex(index) ;
+        double length = lengthForIndex(index) ;
         return minY() + length * _direction.y();
     }
 
@@ -208,23 +208,23 @@ public:
      * \brief Gives the Z coordinate of the center of cells at index
      * \return Z coordinate
      */
-    inline float getCellCenterZ(const size_t &index) const
+    inline double getCellCenterZ(const size_t &index) const
     {
-        float length = lengthForIndex(index) ;
+        double length = lengthForIndex(index) ;
         return minZ() + length * _direction.z();
     }
 
     /*!
      * \brief Gives the (X,Y,Z) coordinates of the center of cell at index
      */
-    inline bool getCellCenterXYZ(const size_t &index, QVector3D &center) const
+    inline bool getCellCenterXYZ(const size_t &index, Eigen::Vector3d &center) const
     {
         if (index >= _dim) {return false;}
 
-        float length = lengthForIndex(index) ;
-        center.setX(minX() + length * _direction.x());
-        center.setY(minY() + length * _direction.y());
-        center.setZ(minZ() + length * _direction.z());
+        double length = lengthForIndex(index) ;
+
+        center = _minCoordinates + length*_direction;
+
         return true;
     }
 
@@ -235,34 +235,29 @@ public:
      * \param top Max coordinates
      * \return true if index is in the grid
      */
-    inline bool getCellCoordinates(const size_t &index, QVector3D &bottom, QVector3D &top) const
+    inline bool getCellCoordinates(const size_t &index, Eigen::Vector3d &bottom, Eigen::Vector3d &top) const
     {
         if (index >= _dim) {return false;}
 
-        float length = lengthForIndex(index) ;
-        float lengthBottom = length - (_res/2.0);
-        float lengthTop = length + (_res/2.0);
+        double length = lengthForIndex(index) ;
+        double lengthBottom = length - (_res/2.0);
+        double lengthTop = length + (_res/2.0);
 
-        bottom.setX(minX() + lengthBottom * _direction.x());
-        bottom.setY(minY() + lengthBottom * _direction.y());
-        bottom.setZ(minZ() + lengthBottom * _direction.z());
-
-        top.setX(minX() + lengthTop * _direction.x());
-        top.setY(minY() + lengthTop * _direction.y());
-        top.setZ(minZ() + lengthTop * _direction.z());
+        bottom = _minCoordinates + lengthBottom*_direction;
+        top    = _minCoordinates + lengthTop*_direction;
 
         return true;
     }
 
-    inline const QVector3D &getDirection() const {return _direction;}
+    inline const Eigen::Vector3d &getDirection() const {return _direction;}
 
 
 protected:
-    size_t         _dim;       /*!< Nombre de cases du profile */
-    float          _res;       /*!< Resolution du profile (taille d'une case) */
-    float          _maxLength; /*!< Longueur du profil le long de l'axe */
+    size_t          _dim;       /*!< Nombre de cases du profile */
+    double          _res;       /*!< Resolution du profile (taille d'une case) */
+    double          _maxLength; /*!< Longueur du profil le long de l'axe */
 
-    QVector3D      _direction; /*!< Direction of the profil axis */
+    Eigen::Vector3d _direction; /*!< Direction of the profil axis */
 
 };
 

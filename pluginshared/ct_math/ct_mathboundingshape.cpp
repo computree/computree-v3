@@ -28,43 +28,43 @@
 #include "ct_mathboundingshape.h"
 #include "ct_math/ct_mathpoint.h"
 
-bool CT_MathBoundingShape::aabbIntersects(const QVector3D &min1, const QVector3D &max1, const QVector3D &min2, const QVector3D &max2)
+bool CT_MathBoundingShape::aabbIntersects(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2)
 {
-    if (max1.x() < min2.x()) {return false;}
-    if (max2.x() < min1.x()) {return false;}
-    if (max1.y() < min2.y()) {return false;}
-    if (max2.y() < min1.y()) {return false;}
-    if (max1.z() < min2.z()) {return false;}
-    if (max2.z() < min1.z()) {return false;}
+    if (max1(0) < min2(0)) {return false;}
+    if (max2(0) < min1(0)) {return false;}
+    if (max1(1) < min2(1)) {return false;}
+    if (max2(1) < min1(1)) {return false;}
+    if (max1(2) < min2(2)) {return false;}
+    if (max2(2) < min1(2)) {return false;}
     return true;
 }
 
-bool CT_MathBoundingShape::aabbIntersects2D(const QVector3D &min1, const QVector3D &max1, const QVector3D &min2, const QVector3D &max2)
+bool CT_MathBoundingShape::aabbIntersects2D(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2)
 {     
-    if (max1.x() < min2.x()) {return false;}
-    if (max2.x() < min1.x()) {return false;}
-    if (max1.y() < min2.y()) {return false;}
-    if (max2.y() < min1.y()) {return false;}
+    if (max1(0) < min2(0)) {return false;}
+    if (max2(0) < min1(0)) {return false;}
+    if (max1(1) < min2(1)) {return false;}
+    if (max2(1) < min1(1)) {return false;}
     return true;
 }
 
-bool CT_MathBoundingShape::containsPoint(const QVector3D &min, const QVector3D &max, const CT_Point& point)
+bool CT_MathBoundingShape::containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point)
 {
-    if (point(0) < min.x()) {return false;}
-    if (point(0) > max.x()) {return false;}
-    if (point(1) < min.y()) {return false;}
-    if (point(1) > max.y()) {return false;}
-    if (point(2) < min.z()) {return false;}
-    if (point(2) > max.z()) {return false;}
+    if (point(0) < min(0)) {return false;}
+    if (point(0) > max(0)) {return false;}
+    if (point(1) < min(1)) {return false;}
+    if (point(1) > max(1)) {return false;}
+    if (point(2) < min(2)) {return false;}
+    if (point(2) > max(2)) {return false;}
     return true;
 }
 
-bool CT_MathBoundingShape::containsPointIn2D(const QVector3D &min, const QVector3D &max, const CT_Point& point)
+bool CT_MathBoundingShape::containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point)
 {
-    if (point(0) < min.x()) {return false;}
-    if (point(0) > max.x()) {return false;}
-    if (point(1) < min.y()) {return false;}
-    if (point(1) > max.y()) {return false;}
+    if (point(0) < min(0)) {return false;}
+    if (point(0) > max(0)) {return false;}
+    if (point(1) < min(1)) {return false;}
+    if (point(1) > max(1)) {return false;}
     return true;
 }
 

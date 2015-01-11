@@ -290,7 +290,7 @@ bool CT_Reader_XYB::protectedReadFile()
             double vres = 360.0 / ((double)_cols);
 
             // add the scanner
-            addOutItemDrawable(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(NULL, NULL, 0, QVector3D(_xc, _yc, _zc), QVector3D(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
+            addOutItemDrawable(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(NULL, NULL, 0, Eigen::Vector3d(_xc, _yc, _zc), Eigen::Vector3d(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
 
             return true;
         }

@@ -64,7 +64,7 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    virtual bool contains(float x, float y) const;
+    virtual bool contains(double x, double y) const;
     virtual double getArea() const;
 
     const CT_AreaShape2DData* getPointerAreaData() const;

@@ -31,8 +31,12 @@
 #include "pluginShared_global.h"
 
 #include "ct_point.h"
+
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <QMatrix4x4>
+
+#include <eigen/Eigen/Core>
 
 class PLUGINSHAREDSHARED_EXPORT CT_MathPoint
 {
@@ -45,36 +49,41 @@ public:
 
     typedef enum RotationAxis RotationAxis;
 
-    template<typename xyzPoint>
-    inline static float distance2DZAxis(const xyzPoint &p1, const xyzPoint &p2)
+    inline static double distance2D(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2)
     {
-        return sqrt(pow(pX(p1)-pX(p2), 2) + pow(pY(p1)-pY(p2), 2));
+        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)));
     }
 
-    template<typename xyzPoint>
-    inline static float distance2D(const xyzPoint &p1, const xyzPoint &p2)
+    // TODO : A supprimer à terme (pas logique de faire des calculs sur les points float)
+    inline static double distance2D(const CT_Point &p1, const CT_Point &p2)
     {
-        return sqrt(pow(pX(p1)-pX(p2), 2) + pow(pY(p1)-pY(p2), 2));
+        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)));
     }
 
-    template<typename xyzPoint>
-    inline static float distance3D(const xyzPoint &p1, const xyzPoint &p2)
+
+    inline static double distance3D(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2)
     {
-        return sqrt(pow(pX(p1)-pX(p2), 2) + pow(pY(p1)-pY(p2), 2) + pow(pZ(p1)-pZ(p2), 2));
+        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)) + (p1(2) - p2(2))*(p1(2) - p2(2)));
     }
 
-    template<typename xyzPoint>
-    inline static float angle(const xyzPoint &v1, const xyzPoint &v2)
+    // TODO à supprimer
+    inline static double distance3D(const Eigen::Vector3f &p1, const Eigen::Vector3f &p2)
     {
-        float norm1 = v1.length();
-        float norm2 = v2.length();
+        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)) + (p1(2) - p2(2))*(p1(2) - p2(2)));
+    }
+
+
+    inline static double angle(const Eigen::Vector3d &v1, const Eigen::Vector3d &v2)
+    {
+        double norm1 = v1.norm();
+        double norm2 = v2.norm();
 
         if ( norm1 == 0 || norm2 == 0 )
         {
             return 0;
         }
 
-        float cosAlpha = xyzPoint::dotProduct(v1,v2) / (norm1*norm2);
+        double cosAlpha = v1.dot(v2) / (norm1*norm2);
 
         if (cosAlpha > 1 && cosAlpha < 1.000001)
         {
@@ -83,18 +92,17 @@ public:
         return acos( cosAlpha );
     }
 
-    template<typename xyzPoint>
-    inline static float angleUnsigned(const xyzPoint &v1, const xyzPoint &v2)
+    inline static double angleUnsigned(const Eigen::Vector3d &v1, const Eigen::Vector3d &v2)
     {
-        float norm1 = v1.length();
-        float norm2 = v2.length();
+        double norm1 = v1.norm();
+        double norm2 = v2.norm();
 
         if ( norm1 == 0 || norm2 == 0 )
         {
             return 0;
         }
 
-        float cosAlpha = fabs(xyzPoint::dotProduct(v1,v2) ) / (norm1*norm2);
+        double cosAlpha = fabs(v1.dot(v2)) / (norm1*norm2);
 
         if (cosAlpha > 1 && cosAlpha < 1.000001)
         {
@@ -104,57 +112,45 @@ public:
     }
 
 
-    template<typename xyzPoint>
-    inline static float distancePointLine ( const xyzPoint &p, const xyzPoint &lineDirection, xyzPoint &pointOnLine )
+    inline static double distancePointLine ( const Eigen::Vector3d &p, const Eigen::Vector3d &lineDirection, Eigen::Vector3d &pointOnLine )
     {
         // Vector from pointOnLine to p
-        xyzPoint polP;
-        polP.setX(pX(pointOnLine) - pX(p));
-        polP.setY(pY(pointOnLine) - pY(p));
-        polP.setZ(pZ(pointOnLine) - pZ(p));
+        Eigen::Vector3d polP;
+        polP = pointOnLine - p;
 
-        xyzPoint crossP = xyzPoint::crossProduct( polP, lineDirection );
+        Eigen::Vector3d crossP = polP.cross(lineDirection);
 
-        return ( crossP.length() / lineDirection.length() );
+        return ( crossP.norm() / lineDirection.norm() );
     }
 
-    template<typename xyzPoint>
-    inline static float distancePointPlane ( const xyzPoint &p, const xyzPoint &planeNormal, xyzPoint &pointOnPlane )
+    inline static double distancePointPlane ( const Eigen::Vector3d &p, const Eigen::Vector3d &planeNormal, Eigen::Vector3d &pointOnPlane )
     {
         // Vector from pointOnPlane to p
-        xyzPoint popP;
-        popP.setX(pX(p) - pX(pointOnPlane));
-        popP.setY(pY(p) - pY(pointOnPlane));
-        popP.setZ(pZ(p) - pZ(pointOnPlane));
+        Eigen::Vector3d popP;
+        popP = pointOnPlane - p;
 
-        return ( fabs( xyzPoint::dotProduct( popP, planeNormal ) ) / planeNormal.length() );
+        return fabs(popP.dot(planeNormal) ) / planeNormal.norm();
     }
 
-    template<typename xyzPoint>
-    inline static float distancePointPlaneSigned ( const xyzPoint &p, const xyzPoint &planeNormal, xyzPoint &pointOnPlane )
+    inline static double distancePointPlaneSigned ( const Eigen::Vector3d &p, const Eigen::Vector3d &planeNormal, Eigen::Vector3d &pointOnPlane )
     {
         // Vector from pointOnPlane to p
-        xyzPoint popP;
-        popP.setX(pX(p) - pX(pointOnPlane));
-        popP.setY(pY(p) - pY(pointOnPlane));
-        popP.setZ(pZ(p) - pZ(pointOnPlane));
+        Eigen::Vector3d popP;
+        popP = pointOnPlane - p;
 
-        return ( xyzPoint::dotProduct( popP, planeNormal ) / planeNormal.length() );
+        return popP.dot(planeNormal) / planeNormal.norm();
     }
 
 
-    template<typename xyzPoint>
-    inline static float distanceOnLineForPointProjection ( const xyzPoint &origin, const xyzPoint &direction, const xyzPoint &point, xyzPoint &projectedPoint)
+    inline static double distanceOnLineForPointProjection ( const Eigen::Vector3d &origin, const Eigen::Vector3d &direction, const Eigen::Vector3d &point, Eigen::Vector3d &projectedPoint)
     {
-        float num = pX(direction)*(pX(point) - pX(origin)) + pY(direction)*(pY(point) - pY(origin)) + pZ(direction)*(pZ(point) - pZ(origin));
-        float den = pow(pX(direction), 2) + pow(pY(direction), 2) + pow(pZ(direction), 2);
+        double num = direction(0)*(point(0) - origin(0)) + direction(1)*(point(1) - origin(1)) + direction(2)*(point(2) - origin(2));
+        double den = direction(0)*direction(0) + direction(1)*direction(1) + direction(2)*direction(2);
 
         if (den == 0) {return -1;}
-        float length = num / den ;
+        double length = num / den ;
 
-        projectedPoint.setX(pX(origin) + pX(direction) * length);
-        projectedPoint.setY(pY(origin) + pY(direction) * length);
-        projectedPoint.setZ(pZ(origin) + pZ(direction) * length);
+        projectedPoint = origin + direction*length;
 
         return length * sqrt(den);
     }
@@ -163,43 +159,41 @@ public:
     // Rotation
     // *********************************************************** //
 
-    template<typename xyzPoint>
-    inline static xyzPoint rotate( const xyzPoint& p, RotationAxis axis, float alpha )
+    inline static Eigen::Vector3d rotate( const Eigen::Vector3d& p, RotationAxis axis, double alpha )
     {
-        float c = cos( alpha );
-        float s = sin( alpha );
+        double c = cos( alpha );
+        double s = sin( alpha );
 
         return rotate( p, axis, c, s );
     }
 
-    template<typename xyzPoint>
-    inline static xyzPoint rotate( const xyzPoint& p, RotationAxis axis, float cosAlpha, float sinAlpha )
+    inline static Eigen::Vector3d rotate( const Eigen::Vector3d& p, RotationAxis axis, double cosAlpha, double sinAlpha )
     {
-        xyzPoint rslt;
+        Eigen::Vector3d rslt;
 
         switch ( axis )
         {
             case OX :
             {
-                rslt.setX(pX(p));
-                rslt.setY((pY(p) * cosAlpha) + ( pZ(p) * (-sinAlpha)));
-                rslt.setZ((pY(p) * sinAlpha) + ( pZ(p) * cosAlpha ));
+                rslt(0) = p(0);
+                rslt(1) = (p(1) * cosAlpha) + ( p(2) * (-sinAlpha));
+                rslt(2) = (p(1) * sinAlpha) + ( p(2) * cosAlpha );
                 break;
             }
 
             case OY :
             {
-                rslt.setY(pY(p));
-                rslt.setZ((pZ(p) * cosAlpha) + ( pX(p) * (-sinAlpha)));
-                rslt.setX((pZ(p) * sinAlpha) + ( pX(p) * cosAlpha ));
+                rslt(1) = p(1);
+                rslt(2) = (p(2) * cosAlpha) + ( p(0) * (-sinAlpha));
+                rslt(0) = (p(2) * sinAlpha) + ( p(0) * cosAlpha );
                 break;
             }
 
             case OZ :
             {
-                rslt.setZ(pZ(p));
-                rslt.setX((pX(p) * cosAlpha) + ( pY(p) * (-sinAlpha)));
-                rslt.setY((pX(p) * sinAlpha) + ( pY(p) * cosAlpha ));
+                rslt(2) = p(2);
+                rslt(0) = (p(0) * cosAlpha) + ( p(1) * (-sinAlpha));
+                rslt(1) = (p(0) * sinAlpha) + ( p(1) * cosAlpha );
                 break;
             }
 
@@ -210,147 +204,165 @@ public:
         return rslt;
     }
 
-    template<typename xyzPoint>
-    inline static xyzPoint rotate( const xyzPoint& p, const xyzPoint& rotationAxis, float alpha )
+    inline static Eigen::Vector3d rotate( const Eigen::Vector3d& p, const Eigen::Vector3d& rotationAxis, double alpha )
     {
-        float c = cos( alpha );
-        float s = sin( alpha );
-        xyzPoint rotationUnitAxis = rotationAxis / norm(rotationAxis);
+        double c = cos( alpha );
+        double s = sin( alpha );
+        Eigen::Vector3d rotationUnitAxis = rotationAxis / rotationAxis.norm();
 
         return rotate( p, rotationUnitAxis, c, s );
     }
 
-    template<typename xyzPoint>
-    inline static xyzPoint rotate( const xyzPoint& p, const xyzPoint& unitRotationAxis, float cosAlpha, float sinAlpha )
+    inline static Eigen::Vector3d rotate( const Eigen::Vector3d& p, const Eigen::Vector3d& unitRotationAxis, double cosAlpha, double sinAlpha )
     {
-        xyzPoint rslt;
-        rslt.setX(  ( ( (pX(unitRotationAxis) * pX(unitRotationAxis)) + ( (1 - (pX(unitRotationAxis) * pX(unitRotationAxis)) ) * cosAlpha) ) * (pX(p)) ) +
-                    ( ( (pX(unitRotationAxis) * pY(unitRotationAxis) * ( 1 - cosAlpha ) ) - (pZ(unitRotationAxis) * sinAlpha) ) * (pY(p)) ) +
-                    ( ( (pX(unitRotationAxis) * pZ(unitRotationAxis) * ( 1 - cosAlpha ) ) + (pY(unitRotationAxis) * sinAlpha) ) * (pZ(p)) ));
+        Eigen::Vector3d rslt;
+        rslt(0) =   ( ( (unitRotationAxis(0) * unitRotationAxis(0)) + ( (1 - (unitRotationAxis(0) * unitRotationAxis(0)) ) * cosAlpha) ) * (p(0)) ) +
+                    ( ( (unitRotationAxis(0) * unitRotationAxis(1) * ( 1 - cosAlpha ) ) - (unitRotationAxis(2) * sinAlpha) ) * (p(1)) ) +
+                    ( ( (unitRotationAxis(0) * unitRotationAxis(2) * ( 1 - cosAlpha ) ) + (unitRotationAxis(1) * sinAlpha) ) * (p(2)) );
 
-        rslt.setY(  ( ( (pX(unitRotationAxis) * pY(unitRotationAxis) * ( 1 - cosAlpha ) ) + (pZ(unitRotationAxis) * sinAlpha) ) * (pX(p)) ) +
-                    ( ( (pY(unitRotationAxis) * pY(unitRotationAxis)) + ( (1 - (pY(unitRotationAxis) * pY(unitRotationAxis)) ) * cosAlpha) ) * (pY(p)) ) +
-                    ( ( (pY(unitRotationAxis) * pZ(unitRotationAxis) * ( 1 - cosAlpha ) ) - (pX(unitRotationAxis) * sinAlpha) ) * (pZ(p)) ));
+        rslt(1) =   ( ( (unitRotationAxis(0) * unitRotationAxis(1) * ( 1 - cosAlpha ) ) + (unitRotationAxis(2) * sinAlpha) ) * (p(0)) ) +
+                    ( ( (unitRotationAxis(1) * unitRotationAxis(1)) + ( (1 - (unitRotationAxis(1) * unitRotationAxis(1)) ) * cosAlpha) ) * (p(1)) ) +
+                    ( ( (unitRotationAxis(1) * unitRotationAxis(2) * ( 1 - cosAlpha ) ) - (unitRotationAxis(0) * sinAlpha) ) * (p(2)) );
 
-        rslt.setZ(  ( ( (pX(unitRotationAxis) * pZ(unitRotationAxis) * ( 1 - cosAlpha ) ) - (pY(unitRotationAxis) * sinAlpha) ) * (pX(p)) ) +
-                    ( ( (pY(unitRotationAxis) * pZ(unitRotationAxis) * ( 1 - cosAlpha ) ) + (pX(unitRotationAxis) * sinAlpha) ) * (pY(p)) ) +
-                    ( ( (pZ(unitRotationAxis) * pZ(unitRotationAxis)) + ( (1 - (pZ(unitRotationAxis) * pZ(unitRotationAxis)) ) * cosAlpha) ) * (pZ(p)) ));
+        rslt(2) =   ( ( (unitRotationAxis(0) * unitRotationAxis(2) * ( 1 - cosAlpha ) ) - (unitRotationAxis(1) * sinAlpha) ) * (p(0)) ) +
+                    ( ( (unitRotationAxis(1) * unitRotationAxis(2) * ( 1 - cosAlpha ) ) + (unitRotationAxis(0) * sinAlpha) ) * (p(1)) ) +
+                    ( ( (unitRotationAxis(2) * unitRotationAxis(2)) + ( (1 - (unitRotationAxis(2) * unitRotationAxis(2)) ) * cosAlpha) ) * (p(2)) );
 
         return rslt;
     }
 
     // En spherique on stocke r, theta, phi
-    template<typename xyzPoint>
-    inline static void cartesianToSpherical ( const xyzPoint& pCartesian, xyzPoint& outSpherical)
+    inline static void cartesianToSpherical ( const Eigen::Vector3d& pCartesian, Eigen::Vector3d& outSpherical)
     {
         // On recupere la longueur du vecteur normalisé
-        float norme = pCartesian.length();
+        double norme = pCartesian.norm();
 
         if ( norme == 0 )
         {
-            outSpherical.setX(0);
-            outSpherical.setY(0);
-            outSpherical.setZ(0);
+            outSpherical(0) = 0;
+            outSpherical(1) = 0;
+            outSpherical(2) = 0;
         }
         else
         {
             // r est la norme du veteur
-            outSpherical.setX(norme);
+            outSpherical(0) = norme;
 
             // theta depend du signe de y, on ne peut pas diviser par 0 ce qui arrive quand x et y sont nuls
-            if ( pX(pCartesian) == 0 && pY(pCartesian) == 0 )
+            if ( pCartesian(0) == 0 && pCartesian(1) == 0 )
             {
-                outSpherical.setY(0);
+                outSpherical(1) = 0;
             }
 
             // Petit problème lorsque y est nul, on arrive a acos(x/x) qui plante pck acos(1) marche pas...
-            else if ( pY(pCartesian) == 0 )
+            else if ( pCartesian(1) == 0 )
             {
-                outSpherical.setY(0);
+                outSpherical(1) = 0;
             }
 
-            else if ( pY(pCartesian) > 0 )
+            else if ( pCartesian(1) > 0 )
             {
-                outSpherical.setY(acos(pX(pCartesian) / sqrt( pX(pCartesian)*pX(pCartesian) + pY(pCartesian)*pY(pCartesian) ) ));
+                outSpherical(1) = acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ) );
             }
 
             else
             {
-                outSpherical.setY((2 * M_PI) - acos(pX(pCartesian) / sqrt( pX(pCartesian)*pX(pCartesian) + pY(pCartesian)*pY(pCartesian) ) ));
+                outSpherical(1) = (2 * M_PI) - acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ));
             }
 
             // phi depend de la hauteur du point
-            outSpherical.setZ(acos( pZ(pCartesian) / norme ));
+            outSpherical(2) = acos( pCartesian(2) / norme );
         }
     }
 
 
-    template<typename xyzPoint>
-    inline static void sphericalToCartesian ( const xyzPoint& spher, xyzPoint& cart )
+    // TODO à supprimer
+    inline static void cartesianToSpherical ( const Eigen::Vector3f& pCartesian, Eigen::Vector3f& outSpherical)
+    {
+        // On recupere la longueur du vecteur normalisé
+        double norme = pCartesian.norm();
+
+        if ( norme == 0 )
+        {
+            outSpherical(0) = 0;
+            outSpherical(1) = 0;
+            outSpherical(2) = 0;
+        }
+        else
+        {
+            // r est la norme du veteur
+            outSpherical(0) = norme;
+
+            // theta depend du signe de y, on ne peut pas diviser par 0 ce qui arrive quand x et y sont nuls
+            if ( pCartesian(0) == 0 && pCartesian(1) == 0 )
+            {
+                outSpherical(1) = 0;
+            }
+
+            // Petit problème lorsque y est nul, on arrive a acos(x/x) qui plante pck acos(1) marche pas...
+            else if ( pCartesian(1) == 0 )
+            {
+                outSpherical(1) = 0;
+            }
+
+            else if ( pCartesian(1) > 0 )
+            {
+                outSpherical(1) = acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ) );
+            }
+
+            else
+            {
+                outSpherical(1) = (2 * M_PI) - acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ));
+            }
+
+            // phi depend de la hauteur du point
+            outSpherical(2) = acos( pCartesian(2) / norme );
+        }
+    }
+
+    inline static void sphericalToCartesian ( const Eigen::Vector3d& spher, Eigen::Vector3d& cart )
     {
         // En spherique on stocke r, theta, phi
-        cart.setX( spher(0) * cos( spher(1) ) * sin( spher(2) ) );
-        cart.setY( spher(0) * sin( spher(1) ) * sin( spher(2) ) );
-        cart.setZ( spher(0) * cos( spher(2) ) );
+        cart(0) =  spher(0) * cos( spher(1) ) * sin( spher(2) );
+        cart(1) =  spher(0) * sin( spher(1) ) * sin( spher(2) );
+        cart(2) =  spher(0) * cos( spher(2) );
     }
 
 
-    template<class xyzPoint>
-    static void transform(const QMatrix4x4 &matrix, xyzPoint &point)
+    static void transform(const QMatrix4x4 &matrix, Eigen::Vector3d &point)
     {
-        float x, y, z, w;
-        x = pX(point) * matrix(0,0) +
-            pY(point) * matrix(0,1) +
-            pZ(point) * matrix(0,2) +
+        double x, y, z, w;
+        x = point(0) * matrix(0,0) +
+            point(1) * matrix(0,1) +
+            point(2) * matrix(0,2) +
             matrix(0,3);
-        y = pX(point) * matrix(1,0) +
-            pY(point) * matrix(1,1) +
-            pZ(point) * matrix(1,2) +
+        y = point(0) * matrix(1,0) +
+            point(1) * matrix(1,1) +
+            point(2) * matrix(1,2) +
             matrix(1,3);
-        z = pX(point) * matrix(2,0) +
-            pY(point) * matrix(2,1) +
-            pZ(point) * matrix(2,2) +
+        z = point(0) * matrix(2,0) +
+            point(1) * matrix(2,1) +
+            point(2) * matrix(2,2) +
             matrix(2,3);
-        w = pX(point) * matrix(3,0) +
-            pY(point) * matrix(3,1) +
-            pZ(point) * matrix(3,2) +
+        w = point(0) * matrix(3,0) +
+            point(1) * matrix(3,1) +
+            point(2) * matrix(3,2) +
             matrix(3,3);
 
         if (w == 1.0f)
         {
-            point.setX(x);
-            point.setY(y);
-            point.setZ(z);
+            point(0) = x;
+            point(1) = y;
+            point(2) = z;
         }
         else
         {
-            point.setX(x/w);
-            point.setY(y/w);
-            point.setZ(z/w);
+            point(0) = x/w;
+            point(1) = y/w;
+            point(2) = z/w;
         }
     }
 
-    template<typename xyzPoint>
-    inline static float pX(const xyzPoint &p) { return p.x(); }
-
-    template<typename xyzPoint>
-    inline static float pY(const xyzPoint &p) { return p.y(); }
-
-    template<typename xyzPoint>
-    inline static float pZ(const xyzPoint &p) { return p.z(); }
-
 };
-
-//typename CT_Point;
-
-// specialization for CT_Point
-template<>
-inline float CT_MathPoint::pX(const CT_Point &p) { return p(0); }
-
-template<>
-inline float CT_MathPoint::pY(const CT_Point &p) { return p(1); }
-
-template<>
-inline float CT_MathPoint::pZ(const CT_Point &p) { return p(2); }
 
 #endif // CT_MATHPOINT_H

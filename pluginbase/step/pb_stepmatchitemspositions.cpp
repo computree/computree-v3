@@ -633,9 +633,9 @@ void PB_StepMatchItemsPositions::compute()
             CT_Line *line;
             if (_drawMode == 0)
             {
-                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(QVector3D(transPos[0], transPos[1], zValTrans), QVector3D(refPos[0], refPos[1], zValRef)));
+                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(Eigen::Vector3d(transPos[0], transPos[1], zValTrans), Eigen::Vector3d(refPos[0], refPos[1], zValRef)));
             } else {
-                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(QVector3D(transPos[0], transPos[1], 0), QVector3D(refPos[0], refPos[1], 0)));
+                line = new CT_Line(DEFout_correspLine, res_trans2, new CT_LineData(Eigen::Vector3d(transPos[0], transPos[1], 0), Eigen::Vector3d(refPos[0], refPos[1], 0)));
             }
             grp_grp2->addItemDrawable(line);
 

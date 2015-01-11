@@ -83,15 +83,15 @@ void CT_StandardMeshModelOPFDrawManager::draw(GraphicsViewInterface &view, Paint
             DDOWN_LOCATION = SHADER_PROG->uniformLocation("dDown");
         }
 
-        QVector3D min, max;
+        Eigen::Vector3d min, max;
         item.getBoundingBox(min, max);
 
-        float deltaX = max.x() - min.x();
+        double deltaX = max(0) - min(0);
 
         SHADER_PROG->setUniformValue(MATRIX_LOCATION, item.transformMatrix());
         SHADER_PROG->setUniformValue(DELTAX_LOCATION, (float)deltaX);
         SHADER_PROG->setUniformValue(DELTAD_LOCATION, (float)m_deltaD);
-        SHADER_PROG->setUniformValue(MINX_LOCATION, (float)min.x());
+        SHADER_PROG->setUniformValue(MINX_LOCATION, (float)min(0));
         SHADER_PROG->setUniformValue(DDOWN_LOCATION, (float)m_dDown);
     }
     else

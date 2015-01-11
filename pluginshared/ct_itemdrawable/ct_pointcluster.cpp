@@ -82,7 +82,7 @@ QString CT_PointCluster::staticGetType()
     return CT_AbstractItemDrawableWithPointCloud::staticGetType() + "/CT_PointCluster";
 }
 
-bool CT_PointCluster::addPoint(int index, bool verifyIfExist, bool firstPosition)
+bool CT_PointCluster::addPoint(size_t index, bool verifyIfExist, bool firstPosition)
 {
     if(verifyIfExist && m_pIndex->contains(index))
     {
@@ -100,13 +100,13 @@ bool CT_PointCluster::addPoint(int index, bool verifyIfExist, bool firstPosition
 
     _barycenter.addPoint(point);
 
-    if (point(0) < _minCoordinates.x()) {_minCoordinates.setX(point(0));}
-    if (point(1) < _minCoordinates.y()) {_minCoordinates.setY(point(1));}
-    if (point(2) < _minCoordinates.z()) {_minCoordinates.setZ(point(2));}
+    if (point(0) < _minCoordinates(0)) {_minCoordinates(0) = point(0);}
+    if (point(1) < _minCoordinates(1)) {_minCoordinates(1) = point(1);}
+    if (point(2) < _minCoordinates(2)) {_minCoordinates(2) = point(2);}
 
-    if (point(0) > _maxCoordinates.x()) {_maxCoordinates.setX(point(0));}
-    if (point(1) > _maxCoordinates.y()) {_maxCoordinates.setY(point(1));}
-    if (point(2) > _maxCoordinates.z()) {_maxCoordinates.setZ(point(2));}
+    if (point(0) > _maxCoordinates(0)) {_maxCoordinates(0) = point(0);}
+    if (point(1) > _maxCoordinates(1)) {_maxCoordinates(1) = point(1);}
+    if (point(2) > _maxCoordinates(2)) {_maxCoordinates(2) = point(2);}
 
     updateCenterFromBoundingBox();
 

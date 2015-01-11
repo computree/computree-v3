@@ -491,20 +491,20 @@ QVector3D G3DGraphicsView::pointUnderPixel(const QPoint &pixel, bool &found) con
     return vr;
 }
 
-void G3DGraphicsView::convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const
+void G3DGraphicsView::convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const
 {
     qglviewer::Vec origi;
     qglviewer::Vec direc;
 
     QGLViewer::camera()->convertClickToLine(pixel, origi, direc);
 
-    orig.setX(origi.x);
-    orig.setY(origi.y);
-    orig.setZ(origi.z);
+    orig(0) = origi.x;
+    orig(1) = origi.y;
+    orig(2) = origi.z;
 
-    dir.setX(direc.x);
-    dir.setY(direc.y);
-    dir.setZ(direc.z);
+    dir(0) = direc.x;
+    dir(1) = direc.y;
+    dir(2) = direc.z;
 }
 
 void G3DGraphicsView::convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const

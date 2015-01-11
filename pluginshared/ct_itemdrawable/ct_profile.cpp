@@ -39,7 +39,7 @@ void CT_Profile<bool>::computeMinMax()
 }
 
 template<>
-float CT_Profile<bool>::ratioValueAtIndex(const size_t &index) const
+double CT_Profile<bool>::ratioValueAtIndex(const size_t &index) const
 {
     bool value = valueAtIndex(index);
     if (value) {return 1;}

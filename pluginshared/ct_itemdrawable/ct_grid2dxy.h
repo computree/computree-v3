@@ -31,8 +31,6 @@
 #include "ct_math/ct_math.h"
 #include "ct_itemdrawable/abstract/ct_virtualgrid2d.h"
 
-#include <QVector2D>
-
 template< typename DataT > class CT_StandardGrid2DXYDrawManager;
 
 /*!
@@ -69,23 +67,23 @@ public:
      */
     CT_Grid2DXY(const CT_OutAbstractSingularItemModel *model,
                 const CT_AbstractResult *result,
-                float xmin,
-                float ymin,
+                double xmin,
+                double ymin,
                 size_t dimx,
                 size_t dimy,
-                float resolution,
-                float zlevel,
+                double resolution,
+                double zlevel,
                 DataT na,
                 DataT initValue);
 
     CT_Grid2DXY(const QString &modelName,
                 const CT_AbstractResult *result,
-                float xmin,
-                float ymin,
+                double xmin,
+                double ymin,
                 size_t dimx,
                 size_t dimy,
-                float resolution,
-                float zlevel,
+                double resolution,
+                double zlevel,
                 DataT na,
                 DataT initValue);
 
@@ -106,23 +104,23 @@ public:
       */
     static CT_Grid2DXY<DataT>* createGrid2DXYFromXYCoords(const CT_OutAbstractSingularItemModel *model,
                                                           const CT_AbstractResult *result,
-                                                          float xmin,
-                                                          float ymin,
-                                                          float xmax,
-                                                          float ymax,
-                                                          float resolution,
-                                                          float zlevel,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double resolution,
+                                                          double zlevel,
                                                           DataT na,
                                                           DataT initValue);
 
     static CT_Grid2DXY<DataT>* createGrid2DXYFromXYCoords(const QString &modelName,
                                                           const CT_AbstractResult *result,
-                                                          float xmin,
-                                                          float ymin,
-                                                          float xmax,
-                                                          float ymax,
-                                                          float resolution,
-                                                          float zlevel,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double resolution,
+                                                          double zlevel,
                                                           DataT na,
                                                           DataT initValue);
 
@@ -155,7 +153,7 @@ public:
       * \param lin Y coordinate
       * \return Value at (x,y)
       */
-    inline DataT valueAtXY(const float x, const float y) const {return this->valueAtCoords(x, y);}
+    inline DataT valueAtXY(const double x, const double y) const {return this->valueAtCoords(x, y);}
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value
@@ -164,7 +162,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setValueAtXY(const float x, const float y, const DataT value) {return this->setValueAtCoords(x, y, value);}
+    inline bool setValueAtXY(const double x, const double y, const DataT value) {return this->setValueAtCoords(x, y, value);}
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value, if value is superior to actual one
@@ -173,7 +171,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setMaxValueAtXY(const float x, const float y, const DataT value) {return this->setMaxValueAtCoords(x, y, value);}
+    inline bool setMaxValueAtXY(const double x, const double y, const DataT value) {return this->setMaxValueAtCoords(x, y, value);}
 
     /**
       * \brief Set the value for the cell containing (x,y) coordinate to value, if value is inferior to actual one
@@ -182,7 +180,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    inline bool setMinValueAtXY(const float x, const float y, const DataT value) {return this->setMinValueAtCoords(x, y, value);}
+    inline bool setMinValueAtXY(const double x, const double y, const DataT value) {return this->setMinValueAtCoords(x, y, value);}
 
     /**
       * \brief Add value to the cell containing (x,y) coordinate
@@ -191,7 +189,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    inline bool addValueAtXY(const float x, const float y, const DataT value) {return this->addValueAtCoords(x, y, value);}
+    inline bool addValueAtXY(const double x, const double y, const DataT value) {return this->addValueAtCoords(x, y, value);}
 
     const static CT_StandardGrid2DXYDrawManager<DataT> ABSGRID2DXY_DRAW_MANAGER;
 };

@@ -22,8 +22,8 @@ void CT_StandardCylinderDrawManager::draw(GraphicsViewInterface &view, PainterIn
 
     const CT_Cylinder &item = dynamic_cast<const CT_Cylinder&>(itemDrawable);
 
-    const QVector3D &center = item.getCenter();
-    const QVector3D &direction = item.getDirection();
+    const Eigen::Vector3d &center = item.getCenter();
+    const Eigen::Vector3d &direction = item.getDirection();
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_CYLINDER).toBool())
     {

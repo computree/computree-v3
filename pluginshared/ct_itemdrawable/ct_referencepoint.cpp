@@ -40,19 +40,19 @@ CT_ReferencePoint::CT_ReferencePoint() : CT_AbstractItemDrawableWithoutPointClou
 
 CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
-                                     float x, float y, float z, float buffer) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                                     double x, double y, double z, double buffer) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     CT_AbstractItemDrawableWithoutPointCloud::setCenterX(x);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterY(y);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterZ(z);
 
-    _minCoordinates.setX(x);
-    _minCoordinates.setY(y);
-    _minCoordinates.setZ(z);
+    _minCoordinates(0) = x;
+    _minCoordinates(1) = y;
+    _minCoordinates(2) = z;
 
-    _maxCoordinates.setX(x);
-    _maxCoordinates.setY(y);
-    _maxCoordinates.setZ(z);
+    _maxCoordinates(0) = x;
+    _maxCoordinates(1) = y;
+    _maxCoordinates(2) = z;
 
     setXYBuffer(buffer);
     _refId = _currentRefId++;
@@ -63,19 +63,19 @@ CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *mode
 // Contructeur privé pour la copie
 CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
-                                     float x, float y, float z, float buffer, int refId) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                                     double x, double y, double z, double buffer, int refId) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     CT_AbstractItemDrawableWithoutPointCloud::setCenterX(x);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterY(y);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterZ(z);
 
-    _minCoordinates.setX(x);
-    _minCoordinates.setY(y);
-    _minCoordinates.setZ(z);
+    _minCoordinates(0) = x;
+    _minCoordinates(1) = y;
+    _minCoordinates(2) = z;
 
-    _maxCoordinates.setX(x);
-    _maxCoordinates.setY(y);
-    _maxCoordinates.setZ(z);
+    _maxCoordinates(0) = x;
+    _maxCoordinates(1) = y;
+    _maxCoordinates(2) = z;
 
     setXYBuffer(buffer);
     _refId = refId;
@@ -85,19 +85,19 @@ CT_ReferencePoint::CT_ReferencePoint(const CT_OutAbstractSingularItemModel *mode
 
 CT_ReferencePoint::CT_ReferencePoint(const QString &modelName,
                                      const CT_AbstractResult *result,
-                                     float x, float y, float z, float buffer, int refId) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+                                     double x, double y, double z, double buffer, int refId) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     CT_AbstractItemDrawableWithoutPointCloud::setCenterX(x);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterY(y);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterZ(z);
 
-    _minCoordinates.setX(x);
-    _minCoordinates.setY(y);
-    _minCoordinates.setZ(z);
+    _minCoordinates(0) = x;
+    _minCoordinates(1) = y;
+    _minCoordinates(2) = z;
 
-    _maxCoordinates.setX(x);
-    _maxCoordinates.setY(y);
-    _maxCoordinates.setZ(z);
+    _maxCoordinates(0) = x;
+    _maxCoordinates(1) = y;
+    _maxCoordinates(2) = z;
 
     setXYBuffer(buffer);
     _refId = refId;
@@ -107,19 +107,19 @@ CT_ReferencePoint::CT_ReferencePoint(const QString &modelName,
 
 CT_ReferencePoint::CT_ReferencePoint(const QString &modelName,
                                      const CT_AbstractResult *result,
-                                     float x, float y, float z, float buffer) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+                                     double x, double y, double z, double buffer) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     CT_AbstractItemDrawableWithoutPointCloud::setCenterX(x);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterY(y);
     CT_AbstractItemDrawableWithoutPointCloud::setCenterZ(z);
 
-    _minCoordinates.setX(x);
-    _minCoordinates.setY(y);
-    _minCoordinates.setZ(z);
+    _minCoordinates(0) = x;
+    _minCoordinates(1) = y;
+    _minCoordinates(2) = z;
 
-    _maxCoordinates.setX(x);
-    _maxCoordinates.setY(y);
-    _maxCoordinates.setZ(z);
+    _maxCoordinates(0) = x;
+    _maxCoordinates(1) = y;
+    _maxCoordinates(2) = z;
 
     setXYBuffer(buffer);
     _refId = _currentRefId++;
@@ -137,26 +137,26 @@ QString CT_ReferencePoint::staticGetType()
     return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_ReferencePoint";
 }
 
-void CT_ReferencePoint::setXYBuffer(float buffer)
+void CT_ReferencePoint::setXYBuffer(double buffer)
 {
     _xyBuffer = buffer;
 }
 
-void CT_ReferencePoint::setCenterX(float x)
+void CT_ReferencePoint::setCenterX(double x)
 {
     Q_UNUSED(x)
 
     qDebug() << "setCenterX n'a aucun aucun effet dans le cas d'un CT_ReferencePoint";
 }
 
-void CT_ReferencePoint::setCenterY(float y)
+void CT_ReferencePoint::setCenterY(double y)
 {
     Q_UNUSED(y)
 
     qDebug() << "setCenterY n'a aucun aucun effet dans le cas d'un CT_ReferencePoint";
 }
 
-void CT_ReferencePoint::setCenterZ(float z)
+void CT_ReferencePoint::setCenterZ(double z)
 {
     Q_UNUSED(z)
 

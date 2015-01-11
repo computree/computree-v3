@@ -54,11 +54,11 @@ public:
       */
     CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
-                            float x, float y, float z, float buffer);
+                            double x, double y, double z, double buffer);
 
     CT_ReferencePoint(const QString &modelName,
                             const CT_AbstractResult *result,
-                            float x, float y, float z, float buffer);
+                            double x, double y, double z, double buffer);
 
     /**
       * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous héritez de cette classe.
@@ -70,20 +70,20 @@ public:
 
     virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
-    inline float x() const { return getCenterX(); }
-    inline float y() const { return getCenterY(); }
-    inline float z() const { return getCenterZ(); }
-    inline float refId() const { return _refId; }
+    inline double x() const { return getCenterX(); }
+    inline double y() const { return getCenterY(); }
+    inline double z() const { return getCenterZ(); }
+    inline double refId() const { return _refId; }
 
-    inline float xyBuffer() const { return _xyBuffer;}
+    inline double xyBuffer() const { return _xyBuffer;}
 
-    void setXYBuffer(float buffer);
+    void setXYBuffer(double buffer);
 
     // neutralisation des méthodes permettant de modifier les (x,y,z)
     // Une fois créés (constructeurs) : ne sont plus modifiables
-    void setCenterX(float x);
-    void setCenterY(float y);
-    void setCenterZ(float z);
+    void setCenterX(double x);
+    void setCenterY(double y);
+    void setCenterZ(double z);
 
 private:
 
@@ -91,18 +91,18 @@ private:
 
     static int      _currentRefId;
 
-    float           _xyBuffer;
+    double           _xyBuffer;
     int             _refId;         /*!< Identifiant automatique unique à la construction, identique à la copie */
 
 
     // Contructeur privé pour la copie (permettant de conserver le refId de l'instance copiée
     CT_ReferencePoint(const CT_OutAbstractSingularItemModel *model,
                       const CT_AbstractResult *result,
-                      float x, float y, float z, float buffer, int refId);
+                      double x, double y, double z, double buffer, int refId);
 
     CT_ReferencePoint(const QString &modelName,
                       const CT_AbstractResult  *result,
-                      float x, float y, float z, float buffer, int refId);
+                      double x, double y, double z, double buffer, int refId);
 
 };
 

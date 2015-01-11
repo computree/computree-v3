@@ -57,11 +57,11 @@ void CT_StandardGrid4DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
     size_t xdim = item.xdim();
     size_t ydim = item.ydim();
     size_t zdim = item.zdim();
-    float demiResx = reductionCoef*item.xres() / 2.0;
-    float demiResy = reductionCoef*item.yres() / 2.0;
-    float demiResz = reductionCoef*item.zres() / 2.0;
+    double demiResx = reductionCoef*item.xres() / 2.0;
+    double demiResy = reductionCoef*item.yres() / 2.0;
+    double demiResz = reductionCoef*item.zres() / 2.0;
 
-    float xmin, ymin, zmin, xmax, ymax, zmax;
+    double xmin, ymin, zmin, xmax, ymax, zmax;
 
     // If w val > wwMax, do not display
     if ( ww <= item.wdim() )

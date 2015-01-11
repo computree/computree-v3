@@ -25,27 +25,27 @@ void CT_StandardPolygon2DDrawManager::draw(GraphicsViewInterface &view, PainterI
     bool drawPoints = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_POINTS).toBool();
     bool drawLines = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_LINES).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
-    float zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toFloat();
+    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
-    float zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+    double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal) {zPlane = zVal;}
 
     if(drawPoints || drawLines)
     {
-        const QVector<QVector2D*>&vertices = item.getVertices();
+        const QVector<Eigen::Vector2d*>&vertices = item.getVertices();
         int size = vertices.size();
 
-        QVector2D *pt1 = vertices.last();
+        Eigen::Vector2d *pt1 = vertices.last();
         for (int i = 0 ; i < size ; i++)
         {
-            QVector2D *pt2 = vertices.at(i);
+            Eigen::Vector2d *pt2 = vertices.at(i);
             if(drawPoints)
             {
-                painter.drawPoint(pt2->x(), pt2->y(), zPlane);
+                painter.drawPoint((*pt2)(0), (*pt2)(1), zPlane);
             }
             if(drawLines)
             {
-                painter.drawLine(pt1->x(), pt1->y(), zPlane, pt2->x(), pt2->y(), zPlane);
+                painter.drawLine((*pt1)(0), (*pt1)(1), zPlane, (*pt2)(0), (*pt2)(1), zPlane);
             }
             pt1 = pt2;
         }

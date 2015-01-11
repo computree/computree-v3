@@ -26,7 +26,7 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
         current = new CandidatePoint();
         current->indexInCloud = baseIndexCloud->indexAt(i);
         current->indexOfMinDistance = -1;
-        current->distanceToLine = std::numeric_limits<float>::max();
+        current->distanceToLine = std::numeric_limits<double>::max();
         unMarked.push_back(current);
     }
 
@@ -53,8 +53,9 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
 
             const CT_Point &p1 = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
             const CT_Point &p2 = baseIndexCloud->constTAtGlobalIndex(current->indexInCloud);
+
             // Distance a l'objet qu'on vient d'ajouter pour ensuite la comparer a la distance de l'ancienne tete et de l'ancienne queue de ma polyligne
-            float distance = CT_MathPoint::distance2D (p1,p2);
+            double distance = CT_MathPoint::distance2D (Eigen::Vector3d(p1(0), p1(1), p1(2)), Eigen::Vector3d(p2(0), p2(1), p2(2)));
 
             // Si ils pointaient vers un point diffrent de celui de current
             if ( current->indexOfMinDistance != candidate->indexOfMinDistance )
@@ -70,7 +71,7 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
 
             else
             {
-                float distanceToOtherEnd;
+                double distanceToOtherEnd;
 
                 // Comparaison a la tete
                 if ( current->indexInCloud == polylineIndexCloud->first())
@@ -78,7 +79,7 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
                     const CT_Point &pA = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
                     const CT_Point &pB = polylineIndexCloud->constTAtGlobalIndex(polylineIndexCloud->last());
 
-                    distanceToOtherEnd = CT_MathPoint::distance2D(pA,pB);
+                    distanceToOtherEnd = CT_MathPoint::distance2D(Eigen::Vector3d(pA(0), pA(1), pA(2)), Eigen::Vector3d(pB(0), pB(1), pB(2)));
 
                     if ( distance < distanceToOtherEnd )
                     {
@@ -99,7 +100,7 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
                     const CT_Point &pA = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
                     const CT_Point &pB = polylineIndexCloud->constTAtGlobalIndex(polylineIndexCloud->first());
 
-                    distanceToOtherEnd = CT_MathPoint::distance2D(pA,pB);
+                    distanceToOtherEnd = CT_MathPoint::distance2D(Eigen::Vector3d(pA(0), pA(1), pA(2)), Eigen::Vector3d(pB(0), pB(1), pB(2)));
 
                     if ( distance < distanceToOtherEnd )
                     {
@@ -120,7 +121,7 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
         // Ajout  la polyligne /////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////
         int		indexMin = 0;
-        float	distMin = std::numeric_limits<float>::max();
+        double	distMin = std::numeric_limits<double>::max();
 
         // On cherche le point le plus proche de l'actuelle polyligne
         for ( int i = 0 ; i < unMarked.size() ; i++ )
@@ -160,27 +161,26 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
     delete current;
 }
 
-QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyline, float &sagitta, float &chord, float &radius)
+Eigen::Vector2d CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyline, double &sagitta, double &chord, double &radius)
 {
     const CT_AbstractPointCloudIndex* indexCloud = polyline->getPointCloudIndex();
 
     const CT_Point &first = indexCloud->constTAt(0);
     const CT_Point &last = indexCloud->constTAt(indexCloud->size() - 1);
 
-    QVector2D v1(first(0), first(1));
-    QVector2D v2(last(0),  last(1));
-    QVector2D v3((first(0) + last(0))/2, (first(1) + last(1))/2);
-    QVector2D v4;
+    Eigen::Vector2d v1(first(0), first(1));
+    Eigen::Vector2d v2(last(0),  last(1));
+    Eigen::Vector2d v3((first(0) + last(0))/2, (first(1) + last(1))/2);
+    Eigen::Vector2d v4;
 
-    chord = CT_MathPoint::distance2D(first, last);
-
+    chord = CT_MathPoint::distance2D(Eigen::Vector3d(first(0), first(1), first(2)), Eigen::Vector3d(last(0), last(1), last(2)));
     // Calcul de la perpendiculaire à la corde
     CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, v4, -1, false);
 
     // recherche des intersections entre les segments successifs de l'arc et la médiatrice de la corde pour déterminer la flèche
     sagitta = 0;
-    float sagittacw  = 0;
-    float sagittaccw = 0;
+    double sagittacw  = 0;
+    double sagittaccw = 0;
     int nbcw = 0;
     int nbccw = 0;
     size_t size = indexCloud->size() - 1;
@@ -189,10 +189,10 @@ QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyli
         const CT_Point &p1 = indexCloud->constTAt(i);
         const CT_Point &p2 = indexCloud->constTAt(i+1);
 
-        QVector2D v5(p1(0), p1(1));
-        QVector2D v6(p2(0), p2(1));
-        QVector2D intersection;
-        float r, s;
+        Eigen::Vector2d v5(p1(0), p1(1));
+        Eigen::Vector2d v6(p2(0), p2(1));
+        Eigen::Vector2d intersection;
+        double r, s;
 
         if (CT_Math2DLines::intersectSegments(v3, v4, v5, v6, r, s, intersection))
         {
@@ -200,10 +200,10 @@ QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyli
             {
                 if (r<0)
                 {
-                    sagittacw += CT_MathPoint::distance2D(v3, intersection);
+                    sagittacw += CT_Math2DLines::distance2D(v3, intersection);
                     ++nbcw;
                 } else {
-                    sagittaccw += CT_MathPoint::distance2D(v3, intersection);
+                    sagittaccw += CT_Math2DLines::distance2D(v3, intersection);
                     ++nbccw;
                 }
             }
@@ -231,7 +231,7 @@ QVector2D CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *polyli
 
 
     // Calcul du centre du cercle
-    QVector2D circleCenter;
+    Eigen::Vector2d circleCenter;
     CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, circleCenter, (radius-sagitta), !cw);
     return circleCenter;
 }

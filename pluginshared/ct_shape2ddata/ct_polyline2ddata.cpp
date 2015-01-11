@@ -37,36 +37,36 @@ CT_Polyline2DData::CT_Polyline2DData() : CT_Shape2DData()
 {
 }
 
-CT_Polyline2DData::CT_Polyline2DData(const QVector<QVector2D*> &vertices, bool copy) : CT_Shape2DData()
+CT_Polyline2DData::CT_Polyline2DData(const QVector<Eigen::Vector2d*> &vertices, bool copy) : CT_Shape2DData()
 {
 
     int size = vertices.size();
     _vertices.resize(size);
 
-    _minX = std::numeric_limits<float>::max();
-    _minY = std::numeric_limits<float>::max();
-    _maxX = -std::numeric_limits<float>::max();
-    _maxY = -std::numeric_limits<float>::max();
+    _minX = std::numeric_limits<double>::max();
+    _minY = std::numeric_limits<double>::max();
+    _maxX = -std::numeric_limits<double>::max();
+    _maxY = -std::numeric_limits<double>::max();
 
     for (int i = 0 ; i < size ; i++)
     {
-        QVector2D* source = vertices.at(i);
+        Eigen::Vector2d* source = vertices.at(i);
         if (copy)
         {
-            _vertices[i] = new QVector2D(source->x(), source->y());
+            _vertices[i] = new Eigen::Vector2d(*source);
         } else {
             _vertices[i] = vertices.at(i);
         }
 
-        if (_vertices[i]->x() < _minX) {_minX = _vertices[i]->x();}
-        if (_vertices[i]->x() > _maxX) {_maxX = _vertices[i]->x();}
-        if (_vertices[i]->y() < _minY) {_minY = _vertices[i]->y();}
-        if (_vertices[i]->y() > _maxY) {_maxY = _vertices[i]->y();}
+        if ((*_vertices[i])(0) < _minX) {_minX = (*_vertices[i])(0);}
+        if ((*_vertices[i])(0) > _maxX) {_maxX = (*_vertices[i])(0);}
+        if ((*_vertices[i])(1) < _minY) {_minY = (*_vertices[i])(1);}
+        if ((*_vertices[i])(1) > _maxY) {_maxY = (*_vertices[i])(1);}
 
     }
 
-    _center.setX((_maxX + _minX) / 2.0);
-    _center.setY((_maxY + _minY) / 2.0);
+    _center(0) = (_maxX + _minX) / 2.0;
+    _center(1) = (_maxY + _minY) / 2.0;
 }
 
 CT_Polyline2DData::~CT_Polyline2DData()
@@ -80,10 +80,12 @@ CT_Polyline2DData* CT_Polyline2DData::clone() const
     return new CT_Polyline2DData(_vertices);
 }
 
-void CT_Polyline2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+void CT_Polyline2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(_minX);
-    min.setY(_minY);
-    max.setX(_maxX);
-    max.setY(_maxY);
+    min(0) = _minX;
+    min(1) = _minY;
+    min(2) = 0;
+    max(0) = _maxX;
+    max(1) = _maxY;
+    max(2) = 0;
 }

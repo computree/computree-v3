@@ -83,27 +83,27 @@ public:
      */
     CT_Profile(const CT_OutAbstractSingularItemModel *model,
                const CT_AbstractResult *result,
-               float xmin,
-               float ymin,
-               float zmin,
-               float xdir,
-               float ydir,
-               float zdir,
+               double xmin,
+               double ymin,
+               double zmin,
+               double xdir,
+               double ydir,
+               double zdir,
                size_t dim,
-               float resolution,
+               double resolution,
                DataT na,
                DataT initValue);
 
     CT_Profile(const QString &modelName,
                const CT_AbstractResult *result,
-               float xmin,
-               float ymin,
-               float zmin,
-               float xdir,
-               float ydir,
-               float zdir,
+               double xmin,
+               double ymin,
+               double zmin,
+               double xdir,
+               double ydir,
+               double zdir,
                size_t dim,
-               float resolution,
+               double resolution,
                DataT na,
                DataT initValue);
 
@@ -125,25 +125,25 @@ public:
      */
     static CT_Profile<DataT>* createProfileFromSegment(const CT_OutAbstractSingularItemModel *model,
                                                        const CT_AbstractResult *result,
-                                                       float xmin,
-                                                       float ymin,
-                                                       float zmin,
-                                                       float xmax,
-                                                       float ymax,
-                                                       float zmax,
-                                                       float resolution,
+                                                       double xmin,
+                                                       double ymin,
+                                                       double zmin,
+                                                       double xmax,
+                                                       double ymax,
+                                                       double zmax,
+                                                       double resolution,
                                                        DataT na,
                                                        DataT initValue);
 
     static CT_Profile<DataT>* createProfileFromSegment(const QString &modelName,
                                                        const CT_AbstractResult *result,
-                                                       float xmin,
-                                                       float ymin,
-                                                       float zmin,
-                                                       float xmax,
-                                                       float ymax,
-                                                       float zmax,
-                                                       float resolution,
+                                                       double xmin,
+                                                       double ymin,
+                                                       double zmin,
+                                                       double xmax,
+                                                       double ymax,
+                                                       double zmax,
+                                                       double resolution,
                                                        DataT na,
                                                        DataT initValue);
 
@@ -223,7 +223,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setValueAtLength(const float &l, const DataT &value);
+    bool setValueAtLength(const double &l, const DataT &value);
 
     /**
       * \brief Set the value for the cell corresponding to (X,Y,Z), projected on profil axis
@@ -233,7 +233,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setValueForXYZ(const float &x, const float &y, const float &z, const DataT &value);
+    bool setValueForXYZ(const double &x, const double &y, const double &z, const DataT &value);
 
     /*!
      * \brief ives the value at specified index
@@ -245,9 +245,9 @@ public:
     /*!
      * \brief Generic [0;1]  (or -1 for NA) value accessor for use as CT_AbstractGrid3D
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value), or -1 for NA
+     * \return A double value between 0 (min value) and 1 (max value), or -1 for NA
      */
-    virtual float ratioValueAtIndex(const size_t &index) const;
+    virtual double ratioValueAtIndex(const size_t &index) const;
 
 
     /*!
@@ -276,14 +276,14 @@ public:
       * \param l length
       * \return Value
       */
-    DataT valueAtLength(const float &l) const;
+    DataT valueAtLength(const double &l) const;
 
     /**
       * \brief Gives the value at length
       * \param l length
       * \return Value
       */
-    DataT valueForXYZ(const float &x, const float &y, const float &z) const;
+    DataT valueForXYZ(const double &x, const double &y, const double &z) const;
 
 
     /**
@@ -300,7 +300,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMaxValueAtLength(const float &l, const DataT &value);
+    bool setMaxValueAtLength(const double &l, const DataT &value);
 
     /**
       * \brief Set the value for the cell corresponding to (X,Y,Z), projected on profil axis, if value is superior to actual one
@@ -310,7 +310,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMaxValueForXYZ(const float &x, const float &y, const float &z, const DataT &value);
+    bool setMaxValueForXYZ(const double &x, const double &y, const double &z, const DataT &value);
 
     /**
       * \brief Set the value for the cell at specified index, if value is inferior to actual one
@@ -326,7 +326,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMinValueAtLength(const float &l, const DataT &value);
+    bool setMinValueAtLength(const double &l, const DataT &value);
 
     /**
       * \brief Set the value for the cell corresponding to (X,Y,Z), projected on profil axis, if value is inferior to actual one
@@ -336,7 +336,7 @@ public:
       * \param value Value
       * \return True if the value has actually been set
       */
-    bool setMinValueForXYZ(const float &x, const float &y, const float &z, const DataT &value);
+    bool setMinValueForXYZ(const double &x, const double &y, const double &z, const DataT &value);
 
     /**
       * \brief Add value to the cell at the specified index
@@ -352,7 +352,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    bool addValueAtLength(const float &l, const DataT &value);
+    bool addValueAtLength(const double &l, const DataT &value);
 
     /**
       * \brief Add value to the cell corresponding to (X,Y,Z), projected on profil axis
@@ -362,7 +362,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    bool addValueForXYZ(const float &x, const float &y, const float &z, const DataT &value);
+    bool addValueForXYZ(const double &x, const double &y, const double &z, const DataT &value);
 
     /**
       * \brief Gives neighbours values
@@ -403,7 +403,7 @@ template<>
 PLUGINSHAREDSHARED_EXPORT void CT_Profile<bool>::computeMinMax();
 
 template<>
-PLUGINSHAREDSHARED_EXPORT float CT_Profile<bool>::ratioValueAtIndex(const size_t &index) const;
+PLUGINSHAREDSHARED_EXPORT double CT_Profile<bool>::ratioValueAtIndex(const size_t &index) const;
 
 template<>
 PLUGINSHAREDSHARED_EXPORT double CT_Profile<bool>::valueAtIndexAsDouble(const size_t &index) const;

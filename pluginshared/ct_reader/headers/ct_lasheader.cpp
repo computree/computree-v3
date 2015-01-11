@@ -398,13 +398,13 @@ bool CT_LASHeader::read(QDataStream &stream, QString &error)
 
     float x, y, z;
     PS_COORDINATES_SYS->convertImport(m_minX, m_minY, m_minZ, x, y, z);
-    _minCoordinates.setX(x);
-    _minCoordinates.setY(y);
-    _minCoordinates.setZ(z);
+    _minCoordinates(0) = x;
+    _minCoordinates(1) = y;
+    _minCoordinates(2) = z;
     PS_COORDINATES_SYS->convertImport(m_maxX, m_maxY, m_maxZ, x, y, z);
-    _maxCoordinates.setX(x);
-    _maxCoordinates.setY(y);
-    _maxCoordinates.setZ(z);
+    _maxCoordinates(0) = x;
+    _maxCoordinates(1) = y;
+    _maxCoordinates(2) = z;
 
     setCenterX((maxX() + minX())/2.0);
     setCenterY((maxY() + minY())/2.0);

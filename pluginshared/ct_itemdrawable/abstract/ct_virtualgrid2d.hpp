@@ -41,15 +41,15 @@ template< typename DataT> CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<DataT>)
 template< typename DataT>
 CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D() : CT_AbstractGrid2D()
 {
-    _minCoordinates.setX(0);
-    _minCoordinates.setY(0);
-    _minCoordinates.setZ(0);
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
     _res = 1;
     _dimCol = 0;
     _dimLin = 0;
-    _maxCoordinates.setX(0);
-    _maxCoordinates.setY(0);
-    _maxCoordinates.setZ(0);
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
 
     _minColCoord = 0;
     _minLinCoord = 0;
@@ -133,7 +133,7 @@ bool CT_VirtualGrid2D<DataT>::setValue(const size_t col, const size_t lin, const
 }
 
 template< typename DataT>
-bool CT_VirtualGrid2D<DataT>::setValueAtCoords(const float x, const float y, const DataT value)
+bool CT_VirtualGrid2D<DataT>::setValueAtCoords(const double x, const double y, const DataT value)
 {
     size_t resultIndex;
     if (!indexAtCoords(x, y, resultIndex)) {return false;}
@@ -171,7 +171,7 @@ DataT CT_VirtualGrid2D<DataT>::dataFromArray(const size_t &index) const
 }
 
 template< typename DataT>
-DataT CT_VirtualGrid2D<DataT>::valueAtCoords(const float x, const float y) const
+DataT CT_VirtualGrid2D<DataT>::valueAtCoords(const double x, const double y) const
 {
     size_t index;
     if (!indexAtCoords(x, y, index)) {return NA();}
@@ -192,7 +192,7 @@ bool CT_VirtualGrid2D<DataT>::setMaxValueAtIndex(const size_t index, const DataT
 }
 
 template< typename DataT>
-bool CT_VirtualGrid2D<DataT>::setMaxValueAtCoords(const float x, const float y, const DataT value)
+bool CT_VirtualGrid2D<DataT>::setMaxValueAtCoords(const double x, const double y, const DataT value)
 {
     size_t indice;
     if (!indexAtCoords(x, y, indice)) {return false;}
@@ -214,7 +214,7 @@ bool CT_VirtualGrid2D<DataT>::setMinValueAtIndex(const size_t index, const DataT
 }
 
 template< typename DataT>
-bool CT_VirtualGrid2D<DataT>::setMinValueAtCoords(const float x, const float y, const DataT value)
+bool CT_VirtualGrid2D<DataT>::setMinValueAtCoords(const double x, const double y, const DataT value)
 {
     size_t indice;
     if (!indexAtCoords(x, y, indice)) {return false;}
@@ -240,12 +240,12 @@ bool CT_VirtualGrid2D<DataT>::addValueAtIndex(const size_t index, const DataT va
 }
 
 template< typename DataT>
-float CT_VirtualGrid2D<DataT>::ratioValueAtIndex(const size_t index) const
+double CT_VirtualGrid2D<DataT>::ratioValueAtIndex(const size_t index) const
 {
     if (_dataMax <= _dataMin) {return 1;}
     DataT value = valueAtIndex(index);
     if (value == NA()) {return -1;}
-    return (float) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
+    return (double) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
 }
 
 template< typename DataT>
@@ -270,7 +270,7 @@ QString CT_VirtualGrid2D<DataT>::NAAsString() const
 }
 
 template< typename DataT>
-bool CT_VirtualGrid2D<DataT>::addValueAtCoords(const float x, const float y, const DataT value)
+bool CT_VirtualGrid2D<DataT>::addValueAtCoords(const double x, const double y, const DataT value)
 {
     size_t indice;
     if (!indexAtCoords(x, y, indice)) {return false;}

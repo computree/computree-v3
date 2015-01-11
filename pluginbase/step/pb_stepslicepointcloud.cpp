@@ -130,16 +130,16 @@ void PB_StepSlicePointCloud::compute()
         CT_Scene* itemIn_scene = (CT_Scene*) itIn_scene.next();
         _sceneList->append(itemIn_scene);
 
-        QVector3D min, max;
+        Eigen::Vector3d min, max;
         itemIn_scene->getBoundingBox(min, max);
 
-        if (min.x() < _xmin) {_xmin = min.x();}
-        if (min.y() < _ymin) {_ymin = min.y();}
-        if (min.z() < _zmin) {_zmin = min.z();}
+        if (min(0) < _xmin) {_xmin = min(0);}
+        if (min(1) < _ymin) {_ymin = min(1);}
+        if (min(2) < _zmin) {_zmin = min(2);}
 
-        if (max.x() > _xmax) {_xmax = max.x();}
-        if (max.y() > _ymax) {_ymax = max.y();}
-        if (max.z() > _zmax) {_zmax = max.z();}
+        if (max(0) > _xmax) {_xmax = max(0);}
+        if (max(1) > _ymax) {_ymax = max(1);}
+        if (max(2) > _zmax) {_zmax = max(2);}
     }
 
     _dataContainer->_zBase = _zmin;

@@ -42,7 +42,7 @@ CT_CylinderData::CT_CylinderData() : CT_ShapeData()
     _circleError = 0;
 }
 
-CT_CylinderData::CT_CylinderData(const QVector3D &center, const QVector3D &direction, float radius, float h) : CT_ShapeData(center, direction)
+CT_CylinderData::CT_CylinderData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double h) : CT_ShapeData(center, direction)
 {
     _radius = radius;
     _h = h;
@@ -50,7 +50,7 @@ CT_CylinderData::CT_CylinderData(const QVector3D &center, const QVector3D &direc
     _circleError = 0;
 }
 
-CT_CylinderData::CT_CylinderData(const QVector3D &center, const QVector3D &direction, float radius, float h, float lineError, float circleError) : CT_ShapeData(center, direction)
+CT_CylinderData::CT_CylinderData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double h, double lineError, double circleError) : CT_ShapeData(center, direction)
 {
     _radius = radius;
     _h = h;
@@ -58,22 +58,22 @@ CT_CylinderData::CT_CylinderData(const QVector3D &center, const QVector3D &direc
     _circleError = circleError;
 }
 
-float CT_CylinderData::getRadius() const
+double CT_CylinderData::getRadius() const
 {
     return _radius;
 }
 
-float CT_CylinderData::getHeight() const
+double CT_CylinderData::getHeight() const
 {
     return _h;
 }
 
-float CT_CylinderData::getLineError() const
+double CT_CylinderData::getLineError() const
 {
     return _lineError;
 }
 
-float CT_CylinderData::getCircleError() const
+double CT_CylinderData::getCircleError() const
 {
     return _circleError;
 }
@@ -85,7 +85,7 @@ CT_CylinderData* CT_CylinderData::clone() const
 
 CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
                                                                            const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                                           const QVector3D &pointCloudBarycenter)
+                                                                           const Eigen::Vector3d &pointCloudBarycenter)
 {
     if(pointCloudIndex.size() < 3)
         return NULL;
@@ -102,7 +102,7 @@ CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(const
 
 CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloud &pointCloud,
                                                                                        const CT_AbstractPointCloudIndex &pointCloudIndex,
-                                                                                       const QVector3D &pointCloudBarycenter,
+                                                                                       const Eigen::Vector3d &pointCloudBarycenter,
                                                                                        const CT_LineData &direction,
                                                                                        CT_CircleData *outCircleData)
 {
@@ -137,33 +137,33 @@ CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDir
     double ty = -pointCloudBarycenter.y();
     double tz = -pointCloudBarycenter.z();
 
-    QVector3D vect_line(x1-x2, y1-y2, z1-z2);
+    Eigen::Vector3d vect_line(x1-x2, y1-y2, z1-z2);
     vect_line.normalize();
 
-    QVector3D vect_line2(x1-x2, y1-y2, 0);
+    Eigen::Vector3d vect_line2(x1-x2, y1-y2, 0);
     vect_line2.normalize();
 
-    QVector3D vx(1,0,0);
-    QVector3D vz(0,0,1);
+    Eigen::Vector3d vx(1,0,0);
+    Eigen::Vector3d vz(0,0,1);
 
     // rotation des points a effectuer autour de l'axe z
-    double rz = acos(QVector3D::dotProduct(vect_line2, vx));
+    double rz = acos(vect_line2.dot(vx));
 
     if(vect_line.y() > 0)
     {
         rz = CT_CylinderData::M_PI_X2 - rz;
     }
 
-    QVector3D vect_line3(vect_line.x()*cos(rz) - vect_line.y()*sin(rz), 0, vect_line.z());
+    Eigen::Vector3d vect_line3(vect_line(0)*cos(rz) - vect_line(1)*sin(rz), 0, vect_line(2));
     vect_line3.normalize();
 
     // rotation des points a effectuer autour de l'axe y
-    double ry = acos(QVector3D::dotProduct(vect_line3, vz));
+    double ry = acos(vect_line3.dot(vz));
 
     /*1, 0, 1, 0*/
 
     // on deplace et tourne les points puis on fit un cercle
-    CircleDataPreProcessingAction preProcessingAction(QVector3D(tx, ty, tz), cos(rz), sin(rz), cos(ry), sin(ry));
+    CircleDataPreProcessingAction preProcessingAction(Eigen::Vector3d(tx, ty, tz), cos(rz), sin(rz), cos(ry), sin(ry));
 
     CT_CircleData *circleData = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(pointCloud,
                                                                                                                  pointCloudIndex,
@@ -179,16 +179,16 @@ CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDir
     double sinRotationZ = sin(-rz);
 
     // calcul les coordonnées du centre du cercle en fonction de la rotation et translation appliquées aux points
-    QVector3D cen = circleData->getCenter();
+    Eigen::Vector3d cen = circleData->getCenter();
 
     // rotation inverse
-    double xp = cen.x()*cosRotationZ - cen.y()*sinRotationZ;
-    double yp = cen.x()*sinRotationZ + cen.y()*cosRotationZ;
+    double xp = cen(0)*cosRotationZ - cen(1)*sinRotationZ;
+    double yp = cen(0)*sinRotationZ + cen(1)*cosRotationZ;
 
     // translation inverse
-    cen.setX(xp - preProcessingAction.getTranslationX());
-    cen.setY(yp - preProcessingAction.getTranslationY());
-    cen.setZ(-preProcessingAction.getTranslationZ());
+    cen(0) = xp - preProcessingAction.getTranslationX();
+    cen(1) = yp - preProcessingAction.getTranslationY();
+    cen(2) = -preProcessingAction.getTranslationZ();
 
     // nouveau centre
     circleData->setCenter(cen);

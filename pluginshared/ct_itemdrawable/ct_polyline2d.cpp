@@ -46,20 +46,20 @@ CT_Polyline2D::CT_Polyline2D(const CT_OutAbstractSingularItemModel *model,
 
     if (data != NULL)
     {
-        _minCoordinates.setX(data->_minX);
-        _minCoordinates.setY(data->_minY);
+        _minCoordinates(0) = data->_minX;
+        _minCoordinates(1) = data->_minY;
 
-        _maxCoordinates.setX(data->_maxX);
-        _maxCoordinates.setY(data->_maxY);
+        _maxCoordinates(0) = data->_maxX;
+        _maxCoordinates(1) = data->_maxY;
     } else {
-        _minCoordinates.setX(0);
-        _minCoordinates.setY(0);
+        _minCoordinates(0) = 0;
+        _minCoordinates(1) = 0;
 
-        _maxCoordinates.setX(0);
-        _maxCoordinates.setY(0);
+        _maxCoordinates(0) = 0;
+        _maxCoordinates(1) = 0;
     }
-    _minCoordinates.setZ(0);
-    _maxCoordinates.setZ(0);
+    _minCoordinates(2) = 0;
+    _maxCoordinates(2) = 0;
 }
 
 CT_Polyline2D::CT_Polyline2D(const QString &modelName,
@@ -70,23 +70,23 @@ CT_Polyline2D::CT_Polyline2D(const QString &modelName,
 
     if (data != NULL)
     {
-        _minCoordinates.setX(data->_minX);
-        _minCoordinates.setY(data->_minY);
+        _minCoordinates(0) = data->_minX;
+        _minCoordinates(1) = data->_minY;
 
-        _maxCoordinates.setX(data->_maxX);
-        _maxCoordinates.setY(data->_maxY);
+        _maxCoordinates(0) = data->_maxX;
+        _maxCoordinates(1) = data->_maxY;
     } else {
-        _minCoordinates.setX(0);
-        _minCoordinates.setY(0);
+        _minCoordinates(0) = 0;
+        _minCoordinates(1) = 0;
 
-        _maxCoordinates.setX(0);
-        _maxCoordinates.setY(0);
+        _maxCoordinates(0) = 0;
+        _maxCoordinates(1) = 0;
     }
-    _minCoordinates.setZ(0);
-    _maxCoordinates.setZ(0);
+    _minCoordinates(2) = 0;
+    _maxCoordinates(2) = 0;
 }
 
-const QVector<QVector2D*>& CT_Polyline2D::getVertices() const
+const QVector<Eigen::Vector2d*>& CT_Polyline2D::getVertices() const
 {
     return ((const CT_Polyline2DData&)getData()).getVertices();
 }

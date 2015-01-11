@@ -60,7 +60,7 @@ private:
     static int                  DDOWN_LOCATION;
     static int                  N_SHARED;
 
-    float                       m_deltaD;
+    double                       m_deltaD;
 
 protected:
 

@@ -27,7 +27,8 @@
 
 #include "ct_line2ddata.h"
 
-#include "ct_mathpoint.h"
+#include "ct_math/ct_mathpoint.h"
+#include "ct_math/ct_math2dlines.h"
 #include <math.h>
 
 
@@ -35,18 +36,18 @@ CT_Line2DData::CT_Line2DData() : CT_Shape2DData()
 {
 }
 
-CT_Line2DData::CT_Line2DData(const QVector2D &p1, const QVector2D &p2) : CT_Shape2DData(QVector2D((float)((p1.x() + p2.x())/2.0), (float)((p1.y() + p2.y())/2.0)))
+CT_Line2DData::CT_Line2DData(const Eigen::Vector2d &p1, const Eigen::Vector2d &p2) : CT_Shape2DData((p1 + p2) / 2.0)
 {
     _p1 = p1;
     _p2 = p2;
 }
 
-const QVector2D& CT_Line2DData::getP1() const
+const Eigen::Vector2d& CT_Line2DData::getP1() const
 {
     return _p1;
 }
 
-const QVector2D& CT_Line2DData::getP2() const
+const Eigen::Vector2d &CT_Line2DData::getP2() const
 {
     return _p2;
 }
@@ -54,35 +55,37 @@ const QVector2D& CT_Line2DData::getP2() const
 
 double CT_Line2DData::x1() const
 {
-    return _p1.x();
+    return _p1(0);
 }
 
 double CT_Line2DData::y1() const
 {
-    return _p1.y();
+    return _p1(1);
 }
 
 double CT_Line2DData::x2() const
 {
-    return _p2.x();
+    return _p2(0);
 }
 
 double CT_Line2DData::y2() const
 {
-    return _p2.y();
+    return _p2(1);
 }
 
 double CT_Line2DData::length() const
 {
-    return CT_MathPoint::distance2D(_p1, _p2);
+    return CT_Math2DLines::distance2D(_p1, _p2);
 }
 
-void CT_Line2DData::getBoundingBox(QVector2D &min, QVector2D &max) const
+void CT_Line2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min.setX(std::min(_p1.x(), _p2.x()));
-    min.setY(std::min(_p1.y(), _p2.y()));
-    max.setX(std::max(_p1.x(), _p2.x()));
-    max.setY(std::max(_p1.y(), _p2.y()));
+    min(0) = std::min(_p1(0), _p2(0));
+    min(1) = std::min(_p1(1), _p2(1));
+    min(2) = 0;
+    max(0) = std::max(_p1(0), _p2(0));
+    max(1) = std::max(_p1(1), _p2(1));
+    max(2) = 0;
 }
 
 CT_Line2DData* CT_Line2DData::clone() const

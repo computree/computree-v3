@@ -46,7 +46,7 @@ QString CT_StandardScannerDrawManager::staticInitConfigFieldOfView()
 
 void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, const CT_Scanner &scanner) const
 {
-    float scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
+    double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
 
     if ( !scanner.getClockWise() )
     {
@@ -73,9 +73,9 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
 
 void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter, const CT_Scanner &scanner, double theta, double phi) const
 {
-    float scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
+    double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
 
-    float cosPhi, sinPhi, cosTheta, sinTheta;
+    double cosPhi, sinPhi, cosTheta, sinTheta;
     sinTheta = sin (theta);
     cosTheta = cos (theta);
     sinPhi = sin (phi);

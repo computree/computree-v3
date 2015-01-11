@@ -204,13 +204,13 @@ bool createPolyline(OGRLineString *line, CT_StandardItemGroup *group, int layerI
 
     if(n > 0) {
 
-        QVector<QVector2D *> vertices(n);
+        QVector<Eigen::Vector2d *> vertices(n);
 
         OGRPoint point;
 
         for(int j=0; j<n; ++j) {
             line->getPoint(j, &point);
-            vertices[j] = new QVector2D(point.getX(), point.getY());
+            vertices[j] = new Eigen::Vector2d(point.getX(), point.getY());
         }
 
         return group->addItemDrawable(new CT_Polyline2D(models.value(QString(DEF_CT_Reader_GDAL_polylineOut).arg(layerIndex)), NULL, new CT_Polyline2DData(vertices, false)));
@@ -226,13 +226,13 @@ bool createPolygon(OGRPolygon *polygon, CT_StandardItemGroup *group, int layerIn
     if(ring != NULL) {
         int n = ring->getNumPoints();
 
-        QVector<QVector2D *> vertices(n);
+        QVector<Eigen::Vector2d *> vertices(n);
 
         OGRPoint point;
 
         for(int j=0; j<n; ++j) {
             ring->getPoint(j, &point);
-            vertices[j] = new QVector2D(point.getX(), point.getY());
+            vertices[j] = new Eigen::Vector2d(point.getX(), point.getY());
         }
 
         return group->addItemDrawable(new CT_Polygon2D(models.value(QString(DEF_CT_Reader_GDAL_polygoneOut).arg(layerIndex)), NULL, new CT_Polygon2DData(vertices, false)));
@@ -243,7 +243,7 @@ bool createPolygon(OGRPolygon *polygon, CT_StandardItemGroup *group, int layerIn
 
 bool createPoint(OGRPoint *point, CT_StandardItemGroup *group, int layerIndex, const QHash<QString, CT_OutStdSingularItemModel*> &models)
 {
-    return group->addItemDrawable(new CT_Point2D(models.value(QString(DEF_CT_Reader_GDAL_pointOut).arg(layerIndex)), NULL, new CT_Point2DData(QVector2D(point->getX(), point->getY()))));
+    return group->addItemDrawable(new CT_Point2D(models.value(QString(DEF_CT_Reader_GDAL_pointOut).arg(layerIndex)), NULL, new CT_Point2DData(point->getX(), point->getY())));
 }
 #endif
 

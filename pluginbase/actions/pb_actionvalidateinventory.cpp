@@ -256,7 +256,7 @@ CT_AbstractAction* PB_ActionValidateInventory::copy() const
 
 const CT_AbstractSingularItemDrawable* PB_ActionValidateInventory::chooseForItem(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -270,8 +270,7 @@ const CT_AbstractSingularItemDrawable* PB_ActionValidateInventory::chooseForItem
         const CT_StandardItemGroup* scene = it.key();
         const CT_AbstractSingularItemDrawable* item = it.value();
 
-        QVector3D point(item->getCenterX(), item->getCenterY(), item->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(item->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {
@@ -291,7 +290,7 @@ const CT_AbstractSingularItemDrawable* PB_ActionValidateInventory::chooseForItem
 
 const CT_AbstractSingularItemDrawable* PB_ActionValidateInventory::chooseForAttributes(const QPoint &point)
 {
-    QVector3D origin, direction;
+    Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
     float minDist = std::numeric_limits<float>::max();
@@ -305,8 +304,7 @@ const CT_AbstractSingularItemDrawable* PB_ActionValidateInventory::chooseForAttr
         const CT_StandardItemGroup* scene = it.key();
         const CT_AbstractSingularItemDrawable* circle = it.value();
 
-        QVector3D point(circle->getCenterX(), circle->getCenterY(), circle->getCenterZ());
-        float dist = CT_MathPoint::distancePointLine<QVector3D>(point, direction, origin);
+        float dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {

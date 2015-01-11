@@ -31,7 +31,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_math/ct_math.h"
 
-#include <QVector2D>
+#include <eigen/Eigen/Core>
 
 /*!
  * \class CT_AbstractGrid2D
@@ -63,9 +63,9 @@ public:
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value)
+     * \return A double value between 0 (min value) and 1 (max value)
      */
-    virtual float ratioValueAtIndex(const size_t index) const = 0;
+    virtual double ratioValueAtIndex(const size_t index) const = 0;
 
     /*!
      * \brief Return a double value for any type (or NAN for NA)
@@ -114,7 +114,7 @@ public:
      * \param column Column number
      * \return true if index is valid
      */
-    inline bool col(const float colCoord, size_t &column) const
+    inline bool col(const double colCoord, size_t &column) const
     {
         if (colCoord < minColCoord() || colCoord > maxColCoord()) {return false;}
         if (colCoord == maxColCoord())
@@ -131,7 +131,7 @@ public:
      * \param Row number
      * \return true if index is valid
      */
-    inline bool lin(const float linCoord, size_t &row) const
+    inline bool lin(const double linCoord, size_t &row) const
     {
         if (linCoord < minLinCoord() || linCoord > maxLinCoord()) {return false;}
         if (linCoord == maxLinCoord())
@@ -149,7 +149,7 @@ public:
      * \param index Returned index
      * \return true if returnedIndex is valid
      */
-    inline bool indexAtCoords(const float colCoord, const float linCoord, size_t &returnedIndex) const
+    inline bool indexAtCoords(const double colCoord, const double linCoord, size_t &returnedIndex) const
     {
         size_t colx, liny;
         if (!col(colCoord, colx) || !lin(linCoord, liny)) {return false;}
@@ -183,38 +183,38 @@ public:
      * \brief Gives the default z level of the raster
      * \return Default level
      */
-    inline float level() const { return _level; }
+    inline double level() const { return _level; }
 
     /*!
      * \brief Set the z level of the raster
      * \return Default level
      */
-    inline void setlevel(float level) { _level = level; }
+    inline void setlevel(double level) { _level = level; }
 
     /**
       * \brief Gives the resolution
       * \return Resolution (m)
       */
-    inline float resolution() const {return _res;}
+    inline double resolution() const {return _res;}
 
     /**
      * \brief getMinCoordinates
      * \param min Min coordinates of the grid (bottom left corner)
      */
-    inline void getMinCoordinates(QVector2D &min) const
+    inline void getMinCoordinates(Eigen::Vector2d &min) const
     {
-        min.setX(minColCoord());
-        min.setY(minLinCoord());
+        min(0) = minColCoord();
+        min(1) = minLinCoord();
     }
 
     /**
      * \brief getMaxCoordinates
      * \param max Max coordinates of the grid (upper right corner)
      */
-    inline void getMaxCoordinates(QVector2D &max) const
+    inline void getMaxCoordinates(Eigen::Vector2d &max) const
     {
-        max.setX(maxX());
-        max.setY(maxY());
+        max(0) = maxX();
+        max(1) = maxY();
     }
 
     /**
@@ -233,25 +233,25 @@ public:
       * \brief Gives the minimum column coordinate
       * \return minimum column coordinate
       */
-    inline float minColCoord() const {return _minColCoord;}
+    inline double minColCoord() const {return _minColCoord;}
 
     /**
       * \brief Gives the minimum row coordinate
       * \return minimum row coordinate
       */
-    inline float minLinCoord() const {return _minLinCoord;}
+    inline double minLinCoord() const {return _minLinCoord;}
 
     /**
       * \brief Gives the maximum column coordinate
       * \return maximum column coordinate
       */
-    inline float maxColCoord() const {return _minColCoord + _dimCol*_res;}
+    inline double maxColCoord() const {return _minColCoord + _dimCol*_res;}
 
     /**
       * \brief Gives the maximum row coordinate
       * \return maximum row coordinate
       */
-    inline float maxLinCoord() const {return _minLinCoord + _dimLin*_res;}
+    inline double maxLinCoord() const {return _minLinCoord + _dimLin*_res;}
 
     /*!
      * \brief Total number of cells for the raster
@@ -264,14 +264,14 @@ public:
      * \param col Column, first one is 0
      * \return Column coordinate
      */
-    inline float getCellCenterColCoord(const size_t col) const {return minColCoord() + col*_res + _res/2;}
+    inline double getCellCenterColCoord(const size_t col) const {return minColCoord() + col*_res + _res/2;}
 
     /*!
      * \brief Gives the row coordinate of the center of cells of row lin
      * \param lin Row, first one is 0
      * \return Row coordinate
      */
-    inline float getCellCenterLinCoord(const size_t lin) const {return minLinCoord() + lin*_res + _res/2;}
+    inline double getCellCenterLinCoord(const size_t lin) const {return minLinCoord() + lin*_res + _res/2;}
 
     /*!
      * \brief getCellCoordinates Give min and max coordinates of a cell
@@ -280,15 +280,15 @@ public:
      * \param top Max coordinates
      * \return true if index is in the grid
      */
-    inline bool getCellCoordinates(const size_t index, QVector2D &bottom, QVector2D &top) const
+    inline bool getCellCoordinates(const size_t index, Eigen::Vector2d &bottom, Eigen::Vector2d &top) const
     {
         size_t col, lin;
         if (!indexToGrid(index, col, lin)) {return false;}
-        bottom.setX(minColCoord() + col*_res);
-        bottom.setY(minLinCoord() + lin*_res);
+        bottom(0) = minColCoord() + col*_res;
+        bottom(1) = minLinCoord() + lin*_res;
 
-        top.setX(bottom.x() + _res);
-        top.setY(bottom.y() + _res);
+        top(0) = bottom(0) + _res;
+        top(1) = bottom(1) + _res;
         return true;
     }
 
@@ -297,13 +297,13 @@ public:
      * \param col Column
      * \param lin Row
      * \param bottom Output coordinates
-     * \return A QVector2D coordinates for the bottom left corner
+     * \return A Eigen::Vector2d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCorner(const size_t col, const size_t lin, QVector2D &bottom) const
+    inline bool getCellBottomLeftCorner(const size_t col, const size_t lin, Eigen::Vector2d &bottom) const
     {
         if ((col >= _dimCol) || (lin >= _dimLin)) {return false;}
-        bottom.setX(minColCoord() + col*_res);
-        bottom.setY(minLinCoord() + lin*_res);
+        bottom(0) = minColCoord() + col*_res;
+        bottom(1) = minLinCoord() + lin*_res;
 
         return true;
     }
@@ -313,9 +313,9 @@ public:
      * \param colCoord column coordinate
      * \param linCoord Row coordinate
      * \param bottom Output coordinates
-     * \return A QVector2D coordinates for the bottom left corner
+     * \return A Eigen::Vector2d coordinates for the bottom left corner
      */
-    inline bool getCellBottomLeftCornerAtCoords(const float colCoord, const float linCoord, QVector2D &bottom) const
+    inline bool getCellBottomLeftCornerAtCoords(const double colCoord, const double linCoord, Eigen::Vector2d &bottom) const
     {
 
         return getCellBottomLeftCorner((size_t) floor((colCoord - minColCoord()) / _res),
@@ -326,10 +326,10 @@ public:
 protected:
     size_t      _dimCol;        /*!< Nombre de cases selon x du raster*/
     size_t      _dimLin;        /*!< Nombre de cases selon y du raster*/
-    float       _minColCoord;   /*!< Coordonnée colonne minimum*/
-    float       _minLinCoord;   /*!< Coordonnée ligne minimum*/
-    float       _res;           /*!< Resolution de la grille (taille d'une case*/
-    float       _level;         /*!< Niveau Z de placement du raster*/
+    double       _minColCoord;   /*!< Coordonnée colonne minimum*/
+    double       _minLinCoord;   /*!< Coordonnée ligne minimum*/
+    double       _res;           /*!< Resolution de la grille (taille d'une case*/
+    double       _level;         /*!< Niveau Z de placement du raster*/
 
 };
 

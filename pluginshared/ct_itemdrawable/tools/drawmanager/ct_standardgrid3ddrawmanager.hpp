@@ -83,9 +83,9 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
     size_t xdim = item.xdim();
     size_t ydim = item.ydim();
     size_t zdim = item.zdim();
-    float demiRes = reductionCoef*item.resolution() / 2.0;
+    double demiRes = reductionCoef*item.resolution() / 2.0;
 
-    float xmin, ymin, zmin, xmax, ymax, zmax;
+    double xmin, ymin, zmin, xmax, ymax, zmax;
 
     // For each voxel of the grid
     for (size_t xx = nXinf ; xx < (xdim - nXsup) ; xx++)

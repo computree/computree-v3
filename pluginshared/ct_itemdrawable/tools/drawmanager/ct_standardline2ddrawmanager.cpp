@@ -25,9 +25,9 @@ void CT_StandardLine2DDrawManager::draw(GraphicsViewInterface &view, PainterInte
     bool drawPoints = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_POINTS).toBool();
     bool drawLine = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_LINE).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
-    float zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toFloat();
+    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
-    float zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
+    double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal) {zPlane = zVal;}
 
     if (drawPoints)

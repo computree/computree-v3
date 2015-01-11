@@ -43,14 +43,14 @@ class PLUGINSHAREDSHARED_EXPORT CT_Circle2DData : public CT_AreaShape2DData
 {
 public:
     CT_Circle2DData();
-    CT_Circle2DData(const QVector2D &center, float radius);
+    CT_Circle2DData(const Eigen::Vector2d &center, double radius);
 
-    void setRadius(float radius);
-    float getRadius() const;
+    void setRadius(double radius);
+    double getRadius() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
-    bool contains(float x, float y) const;
+    bool contains(double x, double y) const;
     virtual double getArea() const;
 
     CT_Circle2DData* clone() const;
@@ -60,7 +60,7 @@ public:
 
 private:
 
-    float _radius;
+    double _radius;
 
 };
 

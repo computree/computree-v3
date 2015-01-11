@@ -67,35 +67,35 @@ public:
      */
     CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
-              float wmin,
-              float xmin,
-              float ymin,
-              float zmin,
+              double wmin,
+              double xmin,
+              double ymin,
+              double zmin,
               size_t dimw,
               size_t dimx,
               size_t dimy,
               size_t dimz,
-              float resw,
-              float resx,
-              float resy,
-              float resz,
+              double resw,
+              double resx,
+              double resy,
+              double resz,
               DataT na,
               DataT initValue);
 
     CT_Grid4D(const QString &modelName,
               const CT_AbstractResult *result,
-              float wmin,
-              float xmin,
-              float ymin,
-              float zmin,
+              double wmin,
+              double xmin,
+              double ymin,
+              double zmin,
               size_t dimw,
               size_t dimx,
               size_t dimy,
               size_t dimz,
-              float resw,
-              float resx,
-              float resy,
-              float resz,
+              double resw,
+              double resx,
+              double resy,
+              double resz,
               DataT na,
               DataT initValue);
 
@@ -125,35 +125,35 @@ public:
      */
     static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                         const CT_AbstractResult *result,
-                                                        float wmin,
-                                                        float xmin,
-                                                        float ymin,
-                                                        float zmin,
-                                                        float wmax,
-                                                        float xmax,
-                                                        float ymax,
-                                                        float zmax,
-                                                        float resw,
-                                                        float resx,
-                                                        float resy,
-                                                        float resz,
+                                                        double wmin,
+                                                        double xmin,
+                                                        double ymin,
+                                                        double zmin,
+                                                        double wmax,
+                                                        double xmax,
+                                                        double ymax,
+                                                        double zmax,
+                                                        double resw,
+                                                        double resx,
+                                                        double resy,
+                                                        double resz,
                                                         DataT na,
                                                         DataT initValue);
 
     static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const QString &modelName,
                                                         const CT_AbstractResult *result,
-                                                        float wmin,
-                                                        float xmin,
-                                                        float ymin,
-                                                        float zmin,
-                                                        float wmax,
-                                                        float xmax,
-                                                        float ymax,
-                                                        float zmax,
-                                                        float resw,
-                                                        float resx,
-                                                        float resy,
-                                                        float resz,
+                                                        double wmin,
+                                                        double xmin,
+                                                        double ymin,
+                                                        double zmin,
+                                                        double wmax,
+                                                        double xmax,
+                                                        double ymax,
+                                                        double zmax,
+                                                        double resw,
+                                                        double resx,
+                                                        double resy,
+                                                        double resz,
                                                         DataT na,
                                                         DataT initValue);
 
@@ -216,9 +216,9 @@ public:
     /*!
      * \brief Generic [0;1]  (or -1 for NA) value accessor for use as CT_AbstractGrid4D
      * \param index index in the grid
-     * \return A float value between 0 (min value) and 1 (max value), or -1 for NA : (valueAt(i)-dataMin) / (dataMax-dataMin)
+     * \return A double value between 0 (min value) and 1 (max value), or -1 for NA : (valueAt(i)-dataMin) / (dataMax-dataMin)
      */
-    virtual float ratioValueAtIndex(const size_t index) const;
+    virtual double ratioValueAtIndex(const size_t index) const;
 
     /*!
      * \brief Gives the value at (levw, levx, levy, levz)
@@ -238,7 +238,7 @@ public:
       * \param z Z coordinate
       * \return Value of the cell containing (w,x,y,z) coordinate (in cartesian space)
       */
-    DataT valueAtWXYZ(const float w, const float x, const float y, const float z) const;
+    DataT valueAtWXYZ(const double w, const double x, const double y, const double z) const;
 
     //    /**
     //      * \brief Set the value for the cell at specified index, if value is superior to actual one
@@ -256,7 +256,7 @@ public:
     //      * \param value Value
     //      * \return True if the value has actually been set
     //      */
-    //    bool setMaxValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    //    bool setMaxValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
     //    /**
     //      * \brief Set the value for the cell at specified index, if value is inferior to actual one
@@ -274,7 +274,7 @@ public:
     //      * \param value Value
     //      * \return True if the value has actually been set
     //      */
-    //    bool setMinValueAtXYZ(const float x, const float y, const float z, const DataT value);
+    //    bool setMinValueAtXYZ(const double x, const double y, const double z, const DataT value);
 
     /**
       * \brief Add value to the cell at the specified index
@@ -293,7 +293,7 @@ public:
       * \param value Value
       * \return True if the value has actually been updated
       */
-    bool addValueAtWXYZ(const float w, const float x, const float y, const float z, const DataT value);
+    bool addValueAtWXYZ(const double w, const double x, const double y, const double z, const DataT value);
 
     /**
       * \brief Gives neighbours values
@@ -376,7 +376,7 @@ public:
      * \param value Value
      * \return True if the value has actually been set
      */
-    inline bool setValueAtWXYZ(const float w, const float x, const float y, const float z, const DataT value)
+    inline bool setValueAtWXYZ(const double w, const double x, const double y, const double z, const DataT value)
     {
         size_t i;
         if( indexAtWXYZ(w, x, y, z, i) )

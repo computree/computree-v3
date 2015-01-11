@@ -35,7 +35,6 @@
 
 
 #include <QVector>
-#include <QVector2D>
 #include <QStack>
 
 class PLUGINSHAREDSHARED_EXPORT CT_Polygon2DData : public CT_AreaShape2DData
@@ -44,19 +43,19 @@ public:
 
     CT_Polygon2DData();
 
-    CT_Polygon2DData(const QVector<QVector2D *> &vertices, bool copy = true);
+    CT_Polygon2DData(const QVector<Eigen::Vector2d *> &vertices, bool copy = true);
 
     ~CT_Polygon2DData();
 
     CT_Polygon2DData* clone() const;
 
-    void getBoundingBox(QVector2D &min, QVector2D &max) const;
+    void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     void computeCentroid();
 
-    void expand(float buffer);
+    void expand(double buffer);
 
-    inline const QVector<QVector2D*>& getVertices() const {return _vertices;}
+    inline const QVector<Eigen::Vector2d*>& getVertices() const {return _vertices;}
 
     double getAreaIfNotSelfIntersecting() const;
     double getSignedArea() const;
@@ -65,28 +64,28 @@ public:
 
     virtual double getArea() const;
 
-    bool contains(float x, float y) const;
+    bool contains(double x, double y) const;
 
     static CT_Polygon2DData* createConvexHull(const CT_PointCloudIndexVector *indices);
     static CT_Polygon2DData* createConvexHull(const CT_DelaunayT &triangulation);
 
-    static void orderPointsByXY(QList<QVector2D *> &pointList);
+    static void orderPointsByXY(QList<Eigen::Vector2d *> &pointList);
     // Use Andrew's monotone chain convex hull algorithm
-    static CT_Polygon2DData* createConvexHull(QList<QVector2D *> &orderedCandidates);
-    static CT_Polygon2DData* chainHull_2D(QList<QVector2D*> &orderedCandidates);
+    static CT_Polygon2DData* createConvexHull(QList<Eigen::Vector2d *> &orderedCandidates);
+    static CT_Polygon2DData* chainHull_2D(QList<Eigen::Vector2d*> &orderedCandidates);
 
 private:
-    QVector<QVector2D*> _vertices;
+    QVector<Eigen::Vector2d*> _vertices;
 
-    float               _minX;
-    float               _maxX;
-    float               _minY;
-    float               _maxY;
+    double               _minX;
+    double               _maxX;
+    double               _minY;
+    double               _maxY;
 
     friend class CT_Polygon2D;
 
-    static float cross(const QVector2D* O, const QVector2D* A, const QVector2D* B);
-    static bool compare(const QVector2D* p1, const QVector2D* p2);
+    static double cross(const Eigen::Vector2d* O, const Eigen::Vector2d* A, const Eigen::Vector2d* B);
+    static bool compare(const Eigen::Vector2d* p1, const Eigen::Vector2d* p2);
 
 };
 

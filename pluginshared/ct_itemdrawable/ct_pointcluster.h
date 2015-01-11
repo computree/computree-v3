@@ -59,7 +59,7 @@ public:
         _notComputed = false;
     }
 
-    void addPoint(float x, float y, float z)
+    void addPoint(double x, double y, double z)
     {
         _backupSum[0] += x;
         _backupSum[1] += y;
@@ -83,7 +83,7 @@ public:
 
     void compute() const
     {
-        float *notConstBarycenter = const_cast<float*>(_barycenter);
+        double *notConstBarycenter = const_cast<double*>(_barycenter);
         bool *notConstNotComputed = const_cast<bool*>(&_notComputed);
 
         notConstBarycenter[0] = _backupSum[0]/_size;
@@ -93,15 +93,15 @@ public:
         *notConstNotComputed = false;        
     }
 
-    inline float x() const { if(_notComputed){ compute(); } return _barycenter[0]; }
-    inline float y() const { if(_notComputed){ compute(); } return _barycenter[1]; }
-    inline float z() const { if(_notComputed){ compute(); } return _barycenter[2]; }
+    inline double x() const { if(_notComputed){ compute(); } return _barycenter[0]; }
+    inline double y() const { if(_notComputed){ compute(); } return _barycenter[1]; }
+    inline double z() const { if(_notComputed){ compute(); } return _barycenter[2]; }
 
 private:
 
     int     _size;
-    float   _backupSum[3];
-    float   _barycenter[3];
+    double   _backupSum[3];
+    double   _barycenter[3];
 
     bool    _notComputed;
 };
@@ -146,7 +146,7 @@ public:
       *
       * \return true si le point a t ajout
       */
-    virtual bool addPoint(int index, bool verifyIfExist = false, bool firstPosition = false);
+    virtual bool addPoint(size_t index, bool verifyIfExist = false, bool firstPosition = false);
 
     /**
       * \brief Retourne le barycentre du groupe de points

@@ -46,16 +46,16 @@ const CT_StandardGrid3DDrawManager<DataT> CT_Grid3D<DataT>::ABSGRID3D_DRAW_MANAG
 template< typename DataT>
 CT_Grid3D<DataT>::CT_Grid3D() : CT_AbstractGrid3D()
 {
-    _minCoordinates.setX(0);
-    _minCoordinates.setY(0);
-    _minCoordinates.setZ(0);
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
     _res = 1;
     _dimx = 0;
     _dimy = 0;
     _dimz = 0;
-    _maxCoordinates.setX(0);
-    _maxCoordinates.setY(0);
-    _maxCoordinates.setZ(0);
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
     _NAdata = -1;
     _dataMax = -1;
     _dataMin = -1;
@@ -66,28 +66,28 @@ CT_Grid3D<DataT>::CT_Grid3D() : CT_AbstractGrid3D()
 template< typename DataT>
 CT_Grid3D<DataT>::CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
-                            float xmin,
-                            float ymin,
-                            float zmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
                             size_t dimx,
                             size_t dimy,
                             size_t dimz,
-                            float resolution,
+                            double resolution,
                             DataT na,
                             DataT initValue) : CT_AbstractGrid3D(model, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
 
     _res = resolution;
     _dimx = dimx;
     _dimy = dimy;
     _dimz = dimz;
 
-    _maxCoordinates.setX(minX() + _res * _dimx);
-    _maxCoordinates.setY(minY() + _res * _dimy);
-    _maxCoordinates.setZ(minZ() + _res * _dimz);
+    _maxCoordinates(0) = minX() + _res * _dimx;
+    _maxCoordinates(1) = minY() + _res * _dimy;
+    _maxCoordinates(2) = minZ() + _res * _dimz;
 
     _NAdata = na;
 
@@ -104,28 +104,28 @@ CT_Grid3D<DataT>::CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
 template< typename DataT>
 CT_Grid3D<DataT>::CT_Grid3D(const QString &modelName,
                             const CT_AbstractResult *result,
-                            float xmin,
-                            float ymin,
-                            float zmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
                             size_t dimx,
                             size_t dimy,
                             size_t dimz,
-                            float resolution,
+                            double resolution,
                             DataT na,
                             DataT initValue) : CT_AbstractGrid3D(modelName, result)
 {
-    _minCoordinates.setX(xmin);
-    _minCoordinates.setY(ymin);
-    _minCoordinates.setZ(zmin);
+    _minCoordinates(0) = xmin;
+    _minCoordinates(1) = ymin;
+    _minCoordinates(2) = zmin;
 
     _res = resolution;
     _dimx = dimx;
     _dimy = dimy;
     _dimz = dimz;
 
-    _maxCoordinates.setX(minX() + _res * _dimx);
-    _maxCoordinates.setY(minY() + _res * _dimy);
-    _maxCoordinates.setZ(minZ() + _res * _dimz);
+    _maxCoordinates(0) = minX() + _res * _dimx;
+    _maxCoordinates(1) = minY() + _res * _dimy;
+    _maxCoordinates(2) = minZ() + _res * _dimz;
 
     _NAdata = na;
 
@@ -142,13 +142,13 @@ CT_Grid3D<DataT>::CT_Grid3D(const QString &modelName,
 template< typename DataT>
 CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                               const CT_AbstractResult *result,
-                                                              float xmin,
-                                                              float ymin,
-                                                              float zmin,
-                                                              float xmax,
-                                                              float ymax,
-                                                              float zmax,
-                                                              float resolution,
+                                                              double xmin,
+                                                              double ymin,
+                                                              double zmin,
+                                                              double xmax,
+                                                              double ymax,
+                                                              double zmax,
+                                                              double resolution,
                                                               DataT na,
                                                               DataT initValue)
 {
@@ -178,13 +178,13 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstra
 template< typename DataT>
 CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const QString &modelName,
                                                               const CT_AbstractResult *result,
-                                                              float xmin,
-                                                              float ymin,
-                                                              float zmin,
-                                                              float xmax,
-                                                              float ymax,
-                                                              float zmax,
-                                                              float resolution,
+                                                              double xmin,
+                                                              double ymin,
+                                                              double zmin,
+                                                              double xmax,
+                                                              double ymax,
+                                                              double zmax,
+                                                              double resolution,
                                                               DataT na,
                                                               DataT initValue)
 {
@@ -297,7 +297,7 @@ bool CT_Grid3D<DataT>::setValue(const size_t colx, const size_t liny, const size
 }
 
 template< typename DataT>
-bool CT_Grid3D<DataT>::setValueAtXYZ(const float x, const float y, const float z, const DataT value)
+bool CT_Grid3D<DataT>::setValueAtXYZ(const double x, const double y, const double z, const DataT value)
 {
     size_t i;
     if (indexAtXYZ(x, y, z, i))
@@ -316,12 +316,12 @@ DataT CT_Grid3D<DataT>::valueAtIndex(const size_t index) const
 }
 
 template< typename DataT>
-float CT_Grid3D<DataT>::ratioValueAtIndex(const size_t index) const
+double CT_Grid3D<DataT>::ratioValueAtIndex(const size_t index) const
 {
     if (_dataMax <= _dataMin) {return 1;}
     DataT value = valueAtIndex(index);
     if (value == NA()) {return -1;}
-    return (float) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
+    return (double) (((double)(value - _dataMin))/((double)(_dataMax - _dataMin)));
 }
 
 template< typename DataT>
@@ -375,7 +375,7 @@ DataT CT_Grid3D<DataT>::dataFromArray(const size_t &index) const
 }
 
 template< typename DataT>
-DataT CT_Grid3D<DataT>::valueAtXYZ(const float x, const float y, const float z) const
+DataT CT_Grid3D<DataT>::valueAtXYZ(const double x, const double y, const double z) const
 {
     size_t i;
     if (indexAtXYZ(x, y, z, i))
@@ -400,7 +400,7 @@ bool CT_Grid3D<DataT>::setMaxValueAtIndex(const size_t index, const DataT value)
 }
 
 template< typename DataT>
-bool CT_Grid3D<DataT>::setMaxValueAtXYZ(const float x, const float y, const float z, const DataT value)
+bool CT_Grid3D<DataT>::setMaxValueAtXYZ(const double x, const double y, const double z, const DataT value)
 {
     size_t i;
     if (indexAtXYZ(x, y, z, i))
@@ -425,7 +425,7 @@ bool CT_Grid3D<DataT>::setMinValueAtIndex(const size_t index, DataT value)
 }
 
 template< typename DataT>
-bool CT_Grid3D<DataT>::setMinValueAtXYZ(const float x, const float y, const float z, const DataT value)
+bool CT_Grid3D<DataT>::setMinValueAtXYZ(const double x, const double y, const double z, const DataT value)
 {
     size_t i;
     if (indexAtXYZ(x, y, z, i))
@@ -453,7 +453,7 @@ bool CT_Grid3D<DataT>::addValueAtIndex(const size_t index, DataT value)
 }
 
 template< typename DataT>
-bool CT_Grid3D<DataT>::addValueAtXYZ(const float x, const float y, const float z, const DataT value)
+bool CT_Grid3D<DataT>::addValueAtXYZ(const double x, const double y, const double z, const DataT value)
 {
     size_t i;
     if (indexAtXYZ(x, y, z, i))

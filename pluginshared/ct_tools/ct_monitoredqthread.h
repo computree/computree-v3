@@ -11,13 +11,13 @@ class PLUGINSHAREDSHARED_EXPORT CT_MonitoredQThread : public QThread
 public:
     CT_MonitoredQThread();
 
-    inline int getProgress() {return _progress;}
+    inline size_t getProgress() {return _progress;}
 
 signals:
     void progressChanged();
 
 protected:
-    int     _progress;
+    size_t     _progress;
 };
 
 #endif // CT_MONITOREDQTHREAD_H
