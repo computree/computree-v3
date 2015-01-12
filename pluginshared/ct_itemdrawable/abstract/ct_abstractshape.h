@@ -67,10 +67,14 @@ public:
     void setCenterX(double x);
     void setCenterY(double y);
     void setCenterZ(double z);
+    void setCenterCoordinate(const Eigen::Vector3d& center);
+
 
     double getCenterX() const;
     double getCenterY() const;
     double getCenterZ() const;
+    const Eigen::Vector3d& getCenterCoordinate() const;
+
 
     const CT_ShapeData* getPointerData() const;
     const CT_ShapeData& getData() const;

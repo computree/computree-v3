@@ -43,6 +43,10 @@ CT_AbstractShape2D::CT_AbstractShape2D(const CT_OutAbstractSingularItemModel *mo
     {
         data->getBoundingBox(_minCoordinates, _maxCoordinates);
     }
+
+    const Eigen::Vector2d &center2D = data->getCenter();
+    Eigen::Vector3d center(center2D(0), center2D(1), 0);
+    CT_AbstractItemDrawableWithoutPointCloud::setCenterCoordinate(center);
 }
 
 CT_AbstractShape2D::CT_AbstractShape2D(const QString &modelName,
@@ -57,6 +61,10 @@ CT_AbstractShape2D::CT_AbstractShape2D(const QString &modelName,
         _minCoordinates(2) = 0;
         _maxCoordinates(2) = 0;
     }
+
+    const Eigen::Vector2d &center2D = data->getCenter();
+    Eigen::Vector3d center(center2D(0), center2D(1), 0);
+    CT_AbstractItemDrawableWithoutPointCloud::setCenterCoordinate(center);
 }
 
 CT_AbstractShape2D::~CT_AbstractShape2D()
@@ -82,6 +90,15 @@ void CT_AbstractShape2D::setCenterX(double x)
 void CT_AbstractShape2D::setCenterY(double y)
 {
     getDataNotConst()->_center(1) = y;
+}
+
+void CT_AbstractShape2D::setCenterCoordinate(const Eigen::Vector3d &center)
+{
+    getDataNotConst()->_center(0) = center(0);
+    getDataNotConst()->_center(1) = center(1);
+
+    Eigen::Vector3d center3D(center(0), center(1), 0);
+    CT_AbstractItemDrawableWithoutPointCloud::setCenterCoordinate(center3D);
 }
 
 double CT_AbstractShape2D::getCenterX() const

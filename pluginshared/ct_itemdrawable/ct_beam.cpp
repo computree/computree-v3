@@ -78,7 +78,7 @@ CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_Abstract
     _direction = direction.normalized();
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    _centerCoordinate = _origin;
+    setCenterCoordinate(_origin);
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
@@ -112,7 +112,7 @@ CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result, cons
     _direction = direction.normalized();
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    _centerCoordinate = _origin;
+    setCenterCoordinate(_origin);
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }

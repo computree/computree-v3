@@ -185,20 +185,22 @@ public:
      */
     virtual void setCenterZ(double z);
 
+    inline virtual void setCenterCoordinate(const Eigen::Vector3d& center) {_centerCoordinate = center;}
+
     /**
      * @brief Returns the x center coordinate of this item
      */
-    double getCenterX() const;
+    virtual double getCenterX() const;
 
     /**
      * @brief Returns the y center coordinate of this item
      */
-    double getCenterY() const;
+    virtual double getCenterY() const;
 
     /**
      * @brief Returns the z center coordinate of this item
      */
-    double getCenterZ() const;
+    virtual double getCenterZ() const;
 
     inline const Eigen::Vector3d& getCenterCoordinate() const {return _centerCoordinate;}
 
@@ -316,8 +318,6 @@ protected:
      * @brief Overloaded to cast the model to check the validity.
      */
     virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
-protected:
-    Eigen::Vector3d             _centerCoordinate;
 
 private:
 
@@ -329,6 +329,7 @@ private:
     bool                        _autoDelete;
     CT_AbstractItemDrawable     *_parent;
     QMatrix4x4                  m_transformMatrix;
+    Eigen::Vector3d             _centerCoordinate;
 
     CT_AbstractItemDrawableDrawManager  *_baseDrawManager;
     CT_AbstractItemDrawableDrawManager  *_alternativeDrawManager;

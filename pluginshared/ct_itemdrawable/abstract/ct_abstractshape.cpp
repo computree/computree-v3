@@ -77,6 +77,11 @@ void CT_AbstractShape::setCenterZ(double z)
     getDataNotConst()->_center(2) = z;
 }
 
+void CT_AbstractShape::setCenterCoordinate(const Eigen::Vector3d &center)
+{
+    getDataNotConst()->_center = center;
+}
+
 double CT_AbstractShape::getCenterX() const
 {
     return getDataNotConst()->getCenter().x();
@@ -90,6 +95,11 @@ double CT_AbstractShape::getCenterY() const
 double CT_AbstractShape::getCenterZ() const
 {
     return getDataNotConst()->getCenter().z();
+}
+
+const Eigen::Vector3d &CT_AbstractShape::getCenterCoordinate() const
+{
+    return getDataNotConst()->getCenter();
 }
 
 const CT_ShapeData* CT_AbstractShape::getPointerData() const

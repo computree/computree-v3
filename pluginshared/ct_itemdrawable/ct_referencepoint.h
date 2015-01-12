@@ -84,6 +84,7 @@ public:
     void setCenterX(double x);
     void setCenterY(double y);
     void setCenterZ(double z);
+    void setCenterCoordinate(const Eigen::Vector3d& center);
 
 private:
 

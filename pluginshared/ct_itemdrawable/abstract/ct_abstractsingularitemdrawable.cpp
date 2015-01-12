@@ -164,7 +164,7 @@ void CT_AbstractSingularItemDrawable::setBoundingBox(double minx, double miny, d
 
 void CT_AbstractSingularItemDrawable::updateCenterFromBoundingBox()
 {
-    _centerCoordinate = (_maxCoordinates + _minCoordinates) / 2.0;
+    setCenterCoordinate((_maxCoordinates + _minCoordinates) / 2.0);
 }
 
 QString CT_AbstractSingularItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const

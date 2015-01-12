@@ -163,6 +163,13 @@ void CT_ReferencePoint::setCenterZ(double z)
     qDebug() << "setCenterZ n'a aucun aucun effet dans le cas d'un CT_ReferencePoint";
 }
 
+void CT_ReferencePoint::setCenterCoordinate(const Eigen::Vector3d &center)
+{
+    Q_UNUSED(center)
+
+    qDebug() << "setCenterCoordinate n'a aucun aucun effet dans le cas d'un CT_ReferencePoint";
+}
+
 CT_AbstractItemDrawable* CT_ReferencePoint::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_ReferencePoint *ref = new CT_ReferencePoint((const CT_OutAbstractSingularItemModel *)model, result, x(), y(), z(), xyBuffer(), _refId);
