@@ -32,23 +32,7 @@ void CT_StandardPolygon2DDrawManager::draw(GraphicsViewInterface &view, PainterI
 
     if(drawPoints || drawLines)
     {
-        const QVector<Eigen::Vector2d*>&vertices = item.getVertices();
-        int size = vertices.size();
-
-        Eigen::Vector2d *pt1 = vertices.last();
-        for (int i = 0 ; i < size ; i++)
-        {
-            Eigen::Vector2d *pt2 = vertices.at(i);
-            if(drawPoints)
-            {
-                painter.drawPoint((*pt2)(0), (*pt2)(1), zPlane);
-            }
-            if(drawLines)
-            {
-                painter.drawLine((*pt1)(0), (*pt1)(1), zPlane, (*pt2)(0), (*pt2)(1), zPlane);
-            }
-            pt1 = pt2;
-        }
+        ((const CT_Polygon2DData&)item.getData()).draw(painter, drawPoints, drawLines, zPlane);
     }
 }
 

@@ -212,6 +212,30 @@ bool CT_Polygon2DData::contains(double x, double y) const
     return result;
 }
 
+void CT_Polygon2DData::draw(PainterInterface &painter, bool drawPoints, bool drawLines, double zPlane) const
+{
+    if(drawPoints || drawLines)
+    {
+        const QVector<Eigen::Vector2d*>&vertices = getVertices();
+        int size = vertices.size();
+
+        Eigen::Vector2d *pt1 = vertices.last();
+        for (int i = 0 ; i < size ; i++)
+        {
+            Eigen::Vector2d *pt2 = vertices.at(i);
+            if(drawPoints)
+            {
+                painter.drawPoint((*pt2)(0), (*pt2)(1), zPlane);
+            }
+            if(drawLines)
+            {
+                painter.drawLine((*pt1)(0), (*pt1)(1), zPlane, (*pt2)(0), (*pt2)(1), zPlane);
+            }
+            pt1 = pt2;
+        }
+    }
+}
+
 CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVector *indices)
 {
     // Compute triangulation

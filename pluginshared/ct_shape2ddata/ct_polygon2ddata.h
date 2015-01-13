@@ -66,6 +66,8 @@ public:
 
     bool contains(double x, double y) const;
 
+    void draw(PainterInterface &painter, bool drawPoints, bool drawLines, double zPlane) const;
+
     static CT_Polygon2DData* createConvexHull(const CT_PointCloudIndexVector *indices);
     static CT_Polygon2DData* createConvexHull(const CT_DelaunayT &triangulation);
 
