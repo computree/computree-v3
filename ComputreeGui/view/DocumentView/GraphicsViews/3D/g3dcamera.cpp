@@ -25,10 +25,7 @@ float G3DCamera::zNear() const
         return z;
     }
     return z;*/
-<<<<<<< .mine
-    return z;*/
-
-=======>>>>>>> .theirs    return 0.001;
+    return 0.001;
 }
 
 float G3DCamera::zFar() const

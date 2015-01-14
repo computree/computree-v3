@@ -33,7 +33,7 @@ void CT_StandardBox2DDrawManager::draw(GraphicsViewInterface &view, PainterInter
         Eigen::Vector3d min, max;
         item.getData().getBoundingBox(min, max);
 
-        painter.drawRectXY(QRectF(min(0), min(1), item.getWidth(), item.getHeight()), zPlane);
+        painter.drawRectXY(min.head(2), max.head(2), zPlane);
     }
 }
 

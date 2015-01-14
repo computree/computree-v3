@@ -956,7 +956,7 @@ public:
      *
      * This method is useful for analytical intersection in a selection method.
      */
-    virtual void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const = 0;
+    virtual void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const = 0;
 
     virtual void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const = 0;
 

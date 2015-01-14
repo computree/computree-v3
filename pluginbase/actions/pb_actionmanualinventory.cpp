@@ -209,13 +209,7 @@ void PB_ActionManualInventory::draw(GraphicsViewInterface &view, PainterInterfac
                 painter.setColor(Qt::blue);
             }
 
-            const QVector3D &cc = circle->getCenter();
-            const QVector3D &dd = circle->getDirection();
-
-            Eigen::Vector3d center(cc.x(), cc.y(), cc.z());
-            Eigen::Vector3d direction(dd.x(), dd.y(), dd.z());
-
-            painter.drawCircle3D(center,direction, circle->getRadius());
+            painter.drawCircle3D(circle->getCenter(),circle->getDirection(), circle->getRadius());
         }
     }
 

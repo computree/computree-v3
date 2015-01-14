@@ -886,8 +886,9 @@ void PB_ActionSegmentGaps::draw(GraphicsViewInterface &view, PainterInterface &p
 
             if (!option->getShowClustersOnly() || (cluster >= 0 && cluster <= _lastCluster))
             {
-                QRectF rect(x - 0.5*resolution, y - 0.5*resolution, resolution, resolution);
-                painter.fillRectXY(rect, z_val);
+                Eigen::Vector2d topLeft(x - 0.5*resolution, y + 0.5*resolution);
+                Eigen::Vector2d bottomRight(x + 0.5*resolution, y - 0.5*resolution);
+                painter.fillRectXY(topLeft, bottomRight, z_val);
             }
         }
     }
@@ -904,14 +905,15 @@ void PB_ActionSegmentGaps::draw(GraphicsViewInterface &view, PainterInterface &p
 
 void PB_ActionSegmentGaps::drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const float &resolution, const double &z_val)
 {
-    int size = option->getPencilSize();
-    float width = resolution*size;
+    double delta = (0.5 + option->getPencilSize() / 2.0)*resolution;
 
-    Eigen::Vector2d bottom;
-    _clustersGrid->getCellBottomLeftCorner(_activeCol, _activeRow, bottom);
+    double x = _clustersGrid->getCellCenterColCoord(_activeCol);
+    double y = _clustersGrid->getCellCenterLinCoord(_activeRow);
 
-    QRectF rect(bottom(0), bottom(1), width, width);
-    painter.drawRectXY(rect, z_val + 0.0001);
+    Eigen::Vector2d topLeft(x - delta, y + delta);
+    Eigen::Vector2d bottomRight(x + delta, y - delta);
+
+    painter.drawRectXY(topLeft, bottomRight, z_val + 0.0001);
 }
 
 void PB_ActionSegmentGaps::drawOverlay(GraphicsViewInterface &view, QPainter &painter)
