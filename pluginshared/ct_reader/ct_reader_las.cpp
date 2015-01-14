@@ -6,6 +6,7 @@
 #include "ct_itemdrawable/ct_pointsattributesscalarmaskt.h"
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include <QMessageBox>
 
@@ -193,7 +194,9 @@ bool CT_Reader_LAS::protectedReadFile()
             delete m_header;
             m_header = readHeader(error);
 
-            PS_COORDINATES_SYS->setOffset(m_header->minX(), m_header->minY(), m_header->minZ());
+            // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
+            // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
+            QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->m_minX, ((CT_LASHeader*)m_header)->m_minY, ((CT_LASHeader*)m_header)->m_minZ));
 
             setToolTip(((CT_LASHeader*)m_header)->toString());
 
@@ -379,6 +382,7 @@ bool CT_Reader_LAS::protectedReadFile()
 
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+            scene->setCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_LAS_sceneOut, scene);

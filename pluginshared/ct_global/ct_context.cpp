@@ -10,6 +10,42 @@ CT_Context* CT_Context::UNIQUE_INSTANCE = NULL;
 
 CT_Context::CT_Context()
 {
+    m_categoryManager = NULL;
+    m_tmpLog = NULL;
+    m_diam = NULL;
+    m_modelHelper = NULL;
+    m_guiManager = NULL;
+    m_coreInterface = NULL;
+    m_repositoryManager = NULL;
+    m_csManager = NULL;
+    m_ZPlaneFor2DShapes = 0;
+}
+
+CT_Context::~CT_Context()
+{
+    delete m_repositoryManager;
+    delete m_diam;
+    delete m_categoryManager;
+    delete m_tmpLog;
+}
+
+CT_RepositoryManager* CT_Context::repositoryManager() const
+{
+    return m_repositoryManager;
+}
+
+GuiManagerInterface* CT_Context::guiManager() const
+{
+    return m_guiManager;
+}
+
+DocumentManagerInterface* CT_Context::documentManager() const
+{
+    return (m_guiManager == NULL) ? NULL : m_guiManager->documentManager();
+}
+
+void CT_Context::init()
+{
     m_categoryManager = new CT_CategoryManager();
 
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataValue()));
@@ -49,7 +85,6 @@ CT_Context::CT_Context()
     m_tmpLog = new CT_TemporaryLog();
     m_diam = new CT_DefaultItemAttributeManager();
     m_modelHelper = new CT_ModelSearchHelper();
-    m_csManager = new CT_CoordinateSystemManager();
 
     m_guiManager = NULL;
     m_coreInterface = NULL;
@@ -57,30 +92,9 @@ CT_Context::CT_Context()
     // initialisation du gestionnaire de dépot
     m_repositoryManager = new CT_RepositoryManager();
 
+    m_csManager = new CT_CoordinateSystemManager();
+
     m_ZPlaneFor2DShapes = 0;
-}
-
-CT_Context::~CT_Context()
-{
-    delete m_repositoryManager;
-    delete m_diam;
-    delete m_categoryManager;
-    delete m_tmpLog;
-}
-
-CT_RepositoryManager* CT_Context::repositoryManager() const
-{
-    return m_repositoryManager;
-}
-
-GuiManagerInterface* CT_Context::guiManager() const
-{
-    return m_guiManager;
-}
-
-DocumentManagerInterface* CT_Context::documentManager() const
-{
-    return (m_guiManager == NULL) ? NULL : m_guiManager->documentManager();
 }
 
 CT_Repository* CT_Context::repository() const

@@ -32,7 +32,7 @@ public:
     boost::shared_ptr< std::vector<int> > getPCLIndices() const;
 #endif
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 
 private:
 
@@ -55,7 +55,8 @@ private:
     mutable CT_AbstractCloudIndex::size_type    m_temporary;
 
 protected:
-    bool internalResize(const size_t &newSize);
+    void erase(const size_t &beginIndex, const size_t &sizes);
+    void resize(const size_t &newSize);
     void internalShiftAll(const size_t &offset, const bool &negativeOffset);
     void internalClear();
 };

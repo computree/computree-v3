@@ -59,7 +59,7 @@ protected:
     /**
      * @brief delete all elements of the cloud between beginIndex and (beginIndex+size-1) included.
      */
-    void erase(const size_t &beginIndex, const size_t &s);
+    void erase(const size_t &beginIndex, const size_t &sizes);
 
     /**
      * @brief resize the collection

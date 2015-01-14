@@ -10,6 +10,7 @@
 #include <QFileInfo>
 
 #include "ct_global/ct_context.h"
+#include "ct_tools/ct_numerictostringconversiont.h"
 
 PB_ASCRGBExporter::PB_ASCRGBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -84,6 +85,8 @@ bool PB_ASCRGBExporter::protectedExportToFile()
         int totalToExport = itemDrawableToExport().size();
         int nExported = 0;
 
+        CT_AbstractCoordinateSystem::realEx cx, cy, cz;
+
         // write data
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
@@ -102,10 +105,13 @@ bool PB_ASCRGBExporter::protectedExportToFile()
             while(begin != end)
             {
                 const CT_Point &point = begin.cT();
+                size_t globalIndex = begin.cIndex();
 
-                txtStream << point(0) << " ";
-                txtStream << point(1) << " ";
-                txtStream << point(2) << " ";
+                PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(point(CT_Point::X), point(CT_Point::Y), point(CT_Point::Z), cx, cy, cz);
+
+                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cx) << " ";
+                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cy) << " ";
+                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cz) << " ";
 
                 if(cc == NULL)
                 {

@@ -609,7 +609,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     setProgress(100);
 
-    CT_ABSTRACT_PCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(uspc);
+    CT_Repository::CT_AbstractPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(uspc);
 
     CT_ResultGroup *out_res = getOutResultList().first();
     QList<CT_AbstractSingularItemDrawable*> lAdd;

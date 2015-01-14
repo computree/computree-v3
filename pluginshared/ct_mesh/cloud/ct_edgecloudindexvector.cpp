@@ -4,7 +4,7 @@ CT_EdgeCloudIndexVector::CT_EdgeCloudIndexVector(const size_t &size) : CT_Abstra
 {
 }
 
-CT_AbstractCloudIndex* CT_EdgeCloudIndexVector::copy() const
+CT_AbstractCloud* CT_EdgeCloudIndexVector::copy() const
 {
     size_t s = size();
 

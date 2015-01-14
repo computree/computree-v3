@@ -12,6 +12,9 @@ public:
     virtual float zFar() const;
 
     void setBoundingBox(const qglviewer::Vec& min, const qglviewer::Vec& max);
+
+    void loadModelViewMatrix(bool reset=true) const;
+
 private:
     qglviewer::Vec     _min;
     qglviewer::Vec     _max;

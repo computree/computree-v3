@@ -15,6 +15,8 @@
 # include <GL/glu.h>
 #endif
 
+// TODO !!! IMPORTANT !!! : use a shader to move points in real coordinates (coordinate system matrix)
+
 /**
  * @brief A painter that draw only points or faces or edges with names (the name is the index of the point/face/edge)
  */
@@ -95,42 +97,39 @@ public:
     void enableMultMatrix(bool e);
 
     void pushMatrix();
-    void multMatrix(const QMatrix4x4 &matrix);
+    void multMatrix(const Eigen::Matrix4d &matrix);
     void popMatrix();
 
-    void setPointSize(double size);
-    void setDefaultPointSize(double size);
+    void setPointSize(float size);
+    void setDefaultPointSize(float size);
     void restoreDefaultPointSize();
 
     void enableSetPointSize(bool enable);
     void enableSetForcedPointSize(bool enable);
 
-    void translate(double x, double y, double z);
-    void rotate(double alpha, double x, double y, double z);
-    void scale(double x, double y, double z);
+    void translate(const double &x, const double &y, const double &z);
+    void rotate(const double &alpha, const double &x, const double &y, const double &z);
+    void scale(const double &x, const double &y, const double &z);
 
     void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
-    void drawPointCloud(const CT_AbstractPointCloud *pc,
-                        const CT_AbstractCloudIndex *pci,
-                        int fastestIncrement);
+    void drawPointCloud(const CT_AbstractCloudIndex *pci);
 
     void drawMesh(const CT_AbstractMeshModel *mesh);
     void drawFaces(const CT_AbstractMeshModel *mesh);
     void drawEdges(const CT_AbstractMeshModel *mesh);
-    void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
+    void drawPoints(const CT_AbstractMeshModel *mesh);
 
     // called from a mesh to draw Faces
-    void beginDrawMultipleTriangle();
-    void drawTriangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3);
-    void drawTriangle(const float *p1, const float *p2, const float *p3);
-    void endDrawMultipleTriangle();
+    void drawTriangle(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, const double &x3, const double &y3, const double &z3);
+    void drawTriangle(const size_t &p1GlobalIndex,
+                      const size_t &p2GlobalIndex,
+                      const size_t &p3GlobalIndex);
 
     // called from a mesh to draw Edges
-    void beginDrawMultipleLine();
-    void drawLine(double x1, double y1, double z1, double x2, double y2, double z2);
-    void drawLine(const float *p1, const float *p2);
-    void endDrawMultipleLine();
+    void drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2);
+    void drawLine(const size_t &p1GlobalIndex,
+                  const size_t &p2GlobalIndex);
 
     /*********** METHOD NOT USED **********/
 
@@ -145,30 +144,26 @@ public:
     void enableSetColor(bool enable) { Q_UNUSED(enable) }
     void enableSetForcedColor(bool enable) { Q_UNUSED(enable) }
 
-    void drawPoint(double x, double y, double z) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) }
+    void drawPoint(const double &x, const double &y, const double &z) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) }
     void drawPoint(double *p) { Q_UNUSED(p) }
-    void drawPoint(float *p) { Q_UNUSED(p) }
+    void drawPoint(const size_t &globalIndex) { Q_UNUSED(globalIndex) }
 
-    void beginMultiplePoints() {}
-    void addPoint(float *p) { Q_UNUSED(p) }
-    void endMultiplePoints() {}
+    void drawCircle(const double &x, const double &y, const double &z, const double &radius) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) }
+    void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) }
 
-    void drawCircle(double x, double y, double z, double radius) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) }
-    void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) }
+    void drawCylinder(const double &x, const double &y, const double &z, const double &radius, const double &height) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) Q_UNUSED(height) }
+    void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius, const double &height) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) Q_UNUSED(height) }
 
-    void drawCylinder(double x, double y, double z, double radius, double height) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) Q_UNUSED(height) }
-    void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) Q_UNUSED(height) }
+    void drawEllipse(const double &x, const double &y, const double &z, const double &radiusA, const double &radiusB) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radiusA) Q_UNUSED(radiusB) }
 
-    void drawEllipse(double x, double y, double z, double radiusA, double radiusB) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radiusA) Q_UNUSED(radiusB) }
+    void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2) { Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) }
+    void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, GLenum faces, GLenum mode ) { Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(faces) Q_UNUSED(mode) }
 
-    void drawCube(double x1, double y1, double z1, double x2, double y2, double z2) { Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) }
-    void drawCube(double x1, double y1, double z1, double x2, double y2, double z2, GLenum faces, GLenum mode ) { Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(faces) Q_UNUSED(mode) }
-
-    void drawPyramid(double topX, double topY, double topZ,
-                     double base1X, double base1Y, double base1Z,
-                     double base2X, double base2Y, double base2Z,
-                     double base3X, double base3Y, double base3Z,
-                     double base4X, double base4Y, double base4Z) {
+    void drawPyramid(const double &topX, const double &topY, const double &topZ,
+                     const double &base1X, const double &base1Y, const double &base1Z,
+                     const double &base2X, const double &base2Y, const double &base2Z,
+                     const double &base3X, const double &base3Y, const double &base3Z,
+                     const double &base4X, const double &base4Y, const double &base4Z) {
          Q_UNUSED(topX) Q_UNUSED(topY) Q_UNUSED(topZ)
          Q_UNUSED(base1X) Q_UNUSED(base1Y) Q_UNUSED(base1Z)
          Q_UNUSED(base2X) Q_UNUSED(base2Y) Q_UNUSED(base2Z)
@@ -176,67 +171,67 @@ public:
          Q_UNUSED(base4X) Q_UNUSED(base4Y) Q_UNUSED(base4Z)
     }
 
-    void drawPartOfSphere ( double centerX, double centerY, double centerZ,
-                            double radius, double initTheta, double endTheta,
-                            double initPhi, double endPhi, bool radians = true ) {
+    void drawPartOfSphere ( const double &centerX, const double &centerY, const double &centerZ,
+                            const double &radius, const double &initTheta, const double &endTheta,
+                            const double &initPhi, const double &endPhi, bool radians = true ) {
         Q_UNUSED(centerX) Q_UNUSED(centerY) Q_UNUSED(centerZ)
         Q_UNUSED(radius) Q_UNUSED(initTheta) Q_UNUSED(endTheta)
         Q_UNUSED(initPhi) Q_UNUSED(endPhi) Q_UNUSED(radians)
     }
 
-    void drawRectXY(const QRectF &rectangle, double z) { Q_UNUSED(rectangle) Q_UNUSED(z) }
-    void fillRectXY(const QRectF &rectangle, double z) { Q_UNUSED(rectangle) Q_UNUSED(z) }
+    void drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(z) }
+    void fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(z) }
 
-    void drawRectXZ(const QRectF &rectangle, double y) { Q_UNUSED(rectangle) Q_UNUSED(y) }
-    void fillRectXZ(const QRectF &rectangle, double y) { Q_UNUSED(rectangle) Q_UNUSED(y) }
+    void drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(y) }
+    void fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(y) }
 
-    void drawRectYZ(const QRectF &rectangle, double x) { Q_UNUSED(rectangle) Q_UNUSED(x) }
-    void fillRectYZ(const QRectF &rectangle, double x) { Q_UNUSED(rectangle) Q_UNUSED(x) }
+    void drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(x) }
+    void fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x) { Q_UNUSED(topLeft) Q_UNUSED(bottomRight) Q_UNUSED(x) }
 
     void beginPolygon() {}
-    void addPointToPolygon(float *p) { Q_UNUSED(p) }
+    void addPointToPolygon(const double &x, const double &y, const double &z) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) }
     void endPolygon() {}
 
-    void drawQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 ) {
-         Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1)
-                Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
-                Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3)
-                Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4)
+    void drawQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 ) {
+        Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
+        Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3)
+        Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4)
     }
 
-    void fillQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 ) {
+    void fillQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 ) {
 
         Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1)
-               Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
-               Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3)
-               Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
+        Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3)
+        Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4)
     }
 
-    void drawQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 ) {
+    void drawQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 ) {
 
         Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(r1) Q_UNUSED(g1) Q_UNUSED(g1) Q_UNUSED(b1)
-               Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(r2) Q_UNUSED(g2) Q_UNUSED(g2) Q_UNUSED(b2)
-               Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3) Q_UNUSED(r3) Q_UNUSED(g3) Q_UNUSED(g3) Q_UNUSED(b3)
-               Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4) Q_UNUSED(r4) Q_UNUSED(g4) Q_UNUSED(g4) Q_UNUSED(b4)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(r2) Q_UNUSED(g2) Q_UNUSED(g2) Q_UNUSED(b2)
+        Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3) Q_UNUSED(r3) Q_UNUSED(g3) Q_UNUSED(g3) Q_UNUSED(b3)
+        Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4) Q_UNUSED(r4) Q_UNUSED(g4) Q_UNUSED(g4) Q_UNUSED(b4)
     }
 
-    void fillQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 ) {
+    void fillQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 ) {
         Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1) Q_UNUSED(r1) Q_UNUSED(g1) Q_UNUSED(g1) Q_UNUSED(b1)
-               Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(r2) Q_UNUSED(g2) Q_UNUSED(g2) Q_UNUSED(b2)
-               Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3) Q_UNUSED(r3) Q_UNUSED(g3) Q_UNUSED(g3) Q_UNUSED(b3)
-               Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4) Q_UNUSED(r4) Q_UNUSED(g4) Q_UNUSED(g4) Q_UNUSED(b4)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2) Q_UNUSED(r2) Q_UNUSED(g2) Q_UNUSED(g2) Q_UNUSED(b2)
+        Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3) Q_UNUSED(r3) Q_UNUSED(g3) Q_UNUSED(g3) Q_UNUSED(b3)
+        Q_UNUSED(x4) Q_UNUSED(y4) Q_UNUSED(z4) Q_UNUSED(r4) Q_UNUSED(g4) Q_UNUSED(g4) Q_UNUSED(b4)
     }
 
 private:

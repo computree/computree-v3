@@ -126,6 +126,11 @@ void CT_Scene::setTransformMatrix(const QMatrix4x4 &matrix)
     setMatrix4x4(matrix);
 }
 
+void CT_Scene::setCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs)
+{
+    m_spcs = spcs;
+}
+
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_Scene)
 #endif

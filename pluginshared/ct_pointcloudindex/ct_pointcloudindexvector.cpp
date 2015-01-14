@@ -31,7 +31,7 @@ CT_PointCloudIndexVector::CT_PointCloudIndexVector(size_t size) : CT_AbstractPoi
 {
 }
 
-CT_AbstractCloudIndex* CT_PointCloudIndexVector::copy() const
+CT_AbstractCloud* CT_PointCloudIndexVector::copy() const
 {
     size_t s = size();
 

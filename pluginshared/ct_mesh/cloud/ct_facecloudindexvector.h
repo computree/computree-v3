@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_FaceCloudIndexVector : public CT_AbstractFace
 public:
     CT_FaceCloudIndexVector(const size_t &size = 0);
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #endif // CT_FACECLOUDINDEXVECTOR_H

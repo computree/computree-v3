@@ -102,7 +102,7 @@ public:
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selected();
 
 private:
-    QSharedPointer<CT_StdCloudRegisteredT<GLubyte> >            m_infoR;
+    QSharedPointer< CT_StdCloudRegisteredT< CT_StandardCloudStdVectorT<GLubyte> > >            m_infoR;
     CT_StandardCloudStdVectorT<GLubyte>                         *m_infoCloud;
 
     CT_Repository::SyncCloudWith                                m_syncWith;

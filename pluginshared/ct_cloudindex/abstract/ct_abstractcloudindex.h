@@ -1,8 +1,7 @@
 #ifndef CT_ABSTRACTCLOUDINDEX_H
 #define CT_ABSTRACTCLOUDINDEX_H
 
-#include "pluginShared_global.h"
-#include "interfaces.h"
+#include "ct_cloud/abstract/ct_abstractcloud.h"
 
 #ifdef USE_PCL
 #include "pcl/point_cloud.h"
@@ -11,7 +10,7 @@
 /**
  * A cloud of index (size_t)
  */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudIndex
+class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudIndex : public CT_AbstractCloud
 {
 public:
 
@@ -34,11 +33,6 @@ public:
      * @brief return the sort type
      */
     SortType sortType() const;
-
-    /**
-     * @brief return the size of the cloud index
-     */
-    virtual size_t size() const = 0;
 
     /**
       * \brief return the index in the cloud at index 'i'.
@@ -117,23 +111,11 @@ public:
      */
     bool mustBeUnregisteredWhenIsEmpty() const;
 
-    /**
-     * @brief return a copy
-     */
-    virtual CT_AbstractCloudIndex* copy() const = 0;
-
 private:
     SortType        m_sortType;
     bool            m_unregisterWhenEmpty;
 
 protected:
-
-    template<typename T, typename CLOUD> friend class CT_GlobalCloudManagerT;
-
-    /**
-     * @brief resize the cloud index (Called by CT_GlobalCloudManagerT)
-     */
-    virtual bool internalResize(const size_t &newSize) = 0;
 
     void internalSetSortType(SortType st);
 

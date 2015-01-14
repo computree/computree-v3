@@ -195,7 +195,7 @@ bool CT_AbstractExporter::exportToFile()
     if(!protectedExportToFile())
         return false;
 
-    if(!PS_COORDINATES_SYS->wasUsed())
+    if(!PS_COORDINATES_SYS_MANAGER->wasAtLeastOneUsed())
         PS_LOG->addErrorMessage(LogInterface::exporter, tr("Exporter error ! The exporter has not used the coordinate system !"));
 
     d->_progress = 100;

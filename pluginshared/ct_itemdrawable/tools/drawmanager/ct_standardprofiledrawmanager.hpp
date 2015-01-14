@@ -90,7 +90,10 @@ void CT_StandardProfileDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
                 }
 
                 painter.drawPoint(center(0), center(1), center(2));
-                painter.drawCylinder3D(center, direction, radius, item.resolution());
+                Eigen::Vector3d cc(center.x(), center.y(), center.z());
+                Eigen::Vector3d dd(direction.x(), direction.y(), direction.z());
+
+                painter.drawCylinder3D(cc, dd, radius, item.resolution());
             }
             painter.setColor(color);
 

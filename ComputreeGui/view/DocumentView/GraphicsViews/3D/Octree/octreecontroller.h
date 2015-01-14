@@ -38,7 +38,7 @@ public:
      * @param min : NULL if you want than min and max value was calculated otherwise pass a pointer to the min corner
      * @param max : NULL if you want than min and max value was calculated otherwise pass a pointer to the max corner
      */
-    void addPoints(const CT_AbstractPointCloudIndex *index, QVector3D *min = NULL, QVector3D *max = NULL);
+    void addPoints(const CT_AbstractPointCloudIndex *index, Eigen::Vector3d *min = NULL, Eigen::Vector3d *max = NULL);
 
     /**
      * @brief Remove points from the octree.
@@ -48,7 +48,7 @@ public:
     /**
      * @brief Get the index of the point in the octree
      */
-    void indexOfPoint(const CT_Point &point, int &x, int &y, int &z);
+    void indexOfPoint(const CT_Point &point, int &ix, int &iy, int &iz);
 
     /**
      * @brief Returns true if the octree has points
@@ -84,12 +84,12 @@ public:
     /**
      * @brief The min corner of the octree
      */
-    QVector3D octreeMinCorner() const;
+    Eigen::Vector3d octreeMinCorner() const;
 
     /**
      * @brief The max corner of the octree
      */
-    QVector3D octreeMaxCorner() const;
+    Eigen::Vector3d octreeMaxCorner() const;
 
     /**
      * @brief Returns true if the octree must be reconstructed. (If new min or max is greather or lower than old min or max OR if number of cells has changed)
@@ -117,17 +117,17 @@ private:
     class Corner {
     public:
         Corner() { m_x = 0; m_y = 0; m_z = 0;}
-        Corner(double x, double y, double z) { m_x = x; m_y = y; m_z = z; }
+        Corner(const double &x, const double &y, const double &z) { m_x = x; m_y = y; m_z = z; }
 
         bool operator<(const Corner &o) const { return ((m_x < o.m_x) && (m_y < o.m_y) && (m_z < o.m_z)); }
         bool operator>(const Corner &o) const { return ((m_x > o.m_x) && (m_y > o.m_y) && (m_z > o.m_z)); }
         bool operator!=(const Corner &o) const { return ((o.m_x != m_x) || (o.m_y != m_y) || (o.m_z != m_z)); }
         bool operator==(const Corner &o) const { return ((o.m_x == m_x) && (o.m_y == m_y) && (o.m_z == m_z)); }
-        void operator=(const QVector3D &o) { m_x = o.x(); m_y = o.y(); m_z = o.z(); }
+        void operator=(const Eigen::Vector3d &o) { m_x = o(0); m_y = o(1); m_z = o(2); }
 
-        inline void setX(double x) { m_x = x; }
-        inline void setY(double y) { m_y = y; }
-        inline void setZ(double z) { m_z = z; }
+        inline void setX(const double &x) { m_x = x; }
+        inline void setY(const double &y) { m_y = y; }
+        inline void setZ(const double &z) { m_z = z; }
 
         inline double x() const { return m_x; }
         inline double y() const { return m_y; }
@@ -165,12 +165,12 @@ private:
     /**
      * @brief Return the distance between a point and a face of the frustrum
      */
-    float distanceToFrustumPlane(int index, const double &x, const double &y, const double &z, GLdouble planeCoefficients[6][4]) const;
+    double distanceToFrustumPlane(int index, const double &x, const double &y, const double &z, GLdouble planeCoefficients[6][4]) const;
 
     /**
      * @brief Return true if an aabox is visible in frustrum
      */
-    bool aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, GLdouble m_planeCoefficients[6][4], bool *entirely = NULL) const;
+    bool aaBoxIsVisible(const Eigen::Vector3d  &p1, const Eigen::Vector3d  &p2, GLdouble m_planeCoefficients[6][4], bool *entirely = NULL) const;
 
     void resetNewMinAndMax();
 

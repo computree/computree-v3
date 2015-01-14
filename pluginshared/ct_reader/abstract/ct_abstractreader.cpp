@@ -125,7 +125,7 @@ bool CT_AbstractReader::readFile()
 
     m_error = protectedReadFile();
 
-    if(!m_error && !PS_COORDINATES_SYS->wasUsed())
+    if(!m_error && !PS_COORDINATES_SYS_MANAGER->wasAtLeastOneUsed())
         PS_LOG->addErrorMessage(LogInterface::reader, tr("Reader error ! The reader has not used the coordinate system !"));
 
     emit finished();

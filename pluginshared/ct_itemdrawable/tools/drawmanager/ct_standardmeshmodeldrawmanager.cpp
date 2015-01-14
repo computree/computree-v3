@@ -5,16 +5,6 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
-#include <QtOpenGL>
-
-// GLU was removed from Qt in version 4.8
-#ifdef Q_OS_MAC
-# include <OpenGL/glu.h>
-#else
-# include <GL/glu.h>
-#endif
-
-
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_FACES = CT_StandardMeshModelDrawManager::staticInitConfigShowFaces();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_EDGES = CT_StandardMeshModelDrawManager::staticInitConfigShowEdges();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_POINTS = CT_StandardMeshModelDrawManager::staticInitConfigShowPoints();
@@ -23,21 +13,22 @@ CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawCon
 {
 }
 
-// add overloaded functions which call the underlying OpenGL function
-inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
-inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
-
-// add an overload for QMatrix4x4 for convenience
-inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
-
 void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
     Q_UNUSED(view)
 
     const CT_AbstractMeshModel &item = dynamic_cast<const CT_AbstractMeshModel&>(itemDrawable);
 
-    glPushMatrix();
-    glMultMatrix(item.transformMatrix());
+    painter.pushMatrix();
+
+    QMatrix4x4 m = item.transformMatrix();
+    Eigen::Matrix4d em;
+    em << m(0, 0), m(0, 1), m(0, 2), m(0, 3),
+          m(1, 0), m(1, 1), m(1, 2), m(1, 3),
+          m(2, 0), m(2, 1), m(2, 2), m(2, 3),
+          m(3, 0), m(3, 1), m(3, 2), m(3, 3);
+
+    painter.multMatrix(em);
 
     bool showFaces = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_FACES).toBool();
     bool showEdges = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_EDGES).toBool();
@@ -50,9 +41,9 @@ void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterI
         painter.drawEdges(&item);
 
     if(showPoints)
-        painter.drawPoints(&item, 4);
+        painter.drawPoints(&item);
 
-    glPopMatrix();
+    painter.popMatrix();
 }
 
 void CT_StandardMeshModelDrawManager::drawFaces(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -72,10 +63,6 @@ void CT_StandardMeshModelDrawManager::drawFaces(GraphicsViewInterface &view, Pai
 
 void CT_StandardMeshModelDrawManager::beginDrawMultipleFace(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
-    if((mesh == NULL) || (mesh->pFace() == NULL))
-        return;
-
-    painter.beginDrawMultipleTriangle();
 }
 
 void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -85,15 +72,11 @@ void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsVi
 
     const CT_Face &face = mesh->face().constTAt(index);
 
-    painter.drawTriangle(&((*face.pointAt(0))(0)), &((*face.pointAt(1))(0)), &((*face.pointAt(2))(0)));
+    painter.drawTriangle(face.iPointAt(0), face.iPointAt(1), face.iPointAt(2));
 }
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleFace(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
-    if((mesh == NULL) || (mesh->pFace() == NULL))
-        return;
-
-    painter.endDrawMultipleTriangle();
 }
 
 void CT_StandardMeshModelDrawManager::drawEdges(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -113,10 +96,6 @@ void CT_StandardMeshModelDrawManager::drawEdges(GraphicsViewInterface &view, Pai
 
 void CT_StandardMeshModelDrawManager::beginDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
-    if((mesh == NULL) || (mesh->pHedge() == NULL))
-        return;
-
-    painter.beginDrawMultipleLine();
 }
 
 void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -126,15 +105,11 @@ void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsVi
 
     const CT_Edge &edge = mesh->hedge().constTAt(index);
 
-    painter.drawLine(&((*edge.pointAt(0))(0)), &((*edge.pointAt(1))(0)));
+    painter.drawLine(edge.iPointAt(0), edge.iPointAt(1));
 }
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
-    if((mesh == NULL) || (mesh->pHedge() == NULL))
-        return;
-
-    painter.endDrawMultipleLine();
 }
 
 CT_ItemDrawableConfiguration CT_StandardMeshModelDrawManager::createDrawConfiguration(QString drawConfigurationName) const

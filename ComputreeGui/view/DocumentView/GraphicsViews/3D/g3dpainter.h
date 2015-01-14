@@ -75,18 +75,18 @@ public:
      *        no call to glBegin multiple times.
      */
     enum MultiDrawableType {
-        POINT_CLOUD = 0,    // is at hand because it uses a shader      (draw only point cloud)
-        FACE,               // is at hand because it CAN uses a shader  (draw only face)
-        EDGE,               // is at hand because it CAN uses a shader  (draw only edge)
+        POINT,              // points
+        POINT_FROM_PC,      // points from index in the global point cloud
+        LINE,               // lines
+        LINE_FROM_PC,       // lines from index in the global point cloud
+        TRIANGLE,           // triangles
+        TRIANGLE_FROM_PC,   // triangles from index in the global point cloud
+        QUAD,               // quads
+        QUAD_FROM_PC,       // quads from index in the global point cloud
 
-        POINT,              // (draw only point)
-        LINE,               // (draw only line)
-        TRIANGLE,           // (draw only triangle)
-        QUADS,              // (draw only quads)
+        OTHER,              // draw only other elements
 
-        NO_MULTI_AVAILABLE, // (draw only othe elements)
-
-        DRAW_ALL            // (draw all)
+        DRAW_ALL            // draw all
     };
 
     G3DPainter();
@@ -142,6 +142,11 @@ public:
     void setDrawFastest(bool enable);
     bool drawFastest() const;
 
+    /**
+     * @brief Call this method to stop the draw (call the glEnd() function and release the shader).
+     */
+    void stopDrawMultiple();
+
     virtual void save();
     virtual void restore();
 
@@ -151,11 +156,11 @@ public:
     virtual void enableMultMatrix(bool e);
 
     virtual void pushMatrix();
-    virtual void multMatrix(const QMatrix4x4 &matrix);
+    virtual void multMatrix(const Eigen::Matrix4d &matrix);
     virtual void popMatrix();
 
-    virtual void setPointSize(double size);
-    virtual void setDefaultPointSize(double size);
+    virtual void setPointSize(float size);
+    virtual void setDefaultPointSize(float size);
     virtual void restoreDefaultPointSize();
 
     virtual void setPen(const QPen &pen);
@@ -178,124 +183,124 @@ public:
     virtual void enableSetPointSize(bool enable);
     virtual void enableSetForcedPointSize(bool enable);
 
-    virtual void translate(double x, double y, double z);
-    virtual void rotate(double alpha, double x, double y, double z);
-    virtual void translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction);
-    virtual void scale(double x, double y, double z);
+    virtual void translate(const double &x, const double &y, const double &z);
+    virtual void rotate(const double &alpha, const double &x, const double &y, const double &z);
+    virtual void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
+    virtual void scale(const double &x, const double &y, const double &z);
+
+    ///////// GL_POINTS //////////
+
+    virtual void drawPoint(const double &x, const double &y, const double &z);
+    virtual void drawPoint(double *p);
+    virtual void drawPoint(const size_t &globalIndex);
+
+    virtual void drawPoints(const CT_AbstractMeshModel *mesh);
+
+    virtual void drawPointCloud(const CT_AbstractCloudIndex *pci);
 
     virtual void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
-    virtual void drawPoint(double x, double y, double z);
-    virtual void drawPoint(double *p);
-    virtual void drawPoint(float *p);
+    ///////// GL_QUADS //////////
 
-    virtual void drawPointCloud(const CT_AbstractPointCloud *pc,
-                        const CT_AbstractCloudIndex *pci,
-                        int fastestIncrement);
+    virtual void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2);
+    virtual void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, GLenum faces, GLenum mode );
 
-    virtual void drawMesh(const CT_AbstractMeshModel *mesh);
-    virtual void drawFaces(const CT_AbstractMeshModel *mesh);
+    virtual void drawQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 );
+
+    virtual void fillQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 );
+
+    virtual void drawQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 );
+
+    virtual void fillQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 );
+
+    virtual void drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z);
+    virtual void fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z);
+
+    virtual void drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y);
+    virtual void fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y);
+
+    virtual void drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x);
+    virtual void fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x);
+
+    ///////// GL_LINES //////////
+
+    virtual void drawLine(const double &x1, const double &y1, const double &z1,
+                          const double &x2, const double &y2, const double &z2);
+
+    virtual void drawLine(const size_t &p1GlobalIndex,
+                          const size_t &p2GlobalIndex);
+
     virtual void drawEdges(const CT_AbstractMeshModel *mesh);
-    virtual void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement);
 
-    virtual void beginMultiplePoints();
-    virtual void addPoint(float *p);
-    virtual void endMultiplePoints();
+    virtual void drawCircle(const double &x, const double &y, const double &z, const double &radius);
+    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius);
 
-    virtual void beginDrawMultipleLine();
-    virtual void drawLine(double x1, double y1, double z1, double x2, double y2, double z2);
-    virtual void drawLine(const float *p1, const float *p2);
-    virtual void endDrawMultipleLine();
-
-    virtual void drawCircle(double x, double y, double z, double radius);
-    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius);
-
-    virtual void drawCylinder(double x, double y, double z, double radius, double height);
-    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height);
-
-    virtual void drawEllipse(double x, double y, double z, double radiusA, double radiusB);
-
-    virtual void beginDrawMultipleTriangle();
-    virtual void drawTriangle(double x1, double y1, double z1,
-                                  double x2, double y2, double z2,
-                                  double x3, double y3, double z3);
-    virtual void drawTriangle(const float *p1,
-                              const float *p2,
-                              const float *p3);
-    virtual void endDrawMultipleTriangle();
-
-
-    /**  \brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
-      *
-      */
-    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2);
-
-    /**  \brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
-      *  The drawing mode is given by the user (GL_POINT, GL_LINE or GL_FILL)
-      */
-    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2, GLenum faces, GLenum mode ) { glPolygonMode(faces, mode); drawCube(x1, y1, z1, x2, y2, z2); }
-
-    /**  \brief Draw a pyramid given its top point and its base
-      */
-    virtual void drawPyramid(double topX, double topY, double topZ,
-                     double base1X, double base1Y, double base1Z,
-                     double base2X, double base2Y, double base2Z,
-                     double base3X, double base3Y, double base3Z,
-                     double base4X, double base4Y, double base4Z);
-
-    /**  \brief Draw a part of a sphere given the angles bounds
-      */
-    virtual void drawPartOfSphere ( double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians = true );
-
-    virtual void drawRectXY(const QRectF &rectangle, double z);
-    virtual void fillRectXY(const QRectF &rectangle, double z);
-
-    virtual void drawRectXZ(const QRectF &rectangle, double y);
-    virtual void fillRectXZ(const QRectF &rectangle, double y);
-
-    virtual void drawRectYZ(const QRectF &rectangle, double x);
-    virtual void fillRectYZ(const QRectF &rectangle, double x);
+    virtual void drawEllipse(const double &x, const double &y, const double &z, const double &radiusA, const double &radiusB);
 
     virtual void beginPolygon();
-    virtual void addPointToPolygon(float *p);
+    virtual void addPointToPolygon(const double &x, const double &y, const double &z);
     virtual void endPolygon();
 
-    virtual void drawQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 );
+    ///////// GL_TRIANGLES //////////
 
-    virtual void fillQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 );
+    virtual void drawTriangle(const double &x1, const double &y1, const double &z1,
+                              const double &x2, const double &y2, const double &z2,
+                              const double &x3, const double &y3, const double &z3);
 
-    virtual void drawQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 );
+    virtual void drawTriangle(const size_t &p1GlobalIndex,
+                              const size_t &p2GlobalIndex,
+                              const size_t &p3GlobalIndex);
 
-    virtual void fillQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 );
+    virtual void drawFaces(const CT_AbstractMeshModel *mesh);
+    virtual void drawMesh(const CT_AbstractMeshModel *mesh);
 
+    ///////// OTHER //////////
+
+    virtual void drawCylinder(const double &x, const double &y, const double &z, const double &radius, const double &height);
+    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius, const double &height);
+
+    virtual void drawPyramid(const double &topX, const double &topY, const double &topZ,
+                             const double &base1X, const double &base1Y, const double &base1Z,
+                             const double &base2X, const double &base2Y, const double &base2Z,
+                             const double &base3X, const double &base3Y, const double &base3Z,
+                             const double &base4X, const double &base4Y, const double &base4Z);
+
+    virtual void drawPartOfSphere(const double &centerX, const double &centerY, const double &centerZ,
+                                  const double &radius,
+                                  const double &initTheta, const double &endTheta,
+                                  const double &initPhi, const double &endPhi,
+                                  bool radians = true );
 protected:
+
+    enum GlBeginType {
+        GL_BEGIN_POINT,                 // glBegin(GL_POINTS)
+        GL_BEGIN_POINT_FROM_PC,         // glBegin(GL_POINTS) but with shader
+        GL_BEGIN_LINE,                  // glBegin(GL_LINES)
+        GL_BEGIN_LINE_FROM_PC,          // glBegin(GL_LINES) but with shader
+        GL_BEGIN_TRIANGLE,              // glBegin(GL_TRIANGLES)
+        GL_BEGIN_TRIANGLE_FROM_PC,      // glBegin(GL_TRIANGLES) but with shader
+        GL_BEGIN_QUAD,                  // glBegin(GL_QUADS)
+        GL_BEGIN_QUAD_FROM_PC,          // glBegin(GL_QUADS) but with shader
+        GL_OTHER,                       // other elements
+        GL_END_CALLED                   // glEnd() called
+    };
 
     /**
      * @brief Init shader for points if is not already initialized
      */
     void initPointShader();
-
-    /**
-     * @brief Init shader for faces if is not already initialized
-     */
-    //void initFaceShader();
-
-    /**
-     * @brief Init shader for edges if is not already initialized
-     */
-    //void initEdgeShader();
 
     /**
      * @brief Bind the point shader
@@ -308,36 +313,18 @@ protected:
      */
     void releasePointShader(bool bindOk);
 
-    /**
-     * @brief Bind the face shader
-     * @return false bind is ok
-     */
-    //bool bindFaceShader();
-
-    /**
-     * @brief Release the face shader
-     */
-    //void releaseFaceShader(bool bindOk);
-
-    /**
-     * @brief Bind the edge shader
-     * @return false bind is ok
-     */
-    //bool bindEdgeShader();
-
-    /**
-     * @brief Release the edge shader
-     */
-    //void releaseEdgeShader(bool bindOk);
-
 private:
     G3DGraphicsView                     *m_gv;                  // Graphics View that used the painter
+
+    G3DPainter::MultiDrawableType       m_drawOnly;             // The type that we must only draw
+    G3DPainter::GlBeginType             m_currentGlBeginType;   // The type of the current "glBegin" if "glEnd" was not called. If "glEnd" was called this variable is "GL_END_CALLED".
 
     CT_AbstractCloudT<CT_Point>         *m_pointCloud;
     CT_AbstractCloudT<CT_Face>          *m_faceCloud;
     CT_AbstractCloudT<CT_Edge>          *m_edgeCloud;
 
-    G3DPainter::MultiDrawableType       m_drawOnly;
+    bool                                m_firstPolygonPointValid;
+    Eigen::Vector4d                     m_firstPolygonPoint;
 
     QT_GL_SHADERPROGRAM                 *m_shaderProgPoint;     // Shader program used for points
     QT_GL_SHADER                        *m_ShaderPoint;
@@ -357,12 +344,6 @@ private:
     bool                                m_useFNormalCloud;      // True if we must use normal cloud for faces
     bool                                m_useEColorCloud;       // True if we must use color cloud for edges
 
-    bool                                m_drawMultipleLine;
-    bool                                m_drawMultipleTriangle;
-    bool                                m_drawMultiplePoint;
-
-    bool                                m_beginMultipleEnable;
-
     int                                 _nCallEnableSetColor;       // count how many times the enableSetColor was called
     int                                 _nCallEnableSetForcedColor; // count how many times the enableSetForcedColor was called
 
@@ -375,6 +356,9 @@ private:
     size_t                              m_fastestIncrementPoint;        // fastest increment to use if drawFastest() return true
     int                                 m_octreeCellsDraw;              // count how many octree cells was draw
 
+    std::vector< Eigen::Matrix4f >      m_csMatrix;                     // matrix for points in the shader (matrix of coordinate system)
+    Eigen::Matrix4d                     m_modelViewMatrix4d;            // model/view matrix of the camera
+
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
     static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 25;
 
@@ -386,9 +370,28 @@ private:
 
     static QVector< QPair<double, double> > staticInitCircleVector(int size);
 
-    void startDrawMultiple();
-    void stopDrawMultiple();
-    void resetDrawMultiple();
+    /**
+     * @brief Returns true if you can draw the type passed in parameter
+     */
+    bool canDraw(GlBeginType type) const;
+
+    /**
+     * @brief Call this method before draw a type that was in the "GlBeginType" enum. Call to function
+     *        glEnd() or glBegin(...) and the bind of the shader was called automatically to begin the draw of your type.
+     */
+    void startDrawMultiple(GlBeginType type);
+
+    /**
+     * @brief This method call "glEnd()" if the last "glBegin(...)" was not appropriate
+     *        for the new type and change the variable "m_currentGlBeginType" to GL_END_CALLED if glEnd() was called.
+     *
+     *        This method also bind/release the shader in function of the last and new type. Per example if you
+     *        use GL_BEGIN_POINT and now you want to use GL_BEGIN_POINT_FROM_PC : the shader is bind but glEnd was not called
+     *        because you used and want to use "glBegin(GL_POINTS)".
+     *
+     * @param newGlBeginType : the new "glBegin" type that you want to call after this method.
+     */
+    void callGlEndIfGlBeginChanged(GlBeginType newGlBeginType);
 };
 
 #endif // G3DPAINTER_H

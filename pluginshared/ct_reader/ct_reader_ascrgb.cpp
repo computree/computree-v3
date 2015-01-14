@@ -166,7 +166,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
             if (colorCloud->size() > 0)
             {
-                CT_ABSTRACT_NMPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pointCloud);
+                CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pointCloud);
 
                 CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
                 scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);

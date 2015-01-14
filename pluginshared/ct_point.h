@@ -32,10 +32,21 @@
 #include <string>
 
 #include <cmath>
-#include "pluginShared_global.h"
+#include "ct_coordinates/abstract/ct_abstractcoordinatesystem.h"
 
 #ifndef USE_PCL
 #include "eigen/Eigen/Core"
+
+class CT_Point;
+
+class PLUGINSHAREDSHARED_EXPORT CT_PointTools {
+public:
+    static CT_AbstractCoordinateSystem::realEx staticXExport(const CT_Point &p, const size_t &globalIndex);
+    static CT_AbstractCoordinateSystem::realEx staticYExport(const CT_Point &p, const size_t &globalIndex);
+    static CT_AbstractCoordinateSystem::realEx staticZExport(const CT_Point &p, const size_t &globalIndex);
+    static void staticXYZExport(const CT_Point &p, const size_t &globalIndex, CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z);
+    static Eigen::Vector3d staticRealPoint(const CT_Point &p, const size_t &globalIndex);
+};
 
 class CT_Point : public Eigen::Vector3f
 {
@@ -72,6 +83,52 @@ public:
     inline void setX(float x) { (*this)(0) = x; }
     inline void setY(float y) { (*this)(1) = y; }
     inline void setZ(float z) { (*this)(2) = z; }
+
+    /**
+     * @brief Returns the real x coordinate of the point (converted with the coordinate system of the point)
+     * @param globalIndex : the global index of the point in the cloud
+     */
+    inline CT_AbstractCoordinateSystem::realEx xExport(const size_t &globalIndex) const
+    {
+        return CT_PointTools::staticXExport(*this, globalIndex);
+    }
+
+    /**
+     * @brief Returns the real y coordinate of the point (converted with the coordinate system of the point)
+     * @param globalIndex : the global index of the point in the cloud
+     */
+    inline CT_AbstractCoordinateSystem::realEx yExport(const size_t &globalIndex) const
+    {
+        return CT_PointTools::staticYExport(*this, globalIndex);
+    }
+
+    /**
+     * @brief Returns the real z coordinate of the point (converted with the coordinate system of the point)
+     * @param globalIndex : the global index of the point in the cloud
+     */
+    inline CT_AbstractCoordinateSystem::realEx zExport(const size_t &globalIndex) const
+    {
+        return CT_PointTools::staticZExport(*this, globalIndex);
+    }
+
+    /**
+     * @brief Returns the real x, y and z coordinates of the point (converted with the coordinate system of the point)
+     * @param globalIndex : the global index of the point in the cloud
+     * @param x, y, z : real coordinates (output)
+     */
+    inline void xyzExport(const size_t &globalIndex, CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const
+    {
+        return CT_PointTools::staticXYZExport(*this, globalIndex, x, y ,z);
+    }
+
+    /**
+     * @brief Returns the point converted to it's real coordinates
+     * @param globalIndex : the global index of the point in the cloud
+     */
+    inline Eigen::Vector3d realPoint(const size_t &globalIndex) const
+    {
+        return CT_PointTools::staticRealPoint(*this, globalIndex);
+    }
 
     inline float length() const { return ( std::sqrt( (*this)(0)*(*this)(0) + (*this)(1)*(*this)(1) + (*this)(2)*(*this)(2) ) ); }
 

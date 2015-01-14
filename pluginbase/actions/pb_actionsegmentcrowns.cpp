@@ -846,8 +846,10 @@ void PB_ActionSegmentCrowns::draw(GraphicsViewInterface &view, PainterInterface 
 
             if (!option->getShowClustersOnly() || (cluster >= 0 && cluster <= _lastCluster))
             {
-                QRectF rect(x - 0.5*resolution, y - 0.5*resolution, resolution, resolution);
-                painter.fillRectXY(rect, z_val);
+                Eigen::Vector2d tLeft(x - 0.5*resolution, y - 0.5*resolution);
+                Eigen::Vector2d bRight(tLeft(0)+resolution, tLeft(1)+resolution);
+
+                painter.fillRectXY(tLeft, bRight, z_val);
             }
         }
     }
@@ -870,8 +872,10 @@ void PB_ActionSegmentCrowns::drawPencil(PainterInterface &painter, PB_ActionSegm
     Eigen::Vector2d bottom;
     _clustersGrid->getCellBottomLeftCorner(_activeCol, _activeRow, bottom);
 
-    QRectF rect(bottom.x(), bottom.y(), width, width);
-    painter.drawRectXY(rect, z_val + 0.0001);
+    Eigen::Vector2d tLeft(bottom.x(), bottom.y());
+    Eigen::Vector2d bRight(tLeft(0)+width, tLeft(1)+width);
+
+    painter.drawRectXY(tLeft, bRight, z_val + 0.0001);
 }
 
 void PB_ActionSegmentCrowns::drawOverlay(GraphicsViewInterface &view, QPainter &painter)

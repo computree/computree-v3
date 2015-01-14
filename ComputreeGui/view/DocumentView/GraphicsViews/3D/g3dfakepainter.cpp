@@ -182,17 +182,10 @@ void G3DFakePainter::pushMatrix()
         glPushMatrix();
 }
 
-// add overloaded functions which call the underlying OpenGL function
-inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
-inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
-
-// add an overload for QMatrix4x4 for convenience
-inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
-
-void G3DFakePainter::multMatrix(const QMatrix4x4 &matrix)
+void G3DFakePainter::multMatrix(const Eigen::Matrix4d &matrix)
 {
     if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
-        glMultMatrix(matrix);
+        glMultMatrixd(matrix.data());
 }
 
 void G3DFakePainter::popMatrix()
@@ -201,13 +194,13 @@ void G3DFakePainter::popMatrix()
         glPopMatrix();
 }
 
-void G3DFakePainter::setPointSize(double size)
+void G3DFakePainter::setPointSize(float size)
 {
     if(m_drawEnabled && (m_nCallEnableSetPointSize == 0))
         glPointSize(size);
 }
 
-void G3DFakePainter::setDefaultPointSize(double size)
+void G3DFakePainter::setDefaultPointSize(float size)
 {
     if(m_nCallEnableSetPointSize == 0)
         m_defaultPointSize = size;
@@ -229,19 +222,19 @@ void G3DFakePainter::enableSetForcedPointSize(bool enable)
     m_nCallEnableSetForcedPointSize += (enable ? 1 : -1);
 }
 
-void G3DFakePainter::translate(double x, double y, double z)
+void G3DFakePainter::translate(const double & x, const double & y, const double & z)
 {
     if(m_drawEnabled)
         glTranslated(x, y, z);
 }
 
-void G3DFakePainter::rotate(double alpha, double x, double y, double z)
+void G3DFakePainter::rotate(const double & alpha, const double & x, const double & y, const double & z)
 {
     if(m_drawEnabled)
         glRotated(alpha, x, y, z);
 }
 
-void G3DFakePainter::scale(double x, double y, double z)
+void G3DFakePainter::scale(const double & x, const double & y, const double & z)
 {
     if(m_drawEnabled)
         glScaled(x, y, z);
@@ -268,18 +261,16 @@ void G3DFakePainter::drawOctreeOfPoints(const OctreeInterface *octree, PainterIn
                 if(indexes != NULL)
                 {
                     if(octree->isCellVisibleInFrustrum(x, y, z, planeCoefficients))
-                        drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                        drawPointCloud(indexes);
                 }
             }
         }
     }
 }
 
-void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
-                                    const CT_AbstractCloudIndex *pci,
-                                    int fastestIncrement)
+void G3DFakePainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
 {
-    if((pc == NULL) || (pci == NULL))
+    if(pci == NULL)
         return;
 
     if(m_drawMode.testFlag(DrawPointsWithName))
@@ -291,9 +282,7 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         size_t indexCount = pci->size();
         size_t increment = 1;
 
-        if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
-            increment = fastestIncrement;
-        else if((m_fastestIncrementPoint != 0) && drawFastest())
+        if((m_fastestIncrementPoint != 0) && drawFastest())
             increment = m_fastestIncrementPoint;
 
         // FAST
@@ -580,23 +569,15 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
     }
 }
 
-void G3DFakePainter::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
+void G3DFakePainter::drawPoints(const CT_AbstractMeshModel *mesh)
 {
     if(m_drawMode.testFlag(BackupPointCloudIndex))
         drawMesh(mesh);
     else
-        drawPointCloud(PS_REPOSITORY->globalPointCloud(), mesh->getPointCloudIndex(), fastestIncrement);
+        drawPointCloud(mesh->getPointCloudIndex());
 }
 
-void G3DFakePainter::beginDrawMultipleLine()
-{
-    if(m_drawEnabled)
-        glBegin(GL_LINES);
-
-    m_drawMultipleLine = true;
-}
-
-void G3DFakePainter::drawLine(double x1, double y1, double z1, double x2, double y2, double z2)
+void G3DFakePainter::drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2)
 {
     if(m_drawEnabled)
     {
@@ -617,44 +598,28 @@ void G3DFakePainter::drawLine(double x1, double y1, double z1, double x2, double
     }
 }
 
-void G3DFakePainter::drawLine(const float *p1, const float *p2)
+void G3DFakePainter::drawLine(const size_t &p1GlobalIndex, const size_t &p2GlobalIndex)
 {
     if(m_drawEnabled)
     {
         if(m_drawMultipleLine)
         {
-            glVertex3fv(p1);
-            glVertex3fv(p2);
+            glArrayElement(p1GlobalIndex);
+            glArrayElement(p2GlobalIndex);
         }
         else
         {
             glBegin(GL_LINES);
 
-            glVertex3fv(p1);
-            glVertex3fv(p2);
+            glArrayElement(p1GlobalIndex);
+            glArrayElement(p2GlobalIndex);
 
             glEnd();
         }
     }
 }
 
-void G3DFakePainter::endDrawMultipleLine()
-{
-    if(m_drawEnabled)
-        glEnd();
-
-    m_drawMultipleLine = false;
-}
-
-void G3DFakePainter::beginDrawMultipleTriangle()
-{
-    if(m_drawEnabled)
-        glBegin( GL_TRIANGLES );
-
-    m_drawMultipleTriangle = true;
-}
-
-void G3DFakePainter::drawTriangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3)
+void G3DFakePainter::drawTriangle(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, const double &x3, const double &y3, const double &z3)
 {
     if(m_drawEnabled)
     {
@@ -675,31 +640,23 @@ void G3DFakePainter::drawTriangle(double x1, double y1, double z1, double x2, do
     }
 }
 
-void G3DFakePainter::drawTriangle(const float *p1, const float *p2, const float *p3)
+void G3DFakePainter::drawTriangle(const size_t &p1GlobalIndex, const size_t &p2GlobalIndex, const size_t &p3GlobalIndex)
 {
     if(m_drawEnabled)
     {
         if(m_drawMultipleTriangle)
         {
-            glVertex3fv(p1);
-            glVertex3fv(p2);
-            glVertex3fv(p3);
+            glArrayElement(p1GlobalIndex);
+            glArrayElement(p2GlobalIndex);
+            glArrayElement(p3GlobalIndex);
         }
         else
         {
             glBegin( GL_TRIANGLES );
-            glVertex3fv(p1);
-            glVertex3fv(p2);
-            glVertex3fv(p3);
+            glArrayElement(p1GlobalIndex);
+            glArrayElement(p2GlobalIndex);
+            glArrayElement(p3GlobalIndex);
             glEnd();
         }
     }
-}
-
-void G3DFakePainter::endDrawMultipleTriangle()
-{
-    if(m_drawEnabled)
-        glEnd();
-
-    m_drawMultipleTriangle = false;
 }

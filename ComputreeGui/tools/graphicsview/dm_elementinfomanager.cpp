@@ -16,8 +16,11 @@ DM_ElementInfoManager::DM_ElementInfoManager(CT_Repository::SyncCloudWith syncWi
     m_disableSelection = std::numeric_limits<GLubyte>::max()-m_enableSelection;
     m_disableInvisibility = std::numeric_limits<GLubyte>::max()-m_enableInvisibility;
 
-    m_infoR = PS_REPOSITORY->createNewSyncCloudT<CT_StdCloudRegisteredT<GLubyte>, CT_StandardCloudStdVectorT<GLubyte> >(m_syncWith);
-    m_infoCloud = dynamic_cast<CT_StandardCloudStdVectorT<GLubyte>*>(m_infoR->abstractCloud());
+    m_infoR = PS_REPOSITORY->createNewCloudT<CT_StdCloudRegisteredT< CT_StandardCloudStdVectorT<GLubyte> >, CT_StandardCloudStdVectorT<GLubyte> >(m_syncWith);
+    m_infoCloud = NULL;
+
+    if(!m_infoR.isNull())
+        m_infoCloud = m_infoR->cloudT();
 
     m_selectionChanged = false;
 }

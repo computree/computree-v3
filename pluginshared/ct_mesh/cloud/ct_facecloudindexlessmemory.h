@@ -12,7 +12,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_FaceCloudIndexLessMemory : public CT_Abstract
 public:
     CT_FaceCloudIndexLessMemory(const size_t &begin, const size_t &size);
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #endif // CT_FACECLOUDINDEXLESSMEMORY_H

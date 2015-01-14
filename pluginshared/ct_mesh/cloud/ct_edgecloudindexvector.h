@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_EdgeCloudIndexVector : public CT_AbstractEdge
 public:
     CT_EdgeCloudIndexVector(const size_t &size = 0);
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #endif // CT_EDGECLOUDINDEXVECTOR_H

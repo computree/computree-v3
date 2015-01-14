@@ -164,6 +164,8 @@ public:
 
 private:
 
+    QTime                           timer;
+
     GDocumentViewForGraphics        *m_docGV;
     QMutex                          *_mutex;
     QPainter                        *m_painter;

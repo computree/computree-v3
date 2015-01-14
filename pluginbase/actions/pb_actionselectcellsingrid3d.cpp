@@ -635,26 +635,41 @@ void PB_ActionSelectCellsInGrid3D::draw2D(GraphicsViewInterface &view, PainterIn
                 xmin = _refGrid->getCellCenterX(xx) - demiRes;
                 ymin = _refGrid->getCellCenterY(yy) - demiRes;
 
-                painter.fillRectXY(QRectF(xmin, ymin, res, res), zmin);
+                Eigen::Vector2d tLeft(xmin, ymin);
+                Eigen::Vector2d bRight(xmin+res, ymin+res);
 
+                painter.fillRectXY(tLeft, bRight, zmin);
 
                 if (option->isGridOn())
                 {
                     painter.setColor(QColor(255, 255, 255));
-                    painter.drawRectXY(QRectF(xmin, ymin, res, res), zmin + 0.0001);
+                    painter.drawRectXY(tLeft, bRight, zmin + 0.0001);
                 }
             }
         }
     }
 
+    Eigen::Vector2d tLeft;
+    Eigen::Vector2d bRight;
+
     painter.setColor(QColor(255, 255, 255));
-    painter.drawRectXY(QRectF(_refGrid->minX(), _refGrid->minY(), lengthX, lengthY), zmax);
 
-    painter.drawRectXZ(QRectF(_refGrid->minX(), zmin, lengthX, _thickness*res), _refGrid->minY());
-    painter.drawRectXZ(QRectF(_refGrid->minX(), zmin, lengthX, _thickness*res), _refGrid->maxY());
-    painter.drawRectYZ(QRectF(_refGrid->minY(), zmin, lengthY, _thickness*res), _refGrid->minX());
-    painter.drawRectYZ(QRectF(_refGrid->minY(), zmin, lengthY, _thickness*res), _refGrid->maxX());
+    tLeft << _refGrid->minX(), _refGrid->minY();
+    bRight << _refGrid->minX()+lengthX, _refGrid->minY()+lengthY;
 
+    painter.drawRectXY(tLeft, bRight, zmax);
+
+    tLeft << _refGrid->minX(), zmin;
+    bRight << _refGrid->minX()+lengthX, zmin+_thickness*res;
+
+    painter.drawRectXZ(tLeft, bRight, _refGrid->minY());
+    painter.drawRectXZ(tLeft, bRight, _refGrid->maxY());
+
+    tLeft << _refGrid->minY(), zmin;
+    bRight << _refGrid->minY()+lengthY, zmin+_thickness*res;
+
+    painter.drawRectYZ(tLeft, bRight, _refGrid->minX());
+    painter.drawRectYZ(tLeft, bRight, _refGrid->maxX());
 
     painter.restore();
 }

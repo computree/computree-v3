@@ -672,7 +672,12 @@ void G3DGraphicsView::addEdgesIDToSelection(const GLuint &id)
 
 void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
 {
+
+    qDebug() << "t15 : " << timer.restart();
+
     CT_AbstractItemDrawable *item = getDocumentView().getItemDrawable(id);
+
+    qDebug() << "t16 : " << timer.restart();
 
     if(item != NULL)
     {
@@ -690,6 +695,8 @@ void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
         unlockPaint();*/
 
         item->setSelected(true);
+
+        qDebug() << "t17 : " << timer.restart();
     }
 }
 
@@ -978,6 +985,13 @@ void G3DGraphicsView::drawInternal()
     _g.setUseNormalCloudForPoints(m_docGV->useNormalCloud());
     _g.setUseNormalCloudForFaces(m_docGV->useNormalCloud());
 
+    _g.setColor(Qt::blue);
+    _g.drawLine(0, 0, -20, 0, 0, 20);
+    _g.setColor(Qt::green);
+    _g.drawLine(0, -20, 0, 0, 20, 0);
+    _g.setColor(Qt::red);
+    _g.drawLine(-20, 0, 0, 20, 0, 0);
+
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
@@ -1145,10 +1159,14 @@ void G3DGraphicsView::drawWithNames()
 {
     lockPaint();
 
+    timer.restart();
+
     if(colorVBOManager() != NULL) {
         colorVBOManager()->preDraw();
         colorVBOManager()->setUseColorCloud(false);
     }
+
+    qDebug() << "t1 : " << timer.restart();
 
     bool selectItems = true;
 
@@ -1171,7 +1189,7 @@ void G3DGraphicsView::drawWithNames()
             m_fakeG.setPointSize(getOptions().getPointSize());
             m_fakeG.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
 
-            QVector3D min = octreeC->octreeMinCorner();
+            Eigen::Vector3d min = octreeC->octreeMinCorner();
             double cellSize = octreeC->cellsSize();
             int s = octreeC->numberOfCells();
 
@@ -1189,8 +1207,8 @@ void G3DGraphicsView::drawWithNames()
 
                         if((indexes != NULL)/* && octreeC->isCellVisibleInFrustrum(x, y, z, planeCoefficients, entirely)*/)
                         {
-                            qglviewer::Vec p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
-                            qglviewer::Vec p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
+                            qglviewer::Vec p1(min(0)+(x*cellSize), min(1)+(y*cellSize), min(2)+(z*cellSize));
+                            qglviewer::Vec p2(min(0)+((x+1)*cellSize), min(1)+((y+1)*cellSize), min(2)+((z+1)*cellSize));
 
                             gluProject(p1.x,p1.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[0],&yy[0],&zz[0]);
                             gluProject(p2.x,p1.y,p1.z,modelViewMatrix_, projectionMatrix_,viewport_,&xx[1],&yy[1],&zz[1]);
@@ -1221,7 +1239,7 @@ void G3DGraphicsView::drawWithNames()
                                      || bounding.contains(rect.topRight())
                                      || bounding.contains(rect.bottomLeft())
                                      || bounding.contains(rect.bottomRight()))
-                                m_fakeG.drawPointCloud(PS_REPOSITORY->globalPointCloud(), indexes, 10);
+                                m_fakeG.drawPointCloud(indexes);
                         }
                     }
                 }
@@ -1268,14 +1286,19 @@ void G3DGraphicsView::drawWithNames()
 
         QListIterator<CT_AbstractItemDrawable*> it(getDocumentView().getItemDrawable());
 
+        qDebug() << "t2 : " << timer.restart();
+
         while(it.hasNext())
         {
             glPushName(i);
             it.next()->draw(*this, _g);
+            _g.stopDrawMultiple();
             glPopName();
 
             ++i;
         }
+
+        qDebug() << "t3 : " << timer.restart();
 
         _g.endNewDraw();
     }
@@ -1293,12 +1316,18 @@ void G3DGraphicsView::drawWithNames()
         m_fakeG.endNewDraw();
     }
 
+    qDebug() << "t4 : " << timer.restart();
+
     if(colorVBOManager() != NULL)
         colorVBOManager()->postDraw();
+
+    qDebug() << "t5 : " << timer.restart();
 
     unlockPaint();
 
     checkAndShowOpenGLErrors();
+
+    qDebug() << "t6 : " << timer.restart();
 }
 
 void G3DGraphicsView::paintEvent(QPaintEvent *e)
@@ -1324,8 +1353,12 @@ void G3DGraphicsView::endSelection(const QPoint &p)
         // Get the number of objects that were seen through the pick matrix frustum. Reset GL_RENDER mode.
         GLint nbHits = glRenderMode(GL_RENDER);
 
+        qDebug() << "t7 : " << timer.restart();
+
         if(mode == GraphicsViewInterface::SELECT)
             removeAllIdFromSelection();
+
+        qDebug() << "t8 : " << timer.restart();
 
         if(mustSelectPoints())
         {
@@ -1410,6 +1443,9 @@ void G3DGraphicsView::endSelection(const QPoint &p)
         }
         else
         {
+
+            qDebug() << "t9 : " << timer.restart();
+
             // Interpret results : each object created 4 values in the selectBuffer().
             // (selectBuffer())[4*i+3] is the id pushed on the stack.
             for (int i=0; i<nbHits; ++i)
@@ -1423,12 +1459,18 @@ void G3DGraphicsView::endSelection(const QPoint &p)
                 }
             }
 
+            qDebug() << "t10 : " << timer.restart();
+
             if(((mode == ADD) || (mode == GraphicsViewInterface::SELECT)) && (nbHits > 0))
                 setLastItemIdSelected((selectBuffer())[4*(nbHits-1)+3]);
+
+            qDebug() << "t11 : " << timer.restart();
         }
 
         setSelectionMode(NONE);
         m_idToAddInSelection.clear();
+
+        qDebug() << "t13 : " << timer.restart();
     }
     else
     {
@@ -1438,31 +1480,45 @@ void G3DGraphicsView::endSelection(const QPoint &p)
 
 void G3DGraphicsView::postSelection(const QPoint& point)
 {
+    qDebug() << "t7' : " << timer.restart();
+
     SelectionMode mode = selectionModeToBasic();
+
+    qDebug() << "t8' : " << timer.restart();
 
     if((mode == ADD_ONE)
         || (mode == REMOVE_ONE)
         || (mode == SELECT_ONE))
     {
         if(mode == SELECT_ONE)
-        {
             removeAllIdFromSelection();
-        }
+
+        qDebug() << "t9' : " << timer.restart();
 
         if(selectedName() != -1)
         {
             if((mode == ADD_ONE)
                 || (mode == SELECT_ONE))
             {
+                qDebug() << "t10' : " << timer.restart();
+
                 int s = selectedName();
                 addIdToSelection(s);
 
+                qDebug() << "t11' : " << timer.restart();
+
                 if(mustSelectItems())
                     setLastItemIdSelected(s);
+
+                qDebug() << "t12' : " << timer.restart();
             }
             else if(mode == REMOVE_ONE)
             {
+                qDebug() << "t10'' : " << timer.restart();
+
                 removeIdFromSelection(selectedName());
+
+                qDebug() << "t11'' : " << timer.restart();
             }
         }
     }

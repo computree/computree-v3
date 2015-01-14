@@ -1,9 +1,13 @@
 #ifndef CT_COORDINATESYSTEMMANAGER_H
 #define CT_COORDINATESYSTEMMANAGER_H
 
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
+#include "ct_coordinates/abstract/ct_abstractcoordinatesystem.h"
+#include "ct_coordinates/tools/ct_coordinatesystemcloudindex.h"
+#include "ct_cloud/registered/ct_stdcloudregisteredt.h"
+#include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h"
 
-#include <QList>
+#include <QVector>
+#include <QSharedPointer>
 
 /**
  * @brief Manage available coordinate system. At least one coordinate system
@@ -16,21 +20,20 @@ public:
     ~CT_CoordinateSystemManager();
 
     /**
-     * @brief Add a new coordinate system to this manager
+     * @brief Register a new coordinate system to this manager and set it to be the current. The result is a QSharedPointer that must
+     *        be passed to all your scene that will use points that use this coordinate system.
+     *
+     *        All points created in the global points cloud will automatically had the index of the current coordinate system.
      */
-    void addCoordinateSystem(CT_AbstractCoordinateSystem *cs);
+    QSharedPointer<CT_AbstractCoordinateSystem> registerCoordinateSystem(CT_AbstractCoordinateSystem *cs);
 
     /**
-     * @brief Remove the coordinate system passed in parameter
-     * @return false if it is the current system and it can not be changed or if it was the default system.
+     * @brief Returns the index cloud that contains for each points the index of the coordinate system used. You can modify
+     *        this cloud but be careful not to put an invalid value.
+     *
+     * @warning Don't add or remove index ! just replace index.
      */
-    bool removeCoordinateSystem(CT_AbstractCoordinateSystem *cs);
-
-    /**
-     * @brief Remove the coordinate system at 'index'
-     * @return false if it is the current system and it can not be changed or if index == 0.
-     */
-    bool removeCoordinateSystem(int index);
+    CT_CoordinateSystemCloudIndex* indexCloudOfCoordinateSystemOfPoints() const;
 
     /**
      * @brief Returns the number of coordinate system installed. At least one coordinate system
@@ -39,21 +42,39 @@ public:
     int size() const;
 
     /**
+     * @brief Returns the index of the coordinate system passed in parameter
+     */
+    GLuint indexOfCoordinateSystem(const CT_AbstractCoordinateSystem *cs) const;
+
+    /**
      * @brief Returns the coordinate system at 'index'
      */
-    CT_AbstractCoordinateSystem* coordinateSystemAt(int index) const;
+    CT_AbstractCoordinateSystem* coordinateSystemAt(const GLuint &index) const;
 
     /**
-     * @brief Set the passed coordinate system the current used.
-     * @return false if the current coordinate system can not be changed
+     * @brief Returns the coordinate system for the point at index 'globalIndex' in the global points cloud
      */
-    bool setCurrentCoordinateSystem(CT_AbstractCoordinateSystem *cs);
+    CT_AbstractCoordinateSystem* coordinateSystemForPointAt(const size_t &globalIndex) const;
 
     /**
-     * @brief Set the coordinate system at 'index' the current used.
-     * @return false if the current coordinate system can not be changed
+     * @brief Returns the coordinate system index for the point at index 'globalIndex' in the global points cloud
      */
-    bool setCurrentCoordinateSystem(int index);
+    GLuint coordinateSystemIndexForPointAt(const size_t &globalIndex) const;
+
+    /**
+     * @brief Change the index of the coordinate system of the point at index 'globalIndex' in the global points cloud
+     */
+    void setCoordinateSystemForPointAt(const size_t &globalIndex, const GLuint &coordinateSystemIndex) const;
+
+    /**
+     * @brief Use this method to change indexes (in the CT_CoordinateSystemCloudIndex) for all points in pcir by the index of the coordinate system "cs"
+     */
+    void setCoordinateSystemForPoints(QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, CT_AbstractCoordinateSystem *cs);
+
+    /**
+     * @brief Use this method to change indexes (in the CT_CoordinateSystemCloudIndex) for all points in pcir by the index of the coordinate system "cs"
+     */
+    void setCoordinateSystemIndexForPoints(QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, const GLuint &coordinateSystemIndex);
 
     /**
      * @brief Returns the current coordinate system manager. Can not be NULL.
@@ -61,13 +82,42 @@ public:
     CT_AbstractCoordinateSystem* currentCoordinateSystem() const;
 
     /**
-     * @brief Returns true if we can change or modify a coordinate system
+     * @brief Returns true if at least one coordinate system was used since the protected method "initUsedOfAllCoordinateSystem" was called
      */
-    static bool staticCanChangeOrModifyCoordinateSystem();
+    bool wasAtLeastOneUsed() const;
 
 private:
-    QList<CT_AbstractCoordinateSystem*>     m_cs;
-    CT_AbstractCoordinateSystem             *m_current;
+    QVector<CT_AbstractCoordinateSystem*>                                       m_cs;                                   // list of coordinate system
+    CT_AbstractCoordinateSystem                                                 *m_current;                             // current coordinate system (never NULL)
+    QSharedPointer< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex > >   m_indexOfCoordinateSystemOfPoints;      // index for all points (sync) of the coordinate system to use
+    QSharedPointer<CT_AbstractCoordinateSystem> m_default;
+
+    /**
+     * @brief Set the passed coordinate system the current used.
+     */
+    void setCurrentCoordinateSystem(CT_AbstractCoordinateSystem *cs);
+
+    /**
+     * @brief Set the coordinate system at 'index' the current used.
+     */
+    void setCurrentCoordinateSystem(int index);
+
+    /**
+     * @brief Remove the coordinate system passed in parameter
+     * @return false if it was the first coordinate system (default)
+     */
+    bool removeCoordinateSystem(CT_AbstractCoordinateSystem *cs);
+
+    /**
+     * @brief Remove the coordinate system at 'index'
+     * @return false if index == 0.
+     */
+    bool removeCoordinateSystem(int index);
+
+    /**
+     * @brief Called when a coordinate system will no longer be used
+     */
+    static void staticUnregisterCoordinateSystem(CT_AbstractCoordinateSystem *cs);
 
 protected:
     friend class CT_AbstractReader;

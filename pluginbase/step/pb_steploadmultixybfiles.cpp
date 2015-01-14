@@ -103,7 +103,7 @@ void PB_StepLoadMultiXYBFiles::compute()
     float zmax = -std::numeric_limits<float>::max();
 
 
-    QList< CT_ABSTRACT_PCIR > individualScenes;
+    QList< CT_Repository::CT_AbstractPCIR > individualScenes;
 
     int baseProgress = 0;
     int fileNumber = _filesNames.size();

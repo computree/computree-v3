@@ -189,7 +189,7 @@ void CT_CloudIndexStdMapT<T, ValueT>::push_front(const size_t &newIndex)
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::fill()
 {
-    qFatal("CT_CloudIndexStdMapT<T, ValueT>::fill must not be used");
+    qFatal("CT_CloudIndexStdMapT<T, ValueT>::fill can not be used");
 }
 
 template<typename T, typename ValueT>
@@ -213,7 +213,7 @@ void CT_CloudIndexStdMapT<T, ValueT>::erase(const size_t &beginIndex, const size
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::resize(const size_t &newSize)
 {
-    qFatal("CT_CloudIndexStdMapT<T, ValueT>::resize must not be used");
+    qFatal("CT_CloudIndexStdMapT<T, ValueT>::resize can not be used");
 }
 
 template<typename T, typename ValueT>
@@ -225,7 +225,7 @@ void CT_CloudIndexStdMapT<T, ValueT>::removeIfOrShiftIf(typename CT_CloudIndexSt
                                                 void *context)
 {
     // used only for not sorted cloud index
-    qFatal("CT_CloudIndexStdMapT<T, ValueT>::removeIfOrShiftIf must not be used");
+    qFatal("CT_CloudIndexStdMapT<T, ValueT>::removeIfOrShiftIf can not be used");
 }
 
 template<typename T, typename ValueT>
@@ -288,7 +288,7 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexStdMapT<T, ValueT>::getPCLInd
 #endif
 
 template<typename T, typename ValueT>
-CT_AbstractCloudIndex* CT_CloudIndexStdMapT<T, ValueT>::copy() const
+CT_AbstractCloud* CT_CloudIndexStdMapT<T, ValueT>::copy() const
 {
     CT_CloudIndexStdMapT<T, ValueT> *index = new CT_CloudIndexStdMapT<T, ValueT>();
 

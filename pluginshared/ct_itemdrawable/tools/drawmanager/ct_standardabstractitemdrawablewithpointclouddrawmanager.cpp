@@ -26,11 +26,7 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
         return;
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINTS_VISIBLE).toBool())
-    {
-        painter.drawPointCloud( PS_REPOSITORY->globalPointCloud(),
-                                item.getPointCloudIndex(),
-                                item.getFastestIncrement());
-    }
+        painter.drawPointCloud(item.getPointCloudIndex());
 
     painter.setColor(Qt::white);
 

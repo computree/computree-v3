@@ -4,7 +4,7 @@
 #include "ct_cloud/registered/abstract/ct_abstractcloudregistered.h"
 
 /**
- * A cloud registered of T. It's size and indices is sync with a global cloud.
+ * A cloud registered of T (T must be the type of the cloud, per example CT_StandardCloudStdVectorT<GLubyte> ). It's size is sync with a global cloud.
  */
 template<typename T >
 class CT_StdCloudRegisteredT : public CT_AbstractCloudRegistered
@@ -17,14 +17,19 @@ public:
      */
     CT_AbstractCloud* abstractCloud() const;
 
+    /**
+     * @brief Returns the cloud
+     */
+    T* cloudT() const;
+
 protected:
 
     friend class CT_CloudSyncToGlobalCloudManager;
 
-    CT_StdCloudRegisteredT(CT_AbstractCloud *cloud);
+    CT_StdCloudRegisteredT(T *cloud);
 
 private:
-    CT_AbstractCloud                   *m_cloud;
+    T                   *m_cloud;
 };
 
 #include "ct_cloud/registered/ct_stdcloudregisteredt.hpp"

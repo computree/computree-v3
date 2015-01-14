@@ -3,6 +3,8 @@
 
 #include "pluginShared_global.h"
 
+#include "eigen/Dense"
+
 /**
  * @brief Abstract class that define the interface of a Coordinate System class. A
  *        Coordinate System class can be a projection library per example.
@@ -82,6 +84,11 @@ public:
      * @brief Modify offset of this coordinate system
      */
     virtual bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z) = 0;
+
+    /**
+     * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)
+     */
+    virtual Eigen::Matrix4d toMatrix4x4() const = 0;
 
 private:
     mutable bool        m_used;

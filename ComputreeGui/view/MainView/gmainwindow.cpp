@@ -461,7 +461,7 @@ void GMainWindow::initUI()
     actGroup->setExclusive(true);
 
     foreach (QString l, dLA) {
-        QAction *languageAction = ui->menuLangue->addAction(QIcon(QString("./img") + QDir::separator() + "flag_" + lA.at(i) + ".png"), l, this, SLOT(changeLanguage()));
+        QAction *languageAction = ui->menuLangue->addAction(QIcon(QString(":/Icones/Icones/") + "flag_" + lA.at(i) + ".png"), l, this, SLOT(changeLanguage()));
         languageAction->setData(i);
         languageAction->setCheckable(true);
         languageAction->setChecked(GUI_MANAGER->getLanguageManager()->currentLanguage() == i);

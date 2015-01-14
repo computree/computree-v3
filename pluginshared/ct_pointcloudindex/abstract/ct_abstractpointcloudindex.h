@@ -31,6 +31,7 @@
 #include "pluginShared_global.h"
 
 #include "ct_cloudindex/abstract/ct_abstractcloudindext.h"
+#include "ct_point.h"
 
 /**
   * \brief Classe représentant un nuage d'index qui font référence à la position d'un point dans le nuage de points.

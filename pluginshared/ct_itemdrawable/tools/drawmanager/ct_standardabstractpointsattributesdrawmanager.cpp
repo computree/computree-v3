@@ -10,7 +10,5 @@ void CT_StandardAbstractPointsAttributesDrawManager::draw(GraphicsViewInterface 
 {
     const CT_AbstractPointsAttributes &item = dynamic_cast<const CT_AbstractPointsAttributes&>(itemDrawable);
 
-    painter.drawPointCloud(PS_REPOSITORY->globalPointCloud(),
-                           item.getPointCloudIndex(),
-                           item.getFastestIncrement());
+    painter.drawPointCloud(item.getPointCloudIndex());
 }

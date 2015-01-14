@@ -68,7 +68,7 @@ public:
     boost::shared_ptr< std::vector<int> > getPCLIndices() const;
 #endif
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 
 private:
 #ifdef USE_PCL

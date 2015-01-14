@@ -137,17 +137,24 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexLessMemoryT<T>::getPCLIndices
 #endif
 
 template<typename T>
-CT_AbstractCloudIndex* CT_CloudIndexLessMemoryT<T>::copy() const
+CT_AbstractCloud* CT_CloudIndexLessMemoryT<T>::copy() const
 {
     return new CT_CloudIndexLessMemoryT<T>(m_begin, m_size);
 }
 
 template<typename T>
-bool CT_CloudIndexLessMemoryT<T>::internalResize(const size_t &newSize)
+void CT_CloudIndexLessMemoryT<T>::erase(const size_t &beginIndex, const size_t &sizes)
+{
+    Q_UNUSED(beginIndex)
+    Q_UNUSED(sizes)
+
+    qFatal("CT_CloudIndexLessMemoryT<T>::erase can not be used");
+}
+
+template<typename T>
+void CT_CloudIndexLessMemoryT<T>::resize(const size_t &newSize)
 {
     m_size = newSize;
-
-    return true;
 }
 
 template<typename T>

@@ -46,9 +46,6 @@
 
 #include <QQuaternion>
 
-#include <eigen/Eigen/Core>
-#include <eigen/Eigen/Dense>
-
 #define M_PI_MULT_2 6.28318530717958647692
 
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_FASTEST = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE);
@@ -65,24 +62,15 @@ G3DPainter::G3DPainter()
     _drawFastest = false;
 
     m_shaderProgPoint = NULL;
-    /*m_shaderProgFace = NULL;
-    m_shaderProgEdge = NULL;*/
-
     m_shaderProgPointError = false;
-    /*m_shaderProgFaceError = false;
-    m_shaderProgEdgeError = false;*/
-
     m_ShaderPoint = NULL;
-    /*m_ShaderFace = NULL;
-    m_ShaderEdge = NULL;*/
-
     m_shaderPointError = false;
-    /*m_shaderFaceError = false;
-    m_shaderEdgeError = false;*/
 
     m_pointCloud = PS_REPOSITORY->globalCloud<CT_Point>();
     m_faceCloud = PS_REPOSITORY->globalCloud<CT_Face>();
     m_edgeCloud = PS_REPOSITORY->globalCloud<CT_Edge>();
+
+    m_csMatrix.resize(64, Eigen::Matrix4f::Identity()); // 64 is the maximum number of matrix in the shader
 
     beginNewDraw();
 }
@@ -93,13 +81,6 @@ G3DPainter::~G3DPainter()
 
     delete m_shaderProgPoint;
     delete m_ShaderPoint;
-
-    /*delete m_shaderProgFace;
-    delete m_ShaderFace;
-
-    delete m_shaderProgEdge;
-    delete m_ShaderEdge;*/
-
 }
 
 void G3DPainter::setGraphicsView(const G3DGraphicsView *gv)
@@ -158,39 +139,43 @@ void G3DPainter::beginNewDraw()
     m_useFNormalCloud = true;
     m_useEColorCloud = true;
 
-    m_drawMultipleLine = false;
-    m_drawMultipleTriangle = false;
-    m_drawMultiplePoint = false;
-
-    m_beginMultipleEnable = false;
-
     m_fastestIncrementPoint = 0;
 
     m_octreeCellsDraw = 0;
 
     m_shaderProgPointSet = false;
-    /*m_shaderProgFaceSet = false;
-    m_shaderProgEdgeSet = false;*/
-
     m_bindShaderPointOK = false;
+
+    m_firstPolygonPointValid = false;
 
     // DRAW ALL elements
     m_drawOnly = DRAW_ALL;
+
+    // not current "glBegin" called
+    m_currentGlBeginType = GL_END_CALLED;
+
+    // Model/View Matrix of the camera
+    if((m_gv != NULL) && (m_gv->camera() != NULL)) {
+        GLdouble modelViewMatrix[16];
+        m_gv->camera()->modelViewMatrix(modelViewMatrix);
+
+        // convert to eigen matrix4d
+        m_modelViewMatrix4d << modelViewMatrix[0], modelViewMatrix[4], modelViewMatrix[8], modelViewMatrix[12],
+                               modelViewMatrix[1], modelViewMatrix[5], modelViewMatrix[9], modelViewMatrix[13],
+                               modelViewMatrix[2], modelViewMatrix[6], modelViewMatrix[10], modelViewMatrix[14],
+                               modelViewMatrix[3], modelViewMatrix[7], modelViewMatrix[11], modelViewMatrix[15];
+    }
 }
 
 void G3DPainter::endNewDraw()
 {
-    resetDrawMultiple();
+    stopDrawMultiple();
 }
 
 void G3DPainter::setDrawOnly(G3DPainter::MultiDrawableType type)
 {
-    resetDrawMultiple();
-
     // the new type to draw
     m_drawOnly = type;
-
-    startDrawMultiple();
 }
 
 void G3DPainter::save()
@@ -257,19 +242,12 @@ void G3DPainter::pushMatrix()
     }
 }
 
-// add overloaded functions which call the underlying OpenGL function
-inline void glMultMatrix(const GLfloat  *m) { glMultMatrixf(m); }
-inline void glMultMatrix(const GLdouble *m) { glMultMatrixd(m); }
-
-// add an overload for QMatrix4x4 for convenience
-inline void glMultMatrix(const QMatrix4x4 &m) { glMultMatrix(m.constData()); }
-
-void G3DPainter::multMatrix(const QMatrix4x4 &matrix)
+void G3DPainter::multMatrix(const Eigen::Matrix4d &matrix)
 {
     if(_nCallEnablePushMatrix == 0)
     {
         stopDrawMultiple();
-        glMultMatrix(matrix);
+        glMultMatrixd(matrix.data());
     }
 }
 
@@ -282,7 +260,7 @@ void G3DPainter::popMatrix()
     }
 }
 
-void G3DPainter::setPointSize(double size)
+void G3DPainter::setPointSize(float size)
 {
     if(_nCallEnableSetPointSize == 0)
     {
@@ -291,7 +269,7 @@ void G3DPainter::setPointSize(double size)
     }
 }
 
-void G3DPainter::setDefaultPointSize(double size)
+void G3DPainter::setDefaultPointSize(float size)
 {
     if(_nCallEnableSetPointSize == 0)
         _defaultPointSize = size;
@@ -447,128 +425,73 @@ void G3DPainter::enableSetForcedPointSize(bool enable)
     _nCallEnableSetForcedPointSize += (enable ? 1 : -1);
 }
 
-void G3DPainter::translate(double x, double y, double z)
+void G3DPainter::translate(const double &x, const double &y, const double &z)
 {
     stopDrawMultiple();
     glTranslated(x, y, z);
 }
 
-void G3DPainter::rotate(double alpha, double x, double y, double z)
+void G3DPainter::rotate(const double &alpha, const double &x, const double &y, const double &z)
 {
     stopDrawMultiple();
     glRotated(alpha, x, y, z);
 }
 
-void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction)
+void G3DPainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
 {
     stopDrawMultiple();
 
     //direction is the direction you want the object to point at
     //up- first guess
-    Eigen::Vector3d up;
+    QVector3D up;
 
     //If x and z are really small
-    if((fabs(direction(0))< 0.00001) && (fabs(direction(2)) < 0.00001))
+    if((fabs(direction.x())< 0.00001) && (fabs(direction.z()) < 0.00001))
     {
-        if(direction(1) > 0)
-            up = Eigen::Vector3d(0.0, 0.0, -1.0); //if direction points in +y direction
+        if(direction.y() > 0)
+            up = QVector3D(0.0, 0.0, -1.0); //if direction points in +y direction
         else
-            up = Eigen::Vector3d(0.0, 0.0, 1.0); //if direction points in -y direction
+            up = QVector3D(0.0, 0.0, 1.0); //if direction points in -y direction
     }
     else
     {
-        up = Eigen::Vector3d(0.0, 1.0, 0.0); //y-axis is the general up direction
+        up = QVector3D(0.0, 1.0, 0.0); //y-axis is the general up direction
     }
 
     //left
-    Eigen::Vector3d left = direction.cross(up);
+    QVector3D left = QVector3D::crossProduct(direction, up);
     left.normalize();
 
     //final up
-    up = left.cross(direction);
+    up = QVector3D::crossProduct(left, direction);
     up.normalize();
 
-    // TODO : soustraire l'offset
-
-    float matrix[]={left(0)         , left(1)       , left(2)       , 0.0f,  //LEFT
-                    up(0)           , up(1)         , up(2)         , 0.0f,  //UP
-                    direction(0)    , direction(1)  , direction(2)  , 0.0f,  //FORWARD
-                    translation(0)  , translation(1), translation(2), 1.0f}; //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
+    float matrix[]={left.x(), left.y(), left.z(), 0.0f,     //LEFT
+                    up.x(), up.y(), up.z(), 0.0f,                       //UP
+                    direction.x(), direction.y(), direction.z(), 0.0f,  //FORWARD
+                    translation.x(), translation.y(), translation.z(), 1.0f};    //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
 
     glMultMatrixf(matrix);
 }
 
-void G3DPainter::scale(double x, double y, double z)
+void G3DPainter::scale(const double &x, const double &y, const double &z)
 {
     stopDrawMultiple();
 
     glScaled(x, y, z);
 }
 
-void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes)
+void G3DPainter::drawPoint(const double &x, const double &y, const double &z)
 {
-    m_octreeCellsDraw = 0;
-
-    if((modes == 0) || (m_gv == NULL))
-        return;
-
-    GLdouble planesCoefficients[6][4];
-    m_gv->getCameraFrustumPlanesCoefficients(planesCoefficients);
-
-    QVector3D min = octree->octreeMinCorner();
-    QVector3D max = octree->octreeMaxCorner();
-
-    double cellSize = octree->cellsSize();
-
-    if(modes.testFlag(DrawOctree))
-        drawCube(min.x(), min.y(), min.z(), max.x(), max.y(), max.z(), GL_FRONT_AND_BACK, GL_LINE);
-
-    int s = octree->numberOfCells();
-
-    for(int x=0; x<s; ++x)
+    // if we can points
+    if(canDraw(GL_BEGIN_POINT))
     {
-        for(int y=0; y<s; ++y)
-        {
-            for(int z=0; z<s; ++z)
-            {
-                const CT_AbstractCloudIndex *indexes = octree->at(x, y, z);
+        // Call this method to call "glBegin(GL_POINTS)" if it was not already called
+        startDrawMultiple(GL_BEGIN_POINT);
 
-                if(indexes != NULL)
-                {
-                    if(octree->isCellVisibleInFrustrum(x, y, z, planesCoefficients))
-                    {
-                        if(modes.testFlag(DrawOctree))
-                        {
-                            QVector3D p1(min.x()+(x*cellSize), min.y()+(y*cellSize), min.z()+(z*cellSize));
-                            QVector3D p2(min.x()+((x+1)*cellSize), min.y()+((y+1)*cellSize), min.z()+((z+1)*cellSize));
-                            drawCube(p1.x(), p1.y(), p1.z(), p2.x(), p2.y(), p2.z(), GL_FRONT_AND_BACK, GL_LINE);
-                        }
+        Eigen::Vector4d v = m_modelViewMatrix4d * Eigen::Vector4d(x, y, z, 1);
 
-                        if(modes.testFlag(DrawElements))
-                        {
-                            drawPointCloud(NULL, indexes, 10);
-                            glColor4ub(_color.red(), _color.green(), _color.blue(), _color.alpha());
-                        }
-
-                        ++m_octreeCellsDraw;
-                    }
-                }
-            }
-        }
-    }
-}
-
-void G3DPainter::drawPoint(double x, double y, double z)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
-    {
-        startDrawMultiple();
-
-        beginMultiplePoints();
-
-        glVertex3d(x, y, z);
-
-        endMultiplePoints();
+        glVertex3dv(v.data());
     }
 }
 
@@ -577,38 +500,37 @@ void G3DPainter::drawPoint(double *p)
     drawPoint(p[0], p[1], p[2]);
 }
 
-void G3DPainter::drawPoint(float *p)
+void G3DPainter::drawPoint(const size_t &globalIndex)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
+    if(canDraw(GL_BEGIN_POINT_FROM_PC))
     {
-        startDrawMultiple();
+        // Call this method to call "glBegin(GL_POINTS)" if it was not already called
+        startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
 
-        beginMultiplePoints();
+        DM_ElementInfoManager *infos = m_gv->pointsInformationManager();
 
-        glVertex3f(p[0], p[1], p[2]);
-
-        endMultiplePoints();
+        if(!infos->inlineIsInvisible(globalIndex))
+            glArrayElement(globalIndex);
     }
 }
 
-void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
-                                const CT_AbstractCloudIndex *pci,
-                                int fastestIncrement)
+void G3DPainter::drawPoints(const CT_AbstractMeshModel *mesh)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD) || (m_drawOnly == LINE))
+    drawPointCloud(mesh->getPointCloudIndex());
+}
+
+void G3DPainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
+{
+    if(pci == NULL)
+        return;
+
+    size_t indexCount = pci->size();
+
+    if(indexCount == 0)
+        return;
+
+    if(canDraw(GL_BEGIN_POINT_FROM_PC) || canDraw(GL_BEGIN_LINE_FROM_PC))
     {
-        if(pci == NULL)
-            return;
-
-        size_t indexCount = pci->size();
-
-        if(indexCount == 0)
-            return;
-
-        startDrawMultiple();
-
-        bool bindOk = bindPointShader(false);
-
         if(!m_gv->getOptions().useColor())
             setCurrentColor();
 
@@ -616,9 +538,7 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         size_t increment = 1;
         size_t globalIndex;
 
-        if((m_fastestIncrementPoint == 0) && (fastestIncrement > 0) && drawFastest())
-            increment = fastestIncrement;
-        else if((m_fastestIncrementPoint != 0) && drawFastest())
+        if((m_fastestIncrementPoint != 0) && drawFastest())
             increment = m_fastestIncrementPoint;
 
         QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NPointCloud);
@@ -630,11 +550,11 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         {
             if(m_usePNormalCloud
                     && (normalCloud.data() != NULL)
-                    && ((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE)))
+                    && canDraw(GL_BEGIN_LINE_FROM_PC))
             {
-                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
+                startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
 
-                beginDrawMultipleLine();
+                CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
 
                 n = 0;
                 while(n < indexCount)
@@ -648,13 +568,11 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
                     n += increment;
                 }
-
-                endDrawMultipleLine();
             }
 
-            if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
+            if(canDraw(GL_BEGIN_POINT_FROM_PC))
             {
-                beginMultiplePoints();
+                startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
 
                 n = 0;
                 while(n < indexCount)
@@ -666,8 +584,6 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
                     n += increment;
                 }
-
-                endMultiplePoints();
             }
         }
         // NORMAL
@@ -675,12 +591,11 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
         {
             if(m_usePNormalCloud
                     && (normalCloud.data() != NULL)
-                    && ((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE)))
+                    && canDraw(GL_BEGIN_LINE_FROM_PC))
             {
+                startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
 
                 CT_AbstractNormalCloud *nn = normalCloud->abstractNormalCloud();
-
-                beginDrawMultipleLine();
 
                 n = 0;
                 while(n < indexCount)
@@ -694,11 +609,11 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
                     ++n;
                 }
-
-                endDrawMultipleLine();
             }
 
             /*if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
+                startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
+
                 size_t fn = pci->first();
                 size_t fnSize = pci->size();
                 size_t completeSize = fn + fnSize;
@@ -717,9 +632,9 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
             } else {*/
 
-                if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT_CLOUD))
+                if(canDraw(GL_BEGIN_POINT_FROM_PC))
                 {
-                    beginMultiplePoints();
+                    startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
 
                     n = 0;
                     while(n < indexCount)
@@ -731,36 +646,543 @@ void G3DPainter::drawPointCloud(const CT_AbstractPointCloud *pc,
 
                         ++n;
                     }
-
-                    endMultiplePoints();
                 }
             //}
         }
-
-        releasePointShader(bindOk);
     }
 }
 
-void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
+void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes)
 {
-    drawFaces(mesh);
+    m_octreeCellsDraw = 0;
+
+    if((modes == 0) || (m_gv == NULL))
+        return;
+
+    if((modes.testFlag(DrawOctree) && canDraw(GL_BEGIN_QUAD))
+            || (modes.testFlag(DrawElements) && canDraw(GL_BEGIN_POINT_FROM_PC)))
+    {
+        GLdouble planesCoefficients[6][4];
+        m_gv->getCameraFrustumPlanesCoefficients(planesCoefficients);
+
+        Eigen::Vector3d min = octree->octreeMinCorner();
+        Eigen::Vector3d max = octree->octreeMaxCorner();
+
+        double cellSize = octree->cellsSize();
+
+        if(modes.testFlag(DrawOctree))
+            drawCube(min(0), min(1), min(2), max(0), max(1), max(2), GL_FRONT_AND_BACK, GL_LINE);
+
+        QList<CT_AbstractCloudIndex*> indexesToDraw;
+
+        int s = octree->numberOfCells();
+
+        for(int x=0; x<s; ++x)
+        {
+            for(int y=0; y<s; ++y)
+            {
+                for(int z=0; z<s; ++z)
+                {
+                    const CT_AbstractCloudIndex *indexes = octree->at(x, y, z);
+
+                    if(indexes != NULL)
+                    {
+                        if(octree->isCellVisibleInFrustrum(x, y, z, planesCoefficients))
+                        {
+                            if(modes.testFlag(DrawOctree))
+                            {
+                                Eigen::Vector3d p1(min(0)+(x*cellSize), min(1)+(y*cellSize), min(2)+(z*cellSize));
+                                Eigen::Vector3d p2(min(0)+((x+1)*cellSize), min(1)+((y+1)*cellSize), min(2)+((z+1)*cellSize));
+                                drawCube(p1(0), p1(1), p1(2), p2(0), p2(1), p2(2), GL_FRONT_AND_BACK, GL_LINE);
+                            }
+
+                            if(modes.testFlag(DrawElements))
+                                indexesToDraw.append((CT_AbstractCloudIndex*)indexes);
+
+                            ++m_octreeCellsDraw;
+                        }
+                    }
+                }
+            }
+        }
+
+        QListIterator<CT_AbstractCloudIndex*> it(indexesToDraw);
+
+        while(it.hasNext())
+        {
+            drawPointCloud(it.next());
+            glColor4ub(_color.red(), _color.green(), _color.blue(), _color.alpha());
+        }
+    }
+}
+
+void G3DPainter::drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2)
+{
+    drawCube(x1, y1, z1, x2, y2, z2, GL_FRONT_AND_BACK, GL_LINE);
+}
+
+void G3DPainter::drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, GLenum faces, GLenum mode)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(faces, mode);
+
+        // Bottom
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
+
+        // Top
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
+
+        // Left
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
+
+        // Right
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
+
+        // Front
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
+
+        // Back
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
+    }
+}
+
+void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &z1,
+                              const double &x2, const double &y2, const double &z2,
+                              const double &x3, const double &y3, const double &z3,
+                              const double &x4, const double &y4, const double &z4)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+    }
+}
+
+
+void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+    }
+}
+
+void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                              const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                              const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                              const double &x4, const double &y4, const double &z4, int r4, int g4, int b4)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glColor3ub(r1, g1, b1);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glColor3ub(r2, g2, b2);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glColor3ub(r3, g3, b3);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glColor3ub(r4, g4, b4);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+    }
+}
+
+void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                              const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                              const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                              const double &x4, const double &y4, const double &z4, int r4, int g4, int b4)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glColor3ub(r1, g1, b1);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glColor3ub(r2, g2, b2);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glColor3ub(r3, g3, b3);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glColor3ub(r4, g4, b4);
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+     }
+}
+
+void G3DPainter::drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), bottomRight(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), bottomRight(1), z, 1)).data());
+    }
+}
+
+void G3DPainter::fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), bottomRight(1), z, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), bottomRight(1), z, 1)).data());
+    }
+}
+
+void G3DPainter::drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, bottomRight(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, bottomRight(1), 1)).data());
+    }
+}
+
+void G3DPainter::fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, bottomRight(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, bottomRight(1), 1)).data());
+    }
+}
+
+void G3DPainter::drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), bottomRight(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), bottomRight(1), 1)).data());
+    }
+}
+
+void G3DPainter::fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x)
+{
+    if(canDraw(GL_BEGIN_QUAD))
+    {
+        startDrawMultiple(GL_BEGIN_QUAD);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), bottomRight(1), 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), bottomRight(1), 1)).data());
+    }
+}
+
+void G3DPainter::drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2)
+{
+    if(canDraw(GL_BEGIN_LINE))
+    {
+        startDrawMultiple(GL_BEGIN_LINE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+    }
+}
+
+void G3DPainter::drawLine(const size_t &p1GlobalIndex, const size_t &p2GlobalIndex)
+{
+    if(canDraw(GL_BEGIN_LINE_FROM_PC))
+    {
+        startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
+
+        glArrayElement(p1GlobalIndex);
+        glArrayElement(p2GlobalIndex);
+    }
+}
+
+void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
+{
+    if(mesh == NULL)
+        return;
+
+    const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
+
+    if(eIndex == NULL)
+        return;
+
+    if(canDraw(GL_BEGIN_LINE_FROM_PC))
+    {
+        startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
+
+        if(!m_gv->getOptions().useColor())
+            setCurrentColor();
+
+        QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CEdgeCloud);
+        //QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NEdgeCloud);
+        QColor selColor = m_gv->getOptions().getSelectedColor();
+        DM_ElementInfoManager *infos = m_gv->edgesInformationManager();
+        size_t size = eIndex->size();
+        size_t globalIndex;
+
+        if(m_useEColorCloud
+                && (colorCloud.data() != NULL))
+        {
+            CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
+
+            for(size_t i=0; i<size; ++i)
+            {
+                eIndex->indexAt(i, globalIndex);
+
+                if(!infos->inlineIsInvisible(globalIndex))
+                {
+                    if(infos->inlineIsSelected(globalIndex)) {
+                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                    } else {
+                        const CT_Color &color = cc->constColorAt(globalIndex);
+                        glColor4ub(color.r, color.g, color.b, color.a);
+                    }
+
+                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    glArrayElement(edge.iPointAt(0));
+                    glArrayElement(edge.iPointAt(1));
+                }
+            }
+        }
+        else
+        {
+            for(size_t i=0; i<size; ++i)
+            {
+                eIndex->indexAt(i, globalIndex);
+
+                if(!infos->inlineIsInvisible(globalIndex))
+                {
+                    if(infos->inlineIsSelected(globalIndex)) {
+                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                    } else {
+                        setCurrentColor();
+                    }
+
+                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    glArrayElement(edge.iPointAt(0));
+                    glArrayElement(edge.iPointAt(1));
+                }
+            }
+        }
+    }
+}
+
+void G3DPainter::drawCircle(const double &x, const double &y, const double &z, const double &radius)
+{
+    if(canDraw(GL_BEGIN_LINE))
+    {
+        startDrawMultiple(GL_BEGIN_LINE);
+
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(drawFastest())
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+
+        int size = cosSinA->size();
+
+        const QPair<double, double> &fPair = (*cosSinA)[0];
+        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d((fPair.first*radius) + x, (fPair.second*radius) + y, z, 1);
+        Eigen::Vector4d firstV = lastV;
+
+        for(int i=1; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d((pair.first*radius) + x, (pair.second*radius) + y, z, 1);
+
+            glVertex3dv(lastV.data());
+            glVertex3dv(newV.data());
+
+            lastV = newV;
+        }
+
+        glVertex3dv(lastV.data());
+        glVertex3dv(firstV.data());
+    }
+}
+
+void G3DPainter::drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius)
+{
+    if(canDraw(GL_BEGIN_LINE))
+    {
+        startDrawMultiple(GL_BEGIN_LINE);
+
+        Eigen::Vector3d u(0,0,0);
+
+        if(fabs(direction(0)) >= fabs(direction(1)))
+        {
+            double factor = 1.0/sqrt(direction(0)*direction(0)+direction(2)*direction(2));
+            u(0) = (-direction(2)*factor);
+            u(2) = (direction(0)*factor);
+        }
+        else
+        {
+            double factor = 1.0/sqrt(direction(1)*direction(1)+direction(2)*direction(2));
+            u(1) = (direction(2)*factor);
+            u(2) = (-direction(1)*factor);
+        }
+
+        Eigen::Vector3d v = direction.cross(u);
+        v.normalize();
+
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(drawFastest())
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+
+        int size = cosSinA->size();
+
+        const QPair<double, double> &fPair = (*cosSinA)[0];
+        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d(center(0) + (radius*fPair.first)*u(0) + (radius*fPair.second)*v(0),
+                                                                      center(1) + (radius*fPair.first)*u(1) + (radius*fPair.second)*v(1),
+                                                                      center(2) + (radius*fPair.first)*u(2) + (radius*fPair.second)*v(2), 1);
+        Eigen::Vector4d firstV = lastV;
+
+        for(int i=1; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d(center(0) + (radius*pair.first)*u(0) + (radius*pair.second)*v(0),
+                                                                         center(1) + (radius*pair.first)*u(1) + (radius*pair.second)*v(1),
+                                                                         center(2) + (radius*pair.first)*u(2) + (radius*pair.second)*v(2), 1);
+
+            glVertex3dv(lastV.data());
+            glVertex3dv(newV.data());
+
+            lastV = newV;
+        }
+
+        glVertex3dv(lastV.data());
+        glVertex3dv(firstV.data());
+    }
+}
+
+void G3DPainter::drawEllipse(const double &x, const double &y, const double &z, const double &radiusA, const double &radiusB)
+{
+    if(canDraw(GL_BEGIN_LINE))
+    {
+        startDrawMultiple(GL_BEGIN_LINE);
+
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(drawFastest())
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+
+        int size = cosSinA->size();
+
+        const QPair<double, double> &fPair = (*cosSinA)[0];
+        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d((fPair.first*radiusA) + x, (fPair.second*radiusB) + y, z, 1);
+        Eigen::Vector4d firstV = lastV;
+
+        for(int i=1; i<size; ++i)
+        {
+            const QPair<double, double> &pair = (*cosSinA)[i];
+
+            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d((pair.first*radiusA) + x, (pair.second*radiusB) + y, z, 1);
+
+            glVertex3dv(lastV.data());
+            glVertex3dv(newV.data());
+
+            lastV = newV;
+        }
+
+        glVertex3dv(lastV.data());
+        glVertex3dv(firstV.data());
+    }
+}
+
+void G3DPainter::drawTriangle(const double &x1, const double &y1, const double &z1,
+                              const double &x2, const double &y2, const double &z2,
+                              const double &x3, const double &y3, const double &z3)
+{
+    if(canDraw(GL_BEGIN_TRIANGLE))
+    {
+        startDrawMultiple(GL_BEGIN_TRIANGLE);
+
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+    }
+}
+
+void G3DPainter::drawTriangle(const size_t &p1GlobalIndex, const size_t &p2GlobalIndex, const size_t &p3GlobalIndex)
+{
+    if(canDraw(GL_BEGIN_TRIANGLE_FROM_PC))
+    {
+        startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
+
+        glArrayElement(p1GlobalIndex);
+        glArrayElement(p2GlobalIndex);
+        glArrayElement(p3GlobalIndex);
+    }
 }
 
 void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == FACE))
+    if(mesh == NULL)
+        return;
+
+    const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
+
+    if(fIndex == NULL)
+        return;
+
+    if(canDraw(GL_BEGIN_TRIANGLE_FROM_PC))
     {
-        if(mesh == NULL)
-            return;
-
-        const CT_AbstractCloudIndex *fIndex = mesh->getFaceCloudIndex();
-
-        if(fIndex == NULL)
-            return;
-
-        startDrawMultiple();
-
-        //bool bindOk = bindFaceShader();
+        startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
 
         if(!m_gv->getOptions().useColor())
             setCurrentColor();
@@ -771,8 +1193,6 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
         DM_ElementInfoManager *infos = m_gv->facesInformationManager();
         size_t globalIndex;
         size_t size = fIndex->size();
-
-        beginDrawMultipleTriangle();
 
         // W/ colors cloud
         if(m_useFColorCloud
@@ -884,689 +1304,172 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
                 }
             }
         }
-
-        endDrawMultipleTriangle();
-
-        //releaseFaceShader(bindOk);
     }
 }
 
-void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
+void G3DPainter::drawMesh(const CT_AbstractMeshModel *mesh)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == EDGE))
-    {
-        if(mesh == NULL)
-            return;
-
-        const CT_AbstractCloudIndex *eIndex = mesh->getEdgeCloudIndex();
-
-        if(eIndex == NULL)
-            return;
-
-        startDrawMultiple();
-
-        //bool bindOk = bindEdgeShader();
-
-        if(!m_gv->getOptions().useColor())
-            setCurrentColor();
-
-        QSharedPointer<CT_StandardColorCloudRegistered> colorCloud = m_gv->colorCloudOf(GraphicsViewInterface::CEdgeCloud);
-        //QSharedPointer<CT_StandardNormalCloudRegistered> normalCloud = m_gv->normalCloudOf(GraphicsViewInterface::NEdgeCloud);
-        QColor selColor = m_gv->getOptions().getSelectedColor();
-        DM_ElementInfoManager *infos = m_gv->edgesInformationManager();
-        size_t size = eIndex->size();
-        size_t globalIndex;
-
-        beginDrawMultipleLine();
-
-        if(m_useEColorCloud
-                && (colorCloud.data() != NULL))
-        {
-            CT_AbstractColorCloud *cc = colorCloud->abstractColorCloud();
-
-            for(size_t i=0; i<size; ++i)
-            {
-                eIndex->indexAt(i, globalIndex);
-
-                if(!infos->inlineIsInvisible(globalIndex))
-                {
-                    if(infos->inlineIsSelected(globalIndex)) {
-                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                    } else {
-                        const CT_Color &color = cc->constColorAt(globalIndex);
-                        glColor4ub(color.r, color.g, color.b, color.a);
-                    }
-
-                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
-                    glArrayElement(edge.iPointAt(0));
-                    glArrayElement(edge.iPointAt(1));
-                }
-            }
-        }
-        else
-        {
-            for(size_t i=0; i<size; ++i)
-            {
-                eIndex->indexAt(i, globalIndex);
-
-                if(!infos->inlineIsInvisible(globalIndex))
-                {
-                    if(infos->inlineIsSelected(globalIndex)) {
-                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                    } else {
-                        setCurrentColor();
-                    }
-
-                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
-                    glArrayElement(edge.iPointAt(0));
-                    glArrayElement(edge.iPointAt(1));
-                }
-            }
-        }
-
-        endDrawMultipleLine();
-        //releaseEdgeShader(bindOk);
-    }
-}
-
-void G3DPainter::drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement)
-{
-    drawPointCloud(NULL, mesh->getPointCloudIndex(), fastestIncrement);
-}
-
-void G3DPainter::beginMultiplePoints()
-{
-    if(m_drawOnly == DRAW_ALL)
-        glBegin(GL_POINTS);
-
-    m_drawMultiplePoint = true;
-}
-
-void G3DPainter::addPoint(float *p)
-{
-    startDrawMultiple();
-
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == POINT))
-        glVertex3fv(p);
-}
-
-void G3DPainter::endMultiplePoints()
-{
-    if(m_drawOnly == DRAW_ALL)
-        glEnd();
-
-    m_drawMultiplePoint = false;
-}
-
-void G3DPainter::drawRectXY(const QRectF &rectangle, double z)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        glBegin(GL_LINE_LOOP);
-
-        glVertex3d(rectangle.left(), rectangle.top(), z);
-        glVertex3d(rectangle.right(), rectangle.top(), z);
-        glVertex3d(rectangle.right(), rectangle.bottom(), z);
-        glVertex3d(rectangle.left(), rectangle.bottom(), z);
-
-        glEnd();
-    }
-}
-
-void G3DPainter::fillRectXY(const QRectF &rectangle, double z)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        glVertex3d(rectangle.left(), rectangle.top(), z);
-        glVertex3d(rectangle.right(), rectangle.top(), z);
-        glVertex3d(rectangle.right(), rectangle.bottom(), z);
-        glVertex3d(rectangle.left(), rectangle.bottom(), z);
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-    }
-}
-
-void G3DPainter::drawRectXZ(const QRectF &rectangle, double y)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        glBegin(GL_LINE_LOOP);
-
-        glVertex3d(rectangle.left(), y, rectangle.top());
-        glVertex3d(rectangle.right(), y, rectangle.top());
-        glVertex3d(rectangle.right(), y, rectangle.bottom());
-        glVertex3d(rectangle.left(), y, rectangle.bottom());
-
-        glEnd();
-    }
-}
-
-void G3DPainter::fillRectXZ(const QRectF &rectangle, double y)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        glVertex3d(rectangle.left(), y, rectangle.top());
-        glVertex3d(rectangle.right(), y, rectangle.top());
-        glVertex3d(rectangle.right(), y, rectangle.bottom());
-        glVertex3d(rectangle.left(), y, rectangle.bottom());
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-    }
-}
-
-void G3DPainter::drawRectYZ(const QRectF &rectangle, double x)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        glBegin(GL_LINE_LOOP);
-
-        glVertex3d(x, rectangle.left(), rectangle.top());
-        glVertex3d(x, rectangle.right(), rectangle.top());
-        glVertex3d(x, rectangle.right(), rectangle.bottom());
-        glVertex3d(x, rectangle.left(), rectangle.bottom());
-
-        glEnd();
-    }
-}
-
-void G3DPainter::fillRectYZ(const QRectF &rectangle, double x)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        glVertex3d(x, rectangle.left(), rectangle.top());
-        glVertex3d(x, rectangle.right(), rectangle.top());
-        glVertex3d(x, rectangle.right(), rectangle.bottom());
-        glVertex3d(x, rectangle.left(), rectangle.bottom());
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-    }
+    drawFaces(mesh);
 }
 
 void G3DPainter::beginPolygon()
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-        glBegin(GL_LINE_STRIP);
+    if(canDraw(GL_BEGIN_LINE)) {
+        startDrawMultiple(GL_BEGIN_LINE);
+        m_firstPolygonPointValid = false;
+    }
 }
 
-void G3DPainter::addPointToPolygon(float *p)
+void G3DPainter::addPointToPolygon(const double &x, const double &y, const double &z)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-        glVertex3fv(p);
+    if(canDraw(GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE)) {
+
+        Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d(x, y, z, 1);
+
+        if(m_firstPolygonPointValid) {
+            glVertex3dv(m_firstPolygonPoint.data());
+            glVertex3dv(newV.data());
+        }
+
+        m_firstPolygonPoint = newV;
+        m_firstPolygonPointValid = true;
+    }
 }
 
 void G3DPainter::endPolygon()
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-        glEnd();
+    m_firstPolygonPointValid = false;
 }
 
-void G3DPainter::beginDrawMultipleLine()
+void G3DPainter::drawCylinder(const double &x, const double &y, const double &z, const double &radius, const double &height)
 {
-    if(m_drawOnly == DRAW_ALL)
-        glBegin(GL_LINES);
-
-    m_drawMultipleLine = true;
-}
-
-void G3DPainter::drawLine(double x1, double y1, double z1, double x2, double y2, double z2)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE))
+    if(canDraw(GL_OTHER))
     {
-        startDrawMultiple();
-
-        beginDrawMultipleLine();
-
-        glVertex3d(x1, y1, z1);
-        glVertex3d(x2, y2, z2);
-
-        endDrawMultipleLine();
-    }
-}
-
-void G3DPainter::drawLine(const float *p1, const float *p2)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == LINE))
-    {
-        startDrawMultiple();
-
-        beginDrawMultipleLine();
-
-        glVertex3fv(p1);
-        glVertex3fv(p2);
-
-        endDrawMultipleLine();
-    }
-}
-
-void G3DPainter::endDrawMultipleLine()
-{
-    if(m_drawOnly == DRAW_ALL)
-        glEnd();
-
-    m_drawMultipleLine = false;
-}
-
-void G3DPainter::drawCircle(double x, double y, double z, double radius)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
-
-        if(_drawFastest)
-        {
-            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
-        }
-
-        int size = cosSinA->size();
-
-        glBegin(GL_LINE_LOOP);
-
-        float inc = M_PI_MULT_2/((double)size);
-        float a = -M_PI;
-
-        for(int i=0; i<size; ++i)
-        {
-            const QPair<double, double> &pair = (*cosSinA)[i];
-
-            glVertex3d((pair.first*radius) + x, (pair.second*radius) + y, z);
-            a += inc;
-        }
-
-        glEnd();
-    }
-}
-
-void G3DPainter::drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        Eigen::Vector3d u(0,0,0);
-
-        if(fabs(direction(0)) >= fabs(direction(1)))
-        {
-            double factor = 1.0/sqrt(direction(0)*direction(0)+direction(2)*direction(2));
-            u(0) = -direction(2)*factor;
-            u(2) = direction(0)*factor;
-        }
-        else
-        {
-            double factor = 1.0/sqrt(direction(1)*direction(1)+direction(2)*direction(2));
-            u(1) = direction(2)*factor;
-            u(2) = -direction(1)*factor;
-        }
-
-        Eigen::Vector3d v = direction.cross(u);
-        v.normalize();
-
-        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
-
-        if(_drawFastest)
-        {
-            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
-        }
-
-        int size = cosSinA->size();
-
-        glBegin(GL_LINE_LOOP);
-
-        for(int i=0; i<size; ++i)
-        {
-            const QPair<double, double> &pair = (*cosSinA)[i];
-
-            glVertex3d(center(0) + (radius*pair.first)*u(0) + (radius*pair.second)*v(0),
-                       center(1) + (radius*pair.first)*u(1) + (radius*pair.second)*v(1),
-                       center(2) + (radius*pair.first)*u(2) + (radius*pair.second)*v(2));
-        }
-
-        glEnd();
-    }
-}
-
-void G3DPainter::drawCylinder(double x, double y, double z, double radius, double height)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        save();
+        stopDrawMultiple();
+        /*save();
 
         translate(x, y, z);
 
         gluCylinder(_quadric, radius, radius, height, 20, 1);
 
-        restore();
+        restore();*/
     }
 }
 
-void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height)
+void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius, const double &height)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    if(canDraw(GL_OTHER))
     {
-        save();
+        stopDrawMultiple();
 
-        double delta = - height/2.0;
-        Eigen::Vector3d translation = center + delta*direction;
-        translateThenRotateToDirection(translation, direction);
+        /*save();
+
+        float delta = - height/2.0;
+        translateThenRotateToDirection(QVector3D(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
 
         gluCylinder(_quadric, radius, radius, height, 20, 1);
 
-        restore();
+        restore();*/
     }
 }
 
-void G3DPainter::drawEllipse(double x, double y, double z, double radiusA, double radiusB)
+void G3DPainter::drawPyramid(const double &topX, const double &topY, const double &topZ,
+                             const double &base1X, const double &base1Y, const double &base1Z,
+                             const double &base2X, const double &base2Y, const double &base2Z,
+                             const double &base3X, const double &base3Y, const double &base3Z,
+                             const double &base4X, const double &base4Y, const double &base4Z)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    if(canDraw(GL_OTHER))
     {
-        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+        stopDrawMultiple();
 
-        if(_drawFastest)
-        {
-            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
-        }
-
-        int size = cosSinA->size();
-
-        glBegin(GL_LINE_LOOP);
-
-        for(int i=0; i<size; ++i)
-        {
-            const QPair<double, double> &pair = (*cosSinA)[i];
-
-            glVertex3d((pair.first*radiusA)+x,
-                       (pair.second*radiusB)+y,
-                       z);
-        }
-
-        glEnd();
-    }
-}
-
-void G3DPainter::beginDrawMultipleTriangle()
-{
-    if(m_drawOnly == DRAW_ALL)
-        glBegin( GL_TRIANGLES );
-
-    m_drawMultipleTriangle = true;
-}
-
-void G3DPainter::drawTriangle(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == TRIANGLE))
-    {
-        startDrawMultiple();
-
-        beginDrawMultipleTriangle();
-
-        glVertex3d(x1, y1, z1);
-        glVertex3d(x2, y2, z2);
-        glVertex3d(x3, y3, z3);
-
-        endDrawMultipleTriangle();
-    }
-}
-
-void G3DPainter::drawTriangle(const float *p1, const float *p2, const float *p3)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == TRIANGLE))
-    {
-        startDrawMultiple();
-
-        beginDrawMultipleTriangle();
-
-        glVertex3fv(p1);
-        glVertex3fv(p2);
-        glVertex3fv(p3);
-
-        endDrawMultipleTriangle();
-    }
-}
-
-void G3DPainter::endDrawMultipleTriangle()
-{
-    if(m_drawOnly == DRAW_ALL)
-        glEnd();
-
-    m_drawMultipleTriangle = false;
-}
-
-void G3DPainter::drawCube(double x1, double y1, double z1, double x2, double y2, double z2)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        // Bottom
-        glVertex3f(x1, y1, z1);
-        glVertex3f(x2, y1, z1);
-        glVertex3f(x2, y2, z1);
-        glVertex3f(x1, y2, z1);
-
-        // Top
-        glVertex3f(x1, y1, z2);
-        glVertex3f(x2, y1, z2);
-        glVertex3f(x2, y2, z2);
-        glVertex3f(x1, y2, z2);
-
-        // Left
-        glVertex3f(x1, y1, z1);
-        glVertex3f(x1, y2, z1);
-        glVertex3f(x1, y2, z2);
-        glVertex3f(x1, y1, z2);
-
-        // Right
-        glVertex3f(x2, y1, z1);
-        glVertex3f(x2, y2, z1);
-        glVertex3f(x2, y2, z2);
-        glVertex3f(x2, y1, z2);
-
-        // Front
-        glVertex3f(x1, y1, z1);
-        glVertex3f(x2, y1, z1);
-        glVertex3f(x2, y1, z2);
-        glVertex3f(x1, y1, z2);
-
-        // Back
-        glVertex3f(x1, y2, z1);
-        glVertex3f(x2, y2, z1);
-        glVertex3f(x2, y2, z2);
-        glVertex3f(x1, y2, z2);
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-    }
-}
-
-void G3DPainter::drawPyramid(double topX, double topY, double topZ, double base1X, double base1Y, double base1Z, double base2X, double base2Y, double base2Z, double base3X, double base3Y, double base3Z, double base4X, double base4Y, double base4Z)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
         glBegin( GL_TRIANGLE_FAN );
-            glVertex3f(topX, topY, topZ);
 
-            glVertex3f(base1X, base1Y, base1Z);
-            glVertex3f(base2X, base2Y, base2Z);
-            glVertex3f(base3X, base3Y, base3Z);
-            glVertex3f(base4X, base4Y, base4Z);
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topX, topY, topZ, 1)).data());
 
-            glVertex3f(base1X, base1Y, base1Z);
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base2X, base2Y, base2Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base3X, base3Y, base3Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base4X, base4Y, base4Z, 1)).data());
+
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
         glEnd();
 
         glBegin( GL_QUADS );
-            glVertex3f(base1X, base1Y, base1Z);
-            glVertex3f(base2X, base2Y, base2Z);
-            glVertex3f(base3X, base3Y, base3Z);
-            glVertex3f(base4X, base4Y, base4Z);
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base2X, base2Y, base2Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base3X, base3Y, base3Z, 1)).data());
+            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base4X, base4Y, base4Z, 1)).data());
         glEnd();
     }
 }
 
-void G3DPainter::drawPartOfSphere(double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians)
+void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, const double &centerZ,
+                                  const double &radius,
+                                  const double &initTheta, const double &endTheta,
+                                  const double &initPhi, const double &endPhi,
+                                  bool radians)
 {
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
+    if(canDraw(GL_OTHER))
     {
+        stopDrawMultiple();
+
+        double iTheta = initTheta;
+        double eTheta = endTheta;
+        double iPhi = iPhi;
+        double ePhi = endPhi;
+
         if ( !radians )
         {
-            initTheta *= M_PI/180.0;
-            endTheta *= M_PI/180.0;
-            initPhi *= M_PI/180.0;
-            endPhi *= M_PI/180.0;
+            iTheta *= M_PI/180.0;
+            eTheta *= M_PI/180.0;
+            iPhi *= M_PI/180.0;
+            ePhi *= M_PI/180.0;
         }
 
-        float nbSteps = 60;
-        float stepTheta = fabs(endTheta-initTheta) / nbSteps;
-        float stepPhi = fabs(endPhi-initPhi) / nbSteps;
+        double nbSteps = 60;
+        double stepTheta = fabs(eTheta-iTheta) / nbSteps;
+        double stepPhi = fabs(ePhi-iPhi) / nbSteps;
 
-        float cosPhi, sinPhi, cosTheta, sinTheta;
+        double cosPhi, sinPhi, cosTheta, sinTheta;
 
-        for ( float currentTheta = initTheta ; currentTheta <= endTheta ;  currentTheta += stepTheta )
+        for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
         {
             glBegin( GL_LINE_STRIP );
-            for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
+            for ( float currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
             {
                     sinPhi = sin (currentPhi);
                     cosPhi = cos (currentPhi);
                     sinTheta = sin (currentTheta);
                     cosTheta = cos (currentTheta);
 
-                    glVertex3f( radius*sinPhi*cosTheta + centerX,
-                                radius*sinPhi*sinTheta + centerY,
-                                radius*cosPhi + centerZ);
+                    glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(radius*sinPhi*cosTheta + centerX,
+                                                                       radius*sinPhi*sinTheta + centerY,
+                                                                       radius*cosPhi + centerZ, 1)).data());
             }
             glEnd();
         }
 
-        for ( float currentPhi = initPhi ; currentPhi <= endPhi ; currentPhi += stepPhi )
+        for ( double currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
         {
             glBegin( GL_LINE_STRIP );
-            for ( float currentTheta = initTheta ; currentTheta <= endTheta ;  currentTheta += stepTheta )
+            for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
             {
                     sinPhi = sin (currentPhi);
                     cosPhi = cos (currentPhi);
                     sinTheta = sin (currentTheta);
                     cosTheta = cos (currentTheta);
 
-                    glVertex3f( radius*sinPhi*cosTheta + centerX,
-                                radius*sinPhi*sinTheta + centerY,
-                                radius*cosPhi + centerZ);
+                    glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(radius*sinPhi*cosTheta + centerX,
+                                                                       radius*sinPhi*sinTheta + centerY,
+                                                                       radius*cosPhi + centerZ, 1)).data());
+
             }
             glEnd();
         }
     }
 }
 
-void G3DPainter::fillQuadFace(float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        glVertex3d(x1, y1, z1 );
-        glVertex3d(x2, y2, z2 );
-        glVertex3d(x3, y3, z3 );
-        glVertex3d(x4, y4, z4 );
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-    }
-}
-
-void G3DPainter::fillQuadFace(float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == QUADS))
-    {
-        startDrawMultiple();
-
-        if(m_drawOnly == DRAW_ALL)
-            glBegin(GL_QUADS);
-
-        glColor3ub(r1, g1, b1);
-        glVertex3d(x1, y1, z1 );
-
-        glColor3ub(r2, g2, b2);
-        glVertex3d(x2, y2, z2 );
-
-        glColor3ub(r3, g3, b3);
-        glVertex3d(x3, y3, z3 );
-
-        glColor3ub(r4, g4, b4);
-        glVertex3d(x4, y4, z4 );
-
-        if(m_drawOnly == DRAW_ALL)
-            glEnd();
-     }
-}
-
-void G3DPainter::drawQuadFace(float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        glBegin(GL_LINE_STRIP);
-
-        glVertex3d(x1, y1, z1 );
-        glVertex3d(x2, y2, z2 );
-        glVertex3d(x3, y3, z3 );
-        glVertex3d(x4, y4, z4 );
-
-        glEnd();
-    }
-}
-
-void G3DPainter::drawQuadFace(float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4)
-{
-    if((m_drawOnly == DRAW_ALL) || (m_drawOnly == NO_MULTI_AVAILABLE))
-    {
-        glBegin(GL_LINE_STRIP);
-
-        glColor3ub(r1, g1, b1);
-        glVertex3d(x1, y1, z1 );
-
-        glColor3ub(r2, g2, b2);
-        glVertex3d(x2, y2, z2 );
-
-        glColor3ub(r3, g3, b3);
-        glVertex3d(x3, y3, z3 );
-
-        glColor3ub(r4, g4, b4);
-        glVertex3d(x4, y4, z4 );
-
-        glEnd();
-    }
-}
 
 
 //////////// PROTECTED ///////////
@@ -1705,7 +1608,7 @@ void G3DPainter::initEdgeShader()
 
 bool G3DPainter::bindPointShader(bool force)
 {
-    if((m_drawOnly != POINT_CLOUD) || force)
+    if((m_drawOnly != POINT_FROM_PC) || force)
     {
         initPointShader();
 
@@ -1731,20 +1634,34 @@ bool G3DPainter::bindPointShader(bool force)
                 if(!m_shaderProgPointSet) {
                     if(m_gv->pointsInformationManager()->informations()->size() > 0)
                     {
+                        int s = PS_COORDINATES_SYS_MANAGER->size();
+
+                        for(int i=0; i<s; ++i)
+                            m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
+
+                        int locCSIndex = m_shaderProgPoint->attributeLocation("csIndex");
+                        int locInfo = m_shaderProgPoint->attributeLocation("info");
+                        int locCSMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
+
                         QColor sColor = m_gv->getOptions().getSelectedColor();
                         m_shaderProgPoint->setUniformValue("selectionColor", QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
 
                         m_shaderProgPoint->setUniformValue("checkSelected", (GLuint)m_gv->pointsInformationManager()->checkSelected());
 
                         m_shaderProgPoint->enableAttributeArray("info");
-                        int loc = m_shaderProgPoint->attributeLocation("info");
-                        glVertexAttribPointer(loc, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+                        glVertexAttribPointer(locInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+
+                        m_shaderProgPoint->enableAttributeArray("csIndex");
+                        glVertexAttribPointer(locCSIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
+
+                        glUniformMatrix4fv(locCSMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
 
                         m_shaderProgPointSet = true;
                     }
 
                 } else {
                     m_shaderProgPoint->enableAttributeArray("info");
+                    m_shaderProgPoint->enableAttributeArray("csIndex");
                 }
 
                 return true;
@@ -1867,34 +1784,84 @@ QVector< QPair<double, double> > G3DPainter::staticInitCircleVector(int size)
     return vector;
 }
 
-void G3DPainter::startDrawMultiple()
+bool G3DPainter::canDraw(G3DPainter::GlBeginType type) const
 {
-    if(!m_beginMultipleEnable)
+    if(m_drawOnly == DRAW_ALL)
+        return true;
+
+    if((type == GL_BEGIN_POINT) && (m_drawOnly == POINT))
+        return true;
+
+    if((type == GL_BEGIN_POINT_FROM_PC) && (m_drawOnly == POINT_FROM_PC))
+        return true;
+
+    if((type == GL_BEGIN_LINE) && (m_drawOnly == LINE))
+        return true;
+
+    if((type == GL_BEGIN_LINE_FROM_PC) && (m_drawOnly == LINE_FROM_PC))
+        return true;
+
+    if((type == GL_BEGIN_TRIANGLE) && (m_drawOnly == TRIANGLE))
+        return true;
+
+    if((type == GL_BEGIN_TRIANGLE_FROM_PC) && (m_drawOnly == TRIANGLE_FROM_PC))
+        return true;
+
+    if((type == GL_BEGIN_QUAD) && (m_drawOnly == QUAD))
+        return true;
+
+    if((type == GL_BEGIN_QUAD_FROM_PC) && (m_drawOnly == QUAD_FROM_PC))
+        return true;
+
+    if((type == GL_OTHER) && (m_drawOnly == OTHER))
+        return true;
+
+    return false;
+}
+
+void G3DPainter::startDrawMultiple(GlBeginType type)
+{
+    m_firstPolygonPointValid = false;
+
+    // call glEnd() if it was not already called and if we change
+    // the type of glBegin(...)
+    callGlEndIfGlBeginChanged(type);
+
+    // if we have not already started a glBegin
+    if(m_currentGlBeginType == GL_END_CALLED)
     {
         // if we must only draw point or point cloud
-        if((m_drawOnly == POINT) || (m_drawOnly == POINT_CLOUD))
+        if((type == GL_BEGIN_POINT) || (type == GL_BEGIN_POINT_FROM_PC))
         {
-            if((m_drawOnly == POINT_CLOUD) && !m_bindShaderPointOK)
+            if((type == GL_BEGIN_POINT_FROM_PC) && !m_bindShaderPointOK)
                 m_bindShaderPointOK = bindPointShader(true);
 
             glBegin(GL_POINTS);
+            m_currentGlBeginType = type;
+        }
+        else if((type == GL_BEGIN_TRIANGLE) || (type == GL_BEGIN_TRIANGLE_FROM_PC))
+        {
+            if((type == GL_BEGIN_TRIANGLE_FROM_PC) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader(true);
 
-            m_beginMultipleEnable = true;
-        }
-        else if((m_drawOnly == TRIANGLE) || (m_drawOnly == FACE))
-        {
             glBegin(GL_TRIANGLES);
-            m_beginMultipleEnable = true;
+            m_currentGlBeginType = type;
         }
-        else if((m_drawOnly == LINE) || (m_drawOnly == EDGE))
-                {
-            glBegin(GL_LINES);
-            m_beginMultipleEnable = true;
-        }
-        else if(m_drawOnly == QUADS)
+        else if((type == GL_BEGIN_LINE) || (type == GL_BEGIN_LINE_FROM_PC))
         {
+            if((type == GL_BEGIN_LINE_FROM_PC) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader(true);
+
+            glBegin(GL_LINES);
+            m_currentGlBeginType = type;
+        }
+        else if((type == GL_BEGIN_QUAD) || (type == GL_BEGIN_QUAD_FROM_PC))
+        {
+            if((type == GL_BEGIN_QUAD_FROM_PC) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader(true);
+
             glBegin(GL_QUADS);
-            m_beginMultipleEnable = true;
+            m_currentGlBeginType = type;
         }
     }
 
@@ -1903,26 +1870,52 @@ void G3DPainter::startDrawMultiple()
 
 void G3DPainter::stopDrawMultiple()
 {
-    if(m_beginMultipleEnable)
+    m_firstPolygonPointValid = false;
+
+    // if we have not call "glEnd()"
+    if(m_currentGlBeginType != GL_END_CALLED)
     {
         glEnd();
-        m_beginMultipleEnable = false;
+
+        // if the last glBegin() has bind the point cloud shader, we must release it
+        if(m_bindShaderPointOK) {
+            releasePointShader(m_bindShaderPointOK);
+            m_bindShaderPointOK = false;
+        }
+
+        m_currentGlBeginType = GL_END_CALLED;
     }
 }
 
-void G3DPainter::resetDrawMultiple()
+void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginType)
 {
-    // if we have draw a specific type we must call glEnd() before call a glBegin(...)
-    if((m_drawOnly != NO_MULTI_AVAILABLE) && (m_drawOnly != DRAW_ALL))
+    // if the current "glBegin(...)" was the same type
+    if(m_currentGlBeginType == newGlBeginType) {
+        return; // we must not call "glEnd"
+    }
+    // else if we currently draw with points from global cloud and now we want to draw
+    // with double values
+    else if(((newGlBeginType == GL_BEGIN_POINT) && (m_currentGlBeginType == GL_BEGIN_POINT_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
-        if(m_beginMultipleEnable)
-            glEnd();
-
-        if(m_drawOnly == POINT_CLOUD)
-            releasePointShader(m_bindShaderPointOK);
-
+        // we must just release the shader
+        releasePointShader(m_bindShaderPointOK);
         m_bindShaderPointOK = false;
     }
-
-    m_drawOnly = DRAW_ALL;
+    // else if we currently draw with double values and now we want to draw
+    // with points from global cloud
+    else if(((newGlBeginType == GL_BEGIN_POINT) && (m_currentGlBeginType == GL_BEGIN_POINT_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
+            || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
+    {
+        // we must just bind the shader
+        if(!m_bindShaderPointOK)
+            m_bindShaderPointOK = bindPointShader(true);
+    }
+    else {
+        stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
+    }
 }

@@ -137,7 +137,7 @@ void CT_IndexCloudColorStdMapT<T>::clear()
 }
 
 template<typename T>
-CT_AbstractCloudIndex* CT_IndexCloudColorStdMapT<T>::copy() const
+CT_AbstractCloud* CT_IndexCloudColorStdMapT<T>::copy() const
 {
     CT_IndexCloudColorStdMapT<T> *index = new CT_IndexCloudColorStdMapT<T>();
 

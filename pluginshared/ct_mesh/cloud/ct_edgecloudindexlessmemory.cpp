@@ -4,7 +4,7 @@ CT_EdgeCloudIndexLessMemory::CT_EdgeCloudIndexLessMemory(const size_t &begin, co
 {
 }
 
-CT_AbstractCloudIndex* CT_EdgeCloudIndexLessMemory::copy() const
+CT_AbstractCloud *CT_EdgeCloudIndexLessMemory::copy() const
 {
     return new CT_EdgeCloudIndexLessMemory(first(), size());
 }

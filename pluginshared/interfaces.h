@@ -36,8 +36,6 @@
 #include <QPainter>
 #include <QAbstractItemView>
 
-#include <eigen/Eigen/Core>
-
 #if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
 #include <GL/gl.h>
 #else
@@ -45,6 +43,7 @@
 #endif
 
 #include "interfacessettings.h"
+#include "eigen/Eigen/Core"
 
 class QPen;
 class QRectF;
@@ -77,7 +76,7 @@ class CT_AbstractModifiableCloudIndex;
 /**
  * @brief Represent an octree used by graphics views
  */
-class OctreeInterface  : public QObject
+class OctreeInterface : public QObject
 {
     Q_OBJECT
 
@@ -117,12 +116,12 @@ public:
     /**
      * @brief The min corner of the octree
      */
-    virtual QVector3D octreeMinCorner() const = 0;
+    virtual Eigen::Vector3d octreeMinCorner() const = 0;
 
     /**
      * @brief The max corner of the octree
      */
-    virtual QVector3D octreeMaxCorner() const = 0;
+    virtual Eigen::Vector3d octreeMaxCorner() const = 0;
 
     /**
      * @brief Returns true if the octree must be reconstructed. (If new min or max is greather or lower than old min or max OR if number of cells has changed)
@@ -172,6 +171,9 @@ public:
 
     virtual ~PainterInterface() {}
 
+    /**
+     * @brief Returns true if we draw fastest
+     */
     virtual bool drawFastest() const = 0;
 
     virtual void save() = 0;
@@ -183,10 +185,10 @@ public:
     virtual void enableMultMatrix(bool e) = 0;
 
     virtual void pushMatrix() = 0;
-    virtual void multMatrix(const QMatrix4x4 &matrix) = 0;
+    virtual void multMatrix(const Eigen::Matrix4d &matrix) = 0;
     virtual void popMatrix() = 0;
 
-    virtual void setPointSize(double size) = 0;
+    virtual void setPointSize(float size) = 0;
     virtual void restoreDefaultPointSize() = 0;
 
     virtual void setPen(const QPen &pen) = 0;
@@ -204,144 +206,283 @@ public:
     virtual void enableSetPointSize(bool enable) = 0;
     virtual void enableSetForcedPointSize(bool enable) = 0;
 
-    virtual void translate(double x, double y, double z) = 0;
-    virtual void rotate(double alpha, double x, double y, double z) = 0;
-    virtual void scale(double x, double y, double z) = 0;
+    virtual void translate(const double &x, const double &y, const double &z) = 0;
+    virtual void rotate(const double &alpha, const double &x, const double &y, const double &z) = 0;
+    virtual void scale(const double &x, const double &y, const double &z) = 0;
 
-    virtual void drawPoint(double x, double y, double z) = 0;
+    /**
+     * @brief Draw a point that was not in the global points cloud (otherwise use drawPoint(globalIndex) method)
+     * @warning To get best performance don't mix this method with other method that don't draw point (like triangles or
+     *          cubes or lines, etc...)
+     */
+    virtual void drawPoint(const double &x, const double &y, const double &z) = 0;
+
+    /**
+     * @brief Draw a point that was not in the global points cloud (otherwise use drawPoint(globalIndex) method)
+     * @warning To get best performance don't mix this method with other method that don't draw point (like triangles or
+     *          cubes or lines, etc...)
+     */
     virtual void drawPoint(double *p) = 0;
-    virtual void drawPoint(float *p) = 0;
 
-    virtual void beginMultiplePoints() = 0;
-    virtual void addPoint(float *p) = 0;
-    virtual void endMultiplePoints() = 0;
+    /**
+     * @brief Draw a point that was in the global points cloud
+     * @param globalIndex: index of the point in the global points cloud
+     * @warning To get best performance don't mix this method with method that draw classical point that was not in the global cloud.
+     *          To get best performance don't mix this method with other method that don't draw point from the global cloud (like triangles or
+     *          cubes or lines, etc...)
+     */
+    virtual void drawPoint(const size_t &globalIndex) = 0;
 
+    /**
+     * @brief Draw all points that was pointed by indexes in "pci" in the global points cloud
+     * @param pci : indexes of points to draw
+     * @warning To get best performance don't mix this method with method that draw classical point that was not in the global cloud.
+     *          To get best performance don't mix this method with other method that don't draw point from the global cloud (like triangles or
+     *          cubes or lines, etc...)
+     */
+    virtual void drawPointCloud(const CT_AbstractCloudIndex *pci) = 0;
+
+    /**
+     * @brief Draw the octree and points (depend of the parameter modes)
+     * @param octree : octree to draw
+     * @param modes : what you want to draw => Cubes and/or Points
+     */
     virtual void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes) = 0;
 
-    virtual void drawPointCloud(const CT_AbstractPointCloud *pc,
-                                const CT_AbstractCloudIndex *pci,
-                                int fastestIncrement) = 0;
-
-    virtual void drawMesh(const CT_AbstractMeshModel *mesh) = 0;
-    virtual void drawFaces(const CT_AbstractMeshModel *mesh) = 0;
-    virtual void drawEdges(const CT_AbstractMeshModel *mesh) = 0;
-    virtual void drawPoints(const CT_AbstractMeshModel *mesh, int fastestIncrement) = 0;
-
-    virtual void beginDrawMultipleLine() = 0;
-    virtual void drawLine(double x1, double y1, double z1, double x2, double y2, double z2) = 0;
-    virtual void drawLine(const float *p1, const float *p2) = 0;
-    virtual void endDrawMultipleLine() = 0;
-
-    virtual void drawCircle(double x, double y, double z, double radius) = 0;
-    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius) = 0;
-
-    virtual void drawCylinder(double x, double y, double z, double radius, double height) = 0;
-    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double height) = 0;
-
-    virtual void drawEllipse(double x, double y, double z, double radiusA, double radiusB) = 0;
-
-    virtual void beginDrawMultipleTriangle() = 0;
-    virtual void drawTriangle(double x1, double y1, double z1,
-                              double x2, double y2, double z2,
-                              double x3, double y3, double z3) = 0;
-    virtual void drawTriangle(const float *p1,
-                              const float *p2,
-                              const float *p3) = 0;
-    virtual void endDrawMultipleTriangle() = 0;
+    /**
+     * @brief Draw a 3D cube defined by its bounding box (bottom left and top right corner). (NOT FILLED by default)
+     * @warning To get best performance don't mix this method with other method that don't draw cube (like triangles or
+     *          points or line, etc...)
+     */
+    virtual void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2) = 0;
 
     /**
      * @brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
-     *
+     * @param faces : Specifies the polygons that mode applies to. Must be GL_FRONT_AND_BACK for front- and back-facing polygons. Show glPolygonMode(...) for more details.
+     * @param mode : Specifies how polygons will be rasterized. Accepted values are GL_POINT, GL_LINE, and GL_FILL. Show glPolygonMode(...) for more details.
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
      */
-    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2) = 0;
+    virtual void drawCube(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, GLenum faces, GLenum mode) = 0;
 
     /**
-     * @brief Draw a 3D cube defined by its bounding box (bottom left and top right corner).
-     * The drawing mode is given by the user (GL_POINT, GL_LINE or GL_FILL). Show glPolygonMode(...)
+     * @brief Draw a not filled quad face in 3D
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
      */
-    virtual void drawCube(double x1, double y1, double z1, double x2, double y2, double z2, GLenum faces, GLenum mode) = 0;
+    virtual void drawQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 ) = 0;
+
+    /**
+     * @brief Draw a filled quad face in 3D
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     */
+    virtual void fillQuadFace( const double &x1, const double &y1, const double &z1,
+                               const double &x2, const double &y2, const double &z2,
+                               const double &x3, const double &y3, const double &z3,
+                               const double &x4, const double &y4, const double &z4 ) = 0;
+
+    /**
+     * @brief Draw a not filled quad face in 3D with associated colors
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     */
+    virtual void drawQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 ) = 0;
+
+    /**
+     * @brief Draw a filled quad face in 3D with associated colors
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     */
+    virtual void fillQuadFace( const double &x1, const double &y1, const double &z1, int r1, int g1, int b1,
+                               const double &x2, const double &y2, const double &z2, int r2, int g2, int b2,
+                               const double &x3, const double &y3, const double &z3, int r3, int g3, int b3,
+                               const double &x4, const double &y4, const double &z4, int r4, int g4, int b4 ) = 0;
 
     /**
      * @brief Draw a rectangle in XY plane at level Z
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "drawQuadFace".
      */
-    virtual void drawRectXY(const QRectF &rectangle, double z) = 0;
+    virtual void drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z) = 0;
 
     /**
      * @brief Draw a filled rectangle in XY plane at level Z
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "fillQuadFace".
      */
-    virtual void fillRectXY(const QRectF &rectangle, double z) = 0;
+    virtual void fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &z) = 0;
 
 
     /**
      * @brief Draw a rectangle in XZ plane at level Y
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "drawQuadFace".
      */
-    virtual void drawRectXZ(const QRectF &rectangle, double y) =0;
+    virtual void drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y) =0;
 
     /**
      * @brief Draw a filled rectangle in XZ plane at level Y
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "fillQuadFace".
      */
-    virtual void fillRectXZ(const QRectF &rectangle, double y) = 0;
+    virtual void fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &y) = 0;
 
 
     /**
      * @brief Draw a rectangle in YZ plane at level X
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "drawQuadFace".
      */
-    virtual void drawRectYZ(const QRectF &rectangle, double x) = 0;
+    virtual void drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x) = 0;
 
     /**
      * @brief Draw a filled rectangle in YZ plane at level X
+     * @warning To get best performance don't mix this method with other method that don't draw cube or quads (like triangles or
+     *          points or line, etc...).
+     *          To get best performance prefer method "fillQuadFace".
      */
-    virtual void fillRectYZ(const QRectF &rectangle, double x) = 0;
+    virtual void fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2d &bottomRight, const double &x) = 0;
+
+    /**
+     * @brief Draw a line in 3D
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2) = 0;
+
+    /**
+     * @brief Draw a line in 3D from points in the global cloud
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawLine(const size_t &p1GlobalIndex,
+                          const size_t &p2GlobalIndex) = 0;
+
+    /**
+     * @brief Draw a triangle in 3D
+     * @warning To get best performance don't mix this method with other method that don't draw triangles or faces (like lines or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawTriangle(const double &x1, const double &y1, const double &z1,
+                              const double &x2, const double &y2, const double &z2,
+                              const double &x3, const double &y3, const double &z3) = 0;
+
+    /**
+     * @brief Draw a triangle in 3D from points in the global cloud
+     * @warning To get best performance don't mix this method with other method that don't draw triangles or faces (like lines or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawTriangle(const size_t &p1GlobalIndex,
+                              const size_t &p2GlobalIndex,
+                              const size_t &p3GlobalIndex) = 0;
+
+    /**
+     * @brief Draw a 2D circle (XY)
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawCircle(const double &x, const double &y, const double &z, const double &radius) = 0;
+
+    /**
+     * @brief Draw a 3D circle
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius) = 0;
+
+    /**
+     * @brief Draw a 2D ellipse (XY)
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawEllipse(const double &x, const double &y, const double &z, const double &radiusA, const double &radiusB) = 0;
+
+    /**
+     * @brief Call this method when you want to start to draw a polygon
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void beginPolygon() = 0;
+
+    /**
+     * @brief Call this method to add a point to the polygon
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void addPointToPolygon(const double &x, const double &y, const double &z) = 0;
+
+    /**
+     * @brief Call this method to finish the draw of the polygon
+     */
+    virtual void endPolygon() = 0;
+
+    /**
+     * @brief Draw a 2D cylinder (height is in Z axis)
+     */
+    virtual void drawCylinder(const double & x, const double & y, const double & z, const double & radius, const double & height) = 0;
+
+    /**
+     * @brief Draw a 3D cylinder
+     */
+    virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double & radius, const double & height) = 0;
 
     /**
      * @brief Draw a pyramid given its top point and its base
      */
-    virtual void drawPyramid(double topX, double topY, double topZ,
-                             double base1X, double base1Y, double base1Z,
-                             double base2X, double base2Y, double base2Z,
-                             double base3X, double base3Y, double base3Z,
-                             double base4X, double base4Y, double base4Z) = 0;
-
-    /**
-          * @brief Draw a quad face in 3D
-          */
-    virtual void drawQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 ) = 0;
-
-    /**
-          * @brief Draw a filled quad face in 3D
-          */
-    virtual void fillQuadFace( float x1, float y1, float z1,
-                               float x2, float y2, float z2,
-                               float x3, float y3, float z3,
-                               float x4, float y4, float z4 ) = 0;
-
-    /**
-          * @brief Draw a quad face in 3D with associated colors
-          */
-    virtual void drawQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 ) = 0;
-
-    /**
-          * @brief Draw a filled quad face in 3D with associated colors
-          */
-    virtual void fillQuadFace( float x1, float y1, float z1, int r1, int g1, int b1,
-                               float x2, float y2, float z2, int r2, int g2, int b2,
-                               float x3, float y3, float z3, int r3, int g3, int b3,
-                               float x4, float y4, float z4, int r4, int g4, int b4 ) = 0;
-
+    virtual void drawPyramid(const double &topX, const double &topY, const double &topZ,
+                             const double &base1X, const double &base1Y, const double &base1Z,
+                             const double &base2X, const double &base2Y, const double &base2Z,
+                             const double &base3X, const double &base3Y, const double &base3Z,
+                             const double &base4X, const double &base4Y, const double &base4Z) = 0;
     /**
      * @brief Draw a part of a sphere given the angles bounds
      */
-    virtual void drawPartOfSphere ( double centerX, double centerY, double centerZ, double radius, double initTheta, double endTheta, double initPhi, double endPhi, bool radians = true ) = 0;
+    virtual void drawPartOfSphere (const double &centerX, const double &centerY, const double &centerZ,
+                                   const double &radius,
+                                   const double &initTheta, const double &endTheta,
+                                   const double &initPhi, const double &endPhi,
+                                   bool radians = true) = 0;
 
-    virtual void beginPolygon() = 0;
-    virtual void addPointToPolygon(float *p) = 0;
-    virtual void endPolygon() = 0;
+    /**
+     * @brief Draw faces of a mesh
+     * @warning To get best performance don't mix this method with other method that don't draw triangles or faces (like lines or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawMesh(const CT_AbstractMeshModel *mesh) = 0;
+
+    /**
+     * @brief Draw faces of a mesh
+     * @warning To get best performance don't mix this method with other method that don't draw triangles or faces (like lines or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawFaces(const CT_AbstractMeshModel *mesh) = 0;
+
+    /**
+     * @brief Draw edges of a mesh
+     * @warning To get best performance don't mix this method with other method that don't draw lines (like triangles or
+     *          points or quads or cubes, etc...).
+     */
+    virtual void drawEdges(const CT_AbstractMeshModel *mesh) = 0;
+
+    /**
+     * @brief Draw points of a mesh
+     *          To get best performance don't mix this method with other method that don't draw point (like triangles or
+     *          cubes or lines, etc...)
+     */
+    virtual void drawPoints(const CT_AbstractMeshModel *mesh) = 0;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(PainterInterface::DrawOctreeModes)
@@ -815,7 +956,7 @@ public:
      *
      * This method is useful for analytical intersection in a selection method.
      */
-    virtual void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const = 0;
+    virtual void convertClickToLine(const QPoint &pixel, QVector3D &orig, QVector3D &dir) const = 0;
 
     virtual void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const = 0;
 

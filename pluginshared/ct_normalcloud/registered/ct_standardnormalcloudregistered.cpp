@@ -1,21 +1,10 @@
 #include "ct_standardnormalcloudregistered.h"
 
-CT_StandardNormalCloudRegistered::~CT_StandardNormalCloudRegistered()
+CT_AbstractNormalCloud* CT_StandardNormalCloudRegistered::abstractNormalCloud() const
 {
-    delete m_normalCloud;
+    return cloudT();
 }
 
-CT_AbstractNormalCloud *CT_StandardNormalCloudRegistered::abstractNormalCloud() const
+CT_StandardNormalCloudRegistered::CT_StandardNormalCloudRegistered(CT_AbstractNormalCloud *normalCloud) : CT_StdCloudRegisteredT<CT_AbstractNormalCloud>(normalCloud)
 {
-    return m_normalCloud;
-}
-
-CT_AbstractCloud *CT_StandardNormalCloudRegistered::abstractCloud() const
-{
-    return m_normalCloud;
-}
-
-CT_StandardNormalCloudRegistered::CT_StandardNormalCloudRegistered(CT_AbstractNormalCloud *normalCloud) : CT_AbstractCloudRegistered()
-{
-    m_normalCloud = normalCloud;
 }

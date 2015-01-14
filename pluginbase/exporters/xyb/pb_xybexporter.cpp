@@ -250,15 +250,11 @@ bool PB_XYBExporter::protectedExportToFile()
 
         if(m_scanner != NULL)
         {
-            CT_AbstractCoordinateSystem::realIm x, y, z;
-            CT_AbstractCoordinateSystem::realEx xc, yc, zc;
-            x = m_scanner->getPosition().x();
-            y = m_scanner->getPosition().y();
-            z = m_scanner->getPosition().z();
+            double x = m_scanner->getPosition().x();
+            double y = m_scanner->getPosition().y();
+            double z = m_scanner->getPosition().z();
 
-            PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
-
-            txtStream << "ScanPosition " << (double)xc << " " << (double)yc << " " << (double)zc << "\n";
+            txtStream << "ScanPosition " << x << " " << y << " " << z << "\n";
             txtStream << "Rows " << (m_scanner->getVFov()*RAD2DEG)/(m_scanner->getHRes()*RAD2DEG) << "\n";
             txtStream << "Cols " << (m_scanner->getHFov()*RAD2DEG)/(m_scanner->getVRes()*RAD2DEG) << "\n";
         }
@@ -360,8 +356,9 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
     while(begin != end)
     {
         const CT_Point &point = begin.cT();
+        size_t globalIndex = begin.cIndex();
 
-        PS_COORDINATES_SYS->convertExport(point(0), point(1), point(2), xc, yc, zc);
+        PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(point(0), point(1), point(2), xc, yc, zc);
 
         stream << ((double)xc);
         stream << ((double)yc);

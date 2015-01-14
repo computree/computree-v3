@@ -112,6 +112,15 @@ public:
      */
     void setTransformMatrix(const QMatrix4x4 &matrix);
 
+    /**
+     * @brief Set the coordinate system of this scene. When the coordinate system will no longer be used it will be automatically
+     *        removed from the manager.
+     */
+    void setCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs);
+
+private:
+    QSharedPointer<CT_AbstractCoordinateSystem> m_spcs;
+
 #ifdef USE_BOOST_OLD
 private:
 

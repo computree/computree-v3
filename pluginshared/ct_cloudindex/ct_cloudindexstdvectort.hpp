@@ -269,7 +269,7 @@ void CT_CloudIndexStdVectorT<T>::erase(const size_t &beginIndex, const size_t &s
 template<typename T>
 void CT_CloudIndexStdVectorT<T>::resize(const size_t &newSize)
 {
-    _vector->resize(newSize);
+    _vector->resize(newSize, 0);
 }
 
 template<typename T>
@@ -371,7 +371,7 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexStdVectorT<T>::getPCLIndices(
 #endif
 
 template<typename T>
-CT_AbstractCloudIndex* CT_CloudIndexStdVectorT<T>::copy() const
+CT_AbstractCloud* CT_CloudIndexStdVectorT<T>::copy() const
 {
     size_t s = size();
 

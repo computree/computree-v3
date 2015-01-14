@@ -1,23 +1,12 @@
 #include "ct_standardcolorcloudregistered.h"
 
-CT_StandardColorCloudRegistered::~CT_StandardColorCloudRegistered()
-{
-    delete m_colorCloud;
-}
-
-CT_AbstractCloud* CT_StandardColorCloudRegistered::abstractCloud() const
-{
-    return m_colorCloud;
-}
-
 CT_AbstractColorCloud* CT_StandardColorCloudRegistered::abstractColorCloud() const
 {
-    return m_colorCloud;
+    return cloudT();
 }
 
-CT_StandardColorCloudRegistered::CT_StandardColorCloudRegistered(CT_AbstractColorCloud *colorCloud) : CT_AbstractCloudRegistered()
+CT_StandardColorCloudRegistered::CT_StandardColorCloudRegistered(CT_AbstractColorCloud *colorCloud) : CT_StdCloudRegisteredT<CT_AbstractColorCloud>(colorCloud)
 {
-    m_colorCloud = colorCloud;
 }
 
 

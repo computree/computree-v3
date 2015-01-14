@@ -8,6 +8,7 @@
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include <limits>
 
@@ -149,12 +150,11 @@ bool CT_Reader_XYB::protectedReadFile()
 
     float xc, yc, zc;
 
-    PS_COORDINATES_SYS->setOffset(_xc, _yc, _zc);
-
-    PS_COORDINATES_SYS->convertImport(_xc, _yc, _zc, xc, yc, zc);
-    _xc = xc;
-    _yc = yc;
-    _zc = zc;
+    // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
+    // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
+    //QSharedPointer<CT_AbstractCoordinateSystem> spcs;
+    QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(_xc, _yc, _zc));
+    //QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(20, 0, 0));
 
     // Test File validity
     if(QFile::exists(filepath()))
@@ -174,7 +174,7 @@ bool CT_Reader_XYB::protectedReadFile()
             qint64 n_points = (filesize - _offset) / 26;
 
             CT_AbstractUndefinedSizePointCloud* mpcir;
-            CT_ABSTRACT_NMPCIR pcir;
+            CT_Repository::CT_AbstractNotModifiablePCIR pcir;
 
             if (filter)
                 mpcir = PS_REPOSITORY->createNewUndefinedSizePointCloud();
@@ -188,6 +188,7 @@ bool CT_Reader_XYB::protectedReadFile()
             else
                 collection = new CT_StandardCloudStdVectorT<quint16>(n_points);
 
+            // TODO : convert xmin/ymin/.../zmax to double and use it with "x" and not "xc" etc...
             float xmin = std::numeric_limits<float>::max();
             float ymin = std::numeric_limits<float>::max();
             float zmin = std::numeric_limits<float>::max();
@@ -217,6 +218,7 @@ bool CT_Reader_XYB::protectedReadFile()
                     {
                         CT_Point &p = mpcir->addPoint();
 
+                        // convert (with the current coordinate system) coordinate to be in a float precision
                         PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
                         p(0) = xc;
@@ -239,6 +241,7 @@ bool CT_Reader_XYB::protectedReadFile()
                 {
                     CT_Point &p = pcir->tAt(a);
 
+                    // convert (with the current coordinate system) coordinate to be in a float precision
                     PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
 
                     p(0) = xc;
@@ -269,6 +272,7 @@ bool CT_Reader_XYB::protectedReadFile()
 
             scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+            scene->setCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_XYB_sceneOut, scene);

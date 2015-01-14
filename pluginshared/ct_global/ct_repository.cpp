@@ -54,31 +54,17 @@ CT_Repository::CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith,
 
 CT_Repository::CT_NCR CT_Repository::createNewNormalCloud(SyncCloudWith syncWith)
 {
-    return createNewSyncCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>(syncWith);
+    return createNewCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>(syncWith);
 }
 
 QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> CT_Repository::createNewIndexCloud(CT_Repository::SyncCloudWith syncWith)
 {
-    if(syncWith == SyncWithPointCloud)
-        return registerCloudIndex<CT_Point>(new CT_CloudIndexStdListT<CT_Point>());
-    else if(syncWith == SyncWithFaceCloud)
-        return registerCloudIndex<CT_Face>(new CT_CloudIndexStdListT<CT_Face>());
-    else if(syncWith == SyncWithEdgeCloud)
-        return registerCloudIndex<CT_Edge>(new CT_CloudIndexStdListT<CT_Edge>());
-
-    return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
+    return createNewIndexCloudT< CT_CloudIndexStdListT >(syncWith);
 }
 
 QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> CT_Repository::createNewMapIndexCloudColor(CT_Repository::SyncCloudWith syncWith)
 {
-    if(syncWith == SyncWithPointCloud)
-        return registerCloudIndex<CT_Point>(new CT_IndexCloudColorStdMapT<CT_Point>());
-    else if(syncWith == SyncWithFaceCloud)
-        return registerCloudIndex<CT_Face>(new CT_IndexCloudColorStdMapT<CT_Face>());
-    else if(syncWith == SyncWithEdgeCloud)
-        return registerCloudIndex<CT_Edge>(new CT_IndexCloudColorStdMapT<CT_Edge>());
-
-    return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
+    return createNewIndexCloudT< CT_IndexCloudColorStdMapT >(syncWith);
 }
 
 CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, CT_Repository::CloudIndexOptimizationType optim)

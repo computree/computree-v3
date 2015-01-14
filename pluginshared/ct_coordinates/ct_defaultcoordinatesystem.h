@@ -10,6 +10,9 @@ class PLUGINSHAREDSHARED_EXPORT CT_DefaultCoordinateSystem : public CT_AbstractC
 {
 public:
     CT_DefaultCoordinateSystem();
+    CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                               CT_AbstractCoordinateSystem::realEx y,
+                               CT_AbstractCoordinateSystem::realEx z);
 
     /**
      * @brief Returns true if coordinates passed in parameter can be converted to realIm (import). False
@@ -53,6 +56,11 @@ public:
      * @brief Modify offset of this coordinate system
      */
     bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z);
+
+    /**
+     * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)
+     */
+    Eigen::Matrix4d toMatrix4x4() const;
 
     /**
      * @brief X Offset

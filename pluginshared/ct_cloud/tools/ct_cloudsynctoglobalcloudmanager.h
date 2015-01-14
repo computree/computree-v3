@@ -28,14 +28,14 @@ public:
      * @return return the cloud registered
      */
     template< class CloudRegistered, class Cloud, typename CastOptionnalParameter >
-    QSharedPointer<CloudRegistered> createNewCloud(void *optionnalParameterForConstructor)
+    QSharedPointer< CloudRegistered > createNewCloud(void *optionnalParameterForConstructor)
     {
         QMutexLocker locker(&this->m_mutex);
 
         CloudRegistered *icr = new CloudRegistered( new Cloud(this->globalCloudManager()->globalAbstractCloud()->size(), (CastOptionnalParameter*)optionnalParameterForConstructor) );
         this->internalRegisterCloud(icr);
 
-        return QSharedPointer<CloudRegistered>(icr);
+        return QSharedPointer< CloudRegistered >(icr);
     }
 
     /**
@@ -48,14 +48,14 @@ public:
      * @return return the cloud registered
      */
     template< class CloudRegistered, class Cloud >
-    QSharedPointer<CloudRegistered> createNewCloud()
+    QSharedPointer< CloudRegistered > createNewCloud()
     {
         QMutexLocker locker(&this->m_mutex);
 
         CloudRegistered *icr = new CloudRegistered( new Cloud(this->globalCloudManager()->globalAbstractCloud()->size()) );
         this->internalRegisterCloud(icr);
 
-        return QSharedPointer<CloudRegistered>(icr);
+        return QSharedPointer< CloudRegistered >(icr);
     }
 };
 

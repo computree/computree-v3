@@ -12,7 +12,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_PointCloudIndexLessMemory : public CT_Abstrac
 public:
     CT_PointCloudIndexLessMemory(const size_t &begin, const size_t &size);
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #endif // CT_POINTCLOUDINDEXLESSMEMORY_H

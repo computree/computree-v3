@@ -84,10 +84,10 @@ const T& CT_StandardCloudStdVectorT<T>::operator[](const size_t &index) const
 }
 
 template<typename T>
-void CT_StandardCloudStdVectorT<T>::erase(const size_t &beginIndex, const size_t &s)
+void CT_StandardCloudStdVectorT<T>::erase(const size_t &beginIndex, const size_t &sizes)
 {
-    size_t endIndex = beginIndex+s;
-    size_t cpySize = size()-(beginIndex+s);
+    size_t endIndex = beginIndex+sizes;
+    size_t cpySize = size()-(beginIndex+sizes);
 
     if(cpySize > 0)
     {
@@ -103,7 +103,7 @@ void CT_StandardCloudStdVectorT<T>::erase(const size_t &beginIndex, const size_t
         memcpy(dst, src, sizeof(T)*cpySize);
     }
 
-    resize(size()-s);
+    resize(size()-sizes);
 }
 
 template<typename T>

@@ -13,6 +13,15 @@ CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
     m_zOffset = 0;
 }
 
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                                                       CT_AbstractCoordinateSystem::realEx y,
+                                                       CT_AbstractCoordinateSystem::realEx z)
+{
+    m_xOffset = x;
+    m_yOffset = y;
+    m_zOffset = z;
+}
+
 bool CT_DefaultCoordinateSystem::canConvertImport(CT_AbstractCoordinateSystem::realEx x,
                                                   CT_AbstractCoordinateSystem::realEx y,
                                                   CT_AbstractCoordinateSystem::realEx z) const
@@ -79,7 +88,7 @@ bool CT_DefaultCoordinateSystem::configure()
 {
     CT_GDefaultCoordinateSystem dialog;
     dialog.setCoordinateSystem(this);
-    dialog.setReadOnly(!CT_CoordinateSystemManager::staticCanChangeOrModifyCoordinateSystem());
+    dialog.setReadOnly(true);
 
     return (dialog.exec() == QDialog::Accepted);
 }
@@ -96,4 +105,14 @@ bool CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x
     m_zOffset = z;
 
     return true;
+}
+
+Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const
+{
+    Eigen::Matrix4d m = Eigen::Matrix4d::Identity();
+    m(0,3) = m_xOffset;
+    m(1,3) = m_yOffset;
+    m(2,3) = m_zOffset;
+
+    return m;
 }

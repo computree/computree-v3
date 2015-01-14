@@ -11,6 +11,7 @@ G3DCamera::G3DCamera() : qglviewer::Camera()
 
 float G3DCamera::zNear() const
 {
+    /*float z = 0.95f*getZNearDistance();
     if (type() == Camera::PERSPECTIVE)
     {
         float z = 0.95f*getZNearDistance();
@@ -23,10 +24,16 @@ float G3DCamera::zNear() const
         if (z < zMin){z = 0.0;}
         return z;
     }
+    return z;*/
+<<<<<<< .mine
+    return z;*/
+
+=======>>>>>>> .theirs    return 0.001;
 }
 
 float G3DCamera::zFar() const
 {
+    //return distanceToSceneCenter() + 2.0 * sceneRadius();
     if (type() == Camera::PERSPECTIVE)
     {
         float z = 1.05 * getZFarDistance();
@@ -41,6 +48,28 @@ void G3DCamera::setBoundingBox(const qglviewer::Vec& min, const qglviewer::Vec& 
     setSceneBoundingBox(min, max);
     _min = min;
     _max = max;
+}
+
+void G3DCamera::loadModelViewMatrix(bool reset) const
+{
+    // WARNING: makeCurrent must be called by every calling method
+    glMatrixMode(GL_MODELVIEW);
+
+    // Identity matrix
+    GLdouble m[16];
+
+    for(int i=0; i<16; ++i)
+        m[i] = 0;
+
+    m[0] = 1;
+    m[5] = 1;
+    m[10] = 1;
+    m[15] = 1;
+
+    if (reset)
+        glLoadMatrixd(m);
+    else
+        glMultMatrixd(m);
 }
 
 float G3DCamera::getZNearDistance() const

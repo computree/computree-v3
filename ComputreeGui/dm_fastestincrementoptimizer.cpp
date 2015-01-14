@@ -40,7 +40,7 @@ void DM_FastestIncrementOptimizer::postDraw()
         if(m_fi != 1)
             --m_fi;
     }
-    else if(((int)m_currentFps) < m_desiredFps){
+    else if((((int)m_currentFps)+5) < m_desiredFps){
         ++m_fi;
     }
 }

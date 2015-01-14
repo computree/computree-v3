@@ -16,7 +16,13 @@ CT_AbstractCloud* CT_StdCloudRegisteredT<T>::abstractCloud() const
 }
 
 template<typename T >
-CT_StdCloudRegisteredT<T>::CT_StdCloudRegisteredT(CT_AbstractCloud *cloud) : CT_AbstractCloudRegistered()
+T* CT_StdCloudRegisteredT<T>::cloudT() const
+{
+    return m_cloud;
+}
+
+template<typename T >
+CT_StdCloudRegisteredT<T>::CT_StdCloudRegisteredT(T *cloud) : CT_AbstractCloudRegistered()
 {
     m_cloud = cloud;
 }

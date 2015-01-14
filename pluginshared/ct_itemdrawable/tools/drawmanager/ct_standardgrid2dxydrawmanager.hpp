@@ -234,13 +234,15 @@ void CT_StandardGrid2DXYDrawManager<DataT>::draw(GraphicsViewInterface &view, Pa
                     painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
                 }
 
-                QRectF rect(x - demiRes, y - demiRes, item.resolution(), item.resolution());
-                painter.fillRectXY(rect, z_val);
+                Eigen::Vector2d tLeft(x - demiRes, y - demiRes);
+                Eigen::Vector2d bRight(tLeft(0)+item.resolution(), tLeft(1)+item.resolution());
+
+                painter.fillRectXY(tLeft, bRight, z_val);
 
                 if (show_grid)
                 {
                     painter.setColor(QColor(255, 255, 255));
-                    painter.drawRectXY(rect, z_val);
+                    painter.drawRectXY(tLeft, bRight, z_val);
                 }
             }
         }

@@ -142,27 +142,27 @@ public:
      *        a cloud is deleted.
      *
      * @param syncWith : define what cloud sync
-     * @example : create a cloud of quint8 that is synchorinzed with the global points cloud :
+     * @example : create a cloud of quint8 that is synchronized with the global points cloud :
      *
-     *            QSharedPointer<> sp = createNewSyncCloudT<CT_StandardCloudStdVectorT<quint8> >(CT_Repository::SyncWithPointCloud);
+     *            QSharedPointer< CT_StdCloudRegisteredT< CT_StandardCloudStdVectorT<quint8> > > sp = createNewCloudT< CT_StdCloudRegisteredT< CT_StandardCloudStdVectorT<quint8> >, CT_StandardCloudStdVectorT<quint8> >(CT_Repository::SyncWithPointCloud);
      *
      * @return return the CloudT cloud registered
      */
-    template<class CloudRegistered, class CloudT >
-    QSharedPointer<CloudRegistered> createNewSyncCloudT(SyncCloudWith syncWith)
+    template<class CloudRegistered, class Cloud >
+    QSharedPointer< CloudRegistered > createNewCloudT(SyncCloudWith syncWith)
     {
         if(syncWith == SyncWithPointCloud)
-            return m_syncPointCloudManager->createNewCloud<CloudRegistered, CloudT >();
+            return m_syncPointCloudManager->createNewCloud<CloudRegistered, Cloud >();
         else if(syncWith == SyncWithFaceCloud)
-            return m_syncFaceCloudManager->createNewCloud<CloudRegistered, CloudT >();
+            return m_syncFaceCloudManager->createNewCloud<CloudRegistered, Cloud >();
         else if(syncWith == SyncWithEdgeCloud)
-            return m_syncEdgeCloudManager->createNewCloud<CloudRegistered, CloudT >();
+            return m_syncEdgeCloudManager->createNewCloud<CloudRegistered, Cloud >();
 
-        return QSharedPointer<CloudRegistered>(NULL);
+        return QSharedPointer< CloudRegistered >(NULL);
     }
 
     /**
-     * @brief Create a new index cloud whose indices is synchronized with index of cloud passed in parameter. This means that
+     * @brief Create a new index cloud (of type CT_CloudIndexStdListT) whose indices is synchronized with index of cloud passed in parameter. This means that
      *        indices will be automatically modified if a cloud is deleted.
      *
      * @param syncWith : define what cloud sync
@@ -184,6 +184,30 @@ public:
      * @return return the index cloud registered
      */
     QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewMapIndexCloudColor(SyncCloudWith syncWith);
+
+    /**
+     * @brief Create a new index cloud of type IndexCloudT that will be synchronized with the global XXX cloud (defined by syncWith param). This
+     *        means that indices of the cloud index will always be sync with the global cloud.
+     *
+     * @param syncWith : define what cloud sync
+     * @example : create a CT_CloudIndexStdVectorT that is synchronized with the global points cloud :
+     *
+     *            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mcir = createNewIndexCloudT< CT_CloudIndexStdVectorT >(CT_Repository::SyncWithPointCloud);
+     *
+     * @return return the index cloud registered
+     */
+    template< template<typename T> class IndexCloudT >
+    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewIndexCloudT(SyncCloudWith syncWith)
+    {
+        if(syncWith == SyncWithPointCloud)
+            return registerCloudIndex<CT_Point>(new IndexCloudT<CT_Point>());
+        else if(syncWith == SyncWithFaceCloud)
+            return registerCloudIndex<CT_Face>(new IndexCloudT<CT_Face>());
+        else if(syncWith == SyncWithEdgeCloud)
+            return registerCloudIndex<CT_Edge>(new IndexCloudT<CT_Edge>());
+
+        return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
+    }
 
     /**
      * @brief Register the object create with the method "createNewUndefinedSizePointCloud". Convert the points added to a

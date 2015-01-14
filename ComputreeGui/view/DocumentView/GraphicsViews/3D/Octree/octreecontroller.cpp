@@ -39,7 +39,7 @@ int OctreeController::numberOfCells() const
     return m_octree->size();
 }
 
-void OctreeController::addPoints(const CT_AbstractPointCloudIndex *index, QVector3D *min, QVector3D *max)
+void OctreeController::addPoints(const CT_AbstractPointCloudIndex *index, Eigen::Vector3d *min, Eigen::Vector3d *max)
 {
     if(!m_points.contains((CT_AbstractPointCloudIndex*)index)
             && !m_pointsToAdd.contains((CT_AbstractPointCloudIndex*)index))
@@ -78,20 +78,20 @@ void OctreeController::removePoints(const CT_AbstractPointCloudIndex *index)
     }
 }
 
-void OctreeController::indexOfPoint(const CT_Point &point, int &x, int &y, int &z)
+void OctreeController::indexOfPoint(const CT_Point &point, int &ix, int &iy, int &iz)
 {
-    x = ((point(0) - m_octreeMinCorner.x()) / m_size);
-    y = ((point(1) - m_octreeMinCorner.y()) / m_size);
-    z = ((point(2) - m_octreeMinCorner.z()) / m_size);
+    ix = ((point(0) - m_octreeMinCorner.x()) / m_size);
+    iy = ((point(1) - m_octreeMinCorner.y()) / m_size);
+    iz = ((point(2) - m_octreeMinCorner.z()) / m_size);
 
-    if(x == m_newNumberOfCells)
-        x = m_newNumberOfCells-1;
+    if(ix == m_newNumberOfCells)
+        ix = m_newNumberOfCells-1;
 
-    if(y == m_newNumberOfCells)
-        y = m_newNumberOfCells-1;
+    if(iy == m_newNumberOfCells)
+        iy = m_newNumberOfCells-1;
 
-    if(z == m_newNumberOfCells)
-        z = m_newNumberOfCells-1;
+    if(iz == m_newNumberOfCells)
+        iz = m_newNumberOfCells-1;
 }
 
 bool OctreeController::hasElements() const
@@ -132,8 +132,8 @@ bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble pla
 
     double cellSize = cellsSize();
 
-    QVector3D p1(m_octreeMinCorner.x()+(x*cellSize), m_octreeMinCorner.y()+(y*cellSize), m_octreeMinCorner.z()+(z*cellSize));
-    QVector3D p2(m_octreeMinCorner.x()+((x+1)*cellSize), m_octreeMinCorner.y()+((y+1)*cellSize), m_octreeMinCorner.z()+((z+1)*cellSize));
+    Eigen::Vector3d p1(m_octreeMinCorner.x()+(x*cellSize), m_octreeMinCorner.y()+(y*cellSize), m_octreeMinCorner.z()+(z*cellSize));
+    Eigen::Vector3d p2(m_octreeMinCorner.x()+((x+1)*cellSize), m_octreeMinCorner.y()+((y+1)*cellSize), m_octreeMinCorner.z()+((z+1)*cellSize));
 
     return aaBoxIsVisible(p1, p2, planeCoefficients);
 }
@@ -145,8 +145,8 @@ bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble pla
 
     double cellSize = cellsSize();
 
-    QVector3D p1(m_octreeMinCorner.x()+(x*cellSize), m_octreeMinCorner.y()+(y*cellSize), m_octreeMinCorner.z()+(z*cellSize));
-    QVector3D p2(m_octreeMinCorner.x()+((x+1)*cellSize), m_octreeMinCorner.y()+((y+1)*cellSize), m_octreeMinCorner.z()+((z+1)*cellSize));
+    Eigen::Vector3d p1(m_octreeMinCorner.x()+(x*cellSize), m_octreeMinCorner.y()+(y*cellSize), m_octreeMinCorner.z()+(z*cellSize));
+    Eigen::Vector3d p2(m_octreeMinCorner.x()+((x+1)*cellSize), m_octreeMinCorner.y()+((y+1)*cellSize), m_octreeMinCorner.z()+((z+1)*cellSize));
 
     return aaBoxIsVisible(p1, p2, planeCoefficients, &entirely);
 }
@@ -156,14 +156,14 @@ double OctreeController::cellsSize() const
     return m_size;
 }
 
-QVector3D OctreeController::octreeMinCorner() const
+Eigen::Vector3d OctreeController::octreeMinCorner() const
 {
-    return QVector3D(m_octreeMinCorner.x(), m_octreeMinCorner.y(), m_octreeMinCorner.z());
+    return Eigen::Vector3d (m_octreeMinCorner.x(), m_octreeMinCorner.y(), m_octreeMinCorner.z());
 }
 
-QVector3D OctreeController::octreeMaxCorner() const
+Eigen::Vector3d OctreeController::octreeMaxCorner() const
 {
-    return QVector3D(m_octreeMaxCorner.x(), m_octreeMaxCorner.y(), m_octreeMaxCorner.z());
+    return Eigen::Vector3d (m_octreeMaxCorner.x(), m_octreeMaxCorner.y(), m_octreeMaxCorner.z());
 }
 
 bool OctreeController::mustBeReconstructed() const
@@ -200,7 +200,7 @@ void OctreeController::construct()
 
             m_size = maxW / m_newNumberOfCells;
 
-            QVector3D middle((m_newMax.x() + m_newMin.x())/2.0, (m_newMax.y() + m_newMin.y())/2.0, (m_newMax.z() + m_newMin.z())/2.0);
+            Eigen::Vector3d middle((m_newMax.x() + m_newMin.x())/2.0, (m_newMax.y() + m_newMin.y())/2.0, (m_newMax.z() + m_newMin.z())/2.0);
             m_octreeMaxCorner = Corner(middle.x()+(maxW/2.0), middle.y()+(maxW/2.0), middle.z()+(maxW/2.0));
             m_octreeMinCorner = Corner(middle.x()-(maxW/2.0), middle.y()-(maxW/2.0), middle.z()-(maxW/2.0));
 
@@ -240,12 +240,12 @@ void OctreeController::clear()
     m_octree = NULL;
 }
 
-float OctreeController::distanceToFrustumPlane(int index, const double &x, const double &y, const double &z, GLdouble planeCoefficients[6][4]) const
+double OctreeController::distanceToFrustumPlane(int index, const double &x, const double &y, const double &z, GLdouble planeCoefficients[6][4]) const
 {
     return qglviewer::Vec(x, y, z) * qglviewer::Vec(planeCoefficients[index]) - planeCoefficients[index][3];
 }
 
-bool OctreeController::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, GLdouble planeCoefficients[6][4], bool *entirely) const
+bool OctreeController::aaBoxIsVisible(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2, GLdouble planeCoefficients[6][4], bool *entirely) const
 {
     bool allInForAllPlanes = true;
     for (int i=0; i<6; ++i)
@@ -253,7 +253,7 @@ bool OctreeController::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, 
         bool allOut = true;
         for (unsigned int c=0; c<8; ++c)
       {
-        if (distanceToFrustumPlane(i, (c&4)?p1.x():p2.x(), (c&2)?p1.y():p2.y(), (c&1)?p1.z():p2.z(), planeCoefficients) > 0.0)
+        if (distanceToFrustumPlane(i, (c&4)?p1(0):p2(0), (c&2)?p1(1):p2(1), (c&1)?p1(2):p2(2), planeCoefficients) > 0.0)
           allInForAllPlanes = false;
         else
           allOut = false;
@@ -275,8 +275,8 @@ bool OctreeController::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, 
 
 void OctreeController::resetNewMinAndMax()
 {
-    m_newMin = QVector3D(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-    m_newMax = QVector3D(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+    m_newMin = Eigen::Vector3d(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+    m_newMax = Eigen::Vector3d(-std::numeric_limits<double>::max(), -std::numeric_limits<double>::max(), -std::numeric_limits<double>::max());
 }
 
 void OctreeController::computeNewMinAndMax()
@@ -393,10 +393,10 @@ void OctreeController::removePoinsFromOctree(const CT_AbstractPointCloudIndex *i
 
 void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *index, OctreeController::PointsInfo &info)
 {
-    info.m_min.setX(std::numeric_limits<float>::max());
+    info.m_min.setX(std::numeric_limits<double>::max());
     info.m_min.setY(info.m_min.x());
     info.m_min.setZ(info.m_min.x());
-    info.m_max.setX(-std::numeric_limits<float>::max());
+    info.m_max.setX(-std::numeric_limits<double>::max());
     info.m_max.setY(info.m_max.x());
     info.m_max.setZ(info.m_max.x());
 

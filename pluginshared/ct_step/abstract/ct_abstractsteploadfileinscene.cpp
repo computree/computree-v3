@@ -115,7 +115,7 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
         }
     }*/
 
-    CT_ABSTRACT_NMPCIR pcir = PS_REPOSITORY->createNewPointCloud(n_points);
+    CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(n_points);
 
     float xmin = std::numeric_limits<float>::max();
     float ymin = std::numeric_limits<float>::max();

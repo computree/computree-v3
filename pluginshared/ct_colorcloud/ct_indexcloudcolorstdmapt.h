@@ -68,7 +68,7 @@ public:
     /**
      * @brief Returns a copy of this cloud index
      */
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #include "ct_colorcloud/ct_indexcloudcolorstdmapt.hpp"

@@ -196,12 +196,12 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
     double z_current = _zmin;
     while (z_current <= _zmax)
     {
-        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current);
-        painter.fillRectXY(QRectF(_xmin, _ymin, _xwidth, _ywidth), z_current + _dataContainer->_thickness);
-        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_dataContainer->_thickness), _ymin);
-        painter.drawRectXZ(QRectF(_xmin, z_current, _xwidth, (float)_dataContainer->_thickness), _ymax);
-        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_dataContainer->_thickness), _xmin);
-        painter.drawRectYZ(QRectF(_ymin, z_current, _ywidth, (float)_dataContainer->_thickness), _xmax);
+        painter.fillRectXY(Eigen::Vector2d(_xmin, _ymin), Eigen::Vector2d(_xmin+_xwidth, _ymin+_ywidth), z_current);
+        painter.fillRectXY(Eigen::Vector2d(_xmin, _ymin), Eigen::Vector2d(_xmin+_xwidth, _ymin+_ywidth), z_current + _dataContainer->_thickness);
+        painter.drawRectXZ(Eigen::Vector2d(_xmin, z_current), Eigen::Vector2d(_xmin+_xwidth, z_current+_dataContainer->_thickness), _ymin);
+        painter.drawRectXZ(Eigen::Vector2d(_xmin, z_current), Eigen::Vector2d(_xmin+_xwidth, z_current+_dataContainer->_thickness), _ymax);
+        painter.drawRectYZ(Eigen::Vector2d(_ymin, z_current), Eigen::Vector2d(_ymin+_ywidth, z_current+_dataContainer->_thickness), _xmin);
+        painter.drawRectYZ(Eigen::Vector2d(_ymin, z_current), Eigen::Vector2d(_ymin+_ywidth, z_current+_dataContainer->_thickness), _xmax);
 
         z_current += _dataContainer->_thickness;
         z_current += _dataContainer->_spacing;

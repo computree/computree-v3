@@ -4,7 +4,7 @@ CT_FaceCloudIndexVector::CT_FaceCloudIndexVector(const size_t &size) : CT_Abstra
 {
 }
 
-CT_AbstractCloudIndex* CT_FaceCloudIndexVector::copy() const
+CT_AbstractCloud* CT_FaceCloudIndexVector::copy() const
 {
     size_t s = size();
 

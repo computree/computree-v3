@@ -59,5 +59,10 @@
         <file>Icones/help.png</file>
         <file>Icones/octree.png</file>
         <file>Icones/maps.png</file>
+        <file>Icones/flag_ca.png</file>
+        <file>Icones/flag_de.png</file>
+        <file>Icones/flag_en.png</file>
+        <file>Icones/flag_es.png</file>
+        <file>Icones/flag_fr.png</file>
     </qresource>
 </RCC>

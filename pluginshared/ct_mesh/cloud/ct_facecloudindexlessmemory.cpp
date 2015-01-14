@@ -4,7 +4,7 @@ CT_FaceCloudIndexLessMemory::CT_FaceCloudIndexLessMemory(const size_t &begin, co
 {
 }
 
-CT_AbstractCloudIndex* CT_FaceCloudIndexLessMemory::copy() const
+CT_AbstractCloud* CT_FaceCloudIndexLessMemory::copy() const
 {
     return new CT_FaceCloudIndexLessMemory(first(), size());
 }

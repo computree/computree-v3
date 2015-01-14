@@ -40,7 +40,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_PointCloudIndexVector : public CT_AbstractPoi
 public:
     CT_PointCloudIndexVector(size_t size = 0);
 
-    CT_AbstractCloudIndex* copy() const;
+    CT_AbstractCloud* copy() const;
 };
 
 #endif // CT_POINTCLOUDINDEXVECTOR_H

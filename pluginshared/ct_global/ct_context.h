@@ -2,7 +2,6 @@
 #define CT_CONTEXT_H
 
 #include "ct_global/ct_repositorymanager.h"
-#include "ct_global/ct_repository.h"
 
 #define PS_CONTEXT CT_Context::staticInstance()
 #define PS_CATEGORY_MANAGER CT_Context::staticInstance()->categoryManager()
@@ -14,9 +13,9 @@
 #define PS_COORDINATES_SYS_MANAGER CT_Context::staticInstance()->coordinateSystemManager()
 #define PS_COORDINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
 
-#define CT_ABSTRACT_NMPCIR CT_Repository::CT_AbstractNotModifiablePCIR
-#define CT_ABSTRACT_MPCIR CT_Repository::CT_AbstractModifiablePCIR
-#define CT_ABSTRACT_PCIR CT_Repository::CT_AbstractPCIR
+typedef CT_Repository::CT_AbstractNotModifiablePCIR CT_ABSTRACT_NMPCIR;
+typedef CT_Repository::CT_AbstractModifiablePCIR    CT_ABSTRACT_MPCIR;
+typedef CT_Repository::CT_AbstractPCIR              CT_ABSTRACT_PCIR;
 
 class CT_DefaultItemAttributeManager;
 class CT_CategoryManager;
@@ -30,8 +29,10 @@ public:
 
     static CT_Context* staticInstance()
     {
-        if(UNIQUE_INSTANCE == NULL)
+        if(UNIQUE_INSTANCE == NULL) {
             UNIQUE_INSTANCE = new CT_Context();
+            UNIQUE_INSTANCE->init();
+        }
 
         return UNIQUE_INSTANCE;
     }
@@ -120,6 +121,8 @@ private:
     CT_CoordinateSystemManager      *m_csManager;
     float                           m_ZPlaneFor2DShapes;
     CT_Context();
+
+    void init();
 };
 
 #endif // CT_CONTEXT_H

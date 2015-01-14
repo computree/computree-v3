@@ -122,9 +122,6 @@ public:
     virtual void eraseBetweenAndShiftRest(const size_t &eraseBeginPos, const size_t &eraseSize,
                                           const size_t &offset, const bool &negativeOffset) = 0;
 
-protected:
-    bool internalResize(const size_t &newSize) { resize(newSize); return true; }
-
 private:
     template<typename A> friend class CT_CloudIndexStdVectorT;
     template<typename A> friend class CT_CloudIndexStdListT;

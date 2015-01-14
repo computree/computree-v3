@@ -370,7 +370,8 @@ SOURCES += \
     ct_itemdrawable/ct_fileheader.cpp \
     ct_reader/headers/ct_lasheader.cpp \
     ct_reader/ct_reader_gdal.cpp \
-    ct_itemdrawable/ct_transformationmatrix.cpp
+    ct_itemdrawable/ct_transformationmatrix.cpp \
+    ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -831,7 +832,8 @@ HEADERS += interfaces.h \
     ct_reader/headers/ct_lasheader.h \
     ct_reader/ct_reader_gdal.h \
     ct_reader/ct_reader_gdal_def_models.h \
-    ct_itemdrawable/ct_transformationmatrix.h
+    ct_itemdrawable/ct_transformationmatrix.h \
+    ct_coordinates/tools/ct_coordinatesystemcloudindex.h
 
 
 INCLUDEPATH += .
@@ -894,29 +896,5 @@ TRANSLATIONS += languages/pluginshared_fr.ts \
                 languages/pluginshared_en.ts
 
 RESOURCES +=
-
-macx {
-    exists($${OUT_PWD}/scripts/postprocess_osx.sh) {
-        QMAKE_POST_LINK = $${OUT_PWD}/scripts/postprocess_osx.sh
-    } else {
-        message(optionnal scripts not found)
-    }
-} else {
-    unix{
-        exists($${OUT_PWD}/scripts/postprocess_unix.sh) {
-            QMAKE_POST_LINK = $${OUT_PWD}/scripts/postprocess_unix.sh
-        }else {
-            message(optionnal scripts not found)
-        }
-    }
-
-    win32 {
-        exists($${OUT_PWD}\\scripts\\postprocess_win.bat) {
-            QMAKE_POST_LINK = $${OUT_PWD}\\scripts\\postprocess_win.bat
-        } else {
-            message(optionnal scripts not found)
-        }
-    }
-}
 
 OTHER_FILES +=

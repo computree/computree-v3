@@ -4,7 +4,7 @@ CT_PointCloudIndexLessMemory::CT_PointCloudIndexLessMemory(const size_t &begin, 
 {
 }
 
-CT_AbstractCloudIndex* CT_PointCloudIndexLessMemory::copy() const
+CT_AbstractCloud* CT_PointCloudIndexLessMemory::copy() const
 {
     return new CT_PointCloudIndexLessMemory(first(), size());
 }

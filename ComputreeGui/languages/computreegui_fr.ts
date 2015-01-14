@@ -93,24 +93,24 @@
 <context>
     <name>G3DGraphicsView</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1652"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1672"/>
         <source>Colorer les points par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1653"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1673"/>
         <source>Colorer les faces par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1654"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1674"/>
         <source>Colorer les edges par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1671"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1678"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1685"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1691"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1698"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1705"/>
         <source>Configurer</source>
         <translation></translation>
     </message>
@@ -1301,42 +1301,42 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="719"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="722"/>
         <source>All Valid Files (</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="810"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="813"/>
         <source>All files</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="822"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="825"/>
         <source>Script File (*</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="841"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="844"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="841"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="844"/>
         <source>Voud devez redémarrer l&apos;application pour prendre en compte le changement de langue.</source>
         <translation>Vous devez redémarrer l&apos;application pour prendre en compte le changement de langue.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="917"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="920"/>
         <source>%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="918"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="921"/>
         <source>%1 (F1 pour plus d&apos;info)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="946"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="949"/>
         <source>Aucune action</source>
         <translation>Aucune étape</translation>
     </message>
@@ -1841,48 +1841,48 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="780"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="782"/>
         <source>Question</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="792"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="794"/>
         <source>Veuillez patienter pendant le chargement de la table...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="792"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="794"/>
         <source>Annuler</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="918"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="920"/>
         <source>Sélectionner</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="922"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="924"/>
         <source>Dé-Sélectionner</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="926"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="928"/>
         <source>Inverser la sélection</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="944"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="957"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="946"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="959"/>
         <source>%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="949"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="951"/>
         <source>Couleur automatique</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="936"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="938"/>
         <source>Couleur unie</source>
         <translation></translation>
     </message>
@@ -1900,7 +1900,7 @@ Attention cette opération peut être lente.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="975"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="977"/>
         <source>Ajouter au </source>
         <translation></translation>
     </message>
@@ -1933,17 +1933,17 @@ Attention cette opération peut être lente.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1595"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1597"/>
         <source>G3DPainter (points) =&gt; Vertex shader compilation error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de compilation des Vertex Shader: %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1623"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1625"/>
         <source>G3DPainter (points) =&gt; Link error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de linkage (Link error) : %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1719"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1721"/>
         <source>G3DPainter (points) =&gt; Bind error : %1</source>
         <translation>G3DPainter (points) =&gt; Erreur de liaison (Bind error) : %1</translation>
     </message>

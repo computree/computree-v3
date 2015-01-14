@@ -105,9 +105,10 @@ typename CT_GlobalCloudManagerT<T, CLOUD>::CT_AbstractNotModifiableCIR CT_Global
     size_t s = newSize - cir->abstractCloudIndexT()->size();
 
     if(!this->m_cirArray.contains(cir.data())
-            || (cir->last() != (m_cloud.size()-1))
-            || !cir->abstractCloudIndexT()->internalResize(newSize))
+            || (cir->last() != (m_cloud.size()-1)))
         return CT_GlobalCloudManagerT<T, CLOUD>::CT_AbstractNotModifiableCIR(NULL);
+
+    cir->abstractCloudIndexT()->resize(newSize);
 
     // informe les gestionnaire de synchronisation de nuage qu'un nouveau nuage a été ajouté
     this->informThatCloudAdded(s);
