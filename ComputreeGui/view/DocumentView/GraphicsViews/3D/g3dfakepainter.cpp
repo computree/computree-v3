@@ -176,7 +176,7 @@ void G3DFakePainter::rotate(const double &alpha, const double &x, const double &
         G3DPainter::rotate(alpha, x, y, z);
 }
 
-void G3DFakePainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
+void G3DFakePainter::translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction)
 {
     if(m_drawEnabled)
         G3DPainter::translateThenRotateToDirection(translation, direction);

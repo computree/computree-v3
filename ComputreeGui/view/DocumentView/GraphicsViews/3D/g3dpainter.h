@@ -188,7 +188,7 @@ public:
 
     virtual void translate(const double &x, const double &y, const double &z);
     virtual void rotate(const double &alpha, const double &x, const double &y, const double &z);
-    virtual void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
+    virtual void translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction);
     virtual void scale(const double &x, const double &y, const double &z);
 
     ///////// GL_POINTS //////////

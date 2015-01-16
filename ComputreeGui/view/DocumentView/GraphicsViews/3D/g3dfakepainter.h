@@ -114,7 +114,7 @@ public:
 
     void translate(const double &x, const double &y, const double &z);
     void rotate(const double &alpha, const double &x, const double &y, const double &z);
-    void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
+    void translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction);
     void scale(const double &x, const double &y, const double &z);
 
     ///////// GL_POINTS //////////

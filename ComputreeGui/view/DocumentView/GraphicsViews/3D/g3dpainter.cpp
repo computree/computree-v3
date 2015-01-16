@@ -189,9 +189,9 @@ void G3DPainter::save()
 void G3DPainter::restore()
 {
     stopDrawMultiple();
+    glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
 
     glPopMatrix();
-    glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
 }
 
 void G3DPainter::startRestoreIdentityMatrix(GLdouble *matrix)
@@ -437,41 +437,41 @@ void G3DPainter::rotate(const double &alpha, const double &x, const double &y, c
     glRotated(alpha, x, y, z);
 }
 
-void G3DPainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
+void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction)
 {
     stopDrawMultiple();
 
     //direction is the direction you want the object to point at
     //up- first guess
-    QVector3D up;
+    Eigen::Vector3d up;
 
     //If x and z are really small
     if((fabs(direction.x())< 0.00001) && (fabs(direction.z()) < 0.00001))
     {
         if(direction.y() > 0)
-            up = QVector3D(0.0, 0.0, -1.0); //if direction points in +y direction
+            up = Eigen::Vector3d(0.0, 0.0, -1.0); //if direction points in +y direction
         else
-            up = QVector3D(0.0, 0.0, 1.0); //if direction points in -y direction
+            up = Eigen::Vector3d(0.0, 0.0, 1.0); //if direction points in -y direction
     }
     else
     {
-        up = QVector3D(0.0, 1.0, 0.0); //y-axis is the general up direction
+        up = Eigen::Vector3d(0.0, 1.0, 0.0); //y-axis is the general up direction
     }
 
     //left
-    QVector3D left = QVector3D::crossProduct(direction, up);
+    Eigen::Vector3d left = direction.cross(up);
     left.normalize();
 
     //final up
-    up = QVector3D::crossProduct(left, direction);
+    up = left.cross(direction);
     up.normalize();
 
-    float matrix[]={left.x(), left.y(), left.z(), 0.0f,     //LEFT
+    double matrix[]={left.x(), left.y(), left.z(), 0.0f,     //LEFT
                     up.x(), up.y(), up.z(), 0.0f,                       //UP
                     direction.x(), direction.y(), direction.z(), 0.0f,  //FORWARD
                     translation.x(), translation.y(), translation.z(), 1.0f};    //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
 
-    glMultMatrixf(matrix);
+    glMultMatrixd(matrix);
 }
 
 void G3DPainter::scale(const double &x, const double &y, const double &z)
@@ -725,8 +725,9 @@ void G3DPainter::drawCube(const double &x1, const double &y1, const double &z1, 
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(faces, mode);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         // Bottom
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
@@ -773,8 +774,9 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
@@ -791,8 +793,9 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
@@ -808,8 +811,9 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
@@ -829,8 +833,9 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
@@ -847,8 +852,9 @@ void G3DPainter::drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
@@ -861,8 +867,9 @@ void G3DPainter::fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
@@ -875,8 +882,9 @@ void G3DPainter::drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
@@ -889,8 +897,9 @@ void G3DPainter::fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
@@ -903,8 +912,9 @@ void G3DPainter::drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
@@ -917,8 +927,9 @@ void G3DPainter::fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        startDrawMultiple(GL_BEGIN_QUAD);
+        stopDrawMultiple();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
@@ -1343,33 +1354,88 @@ void G3DPainter::endPolygon()
 
 void G3DPainter::drawCylinder(const double &x, const double &y, const double &z, const double &radius, const double &height)
 {
-    if(canDraw(GL_OTHER))
+    if(canDraw(GL_BEGIN_TRIANGLE))
     {
-        stopDrawMultiple();
-        /*save();
+        pushMatrix();
 
         translate(x, y, z);
 
-        gluCylinder(_quadric, radius, radius, height, 20, 1);
+        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
 
-        restore();*/
+        if(drawFastest())
+            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+
+        int sides = cosSinA->size();
+        double minH = 0;
+        double maxH = height;
+
+        Eigen::Vector3d v;
+        v(0) = maxH;
+        v(1) = radius;
+        v(2) = 0;
+
+        for(size_t i=0; i<sides; ++i)
+        {
+            const QPair<double, double> &fPair = (*cosSinA)[i];
+
+            Eigen::Vector3d v0 = v;
+
+            Eigen::Vector3d v1;
+            v1(0) = minH;
+            v1(1) = v0(1);
+            v1(2) = v0(2);
+
+            Eigen::Vector3d v2;
+            Eigen::Vector3d v3;
+
+            if(i<sides-1)
+            {
+                v2(0) = maxH;
+                v2(1) = radius * fPair.first;
+                v2(2) = radius * fPair.second;
+
+                v3(0) = minH;
+                v3(1) = v2(1);
+                v3(2) = v2(2);
+
+                v = v2;
+            }
+            else
+            {
+                v2(0) = maxH;
+                v2(1) = radius;
+                v2(2) = 0;
+
+                v3(0) = minH;
+                v3(1) = v2(1);
+                v3(2) = v2(2);
+            }
+
+            drawTriangle(v0(0), v0(1), v0(2),
+                         v1(0), v1(1), v1(2),
+                         v2(0), v2(1), v2(2));
+
+            drawTriangle(v1(0), v1(1), v1(2),
+                         v3(0), v3(1), v3(2),
+                         v2(0), v2(1), v2(2));
+        }
+
+        popMatrix();
     }
 }
 
 void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius, const double &height)
 {
-    if(canDraw(GL_OTHER))
+    if(canDraw(GL_BEGIN_TRIANGLE))
     {
-        stopDrawMultiple();
-
-        /*save();
+        pushMatrix();
 
         float delta = - height/2.0;
-        translateThenRotateToDirection(QVector3D(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
+        translateThenRotateToDirection(Eigen::Vector3d(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
 
-        gluCylinder(_quadric, radius, radius, height, 20, 1);
+        drawCylinder(0, 0, 0, radius, height);
 
-        restore();*/
+        popMatrix();
     }
 }
 
@@ -1767,7 +1833,7 @@ QVector< QPair<double, double> > G3DPainter::staticInitCircleVector(int size)
     QVector< QPair<double, double> > vector(size);
 
     float inc = M_PI_MULT_2/((double)size);
-    float a = -M_PI;
+    float a = 0;
 
     for(int i=0; i<size; ++i)
     {

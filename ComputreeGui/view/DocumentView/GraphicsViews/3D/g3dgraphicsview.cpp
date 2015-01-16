@@ -993,6 +993,9 @@ void G3DGraphicsView::drawInternal()
     _g.setColor(Qt::red);
     _g.drawLine(-20, 0, 0, 20, 0, 0);
 
+
+    _g.drawQuadFace(0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0);
+
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
