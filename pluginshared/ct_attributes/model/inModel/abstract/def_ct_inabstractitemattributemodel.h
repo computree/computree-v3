@@ -5,6 +5,6 @@
 
 #include "ct_itemdrawable/model/inModel/abstract/ct_inabstractsingularitemmodel.h"
 
-#define DEF_CT_InAbstractIAModel CT_AbstractItemAttributeModelT<CT_InAbstractSingularItemModel, CT_InAbstractModel>
+typedef CT_AbstractItemAttributeModelT<CT_InAbstractSingularItemModel, CT_InAbstractModel> DEF_CT_InAbstractIAModel;
 
 #endif // DEF_CT_INABSTRACTITEMATTRIBUTEMODEL_H

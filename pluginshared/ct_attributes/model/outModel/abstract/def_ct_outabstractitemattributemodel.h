@@ -5,6 +5,6 @@
 
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
 
-#define DEF_CT_OutAbstractIAModel CT_AbstractItemAttributeModelT<CT_OutAbstractSingularItemModel, CT_OutAbstractModel>
+typedef CT_AbstractItemAttributeModelT<CT_OutAbstractSingularItemModel, CT_OutAbstractModel> DEF_CT_OutAbstractIAModel;
 
 #endif // DEF_CT_OUTABSTRACTITEMATTRIBUTEMODEL_H

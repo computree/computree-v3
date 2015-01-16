@@ -908,8 +908,10 @@ void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
         delete m_colorVboManager;
         m_colorVboManager = NULL;
 
+        m_mutex->lock();
         qDeleteAll(_listGraphics.begin(), _listGraphics.end());
         _listGraphics.clear();
+        m_mutex->unlock();
     }
 
     GDocumentView::closeEvent(closeEvent);
