@@ -1,7 +1,10 @@
 #include "pb_stepbeginloopthroughgroups.h"
-#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
+#include "ct_result/model/inModel/tools/ct_instdresultmodelpossibility.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
+
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 #define DEF_inResult_g "inResult_g"
 #define DEF_inGroup  "inGroup"
@@ -35,10 +38,9 @@ CT_VirtualAbstractStep* PB_StepBeginLoopThroughGroups::createNewInstance(CT_Step
 
 void PB_StepBeginLoopThroughGroups::createInResultModelListProtected()
 {
-    CT_InResultModelGroupToCopy *resultModel = createNewInResultModelForCopy(DEF_inResult_g, tr("Résultat"));
+    CT_InResultModelGroup *resultModel = createNewInResultModel(DEF_inResult_g, tr("Résultat"));
     resultModel->setZeroOrMoreRootGroup();
     resultModel->addGroupModel("", DEF_inGroup);
-    resultModel->addItemModel(DEF_inGroup, DEF_inItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"));
 }
 
 // Redefine in children steps to complete ConfigurationDialog
@@ -51,7 +53,29 @@ void PB_StepBeginLoopThroughGroups::createPostConfigurationDialog(int &nTurns)
 void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel)
 {
     Q_UNUSED(firstResultModel);
-    createNewOutResultModelToCopy(DEF_inResult_g);
+
+    CT_InAbstractResultModel *resultInModel = getInResultModel(DEF_inResult_g);
+    CT_OutAbstractResultModel* resultInModelOut = NULL;
+    CT_InAbstractGroupModel* groupModel;
+
+    // check if model have choice (can be empty if the step want to create a default out model list)
+    if(resultInModel!=NULL && !resultInModel->getPossibilitiesSavedSelected().isEmpty())
+    {
+        resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
+    }
+
+    if(resultInModelOut != NULL)
+    {
+        groupModel = (CT_InAbstractGroupModel*)PS_MODELS->searchModel(DEF_inGroup, resultInModelOut, this);
+    }
+
+    if((groupModel != NULL) && !groupModel->getPossibilitiesSavedSelected().isEmpty())
+    {
+        _outModel = (DEF_CT_AbstractGroupModelOut*)groupModel->getPossibilitiesSavedSelected().first()->outModel()->copy();
+        CT_OutResultModelGroup *resultModel = createNewOutResultModel("rrr", tr("toto"));
+        resultModel->setRootGroup(_outModel);
+    }
+
 }
 
 // Redefine in children steps to complete compute method
@@ -62,41 +86,20 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
 
     // on récupère le résultat copié
     CT_ResultGroup *outResult_g = getOutResultList().at(1);
-
-    QList<CT_AbstractItemGroup*> groupsToBeRemoved;
-
     CT_ResultGroupIterator it(outResult_g, this, DEF_inGroup);
     int cpt = 1;
     while (it.hasNext() && (!isStopped()))
     {
         CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
-        if (cpt++ != _counter->getCurrentTurn()) {groupsToBeRemoved.append(group);}
+        if (cpt++ == _counter->getCurrentTurn())
+        {
+            outResult_g->addGroup((CT_AbstractItemGroup*)group->copy(_outModel, outResult_g, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference));
+        }
     }
 
     if (_counter->getCurrentTurn() == 1) {
         _counter->setNTurns(cpt);
     }
 
-    // Suppression effective des groupes
-    while (!groupsToBeRemoved.isEmpty())
-    {
-        CT_AbstractItemGroup *group = groupsToBeRemoved.takeLast();
-        recursiveRemoveGroupIfEmpty(group->parentGroup(), group);
-    }
-
     setProgress( 100 );
-}
-
-void PB_StepBeginLoopThroughGroups::recursiveRemoveGroupIfEmpty(CT_AbstractItemGroup *parent, CT_AbstractItemGroup *group) const
-{
-    if(parent != NULL)
-    {
-        parent->removeGroup(group);
-
-        if(parent->isEmpty()) {recursiveRemoveGroupIfEmpty(parent->parentGroup(), parent);}
-    }
-    else
-    {
-        ((CT_ResultGroup*)group->result())->removeGroupSomethingInStructure(group);
-    }
 }

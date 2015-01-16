@@ -33,7 +33,8 @@ protected:
     virtual void compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group);
 
 private:
-    void recursiveRemoveGroupIfEmpty(CT_AbstractItemGroup *parent, CT_AbstractItemGroup *group) const;
+    DEF_CT_AbstractGroupModelOut*   _outModel;
+
 };
 
 #endif // PB_STEPBEGINLOOPTHROOUGHGROUPS_H
