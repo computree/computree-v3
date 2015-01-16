@@ -56,7 +56,7 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
 
     CT_InAbstractResultModel *resultInModel = getInResultModel(DEF_inResult_g);
     CT_OutAbstractResultModel* resultInModelOut = NULL;
-    CT_InAbstractGroupModel* groupModel;
+    CT_InAbstractGroupModel* groupModel = NULL;
 
     // check if model have choice (can be empty if the step want to create a default out model list)
     if(resultInModel!=NULL && !resultInModel->getPossibilitiesSavedSelected().isEmpty())
@@ -85,8 +85,9 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
     Q_UNUSED(group);
 
     // on récupère le résultat copié
+    CT_ResultGroup *inResult = getInputResults().first();
     CT_ResultGroup *outResult_g = getOutResultList().at(1);
-    CT_ResultGroupIterator it(outResult_g, this, DEF_inGroup);
+    CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
     int cpt = 1;
     while (it.hasNext() && (!isStopped()))
     {
