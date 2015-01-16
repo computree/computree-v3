@@ -126,7 +126,7 @@ void CT_Scene::setTransformMatrix(const QMatrix4x4 &matrix)
     setMatrix4x4(matrix);
 }
 
-void CT_Scene::setCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs)
+void CT_Scene::registerCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs)
 {
     m_spcs = spcs;
 }

@@ -809,6 +809,7 @@ void G3DGraphicsView::removeAllIdFromSelection()
 void G3DGraphicsView::init()
 {
     _g.initializeGl();
+    m_fakeG.initializeGl();
 
     if(!_2dActive)
         restoreStateFromFile();
@@ -1290,15 +1291,21 @@ void G3DGraphicsView::drawWithNames()
 
         while(it.hasNext())
         {
+
             glPushName(i);
+
+            qDebug() << "t3 : " << timer.restart();
             it.next()->draw(*this, _g);
+            qDebug() << "t3' : " << timer.restart();
             _g.stopDrawMultiple();
+            qDebug() << "t3'' : " << timer.restart();
             glPopName();
+            qDebug() << "t3''' : " << timer.restart();
 
             ++i;
         }
 
-        qDebug() << "t3 : " << timer.restart();
+        qDebug() << "t3'''' : " << timer.restart();
 
         _g.endNewDraw();
     }
@@ -1325,9 +1332,10 @@ void G3DGraphicsView::drawWithNames()
 
     unlockPaint();
 
-    checkAndShowOpenGLErrors();
-
     qDebug() << "t6 : " << timer.restart();
+    //checkAndShowOpenGLErrors();
+
+    qDebug() << "t6' : " << timer.restart();
 }
 
 void G3DGraphicsView::paintEvent(QPaintEvent *e)
@@ -1474,13 +1482,15 @@ void G3DGraphicsView::endSelection(const QPoint &p)
     }
     else
     {
+        qDebug() << "t7 : " << timer.restart();
         QGLViewer::endSelection(p);
+        qDebug() << "t7' : " << timer.restart();
     }
 }
 
 void G3DGraphicsView::postSelection(const QPoint& point)
 {
-    qDebug() << "t7' : " << timer.restart();
+    qDebug() << "t7'' : " << timer.restart();
 
     SelectionMode mode = selectionModeToBasic();
 

@@ -210,11 +210,6 @@ void GMainWindow::showAboutPluginsDialog()
     }
 }
 
-void GMainWindow::configureCurrentCoordinateSystem()
-{
-    PS_COORDINATES_SYS->configure();
-}
-
 void GMainWindow::cleanItemDrawableOfAllDocuments()
 {
     GUI_MANAGER->cleanItemDrawableOfAllDocuments();
@@ -323,9 +318,6 @@ void GMainWindow::initUI()
     QAction *actionStepManagerConfiguration = new QAction(tr("Configurer"), this);
     actionStepManagerConfiguration->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
 
-    QAction *actionCoordinateSystem = new QAction(tr("Système de coordonnées"), this);
-    actionCoordinateSystem->setIcon(QIcon(":/Icones/Icones/maps.png"));
-
     QAction *actionCleanAllDocuments = new QAction(tr("Nettoyer toutes les vues"), this);
     actionCleanAllDocuments->setIcon(QIcon(":/Icones/Icones/broom.png"));
 
@@ -389,8 +381,6 @@ void GMainWindow::initUI()
     ui->toolBar->addAction(actionNewItemModelDocument);
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionStepManagerConfiguration);
-    ui->toolBar->addSeparator();
-    ui->toolBar->addAction(actionCoordinateSystem);
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionCleanAllDocuments);
     ui->toolBar->addAction(actionINeedHelp);
@@ -486,8 +476,6 @@ void GMainWindow::initUI()
     connect(fastForwardSpinBox, SIGNAL(valueChanged(int)), _stepManagerView->getStepManager(), SLOT(setFastForwardJumpInDebugMode(int)));
 
     connect(actionStepManagerConfiguration, SIGNAL(triggered()), _stepManagerView, SLOT(showStepManagerOptions()));
-
-    connect(actionCoordinateSystem, SIGNAL(triggered()), this, SLOT(configureCurrentCoordinateSystem()));
 
     connect(actionCleanAllDocuments, SIGNAL(triggered()), this, SLOT(cleanItemDrawableOfAllDocuments()));
     connect(actionINeedHelp, SIGNAL(triggered()), this, SLOT(showINeedHelpDialog()));

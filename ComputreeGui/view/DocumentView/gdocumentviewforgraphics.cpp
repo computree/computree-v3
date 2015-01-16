@@ -5,6 +5,7 @@
 #include "view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h"
 #include "view/DocumentView/GraphicsViews/3D/g3dfakepainter.h"
 #include "view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h"
+#include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
 
 #include "cdm_tools.h"
 
@@ -328,7 +329,7 @@ void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, con
         createColorCloudRegistered<CT_AbstractEdgeAttributes>();
 
         G3DFakePainter painter;
-        painter.setGraphicsView(_listGraphics.first());
+        painter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(_listGraphics.first()));
         painter.setDrawMode(G3DFakePainter::ApplyColorPoints | G3DFakePainter::ApplyColorEdges | G3DFakePainter::ApplyColorFaces);
         painter.setApplyColor(color);
         painter.setPointsColorCloud(colorCloudRegistered<CT_AbstractPointsAttributes>());
@@ -751,7 +752,7 @@ void GDocumentViewForGraphics::slotItemDrawableAdded(CT_AbstractItemDrawable &it
     if(!getGraphicsList().isEmpty())
     {
         G3DFakePainter fakePainter;
-        fakePainter.setGraphicsView(getGraphicsList().first());
+        fakePainter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(getGraphicsList().first()));
         fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
         item.draw(*getGraphicsList().first(), fakePainter);
         QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());
@@ -768,7 +769,7 @@ void GDocumentViewForGraphics::slotItemToBeRemoved(CT_AbstractItemDrawable &item
     if(!getGraphicsList().isEmpty())
     {
         G3DFakePainter fakePainter;
-        fakePainter.setGraphicsView(getGraphicsList().first());
+        fakePainter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(getGraphicsList().first()));
         fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
         item.draw(*getGraphicsList().first(), fakePainter);
         QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());

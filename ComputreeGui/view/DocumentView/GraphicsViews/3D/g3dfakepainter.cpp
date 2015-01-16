@@ -2,6 +2,10 @@
 
 #include "dm_guimanager.h"
 
+#include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
+
+#include "tools/graphicsview/dm_elementinfomanager.h"
+
 #include "ct_global/ct_context.h"
 #include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
 #include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
@@ -10,22 +14,9 @@
 #include "ct_mesh/cloud/abstract/ct_abstractfacecloudindex.h"
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
-G3DFakePainter::G3DFakePainter()
+G3DFakePainter::G3DFakePainter() : G3DPainter()
 {
-    m_gv = NULL;
-    m_defaultPointSize = 1.0;
-
     beginNewDraw();
-}
-
-void G3DFakePainter::setGraphicsView(const GraphicsViewInterface *gv)
-{
-    m_gv = (GraphicsViewInterface*)gv;
-}
-
-void G3DFakePainter::setPointFastestIncrement(size_t inc)
-{
-    m_fastestIncrementPoint = inc;
 }
 
 void G3DFakePainter::setApplyColor(const QColor &color)
@@ -50,15 +41,10 @@ void G3DFakePainter::setFacesColorCloud(QSharedPointer<CT_StandardColorCloudRegi
 
 void G3DFakePainter::beginNewDraw()
 {
+    G3DPainter::beginNewDraw();
+
     m_drawEnabled = true;
     m_drawMode = DrawNone;
-
-    m_drawFastest = false;
-
-    m_nCallEnableSetPointSize = 0;
-    m_nCallEnableSetForcedPointSize = 0;
-
-    m_nCallEnablePushMatrix = 0;
 
     m_drawMultipleLine = false;
     m_drawMultipleTriangle = false;
@@ -70,8 +56,13 @@ void G3DFakePainter::beginNewDraw()
     m_pCloudIndexBackup.clear();
     m_fCloudIndexBackup.clear();
     m_eCloudIndexBackup.clear();
+}
 
-    m_fastestIncrementPoint = 0;
+void G3DFakePainter::endNewDraw()
+{
+    G3DPainter::endNewDraw();
+
+    stopDrawMultiple();
 }
 
 void G3DFakePainter::setDrawMode(DrawModes mode)
@@ -81,16 +72,6 @@ void G3DFakePainter::setDrawMode(DrawModes mode)
     m_drawEnabled = (m_drawMode.testFlag(DrawPointsWithName)
                         || m_drawMode.testFlag(DrawEdgesWithName)
                         || m_drawMode.testFlag(DrawFacesWithName));
-}
-
-bool G3DFakePainter::drawFastest() const
-{
-    return m_drawFastest;
-}
-
-void G3DFakePainter::setDrawFastest(bool enable)
-{
-    m_drawFastest = enable;
 }
 
 size_t G3DFakePainter::nPoints() const
@@ -126,127 +107,139 @@ const QList<CT_AbstractCloudIndex *>& G3DFakePainter::faceCloudIndexBackup() con
 void G3DFakePainter::save()
 {
     if(m_drawEnabled)
-        glPushMatrix();
+        G3DPainter::save();
 }
 
 void G3DFakePainter::restore()
 {
     if(m_drawEnabled)
-        glPopMatrix();
+        G3DPainter::restore();
 }
 
 void G3DFakePainter::startRestoreIdentityMatrix(GLdouble *matrix)
 {
     if(m_drawEnabled)
-    {
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-
-        double aspectRatio = m_gv->width() / ((double)m_gv->height());
-
-        if(m_gv->width() <= ((double)m_gv->height()))
-            glOrtho(-1, 1, -1/aspectRatio, 1/aspectRatio, -1, 1);
-        else
-            glOrtho(-1*aspectRatio, 1*aspectRatio, -1, 1, -1, 1);
-
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        if(matrix != NULL)
-            glMultMatrixd(matrix);
-    }
+        G3DPainter::startRestoreIdentityMatrix(matrix);
 }
 
 void G3DFakePainter::stopRestoreIdentityMatrix()
 {
     if(m_drawEnabled)
-    {
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-    }
-}
-
-void G3DFakePainter::enableMultMatrix(bool e)
-{
-    m_nCallEnablePushMatrix += (e ? 1 : -1);
+        G3DPainter::stopRestoreIdentityMatrix();
 }
 
 void G3DFakePainter::pushMatrix()
 {
-    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
-        glPushMatrix();
+    if(m_drawEnabled)
+        G3DPainter::pushMatrix();
 }
 
 void G3DFakePainter::multMatrix(const Eigen::Matrix4d &matrix)
 {
-    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
-        glMultMatrixd(matrix.data());
+    if(m_drawEnabled)
+        G3DPainter::multMatrix(matrix);
 }
 
 void G3DFakePainter::popMatrix()
 {
-    if(m_drawEnabled && (m_nCallEnablePushMatrix == 0))
-        glPopMatrix();
+    if(m_drawEnabled)
+        G3DPainter::popMatrix();
 }
 
 void G3DFakePainter::setPointSize(float size)
 {
-    if(m_drawEnabled && (m_nCallEnableSetPointSize == 0))
-        glPointSize(size);
+    if(m_drawEnabled)
+        G3DPainter::setPointSize(size);
 }
 
 void G3DFakePainter::setDefaultPointSize(float size)
 {
-    if(m_nCallEnableSetPointSize == 0)
-        m_defaultPointSize = size;
+    if(m_drawEnabled)
+        G3DPainter::setDefaultPointSize(size);
 }
 
 void G3DFakePainter::restoreDefaultPointSize()
 {
-    if(m_drawEnabled && (m_nCallEnableSetPointSize == 0))
-        glPointSize(m_defaultPointSize);
+    if(m_drawEnabled)
+        G3DPainter::restoreDefaultPointSize();
 }
 
-void G3DFakePainter::enableSetPointSize(bool enable)
-{
-    m_nCallEnableSetPointSize += (enable ? 1 : -1);
-}
-
-void G3DFakePainter::enableSetForcedPointSize(bool enable)
-{
-    m_nCallEnableSetForcedPointSize += (enable ? 1 : -1);
-}
-
-void G3DFakePainter::translate(const double & x, const double & y, const double & z)
+void G3DFakePainter::translate(const double &x, const double &y, const double &z)
 {
     if(m_drawEnabled)
-        glTranslated(x, y, z);
+        G3DPainter::translate(x, y, z);
 }
 
-void G3DFakePainter::rotate(const double & alpha, const double & x, const double & y, const double & z)
+void G3DFakePainter::rotate(const double &alpha, const double &x, const double &y, const double &z)
 {
     if(m_drawEnabled)
-        glRotated(alpha, x, y, z);
+        G3DPainter::rotate(alpha, x, y, z);
+}
+
+void G3DFakePainter::translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction)
+{
+    if(m_drawEnabled)
+        G3DPainter::translateThenRotateToDirection(translation, direction);
 }
 
 void G3DFakePainter::scale(const double & x, const double & y, const double & z)
 {
     if(m_drawEnabled)
-        glScaled(x, y, z);
+        G3DPainter::scale(x, y, z);
+}
+
+void G3DFakePainter::drawPoint(const size_t &globalIndex)
+{
+    if(m_drawMode.testFlag(DrawPointsWithName))
+    {
+        DM_ElementInfoManager *infos = graphicsView()->pointsInformationManager();
+
+        if(!infos->inlineIsInvisible(globalIndex)) {
+            glColor3ub(255, 255, 255);
+
+            glPushName(globalIndex);
+
+            startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
+            glArrayElement(globalIndex);
+            stopDrawMultiple(false);
+
+            glPopName();
+        }
+    }
+    else if(m_drawMode.testFlag(CountPoints))
+    {
+        ++m_nPoints;
+    }
+    else if(m_drawMode.testFlag(ApplyColorPoints))
+    {
+        CT_StandardColorCloudRegistered *scc = m_pColors.data();
+
+        if(scc != NULL)
+        {
+            CT_AbstractColorCloud *cc = scc->abstractColorCloud();
+
+            int r = m_applyColor.red();
+            int g = m_applyColor.green();
+            int b = m_applyColor.blue();
+            int a = m_applyColor.alpha();
+
+            CT_Color &col = cc->colorAt(globalIndex);
+
+            col.r = r;
+            col.g = g;
+            col.b = b;
+            col.a = a;
+        }
+    }
 }
 
 void G3DFakePainter::drawOctreeOfPoints(const OctreeInterface *octree, PainterInterface::DrawOctreeModes modes)
 {
-    if(!modes.testFlag(DrawElements) || (m_gv == NULL))
+    if(!modes.testFlag(DrawElements) || (graphicsView() == NULL))
         return;
 
     GLdouble planeCoefficients[6][4];
-    m_gv->getCameraFrustumPlanesCoefficients(planeCoefficients);
+    graphicsView()->getCameraFrustumPlanesCoefficients(planeCoefficients);
 
     int s = octree->numberOfCells();
 
@@ -282,8 +275,10 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
         size_t indexCount = pci->size();
         size_t increment = 1;
 
-        if((m_fastestIncrementPoint != 0) && drawFastest())
-            increment = m_fastestIncrementPoint;
+        if((pointFastestIncrement() != 0) && drawFastest())
+            increment = pointFastestIncrement();
+
+        DM_ElementInfoManager *infos = graphicsView()->pointsInformationManager();
 
         // FAST
         if(increment != 1)
@@ -292,13 +287,16 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
             {
                 pci->indexAt(n, pIndex);
 
-                glPushName(pIndex);
+                if(!infos->inlineIsInvisible(pIndex))
+                {
+                    glPushName(pIndex);
 
-                glBegin(GL_POINTS);
-                glArrayElement(pIndex);
-                glEnd();
+                    startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
+                    glArrayElement(pIndex);
+                    stopDrawMultiple(false);
 
-                glPopName();
+                    glPopName();
+                }
 
                 n += increment;
             }
@@ -310,13 +308,16 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
             {
                 pci->indexAt(n, pIndex);
 
-                glPushName(pIndex);
+                if(!infos->inlineIsInvisible(pIndex))
+                {
+                    glPushName(pIndex);
 
-                glBegin(GL_POINTS);
-                glArrayElement(pIndex);
-                glEnd();
+                    startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
+                    glArrayElement(pIndex);
+                    stopDrawMultiple(false);
 
-                glPopName();
+                    glPopName();
+                }
 
                 ++n;
             }
@@ -423,6 +424,8 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
         if(fci == NULL)
             return;
 
+        DM_ElementInfoManager *infos = graphicsView()->facesInformationManager();
+
         size_t fIndex;
         size_t size = fci->size();
 
@@ -430,9 +433,21 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
         {
             fci->indexAt(n, fIndex);
 
-            glPushName(fIndex);
-            ((CT_AbstractMeshModel*)mesh)->drawFaceAt(n, *m_gv, *this);
-            glPopName();
+            if(!infos->inlineIsInvisible(fIndex))
+            {
+                glPushName(fIndex);
+
+                startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
+
+                const CT_Face &face = faceCloud()->constTAt(fIndex);
+                glArrayElement(face.iPointAt(0));
+                glArrayElement(face.iPointAt(1));
+                glArrayElement(face.iPointAt(2));
+
+                stopDrawMultiple(false);
+
+                glPopName();
+            }
         }
     }
     else if(m_drawMode.testFlag(CountFaces))
@@ -503,6 +518,8 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
         if(eci == NULL)
             return;
 
+        DM_ElementInfoManager *infos = graphicsView()->edgesInformationManager();
+
         size_t eIndex;
         size_t size = eci->size();
 
@@ -510,9 +527,20 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
         {
             eci->indexAt(n, eIndex);
 
-            glPushName(eIndex);
-            ((CT_AbstractMeshModel*)mesh)->drawEdgeAt(n, *m_gv, *this);
-            glPopName();
+            if(!infos->inlineIsInvisible(eIndex))
+            {
+                glPushName(eIndex);
+
+                startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
+
+                const CT_Edge &edge = edgeCloud()->constTAt(eIndex);
+                glArrayElement(edge.iPointAt(0));
+                glArrayElement(edge.iPointAt(1));
+
+                stopDrawMultiple(false);
+
+                glPopName();
+            }
         }
     }
     else if(m_drawMode.testFlag(CountEdges))
@@ -577,66 +605,16 @@ void G3DFakePainter::drawPoints(const CT_AbstractMeshModel *mesh)
         drawPointCloud(mesh->getPointCloudIndex());
 }
 
-void G3DFakePainter::drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2)
-{
-    if(m_drawEnabled)
-    {
-        if(m_drawMultipleLine)
-        {
-            glVertex3d(x1, y1, z1);
-            glVertex3d(x2, y2, z2);
-        }
-        else
-        {
-            glBegin(GL_LINES);
-
-            glVertex3d(x1, y1, z1);
-            glVertex3d(x2, y2, z2);
-
-            glEnd();
-        }
-    }
-}
-
 void G3DFakePainter::drawLine(const size_t &p1GlobalIndex, const size_t &p2GlobalIndex)
 {
     if(m_drawEnabled)
     {
-        if(m_drawMultipleLine)
-        {
-            glArrayElement(p1GlobalIndex);
-            glArrayElement(p2GlobalIndex);
-        }
-        else
-        {
-            glBegin(GL_LINES);
+        startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
 
-            glArrayElement(p1GlobalIndex);
-            glArrayElement(p2GlobalIndex);
+        glArrayElement(p1GlobalIndex);
+        glArrayElement(p2GlobalIndex);
 
-            glEnd();
-        }
-    }
-}
-
-void G3DFakePainter::drawTriangle(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, const double &x3, const double &y3, const double &z3)
-{
-    if(m_drawEnabled)
-    {
-        if(m_drawMultipleTriangle)
-        {
-            glVertex3d(x1, y1, z1);
-            glVertex3d(x2, y2, z2);
-            glVertex3d(x3, y3, z3);
-        }
-        else
-        {
-            glBegin( GL_TRIANGLES );
-            glVertex3d(x1, y1, z1);
-            glVertex3d(x2, y2, z2);
-            glVertex3d(x3, y3, z3);
-            glEnd();
-        }
+        stopDrawMultiple(false);
     }
 }
 
@@ -644,19 +622,12 @@ void G3DFakePainter::drawTriangle(const size_t &p1GlobalIndex, const size_t &p2G
 {
     if(m_drawEnabled)
     {
-        if(m_drawMultipleTriangle)
-        {
-            glArrayElement(p1GlobalIndex);
-            glArrayElement(p2GlobalIndex);
-            glArrayElement(p3GlobalIndex);
-        }
-        else
-        {
-            glBegin( GL_TRIANGLES );
-            glArrayElement(p1GlobalIndex);
-            glArrayElement(p2GlobalIndex);
-            glArrayElement(p3GlobalIndex);
-            glEnd();
-        }
+        startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
+
+        glArrayElement(p1GlobalIndex);
+        glArrayElement(p2GlobalIndex);
+        glArrayElement(p3GlobalIndex);
+
+        stopDrawMultiple(false);
     }
 }

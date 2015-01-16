@@ -382,7 +382,7 @@ bool CT_Reader_LAS::protectedReadFile()
 
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
-            scene->setCoordinateSystem(spcs);
+            scene->registerCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_LAS_sceneOut, scene);

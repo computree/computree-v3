@@ -1416,7 +1416,7 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
 
         double iTheta = initTheta;
         double eTheta = endTheta;
-        double iPhi = iPhi;
+        double iPhi = initPhi;
         double ePhi = endPhi;
 
         if ( !radians )
@@ -1675,10 +1675,7 @@ bool G3DPainter::bindPointShader(bool force)
 void G3DPainter::releasePointShader(bool bindOk)
 {
     if(bindOk)
-    {
-        m_shaderProgPoint->disableAttributeArray("info");
         m_shaderProgPoint->release();
-    }
 }
 
 /*bool G3DPainter::bindFaceShader()
@@ -1868,7 +1865,7 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
     // if we must draw other elements or all elements we don't call glBegin
 }
 
-void G3DPainter::stopDrawMultiple()
+void G3DPainter::stopDrawMultiple(bool rPointShader)
 {
     m_firstPolygonPointValid = false;
 
@@ -1877,13 +1874,13 @@ void G3DPainter::stopDrawMultiple()
     {
         glEnd();
 
-        // if the last glBegin() has bind the point cloud shader, we must release it
-        if(m_bindShaderPointOK) {
-            releasePointShader(m_bindShaderPointOK);
-            m_bindShaderPointOK = false;
-        }
-
         m_currentGlBeginType = GL_END_CALLED;
+    }
+
+    // if the last glBegin() has bind the point cloud shader, we must release it
+    if(m_bindShaderPointOK && rPointShader) {
+        releasePointShader(m_bindShaderPointOK);
+        m_bindShaderPointOK = false;
     }
 }
 
@@ -1915,7 +1912,7 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
         if(!m_bindShaderPointOK)
             m_bindShaderPointOK = bindPointShader(true);
     }
-    else {
+    else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
     }
 }

@@ -272,7 +272,7 @@ bool CT_Reader_XYB::protectedReadFile()
 
             scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
-            scene->setCoordinateSystem(spcs);
+            scene->registerCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_XYB_sceneOut, scene);

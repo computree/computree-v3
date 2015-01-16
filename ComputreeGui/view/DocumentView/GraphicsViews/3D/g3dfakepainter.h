@@ -1,29 +1,19 @@
 #ifndef G3DFAKEPAINTER_H
 #define G3DFAKEPAINTER_H
 
-#include "interfaces.h"
-#include "dm_graphicsviewoptions.h"
+#include "view/DocumentView/GraphicsViews/3D/g3dpainter.h"
 
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 
-#include <QtOpenGL>
-
-// GLU was removed from Qt in version 4.8
-#ifdef Q_OS_MAC
-# include <OpenGL/glu.h>
-#else
-# include <GL/glu.h>
-#endif
-
-// TODO !!! IMPORTANT !!! : use a shader to move points in real coordinates (coordinate system matrix)
-
 /**
- * @brief A painter that draw only points or faces or edges with names (the name is the index of the point/face/edge)
+ * @brief A painter that can be used to :
+ *           - count points/faces/edges
+ *        OR - backup all point/face/edge cloud index that items draw
+ *        OR - apply a color to points/faces/edges
+ *        OR - draw points/faces/edges with glPushName(index of the points/faces/edges)
  */
-class G3DFakePainter : public PainterInterface
+class G3DFakePainter : public G3DPainter
 {
-    Q_INTERFACES(PainterInterface)
-
 public:
     enum DrawMode {
         DrawNone = 0,
@@ -45,56 +35,74 @@ public:
 
     G3DFakePainter();
 
-    void setGraphicsView(const GraphicsViewInterface *gv);
-
     /**
-     * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
+     * @brief Set what must be draw or count or backup, etc...
+     * @warning Call this method after "beginNewDraw()"
      */
-    void setPointFastestIncrement(size_t inc);
+    void setDrawMode(DrawModes mode);
 
     /**
      * @brief Set the color to apply to points/faces/edges (depend on the mode ApplyColorXXX used)
+     * @warning Call this method after "beginNewDraw()"
      */
     void setApplyColor(const QColor &color);
 
     /**
      * @brief Set the points color cloud to use when you want to apply color on points
+     * @warning Call this method after "beginNewDraw()"
      */
     void setPointsColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> pColors);
 
     /**
      * @brief Set the edges color cloud to use when you want to apply color on edges
+     * @warning Call this method after "beginNewDraw()"
      */
     void setEdgesColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> eColors);
 
     /**
      * @brief Set the faces color cloud to use when you want to apply color on faces
+     * @warning Call this method after "beginNewDraw()"
      */
     void setFacesColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> fColors);
 
-    void beginNewDraw();
-    void endNewDraw() {}
-
-    void setDrawMode(DrawModes mode);
-
-    bool drawFastest() const;
-    void setDrawFastest(bool enable);
-
+    /**
+     * @brief Returns number of points drawed if DrawModes == CountPoints
+     */
     size_t nPoints() const;
+
+    /**
+     * @brief Returns number of edges drawed if DrawModes == CountEdges
+     */
     size_t nEdges() const;
+
+    /**
+     * @brief Returns number of faces drawed if DrawModes == CountFaces
+     */
     size_t nFaces() const;
 
+    /**
+     * @brief Returns the list of point cloud index that was drawed if DrawModes == BackupPointCloudIndex
+     */
     const QList<CT_AbstractCloudIndex*>& pointCloudIndexBackup() const;
+
+    /**
+     * @brief Returns the list of edge cloud index that was drawed if DrawModes == BackupEdgeCloudIndex
+     */
     const QList<CT_AbstractCloudIndex*>& edgeCloudIndexBackup() const;
+
+    /**
+     * @brief Returns the list of face cloud index that was drawed if DrawModes == BackupFaceCloudIndex
+     */
     const QList<CT_AbstractCloudIndex*>& faceCloudIndexBackup() const;
+
+    void beginNewDraw();
+    void endNewDraw();
 
     void save();
     void restore();
 
     void startRestoreIdentityMatrix(GLdouble *matrix = NULL);
     void stopRestoreIdentityMatrix();
-
-    void enableMultMatrix(bool e);
 
     void pushMatrix();
     void multMatrix(const Eigen::Matrix4d &matrix);
@@ -104,32 +112,33 @@ public:
     void setDefaultPointSize(float size);
     void restoreDefaultPointSize();
 
-    void enableSetPointSize(bool enable);
-    void enableSetForcedPointSize(bool enable);
-
     void translate(const double &x, const double &y, const double &z);
     void rotate(const double &alpha, const double &x, const double &y, const double &z);
+    void translateThenRotateToDirection(const QVector3D &translation, const QVector3D &direction);
     void scale(const double &x, const double &y, const double &z);
 
+    ///////// GL_POINTS //////////
+
+    void drawPoint(const size_t &globalIndex);
+    void drawPoints(const CT_AbstractMeshModel *mesh);
+    void drawPointCloud(const CT_AbstractCloudIndex *pci);
     void drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeModes modes);
 
-    void drawPointCloud(const CT_AbstractCloudIndex *pci);
+    ///////// GL_LINES //////////
+
+    void drawEdges(const CT_AbstractMeshModel *mesh);
+
+    void drawLine(const size_t &p1GlobalIndex,
+                  const size_t &p2GlobalIndex);
+
+    ///////// GL_TRIANGLES //////////
 
     void drawMesh(const CT_AbstractMeshModel *mesh);
     void drawFaces(const CT_AbstractMeshModel *mesh);
-    void drawEdges(const CT_AbstractMeshModel *mesh);
-    void drawPoints(const CT_AbstractMeshModel *mesh);
 
-    // called from a mesh to draw Faces
-    void drawTriangle(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2, const double &x3, const double &y3, const double &z3);
     void drawTriangle(const size_t &p1GlobalIndex,
                       const size_t &p2GlobalIndex,
                       const size_t &p3GlobalIndex);
-
-    // called from a mesh to draw Edges
-    void drawLine(const double &x1, const double &y1, const double &z1, const double &x2, const double &y2, const double &z2);
-    void drawLine(const size_t &p1GlobalIndex,
-                  const size_t &p2GlobalIndex);
 
     /*********** METHOD NOT USED **********/
 
@@ -146,7 +155,13 @@ public:
 
     void drawPoint(const double &x, const double &y, const double &z) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) }
     void drawPoint(double *p) { Q_UNUSED(p) }
-    void drawPoint(const size_t &globalIndex) { Q_UNUSED(globalIndex) }
+
+
+    void drawLine(const double &x1, const double &y1, const double &z1,
+                  const double &x2, const double &y2, const double &z2) {
+        Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
+    }
 
     void drawCircle(const double &x, const double &y, const double &z, const double &radius) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) Q_UNUSED(radius) }
     void drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius) { Q_UNUSED(center) Q_UNUSED(direction) Q_UNUSED(radius) }
@@ -191,6 +206,15 @@ public:
     void beginPolygon() {}
     void addPointToPolygon(const double &x, const double &y, const double &z) { Q_UNUSED(x) Q_UNUSED(y) Q_UNUSED(z) }
     void endPolygon() {}
+
+    void drawTriangle(const double &x1, const double &y1, const double &z1,
+                      const double &x2, const double &y2, const double &z2,
+                      const double &x3, const double &y3, const double &z3) {
+
+        Q_UNUSED(x1) Q_UNUSED(y1) Q_UNUSED(z1)
+        Q_UNUSED(x2) Q_UNUSED(y2) Q_UNUSED(z2)
+        Q_UNUSED(x3) Q_UNUSED(y3) Q_UNUSED(z3)
+    }
 
     void drawQuadFace( const double &x1, const double &y1, const double &z1,
                                const double &x2, const double &y2, const double &z2,
@@ -237,11 +261,6 @@ public:
 private:
     DrawModes                                       m_drawMode;
     bool                                            m_drawEnabled;
-    bool                                            m_drawFastest;
-    double                                          m_defaultPointSize;
-    uint                                            m_nCallEnableSetPointSize;
-    uint                                            m_nCallEnableSetForcedPointSize;
-    int                                             m_nCallEnablePushMatrix;
     bool                                            m_drawMultipleLine;
     bool                                            m_drawMultipleTriangle;
     size_t                                          m_nPoints;
@@ -254,9 +273,6 @@ private:
     QSharedPointer<CT_StandardColorCloudRegistered> m_pColors;
     QSharedPointer<CT_StandardColorCloudRegistered> m_eColors;
     QSharedPointer<CT_StandardColorCloudRegistered> m_fColors;
-    size_t                                          m_fastestIncrementPoint;
-
-    GraphicsViewInterface                           *m_gv;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(G3DFakePainter::DrawModes)

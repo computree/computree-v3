@@ -96,25 +96,25 @@ public:
      * @brief Set the graphics view to access to point/face/edge cloud
      *        color, point/face/edge cloud informations, etc...
      */
-    void setGraphicsView(const G3DGraphicsView *gv);
+    virtual void setGraphicsView(const G3DGraphicsView *gv);
     G3DGraphicsView* graphicsView() const;
 
     /**
      * @brief Call this functions in your method initializeOpenGL
      */
-    void initializeGl();
+    virtual void initializeGl();
 
     /**
      * @brief Begin a new draw (call this functions in beginning of your draw method)
      *        Restore value to default
      */
-    void beginNewDraw();
+    virtual void beginNewDraw();
 
     /**
      * @brief End new draw (call this functions in ending of your draw method)
      *        Do nothing by default
      */
-    void endNewDraw();
+    virtual void endNewDraw();
 
     /**
      * @brief Call this function to draw only type passed in parameter. This function
@@ -123,12 +123,19 @@ public:
      *        If you want to draw ALL don't call this method.
      *        If you want to draw only element that was not multi drawable call this method with NO_MULTI_AVAILABLE
      */
-    void setDrawOnly(G3DPainter::MultiDrawableType type);
+    virtual void setDrawOnly(G3DPainter::MultiDrawableType type);
+
+    /**
+     * @brief Call this method to stop the draw (call the glEnd() function and release the shader).
+     * @param releasePointShader : false if you know that you must call glEnd() but without release the point shader because you want
+     *                             to draw another point after. (Used by a faked painter to draw with glPushName(...))
+     */
+    void stopDrawMultiple(bool releasePointShader = true);
 
     /**
      * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
      */
-    void setPointFastestIncrement(size_t inc);
+    virtual void setPointFastestIncrement(size_t inc);
     size_t pointFastestIncrement() const;
 
     /**
@@ -139,13 +146,8 @@ public:
     /**
      * @brief Set if must draw fastest (with the fastest increment)
      */
-    void setDrawFastest(bool enable);
+    virtual void setDrawFastest(bool enable);
     bool drawFastest() const;
-
-    /**
-     * @brief Call this method to stop the draw (call the glEnd() function and release the shader).
-     */
-    void stopDrawMultiple();
 
     virtual void save();
     virtual void restore();
@@ -159,29 +161,30 @@ public:
     virtual void multMatrix(const Eigen::Matrix4d &matrix);
     virtual void popMatrix();
 
+    virtual void enableSetPointSize(bool enable);
     virtual void setPointSize(float size);
     virtual void setDefaultPointSize(float size);
     virtual void restoreDefaultPointSize();
 
+    virtual void enableSetForcedPointSize(bool enable);
+
     virtual void setPen(const QPen &pen);
     virtual void restoreDefaultPen();
 
+    virtual void enableSetColor(bool enable);
     virtual void setColor(int r, int g, int b);
     virtual void setColor(QColor color);
+    virtual QColor getColor();
+
+    virtual void enableSetForcedColor(bool enable);
     virtual void setForcedColor(int r, int g, int b);
     virtual void setForcedColor(QColor color);
+
     virtual void setUseColorCloudForPoints(bool enable);
     virtual void setUseNormalCloudForPoints(bool enable);
     virtual void setUseColorCloudForFaces(bool enable);
     virtual void setUseNormalCloudForFaces(bool enable);
     virtual void setUseColorCloudForEdges(bool enable);
-    virtual QColor getColor();
-
-    virtual void enableSetColor(bool enable);
-    virtual void enableSetForcedColor(bool enable);
-
-    virtual void enableSetPointSize(bool enable);
-    virtual void enableSetForcedPointSize(bool enable);
 
     virtual void translate(const double &x, const double &y, const double &z);
     virtual void rotate(const double &alpha, const double &x, const double &y, const double &z);
@@ -365,6 +368,22 @@ private:
     static QVector< QPair<double, double> > VECTOR_CIRCLE_NORMAL;
     static const int                        VECTOR_CIRCLE_NORMAL_SIZE = 100;
 
+protected:
+    inline CT_AbstractCloudT<CT_Point>* pointCloud() const
+    {
+        return m_pointCloud;
+    }
+
+    inline CT_AbstractCloudT<CT_Edge>* edgeCloud() const
+    {
+        return m_edgeCloud;
+    }
+
+    inline CT_AbstractCloudT<CT_Face>* faceCloud() const
+    {
+        return m_faceCloud;
+    }
+
     void setCurrentColor();
     void setCurrentForcedColor();
 
@@ -379,7 +398,7 @@ private:
      * @brief Call this method before draw a type that was in the "GlBeginType" enum. Call to function
      *        glEnd() or glBegin(...) and the bind of the shader was called automatically to begin the draw of your type.
      */
-    void startDrawMultiple(GlBeginType type);
+    void startDrawMultiple(GlBeginType type);    
 
     /**
      * @brief This method call "glEnd()" if the last "glBegin(...)" was not appropriate
