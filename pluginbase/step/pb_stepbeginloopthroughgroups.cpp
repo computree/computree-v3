@@ -10,6 +10,8 @@
 #define DEF_inGroup  "inGroup"
 #define DEF_inItem   "inItem"
 
+#define DEF_outResult_g "outResult_g"
+
 PB_StepBeginLoopThroughGroups::PB_StepBeginLoopThroughGroups(CT_StepInitializeData &dataInit) : CT_StepBeginLoop(dataInit)
 {
 }
@@ -58,6 +60,8 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
     CT_OutAbstractResultModel* resultInModelOut = NULL;
     CT_InAbstractGroupModel* groupModel = NULL;
 
+    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_outResult_g, tr("toto"));
+
     // check if model have choice (can be empty if the step want to create a default out model list)
     if(resultInModel!=NULL && !resultInModel->getPossibilitiesSavedSelected().isEmpty())
     {
@@ -72,7 +76,6 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
     if((groupModel != NULL) && !groupModel->getPossibilitiesSavedSelected().isEmpty())
     {
         _outModel = (DEF_CT_AbstractGroupModelOut*)groupModel->getPossibilitiesSavedSelected().first()->outModel()->copy();
-        CT_OutResultModelGroup *resultModel = createNewOutResultModel("rrr", tr("toto"));
         resultModel->setRootGroup(_outModel);
     }
 
@@ -84,22 +87,25 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
     Q_UNUSED(outRes);
     Q_UNUSED(group);
 
-    // on récupère le résultat copié
     CT_ResultGroup *inResult = getInputResults().first();
     CT_ResultGroup *outResult_g = getOutResultList().at(1);
-    CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
-    int cpt = 1;
-    while (it.hasNext() && (!isStopped()))
-    {
-        CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
-        if (cpt++ == _counter->getCurrentTurn())
-        {
-            outResult_g->addGroup((CT_AbstractItemGroup*)group->copy(_outModel, outResult_g, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference));
-        }
-    }
 
-    if (_counter->getCurrentTurn() == 1) {
-        _counter->setNTurns(cpt);
+    if (outResult_g != NULL)
+    {
+        CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
+        int cpt = 1;
+        while (it.hasNext() && (!isStopped()))
+        {
+            CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
+            if (cpt++ == _counter->getCurrentTurn())
+            {
+                outResult_g->addGroup((CT_AbstractItemGroup*)group->copy((CT_OutAbstractItemModel*)PS_MODELS->searchModel(_outModel->uniqueName(),outResult_g, this), outResult_g, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference));
+            }
+        }
+
+        if (_counter->getCurrentTurn() == 1) {
+            _counter->setNTurns(cpt);
+        }
     }
 
     setProgress( 100 );
