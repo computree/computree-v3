@@ -63,6 +63,7 @@
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
+#include "step/pb_stepbeginloopthroughgroups.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -205,6 +206,7 @@ bool PB_StepPluginManager::loadGenericsStep()
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
     return true;

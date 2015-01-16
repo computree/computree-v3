@@ -56,18 +56,15 @@ void CT_StepBeginLoop::createInResultModelListProtected()
 // Redefine in children steps to remplace ConfigurationDialog
 void CT_StepBeginLoop::createPostConfigurationDialog()
 {
-    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
-    configDialog->addInt(tr("Nombre d'itérations"), "", 1, std::numeric_limits<int>::max(), _nTurns);
-
-    createPostConfigurationDialog(configDialog);
-
+    createPostConfigurationDialog(_nTurns);
     _counter.clear();
 }
 
 // Redefine in children steps to complete ConfigurationDialog
-void CT_StepBeginLoop::createPostConfigurationDialog(CT_StepConfigurableDialog *configDialog)
+void CT_StepBeginLoop::createPostConfigurationDialog(int &nTurns)
 {
-    Q_UNUSED(configDialog);
+    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
+    configDialog->addInt(tr("Nombre d'itérations"), "", 1, std::numeric_limits<int>::max(), nTurns);
 }
 
 

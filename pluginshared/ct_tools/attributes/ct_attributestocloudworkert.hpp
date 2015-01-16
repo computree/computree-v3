@@ -24,14 +24,14 @@ void CT_AttributesToCloudWorkerT<TypeAttribute, AttributeCloudIndex>::apply()
         if(m_normals.data() != NULL)
             nn = m_normals->abstractNormalCloud();
 
-        int totalSize = 0;
+        size_t totalSize = 0;
 
         QListIterator<TypeAttribute*> it(m_attributes);
 
         while(it.hasNext())
             totalSize += it.next()->attributesSize();
 
-        int currentSize = 0;
+        size_t currentSize = 0;
 
         it.toFront();
         while(it.hasNext()

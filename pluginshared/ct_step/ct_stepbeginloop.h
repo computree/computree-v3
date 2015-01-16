@@ -15,32 +15,33 @@ public:
 
     ~CT_StepBeginLoop();
 
-    QString getStepDescription() const;
+    virtual QString getStepDescription() const;
 
-    QString getStepDetailledDescription() const;
+    virtual QString getStepDetailledDescription() const;
 
     virtual CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
 
     virtual bool isSettingsModified() const;
 
 protected:
+    QSharedPointer<CT_Counter>  _counter;
+
 
     virtual void createInResultModelListProtected();
 
     void createOutResultModelListProtected();
     virtual void createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel);
 
-    virtual void createPostConfigurationDialog();
-    virtual void createPostConfigurationDialog(CT_StepConfigurableDialog *configDialog);
+    void createPostConfigurationDialog();
+    virtual void createPostConfigurationDialog(int &nTurns);
 
     void compute();
 
-
-
     virtual void compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group);
 
+    inline QSharedPointer<CT_Counter> getCounter() const {return _counter;}
+
 private:
-    QSharedPointer<CT_Counter>  _counter;
     int                         _nTurns;
 };
 
