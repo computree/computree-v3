@@ -15,7 +15,7 @@ public:
     CT_Reader_XYB();
 
     bool setFilePath(const QString &filepath);
-    void setRadiusFilter(const float &radius);
+    void setRadiusFilter(const double &radius);
 
     CT_AbstractReader* copy() const;
 

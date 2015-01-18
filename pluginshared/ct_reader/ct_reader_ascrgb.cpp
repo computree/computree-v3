@@ -8,6 +8,7 @@
 #include "ct_pointcloud/ct_pointcloudstdvector.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_global/ct_context.h"
 
 #include <limits>
@@ -47,7 +48,7 @@ bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
     return false;
 }
 
-void CT_Reader_ASCRGB::setRadiusFilter(const float &radius)
+void CT_Reader_ASCRGB::setRadiusFilter(const double &radius)
 {
     m_filterRadius = radius;
 }
@@ -84,15 +85,18 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             CT_AbstractUndefinedSizePointCloud* pointCloud = PS_REPOSITORY->createNewUndefinedSizePointCloud();
             CT_ColorCloudStdVector *colorCloud = new CT_ColorCloudStdVector(false);
 
-            float xmin = std::numeric_limits<float>::max();
-            float ymin = std::numeric_limits<float>::max();
-            float zmin = std::numeric_limits<float>::max();
+            double xmin = std::numeric_limits<double>::max();
+            double ymin = std::numeric_limits<double>::max();
+            double zmin = std::numeric_limits<double>::max();
 
-            float xmax = -std::numeric_limits<float>::max();
-            float ymax = -std::numeric_limits<float>::max();
-            float zmax = -std::numeric_limits<float>::max();
+            double xmax = -std::numeric_limits<double>::max();
+            double ymax = -std::numeric_limits<double>::max();
+            double zmax = -std::numeric_limits<double>::max();
 
             QString line;
+            bool useOffset = true;
+            bool first = true;
+            QSharedPointer<CT_AbstractCoordinateSystem> spcs;
 
             while(!stream.atEnd()
                   && !isStopped())
@@ -109,13 +113,25 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     bool okG = false;
                     bool okB = false;
 
-                    float x = values.at(0).toFloat(&okX);
-                    float y = values.at(1).toFloat(&okY);
-                    float z = values.at(2).toFloat(&okZ);
+                    double x = values.at(0).toDouble(&okX);
+                    double y = values.at(1).toDouble(&okY);
+                    double z = values.at(2).toDouble(&okZ);
 
-                    float valueR = values.at(3).toFloat(&okR);
-                    float valueG = values.at(4).toFloat(&okG);
-                    float valueB = values.at(5).toFloat(&okB);
+                    if (first && useOffset && okX && okY && okZ)
+                    {
+                        first = false;
+                        if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
+                        {
+                            useOffset = true;
+                            spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z));
+                        } else {
+                            useOffset = false;
+                        }
+                    }
+
+                    double valueR = values.at(3).toDouble(&okR);
+                    double valueG = values.at(4).toDouble(&okG);
+                    double valueB = values.at(5).toDouble(&okB);
 
                     if (valueR < 0) {valueR = 0;}
                     if (valueG < 0) {valueG = 0;}
@@ -131,22 +147,27 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
                     if (okX && okY && okZ && okR && okG && okB)
                     {
-                        float distance2D = sqrt(x*x + y*y);
+                        double distance2D = sqrt(x*x + y*y);
 
                         if (!filter || (distance2D <= m_filterRadius))
                         {
+                            if (x<xmin) {xmin = x;}
+                            if (x>xmax) {xmax = x;}
+                            if (y<ymin) {ymin = y;}
+                            if (y>ymax) {ymax = y;}
+                            if (z<zmin) {zmin = z;}
+                            if (z>zmax) {zmax = z;}
+
                             CT_Point &p = pointCloud->addPoint();
 
-                            p(0) = x;
-                            p(1) = y;
-                            p(2) = z;
-
-                            if (x<xmin) {xmin = (float)x;}
-                            if (x>xmax) {xmax = (float)x;}
-                            if (y<ymin) {ymin = (float)y;}
-                            if (y>ymax) {ymax = (float)y;}
-                            if (z<zmin) {zmin = (float)z;}
-                            if (z>zmax) {zmax = (float)z;}
+                            if (useOffset)
+                            {
+                                PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
+                            } else {
+                                p(0) = x;
+                                p(1) = y;
+                                p(2) = z;
+                            }
 
                             CT_Color &color = colorCloud->addColor();
 
@@ -170,6 +191,11 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
                 CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
                 scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+
+                if (useOffset)
+                {
+                    scene->registerCoordinateSystem(spcs);
+                }
 
                 CT_PointsAttributesColor *colors = new CT_PointsAttributesColor(NULL, NULL, pcir, colorCloud);
 

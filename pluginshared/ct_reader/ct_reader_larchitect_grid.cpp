@@ -39,12 +39,12 @@ bool CT_Reader_LArchitect_Grid::setFilePath(const QString &filepath)
                 if (values.size() >= 6)
                 {
                     bool okxmin, okymin, okzmin, okxmax, okymax, okzmax;
-                    _xmin = values.at(0).toFloat(&okxmin);
-                    _ymin = values.at(1).toFloat(&okymin);
-                    _zmin = values.at(2).toFloat(&okzmin);
-                    _xmax = values.at(3).toFloat(&okxmax);
-                    _ymax = values.at(4).toFloat(&okymax);
-                    _zmax = values.at(5).toFloat(&okzmax);
+                    _xmin = values.at(0).toDouble(&okxmin);
+                    _ymin = values.at(1).toDouble(&okymin);
+                    _zmin = values.at(2).toDouble(&okzmin);
+                    _xmax = values.at(3).toDouble(&okxmax);
+                    _ymax = values.at(4).toDouble(&okymax);
+                    _zmax = values.at(5).toDouble(&okzmax);
 
                     if (!okxmin || !okymin || !okzmin || !okxmax || !okymax || !okzmax) {valid = false;}
                 }
@@ -58,9 +58,9 @@ bool CT_Reader_LArchitect_Grid::setFilePath(const QString &filepath)
                 if (values.size() >= 3)
                 {
                     bool okresx, okresy, okresz;
-                    _resx = values.at(0).toFloat(&okresx);
-                    _resy = values.at(1).toFloat(&okresy);
-                    _resz = values.at(2).toFloat(&okresz);
+                    _resx = values.at(0).toDouble(&okresx);
+                    _resy = values.at(1).toDouble(&okresy);
+                    _resz = values.at(2).toDouble(&okresz);
 
                     if (!okresx || !okresy || !okresz) {valid = false;}
                     if (_resx != _resy || _resx != _resz) {valid = false;}

@@ -210,9 +210,6 @@ bool CT_Reader_LAS::protectedReadFile()
 
             quint64 pos = f.pos();
             bool mustTransformPoint = ((CT_LASHeader*)m_header)->mustTransformPoints();
-            Eigen::Vector3d center( (((CT_LASHeader*)m_header)->m_maxX+((CT_LASHeader*)m_header)->m_minX)/2.0,
-                                    (((CT_LASHeader*)m_header)->m_maxY+((CT_LASHeader*)m_header)->m_minY)/2.0,
-                                    (((CT_LASHeader*)m_header)->m_maxZ+((CT_LASHeader*)m_header)->m_minZ)/2.0);
 
             CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
 
@@ -364,24 +361,9 @@ bool CT_Reader_LAS::protectedReadFile()
                 setProgress((i*100)/nPoints);
             }
 
-            CT_AbstractCoordinateSystem::realIm xmin, ymin, zmin, xmax, ymax, zmax;
-
-            PS_COORDINATES_SYS->convertImport(((CT_LASHeader*)m_header)->m_minX,
-                                              ((CT_LASHeader*)m_header)->m_minY,
-                                              ((CT_LASHeader*)m_header)->m_minZ,
-                                              xmin,
-                                              ymin,
-                                              zmin);
-
-            PS_COORDINATES_SYS->convertImport(((CT_LASHeader*)m_header)->m_maxX,
-                                              ((CT_LASHeader*)m_header)->m_maxY,
-                                              ((CT_LASHeader*)m_header)->m_maxZ,
-                                              xmax,
-                                              ymax,
-                                              zmax);
-
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
-            scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+            scene->setBoundingBox(((CT_LASHeader*)m_header)->m_minX, ((CT_LASHeader*)m_header)->m_minY, ((CT_LASHeader*)m_header)->m_minZ,
+                                  ((CT_LASHeader*)m_header)->m_maxX, ((CT_LASHeader*)m_header)->m_maxY, ((CT_LASHeader*)m_header)->m_maxZ);
             scene->registerCoordinateSystem(spcs);
 
             // add the scene

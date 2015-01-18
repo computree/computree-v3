@@ -26,15 +26,15 @@ protected:
     bool protectedReadFile();
 
 private:
-    float               _xmin;
-    float               _ymin;
-    float               _zmin;
-    float               _xmax;
-    float               _ymax;
-    float               _zmax;
-    float               _resx;
-    float               _resy;
-    float               _resz;
+    double               _xmin;
+    double               _ymin;
+    double               _zmin;
+    double               _xmax;
+    double               _ymax;
+    double               _zmax;
+    double               _resx;
+    double               _resy;
+    double               _resz;
     int                 _nmat;
     QMap<QString, int>  _matNames;
     size_t                 _dimx;

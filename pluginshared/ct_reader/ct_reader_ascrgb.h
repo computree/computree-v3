@@ -15,12 +15,12 @@ public:
     CT_Reader_ASCRGB();
 
     bool setFilePath(const QString &filepath);
-    void setRadiusFilter(const float &radius);
+    void setRadiusFilter(const double &radius);
 
     CT_AbstractReader* copy() const;
 
 private:
-    float   m_filterRadius;
+    double   m_filterRadius;
 
 protected:
     void protectedInit();

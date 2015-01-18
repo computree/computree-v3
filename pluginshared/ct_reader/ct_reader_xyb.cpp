@@ -122,7 +122,7 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
     return valid;
 }
 
-void CT_Reader_XYB::setRadiusFilter(const float &radius)
+void CT_Reader_XYB::setRadiusFilter(const double &radius)
 {
     _filterRadius = radius;
 }
@@ -148,13 +148,9 @@ bool CT_Reader_XYB::protectedReadFile()
 {
     bool filter = (_filterRadius > 0);
 
-    float xc, yc, zc;
-
     // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
     // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
-    //QSharedPointer<CT_AbstractCoordinateSystem> spcs;
     QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(_xc, _yc, _zc));
-    //QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(20, 0, 0));
 
     // Test File validity
     if(QFile::exists(filepath()))
@@ -188,15 +184,14 @@ bool CT_Reader_XYB::protectedReadFile()
             else
                 collection = new CT_StandardCloudStdVectorT<quint16>(n_points);
 
-            // TODO : convert xmin/ymin/.../zmax to double and use it with "x" and not "xc" etc...
-            float xmin = std::numeric_limits<float>::max();
-            float ymin = std::numeric_limits<float>::max();
-            float zmin = std::numeric_limits<float>::max();
+            double xmin = std::numeric_limits<double>::max();
+            double ymin = std::numeric_limits<double>::max();
+            double zmin = std::numeric_limits<double>::max();
             quint16 imin = std::numeric_limits<quint16>::max();
 
-            float xmax = -std::numeric_limits<float>::max();
-            float ymax = -std::numeric_limits<float>::max();
-            float zmax = -std::numeric_limits<float>::max();
+            double xmax = -std::numeric_limits<double>::max();
+            double ymax = -std::numeric_limits<double>::max();
+            double zmax = -std::numeric_limits<double>::max();
             quint16 imax = 0;
 
             double x, y, z;
@@ -212,25 +207,21 @@ bool CT_Reader_XYB::protectedReadFile()
 
                 if (filter)
                 {
-                    float distance2D = sqrt(x*x + y*y);
+                    double distance2D = sqrt(x*x + y*y);
 
                     if (distance2D <= _filterRadius)
                     {
                         CT_Point &p = mpcir->addPoint();
 
                         // convert (with the current coordinate system) coordinate to be in a float precision
-                        PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
+                        PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
 
-                        p(0) = xc;
-                        p(1) = yc;
-                        p(2) = zc;
-
-                        if (xc<xmin) {xmin = xc;}
-                        if (xc>xmax) {xmax = xc;}
-                        if (yc<ymin) {ymin = yc;}
-                        if (yc>ymax) {ymax = yc;}
-                        if (zc<zmin) {zmin = zc;}
-                        if (zc>zmax) {zmax = zc;}
+                        if (x<xmin) {xmin = x;}
+                        if (x>xmax) {xmax = x;}
+                        if (y<ymin) {ymin = y;}
+                        if (y>ymax) {ymax = y;}
+                        if (z<zmin) {zmin = z;}
+                        if (z>zmax) {zmax = z;}
                         if (reflectance<imin) {imin = reflectance;}
                         if (reflectance>imax) {imax = reflectance;}
 
@@ -242,18 +233,14 @@ bool CT_Reader_XYB::protectedReadFile()
                     CT_Point &p = pcir->tAt(a);
 
                     // convert (with the current coordinate system) coordinate to be in a float precision
-                    PS_COORDINATES_SYS->convertImport(x, y, z, xc, yc, zc);
+                    PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
 
-                    p(0) = xc;
-                    p(1) = yc;
-                    p(2) = zc;
-
-                    if (xc<xmin) {xmin = xc;}
-                    if (xc>xmax) {xmax = xc;}
-                    if (yc<ymin) {ymin = yc;}
-                    if (yc>ymax) {ymax = yc;}
-                    if (zc<zmin) {zmin = zc;}
-                    if (zc>zmax) {zmax = zc;}
+                    if (x<xmin) {xmin = x;}
+                    if (x>xmax) {xmax = x;}
+                    if (y<ymin) {ymin = y;}
+                    if (y>ymax) {ymax = y;}
+                    if (z<zmin) {zmin = z;}
+                    if (z>zmax) {zmax = z;}
                     if (reflectance<imin) {imin = reflectance;}
                     if (reflectance>imax) {imax = reflectance;}
 
