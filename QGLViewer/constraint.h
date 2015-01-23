@@ -2,7 +2,7 @@
 
  Copyright (C) 2002-2014 Gilles Debunne. All rights reserved.
 
- This file is part of the QGLViewer library version 2.5.3.
+ This file is part of the QGLViewer library version 2.6.1.
 
  http://www.libqglviewer.com - contact@libqglviewer.com
 

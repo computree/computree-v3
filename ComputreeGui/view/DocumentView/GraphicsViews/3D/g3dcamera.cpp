@@ -9,7 +9,7 @@ G3DCamera::G3DCamera() : qglviewer::Camera()
 {
 }
 
-float G3DCamera::zNear() const
+qreal G3DCamera::zNear() const
 {
     /*float z = 0.95f*getZNearDistance();
     if (type() == Camera::PERSPECTIVE)
@@ -28,7 +28,7 @@ float G3DCamera::zNear() const
     return 0.001;
 }
 
-float G3DCamera::zFar() const
+qreal G3DCamera::zFar() const
 {
     //return distanceToSceneCenter() + 2.0 * sceneRadius();
     if (type() == Camera::PERSPECTIVE)
@@ -69,7 +69,7 @@ void G3DCamera::loadModelViewMatrix(bool reset) const
         glMultMatrixd(m);
 }
 
-float G3DCamera::getZNearDistance() const
+double G3DCamera::getZNearDistance() const
 {
     double minDist = std::numeric_limits<double>::max();
     double dist;
@@ -111,7 +111,7 @@ float G3DCamera::getZNearDistance() const
     return minDist;
 }
 
-float G3DCamera::getZFarDistance() const
+double G3DCamera::getZFarDistance() const
 {
     double maxDist = -std::numeric_limits<double>::max();
     double dist;

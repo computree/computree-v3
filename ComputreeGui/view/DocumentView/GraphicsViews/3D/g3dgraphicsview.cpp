@@ -509,12 +509,12 @@ void G3DGraphicsView::convertClickToLine(const QPoint &pixel, Eigen::Vector3d &o
 
 void G3DGraphicsView::convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const
 {
-    float src[3];
+    qreal src[3];
     src[0] = position.x();
     src[1] = position.y();
     src[2] = position.z();
 
-    float res[2];
+    qreal res[2];
 
     QGLViewer::camera()->getProjectedCoordinatesOf(src, res);
 

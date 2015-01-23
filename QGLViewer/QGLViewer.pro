@@ -6,11 +6,10 @@
 
 TEMPLATE = lib
 TARGET = QGLViewer
-VERSION = 2.5.3
+VERSION = 2.6.1
 CONFIG *= qt opengl warn_on shared thread create_prl rtti no_keywords
 
 include(../destdir.pri)
-
 DESTDIR = $${PLUGINSHARED_DESTDIR}
 
 QGL_HEADERS = qglviewer.h \
@@ -151,7 +150,11 @@ unix {
 	QMAKE_LIBS_OPENGL *= -lglut
   }
 
-  QMAKE_LIBS_OPENGL *= -lGLU
+  macx|darwin-g++ {
+  	# GLU is part of the OpenGL framework
+  } else {
+  	QMAKE_LIBS_OPENGL *= -lGLU
+  }
 
   MOC_DIR = .moc
   OBJECTS_DIR = .obj
@@ -272,9 +275,6 @@ macx|darwin-g++ {
 	QMAKE_LIBS_OPENGL -= -lglut
 	QMAKE_LIBS_OPENGL *= -framework GLUT -lobjc
   }
-
-  # Qt3 only
-  macx: CONFIG -= thread
 }
 
 
@@ -296,14 +296,18 @@ win32 {
 
   CONFIG *= embed_manifest_dll
 
-  # Make sure to have C++ files, PentiumPro code, few warnings, add
-  # support to RTTI and Exceptions, and generate debug info "program database".
+  # TP : C++ source code
+  # GR : Enables run-time type information (RTTI).
+  # Zi : Generates complete debugging information (removed)
+  # EHs : The exception-handling model that catches C++ exceptions only and tells the
+  #       compiler to assume that functions declared as extern "C" may throw an exception.
+  # FS : Enable parallel compilation
   # Any feedback on these flags is welcome.
   !win32-g++ {
-        QMAKE_CXXFLAGS += -TP -GR -Zi
+	QMAKE_CXXFLAGS *= -TP -GR
 	DEFINES += NOMINMAX
 	win32-msvc {
-	  QMAKE_CXXFLAGS *= -GX
+	  QMAKE_CXXFLAGS *= -EH -FS
 	} else {
 	  QMAKE_CXXFLAGS *= -EHs
 	}

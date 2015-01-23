@@ -8,8 +8,8 @@ class G3DCamera : public qglviewer::Camera
 public:
     G3DCamera();
 
-    virtual float zNear() const;
-    virtual float zFar() const;
+    virtual qreal zNear() const;
+    virtual qreal zFar() const;
 
     void setBoundingBox(const qglviewer::Vec& min, const qglviewer::Vec& max);
 
@@ -19,8 +19,8 @@ private:
     qglviewer::Vec     _min;
     qglviewer::Vec     _max;
 
-    float getZNearDistance() const;
-    float getZFarDistance() const;
+    double getZNearDistance() const;
+    double getZFarDistance() const;
 };
 
 #endif // G3DCAMERA_H

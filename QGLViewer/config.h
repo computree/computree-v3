@@ -2,7 +2,7 @@
 
  Copyright (C) 2002-2014 Gilles Debunne. All rights reserved.
 
- This file is part of the QGLViewer library version 2.5.3.
+ This file is part of the QGLViewer library version 2.6.1.
 
  http://www.libqglviewer.com - contact@libqglviewer.com
 
@@ -28,7 +28,7 @@
 #ifndef QGLVIEWER_CONFIG_H
 #define QGLVIEWER_CONFIG_H
 
-#define QGLVIEWER_VERSION 0x020503
+#define QGLVIEWER_VERSION 0x020601
 
 // Needed for Qt < 4 (?)
 #ifndef QT_CLEAN_NAMESPACE
@@ -45,7 +45,7 @@ Error : libQGLViewer requires a minimum Qt version of 4.0
 // Win 32 DLL export macros
 #ifdef Q_OS_WIN32
 # ifndef M_PI
-#  define M_PI 3.14159265358979323846f
+#  define M_PI 3.14159265358979323846
 # endif
 # ifndef QGLVIEWER_STATIC
 #   ifdef CREATE_QGLVIEWER_DLL
