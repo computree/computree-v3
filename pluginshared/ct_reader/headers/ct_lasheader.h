@@ -27,6 +27,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
+    virtual bool hasBoundingBox() const {return true;}
+
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 
@@ -56,12 +58,6 @@ public:
     double      m_xOffset;
     double      m_yOffset;
     double      m_zOffset;
-    double      m_maxX;
-    double      m_minX;
-    double      m_maxY;
-    double      m_minY;
-    double      m_maxZ;
-    double      m_minZ;
     quint64     m_startOfWaveformDataPacketRecord;
     quint64     m_startOfFirstExtendedVariableLengthRecord;
     quint32     m_numberOfExtendedVariableLengthRecords;
@@ -135,12 +131,12 @@ public:
     inline double get_xOffset() const {return m_xOffset;}
     inline double get_yOffset() const {return m_yOffset;}
     inline double get_zOffset() const {return m_zOffset;}
-    inline double get_maxX() const {return m_maxX;}
-    inline double get_minX() const {return m_minX;}
-    inline double get_maxY() const {return m_maxY;}
-    inline double get_minY() const {return m_minY;}
-    inline double get_maxZ() const {return m_maxZ;}
-    inline double get_minZ() const {return m_minZ;}
+    inline double get_maxX() const {return maxX();}
+    inline double get_minX() const {return minX();}
+    inline double get_maxY() const {return maxY();}
+    inline double get_minY() const {return minY();}
+    inline double get_maxZ() const {return maxZ();}
+    inline double get_minZ() const {return minZ();}
     inline quint64 get_startOfWaveformDataPacketRecord() const {return m_startOfWaveformDataPacketRecord;}
     inline quint64 get_startOfFirstExtendedVariableLengthRecord() const {return m_startOfFirstExtendedVariableLengthRecord;}
     inline quint32 get_numberOfExtendedVariableLengthRecords() const {return m_numberOfExtendedVariableLengthRecords;}

@@ -366,12 +366,13 @@ SOURCES += \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.cpp \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.cpp \
     ct_attributes/ct_stditemattributet.cpp \
-    ct_itemdrawable/abstract/ct_abstractdatasource.cpp \
     ct_itemdrawable/ct_fileheader.cpp \
     ct_reader/headers/ct_lasheader.cpp \
     ct_reader/ct_reader_gdal.cpp \
     ct_itemdrawable/ct_transformationmatrix.cpp \
-    ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp
+    ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp \
+    ct_itemdrawable/ct_datasource.cpp \
+    ct_itemdrawable/ct_datasourcegeo.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -827,13 +828,14 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_point2d.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.h \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h \
-    ct_itemdrawable/abstract/ct_abstractdatasource.h \
     ct_itemdrawable/ct_fileheader.h \
     ct_reader/headers/ct_lasheader.h \
     ct_reader/ct_reader_gdal.h \
     ct_reader/ct_reader_gdal_def_models.h \
     ct_itemdrawable/ct_transformationmatrix.h \
-    ct_coordinates/tools/ct_coordinatesystemcloudindex.h
+    ct_coordinates/tools/ct_coordinatesystemcloudindex.h \
+    ct_itemdrawable/ct_datasource.h \
+    ct_itemdrawable/ct_datasourcegeo.h
 
 
 INCLUDEPATH += .

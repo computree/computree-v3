@@ -25,8 +25,8 @@
 
 *****************************************************************************/
 
-#ifndef CT_ABSTRACTDATASOURCE_H
-#define CT_ABSTRACTDATASOURCE_H
+#ifndef CT_DATASOURCE_H
+#define CT_DATASOURCE_H
 
 #include "ct_abstractsingularitemdrawable.h"
 #include "ct_reader/abstract/ct_abstractreader.h"
@@ -35,26 +35,26 @@
 /**
   * Représente une liste de readers au même format
   */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractDataSource : public CT_AbstractSingularItemDrawable
+class PLUGINSHAREDSHARED_EXPORT CT_DataSource : public CT_AbstractSingularItemDrawable
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
 
 public:
     /**
-      * \brief Contructeur vide (seulement pour la srialisation avec BOOST).
+      * \brief Contructeur vide
       */
-    CT_AbstractDataSource();
+    CT_DataSource();
     /**
       * \brief Contructeur
       */
-    CT_AbstractDataSource(const CT_OutAbstractSingularItemModel *model,
-                     const CT_AbstractResult *result);
+    CT_DataSource(const CT_OutAbstractSingularItemModel *model,
+                     const CT_AbstractResult *result, CT_AbstractReader* readerPrototype);
 
-    CT_AbstractDataSource(const QString &modelName,
-                     const CT_AbstractResult *result);
+    CT_DataSource(const QString &modelName,
+                     const CT_AbstractResult *result,CT_AbstractReader* readerPrototype);
 
-    virtual ~CT_AbstractDataSource();
+    virtual ~CT_DataSource();
 
     /**
       * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
@@ -62,7 +62,7 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    void addReader(CT_AbstractReader* reader);
+    virtual bool addReader(CT_AbstractReader* reader);
 
     const CT_AbstractReader* getActiveReader() const;
 
@@ -72,14 +72,13 @@ public:
 
     virtual void init();
 
-    QList<const CT_AbstractReader* > getReadersIntersecting(const CT_Shape2DData &data);
-
 
 protected:
+    CT_AbstractReader*                  _readerPrototype;
     QMap<int, CT_AbstractReader*>       _readers;
     int                                 _activeReader;
     int                                 _lastReaderIndice;
 
 };
 
-#endif // CT_ABSTRACTDATASOURCE_H
+#endif // CT_DATASOURCE_H

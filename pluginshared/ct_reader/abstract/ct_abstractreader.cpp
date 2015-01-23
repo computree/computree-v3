@@ -57,6 +57,11 @@ CT_FileHeader *CT_AbstractReader::getHeader(bool deleteHeader)
     return m_header;
 }
 
+const CT_FileHeader *CT_AbstractReader::getHeader()
+{
+    return m_header;
+}
+
 const CT_FileHeader &CT_AbstractReader::getConstHeader() const
 {
     return *m_header;

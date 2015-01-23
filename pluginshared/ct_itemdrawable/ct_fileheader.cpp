@@ -73,5 +73,16 @@ void CT_FileHeader::setFile(const QString &filename)
     _fileInfo = QFileInfo(filename);
 }
 
+void CT_FileHeader::setMinAndMaxCoordinates(double minx, double miny, double minz, double maxx, double maxy, double maxz)
+{
+    _minCoordinates(0) = minx;
+    _minCoordinates(1) = miny;
+    _minCoordinates(2) = minz;
+
+    _maxCoordinates(0) = maxx;
+    _maxCoordinates(1) = maxy;
+    _maxCoordinates(2) = maxz;
+}
+
 
 

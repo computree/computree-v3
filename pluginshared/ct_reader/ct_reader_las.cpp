@@ -196,7 +196,7 @@ bool CT_Reader_LAS::protectedReadFile()
 
             // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
             // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
-            QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->m_minX, ((CT_LASHeader*)m_header)->m_minY, ((CT_LASHeader*)m_header)->m_minZ));
+            QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ()));
 
             setToolTip(((CT_LASHeader*)m_header)->toString());
 
@@ -362,8 +362,8 @@ bool CT_Reader_LAS::protectedReadFile()
             }
 
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
-            scene->setBoundingBox(((CT_LASHeader*)m_header)->m_minX, ((CT_LASHeader*)m_header)->m_minY, ((CT_LASHeader*)m_header)->m_minZ,
-                                  ((CT_LASHeader*)m_header)->m_maxX, ((CT_LASHeader*)m_header)->m_maxY, ((CT_LASHeader*)m_header)->m_maxZ);
+            scene->setBoundingBox(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(),
+                                  ((CT_LASHeader*)m_header)->get_maxX(), ((CT_LASHeader*)m_header)->get_maxY(), ((CT_LASHeader*)m_header)->get_maxZ());
             scene->registerCoordinateSystem(spcs);
 
             // add the scene

@@ -70,8 +70,14 @@ public:
     inline QString getFileName() const {return _fileInfo.fileName();}
     inline QString getDirectory() const {return _fileInfo.path();}
 
+    // By default Ct_FileHeader don't have a Bounding Box : redefine in children class of geographical files
+    virtual bool hasBoundingBox() const {return false;}
+
+    void setMinAndMaxCoordinates(double minx, double miny, double minz, double maxx, double maxy, double maxz);
+
+
 protected:
-    QFileInfo     _fileInfo;
+    QFileInfo     _fileInfo;    
 
 private:
 

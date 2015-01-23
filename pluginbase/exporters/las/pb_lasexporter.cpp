@@ -365,12 +365,7 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
         header->m_xOffset = 0;
         header->m_yOffset = 0;
         header->m_zOffset = 0;
-        header->m_maxX = max_xc;
-        header->m_minX = min_xc;
-        header->m_maxY = max_yc;
-        header->m_minY = min_yc;
-        header->m_maxZ = max_zc;
-        header->m_minZ = min_zc;
+        header->setMinAndMaxCoordinates(min_xc, min_yc, min_zc, max_xc, max_yc, max_zc);
         header->m_startOfWaveformDataPacketRecord = 0; // TODO : write the good value
         header->m_startOfFirstExtendedVariableLengthRecord = 0; // TODO : write the good value
         header->m_numberOfExtendedVariableLengthRecords = 0; // TODO : write the good value

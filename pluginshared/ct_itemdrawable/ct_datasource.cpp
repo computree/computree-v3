@@ -25,80 +25,70 @@
 
 *****************************************************************************/
 
-#include "ct_abstractdatasource.h"
+#include "ct_datasource.h"
 
 
-CT_AbstractDataSource::CT_AbstractDataSource() : CT_AbstractSingularItemDrawable()
+CT_DataSource::CT_DataSource() : CT_AbstractSingularItemDrawable()
 {
     _activeReader = -1;
     _lastReaderIndice = -1;
 }
 
-CT_AbstractDataSource::CT_AbstractDataSource(const CT_OutAbstractSingularItemModel *model,
-                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
+CT_DataSource::CT_DataSource(const CT_OutAbstractSingularItemModel *model,
+                                   const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_AbstractSingularItemDrawable(model, result)
 {
-
+    _readerPrototype = readerPrototype;
 }
 
-CT_AbstractDataSource::CT_AbstractDataSource(const QString &modelName,
-                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName, result)
+CT_DataSource::CT_DataSource(const QString &modelName,
+                                   const CT_AbstractResult *result, CT_AbstractReader *readerPrototype) : CT_AbstractSingularItemDrawable(modelName, result)
 {
-
+    _readerPrototype = readerPrototype;
 }
 
-CT_AbstractDataSource::~CT_AbstractDataSource()
+CT_DataSource::~CT_DataSource()
 {
+    delete _readerPrototype;
 }
 
-QString CT_AbstractDataSource::getType() const
+QString CT_DataSource::getType() const
 {
     return staticGetType();
 }
 
-QString CT_AbstractDataSource::staticGetType()
+QString CT_DataSource::staticGetType()
 {
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractDataSource";
+    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_DataSource";
 }
 
-void CT_AbstractDataSource::addReader(CT_AbstractReader *reader)
+bool CT_DataSource::addReader(CT_AbstractReader *reader)
 {
-    _readers.insert(++_lastReaderIndice, reader);
+    if (typeid(reader) == typeid(_readerPrototype))
+    {
+        _readers.insert(++_lastReaderIndice, reader);
+        return true;
+    } else {
+        PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter un reader d'une classe différente du prototype"));
+    }
+    return false;
 }
 
-const CT_AbstractReader *CT_AbstractDataSource::getActiveReader() const
+const CT_AbstractReader *CT_DataSource::getActiveReader() const
 {
     return _readers.value(_activeReader, NULL);
 }
 
-bool CT_AbstractDataSource::activateNextReader()
+bool CT_DataSource::activateNextReader()
 {
     return (_readers.value(++_activeReader) != NULL);
 }
 
-int CT_AbstractDataSource::getNumberOfReader() const
+int CT_DataSource::getNumberOfReader() const
 {
     return _readers.size();
 }
 
-void CT_AbstractDataSource::init()
+void CT_DataSource::init()
 {
     _activeReader = 1;
-}
-
-QList<const CT_AbstractReader *> CT_AbstractDataSource::getReadersIntersecting(const CT_Shape2DData &data)
-{
-    QList<const CT_AbstractReader *> list;
-
-    QMapIterator<int, CT_AbstractReader*> it(_readers);
-
-    while (it.hasNext())
-    {
-        it.next();
-        //if (it.value()->intersect(data))
-        {
-            list.append(it.value());
-        }
-    }
-
-    return list;
 }

@@ -34,7 +34,9 @@ public:
       * \param deleteHeader If set true, the reader will delete the header object in destructor
       *
       */
-    CT_FileHeader* getHeader(bool deleteHeader = false);
+    CT_FileHeader* getHeader(bool deleteHeader);
+
+    const CT_FileHeader* getHeader();
 
     /**
       * \brief Return a const reference on the header

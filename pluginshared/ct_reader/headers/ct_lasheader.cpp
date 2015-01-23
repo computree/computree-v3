@@ -51,12 +51,6 @@ CT_LASHeader::CT_LASHeader() : CT_FileHeader()
     m_xOffset = 0;
     m_yOffset = 0;
     m_zOffset = 0;
-    m_maxX = 0;
-    m_minX = 0;
-    m_maxY = 0;
-    m_minY = 0;
-    m_maxZ = 0;
-    m_minZ = 0;
     m_startOfWaveformDataPacketRecord = 0;
     m_startOfFirstExtendedVariableLengthRecord = 0;
     m_numberOfExtendedVariableLengthRecords = 0;
@@ -106,12 +100,6 @@ CT_LASHeader::CT_LASHeader(const CT_OutAbstractSingularItemModel *model, const C
     m_xOffset = 0;
     m_yOffset = 0;
     m_zOffset = 0;
-    m_maxX = 0;
-    m_minX = 0;
-    m_maxY = 0;
-    m_minY = 0;
-    m_maxZ = 0;
-    m_minZ = 0;
     m_startOfWaveformDataPacketRecord = 0;
     m_startOfFirstExtendedVariableLengthRecord = 0;
     m_numberOfExtendedVariableLengthRecords = 0;
@@ -161,12 +149,6 @@ CT_LASHeader::CT_LASHeader(const QString &modelName, const CT_AbstractResult *re
     m_xOffset = 0;
     m_yOffset = 0;
     m_zOffset = 0;
-    m_maxX = 0;
-    m_minX = 0;
-    m_maxY = 0;
-    m_minY = 0;
-    m_maxZ = 0;
-    m_minZ = 0;
     m_startOfWaveformDataPacketRecord = 0;
     m_startOfFirstExtendedVariableLengthRecord = 0;
     m_numberOfExtendedVariableLengthRecords = 0;
@@ -185,6 +167,7 @@ QString CT_LASHeader::staticGetType()
 {
     return CT_FileHeader::staticGetType() + "/CT_LASHeader";
 }
+
 
 CT_AbstractItemDrawable *CT_LASHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
@@ -219,12 +202,12 @@ CT_AbstractItemDrawable *CT_LASHeader::copy(const CT_OutAbstractItemModel *model
     cpy->m_xOffset = m_xOffset;
     cpy->m_yOffset = m_yOffset;
     cpy->m_zOffset = m_zOffset;
-    cpy->m_maxX = m_maxX;
-    cpy->m_minX = m_minX;
-    cpy->m_maxY = m_maxY;
-    cpy->m_minY = m_minY;
-    cpy->m_maxZ = m_maxZ;
-    cpy->m_minZ = m_minZ;
+    cpy->_maxCoordinates(0) = get_maxX();
+    cpy->_minCoordinates(0) = get_minX();
+    cpy->_maxCoordinates(1) = get_maxY();
+    cpy->_minCoordinates(1) = get_minY();
+    cpy->_maxCoordinates(2) = get_maxZ();
+    cpy->_minCoordinates(2) = get_minZ();
     cpy->m_startOfWaveformDataPacketRecord = m_startOfWaveformDataPacketRecord;
     cpy->m_startOfFirstExtendedVariableLengthRecord = m_startOfFirstExtendedVariableLengthRecord;
     cpy->m_numberOfExtendedVariableLengthRecords = m_numberOfExtendedVariableLengthRecords;
@@ -263,12 +246,12 @@ size_t CT_LASHeader::sizeInBytes() const
             sizeof(m_xOffset) +
             sizeof(m_yOffset) +
             sizeof(m_zOffset) +
-            sizeof(m_maxX) +
-            sizeof(m_minX) +
-            sizeof(m_maxY) +
-            sizeof(m_minY) +
-            sizeof(m_maxZ) +
-            sizeof(m_minZ) +
+            sizeof(_maxCoordinates(0)) +
+            sizeof(_minCoordinates(0)) +
+            sizeof(_maxCoordinates(1)) +
+            sizeof(_minCoordinates(1)) +
+            sizeof(_maxCoordinates(2)) +
+            sizeof(_minCoordinates(2)) +
             sizeof(m_startOfWaveformDataPacketRecord) +
             sizeof(m_startOfFirstExtendedVariableLengthRecord) +
             sizeof(m_numberOfExtendedVariableLengthRecords) +
@@ -389,19 +372,19 @@ bool CT_LASHeader::read(QDataStream &stream, QString &error)
     readData(m_xOffset, QObject::tr("X Offset invalid"));
     readData(m_yOffset, QObject::tr("Y Offset invalid"));
     readData(m_zOffset, QObject::tr("Z Offset invalid"));
-    readData(m_maxX, QObject::tr("Max X invalid"));
-    readData(m_minX, QObject::tr("Min X invalid"));
-    readData(m_maxY, QObject::tr("Max Y invalid"));
-    readData(m_minY, QObject::tr("Min Y invalid"));
-    readData(m_maxZ, QObject::tr("Max Z invalid"));
-    readData(m_minZ, QObject::tr("Min Z invalid"));
+    readData(_maxCoordinates(0), QObject::tr("Max X invalid"));
+    readData(_minCoordinates(0), QObject::tr("Min X invalid"));
+    readData(_maxCoordinates(1), QObject::tr("Max Y invalid"));
+    readData(_minCoordinates(1), QObject::tr("Min Y invalid"));
+    readData(_maxCoordinates(2), QObject::tr("Max Z invalid"));
+    readData(_minCoordinates(2), QObject::tr("Min Z invalid"));
 
     float x, y, z;
-    PS_COORDINATES_SYS->convertImport(m_minX, m_minY, m_minZ, x, y, z);
+    PS_COORDINATES_SYS->convertImport(get_minX(), get_minY(), get_minZ(), x, y, z);
     _minCoordinates(0) = x;
     _minCoordinates(1) = y;
     _minCoordinates(2) = z;
-    PS_COORDINATES_SYS->convertImport(m_maxX, m_maxY, m_maxZ, x, y, z);
+    PS_COORDINATES_SYS->convertImport(get_maxX(), get_maxY(), get_maxZ(), x, y, z);
     _maxCoordinates(0) = x;
     _maxCoordinates(1) = y;
     _maxCoordinates(2) = z;
@@ -496,12 +479,12 @@ bool CT_LASHeader::write(QDataStream &stream, QString &error)
     stream << m_xOffset;
     stream << m_yOffset;
     stream << m_zOffset;
-    stream << m_maxX;
-    stream << m_minX;
-    stream << m_maxY;
-    stream << m_minY;
-    stream << m_maxZ;
-    stream << m_minZ;
+    stream << get_maxX();
+    stream << get_minX();
+    stream << get_maxY();
+    stream << get_minY();
+    stream << get_maxZ();
+    stream << get_minZ();
     stream << m_startOfWaveformDataPacketRecord;
     stream << m_startOfFirstExtendedVariableLengthRecord;
     stream << m_numberOfExtendedVariableLengthRecords;
@@ -542,8 +525,8 @@ QString CT_LASHeader::toString() const
     str += QObject::tr("Legacy Number of points by return : %1 / ...").arg(m_legacyNumberOfPointsByReturn[0]) + "\r\n";
     str += QObject::tr("X/Y/Z scale factor : %1 / %2 / %3").arg(m_xScaleFactor).arg(m_yScaleFactor).arg(m_zScaleFactor) + "\r\n";
     str += QObject::tr("X/Y/Z offset : %1 / %2 / %3").arg(m_xOffset).arg(m_yOffset).arg(m_zOffset) + "\r\n";
-    str += QObject::tr("Min X/Y/Z : %1 / %2 / %3").arg(m_minX).arg(m_minY).arg(m_minZ) + "\r\n";
-    str += QObject::tr("Max X/Y/Z : %1 / %2 / %3").arg(m_maxX).arg(m_maxY).arg(m_maxZ) + "\r\n";
+    str += QObject::tr("Min X/Y/Z : %1 / %2 / %3").arg(get_minX()).arg(get_minY()).arg(get_minZ()) + "\r\n";
+    str += QObject::tr("Max X/Y/Z : %1 / %2 / %3").arg(get_maxX()).arg(get_maxY()).arg(get_maxZ()) + "\r\n";
     str += QObject::tr("Start of Waveform Data Packet Record : %1").arg(m_startOfWaveformDataPacketRecord) + "\r\n";
     str += QObject::tr("Start of first Extended Variable Length Record : %1").arg(m_startOfFirstExtendedVariableLengthRecord) + "\r\n";
     str += QObject::tr("Number of Extended Variable Length Records : %1").arg(m_numberOfExtendedVariableLengthRecords) + "\r\n";
