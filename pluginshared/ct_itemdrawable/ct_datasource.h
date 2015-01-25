@@ -28,7 +28,7 @@
 #ifndef CT_DATASOURCE_H
 #define CT_DATASOURCE_H
 
-#include "ct_abstractsingularitemdrawable.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 #include "ct_reader/abstract/ct_abstractreader.h"
 #include "ct_shape2ddata/ct_shape2ddata.h"
 
@@ -71,6 +71,8 @@ public:
     int getNumberOfReader() const;
 
     virtual void init();
+
+    virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 
 protected:

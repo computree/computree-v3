@@ -40,6 +40,11 @@ void CT_AbstractReader::init(bool initOutItemDrawableList)
         protectedCreateOutItemDrawableModelList();
 }
 
+QString CT_AbstractReader::GetReaderName()
+{
+    return metaObject()->className();
+}
+
 bool CT_AbstractReader::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

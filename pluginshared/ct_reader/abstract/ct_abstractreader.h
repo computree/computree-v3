@@ -19,6 +19,13 @@ public:
     void init(bool initOutItemDrawableList = true);
 
     /**
+     * \brief Inherit this method if you want to return your own name.
+     *
+     *        By default call "metaObject()->className()"
+     */
+    QString GetReaderName();
+
+    /**
       * \brief Set the filepath of the file to read
       */
     virtual bool setFilePath(const QString &filepath);

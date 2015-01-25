@@ -60,6 +60,7 @@
 #include "step/pb_stepselectgroupsbyreferenceheight.h"
 #include "step/pb_stepmatchitemspositions.h"
 #include "step/pb_stepimportsegmafilesformatching.h"
+#include "step/pb_stepcreatedatasource.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -242,9 +243,12 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
 
     // Ajout d'une étape
-    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCreateDataSource(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
+    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;

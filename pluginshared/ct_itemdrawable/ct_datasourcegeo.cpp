@@ -129,3 +129,9 @@ bool CT_DataSourceGeo::intersects(const CT_Shape2DData &data)
 
     return true;
 }
+
+CT_AbstractItemDrawable *CT_DataSourceGeo::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
+{
+    return new CT_DataSourceGeo((const CT_OutAbstractSingularItemModel*)model, result, _readerPrototype->copy());
+}
+

@@ -68,6 +68,8 @@ public:
 
     bool intersects(const CT_Shape2DData &data);
 
+    CT_AbstractItemDrawable *copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
+
 };
 
 #endif // CT_DATASOURCEGEO_H

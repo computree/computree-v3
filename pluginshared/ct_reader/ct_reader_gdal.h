@@ -13,6 +13,7 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Reader_GDAL : public CT_AbstractReader
 {
+    Q_OBJECT
 public:
     CT_Reader_GDAL();
 

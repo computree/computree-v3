@@ -76,7 +76,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/actions/pb_actionvalidateinventoryoptions.h \
     views/actions/pb_actionvalidateinventoryattributesdialog.h \
     step/pb_stepselectgroupsbyreferenceheight.h \
-    step/pb_stepbeginloopthroughgroups.h
+    step/pb_stepbeginloopthroughgroups.h \
+    step/pb_stepcreatedatasource.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -150,7 +151,8 @@ SOURCES += \
     views/actions/pb_actionvalidateinventoryoptions.cpp \
     views/actions/pb_actionvalidateinventoryattributesdialog.cpp \
     step/pb_stepselectgroupsbyreferenceheight.cpp \
-    step/pb_stepbeginloopthroughgroups.cpp
+    step/pb_stepbeginloopthroughgroups.cpp \
+    step/pb_stepcreatedatasource.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

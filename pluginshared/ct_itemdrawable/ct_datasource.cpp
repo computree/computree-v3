@@ -32,6 +32,7 @@ CT_DataSource::CT_DataSource() : CT_AbstractSingularItemDrawable()
 {
     _activeReader = -1;
     _lastReaderIndice = -1;
+    _readerPrototype = NULL;
 }
 
 CT_DataSource::CT_DataSource(const CT_OutAbstractSingularItemModel *model,
@@ -48,7 +49,7 @@ CT_DataSource::CT_DataSource(const QString &modelName,
 
 CT_DataSource::~CT_DataSource()
 {
-    delete _readerPrototype;
+    if(_readerPrototype != NULL) {delete _readerPrototype;}
 }
 
 QString CT_DataSource::getType() const
@@ -91,4 +92,9 @@ int CT_DataSource::getNumberOfReader() const
 void CT_DataSource::init()
 {
     _activeReader = 1;
+}
+
+CT_AbstractItemDrawable *CT_DataSource::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
+{
+    return new CT_DataSource((const CT_OutAbstractSingularItemModel*)model, result, _readerPrototype->copy());
 }
