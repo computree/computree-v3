@@ -40,15 +40,18 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
             while(itE.hasNext())
             {
                 CT_AbstractReader *reader = itE.next();
+                CT_AbstractReader *readerCpy = reader->copy();
+                readerCpy->init(false);
+                _readersInstancesList.append(readerCpy);
 
-                const QList<FileFormat>& formats = reader->readableFormats();
+                const QList<FileFormat>& formats = readerCpy->readableFormats();
 
                 for (int n = 0 ; n < formats.size() ; n++)
                 {
                     const FileFormat& format = formats.at(i);
 
                     QString key = QString("%2 - %1").arg(reader->GetReaderName()).arg(format.description());
-                    _readersMap.insert(key, reader->copy());
+                    _readersMap.insert(key, readerCpy);
                     qDebug() << key;
                 }
 
@@ -56,6 +59,11 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
         }
     }
 
+}
+
+PB_StepCreateDataSource::~PB_StepCreateDataSource()
+{
+    qDeleteAll(_readersInstancesList);
 }
 
 // Step description (tooltip of contextual menu)

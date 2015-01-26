@@ -30,6 +30,8 @@ public:
      */
     PB_StepCreateDataSource(CT_StepInitializeData &dataInit);
 
+    ~PB_StepCreateDataSource();
+
     /*! \brief Step description
      * 
      * Return a description of the step function
@@ -87,7 +89,8 @@ private:
     QStringList                         _filesList;
 
     bool                                _isGeoReader;
-    QMap<QString, CT_AbstractReader*>    _readersMap;
+    QMap<QString, CT_AbstractReader*>   _readersMap;
+    QList<CT_AbstractReader*>           _readersInstancesList;
 
 };
 
