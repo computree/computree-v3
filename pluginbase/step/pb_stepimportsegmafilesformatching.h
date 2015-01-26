@@ -84,7 +84,6 @@ private:
     // Step parameters
     QStringList    _refFile;    /*!<  */
     QStringList    _transFile;    /*!<  */
-    bool            _addOffset;
 
 };
 

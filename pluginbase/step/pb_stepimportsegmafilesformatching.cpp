@@ -24,7 +24,6 @@
 // Constructor : initialization of parameters
 PB_StepImportSegmaFilesForMatching::PB_StepImportSegmaFilesForMatching(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
-    _addOffset = true;
 }
 
 // Step description (tooltip of contextual menu)
@@ -85,8 +84,6 @@ void PB_StepImportSegmaFilesForMatching::createPostConfigurationDialog()
 
     configDialog->addFileChoice(tr("Fichier SEGMA des positions de référence"), CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.*)", _refFile);
     configDialog->addFileChoice(tr("Fichier SEGMA des positions à transformer"), CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.*)", _transFile);
-    configDialog->addBool(tr("Recaler les positions à transformer sur la première positions de référence"), "", "", _addOffset);
-    configDialog->addText(tr("Cocher cette case en cas de référentiels géographiques différents."), "", "");
 }
 
 void PB_StepImportSegmaFilesForMatching::compute()
@@ -96,9 +93,6 @@ void PB_StepImportSegmaFilesForMatching::compute()
     CT_ResultGroup* res_refRes = outResultList.at(0);
     CT_ResultGroup* res_transRes = outResultList.at(1);
 
-
-    double xOffsetRef = 0;
-    double yOffsetRef = 0;
 
     if(QFile::exists(_refFile.first()))
     {
@@ -110,7 +104,6 @@ void PB_StepImportSegmaFilesForMatching::compute()
 
             stream.readLine();
 
-            bool first = true;
             size_t cpt = 1;
             while (!stream.atEnd())
             {
@@ -129,22 +122,10 @@ void PB_StepImportSegmaFilesForMatching::compute()
 
                         if (okX && okY && okVal)
                         {
-                            if (first)
-                            {
-                                first = false;
-                                xOffsetRef = (long long)x;
-                                yOffsetRef = (long long)y;
-
-                                PS_COORDINATES_SYS->setOffset(xOffsetRef, yOffsetRef, 0);
-                            }
-
-                            float xc, yc, zc;
-                            PS_COORDINATES_SYS->convertImport(x, y, 0, xc, yc, zc);
-
                             CT_StandardItemGroup* grp_grpRef= new CT_StandardItemGroup(DEFout_grpRef, res_refRes);
                             res_refRes->addGroup(grp_grpRef);
 
-                            CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(xc,yc));
+                            CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(x,y));
                             grp_grpRef->addItemDrawable(item_ref);
 
                             item_ref->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_refVal, CT_AbstractCategory::DATA_NUMBER, res_refRes, val));
@@ -192,20 +173,10 @@ void PB_StepImportSegmaFilesForMatching::compute()
 
                         if (okX && okY && okVal)
                         {
-                            // offset creation
-                            if (_addOffset)
-                            {
-                                x = x + xOffsetRef;
-                                y = y + yOffsetRef;
-                            }
-
-                            float xc, yc, zc;
-                            PS_COORDINATES_SYS->convertImport(x, y, 0, xc, yc, zc);
-
                             CT_StandardItemGroup* grp_grpTrans= new CT_StandardItemGroup(DEFout_grpTrans, res_transRes);
                             res_transRes->addGroup(grp_grpTrans);
 
-                            CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(xc,yc));
+                            CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(x,y));
                             grp_grpTrans->addItemDrawable(item_trans);
 
                             item_trans->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_transVal, CT_AbstractCategory::DATA_NUMBER, res_transRes, val));

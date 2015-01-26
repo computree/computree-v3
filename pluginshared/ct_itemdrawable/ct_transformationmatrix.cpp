@@ -4,15 +4,15 @@ CT_DEFAULT_IA_INIT(CT_TransformationMatrix)
 
 CT_TransformationMatrix::CT_TransformationMatrix() : CT_AbstractSingularItemDrawable()
 {
-    _transformationMatrix = Eigen::Matrix3f::Identity(3,3);
+    _transformationMatrix = Eigen::Matrix3d::Identity(3,3);
 }
 
-CT_TransformationMatrix::CT_TransformationMatrix(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const Eigen::Matrix3f &trMat) : CT_AbstractSingularItemDrawable(model, result)
+CT_TransformationMatrix::CT_TransformationMatrix(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const Eigen::Matrix3d &trMat) : CT_AbstractSingularItemDrawable(model, result)
 {
     _transformationMatrix = trMat;
 }
 
-CT_TransformationMatrix::CT_TransformationMatrix(const QString &modelName, const CT_AbstractResult *result, const Eigen::Matrix3f &trMat) : CT_AbstractSingularItemDrawable(modelName, result)
+CT_TransformationMatrix::CT_TransformationMatrix(const QString &modelName, const CT_AbstractResult *result, const Eigen::Matrix3d &trMat) : CT_AbstractSingularItemDrawable(modelName, result)
 {
     _transformationMatrix = trMat;
 }
