@@ -158,6 +158,12 @@ bool PB_GroupDataExporter::protectedExportToFile()
 
             // Création du header
             QString header_line1, header_line2;
+
+            header_line1.append("GroupID\t");
+            header_line2.append("GroupID\t");
+            header_line1.append("ParentID\t");
+            header_line2.append("ParentID\t");
+
             // Liste des modèles d'items du modèle de groupe
             QList<CT_OutAbstractSingularItemModel*> itemModelList = itemMap->uniqueKeys();
 
@@ -191,6 +197,16 @@ bool PB_GroupDataExporter::protectedExportToFile()
             while(it_Groups.hasNext())
             {
                 const CT_AbstractItemGroup* group = it_Groups.next();
+
+                txtStream << group->id() << "\t";
+
+                const CT_AbstractItemGroup* parentGroup = group->parentGroup();
+                if (parentGroup != NULL)
+                {
+                    txtStream << parentGroup->id() << "\t";
+                } else {
+                    txtStream << "\t";
+                }
 
                 // Liste des modèles d'items du modèle de groupe
                 QList<CT_OutAbstractSingularItemModel*> itemModelList = itemMap->uniqueKeys();
