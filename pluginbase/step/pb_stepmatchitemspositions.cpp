@@ -686,6 +686,15 @@ void PB_StepMatchItemsPositions::compute()
         stream << "Score weight for transformed positions positive matching                  :" << "\t" << _coef_nbTwc << "\n";
         stream << "Score weight for size similarity                                          :" << "\t" << _coef_nbSim << "\n";
         stream << "\n";
+        stream << "\n";
+
+        stream << "Algorithm from:\n";
+        stream << "Marius Hauglin, Vegard Lien, Erik Naesset & Terje Gobakken (2014)\n";
+        stream << "Geo-referencing forest field plots by co-registration of terrestrial and airborne laser scanning data,\n";
+        stream << "International Journal of Remote Sensing, 35:9, 3135-3149, DOI: 10.1080/01431161.2014.903440\n";
+
+        stream << "\n";
+        stream << "\n";
 
         stream << "# Positions data:\n";
         stream << "IDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";

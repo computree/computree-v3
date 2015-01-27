@@ -79,6 +79,11 @@ protected:
     /*! \brief Algorithm of the step
      * 
      * Step computation, using input results, and creating output results
+     *
+     * Adapted from :
+     * Marius Hauglin, Vegard Lien, Erik Næsset & Terje Gobakken (2014)
+     * Geo-referencing forest field plots by co-registration of terrestrial and airborne laser scanning data,
+     * International Journal of Remote Sensing, 35:9, 3135-3149, DOI: 10.1080/01431161.2014.903440
      */
     void compute();
 
