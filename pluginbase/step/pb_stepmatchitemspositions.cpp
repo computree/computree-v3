@@ -104,20 +104,22 @@ CT_VirtualAbstractStep* PB_StepMatchItemsPositions::createNewInstance(CT_StepIni
 void PB_StepMatchItemsPositions::createInResultModelListProtected()
 {
     CT_InResultModelGroup *resIn_refpos = createNewInResultModel(DEFin_Resrefpos, tr("Positions de référence"));
-    resIn_refpos->setRootGroup(DEFin_grpref, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+    resIn_refpos->setZeroOrMoreRootGroup();
+    resIn_refpos->addGroupModel("", DEFin_grpref, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_refpos->addItemModel(DEFin_grpref, DEFin_refpos, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item de référence"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refx, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("Coordonnée X"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refy, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Coordonnée Y"));
-    resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refvalue, QList<QString>() << CT_AbstractCategory::DATA_NUMBER, CT_AbstractCategory::NUMBER, tr("Valeur"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
+    resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refvalue, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::NUMBER, tr("Valeur"));
 
     CT_InResultModelGroup *resIn_transpos = createNewInResultModel(DEFin_Restranspos, tr("Positions à transformer"));
-    resIn_transpos->setRootGroup(DEFin_grptrans, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+    resIn_transpos->setZeroOrMoreRootGroup();
+    resIn_transpos->addGroupModel("", DEFin_grptrans, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_transpos->addItemModel(DEFin_grptrans, DEFin_transpos, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à transformer"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transx, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("Coordonnée X"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transy, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Coordonnée Y"));
-    resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transvalue, QList<QString>() << CT_AbstractCategory::DATA_NUMBER, CT_AbstractCategory::NUMBER, tr("Valeur"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
+    resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transvalue, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::NUMBER, tr("Valeur"));
 
 }
 
@@ -129,16 +131,16 @@ void PB_StepMatchItemsPositions::createOutResultModelListProtected()
     res_trans2->addItemModel(DEFout_rootGrp, DEFout_trMat, new CT_TransformationMatrix(), tr("Matrice de transformation"));
     res_trans2->addItemModel(DEFout_rootGrp, DEFout_attributes, new CT_AttributesList(), tr("Qualité de Matching"));
     res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attRmseDist,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("RMSE Dist"));
     res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attRmseVal,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("RMSE Val"));
     res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attMaxDist,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("Max Dist"));
     res_trans2->addItemAttributeModel(DEFout_attributes, DEFout_attMaxDistDiff,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("Max Val diff"));
 
     res_trans2->addGroupModel(DEFout_rootGrp, DEFout_grp2, new CT_StandardItemGroup(), tr("Groupe"));
@@ -150,10 +152,10 @@ void PB_StepMatchItemsPositions::createOutResultModelListProtected()
                                       new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
                                       tr("ID position de référence"));
     res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_deltaValue,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("Ecart ValTrans - ValRef"));
     res_trans2->addItemAttributeModel(DEFout_transpos2, DEFout_distance,
-                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
+                                      new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE),
                                       tr("Distance 2D Trans - Ref"));
 
 
@@ -618,8 +620,8 @@ void PB_StepMatchItemsPositions::compute()
             grp_grp2->addItemDrawable(item_refposCorresp);
 
             item_transpos2->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_refCorrespId,CT_AbstractCategory::DATA_ID,res_trans2, refId));
-            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_deltaValue,CT_AbstractCategory::DATA_NUMBER,res_trans2, deltaVal));
-            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_distance,CT_AbstractCategory::DATA_NUMBER,res_trans2, distance));
+            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_deltaValue,CT_AbstractCategory::DATA_VALUE,res_trans2, deltaVal));
+            item_transpos2->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_distance,CT_AbstractCategory::DATA_VALUE,res_trans2, distance));
 
             deltaDistMap.insert(refIndice, distance);
             deltaValMap.insert(refIndice, deltaVal);
@@ -648,10 +650,10 @@ void PB_StepMatchItemsPositions::compute()
     CT_AttributesList *attributes = new CT_AttributesList(DEFout_attributes, res_trans2);
     rootGroup->addItemDrawable(attributes);
 
-    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attRmseDist,CT_AbstractCategory::DATA_NUMBER,res_trans2, rmseDist));
-    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attRmseVal,CT_AbstractCategory::DATA_NUMBER,res_trans2, rmseVal));
-    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attMaxDist,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxDist));
-    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attMaxDistDiff,CT_AbstractCategory::DATA_NUMBER,res_trans2, maxVal));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attRmseDist,CT_AbstractCategory::DATA_VALUE,res_trans2, rmseDist));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attRmseVal,CT_AbstractCategory::DATA_VALUE,res_trans2, rmseVal));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attMaxDist,CT_AbstractCategory::DATA_VALUE,res_trans2, maxDist));
+    attributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEFout_attMaxDistDiff,CT_AbstractCategory::DATA_VALUE,res_trans2, maxVal));
 
     Eigen::Matrix3d resultingMatrix = transformationMatrix2*transformationMatrix;
 
