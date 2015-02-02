@@ -987,14 +987,21 @@ void G3DGraphicsView::drawInternal()
     _g.setUseNormalCloudForFaces(m_docGV->useNormalCloud());
 
     _g.setColor(Qt::blue);
-    _g.drawLine(0, 0, -20, 0, 0, 20);
+    _g.drawLine(0, 0, 0, 0, 0, 20);
     _g.setColor(Qt::green);
-    _g.drawLine(0, -20, 0, 0, 20, 0);
+    _g.drawLine(0, 0, 0, 0, 20, 0);
     _g.setColor(Qt::red);
-    _g.drawLine(-20, 0, 0, 20, 0, 0);
+    _g.drawLine(0, 0, 0, 20, 0, 0);
 
-
-    _g.drawQuadFace(0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0);
+    /*_g.pushMatrix();
+    _g.rotate(M_PI_2/2, 1, 0, 0);
+    _g.setColor(Qt::white);
+    _g.drawCylinder(0, 0, 0, 2, 8);
+    _g.popMatrix();*/
+    /*_g.setColor(Qt::gray);
+    _g.drawCylinder3D(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(0.5, 0.5, 0), 2, 8);
+    _g.setColor(Qt::yellow);
+    _g.drawCylinder3D(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(1, 0, 0), 2, 8);*/
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 

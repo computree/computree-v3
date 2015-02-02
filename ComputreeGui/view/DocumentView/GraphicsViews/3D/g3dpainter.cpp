@@ -55,7 +55,6 @@ G3DPainter::G3DPainter()
 {
     m_gv = NULL;
 
-    _quadric = gluNewQuadric();
     _color = Qt::white;
     _forcedColor = Qt::white;
     _defaultPointSize = 1.0;
@@ -77,8 +76,6 @@ G3DPainter::G3DPainter()
 
 G3DPainter::~G3DPainter()
 {
-    gluDeleteQuadric(_quadric);
-
     delete m_shaderProgPoint;
     delete m_ShaderPoint;
 }
@@ -154,6 +151,8 @@ void G3DPainter::beginNewDraw()
     // not current "glBegin" called
     m_currentGlBeginType = GL_END_CALLED;
 
+    m_matrixStack.clear();
+
     // Model/View Matrix of the camera
     if((m_gv != NULL) && (m_gv->camera() != NULL)) {
         GLdouble modelViewMatrix[16];
@@ -164,6 +163,7 @@ void G3DPainter::beginNewDraw()
                                modelViewMatrix[1], modelViewMatrix[5], modelViewMatrix[9], modelViewMatrix[13],
                                modelViewMatrix[2], modelViewMatrix[6], modelViewMatrix[10], modelViewMatrix[14],
                                modelViewMatrix[3], modelViewMatrix[7], modelViewMatrix[11], modelViewMatrix[15];
+
     }
 }
 
@@ -180,18 +180,18 @@ void G3DPainter::setDrawOnly(G3DPainter::MultiDrawableType type)
 
 void G3DPainter::save()
 {
-    stopDrawMultiple();
+    pushMatrix();
 
-    glPushMatrix();
+    stopDrawMultiple();
     glGetIntegerv(GL_POLYGON_MODE, &m_polygonMode);
 }
 
 void G3DPainter::restore()
 {
+    popMatrix();
+
     stopDrawMultiple();
     glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
-
-    glPopMatrix();
 }
 
 void G3DPainter::startRestoreIdentityMatrix(GLdouble *matrix)
@@ -236,28 +236,19 @@ void G3DPainter::enableMultMatrix(bool e)
 void G3DPainter::pushMatrix()
 {
     if(_nCallEnablePushMatrix == 0)
-    {
-        stopDrawMultiple();
-        glPushMatrix();
-    }
+        m_matrixStack.push(m_modelViewMatrix4d);
 }
 
 void G3DPainter::multMatrix(const Eigen::Matrix4d &matrix)
 {
     if(_nCallEnablePushMatrix == 0)
-    {
-        stopDrawMultiple();
-        glMultMatrixd(matrix.data());
-    }
+        m_modelViewMatrix4d = m_modelViewMatrix4d * matrix;
 }
 
 void G3DPainter::popMatrix()
 {
-    if(_nCallEnablePushMatrix == 0)
-    {
-        stopDrawMultiple();
-        glPopMatrix();
-    }
+    if((_nCallEnablePushMatrix == 0) && (m_matrixStack.size() > 0))
+        m_modelViewMatrix4d = m_matrixStack.pop();
 }
 
 void G3DPainter::setPointSize(float size)
@@ -427,20 +418,27 @@ void G3DPainter::enableSetForcedPointSize(bool enable)
 
 void G3DPainter::translate(const double &x, const double &y, const double &z)
 {
-    stopDrawMultiple();
-    glTranslated(x, y, z);
+    Eigen::Matrix4d t = Eigen::Matrix4d::Identity();
+    t(0,3) = x;
+    t(1,3) = y;
+    t(2,3) = z;
+
+    multMatrix(t);
 }
 
 void G3DPainter::rotate(const double &alpha, const double &x, const double &y, const double &z)
 {
-    stopDrawMultiple();
-    glRotated(alpha, x, y, z);
+    Eigen::Vector3d v(x, y ,z);
+    v.normalize();
+
+    Eigen::Affine3d m = Eigen::Affine3d::Identity();
+    m.rotate(Eigen::AngleAxisd(alpha, v));
+
+    multMatrix(m.matrix());
 }
 
 void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translation, const Eigen::Vector3d &direction)
 {
-    stopDrawMultiple();
-
     //direction is the direction you want the object to point at
     //up- first guess
     Eigen::Vector3d up;
@@ -458,27 +456,33 @@ void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translati
         up = Eigen::Vector3d(0.0, 1.0, 0.0); //y-axis is the general up direction
     }
 
+    Eigen::Vector3d dn = direction.normalized();
+
     //left
-    Eigen::Vector3d left = direction.cross(up);
+    Eigen::Vector3d left = dn.cross(up);
     left.normalize();
 
     //final up
-    up = left.cross(direction);
+    up = left.cross(dn);
     up.normalize();
 
-    double matrix[]={left.x(), left.y(), left.z(), 0.0f,     //LEFT
-                    up.x(), up.y(), up.z(), 0.0f,                       //UP
-                    direction.x(), direction.y(), direction.z(), 0.0f,  //FORWARD
-                    translation.x(), translation.y(), translation.z(), 1.0f};    //TRANSLATION TO WHERE THE OBJECT SHOULD BE PLACED
+    Eigen::Matrix4d res;
+    res <<  left.x(), up.x(), direction.x() , translation.x(),
+            left.y(), up.y(), direction.y() , translation.y(),
+            left.z(), up.z(), direction.z() , translation.z(),
+            0.0     , 0.0   , 0.0           , 1.0;
 
-    glMultMatrixd(matrix);
+    multMatrix(res);
 }
 
 void G3DPainter::scale(const double &x, const double &y, const double &z)
 {
-    stopDrawMultiple();
+    Eigen::Matrix4d sc = Eigen::Matrix4d::Identity();
+    sc(0,0) = x;
+    sc(1,1) = y;
+    sc(2,2) = z;
 
-    glScaled(x, y, z);
+    multMatrix(sc);
 }
 
 void G3DPainter::drawPoint(const double &x, const double &y, const double &z)
@@ -1370,9 +1374,9 @@ void G3DPainter::drawCylinder(const double &x, const double &y, const double &z,
         double maxH = height;
 
         Eigen::Vector3d v;
-        v(0) = maxH;
+        v(0) = 0;
         v(1) = radius;
-        v(2) = 0;
+        v(2) = maxH;
 
         for(size_t i=0; i<sides; ++i)
         {
@@ -1381,34 +1385,34 @@ void G3DPainter::drawCylinder(const double &x, const double &y, const double &z,
             Eigen::Vector3d v0 = v;
 
             Eigen::Vector3d v1;
-            v1(0) = minH;
+            v1(0) = v0(0);
             v1(1) = v0(1);
-            v1(2) = v0(2);
+            v1(2) = minH;
 
             Eigen::Vector3d v2;
             Eigen::Vector3d v3;
 
             if(i<sides-1)
             {
-                v2(0) = maxH;
+                v2(0) = radius * fPair.second;
                 v2(1) = radius * fPair.first;
-                v2(2) = radius * fPair.second;
+                v2(2) = maxH;
 
-                v3(0) = minH;
+                v3(0) = v2(0);
                 v3(1) = v2(1);
-                v3(2) = v2(2);
+                v3(2) = minH;
 
                 v = v2;
             }
             else
             {
-                v2(0) = maxH;
+                v2(0) = 0;
                 v2(1) = radius;
-                v2(2) = 0;
+                v2(2) = maxH;
 
-                v3(0) = minH;
+                v3(0) = v2(0);
                 v3(1) = v2(1);
-                v3(2) = v2(2);
+                v3(2) = minH;
             }
 
             drawTriangle(v0(0), v0(1), v0(2),
@@ -1430,7 +1434,7 @@ void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vect
     {
         pushMatrix();
 
-        float delta = - height/2.0;
+        double delta = - height/2.0;
         translateThenRotateToDirection(Eigen::Vector3d(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
 
         drawCylinder(0, 0, 0, radius, height);

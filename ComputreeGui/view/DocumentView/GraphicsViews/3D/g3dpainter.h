@@ -269,10 +269,10 @@ public:
     virtual void drawFaces(const CT_AbstractMeshModel *mesh);
     virtual void drawMesh(const CT_AbstractMeshModel *mesh);
 
-    ///////// OTHER //////////
-
     virtual void drawCylinder(const double &x, const double &y, const double &z, const double &radius, const double &height);
     virtual void drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, const double &radius, const double &height);
+
+    ///////// OTHER //////////
 
     virtual void drawPyramid(const double &topX, const double &topY, const double &topZ,
                              const double &base1X, const double &base1Y, const double &base1Z,
@@ -336,9 +336,9 @@ private:
     bool                                m_shaderPointError;
     bool                                m_bindShaderPointOK;
 
+
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
-    GLUquadric                          *_quadric;              // Quadric used to draw cylinder with gluCylinder
     double                              _defaultPointSize;      // Default point size
     bool                                _drawFastest;           // True if we must draw fastest
     bool                                m_usePColorCloud;       // True if we must use color cloud for points
@@ -359,6 +359,7 @@ private:
     size_t                              m_fastestIncrementPoint;        // fastest increment to use if drawFastest() return true
     int                                 m_octreeCellsDraw;              // count how many octree cells was draw
 
+    QStack< Eigen::Matrix4d >           m_matrixStack;                  // stack of matrix if use pushMatrix / popMatrix
     std::vector< Eigen::Matrix4f >      m_csMatrix;                     // matrix for points in the shader (matrix of coordinate system)
     Eigen::Matrix4d                     m_modelViewMatrix4d;            // model/view matrix of the camera
 
