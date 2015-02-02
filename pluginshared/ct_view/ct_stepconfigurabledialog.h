@@ -43,6 +43,8 @@ class QWidget;
 class QGridLayout;
 class CT_WidgetWithValueReferenceInterface;
 class CT_ButtonGroup;
+class CT_FileChoiceButton;
+class CT_ComboBox;
 class SettingsNodeGroup;
 
 /*!
@@ -176,7 +178,7 @@ public:
      * \param valuesList List of QString (QStringList) allowed values for the parameter.
      * \param[out] value Output variable for the value. Note that it's also used to fix input default value.
      */
-    bool addStringChoice(QString beforeLabelText,
+    CT_ComboBox *addStringChoice(QString beforeLabelText,
                          QString afterLabelText,
                          QStringList valuesList,
                          QString &value);
@@ -196,7 +198,7 @@ public:
      *
      * \param[out] value Output variable for the value. Note that it's also used to fix input default value.
      */
-    bool addFileChoice(QString btLabel,
+    CT_FileChoiceButton* addFileChoice(QString btLabel,
                          CT_FileChoiceButton::NeededFileType filetype,
                          QString fileFilter,
                          QStringList &value);
@@ -264,7 +266,7 @@ private:
     int                     _nRow;
 
     QGridLayout* getLayout(QWidget *wid) const;
-    void addWidget(int row, int column, QWidget *wid);
+    void addWidget(int row, int column, QWidget *wid, int rowSpan = 1, int colSpan = 1);
     void addLabel(int row, int column, QString text);
 };
 

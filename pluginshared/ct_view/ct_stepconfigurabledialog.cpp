@@ -32,10 +32,10 @@
 #include "ct_spinbox.h"
 #include "ct_doublespinbox.h"
 #include "ct_checkbox.h"
+#include "ct_filechoicebutton.h"
 #include "ct_combobox.h"
 #include "ct_radiobutton.h"
 #include "ct_buttongroup.h"
-#include "ct_filechoicebutton.h"
 #include "ct_lineedit.h"
 
 #include <QLabel>
@@ -243,7 +243,7 @@ bool CT_StepConfigurableDialog::addString(QString beforeLabelText,
     return false;
 }
 
-bool CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
+CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
                      QString afterLabelText,
                      QStringList valuesList,
                      QString &value)
@@ -261,13 +261,13 @@ bool CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
 
         ++_nRow;
 
-        return true;
+        return comboBox;
     }
 
-    return false;
+    return NULL;
 }
 
-bool CT_StepConfigurableDialog::addFileChoice(QString btLabel,
+CT_FileChoiceButton *CT_StepConfigurableDialog::addFileChoice(QString btLabel,
                      CT_FileChoiceButton::NeededFileType filetype,
                      QString fileFilter,
                      QStringList &value)
@@ -278,14 +278,15 @@ bool CT_StepConfigurableDialog::addFileChoice(QString btLabel,
         CT_FileChoiceButton *fileChoiceButton = new CT_FileChoiceButton(btLabel, filetype, fileFilter, value, btLabel);
         _listWidgetWithValueReference.append(fileChoiceButton);
 
-        addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid));
+        addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid), 1, -1);
+
 
         ++_nRow;
 
-        return true;
+        return fileChoiceButton;
     }
 
-    return false;
+    return NULL;
 }
 
 
@@ -421,9 +422,9 @@ QGridLayout* CT_StepConfigurableDialog::getLayout(QWidget *wid) const
     return (QGridLayout*)wid->layout();
 }
 
-void CT_StepConfigurableDialog::addWidget(int row, int column, QWidget *wid)
+void CT_StepConfigurableDialog::addWidget(int row, int column, QWidget *wid, int rowSpan, int colSpan)
 {
-    getLayout(_wid)->addWidget(wid, row, column);
+    getLayout(_wid)->addWidget(wid, row, column, rowSpan, colSpan);
 }
 
 void CT_StepConfigurableDialog::addLabel(int row, int column, QString text)

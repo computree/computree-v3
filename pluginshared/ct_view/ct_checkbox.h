@@ -36,6 +36,7 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_CheckBox : public CT_WidgetWithValueReferenceInterface
 {
+    Q_OBJECT
 private:
 
     struct CheckBoxData

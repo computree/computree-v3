@@ -82,6 +82,8 @@ QWidget* CT_ComboBox::createWidget(QWidget &parent)
 
     }
 
+    connect(_comboBoxCreated, SIGNAL(currentIndexChanged(QString)), this, SIGNAL(currentIndexChanged(QString)));
+
     return _comboBoxCreated;
 }
 

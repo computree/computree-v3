@@ -4,6 +4,9 @@
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 #include "ct_reader/abstract/ct_abstractreader.h"
 
+#include "ct_view/ct_filechoicebutton.h"
+
+
 /*!
  * \class PB_StepCreateDataSource
  * \ingroup Steps_PB
@@ -56,6 +59,10 @@ public:
      */
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
 
+public slots:
+    void setFormat(QString formatName);
+
+
 protected:
 
     /*! \brief Input results specification
@@ -85,12 +92,13 @@ protected:
 private:
 
     // Step parameters
-    QString                             _readersList;
-    QStringList                         _filesList;
+    QString                                         _readersListValue;
+    QStringList                                     _filesList;
 
-    bool                                _isGeoReader;
-    QMap<QString, CT_AbstractReader*>   _readersMap;
-    QList<CT_AbstractReader*>           _readersInstancesList;
+    bool                                            _isGeoReader;
+    QMap<QString, QPair<CT_AbstractReader*, int> >  _readersMap;
+    QList<CT_AbstractReader*>                       _readersInstancesList;
+    CT_FileChoiceButton*                            _fileChoiceButton;
 
 };
 

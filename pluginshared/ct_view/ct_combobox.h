@@ -7,6 +7,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_ComboBox : public CT_WidgetWithValueReferenceInterface
 {
+    Q_OBJECT
+
 private:
 
     struct ComboBoxData
@@ -37,6 +39,10 @@ protected:
     ComboBoxData   _data;
     QComboBox      *_comboBoxCreated;
     QString         _description;
+
+signals:
+    void currentIndexChanged(QString value);
+
 };
 
 #endif // CT_COMBOBOX_H

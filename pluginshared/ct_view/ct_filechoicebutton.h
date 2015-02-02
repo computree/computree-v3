@@ -36,8 +36,9 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QObject>
+#include <QScrollArea>
 
-class PLUGINSHAREDSHARED_EXPORT CT_FileChoiceButton : public QObject, public CT_WidgetWithValueReferenceInterface
+class PLUGINSHAREDSHARED_EXPORT CT_FileChoiceButton : public CT_WidgetWithValueReferenceInterface
 {
     Q_OBJECT
 
@@ -83,13 +84,19 @@ protected:
 
     FileChoiceButtonData   _data;
     QWidget                 *_widgetCreated;
+    QScrollArea             *_scrollArea;
     QVBoxLayout             *_verticalLayout;
+    QVBoxLayout             *_verticalLayout2;
     QPushButton             *_pushButtonCreated;
     QLabel                  *_labelCreated;
     QString         _description;
 
+public slots:
+    void setFormat(QString format);
+
 private slots:
     void chooseFile();
+
 };
 
 #endif // CT_FILECHOICEBUTTON_H

@@ -8,6 +8,7 @@
 #include "ct_reader/ct_standardreaderseparator.h"
 
 #include "ct_reader/ct_reader_xyb.h"
+#include "ct_view/ct_combobox.h"
 
 // Alias for indexing models
 #define DEFout_res "res"
@@ -18,8 +19,9 @@
 // Constructor : initialization of parameters
 PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
-    _readersList = "xyb";
+    _readersListValue = "xyb";
     _isGeoReader = false;
+    _fileChoiceButton = NULL;
 
     // Create the available readers map
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
@@ -51,8 +53,7 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
                     const FileFormat& format = formats.at(i);
 
                     QString key = QString("%2 - %1").arg(reader->GetReaderName()).arg(format.description());
-                    _readersMap.insert(key, readerCpy);
-                    qDebug() << key;
+                    _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
                 }
 
             }
@@ -91,6 +92,30 @@ CT_VirtualAbstractStep* PB_StepCreateDataSource::createNewInstance(CT_StepInitia
     return new PB_StepCreateDataSource(dataInit);
 }
 
+void PB_StepCreateDataSource::setFormat(QString formatName)
+{
+    if (_readersMap.contains(formatName))
+    {
+        const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(formatName);
+        FileFormat fileFormat = pair.first->readableFormats().at(pair.second);
+
+        QString formatText = fileFormat.description();
+        formatText.append(" (");
+        const QList<QString> &suffixes = fileFormat.suffixes();
+        for (int i = 0 ; i < suffixes.size() ; i++)
+        {
+            if (i > 0) {formatText.append(" ");}
+            formatText.append("*.");
+            formatText.append(suffixes.at(i));
+        }
+        formatText.append(")");
+
+        _fileChoiceButton->setFormat(formatText);
+    } else {
+        _fileChoiceButton->setFormat(tr("Aucun reader disponible (*.error)"));
+    }
+}
+
 //////////////////// PROTECTED METHODS //////////////////
 
 // Creation and affiliation of IN models
@@ -107,11 +132,23 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
 
 
     QStringList list_readersList;
-    list_readersList.append("las");
-    list_readersList.append("xyb");
 
-    configDialog->addStringChoice("Choix du type de fichier", "", list_readersList, _readersList);
-    configDialog->addFileChoice("Choisir les fichiers", CT_FileChoiceButton::OneOrMoreExistingFiles, "Fichier LAS (*.las)", _filesList);
+    QMapIterator<QString, QPair<CT_AbstractReader*, int> > it(_readersMap);
+    while (it.hasNext())
+    {
+        it.next();
+        list_readersList.append(it.key());
+    }
+
+    if (list_readersList.isEmpty())
+    {
+        list_readersList.append(tr("ERREUR : aucun reader disponible"));
+    }
+
+    CT_ComboBox* comboBox = configDialog->addStringChoice("Choix du type de fichier", "", list_readersList, _readersListValue);
+    _fileChoiceButton = configDialog->addFileChoice("Choisir les fichiers", CT_FileChoiceButton::OneOrMoreExistingFiles, list_readersList.first(), _filesList);
+
+    QObject::connect(comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(setFormat(QString)));
 
 }
 

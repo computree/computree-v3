@@ -37,8 +37,9 @@ class SettingsNodeGroup;
 #include <QWidget>
 #include <QVariant>
 
-class PLUGINSHAREDSHARED_EXPORT CT_WidgetWithValueReferenceInterface
+class PLUGINSHAREDSHARED_EXPORT CT_WidgetWithValueReferenceInterface : public QObject
 {
+    Q_OBJECT
 public:    
 
     virtual ~CT_WidgetWithValueReferenceInterface() {}

@@ -36,6 +36,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_LineEdit : public CT_WidgetWithValueReferenceInterface
 {
+    Q_OBJECT
+
 private:
 
     struct LineEditData

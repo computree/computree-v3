@@ -39,7 +39,9 @@ CT_FileChoiceButton::CT_FileChoiceButton(QString btlab, CT_FileChoiceButton::Nee
     _description = description;
 
     _widgetCreated = NULL;
+    _scrollArea = NULL;
     _verticalLayout = NULL;
+    _verticalLayout2 = NULL;
     _pushButtonCreated = NULL;
     _labelCreated = NULL;
 }
@@ -84,7 +86,13 @@ QWidget* CT_FileChoiceButton::createWidget(QWidget &parent)
         _pushButtonCreated = new QPushButton(_widgetCreated);
         _pushButtonCreated->setText(_data._buttonLabel);
 
-        _labelCreated = new QLabel(_widgetCreated);
+        _scrollArea = new QScrollArea(_widgetCreated);
+        _scrollArea->setMaximumHeight(200);
+        _scrollArea->setFrameShape(QScrollArea::NoFrame);
+        _scrollArea->setSizeAdjustPolicy(QScrollArea::AdjustToContents);
+
+
+        _labelCreated = new QLabel(_scrollArea);
 
         _labelCreated->setText("");
         for (int i = 0 ; i < (*_data._value).size() ; ++i)
@@ -93,10 +101,14 @@ QWidget* CT_FileChoiceButton::createWidget(QWidget &parent)
         }
 
         _verticalLayout = new QVBoxLayout(_widgetCreated);
+        _verticalLayout2 = new QVBoxLayout(_scrollArea);
+
+        _verticalLayout2->addWidget(_labelCreated);
 
         _verticalLayout->addWidget(_pushButtonCreated);
-        _verticalLayout->addWidget(_labelCreated);
+        _verticalLayout->addWidget(_scrollArea);
         _verticalLayout->setSpacing(0);
+        _verticalLayout2->setSpacing(0);
 
         connect(_pushButtonCreated, SIGNAL(clicked()),this,SLOT(chooseFile()));
 
@@ -176,5 +188,11 @@ void CT_FileChoiceButton::chooseFile()
         _labelCreated->setText(s);
     }
 
+
+}
+
+void CT_FileChoiceButton::setFormat(QString format)
+{
+        _data._fileFilter = format;
 }
 

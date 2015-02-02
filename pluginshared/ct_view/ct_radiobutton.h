@@ -35,6 +35,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_RadioButton : public CT_WidgetWithValueReferenceInterface
 {
+    Q_OBJECT
+
 private:
 
     struct RadioButtonData

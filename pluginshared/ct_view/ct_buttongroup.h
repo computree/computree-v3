@@ -34,6 +34,7 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_ButtonGroup : public CT_WidgetWithValueReferenceInterface
 {
+    Q_OBJECT
 private:
 
     struct ButtonGroupData
