@@ -27,6 +27,7 @@
 
 #include "ct_datasource.h"
 
+CT_DEFAULT_IA_INIT(CT_DataSource)
 
 CT_DataSource::CT_DataSource() : CT_AbstractSingularItemDrawable()
 {
@@ -39,12 +40,14 @@ CT_DataSource::CT_DataSource(const CT_OutAbstractSingularItemModel *model,
                                    const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_AbstractSingularItemDrawable(model, result)
 {
     _readerPrototype = readerPrototype;
+    _readerPrototype->init(false);
 }
 
 CT_DataSource::CT_DataSource(const QString &modelName,
                                    const CT_AbstractResult *result, CT_AbstractReader *readerPrototype) : CT_AbstractSingularItemDrawable(modelName, result)
 {
     _readerPrototype = readerPrototype;
+    _readerPrototype->init(false);
 }
 
 CT_DataSource::~CT_DataSource()

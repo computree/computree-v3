@@ -86,7 +86,6 @@ protected:
     QWidget                 *_widgetCreated;
     QScrollArea             *_scrollArea;
     QVBoxLayout             *_verticalLayout;
-    QVBoxLayout             *_verticalLayout2;
     QPushButton             *_pushButtonCreated;
     QLabel                  *_labelCreated;
     QString         _description;

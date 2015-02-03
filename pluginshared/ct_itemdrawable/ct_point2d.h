@@ -74,11 +74,6 @@ public:
 
 private:
 
-    CT_DEFAULT_IA_BEGIN(CT_Point2D)
-    CT_DEFAULT_IA_V2(CT_Point2D, CT_AbstractCategory::staticInitDataX(), &CT_Point2D::x, QObject::tr("X"))
-    CT_DEFAULT_IA_V2(CT_Point2D, CT_AbstractCategory::staticInitDataY(), &CT_Point2D::y, QObject::tr("Y"))
-    CT_DEFAULT_IA_END(CT_Point2D)
-
     const static CT_StandardPoint2DDrawManager  POINT2D_DRAW_MANAGER;
 
 };

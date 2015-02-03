@@ -35,6 +35,10 @@ public:
       */
     QString filepath() const;
 
+
+    // By default CT_AbstractReader don't have a Bounding Box : redefine in children class of geographical files
+    virtual bool hasBoundingBox() {return false;}
+
     /**
       * \brief Return the header object
       *

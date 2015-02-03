@@ -155,15 +155,22 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
 // Creation and affiliation of OUT models
 void PB_StepCreateDataSource::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_res = createNewOutResultModel(DEFout_res, tr("Source de données géographique"));
+    CT_OutResultModelGroup *res_res = createNewOutResultModel(DEFout_res, tr("Source de données"));
     res_res->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
 
-    if (_isGeoReader)
-    {
-        res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSourceGeo(), tr("Source de données géographique"));
+    const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(_readersListValue);
 
-    } else {
-        res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSource(), tr("Source de données"));
+    if (pair.first != NULL)
+    {
+        _isGeoReader = pair.first->hasBoundingBox();
+
+        if (_isGeoReader)
+        {
+            res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSourceGeo(), tr("Source de données géographique"));
+
+        } else {
+            res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSource(), tr("Source de données"));
+        }
     }
 
 }
@@ -174,18 +181,32 @@ void PB_StepCreateDataSource::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* resultOut = outResultList.at(0);
 
-
     CT_StandardItemGroup* grp= new CT_StandardItemGroup(DEFout_grp, resultOut);
     resultOut->addGroup(grp);
-    
+
+    const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(_readersListValue);
+
+    CT_DataSource* item_datasource = NULL;
+
     if (_isGeoReader)
     {
-        CT_DataSourceGeo* item_datasource = new CT_DataSourceGeo(DEFout_datasource, resultOut, new CT_Reader_XYB());
-        grp->addItemDrawable(item_datasource);
+        item_datasource = new CT_DataSourceGeo(DEFout_datasource, resultOut, pair.first->copy());
     } else {
-        CT_DataSource* item_datasource = new CT_DataSource(DEFout_datasource, resultOut, new CT_Reader_XYB());
-        grp->addItemDrawable(item_datasource);
+        item_datasource = new CT_DataSource(DEFout_datasource, resultOut, pair.first->copy());
     }
+
+    for (int i = 0 ; i < _filesList.size() ; i++)
+    {
+        CT_AbstractReader* reader = pair.first->copy();
+
+        if (reader->setFilePath(_filesList.at(i)))
+        {
+            reader->init();
+            item_datasource->addReader(reader);
+        }
+    }
+
+    grp->addItemDrawable(item_datasource);
 
 
 

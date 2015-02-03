@@ -35,6 +35,8 @@ public:
 
     bool setFilePath(const QString &filepath);
 
+    virtual bool hasBoundingBox() {return true;}
+
     /**
      * @brief Read the header and return it if it was no error. Otherwise return NULL.
      *        You are responsible to delete the header returned by this method.

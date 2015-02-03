@@ -81,6 +81,11 @@ protected:
     int                                 _activeReader;
     int                                 _lastReaderIndice;
 
+private:
+    CT_DEFAULT_IA_BEGIN(CT_DataSource)
+    CT_DEFAULT_IA_V2(CT_DataSource, CT_AbstractCategory::staticInitDataNumber(), &CT_DataSource::getNumberOfReader, QObject::tr("Nombre de readers"))
+    CT_DEFAULT_IA_END(CT_DataSource)
+
 };
 
 #endif // CT_DATASOURCE_H

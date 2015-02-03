@@ -31,8 +31,6 @@
 
 const CT_StandardPoint2DDrawManager CT_Point2D::POINT2D_DRAW_MANAGER;
 
-CT_DEFAULT_IA_INIT(CT_Point2D)
-
 CT_Point2D::CT_Point2D() : CT_AbstractShape2D()
 {
     setBaseDrawManager(&POINT2D_DRAW_MANAGER);

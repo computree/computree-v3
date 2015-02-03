@@ -55,11 +55,13 @@ QString CT_DataSourceGeo::getType() const
 
 QString CT_DataSourceGeo::staticGetType()
 {
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_DataSourceGeo";
+    return CT_DataSource::staticGetType() + "/CT_DataSourceGeo";
 }
 
 bool CT_DataSourceGeo::addReader(CT_AbstractReader *reader)
 {
+    if (reader->getHeader() == NULL) {return false;}
+
     if (reader->getHeader()->hasBoundingBox())
     {
         if (CT_DataSource::addReader(reader))

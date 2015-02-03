@@ -41,7 +41,6 @@ CT_FileChoiceButton::CT_FileChoiceButton(QString btlab, CT_FileChoiceButton::Nee
     _widgetCreated = NULL;
     _scrollArea = NULL;
     _verticalLayout = NULL;
-    _verticalLayout2 = NULL;
     _pushButtonCreated = NULL;
     _labelCreated = NULL;
 }
@@ -87,10 +86,9 @@ QWidget* CT_FileChoiceButton::createWidget(QWidget &parent)
         _pushButtonCreated->setText(_data._buttonLabel);
 
         _scrollArea = new QScrollArea(_widgetCreated);
-        _scrollArea->setMaximumHeight(200);
         _scrollArea->setFrameShape(QScrollArea::NoFrame);
+        _scrollArea->setWidgetResizable(true);
         _scrollArea->setSizeAdjustPolicy(QScrollArea::AdjustToContents);
-
 
         _labelCreated = new QLabel(_scrollArea);
 
@@ -101,14 +99,12 @@ QWidget* CT_FileChoiceButton::createWidget(QWidget &parent)
         }
 
         _verticalLayout = new QVBoxLayout(_widgetCreated);
-        _verticalLayout2 = new QVBoxLayout(_scrollArea);
-
-        _verticalLayout2->addWidget(_labelCreated);
+        _verticalLayout->setSpacing(0);
 
         _verticalLayout->addWidget(_pushButtonCreated);
         _verticalLayout->addWidget(_scrollArea);
-        _verticalLayout->setSpacing(0);
-        _verticalLayout2->setSpacing(0);
+        _scrollArea->setWidget(_labelCreated);
+        _labelCreated->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
         connect(_pushButtonCreated, SIGNAL(clicked()),this,SLOT(chooseFile()));
 
