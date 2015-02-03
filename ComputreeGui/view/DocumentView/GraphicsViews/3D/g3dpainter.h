@@ -376,7 +376,7 @@ protected:
 
         void draw(G3DPainter &painter) const;
     private:
-        QVector<Eigen::Vector3d>    m_v;
+        QVector<Eigen::Vector4d>    m_v;
     };
 
     static G3DPainter::G3DPainterCylinder       CYLINDER_FASTEST;

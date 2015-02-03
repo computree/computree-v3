@@ -1952,24 +1952,26 @@ G3DPainter::G3DPainterCylinder::G3DPainterCylinder(const QVector<QPair<double, d
     double minH = 0;
     double maxH = 1;
 
-    Eigen::Vector3d v;
+    Eigen::Vector4d v;
     v(0) = 0;
     v(1) = 1;
     v(2) = maxH;
+    v(3) = 1;
 
     for(size_t i=0; i<sides; ++i)
     {
         const QPair<double, double> &fPair = cosSinAlpha[i];
 
-        Eigen::Vector3d v0 = v;
+        Eigen::Vector4d v0 = v;
 
-        Eigen::Vector3d v1;
-        v1(0) = v0(0);
-        v1(1) = v0(1);
+        Eigen::Vector4d v1 = v0;
         v1(2) = minH;
 
-        Eigen::Vector3d v2;
-        Eigen::Vector3d v3;
+        Eigen::Vector4d v2;
+        v2(3) = 1;
+
+        Eigen::Vector4d v3;
+        v3(3) = 1;
 
         if(i<sides-1)
         {
@@ -2007,19 +2009,24 @@ void G3DPainter::G3DPainterCylinder::draw(G3DPainter &painter) const
 
     int i = 0;
 
-    while(i<s) {
+    if(painter.canDraw(GL_BEGIN_TRIANGLE))
+    {
+        painter.startDrawMultiple(GL_BEGIN_TRIANGLE);
 
-        const Eigen::Vector3d &v0 = m_v[i++];
-        const Eigen::Vector3d &v1 = m_v[i++];
-        const Eigen::Vector3d &v2 = m_v[i++];
-        const Eigen::Vector3d &v3 = m_v[i++];
+        while(i<s) {
 
-        painter.drawTriangle(v0(0), v0(1), v0(2),
-                             v1(0), v1(1), v1(2),
-                             v2(0), v2(1), v2(2));
+            Eigen::Vector4d v0 = painter.m_modelViewMatrix4d * m_v[i++];
+            Eigen::Vector4d v1 = painter.m_modelViewMatrix4d * m_v[i++];
+            Eigen::Vector4d v2 = painter.m_modelViewMatrix4d * m_v[i++];
+            Eigen::Vector4d v3 = painter.m_modelViewMatrix4d * m_v[i++];
 
-        painter.drawTriangle(v1(0), v1(1), v1(2),
-                             v3(0), v3(1), v3(2),
-                             v2(0), v2(1), v2(2));
+            glVertex3dv(v0.data());
+            glVertex3dv(v1.data());
+            glVertex3dv(v2.data());
+
+            glVertex3dv(v1.data());
+            glVertex3dv(v3.data());
+            glVertex3dv(v2.data());
+        }
     }
 }
