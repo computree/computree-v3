@@ -336,7 +336,6 @@ private:
     bool                                m_shaderPointError;
     bool                                m_bindShaderPointOK;
 
-
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
     double                              _defaultPointSize;      // Default point size
@@ -370,6 +369,19 @@ private:
     static const int                        VECTOR_CIRCLE_NORMAL_SIZE = 100;
 
 protected:
+
+    class G3DPainterCylinder {
+    public:
+        G3DPainterCylinder(const QVector< QPair<double, double> > &cosSinAlpha);
+
+        void draw(G3DPainter &painter) const;
+    private:
+        QVector<Eigen::Vector3d>    m_v;
+    };
+
+    static G3DPainter::G3DPainterCylinder       CYLINDER_FASTEST;
+    static G3DPainter::G3DPainterCylinder       CYLINDER_NORMAL;
+
     inline CT_AbstractCloudT<CT_Point>* pointCloud() const
     {
         return m_pointCloud;
@@ -389,6 +401,8 @@ protected:
     void setCurrentForcedColor();
 
     static QVector< QPair<double, double> > staticInitCircleVector(int size);
+
+    static G3DPainterCylinder staticInitCylinder(const QVector< QPair<double, double> > &cosSinAlpha);
 
     /**
      * @brief Returns true if you can draw the type passed in parameter

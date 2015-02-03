@@ -51,6 +51,9 @@
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_FASTEST = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE);
 QVector< QPair<double, double> > G3DPainter::VECTOR_CIRCLE_NORMAL = G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_NORMAL_SIZE);
 
+G3DPainter::G3DPainterCylinder G3DPainter::CYLINDER_FASTEST = G3DPainter::staticInitCylinder(G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_FASTEST_SIZE));
+G3DPainter::G3DPainterCylinder G3DPainter::CYLINDER_NORMAL = G3DPainter::staticInitCylinder(G3DPainter::staticInitCircleVector(G3DPainter::VECTOR_CIRCLE_NORMAL_SIZE));
+
 G3DPainter::G3DPainter()
 {
     m_gv = NULL;
@@ -467,9 +470,9 @@ void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translati
     up.normalize();
 
     Eigen::Matrix4d res;
-    res <<  left.x(), up.x(), direction.x() , translation.x(),
-            left.y(), up.y(), direction.y() , translation.y(),
-            left.z(), up.z(), direction.z() , translation.z(),
+    res <<  left.x(), up.x(), dn.x(), translation.x(),
+            left.y(), up.y(), dn.y(), translation.y(),
+            left.z(), up.z(), dn.z(), translation.z(),
             0.0     , 0.0   , 0.0           , 1.0;
 
     multMatrix(res);
@@ -1363,66 +1366,12 @@ void G3DPainter::drawCylinder(const double &x, const double &y, const double &z,
         pushMatrix();
 
         translate(x, y, z);
-
-        QVector< QPair<double, double> > *cosSinA = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+        scale(radius, radius, height);
 
         if(drawFastest())
-            cosSinA = &G3DPainter::VECTOR_CIRCLE_FASTEST;
-
-        int sides = cosSinA->size();
-        double minH = 0;
-        double maxH = height;
-
-        Eigen::Vector3d v;
-        v(0) = 0;
-        v(1) = radius;
-        v(2) = maxH;
-
-        for(size_t i=0; i<sides; ++i)
-        {
-            const QPair<double, double> &fPair = (*cosSinA)[i];
-
-            Eigen::Vector3d v0 = v;
-
-            Eigen::Vector3d v1;
-            v1(0) = v0(0);
-            v1(1) = v0(1);
-            v1(2) = minH;
-
-            Eigen::Vector3d v2;
-            Eigen::Vector3d v3;
-
-            if(i<sides-1)
-            {
-                v2(0) = radius * fPair.second;
-                v2(1) = radius * fPair.first;
-                v2(2) = maxH;
-
-                v3(0) = v2(0);
-                v3(1) = v2(1);
-                v3(2) = minH;
-
-                v = v2;
-            }
-            else
-            {
-                v2(0) = 0;
-                v2(1) = radius;
-                v2(2) = maxH;
-
-                v3(0) = v2(0);
-                v3(1) = v2(1);
-                v3(2) = minH;
-            }
-
-            drawTriangle(v0(0), v0(1), v0(2),
-                         v1(0), v1(1), v1(2),
-                         v2(0), v2(1), v2(2));
-
-            drawTriangle(v1(0), v1(1), v1(2),
-                         v3(0), v3(1), v3(2),
-                         v2(0), v2(1), v2(2));
-        }
+            CYLINDER_FASTEST.draw(*this);
+        else
+            CYLINDER_NORMAL.draw(*this);
 
         popMatrix();
     }
@@ -1434,8 +1383,11 @@ void G3DPainter::drawCylinder3D(const Eigen::Vector3d &center, const Eigen::Vect
     {
         pushMatrix();
 
-        double delta = - height/2.0;
-        translateThenRotateToDirection(Eigen::Vector3d(center.x() + delta*direction.x(), center.y() + delta*direction.y(), center.z() + delta*direction.z()), direction);
+        Eigen::Vector3d dn = direction.normalized();
+
+        double delta = -height/2.0;
+
+        translateThenRotateToDirection(Eigen::Vector3d(center.x() + delta*dn.x(), center.y() + delta*dn.y(), center.z() + delta*dn.z()), direction);
 
         drawCylinder(0, 0, 0, radius, height);
 
@@ -1851,6 +1803,11 @@ QVector< QPair<double, double> > G3DPainter::staticInitCircleVector(int size)
     return vector;
 }
 
+G3DPainter::G3DPainterCylinder G3DPainter::staticInitCylinder(const QVector<QPair<double, double> > &cosSinAlpha)
+{
+    return G3DPainter::G3DPainterCylinder(cosSinAlpha);
+}
+
 bool G3DPainter::canDraw(G3DPainter::GlBeginType type) const
 {
     if(m_drawOnly == DRAW_ALL)
@@ -1984,5 +1941,85 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
     }
     else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
+    }
+}
+
+//////////////// G3DPainterCylinder ///////////////
+
+G3DPainter::G3DPainterCylinder::G3DPainterCylinder(const QVector<QPair<double, double> > &cosSinAlpha)
+{
+    int sides = cosSinAlpha.size();
+    double minH = 0;
+    double maxH = 1;
+
+    Eigen::Vector3d v;
+    v(0) = 0;
+    v(1) = 1;
+    v(2) = maxH;
+
+    for(size_t i=0; i<sides; ++i)
+    {
+        const QPair<double, double> &fPair = cosSinAlpha[i];
+
+        Eigen::Vector3d v0 = v;
+
+        Eigen::Vector3d v1;
+        v1(0) = v0(0);
+        v1(1) = v0(1);
+        v1(2) = minH;
+
+        Eigen::Vector3d v2;
+        Eigen::Vector3d v3;
+
+        if(i<sides-1)
+        {
+            v2(0) = fPair.second;
+            v2(1) = fPair.first;
+            v2(2) = maxH;
+
+            v3(0) = v2(0);
+            v3(1) = v2(1);
+            v3(2) = minH;
+
+            v = v2;
+        }
+        else
+        {
+            v2(0) = 0;
+            v2(1) = 1;
+            v2(2) = maxH;
+
+            v3(0) = v2(0);
+            v3(1) = v2(1);
+            v3(2) = minH;
+        }
+
+        m_v.push_back(v0);
+        m_v.push_back(v1);
+        m_v.push_back(v2);
+        m_v.push_back(v3);
+    }
+}
+
+void G3DPainter::G3DPainterCylinder::draw(G3DPainter &painter) const
+{
+    int s = m_v.size();
+
+    int i = 0;
+
+    while(i<s) {
+
+        const Eigen::Vector3d &v0 = m_v[i++];
+        const Eigen::Vector3d &v1 = m_v[i++];
+        const Eigen::Vector3d &v2 = m_v[i++];
+        const Eigen::Vector3d &v3 = m_v[i++];
+
+        painter.drawTriangle(v0(0), v0(1), v0(2),
+                             v1(0), v1(1), v1(2),
+                             v2(0), v2(1), v2(2));
+
+        painter.drawTriangle(v1(0), v1(1), v1(2),
+                             v3(0), v3(1), v3(2),
+                             v2(0), v2(1), v2(2));
     }
 }
