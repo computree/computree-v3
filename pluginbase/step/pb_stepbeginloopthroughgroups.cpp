@@ -60,7 +60,7 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
     CT_OutAbstractResultModel* resultInModelOut = NULL;
     CT_InAbstractGroupModel* groupModel = NULL;
 
-    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_outResult_g, tr("toto"));
+    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_outResult_g, tr("Elément"));
 
     // check if model have choice (can be empty if the step want to create a default out model list)
     if(resultInModel!=NULL && !resultInModel->getPossibilitiesSavedSelected().isEmpty())
