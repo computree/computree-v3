@@ -223,7 +223,12 @@ bool CT_OutAbstractModel::recursiveSetComplete()
 
         while(it.hasNext())
         {
-            if(!((CT_OutAbstractModel*)it.next())->recursiveSetComplete())
+            oModel = (CT_OutAbstractModel*)it.next();
+
+            if(oModel->step() == NULL)
+                oModel->setStep(step());
+
+            if(!oModel->recursiveSetComplete())
                 return false;
         }
     }
