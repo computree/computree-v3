@@ -35,13 +35,11 @@ CT_DataSourceGeo::CT_DataSourceGeo() : CT_DataSource()
 CT_DataSourceGeo::CT_DataSourceGeo(const CT_OutAbstractSingularItemModel *model,
                                    const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_DataSource(model, result, readerPrototype)
 {
-
 }
 
 CT_DataSourceGeo::CT_DataSourceGeo(const QString &modelName,
                                    const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_DataSource(modelName, result, readerPrototype)
 {
-
 }
 
 CT_DataSourceGeo::~CT_DataSourceGeo()
@@ -85,11 +83,17 @@ bool CT_DataSourceGeo::addReader(CT_AbstractReader *reader)
     return false;
 }
 
-QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const CT_Shape2DData &data)
+QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const CT_Shape2DData &data) const
 {
     Eigen::Vector3d min, max;
     data.getBoundingBox(min, max);
 
+    return getReadersIntersecting(min, max);
+}
+
+
+QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const Eigen::Vector3d& min,const Eigen::Vector3d& max) const
+{
     QList<const CT_AbstractReader *> list;
 
     if (min(0) > _maxCoordinates(0)) {return list;}
@@ -105,7 +109,7 @@ QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const 
         CT_AbstractReader* reader = it.value();
 
         Eigen::Vector3d minR, maxR;
-        reader->getHeader()->getBoundingBox(min, max);
+        reader->getHeader()->getBoundingBox(minR, maxR);
 
         bool intersection = true;
 

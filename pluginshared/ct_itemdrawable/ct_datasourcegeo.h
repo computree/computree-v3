@@ -64,7 +64,8 @@ public:
 
     virtual bool addReader(CT_AbstractReader* reader);
 
-    QList<const CT_AbstractReader* > getReadersIntersecting(const CT_Shape2DData &data);
+    QList<const CT_AbstractReader* > getReadersIntersecting(const CT_Shape2DData &data) const;
+    QList<const CT_AbstractReader *> getReadersIntersecting(const Eigen::Vector3d &min, const Eigen::Vector3d &max) const;
 
     bool intersects(const CT_Shape2DData &data);
 

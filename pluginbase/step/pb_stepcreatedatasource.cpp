@@ -9,11 +9,16 @@
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_view/ct_combobox.h"
+#include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
+
 
 // Alias for indexing models
 #define DEFout_res "res"
 #define DEFout_grp "grp"
 #define DEFout_datasource "datasource"
+#define DEFout_grpHeader "grpHeader"
+#define DEFout_header "header"
 
 
 // Constructor : initialization of parameters
@@ -160,7 +165,7 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
 
     const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(_readersListValue);
 
-    if (pair.first != NULL)
+    if (pair.first != NULL && _filesList.size() > 0)
     {
         _isGeoReader = pair.first->hasBoundingBox();
 
@@ -171,8 +176,19 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
         } else {
             res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSource(), tr("Source de données"));
         }
-    }
 
+        CT_AbstractReader* reader = pair.first->copy();
+        if (reader->setFilePath(_filesList.first()))
+        {
+            CT_FileHeader *header = (CT_FileHeader*) reader->getHeader(true)->copy(NULL, NULL, CT_ResultCopyModeList());
+
+            if (header != NULL)
+            {
+                res_res->addGroupModel(DEFout_grp, DEFout_grpHeader, new CT_StandardItemGroup(), tr("Fichier"));
+                res_res->addItemModel(DEFout_grpHeader, DEFout_header, header, tr("Entête"));
+            }
+        }
+    }
 }
 
 
@@ -202,7 +218,19 @@ void PB_StepCreateDataSource::compute()
         if (reader->setFilePath(_filesList.at(i)))
         {
             reader->init();
-            item_datasource->addReader(reader);
+
+            if (item_datasource->addReader(reader))
+            {
+                CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
+                grp->addGroup(grpHeader);
+
+                CT_FileHeader * header = reader->getHeader(false);
+                header->setModel((CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut));
+                header->changeResult(resultOut);
+                grpHeader->addItemDrawable(header);
+            } else {
+                delete reader;
+            }
         }
     }
 

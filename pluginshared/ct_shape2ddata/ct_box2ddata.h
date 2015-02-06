@@ -35,6 +35,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_Box2DData : public CT_AreaShape2DData
 public:
     CT_Box2DData();
     CT_Box2DData(const Eigen::Vector2d &center, double height, double width);
+    CT_Box2DData(const Eigen::Vector2d &min, const Eigen::Vector2d &max);
 
     double getHeight() const;
     double getWidth() const;

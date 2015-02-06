@@ -53,8 +53,6 @@ public:
 
     void computeCentroid();
 
-    void expand(double buffer);
-
     inline const QVector<Eigen::Vector2d*>& getVertices() const {return _vertices;}
 
     double getAreaIfNotSelfIntersecting() const;

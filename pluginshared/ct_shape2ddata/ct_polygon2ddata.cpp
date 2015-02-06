@@ -121,42 +121,6 @@ void CT_Polygon2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max
     max(2) = 0;
 }
 
-void CT_Polygon2DData::expand(double buffer)
-{
-    int size = getVerticesNumber();
-    if (size < 3) {return;}
-
-    Eigen::Vector2d pt1, pt2, ptTrans, ptTang, direction;
-
-    for (int i = 0 ; i < size ; i++)
-    {
-        Eigen::Vector2d* pt = _vertices.at(i);
-
-        if (i > 0) {pt1 = *(_vertices.at(i - 1));}
-        else {pt1 = *(_vertices.last());}
-
-        if (i < size - 1) {pt2 = *(_vertices.at(i + 1));}
-        else {pt2 = *(_vertices.first());}
-
-        ptTang = pt2 - pt1;
-        ptTang.normalize();
-
-        direction(0) = -ptTang(1);
-        direction(1) = ptTang(0);
-
-        ptTrans = *pt + direction*buffer;
-
-        double distBefore = (*pt - _center).norm();
-        double distAfter  = (ptTrans - _center).norm();
-
-        if (((buffer > 0) && (distAfter < distBefore)) || ((buffer < 0) && (distAfter > distBefore))) {ptTrans = *pt - direction*buffer;}
-
-        *pt = ptTrans;
-    }
-
-    computeCentroid();
-}
-
 double CT_Polygon2DData::getAreaIfNotSelfIntersecting() const
 {
     return fabs(getSignedArea());

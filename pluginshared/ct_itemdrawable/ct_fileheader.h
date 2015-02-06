@@ -28,14 +28,14 @@
 #ifndef CT_FILEHEADER_H
 #define CT_FILEHEADER_H
 
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 
 #include <QFileInfo>
 
 /**
   * Représente un header de fichier
   */
-class PLUGINSHAREDSHARED_EXPORT CT_FileHeader : public CT_AbstractSingularItemDrawable
+class PLUGINSHAREDSHARED_EXPORT CT_FileHeader : public CT_AbstractItemDrawableWithoutPointCloud
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT

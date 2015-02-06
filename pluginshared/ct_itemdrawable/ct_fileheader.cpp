@@ -29,18 +29,18 @@
 
 CT_DEFAULT_IA_INIT(CT_FileHeader)
 
-CT_FileHeader::CT_FileHeader() : CT_AbstractSingularItemDrawable()
+CT_FileHeader::CT_FileHeader() : CT_AbstractItemDrawableWithoutPointCloud()
 {
 }
 
 CT_FileHeader::CT_FileHeader(const CT_OutAbstractSingularItemModel *model,
-                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
+                                   const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 
 }
 
 CT_FileHeader::CT_FileHeader(const QString &modelName,
-                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName, result)
+                                   const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
 
 }
@@ -56,7 +56,7 @@ QString CT_FileHeader::getType() const
 
 QString CT_FileHeader::staticGetType()
 {
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_FileHeader";
+    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_FileHeader";
 }
 
 CT_AbstractItemDrawable *CT_FileHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

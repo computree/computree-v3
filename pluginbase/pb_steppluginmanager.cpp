@@ -65,6 +65,7 @@
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
 #include "step/pb_stepbeginloopthroughgroups.h"
+#include "step/pb_steploaddatafromitemposition.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -204,6 +205,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepSelectGroupsByReferenceHeight(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Sourcees de données")));
+    sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
+
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));

@@ -34,7 +34,13 @@ CT_Box2DData::CT_Box2DData() : CT_AreaShape2DData()
 CT_Box2DData::CT_Box2DData(const Eigen::Vector2d &center, double height, double width) : CT_AreaShape2DData(center)
 {
     _height = height;
-    _width = width;        
+    _width = width;
+}
+
+CT_Box2DData::CT_Box2DData(const Eigen::Vector2d &min, const Eigen::Vector2d &max) : CT_AreaShape2DData((max + min)/2.0)
+{
+    _width  = fabs(max(0)- min(0));
+    _height = fabs(max(1)- min(1));
 }
 
 double CT_Box2DData::getHeight() const
