@@ -1,6 +1,6 @@
 #include "actions/pb_actionvalidateinventory.h"
 #include "ct_global/ct_context.h"
-#include "views/actions/PB_ActionValidateInventoryattributesdialog.h"
+#include "views/actions/pb_actionvalidateinventoryattributesdialog.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
