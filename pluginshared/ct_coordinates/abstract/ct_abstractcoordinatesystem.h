@@ -3,7 +3,7 @@
 
 #include "pluginShared_global.h"
 
-#include "eigen/Dense"
+#include "eigen/Eigen/Dense"
 
 /**
  * @brief Abstract class that define the interface of a Coordinate System class. A

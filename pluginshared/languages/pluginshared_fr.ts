@@ -113,7 +113,7 @@
 <context>
     <name>CT_AbstractReader</name>
     <message>
-        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="129"/>
+        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="139"/>
         <source>Reader error ! The reader has not used the coordinate system !</source>
         <translation>Erreur de reader ! Le reader n&apos;a pas utilisé le système de coordonnées (offsets) !</translation>
     </message>
@@ -121,30 +121,46 @@
 <context>
     <name>CT_AbstractSingularItemDrawable</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="175"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="173"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un CT_OutAbstractGroupModel</translation>
     </message>
 </context>
 <context>
+    <name>CT_DataSource</name>
+    <message>
+        <location filename="../ct_itemdrawable/ct_datasource.cpp" line="75"/>
+        <source>Impossible d&apos;ajouter un reader d&apos;une classe différente du prototype</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CT_DataSourceGeo</name>
+    <message>
+        <location filename="../ct_itemdrawable/ct_datasourcegeo.cpp" line="81"/>
+        <source>Impossible d&apos;ajouter un reader sans BoundingBox à une CT_DataSourceGeo</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CT_FileChoiceButton</name>
     <message>
-        <location filename="../ct_view/ct_filechoicebutton.cpp" line="148"/>
+        <location filename="../ct_view/ct_filechoicebutton.cpp" line="156"/>
         <source>Choisir un fichier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/ct_filechoicebutton.cpp" line="156"/>
+        <location filename="../ct_view/ct_filechoicebutton.cpp" line="164"/>
         <source>Choisir un ou plusieurs fichiers</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/ct_filechoicebutton.cpp" line="168"/>
+        <location filename="../ct_view/ct_filechoicebutton.cpp" line="176"/>
         <source>Choisir un répertoire</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/ct_filechoicebutton.cpp" line="175"/>
+        <location filename="../ct_view/ct_filechoicebutton.cpp" line="183"/>
         <source>Fichier à créer</source>
         <translation></translation>
     </message>
@@ -216,17 +232,17 @@
 <context>
     <name>CT_Reader_ASCRGB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="62"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="63"/>
         <source>Fichiers de points ASCII</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="67"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="68"/>
         <source>Scène</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="68"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="69"/>
         <source>Attribut de points (couleurs)</source>
         <translation></translation>
     </message>
@@ -592,17 +608,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/ct_stepbeginloop.cpp" line="60"/>
+        <location filename="../ct_step/ct_stepbeginloop.cpp" line="67"/>
         <source>Nombre d&apos;itérations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/ct_stepbeginloop.cpp" line="78"/>
+        <location filename="../ct_step/ct_stepbeginloop.cpp" line="75"/>
         <source>Compteur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/ct_stepbeginloop.cpp" line="103"/>
+        <location filename="../ct_step/ct_stepbeginloop.cpp" line="100"/>
         <source>Début de boucle, tour %1 sur %2</source>
         <translation></translation>
     </message>
@@ -749,42 +765,42 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="283"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="281"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="386"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="498"/>
         <source>X dimension</source>
         <translation>Dimension X</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="284"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="282"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="387"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="499"/>
         <source>Y dimension</source>
         <translation>Dimension Y</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="285"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="283"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="389"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="502"/>
         <source>X min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="286"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="284"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="390"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="503"/>
         <source>Y min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="287"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="285"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="392"/>
         <location filename="../ct_itemdrawable/ct_profile.h" line="392"/>
         <source>Resolution</source>
         <translation>Résolution</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="288"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="286"/>
         <location filename="../ct_itemdrawable/ct_grid3d.h" line="393"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="509"/>
         <location filename="../ct_itemdrawable/ct_profile.h" line="393"/>
@@ -958,92 +974,92 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="112"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
         <source>X1 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="113"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
         <source>Y1 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="114"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
         <source>Z1 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="118"/>
         <source>X2 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
         <source>Y2 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="120"/>
         <source>Z2 axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
         <source>X1 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="120"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
         <source>Y1 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="121"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
         <source>Z1 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="125"/>
         <source>X2 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
         <source>Y2 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="127"/>
         <source>Z2 axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
         <source>Longueur axe mineur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="127"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="130"/>
         <source>Longueur axe majeur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="132"/>
         <source>Erreur d&apos;ajustement de l&apos;ellipse</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="131"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="134"/>
         <source>Ratio des axes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="133"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="136"/>
         <source>Angle de début</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="134"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="137"/>
         <source>Angle de fin</source>
         <translation></translation>
     </message>
@@ -1108,12 +1124,12 @@
         <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de liaison (Bind error) : %1</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="169"/>
+        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="176"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Vertex shader compilation error : %1</source>
         <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de compilation des Vertex Shader : %1</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="185"/>
+        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="192"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Link error : %1</source>
         <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de linkage (Link error) : %1</translation>
     </message>
@@ -1138,16 +1154,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_point2d.h" line="78"/>
-        <source>X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_itemdrawable/ct_point2d.h" line="79"/>
-        <source>Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardabstractshape2ddrawmanager.cpp" line="22"/>
         <source>Utiliser une valeur Z différente</source>
         <translation type="unfinished"></translation>
@@ -1158,427 +1164,427 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="317"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="300"/>
         <source>File Signature invalid</source>
         <translation type="unfinished">Signature de fichier invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="323"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="306"/>
         <source>Not a LAS File</source>
         <translation type="unfinished">Ce n&apos;est pas un fichier LAS</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="328"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="311"/>
         <source>File Source ID invalid</source>
         <translation type="unfinished">ID du fichier source invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="331"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="314"/>
         <source>Global Encoding invalid</source>
         <translation type="unfinished">Encodage global invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="334"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="317"/>
         <source>Project ID 1 invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="335"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="318"/>
         <source>Project ID 2 invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="336"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="319"/>
         <source>Project ID 3 invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="337"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="320"/>
         <source>Project ID 4 invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="340"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="323"/>
         <source>Version Major invalid</source>
         <translation type="unfinished">Version Majeure invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="343"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="326"/>
         <source>Version Minor invalid</source>
         <translation type="unfinished">Version mineure invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="346"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="329"/>
         <source>System Identifier invalid</source>
         <translation type="unfinished">Identifiant système invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="349"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="332"/>
         <source>Sofware Identifier invalid</source>
         <translation type="unfinished">Identifiant logiciel invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="352"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="335"/>
         <source>File Creation Day of Year invalid</source>
         <translation type="unfinished">Jour de l&apos;année de création du fichier invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="355"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="338"/>
         <source>File Creation Year invalid</source>
         <translation type="unfinished">Année de création du fichier invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="358"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="341"/>
         <source>Header Size invalid</source>
         <translation type="unfinished">Taille de Header invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="361"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="344"/>
         <source>Offset To Point Data invalid</source>
         <translation type="unfinished">Offset des données points invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="365"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="348"/>
         <source>The offset to the start of points data (%1) is smaller than the header size (%2).</source>
         <translation type="unfinished">L&apos;offset pour le début des données points (%1) est plus petit que la taille du header (%2).</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="370"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="353"/>
         <source>Number of Variable Length Records invalid</source>
         <translation type="unfinished">Nombre d&apos;enregistrements de longueur de variable invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="373"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="356"/>
         <source>Point Data Record Format invalid</source>
         <translation type="unfinished">Format d&apos;enregistrement de données points invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="376"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="359"/>
         <source>Point Data Record Length invalid</source>
         <translation type="unfinished">Longueur d&apos;enregistrement de données points invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="379"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="362"/>
         <source>Legacy Number of point records invalid</source>
         <translation type="unfinished">Enregistrement Nombre de points &quot;Legacy&quot; invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="383"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="366"/>
         <source>Legacy Number of points by return (%1) invalid</source>
         <translation type="unfinished">Nombre de points par retour &quot;Legacy&quot; (%1) invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="386"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="369"/>
         <source>X Scale Factor invalid</source>
         <translation type="unfinished">Facteur d&apos;échelle X invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="387"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="370"/>
         <source>Y Scale Factor invalid</source>
         <translation type="unfinished">Facteur d&apos;échelle Y invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="388"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="371"/>
         <source>Z Scale Factor invalid</source>
         <translation type="unfinished">Facteur d&apos;échelle Z invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="389"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="372"/>
         <source>X Offset invalid</source>
         <translation type="unfinished">Offset X invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="390"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="373"/>
         <source>Y Offset invalid</source>
         <translation type="unfinished">Offset Y invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="391"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="374"/>
         <source>Z Offset invalid</source>
         <translation type="unfinished">Offset Z invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="392"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="375"/>
         <source>Max X invalid</source>
         <translation type="unfinished">X max invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="393"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="376"/>
         <source>Min X invalid</source>
         <translation type="unfinished">X min invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="394"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="377"/>
         <source>Max Y invalid</source>
         <translation type="unfinished">Y max invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="395"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="378"/>
         <source>Min Y invalid</source>
         <translation type="unfinished">Y min invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="396"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="379"/>
         <source>Max Z invalid</source>
         <translation type="unfinished">Z max invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="397"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="380"/>
         <source>Min Z invalid</source>
         <translation type="unfinished">Z min invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="413"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="396"/>
         <source>Start of Waveform Data Packet Record invalid</source>
         <translation type="unfinished">Début des enregitrements Waveform invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="414"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="397"/>
         <source>Start Of First Extended Variable Length Record invalid</source>
         <translation type="unfinished">Début de l&apos;enregistrement de la première variable supplémentaire invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="415"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="398"/>
         <source>Number Of Extended Variable Length Records invalid</source>
         <translation type="unfinished">Nombre d&apos;enregistrements de longueur des variables supplémentaires invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="416"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="399"/>
         <source>Number Of Point Records invalid</source>
         <translation type="unfinished">Nombre d&apos;enregistrement de points invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="420"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="403"/>
         <source>Number Of Points By Return (%1) invalid</source>
         <translation type="unfinished">Nombre de points par retour (%1) invalide</translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="525"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="508"/>
         <source>File Signature : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="526"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="509"/>
         <source>File Source ID : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="527"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="510"/>
         <source>Project ID - GUID data 1 : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="528"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="511"/>
         <source>Project ID - GUID data 2 : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="529"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="512"/>
         <source>Project ID - GUID data 3 : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="530"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="513"/>
         <source>Project ID - GUID data 4 : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="531"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="514"/>
         <source>Version Major : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="532"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="515"/>
         <source>Version Minor : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="533"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="516"/>
         <source>System Identifier : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="534"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="517"/>
         <source>Generating Software : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="535"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="518"/>
         <source>File Creation : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="535"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="518"/>
         <source>dd/MM/yyyy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="536"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="519"/>
         <source>Header Size : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="537"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="520"/>
         <source>Offset to point data : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="538"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="521"/>
         <source>Number of Variable Length Records : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="539"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="522"/>
         <source>Point Data Record Format : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="540"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="523"/>
         <source>Point Data Record Length : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="541"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="524"/>
         <source>Legacy Number of point records : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="542"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="525"/>
         <source>Legacy Number of points by return : %1 / ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="543"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="526"/>
         <source>X/Y/Z scale factor : %1 / %2 / %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="544"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="527"/>
         <source>X/Y/Z offset : %1 / %2 / %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="545"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="528"/>
         <source>Min X/Y/Z : %1 / %2 / %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="546"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="529"/>
         <source>Max X/Y/Z : %1 / %2 / %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="547"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="530"/>
         <source>Start of Waveform Data Packet Record : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="548"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="531"/>
         <source>Start of first Extended Variable Length Record : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="549"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="532"/>
         <source>Number of Extended Variable Length Records : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="550"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="533"/>
         <source>Number of point records : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="551"/>
+        <location filename="../ct_reader/headers/ct_lasheader.cpp" line="534"/>
         <source>Number of points by return : %1 / ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_fileheader.h" line="79"/>
+        <location filename="../ct_itemdrawable/ct_fileheader.h" line="85"/>
         <source>FileName</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_fileheader.h" line="80"/>
+        <location filename="../ct_itemdrawable/ct_fileheader.h" line="86"/>
         <source>Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="358"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="357"/>
         <source>ScanID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="359"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="358"/>
         <source>HFov</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="360"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="359"/>
         <source>VFov</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="361"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="360"/>
         <source>HRes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="362"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="361"/>
         <source>VRes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="363"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="362"/>
         <source>InitTheta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="364"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="363"/>
         <source>InitPhi</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="365"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="364"/>
         <source>NHRays</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="366"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="365"/>
         <source>NVRays</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="367"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="366"/>
         <source>ClockWise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="368"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="367"/>
         <source>PositionX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="369"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="368"/>
         <source>PositionY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="370"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="369"/>
         <source>PositionZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="371"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="370"/>
         <source>ZVectorX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="372"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="371"/>
         <source>ZVectorY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_scanner.h" line="373"/>
+        <location filename="../ct_itemdrawable/ct_scanner.h" line="372"/>
         <source>ZVectorZ</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1603,188 +1609,193 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="155"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="151"/>
         <source>File Signature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="156"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="152"/>
         <source>File Source ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="157"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="153"/>
         <source>Global encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="158"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="154"/>
         <source>Project ID - GUID data 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="159"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="155"/>
         <source>Project ID - GUID data 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="160"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="156"/>
         <source>Project ID - GUID data 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="161"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="157"/>
         <source>Project ID - GUID data 4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="162"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="158"/>
         <source>Version Major</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="163"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="159"/>
         <source>Version Minor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="164"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="160"/>
         <source>System Identifier</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="165"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="161"/>
         <source>Generating Software</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="166"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="162"/>
         <source>File Creation DoY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="167"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="163"/>
         <source>File Creation Year</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="168"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="164"/>
         <source>Header Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="169"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="165"/>
         <source>Offset to point data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="170"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="166"/>
         <source>Number of Variable Length Records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="171"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="167"/>
         <source>Point Data Record Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="172"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="168"/>
         <source>Point Data Record Length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="173"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="169"/>
         <source>Legacy Number of point records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="174"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="170"/>
         <source>Legacy Number of points by return</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="175"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="171"/>
         <source>X scale factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="176"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="172"/>
         <source>Y scale factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="177"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="173"/>
         <source>Z scale factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="178"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="174"/>
         <source>X offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="179"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="175"/>
         <source>Y offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="180"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="176"/>
         <source>Z offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="181"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="177"/>
         <source>Max X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="182"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="178"/>
         <source>Min X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="183"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="179"/>
         <source>Max Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="184"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="180"/>
         <source>Min Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="185"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="181"/>
         <source>Max Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="186"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="182"/>
         <source>Min Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="187"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="183"/>
         <source>Start of Waveform Data Packet Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="188"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="184"/>
         <source>Start of first Extended Variable Length Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="189"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="185"/>
         <source>Number of Extended Variable Length Records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="190"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="186"/>
         <source>Number of point records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/headers/ct_lasheader.h" line="191"/>
+        <location filename="../ct_reader/headers/ct_lasheader.h" line="187"/>
         <source>Number of points by return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_datasource.h" line="86"/>
+        <source>Nombre de readers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
