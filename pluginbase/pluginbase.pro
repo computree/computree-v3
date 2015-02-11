@@ -79,9 +79,7 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepbeginloopthroughgroups.h \
     step/pb_stepcreatedatasource.h \
     step/pb_steploaddatafromitemposition.h \
-    step/pb_steptransformpointcloud.h \
-    actions/pb_actiontest00.h \
-    views/actions/pb_actiontest00options.h
+    step/pb_steptransformpointcloud.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -158,9 +156,7 @@ SOURCES += \
     step/pb_stepbeginloopthroughgroups.cpp \
     step/pb_stepcreatedatasource.cpp \
     step/pb_steploaddatafromitemposition.cpp \
-    step/pb_steptransformpointcloud.cpp \
-    actions/pb_actiontest00.cpp \
-    views/actions/pb_actiontest00options.cpp
+    step/pb_steptransformpointcloud.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -186,8 +182,7 @@ FORMS += \
     views/actions/pb_actionmanualinventoryoptions.ui \
     views/actions/pb_actionmanualinventoryattributesdialog.ui \
     views/actions/pb_actionvalidateinventoryoptions.ui \
-    views/actions/pb_actionvalidateinventoryattributesdialog.ui \
-    views/actions/pb_actiontest00options.ui
+    views/actions/pb_actionvalidateinventoryattributesdialog.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts

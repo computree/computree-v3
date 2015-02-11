@@ -132,25 +132,28 @@ void PB_StepTransformPointCloud::compute()
                     {
                         size_t globalIndex;
                         const CT_Point &pointFloat = cloudIndex->constTAt(i, globalIndex);
-                        Eigen::Vector3d point = pointFloat.realPoint(globalIndex);
 
-                        CT_AbstractCoordinateSystem* currentSystem = PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex);
+                        CT_AbstractCoordinateSystem* currentSystem = PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex);                        
+                        Eigen::Vector3d point;
+                        currentSystem->convertExport(pointFloat(0), pointFloat(1), pointFloat(2), point(0), point(1), point(2));
+
                         CT_AbstractCoordinateSystem* transSystem = coordSysCorresp.value(currentSystem, NULL);
-
                         if (transSystem == NULL)
                         {
-                            Eigen::Vector3d currentCenter;
-                            currentSystem->convertExport(0, 0, 0, currentCenter(0), currentCenter(1), currentCenter(2));
+                            Eigen::Vector3d offset;
+                            currentSystem->convertExport(0, 0, 0, offset(0), offset(1), offset(2));
 
-                            currentCenter = trMat->getTransformationMatrix() * currentCenter;
+                            offset = trMat->getTransformationMatrix() * offset;
+                            //offset = Eigen::Matrix3d::Identity(3,3) * offset;
 
-                            transSystem = new CT_DefaultCoordinateSystem(currentCenter(0), currentCenter(1), currentCenter(2));
+                            transSystem = new CT_DefaultCoordinateSystem(offset(0), offset(1), offset(2));
 
                             outScene->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(transSystem));
                             coordSysCorresp.insert(currentSystem, transSystem);
                         }
 
                         Eigen::Vector3d trPoint = trMat->getTransformationMatrix() * point;
+                        //Eigen::Vector3d trPoint = Eigen::Matrix3d::Identity(3,3) * point;
 
                         size_t globalIndexTr;
                         CT_Point &trPointFloat = pcir->tAt(i, globalIndexTr);
