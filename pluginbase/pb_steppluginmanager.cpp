@@ -61,6 +61,7 @@
 #include "step/pb_stepmatchitemspositions.h"
 #include "step/pb_stepimportsegmafilesformatching.h"
 #include "step/pb_stepcreatedatasource.h"
+#include "step/pb_steptransformpointcloud.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -186,6 +187,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Nuages de points")));
     sep->addStep(new PB_StepReducePointsDensity(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSlicePointCloud(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepTransformPointCloud(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
     sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
@@ -206,7 +208,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Sourcees de données")));
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Sources de données")));
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
 
 

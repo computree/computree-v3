@@ -119,7 +119,7 @@ public:
     void registerCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs);
 
 private:
-    QSharedPointer<CT_AbstractCoordinateSystem> m_spcs;
+    QList<QSharedPointer<CT_AbstractCoordinateSystem> > m_spcs;
 
 #ifdef USE_BOOST_OLD
 private:

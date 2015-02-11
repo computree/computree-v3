@@ -86,12 +86,6 @@ public:
      */
     bool wasAtLeastOneUsed() const;
 
-private:
-    QVector<CT_AbstractCoordinateSystem*>                                       m_cs;                                   // list of coordinate system
-    CT_AbstractCoordinateSystem                                                 *m_current;                             // current coordinate system (never NULL)
-    QSharedPointer< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex > >   m_indexOfCoordinateSystemOfPoints;      // index for all points (sync) of the coordinate system to use
-    QSharedPointer<CT_AbstractCoordinateSystem> m_default;
-
     /**
      * @brief Set the passed coordinate system the current used.
      */
@@ -101,6 +95,13 @@ private:
      * @brief Set the coordinate system at 'index' the current used.
      */
     void setCurrentCoordinateSystem(int index);
+
+private:
+    QVector<CT_AbstractCoordinateSystem*>                                       m_cs;                                   // list of coordinate system
+    CT_AbstractCoordinateSystem                                                 *m_current;                             // current coordinate system (never NULL)
+    QSharedPointer< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex > >   m_indexOfCoordinateSystemOfPoints;      // index for all points (sync) of the coordinate system to use
+    QSharedPointer<CT_AbstractCoordinateSystem> m_default;
+
 
     /**
      * @brief Remove the coordinate system passed in parameter
