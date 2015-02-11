@@ -143,8 +143,7 @@ void PB_StepTransformPointCloud::compute()
                             Eigen::Vector3d offset;
                             currentSystem->convertExport(0, 0, 0, offset(0), offset(1), offset(2));
 
-                            offset = trMat->getTransformationMatrix() * offset;
-                            //offset = Eigen::Matrix3d::Identity(3,3) * offset;
+                            trMat->transform(offset);
 
                             transSystem = new CT_DefaultCoordinateSystem(offset(0), offset(1), offset(2));
 
@@ -152,8 +151,8 @@ void PB_StepTransformPointCloud::compute()
                             coordSysCorresp.insert(currentSystem, transSystem);
                         }
 
-                        Eigen::Vector3d trPoint = trMat->getTransformationMatrix() * point;
-                        //Eigen::Vector3d trPoint = Eigen::Matrix3d::Identity(3,3) * point;
+                        Eigen::Vector3d trPoint = point;
+                        trMat->transform(trPoint);
 
                         size_t globalIndexTr;
                         CT_Point &trPointFloat = pcir->tAt(i, globalIndexTr);

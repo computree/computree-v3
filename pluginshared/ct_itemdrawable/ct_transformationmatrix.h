@@ -17,10 +17,10 @@ public:
     CT_TransformationMatrix();
 
     CT_TransformationMatrix(const CT_OutAbstractSingularItemModel *model,
-                         const CT_AbstractResult *result, const Eigen::Matrix3d &trMat);
+                         const CT_AbstractResult *result, const Eigen::Matrix4d &trMat);
 
     CT_TransformationMatrix(const QString &modelName,
-                         const CT_AbstractResult *result, const Eigen::Matrix3d &trMat);
+                         const CT_AbstractResult *result, const Eigen::Matrix4d &trMat);
 
     /**
       * WARNING : don't forget to redefined this methods if you inherit this class
@@ -28,8 +28,10 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    inline const Eigen::Matrix3d& getTransformationMatrix() const {return _transformationMatrix;}
+    inline const Eigen::Matrix4d& getTransformationMatrix() const {return _transformationMatrix;}
     QString getTransformationMatrixAsString() const;
+
+    void transform(Eigen::Vector3d &vec) const;
 
     /**
      * @brief Returns a copy of this item
@@ -37,7 +39,7 @@ public:
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 protected:
-    Eigen::Matrix3d     _transformationMatrix;
+    Eigen::Matrix4d     _transformationMatrix;
 
 private:
 
