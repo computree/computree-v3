@@ -400,6 +400,9 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
         QList<CT_StandardReaderSeparator*> rsl = p->getReadersAvailable();
         QListIterator<CT_StandardReaderSeparator*> itR(rsl);
 
+        CT_StepSeparator *sepGeneric = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));
+
+
         while(itR.hasNext())
         {
             CT_StandardReaderSeparator *rs = itR.next();
@@ -412,6 +415,8 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             {
                 CT_AbstractReader *reader = itE.next();
                 sepReaders->addStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()));
+
+                sepGeneric->addStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()));
             }
         }
 
