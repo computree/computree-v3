@@ -45,7 +45,7 @@ QString CT_TransformationMatrix::getTransformationMatrixAsString() const
                                                             .arg(QString::number(_transformationMatrix(3,0), 'f', 10))
                                                             .arg(QString::number(_transformationMatrix(3,1), 'f', 10))
                                                             .arg(QString::number(_transformationMatrix(3,2), 'f', 10))
-            .arg(QString::number(_transformationMatrix(3,3), 'f', 10));
+                                                            .arg(QString::number(_transformationMatrix(3,3), 'f', 10));
 }
 
 void CT_TransformationMatrix::transform(Eigen::Vector3d &vec) const
