@@ -10,12 +10,7 @@ template<typename T>
 class CT_AbstractNotModifiableCloudIndexRegisteredT : public CT_AbstractCloudIndexRegisteredT<T>
 {
 public:
-    typedef typename CT_AbstractCloudIndexT<T>::ConstIterator  ConstIterator;
-
     ~CT_AbstractNotModifiableCloudIndexRegisteredT();
-
-    ConstIterator constBegin() const { return this->abstractCloudIndexT()->constBegin(); }
-    ConstIterator constEnd() const { return this->abstractCloudIndexT()->constEnd(); }
 
 protected:
     CT_AbstractNotModifiableCloudIndexRegisteredT(CT_AbstractCloudIndexT<T> *ci) :  CT_AbstractCloudIndexRegisteredT<T>(ci) {}

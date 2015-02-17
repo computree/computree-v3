@@ -12,32 +12,32 @@ public:
 
     CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
+                             CT_FCIR pcir);
 
     CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                             CT_FCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
     CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                             CT_FCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,
                              const SCALAR &min,
                              const SCALAR &max);
 
     CT_FaceAttributesScalarT(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
+                             CT_FCIR pcir);
 
     CT_FaceAttributesScalarT(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                             CT_FCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
     CT_FaceAttributesScalarT(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                             CT_FCIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,
                              const SCALAR &min,
                              const SCALAR &max);

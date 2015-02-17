@@ -9,9 +9,9 @@ size_t CT_LASPointFormat4::sizeInBytes() const
     return CT_LASPointFormat1::sizeInBytes() + wavePacketSizeInBytes();
 }
 
-CT_LasPointInfo* CT_LASPointFormat4::write(QDataStream &stream, const size_t &globalIndex)
+CT_LasPointInfo* CT_LASPointFormat4::write(QDataStream &stream, const CT_Point &p, const size_t &globalIndex)
 {
-    CT_LasPointInfo *info = CT_LASPointFormat1::write(stream, globalIndex);
+    CT_LasPointInfo *info = CT_LASPointFormat1::write(stream, p, globalIndex);
 
     writeInfoFormat4(stream, info);
 

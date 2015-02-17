@@ -795,11 +795,18 @@ protected:
      */
     void setClearMemoryProgress(float progress);
 
+public:
+
     /********************************************************************************/
     /************ Not intended for direct use by plugin developper ******************/
     /********************************************************************************/
 
-public:
+    /**
+     * @brief Add a registered coordinate system to this step. It will be deleted when result or this was deleted from
+     *        memory.
+     * @warning Not intended for direct use by plugin developper
+     */
+    void registerCoordinateSystem(CT_CSR coordinateSystemRegistered);
 
     /*!
      * @brief Return a unique id for the step
@@ -1166,6 +1173,8 @@ private:
 
     QString                         _serializedResultsRelativeFilename; /*! le fichier ou sont stocké les résultats (chemin relatif) */
     int                             _nResultSerialized;                 /*! le nombre de résultat sérialisé */
+
+    QList<CT_CSR>                   m_coordinateSystemRegistered;       /*! list of coordinate system registered */
 
     static int CURRENT_ID;
 

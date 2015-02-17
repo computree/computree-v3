@@ -3,8 +3,6 @@
 #include <QIODevice>
 #include <QTextStream>
 
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 #include "ct_global/ct_context.h"
 #include <QDebug>

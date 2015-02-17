@@ -53,7 +53,7 @@ protected:
     int readHeaderFile(QFile &f);
     void readDataFile(QFile &f, int offset, bool little_endian = false);
 
-    void readFloat( float& outputFloat, QStringList& stringList, int nWord, bool &success, const QString &msgError );
+    void readDouble(double &outputDouble, QStringList& stringList, int nWord, bool &success, const QString &msgError );
 
     bool showColumnConfigurationDialog();
 

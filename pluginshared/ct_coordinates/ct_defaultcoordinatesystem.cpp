@@ -2,24 +2,52 @@
 
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 #include "ct_coordinates/view/ct_gdefaultcoordinatesystem.h"
+#include "ct_step/abstract/ct_virtualabstractstep.h"
+#include "ct_reader/abstract/ct_abstractreader.h"
 #include "ct_global/ct_context.h"
 
 #include <limits>
 
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const CT_VirtualAbstractStep *step)
 {
     m_xOffset = 0;
     m_yOffset = 0;
     m_zOffset = 0;
+
+    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
+}
+
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const CT_AbstractReader *reader)
+{
+    m_xOffset = 0;
+    m_yOffset = 0;
+    m_zOffset = 0;
+
+    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
 }
 
 CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
                                                        CT_AbstractCoordinateSystem::realEx y,
-                                                       CT_AbstractCoordinateSystem::realEx z)
+                                                       CT_AbstractCoordinateSystem::realEx z,
+                                                       const CT_VirtualAbstractStep *step)
 {
     m_xOffset = x;
     m_yOffset = y;
     m_zOffset = z;
+
+    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
+}
+
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                                                       CT_AbstractCoordinateSystem::realEx y,
+                                                       CT_AbstractCoordinateSystem::realEx z,
+                                                       const CT_AbstractReader *reader)
+{
+    m_xOffset = x;
+    m_yOffset = y;
+    m_zOffset = z;
+
+    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
 }
 
 bool CT_DefaultCoordinateSystem::canConvertImport(CT_AbstractCoordinateSystem::realEx x,
@@ -97,14 +125,18 @@ bool CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x
                                            CT_AbstractCoordinateSystem::realEx y,
                                            CT_AbstractCoordinateSystem::realEx z)
 {
-    if(PS_REPOSITORY->globalPointCloud()->size() != 0)
-        return false;
-
     m_xOffset = x;
     m_yOffset = y;
     m_zOffset = z;
 
     return true;
+}
+
+void CT_DefaultCoordinateSystem::offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const
+{
+    x = m_xOffset;
+    y = m_yOffset;
+    z = m_zOffset;
 }
 
 Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const
@@ -115,4 +147,16 @@ Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const
     m(2,3) = m_zOffset;
 
     return m;
+}
+
+GLuint CT_DefaultCoordinateSystem::indexInManager() const
+{
+    return PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(this);
+}
+
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
+{
+    m_xOffset = 0;
+    m_yOffset = 0;
+    m_zOffset = 0;
 }

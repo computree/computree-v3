@@ -7,7 +7,7 @@ CT_EdgeAttributesNormal::CT_EdgeAttributesNormal() : CT_AbstractEdgeAttributes()
 
 CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir) : CT_AbstractEdgeAttributes(model,
+                                                 CT_ECIR pcir) : CT_AbstractEdgeAttributes(model,
                                                                                                                                                       result,
                                                                                                                                                       pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -16,7 +16,7 @@ CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const CT_OutAbstractSingularIte
 
 CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                 CT_ECIR pcir,
                                                  CT_AbstractNormalCloud *nc) : CT_AbstractEdgeAttributes(model,
                                                                                                          result,
                                                                                                          pcir), CT_AttributesNormal(nc)
@@ -25,7 +25,7 @@ CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const CT_OutAbstractSingularIte
 
 CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const QString &modelName,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir) : CT_AbstractEdgeAttributes(modelName,
+                                                 CT_ECIR pcir) : CT_AbstractEdgeAttributes(modelName,
                                                                                                                                                       result,
                                                                                                                                                       pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -34,7 +34,7 @@ CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const QString &modelName,
 
 CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const QString &modelName,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                 CT_ECIR pcir,
                                                  CT_AbstractNormalCloud *nc) : CT_AbstractEdgeAttributes(modelName,
                                                                                                          result,
                                                                                                          pcir), CT_AttributesNormal(nc)

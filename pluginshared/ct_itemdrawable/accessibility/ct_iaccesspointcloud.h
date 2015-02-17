@@ -3,7 +3,7 @@
 
 #include "pluginShared_global.h"
 
-class CT_AbstractPointCloudIndex;
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_IAccessPointCloud
 {

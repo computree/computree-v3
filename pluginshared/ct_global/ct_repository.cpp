@@ -16,21 +16,14 @@
 #include "ct_cloud/tools/ct_globaledgecloudmanager.h"
 #include "ct_cloud/tools/ct_globalfacecloudmanager.h"
 
-#include "ct_pointcloudindex/ct_pointcloudindexlessmemory.h"
-#include "ct_mesh/cloud/ct_edgecloudindexlessmemory.h"
-#include "ct_mesh/cloud/ct_facecloudindexlessmemory.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
-#include "ct_mesh/cloud/ct_edgecloudindexvector.h"
-#include "ct_mesh/cloud/ct_facecloudindexvector.h"
-
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
 #include <QMutexLocker>
 
-CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim)
+CT_NMPCIR CT_Repository::createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim)
 {
-    return createNewCloud<CT_Point>(size, optim);
+    return createNewCloud<CT_PointData>(size, optim);
 }
 
 CT_AbstractUndefinedSizePointCloud* CT_Repository::createNewUndefinedSizePointCloud()
@@ -40,7 +33,7 @@ CT_AbstractUndefinedSizePointCloud* CT_Repository::createNewUndefinedSizePointCl
     return m_gpcManager->createNewUndefinedSizePointCloud();
 }
 
-CT_Repository::CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith, bool withAlphaInformation)
+CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith, bool withAlphaInformation)
 {
     if(syncWith == SyncWithPointCloud)
         return m_syncPointCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
@@ -49,64 +42,74 @@ CT_Repository::CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith,
     else if(syncWith == SyncWithEdgeCloud)
         return m_syncEdgeCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
 
-    return CT_Repository::CT_CCR(NULL);
+    return CT_CCR(NULL);
 }
 
-CT_Repository::CT_NCR CT_Repository::createNewNormalCloud(SyncCloudWith syncWith)
+CT_NCR CT_Repository::createNewNormalCloud(SyncCloudWith syncWith)
 {
     return createNewCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>(syncWith);
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> CT_Repository::createNewIndexCloud(CT_Repository::SyncCloudWith syncWith)
+CT_MCIR CT_Repository::createNewIndexCloud(CT_Repository::SyncCloudWith syncWith)
 {
     return createNewIndexCloudT< CT_CloudIndexStdListT >(syncWith);
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> CT_Repository::createNewMapIndexCloudColor(CT_Repository::SyncCloudWith syncWith)
+CT_MCIR CT_Repository::createNewMapIndexCloudColor(CT_Repository::SyncCloudWith syncWith)
 {
     return createNewIndexCloudT< CT_IndexCloudColorStdMapT >(syncWith);
 }
 
-CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, CT_Repository::CloudIndexOptimizationType optim)
+CT_NMPCIR CT_Repository::registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, CT_Repository::CloudIndexOptimizationType optim)
 {
     QMutexLocker locker(&m_mutexUSPC);
 
     return m_gpcManager->registerUndefinedSizePointCloud(uspc, (CT_GlobalPointCloudManager::IndexOptimization)optim);
 }
 
-CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::copyPointCloud(CT_Repository::CT_AbstractPCIR pcir, CloudIndexOptimizationType optim)
+CT_NMPCIR CT_Repository::copyPointCloud(CT_PCIR pcir, CloudIndexOptimizationType optim)
 {
     return m_gpcManager->copyCloud<CT_PointCloudIndexLessMemory, CT_PointCloudIndexVector>(pcir, (CT_GlobalPointCloudManager::IndexOptimization)optim);
 }
 
-CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::copyPointCloud(const CT_AbstractCloudIndexT<CT_Point> *index, CT_Repository::CloudIndexOptimizationType optim)
+CT_NMPCIR CT_Repository::copyPointCloud(const CT_AbstractPointCloudIndex *index, CT_Repository::CloudIndexOptimizationType optim)
 {
     return m_gpcManager->copyCloud<CT_PointCloudIndexLessMemory, CT_PointCloudIndexVector>(index, (CT_GlobalPointCloudManager::IndexOptimization)optim);
 }
 
-CT_Repository::CT_AbstractNotModifiablePCIR CT_Repository::mergePointCloudContiguous(const QList< CT_Repository::CT_AbstractPCIR > &pcir_collection)
+CT_NMPCIR CT_Repository::mergePointCloudContiguous(const QList< CT_PCIR > &pcir_collection)
 {
     return m_pcirManager->mergeCloudContiguous(pcir_collection);
 }
 
-CT_Repository::CT_AbstractModifiablePCIR CT_Repository::registerPointCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index)
+CT_MPCIR CT_Repository::registerPointCloudIndex(CT_AbstractModifiablePointCloudIndex *index)
 {
-    return registerCloudIndex<CT_Point>(index);
+    return registerCloudIndex<CT_PointData>(index);
 }
 
-CT_Repository::CT_AbstractModifiableFCIR CT_Repository::registerFaceCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index)
+CT_MFCIR CT_Repository::registerFaceCloudIndex(CT_AbstractModifiableFaceCloudIndex *index)
 {
     return registerCloudIndex<CT_Face>(index);
 }
 
-CT_Repository::CT_AbstractModifiableECIR CT_Repository::registerEdgeCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index)
+CT_MECIR CT_Repository::registerEdgeCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index)
 {
     return registerCloudIndex<CT_Edge>(index);
 }
 
 CT_AbstractPointCloud* CT_Repository::globalPointCloud() const
 {
-    return m_gpcManager->globalPointsCloud();
+    return m_gpcManager->globalCloud();
+}
+
+CT_AbstractEdgeCloud* CT_Repository::globalEdgeCloud() const
+{
+    return m_gecManager->globalCloud();
+}
+
+CT_AbstractFaceCloud* CT_Repository::globalFaceCloud() const
+{
+    return m_gfcManager->globalCloud();
 }
 
 void CT_Repository::begingDeleteMultiCloud()
@@ -130,19 +133,19 @@ void CT_Repository::endDeleteMultiCloud()
 
 CT_Repository::CT_Repository()
 {
-    m_gpcManager = new GlobalPointCloudManager();
-    m_gecManager = new GlobalEdgeCloudManager();
+    m_gpcManager = new CT_GlobalPointCloudManager();
+    m_gecManager = new CT_GlobalEdgeCloudManager();
     m_gecManager->setGlobalCloudManager(m_gpcManager);
-    m_gfcManager = new GlobalFaceCloudManager(m_gecManager);
+    m_gfcManager = new CT_GlobalFaceCloudManager(m_gecManager);
     m_gecManager->setGlobalCloudManager(m_gfcManager);
 
-    m_pcirManager = new PointCloudIndexRegistrationManager(*m_gpcManager);
-    m_fcirManager = new FaceCloudIndexRegistrationManager(*m_gfcManager);
-    m_ecirManager = new EdgeCloudIndexRegistrationManager(*m_gecManager);
+    m_pcirManager = new CT_PointCloudIndexRegistrationManager(*m_gpcManager);
+    m_fcirManager = new CT_FaceCloudIndexRegistrationManager(*m_gfcManager);
+    m_ecirManager = new CT_EdgeCloudIndexRegistrationManager(*m_gecManager);
 
-    m_syncPointCloudManager = new SyncPointCloudManager(*m_gpcManager);
-    m_syncFaceCloudManager = new SyncFaceCloudManager(*m_gfcManager);
-    m_syncEdgeCloudManager = new SyncEdgeCloudManager(*m_gecManager);
+    m_syncPointCloudManager = new CT_SyncPointCloudManager(*m_gpcManager);
+    m_syncFaceCloudManager = new CT_SyncFaceCloudManager(*m_gfcManager);
+    m_syncEdgeCloudManager = new CT_SyncEdgeCloudManager(*m_gecManager);
 }
 
 CT_Repository::~CT_Repository()
@@ -163,109 +166,91 @@ CT_Repository::~CT_Repository()
 // TEMPLATE //
 
 template<>
-CT_AbstractCloudT<CT_Point>* CT_Repository::globalCloud() const
+CT_AbstractPointCloud* CT_Repository::globalCloud() const
 {
     return m_gpcManager->globalCloud();
 }
 
 template<>
-CT_AbstractCloudT<CT_Face>* CT_Repository::globalCloud() const
+CT_AbstractFaceCloud* CT_Repository::globalCloud() const
 {
     return m_gfcManager->globalCloud();
 }
 
 template<>
-CT_AbstractCloudT<CT_Edge>* CT_Repository::globalCloud() const
+CT_AbstractEdgeCloud* CT_Repository::globalCloud() const
 {
     return m_gecManager->globalCloud();
 }
 
 template<>
-CT_AbstractGlobalCloudManagerT<CT_Point>* CT_Repository::globalCloudManager() const
+CT_AbstractGlobalPointCloudManager* CT_Repository::globalCloudManager() const
 {
     return m_gpcManager;
 }
 
 template<>
-CT_AbstractGlobalCloudManagerT<CT_Face>* CT_Repository::globalCloudManager() const
+CT_AbstractGlobalFaceCloudManager* CT_Repository::globalCloudManager() const
 {
     return m_gfcManager;
 }
 
 template<>
-CT_AbstractGlobalCloudManagerT<CT_Edge>* CT_Repository::globalCloudManager() const
+CT_AbstractGlobalEdgeCloudManager* CT_Repository::globalCloudManager() const
 {
     return m_gecManager;
 }
 
 template<>
-CT_StandardCloudStdVectorT<CT_Point>* CT_Repository::globalStandardCloudT() const
-{
-    return m_gpcManager->globalCloud();
-}
-
-template<>
-CT_StandardCloudStdVectorT<CT_Face>* CT_Repository::globalStandardCloudT() const
-{
-    return m_gfcManager->globalCloud();
-}
-
-template<>
-CT_StandardCloudStdVectorT<CT_Edge>* CT_Repository::globalStandardCloudT() const
-{
-    return m_gecManager->globalCloud();
-}
-
-template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > cir, const size_t &newSize)
+CT_NMPCIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMPCIR cir, const size_t &newSize)
 {
     return m_gpcManager->resizeCloudAndCloudIndex(cir, newSize);
 }
 
 template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > cir, const size_t &newSize)
+CT_NMFCIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMFCIR cir, const size_t &newSize)
 {
     return m_gfcManager->resizeCloudAndCloudIndex(cir, newSize);
 }
 
 template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > cir, const size_t &newSize)
+CT_NMECIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMECIR cir, const size_t &newSize)
 {
     return m_gecManager->resizeCloudAndCloudIndex(cir, newSize);
 }
 
 template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
+CT_NMPCIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
 {
     return m_gpcManager->createNewCloud<CT_PointCloudIndexLessMemory, CT_PointCloudIndexVector>(size, (CT_GlobalPointCloudManager::IndexOptimization)optim);
 }
 
 template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
+CT_NMFCIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
 {
     return m_gfcManager->createNewCloud< CT_FaceCloudIndexLessMemory , CT_FaceCloudIndexVector >(size, (CT_AbstractGlobalCloudManagerT<CT_Face>::IndexOptimization)optim);
 }
 
 template<>
-QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
+CT_NMECIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim)
 {
     return m_gecManager->createNewCloud< CT_EdgeCloudIndexLessMemory , CT_EdgeCloudIndexVector >(size, (CT_AbstractGlobalCloudManagerT<CT_Edge>::IndexOptimization)optim);
 }
 
 template<>
-QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index)
+CT_MPCIR CT_Repository::registerCloudIndex(CT_AbstractModifiablePointCloudIndex *index)
 {
     return m_pcirManager->registerIndex(index);
 }
 
 template<>
-QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index)
+CT_MFCIR CT_Repository::registerCloudIndex(CT_AbstractModifiableFaceCloudIndex *index)
 {
     return m_fcirManager->registerIndex(index);
 }
 
 template<>
-QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index)
+CT_MECIR CT_Repository::registerCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index)
 {
     return m_ecirManager->registerIndex(index);
 }

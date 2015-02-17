@@ -2,8 +2,7 @@
 #define CT_IACCESSEDGECLOUD_H
 
 #include "pluginShared_global.h"
-
-class CT_AbstractEdgeCloudIndex;
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_IAccessEdgeCloud
 {

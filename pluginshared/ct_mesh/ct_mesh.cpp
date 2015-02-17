@@ -22,22 +22,22 @@ CT_Mesh::~CT_Mesh()
     clear();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Point>& CT_Mesh::vert() const
+CT_AbstractModifiablePointCloudIndex& CT_Mesh::vert() const
 {
     return *pVert();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Face>& CT_Mesh::face() const
+CT_AbstractModifiableFaceCloudIndex& CT_Mesh::face() const
 {
     return *pFace();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Edge>& CT_Mesh::hedge() const
+CT_AbstractModifiableEdgeCloudIndex& CT_Mesh::hedge() const
 {
     return *pHedge();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Point>* CT_Mesh::pVert() const
+CT_AbstractModifiablePointCloudIndex* CT_Mesh::pVert() const
 {
     if(m_vert == NULL)
         return NULL;
@@ -45,7 +45,7 @@ CT_AbstractModifiableCloudIndexT<CT_Point>* CT_Mesh::pVert() const
     return m_vert->abstractModifiableCloudIndexT();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Face>* CT_Mesh::pFace() const
+CT_AbstractModifiableFaceCloudIndex* CT_Mesh::pFace() const
 {
     if(m_face == NULL)
         return NULL;
@@ -53,7 +53,7 @@ CT_AbstractModifiableCloudIndexT<CT_Face>* CT_Mesh::pFace() const
     return m_face->abstractModifiableCloudIndexT();
 }
 
-CT_AbstractModifiableCloudIndexT<CT_Edge>* CT_Mesh::pHedge() const
+CT_AbstractModifiableEdgeCloudIndex* CT_Mesh::pHedge() const
 {
     if(m_hedge == NULL)
         return NULL;
@@ -76,17 +76,17 @@ CT_AbstractEdgeCloudIndex* CT_Mesh::abstractHedge() const
     return m_pHedge;
 }
 
-CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractModifiableCIR CT_Mesh::registeredVert() const
+CT_MPCIR CT_Mesh::registeredVert() const
 {
     return m_vert;
 }
 
-CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractModifiableCIR CT_Mesh::registeredFace() const
+CT_MFCIR CT_Mesh::registeredFace() const
 {
     return m_face;
 }
 
-CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractModifiableCIR CT_Mesh::registeredHedge() const
+CT_MECIR CT_Mesh::registeredHedge() const
 {
     return m_hedge;
 }
@@ -98,33 +98,41 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
     double inc = (2.0 * M_PI) / ((double)sides);
     double theta = 0;
 
-    VertexIndexIterator vi = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*this, 2*sides);
-    FaceIndexIterator fi = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*this, 2*sides);
-    HEdgeIndexIterator ei = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*this, 6*sides);
+    CT_MutablePointIterator vi = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*this, 2*sides);
+    CT_MutableFaceIterator fi = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*this, 2*sides);
+    CT_MutableEdgeIterator ei = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*this, 6*sides);
+
+    vi.next();
+    fi.next();
+    ei.next();
 
     double minH = 0;
     double maxH = height;
 
-    CT_Point &v = vi.cT();
+    CT_Point v;
     v(0) = maxH;
     v(1) = radius;
     v(2) = 0;
+
+    vi.replaceCurrentPoint(v);
 
     size_t p = vi.cIndex();
 
     for(size_t i=0; i<sides; ++i)
     {
-        CT_Point &v0 = vi.cT();
+        const CT_Point &v0 = vi.cT();
         size_t p0 = vi.cIndex();
-        ++vi;
+        vi.next();
 
-        CT_Point &v1 = vi.cT();
-        size_t p1 = vi.cIndex();
-        ++vi;
+        CT_Point v1;
 
         v1(0) = minH;
         v1(1) = v0(1);
         v1(2) = v0(2);
+
+        vi.replaceCurrentPoint(v1);
+        size_t p1 = vi.cIndex();
+        vi.next();
 
         theta += inc;
 
@@ -133,13 +141,15 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
 
         if(i<sides-1)
         {
-            CT_Point &v2 = vi.cT();
+            CT_Point v2;
             p2 = vi.cIndex();
             p3 = p2+1;
 
             v2(0) = maxH;
             v2(1) = radius * cos(theta);
             v2(2) = radius * sin(theta);
+
+            vi.replaceCurrentPoint(v2);
         }
         else
         {
@@ -160,21 +170,19 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         e1.setPoint0(p0);
         e1.setPoint1(p1);
         e1.setFace(faceIndex);
-        ++ei;
 
-        CT_Edge &e2 = ei.cT();
+        CT_Edge &e2 = ei.next().cT();
         e2.setPoint0(p1);
         e2.setPoint1(p2);
         e1.setFace(faceIndex);
         e2Index = ei.cIndex();
-        ++ei;
 
-        CT_Edge &e3 = ei.cT();
+        CT_Edge &e3 = ei.next().cT();
         e3.setPoint0(p2);
         e3.setPoint1(p0);
         e3.setFace(faceIndex);
         e3Index = ei.cIndex();
-        ++ei;
+        ei.next();
 
         e1.setNext(e2Index);
         e1.setPrevious(e3Index);
@@ -183,9 +191,7 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         e3.setNext(e1Index);
         e3.setPrevious(e2Index);
 
-        ++fi;
-
-        CT_Face &face2 = fi.cT();
+        CT_Face &face2 = fi.next().cT();
         faceIndex = fi.cIndex();
 
         e1Index = ei.cIndex();
@@ -196,21 +202,18 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         e11.setPoint0(p1);
         e11.setPoint1(p3);
         e11.setFace(faceIndex);
-        ++ei;
 
-        CT_Edge &e22 = ei.cT();
+        CT_Edge &e22 = ei.next().cT();
         e22.setPoint0(p3);
         e22.setPoint1(p2);
         e11.setFace(faceIndex);
         e2Index = ei.cIndex();
-        ++ei;
 
-        CT_Edge &e33 = ei.cT();
+        CT_Edge &e33 = ei.next().cT();
         e33.setPoint0(p2);
         e33.setPoint1(p1);
         e33.setFace(faceIndex);
         e3Index = ei.cIndex();
-        ++ei;
 
         e11.setNext(e2Index);
         e11.setPrevious(e3Index);
@@ -219,7 +222,8 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
         e33.setNext(e1Index);
         e33.setPrevious(e2Index);
 
-        ++fi;
+        ei.next();
+        fi.next();
     }
 }
 

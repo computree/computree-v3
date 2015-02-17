@@ -30,9 +30,9 @@
 
 #include "dm_graphicsviewoptions.h"
 
-#include "ct_point.h"
-#include "ct_mesh/ct_face.h"
-#include "ct_mesh/ct_edge.h"
+#include "ct_accessor/ct_pointaccessor.h"
+#include "ct_accessor/ct_faceaccessor.h"
+#include "ct_accessor/ct_edgeaccessor.h"
 
 #include <QtOpenGL>
 
@@ -322,19 +322,22 @@ private:
     G3DPainter::MultiDrawableType       m_drawOnly;             // The type that we must only draw
     G3DPainter::GlBeginType             m_currentGlBeginType;   // The type of the current "glBegin" if "glEnd" was not called. If "glEnd" was called this variable is "GL_END_CALLED".
 
-    CT_AbstractCloudT<CT_Point>         *m_pointCloud;
-    CT_AbstractCloudT<CT_Face>          *m_faceCloud;
-    CT_AbstractCloudT<CT_Edge>          *m_edgeCloud;
-
     bool                                m_firstPolygonPointValid;
     Eigen::Vector4d                     m_firstPolygonPoint;
 
     QT_GL_SHADERPROGRAM                 *m_shaderProgPoint;     // Shader program used for points
     QT_GL_SHADER                        *m_ShaderPoint;
+    QString                             m_shaderSourceFile;
     bool                                m_shaderProgPointError;
     bool                                m_shaderProgPointSet;
     bool                                m_shaderPointError;
     bool                                m_bindShaderPointOK;
+    bool                                m_shaderLocInitialized;
+    int                                 m_shaderLocCsIndex;
+    int                                 m_shaderLocInfo;
+    int                                 m_shaderLocCsMatrix;
+    int                                 m_shaderLocSelectionColor;
+    int                                 m_shaderLocCheckSelected;
 
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
@@ -370,6 +373,10 @@ private:
 
 protected:
 
+    CT_PointAccessor                    m_pAccess;
+    CT_FaceAccessor                     m_fAccess;
+    CT_EdgeAccessor                     m_eAccess;
+
     class G3DPainterCylinder {
     public:
         G3DPainterCylinder(const QVector< QPair<double, double> > &cosSinAlpha);
@@ -381,21 +388,6 @@ protected:
 
     static G3DPainter::G3DPainterCylinder       CYLINDER_FASTEST;
     static G3DPainter::G3DPainterCylinder       CYLINDER_NORMAL;
-
-    inline CT_AbstractCloudT<CT_Point>* pointCloud() const
-    {
-        return m_pointCloud;
-    }
-
-    inline CT_AbstractCloudT<CT_Edge>* edgeCloud() const
-    {
-        return m_edgeCloud;
-    }
-
-    inline CT_AbstractCloudT<CT_Face>* faceCloud() const
-    {
-        return m_faceCloud;
-    }
 
     void setCurrentColor();
     void setCurrentForcedColor();

@@ -42,7 +42,7 @@ private:
     CT_Scanner                                                          *m_scanner;
 
     void exportPoints(QDataStream &stream,
-                      const CT_AbstractCloudIndexT<CT_Point> *constPCIndex,
+                      const CT_AbstractPointCloudIndex *constPCIndex,
                       const CT_AbstractColorCloud *cc,
                       const int &nExported,
                       const int &totalToExport);

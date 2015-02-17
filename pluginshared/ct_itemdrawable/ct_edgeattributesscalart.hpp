@@ -13,7 +13,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT() : CT_AbstractEdgeAt
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir) : CT_AbstractEdgeAttributesScalar(model,
+                                                           CT_ECIR pcir) : CT_AbstractEdgeAttributesScalar(model,
                                                                                                                                                                       result,
                                                                                                                                                                       pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -22,7 +22,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                           CT_ECIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractEdgeAttributesScalar(model,
                                                                                                                                              result,
                                                                                                                                              pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -32,7 +32,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                           CT_ECIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                            const SCALAR &min,
                                                            const SCALAR &max) : CT_AbstractEdgeAttributesScalar(model,
@@ -46,7 +46,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const QString &modelName,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir) : CT_AbstractEdgeAttributesScalar(modelName,
+                                                           CT_ECIR pcir) : CT_AbstractEdgeAttributesScalar(modelName,
                                                                                                                                                                       result,
                                                                                                                                                                       pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -55,7 +55,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const QString &modelN
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const QString &modelName,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                           CT_ECIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractEdgeAttributesScalar(modelName,
                                                                                                                                              result,
                                                                                                                                              pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -65,7 +65,7 @@ CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const QString &modelN
 template<typename SCALAR>
 CT_EdgeAttributesScalarT<SCALAR>::CT_EdgeAttributesScalarT(const QString &modelName,
                                                            CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                                           CT_ECIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                            const SCALAR &min,
                                                            const SCALAR &max) : CT_AbstractEdgeAttributesScalar(modelName,

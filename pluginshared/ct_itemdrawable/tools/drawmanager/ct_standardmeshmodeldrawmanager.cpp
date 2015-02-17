@@ -70,7 +70,7 @@ void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsVi
     if((mesh == NULL) || (mesh->pFace() == NULL))
         return;
 
-    const CT_Face &face = mesh->face().constTAt(index);
+    const CT_Face &face = m_fAccess.constFaceAt(mesh->face().constIndexAt(index));
 
     painter.drawTriangle(face.iPointAt(0), face.iPointAt(1), face.iPointAt(2));
 }
@@ -103,7 +103,7 @@ void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsVi
     if((mesh == NULL) || (mesh->pHedge() == NULL))
         return;
 
-    const CT_Edge &edge = mesh->hedge().constTAt(index);
+    const CT_Edge &edge = m_eAccess.constEdgeAt(mesh->hedge().constIndexAt(index));
 
     painter.drawLine(edge.iPointAt(0), edge.iPointAt(1));
 }

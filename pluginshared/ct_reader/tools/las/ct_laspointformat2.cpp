@@ -9,9 +9,9 @@ size_t CT_LASPointFormat2::sizeInBytes() const
     return CT_LASPointFormat0::sizeInBytes() + colorPacketSizeInBytes();
 }
 
-CT_LasPointInfo* CT_LASPointFormat2::write(QDataStream &stream, const size_t &globalIndex)
+CT_LasPointInfo* CT_LASPointFormat2::write(QDataStream &stream, const CT_Point &p, const size_t &globalIndex)
 {
-    CT_LasPointInfo *info = CT_LASPointFormat0::write(stream, globalIndex);
+    CT_LasPointInfo *info = CT_LASPointFormat0::write(stream, p, globalIndex);
 
     writeInfoFormat2(stream, info);
 

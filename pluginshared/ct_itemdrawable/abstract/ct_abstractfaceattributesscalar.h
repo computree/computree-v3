@@ -11,11 +11,11 @@ public:
     CT_AbstractFaceAttributesScalar();
     CT_AbstractFaceAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                     CT_AbstractResult *result,
-                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir);
+                                    CT_FCIR cir);
 
     CT_AbstractFaceAttributesScalar(const QString &modelName,
                                     CT_AbstractResult *result,
-                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir);
+                                    CT_FCIR cir);
 
 
     /**

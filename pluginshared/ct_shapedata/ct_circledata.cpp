@@ -26,7 +26,9 @@
 *****************************************************************************/
 
 #include "ct_circledata.h"
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_cloud/ct_standardcloudstdvectort.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #include <math.h>
 
@@ -48,22 +50,22 @@ CT_CircleData::CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3
     _error = error;
 }
 
-void CT_CircleData::setRadius(float radius)
+void CT_CircleData::setRadius(double radius)
 {
     _radius = radius;
 }
 
-void CT_CircleData::setError(float error)
+void CT_CircleData::setError(double error)
 {
     _error = error;
 }
 
-float CT_CircleData::getRadius() const
+double CT_CircleData::getRadius() const
 {
     return _radius;
 }
 
-float CT_CircleData::getError() const
+double CT_CircleData::getError() const
 {
     return _error;
 }
@@ -83,31 +85,28 @@ CT_CircleData& CT_CircleData::operator= (const CT_CircleData& o)
     return *this;
 }
 
-CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                                               const CT_AbstractPointCloudIndex &pointCloudIndex,
+CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                                double z)
 {
-    return staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(pointCloud,
-                                                                             pointCloudIndex,
+    return staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(pointCloudIndex,
                                                                              NULL,
                                                                              z);
 }
 
-CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(const CT_AbstractPointCloud &pointCloud,
-                                                                                                const CT_AbstractPointCloudIndex &pointCloudIndex,
+CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                                                 CT_CircleDataPreProcessingAction *preProcessingAction,
                                                                                                 double z)
 {
 
-    int size = pointCloudIndex.size();
+    size_t size = pointCloudIndex.size();
 
     if(size < 3)
         return NULL;
 
-    CT_PointCloudStdVector *newPointCloud = NULL;
+    CT_StandardCloudStdVectorT<CT_Point> *newPointCloud = NULL;
 
     if(preProcessingAction != NULL)
-        newPointCloud = new CT_PointCloudStdVector(size);
+        newPointCloud = new CT_StandardCloudStdVectorT<CT_Point>(size);
 
     double somme_x = 0;
     double somme_y = 0;
@@ -119,12 +118,17 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
     double somme_x_au_carre_fois_y = 0;
     double somme_y_au_carre_fois_x = 0;
 
-    float x, y;
+    double x, y;
     double x_au_carre, y_au_carre;
 
-    for(int i=0; i<size; ++i)
+    size_t i = 0;
+    CT_PointIterator it(&pointCloudIndex);
+
+    while(it.hasNext())
     {
-        const CT_Point &p = pointCloud[pointCloudIndex[i]];
+        it.next();
+
+        const CT_Point &p = it.currentPoint();
 
         if(preProcessingAction != NULL)
         {
@@ -153,6 +157,8 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
         somme_y_au_cube += (y*y_au_carre);
         somme_x_au_carre_fois_y += (x_au_carre * y);
         somme_y_au_carre_fois_x += (y_au_carre * x);
+
+        ++i;
     }
 
     double phi_11 = (size * somme_x_fois_y) - (somme_x * somme_y);
@@ -170,37 +176,42 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
 
     double c = (1.0/((double)size)) * (somme_x_au_carre + somme_y_au_carre - (2 * a * somme_x) - (2 * b * somme_y));
 
-    float radiusT = sqrt(c + (a*a) + (b*b));
-    float r2 = 0;
+    double radiusT = sqrt(c + (a*a) + (b*b));
+    double r2 = 0;
 
     if(newPointCloud != NULL)
     {
-        for(int i=0; i<size; ++i)
+        for(i=0; i<size; ++i)
         {
             const CT_Point &p = (*newPointCloud)[i];
             x = p(0);
             y = p(1);
 
-            float xma = x-a;
-            float ymb = y-b;
+            double xma = x-a;
+            double ymb = y-b;
 
-            float r = radiusT - sqrt((xma*xma) + (ymb*ymb));
+            double r = radiusT - sqrt((xma*xma) + (ymb*ymb));
 
             r2 += (r*r);
         }
     }
     else
     {
-        for(int i=0; i<size; ++i)
+        it.toFront();
+
+        while(it.hasNext())
         {
-            const CT_Point &p = pointCloudIndex.constTAt(i);
+            it.next();
+
+            const CT_Point &p = it.currentPoint();
+
             x = p(0);
             y = p(1);
 
-            float xma = x-a;
-            float ymb = y-b;
+            double xma = x-a;
+            double ymb = y-b;
 
-            float r = radiusT - sqrt((xma*xma) + (ymb*ymb));
+            double r = radiusT - sqrt((xma*xma) + (ymb*ymb));
 
             r2 += (r*r);
         }

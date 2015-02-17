@@ -1,6 +1,7 @@
 #ifndef CT_ABSTRACTCOORDINATESYSTEM_H
 #define CT_ABSTRACTCOORDINATESYSTEM_H
 
+#include "interfaces.h"
 #include "pluginShared_global.h"
 
 #include "eigen/Eigen/Dense"
@@ -86,9 +87,19 @@ public:
     virtual bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z) = 0;
 
     /**
+     * @brief Returns the offset of this coordinate system
+     */
+    virtual void offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const = 0;
+
+    /**
      * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)
      */
     virtual Eigen::Matrix4d toMatrix4x4() const = 0;
+
+    /**
+     * @brief Return the index of this coordinate system in the manager
+     */
+    virtual GLuint indexInManager() const = 0;
 
 private:
     mutable bool        m_used;

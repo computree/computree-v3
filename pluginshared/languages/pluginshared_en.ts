@@ -113,7 +113,7 @@
 <context>
     <name>CT_AbstractReader</name>
     <message>
-        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="139"/>
+        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="140"/>
         <source>Reader error ! The reader has not used the coordinate system !</source>
         <translation></translation>
     </message>
@@ -232,17 +232,17 @@
 <context>
     <name>CT_Reader_ASCRGB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="63"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="62"/>
         <source>Fichiers de points ASCII</source>
         <translation>ASCII points file</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="68"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="67"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="69"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="68"/>
         <source>Attribut de points (couleurs)</source>
         <translation>Points attributes (colors)</translation>
     </message>
@@ -263,136 +263,136 @@
 <context>
     <name>CT_Reader_LAS</name>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="95"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="96"/>
         <source>Fichiers LAS .las</source>
         <translation>LAS file *.las</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="100"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="101"/>
         <source>LAS Header</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="102"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="103"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="103"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="104"/>
         <source>All Attributs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="108"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="115"/>
-        <source>Return Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_reader/ct_reader_las.cpp" line="109"/>
         <location filename="../ct_reader/ct_reader_las.cpp" line="116"/>
-        <source>Number of Returns</source>
+        <source>Return Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_reader/ct_reader_las.cpp" line="110"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="119"/>
-        <source>Scan Direction Flag</source>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="117"/>
+        <source>Number of Returns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_reader/ct_reader_las.cpp" line="111"/>
         <location filename="../ct_reader/ct_reader_las.cpp" line="120"/>
+        <source>Scan Direction Flag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="112"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="121"/>
         <source>Edge of Flight Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="117"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="118"/>
         <source>Classification Flags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="118"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="119"/>
         <source>Scanner Channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="124"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="125"/>
         <source>Intensité</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="125"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="126"/>
         <source>Classification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="126"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="127"/>
         <source>User Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="127"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="128"/>
         <source>Point Source ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="132"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="133"/>
         <source>Scan Angle Rank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="134"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="135"/>
         <source>Scan Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="139"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="140"/>
         <source>GPS Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="149"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="150"/>
         <source>Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="150"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="151"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="151"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="152"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="152"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="153"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="161"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="162"/>
         <source>Wave Packet Descriptor Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="162"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="163"/>
         <source>Byte offset to waveform data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="163"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="164"/>
         <source>Waveform packet size in bytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="164"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="165"/>
         <source>Return Point Waveform Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="170"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="171"/>
         <source>NIR</source>
         <translation type="unfinished"></translation>
     </message>
@@ -400,7 +400,7 @@
 <context>
     <name>CT_Reader_LArchitect_Grid</name>
     <message>
-        <location filename="../ct_reader/ct_reader_larchitect_grid.cpp" line="135"/>
+        <location filename="../ct_reader/ct_reader_larchitect_grid.cpp" line="133"/>
         <source>Fichiers de grilles 3D LArchitect</source>
         <translation>LArchitect 3D grid files</translation>
     </message>
@@ -413,17 +413,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="496"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="495"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="504"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="503"/>
         <source>Topologie</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="524"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="523"/>
         <source>Mesh</source>
         <translation></translation>
     </message>
@@ -431,22 +431,22 @@
 <context>
     <name>CT_Reader_XYB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="137"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="136"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation>Points binary files *.xyb</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="142"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="141"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="143"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="142"/>
         <source>Intensité</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="144"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="143"/>
         <source>Scanner</source>
         <translation>Scanner</translation>
     </message>
@@ -603,17 +603,17 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="846"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="850"/>
         <source> enter manual mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1524"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1533"/>
         <source> - Start computing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1623"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1632"/>
         <source> - Computing completed</source>
         <translation></translation>
     </message>
@@ -751,7 +751,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h" line="152"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h" line="140"/>
         <source>Nombre de points</source>
         <translation>Number of points</translation>
     </message>
@@ -786,170 +786,170 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_circle.h" line="92"/>
+        <location filename="../ct_itemdrawable/ct_circle.h" line="91"/>
         <location filename="../ct_itemdrawable/ct_circle2d.h" line="78"/>
         <source>Rayon du cercle</source>
         <translation>Radius of the circle</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_circle.h" line="93"/>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
+        <location filename="../ct_itemdrawable/ct_circle.h" line="92"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
         <source>Erreur d&apos;ajustement du cercle</source>
         <translation>Circle fitting error</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="91"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="90"/>
         <source>Direction X</source>
         <translation>X direction</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="92"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="91"/>
         <source>Direction Y</source>
         <translation>Y direction</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="93"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="92"/>
         <source>Direction Z</source>
         <translation>Z direction</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="94"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="93"/>
         <source>Rayon</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
-        <location filename="../ct_itemdrawable/ct_line.h" line="106"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="94"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="105"/>
         <source>Longueur</source>
         <translation>Length</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="97"/>
-        <location filename="../ct_itemdrawable/ct_line.h" line="107"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="106"/>
         <source>Erreur d&apos;ajustement de la ligne</source>
         <translation>Line fitting error</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="114"/>
         <source>X1 axe mineur</source>
         <translation>X1 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="115"/>
         <source>Y1 axe mineur</source>
         <translation>Y1 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="116"/>
         <source>Z1 axe mineur</source>
         <translation>Z1 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="118"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="117"/>
         <source>X2 axe mineur</source>
         <translation>X2 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="118"/>
         <source>Y2 axe mineur</source>
         <translation>Y2 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="120"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="119"/>
         <source>Z2 axe mineur</source>
         <translation>Z2 minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="121"/>
         <source>X1 axe majeur</source>
         <translation>X1 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="122"/>
         <source>Y1 axe majeur</source>
         <translation>Y1 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="123"/>
         <source>Z1 axe majeur</source>
         <translation>Z1 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="125"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="124"/>
         <source>X2 axe majeur</source>
         <translation>X2 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="125"/>
         <source>Y2 axe majeur</source>
         <translation>Y2 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="127"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="126"/>
         <source>Z2 axe majeur</source>
         <translation>Z2 major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="128"/>
         <source>Longueur axe mineur</source>
         <translation>Length of minor axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="130"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="129"/>
         <source>Longueur axe majeur</source>
         <translation>Length of major axis</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="132"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="131"/>
         <source>Erreur d&apos;ajustement de l&apos;ellipse</source>
         <translation>Ellipse fitting error</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="134"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="133"/>
         <source>Ratio des axes</source>
         <translation>Axis ratio</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="136"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="135"/>
         <source>Angle de début</source>
         <translation>Beginning angle</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_ellipse.h" line="137"/>
+        <location filename="../ct_itemdrawable/ct_ellipse.h" line="136"/>
         <source>Angle de fin</source>
         <translation>Ending angle</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="98"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="97"/>
         <location filename="../ct_itemdrawable/ct_line2d.h" line="88"/>
         <source>X1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="99"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="98"/>
         <location filename="../ct_itemdrawable/ct_line2d.h" line="89"/>
         <source>Y1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="100"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="99"/>
         <source>Z1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="102"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="101"/>
         <location filename="../ct_itemdrawable/ct_line2d.h" line="90"/>
         <source>X2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="103"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="102"/>
         <location filename="../ct_itemdrawable/ct_line2d.h" line="91"/>
         <source>Y2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_line.h" line="104"/>
+        <location filename="../ct_itemdrawable/ct_line.h" line="103"/>
         <source>Z2</source>
         <translation></translation>
     </message>
@@ -1445,7 +1445,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_transformationmatrix.h" line="45"/>
+        <location filename="../ct_itemdrawable/ct_transformationmatrix.h" line="47"/>
         <source>Matrice de transformation</source>
         <translation type="unfinished"></translation>
     </message>

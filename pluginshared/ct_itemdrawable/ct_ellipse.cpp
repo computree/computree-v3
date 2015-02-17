@@ -164,12 +164,11 @@ CT_AbstractItemDrawable* CT_Ellipse::copy(const CT_OutAbstractItemModel *model,
 CT_Ellipse* CT_Ellipse::staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                       quint64 id,
                                                                       const CT_AbstractResult *result,
-                                                                      const CT_AbstractPointCloud *pointCloud,
                                                                       const CT_AbstractPointCloudIndex *pointCloudIndex)
 {
     Q_UNUSED(id)
 
-    CT_EllipseData *data = CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointCloud(pointCloud, pointCloudIndex);
+    CT_EllipseData *data = CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointCloud(pointCloudIndex);
 
     if(data == NULL)
         return NULL;

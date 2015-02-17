@@ -13,7 +13,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated()
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointAttributesScalar(model,
+                                                                               CT_PCIR pcir) : CT_AbstractPointAttributesScalar(model,
                                                                                                                                                                                             result,
                                                                                                                                                                                             pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -22,7 +22,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                                               CT_PCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractPointAttributesScalar(model,
                                                                                                                                                                   result,
                                                                                                                                                                   pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -32,7 +32,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const CT_OutAbstractSingularItemModel *model,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                                               CT_PCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                                                const SCALAR &min,
                                                                                const SCALAR &max) : CT_AbstractPointAttributesScalar(model,
@@ -44,7 +44,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const QString &modelName,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointAttributesScalar(modelName,
+                                                                               CT_PCIR pcir) : CT_AbstractPointAttributesScalar(modelName,
                                                                                                                                                                                             result,
                                                                                                                                                                                             pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -53,7 +53,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const QString &modelName,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                                               CT_PCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractPointAttributesScalar(modelName,
                                                                                                                                                                   result,
                                                                                                                                                                   pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -63,7 +63,7 @@ CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(c
 template<typename SCALAR>
 CT_PointsAttributesScalarTemplated<SCALAR>::CT_PointsAttributesScalarTemplated(const QString &modelName,
                                                                                const CT_AbstractResult *result,
-                                                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                                               CT_PCIR pcir,
                                                                                CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                                                const SCALAR &min,
                                                                                const SCALAR &max) : CT_AbstractPointAttributesScalar(modelName,

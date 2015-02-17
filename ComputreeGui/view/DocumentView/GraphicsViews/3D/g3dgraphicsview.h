@@ -87,9 +87,9 @@ public:
     bool mustSelectEdges() const;
     bool mustSelectItems() const;
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedPoints() const;
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedFaces() const;
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedEdges() const;
+    CT_SPCIR getSelectedPoints() const;
+    CT_SFCIR getSelectedFaces() const;
+    CT_SECIR getSelectedEdges() const;
     QList<CT_AbstractItemDrawable*> getSelectedItems() const;
 
     void beginRemoveMultiplePointsFromSelection(const size_t &n);

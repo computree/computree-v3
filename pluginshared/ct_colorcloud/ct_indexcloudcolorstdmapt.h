@@ -12,7 +12,7 @@ class CT_AbstractColorCloud;
  *        and the value of type "CT_Color" --> the color
  */
 template<typename T>
-class CT_IndexCloudColorStdMapT : public CT_CloudIndexStdMapT<T, CT_Color>, public CT_AbstractModifiableIndexCloudColorMap
+class CT_IndexCloudColorStdMapT : virtual public CT_CloudIndexStdMapT<T, CT_Color>, virtual public CT_AbstractModifiableIndexCloudColorMap
 {
 public:
     CT_IndexCloudColorStdMapT();

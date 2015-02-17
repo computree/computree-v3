@@ -99,7 +99,7 @@ public:
     /**
      * @brief Returns the index cloud of selected TYPE
      */
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selected();
+    CT_CIR selected();
 
 private:
     QSharedPointer< CT_StdCloudRegisteredT< CT_StandardCloudStdVectorT<GLubyte> > >            m_infoR;
@@ -114,7 +114,7 @@ private:
 
     bool                                                        m_selectionChanged;
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>   m_selectedBackup;
+    CT_CIR                                                      m_selectedBackup;
 
     template<typename T>
     CT_AbstractModifiableCloudIndexT<T>* selectedT() const;

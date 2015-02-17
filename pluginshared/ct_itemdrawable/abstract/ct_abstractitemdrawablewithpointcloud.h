@@ -28,13 +28,13 @@
 #ifndef CT_ABSTRACTITEMDRAWABLEWITHPOINTCLOUD_H
 #define CT_ABSTRACTITEMDRAWABLEWITHPOINTCLOUD_H
 
+#include "ct_defines.h"
+
 #include "ct_abstractsingularitemdrawable.h"
 #include "ct_itemdrawable/accessibility/ct_iaccesspointcloud.h"
 
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardabstractitemdrawablewithpointclouddrawmanager.h"
-
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 /**
  * @brief Represent an singular item that contains a point cloud
@@ -44,8 +44,6 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithPointCloud : public C
     Q_OBJECT
 
 public:
-
-    typedef CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR CT_AbstractCIR;
 
     CT_AbstractItemDrawableWithPointCloud();
 
@@ -69,7 +67,7 @@ public:
      */
     CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                           const CT_AbstractResult *result,
-                                          CT_AbstractCIR pcir);
+                                          CT_PCIR pcir);
 
     /**
      * @brief Create a ItemDrawable with a name of model defined in your step (typically a DEF_...)
@@ -91,7 +89,7 @@ public:
      */
     CT_AbstractItemDrawableWithPointCloud(const QString &modelName,
                                           const CT_AbstractResult *result,
-                                          CT_AbstractCIR pcir);
+                                          CT_PCIR pcir);
 
     virtual ~CT_AbstractItemDrawableWithPointCloud();
 
@@ -108,25 +106,15 @@ public:
     virtual void updateBoundingBox();
 
     /**
-      * \brief Retourne le nuage de points.
-      */
-    const CT_AbstractPointCloud* getPointCloud() const;
-
-    /**
       * \brief Retourne les index du nuage de points.
       */
     const CT_AbstractPointCloudIndex* getPointCloudIndex() const;
 
     /**
-      * \brief Retourne les index du nuage de points.
-      */
-    const CT_AbstractCloudIndexT<CT_Point>* getPointCloudIndexT() const;
-
-    /**
      * @brief PointCloudIndexRegistered getter
      * @return retourne le nuage de points enregistré
      */
-    CT_AbstractCIR getPointCloudIndexRegistered() const;
+    CT_PCIR getPointCloudIndexRegistered() const;
 
     /**
      * @brief return the number of points
@@ -156,15 +144,10 @@ protected:
     void deletePointCloud();
 
     /**
-      * \brief Retourne le nuage de points (modifiable).
-      */
-    CT_AbstractPointCloud* getPointCloud();
-
-    /**
      * @brief PointCloudIndexRegistered setter
      * @param pcr : le nuage d'index enregistré
      */
-    void setPointCloudIndexRegisteredProtected(CT_AbstractCIR pcir);
+    void setPointCloudIndexRegisteredProtected(CT_PCIR pcir);
 
     /**
       * \brief A redfinir si vous voulez supprimer quelquechose lors de l'appel  la mthode clearFromMemory
@@ -172,7 +155,7 @@ protected:
     virtual void clearFromMemoryProtected() {}
 
 private:
-    CT_AbstractCIR              _pcir;
+    CT_PCIR                     _pcir;
     CT_AbstractPointCloudIndex  *m_apci;
 
 #ifdef USE_BOOST_OLD

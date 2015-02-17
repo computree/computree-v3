@@ -13,23 +13,23 @@ public:
 
     CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              bool withAlphaInformation);
 
     CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              CT_AbstractColorCloud *cc);
 
 
     CT_EdgeAttributesColor(const QString &modelName,
                      const CT_AbstractResult *result,
-                     CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                     CT_ECIR pcir,
                      bool withAlphaInformation);
 
     CT_EdgeAttributesColor(const QString &modelName,
                      const CT_AbstractResult *result,
-                     CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                     CT_ECIR pcir,
                      CT_AbstractColorCloud *cc);
 
     /**

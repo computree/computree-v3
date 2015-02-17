@@ -30,8 +30,7 @@
 
 #include "ct_shapedata.h"
 #include "ct_linedata.h"
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_EllipseData : public CT_ShapeData
 {
@@ -51,8 +50,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  6.
       */
-    static CT_EllipseData* staticCreateZAxisAlignedEllipseDataFromPointCloud(const CT_AbstractPointCloud *pointCloud,
-                                                                             const CT_AbstractPointCloudIndex *pointCloudIndex);
+    static CT_EllipseData* staticCreateZAxisAlignedEllipseDataFromPointCloud(const CT_AbstractPointCloudIndex *pointCloudIndex);
 
 private:
 

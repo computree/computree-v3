@@ -824,11 +824,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
         while(it.hasNext())
         {
-            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedPoints();
+            CT_SPCIR selec = it.next()->getSelectedPoints();
 
             if(!selec.isNull()
-                    && (selec->abstractModifiableCloudIndex() != NULL))
-                points.append(selec->abstractModifiableCloudIndex());
+                    && (selec->abstractCloudIndex() != NULL))
+                points.append(selec->abstractCloudIndex());
         }
 
         exCopy->setPointsToExport(points);
@@ -842,11 +842,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
         while(it.hasNext())
         {
-            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedFaces();
+            CT_SFCIR selec = it.next()->getSelectedFaces();
 
             if(!selec.isNull()
-                    && (selec->abstractModifiableCloudIndex() != NULL))
-                faces.append(selec->abstractModifiableCloudIndex());
+                    && (selec->abstractCloudIndex() != NULL))
+                faces.append(selec->abstractCloudIndex());
         }
 
         exCopy->setFacesToExport(faces);
@@ -860,11 +860,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
         while(it.hasNext())
         {
-            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = it.next()->getSelectedEdges();
+            CT_SECIR selec = it.next()->getSelectedEdges();
 
             if(!selec.isNull()
-                    && (selec->abstractModifiableCloudIndex() != NULL))
-                edges.append(selec->abstractModifiableCloudIndex());
+                    && (selec->abstractCloudIndex() != NULL))
+                edges.append(selec->abstractCloudIndex());
         }
 
         exCopy->setEdgesToExport(edges);

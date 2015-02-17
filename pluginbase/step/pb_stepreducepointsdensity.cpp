@@ -45,6 +45,9 @@
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_accessor/ct_pointaccessor.h"
+
 #include <math.h>
 #include <iostream>
 #include <QList>
@@ -122,12 +125,14 @@ void PB_StepReducePointsDensity::compute()
 
     CT_ResultItemIterator itR(inResult, inSceneModel);
 
+    CT_PointAccessor pAccess;
+
     while(itR.hasNext()
           && !isStopped())
     {
         CT_Scene *in_scene = (CT_Scene*)itR.next();
-        const CT_AbstractPointCloudIndex *pointCloudIndex = in_scene->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->size();
+        CT_PointIterator itP(in_scene->getPointCloudIndex());
+        size_t n_points = itP.size();
 
         _minx = in_scene->minX();
         _miny = in_scene->minY();
@@ -146,34 +151,32 @@ void PB_StepReducePointsDensity::compute()
         // Extraction des points de la placette
         size_t i = 0;
 
-        while((i<n_points) && (!isStopped()))
+        while(itP.hasNext() && !isStopped())
         {
-            size_t pointIndex;
-            const CT_Point &point = pointCloudIndex->constTAt(i, pointIndex);
+            const CT_Point &point = itP.next().cT();
+            size_t pointIndex = itP.cIndex();
 
             size_t col, row, levz;
             size_t grdIndex = gridIndex(point(0), point(1), point(2), col, row, levz);
 
-            size_t previousPointIndex = indexMap.value(grdIndex, std::numeric_limits<size_t>::max());
+            size_t previousPointGlobalIndex = indexMap.value(grdIndex, std::numeric_limits<size_t>::max());
 
-            if (previousPointIndex == std::numeric_limits<size_t>::max())
+            if (previousPointGlobalIndex == std::numeric_limits<size_t>::max())
             {
                 indexMap.insert(grdIndex, pointIndex);
             } else {
 
-                float gridx, gridy, gridz;
+                double gridx, gridy, gridz;
                 cellCoordinates(col, row, levz, gridx, gridy, gridz);
 
-                float distance = pow(point(0) - gridx, 2) + pow(point(1) - gridy, 2) + pow(point(2) - gridz, 2);
+                double distance = pow(point(0) - gridx, 2) + pow(point(1) - gridy, 2) + pow(point(2) - gridz, 2);
 
-                const CT_Point &previousPoint = pointCloudIndex->constTAtGlobalIndex(previousPointIndex);
+                const CT_Point &previousPoint = pAccess.constPointAt(previousPointGlobalIndex);
 
-                float previousDistance = pow(previousPoint(0) - gridx, 2) + pow(previousPoint(1) - gridy, 2) + pow(previousPoint(2) - gridz, 2);
+                double previousDistance = pow(previousPoint(0) - gridx, 2) + pow(previousPoint(1) - gridy, 2) + pow(previousPoint(2) - gridz, 2);
 
                 if (distance < previousDistance)
-                {
                     indexMap.insert(grdIndex, pointIndex);
-                }
             }
             ++i;
 
@@ -223,7 +226,7 @@ void PB_StepReducePointsDensity::compute()
 
 }
 
-size_t PB_StepReducePointsDensity::gridIndex(const float &x, const float &y, const float &z, size_t &colx, size_t &liny, size_t &levz) const
+size_t PB_StepReducePointsDensity::gridIndex(const double &x, const double &y, const double &z, size_t &colx, size_t &liny, size_t &levz) const
 {
     colx = (size_t) floor((x - _minx) / _resolution);
     liny = (size_t) floor((y - _miny) / _resolution);
@@ -232,7 +235,7 @@ size_t PB_StepReducePointsDensity::gridIndex(const float &x, const float &y, con
     return levz*_dimx*_dimy + liny*_dimx + colx;;
 }
 
-void PB_StepReducePointsDensity::cellCoordinates(const size_t &colx, const size_t &liny, const size_t &levz, float &x, float &y, float &z) const
+void PB_StepReducePointsDensity::cellCoordinates(const size_t &colx, const size_t &liny, const size_t &levz, double &x, double &y, double &z) const
 {
     x = _minx + colx*_resolution + _halfResolution;
     y = _miny + liny*_resolution + _halfResolution;

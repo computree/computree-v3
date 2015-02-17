@@ -2,8 +2,7 @@
 #define CT_IACCESSFACECLOUD_H
 
 #include "pluginShared_global.h"
-
-class CT_AbstractFaceCloudIndex;
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_IAccessFaceCloud
 {

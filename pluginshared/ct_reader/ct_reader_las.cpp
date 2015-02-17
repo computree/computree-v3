@@ -7,6 +7,7 @@
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 #include "ct_coordinates/ct_defaultcoordinatesystem.h"
+#include "ct_iterator/ct_mutablepointiterator.h"
 
 #include <QMessageBox>
 
@@ -194,9 +195,8 @@ bool CT_Reader_LAS::protectedReadFile()
             delete m_header;
             m_header = readHeader(error);
 
-            // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
-            // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
-            QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ()));
+            // create a new coordinate system for this scene.
+            GLuint csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(), this));
 
             setToolTip(((CT_LASHeader*)m_header)->toString());
 
@@ -207,11 +207,12 @@ bool CT_Reader_LAS::protectedReadFile()
 
             qint32 x, y, z;
             double xc, yc, zc;
+            CT_Point pAdded;
 
             quint64 pos = f.pos();
             bool mustTransformPoint = ((CT_LASHeader*)m_header)->mustTransformPoints();
 
-            CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
+            CT_NMPCIR pcir = PS_REPOSITORY->createNewPointCloud(nPoints);
 
             // VECTOR
             CT_StandardCloudStdVectorT<qint8> *scanAngleRankV0_5 = NULL;
@@ -286,6 +287,8 @@ bool CT_Reader_LAS::protectedReadFile()
                 rpwlV = new CT_StandardCloudStdVectorT<float>();
             }
 
+            CT_MutablePointIterator it(pcir);
+
             for(size_t i=0; i<nPoints; ++i)
             {
                 // READ ALL ATTRIBUTES
@@ -342,18 +345,14 @@ bool CT_Reader_LAS::protectedReadFile()
 
                 // CONVERT POINT
 
-                CT_Point &p = pcir->tAt(i);
-
                 if(mustTransformPoint)
-                {
                     ((CT_LASHeader*)m_header)->transformPoint(x, y, z, xc, yc, zc);
 
-                    PS_COORDINATES_SYS->convertImport(xc, yc, zc, p(0), p(1), p(2));
-                }
-                else
-                {
-                    PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
-                }
+                pAdded(0) = xc;
+                pAdded(1) = yc;
+                pAdded(2) = zc;
+
+                it.next().replaceCurrentPoint(pAdded, csIndex);
 
                 pos += ((CT_LASHeader*)m_header)->m_pointDataRecordLength;
                 f.seek(pos);
@@ -364,7 +363,6 @@ bool CT_Reader_LAS::protectedReadFile()
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(),
                                   ((CT_LASHeader*)m_header)->get_maxX(), ((CT_LASHeader*)m_header)->get_maxY(), ((CT_LASHeader*)m_header)->get_maxZ());
-            scene->registerCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_LAS_sceneOut, scene);

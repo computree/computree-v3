@@ -13,6 +13,8 @@
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include "view/DocumentView/GraphicsViews/3D/g3dcamera.h"
 
 G3DCameraController::G3DCameraController() : DM_GraphicsViewCamera()
@@ -687,14 +689,13 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
 
     double size = selected.size();
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> selec = _view->getSelectedPoints();
+    CT_SPCIR selec = _view->getSelectedPoints();
 
-    if(!selec.isNull()
-            && (selec->abstractModifiableCloudIndex() != NULL))
+    CT_PointIterator itP(selec);
+
+    if(itP.hasNext())
     {
-        CT_AbstractCloudIndex *index = selec->abstractModifiableCloudIndex();
-
-        size_t sizeP = index->size();
+        size_t sizeP = itP.size();
         size_t increment = log10(sizeP);
 
         if(increment < 3)
@@ -702,20 +703,18 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
         else
             increment = pow(10, increment)/10;
 
-        const CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
-
-        size_t i=0;
-
-        while(i<sizeP)
+        while(itP.hasNext())
         {
-            const CT_Point &point = pc->constTAt(index->indexAt(i));
+            itP.next();
+
+            const CT_Point &point = itP.currentPoint();
 
             bx += point(0);
             by += point(1);
             bz += point(2);
 
             ++size;
-            i += increment;
+            itP.jump(increment);
         }
     }
 

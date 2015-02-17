@@ -11,11 +11,11 @@ public:
     CT_AbstractEdgeAttributesScalar();
     CT_AbstractEdgeAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                     CT_AbstractResult *result,
-                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
+                                    CT_ECIR cir);
 
     CT_AbstractEdgeAttributesScalar(const QString &modelName,
                                     CT_AbstractResult *result,
-                                    CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
+                                    CT_ECIR cir);
 
     /**
       * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.

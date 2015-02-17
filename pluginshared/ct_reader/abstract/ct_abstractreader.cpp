@@ -127,6 +127,7 @@ bool CT_AbstractReader::readFile()
     setProgress(0);
 
     clearOutItemDrawable();
+    clearOutGroups();
 
     m_error = false;
     m_stop = false;
@@ -428,6 +429,11 @@ QList<CT_AbstractItemGroup *> CT_AbstractReader::groupOfModel(const QString &mod
     return l;
 }
 
+void CT_AbstractReader::registerCoordinateSystem(CT_CSR coordinateSystemRegistered)
+{
+    m_coordinateSystems.append(coordinateSystemRegistered);
+}
+
 void CT_AbstractReader::addNewReadableFormat(const FileFormat &format)
 {
     m_formats.append(format);
@@ -506,6 +512,8 @@ void CT_AbstractReader::clearOutItemDrawable()
 {
     qDeleteAll(m_outItems.begin(), m_outItems.end());
     m_outItems.clear();
+
+    m_coordinateSystems.clear();
 }
 
 void CT_AbstractReader::clearOutGroupsModel()
@@ -518,4 +526,6 @@ void CT_AbstractReader::clearOutGroups()
 {
     qDeleteAll(m_outGroups.begin(), m_outGroups.end());
     m_outGroups.clear();
+
+    m_coordinateSystems.clear();
 }

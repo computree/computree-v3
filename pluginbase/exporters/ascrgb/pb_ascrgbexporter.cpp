@@ -11,6 +11,7 @@
 
 #include "ct_global/ct_context.h"
 #include "ct_tools/ct_numerictostringconversiont.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 PB_ASCRGBExporter::PB_ASCRGBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -85,8 +86,6 @@ bool PB_ASCRGBExporter::protectedExportToFile()
         int totalToExport = itemDrawableToExport().size();
         int nExported = 0;
 
-        CT_AbstractCoordinateSystem::realEx cx, cy, cz;
-
         // write data
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
@@ -94,24 +93,18 @@ bool PB_ASCRGBExporter::protectedExportToFile()
         {
             CT_AbstractItemDrawable *item = it.next();
 
-            const CT_AbstractPointCloudIndex *constPCIndex = dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex();
+            CT_PointIterator itP(dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex());
 
-            size_t totalSize = constPCIndex->size();
+            size_t totalSize = itP.size();
             size_t i = 0;
 
-            CT_AbstractPointCloudIndex::ConstIterator begin = constPCIndex->constBegin();
-            CT_AbstractPointCloudIndex::ConstIterator end = constPCIndex->constEnd();
-
-            while(begin != end)
+            while(itP.hasNext())
             {
-                const CT_Point &point = begin.cT();
-                size_t globalIndex = begin.cIndex();
+                const CT_Point &point = itP.next().cT();
 
-                PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(point(CT_Point::X), point(CT_Point::Y), point(CT_Point::Z), cx, cy, cz);
-
-                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cx) << " ";
-                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cy) << " ";
-                txtStream << CT_NumericToStringConversionT<CT_AbstractCoordinateSystem::realEx>::toString(cz) << " ";
+                txtStream << CT_NumericToStringConversionT<double>::toString(point(0)) << " ";
+                txtStream << CT_NumericToStringConversionT<double>::toString(point(1)) << " ";
+                txtStream << CT_NumericToStringConversionT<double>::toString(point(2)) << " ";
 
                 if(cc == NULL)
                 {
@@ -119,7 +112,7 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                 }
                 else
                 {
-                    const CT_Color &co = cc->constColorAt(begin.cIndex());
+                    const CT_Color &co = cc->constColorAt(itP.cIndex());
                     r = (quint16)co.r / 255.0;
                     g = (quint16)co.g / 255.0;
                     b = (quint16)co.b / 255.0;
@@ -129,7 +122,6 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                     txtStream << b << "\n";
                 }
 
-                ++begin;
                 ++i;
 
                 setExportProgress((((i*100)/totalSize)+nExported)/totalToExport);

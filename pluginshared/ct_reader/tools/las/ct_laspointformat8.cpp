@@ -9,9 +9,9 @@ size_t CT_LASPointFormat8::sizeInBytes() const
     return CT_LASPointFormat7::sizeInBytes() + nirPacketSizeInBytes();
 }
 
-CT_LasPointInfo* CT_LASPointFormat8::write(QDataStream &stream, const size_t &globalIndex)
+CT_LasPointInfo* CT_LASPointFormat8::write(QDataStream &stream, const CT_Point &p, const size_t &globalIndex)
 {
-    CT_LasPointInfo *info = CT_LASPointFormat7::write(stream, globalIndex);
+    CT_LasPointInfo *info = CT_LASPointFormat7::write(stream, p, globalIndex);
 
     writeInfoFormat8(stream, info);
 

@@ -29,7 +29,7 @@
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
-CT_AbstractCoordinateSystem::realEx CT_PointTools::staticXExport(const CT_Point &p, const size_t &globalIndex)
+CT_AbstractCoordinateSystem::realEx CT_PointTools::staticXExport(const CT_PointData &p, const size_t &globalIndex)
 {
     CT_AbstractCoordinateSystem::realEx out;
     PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), out, out, out, CT_AbstractCoordinateSystem::CONVERT_X);
@@ -37,7 +37,7 @@ CT_AbstractCoordinateSystem::realEx CT_PointTools::staticXExport(const CT_Point 
     return out;
 }
 
-CT_AbstractCoordinateSystem::realEx CT_PointTools::staticYExport(const CT_Point &p, const size_t &globalIndex)
+CT_AbstractCoordinateSystem::realEx CT_PointTools::staticYExport(const CT_PointData &p, const size_t &globalIndex)
 {
     CT_AbstractCoordinateSystem::realEx out;
     PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), out, out, out, CT_AbstractCoordinateSystem::CONVERT_Y);
@@ -45,7 +45,7 @@ CT_AbstractCoordinateSystem::realEx CT_PointTools::staticYExport(const CT_Point 
     return out;
 }
 
-CT_AbstractCoordinateSystem::realEx CT_PointTools::staticZExport(const CT_Point &p, const size_t &globalIndex)
+CT_AbstractCoordinateSystem::realEx CT_PointTools::staticZExport(const CT_PointData &p, const size_t &globalIndex)
 {
     CT_AbstractCoordinateSystem::realEx out;
     PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), out, out, out, CT_AbstractCoordinateSystem::CONVERT_Z);
@@ -53,15 +53,20 @@ CT_AbstractCoordinateSystem::realEx CT_PointTools::staticZExport(const CT_Point 
     return out;
 }
 
-void CT_PointTools::staticXYZExport(const CT_Point &p, const size_t &globalIndex, CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z)
+void CT_PointTools::staticXYZExport(const CT_PointData &p, const size_t &globalIndex, CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z)
 {
     PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), x, y, z, CT_AbstractCoordinateSystem::CONVERT_ALL);
 }
 
-Eigen::Vector3d CT_PointTools::staticRealPoint(const CT_Point &p, const size_t &globalIndex)
+CT_Point CT_PointTools::staticRealPoint(const CT_PointData &p, const size_t &globalIndex)
 {
-    Eigen::Vector3d cp;
+    CT_Point cp;
     PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), cp(0), cp(1), cp(2), CT_AbstractCoordinateSystem::CONVERT_ALL);
 
     return cp;
+}
+
+void CT_PointTools::staticRealPoint(const CT_PointData &p, CT_Point &cp, const size_t &globalIndex)
+{
+    PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(p(0), p(1), p(2), cp(0), cp(1), cp(2), CT_AbstractCoordinateSystem::CONVERT_ALL);
 }

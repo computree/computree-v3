@@ -14,22 +14,22 @@ public:
 
     CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                             CT_PCIR pcir,
                              bool withAlphaInformation);
 
     CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                             CT_PCIR pcir,
                              CT_AbstractColorCloud *cc);
 
     CT_PointsAttributesColor(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                             CT_PCIR pcir,
                              bool withAlphaInformation);
 
     CT_PointsAttributesColor(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                             CT_PCIR pcir,
                              CT_AbstractColorCloud *cc);
 
 

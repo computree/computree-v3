@@ -30,9 +30,8 @@
 #include "ct_global/ct_context.h"
 
 #include "ct_step/ct_stepinitializedata.h"
-
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
+#include "ct_point.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include <QTextStream>
 #include <limits>
@@ -178,7 +177,9 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
     QStringList wordsOfLine;
 
     int nLine = 0;
-    float currentX, currentY, currentZ, currentIntensity;
+    double currentX, currentY, currentZ, currentIntensity;
+    bool first = true;
+    GLuint csIndex = 0;
 
     bool convertionToFloatSuccess;
     int maxSize = 0;
@@ -220,23 +221,23 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
                     currentIntensity = 0;
 
                     // Reads the attributes of the point
-                    float *outputFloat;
+                    double *outputDouble;
 
                     for(int i=0; i<7; ++i)
                     {
-                        outputFloat = NULL;
+                        outputDouble = NULL;
 
                         if(_columnTab[i] == COLUMN_X)
-                            outputFloat = &currentX;
+                            outputDouble = &currentX;
                         else if(_columnTab[i] == COLUMN_Y)
-                            outputFloat = &currentY;
+                            outputDouble = &currentY;
                         else if(_columnTab[i] == COLUMN_Z)
-                            outputFloat = &currentZ;
+                            outputDouble = &currentZ;
                         else if(_columnTab[i] == COLUMN_INTENSITY)
-                            outputFloat = &currentIntensity;
+                            outputDouble = &currentIntensity;
 
-                        if(outputFloat != NULL)
-                            readFloat( *outputFloat, wordsOfLine, i, convertionToFloatSuccess, QString(QString("Unable to convert the ascii format to a floatting point at line ").append( QString().number(nLine))) );
+                        if(outputDouble != NULL)
+                            readDouble( *outputDouble, wordsOfLine, i, convertionToFloatSuccess, QString(QString("Unable to convert the ascii format to a floatting point at line ").append( QString().number(nLine))) );
                     }
 
                     // Checks for min and max
@@ -258,8 +259,15 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
                     if ( currentZ > zmax )
                         zmax = currentZ;
 
+                    if(first) {
+                        first = false;
+
+                        if(fabs(currentX) > 1000 || fabs(currentY) > 1000 || fabs(currentZ) > 1000)
+                            csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this));
+                    }
+
                     // Add this point to the point cloud
-                    uspc->addPoint( createCtPoint(currentX, currentY, currentZ) );
+                    uspc->addPoint( createCtPoint(currentX, currentY, currentZ), csIndex );
 
                     // Progress bar
                     setProgress( currentSizeRead*100.0/fileSize );
@@ -273,9 +281,9 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
     createOutResult(PS_REPOSITORY->registerUndefinedSizePointCloud(uspc), xmin, xmax, ymin, ymax, zmin, zmax);
 }
 
-void PB_StepLoadAsciiFile::readFloat(float &outputFloat, QStringList &stringList, int nWord, bool &success, const QString &msgError)
+void PB_StepLoadAsciiFile::readDouble(double &outputDouble, QStringList &stringList, int nWord, bool &success, const QString &msgError)
 {
-    outputFloat = stringList[nWord].toFloat( &success );
+    outputDouble = stringList[nWord].toDouble(&success);
 
     if(!success)
     {

@@ -31,8 +31,7 @@
 #include "ct_shapedata.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_LineData : public CT_ShapeData
 {
@@ -72,8 +71,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  2.
       */
-    static CT_LineData* staticCreateLineDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                           const CT_AbstractPointCloudIndex &pointCloudIndex);
+    static CT_LineData* staticCreateLineDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex);
 
 
     static CT_LineData* staticCreateLineDataFromPointCloud(const QList<Eigen::Vector3d> &l_gp);

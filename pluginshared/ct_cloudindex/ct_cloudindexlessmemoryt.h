@@ -36,18 +36,9 @@ public:
 
 private:
 
-    friend class CT_PointCloudIndexLessMemory;
-    friend class CT_FaceCloudIndexLessMemory;
-    friend class CT_EdgeCloudIndexLessMemory;
+    template<typename T, class CloudIndexLessMemory> friend class CT_CloudIndexRegistrationManagerT;
+    template<typename T, typename CLOUD> friend class CT_GlobalCloudManagerT;
 
-    // private and friend class CT_XCloudIndexLessMemory to allow
-    // dynamic_cast a CT_AbstractCloudIndexT<CT_Point> to ICloudIndex.
-    // dynamic_cast a CT_AbstractCloudIndexT<CT_Face> to ICloudIndex.
-    // dynamic_cast a CT_AbstractCloudIndexT<CT_Edge> to ICloudIndex.
-    //
-    // only CT_PointCloudIndexLessMemory can create a CT_CloudIndexLessMemoryT
-    // only CT_FaceCloudIndexLessMemory can create a CT_CloudIndexLessMemoryT
-    // only CT_EdgeCloudIndexLessMemory can create a CT_CloudIndexLessMemoryT
     CT_CloudIndexLessMemoryT(const size_t &begin, const size_t &size);
 
     size_t                                      m_begin;

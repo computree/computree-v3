@@ -43,7 +43,9 @@
 #include "ct_itemdrawable/ct_pointsattributesnormal.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 #include "ct_normalcloud/ct_normalcloudstdvector.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
+#include "ct_point.h"
 #include "ct_normal.h"
 
 #include <QTextStream>
@@ -394,15 +396,15 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
     qDebug() << "Normal cloud = null ? " << (normalCloud == NULL);
     qDebug() << "Colonne x y z " << _columnNX << _columnNY << _columnNZ;
 
-    float xmin = std::numeric_limits<float>::max();
-    float ymin = xmin;
-    float zmin = xmin;
-    float imin = xmin;
+    double xmin = std::numeric_limits<double>::max();
+    double ymin = xmin;
+    double zmin = xmin;
+    double imin = xmin;
 
-    float xmax = -std::numeric_limits<float>::max();
-    float ymax = xmax;
-    float zmax = xmax;
-    float imax = xmax;
+    double xmax = -std::numeric_limits<double>::max();
+    double ymax = xmax;
+    double zmax = xmax;
+    double imax = xmax;
 
     QTextStream stream ( &f );
     QString     currentLine;
@@ -410,7 +412,9 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     int nPoints = 0;
     int nLine = 0;
-    float currentX, currentY, currentZ, currentIntensity;
+    double currentX, currentY, currentZ, currentIntensity;
+    bool first = true;
+    GLuint csIndex = 0;
     CT_Normal currentNormal;
     CT_Color currentRGB;
 
@@ -459,9 +463,9 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
             {
                 bool okx = true, oky = true, okz = true, oki = true;
                 bool okr = true, okg = true, okb = true, oknx = true, okny = true, oknz = true;
-                currentX = locale.toFloat(wordsOfLine.at(_columnX), &okx);
-                currentY = locale.toFloat(wordsOfLine.at(_columnY), &oky);
-                currentZ = locale.toFloat(wordsOfLine.at(_columnZ), &okz);
+                currentX = locale.toDouble(wordsOfLine.at(_columnX), &okx);
+                currentY = locale.toDouble(wordsOfLine.at(_columnY), &oky);
+                currentZ = locale.toDouble(wordsOfLine.at(_columnZ), &okz);
 
                 if(collection != NULL)
                 {
@@ -485,7 +489,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     }
                     else
                     {
-                        currentRGB.r = locale.toFloat(wordsOfLine.at(_columnR), &okr);
+                        currentRGB.r = locale.toInt(wordsOfLine.at(_columnR), &okr);
                     }
 
                     if(_columnG<0)
@@ -495,7 +499,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     }
                     else
                     {
-                        currentRGB.g = locale.toFloat(wordsOfLine.at(_columnG), &okg);
+                        currentRGB.g = locale.toInt(wordsOfLine.at(_columnG), &okg);
                     }
 
                     if(_columnB<0)
@@ -505,7 +509,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     }
                     else
                     {
-                        currentRGB.b = locale.toFloat(wordsOfLine.at(_columnB), &okb);
+                        currentRGB.b = locale.toInt(wordsOfLine.at(_columnB), &okb);
                     }
                 }
 
@@ -579,8 +583,15 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 if ( currentIntensity > imax )
                     imax = currentIntensity;
 
+                if(first) {
+                    first = false;
+
+                    if(fabs(currentX) > 1000 || fabs(currentY) > 1000 || fabs(currentZ) > 1000)
+                        csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this));
+                }
+
                 // Add this point to the point cloud
-                uspc->addPoint( createCtPoint(currentX, currentY, currentZ) );
+                uspc->addPoint( createCtPoint(currentX, currentY, currentZ), csIndex );
 
                 if (collection != NULL && oki)
                 {
@@ -609,7 +620,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
 
     setProgress(100);
 
-    CT_Repository::CT_AbstractPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(uspc);
+    CT_PCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(uspc);
 
     CT_ResultGroup *out_res = getOutResultList().first();
     QList<CT_AbstractSingularItemDrawable*> lAdd;

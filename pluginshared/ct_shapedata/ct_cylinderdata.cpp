@@ -83,25 +83,22 @@ CT_CylinderData* CT_CylinderData::clone() const
     return new CT_CylinderData(getCenter(), getDirection(), getRadius(), getHeight(), getLineError(), getCircleError());
 }
 
-CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                                           const CT_AbstractPointCloudIndex &pointCloudIndex,
+CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                            const Eigen::Vector3d &pointCloudBarycenter)
 {
     if(pointCloudIndex.size() < 3)
         return NULL;
 
     // fitting des points avec une ligne 3D
-    CT_LineData *lineData = CT_LineData::staticCreateLineDataFromPointCloud(pointCloud,
-                                                                            pointCloudIndex);
+    CT_LineData *lineData = CT_LineData::staticCreateLineDataFromPointCloud(pointCloudIndex);
 
-    CT_CylinderData *data = CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDirection(pointCloud, pointCloudIndex, pointCloudBarycenter, *lineData);
+    CT_CylinderData *data = CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDirection(pointCloudIndex, pointCloudBarycenter, *lineData);
     delete lineData;
 
     return data;
 }
 
-CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloud &pointCloud,
-                                                                                       const CT_AbstractPointCloudIndex &pointCloudIndex,
+CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                                        const Eigen::Vector3d &pointCloudBarycenter,
                                                                                        const CT_LineData &direction,
                                                                                        CT_CircleData *outCircleData)
@@ -165,8 +162,7 @@ CT_CylinderData* CT_CylinderData::staticCreate3DCylinderDataFromPointCloudAndDir
     // on deplace et tourne les points puis on fit un cercle
     CircleDataPreProcessingAction preProcessingAction(Eigen::Vector3d(tx, ty, tz), cos(rz), sin(rz), cos(ry), sin(ry));
 
-    CT_CircleData *circleData = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(pointCloud,
-                                                                                                                 pointCloudIndex,
+    CT_CircleData *circleData = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(pointCloudIndex,
                                                                                                                  &preProcessingAction);
     if(circleData == NULL)
         return NULL;

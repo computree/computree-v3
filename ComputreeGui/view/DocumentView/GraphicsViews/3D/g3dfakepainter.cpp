@@ -8,11 +8,7 @@
 
 #include "ct_global/ct_context.h"
 #include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
 #include "ct_itemdrawable/abstract/ct_abstractmeshmodel.h"
-#include "ct_mesh/cloud/abstract/ct_abstractedgecloudindex.h"
-#include "ct_mesh/cloud/abstract/ct_abstractfacecloudindex.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 G3DFakePainter::G3DFakePainter() : G3DPainter()
 {
@@ -249,7 +245,7 @@ void G3DFakePainter::drawOctreeOfPoints(const OctreeInterface *octree, PainterIn
         {
             for(int z=0; z<s; ++z)
             {
-                const CT_AbstractCloudIndexT<CT_Point> *indexes = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(octree->at(x, y, z));
+                const CT_AbstractPointCloudIndex *indexes = octree->at(x, y, z);
 
                 if(indexes != NULL)
                 {
@@ -439,7 +435,7 @@ void G3DFakePainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                 startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
 
-                const CT_Face &face = faceCloud()->constTAt(fIndex);
+                const CT_Face &face = m_fAccess.constFaceAt(fIndex);
                 glArrayElement(face.iPointAt(0));
                 glArrayElement(face.iPointAt(1));
                 glArrayElement(face.iPointAt(2));
@@ -533,7 +529,7 @@ void G3DFakePainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
                 startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
 
-                const CT_Edge &edge = edgeCloud()->constTAt(eIndex);
+                const CT_Edge &edge = m_eAccess.constEdgeAt(eIndex);
                 glArrayElement(edge.iPointAt(0));
                 glArrayElement(edge.iPointAt(1));
 

@@ -30,6 +30,7 @@
 #include "ct_triangulation/ct_nodet.h"
 #include "ct_triangulation/ct_trianglet.h"
 #include "ct_triangulation/ct_edget.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #include <math.h>
 #include <limits>
@@ -225,11 +226,12 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVec
     // Compute triangulation
     CT_DelaunayT delaunay;
 
-    size_t size = indices->size();
+    CT_PointIterator it(indices);
 
-    for (size_t i = 0 ; i < size ; i++)
+    while(it.hasNext())
     {
-        CT_Point &point = indices->tAt(i);
+        // TODO : use the point in double
+        CT_PointData &point = it.next().currentInternalPoint();
         float* pt = &point(0);
 
         delaunay.insertNode(CT_NodeT::create(pt, NULL, false));

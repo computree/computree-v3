@@ -3,16 +3,29 @@
 
 #include "ct_coordinates/abstract/ct_abstractcoordinatesystem.h"
 
+class CT_VirtualAbstractStep;
+class CT_AbstractReader;
+
 /**
  * @brief The default coordinate system just translate coordinates
  */
 class PLUGINSHAREDSHARED_EXPORT CT_DefaultCoordinateSystem : public CT_AbstractCoordinateSystem
 {
 public:
-    CT_DefaultCoordinateSystem();
+    CT_DefaultCoordinateSystem(const CT_VirtualAbstractStep *step);
+
+    CT_DefaultCoordinateSystem(const CT_AbstractReader *reader);
+
     CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
                                CT_AbstractCoordinateSystem::realEx y,
-                               CT_AbstractCoordinateSystem::realEx z);
+                               CT_AbstractCoordinateSystem::realEx z,
+                               const CT_VirtualAbstractStep *step);
+
+
+    CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                               CT_AbstractCoordinateSystem::realEx y,
+                               CT_AbstractCoordinateSystem::realEx z,
+                               const CT_AbstractReader *reader);
 
     /**
      * @brief Returns true if coordinates passed in parameter can be converted to realIm (import). False
@@ -58,6 +71,11 @@ public:
     bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z);
 
     /**
+     * @brief Returns the offset of this coordinate system
+     */
+    void offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const;
+
+    /**
      * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)
      */
     Eigen::Matrix4d toMatrix4x4() const;
@@ -77,10 +95,21 @@ public:
      */
     inline CT_AbstractCoordinateSystem::realEx zOffset() const { return m_zOffset; }
 
+    /**
+     * @brief Return the index of this coordinate system in the manager
+     */
+    GLuint indexInManager() const;
+
 private:
     CT_AbstractCoordinateSystem::realEx  m_xOffset;
     CT_AbstractCoordinateSystem::realEx  m_yOffset;
     CT_AbstractCoordinateSystem::realEx  m_zOffset;
+
+protected:
+
+    friend class CT_CoordinateSystemManager;
+
+    CT_DefaultCoordinateSystem();
 };
 
 #endif // CT_DEFAULTCOORDINATESYSTEM_H

@@ -1,12 +1,12 @@
 #include "ct_globalfacecloudmanager.h"
 #include "ct_mesh/ct_edge.h"
 
-CT_GlobalFaceCloudManager::CT_GlobalFaceCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Edge> *globalEdgeCloudManager) : CT_GlobalCloudManagerT< CT_Face, CT_StandardCloudStdVectorT<CT_Face> >()
+CT_GlobalFaceCloudManager::CT_GlobalFaceCloudManager(const CT_AbstractGlobalEdgeCloudManager *globalEdgeCloudManager) : CT_GlobalCloudManagerT< CT_Face, CT_FaceCloudStdVector >()
 {
     // add a face to begin index to 1 (invalid index of a face is 0)
     this->m_cloud.addT(CT_Face());
 
-    m_gecm = (CT_AbstractGlobalCloudManagerT<CT_Edge>*)globalEdgeCloudManager;
+    m_gecm = (CT_AbstractGlobalEdgeCloudManager*)globalEdgeCloudManager;
     m_gecm->addGlobalCloudListener(this);
 }
 
@@ -18,12 +18,12 @@ void CT_GlobalFaceCloudManager::cloudDeleted(const size_t &beginIndex, const siz
 
         // we will remove edge of all faces that contains a edge that have been removed
         // and shift them that is after the list of edge deleted
-        CT_StandardCloudStdVectorT<CT_Face> *cloud = globalCloud();
+        CT_FaceCloudStdVector *cloud = globalCloud();
 
         size_t currentIndex = 0;
 
-        CT_StandardCloudStdVectorT<CT_Face>::Iterator begin = cloud->begin()+currentIndex;
-        CT_StandardCloudStdVectorT<CT_Face>::Iterator end = cloud->end();
+        CT_FaceCloudStdVector::Iterator begin = cloud->begin()+currentIndex;
+        CT_FaceCloudStdVector::Iterator end = cloud->end();
 
         if(begin != end)
         {
@@ -33,8 +33,8 @@ void CT_GlobalFaceCloudManager::cloudDeleted(const size_t &beginIndex, const siz
             size_t edgeIndex;
             size_t endIndex = beginIndex+size-1;
 
-            CT_StandardCloudStdVectorT<CT_Face>::Iterator beginOrig = begin;
-            CT_StandardCloudStdVectorT<CT_Face>::Iterator nextEnd = end;
+            CT_FaceCloudStdVector::Iterator beginOrig = begin;
+            CT_FaceCloudStdVector::Iterator nextEnd = end;
 
             while(begin != nextEnd)
             {

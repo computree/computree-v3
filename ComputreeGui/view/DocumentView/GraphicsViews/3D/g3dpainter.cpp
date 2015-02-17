@@ -67,10 +67,12 @@ G3DPainter::G3DPainter()
     m_shaderProgPointError = false;
     m_ShaderPoint = NULL;
     m_shaderPointError = false;
-
-    m_pointCloud = PS_REPOSITORY->globalCloud<CT_Point>();
-    m_faceCloud = PS_REPOSITORY->globalCloud<CT_Face>();
-    m_edgeCloud = PS_REPOSITORY->globalCloud<CT_Edge>();
+    m_shaderLocInitialized = false;
+    m_shaderLocCsIndex = -1;
+    m_shaderLocInfo = -1;
+    m_shaderLocCsMatrix = -1;
+    m_shaderLocSelectionColor = -1;
+    m_shaderLocCheckSelected = -1;
 
     m_csMatrix.resize(64, Eigen::Matrix4f::Identity()); // 64 is the maximum number of matrix in the shader
 
@@ -618,7 +620,7 @@ void G3DPainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
                 }
             }
 
-            /*if(dynamic_cast<const CT_CloudIndexLessMemoryT<CT_Point>*>(pci) != NULL) {
+            /*if(dynamic_cast<const CT_PointCloudIndexLessMemory*>(pci) != NULL) {
                 startDrawMultiple(GL_BEGIN_POINT_FROM_PC);
 
                 size_t fn = pci->first();
@@ -1009,7 +1011,7 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
                         glColor4ub(color.r, color.g, color.b, color.a);
                     }
 
-                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    const CT_Edge &edge = m_eAccess.constEdgeAt(globalIndex);
                     glArrayElement(edge.iPointAt(0));
                     glArrayElement(edge.iPointAt(1));
                 }
@@ -1029,7 +1031,7 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
                         setCurrentColor();
                     }
 
-                    const CT_Edge &edge = m_edgeCloud->constTAt(globalIndex);
+                    const CT_Edge &edge = m_eAccess.constEdgeAt(globalIndex);
                     glArrayElement(edge.iPointAt(0));
                     glArrayElement(edge.iPointAt(1));
                 }
@@ -1239,7 +1241,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                         glNormal3fv(nn->normalAt(globalIndex).vertex());
 
-                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
                         glArrayElement(face.iPointAt(0));
                         glArrayElement(face.iPointAt(1));
                         glArrayElement(face.iPointAt(2));
@@ -1262,7 +1264,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
                             glColor4ub(color.r, color.g, color.b, color.a);
                         }
 
-                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
                         glArrayElement(face.iPointAt(0));
                         glArrayElement(face.iPointAt(1));
                         glArrayElement(face.iPointAt(2));
@@ -1292,7 +1294,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                         glNormal3fv(nn->normalAt(globalIndex).vertex());
 
-                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
                         glArrayElement(face.iPointAt(0));
                         glArrayElement(face.iPointAt(1));
                         glArrayElement(face.iPointAt(2));
@@ -1314,7 +1316,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
                             setCurrentColor();
                         }
 
-                        const CT_Face &face = m_faceCloud->constTAt(globalIndex);
+                        const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
                         glArrayElement(face.iPointAt(0));
                         glArrayElement(face.iPointAt(1));
                         glArrayElement(face.iPointAt(2));
@@ -1507,14 +1509,12 @@ void G3DPainter::initPointShader()
             GLint version;
             glGetIntegerv(GL_MAJOR_VERSION, &version);
 
-            bool compileOk = false;
-
             if(version >= 3)
-                compileOk = m_ShaderPoint->compileSourceFile("./shaders/points.vert");
+                m_shaderSourceFile = "./shaders/points.vert";
             else
-                compileOk = m_ShaderPoint->compileSourceFile("./shaders/points_120.vert");
+                m_shaderSourceFile = "./shaders/points_120.vert";
 
-            if(!compileOk)
+            if(!m_ShaderPoint->compileSourceFile(m_shaderSourceFile))
             {
                 QString log;
                 QString tmp;
@@ -1523,7 +1523,9 @@ void G3DPainter::initPointShader()
                     log += tmp;
 
                 if(!log.isEmpty())
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Vertex shader compilation error : %1").arg(log));
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderSourceFile).arg(log));
+                else
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderSourceFile));
 
                 delete m_ShaderPoint;
                 m_ShaderPoint = NULL;
@@ -1551,7 +1553,9 @@ void G3DPainter::initPointShader()
                         log += tmp;
 
                     if(!log.isEmpty())
-                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Link error : %1").arg(log));
+                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" link error : %2").arg(m_shaderSourceFile).arg(log));
+                    else
+                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" link error").arg(m_shaderSourceFile));
 
                     m_shaderProgPointError = true;
                 }
@@ -1559,74 +1563,6 @@ void G3DPainter::initPointShader()
         }
     }
 }
-
-/*void G3DPainter::initFaceShader()
-{
-    if(QT_GL_CONTEXT::currentContext() != NULL)
-    {
-        if(!m_shaderFaceError && (m_ShaderFace == NULL))
-        {
-            m_ShaderFace = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
-
-            if(!m_ShaderFace->compileSourceFile("./shaders/faces.vert"))
-            {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Vertex shader compilation error : %1").arg(m_ShaderFace->log()));
-
-                delete m_ShaderFace;
-                m_ShaderFace = NULL;
-
-                m_shaderFaceError = true;
-            }
-        }
-
-        if(!m_shaderFaceError
-                && !m_shaderProgFaceError
-                && m_shaderProgFace->shaders().isEmpty())
-        {
-            m_shaderProgFaceError = !m_shaderProgFace->addShader(m_ShaderFace);
-
-            if(!m_shaderProgFaceError && !m_shaderProgFace->link())
-            {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Link error : %1").arg(m_shaderProgFace->log()));
-                m_shaderProgFaceError = true;
-            }
-        }
-    }
-}
-
-void G3DPainter::initEdgeShader()
-{
-    if(QT_GL_CONTEXT::currentContext() != NULL)
-    {
-        if(!m_shaderEdgeError && (m_ShaderEdge == NULL))
-        {
-            m_ShaderEdge = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
-
-            if(!m_ShaderEdge->compileSourceFile("./shaders/edges.vert"))
-            {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Vertex shader compilation error : %1").arg(m_ShaderEdge->log()));
-
-                delete m_ShaderEdge;
-                m_ShaderEdge = NULL;
-
-                m_shaderEdgeError = true;
-            }
-        }
-
-        if(!m_shaderEdgeError
-                && !m_shaderProgEdgeError
-                && m_shaderProgEdge->shaders().isEmpty())
-        {
-            m_shaderProgEdgeError = !m_shaderProgEdge->addShader(m_ShaderEdge);
-
-            if(!m_shaderProgEdgeError && !m_shaderProgEdge->link())
-            {
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Link error : %1").arg(m_shaderProgEdge->log()));
-                m_shaderProgEdgeError = true;
-            }
-        }
-    }
-}*/
 
 bool G3DPainter::bindPointShader(bool force)
 {
@@ -1647,13 +1583,47 @@ bool G3DPainter::bindPointShader(bool force)
                     log += tmp;
 
                 if(!log.isEmpty())
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (points) => Bind error : %1").arg(m_shaderProgPoint->log()));
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" bind error : %2").arg(m_shaderSourceFile).arg(m_shaderProgPoint->log()));
+                else
+                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" bind error").arg(m_shaderSourceFile).arg(m_shaderProgPoint->log()));
+
 
                 m_shaderProgPointError = true;
             }
             else
             {
                 if(!m_shaderProgPointSet) {
+
+                    if(!m_shaderLocInitialized) {
+                        m_shaderLocCsIndex = m_shaderProgPoint->attributeLocation("csIndex");
+                        m_shaderLocInfo = m_shaderProgPoint->attributeLocation("info");
+                        m_shaderLocCsMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
+                        m_shaderLocSelectionColor = m_shaderProgPoint->uniformLocation("selectionColor");
+                        m_shaderLocCheckSelected = m_shaderProgPoint->uniformLocation("checkSelected");
+
+                        m_shaderLocInitialized = true;
+
+                        QString err;
+
+                        if(m_shaderLocCsIndex == -1)
+                            err += "\r\n* attribute \"csIndex\" not found.";
+
+                        if(m_shaderLocInfo == -1)
+                            err += "\r\n* attribute \"info\" not found.";
+
+                        if(m_shaderLocCsMatrix == -1)
+                            err += "\r\n* uniform \"csMatrix\" not found.";
+
+                        if(m_shaderLocSelectionColor == -1)
+                            err += "\r\n* uniform \"selectionColor\" not found.";
+
+                        if(m_shaderLocCheckSelected == -1)
+                            err += "\r\n* uniform \"checkSelected\" not found.";
+
+                        if(!err.isEmpty())
+                            GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderSourceFile).arg(err));
+                    }
+
                     if(m_gv->pointsInformationManager()->informations()->size() > 0)
                     {
                         int s = PS_COORDINATES_SYS_MANAGER->size();
@@ -1661,22 +1631,18 @@ bool G3DPainter::bindPointShader(bool force)
                         for(int i=0; i<s; ++i)
                             m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
 
-                        int locCSIndex = m_shaderProgPoint->attributeLocation("csIndex");
-                        int locInfo = m_shaderProgPoint->attributeLocation("info");
-                        int locCSMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
-
                         QColor sColor = m_gv->getOptions().getSelectedColor();
-                        m_shaderProgPoint->setUniformValue("selectionColor", QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
+                        m_shaderProgPoint->setUniformValue(m_shaderLocSelectionColor, QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
 
-                        m_shaderProgPoint->setUniformValue("checkSelected", (GLuint)m_gv->pointsInformationManager()->checkSelected());
+                        m_shaderProgPoint->setUniformValue(m_shaderLocCheckSelected, (GLuint)m_gv->pointsInformationManager()->checkSelected());
 
                         m_shaderProgPoint->enableAttributeArray("info");
-                        glVertexAttribPointer(locInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+                        glVertexAttribPointer(m_shaderLocInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
 
                         m_shaderProgPoint->enableAttributeArray("csIndex");
-                        glVertexAttribPointer(locCSIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
+                        glVertexAttribPointer(m_shaderLocCsIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
 
-                        glUniformMatrix4fv(locCSMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
+                        glUniformMatrix4fv(m_shaderLocCsMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
 
                         m_shaderProgPointSet = true;
                     }
@@ -1699,78 +1665,6 @@ void G3DPainter::releasePointShader(bool bindOk)
     if(bindOk)
         m_shaderProgPoint->release();
 }
-
-/*bool G3DPainter::bindFaceShader()
-{
-    initFaceShader();
-
-    if(!m_shaderFaceError
-            && !m_shaderProgFaceError
-            && (QT_GL_CONTEXT::currentContext() != NULL))
-    {
-        if(!m_shaderProgFace->bind())
-        {
-            QString log;
-            QString tmp;
-
-            while(!(tmp = m_shaderProgFace->log()).isEmpty())
-                log += tmp;
-
-            if(!log.isEmpty())
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (faces) => Bind error : %1").arg(m_shaderProgFace->log()));
-
-            m_shaderProgFaceError = true;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void G3DPainter::releaseFaceShader(bool bindOk)
-{
-    if(bindOk)
-        m_shaderProgFace->release();
-}
-
-bool G3DPainter::bindEdgeShader()
-{
-    initEdgeShader();
-
-    if(!m_shaderEdgeError
-            && !m_shaderProgEdgeError
-            && (QT_GL_CONTEXT::currentContext() != NULL))
-    {
-        if(!m_shaderProgEdge->bind())
-        {
-            QString log;
-            QString tmp;
-
-            while(!(tmp = m_shaderProgEdge->log()).isEmpty())
-                log += tmp;
-
-            if(!log.isEmpty())
-                GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("G3DPainter (edges) => Bind error : %1").arg(m_shaderProgEdge->log()));
-
-            m_shaderProgEdgeError = true;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void G3DPainter::releaseEdgeShader(bool bindOk)
-{
-    if(bindOk)
-        m_shaderProgEdge->release();
-}*/
 
 //////////// PRIVATE ///////////
 

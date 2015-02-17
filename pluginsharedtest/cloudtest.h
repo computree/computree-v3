@@ -25,9 +25,9 @@ private slots:
     //void cleanupTestCase();
 
 private:
-    CT_Repository::CT_AbstractNotModifiablePCIR createPointCloud(size_t size, int initVar) const;
-    void checkPointCloud(CT_Repository::CT_AbstractNotModifiablePCIR pcir, int initVar) const;
-    void checkPointCloudIndex(CT_Repository::CT_AbstractNotModifiablePCIR pcir, int initIndex) const;
+    CT_NMPCIR createPointCloud(size_t size, int initVar) const;
+    void checkPointCloud(CT_NMPCIR pcir, int initVar) const;
+    void checkPointCloudIndex(CT_NMPCIR pcir, int initIndex) const;
 };
 
 #endif // CLOUDTEST_H

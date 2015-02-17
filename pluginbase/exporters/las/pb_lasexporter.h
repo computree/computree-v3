@@ -42,7 +42,7 @@ protected:
      */
     CT_LASHeader* writeHeader(QDataStream &stream,
                               const CT_AbstractPointAttributesScalar *rn,
-                              const QList<CT_AbstractCloudIndexT<CT_Point> *> &indexes,
+                              const QList<CT_AbstractPointCloudIndex *> &indexes,
                               size_t &nPoints);
 
     /**

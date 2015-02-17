@@ -98,15 +98,15 @@ private:
 
     double _resolution;                            /*!< sample grid resolution*/
     double _halfResolution;                            /*!< sample grid resolution*/
-    float _minx;
-    float _miny;
-    float _minz;
+    double _minx;
+    double _miny;
+    double _minz;
     size_t _dimx;
     size_t _dimy;
     size_t _dimz;
 
-    size_t gridIndex(const float &x, const float &y, const float &z, size_t &colx, size_t &liny, size_t &levz) const;
-    void cellCoordinates(const size_t &colx, const size_t &liny, const size_t &levz, float &x, float &y, float &z) const;
+    size_t gridIndex(const double &x, const double &y, const double &z, size_t &colx, size_t &liny, size_t &levz) const;
+    void cellCoordinates(const size_t &colx, const size_t &liny, const size_t &levz, double &x, double &y, double &z) const;
 
 
 };

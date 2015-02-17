@@ -11,6 +11,13 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_iterator/ct_faceiterator.h"
+#include "ct_iterator/ct_edgeiterator.h"
+#include "ct_accessor/ct_pointaccessor.h"
+
+#include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h"
+
 #include <QIcon>
 #include <QPainter>
 #include <QMouseEvent>
@@ -94,19 +101,15 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
 {
     bool result = m_selectAction->mouseReleaseEvent(e);
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
-    if((pcir.data() != NULL)
-            && (pcir->abstractModifiableCloudIndex() != NULL))
-    {
-        CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
-        size_t size = pci->size();
+    CT_CIR pcir = graphicsView()->getSelectedPoints();
+    CT_PointIterator it(pcir);
 
-        if(size > 0)
-        {
-            CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
-            const CT_Point &p = pc->constTAt(pci->indexAt(0));
-            PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p(0)).arg(p(1)).arg(p(2)));
-        }
+    if(it.hasNext())
+    {
+        it.next();
+
+        const CT_Point &p = it.cT();
+        PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p(0)).arg(p(1)).arg(p(2)));
     }
 
     return result;
@@ -171,88 +174,76 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         }
     }
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> pcir = graphicsView()->getSelectedPoints();
+    CT_SPCIR pcir = graphicsView()->getSelectedPoints();
 
-    if((pcir.data() != NULL)
-            && (pcir->abstractModifiableCloudIndex() != NULL))
+    CT_PointIterator itp(pcir);
+
+    if(itp.hasNext())
     {
-        CT_AbstractModifiableCloudIndex *pci = pcir->abstractModifiableCloudIndex();
-        size_t size = pci->size();
+        itp.next();
 
-        if(size > 0)
-        {
-            CT_AbstractCloudT<CT_Point> *pc = PS_REPOSITORY->globalCloud<CT_Point>();
-            const CT_Point &p = pc->constTAt(pci->indexAt(0));
+        const CT_Point &p = itp.cT();
 
-            painter.save();
-            painter.setPen(QColor(255,255,255,127));
-            painter.drawText(2, y, QString("Nombre de points sélectionnés = %1").arg(size));
-            y += add;
-            painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p(0)).arg(p(1)).arg(p(2)));
-            y += add;
-            painter.drawText(2, y, QString("..."));
-            painter.restore();
-            y += (add*2);
-        }
+        painter.save();
+        painter.setPen(QColor(255,255,255,127));
+        painter.drawText(2, y, QString("Nombre de points sélectionnés = %1").arg(itp.size()));
+        y += add;
+        painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p(0)).arg(p(1)).arg(p(2)));
+        y += add;
+        painter.drawText(2, y, QString("..."));
+        painter.restore();
+        y += (add*2);
     }
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> fcir = graphicsView()->getSelectedFaces();
+    CT_SFCIR fcir = graphicsView()->getSelectedFaces();
 
-    if((fcir.data() != NULL)
-            && (fcir->abstractModifiableCloudIndex() != NULL))
+    CT_FaceIterator itf(fcir);
+    CT_PointAccessor pAccess;
+
+    if(itf.hasNext())
     {
-        CT_AbstractModifiableCloudIndex *fci = fcir->abstractModifiableCloudIndex();
-        size_t size = fci->size();
+        itf.next();
 
-        if(size > 0)
-        {
-            CT_AbstractCloudT<CT_Face> *fc = PS_REPOSITORY->globalCloud<CT_Face>();
-            const CT_Face &f = fc->constTAt(fci->indexAt(0));
+        const CT_Face &f = itf.cT();
 
-            CT_Point *p1 = f.pointAt(0);
-            CT_Point *p2 = f.pointAt(1);
-            CT_Point *p3 = f.pointAt(2);
+        const CT_Point &p1 = pAccess.constPointAt(f.iPointAt(0));
+        const CT_Point &p2 = pAccess.constPointAt(f.iPointAt(1));
+        const CT_Point &p3 = pAccess.constPointAt(f.iPointAt(2));
 
-            painter.save();
-            painter.setPen(QColor(255,255,255,127));
-            painter.drawText(2, y, QString("Nombre de faces sélectionnés = %1").arg(size));
-            y += add;
-            painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg((*p1)(0)).arg((*p1)(1)).arg((*p1)(2))
-                             .arg((*p2)(0)).arg((*p2)(1)).arg((*p2)(2))
-                             .arg((*p3)(0)).arg((*p3)(1)).arg((*p3)(2)));
-            y += add;
-            painter.drawText(2, y, QString("..."));
-            painter.restore();
-            y += (add*2);
-        }
+        painter.save();
+        painter.setPen(QColor(255,255,255,127));
+        painter.drawText(2, y, QString("Nombre de faces sélectionnés = %1").arg(itf.size()));
+        y += add;
+        painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
+                         .arg(p2(0)).arg(p2(1)).arg(p2(2))
+                         .arg(p3(0)).arg(p3(1)).arg(p3(2)));
+        y += add;
+        painter.drawText(2, y, QString("..."));
+        painter.restore();
+        y += (add*2);
     }
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> ecir = graphicsView()->getSelectedEdges();
+    CT_SECIR ecir = graphicsView()->getSelectedEdges();
+    CT_EdgeIterator ite(ecir);
 
-    if((ecir.data() != NULL)
-            && (ecir->abstractModifiableCloudIndex() != NULL))
+    if(ite.hasNext())
     {
-        CT_AbstractModifiableCloudIndex *eci = ecir->abstractModifiableCloudIndex();
-        size_t size = eci->size();
+        ite.next();
 
-        if(size > 0)
-        {
-            CT_AbstractCloudT<CT_Edge> *ec = PS_REPOSITORY->globalCloud<CT_Edge>();
-            const CT_Edge &e = ec->constTAt(eci->indexAt(0));
+        const CT_Edge &e = ite.cT();
+        const CT_Point &p1 = pAccess.constPointAt(e.iPointAt(0));
+        const CT_Point &p2 = pAccess.constPointAt(e.iPointAt(1));
 
-            CT_Point *p1 = e.pointAt(0);
-            CT_Point *p2 = e.pointAt(1);
-
-            painter.save();
-            painter.setPen(QColor(255,255,255,127));
-            painter.drawText(2, y, QString("Nombre d'arêtes sélectionnés = %1").arg(size));
-            y += add;
-            painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg((*p1)(0)).arg((*p1)(1)).arg((*p1)(2)).arg((*p2)(0)).arg((*p2)(1)).arg((*p2)(2)));
-            y += add;
-            painter.drawText(2, y, QString("..."));
-            painter.restore();
-            y += (add*2);
-        }
+        painter.save();
+        painter.setPen(QColor(255,255,255,127));
+        painter.drawText(2, y, QString("Nombre d'arêtes sélectionnés = %1").arg(ite.size()));
+        y += add;
+        painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
+                                                                              .arg(p2(0)).arg(p2(1)).arg(p2(2)));
+        y += add;
+        painter.drawText(2, y, QString("..."));
+        painter.restore();
+        y += (add*2);
     }
 }
 

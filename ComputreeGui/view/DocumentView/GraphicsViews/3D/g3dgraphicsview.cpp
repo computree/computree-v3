@@ -47,6 +47,8 @@
 #include "ct_mesh/ct_edge.h"
 #include "ct_attributes/abstract/ct_abstractattributesscalar.h"
 
+#include "ct_accessor/ct_pointaccessor.h"
+
 #include "dm_iteminfoforgraphics.h"
 
 #include <limits>
@@ -711,27 +713,28 @@ void G3DGraphicsView::setLastItemIdSelected(const GLuint &id)
 
 void G3DGraphicsView::setLastPointIdSelected(const GLuint &id)
 {
-    const CT_Point &point = PS_REPOSITORY->globalPointCloud()->constTAt(id);
+    CT_PointAccessor pAccess;
+    const CT_Point &point = pAccess.constPointAt(id);
 
     _cameraController.setLastItemSelectedCameraCenter(point(0), point(1), point(2));
 }
 
 void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
 {
-    const CT_Face &face = PS_REPOSITORY->globalCloud<CT_Face>()->constTAt(id);
+    CT_FaceAccessor fAccess;
+    CT_PointAccessor pAccess;
+
+    const CT_Face &face = fAccess.constFaceAt(id);
 
     float x = 0, y = 0, z = 0;
 
     for(int i=0; i<3; ++i)
     {
-        CT_Point *point = face.pointAt(i);
+        const CT_Point &point = pAccess.constPointAt(face.iPointAt(i));
 
-        if(point == NULL)
-            return;
-
-        x += (*point)(0);
-        y += (*point)(1);
-        z += (*point)(2);
+        x += point(0);
+        y += point(1);
+        z += point(2);
     }
 
     _cameraController.setLastItemSelectedCameraCenter(x/3.0, y/3.0, z/3.0);
@@ -739,20 +742,20 @@ void G3DGraphicsView::setLastFaceIdSelected(const GLuint &id)
 
 void G3DGraphicsView::setLastEdgeIdSelected(const GLuint &id)
 {
-    const CT_Edge &edge = PS_REPOSITORY->globalCloud<CT_Edge>()->constTAt(id);
+    CT_PointAccessor pAccess;
+    CT_EdgeAccessor eAccess;
+
+    const CT_Edge &edge = eAccess.constEdgeAt(id);
 
     float x = 0, y = 0, z = 0;
 
     for(int i=0; i<2; ++i)
     {
-        CT_Point *point = edge.pointAt(i);
+        const CT_Point &point = pAccess.constPointAt(edge.iPointAt(i));
 
-        if(point == NULL)
-            return;
-
-        x += (*point)(0);
-        y += (*point)(1);
-        z += (*point)(2);
+        x += point(0);
+        y += point(1);
+        z += point(2);
     }
 
     _cameraController.setLastItemSelectedCameraCenter(x/2.0, y/2.0, z/2.0);
@@ -1234,7 +1237,7 @@ void G3DGraphicsView::drawWithNames()
                             QRectF bounding = poly.boundingRect();
 
                             if(nnn == 8)
-                                m_idToAddInSelection << dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>((CT_AbstractCloudIndex*)indexes);
+                                m_idToAddInSelection << dynamic_cast<CT_AbstractPointCloudIndex*>((CT_AbstractCloudIndex*)indexes);
                             else if ((nnn > 0)
                                      || bounding.contains(rect.topLeft())
                                      || bounding.contains(rect.topRight())
@@ -1692,17 +1695,17 @@ bool G3DGraphicsView::mustSelectItems() const
     return ((selectionMode() >= GraphicsViewInterface::SELECT) && (selectionMode() <= GraphicsViewInterface::REMOVE_ONE));
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedPoints() const
+CT_SPCIR G3DGraphicsView::getSelectedPoints() const
 {
     return m_pointsSelectionManager->selected();
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedFaces() const
+CT_SFCIR G3DGraphicsView::getSelectedFaces() const
 {
     return m_facesSelectionManager->selected();
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> G3DGraphicsView::getSelectedEdges() const
+CT_SECIR G3DGraphicsView::getSelectedEdges() const
 {
     return m_edgesSelectionManager->selected();
 }

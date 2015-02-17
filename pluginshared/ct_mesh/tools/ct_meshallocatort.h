@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <QSharedPointer>
 
+#include "ct_defines.h"
+
 #include "ct_cloudindex/tools/ct_cloudindexregistrationmanagert.h"
 
 /**
@@ -15,9 +17,6 @@ class CT_MeshAllocatorT
 {
 public:
     typedef MeshType Mesh;
-    typedef typename Mesh::VertexIndexIterator VertexIndexIterator;
-    typedef typename Mesh::FaceIndexIterator FaceIndexIterator;
-    typedef typename Mesh::HEdgeIndexIterator HEdgeIndexIterator;
 
     /**
      * @brief Add new vertices that already exist in the global points cloud => Add indexes
@@ -25,9 +24,9 @@ public:
      * @param n : number of indexes to add
      * @return an iterator to the first index added
      */
-    static VertexIndexIterator AddVerticeIndexes(Mesh &mesh, const size_t &n);
-    static FaceIndexIterator AddFaceIndexes(Mesh &mesh, const size_t &n);
-    static HEdgeIndexIterator AddHEdgeIndexes(Mesh &mesh, const size_t &n);
+    static CT_MutablePointIterator AddVerticeIndexes(Mesh &mesh, const size_t &n);
+    static CT_MutableFaceIterator AddFaceIndexes(Mesh &mesh, const size_t &n);
+    static CT_MutableEdgeIterator AddHEdgeIndexes(Mesh &mesh, const size_t &n);
 
     /**
      * @brief Add new vertices to the mesh and in consequence to the global points cloud
@@ -35,9 +34,9 @@ public:
      * @param n : number of vertices to add
      * @return an iterator to the first index added
      */
-    static VertexIndexIterator AddVertices(Mesh &mesh, const size_t &n);
-    static FaceIndexIterator AddFaces(Mesh &mesh, const size_t &n);
-    static HEdgeIndexIterator AddHEdges(Mesh &mesh, const size_t &n);
+    static CT_MutablePointIterator AddVertices(Mesh &mesh, const size_t &n);
+    static CT_MutableFaceIterator AddFaces(Mesh &mesh, const size_t &n);
+    static CT_MutableEdgeIterator AddHEdges(Mesh &mesh, const size_t &n);
 
 private:
     template<typename T, typename CloudIndex, typename Iterator>

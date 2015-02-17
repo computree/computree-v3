@@ -41,6 +41,11 @@ PB_StepLoadMultiXYBFiles::PB_StepLoadMultiXYBFiles(CT_StepInitializeData &dataIn
     _radius = 20;
 }
 
+PB_StepLoadMultiXYBFiles::~PB_StepLoadMultiXYBFiles()
+{
+    qDeleteAll(m_readers.begin(), m_readers.end());
+}
+
 // Step description (tooltip of contextual menu)
 QString PB_StepLoadMultiXYBFiles::getStepDescription() const
 {
@@ -87,6 +92,8 @@ void PB_StepLoadMultiXYBFiles::createPostConfigurationDialog()
 
 void PB_StepLoadMultiXYBFiles::compute()
 {
+    qDeleteAll(m_readers.begin(), m_readers.end());
+
     QList<CT_ResultGroup*> outResultList = getOutResultList();
 
     CT_ResultGroup* resultOut_individualScenes = outResultList.at(0);
@@ -103,7 +110,7 @@ void PB_StepLoadMultiXYBFiles::compute()
     float zmax = -std::numeric_limits<float>::max();
 
 
-    QList< CT_Repository::CT_AbstractPCIR > individualScenes;
+    QList< CT_PCIR > individualScenes;
 
     int baseProgress = 0;
     int fileNumber = _filesNames.size();
@@ -111,28 +118,29 @@ void PB_StepLoadMultiXYBFiles::compute()
 
     for (int i = 0 ; i < fileNumber ; ++i)
     {
-        CT_Reader_XYB reader;
-        bool readerValid = reader.setFilePath(_filesNames.at(i));
+        CT_Reader_XYB *reader = new CT_Reader_XYB();
+
+        bool readerValid = reader->setFilePath(_filesNames.at(i));
 
         if(readerValid)
         {
-            reader.setRadiusFilter(_radius);
-            reader.init();
+            reader->setRadiusFilter(_radius);
+            reader->init();
 
-            readerValid = reader.readFile();
+            readerValid = reader->readFile();
 
             if(readerValid)
             {               
-                CT_Scene* scene = (CT_Scene*)reader.takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_sceneOut, resultOut_individualScenes, DEF_itemOut_individualScene);
+                CT_Scene* scene = (CT_Scene*)reader->takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_sceneOut, resultOut_individualScenes, DEF_itemOut_individualScene);
                 individualScenes.append(scene->getPointCloudIndexRegistered());
 
                 CT_StandardItemGroup* groupOut_individualScene = new CT_StandardItemGroup(DEF_groupOut_g, resultOut_individualScenes);
                 groupOut_individualScene->addItemDrawable(scene);
 
-                CT_PointsAttributesScalarTemplated<quint16>* intensity = (CT_PointsAttributesScalarTemplated<quint16>*)reader.takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_intensityOut, resultOut_individualScenes, DEF_itemOut_individualIntensity);
+                CT_PointsAttributesScalarTemplated<quint16>* intensity = (CT_PointsAttributesScalarTemplated<quint16>*)reader->takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_intensityOut, resultOut_individualScenes, DEF_itemOut_individualIntensity);
                 groupOut_individualScene->addItemDrawable(intensity);
 
-                CT_Scanner* scanner = (CT_Scanner*)reader.takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_scannerOut, resultOut_individualScenes, DEF_itemOut_scanner);
+                CT_Scanner* scanner = (CT_Scanner*)reader->takeFirstItemDrawableOfModel(DEF_CT_Reader_XYB_scannerOut, resultOut_individualScenes, DEF_itemOut_scanner);
 
                 if(scanner != NULL)
                 {
@@ -147,8 +155,13 @@ void PB_StepLoadMultiXYBFiles::compute()
                 if (scene->maxY()>ymax) {ymax = scene->maxY();}
                 if (scene->minZ()<zmin) {zmin = scene->minZ();}
                 if (scene->maxZ()>zmax) {zmax = scene->maxZ();}
+
+                m_readers.append(reader); // backup reader to not destroy coordinate system created by it
             }
         }
+
+        if(!readerValid)
+            delete reader;
 
         baseProgress += progressIncrement;
         setProgress(baseProgress);

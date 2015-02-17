@@ -1,6 +1,6 @@
 #include "ct_globaledgecloudmanager.h"
 
-CT_GlobalEdgeCloudManager::CT_GlobalEdgeCloudManager() : CT_GlobalCloudManagerT< CT_Edge, CT_StandardCloudStdVectorT<CT_Edge> >()
+CT_GlobalEdgeCloudManager::CT_GlobalEdgeCloudManager() : CT_GlobalCloudManagerT< CT_Edge, CT_EdgeCloudStdVector >()
 {
     // add a edge to begin index to 1 (invalid index of a face is 0)
     this->m_cloud.addT(CT_Edge());
@@ -15,15 +15,15 @@ CT_GlobalEdgeCloudManager::CT_GlobalEdgeCloudManager() : CT_GlobalCloudManagerT<
     this->addGlobalCloudListener(&m_syncEdgeE);
 }
 
-void CT_GlobalEdgeCloudManager::setGlobalCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Point> *globalPointCloudManager)
+void CT_GlobalEdgeCloudManager::setGlobalCloudManager(const CT_AbstractGlobalPointCloudManager *globalPointCloudManager)
 {
-    m_gpcm = (CT_AbstractGlobalCloudManagerT<CT_Point>*)globalPointCloudManager;
+    m_gpcm = (CT_AbstractGlobalPointCloudManager*)globalPointCloudManager;
     m_gpcm->addGlobalCloudListener(&m_syncEdgeP);
 }
 
-void CT_GlobalEdgeCloudManager::setGlobalCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Face> *globalFaceCloudManager)
+void CT_GlobalEdgeCloudManager::setGlobalCloudManager(const CT_AbstractGlobalFaceCloudManager *globalFaceCloudManager)
 {
-    m_gfcm = (CT_AbstractGlobalCloudManagerT<CT_Face>*)globalFaceCloudManager;
+    m_gfcm = (CT_AbstractGlobalFaceCloudManager*)globalFaceCloudManager;
     m_gfcm->addGlobalCloudListener(&m_syncEdgeF);
 }
 
@@ -36,13 +36,13 @@ void CT_GlobalEdgeCloudManager::SyncEdgeE::cloudDeleted(const size_t &beginIndex
 
         // we will remove edge of all edges that contains a edge that have been removed
         // and shift them that is after the list of edge deleted
-        CT_StandardCloudStdVectorT<CT_Edge> *cloud = m_manager->globalCloud();
+        CT_EdgeCloudStdVector *cloud = m_manager->globalCloud();
 
         size_t currentIndex = 0;
 
         // first we will loop over edge between 0 and beginIndex
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator begin = cloud->begin()+currentIndex;
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator end = cloud->begin()+beginIndex;
+        CT_EdgeCloudStdVector::Iterator begin = cloud->begin()+currentIndex;
+        CT_EdgeCloudStdVector::Iterator end = cloud->begin()+beginIndex;
 
         if(begin != end)
         {
@@ -52,8 +52,8 @@ void CT_GlobalEdgeCloudManager::SyncEdgeE::cloudDeleted(const size_t &beginIndex
             size_t edgeIndex;
             size_t endIndex = beginIndex+size-1;
 
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator beginOrig = begin;
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator nextEnd = end;
+            CT_EdgeCloudStdVector::Iterator beginOrig = begin;
+            CT_EdgeCloudStdVector::Iterator nextEnd = end;
 
             while(begin != nextEnd)
             {
@@ -115,8 +115,8 @@ void CT_GlobalEdgeCloudManager::SyncEdgeE::cloudDeleted(const size_t &beginIndex
             size_t edgeIndex;
             size_t endIndex = beginIndex+size-1;
 
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator beginOrig = begin;
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator nextEnd = end;
+            CT_EdgeCloudStdVector::Iterator beginOrig = begin;
+            CT_EdgeCloudStdVector::Iterator nextEnd = end;
 
             while(begin != nextEnd)
             {
@@ -176,12 +176,12 @@ void CT_GlobalEdgeCloudManager::SyncEdgeF::cloudDeleted(const size_t &beginIndex
 
         // we will remove face of all edges that contains a face that have been removed
         // and shift them that is after the list of face deleted
-        CT_StandardCloudStdVectorT<CT_Edge> *cloud = m_manager->globalCloud();
+        CT_EdgeCloudStdVector *cloud = m_manager->globalCloud();
 
         size_t currentIndex = 0;
 
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator begin = cloud->begin() + currentIndex;
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator end = cloud->end();
+        CT_EdgeCloudStdVector::Iterator begin = cloud->begin() + currentIndex;
+        CT_EdgeCloudStdVector::Iterator end = cloud->end();
 
         if(begin != end)
         {
@@ -191,8 +191,8 @@ void CT_GlobalEdgeCloudManager::SyncEdgeF::cloudDeleted(const size_t &beginIndex
             size_t faceIndex;
             size_t endIndex = beginIndex+size-1;
 
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator beginOrig = begin;
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator nextEnd = end;
+            CT_EdgeCloudStdVector::Iterator beginOrig = begin;
+            CT_EdgeCloudStdVector::Iterator nextEnd = end;
 
             while(begin != nextEnd)
             {
@@ -249,12 +249,12 @@ void CT_GlobalEdgeCloudManager::SyncEdgeP::cloudDeleted(const size_t &beginIndex
 
         // we will remove point of all edges that contains a point that have been removed
         // and shift them that is after the list of point deleted
-        CT_StandardCloudStdVectorT<CT_Edge> *cloud =  m_manager->globalCloud();
+        CT_EdgeCloudStdVector *cloud =  m_manager->globalCloud();
 
         size_t currentIndex = 0;
 
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator begin = cloud->begin()+currentIndex;
-        CT_StandardCloudStdVectorT<CT_Edge>::Iterator end = cloud->end();
+        CT_EdgeCloudStdVector::Iterator begin = cloud->begin()+currentIndex;
+        CT_EdgeCloudStdVector::Iterator end = cloud->end();
 
         if(begin != end)
         {
@@ -264,8 +264,8 @@ void CT_GlobalEdgeCloudManager::SyncEdgeP::cloudDeleted(const size_t &beginIndex
             size_t pointIndex;
             size_t endIndex = beginIndex+size-1;
 
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator beginOrig = begin;
-            CT_StandardCloudStdVectorT<CT_Edge>::Iterator nextEnd = end;
+            CT_EdgeCloudStdVector::Iterator beginOrig = begin;
+            CT_EdgeCloudStdVector::Iterator nextEnd = end;
 
             while(begin != nextEnd)
             {

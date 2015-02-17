@@ -5,11 +5,10 @@
 
 #include <QDebug>
 
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 #include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_global/ct_context.h"
+#include "ct_point.h"
 
 #include <limits>
 
@@ -94,9 +93,9 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             double zmax = -std::numeric_limits<double>::max();
 
             QString line;
-            bool useOffset = true;
+            GLuint coordinateSystemIndex = 0;
+            CT_Point pReaded;
             bool first = true;
-            QSharedPointer<CT_AbstractCoordinateSystem> spcs;
 
             while(!stream.atEnd()
                   && !isStopped())
@@ -117,16 +116,11 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     double y = values.at(1).toDouble(&okY);
                     double z = values.at(2).toDouble(&okZ);
 
-                    if (first && useOffset && okX && okY && okZ)
+                    if (first && okX && okY && okZ)
                     {
                         first = false;
                         if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
-                        {
-                            useOffset = true;
-                            spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z));
-                        } else {
-                            useOffset = false;
-                        }
+                            coordinateSystemIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z, this));
                     }
 
                     double valueR = values.at(3).toDouble(&okR);
@@ -158,16 +152,11 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                             if (z<zmin) {zmin = z;}
                             if (z>zmax) {zmax = z;}
 
-                            CT_Point &p = pointCloud->addPoint();
+                            pReaded(0) = x;
+                            pReaded(1) = y;
+                            pReaded(2) = z;
 
-                            if (useOffset)
-                            {
-                                PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
-                            } else {
-                                p(0) = x;
-                                p(1) = y;
-                                p(2) = z;
-                            }
+                            pointCloud->addPoint(pReaded, coordinateSystemIndex);
 
                             CT_Color &color = colorCloud->addColor();
 
@@ -187,15 +176,10 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
             if (colorCloud->size() > 0)
             {
-                CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pointCloud);
+                CT_NMPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pointCloud);
 
                 CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
                 scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
-
-                if (useOffset)
-                {
-                    scene->registerCoordinateSystem(spcs);
-                }
 
                 CT_PointsAttributesColor *colors = new CT_PointsAttributesColor(NULL, NULL, pcir, colorCloud);
 

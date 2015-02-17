@@ -1,7 +1,7 @@
 #ifndef CT_ABSTRACTEDGEATTRIBUTES_H
 #define CT_ABSTRACTEDGEATTRIBUTES_H
 
-#include "ct_mesh/cloud/abstract/ct_abstractedgecloudindex.h"
+#include "ct_defines.h"
 
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
 
@@ -18,11 +18,11 @@ public:
     CT_AbstractEdgeAttributes();
     CT_AbstractEdgeAttributes(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
+                              CT_ECIR cir);
 
     CT_AbstractEdgeAttributes(const QString &modelName,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir);
+                              CT_ECIR cir);
 
     /**
       * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
@@ -38,21 +38,16 @@ public:
     const CT_AbstractEdgeCloudIndex* getEdgeCloudIndex() const;
 
     /**
-      * \brief Retourne les index du nuage de edge.
-      */
-    const CT_AbstractCloudIndexT<CT_Edge>* getEdgeCloudIndexT() const;
-
-    /**
      * @brief EdgeCloudIndexRegistered getter
      * @return retourne le nuage de points enregistré
      */
-    CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR getEdgeCloudIndexRegistered() const;
+    CT_ECIR getEdgeCloudIndexRegistered() const;
 
 private:
     // TODO
     //static CT_StandardAbstractEdgeAttributesDrawManager AEA_DRAW_MANAGER;
 
-    CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR m_cir;
+    CT_ECIR m_cir;
     CT_AbstractEdgeCloudIndex* m_aci;
 };
 

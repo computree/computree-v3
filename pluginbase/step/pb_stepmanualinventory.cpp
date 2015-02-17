@@ -11,6 +11,8 @@
 
 #include "actions/pb_actionmanualinventory.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <limits>
 #include <QMessageBox>
 
@@ -311,20 +313,16 @@ void PB_StepManualInventory::findBestCircleForEachScene()
 
 float PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
 {
-    const CT_AbstractPointCloudIndex *pointCloudIndex = scene->getPointCloudIndex();
-    size_t n_points = pointCloudIndex->size();
+    CT_PointIterator it(scene->getPointCloudIndex());
 
-    float zmax = -std::numeric_limits<float>::max();
+    double zmax = -std::numeric_limits<double>::max();
 
-    for (int i = 0 ; i < n_points; i++)
+    while(it.hasNext())
     {
-        size_t index;
-        const CT_Point &point = pointCloudIndex->constTAt(i, index);
+        const CT_Point &point = it.next().cT();
 
         if (point(2) > zmax)
-        {
             zmax = point(2);
-        }
     }
 
     return zmax;

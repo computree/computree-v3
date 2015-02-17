@@ -1,5 +1,7 @@
 #include "ct_abstractlaspointformat.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 CT_AbstractLASPointFormat::CT_AbstractLASPointFormat()
 {
     m_lasHeader = NULL;
@@ -52,14 +54,13 @@ bool CT_AbstractLASPointFormat::initWrite()
             {
                 size_t pIndex = 0;
 
-                CT_AbstractPointCloudIndex::ConstIterator it = indexes->constBegin();
-                CT_AbstractPointCloudIndex::ConstIterator end = indexes->constEnd();
+                CT_PointIterator it(indexes);
 
                 // for each index
-                while(it != end) {
+                while(it.hasNext()) {
 
                     // get info for this global point index
-                    CT_LasPointInfo *info = m_infos.value(it.cIndex(), NULL);
+                    CT_LasPointInfo *info = m_infos.value(it.next().cIndex(), NULL);
 
                     // if info doesn't already exist
                     if(info == NULL)
@@ -74,7 +75,6 @@ bool CT_AbstractLASPointFormat::initWrite()
                     // and set it the attribute
                     info->setAttribute(type, scalar, pIndex);
 
-                    ++it;
                     ++pIndex;
                 }
             }

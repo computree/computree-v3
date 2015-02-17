@@ -14,6 +14,9 @@
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_transformationmatrix.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_iterator/ct_mutablepointiterator.h"
+
 #define DEFin_resScene "resScene"
 #define DEFin_grpScene "grpScene"
 #define DEFin_scene "scene"
@@ -102,73 +105,73 @@ void PB_StepTransformPointCloud::compute()
 
         if (trMat != NULL)
         {
-            QMap<CT_AbstractCoordinateSystem*, CT_AbstractCoordinateSystem*> coordSysCorresp;
-
-
+            QMap<CT_AbstractCoordinateSystem*, GLuint> coordSysCorresp;
 
             CT_ResultItemIterator itScene(resin_Scene, this, DEFin_scene);
             while (itScene.hasNext() && !isStopped())
             {
                 const CT_Scene *inScene = (const CT_Scene*) itScene.next();
 
-                const CT_AbstractPointCloudIndex* cloudIndex = inScene->getPointCloudIndex();
-                size_t n_points = cloudIndex->size();
+                CT_PointIterator itP(inScene->getPointCloudIndex());
 
-                if (n_points > 0)
+                if (itP.hasNext())
                 {
                     // limites de la bounding-box de la scène de sortie
                     double minX = std::numeric_limits<double>::max();
-                    double minY = std::numeric_limits<double>::max();
-                    double minZ = std::numeric_limits<double>::max();
+                    double minY = minX;
+                    double minZ = minX;
 
-                    double maxX = -std::numeric_limits<double>::max();
-                    double maxY = -std::numeric_limits<double>::max();
-                    double maxZ = -std::numeric_limits<double>::max();
+                    double maxX = -minX;
+                    double maxY = -minX;
+                    double maxZ = -minX;
 
-                    CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(n_points);
+                    CT_NMPCIR pcir = PS_REPOSITORY->createNewPointCloud(itP.size());
                     CT_Scene *outScene = new CT_Scene(DEFout_scene, resout_Scene);
 
-                    for (size_t i = 0 ; i < n_points ; i++)
+                    // create a mutable point iterator to change points of this cloud
+                    CT_MutablePointIterator outItP(pcir);
+
+                    while(itP.hasNext())
                     {
-                        size_t globalIndex;
-                        const CT_Point &pointFloat = cloudIndex->constTAt(i, globalIndex);
+                        CT_Point point = itP.next().cT();
 
-                        CT_AbstractCoordinateSystem* currentSystem = PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex);                        
-                        Eigen::Vector3d point;
-                        currentSystem->convertExport(pointFloat(0), pointFloat(1), pointFloat(2), point(0), point(1), point(2));
+                        // get the coordinate system of this point
+                        CT_AbstractCoordinateSystem* currentSystem = itP.currentCoordinateSystem();
 
-                        CT_AbstractCoordinateSystem* transSystem = coordSysCorresp.value(currentSystem, NULL);
-                        if (transSystem == NULL)
+                        GLuint transSystem = 0;
+
+                        // if the transformed coordinate system don't exist
+                        if (!coordSysCorresp.contains(currentSystem))
                         {
+                            // get the current offset
                             Eigen::Vector3d offset;
-                            currentSystem->convertExport(0, 0, 0, offset(0), offset(1), offset(2));
+                            currentSystem->offset(offset(0), offset(1), offset(2));
 
+                            // transform it
                             trMat->transform(offset);
 
-                            transSystem = new CT_DefaultCoordinateSystem(offset(0), offset(1), offset(2));
+                            // create the coordinate system transformed and get it's index
+                            transSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(offset(0), offset(1), offset(2), this));
 
-                            outScene->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(transSystem));
+                            // and backup it
                             coordSysCorresp.insert(currentSystem, transSystem);
+                        } else {
+                            transSystem = coordSysCorresp.value(currentSystem, 0);
                         }
 
-                        Eigen::Vector3d trPoint = point;
-                        trMat->transform(trPoint);
+                        // transform the current point
+                        trMat->transform(point);
 
-                        size_t globalIndexTr;
-                        CT_Point &trPointFloat = pcir->tAt(i, globalIndexTr);
-                        transSystem->convertImport(trPoint(0), trPoint(1), trPoint(2), trPointFloat(0), trPointFloat(1), trPointFloat(2));
+                        // set it to the new point cloud
+                        outItP.next().replaceCurrentPoint(point, transSystem);
 
-                        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndexTr, PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(transSystem));
-
-                        if (trPoint(0) < minX) {minX = trPoint(0);}
-                        if (trPoint(1) < minY) {minY = trPoint(1);}
-                        if (trPoint(2) < minZ) {minZ = trPoint(2);}
-                        if (trPoint(0) > maxX) {maxX = trPoint(0);}
-                        if (trPoint(1) > maxY) {maxY = trPoint(1);}
-                        if (trPoint(2) > maxZ) {maxZ = trPoint(2);}
+                        if (point(0) < minX) {minX = point(0);}
+                        if (point(1) < minY) {minY = point(1);}
+                        if (point(2) < minZ) {minZ = point(2);}
+                        if (point(0) > maxX) {maxX = point(0);}
+                        if (point(1) > maxY) {maxY = point(1);}
+                        if (point(2) > maxZ) {maxZ = point(2);}
                     }
-
-
 
                     CT_StandardItemGroup *outGroup = new CT_StandardItemGroup(DEFout_grpScene, resout_Scene);
                     outScene->setPointCloudIndexRegistered(pcir);

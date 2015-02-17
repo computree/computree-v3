@@ -51,7 +51,7 @@ public:
                                    StructMASK mask,
                                    quint16 shiftRight,
                                    CT_StandardCloudStdVectorT<StructType> *collection,
-                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                   CT_PCIR pcir,
                                    bool autoDeleteCollection = true);
 
     CT_PointsAttributesScalarMaskT(const QString &modelName,
@@ -59,7 +59,7 @@ public:
                                    StructMASK mask,
                                    quint16 shiftRight,
                                    CT_StandardCloudStdVectorT<StructType> *collection,
-                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                   CT_PCIR pcir,
                                    bool autoDeleteCollection = true);
 
     CT_PointsAttributesScalarMaskT(const CT_OutAbstractSingularItemModel *model,
@@ -69,7 +69,7 @@ public:
                                    const StructMASK &min,
                                    const StructMASK &max,
                                    CT_StandardCloudStdVectorT<StructType> *collection,
-                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                   CT_PCIR pcir,
                                    bool autoDeleteCollection = true);
 
     CT_PointsAttributesScalarMaskT(const QString &modelName,
@@ -79,7 +79,7 @@ public:
                                    const StructMASK &min,
                                    const StructMASK &max,
                                    CT_StandardCloudStdVectorT<StructType> *collection,
-                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                   CT_PCIR pcir,
                                    bool autoDeleteCollection = true);
 
     virtual ~CT_PointsAttributesScalarMaskT();

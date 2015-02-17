@@ -33,6 +33,7 @@
 #include <limits>
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 CT_StandardAbstractItemDrawableWithPointCloudDrawManager CT_AbstractItemDrawableWithPointCloud::IDWITHPC_DRAW_MANAGER;
 CT_DEFAULT_IA_INIT(CT_AbstractItemDrawableWithPointCloud)
@@ -52,7 +53,7 @@ CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(con
 
 CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                              const CT_AbstractResult *result,
-                                                                             CT_AbstractCIR pcir) : CT_AbstractSingularItemDrawable(model, result)
+                                                                             CT_PCIR pcir) : CT_AbstractSingularItemDrawable(model, result)
 {
     setPointCloudIndexRegisteredProtected(pcir);
     setBaseDrawManager(&IDWITHPC_DRAW_MANAGER);
@@ -67,7 +68,7 @@ CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(con
 
 CT_AbstractItemDrawableWithPointCloud::CT_AbstractItemDrawableWithPointCloud(const QString &modelName,
                                                                              const CT_AbstractResult *result,
-                                                                             CT_AbstractCIR pcir) : CT_AbstractSingularItemDrawable(modelName, result)
+                                                                             CT_PCIR pcir) : CT_AbstractSingularItemDrawable(modelName, result)
 {
     setPointCloudIndexRegisteredProtected(pcir);
     setBaseDrawManager(&IDWITHPC_DRAW_MANAGER);
@@ -93,14 +94,16 @@ void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
     _maxCoordinates(1) = -std::numeric_limits<double>::max();
     _maxCoordinates(2) = -std::numeric_limits<double>::max();
 
-    const CT_AbstractCloudIndexT<CT_Point>* pointCloudIndex = getPointCloudIndexT();
+    const CT_AbstractPointCloudIndex* pointCloudIndex = getPointCloudIndex();
 
-    if (pointCloudIndex == NULL) {return;}
+    CT_PointIterator it(pointCloudIndex);
 
-    size_t size = pointCloudIndex->size();
-    for (size_t i = 0 ; i < size ; i++)
+    while(it.hasNext())
     {
-        const CT_Point& point = pointCloudIndex->constTAt(i);
+        it.next();
+
+        const CT_Point& point = it.currentPoint();
+
         if (point(0) < _minCoordinates(0)) {_minCoordinates(0) = point(0);}
         if (point(1) < _minCoordinates(1)) {_minCoordinates(1) = point(1);}
         if (point(2) < _minCoordinates(2)) {_minCoordinates(2) = point(2);}
@@ -113,24 +116,12 @@ void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
     updateCenterFromBoundingBox();
 }
 
-const CT_AbstractPointCloud* CT_AbstractItemDrawableWithPointCloud::getPointCloud() const
-{
-    return PS_REPOSITORY->globalPointCloud();
-}
-
 const CT_AbstractPointCloudIndex* CT_AbstractItemDrawableWithPointCloud::getPointCloudIndex() const
 {
     return m_apci;
 }
 
-const CT_AbstractCloudIndexT<CT_Point>* CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexT() const
-{
-    if (_pcir.isNull()) {return NULL;}
-
-    return _pcir->abstractCloudIndexT();
-}
-
-CT_AbstractItemDrawableWithPointCloud::CT_AbstractCIR CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexRegistered() const
+CT_PCIR CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexRegistered() const
 {
     return _pcir;
 }
@@ -159,16 +150,11 @@ int CT_AbstractItemDrawableWithPointCloud::getFastestIncrement() const
 
 void CT_AbstractItemDrawableWithPointCloud::deletePointCloud()
 {
-    _pcir = CT_AbstractCIR();
+    _pcir = CT_PCIR();
     m_apci = NULL;
 }
 
-CT_AbstractPointCloud* CT_AbstractItemDrawableWithPointCloud::getPointCloud()
-{
-    return PS_REPOSITORY->globalPointCloud();
-}
-
-void CT_AbstractItemDrawableWithPointCloud::setPointCloudIndexRegisteredProtected(CT_AbstractCIR pcir)
+void CT_AbstractItemDrawableWithPointCloud::setPointCloudIndexRegisteredProtected(CT_PCIR pcir)
 {
     deletePointCloud();
 

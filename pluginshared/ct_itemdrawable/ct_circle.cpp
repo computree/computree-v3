@@ -95,13 +95,12 @@ CT_AbstractItemDrawable* CT_Circle::copy(const QString &modelName, const CT_Abst
 CT_Circle* CT_Circle::staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                    quint64 id,
                                                                    const CT_AbstractResult *result,
-                                                                   const CT_AbstractPointCloud &pointCloud,
                                                                    const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                    double z)
 {
     Q_UNUSED(id)
 
-    CT_CircleData *data = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloud(pointCloud, pointCloudIndex, z);
+    CT_CircleData *data = CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloud(pointCloudIndex, z);
 
     if(data == NULL)
     {

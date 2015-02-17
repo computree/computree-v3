@@ -13,6 +13,8 @@
 #include "ct_reader/tools/las/ct_laspointformat9.h"
 #include "ct_reader/tools/las/ct_laspointformat10.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <QFileInfo>
 #include <QDateTime>
 #include <QInputDialog>
@@ -70,7 +72,7 @@ bool PB_LASExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list
     {
         CT_AbstractCloudIndex *item = it.next();
 
-        if(dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(item) != NULL)
+        if(dynamic_cast<CT_AbstractPointCloudIndex*>(item) != NULL)
             myList.append(item);
     }
 
@@ -144,7 +146,7 @@ bool PB_LASExporter::protectedExportToFile()
         {
             ok = true;
 
-            QList<CT_AbstractCloudIndexT<CT_Point>*> indexes;
+            QList<CT_AbstractPointCloudIndex*> indexes;
 
             QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
@@ -152,16 +154,16 @@ bool PB_LASExporter::protectedExportToFile()
             {
                 CT_AbstractItemDrawable *item = it.next();
 
-                const CT_AbstractCloudIndexT<CT_Point> *index = dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex();
+                const CT_AbstractPointCloudIndex *index = dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex();
 
                 if(index != NULL)
-                    indexes.append((CT_AbstractCloudIndexT<CT_Point>*)index);
+                    indexes.append((CT_AbstractPointCloudIndex*)index);
             }
 
             QListIterator<CT_AbstractCloudIndex*> itP(pointsToExport());
 
             while(itP.hasNext())
-                indexes.append(dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(itP.next()));
+                indexes.append(dynamic_cast<CT_AbstractPointCloudIndex*>(itP.next()));
 
             size_t nPoints = 0;
 
@@ -185,19 +187,18 @@ bool PB_LASExporter::protectedExportToFile()
 
                 size_t pCount = 0;
 
-                QListIterator<CT_AbstractCloudIndexT<CT_Point>*> itIL(indexes);
+                QListIterator<CT_AbstractPointCloudIndex*> itIL(indexes);
 
                 while(itIL.hasNext())
                 {
-                    CT_AbstractCloudIndexT<CT_Point> *index = itIL.next();
+                    CT_AbstractPointCloudIndex *index = itIL.next();
 
-                    CT_AbstractCloudIndexT<CT_Point>::ConstIterator itI = index->constBegin();
-                    CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = index->constEnd();
+                    CT_PointIterator itI(index);
 
-                    while(itI != end) {
-                        toolsFormat->write(stream, itI.cIndex());
+                    while(itI.hasNext()) {
+                        itI.next();
+                        toolsFormat->write(stream, itI.cT(), itI.cIndex());
 
-                        ++itI;
                         ++pCount;
 
                         setExportProgress((pCount*100)/nPoints);
@@ -229,7 +230,7 @@ void PB_LASExporter::clearWorker()
 
 CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
                                           const CT_AbstractPointAttributesScalar *rn,
-                                          const QList<CT_AbstractCloudIndexT<CT_Point> *> &indexes,
+                                          const QList<CT_AbstractPointCloudIndex *> &indexes,
                                           size_t &nPoints)
 {
     CT_LASHeader *header = NULL;
@@ -241,12 +242,12 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
     {
         header = new CT_LASHeader();
 
-        QVector3D min;
+        CT_Point min;
         min.setX(std::numeric_limits<double>::max());
         min.setY(min.x());
         min.setZ(min.x());
 
-        QVector3D max;
+        CT_Point max;
         max.setX(-min.x());
         max.setY(max.x());
         max.setZ(max.x());
@@ -254,7 +255,7 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
         for(int i=0; i<15; ++i)
             header->m_numberOfPointsByReturn[i] = 0;
 
-        const CT_AbstractCloudIndexT<CT_Point> *rnIndex = NULL;
+        const CT_AbstractPointCloudIndex *rnIndex = NULL;
         size_t rnSize = 0;
 
         if(rn != NULL)
@@ -265,38 +266,38 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
                 rnSize = rnIndex->size();
         }
 
-        QListIterator<CT_AbstractCloudIndexT<CT_Point>*> it(indexes);
+        QListIterator<CT_AbstractPointCloudIndex*> it(indexes);
 
         while(it.hasNext())
         {
-            CT_AbstractCloudIndexT<CT_Point> *index = it.next();
+            CT_AbstractPointCloudIndex *index = it.next();
 
-            CT_AbstractCloudIndexT<CT_Point>::ConstIterator itP = index->constBegin();
-            CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = index->constEnd();
+            CT_PointIterator itP(index);
 
             // count the number of points
             nPoints += index->size();
 
             // compute max, min and return number
-            while(itP != end) {
-                const CT_Point &p = itP.cT();
+            while(itP.hasNext()) {
 
-                if(p(0) > max.x())
+                const CT_Point &p = itP.next().cT();
+
+                if(p(0) > max(0))
                     max.setX(p(0));
 
-                if(p(1) > max.y())
+                if(p(1) > max(1))
                     max.setY(p(1));
 
-                if(p(2) > max.z())
+                if(p(2) > max(2))
                     max.setZ(p(2));
 
-                if(p(0) < min.x())
+                if(p(0) < min(0))
                     min.setX(p(0));
 
-                if(p(1) < min.y())
+                if(p(1) < min(1))
                     min.setY(p(1));
 
-                if(p(2) < min.z())
+                if(p(2) < min(2))
                     min.setZ(p(2));
 
                 if(rnIndex != NULL) {
@@ -308,8 +309,6 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
                         ++val;
                     }
                 }
-
-                ++itP;
             }
         }
 
@@ -346,15 +345,9 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
         for(int i=0; i<5; ++i)
             header->m_legacyNumberOfPointsByReturn[i] = 0; // deprecated in 1.4
 
-        CT_AbstractCoordinateSystem::realEx max_xc, max_yc, max_zc;
-        CT_AbstractCoordinateSystem::realEx min_xc, min_yc, min_zc;
-
-        PS_COORDINATES_SYS->convertExport(max.x(), max.y(), max.z(), max_xc, max_yc, max_zc);
-        PS_COORDINATES_SYS->convertExport(min.x(), min.y(), min.z(), min_xc, min_yc, min_zc);
-
         // maximum point coordinate
-        double scaleFactor = qMax(qMax(qAbs(max_xc), qAbs(max_yc)), qAbs(max_zc));
-        scaleFactor = qMax(qMax(qMax(qAbs(min_xc), qAbs(min_yc)), qAbs(min_zc)), (CT_AbstractCoordinateSystem::realEx)scaleFactor);
+        double scaleFactor = qMax(qMax(qAbs(max(0)), qAbs(max(1))), qAbs(max(2)));
+        scaleFactor = qMax(qMax(qMax(qAbs(min(0)), qAbs(min(1))), qAbs(min(2))), scaleFactor);
 
         // scale factor is the optimized to convert a point to be the most accurate
         scaleFactor = qMin((scaleFactor/(std::numeric_limits<qint32>::max()-1)), 1.0);
@@ -365,7 +358,7 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
         header->m_xOffset = 0;
         header->m_yOffset = 0;
         header->m_zOffset = 0;
-        header->setMinAndMaxCoordinates(min_xc, min_yc, min_zc, max_xc, max_yc, max_zc);
+        header->setMinAndMaxCoordinates(min(0), min(1), min(2), max(0), max(1), max(2));
         header->m_startOfWaveformDataPacketRecord = 0; // TODO : write the good value
         header->m_startOfFirstExtendedVariableLengthRecord = 0; // TODO : write the good value
         header->m_numberOfExtendedVariableLengthRecords = 0; // TODO : write the good value

@@ -249,6 +249,17 @@ public:
      */
     virtual CT_AbstractReader *copy() const = 0;
 
+    /********************************************************************************/
+    /************ Not intended for direct use by plugin developper ******************/
+    /********************************************************************************/
+
+    /**
+     * @brief Add a registered coordinate system to this reader. It will be deleted when out item drawable / groups will be deleted from
+     *        memory (new read of file or when reader is deleted from memory)
+     * @warning Not intended for direct use by plugin developper
+     */
+    void registerCoordinateSystem(CT_CSR coordinateSystemRegistered);
+
 public slots:
 
     /**
@@ -337,8 +348,6 @@ protected:
      */
     virtual bool protectedReadFile() = 0;
 
-
-
     CT_FileHeader*                                          m_header;
 
 private:
@@ -355,6 +364,7 @@ private:
     bool                                                    m_error;
     bool                                                    m_stop;
     bool                                                    m_deleteHeader;
+    QList<CT_CSR >                                          m_coordinateSystems;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();

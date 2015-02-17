@@ -4,74 +4,14 @@
 #include <QMutex>
 
 #include "interfaces.h"
+#include "ct_defines.h"
 
-#include "ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h"
 #include "ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.h"
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
-
-#include "ct_point.h"
-
-template<typename T> class CT_AbstractGlobalCloudManagerT;
-template<typename T, typename CLOUD> class CT_GlobalCloudManagerT;
-template<typename T> class CT_AbstractCloudT;
-template<typename T> class CT_StandardCloudStdVectorT;
-template<typename T> class CT_AbstractCloudIndexT;
-template<typename T> class CT_AbstractModifiableCloudIndexT;
-template<typename T> class CT_CloudIndexLessMemoryT;
-class CT_PointCloudIndexLessMemory;
-class CT_EdgeCloudIndexLessMemory;
-class CT_FaceCloudIndexLessMemory;
-
-template<typename T> class CT_ModifiableCloudIndexIteratorT;
-template<typename T> class CT_CloudIndexIteratorT;
-
-template<typename T, class CloudIndexLessMemory> class CT_CloudIndexRegistrationManagerT;
-template<typename T> class CT_AbstractCloudIndexRegisteredT;
-template<typename T> class CT_AbstractNotModifiableCloudIndexRegisteredT;
-template<typename T> class CT_AbstractModifiableCloudIndexRegisteredT;
-
-class CT_GlobalPointCloudManager;
-class CT_GlobalFaceCloudManager;
-class CT_GlobalEdgeCloudManager;
-
-class CT_Face;
-class CT_Edge;
-
-class CT_StandardColorCloudRegistered;
-class CT_StandardNormalCloudRegistered;
+#include "ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_Repository
 {
-protected:
-    typedef CT_GlobalPointCloudManager                                                      GlobalPointCloudManager;
-    typedef CT_GlobalFaceCloudManager                                                       GlobalFaceCloudManager;
-    typedef CT_GlobalEdgeCloudManager                                                       GlobalEdgeCloudManager;
-
-    typedef CT_CloudIndexRegistrationManagerT<CT_Point, CT_PointCloudIndexLessMemory >      PointCloudIndexRegistrationManager;
-    typedef CT_CloudIndexRegistrationManagerT<CT_Face, CT_FaceCloudIndexLessMemory >        FaceCloudIndexRegistrationManager;
-    typedef CT_CloudIndexRegistrationManagerT<CT_Edge, CT_EdgeCloudIndexLessMemory >        EdgeCloudIndexRegistrationManager;
-
-    typedef CT_CloudSyncToGlobalCloudManager                                                SyncPointCloudManager;
-    typedef CT_CloudSyncToGlobalCloudManager                                                SyncFaceCloudManager;
-    typedef CT_CloudSyncToGlobalCloudManager                                                SyncEdgeCloudManager;
-
 public:
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Point >                                     VertexIndexIterator;
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Face >                                      FaceIndexIterator;
-    typedef CT_ModifiableCloudIndexIteratorT<CT_Edge >                                      EdgeIndexIterator;
-
-    typedef CT_CloudIndexIteratorT<CT_Point>                                                ConstVertexIndexIterator;
-    typedef CT_CloudIndexIteratorT<CT_Face>                                                 ConstFaceIndexIterator;
-    typedef CT_CloudIndexIteratorT<CT_Edge>                                                 ConstEdgeIndexIterator;
-
-    typedef QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> >                    CT_AbstractPCIR;
-    typedef QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> >       CT_AbstractNotModifiablePCIR;
-    typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> >          CT_AbstractModifiablePCIR;
-    typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Face> >           CT_AbstractModifiableFCIR;
-    typedef QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Edge> >           CT_AbstractModifiableECIR;
-    typedef QSharedPointer< CT_StandardColorCloudRegistered >                               CT_CCR;
-    typedef QSharedPointer< CT_StandardNormalCloudRegistered >                              CT_NCR;
-
     /**
      * @brief Type of synchronization for new cloud index
      */
@@ -103,7 +43,7 @@ public:
      * @param optim : optimization type
      * @return Returns a cloud index that points to new points created. This cloud index is not modifiable but points are.
      */
-    CT_AbstractNotModifiablePCIR createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim = MemoryOptimized);
+    CT_NMPCIR createNewPointCloud(const size_t &size, CloudIndexOptimizationType optim = MemoryOptimized);
 
     /**
      * @brief Create a new point cloud in memory that size is not known.
@@ -168,7 +108,7 @@ public:
      * @param syncWith : define what cloud sync
      * @return return the index cloud registered
      */
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewIndexCloud(SyncCloudWith syncWith);
+    CT_MCIR createNewIndexCloud(SyncCloudWith syncWith);
 
     /**
      * @brief Create a new index cloud whose indices is synchronized with index of cloud passed in parameter. This means that
@@ -177,13 +117,13 @@ public:
      *
      * @example An example of how to use the result of this method :
      *
-     *        QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mccr = createNewMapIndexCloudColor(CT_Repository::SyncWithXXXCloud);
+     *        CT_MCIR mccr = createNewMapIndexCloudColor(CT_Repository::SyncWithXXXCloud);
      *        CT_AbstractModifiableIndexCloudColorMap *map = dynamic_cast<CT_AbstractModifiableIndexCloudColorMap*>(mccr->abstractModifiableCloudIndex());
      *        map->insertIndexAndColor(0, color);
      *
      * @return return the index cloud registered
      */
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewMapIndexCloudColor(SyncCloudWith syncWith);
+    CT_MCIR createNewMapIndexCloudColor(SyncCloudWith syncWith);
 
     /**
      * @brief Create a new index cloud of type IndexCloudT that will be synchronized with the global XXX cloud (defined by syncWith param). This
@@ -192,21 +132,21 @@ public:
      * @param syncWith : define what cloud sync
      * @example : create a CT_CloudIndexStdVectorT that is synchronized with the global points cloud :
      *
-     *            QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mcir = createNewIndexCloudT< CT_CloudIndexStdVectorT >(CT_Repository::SyncWithPointCloud);
+     *            CT_MCIR mcir = createNewIndexCloudT< CT_CloudIndexStdVectorT >(CT_Repository::SyncWithPointCloud);
      *
      * @return return the index cloud registered
      */
     template< template<typename T> class IndexCloudT >
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> createNewIndexCloudT(SyncCloudWith syncWith)
+    CT_MCIR createNewIndexCloudT(SyncCloudWith syncWith)
     {
         if(syncWith == SyncWithPointCloud)
-            return registerCloudIndex<CT_Point>(new IndexCloudT<CT_Point>());
+            return registerCloudIndex<CT_PointData>(new IndexCloudT<CT_PointData>());
         else if(syncWith == SyncWithFaceCloud)
             return registerCloudIndex<CT_Face>(new IndexCloudT<CT_Face>());
         else if(syncWith == SyncWithEdgeCloud)
             return registerCloudIndex<CT_Edge>(new IndexCloudT<CT_Edge>());
 
-        return QSharedPointer<CT_AbstractModifiableCloudIndexRegistered>(NULL);
+        return CT_MCIR(NULL);
     }
 
     /**
@@ -218,7 +158,7 @@ public:
      * @param optim : optimization type
      * @return Returns a cloud index that points to new points created. This cloud index is not modifiable but points are.
      */
-    CT_AbstractNotModifiablePCIR registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, CloudIndexOptimizationType optim = MemoryOptimized);
+    CT_NMPCIR registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, CloudIndexOptimizationType optim = MemoryOptimized);
 
     /**
      * @brief Recopie EN MEMOIRE les points du nuage de points défini par le nuage d'index contenu dans le nuage de points enregistré passé en paramètre.
@@ -231,7 +171,7 @@ public:
      * @param optim : le type d'optimisation du nuage d'index
      * @return Retourne un nuage d'index correspondant à l'emplacement en mémoire des nouveaux points. Ce nuage d'index n'est pas modifiable !
      */
-    CT_AbstractNotModifiablePCIR copyPointCloud(CT_AbstractPCIR pcir, CloudIndexOptimizationType optim = MemoryOptimized);
+    CT_NMPCIR copyPointCloud(CT_PCIR pcir, CloudIndexOptimizationType optim = MemoryOptimized);
 
     /**
      * @brief Recopie EN MEMOIRE les points du nuage de points défini par le nuage d'index.
@@ -244,14 +184,14 @@ public:
      * @param optim : le type d'optimisation du nuage d'index
      * @return Retourne un nuage d'index correspondant à l'emplacement en mémoire des nouveaux points. Ce nuage d'index n'est pas modifiable !
      */
-    CT_AbstractNotModifiablePCIR copyPointCloud(const CT_AbstractCloudIndexT<CT_Point> *index, CloudIndexOptimizationType optim = MemoryOptimized);
+    CT_NMPCIR copyPointCloud(const CT_AbstractPointCloudIndex *index, CloudIndexOptimizationType optim = MemoryOptimized);
 
     /**
      * @brief Return a memory optimized points cloud index that begin at the first index of the first points cloud and finish at the end of the last points cloud of the list
      * @param pcir_collection : the list of points cloud that is contiguous in memory
      * @return A memory optimized points cloud index. This points cloud index is not modifiable !
      */
-    CT_AbstractNotModifiablePCIR mergePointCloudContiguous(const QList< CT_AbstractPCIR > &pcir_collection);
+    CT_NMPCIR mergePointCloudContiguous(const QList< CT_PCIR > &pcir_collection);
 
     /**
      * @brief Enregistre le nuage d'index auprès du gestionnaire. Le gestionnaire va modifier (décaler) les index du nuage si un nuage de points
@@ -268,33 +208,28 @@ public:
      * @param index : le nuage d'index que vous avez créé. (il n'a pas besoin d'être remplis)
      * @return Retourne un objet contenant le nuage de points (global) et le nuage d'index du nuage de points.
      */
-    CT_AbstractModifiablePCIR registerPointCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index);
-    CT_AbstractModifiableFCIR registerFaceCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index);
-    CT_AbstractModifiableECIR registerEdgeCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index);
-
-    /**
-     * @brief globalPointCloud
-     * @return Retourne le nuage de points global (il contient tout les nuages de points créés)
-     */
-    CT_AbstractPointCloud* globalPointCloud() const;
-
-    template<typename T>
-    CT_AbstractCloudT<T>* globalCloud() const { return NULL; }
+    CT_MPCIR registerPointCloudIndex(CT_AbstractModifiablePointCloudIndex *index);
+    CT_MFCIR registerFaceCloudIndex(CT_AbstractModifiableFaceCloudIndex *index);
+    CT_MECIR registerEdgeCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index);
 
 protected:
 
     friend class CT_RepositoryManager;
     friend class CT_Mesh;
+    friend class CT_AbstractUndefinedSizePointCloud;
+    friend class CT_PointAccessor;
+    friend class CT_FaceAccessor;
+    friend class CT_EdgeAccessor;
+    friend class CT_Face;
+    friend class CT_Edge;
     template<typename T, typename CLOUD> friend class CT_GlobalCloudManagerT;
     template<typename T> friend class CT_MeshAllocatorT;
+    template<typename T> friend class CT_CloudIndexIteratorT;
 
     CT_Repository();
 
     template<typename T>
     CT_AbstractGlobalCloudManagerT<T>* globalCloudManager() const { return NULL; }
-
-    template<typename T>
-    CT_StandardCloudStdVectorT<T>* globalStandardCloudT() const { return NULL; }
 
     /**
      * @brief IF the cloud index passed in parameter was created by the global cloud manager and IF it was at
@@ -355,75 +290,87 @@ protected:
      */
     void endDeleteMultiCloud();
 
+    /**
+     * @brief Returns the global point cloud (contains all points created)
+     */
+    CT_AbstractPointCloud* globalPointCloud() const;
+
+    /**
+     * @brief Returns the global edge cloud (contains all edges created)
+     */
+    CT_AbstractEdgeCloud* globalEdgeCloud() const;
+
+    /**
+     * @brief Returns the global face cloud (contains all faces created)
+     */
+    CT_AbstractFaceCloud* globalFaceCloud() const;
+
+    /**
+     * @brief Returns the global T cloud (contains all T (points/faces or edges) created)
+     */
+    template<typename T>
+    CT_AbstractCloudT<T>* globalCloud() const { return NULL; }
+
 private:
 
-    GlobalPointCloudManager                 *m_gpcManager;
-    GlobalFaceCloudManager                  *m_gfcManager;
-    GlobalEdgeCloudManager                  *m_gecManager;
+    CT_GlobalPointCloudManager              *m_gpcManager;
+    CT_GlobalFaceCloudManager               *m_gfcManager;
+    CT_GlobalEdgeCloudManager               *m_gecManager;
 
-    PointCloudIndexRegistrationManager      *m_pcirManager;
-    FaceCloudIndexRegistrationManager       *m_fcirManager;
-    EdgeCloudIndexRegistrationManager       *m_ecirManager;
+    CT_PointCloudIndexRegistrationManager   *m_pcirManager;
+    CT_FaceCloudIndexRegistrationManager    *m_fcirManager;
+    CT_EdgeCloudIndexRegistrationManager    *m_ecirManager;
 
-    SyncPointCloudManager                   *m_syncPointCloudManager;
-    SyncFaceCloudManager                    *m_syncFaceCloudManager;
-    SyncEdgeCloudManager                    *m_syncEdgeCloudManager;
+    CT_SyncPointCloudManager                *m_syncPointCloudManager;
+    CT_SyncFaceCloudManager                 *m_syncFaceCloudManager;
+    CT_SyncEdgeCloudManager                 *m_syncEdgeCloudManager;
 
     QMutex                                  m_mutexUSPC;
 };
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudT<CT_Point>* CT_Repository::globalCloud() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractPointCloud* CT_Repository::globalCloud() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudT<CT_Face>* CT_Repository::globalCloud() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceCloud* CT_Repository::globalCloud() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudT<CT_Edge>* CT_Repository::globalCloud() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeCloud* CT_Repository::globalCloud() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalCloudManagerT<CT_Point>* CT_Repository::globalCloudManager() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalPointCloudManager* CT_Repository::globalCloudManager() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalCloudManagerT<CT_Face>* CT_Repository::globalCloudManager() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalFaceCloudManager* CT_Repository::globalCloudManager() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalCloudManagerT<CT_Edge>* CT_Repository::globalCloudManager() const;
+PLUGINSHAREDSHARED_EXPORT CT_AbstractGlobalEdgeCloudManager* CT_Repository::globalCloudManager() const;
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_StandardCloudStdVectorT<CT_Point>* CT_Repository::globalStandardCloudT() const;
+PLUGINSHAREDSHARED_EXPORT CT_NMPCIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_StandardCloudStdVectorT<CT_Face>* CT_Repository::globalStandardCloudT() const;
+PLUGINSHAREDSHARED_EXPORT CT_NMFCIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT CT_StandardCloudStdVectorT<CT_Edge>* CT_Repository::globalStandardCloudT() const;
+PLUGINSHAREDSHARED_EXPORT CT_NMECIR CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
+PLUGINSHAREDSHARED_EXPORT CT_NMPCIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMPCIR cir, const size_t &newSize);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
+PLUGINSHAREDSHARED_EXPORT CT_NMFCIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMFCIR cir, const size_t &newSize);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::createNewCloud(const size_t &size, CT_Repository::CloudIndexOptimizationType optim);
+PLUGINSHAREDSHARED_EXPORT CT_NMECIR CT_Repository::resizeCloudIndexAndGlobalCloud(CT_NMECIR cir, const size_t &newSize);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point> > cir, const size_t &newSize);
+PLUGINSHAREDSHARED_EXPORT CT_MPCIR CT_Repository::registerCloudIndex(CT_AbstractModifiablePointCloudIndex *index);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Face> > cir, const size_t &newSize);
+PLUGINSHAREDSHARED_EXPORT CT_MFCIR CT_Repository::registerCloudIndex(CT_AbstractModifiableFaceCloudIndex *index);
 
 template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::resizeCloudIndexAndGlobalCloud(QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Edge> > cir, const size_t &newSize);
-
-template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Point> *index);
-
-template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Face> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Face> *index);
-
-template<>
-PLUGINSHAREDSHARED_EXPORT QSharedPointer< CT_AbstractModifiableCloudIndexRegisteredT<CT_Edge> > CT_Repository::registerCloudIndex(CT_AbstractModifiableCloudIndexT<CT_Edge> *index);
+PLUGINSHAREDSHARED_EXPORT CT_MECIR CT_Repository::registerCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index);
 
 #endif // CT_REPOSITORY_H

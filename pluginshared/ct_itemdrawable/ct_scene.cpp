@@ -26,7 +26,6 @@
 *****************************************************************************/
 
 #include "ct_scene.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
 CT_Scene::CT_Scene() : CT_AbstractItemDrawableWithPointCloud()
 {
@@ -39,7 +38,7 @@ CT_Scene::CT_Scene(const CT_OutAbstractSingularItemModel *model,
 
 CT_Scene::CT_Scene(const CT_OutAbstractSingularItemModel *model,
                    const CT_AbstractResult *result,
-                   CT_AbstractCIR pcir) : CT_AbstractItemDrawableWithPointCloud(model, result)
+                   CT_PCIR pcir) : CT_AbstractItemDrawableWithPointCloud(model, result)
 {
     setPointCloudIndexRegistered(pcir);
 }
@@ -51,7 +50,7 @@ CT_Scene::CT_Scene(const QString &modelName,
 
 CT_Scene::CT_Scene(const QString &modelName,
                    CT_AbstractResult *result,
-                   CT_AbstractCIR pcir) : CT_AbstractItemDrawableWithPointCloud(modelName, result)
+                   CT_PCIR pcir) : CT_AbstractItemDrawableWithPointCloud(modelName, result)
 {
     setPointCloudIndexRegistered(pcir);
 }
@@ -115,7 +114,7 @@ CT_AbstractItemDrawable* CT_Scene::copy(const CT_OutAbstractItemModel *model,
     return scene;
 }
 
-void CT_Scene::setPointCloudIndexRegistered(CT_AbstractCIR pcir)
+void CT_Scene::setPointCloudIndexRegistered(CT_PCIR pcir)
 {
     setPointCloudIndexRegisteredProtected(pcir);
 

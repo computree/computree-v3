@@ -1,12 +1,13 @@
 #include "ct_globalpointcloudmanager.h"
 
-#include "ct_pointcloudindex/ct_pointcloudindexlessmemory.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
+#include "ct_pointcloudindex/ct_pointcloudindexlessmemory.h"
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
-CT_GlobalPointCloudManager::CT_GlobalPointCloudManager() : QObject(), CT_GlobalCloudManagerT<CT_Point, CT_PointCloudStdVector>()
+CT_GlobalPointCloudManager::CT_GlobalPointCloudManager() : QObject(), CT_GlobalCloudManagerT<CT_PointData, CT_PointCloudStdVector>()
 {
     m_uspc.first = NULL;
-    m_pCloud = dynamic_cast<CT_PointCloudStdVector*>(globalCloud());
 }
 
 CT_GlobalPointCloudManager::~CT_GlobalPointCloudManager()
@@ -29,9 +30,9 @@ CT_AbstractUndefinedSizePointCloud* CT_GlobalPointCloudManager::createNewUndefin
     return NULL;
 }
 
-CT_GlobalCloudManagerT<CT_Point, CT_PointCloudStdVector>::CT_AbstractNotModifiableCIR CT_GlobalPointCloudManager::registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, IndexOptimization optim)
+CT_NMPCIR CT_GlobalPointCloudManager::registerUndefinedSizePointCloud(CT_AbstractUndefinedSizePointCloud *uspc, IndexOptimization optim)
 {
-    CT_GlobalCloudManagerT<CT_Point, CT_PointCloudStdVector>::CT_AbstractNotModifiableCIR cir;
+    CT_NMPCIR cir;
 
     if(uspc == m_uspc.first)
     {
@@ -42,16 +43,21 @@ CT_GlobalCloudManagerT<CT_Point, CT_PointCloudStdVector>::CT_AbstractNotModifiab
         if(size > 0)
             cir = createCIR<CT_PointCloudIndexLessMemory, CT_PointCloudIndexVector>(m_uspc.first->beginIndex(), size, optim);
 
+        const std::vector<GLuint> &csIndexes = m_uspc.first->coordinateSystemIndexOfPointsAdded();
+
+        size_t i = 0;
+        CT_PointIterator it(cir);
+
+        while(it.hasNext()) {
+            PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(it.next().cIndex(), csIndexes[i]);
+            ++i;
+        }
+
         delete m_uspc.first;
         m_uspc.first = NULL;
     }
 
     return cir;
-}
-
-CT_PointCloudStdVector* CT_GlobalPointCloudManager::globalPointsCloud() const
-{
-    return m_pCloud;
 }
 
 void CT_GlobalPointCloudManager::undefinedSizePointCloudDestroyed(QObject *o)

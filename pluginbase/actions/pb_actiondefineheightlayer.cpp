@@ -1,6 +1,7 @@
 #include "actions/pb_actiondefineheightlayer.h"
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -17,7 +18,7 @@ PB_ActionDefineHeightLayer_gridContainer::PB_ActionDefineHeightLayer_gridContain
     _mnsGrid = NULL;
 }
 
-PB_ActionDefineHeightLayer::PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax) : CT_AbstractActionForGraphicsView()
+PB_ActionDefineHeightLayer::PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, double xmin, double ymin, double zmin, double xmax, double ymax, double zmax) : CT_AbstractActionForGraphicsView()
 {
     m_status = 0;
 
@@ -107,7 +108,7 @@ void PB_ActionDefineHeightLayer::init()
         graphicsView()->addActionOptions(option);
 
         connect(option, SIGNAL(redrawNeeded()), this, SLOT(updateGraphics()));
-        connect(option, SIGNAL(zValuesChanged(float,float)), this, SLOT(updateZValues(float,float)));
+        connect(option, SIGNAL(zValuesChanged(double,double)), this, SLOT(updateZValues(double,double)));
         connect(option, SIGNAL(askForSideView()), this, SLOT(setSideView()));
         connect(option, SIGNAL(askForCrownProjectionComputing()), this, SLOT(computeCrownProjection()));
         connect(option, SIGNAL(updateResolution(double)), this, SLOT(updateResolution(double)));
@@ -212,7 +213,7 @@ void PB_ActionDefineHeightLayer::setSideView()
     document()->redrawGraphics();
 }
 
-void PB_ActionDefineHeightLayer::updateZValues(float zmin, float zmax)
+void PB_ActionDefineHeightLayer::updateZValues(double zmin, double zmax)
 {
     _gridContainer->_zmin = zmin;
     _gridContainer->_zmax = zmax;
@@ -244,12 +245,11 @@ void PB_ActionDefineHeightLayer::computeCrownProjection()
     int size = _sceneList.size();
     for (int s = 0 ; s < size ; s++)
     {
-        const CT_AbstractPointCloudIndex *pointCloudIndex = _sceneList.at(s)->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->size();
+        CT_PointIterator itP(_sceneList.at(s)->getPointCloudIndex());
 
-        for (size_t i = 0 ; i < n_points; i++)
+        while(itP.hasNext())
         {
-            const CT_Point &point = pointCloudIndex->constTAt(i);
+            const CT_Point &point = itP.next().cT();
 
             if (point(2) >= _gridContainer->_zmin && point(2) <= _gridContainer->_zmax)
             {
@@ -280,8 +280,8 @@ void PB_ActionDefineHeightLayer::draw(GraphicsViewInterface &view, PainterInterf
     PB_ActionDefineHeightLayerOptions *option = (PB_ActionDefineHeightLayerOptions*)optionAt(0);
 
 
-    float zmin = option->getZmin();
-    float zmax = option->getZmax();
+    double zmin = option->getZmin();
+    double zmax = option->getZmax();
 
     _gridContainer->_densityGrid->setlevel(zmin);
     _gridContainer->_mnsGrid->setlevel(zmax);

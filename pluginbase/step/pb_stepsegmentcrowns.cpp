@@ -11,6 +11,8 @@
 #include "ct_triangulation/ct_nodet.h"
 #include "ct_itemdrawable/ct_attributeslist.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <limits>
 #include <QMessageBox>
 #include <QDebug>
@@ -315,14 +317,11 @@ void PB_StepSegmentCrowns::addPointsToExtractedScenes(CT_ResultGroup *resultIn,
     {
         CT_Scene *scene = (CT_Scene*) itRes.next();
 
-        const CT_AbstractPointCloudIndex *pointCloudIndex = scene->getPointCloudIndex();
-        size_t n_points = pointCloudIndex->size();
+        CT_PointIterator itP(scene->getPointCloudIndex());
 
-        size_t i = 0;
-        while((i<n_points) && (!isStopped()))
+        while(itP.hasNext() && !isStopped())
         {
-            size_t index;
-            const CT_Point &point = pointCloudIndex->constTAt(i, index);
+            const CT_Point &point = itP.next().cT();
 
             if (point(2) >= _zmin && point(2) <= _zmax)
             {
@@ -333,11 +332,10 @@ void PB_StepSegmentCrowns::addPointsToExtractedScenes(CT_ResultGroup *resultIn,
                     CT_PointCloudIndexVector* outPointCloudIndex = indexVectorMap.value(cluster, NULL);
                     if (outPointCloudIndex != NULL)
                     {
-                        outPointCloudIndex->addIndex(index);
+                        outPointCloudIndex->addIndex(itP.cIndex());
                     }
                 }
             }
-            ++i;
         }
     }
 }

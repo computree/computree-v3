@@ -1,6 +1,7 @@
 #include "dm_attributesnormalt.h"
 
 #include "ct_global/ct_context.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 template<>
 bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewForGraphics *doc)
@@ -8,11 +9,9 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
     if(m_an == NULL)
         return false;
 
-    const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
-    const CT_AbstractPointCloud *cloud = PS_REPOSITORY->globalPointCloud();
+    CT_PointIterator it(abstractTypeAttributes()->abstractCloudIndex());
 
-    size_t size = index->size();
-    size_t indexP;
+    size_t size = it.size();
 
     QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractPointsAttributes>();
 
@@ -20,11 +19,13 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
     {
         CT_AbstractNormalCloud *nn = spn->abstractNormalCloud();
 
-        for(size_t i=0; i<size && !isCanceled(); ++i)
+        size_t i = 0;
+        while(it.hasNext() && !isCanceled())
         {
-            index->indexAt(i, indexP);
+            size_t indexP = it.next().cIndex();
+
             const CT_Normal &nxnynz_pa = m_an->constNormalAt(i);
-            const CT_Point &xyz = cloud->constTAt(indexP);
+            const CT_Point &xyz = it.cT();
 
             // set the normal of the point at this document
             CT_Normal &nxnynz = nn->normalAt(indexP);
@@ -33,6 +34,7 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
             nxnynz.normal_z = xyz(2) + nxnynz_pa.normal_z;
 
             setProgress((i*100)/size);
+            ++i;
         }
 
         doc->redrawGraphics();

@@ -1,10 +1,10 @@
 #include "ct_laspointformat0.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 #include "ct_global/ct_context.h"
+#include "ct_point.h"
 
 CT_LASPointFormat0::CT_LASPointFormat0() : CT_AbstractLASPointFormat()
 {
-    m_pCloud = PS_REPOSITORY->globalPointCloud();
 }
 
 size_t CT_LASPointFormat0::sizeInBytes() const
@@ -12,15 +12,11 @@ size_t CT_LASPointFormat0::sizeInBytes() const
     return sizeof(m_emptyData);
 }
 
-CT_LasPointInfo* CT_LASPointFormat0::write(QDataStream &stream, const size_t &globalIndex)
+CT_LasPointInfo* CT_LASPointFormat0::write(QDataStream &stream, const CT_Point &p, const size_t &globalIndex)
 {
     CT_LasPointInfo *info = infoOfPoint(globalIndex);
 
-    const CT_Point &point = m_pCloud->constTAt(globalIndex);
-
-    PS_COORDINATES_SYS->convertExport(point(0), point(1), point(2), m_xc, m_yc, m_zc);
-
-    header()->inverseTransformPoint(m_xc, m_yc, m_zc, m_x, m_y, m_z);
+    header()->inverseTransformPoint(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), m_x, m_y, m_z);
 
     // x / y / z
     stream << m_x << m_y << m_z;

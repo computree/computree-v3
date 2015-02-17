@@ -13,21 +13,21 @@ public:
 
     CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
-                            CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
+                            CT_ECIR pcir);
 
     CT_EdgeAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
-                            CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                            CT_ECIR pcir,
                             CT_AbstractNormalCloud *nc);
 
     CT_EdgeAttributesNormal(const QString &modelName,
                             const CT_AbstractResult *result,
-                            CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
+                            CT_ECIR pcir);
 
 
     CT_EdgeAttributesNormal(const QString &modelName,
                             const CT_AbstractResult *result,
-                            CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                            CT_ECIR pcir,
                             CT_AbstractNormalCloud *nc);
 
     /**

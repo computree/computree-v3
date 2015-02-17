@@ -27,6 +27,8 @@
 
 #include "ct_ellipsedata.h"
 
+#include "ct_accessor/ct_pointaccessor.h"
+
 #include <math.h>
 #include <eigen/Eigen/Dense>
 
@@ -72,21 +74,15 @@ CT_EllipseData* CT_EllipseData::clone() const
     return new CT_EllipseData(getCenter(), getAxisA(), getAxisB(), getError());
 }
 
-CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointCloud(const CT_AbstractPointCloud *pointCloud,
-                                                                                  const CT_AbstractPointCloudIndex *pointCloudIndex)
+CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointCloud(const CT_AbstractPointCloudIndex *pointCloudIndex)
 {
-    if((pointCloud == NULL)
-            || (pointCloudIndex == NULL))
-    {
+    if(pointCloudIndex == NULL)
         return NULL;
-    }
 
     size_t np = pointCloudIndex->size()+1;
 
     if(np < 7)
-    {
         return NULL;
-    }
 
     double **D = new double*[np];
     double **S = new double*[7];
@@ -115,9 +111,7 @@ CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointClou
     Const[3][1] = -2;
 
     for(int i=0; i<7; ++i)
-    {
         d[i] = 0;
-    }
 
     np = np-1;
 
@@ -125,9 +119,11 @@ CT_EllipseData* CT_EllipseData::staticCreateZAxisAlignedEllipseDataFromPointClou
     double ty = 0;
     double zm = 0;
 
+    CT_PointAccessor pAccess;
+
     for (int i=1; i <= np; ++i)
     {
-        const CT_Point &point = pointCloudIndex->constTAt(i-1);
+        const CT_Point &point = pAccess.constPointAt(pointCloudIndex->constIndexAt(i-1));
 
         tx = point(0);
         ty = point(1);

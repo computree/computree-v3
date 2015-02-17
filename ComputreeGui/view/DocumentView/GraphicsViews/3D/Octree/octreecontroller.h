@@ -8,8 +8,6 @@
 
 #include "ct_global/ct_context.h"
 
-class CT_AbstractPointCloudIndex;
-
 /**
  * @brief Class that control the generic octree
  */
@@ -63,8 +61,8 @@ public:
     /**
      * @brief Returns point cloud index in cell at x/y/z. NULL if cell is empty.
      */
-    const CT_AbstractCloudIndexT<CT_Point>* pointsAt(int x, int y, int z) const;
-    const CT_AbstractCloudIndex* at(int x, int y, int z) const;
+    const CT_AbstractPointCloudIndex* pointsAt(int x, int y, int z) const;
+    const CT_AbstractPointCloudIndex *at(int x, int y, int z) const;
 
     /**
      * @brief Returns true if the cell at x, y, z is visible in frustrum
@@ -148,7 +146,7 @@ private:
 
     QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_points;           // collection of points in the octree
     QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_pointsToAdd;      // collection of points not added
-    Octree< CT_Repository::CT_AbstractModifiablePCIR >                  *m_octree;          // octree
+    Octree< CT_MPCIR >                                                  *m_octree;          // octree
     double                                                              m_size;             // size of a cells (in meters)
     Corner                                                              m_min;              // minimum corner of the complete octree
     Corner                                                              m_max;              // maximum corner of the complete octree

@@ -25,7 +25,7 @@ public:
      *
      *        All points created in the global points cloud will automatically had the index of the current coordinate system.
      */
-    QSharedPointer<CT_AbstractCoordinateSystem> registerCoordinateSystem(CT_AbstractCoordinateSystem *cs);
+    CT_CSR registerCoordinateSystem(CT_AbstractCoordinateSystem *cs);
 
     /**
      * @brief Returns the index cloud that contains for each points the index of the coordinate system used. You can modify
@@ -69,12 +69,12 @@ public:
     /**
      * @brief Use this method to change indexes (in the CT_CoordinateSystemCloudIndex) for all points in pcir by the index of the coordinate system "cs"
      */
-    void setCoordinateSystemForPoints(QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, CT_AbstractCoordinateSystem *cs);
+    void setCoordinateSystemForPoints(CT_PCIR pcir, CT_AbstractCoordinateSystem *cs);
 
     /**
      * @brief Use this method to change indexes (in the CT_CoordinateSystemCloudIndex) for all points in pcir by the index of the coordinate system "cs"
      */
-    void setCoordinateSystemIndexForPoints(QSharedPointer< CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, const GLuint &coordinateSystemIndex);
+    void setCoordinateSystemIndexForPoints(CT_PCIR pcir, const GLuint &coordinateSystemIndex);
 
     /**
      * @brief Returns the current coordinate system manager. Can not be NULL.
@@ -100,7 +100,7 @@ private:
     QVector<CT_AbstractCoordinateSystem*>                                       m_cs;                                   // list of coordinate system
     CT_AbstractCoordinateSystem                                                 *m_current;                             // current coordinate system (never NULL)
     QSharedPointer< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex > >   m_indexOfCoordinateSystemOfPoints;      // index for all points (sync) of the coordinate system to use
-    QSharedPointer<CT_AbstractCoordinateSystem> m_default;
+    CT_CSR                                                                      m_default;
 
 
     /**

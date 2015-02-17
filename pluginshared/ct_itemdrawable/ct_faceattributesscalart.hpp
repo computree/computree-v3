@@ -13,7 +13,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT() : CT_AbstractFaceAt
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributesScalar(model,
+                                                           CT_FCIR pcir) : CT_AbstractFaceAttributesScalar(model,
                                                                                                                                                                       result,
                                                                                                                                                                       pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -22,7 +22,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                           CT_FCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractFaceAttributesScalar(model,
                                                                                                                                              result,
                                                                                                                                              pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -32,7 +32,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                           CT_FCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                            const SCALAR &min,
                                                            const SCALAR &max) : CT_AbstractFaceAttributesScalar(model,
@@ -46,7 +46,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const CT_OutAbstractS
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const QString &modelName,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributesScalar(modelName,
+                                                           CT_FCIR pcir) : CT_AbstractFaceAttributesScalar(modelName,
                                                                                                                                                                       result,
                                                                                                                                                                       pcir), CT_AttributesScalarT<SCALAR>(pcir.data() != NULL ? pcir->size() : 0)
 {
@@ -55,7 +55,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const QString &modelN
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const QString &modelName,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                           CT_FCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection) : CT_AbstractFaceAttributesScalar(modelName,
                                                                                                                                              result,
                                                                                                                                              pcir), CT_AttributesScalarT<SCALAR>(collection)
@@ -65,7 +65,7 @@ CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const QString &modelN
 template<typename SCALAR>
 CT_FaceAttributesScalarT<SCALAR>::CT_FaceAttributesScalarT(const QString &modelName,
                                                            const CT_AbstractResult *result,
-                                                           CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                           CT_FCIR pcir,
                                                            CT_StandardCloudStdVectorT<SCALAR> *collection,
                                                            const SCALAR &min,
                                                            const SCALAR &max) : CT_AbstractFaceAttributesScalar(modelName,

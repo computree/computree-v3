@@ -1,8 +1,11 @@
 #include "dm_elementinfomanager.h"
 
 #include "ct_global/ct_context.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
+#include "ct_cloudindex/ct_cloudindexstdvectort.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
+#include "ct_point.h"
+#include "ct_mesh/ct_face.h"
+#include "ct_mesh/ct_edge.h"
 
 #include <limits>
 
@@ -169,11 +172,11 @@ GLubyte DM_ElementInfoManager::checkInvisible() const
     return m_enableInvisibility;
 }
 
-QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> DM_ElementInfoManager::selected()
+CT_CIR DM_ElementInfoManager::selected()
 {
     if(m_selectionChanged) {
         if(m_syncWith == CT_Repository::SyncWithPointCloud)
-            m_selectedBackup = PS_REPOSITORY->registerPointCloudIndex(selectedT<CT_Point>());
+            m_selectedBackup = PS_REPOSITORY->registerPointCloudIndex(selectedT<CT_PointData>());
         else if(m_syncWith == CT_Repository::SyncWithEdgeCloud)
             m_selectedBackup = PS_REPOSITORY->registerEdgeCloudIndex(selectedT<CT_Edge>());
         else if(m_syncWith == CT_Repository::SyncWithFaceCloud)

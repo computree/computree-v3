@@ -13,6 +13,8 @@
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <limits>
 
 // Alias for indexing in models
@@ -94,7 +96,6 @@ void PB_StepFilterPointsByBoolGrid::compute()
 
     int gridNum = 1;
 
-
     // create a iterator to find groups that user selected with the IN model named DEF_IN_GridGroup
     CT_ResultGroupIterator it(resultOut, this, DEF_IN_GridGroup);
 
@@ -110,13 +111,13 @@ void PB_StepFilterPointsByBoolGrid::compute()
             CT_PointCloudIndexVector *resPointCloudIndex = new CT_PointCloudIndexVector();
 
             // BoundingBox de la nouvelle scène
-            float xmin = std::numeric_limits<float>::max();
-            float ymin = std::numeric_limits<float>::max();
-            float zmin = std::numeric_limits<float>::max();
+            double xmin = std::numeric_limits<double>::max();
+            double ymin = xmin;
+            double zmin = xmin;
 
-            float xmax = -std::numeric_limits<float>::max();
-            float ymax = -std::numeric_limits<float>::max();
-            float zmax = -std::numeric_limits<float>::max();
+            double xmax = -xmin;
+            double ymax = -xmin;
+            double zmax = -xmin;
 
             int sceneNum = 1;
 
@@ -127,26 +128,24 @@ void PB_StepFilterPointsByBoolGrid::compute()
 
                 PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Grille %1, Scène %2:")).arg(gridNum++).arg(sceneNum++));
 
-                const CT_AbstractPointCloudIndex *pointCloudIndex = in_scene->getPointCloudIndex();
-                size_t n_points = pointCloudIndex->size();
+                CT_PointIterator itP(in_scene->getPointCloudIndex());
+                size_t n_points = itP.size();
 
                 PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène %1 points...")).arg(n_points));
-
 
                 size_t i = 0;
 
                 size_t nbOfFilteredPoints = 0;
-                while((i<n_points))
+                while(itP.hasNext())
                 {
-                    size_t index;
-                    const CT_Point &point = pointCloudIndex->constTAt(i, index);
-                    float x = point(0);
-                    float y = point(1);
-                    float z = point(2);
+                    const CT_Point &point = itP.next().cT();
+                    double x = point(0);
+                    double y = point(1);
+                    double z = point(2);
 
                     if (boolGrid->valueAtXYZ(x, y, z))
                     {
-                        resPointCloudIndex->addIndex(index);
+                        resPointCloudIndex->addIndex(itP.cIndex());
 
                         if (x < xmin) {xmin = x;}
                         if (x > xmax) {xmax = x;}

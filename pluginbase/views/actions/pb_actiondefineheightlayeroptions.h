@@ -18,13 +18,13 @@ public:
     explicit PB_ActionDefineHeightLayerOptions(const PB_ActionDefineHeightLayer *action, float zmin, float zmax, float res, int threshold);
     ~PB_ActionDefineHeightLayerOptions();
 
-    float getZmin();
-    float getZmax();    
+    double getZmin();
+    double getZmax();
 
     void chooseZmin();
     void chooseZmax();
     int getThreshold();
-    float getResolution();
+    double getResolution();
 
 public slots:
     void increaseHValue();
@@ -41,7 +41,7 @@ private slots:
 
 signals:
     void redrawNeeded();
-    void zValuesChanged(float zmin, float zmax);
+    void zValuesChanged(double zmin, double zmax);
     void askForSideView();
     void askForCrownProjectionComputing();
     void updateResolution(double);

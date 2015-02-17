@@ -14,20 +14,20 @@ public:
 
     CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
+                              CT_PCIR pcir);
 
     CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                              CT_PCIR pcir,
                               CT_AbstractNormalCloud *nc);
 
     CT_PointsAttributesNormal(const QString &modelName,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
+                              CT_PCIR pcir);
 
     CT_PointsAttributesNormal(const QString &modelName,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                              CT_PCIR pcir,
                               CT_AbstractNormalCloud *nc);
 
     /**

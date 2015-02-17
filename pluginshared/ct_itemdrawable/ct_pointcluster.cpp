@@ -29,6 +29,9 @@
 
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_global/ct_context.h"
+#include "ct_accessor/ct_pointaccessor.h"
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <limits>
 
 const CT_StandardPointClusterDrawManager CT_PointCluster::POINTCLUSTER_DRAW_MANAGER;
@@ -85,18 +88,15 @@ QString CT_PointCluster::staticGetType()
 bool CT_PointCluster::addPoint(size_t index, bool verifyIfExist, bool firstPosition)
 {
     if(verifyIfExist && m_pIndex->contains(index))
-    {
         return false;
-    }
 
-    const CT_Point& point = m_pIndex->constTAtGlobalIndex(index);
+    CT_PointAccessor pAccess;
+    const CT_Point& point = pAccess.constPointAt(index);
 
     if (firstPosition)
-    {
         m_pIndex->push_front(index);
-    } else {
+    else
         m_pIndex->addIndex(index);
-    }
 
     _barycenter.addPoint(point);
 
@@ -153,8 +153,8 @@ CT_PointCluster* CT_PointCluster::merge(CT_PointCluster &pCLuster1, CT_PointClus
 
     CT_PointCluster *pMerged = new CT_PointCluster(modelName, &result);
 
-    const CT_AbstractCloudIndexT<CT_Point> *pIndex1 = pCLuster1.getPointCloudIndex();
-    const CT_AbstractCloudIndexT<CT_Point> *pIndex2 = pCLuster2.getPointCloudIndex();
+    const CT_AbstractPointCloudIndex *pIndex1 = pCLuster1.getPointCloudIndex();
+    const CT_AbstractPointCloudIndex *pIndex2 = pCLuster2.getPointCloudIndex();
 
     size_t size = pIndex1->size();
     size_t index;
@@ -223,18 +223,15 @@ void CT_PointCluster::initBarycenter()
 {
     _barycenter.reset();
 
-    const CT_AbstractPointCloudIndex *pIndex = getPointCloudIndex();
+    CT_PointIterator it(getPointCloudIndex());
 
-    if(pIndex != NULL)
+    while(it.hasNext())
     {
-        size_t size = pIndex->size();
-        for(size_t i=0 ; i<size ; ++i)
-        {
-            const CT_Point& point = pIndex->constTAt(i);
-            _barycenter.addPoint(point);
-        }
-        _barycenter.compute();
+        it.next();
+        _barycenter.addPoint(it.currentPoint());
     }
+
+    _barycenter.compute();
 }
 
 #ifdef USE_BOOST_OLD

@@ -97,14 +97,12 @@ CT_AbstractItemDrawable* CT_Cylinder::copy(const CT_OutAbstractItemModel *model,
 CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                quint64 id,
                                                                const CT_AbstractResult *result,
-                                                               const CT_AbstractPointCloud &pointCloud,
                                                                const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                const Eigen::Vector3d &pointCloudBarycenter)
 {
     Q_UNUSED(id)
 
-    CT_CylinderData *data = CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(pointCloud,
-                                                                                      pointCloudIndex,
+    CT_CylinderData *data = CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(pointCloudIndex,
                                                                                       pointCloudBarycenter);
 
     if(data == NULL)

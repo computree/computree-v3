@@ -3,6 +3,9 @@
 
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 
+#include "ct_accessor/ct_faceaccessor.h"
+#include "ct_accessor/ct_edgeaccessor.h"
+
 class CT_Mesh;
 
 class PLUGINSHAREDSHARED_EXPORT CT_StandardMeshModelDrawManager : public CT_AbstractItemDrawableDrawManager
@@ -27,6 +30,9 @@ protected:
     const static QString INDEX_CONFIG_SHOW_FACES;
     const static QString INDEX_CONFIG_SHOW_EDGES;
     const static QString INDEX_CONFIG_SHOW_POINTS;
+
+    CT_FaceAccessor m_fAccess;
+    CT_EdgeAccessor m_eAccess;
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 

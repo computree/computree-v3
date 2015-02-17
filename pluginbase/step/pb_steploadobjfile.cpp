@@ -12,6 +12,10 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 #include "ct_mesh/tools/ct_meshallocatort.h"
+#include "ct_iterator/ct_edgeiterator.h"
+#include "ct_iterator/ct_mutablepointiterator.h"
+#include "ct_iterator/ct_mutablefaceiterator.h"
+#include "ct_iterator/ct_mutableedgeiterator.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
@@ -80,20 +84,15 @@ CT_Edge* findHEdgeTwin(const CT_Mesh *mesh, const size_t &p0, const size_t &p1)
     if(mesh->abstractHedge() == NULL)
         return 0;
 
-    CT_Mesh::HEdgeIndexIterator it = mesh->hedge().begin();
-    CT_Mesh::HEdgeIndexIterator end = mesh->hedge().end();
+    CT_EdgeIterator it(mesh->abstractHedge());
 
-    while(it != end)
+    while(it.hasNext())
     {
-        CT_Edge &he = it.cT();
+        CT_Edge &he = it.next().cT();
 
         if(((he.iPointAt(0) == p1)
                             && (he.iPointAt(1) == p0)))
-        {
             return &he;
-        }
-
-        ++it;
     }
 
     return 0;
@@ -143,11 +142,11 @@ void PB_StepLoadObjFile::compute()
 
             if(!isStopped())
             {
+                CT_MutablePointIterator beginV = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh, nv);
+                CT_MutableFaceIterator beginF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh, nf);
 
-                CT_Mesh::VertexIndexIterator beginV = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh, nv);
-                CT_Mesh::FaceIndexIterator beginF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh, nf);
-
-                CT_Mesh::VertexIndexIterator beginVOrig = beginV;
+                size_t beginVOrig = beginV.next().cIndex();
+                beginV.toFront();
 
                 size_t nfLoaded = 0;
 
@@ -167,12 +166,12 @@ void PB_StepLoadObjFile::compute()
 
                             if(sl.size() >= 4)
                             {
-                                CT_Point &p = beginV.cT();
-                                p(0) = sl.at(1).toFloat();
-                                p(1) = sl.at(2).toFloat();
-                                p(2) = sl.at(3).toFloat();
+                                CT_Point p;
+                                p(0) = sl.at(1).toDouble();
+                                p(1) = sl.at(2).toDouble();
+                                p(2) = sl.at(3).toDouble();
 
-                                ++beginV;
+                                beginV.next().replaceCurrentPoint(p);
                             }
                         }
                     }
@@ -184,14 +183,14 @@ void PB_StepLoadObjFile::compute()
                         {
                             size_t p0,p1,p2;
 
-                            p0 = (beginVOrig + (sl.at(1).split("/").at(0).toInt() - 1)).cIndex();
-                            p1 = (beginVOrig + (sl.at(2).split("/").at(0).toInt() - 1)).cIndex();
-                            p2 = (beginVOrig + (sl.at(3).split("/").at(0).toInt() - 1)).cIndex();
+                            p0 = beginVOrig + (sl.at(1).split("/").at(0).toInt() - 1);
+                            p1 = beginVOrig + (sl.at(2).split("/").at(0).toInt() - 1);
+                            p2 = beginVOrig + (sl.at(3).split("/").at(0).toInt() - 1);
 
-                            CT_Face &face = beginF.cT();
+                            CT_Face &face = beginF.next().cT();
                             size_t faceIndex = beginF.cIndex();
 
-                            CT_Mesh::HEdgeIndexIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh, 3);
+                            CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh, 3);
 
                             CT_Edge *twinE1 = NULL;
                             CT_Edge *twinE2 = NULL;
@@ -204,7 +203,7 @@ void PB_StepLoadObjFile::compute()
                                 twinE3 = findHEdgeTwin(mesh, p2, p0);
                             }
 
-                            size_t e1Index = beginHe.cIndex();
+                            size_t e1Index = beginHe.next().cIndex();
                             size_t e2Index;
                             size_t e3Index;
 
@@ -214,16 +213,14 @@ void PB_StepLoadObjFile::compute()
                             e1.setPoint0(p0);
                             e1.setPoint1(p1);
                             e1.setFace(faceIndex);
-                            ++beginHe;
 
-                            CT_Edge &e2 = beginHe.cT();
+                            CT_Edge &e2 = beginHe.next().cT();
                             e2.setPoint0(p1);
                             e2.setPoint1(p2);
                             e1.setFace(faceIndex);
                             e2Index = beginHe.cIndex();
-                            ++beginHe;
 
-                            CT_Edge &e3 = beginHe.cT();
+                            CT_Edge &e3 = beginHe.next().cT();
                             e3.setPoint0(p2);
                             e3.setPoint1(p0);
                             e3.setFace(faceIndex);
@@ -254,7 +251,6 @@ void PB_StepLoadObjFile::compute()
                                 twinE3->setTwin(e3Index);
                             }
 
-                            ++beginF;
                             ++nfLoaded;
 
                             setProgress((nfLoaded*100)/nf);

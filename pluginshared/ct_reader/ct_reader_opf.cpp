@@ -320,20 +320,23 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
 
             int size = points.size()/3;
 
-            CT_Mesh::VertexIndexIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh->m_mesh, size);
-            debPointIndex = itP.cIndex();
+            CT_MutablePointIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh->m_mesh, size);
+            debPointIndex = itP.next().cIndex();
+
+            CT_Point pAdded;
 
             int i = 0;
 
             while(i<size)
             {
-                CT_Point &p = itP.cT();
-                p(0) = it.next().toFloat();
-                p(1) = it.next().toFloat();
-                p(2) = it.next().toFloat();
+                pAdded(0) = it.next().toDouble();
+                pAdded(1) = it.next().toDouble();
+                pAdded(2) = it.next().toDouble();
+
+                itP.replaceCurrentPoint(pAdded);
 
                 ++i;
-                ++itP;
+                itP.next();
             }
         }
         else if(nn == "faces")
@@ -342,16 +345,14 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
 
             while(xmlFace != NULL)
             {
-                //CT_OPF_Face face;
-
                 QString tmp = QString(xmlFace->value()).trimmed();
                 QStringList points = tmp.split(QRegExp("\\s+"));
 
-                CT_Mesh::FaceIndexIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh->m_mesh, 1);
+                CT_MutableFaceIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh->m_mesh, 1);
 
-                CT_Face &face = itF.cT();
+                CT_Face &face = itF.next().cT();
 
-                CT_Mesh::HEdgeIndexIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh->m_mesh, 3);
+                CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh->m_mesh, 3);
 
                 size_t faceIndex = itF.cIndex();
 
@@ -359,7 +360,7 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
                 size_t p1 = points.at(1).toInt() + debPointIndex;
                 size_t p2 = points.at(2).toInt() + debPointIndex;
 
-                size_t e1Index = beginHe.cIndex();
+                size_t e1Index = beginHe.next().cIndex();
                 size_t e2Index;
                 size_t e3Index;
 
@@ -369,16 +370,14 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
                 e1.setPoint0(p0);
                 e1.setPoint1(p1);
                 e1.setFace(faceIndex);
-                ++beginHe;
 
-                CT_Edge &e2 = beginHe.cT();
+                CT_Edge &e2 = beginHe.next().cT();
                 e2.setPoint0(p1);
                 e2.setPoint1(p2);
                 e1.setFace(faceIndex);
                 e2Index = beginHe.cIndex();
-                ++beginHe;
 
-                CT_Edge &e3 = beginHe.cT();
+                CT_Edge &e3 = beginHe.next().cT();
                 e3.setPoint0(p2);
                 e3.setPoint1(p0);
                 e3.setFace(faceIndex);
@@ -662,12 +661,11 @@ void CT_OPF_Mesh::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) con
         m_max(1) = m_max.x();
         m_max(2) = m_max.x();
 
-        CT_AbstractPointCloudIndex::ConstIterator it = m_mesh->abstractVert()->constBegin();
-        CT_AbstractPointCloudIndex::ConstIterator end = m_mesh->abstractVert()->constEnd();
+        CT_PointIterator it(m_mesh->abstractVert());
 
-        while(it != end)
+        while(it.hasNext())
         {
-            const CT_Point &p = it.cT();
+            const CT_Point &p = it.next().cT();
 
             if(p(0) > m_max.x())
                 m_max(0) = p(0);
@@ -686,8 +684,6 @@ void CT_OPF_Mesh::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) con
 
             if(p(2) < m_min.z())
                 m_min(2) = p(2);
-
-            ++it;
         }
 
         m_bboxOK = true;

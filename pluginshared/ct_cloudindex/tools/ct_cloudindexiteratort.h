@@ -1,9 +1,12 @@
 #ifndef CT_CLOUDINDEXITERATORT_H
 #define CT_CLOUDINDEXITERATORT_H
 
-#include <stdlib.h>
+#include <QSharedPointer>
+#include "ct_global/ct_context.h"
+#include "ct_cloud/abstract/ct_abstractcloudt.h"
 
 template <typename T> class CT_AbstractCloudIndexT;
+class CT_AbstractCloudIndexRegistered;
 
 template<typename T>
 class CT_CloudIndexIteratorT
@@ -11,36 +14,86 @@ class CT_CloudIndexIteratorT
 public:
     typedef CT_CloudIndexIteratorT<T> self_type;
 
-    CT_CloudIndexIteratorT(const CT_AbstractCloudIndexT<T> &index, const size_t &startPos = 0)
+    CT_CloudIndexIteratorT(const CT_AbstractCloudIndexT<T> *index)
     {
-        m_index = (CT_AbstractCloudIndexT<T>*)&index;
-        m_currentPos = startPos;
+        m_index = (CT_AbstractCloudIndexT<T>*)index;
+        m_startPos = 0;
+        m_endPos = (m_index == NULL) ? 0 : m_index->size();
+
+        toFront();
+    }
+
+    CT_CloudIndexIteratorT(QSharedPointer<CT_AbstractCloudIndexRegistered> cir)
+    {
+        m_index = dynamic_cast<CT_AbstractCloudIndexT<T>*>(cir->abstractCloudIndex());
+        m_startPos = 0;
+        m_endPos = (m_index == NULL) ? 0 : m_index->size();
+
+        toFront();
+    }
+
+    inline size_t size() const { return m_index->size(); }
+
+
+    inline void toFront() { m_currentPos = m_startPos; m_atFront = true; }
+
+    inline bool hasNext() const { if(m_startPos == m_endPos) { return false; } return m_currentPos != (m_endPos-1); }
+
+    inline CT_CloudIndexIteratorT<T>& next() { if(m_atFront || (m_startPos == m_endPos)) { m_currentPos = m_startPos; m_atFront = false; } else if(m_currentPos != (m_endPos-1)) { ++m_currentPos; } return *this; }
+
+
+    inline void toBack() { m_currentPos = m_endPos; m_atFront = false; }
+
+    inline bool hasPrevious() const { return m_currentPos > m_startPos; }
+
+    inline CT_CloudIndexIteratorT<T>& previous() { if(m_currentPos > m_startPos) { --m_currentPos; } return *this; }
+
+
+    inline CT_CloudIndexIteratorT<T>& jump(size_t n)
+    {
+        if(m_startPos == m_endPos)
+            return *this;
+
+        // if at front
+        if(m_atFront) {
+
+            if(n != 0) {
+                m_currentPos = m_startPos+(n-1); // go to start+n-1
+                m_atFront = false;
+            }
+
+            // if over the end
+            if(m_currentPos > (m_endPos-1))
+                m_currentPos = (m_endPos-1); // go to end
+
+        // else if we jump over the end
+        } else if((m_currentPos+n) >= (m_endPos-1)) {
+            m_currentPos = (m_endPos-1); // go to end
+            m_atFront = false;
+        } else {
+            m_currentPos += n;
+            m_atFront = false;
+        }
+
+        return *this;
     }
 
     inline size_t cIndex() { return (*m_index)[m_currentPos]; }
     const T& cT() const { return operator*(); }
     T& cT() { return operator*(); }
 
-    const T& operator*() const { return m_index->tAt(m_currentPos); }
+    const T& operator*() const { return PS_REPOSITORY->globalCloud<T>()->constTAt(cIndex()); }
     const T* operator->() const { return &(operator*()); }
 
-    T& operator*() { return m_index->tAt(m_currentPos); }
+    T& operator*() { return PS_REPOSITORY->globalCloud<T>()->tAt(cIndex()); }
     T* operator->() { return &(operator*()); }
-
-    self_type& operator++() { ++m_currentPos; return *this; }
-    self_type operator+(const size_t &i) { self_type tmp(*this); tmp.m_currentPos += i; return tmp; }
-    self_type& operator+=(const size_t &i) { m_currentPos += i; return *this; }
-
-    self_type& operator--() { --m_currentPos; return *this; }
-    self_type operator-(const size_t &i) { self_type tmp(*this); tmp.m_currentPos -= i; return tmp; }
-    self_type& operator-=(const size_t &i) { m_currentPos -= i; return *this; }
-
-    bool operator==(const self_type &other) const { return ((m_index == other.m_index) && (m_currentPos == other.m_currentPos)); }
-    bool operator!=(const self_type &other) const { return ((m_index != other.m_index) ||    (m_currentPos != other.m_currentPos)); }
 
 private:
     CT_AbstractCloudIndexT<T>   *m_index;
+    size_t                      m_startPos;
     size_t                      m_currentPos;
+    size_t                      m_endPos;
+    bool                        m_atFront;
 };
 
 #endif // CT_CLOUDINDEXITERATORT_H

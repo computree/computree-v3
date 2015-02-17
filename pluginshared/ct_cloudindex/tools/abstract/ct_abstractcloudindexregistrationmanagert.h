@@ -7,6 +7,8 @@
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractnotmodifiablecloudindexregisteredt.h"
 
+#include "ct_global/ct_context.h"
+
 #include <QMutex>
 
 /**

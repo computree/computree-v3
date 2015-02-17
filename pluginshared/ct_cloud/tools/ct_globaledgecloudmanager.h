@@ -1,6 +1,7 @@
 #ifndef CT_GLOBALEDGECLOUDMANAGER_H
 #define CT_GLOBALEDGECLOUDMANAGER_H
 
+#include "ct_defines.h"
 #include "ct_cloud/tools/ct_globalcloudmanagert.h"
 #include "ct_cloud/ct_standardcloudstdvectort.h"
 #include "ct_mesh/ct_edge.h"
@@ -15,13 +16,13 @@
  *
  * It will also sync pointer in CT_Edge.
  */
-class PLUGINSHAREDSHARED_EXPORT CT_GlobalEdgeCloudManager : public CT_GlobalCloudManagerT< CT_Edge, CT_StandardCloudStdVectorT<CT_Edge> >
+class PLUGINSHAREDSHARED_EXPORT CT_GlobalEdgeCloudManager : public CT_GlobalCloudManagerT< CT_Edge, CT_EdgeCloudStdVector >
 {
 public:
     CT_GlobalEdgeCloudManager();
 
-    void setGlobalCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Point> *globalPointCloudManager);
-    void setGlobalCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Face> *globalFaceCloudManager);
+    void setGlobalCloudManager(const CT_AbstractGlobalPointCloudManager *globalPointCloudManager);
+    void setGlobalCloudManager(const CT_AbstractGlobalFaceCloudManager *globalFaceCloudManager);
 
 private:
     // sync edge when edge is deleted
@@ -55,8 +56,8 @@ private:
     };
 
 
-    CT_AbstractGlobalCloudManagerT<CT_Point>    *m_gpcm;
-    CT_AbstractGlobalCloudManagerT<CT_Face>     *m_gfcm;
+    CT_AbstractGlobalPointCloudManager          *m_gpcm;
+    CT_AbstractGlobalFaceCloudManager           *m_gfcm;
     SyncEdgeE                                   m_syncEdgeE;
     SyncEdgeF                                   m_syncEdgeF;
     SyncEdgeP                                   m_syncEdgeP;

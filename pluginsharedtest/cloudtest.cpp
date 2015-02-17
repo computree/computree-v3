@@ -4,41 +4,47 @@
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 #include "ct_colorcloud/abstract/ct_abstractmodifiableindexcloudcolormap.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_iterator/ct_mutablepointiterator.h"
+#include "ct_accessor/ct_pointaccessor.h"
+
 CloudTest::CloudTest()
 {
 }
 
 void CloudTest::testPointCloudSimple()
 {
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(10, 0);
+    CT_NMPCIR pcir = createPointCloud(10, 0);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)10);
+    QCOMPARE(pAccess.size(), (size_t)10);
 
     checkPointCloud(pcir, 0);
     checkPointCloudIndex(pcir, 0);
 
     pcir.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    QCOMPARE(pAccess.size(), (size_t)0);
 }
 
 void CloudTest::testPointCloudRemoveMiddle()
 {
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(10, 0);
+    CT_NMPCIR pcir = createPointCloud(10, 0);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)10);
+    QCOMPARE(pAccess.size(), (size_t)10);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir2 = createPointCloud(20, 52);
+    CT_NMPCIR pcir2 = createPointCloud(20, 52);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)30);
+    QCOMPARE(pAccess.size(), (size_t)30);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir3 = createPointCloud(5, 128);
+    CT_NMPCIR pcir3 = createPointCloud(5, 128);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)35);
+    QCOMPARE(pAccess.size(), (size_t)35);
 
     checkPointCloud(pcir, 0);
     checkPointCloud(pcir2, 52);
@@ -50,7 +56,7 @@ void CloudTest::testPointCloudRemoveMiddle()
 
     pcir2.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)15);
+    QCOMPARE(pAccess.size(), (size_t)15);
 
     checkPointCloud(pcir, 0);
     checkPointCloud(pcir3, 128);
@@ -60,63 +66,69 @@ void CloudTest::testPointCloudRemoveMiddle()
 
     pcir.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)5);
+    QCOMPARE(pAccess.size(), (size_t)5);
 
     checkPointCloud(pcir3, 128);
     checkPointCloudIndex(pcir3, 0);
 
     pcir3.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    QCOMPARE(pAccess.size(), (size_t)0);
 }
 
 void CloudTest::testUndefinedSizePointCloudSimple()
 {
     CT_AbstractUndefinedSizePointCloud *pc = PS_REPOSITORY->createNewUndefinedSizePointCloud();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
 
     for(int i=0; i<10; ++i)
     {
-        CT_Point &p = pc->addPoint();
+        CT_Point p;
         p.setX(i);
         p.setY(i);
         p.setZ(i);
+
+        pc->addPoint(p, 0);
     }
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
+    CT_NMPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
 
     checkPointCloud(pcir, 0);
     checkPointCloudIndex(pcir, 0);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)10);
+    QCOMPARE(pAccess.size(), (size_t)10);
 }
 
 void CloudTest::testUndefinedSizePointCloudRemoveMiddle()
 {
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(10, 0);
+    CT_NMPCIR pcir = createPointCloud(10, 0);
 
     CT_AbstractUndefinedSizePointCloud *pc = PS_REPOSITORY->createNewUndefinedSizePointCloud();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)10);
+    QCOMPARE(pAccess.size(), (size_t)10);
 
     for(int i=13; i<33; ++i)
     {
-        CT_Point &p = pc->addPoint();
+        CT_Point p;
         p.setX(i);
         p.setY(i);
         p.setZ(i);
+
+        pc->addPoint(p, 0);
     }
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir2 = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
+    CT_NMPCIR pcir2 = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)30);
+    QCOMPARE(pAccess.size(), (size_t)30);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir3 = createPointCloud(5, 85);
+    CT_NMPCIR pcir3 = createPointCloud(5, 85);
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)35);
+    QCOMPARE(pAccess.size(), (size_t)35);
 
     checkPointCloud(pcir, 0);
     checkPointCloud(pcir2, 13);
@@ -128,7 +140,7 @@ void CloudTest::testUndefinedSizePointCloudRemoveMiddle()
 
     pcir2.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)15);
+    QCOMPARE(pAccess.size(), (size_t)15);
 
     checkPointCloud(pcir, 0);
     checkPointCloud(pcir3, 85);
@@ -138,25 +150,26 @@ void CloudTest::testUndefinedSizePointCloudRemoveMiddle()
 
     pcir3.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)10);
+    QCOMPARE(pAccess.size(), (size_t)10);
 
     checkPointCloud(pcir, 0);
     checkPointCloudIndex(pcir, 0);
 
     pcir.clear();
 
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    QCOMPARE(pAccess.size(), (size_t)0);
 }
 
 void CloudTest::testCloudIndexSyncRemoveMiddle()
 {
-    QCOMPARE(PS_REPOSITORY->globalPointCloud()->size(), (size_t)0);
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(8, 0);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir2 = createPointCloud(26, 21);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir3 = createPointCloud(42, 58);
+    CT_NMPCIR pcir = createPointCloud(8, 0);
+    CT_NMPCIR pcir2 = createPointCloud(26, 21);
+    CT_NMPCIR pcir3 = createPointCloud(42, 58);
 
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
+    CT_MCIR cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
 
     cir->abstractModifiableCloudIndex()->addIndex(4); // pcir
     cir->abstractModifiableCloudIndex()->addIndex(5); // pcir
@@ -197,11 +210,11 @@ void CloudTest::testCloudIndexSyncRemoveMiddle()
 
 void CloudTest::testColorCloudSyncRemoveMiddle()
 {
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(14, 0);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir2 = createPointCloud(80, 10);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir3 = createPointCloud(10, 62);
+    CT_NMPCIR pcir = createPointCloud(14, 0);
+    CT_NMPCIR pcir2 = createPointCloud(80, 10);
+    CT_NMPCIR pcir3 = createPointCloud(10, 62);
 
-    CT_Repository::CT_CCR ccr = PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud);
+    CT_CCR ccr = PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud);
 
     for(size_t i=0; i<104; ++i)
     {
@@ -237,20 +250,21 @@ void CloudTest::testColorCloudSyncRemoveMiddle()
 
 void CloudTest::testMapColorCloudSyncRemoveMiddle()
 {
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> mccr = PS_REPOSITORY->createNewMapIndexCloudColor(CT_Repository::SyncWithPointCloud);
+    CT_MCIR mccr = PS_REPOSITORY->createNewMapIndexCloudColor(CT_Repository::SyncWithPointCloud);
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(10, 0);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir2 = createPointCloud(20, 10);
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir3 = createPointCloud(10, 30);
+    CT_NMPCIR pcir = createPointCloud(10, 0);
+    CT_NMPCIR pcir2 = createPointCloud(20, 10);
+    CT_NMPCIR pcir3 = createPointCloud(10, 30);
 
     QCOMPARE(mccr->abstractModifiableCloudIndex()->size(), (size_t)0);
 
     CT_Color col;
-    ((CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex())->insertIndexAndColor(0, col);
-    ((CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex())->insertIndexAndColor(35, col);
-    ((CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex())->insertIndexAndColor(22, col);
-    ((CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex())->insertIndexAndColor(14, col);
-    ((CT_AbstractModifiableIndexCloudColorMap*)mccr->abstractModifiableCloudIndex())->insertIndexAndColor(3, col);
+    CT_AbstractModifiableIndexCloudColorMap *map = dynamic_cast<CT_AbstractModifiableIndexCloudColorMap*>(mccr->abstractModifiableCloudIndex());
+    map->insertIndexAndColor(0, col);
+    map->insertIndexAndColor(35, col);
+    map->insertIndexAndColor(22, col);
+    map->insertIndexAndColor(14, col);
+    map->insertIndexAndColor(3, col);
 
     QCOMPARE(mccr->abstractModifiableCloudIndex()->size(), (size_t)5);
     QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)0);
@@ -274,8 +288,8 @@ void CloudTest::testMapColorCloudSyncRemoveMiddle()
 
 void CloudTest::benchmarkCloudIndexLoop()
 {
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(15000, 0);
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
+    CT_NMPCIR pcir = createPointCloud(15000, 0);
+    CT_MCIR cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
 
     QBENCHMARK {
         CT_AbstractModifiableCloudIndex *index = cir->abstractModifiableCloudIndex();
@@ -290,11 +304,11 @@ void CloudTest::benchmarkCloudIndexLoop()
 
 void CloudTest::benchmarkCloudIndexLoopDynamicCast()
 {
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = createPointCloud(15000, 0);
-    QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
+    CT_NMPCIR pcir = createPointCloud(15000, 0);
+    CT_MCIR cir = PS_REPOSITORY->createNewIndexCloud(CT_Repository::SyncWithPointCloud);
 
     QBENCHMARK {
-        const CT_AbstractCloudIndexT<CT_Point> *index = dynamic_cast<const CT_AbstractCloudIndexT<CT_Point>*>(cir->abstractModifiableCloudIndex());
+        const CT_AbstractPointCloudIndex *index = dynamic_cast<const CT_AbstractPointCloudIndex*>(cir->abstractModifiableCloudIndex());
 
         size_t size = index->size();
 
@@ -304,59 +318,55 @@ void CloudTest::benchmarkCloudIndexLoopDynamicCast()
     }
 }
 
-CT_Repository::CT_AbstractNotModifiablePCIR CloudTest::createPointCloud(size_t size, int initVar) const
+CT_NMPCIR CloudTest::createPointCloud(size_t size, int initVar) const
 {
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(size);
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator begin = pcir->constBegin();
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator end = pcir->constEnd();
+    CT_NMPCIR pcir = PS_REPOSITORY->createNewPointCloud(size);
 
-    float i = initVar;
+    CT_MutablePointIterator it(pcir);
 
-    while(begin != end)
+    double i = initVar;
+
+    while(it.hasNext())
     {
-        CT_Point &p = begin.cT();
+        CT_Point p;
         p.setX(i);
         p.setY(i);
         p.setZ(i);
 
-        ++begin;
+        it.next().replaceCurrentPoint(p);
         ++i;
     }
 
     return pcir;
 }
 
-void CloudTest::checkPointCloud(CT_Repository::CT_AbstractNotModifiablePCIR pcir, int initVar) const
+void CloudTest::checkPointCloud(CT_NMPCIR pcir, int initVar) const
 {
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator begin = pcir->constBegin();
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator end = pcir->constEnd();
+    CT_PointIterator it(pcir);
 
-    float i = initVar;
+    double i = initVar;
 
-    while(begin != end)
+    while(it.hasNext())
     {
-        CT_Point &p = begin.cT();
-        QCOMPARE(p.getX(), i);
-        QCOMPARE(p.getY(), i);
-        QCOMPARE(p.getZ(), i);
+        const CT_Point &p = it.next().cT();
+        QCOMPARE(p(CT_Point::X), i);
+        QCOMPARE(p(CT_Point::Y), i);
+        QCOMPARE(p(CT_Point::Z), i);
 
         ++i;
-        ++begin;
     }
 }
 
-void CloudTest::checkPointCloudIndex(CT_Repository::CT_AbstractNotModifiablePCIR pcir, int initIndex) const
+void CloudTest::checkPointCloudIndex(CT_NMPCIR pcir, int initIndex) const
 {
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator begin = pcir->constBegin();
-    CT_AbstractNotModifiableCloudIndexRegisteredT<CT_Point>::ConstIterator end = pcir->constEnd();
+    CT_PointIterator it(pcir);
 
     size_t i = initIndex;
 
-    while(begin != end)
+    while(it.hasNext())
     {
-        QCOMPARE(begin.cIndex(), i);
+        QCOMPARE(it.next().cIndex(), i);
 
         ++i;
-        ++begin;
     }
 }

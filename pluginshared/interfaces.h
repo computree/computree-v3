@@ -45,6 +45,8 @@
 #include "interfacessettings.h"
 #include "eigen/Eigen/Core"
 
+#include "ct_defines.h"
+
 class QPen;
 class QRectF;
 
@@ -65,13 +67,14 @@ class CT_AbstractItemDrawable;
 class CT_AbstractAction;
 class CT_AbstractLogListener;
 class CT_AbstractMeshModel;
-class CT_AbstractPointCloud;
 class CT_AbstractCloudIndex;
 class CT_OutAbstractModel;
 class CT_StandardColorCloudRegistered;
 class CT_StandardNormalCloudRegistered;
-class CT_AbstractModifiableCloudIndexRegistered;
-class CT_AbstractModifiableCloudIndex;
+
+typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SPCIR;
+typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SFCIR;
+typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SECIR;
 
 /**
  * @brief Represent an octree used by graphics views
@@ -101,7 +104,7 @@ public:
     /**
      * @brief Returns cloud index in cell at x/y/z. NULL if cell is empty.
      */
-    virtual const CT_AbstractCloudIndex* at(int x, int y, int z) const = 0;
+    virtual const CT_AbstractPointCloudIndex* at(int x, int y, int z) const = 0;
 
     /**
      * @brief Returns true if the cell at x, y, z is visible in frustrum
@@ -797,17 +800,17 @@ public:
     /**
      * @brief Returns all points (indices) selected. Can be NULL if no points where selected.
      */
-    virtual QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedPoints() const = 0;
+    virtual CT_SPCIR getSelectedPoints() const = 0;
 
     /**
      * @brief Returns all faces (indices) selected. Can be NULL if no faces where selected.
      */
-    virtual QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedFaces() const = 0;
+    virtual CT_SFCIR getSelectedFaces() const = 0;
 
     /**
      * @brief Returns all edges (indices) selected. Can be NULL if no edges where selected.
      */
-    virtual QSharedPointer<CT_AbstractModifiableCloudIndexRegistered> getSelectedEdges() const = 0;
+    virtual CT_SECIR getSelectedEdges() const = 0;
 
     /**
      * @brief Returns all ItemDrawable selected

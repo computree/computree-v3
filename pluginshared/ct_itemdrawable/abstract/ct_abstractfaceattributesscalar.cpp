@@ -6,7 +6,7 @@ CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar() : CT_Abstract
 
 CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                  CT_AbstractResult *result,
-                                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir) : CT_AbstractFaceAttributes(model,
+                                                                 CT_FCIR cir) : CT_AbstractFaceAttributes(model,
                                                                                                                                                                      result,
                                                                                                                                                                      cir)
 {
@@ -15,7 +15,7 @@ CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const CT_OutAbs
 
 CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const QString &modelName,
                                                                  CT_AbstractResult *result,
-                                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR cir) : CT_AbstractFaceAttributes(modelName,
+                                                                 CT_FCIR cir) : CT_AbstractFaceAttributes(modelName,
                                                                                                                                                                      result,
                                                                                                                                                                      cir)
 {

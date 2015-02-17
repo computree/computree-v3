@@ -60,24 +60,6 @@
     PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName);
 
 /**
- * @brief Call CT_DEFAULT_IA_V2_COORDINATE in the private section of your singular item class. This default item attribute must be
- *        a coordinate (x, y, z) and can be converted by a CT_AbstractCoordinateSystem
- * @param ClassNameSI : your class name
- * @param CategoryUniqueName : a category unique name (typically CT_AbstractCategory::staticInitDataXXXX())
- * @param GetterMethod_OR_Value_X : a pointer to a getter method of your class OR a value of the X coordinate
- * @param GetterMethod_OR_Value_Y : a pointer to a getter method of your class OR a value of the Y coordinate
- * @param GetterMethod_OR_Value_Z : a pointer to a getter method of your class OR a value of the Z coordinate  (can be null if it was a getter method and you don't use 3D)
- * @param DisplayableName : a displayable name for your default attribute
- *
- * @example : private:
- *            CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
- *            CT_DEFAULT_IA_V2_COORDINATE(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, &CT_AbstractSingularItemDrawable::getCenterY, &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre X"))
- *            CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
- */
-#define CT_DEFAULT_IA_V2_COORDINATE(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value_X, GetterMethod_OR_Value_Y, GetterMethod_OR_Value_Z, DisplayableName) \
-    PS_DIAM->addCoordinateItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value_X, GetterMethod_OR_Value_Y, GetterMethod_OR_Value_Z, DisplayableName);
-
-/**
  * @brief Call CT_DEFAULT_IA_V3 in the private section of your singular item class
  * @param ClassNameSI : your class name
  * @param CategoryUniqueName : a category unique name (typically CT_AbstractCategory::staticInitDataXXXX())
@@ -197,110 +179,6 @@ public:
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
 
         // add element to the collection
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
-
-        if(newL == NULL)
-        {
-            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
-            m_collection.insert(className, newL);
-        }
-
-        CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();
-        c->m_model = model;
-        c->m_userKey = uniqueKey;
-
-        newL->append(c);
-
-        return true;
-    }
-
-    /**
-     * @brief Add an item attribute that represent a coordinate and that can be converted by a CT_AbstractCoordinateSystem.
-     * @param className : the class name of the singular item
-     * @param categoryUniqueName : the unique name to get the category in category manager
-     * @param getter : a method to your singular item to get the data (x, y or z)
-     * @param getterX : a method to your singular item to get the x data
-     * @param getterY : a method to your singular item to get the y data
-     * @param getterZ : a method to your singular item to get the z data
-     * @param displayableName : a displayable name for the model of the item attribute (displayed in GUI). If empty we will use the displayable name of the category
-     * @param uniqueKey : a unique key if you want to retrieve your attribute. Can be empty but if you do that you can never
-     *        retrieve your attribute by a unique key because it will be generated automatically
-     * @return true if the item attribute is created and added to this manager
-     */
-    template <typename ItemClass, typename VType>
-    bool addCoordinateItemAttribute(const QString &className,
-                                    const QString &categoryUniqueName,
-                                    VType (ItemClass::*getterX)() const,
-                                    VType (ItemClass::*getterY)() const,
-                                    VType (ItemClass::*getterZ)() const,
-                                    const QString &displayableName = "",
-                                    const QString &uniqueKey = "")
-    {
-        const CT_AbstractCategory *cat = PS_CATEGORY_MANAGER->findByUniqueName(categoryUniqueName);
-
-        Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addCoordinateItemAttribute", qPrintable(QString("You created a default item attribute but the category with name \"") + categoryUniqueName + "\" was not found"));
-
-        if(!cat->isEquivalentTo(CT_AbstractCategory::staticInitDataCoordinate()))
-            Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addCoordinateItemAttribute", qPrintable(QString("You created a item attribute that represent a coordinate but the category is not equivalent to a DATA_COORDINATE")));
-
-        // create an empty item attribute with a model and a result NULL. This attribute will only be used in model.
-        CT_AbstractItemAttribute *attModel = CT_IACreator::createCoordinate<ItemClass, VType>(NULL, cat, NULL, getterX, getterY, getterZ);
-
-        // create the model
-        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
-
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
-
-        if(newL == NULL)
-        {
-            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
-            m_collection.insert(className, newL);
-        }
-
-        CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();
-        c->m_model = model;
-        c->m_userKey = uniqueKey;
-
-        newL->append(c);
-
-        return true;
-    }
-
-    /**
-     * @brief Add an item attribute that represent a coordinate and that can be converted by a CT_AbstractCoordinateSystem.
-     * @param className : the class name of the singular item
-     * @param categoryUniqueName : the unique name to get the category in category manager
-     * @param data : the data that will never change (x, y or z)
-     * @param dataX : the x data that will never change
-     * @param dataY : the y data that will never change
-     * @param dataZ : the z data that will never change
-     * @param displayableName : a displayable name for the model of the item attribute (displayed in GUI). If empty we will use the displayable name of the category
-     * @param uniqueKey : a unique key if you want to retrieve your attribute. Can be empty but if you do that you can never
-     *        retrieve your attribute by a unique key because it will be generated automatically
-     * @return true if the item attribute is created and added to this manager
-     */
-    template <typename VType>
-    bool addCoordinateItemAttribute(const QString &className,
-                                    const QString &categoryUniqueName,
-                                    const VType &dataX,
-                                    const VType &dataY,
-                                    const VType &dataZ,
-                                    const QString &displayableName = "",
-                                    const QString &uniqueKey = "")
-    {
-        const CT_AbstractCategory *cat = PS_CATEGORY_MANAGER->findByUniqueName(categoryUniqueName);
-
-        Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addCoordinateItemAttribute", qPrintable(QString("You created a default item attribute but the category with name \"") + categoryUniqueName + "\" was not found"));
-
-        if(!cat->isEquivalentTo(CT_AbstractCategory::staticInitDataCoordinate()))
-            Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addCoordinateItemAttribute", qPrintable(QString("You created a item attribute that represent a coordinate but the category is not equivalent to a DATA_COORDINATE")));
-
-        // create an empty item attribute with a model and a result NULL. This attribute will only be used in model.
-        CT_AbstractItemAttribute *attModel = CT_IACreator::createCoordinate<VType>(NULL, cat, NULL, dataX, dataY, dataZ);
-
-        // create the model
-        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
-
         QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
 
         if(newL == NULL)

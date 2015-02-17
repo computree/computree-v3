@@ -94,12 +94,11 @@ CT_AbstractItemDrawable* CT_Line::copy(const CT_OutAbstractItemModel *model,
 CT_Line* CT_Line::staticCreateLineFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                  quint64 id,
                                                  const CT_AbstractResult *result,
-                                                 const CT_AbstractPointCloud &pointCloud,
                                                  const CT_AbstractPointCloudIndex &pointCloudIndex)
 {
     Q_UNUSED(id)
 
-    CT_LineData *data = CT_LineData::staticCreateLineDataFromPointCloud(pointCloud, pointCloudIndex);
+    CT_LineData *data = CT_LineData::staticCreateLineDataFromPointCloud(pointCloudIndex);
 
     if(data == NULL)
         return NULL;

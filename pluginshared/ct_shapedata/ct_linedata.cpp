@@ -26,6 +26,7 @@
 *****************************************************************************/
 
 #include "ct_linedata.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -135,26 +136,23 @@ CT_LineData* CT_LineData::clone() const
     return new CT_LineData(getP1(), getP2(), getError(), n());
 }
 
-CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                             const CT_AbstractPointCloudIndex &pointCloudIndex)
-{    
-    Q_UNUSED(pointCloud)
+CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex)
+{
+    CT_PointIterator it(&pointCloudIndex);
 
-    size_t indexSize = pointCloudIndex.size();
-
-    if(indexSize < 2) {return NULL;}
+    if(it.size() < 2) {return NULL;}
 
     QList<Eigen::Vector3d> liste;
 
-    for (size_t i = 0 ; i < indexSize ; i++)
+    while(it.hasNext())
     {
-        const CT_Point &p = pointCloudIndex.tAt(i);
+        it.next();
+        const CT_Point &p = it.currentPoint();
         liste.append(Eigen::Vector3d(p(0), p(1), p(2)));
     }
 
     CT_LineData* result = CT_LineData::staticCreateLineDataFromPointCloud(liste);
     return result;
-
 }
 
 CT_LineData *CT_LineData::staticCreateLineDataFromItemCenters(const QList<CT_AbstractSingularItemDrawable *> &items)

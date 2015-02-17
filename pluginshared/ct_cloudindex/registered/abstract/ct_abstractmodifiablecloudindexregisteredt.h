@@ -14,11 +14,7 @@ class CT_AbstractModifiableCloudIndexRegisteredT : public CT_AbstractCloudIndexR
 public:
     ~CT_AbstractModifiableCloudIndexRegisteredT();
 
-    typedef typename CT_AbstractModifiableCloudIndexT<T>::Iterator  Iterator;
     typedef typename CT_AbstractModifiableCloudIndexT<T>::size_type  size_type;
-
-    inline Iterator begin() { return abstractModifiableCloudIndexT()->begin(); }
-    inline Iterator end() { return abstractModifiableCloudIndexT()->end(); }
 
     inline void addIndex(const size_t &newIndex) { abstractModifiableCloudIndexT()->addIndex(newIndex); }
 

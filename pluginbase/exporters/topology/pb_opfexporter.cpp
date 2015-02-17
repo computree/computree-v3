@@ -10,7 +10,11 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h"
 
+#include "ct_point.h"
 #include "ct_mesh/ct_face.h"
+
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_iterator/ct_faceiterator.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -253,37 +257,33 @@ bool PB_OPFExporter::writeMesh(QTextStream &stream, CT_Mesh *mesh, const int &in
     {
         stream << prefix << "<mesh Id=\"" << index << "\" enableScale=\"true\">" << endl;
 
-        CT_AbstractPointCloudIndex::ConstIterator itP = pci->constBegin();
-        CT_AbstractPointCloudIndex::ConstIterator endP = pci->constEnd();
+        CT_PointIterator itP(pci);
 
         size_t pBeginIndex = std::numeric_limits<size_t>::max();
 
         stream << prefix << "\t<points>" << endl << prefix << "\t\t";
 
-        while(itP != endP)
+        while(itP.hasNext())
         {
-            const CT_Point &p = itP.cT();
+            const CT_Point &p = itP.next().cT();
 
             stream << p(0) << " " << p(1) << " " << p(2) << " ";
 
             if(itP.cIndex() < pBeginIndex)
                 pBeginIndex = itP.cIndex();
-
-            ++itP;
         }
 
         stream << endl << prefix << "\t</points>" << endl;
 
-        CT_AbstractFaceCloudIndex::ConstIterator itF = fci->constBegin();
-        CT_AbstractFaceCloudIndex::ConstIterator endF = fci->constEnd();
+        CT_FaceIterator itF(fci);
 
         stream << prefix << "\t<faces>" << endl;
 
         int i = 0;
 
-        while(itF != endF)
+        while(itF.hasNext())
         {
-            const CT_Face &f = itF.cT();
+            const CT_Face &f = itF.next().cT();
 
             stream << prefix << "\t\t<face Id=\"" << i << "\">" << endl;
 
@@ -291,7 +291,6 @@ bool PB_OPFExporter::writeMesh(QTextStream &stream, CT_Mesh *mesh, const int &in
 
             stream << prefix << "\t\t</face>" << endl;
 
-            ++itF;
             ++i;
         }
 

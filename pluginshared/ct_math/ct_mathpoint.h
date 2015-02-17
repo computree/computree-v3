@@ -54,24 +54,10 @@ public:
         return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)));
     }
 
-    // TODO : A supprimer à terme (pas logique de faire des calculs sur les points float)
-    inline static double distance2D(const CT_Point &p1, const CT_Point &p2)
-    {
-        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)));
-    }
-
-
     inline static double distance3D(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2)
     {
         return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)) + (p1(2) - p2(2))*(p1(2) - p2(2)));
     }
-
-    // TODO à supprimer
-    inline static double distance3D(const Eigen::Vector3f &p1, const Eigen::Vector3f &p2)
-    {
-        return sqrt( (p1(0) - p2(0))*(p1(0) - p2(0)) + (p1(1) - p2(1))*(p1(1) - p2(1)) + (p1(2) - p2(2))*(p1(2) - p2(2)));
-    }
-
 
     inline static double angle(const Eigen::Vector3d &v1, const Eigen::Vector3d &v2)
     {
@@ -233,51 +219,6 @@ public:
 
     // En spherique on stocke r, theta, phi
     inline static void cartesianToSpherical ( const Eigen::Vector3d& pCartesian, Eigen::Vector3d& outSpherical)
-    {
-        // On recupere la longueur du vecteur normalisé
-        double norme = pCartesian.norm();
-
-        if ( norme == 0 )
-        {
-            outSpherical(0) = 0;
-            outSpherical(1) = 0;
-            outSpherical(2) = 0;
-        }
-        else
-        {
-            // r est la norme du veteur
-            outSpherical(0) = norme;
-
-            // theta depend du signe de y, on ne peut pas diviser par 0 ce qui arrive quand x et y sont nuls
-            if ( pCartesian(0) == 0 && pCartesian(1) == 0 )
-            {
-                outSpherical(1) = 0;
-            }
-
-            // Petit problème lorsque y est nul, on arrive a acos(x/x) qui plante pck acos(1) marche pas...
-            else if ( pCartesian(1) == 0 )
-            {
-                outSpherical(1) = 0;
-            }
-
-            else if ( pCartesian(1) > 0 )
-            {
-                outSpherical(1) = acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ) );
-            }
-
-            else
-            {
-                outSpherical(1) = (2 * M_PI) - acos(pCartesian(0) / sqrt( pCartesian(0)*pCartesian(0) + pCartesian(1)*pCartesian(1) ));
-            }
-
-            // phi depend de la hauteur du point
-            outSpherical(2) = acos( pCartesian(2) / norme );
-        }
-    }
-
-
-    // TODO à supprimer
-    inline static void cartesianToSpherical ( const Eigen::Vector3f& pCartesian, Eigen::Vector3f& outSpherical)
     {
         // On recupere la longueur du vecteur normalisé
         double norme = pCartesian.norm();

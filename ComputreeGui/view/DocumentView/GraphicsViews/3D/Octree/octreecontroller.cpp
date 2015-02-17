@@ -3,13 +3,14 @@
 #include "ct_cloudindex/ct_cloudindexstdvectort.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #include <qglviewer.h>
 #include <limits>
 
 OctreeController::OctreeController()
 {
-    m_octree = new Octree< CT_Repository::CT_AbstractModifiablePCIR >(32);
+    m_octree = new Octree< CT_MPCIR >(32);
     m_newNumberOfCells = m_octree->size();
     resetNewMinAndMax();
     m_min = m_newMin;
@@ -107,20 +108,20 @@ bool OctreeController::hasElementsAt(int x, int y, int z) const
     return (m_octree->at(x, y, z).data() != NULL);
 }
 
-const CT_AbstractCloudIndexT<CT_Point>* OctreeController::pointsAt(int x, int y, int z) const
+const CT_AbstractPointCloudIndex* OctreeController::pointsAt(int x, int y, int z) const
 {
     if(m_octree == NULL)
         return NULL;
 
-    CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> *m = m_octree->at(x, y, z).data();
+    CT_MPCIR m = m_octree->at(x, y, z);
 
-    if(m == NULL)
+    if(m.data() == NULL)
         return NULL;
 
     return m->abstractCloudIndexT();
 }
 
-const CT_AbstractCloudIndex* OctreeController::at(int x, int y, int z) const
+const CT_AbstractPointCloudIndex* OctreeController::at(int x, int y, int z) const
 {
     return pointsAt(x, y, z);
 }
@@ -183,7 +184,7 @@ void OctreeController::construct()
         m_forceMustBeReconstructed = false;
 
         delete m_octree;
-        m_octree = new Octree< CT_Repository::CT_AbstractModifiablePCIR >(m_newNumberOfCells);
+        m_octree = new Octree< CT_MPCIR >(m_newNumberOfCells);
 
         if(m_newNumberOfCells > 0)
         {
@@ -320,23 +321,22 @@ void OctreeController::adjustNewMax(const OctreeController::Corner &max)
 
 void OctreeController::addPointsToOctree(const CT_AbstractPointCloudIndex *index)
 {
-    CT_AbstractPointCloudIndex::ConstIterator begin = index->constBegin();
-    CT_AbstractPointCloudIndex::ConstIterator end = index->constEnd();
+    CT_PointIterator it(index);
 
     int xPos, yPos, zPos;
 
-    while(begin != end) {
+    while(it.hasNext()) {
 
-        const CT_Point &p = begin.cT();
-        const size_t &pIndex = begin.cIndex();
+        const CT_Point &p = it.next().cT();
+        const size_t &pIndex = it.cIndex();
 
         indexOfPoint(p, xPos, yPos, zPos);
 
-        CT_Repository::CT_AbstractModifiablePCIR pcir = (*m_octree)(xPos, yPos, zPos);
+        CT_MPCIR pcir = (*m_octree)(xPos, yPos, zPos);
 
         if(pcir.data() == NULL)
         {
-            CT_CloudIndexStdVectorT<CT_Point> *list = new CT_CloudIndexStdVectorT<CT_Point>();
+            CT_PointCloudIndexVector *list = new CT_PointCloudIndexVector();
             pcir = PS_REPOSITORY->registerPointCloudIndex(list);
 
             m_octree->set(xPos, yPos, zPos, pcir);
@@ -344,7 +344,6 @@ void OctreeController::addPointsToOctree(const CT_AbstractPointCloudIndex *index
 
         pcir->addIndex(pIndex);
 
-        ++begin;
         ++m_pointsAdded;
 
         size_t progress = (m_pointsAdded * 100)/m_nPointsToAdd;
@@ -373,11 +372,11 @@ void OctreeController::removePoinsFromOctree(const CT_AbstractPointCloudIndex *i
 
         indexOfPoint(p, xPos, yPos, zPos);
 
-        CT_AbstractModifiableCloudIndexRegisteredT<CT_Point> *cir = (*m_octree)(xPos, yPos, zPos).data();
+        CT_MPCIR cir = (*m_octree)(xPos, yPos, zPos);
 
-        if(cir != NULL)
+        if(cir.data() != NULL)
         {
-            CT_AbstractModifiableCloudIndexT<CT_Point> *list = cir->abstractModifiableCloudIndexT();
+            CT_AbstractModifiablePointCloudIndex *list = cir->abstractModifiableCloudIndexT();
 
             list->removeIndex(pIndex);
 
@@ -400,11 +399,10 @@ void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *ind
     info.m_max.setY(info.m_max.x());
     info.m_max.setZ(info.m_max.x());
 
-    CT_AbstractPointCloudIndex::ConstIterator begin = index->constBegin();
-    CT_AbstractPointCloudIndex::ConstIterator end = index->constEnd();
+    CT_PointIterator it(index);
 
-    while(begin != end) {
-        const CT_Point &p = begin.cT();
+    while(it.hasNext()) {
+        const CT_Point &p = it.next().cT();
 
         if(p(0) < info.m_min.x())
             info.m_min.setX(p(0));
@@ -423,7 +421,5 @@ void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *ind
 
         if(p(2) > info.m_max.z())
             info.m_max.setZ(p(2));
-
-        ++begin;
     }
 }

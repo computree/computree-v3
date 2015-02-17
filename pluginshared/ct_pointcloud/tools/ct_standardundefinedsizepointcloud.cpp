@@ -1,10 +1,22 @@
 #include "ct_standardundefinedsizepointcloud.h"
 
 #include "ct_global/ct_context.h"
+#include "ct_point.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 size_t CT_StandardUndefinedSizePointCloud::beginIndex() const
 {
     return m_bIndex;
+}
+
+size_t CT_StandardUndefinedSizePointCloud::lastIndex() const
+{
+    size_t s = size();
+
+    if(s == 0)
+        return m_bIndex;
+
+    return m_bIndex+(s-1);
 }
 
 size_t CT_StandardUndefinedSizePointCloud::size() const
@@ -12,38 +24,43 @@ size_t CT_StandardUndefinedSizePointCloud::size() const
     return m_pc->size()-m_bIndex;
 }
 
-void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point)
+void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point, const CT_AbstractCoordinateSystem &coordinateSystem)
+{
+    CT_PointData &pData = m_pc->addT();
+    m_csIndexes.push_back(PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(&coordinateSystem));
+
+    coordinateSystem.convertImport(point(CT_Point::X), point(CT_Point::Y), point(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
+}
+
+void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point, const size_t &coordinateSystemGlobalIndex)
+{
+    CT_AbstractCoordinateSystem *sys = PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(coordinateSystemGlobalIndex);
+
+    CT_PointData &pData = m_pc->addT();
+    m_csIndexes.push_back(coordinateSystemGlobalIndex);
+
+    sys->convertImport(point(CT_Point::X), point(CT_Point::Y), point(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
+}
+
+void CT_StandardUndefinedSizePointCloud::addInternalPoint(const CT_PointData &point, const size_t &coordinateSystemGlobalIndex)
 {
     m_pc->addT(point);
+    m_csIndexes.push_back(coordinateSystemGlobalIndex);
 }
 
-CT_Point &CT_StandardUndefinedSizePointCloud::addPoint()
+void CT_StandardUndefinedSizePointCloud::addInternalPoint(const CT_PointData &point, const CT_AbstractCoordinateSystem &coordinateSystem)
 {
-    return m_pc->addT();
+    m_pc->addT(point);
+    m_csIndexes.push_back(PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(&coordinateSystem));
 }
 
-CT_Point& CT_StandardUndefinedSizePointCloud::operator[](const size_t &i)
-{
-    return (*m_pc)[i+m_bIndex];
-}
-
-CT_Point& CT_StandardUndefinedSizePointCloud::pointAt(const size_t &i)
-{
-    return (*m_pc)[i+m_bIndex];
-}
-
-CT_Point& CT_StandardUndefinedSizePointCloud::operator[](const size_t &i) const
-{
-    return (*m_pc)[i+m_bIndex];
-}
-
-const CT_Point& CT_StandardUndefinedSizePointCloud::constPointAt(const size_t &i) const
-{
-    return (*m_pc)[i+m_bIndex];
-}
-
-CT_StandardUndefinedSizePointCloud::CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_StandardCloudStdVectorT<CT_Point> *pc) : CT_AbstractUndefinedSizePointCloud()
+CT_StandardUndefinedSizePointCloud::CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_PointCloudStdVector *cloud) : CT_AbstractUndefinedSizePointCloud()
 {
     m_bIndex = beginIndex;
-    m_pc = (CT_StandardCloudStdVectorT<CT_Point>*)pc;
+    m_pc = (CT_PointCloudStdVector*)cloud;
+}
+
+const std::vector<GLuint>& CT_StandardUndefinedSizePointCloud::coordinateSystemIndexOfPointsAdded() const
+{
+    return m_csIndexes;
 }

@@ -2,27 +2,28 @@
 
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/ct_defaultcoordinatesystem.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 CT_CoordinateSystemManager::CT_CoordinateSystemManager()
 {
     // create a new cloud that contains index of coordinate system for all points. It will be synchronized with the size of the global point cloud
     m_indexOfCoordinateSystemOfPoints = PS_REPOSITORY->createNewCloudT< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex >, CT_CoordinateSystemCloudIndex >(CT_Repository::SyncWithPointCloud);
 
-    m_default = registerCoordinateSystem(new CT_DefaultCoordinateSystem(0, 0, 0));
+    m_default = registerCoordinateSystem(new CT_DefaultCoordinateSystem());
 }
 
 CT_CoordinateSystemManager::~CT_CoordinateSystemManager()
 {
 }
 
-QSharedPointer<CT_AbstractCoordinateSystem> CT_CoordinateSystemManager::registerCoordinateSystem(CT_AbstractCoordinateSystem *cs)
+CT_CSR CT_CoordinateSystemManager::registerCoordinateSystem(CT_AbstractCoordinateSystem *cs)
 {
     m_cs.append(cs);
     cs->initUsed();
 
     setCurrentCoordinateSystem(size()-1);
 
-    return QSharedPointer<CT_AbstractCoordinateSystem>(cs, CT_CoordinateSystemManager::staticUnregisterCoordinateSystem);
+    return CT_CSR(cs, CT_CoordinateSystemManager::staticUnregisterCoordinateSystem);
 }
 
 bool CT_CoordinateSystemManager::removeCoordinateSystem(CT_AbstractCoordinateSystem *cs)
@@ -83,23 +84,21 @@ void CT_CoordinateSystemManager::setCoordinateSystemForPointAt(const size_t &glo
     m_indexOfCoordinateSystemOfPoints->cloudT()->replaceValueAt(globalIndex, coordinateSystemIndex);
 }
 
-
-void CT_CoordinateSystemManager::setCoordinateSystemForPoints(QSharedPointer<CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, CT_AbstractCoordinateSystem *cs)
+void CT_CoordinateSystemManager::setCoordinateSystemForPoints(CT_PCIR pcir, CT_AbstractCoordinateSystem *cs)
 {
     if(cs != NULL)
         setCoordinateSystemIndexForPoints(pcir, indexOfCoordinateSystem(cs));
 }
 
-void CT_CoordinateSystemManager::setCoordinateSystemIndexForPoints(QSharedPointer<CT_AbstractCloudIndexRegisteredT<CT_Point> > pcir, const GLuint &coordinateSystemIndex)
+void CT_CoordinateSystemManager::setCoordinateSystemIndexForPoints(CT_PCIR pcir, const GLuint &coordinateSystemIndex)
 {
     if(!pcir.isNull()) {
 
-        CT_AbstractCloudIndexT<CT_Point>::ConstIterator it = pcir->abstractCloudIndexT()->constBegin();
-        CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = pcir->abstractCloudIndexT()->constEnd();
+        CT_PointIterator it(pcir);
 
-        while(it != end) {
-            m_indexOfCoordinateSystemOfPoints->cloudT()->replaceValueAt(it.cIndex(), coordinateSystemIndex);
-            ++it;
+        while(it.hasNext()) {
+            it.next();
+            m_indexOfCoordinateSystemOfPoints->cloudT()->replaceValueAt(it.currentGlobalIndex(), coordinateSystemIndex);
         }
     }
 }

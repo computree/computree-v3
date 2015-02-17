@@ -3,6 +3,8 @@
 
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 
+#include "ct_reader/abstract/ct_abstractreader.h"
+
 /*!
  * \class LVOX_StepLoadInFile
  * \ingroup Steps_PB
@@ -44,6 +46,7 @@ public:
      * \param dataInit Step parameters object
      */
     PB_StepLoadMultiXYBFiles(CT_StepInitializeData &dataInit);
+    ~PB_StepLoadMultiXYBFiles();
 
     /*! \brief Step description
      * 
@@ -89,6 +92,7 @@ private:
     QStringList _filesNames;        /*!< List of .xyb files names */
     bool        _radiusFiltered;    /*!< If true, only points inside given radius would be kept */
     double      _radius;            /*!<  */
+    QList<CT_AbstractReader*>   m_readers;
 
 };
 

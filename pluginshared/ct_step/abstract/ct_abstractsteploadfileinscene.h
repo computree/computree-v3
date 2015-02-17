@@ -62,7 +62,7 @@ protected:
      * @param zmax : bounding box zmax
      * @param list : the list of other SingularItem that you have set in OUTPUT models and you want to add in the same group that the scene
      */
-    virtual void createOutResult(CT_Scene::CT_AbstractCIR pcir, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax, QList<CT_AbstractSingularItemDrawable*> list = QList<CT_AbstractSingularItemDrawable*>());
+    virtual void createOutResult(CT_PCIR pcir, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, QList<CT_AbstractSingularItemDrawable*> list = QList<CT_AbstractSingularItemDrawable*>());
 };
 
 #endif // CT_ABSTRACTSTEPLOADFILEINSCENE_H

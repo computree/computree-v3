@@ -47,12 +47,12 @@ PB_ActionDefineHeightLayerOptions::~PB_ActionDefineHeightLayerOptions()
     delete ui;
 }
 
-float PB_ActionDefineHeightLayerOptions::getZmin()
+double PB_ActionDefineHeightLayerOptions::getZmin()
 {
     return ui->dsb_zmin->value();
 }
 
-float PB_ActionDefineHeightLayerOptions::getZmax()
+double PB_ActionDefineHeightLayerOptions::getZmax()
 {
     return ui->dsb_zmax->value();
 }
@@ -72,7 +72,7 @@ int PB_ActionDefineHeightLayerOptions::getThreshold()
     return ui->sb_threshold->value();
 }
 
-float PB_ActionDefineHeightLayerOptions::getResolution()
+double PB_ActionDefineHeightLayerOptions::getResolution()
 {
     return ui->dsb_resolution->value();
 }

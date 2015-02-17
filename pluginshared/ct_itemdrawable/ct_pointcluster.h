@@ -30,6 +30,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_itemdrawable/tools/drawmanager/ct_standardpointclusterdrawmanager.h"
+#include "ct_point.h"
 
 #include <QMapIterator>
 
@@ -86,9 +87,11 @@ public:
         double *notConstBarycenter = const_cast<double*>(_barycenter);
         bool *notConstNotComputed = const_cast<bool*>(&_notComputed);
 
-        notConstBarycenter[0] = _backupSum[0]/_size;
-        notConstBarycenter[1] = _backupSum[1]/_size;
-        notConstBarycenter[2] = _backupSum[2]/_size;
+        if(_size != 0) {
+            notConstBarycenter[0] = _backupSum[0]/_size;
+            notConstBarycenter[1] = _backupSum[1]/_size;
+            notConstBarycenter[2] = _backupSum[2]/_size;
+        }
 
         *notConstNotComputed = false;        
     }
@@ -171,9 +174,9 @@ public:
 
 private:
 
-    CT_PointClusterBarycenter                        _barycenter;
-    const static CT_StandardPointClusterDrawManager  POINTCLUSTER_DRAW_MANAGER;
-    CT_CloudIndexStdVectorT<CT_Point>               *m_pIndex;
+    CT_PointClusterBarycenter                           _barycenter;
+    const static CT_StandardPointClusterDrawManager     POINTCLUSTER_DRAW_MANAGER;
+    CT_PointCloudIndexVector                            *m_pIndex;
 
 protected:
 

@@ -6,7 +6,7 @@ CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar() : CT_Abstract
 
 CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                  CT_AbstractResult *result,
-                                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir) : CT_AbstractEdgeAttributes(model,
+                                                                 CT_ECIR cir) : CT_AbstractEdgeAttributes(model,
                                                                                                                                                                      result,
                                                                                                                                                                      cir)
 {
@@ -14,7 +14,7 @@ CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const CT_OutAbs
 
 CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const QString &modelName,
                                                                  CT_AbstractResult *result,
-                                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR cir) : CT_AbstractEdgeAttributes(modelName,
+                                                                 CT_ECIR cir) : CT_AbstractEdgeAttributes(modelName,
                                                                                                                                                                      result,
                                                                                                                                                                      cir)
 {

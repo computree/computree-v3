@@ -13,10 +13,6 @@
 #define PS_COORDINATES_SYS_MANAGER CT_Context::staticInstance()->coordinateSystemManager()
 #define PS_COORDINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
 
-typedef CT_Repository::CT_AbstractNotModifiablePCIR CT_ABSTRACT_NMPCIR;
-typedef CT_Repository::CT_AbstractModifiablePCIR    CT_ABSTRACT_MPCIR;
-typedef CT_Repository::CT_AbstractPCIR              CT_ABSTRACT_PCIR;
-
 class CT_DefaultItemAttributeManager;
 class CT_CategoryManager;
 class CT_TemporaryLog;

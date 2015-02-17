@@ -13,21 +13,9 @@ class CT_AbstractModifiableCloudIndexT : virtual public CT_AbstractCloudIndexT<T
 {
 public:
 
-    typedef CT_ModifiableCloudIndexIteratorT<T> Iterator;
-
     typedef bool (*FindIfFunction) (void *context, const size_t &value);
     typedef bool (*RemoveIfFunction) (void *context, const size_t &value);
     typedef bool (*ShiftIfFunction) (void *context, const size_t &value);
-
-    /**
-     * @brief Returns an iterator to the beginning of the cloud
-     */
-    Iterator begin() { return Iterator(*this); }
-
-    /**
-     * @brief Returns an iterator to the end of the cloud
-     */
-    Iterator end() { return Iterator(*this, this->size()); }
 
     /**
      * @brief add a new index in the cloud

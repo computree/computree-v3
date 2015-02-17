@@ -3,6 +3,7 @@
 
 #include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanager.h"
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
+#include "ct_global/ct_context.h"
 
 /**
  * Utility class who manage a global cloud of T (point, face, etc...). It will inform the CT_AbstractCloudIndexRegistrationManagerT and all

@@ -3,10 +3,11 @@
 
 #include <QObject>
 
-#include "ct_point.h"
+#include "ct_defines.h"
+#include "ct_coordinates/abstract/ct_abstractcoordinatesystem.h"
 
 /**
- * A cloud of points used by the GlobalPointCloudManager when you want to create a cloud of points and you
+ * Use this class when you want to create a cloud of points if you
  * don't know it's size by advance.
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractUndefinedSizePointCloud : public QObject
@@ -18,46 +19,52 @@ public:
     virtual ~CT_AbstractUndefinedSizePointCloud();
 
     /**
-     * @return  l'index du premier point dans le nuage
+     * @brief Returns the global index of the first point in this cloud
      */
     virtual size_t beginIndex() const = 0;
 
     /**
-     * @return la taille du nuage
+     * @brief Returns the global index of the last point in this cloud
+     */
+    virtual size_t lastIndex() const = 0;
+
+    /**
+     * @brief Returns the current size of this cloud
      */
     virtual size_t size() const = 0;
 
     /**
-     * @brief Ajoute un point au nuage. (Préféré la méthode addPoint qui renvoie une référence pour être plus rapide)
-     * @param point : le point à ajouter
+     * @brief Add a point to this cloud. You must pass a coordinate system that will be used to transform the point in
+     *        float values.
      */
-    virtual void addPoint(const CT_Point &point) = 0;
+    virtual void addPoint(const CT_Point &point, const CT_AbstractCoordinateSystem &coordinateSystem) = 0;
 
     /**
-     * @brief Ajoute un point au nuage et retoune une référence sur le point ajouté
-     * @return une référence sur le point ajouté
+     * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be used to transform the point in
+     *        float values.
      */
-    virtual CT_Point& addPoint() = 0;
+    virtual void addPoint(const CT_Point &point, const size_t &coordinateSystemGlobalIndex) = 0;
 
     /**
-     * @brief Return a reference of the point at 'i'
+     * @brief Add a point to this cloud. You must pass a coordinate system that will be set for this point
      */
-    virtual CT_Point& operator[](const size_t &i) = 0;
+    virtual void addInternalPoint(const CT_PointData &point, const CT_AbstractCoordinateSystem &coordinateSystem) = 0;
 
     /**
-     * @brief Return a reference of the point at 'i'
+     * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be set for this point
      */
-    virtual CT_Point& pointAt(const size_t &i) = 0;
+    virtual void addInternalPoint(const CT_PointData &point, const size_t &coordinateSystemGlobalIndex) = 0;
+
+protected:
+    /**
+     * @brief Return the global point cloud
+     */
+    CT_AbstractPointCloud* globalPointCloud() const;
 
     /**
-     * @brief Return a const reference of the point at 'i'
+     * @brief Returns global indexes of coordinate system of points added
      */
-    virtual const CT_Point& operator[](const size_t &i) const = 0;
-
-    /**
-     * @brief Return a const reference of the point at 'i'
-     */
-    virtual const CT_Point& constPointAt(const size_t &i) const = 0;
+    virtual const std::vector<GLuint>& coordinateSystemIndexOfPointsAdded() const = 0;
 };
 
 #endif // CT_ABSTRACTUNDEFINEDSIZEPOINTCLOUD_H

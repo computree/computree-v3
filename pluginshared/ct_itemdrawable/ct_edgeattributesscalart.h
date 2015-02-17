@@ -12,32 +12,32 @@ public:
 
     CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
+                             CT_ECIR pcir);
 
     CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
     CT_EdgeAttributesScalarT(const CT_OutAbstractSingularItemModel *model,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,
                              const SCALAR &min,
                              const SCALAR &max);
 
     CT_EdgeAttributesScalarT(const QString &modelName,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir);
+                             CT_ECIR pcir);
 
     CT_EdgeAttributesScalarT(const QString &modelName,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection);
 
     CT_EdgeAttributesScalarT(const QString &modelName,
                              CT_AbstractResult *result,
-                             CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                             CT_ECIR pcir,
                              CT_StandardCloudStdVectorT<SCALAR> *collection,
                              const SCALAR &min,
                              const SCALAR &max);

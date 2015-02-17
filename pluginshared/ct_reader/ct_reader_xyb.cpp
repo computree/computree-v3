@@ -3,12 +3,11 @@
 #include <QIODevice>
 #include <QTextStream>
 
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 #include "ct_coordinates/ct_defaultcoordinatesystem.h"
+#include "ct_iterator/ct_mutablepointiterator.h"
 
 #include <limits>
 
@@ -148,9 +147,11 @@ bool CT_Reader_XYB::protectedReadFile()
 {
     bool filter = (_filterRadius > 0);
 
-    // create a new coordinate system for this scene and add it to the manager, it will be automatically the current.
-    // Warning : the spcs must be passed to the scene to be automatically deleted when it will no longer be used.
-    QSharedPointer<CT_AbstractCoordinateSystem> spcs = PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(new CT_DefaultCoordinateSystem(_xc, _yc, _zc));
+    // create a new coordinate system for the scene.
+    GLuint csIndex = 0;
+
+    if(fabs(_xc) > 1000 || fabs(_yc) > 1000 || fabs(_zc) > 1000)
+        csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(_xc, _yc, _zc, this));
 
     // Test File validity
     if(QFile::exists(filepath()))
@@ -170,12 +171,16 @@ bool CT_Reader_XYB::protectedReadFile()
             qint64 n_points = (filesize - _offset) / 26;
 
             CT_AbstractUndefinedSizePointCloud* mpcir;
-            CT_Repository::CT_AbstractNotModifiablePCIR pcir;
+            CT_NMPCIR pcir;
+            CT_Point pReaded;
+            CT_MutablePointIterator *it;
 
             if (filter)
                 mpcir = PS_REPOSITORY->createNewUndefinedSizePointCloud();
-            else
+            else {
                 pcir = PS_REPOSITORY->createNewPointCloud(n_points);
+                it = new CT_MutablePointIterator(pcir);
+            }
 
             CT_StandardCloudStdVectorT<quint16> *collection;
 
@@ -211,10 +216,9 @@ bool CT_Reader_XYB::protectedReadFile()
 
                     if (distance2D <= _filterRadius)
                     {
-                        CT_Point &p = mpcir->addPoint();
-
-                        // convert (with the current coordinate system) coordinate to be in a float precision
-                        PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
+                        pReaded(CT_Point::X) = x;
+                        pReaded(CT_Point::Y) = y;
+                        pReaded(CT_Point::Z) = z;
 
                         if (x<xmin) {xmin = x;}
                         if (x>xmax) {xmax = x;}
@@ -225,15 +229,16 @@ bool CT_Reader_XYB::protectedReadFile()
                         if (reflectance<imin) {imin = reflectance;}
                         if (reflectance>imax) {imax = reflectance;}
 
+                        mpcir->addPoint(pReaded, csIndex);
+
                         collection->addT(reflectance);
                     }
                 }
                 else
                 {
-                    CT_Point &p = pcir->tAt(a);
-
-                    // convert (with the current coordinate system) coordinate to be in a float precision
-                    PS_COORDINATES_SYS->convertImport(x, y, z, p(0), p(1), p(2));
+                    pReaded(CT_Point::X) = x;
+                    pReaded(CT_Point::Y) = y;
+                    pReaded(CT_Point::Z) = z;
 
                     if (x<xmin) {xmin = x;}
                     if (x>xmax) {xmax = x;}
@@ -244,6 +249,9 @@ bool CT_Reader_XYB::protectedReadFile()
                     if (reflectance<imin) {imin = reflectance;}
                     if (reflectance>imax) {imax = reflectance;}
 
+                    it->next();
+                    it->replaceCurrentPoint(pReaded, csIndex);
+
                     (*collection)[a] = reflectance;
                 }
 
@@ -252,6 +260,8 @@ bool CT_Reader_XYB::protectedReadFile()
                 setProgress(a*100/n_points);
             }
 
+            delete it;
+
             CT_Scene *scene;
 
             if(filter)
@@ -259,7 +269,6 @@ bool CT_Reader_XYB::protectedReadFile()
 
             scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
-            scene->registerCoordinateSystem(spcs);
 
             // add the scene
             addOutItemDrawable(DEF_CT_Reader_XYB_sceneOut, scene);

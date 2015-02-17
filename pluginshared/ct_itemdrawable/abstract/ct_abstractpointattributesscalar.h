@@ -11,11 +11,11 @@ public:
     CT_AbstractPointAttributesScalar();
     CT_AbstractPointAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                      const CT_AbstractResult *result,
-                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
+                                     CT_PCIR pcir);
 
     CT_AbstractPointAttributesScalar(const QString &modelName,
                                      const CT_AbstractResult *result,
-                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir);
+                                     CT_PCIR pcir);
 
     /**
       * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.

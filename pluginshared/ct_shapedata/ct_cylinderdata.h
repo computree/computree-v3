@@ -30,9 +30,9 @@
 
 #include "ct_circledata.h"
 
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_defines.h"
 #include "ct_linedata.h"
+#include "ct_point.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_CylinderData : public CT_ShapeData
 {
@@ -53,12 +53,10 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  3.
       */
-    static CT_CylinderData* staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                                     const CT_AbstractPointCloudIndex &pointCloudIndex,
+    static CT_CylinderData* staticCreate3DCylinderDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                      const Eigen::Vector3d &pointCloudBarycenter);
 
-    static CT_CylinderData* staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloud &pointCloud,
-                                                                                 const CT_AbstractPointCloudIndex &pointCloudIndex,
+    static CT_CylinderData* staticCreate3DCylinderDataFromPointCloudAndDirection(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                                  const Eigen::Vector3d &pointCloudBarycenter,
                                                                                  const CT_LineData &direction,
                                                                                  CT_CircleData *outCircleData = NULL);

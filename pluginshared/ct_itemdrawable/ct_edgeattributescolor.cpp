@@ -7,7 +7,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor() : CT_AbstractEdgeAttributes(), 
 
 CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                               CT_ECIR pcir,
                                                bool withAlphaInformation) : CT_AbstractEdgeAttributes(model,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
@@ -16,7 +16,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemM
 
 CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                               CT_ECIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractEdgeAttributes(model,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(cc)
@@ -26,7 +26,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor(const CT_OutAbstractSingularItemM
 
 CT_EdgeAttributesColor::CT_EdgeAttributesColor(const QString &modelName,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                               CT_ECIR pcir,
                                                bool withAlphaInformation) : CT_AbstractEdgeAttributes(modelName,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
@@ -35,7 +35,7 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor(const QString &modelName,
 
 CT_EdgeAttributesColor::CT_EdgeAttributesColor(const QString &modelName,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Edge>::CT_AbstractCIR pcir,
+                                               CT_ECIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractEdgeAttributes(modelName,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(cc)

@@ -10,6 +10,8 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
+#include "ct_iterator/ct_pointiterator.h"
+
 #include <QMessageBox>
 #include <limits>
 
@@ -116,13 +118,13 @@ void PB_StepSlicePointCloud::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_resScene = outResultList.at(0);
 
-    _xmin = std::numeric_limits<float>::max();
-    _ymin = std::numeric_limits<float>::max();
-    _zmin = std::numeric_limits<float>::max();
+    _xmin = std::numeric_limits<double>::max();
+    _ymin = _xmin;
+    _zmin = _xmin;
 
-    _xmax = -std::numeric_limits<float>::max();
-    _ymax = -std::numeric_limits<float>::max();
-    _zmax = -std::numeric_limits<float>::max();
+    _xmax = -_xmin;
+    _ymax = -_xmin;
+    _zmax = -_xmin;
 
     CT_ResultItemIterator itIn_scene(resIn_resScene, this, DEFin_scene);
     while (itIn_scene.hasNext())
@@ -147,11 +149,11 @@ void PB_StepSlicePointCloud::compute()
     requestManualMode();
     _m_status = 1;
 
-    QMap<QPair<float, float>, CT_PointCluster*> levels;
+    QMap<QPair<double, double>, CT_PointCluster*> levels;
 
-    for (float base = _dataContainer->_zBase ; base < _zmax ; base = (base + _dataContainer->_thickness + _dataContainer->_spacing))
+    for(double base = _dataContainer->_zBase ; base < _zmax ; base = (base + _dataContainer->_thickness + _dataContainer->_spacing))
     {
-        levels.insert(QPair<float, float>(base, base + _dataContainer->_thickness), new CT_PointCluster(DEFout_cluster, res_resScene));
+        levels.insert(QPair<double, double>(base, base + _dataContainer->_thickness), new CT_PointCluster(DEFout_cluster, res_resScene));
     }
 
     // Do the slices
@@ -159,22 +161,21 @@ void PB_StepSlicePointCloud::compute()
     {
         CT_Scene* itemIn_scene = (CT_Scene*) _sceneList->at(sc);
 
-        const CT_AbstractPointCloudIndex *PCI_itemIn_scene = itemIn_scene->getPointCloudIndex();
-        size_t nPts_itemIn_scene = PCI_itemIn_scene->size();
+        CT_PointIterator itP(itemIn_scene->getPointCloudIndex());
 
-        for (size_t i = 0 ; i < nPts_itemIn_scene ; i++)
+        while(itP.hasNext())
         {
-            size_t index;
-            const CT_Point &point = PCI_itemIn_scene->constTAt(i, index);
+            const CT_Point &point = itP.next().cT();
+            size_t index = itP.cIndex();
 
             bool found = false;
 
-            QMapIterator<QPair<float, float>, CT_PointCluster*> it(levels);
+            QMapIterator<QPair<double, double>, CT_PointCluster*> it(levels);
             while (!found && it.hasNext())
             {
                 it.next();
-                float zminLevel = it.key().first;
-                float zmaxLevel = it.key().second;
+                double zminLevel = it.key().first;
+                double zmaxLevel = it.key().second;
                 CT_PointCluster* cluster = it.value();
 
                 if ((point(2) >= zminLevel) && (point(2) < zmaxLevel))
@@ -186,7 +187,7 @@ void PB_StepSlicePointCloud::compute()
         }
     }
 
-    QMapIterator<QPair<float, float>, CT_PointCluster*> it(levels);
+    QMapIterator<QPair<double, double>, CT_PointCluster*> it(levels);
     while (it.hasNext())
     {
         it.next();

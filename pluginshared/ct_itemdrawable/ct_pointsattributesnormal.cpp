@@ -10,7 +10,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal() : CT_AbstractPointsAttrib
 
 CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
-                                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(model,
+                                                     CT_PCIR pcir) : CT_AbstractPointsAttributes(model,
                                                                                                                                                              result,
                                                                                                                                                              pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -20,7 +20,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingula
 
 CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                      const CT_AbstractResult *result,
-                                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                     CT_PCIR pcir,
                                                      CT_AbstractNormalCloud *nc) : CT_AbstractPointsAttributes(model,
                                                                                                                result,
                                                                                                                pcir), CT_AttributesNormal(nc)
@@ -31,7 +31,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal(const CT_OutAbstractSingula
 
 CT_PointsAttributesNormal::CT_PointsAttributesNormal(const QString &modelName,
                                                      const CT_AbstractResult *result,
-                                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(modelName,
+                                                     CT_PCIR pcir) : CT_AbstractPointsAttributes(modelName,
                                                                                                                                                              result,
                                                                                                                                                              pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -41,7 +41,7 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal(const QString &modelName,
 
 CT_PointsAttributesNormal::CT_PointsAttributesNormal(const QString &modelName,
                                                      const CT_AbstractResult *result,
-                                                     CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir,
+                                                     CT_PCIR pcir,
                                                      CT_AbstractNormalCloud *nc) : CT_AbstractPointsAttributes(modelName,
                                                                                                                result,
                                                                                                                pcir), CT_AttributesNormal(nc)

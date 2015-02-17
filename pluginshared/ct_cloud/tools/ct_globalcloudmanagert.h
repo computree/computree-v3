@@ -19,7 +19,7 @@ public:
  * Class who manage globals cloud. The manager create a CLOUD (second template) that have
  * a collection of T (first template). The CLOUD must be modifiable.
  *
- * Per example : CT_GlobalCloudManagerT<CT_Point, CT_CloudIndexStdVectorT<CT_Point> >
+ * Per example : CT_GlobalCloudManagerT<CT_PointData, CT_PointCloudIndexVector >
  *
  * It's an utility class who manage a global cloud. It will inform the CT_AbstractCloudIndexRegistrationManagerT and all
  * CT_AbstractCloudSyncToGlobalCloudManagerT when elements of the cloud is deleted or added. So we can sync index and

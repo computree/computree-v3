@@ -16,11 +16,10 @@ public:
     /**
      * @brief Write the point 'globalIndex' (index in the global pointCloud)
      */
-    virtual CT_LasPointInfo* write(QDataStream &stream, const size_t &globalIndex);
+    virtual CT_LasPointInfo* write(QDataStream &stream, const CT_Point &p, const size_t &globalIndex);
 
 private:
     char                                    m_emptyData[30];
-    CT_AbstractPointCloud                   *m_pCloud;
     qint32                                  m_x, m_y, m_z;
     CT_AbstractCoordinateSystem::realEx     m_xc, m_yc, m_zc;
 

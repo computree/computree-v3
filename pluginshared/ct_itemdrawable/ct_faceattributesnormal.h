@@ -13,20 +13,20 @@ public:
 
     CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
+                              CT_FCIR pcir);
 
     CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                              CT_FCIR pcir,
                               CT_AbstractNormalCloud *nc);
 
     CT_FaceAttributesNormal(const QString &modelName,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir);
+                              CT_FCIR pcir);
 
     CT_FaceAttributesNormal(const QString &modelName,
                               const CT_AbstractResult *result,
-                              CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                              CT_FCIR pcir,
                               CT_AbstractNormalCloud *nc);
 
     /**

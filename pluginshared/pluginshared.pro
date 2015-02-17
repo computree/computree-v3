@@ -53,10 +53,6 @@ SOURCES += \
     ct_view/ct_radiobutton.cpp \
     ct_view/ct_buttongroup.cpp \
     ct_result/ct_resultcopymodelist.cpp \
-    ct_pointcloud/abstract/ct_abstractpointcloud.cpp \
-    ct_pointcloud/ct_pointcloudstdvector.cpp \
-    ct_pointcloudindex/abstract/ct_abstractpointcloudindex.cpp \
-    ct_pointcloudindex/ct_pointcloudindexvector.cpp \
     ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.cpp \
     ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.cpp \
     ct_math/ct_mathboundingshape.cpp \
@@ -161,7 +157,6 @@ SOURCES += \
     ct_global/ct_context.cpp \
     ct_global/ct_repository.cpp \
     ct_tools/ct_monitoredqthread.cpp \
-    ct_pointcloudindex/ct_pointcloudindexlessmemory.cpp \
     ct_global/ct_repositorymanager.cpp \
     ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.cpp \
     ct_pointcloud/tools/ct_standardundefinedsizepointcloud.cpp \
@@ -207,12 +202,6 @@ SOURCES += \
     ct_cloud/tools/ct_globalpointcloudmanager.cpp \
     ct_itemdrawable/ct_meshmodel.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodeldrawmanager.cpp \
-    ct_mesh/cloud/abstract/ct_abstractfacecloudindex.cpp \
-    ct_mesh/cloud/abstract/ct_abstractedgecloudindex.cpp \
-    ct_mesh/cloud/ct_facecloudindexlessmemory.cpp \
-    ct_mesh/cloud/ct_facecloudindexvector.cpp \
-    ct_mesh/cloud/ct_edgecloudindexlessmemory.cpp \
-    ct_mesh/cloud/ct_edgecloudindexvector.cpp \
     ct_itemdrawable/abstract/ct_abstractattributes.cpp \
     ct_attributes/ct_attributescolor.cpp \
     ct_attributes/ct_attributesnormal.cpp \
@@ -372,7 +361,12 @@ SOURCES += \
     ct_itemdrawable/ct_transformationmatrix.cpp \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp \
     ct_itemdrawable/ct_datasource.cpp \
-    ct_itemdrawable/ct_datasourcegeo.cpp
+    ct_itemdrawable/ct_datasourcegeo.cpp \
+    ct_iterator/ct_pointiterator.cpp \
+    ct_accessor/ct_pointaccessor.cpp \
+    ct_iterator/ct_mutablepointiterator.cpp \
+    ct_accessor/ct_faceaccessor.cpp \
+    ct_accessor/ct_edgeaccessor.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -398,10 +392,6 @@ HEADERS += interfaces.h \
     ct_view/ct_radiobutton.h \
     ct_view/ct_buttongroup.h \
     ct_result/ct_resultcopymodelist.h \
-    ct_pointcloud/abstract/ct_abstractpointcloud.h \
-    ct_pointcloud/ct_pointcloudstdvector.h \
-    ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h \
-    ct_pointcloudindex/ct_pointcloudindexvector.h \
     ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h \
     ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h \
     ct_math/ct_mathboundingshape.h \
@@ -514,7 +504,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/ct_itemplateddata1darray.h \
     ct_tools/ct_monitoredqthread.h \
     ct_itemdrawable/tools/ct_itemplateddata3darray.h \
-    ct_pointcloudindex/ct_pointcloudindexlessmemory.h \
     ct_global/ct_repositorymanager.h \
     ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.h \
     ct_pointcloud/tools/ct_standardundefinedsizepointcloud.h \
@@ -574,7 +563,6 @@ HEADERS += interfaces.h \
     ct_cloudindex/abstract/ct_abstractmodifiablecloudindext.h \
     ct_cloudindex/ct_cloudindexlessmemoryt.hpp \
     ct_cloudindex/ct_cloudindexstdvectort.hpp \
-    ct_cloudindex/abstract/ct_abstractcloudindext.hpp \
     ct_cloud/abstract/ct_abstractcloudt.h \
     ct_cloud/tools/ct_globalcloudmanagert.h \
     ct_cloud/tools/abstract/ct_abstractcloudsynctoglobalcloudmanager.h \
@@ -603,12 +591,6 @@ HEADERS += interfaces.h \
     ct_cloudindex/tools/ct_modifiablecloudindexiteratort.h \
     ct_itemdrawable/ct_meshmodel.h \
     ct_itemdrawable/tools/drawmanager/ct_standardmeshmodeldrawmanager.h \
-    ct_mesh/cloud/abstract/ct_abstractfacecloudindex.h \
-    ct_mesh/cloud/abstract/ct_abstractedgecloudindex.h \
-    ct_mesh/cloud/ct_facecloudindexlessmemory.h \
-    ct_mesh/cloud/ct_facecloudindexvector.h \
-    ct_mesh/cloud/ct_edgecloudindexlessmemory.h \
-    ct_mesh/cloud/ct_edgecloudindexvector.h \
     ct_itemdrawable/abstract/ct_abstractattributes.h \
     ct_attributes/ct_attributescolor.h \
     ct_attributes/ct_attributesnormal.h \
@@ -835,7 +817,23 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_transformationmatrix.h \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.h \
     ct_itemdrawable/ct_datasource.h \
-    ct_itemdrawable/ct_datasourcegeo.h
+    ct_itemdrawable/ct_datasourcegeo.h \
+    ct_defines.h \
+    ct_iterator/ct_pointiterator.h \
+    ct_iterator/ct_faceiterator.h \
+    ct_iterator/ct_edgeiterator.h \
+    ct_accessor/ct_pointaccessor.h \
+    ct_pointcloud/abstract/ct_abstractpointcloud.h \
+    ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h \
+    ct_pointcloudindex/ct_pointcloudindexvector.h \
+    ct_edgecloud/abstract/ct_abstractedgecloud.h \
+    ct_facecloud/abstract/ct_abstractfacecloud.h \
+    ct_iterator/ct_mutablepointiterator.h \
+    ct_accessor/ct_faceaccessor.h \
+    ct_accessor/ct_edgeaccessor.h \
+    ct_pointcloudindex/ct_pointcloudindexlessmemory.h \
+    ct_iterator/ct_mutablefaceiterator.h \
+    ct_iterator/ct_mutableedgeiterator.h
 
 
 INCLUDEPATH += .

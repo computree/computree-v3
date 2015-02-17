@@ -6,7 +6,7 @@ CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar() : CT_Abstra
 
 CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const CT_OutAbstractSingularItemModel *model,
                                                                    const CT_AbstractResult *result,
-                                                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(model,
+                                                                   CT_PCIR pcir) : CT_AbstractPointsAttributes(model,
                                                                                                                                                                            result,
                                                                                                                                                                            pcir)
 {
@@ -15,7 +15,7 @@ CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const CT_OutA
 
 CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const QString &modelName,
                                                                    const CT_AbstractResult *result,
-                                                                   CT_AbstractCloudIndexRegistrationManagerT<CT_Point>::CT_AbstractCIR pcir) : CT_AbstractPointsAttributes(modelName,
+                                                                   CT_PCIR pcir) : CT_AbstractPointsAttributes(modelName,
                                                                                                                                                                            result,
                                                                                                                                                                            pcir)
 {

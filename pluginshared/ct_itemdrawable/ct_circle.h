@@ -82,7 +82,6 @@ public:
     static CT_Circle* staticCreateZAxisAlignedCircleFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                    quint64 id,
                                                                    const CT_AbstractResult *result,
-                                                                   const CT_AbstractPointCloud &pointCloud,
                                                                    const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                    double z = 0);
 

@@ -28,6 +28,7 @@
 #include "pb_computehitsthread.h"
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
                                            CT_Grid2DXY<int> *grdXY,
@@ -49,15 +50,16 @@ PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
 
 void PB_ComputeHitsThread::run()
 {
-    const CT_AbstractPointCloudIndex *pointCloudIndex = _scene->getPointCloudIndex();
-    size_t n_points = pointCloudIndex->size();
+    CT_PointIterator itP(_scene->getPointCloudIndex());
+    size_t n_points = itP.size();
 
     size_t progressStep = n_points / 20;
     size_t prog = 0;
+    size_t i = 0;
 
-    for (size_t i = 0 ; i < n_points; i++)
+    while(itP.hasNext())
     {
-        const CT_Point &point = pointCloudIndex->constTAt(i);
+        const CT_Point &point = itP.next().cT();
         size_t indice;
 
         if (_grilleHits->indexAtXYZ(point(0), point(1), point(2), indice))
@@ -71,10 +73,11 @@ void PB_ComputeHitsThread::run()
             _proY->addValueForXYZ(point(0), point(1), point(2), 1);
             _proZ->addValueForXYZ(point(0), point(1), point(2), 1);
             _proDiag->addValueForXYZ(point(0), point(1), point(2), 1);
-        } else
-        {
+        } else {
             qDebug() << "Le point "<< i << " de la scene n'est pas dans la grille";
         }
+
+        ++i;
 
         if (i % progressStep == 0)
         {

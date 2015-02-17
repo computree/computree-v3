@@ -7,7 +7,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal() : CT_AbstractFaceAttributes()
 
 CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributes(model,
+                                                 CT_FCIR pcir) : CT_AbstractFaceAttributes(model,
                                                                                                                                                       result,
                                                                                                                                                       pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -16,7 +16,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularIte
 
 CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularItemModel *model,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                 CT_FCIR pcir,
                                                  CT_AbstractNormalCloud *nc) : CT_AbstractFaceAttributes(model,
                                                                                                          result,
                                                                                                          pcir), CT_AttributesNormal(nc)
@@ -25,7 +25,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal(const CT_OutAbstractSingularIte
 
 CT_FaceAttributesNormal::CT_FaceAttributesNormal(const QString &modelName,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir) : CT_AbstractFaceAttributes(modelName,
+                                                 CT_FCIR pcir) : CT_AbstractFaceAttributes(modelName,
                                                                                                                                                       result,
                                                                                                                                                       pcir),
     CT_AttributesNormal(new CT_NormalCloudStdVector(pcir->size()))
@@ -34,7 +34,7 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal(const QString &modelName,
 
 CT_FaceAttributesNormal::CT_FaceAttributesNormal(const QString &modelName,
                                                  const CT_AbstractResult *result,
-                                                 CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                                 CT_FCIR pcir,
                                                  CT_AbstractNormalCloud *nc) : CT_AbstractFaceAttributes(modelName,
                                                                                                          result,
                                                                                                          pcir), CT_AttributesNormal(nc)

@@ -39,10 +39,11 @@
 
 #include "ct_resultgroup.h"
 
-#include "ct_pointcloud/ct_pointcloudstdvector.h"
-#include "ct_pointcloudindex/ct_pointcloudindexvector.h"
-
 #include "ct_global/ct_context.h"
+#include "ct_coordinates/ct_defaultcoordinatesystem.h"
+
+#include "ct_iterator/ct_mutablepointiterator.h"
+
 #include "qdebug.h"
 
 #include <QFile>
@@ -115,15 +116,19 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
         }
     }*/
 
-    CT_Repository::CT_AbstractNotModifiablePCIR pcir = PS_REPOSITORY->createNewPointCloud(n_points);
+    CT_NMPCIR pcir = PS_REPOSITORY->createNewPointCloud(n_points);
 
-    float xmin = std::numeric_limits<float>::max();
-    float ymin = std::numeric_limits<float>::max();
-    float zmin = std::numeric_limits<float>::max();
+    CT_MutablePointIterator it(pcir);
+    CT_Point pReaded;
+    GLuint indexOfCoordinateSystem = 0;
 
-    float xmax = -std::numeric_limits<float>::max();
-    float ymax = -std::numeric_limits<float>::max();
-    float zmax = -std::numeric_limits<float>::max();
+    double xmin = std::numeric_limits<float>::max();
+    double ymin = std::numeric_limits<float>::max();
+    double zmin = std::numeric_limits<float>::max();
+
+    double xmax = -xmin;
+    double ymax = -xmin;
+    double zmax = -xmin;
 
     char d_data[8];
 
@@ -140,10 +145,17 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
         f.read(d_data, 2);
         //getShort(d_data); // reflectance
 
-        CT_Point &p = pcir->tAt(a);
-        p(0) = (float)x;
-        p(1) = (float)y;
-        p(2) = (float)z;
+        if(a == 0) {
+            if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
+                indexOfCoordinateSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z, this));
+        }
+
+        pReaded(0) = x;
+        pReaded(1) = y;
+        pReaded(2) = z;
+
+        it.next();
+        it.replaceCurrentPoint(pReaded, indexOfCoordinateSystem);
 
         if (x<xmin) {xmin = (float)x;}
 
@@ -174,7 +186,7 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
 
 }
 
-void CT_AbstractStepLoadFileInScene::createOutResult(CT_Scene::CT_AbstractCIR pcir, float xmin, float xmax, float ymin, float ymax, float zmin, float zmax, QList<CT_AbstractSingularItemDrawable*> list)
+void CT_AbstractStepLoadFileInScene::createOutResult(CT_PCIR pcir, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, QList<CT_AbstractSingularItemDrawable*> list)
 {
     CT_ResultGroup *out_res = getOutResultList().first();
 

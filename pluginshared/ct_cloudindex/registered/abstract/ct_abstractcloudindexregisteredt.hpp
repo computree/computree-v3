@@ -22,6 +22,12 @@ CT_AbstractCloudIndexT<T>* CT_AbstractCloudIndexRegisteredT<T>::abstractCloudInd
 }
 
 template<typename T>
+CT_AbstractCloudIndex* CT_AbstractCloudIndexRegisteredT<T>::abstractCloudIndex() const
+{
+    return m_ci;
+}
+
+template<typename T>
 CT_AbstractCloudIndexRegisteredT<T>::CT_AbstractCloudIndexRegisteredT(CT_AbstractCloudIndexT<T> *ci) : CT_AbstractCloudIndexRegistered()
 {
     m_ci = ci;

@@ -12,6 +12,7 @@ struct CT_Normal : pcl::Normal {
 
 #include "pluginShared_global.h"
 
+ // TODO => pass CT_Normal to double like CT_Point / CT_PointData !
 class PLUGINSHAREDSHARED_EXPORT CT_Normal
 {
 public:

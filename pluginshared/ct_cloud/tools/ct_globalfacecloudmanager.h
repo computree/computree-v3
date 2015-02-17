@@ -15,10 +15,10 @@
  *
  * It will also sync pointer in CT_Face.
  */
-class PLUGINSHAREDSHARED_EXPORT CT_GlobalFaceCloudManager : public CT_GlobalCloudManagerT< CT_Face, CT_StandardCloudStdVectorT<CT_Face> >, public IGlobalCloudListener
+class PLUGINSHAREDSHARED_EXPORT CT_GlobalFaceCloudManager : public CT_GlobalCloudManagerT< CT_Face, CT_FaceCloudStdVector >, public IGlobalCloudListener
 {
 public:
-    CT_GlobalFaceCloudManager(const CT_AbstractGlobalCloudManagerT<CT_Edge> *globalEdgeCloudManager);
+    CT_GlobalFaceCloudManager(const CT_AbstractGlobalEdgeCloudManager *globalEdgeCloudManager);
 
     /**
      * @brief Called when the global cloud of edge is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
@@ -31,7 +31,7 @@ public:
     void cloudAdded(const size_t &size);
 
 private:
-    CT_AbstractGlobalCloudManagerT<CT_Edge> *m_gecm;
+    CT_AbstractGlobalEdgeCloudManager *m_gecm;
 };
 
 #endif // CT_GLOBALFACECLOUDMANAGER_H

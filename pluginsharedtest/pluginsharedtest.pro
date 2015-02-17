@@ -6,6 +6,8 @@
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
+DESTDIR = $${PLUGINSHARED_DESTDIR}
+
 QT       += testlib
 
 QT       += gui

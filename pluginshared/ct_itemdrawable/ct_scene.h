@@ -65,7 +65,7 @@ public:
      */
     CT_Scene(const CT_OutAbstractSingularItemModel *model,
              const CT_AbstractResult *result,
-             CT_AbstractCIR pcir);
+             CT_PCIR pcir);
 
     /**
      * @brief Create a ItemDrawable with a name of model defined in your step (typically a DEF_...)
@@ -87,7 +87,7 @@ public:
      */
     CT_Scene(const QString &modelName,
              CT_AbstractResult *result,
-             CT_AbstractCIR pcir);
+             CT_PCIR pcir);
 
     virtual ~CT_Scene();
 
@@ -105,7 +105,7 @@ public:
      * @brief PointCloudIndexRegistered setter
      * @param pcir : le nuage d'index enregistré
      */
-    void setPointCloudIndexRegistered(CT_AbstractCIR pcir);
+    void setPointCloudIndexRegistered(CT_PCIR pcir);
 
     /**
      * @brief Change the transform matrix of this scene

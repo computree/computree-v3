@@ -2,6 +2,7 @@
 #include "ct_itemdrawable/ct_pointcluster.h"
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_BARYCENTER_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigBarycenterVisible();
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_LINES_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigLinesVisible();
@@ -22,21 +23,24 @@ void CT_StandardPointClusterDrawManager::draw(GraphicsViewInterface &view, Paint
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BARYCENTER_VISIBLE).toBool())
     {
-
         const CT_PointClusterBarycenter &barycenter = item.getBarycenter();
         painter.drawPoint(barycenter.x(), barycenter.y(), barycenter.z());
     }
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_LINES_VISIBLE).toBool())
     {
-        const CT_AbstractPointCloudIndex* cloudIndex = item.getPointCloudIndex();
+        CT_PointIterator it(item.getPointCloudIndex());
 
-        for ( size_t i = 0 ; i < cloudIndex->size()-1 ; ++i )
+        while(it.hasNext())
         {
-            const CT_Point& p1 = cloudIndex->constTAt(i);
-            const CT_Point& p2 = cloudIndex->constTAt(i+1);
+            it.next();
+            size_t p1 = it.currentGlobalIndex();
 
-            painter.drawLine(p1(0), p1(1), p1(2), p2(0), p2(1), p2(2));
+            if(it.hasNext()) {
+                it.next();
+                size_t p2 = it.currentGlobalIndex();
+                painter.drawLine(p1, p2);
+            }
         }
     }
 }

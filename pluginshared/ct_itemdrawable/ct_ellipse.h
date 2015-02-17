@@ -105,7 +105,6 @@ public:
     static CT_Ellipse* staticCreateZAxisAlignedEllipseFromPointCloud(const CT_OutAbstractSingularItemModel *model,
                                                                      quint64 id,
                                                                      const CT_AbstractResult *result,
-                                                                     const CT_AbstractPointCloud *pointCloud,
                                                                      const CT_AbstractPointCloudIndex *pointCloudIndex);
 
 private:

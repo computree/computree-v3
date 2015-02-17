@@ -18,8 +18,8 @@ public:
 
     CT_Grid2DXY<int>    *_densityGrid;
     CT_Grid2DXY<float>  *_mnsGrid;
-    float               _zmin;
-    float               _zmax;
+    double              _zmin;
+    double              _zmax;
 };
 
 class PB_ActionDefineHeightLayer : public CT_AbstractActionForGraphicsView
@@ -28,7 +28,7 @@ class PB_ActionDefineHeightLayer : public CT_AbstractActionForGraphicsView
 public:
 
     PB_ActionDefineHeightLayer();
-    PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, float xmin, float ymin, float zmin, float xmax, float ymax, float zmax);
+    PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, double xmin, double ymin, double zmin, double xmax, double ymax, double zmax);
 
     void createGrids(float res);
 
@@ -60,7 +60,7 @@ public slots:
     void updateGraphics();
     void setSideView();
     void computeCrownProjection();
-    void updateZValues(float zmin, float zmax);
+    void updateZValues(double zmin, double zmax);
     void updateResolution(double resolution);
     void updateThreshold(int threshold);
 

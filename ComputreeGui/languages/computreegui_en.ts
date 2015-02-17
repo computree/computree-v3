@@ -101,24 +101,24 @@
 <context>
     <name>G3DGraphicsView</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1738"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1741"/>
         <source>Colorer les points par...</source>
         <translation>Colorize points by...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1739"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1742"/>
         <source>Colorer les faces par...</source>
         <translation>Colorize faces by...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1740"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1743"/>
         <source>Colorer les edges par...</source>
         <translation>Colorize edges by...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1757"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1764"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1771"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1760"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1767"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1774"/>
         <source>Configurer</source>
         <translation>Configure</translation>
     </message>
@@ -2002,19 +2002,39 @@ Attention cette opération peut être lente.</source>
         <translation>Please wait while octree creation</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1526"/>
-        <source>G3DPainter (points) =&gt; Vertex shader compilation error : %1</source>
-        <translation></translation>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1520"/>
+        <source>Vertex shader &quot;%1&quot; compilation error : %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1554"/>
-        <source>G3DPainter (points) =&gt; Link error : %1</source>
-        <translation></translation>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1522"/>
+        <source>Vertex shader &quot;%1&quot; compilation error</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1650"/>
-        <source>G3DPainter (points) =&gt; Bind error : %1</source>
-        <translation></translation>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1550"/>
+        <source>Vertex shader &quot;%1&quot; link error : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1552"/>
+        <source>Vertex shader &quot;%1&quot; link error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1587"/>
+        <source>Vertex shader &quot;%1&quot; bind error : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1589"/>
+        <source>Vertex shader &quot;%1&quot; bind error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1625"/>
+        <source>Vertex shader &quot;%1&quot; error :%2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

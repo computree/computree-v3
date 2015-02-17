@@ -9,7 +9,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor() : CT_AbstractFaceAttributes(), 
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                               CT_FCIR pcir,
                                                bool withAlphaInformation) : CT_AbstractFaceAttributes(model,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
@@ -18,7 +18,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemM
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                               CT_FCIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractFaceAttributes(model,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(cc)
@@ -27,7 +27,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemM
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const QString &modelName,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                               CT_FCIR pcir,
                                                bool withAlphaInformation) : CT_AbstractFaceAttributes(modelName,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
@@ -36,7 +36,7 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const QString &modelName,
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const QString &modelName,
                                                const CT_AbstractResult *result,
-                                               CT_AbstractCloudIndexRegistrationManagerT<CT_Face>::CT_AbstractCIR pcir,
+                                               CT_FCIR pcir,
                                                CT_AbstractColorCloud *cc) : CT_AbstractFaceAttributes(modelName,
                                                                                                       result,
                                                                                                       pcir), CT_AttributesColor(cc)

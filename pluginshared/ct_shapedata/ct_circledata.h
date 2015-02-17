@@ -29,8 +29,7 @@
 #define CT_CIRCLEDATA_H
 
 #include "ct_shapedata.h"
-#include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
-#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+#include "ct_defines.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_CircleDataPreProcessingAction
 {
@@ -46,11 +45,11 @@ public:
     CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius);
     CT_CircleData(const Eigen::Vector3d &center, const Eigen::Vector3d &direction, double radius, double error);
 
-    void setRadius(float radius);
-    void setError(float error);
+    void setRadius(double radius);
+    void setError(double error);
 
-    float getRadius() const;
-    float getError() const;
+    double getRadius() const;
+    double getError() const;
 
     CT_CircleData* clone() const;
 
@@ -61,8 +60,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  3.
       */
-    static CT_CircleData* staticCreateZAxisAlignedCircleDataFromPointCloud(const CT_AbstractPointCloud &pointCloud,
-                                                                           const CT_AbstractPointCloudIndex &pointCloudIndex,
+    static CT_CircleData* staticCreateZAxisAlignedCircleDataFromPointCloud(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                            double z = 0);
 
     /**
@@ -72,8 +70,7 @@ public:
       *
       * \return NULL si le nombre de points est infrieur  3.
       */
-    static CT_CircleData* staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(const CT_AbstractPointCloud &pointCloud,
-                                                                                            const CT_AbstractPointCloudIndex &pointCloudIndex,
+    static CT_CircleData* staticCreateZAxisAlignedCircleDataFromPointCloudWithPreProcessing(const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                                                             CT_CircleDataPreProcessingAction *preProcessingAction,
                                                                                             double z = 0);
 private:

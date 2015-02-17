@@ -15,6 +15,8 @@
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
 #include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
+#include "ct_iterator/ct_pointiterator.h"
+#include "ct_point.h"
 
 PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -70,7 +72,7 @@ bool PB_XYBExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list
     {
         CT_AbstractCloudIndex *item = it.next();
 
-        if(dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(item) != NULL)
+        if(dynamic_cast<CT_AbstractPointCloudIndex*>(item) != NULL)
             myList.append(item);
     }
 
@@ -313,7 +315,7 @@ bool PB_XYBExporter::protectedExportToFile()
         while(itCI.hasNext())
         {
             exportPoints(stream,
-                         dynamic_cast<CT_AbstractCloudIndexT<CT_Point>*>(itCI.next()),
+                         dynamic_cast<CT_AbstractPointCloudIndex*>(itCI.next()),
                          cc,
                          nExported,
                          totalToExport);
@@ -340,29 +342,23 @@ void PB_XYBExporter::clearWorker()
 }
 
 void PB_XYBExporter::exportPoints(QDataStream &stream,
-                                  const CT_AbstractCloudIndexT<CT_Point> *constPCIndex,
+                                  const CT_AbstractPointCloudIndex *constPCIndex,
                                   const CT_AbstractColorCloud *cc,
                                   const int &nExported,
                                   const int &totalToExport)
 {
-    size_t totalSize = constPCIndex->size();
     size_t i = 0;
 
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator begin = constPCIndex->constBegin();
-    CT_AbstractCloudIndexT<CT_Point>::ConstIterator end = constPCIndex->constEnd();
+    CT_PointIterator it(constPCIndex);
+    size_t totalSize = it.size();
 
-    CT_AbstractCoordinateSystem::realEx xc, yc, zc;
-
-    while(begin != end)
+    while(it.hasNext())
     {
-        const CT_Point &point = begin.cT();
-        size_t globalIndex = begin.cIndex();
+        const CT_Point &point = it.next().cT();
 
-        PS_COORDINATES_SYS_MANAGER->coordinateSystemForPointAt(globalIndex)->convertExport(point(0), point(1), point(2), xc, yc, zc);
-
-        stream << ((double)xc);
-        stream << ((double)yc);
-        stream << ((double)zc);
+        stream << point(CT_Point::X);
+        stream << point(CT_Point::Y);
+        stream << point(CT_Point::Z);
 
         if(cc == NULL)
         {
@@ -370,12 +366,11 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
         }
         else
         {
-            const CT_Color &col = cc->constColorAt(begin.cIndex());
+            const CT_Color &col = cc->constColorAt(it.cIndex());
             quint16 tmp = (quint16)col.b;
             stream << tmp;
         }
 
-        ++begin;
         ++i;
 
         setExportProgress((((i*100)/totalSize)+nExported)/totalToExport);

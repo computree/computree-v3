@@ -17,6 +17,7 @@ public:
 
     CT_AbstractCloudIndexT<T>* operator->() const;
     CT_AbstractCloudIndexT<T>* abstractCloudIndexT() const;
+    CT_AbstractCloudIndex* abstractCloudIndex() const;
 
     /**
      * @brief return the sort type

@@ -4,6 +4,8 @@
 
 #include "ct_math/ct_mathpoint.h"
 #include "ct_math/ct_math2dlines.h"
+#include "ct_accessor/ct_pointaccessor.h"
+#include "ct_iterator/ct_pointiterator.h"
 
 #include <limits>
 
@@ -36,6 +38,8 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
     current = unMarked.takeFirst();
     polylineCluster->addPoint(current->indexInCloud);
 
+    CT_PointAccessor pAccess;
+
     /////////////////////////////////////////////////////////////////////////////////////
     // Prise en compte de chaque point candidat//////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -51,11 +55,11 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
         {
             CandidatePoint* candidate = unMarked.at(i);
 
-            const CT_Point &p1 = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
-            const CT_Point &p2 = baseIndexCloud->constTAtGlobalIndex(current->indexInCloud);
+            const CT_Point &p1 = pAccess.constPointAt(candidate->indexInCloud);
+            const CT_Point &p2 = pAccess.constPointAt(current->indexInCloud);
 
             // Distance a l'objet qu'on vient d'ajouter pour ensuite la comparer a la distance de l'ancienne tete et de l'ancienne queue de ma polyligne
-            double distance = CT_MathPoint::distance2D (Eigen::Vector3d(p1(0), p1(1), p1(2)), Eigen::Vector3d(p2(0), p2(1), p2(2)));
+            double distance = CT_MathPoint::distance2D (p1, p2);
 
             // Si ils pointaient vers un point diffrent de celui de current
             if ( current->indexOfMinDistance != candidate->indexOfMinDistance )
@@ -76,8 +80,8 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
                 // Comparaison a la tete
                 if ( current->indexInCloud == polylineIndexCloud->first())
                 {
-                    const CT_Point &pA = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
-                    const CT_Point &pB = polylineIndexCloud->constTAtGlobalIndex(polylineIndexCloud->last());
+                    const CT_Point &pA = pAccess.constPointAt(candidate->indexInCloud);
+                    const CT_Point &pB = pAccess.constPointAt(polylineIndexCloud->last());
 
                     distanceToOtherEnd = CT_MathPoint::distance2D(Eigen::Vector3d(pA(0), pA(1), pA(2)), Eigen::Vector3d(pB(0), pB(1), pB(2)));
 
@@ -97,8 +101,8 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
                 // Comparaison a la queue
                 else if ( current->indexInCloud == polylineIndexCloud->last())
                 {
-                    const CT_Point &pA = baseIndexCloud->constTAtGlobalIndex(candidate->indexInCloud);
-                    const CT_Point &pB = polylineIndexCloud->constTAtGlobalIndex(polylineIndexCloud->first());
+                    const CT_Point &pA = pAccess.constPointAt(candidate->indexInCloud);
+                    const CT_Point &pB = pAccess.constPointAt(polylineIndexCloud->first());
 
                     distanceToOtherEnd = CT_MathPoint::distance2D(Eigen::Vector3d(pA(0), pA(1), pA(2)), Eigen::Vector3d(pB(0), pB(1), pB(2)));
 
@@ -135,22 +139,15 @@ void CT_PolylinesAlgorithms::createPolyline2D(const CT_PointCluster *baseCluster
 
         // Si la liste est vide on l'ajoute simplement
         if ( polylineIndexCloud->size() <= 0)
-        {
             polylineCluster->addPoint(unMarked[indexMin]->indexInCloud);
-        }
 
         else
         {
             // Sinon on regarde de quel cote il faut l'ajouter
             if ( polylineIndexCloud->last() == unMarked[indexMin]->indexOfMinDistance )
-            {
                 polylineCluster->addPoint(unMarked[indexMin]->indexInCloud);
-            }
-
             else
-            {
                 polylineCluster->addPoint(unMarked[indexMin]->indexInCloud, false, true);
-            }
         }
 
         // Suppression du current dans la liste des non marques
@@ -165,74 +162,86 @@ Eigen::Vector2d CT_PolylinesAlgorithms::compute2DArcData(const CT_PointCluster *
 {
     const CT_AbstractPointCloudIndex* indexCloud = polyline->getPointCloudIndex();
 
-    const CT_Point &first = indexCloud->constTAt(0);
-    const CT_Point &last = indexCloud->constTAt(indexCloud->size() - 1);
+    CT_PointIterator itP(indexCloud);
 
-    Eigen::Vector2d v1(first(0), first(1));
-    Eigen::Vector2d v2(last(0),  last(1));
-    Eigen::Vector2d v3((first(0) + last(0))/2, (first(1) + last(1))/2);
-    Eigen::Vector2d v4;
+    if(itP.size() > 0) {
+        const CT_Point &first = itP.next().currentPoint();
+        itP.toBack();
+        const CT_Point &last = itP.previous().currentPoint();
 
-    chord = CT_MathPoint::distance2D(Eigen::Vector3d(first(0), first(1), first(2)), Eigen::Vector3d(last(0), last(1), last(2)));
-    // Calcul de la perpendiculaire à la corde
-    CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, v4, -1, false);
+        Eigen::Vector2d v1(first(0), first(1));
+        Eigen::Vector2d v2(last(0),  last(1));
+        Eigen::Vector2d v3((first(0) + last(0))/2, (first(1) + last(1))/2);
+        Eigen::Vector2d v4;
 
-    // recherche des intersections entre les segments successifs de l'arc et la médiatrice de la corde pour déterminer la flèche
-    sagitta = 0;
-    double sagittacw  = 0;
-    double sagittaccw = 0;
-    int nbcw = 0;
-    int nbccw = 0;
-    size_t size = indexCloud->size() - 1;
-    for (size_t i = 0 ; i < size ; i++)
-    {
-        const CT_Point &p1 = indexCloud->constTAt(i);
-        const CT_Point &p2 = indexCloud->constTAt(i+1);
+        chord = CT_MathPoint::distance2D(first, last);
+        // Calcul de la perpendiculaire à la corde
+        CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, v4, -1, false);
 
-        Eigen::Vector2d v5(p1(0), p1(1));
-        Eigen::Vector2d v6(p2(0), p2(1));
-        Eigen::Vector2d intersection;
-        double r, s;
+        // recherche des intersections entre les segments successifs de l'arc et la médiatrice de la corde pour déterminer la flèche
+        sagitta = 0;
+        double sagittacw  = 0;
+        double sagittaccw = 0;
+        int nbcw = 0;
+        int nbccw = 0;
 
-        if (CT_Math2DLines::intersectSegments(v3, v4, v5, v6, r, s, intersection))
+        itP.toFront();
+
+        while(itP.hasNext())
         {
-            if (s>=0 && s <= 1)
-            {
-                if (r<0)
+            const CT_Point &p1 = itP.next().currentPoint();
+
+            if(itP.hasNext()) {
+                const CT_Point &p2 = itP.next().currentPoint();
+
+                Eigen::Vector2d v5(p1(0), p1(1));
+                Eigen::Vector2d v6(p2(0), p2(1));
+                Eigen::Vector2d intersection;
+                double r, s;
+
+                if (CT_Math2DLines::intersectSegments(v3, v4, v5, v6, r, s, intersection))
                 {
-                    sagittacw += CT_Math2DLines::distance2D(v3, intersection);
-                    ++nbcw;
-                } else {
-                    sagittaccw += CT_Math2DLines::distance2D(v3, intersection);
-                    ++nbccw;
+                    if (s>=0 && s <= 1)
+                    {
+                        if (r<0)
+                        {
+                            sagittacw += CT_Math2DLines::distance2D(v3, intersection);
+                            ++nbcw;
+                        } else {
+                            sagittaccw += CT_Math2DLines::distance2D(v3, intersection);
+                            ++nbccw;
+                        }
+                    }
                 }
             }
         }
+
+        if (nbcw > 0) {sagittacw /= nbcw;}
+        if (nbccw > 0) {sagittaccw /= nbccw;}
+
+        bool cw = (sagittacw > sagittaccw);
+        if (cw) {
+            sagitta = sagittacw;
+        } else {
+            sagitta = sagittaccw;
+        }
+
+        if (sagitta > (chord/2))
+        {
+            sagitta = chord*chord/(4*sagitta);
+            cw = !cw;
+        }
+
+        // calcul du rayon du cercle
+        radius = ((4*sagitta*sagitta) + chord*chord)/(8*sagitta);
+
+
+        // Calcul du centre du cercle
+        Eigen::Vector2d circleCenter;
+        CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, circleCenter, (radius-sagitta), !cw);
+        return circleCenter;
     }
 
-    if (nbcw > 0) {sagittacw /= nbcw;}
-    if (nbccw > 0) {sagittaccw /= nbccw;}
-
-    bool cw = (sagittacw > sagittaccw);
-    if (cw) {
-        sagitta = sagittacw;
-    } else {
-        sagitta = sagittaccw;
-    }
-
-    if (sagitta > (chord/2))
-    {
-        sagitta = chord*chord/(4*sagitta);
-        cw = !cw;
-    }
-
-    // calcul du rayon du cercle
-    radius = ((4*sagitta*sagitta) + chord*chord)/(8*sagitta);
-
-
-    // Calcul du centre du cercle
-    Eigen::Vector2d circleCenter;
-    CT_Math2DLines::computePerpendicularSegment(v1, v2, v3, circleCenter, (radius-sagitta), !cw);
-    return circleCenter;
+    return Eigen::Vector2d();
 }
 

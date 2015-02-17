@@ -98,12 +98,11 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfCloudIndex(CT_AbstractColorCloud 
 
         if(ci != NULL)
         {
-            typename CT_AbstractCloudIndexT<T>::ConstIterator itK = ci->constBegin();
-            typename CT_AbstractCloudIndexT<T>::ConstIterator endK = ci->constEnd();
+            CT_CloudIndexIteratorT<T> itK(ci);
 
-            while(itK != endK)
+            while(itK.hasNext())
             {
-                typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::iterator it = collect->find(itK.cIndex());
+                typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::iterator it = collect->find(itK.next().cIndex());
 
                 if(it != collect->end())
                 {
@@ -115,8 +114,6 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfCloudIndex(CT_AbstractColorCloud 
                     if(eraseKeys)
                         collect->erase(it);
                 }
-
-                ++itK;
             }
         }
     }
