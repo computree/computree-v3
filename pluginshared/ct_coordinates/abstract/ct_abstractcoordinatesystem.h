@@ -90,6 +90,7 @@ public:
      * @brief Returns the offset of this coordinate system
      */
     virtual void offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const = 0;
+    virtual void offset(Eigen::Vector3d &v) const = 0;
 
     /**
      * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)

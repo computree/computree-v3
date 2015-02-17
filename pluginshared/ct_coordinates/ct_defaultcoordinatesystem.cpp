@@ -50,6 +50,24 @@ CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSyst
     ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
 }
 
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const Eigen::Vector3d &v, const CT_VirtualAbstractStep *step)
+{
+    m_xOffset = v(0);
+    m_yOffset = v(1);
+    m_zOffset = v(2);
+
+    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
+}
+
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const Eigen::Vector3d &v, const CT_AbstractReader *reader)
+{
+    m_xOffset = v(0);
+    m_yOffset = v(1);
+    m_zOffset = v(2);
+
+    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
+}
+
 bool CT_DefaultCoordinateSystem::canConvertImport(CT_AbstractCoordinateSystem::realEx x,
                                                   CT_AbstractCoordinateSystem::realEx y,
                                                   CT_AbstractCoordinateSystem::realEx z) const
@@ -137,6 +155,13 @@ void CT_DefaultCoordinateSystem::offset(CT_AbstractCoordinateSystem::realEx &x, 
     x = m_xOffset;
     y = m_yOffset;
     z = m_zOffset;
+}
+
+void CT_DefaultCoordinateSystem::offset(Eigen::Vector3d &v) const
+{
+    v(0) = m_xOffset;
+    v(1) = m_xOffset;
+    v(2) = m_xOffset;
 }
 
 Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const

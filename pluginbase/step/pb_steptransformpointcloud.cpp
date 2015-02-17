@@ -151,7 +151,7 @@ void PB_StepTransformPointCloud::compute()
                             trMat->transform(offset);
 
                             // create the coordinate system transformed and get it's index
-                            transSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(offset(0), offset(1), offset(2), this));
+                            transSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(offset, this));
 
                             // and backup it
                             coordSysCorresp.insert(currentSystem, transSystem);

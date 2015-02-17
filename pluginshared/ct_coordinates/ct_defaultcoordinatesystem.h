@@ -27,6 +27,12 @@ public:
                                CT_AbstractCoordinateSystem::realEx z,
                                const CT_AbstractReader *reader);
 
+    CT_DefaultCoordinateSystem(const Eigen::Vector3d &v,
+                               const CT_VirtualAbstractStep *step);
+
+    CT_DefaultCoordinateSystem(const Eigen::Vector3d &v,
+                               const CT_AbstractReader *reader);
+
     /**
      * @brief Returns true if coordinates passed in parameter can be converted to realIm (import). False
      *        if the capacity of a realIm is not sufficient.
@@ -74,7 +80,7 @@ public:
      * @brief Returns the offset of this coordinate system
      */
     void offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const;
-
+    void offset(Eigen::Vector3d &v) const;
     /**
      * @brief Convert the coordinate system to a matrix 4x4 (used per example in opengl rendering)
      */
