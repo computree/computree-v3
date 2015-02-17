@@ -20,6 +20,11 @@ public:
      *        cloud index is a pointer to point cloud.
      */
     CT_MutablePointIterator(CT_CIR cir);
+
+    /**
+     * @brief Copy constructor
+     */
+    CT_MutablePointIterator(const CT_MutablePointIterator &it);
     ~CT_MutablePointIterator();
 
     /**

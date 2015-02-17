@@ -12,16 +12,19 @@
 #include "ct_iterator/ct_mutablepointiterator.h"
 
 template<typename Mesh>
-CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh &mesh, const size_t &n)
+CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh *mesh, const size_t &n)
 {
-    CT_PointCloudIndexVector *v = (CT_PointCloudIndexVector*)mesh.m_pVert;
+    if(mesh == NULL)
+        return CT_MutablePointIterator(NULL);
+
+    CT_PointCloudIndexVector *v = (CT_PointCloudIndexVector*)mesh->m_pVert;
     size_t lastSize = 0;
 
     if(v == NULL)
     {
         v = new CT_PointCloudIndexVector(n);
-        mesh.m_vert = PS_REPOSITORY->registerCloudIndex(v);
-        mesh.m_pVert = v;
+        mesh->m_vert = PS_REPOSITORY->registerCloudIndex(v);
+        mesh->m_pVert = v;
     }
     else
     {
@@ -29,87 +32,102 @@ CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh &mesh, c
         v->resize(lastSize + n);
     }
 
-    return mesh.m_vert->begin()+lastSize;
+    return mesh->m_vert->begin()+lastSize;
 }
 
 template<typename Mesh>
-CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaceIndexes(Mesh &mesh, const size_t &n)
+CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaceIndexes(Mesh *mesh, const size_t &n)
 {
-    CT_FaceCloudIndexVector *f = (CT_FaceCloudIndexVector*)mesh.m_pFace;
+    if(mesh == NULL)
+        return CT_MutableFaceIterator(NULL);
+
+    CT_FaceCloudIndexVector *f = (CT_FaceCloudIndexVector*)mesh->m_pFace;
     size_t lastSize = 0;
 
     if(f == NULL)
     {
         f = new CT_FaceCloudIndexVector(n);
-        mesh.m_face = PS_REPOSITORY->registerCloudIndex(f);
-        mesh.m_pFace = f;
+        mesh->m_face = PS_REPOSITORY->registerCloudIndex(f);
+        mesh->m_pFace = f;
     }
     else
     {
         f->resize(f->size() + n);
     }
 
-    return mesh.m_face->begin()+lastSize;
+    return mesh->m_face->begin()+lastSize;
 }
 
 template<typename Mesh>
-CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdgeIndexes(Mesh &mesh, const size_t &n)
+CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdgeIndexes(Mesh *mesh, const size_t &n)
 {
-    CT_EdgeCloudIndexVector *e = (CT_EdgeCloudIndexVector*)mesh.m_pHedge;
+    if(mesh == NULL)
+        return CT_MutableEdgeIterator(NULL);
+
+    CT_EdgeCloudIndexVector *e = (CT_EdgeCloudIndexVector*)mesh->m_pHedge;
     size_t lastSize = 0;
 
     if(e == NULL)
     {
         e = new CT_EdgeCloudIndexVector(n);
-        mesh.m_hedge = PS_REPOSITORY->registerCloudIndex(e);
-        mesh.m_pHedge = e;
+        mesh->m_hedge = PS_REPOSITORY->registerCloudIndex(e);
+        mesh->m_pHedge = e;
     }
     else
     {
         e->resize(e->size() + n);
     }
 
-    return mesh.m_hedge->begin()+lastSize;
+    return mesh->m_hedge->begin()+lastSize;
 }
 
 template<typename Mesh>
-CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVertices(Mesh &mesh, const size_t &n)
+CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVertices(Mesh *mesh, const size_t &n)
 {
-    CT_PointCloudIndexVector *v = ((CT_PointCloudIndexVector*)mesh.m_pVert);
+    if(mesh == NULL)
+        return CT_MutablePointIterator(NULL);
+
+    CT_PointCloudIndexVector *v = ((CT_PointCloudIndexVector*)mesh->m_pVert);
 
     CT_MutablePointIterator it = addT<CT_PointData, CT_PointCloudIndexVector, CT_MutablePointIterator>(n,
-                                                                    mesh.m_newVert,
-                                                                    mesh.m_vert,
+                                                                    mesh->m_newVert,
+                                                                    mesh->m_vert,
                                                                     &v);
-    mesh.m_pVert = v;
+    mesh->m_pVert = v;
 
     return it;
 }
 
 template<typename Mesh>
-CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaces(Mesh &mesh, const size_t &n)
+CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaces(Mesh *mesh, const size_t &n)
 {
-    CT_FaceCloudIndexVector *f = ((CT_FaceCloudIndexVector*)mesh.m_pFace);
+    if(mesh == NULL)
+        return CT_MutableFaceIterator(NULL);
+
+    CT_FaceCloudIndexVector *f = ((CT_FaceCloudIndexVector*)mesh->m_pFace);
 
     CT_MutableFaceIterator  it = addT<CT_Face, CT_FaceCloudIndexVector, CT_MutableFaceIterator>(n,
-                                                                mesh.m_newFace,
-                                                                mesh.m_face,
+                                                                mesh->m_newFace,
+                                                                mesh->m_face,
                                                                 &f);
-    mesh.m_pFace = f;
+    mesh->m_pFace = f;
 
     return it;
 }
 
 template<typename Mesh>
-CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdges(Mesh &mesh, const size_t &n)
+CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdges(Mesh *mesh, const size_t &n)
 {
-    CT_EdgeCloudIndexVector *e = ((CT_EdgeCloudIndexVector*)mesh.m_pHedge);
+    if(mesh == NULL)
+        return CT_MutableEdgeIterator(NULL);
+
+    CT_EdgeCloudIndexVector *e = ((CT_EdgeCloudIndexVector*)mesh->m_pHedge);
 
     CT_MutableEdgeIterator it = addT<CT_Edge, CT_EdgeCloudIndexVector, CT_MutableEdgeIterator>(n,
-                                                                 mesh.m_newEdge,
-                                                                 mesh.m_hedge,
+                                                                 mesh->m_newEdge,
+                                                                 mesh->m_hedge,
                                                                  &e);
-    mesh.m_pHedge = e;
+    mesh->m_pHedge = e;
 
     return it;
 }

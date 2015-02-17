@@ -11,7 +11,7 @@
 #include "ct_itemdrawable/ct_meshmodel.h"
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
-#include "ct_mesh/tools/ct_meshallocatort.h"
+#include "ct_mesh/tools/ct_meshallocator.h"
 #include "ct_iterator/ct_edgeiterator.h"
 #include "ct_iterator/ct_mutablepointiterator.h"
 #include "ct_iterator/ct_mutablefaceiterator.h"
@@ -108,6 +108,13 @@ void PB_StepLoadObjFile::compute()
 
     bool error = false;
 
+    double minX = std::numeric_limits<double>::max();
+    double minY = minX;
+    double minZ = minX;
+    double maxX = -minX;
+    double maxY = -minX;
+    double maxZ = -minX;
+
     if(QFile::exists(getFilePath()))
     {
         QFile f(getFilePath());
@@ -142,8 +149,8 @@ void PB_StepLoadObjFile::compute()
 
             if(!isStopped())
             {
-                CT_MutablePointIterator beginV = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh, nv);
-                CT_MutableFaceIterator beginF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh, nf);
+                CT_MutablePointIterator beginV = CT_MeshAllocator::AddVertices(mesh, nv);
+                CT_MutableFaceIterator beginF = CT_MeshAllocator::AddFaces(mesh, nf);
 
                 size_t beginVOrig = beginV.next().cIndex();
                 beginV.toFront();
@@ -166,12 +173,19 @@ void PB_StepLoadObjFile::compute()
 
                             if(sl.size() >= 4)
                             {
-                                CT_Point p;
-                                p(0) = sl.at(1).toDouble();
-                                p(1) = sl.at(2).toDouble();
-                                p(2) = sl.at(3).toDouble();
+                                CT_Point point;
+                                point(0) = sl.at(1).toDouble();
+                                point(1) = sl.at(2).toDouble();
+                                point(2) = sl.at(3).toDouble();
 
-                                beginV.next().replaceCurrentPoint(p);
+                                if (point(0) < minX) {minX = point(0);}
+                                if (point(1) < minY) {minY = point(1);}
+                                if (point(2) < minZ) {minZ = point(2);}
+                                if (point(0) > maxX) {maxX = point(0);}
+                                if (point(1) > maxY) {maxY = point(1);}
+                                if (point(2) > maxZ) {maxZ = point(2);}
+
+                                beginV.next().replaceCurrentPoint(point);
                             }
                         }
                     }
@@ -190,7 +204,7 @@ void PB_StepLoadObjFile::compute()
                             CT_Face &face = beginF.next().cT();
                             size_t faceIndex = beginF.cIndex();
 
-                            CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh, 3);
+                            CT_MutableEdgeIterator beginHe = CT_MeshAllocator::AddHEdges(mesh, 3);
 
                             CT_Edge *twinE1 = NULL;
                             CT_Edge *twinE2 = NULL;
@@ -217,7 +231,7 @@ void PB_StepLoadObjFile::compute()
                             CT_Edge &e2 = beginHe.next().cT();
                             e2.setPoint0(p1);
                             e2.setPoint1(p2);
-                            e1.setFace(faceIndex);
+                            e2.setFace(faceIndex);
                             e2Index = beginHe.cIndex();
 
                             CT_Edge &e3 = beginHe.next().cT();
@@ -264,6 +278,10 @@ void PB_StepLoadObjFile::compute()
     }
 
     CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_SearchGroup, out_res);
-    group->addItemDrawable(new CT_MeshModel(DEF_SearchMesh, out_res, mesh));
+
+    CT_MeshModel *meshModel = new CT_MeshModel(DEF_SearchMesh, out_res, mesh);
+    meshModel->setBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+
+    group->addItemDrawable(meshModel);
     out_res->addGroup(group);
 }

@@ -320,7 +320,7 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
 
             int size = points.size()/3;
 
-            CT_MutablePointIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*mesh->m_mesh, size);
+            CT_MutablePointIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(mesh->m_mesh, size);
             debPointIndex = itP.next().cIndex();
 
             CT_Point pAdded;
@@ -348,11 +348,11 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
                 QString tmp = QString(xmlFace->value()).trimmed();
                 QStringList points = tmp.split(QRegExp("\\s+"));
 
-                CT_MutableFaceIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*mesh->m_mesh, 1);
+                CT_MutableFaceIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(mesh->m_mesh, 1);
 
                 CT_Face &face = itF.next().cT();
 
-                CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*mesh->m_mesh, 3);
+                CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(mesh->m_mesh, 3);
 
                 size_t faceIndex = itF.cIndex();
 

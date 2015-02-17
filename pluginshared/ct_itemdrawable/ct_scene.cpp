@@ -57,7 +57,6 @@ CT_Scene::CT_Scene(const QString &modelName,
 
 CT_Scene::~CT_Scene()
 {
-    m_spcs.clear();
 }
 
 QString CT_Scene::getType() const
@@ -124,11 +123,6 @@ void CT_Scene::setPointCloudIndexRegistered(CT_PCIR pcir)
 void CT_Scene::setTransformMatrix(const QMatrix4x4 &matrix)
 {
     setMatrix4x4(matrix);
-}
-
-void CT_Scene::registerCoordinateSystem(QSharedPointer<CT_AbstractCoordinateSystem> spcs)
-{
-    m_spcs.append(spcs);
 }
 
 #ifdef USE_BOOST_OLD

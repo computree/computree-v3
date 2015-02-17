@@ -20,6 +20,14 @@ CT_PointIterator::CT_PointIterator(CT_CIR cir)
         init(dynamic_cast<CT_AbstractPointCloudIndex*>(cir->abstractCloudIndex()));
 }
 
+CT_PointIterator::CT_PointIterator(const CT_PointIterator &it)
+{
+    if(it.m_it == NULL)
+        m_it = NULL;
+    else
+        m_it = new CT_CloudIndexIteratorT<CT_PointData>(*it.m_it);
+}
+
 CT_PointIterator::~CT_PointIterator()
 {
     delete m_it;

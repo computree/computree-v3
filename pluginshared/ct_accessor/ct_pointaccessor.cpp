@@ -19,9 +19,13 @@ void CT_PointAccessor::replacePointAt(const size_t &globalIndex, const CT_Point 
 {
     CT_PointData &pData = internalPointAt(globalIndex);
 
-    sys->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-
-    PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndex, PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(sys));
+    if(sys == NULL) {
+        PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(0)->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
+        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndex, 0);
+    } else {
+        sys->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
+        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndex, PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(sys));
+    }
 }
 
 CT_PointData& CT_PointAccessor::internalPointAt(const size_t &globalIndex)

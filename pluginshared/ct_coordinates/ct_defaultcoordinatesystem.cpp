@@ -1,7 +1,6 @@
 #include "ct_defaultcoordinatesystem.h"
 
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
-#include "ct_coordinates/view/ct_gdefaultcoordinatesystem.h"
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 #include "ct_reader/abstract/ct_abstractreader.h"
 #include "ct_global/ct_context.h"
@@ -128,26 +127,6 @@ void CT_DefaultCoordinateSystem::convertExport(CT_AbstractCoordinateSystem::real
         zOut = z+m_zOffset;
 
     informThatUsed();
-}
-
-bool CT_DefaultCoordinateSystem::configure()
-{
-    CT_GDefaultCoordinateSystem dialog;
-    dialog.setCoordinateSystem(this);
-    dialog.setReadOnly(true);
-
-    return (dialog.exec() == QDialog::Accepted);
-}
-
-bool CT_DefaultCoordinateSystem::setOffset(CT_AbstractCoordinateSystem::realEx x,
-                                           CT_AbstractCoordinateSystem::realEx y,
-                                           CT_AbstractCoordinateSystem::realEx z)
-{
-    m_xOffset = x;
-    m_yOffset = y;
-    m_zOffset = z;
-
-    return true;
 }
 
 void CT_DefaultCoordinateSystem::offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const

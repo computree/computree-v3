@@ -46,6 +46,9 @@ class CT_GlobalPointCloudManager;
 class CT_GlobalFaceCloudManager;
 class CT_GlobalEdgeCloudManager;
 
+template<typename MeshType> class CT_MeshAllocatorT;
+class CT_Mesh;
+
 // typedef iterator
 
 /**
@@ -262,6 +265,9 @@ typedef CT_AbstractGlobalCloudManagerT<CT_Edge>                                 
 
 // typedef coordinate system
 
-typedef QSharedPointer<CT_AbstractCoordinateSystem>                                 CT_CSR;
+typedef QSharedPointer<CT_AbstractCoordinateSystem>                                     CT_CSR;
 
+// typedef mesh
+
+typedef CT_MeshAllocatorT<CT_Mesh>                                                      CT_MeshAllocator;
 #endif // CT_DEFINES_H

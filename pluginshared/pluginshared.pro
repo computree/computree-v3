@@ -303,7 +303,6 @@ SOURCES += \
     ct_itemdrawable/ct_attributeslist.cpp \
     ct_coordinates/ct_defaultcoordinatesystem.cpp \
     ct_coordinates/tools/ct_coordinatesystemmanager.cpp \
-    ct_coordinates/view/ct_gdefaultcoordinatesystem.cpp \
     ct_reader/ct_reader_las.cpp \
     ct_itemdrawable/tools/ct_counter.cpp \
     ct_itemdrawable/ct_loopcounter.cpp \
@@ -744,7 +743,6 @@ HEADERS += interfaces.h \
     ct_coordinates/abstract/ct_abstractcoordinatesystem.h \
     ct_coordinates/ct_defaultcoordinatesystem.h \
     ct_coordinates/tools/ct_coordinatesystemmanager.h \
-    ct_coordinates/view/ct_gdefaultcoordinatesystem.h \
     ct_attributes/ct_stditemattributecoordinatewrappert.h \
     ct_attributes/ct_stditemattributecoordinatewrappert.hpp \
     ct_attributes/ct_stditemattributecoordinatet.h \
@@ -833,7 +831,8 @@ HEADERS += interfaces.h \
     ct_accessor/ct_edgeaccessor.h \
     ct_pointcloudindex/ct_pointcloudindexlessmemory.h \
     ct_iterator/ct_mutablefaceiterator.h \
-    ct_iterator/ct_mutableedgeiterator.h
+    ct_iterator/ct_mutableedgeiterator.h \
+    ct_mesh/tools/ct_meshallocator.h
 
 
 INCLUDEPATH += .
@@ -889,8 +888,7 @@ FORMS += \
     ct_view/inModel/ctg_inturnmanager.ui \
     ct_view/inModel/ctg_inmodelpossibilitieschoice.ui \
     ct_view/tools/ct_textfileconfigurationdialog.ui \
-    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui \
-    ct_coordinates/view/ct_gdefaultcoordinatesystem.ui
+    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui
 
 TRANSLATIONS += languages/pluginshared_fr.ts \
                 languages/pluginshared_en.ts

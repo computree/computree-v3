@@ -24,9 +24,9 @@ public:
      * @param n : number of indexes to add
      * @return an iterator to the first index added
      */
-    static CT_MutablePointIterator AddVerticeIndexes(Mesh &mesh, const size_t &n);
-    static CT_MutableFaceIterator AddFaceIndexes(Mesh &mesh, const size_t &n);
-    static CT_MutableEdgeIterator AddHEdgeIndexes(Mesh &mesh, const size_t &n);
+    static CT_MutablePointIterator AddVerticeIndexes(Mesh *mesh, const size_t &n);
+    static CT_MutableFaceIterator AddFaceIndexes(Mesh *mesh, const size_t &n);
+    static CT_MutableEdgeIterator AddHEdgeIndexes(Mesh *mesh, const size_t &n);
 
     /**
      * @brief Add new vertices to the mesh and in consequence to the global points cloud
@@ -34,9 +34,9 @@ public:
      * @param n : number of vertices to add
      * @return an iterator to the first index added
      */
-    static CT_MutablePointIterator AddVertices(Mesh &mesh, const size_t &n);
-    static CT_MutableFaceIterator AddFaces(Mesh &mesh, const size_t &n);
-    static CT_MutableEdgeIterator AddHEdges(Mesh &mesh, const size_t &n);
+    static CT_MutablePointIterator AddVertices(Mesh *mesh, const size_t &n);
+    static CT_MutableFaceIterator AddFaces(Mesh *mesh, const size_t &n);
+    static CT_MutableEdgeIterator AddHEdges(Mesh *mesh, const size_t &n);
 
 private:
     template<typename T, typename CloudIndex, typename Iterator>

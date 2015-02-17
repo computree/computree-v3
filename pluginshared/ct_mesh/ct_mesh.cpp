@@ -98,9 +98,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
     double inc = (2.0 * M_PI) / ((double)sides);
     double theta = 0;
 
-    CT_MutablePointIterator vi = CT_MeshAllocatorT<CT_Mesh>::AddVertices(*this, 2*sides);
-    CT_MutableFaceIterator fi = CT_MeshAllocatorT<CT_Mesh>::AddFaces(*this, 2*sides);
-    CT_MutableEdgeIterator ei = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(*this, 6*sides);
+    CT_MutablePointIterator vi = CT_MeshAllocatorT<CT_Mesh>::AddVertices(this, 2*sides);
+    CT_MutableFaceIterator fi = CT_MeshAllocatorT<CT_Mesh>::AddFaces(this, 2*sides);
+    CT_MutableEdgeIterator ei = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(this, 6*sides);
 
     vi.next();
     fi.next();

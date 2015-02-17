@@ -66,17 +66,6 @@ public:
                        CT_AbstractCoordinateSystem::DatasToConvert convert = CT_AbstractCoordinateSystem::CONVERT_ALL) const;
 
     /**
-     * @brief Configure the coordinate system.
-     * @return false if the configuration was canceled.
-     */
-    bool configure();
-
-    /**
-     * @brief Modify offset of this coordinate system
-     */
-    bool setOffset(CT_AbstractCoordinateSystem::realEx x, CT_AbstractCoordinateSystem::realEx y, CT_AbstractCoordinateSystem::realEx z);
-
-    /**
      * @brief Returns the offset of this coordinate system
      */
     void offset(CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const;

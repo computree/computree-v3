@@ -38,7 +38,7 @@ public:
      * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be used to transform the point in
      *        float values.
      */
-    void addPoint(const CT_Point &point, const size_t &coordinateSystemGlobalIndex);
+    void addPoint(const CT_Point &point, const GLuint &coordinateSystemGlobalIndex);
 
     /**
      * @brief Add a point to this cloud. You must pass a coordinate system that will be set for this point
@@ -48,7 +48,7 @@ public:
     /**
      * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be set for this point
      */
-    void addInternalPoint(const CT_PointData &point, const size_t &coordinateSystemGlobalIndex);
+    void addInternalPoint(const CT_PointData &point, const GLuint &coordinateSystemGlobalIndex);
 
 private:
 
