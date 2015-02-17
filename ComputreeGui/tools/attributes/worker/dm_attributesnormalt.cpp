@@ -25,7 +25,7 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
             size_t indexP = it.next().cIndex();
 
             const CT_Normal &nxnynz_pa = m_an->constNormalAt(i);
-            const CT_Point &xyz = it.cT();
+            const CT_Point &xyz = it.currentPoint();
 
             // set the normal of the point at this document
             CT_Normal &nxnynz = nn->normalAt(indexP);

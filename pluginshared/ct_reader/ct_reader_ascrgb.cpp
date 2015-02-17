@@ -120,7 +120,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     {
                         first = false;
                         if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
-                            coordinateSystemIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z, this));
+                            coordinateSystemIndex = (new CT_DefaultCoordinateSystem(x, y, z, this))->indexInManager();
                     }
 
                     double valueR = values.at(3).toDouble(&okR);

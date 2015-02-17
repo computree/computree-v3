@@ -92,7 +92,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
 
                 while(itP.hasNext())
                 {
-                    const CT_Point &point = itP.next().cT();
+                    const CT_Point &point = itP.next().currentPoint();
                     hashTablePoint.insert(itP.cIndex(), i+1);
 
                     stream << "v " << ((double)point(0)) << " " << ((double)point(1)) << " " << ((double)point(2)) << endl;

@@ -196,7 +196,7 @@ bool CT_Reader_LAS::protectedReadFile()
             m_header = readHeader(error);
 
             // create a new coordinate system for this scene.
-            GLuint csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(), this));
+            GLuint csIndex = (new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(), this))->indexInManager();
 
             setToolTip(((CT_LASHeader*)m_header)->toString());
 

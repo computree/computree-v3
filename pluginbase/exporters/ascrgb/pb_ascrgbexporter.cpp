@@ -100,7 +100,7 @@ bool PB_ASCRGBExporter::protectedExportToFile()
 
             while(itP.hasNext())
             {
-                const CT_Point &point = itP.next().cT();
+                const CT_Point &point = itP.next().currentPoint();
 
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(0)) << " ";
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(1)) << " ";

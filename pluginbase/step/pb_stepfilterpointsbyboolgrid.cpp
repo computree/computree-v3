@@ -138,7 +138,7 @@ void PB_StepFilterPointsByBoolGrid::compute()
                 size_t nbOfFilteredPoints = 0;
                 while(itP.hasNext())
                 {
-                    const CT_Point &point = itP.next().cT();
+                    const CT_Point &point = itP.next().currentPoint();
                     double x = point(0);
                     double y = point(1);
                     double z = point(2);

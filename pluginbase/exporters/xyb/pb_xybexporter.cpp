@@ -354,7 +354,7 @@ void PB_XYBExporter::exportPoints(QDataStream &stream,
 
     while(it.hasNext())
     {
-        const CT_Point &point = it.next().cT();
+        const CT_Point &point = it.next().currentPoint();
 
         stream << point(CT_Point::X);
         stream << point(CT_Point::Y);

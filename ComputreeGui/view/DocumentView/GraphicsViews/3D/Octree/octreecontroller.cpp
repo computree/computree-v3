@@ -327,7 +327,7 @@ void OctreeController::addPointsToOctree(const CT_AbstractPointCloudIndex *index
 
     while(it.hasNext()) {
 
-        const CT_Point &p = it.next().cT();
+        const CT_Point &p = it.next().currentPoint();
         const size_t &pIndex = it.cIndex();
 
         indexOfPoint(p, xPos, yPos, zPos);
@@ -402,7 +402,7 @@ void OctreeController::staticComputeMinMax(const CT_AbstractPointCloudIndex *ind
     CT_PointIterator it(index);
 
     while(it.hasNext()) {
-        const CT_Point &p = it.next().cT();
+        const CT_Point &p = it.next().currentPoint();
 
         if(p(0) < info.m_min.x())
             info.m_min.setX(p(0));

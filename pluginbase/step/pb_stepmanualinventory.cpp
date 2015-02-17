@@ -319,7 +319,7 @@ float PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
 
     while(it.hasNext())
     {
-        const CT_Point &point = it.next().cT();
+        const CT_Point &point = it.next().currentPoint();
 
         if (point(2) > zmax)
             zmax = point(2);

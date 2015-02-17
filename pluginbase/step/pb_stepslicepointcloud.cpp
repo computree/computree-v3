@@ -165,7 +165,7 @@ void PB_StepSlicePointCloud::compute()
 
         while(itP.hasNext())
         {
-            const CT_Point &point = itP.next().cT();
+            const CT_Point &point = itP.next().currentPoint();
             size_t index = itP.cIndex();
 
             bool found = false;

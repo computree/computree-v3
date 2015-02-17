@@ -249,7 +249,7 @@ void PB_ActionDefineHeightLayer::computeCrownProjection()
 
         while(itP.hasNext())
         {
-            const CT_Point &point = itP.next().cT();
+            const CT_Point &point = itP.next().currentPoint();
 
             if (point(2) >= _gridContainer->_zmin && point(2) <= _gridContainer->_zmax)
             {

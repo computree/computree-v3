@@ -263,7 +263,7 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
                         first = false;
 
                         if(fabs(currentX) > 1000 || fabs(currentY) > 1000 || fabs(currentZ) > 1000)
-                            csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this));
+                            csIndex = (new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this))->indexInManager();
                     }
 
                     // Add this point to the point cloud

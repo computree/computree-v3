@@ -147,7 +147,7 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
 
         if(a == 0) {
             if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
-                indexOfCoordinateSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(x, y, z, this));
+                indexOfCoordinateSystem = (new CT_DefaultCoordinateSystem(x, y, z, this))->indexInManager();
         }
 
         pReaded(0) = x;

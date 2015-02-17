@@ -59,7 +59,7 @@ void PB_ComputeHitsThread::run()
 
     while(itP.hasNext())
     {
-        const CT_Point &point = itP.next().cT();
+        const CT_Point &point = itP.next().currentPoint();
         size_t indice;
 
         if (_grilleHits->indexAtXYZ(point(0), point(1), point(2), indice))

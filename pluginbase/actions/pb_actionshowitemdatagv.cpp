@@ -108,7 +108,7 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
     {
         it.next();
 
-        const CT_Point &p = it.cT();
+        const CT_Point &p = it.currentPoint();
         PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p(0)).arg(p(1)).arg(p(2)));
     }
 
@@ -182,7 +182,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
     {
         itp.next();
 
-        const CT_Point &p = itp.cT();
+        const CT_Point &p = itp.currentPoint();
 
         painter.save();
         painter.setPen(QColor(255,255,255,127));

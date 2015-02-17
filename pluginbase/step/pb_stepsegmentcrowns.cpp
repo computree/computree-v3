@@ -321,7 +321,7 @@ void PB_StepSegmentCrowns::addPointsToExtractedScenes(CT_ResultGroup *resultIn,
 
         while(itP.hasNext() && !isStopped())
         {
-            const CT_Point &point = itP.next().cT();
+            const CT_Point &point = itP.next().currentPoint();
 
             if (point(2) >= _zmin && point(2) <= _zmax)
             {

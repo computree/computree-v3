@@ -153,7 +153,7 @@ void PB_StepReducePointsDensity::compute()
 
         while(itP.hasNext() && !isStopped())
         {
-            const CT_Point &point = itP.next().cT();
+            const CT_Point &point = itP.next().currentPoint();
             size_t pointIndex = itP.cIndex();
 
             size_t col, row, levz;

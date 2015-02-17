@@ -197,7 +197,7 @@ bool PB_LASExporter::protectedExportToFile()
 
                     while(itI.hasNext()) {
                         itI.next();
-                        toolsFormat->write(stream, itI.cT(), itI.cIndex());
+                        toolsFormat->write(stream, itI.currentPoint(), itI.cIndex());
 
                         ++pCount;
 
@@ -280,7 +280,7 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
             // compute max, min and return number
             while(itP.hasNext()) {
 
-                const CT_Point &p = itP.next().cT();
+                const CT_Point &p = itP.next().currentPoint();
 
                 if(p(0) > max(0))
                     max.setX(p(0));

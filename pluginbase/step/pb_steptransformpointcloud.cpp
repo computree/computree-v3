@@ -133,7 +133,7 @@ void PB_StepTransformPointCloud::compute()
 
                     while(itP.hasNext())
                     {
-                        CT_Point point = itP.next().cT();
+                        CT_Point point = itP.next().currentPoint();
 
                         // get the coordinate system of this point
                         CT_AbstractCoordinateSystem* currentSystem = itP.currentCoordinateSystem();
@@ -145,13 +145,13 @@ void PB_StepTransformPointCloud::compute()
                         {
                             // get the current offset
                             Eigen::Vector3d offset;
-                            currentSystem->offset(offset(0), offset(1), offset(2));
+                            currentSystem->offset(offset);
 
                             // transform it
                             trMat->transform(offset);
 
                             // create the coordinate system transformed and get it's index
-                            transSystem = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(offset, this));
+                            transSystem = (new CT_DefaultCoordinateSystem(offset, this))->indexInManager();
 
                             // and backup it
                             coordSysCorresp.insert(currentSystem, transSystem);

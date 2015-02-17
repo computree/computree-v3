@@ -665,7 +665,7 @@ void CT_OPF_Mesh::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) con
 
         while(it.hasNext())
         {
-            const CT_Point &p = it.next().cT();
+            const CT_Point &p = it.next().currentPoint();
 
             if(p(0) > m_max.x())
                 m_max(0) = p(0);
