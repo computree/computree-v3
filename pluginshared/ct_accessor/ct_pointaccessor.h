@@ -17,6 +17,8 @@ public:
      */
     CT_Point pointAt(const size_t &globalIndex) const;
 
+    void pointAt(const size_t &globalIndex, CT_Point &point) const;
+
     /**
      * @brief Return a const reference to the point at 'globalIndex'
      */
