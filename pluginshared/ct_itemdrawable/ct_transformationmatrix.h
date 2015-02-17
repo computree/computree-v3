@@ -32,6 +32,8 @@ public:
     QString getTransformationMatrixAsString() const;
 
     void transform(Eigen::Vector3d &vec) const;
+    Eigen::Vector3d getTransformed(const Eigen::Vector3d &vec) const;
+    Eigen::Matrix4d getTransformed(Eigen::Matrix4d &mat) const;
 
     /**
      * @brief Returns a copy of this item

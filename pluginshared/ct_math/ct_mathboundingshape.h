@@ -39,8 +39,8 @@ public:
 
     static bool aabbIntersects(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2);
     static bool aabbIntersects2D(const Eigen::Vector3d &min1, const Eigen::Vector3d &max1, const Eigen::Vector3d &min2, const Eigen::Vector3d &max2);
-    static bool containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f &point);
-    static bool containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point);
+    static bool containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3d &point);
+    static bool containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3d &point);
 
 };
 

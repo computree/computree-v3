@@ -48,7 +48,7 @@ bool CT_MathBoundingShape::aabbIntersects2D(const Eigen::Vector3d &min1, const E
     return true;
 }
 
-bool CT_MathBoundingShape::containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point)
+bool CT_MathBoundingShape::containsPoint(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3d& point)
 {
     if (point(0) < min(0)) {return false;}
     if (point(0) > max(0)) {return false;}
@@ -59,7 +59,7 @@ bool CT_MathBoundingShape::containsPoint(const Eigen::Vector3d &min, const Eigen
     return true;
 }
 
-bool CT_MathBoundingShape::containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3f& point)
+bool CT_MathBoundingShape::containsPointIn2D(const Eigen::Vector3d &min, const Eigen::Vector3d &max, const Eigen::Vector3d& point)
 {
     if (point(0) < min(0)) {return false;}
     if (point(0) > max(0)) {return false;}

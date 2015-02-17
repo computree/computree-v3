@@ -54,6 +54,17 @@ void CT_TransformationMatrix::transform(Eigen::Vector3d &vec) const
     vec = tmp.hnormalized();
 }
 
+Eigen::Vector3d CT_TransformationMatrix::getTransformed(const Eigen::Vector3d &vec) const
+{
+    Eigen::Vector4d tmp = _transformationMatrix*(vec.homogeneous());
+    return tmp.hnormalized();
+}
+
+Eigen::Matrix4d CT_TransformationMatrix::getTransformed(Eigen::Matrix4d &mat) const
+{
+    return _transformationMatrix*mat;
+}
+
 CT_AbstractItemDrawable* CT_TransformationMatrix::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList)
