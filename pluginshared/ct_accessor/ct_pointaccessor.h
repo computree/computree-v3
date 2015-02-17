@@ -13,6 +13,11 @@ public:
     CT_PointAccessor();
 
     /**
+     * @brief Return the point at 'globalIndex'
+     */
+    CT_Point pointAt(const size_t &globalIndex) const;
+
+    /**
      * @brief Return a const reference to the point at 'globalIndex'
      */
     const CT_Point& constPointAt(const size_t &globalIndex) const;

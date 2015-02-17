@@ -9,6 +9,14 @@ CT_PointAccessor::CT_PointAccessor()
     m_pCloud = PS_REPOSITORY->globalPointCloud();
 }
 
+CT_Point CT_PointAccessor::pointAt(const size_t &globalIndex) const
+{
+    CT_Point p;
+
+    m_pCloud->constTAt(globalIndex).realPoint(p, globalIndex);
+    return p;
+}
+
 const CT_Point& CT_PointAccessor::constPointAt(const size_t &globalIndex) const
 {
     m_pCloud->constTAt(globalIndex).realPoint(m_p, globalIndex);
