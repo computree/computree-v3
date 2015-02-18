@@ -32,13 +32,13 @@ public:
      * @brief Add a point to this cloud. You must pass a coordinate system that will be used to transform the point in
      *        float values.
      */
-    void addPoint(const CT_Point &point, const CT_AbstractCoordinateSystem *coordinateSystem);
+    void addPoint(const Eigen::Vector3d &point, const CT_AbstractCoordinateSystem *coordinateSystem);
 
     /**
      * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be used to transform the point in
      *        float values.
      */
-    void addPoint(const CT_Point &point, const GLuint &coordinateSystemGlobalIndex);
+    void addPoint(const Eigen::Vector3d &point, const GLuint &coordinateSystemGlobalIndex);
 
     /**
      * @brief Add a point to this cloud. You must pass a coordinate system that will be set for this point

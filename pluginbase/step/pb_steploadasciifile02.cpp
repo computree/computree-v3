@@ -591,7 +591,7 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 }
 
                 // Add this point to the point cloud
-                uspc->addPoint( createCtPoint(currentX, currentY, currentZ), csIndex );
+                uspc->addPoint( Eigen::Vector3d(currentX, currentY, currentZ), csIndex );
 
                 if (collection != NULL && oki)
                 {

@@ -24,7 +24,7 @@ size_t CT_StandardUndefinedSizePointCloud::size() const
     return m_pc->size()-m_bIndex;
 }
 
-void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point, const CT_AbstractCoordinateSystem *coordinateSystem)
+void CT_StandardUndefinedSizePointCloud::addPoint(const Eigen::Vector3d &point, const CT_AbstractCoordinateSystem *coordinateSystem)
 {
     CT_PointData &pData = m_pc->addT();
 
@@ -37,7 +37,7 @@ void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point, const C
     }
 }
 
-void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &point, const GLuint &coordinateSystemGlobalIndex)
+void CT_StandardUndefinedSizePointCloud::addPoint(const Eigen::Vector3d &point, const GLuint &coordinateSystemGlobalIndex)
 {
     CT_AbstractCoordinateSystem *sys = PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(coordinateSystemGlobalIndex);
 

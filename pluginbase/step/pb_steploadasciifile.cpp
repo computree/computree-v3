@@ -267,7 +267,7 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
                     }
 
                     // Add this point to the point cloud
-                    uspc->addPoint( createCtPoint(currentX, currentY, currentZ), csIndex );
+                    uspc->addPoint( Eigen::Vector3d(currentX, currentY, currentZ), csIndex );
 
                     // Progress bar
                     setProgress( currentSizeRead*100.0/fileSize );
