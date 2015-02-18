@@ -36,12 +36,12 @@ public:
     void getOrientation(double &q0, double &q1, double &q2, double &q3) const;
     bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const;
 
-    QVector3D projectedCoordinatesOf(const QVector3D &src) const;
-    QVector3D openGLProjectedCoordinatesOf(const QVector3D &src) const;
-    QVector3D unprojectedCoordinatesOf(const QVector3D &src) const;
+    Eigen::Vector3d projectedCoordinatesOf(const Eigen::Vector3d &src) const;
+    Eigen::Vector3d openGLProjectedCoordinatesOf(const Eigen::Vector3d &src) const;
+    Eigen::Vector3d unprojectedCoordinatesOf(const Eigen::Vector3d &src) const;
 
-    QVector3D upVector() const;
-    QVector3D rightVector() const;
+    Eigen::Vector3d upVector() const;
+    Eigen::Vector3d rightVector() const;
 
     void setLastItemSelectedCameraCenter(double x, double y, double z);
 

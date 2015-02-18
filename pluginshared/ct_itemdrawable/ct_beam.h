@@ -31,7 +31,6 @@
 #define CT_BEAM_H
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
-#include "qvector3d.h"
 #include "assert.h"
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardbeamdrawmanager.h"

@@ -172,11 +172,7 @@ private:
                                                const CT_InAbstractModel *inModel,
                                                const QList<CT_InStdModelPossibility*> &list);
 
-    void recursiveRemoveNotSelectable(DEF_CT_AbstractGroupModelIn *inGroupModel);
-
-    void recursiveSearchAndRemoveNotSelectableItem(QStandardItem *root,
-                                                   const CT_InAbstractModel *inModel,
-                                                   const QList<CT_InStdModelPossibility*> &list);
+    void recursiveRemoveNotSelectable(QStandardItem *root);
 
     void recursiveSetCheckedParent(QStandardItem *parent, const bool &checked);
     void recursiveSetCheckedParentWhileModelHasNoPossibilityChecked(QStandardItem *parent);

@@ -448,7 +448,7 @@ float G3DGraphicsView::distanceToFrustumPlane(int index, const double &x, const 
     return qglviewer::Vec(x, y, z) * qglviewer::Vec(m_planeCoefficients[index]) - m_planeCoefficients[index][3];
 }
 
-bool G3DGraphicsView::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, bool *entirely) const
+bool G3DGraphicsView::aaBoxIsVisible(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2, bool *entirely) const
 {
     bool allInForAllPlanes = true;
     for (int i=0; i<6; ++i)
@@ -456,7 +456,7 @@ bool G3DGraphicsView::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, b
         bool allOut = true;
         for (unsigned int c=0; c<8; ++c)
       {
-        if (distanceToFrustumPlane(i, (c&4)?p1.x():p2.x(), (c&2)?p1.y():p2.y(), (c&1)?p1.z():p2.z()) > 0.0)
+        if (distanceToFrustumPlane(i, (c&4)?p1(0):p2(0), (c&2)?p1(1):p2(1), (c&1)?p1(2):p2(2)) > 0.0)
           allInForAllPlanes = false;
         else
           allOut = false;
@@ -475,20 +475,20 @@ bool G3DGraphicsView::aaBoxIsVisible(const QVector3D &p1, const QVector3D &p2, b
     return true;
 }
 
-bool G3DGraphicsView::sphereIsVisible(const QVector3D &center, float radius) const
+bool G3DGraphicsView::sphereIsVisible(const Eigen::Vector3d &center, double radius) const
 {
     for (int i=0; i<6; ++i) {
-        if (distanceToFrustumPlane(i, center.x(), center.y(), center.z()) > radius)
+        if (distanceToFrustumPlane(i, center(0), center(1), center(2)) > radius)
           return false;
     }
 
     return true;
 }
 
-QVector3D G3DGraphicsView::pointUnderPixel(const QPoint &pixel, bool &found) const
+Eigen::Vector3d G3DGraphicsView::pointUnderPixel(const QPoint &pixel, bool &found) const
 {
     qglviewer::Vec vec = QGLViewer::camera()->pointUnderPixel(pixel, found);
-    QVector3D vr(vec.x, vec.y, vec.z);
+    Eigen::Vector3d vr(vec.x, vec.y, vec.z);
 
     return vr;
 }
@@ -509,12 +509,12 @@ void G3DGraphicsView::convertClickToLine(const QPoint &pixel, Eigen::Vector3d &o
     dir(2) = direc.z;
 }
 
-void G3DGraphicsView::convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const
+void G3DGraphicsView::convert3DPositionToPixel(const Eigen::Vector3d &position, QPoint &pixel) const
 {
     qreal src[3];
-    src[0] = position.x();
-    src[1] = position.y();
-    src[2] = position.z();
+    src[0] = position(0);
+    src[1] = position(1);
+    src[2] = position(2);
 
     qreal res[2];
 

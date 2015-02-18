@@ -5,7 +5,6 @@
 #include <QIcon>
 #include <QPainter>
 #include <QDebug>
-#include <QVector3D>
 
 #include <limits>
 

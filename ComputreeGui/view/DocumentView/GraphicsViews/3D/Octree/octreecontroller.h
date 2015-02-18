@@ -2,7 +2,6 @@
 #define OCTREECONTROLLER_H
 
 #include <QList>
-#include <QVector3D>
 
 #include "view/DocumentView/GraphicsViews/3D/Octree/octree.h"
 

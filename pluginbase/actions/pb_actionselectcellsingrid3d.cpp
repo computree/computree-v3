@@ -9,7 +9,6 @@
 #include <QIcon>
 #include <QPainter>
 #include <QDebug>
-#include <QVector3D>
 
 
 PB_ActionSelectCellsInGrid3D::PB_ActionSelectCellsInGrid3D(const CT_AbstractGrid3D *refGrid, CT_Grid3D<bool> *boolGrid) : CT_AbstractActionForGraphicsView()

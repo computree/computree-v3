@@ -4,8 +4,6 @@
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "actions/pb_actionselectitemdrawablegv.h"
 
-#include <QVector3D>
-
 class PB_ActionShowItemDataGV : public CT_AbstractActionForGraphicsView
 {
     Q_OBJECT
@@ -33,7 +31,6 @@ public:
 private:
     bool                            m_use;
     QPoint                          m_mousePoint;
-    QVector3D                       m_3dPoint;
     PB_ActionSelectItemDrawableGV   *m_selectAction;
 };
 

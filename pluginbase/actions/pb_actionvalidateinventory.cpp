@@ -7,7 +7,6 @@
 #include <QIcon>
 #include <QPainter>
 #include <limits>
-#include <QVector3D>
 
 #include "ct_math/ct_mathpoint.h"
 
@@ -237,7 +236,7 @@ void PB_ActionValidateInventory::drawOverlay(GraphicsViewInterface &view, QPaint
             QString species = _species->value(scene);
 
             QPoint pixel;
-            graphicsView()->convert3DPositionToPixel(QVector3D(item->getCenterX(), item->getCenterY(), item->getCenterZ()), pixel);
+            graphicsView()->convert3DPositionToPixel(Eigen::Vector3d(item->getCenterX(), item->getCenterY(), item->getCenterZ()), pixel);
 
             painter.setPen(Qt::darkRed);
             int y =  pixel.y() + add + 2;

@@ -546,24 +546,24 @@ public:
     virtual bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const = 0;
 
     // Returns the screen projected coordinates of a point src defined in the world coordinate system.
-    virtual QVector3D projectedCoordinatesOf(const QVector3D &src) const = 0;
+    virtual Eigen::Vector3d projectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
     // same method as previous but use matrix of opengl instead of the matrix of camera.
-    virtual QVector3D openGLProjectedCoordinatesOf(const QVector3D &src) const = 0;
+    virtual Eigen::Vector3d openGLProjectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
 
     // Returns the world unprojected coordinates of a point src defined in the screen coordinate system.
-    virtual QVector3D unprojectedCoordinatesOf(const QVector3D &src) const = 0;
+    virtual Eigen::Vector3d unprojectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
 
     /**
      * @brief Returns the normalized up vector of the Camera, defined in the world coordinate system.
      *       It corresponds to the Y axis.
      */
-    virtual QVector3D upVector() const = 0;
+    virtual Eigen::Vector3d upVector() const = 0;
 
     /**
      * @brief Returns the normalized right vector of the Camera, defined in the world coordinate system.
      *       It corresponds to the X axis.
      */
-    virtual QVector3D rightVector() const = 0;
+    virtual Eigen::Vector3d rightVector() const = 0;
 
 public slots:
     virtual void setX(double x) = 0;
@@ -930,14 +930,14 @@ public:
      * @param minCorner / maxCorner : corners of the box
      * @param entirely : set to true if the box is entirely visible
      */
-    virtual bool aaBoxIsVisible(const QVector3D& minCorner, const QVector3D& maxCorner, bool *entirely = NULL) const = 0;
+    virtual bool aaBoxIsVisible(const Eigen::Vector3d& minCorner, const Eigen::Vector3d& maxCorner, bool *entirely = NULL) const = 0;
 
     /**
      * @brief Returns true if the sphere is visible by the camera
      * @param center : center of the sphere
      * @param radius : radius of the sphere
      */
-    virtual bool sphereIsVisible(const QVector3D& center, float radius) const = 0;
+    virtual bool sphereIsVisible(const Eigen::Vector3d& center, double radius) const = 0;
 
     /**
      * @brief Returns the coordinates of the 3D point located at pixel (x,y) on screen.
@@ -948,7 +948,7 @@ public:
      *
      * x and y are expressed in pixel units with an origin in the upper left corner.
      */
-    virtual QVector3D pointUnderPixel(const QPoint &pixel, bool &found) const = 0;
+    virtual Eigen::Vector3d pointUnderPixel(const QPoint &pixel, bool &found) const = 0;
 
     /**
      * @brief Gives the coefficients of a 3D half-line passing through the Camera eye and pixel (x,y).
@@ -961,7 +961,7 @@ public:
      */
     virtual void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const = 0;
 
-    virtual void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const = 0;
+    virtual void convert3DPositionToPixel(const Eigen::Vector3d &position, QPoint &pixel) const = 0;
 
     /**
      * @brief Add option of a action to the GraphicsView

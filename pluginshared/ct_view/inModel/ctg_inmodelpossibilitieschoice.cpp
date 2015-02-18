@@ -403,7 +403,7 @@ void CTG_InModelPossibilitiesChoice::constructModel()
                 recursiveSetWhereIsSelectable(inGroupModel);
 
                 // on reparcours pour supprimer les éléments non sélectionnable
-                recursiveRemoveNotSelectable(inGroupModel);
+                recursiveRemoveNotSelectable(_viewModel.invisibleRootItem());
 
                 _itemChangedSlotIsEnabled = true;
             }
@@ -656,71 +656,24 @@ void CTG_InModelPossibilitiesChoice::recursiveSearchAndRefreshSelectedItem(QStan
     }
 }
 
-void CTG_InModelPossibilitiesChoice::recursiveRemoveNotSelectable(CT_AbstractGroupModelT<CT_InAbstractSingularItemModel,
-                                                                  CT_InAbstractItemModel> *inGroupModel)
-{
-    QList<CT_InStdModelPossibility*> list = inGroupModel->getPossibilitiesSaved();
-
-    if(!list.isEmpty())
-        recursiveSearchAndRemoveNotSelectableItem(_viewModel.invisibleRootItem(),
-                                              inGroupModel,
-                                              list);
-
-    QListIterator< DEF_CT_AbstractGroupModelIn* > itG(inGroupModel->groups());
-
-    while(itG.hasNext())
-        recursiveRemoveNotSelectable(itG.next());
-
-    QListIterator<CT_InAbstractSingularItemModel*> itI(inGroupModel->items());
-
-    while(itI.hasNext())
-    {
-        CT_InAbstractSingularItemModel *item = itI.next();
-
-        list = item->getPossibilitiesSaved();
-
-        if(!list.isEmpty())
-            recursiveSearchAndRemoveNotSelectableItem(_viewModel.invisibleRootItem(),
-                                                  item,
-                                                  list);
-
-        QListIterator<CT_InAbstractItemAttributeModel*> itAtt(item->itemAttributes());
-
-        while(itAtt.hasNext())
-        {
-            CT_InAbstractItemAttributeModel *itemAtt = itAtt.next();
-
-            list = itemAtt->getPossibilitiesSaved();
-
-            if(!list.isEmpty())
-                recursiveSearchAndRemoveNotSelectableItem(_viewModel.invisibleRootItem(),
-                                                      itemAtt,
-                                                      list);
-        }
-    }
-}
-
-void CTG_InModelPossibilitiesChoice::recursiveSearchAndRemoveNotSelectableItem(QStandardItem *root,
-                                                                               const CT_InAbstractModel *inModel,
-                                                                               const QList<CT_InStdModelPossibility *> &list)
+void CTG_InModelPossibilitiesChoice::recursiveRemoveNotSelectable(QStandardItem *root)
 {
     int size = root->rowCount();
 
     for(int i=0; i<size; ++i)
     {
+        QStandardItem *child = root->child(i, 0);
+
+        if(child->rowCount() > 0)
+            recursiveRemoveNotSelectable(root->child(i, 0));
+
         CTG_InModelPossibilitiesChoiceItem *checkableItem = dynamic_cast<CTG_InModelPossibilitiesChoiceItem*>(root->child(i, COLUMN_CHECK));
 
-        if((checkableItem != NULL) && !checkableItem->isCheckable())
+        if((checkableItem != NULL) && !checkableItem->isCheckable() && (child->rowCount() == 0))
         {
             root->removeRow(i);
             --i;
             --size;
-        }
-        else
-        {
-            recursiveSearchAndRemoveNotSelectableItem(root->child(i, 0),
-                                                  inModel,
-                                                  list);
         }
     }
 }

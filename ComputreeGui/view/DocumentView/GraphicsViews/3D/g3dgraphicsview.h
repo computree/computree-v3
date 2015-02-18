@@ -128,12 +128,12 @@ public:
 
     bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const;
     float distanceToFrustumPlane(int index, const double &x, const double &y, const double &z) const;
-    bool aaBoxIsVisible(const QVector3D& p1, const QVector3D& p2, bool *entirely) const;
-    bool sphereIsVisible(const QVector3D& center, float radius) const;
+    bool aaBoxIsVisible(const Eigen::Vector3d& p1, const Eigen::Vector3d& p2, bool *entirely) const;
+    bool sphereIsVisible(const Eigen::Vector3d& center, double radius) const;
 
-    QVector3D pointUnderPixel(const QPoint &pixel, bool &found) const;
+    Eigen::Vector3d pointUnderPixel(const QPoint &pixel, bool &found) const;
     void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const;
-    void convert3DPositionToPixel(const QVector3D &position, QPoint &pixel) const;
+    void convert3DPositionToPixel(const Eigen::Vector3d &position, QPoint &pixel) const;
 
     void addActionOptions(ActionOptionsInterface *options);
     void removeActionOptions(ActionOptionsInterface *options);

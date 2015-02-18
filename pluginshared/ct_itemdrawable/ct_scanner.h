@@ -232,7 +232,7 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setPosition ( const QVector3D& position ) { setCenterX(position.x());setCenterY(position.y());setCenterZ(position.z()); }
+    inline void setPosition ( const Eigen::Vector3d& position ) { setCenterCoordinate(position); }
 
     /*!
     *  \brief Setter of the class

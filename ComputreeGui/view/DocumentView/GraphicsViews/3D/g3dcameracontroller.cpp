@@ -3,7 +3,6 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <QVector3D>
 #include <limits>
 
 #include "dm_guimanager.h"
@@ -163,22 +162,22 @@ bool G3DCameraController::getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]
     return true;
 }
 
-QVector3D G3DCameraController::projectedCoordinatesOf(const QVector3D &src) const
+Eigen::Vector3d G3DCameraController::projectedCoordinatesOf(const Eigen::Vector3d &src) const
 {
-    QVector3D ret;
+    Eigen::Vector3d ret;
 
     if(_realCamera == NULL)
         return ret;
 
-    qglviewer::Vec v = _realCamera->projectedCoordinatesOf(qglviewer::Vec(src.x(), src.y(), src.z()));
-    ret.setX(v.x);
-    ret.setY(v.y);
-    ret.setZ(v.z);
+    qglviewer::Vec v = _realCamera->projectedCoordinatesOf(qglviewer::Vec(src(0), src(1), src(2)));
+    ret(0) = v.x;
+    ret(1) = v.y;
+    ret(2) = v.z;
 
     return ret;
 }
 
-QVector3D G3DCameraController::openGLProjectedCoordinatesOf(const QVector3D &src) const
+Eigen::Vector3d G3DCameraController::openGLProjectedCoordinatesOf(const Eigen::Vector3d &src) const
 {
     GLint Viewport[4];
     GLdouble Projection[16], Modelview[16];
@@ -212,50 +211,51 @@ QVector3D G3DCameraController::openGLProjectedCoordinatesOf(const QVector3D &src
     vs[2] = vs[2] * 0.5 + 0.5;
     vs[0] = vs[0] * Viewport[2] + Viewport[0];
     vs[1] = vs[1] * Viewport[3] + Viewport[1];
-    return QVector3D(vs[0], Viewport[3]-vs[1], vs[2]);
+
+    return Eigen::Vector3d(vs[0], Viewport[3]-vs[1], vs[2]);
 }
 
-QVector3D G3DCameraController::unprojectedCoordinatesOf(const QVector3D &src) const
+Eigen::Vector3d G3DCameraController::unprojectedCoordinatesOf(const Eigen::Vector3d &src) const
 {
-    QVector3D ret;
+    Eigen::Vector3d ret;
 
     if(_realCamera == NULL)
         return ret;
 
     qglviewer::Vec v = _realCamera->unprojectedCoordinatesOf(qglviewer::Vec(src.x(), src.y(), src.z()));
-    ret.setX(v.x);
-    ret.setY(v.y);
-    ret.setZ(v.z);
+    ret(0) = v.x;
+    ret(1) = v.y;
+    ret(2) = v.z;
 
     return ret;
 }
 
-QVector3D G3DCameraController::upVector() const
+Eigen::Vector3d G3DCameraController::upVector() const
 {
-    QVector3D ret;
+    Eigen::Vector3d ret;
 
     if(_realCamera == NULL)
         return ret;
 
     qglviewer::Vec v = _realCamera->upVector();
-    ret.setX(v.x);
-    ret.setY(v.y);
-    ret.setZ(v.z);
+    ret(0) = v.x;
+    ret(1) = v.y;
+    ret(2) = v.z;
 
     return ret;
 }
 
-QVector3D G3DCameraController::rightVector() const
+Eigen::Vector3d G3DCameraController::rightVector() const
 {
-    QVector3D ret;
+    Eigen::Vector3d ret;
 
     if(_realCamera == NULL)
         return ret;
 
     qglviewer::Vec v = _realCamera->rightVector();
-    ret.setX(v.x);
-    ret.setY(v.y);
-    ret.setZ(v.z);
+    ret(0) = v.x;
+    ret(1) = v.y;
+    ret(2) = v.z;
 
     return ret;
 }

@@ -8,7 +8,6 @@
 #include <QIcon>
 #include <QPainter>
 #include <QDebug>
-#include <QVector3D>
 
 #define DEFAULT_RESOLUTION 0.05
 
