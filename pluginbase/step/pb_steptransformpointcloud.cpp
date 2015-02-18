@@ -145,7 +145,7 @@ void PB_StepTransformPointCloud::compute()
                         {
                             // get the current offset
                             Eigen::Vector3d offset;
-                            currentSystem->offset(offset(0), offset(1), offset(2));
+                            currentSystem->offset(offset);
 
                             // transform it
                             trMat->transform(offset);
