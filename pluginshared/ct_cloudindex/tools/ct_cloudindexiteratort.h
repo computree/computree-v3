@@ -25,7 +25,11 @@ public:
 
     CT_CloudIndexIteratorT(QSharedPointer<CT_AbstractCloudIndexRegistered> cir)
     {
-        m_index = dynamic_cast<CT_AbstractCloudIndexT<T>*>(cir->abstractCloudIndex());
+        if(cir.data() == NULL)
+            m_index = NULL;
+        else
+            m_index = dynamic_cast<CT_AbstractCloudIndexT<T>*>(cir->abstractCloudIndex());
+
         m_startPos = 0;
         m_endPos = (m_index == NULL) ? 0 : m_index->size();
 
