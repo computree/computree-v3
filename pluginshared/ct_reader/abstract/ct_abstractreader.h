@@ -35,6 +35,12 @@ public:
       */
     QString filepath() const;
 
+    /** \brief Check the validity of the file
+     *
+     * \return A file is valid if a header has been read (=> after setFilePath)
+     */
+    bool isValid();
+
 
     // By default CT_AbstractReader don't have a Bounding Box : redefine in children class of geographical files
     virtual bool hasBoundingBox() {return false;}
@@ -45,7 +51,7 @@ public:
       * \param deleteHeader If set true, the reader will delete the header object in destructor
       *
       */
-    CT_FileHeader* getHeader(bool deleteHeader);
+    CT_FileHeader* getHeader(bool deleteHeader) const;
 
     const CT_FileHeader* getHeader();
 
@@ -341,7 +347,7 @@ protected:
     /*!
      *  \brief In this method you must add all ItemDrawable you create in result. Use the method "addOutItemDrawableModel". Called
      */
-    virtual void protectedCreateOutItemDrawableModelList() = 0;
+    virtual void protectedCreateOutItemDrawableModelList();
 
     /**
      * @brief Inherit this method to read the file
@@ -349,9 +355,9 @@ protected:
     virtual bool protectedReadFile() = 0;
 
     CT_FileHeader*                                          m_header;
+    QString                                                 m_filePath;
 
 private:
-    QString                                                 m_filePath;
     QList<FileFormat>                                       m_formats;
     QString                                                 m_tooltip;
     QString                                                 m_errorMess;
@@ -363,7 +369,7 @@ private:
     int                                                     m_progress;
     bool                                                    m_error;
     bool                                                    m_stop;
-    bool                                                    m_deleteHeader;
+    mutable bool                                            m_deleteHeader;
     QList<CT_CSR >                                          m_coordinateSystems;
 
     void clearOutItemDrawableModel();

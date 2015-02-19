@@ -19,6 +19,8 @@ CT_Reader_ASCRGB::CT_Reader_ASCRGB() : CT_AbstractReader()
 
 bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
 {
+    m_filePath = filepath;
+
     // Test File validity
     if(QFile::exists(filepath))
     {
@@ -34,9 +36,12 @@ bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
             {
                 QStringList values = line.split(" ");
                 if (values.size() >= 6)
-                {
+                {                    
+                    m_header = new CT_FileHeader(NULL, NULL);
+                    m_header->setFile(m_filePath);
+
                     f.close();
-                    return CT_AbstractReader::setFilePath(filepath);
+                    return true;
                 }
             }
 
@@ -64,6 +69,8 @@ void CT_Reader_ASCRGB::protectedInit()
 
 void CT_Reader_ASCRGB::protectedCreateOutItemDrawableModelList()
 {
+    CT_AbstractReader::protectedCreateOutItemDrawableModelList();
+
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_ASCRGB_sceneOut, new CT_Scene(), tr("Scène")));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_ASCRGB_colorOut, new CT_PointsAttributesColor(), tr("Attribut de points (couleurs)")));
 }

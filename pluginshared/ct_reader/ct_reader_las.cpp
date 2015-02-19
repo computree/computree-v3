@@ -25,7 +25,7 @@ CT_Reader_LAS::~CT_Reader_LAS()
 
 bool CT_Reader_LAS::setFilePath(const QString &filepath)
 {
-    bool ok = false;
+    m_filePath = filepath;
 
     // Test File validity
     if(QFile::exists(filepath))
@@ -41,13 +41,10 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
             header->setFile(filepath);
 
             if(header->read(stream, error))
-                ok = CT_AbstractReader::setFilePath(filepath);
-
-            if(ok)
             {
                 m_header = header;
-
                 setToolTip(((CT_LASHeader*)m_header)->toString());
+                return true;
             }
             else
             {
@@ -59,7 +56,7 @@ bool CT_Reader_LAS::setFilePath(const QString &filepath)
         f.close();
     }
 
-    return ok;
+    return false;
 }
 
 CT_LASHeader* CT_Reader_LAS::readHeader(QString &error) const

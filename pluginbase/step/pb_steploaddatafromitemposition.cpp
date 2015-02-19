@@ -76,6 +76,43 @@ void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
     CT_OutResultModelGroup *res_result = createNewOutResultModel(DEFout_result, tr("Données chargées"));
     res_result->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
 
+
+//    QList<CT_ResultGroup*> inResultList = getInputResults();
+//    CT_ResultGroup* resIn_dataSource = inResultList.at(0);
+
+//    CT_ResultItemIterator itIn_dataSource(resIn_dataSource, this, DEFin_dataSource);
+//    if (itIn_dataSource.hasNext())
+//    {
+//        const CT_DataSourceGeo *dataSource = (const CT_DataSourceGeo*) itIn_dataSource.next();
+
+//        if (dataSource != NULL && dataSource->getNumberOfReader() > 0)
+//        {
+//            dataSource->init();
+//            QSharedPointer<CT_AbstractReader> firstReader = dataSource->getActiveReader();
+
+//            _itemModels.clear();
+//            _groupModels.clear();
+
+//            _itemModels.append(firstReader->outItemDrawableModels());
+//            _groupModels.append(firstReader->outGroupsModel());
+
+//            QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+//            while (itIM.hasNext())
+//            {
+//                CT_OutStdSingularItemModel* itemModel = itIM.next();
+//            }
+
+
+
+//            QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+//            while (itGM.hasNext())
+//            {
+//                CT_OutStdGroupModel* groupModel = itGM.next();
+//            }
+
+//        }
+//    }
+
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -101,7 +138,7 @@ void PB_StepLoadDataFromItemPosition::compute()
     {
         const CT_DataSourceGeo *dataSource = (CT_DataSourceGeo*) itIn_dataSource.next();
 
-        if (dataSource != NULL)
+        if (dataSource != NULL && dataSource->getNumberOfReader() > 0)
         {
             CT_ResultItemIterator itIn_items(resIn_items, this, DEFin_item);
             while (itIn_items.hasNext() && !isStopped())
@@ -113,11 +150,11 @@ void PB_StepLoadDataFromItemPosition::compute()
                     Eigen::Vector3d min, max;
                     item->getBoundingBox(min, max);
 
-                    QList<const CT_AbstractReader *> readers = dataSource->getReadersIntersecting(min, max);
+                    QList<QSharedPointer<CT_AbstractReader> > readers = dataSource->getReadersIntersecting(min, max);
 
                     for (int i = 0 ; i < readers.size() ; i++)
                     {
-                        CT_AbstractReader *reader = (CT_AbstractReader *) readers.at(i);
+                        QSharedPointer<CT_AbstractReader> reader = readers.at(i);
 
                         if (reader->readFile())
                         {

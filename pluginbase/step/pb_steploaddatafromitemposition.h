@@ -2,6 +2,8 @@
 #define PB_STEPLOADDATAFROMITEMPOSITION_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 
 /*!
  * \class PB_StepLoadDataFromItemPosition
@@ -81,7 +83,11 @@ protected:
 private:
 
     // Step parameters
-    double    _buffer;    /*!<  */
+    double    _buffer;
+
+    QList<CT_OutStdSingularItemModel*>  _itemModels;
+    QList<CT_OutStdGroupModel*>         _groupModels;
+
 
 };
 

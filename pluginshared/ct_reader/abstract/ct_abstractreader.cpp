@@ -6,11 +6,14 @@
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
+#define DEF_CT_header "genericHeader"
+
 CT_AbstractReader::CT_AbstractReader()
 {
     m_deleteHeader = true;
     m_header = NULL;
     m_outHeaderModel = NULL;
+    m_filePath = "";
 }
 
 CT_AbstractReader::~CT_AbstractReader()
@@ -48,7 +51,25 @@ QString CT_AbstractReader::GetReaderName()
 bool CT_AbstractReader::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;
-    return true;
+
+    if (m_header != NULL) {delete m_header; m_header = NULL;}
+
+    // Verify that the file exist and can be opened
+    if (QFile::exists(m_filePath))
+    {
+        QFile file(m_filePath);
+        if (file.open(QIODevice::ReadOnly))
+        {
+            file.close();
+
+            // By default : create a standard FileHeader with the fileName
+            m_header = new CT_FileHeader(NULL, NULL);
+            m_header->setFile(m_filePath);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 QString CT_AbstractReader::filepath() const
@@ -56,7 +77,13 @@ QString CT_AbstractReader::filepath() const
     return m_filePath;
 }
 
-CT_FileHeader *CT_AbstractReader::getHeader(bool deleteHeader)
+bool CT_AbstractReader::isValid()
+{
+    return (m_header != NULL);
+}
+
+
+CT_FileHeader *CT_AbstractReader::getHeader(bool deleteHeader) const
 {
     m_deleteHeader = deleteHeader;
     return m_header;
@@ -500,6 +527,11 @@ void CT_AbstractReader::setErrorMessage(const QString &err)
 
     if(!m_errorMess.isEmpty())
         m_error = true;
+}
+
+void CT_AbstractReader::protectedCreateOutItemDrawableModelList()
+{
+    setOutHeaderModel(new CT_OutStdSingularItemModel(DEF_CT_header, new CT_FileHeader(), tr("Header")));
 }
 
 void CT_AbstractReader::clearOutItemDrawableModel()

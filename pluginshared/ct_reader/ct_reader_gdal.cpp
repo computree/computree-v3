@@ -26,11 +26,17 @@ CT_Reader_GDAL::~CT_Reader_GDAL()
 }
 
 bool CT_Reader_GDAL::setFilePath(const QString &filepath)
-{
+{        
+    m_filePath = filepath;
+
     #ifdef USE_GDAL
     if(m_driver != NULL) {
         if(canBeOpened(filepath))
-            return CT_AbstractReader::setFilePath(filepath);
+        {
+            m_header = new CT_FileHeader(NULL, NULL);
+            m_header->setFile(m_filePath);
+            return true;
+        }
     }
     #endif
 
@@ -123,6 +129,9 @@ bool createGeometryModel(OGRGeometry *poGeometry,
 void CT_Reader_GDAL::protectedCreateOutItemDrawableModelList()
 {
     #ifdef USE_GDAL
+    CT_AbstractReader::protectedCreateOutItemDrawableModelList();
+
+
     GDALDataset *data = getDataSet(filepath());
 
     if(data != NULL) {

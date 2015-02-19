@@ -49,10 +49,10 @@ public:
       * \brief Contructeur
       */
     CT_DataSourceGeo(const CT_OutAbstractSingularItemModel *model,
-                     const CT_AbstractResult *result, CT_AbstractReader *readerPrototype);
+                     const CT_AbstractResult *result);
 
     CT_DataSourceGeo(const QString &modelName,
-                     const CT_AbstractResult *result, CT_AbstractReader *readerPrototype);
+                     const CT_AbstractResult *result);
 
     virtual ~CT_DataSourceGeo();
 
@@ -64,8 +64,8 @@ public:
 
     virtual bool addReader(CT_AbstractReader* reader);
 
-    QList<const CT_AbstractReader* > getReadersIntersecting(const CT_Shape2DData &data) const;
-    QList<const CT_AbstractReader *> getReadersIntersecting(const Eigen::Vector3d &min, const Eigen::Vector3d &max) const;
+    QList<QSharedPointer<CT_AbstractReader> > getReadersIntersecting(const CT_Shape2DData &data) const;
+    QList<QSharedPointer<CT_AbstractReader> > getReadersIntersecting(const Eigen::Vector3d &min, const Eigen::Vector3d &max) const;
 
     bool intersects(const CT_Shape2DData &data);
 

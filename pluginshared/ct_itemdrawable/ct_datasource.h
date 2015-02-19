@@ -32,6 +32,8 @@
 #include "ct_reader/abstract/ct_abstractreader.h"
 #include "ct_shape2ddata/ct_shape2ddata.h"
 
+#include <QSharedPointer>
+
 /**
   * Représente une liste de readers au même format
   */
@@ -49,10 +51,10 @@ public:
       * \brief Contructeur
       */
     CT_DataSource(const CT_OutAbstractSingularItemModel *model,
-                     const CT_AbstractResult *result, CT_AbstractReader* readerPrototype);
+                     const CT_AbstractResult *result);
 
     CT_DataSource(const QString &modelName,
-                     const CT_AbstractResult *result,CT_AbstractReader* readerPrototype);
+                     const CT_AbstractResult *result);
 
     virtual ~CT_DataSource();
 
@@ -64,22 +66,23 @@ public:
 
     virtual bool addReader(CT_AbstractReader* reader);
 
-    const CT_AbstractReader* getActiveReader() const;
-
     bool activateNextReader();
+
+    const QSharedPointer<CT_AbstractReader> getActiveReader() const;
+
+    const QSharedPointer<CT_AbstractReader> getNextReader();
 
     int getNumberOfReader() const;
 
-    virtual void init();
+    virtual void init() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 
 protected:
-    CT_AbstractReader*                  _readerPrototype;
-    QMap<int, CT_AbstractReader*>       _readers;
-    int                                 _activeReader;
-    int                                 _lastReaderIndice;
+    QList<QSharedPointer<CT_AbstractReader> >        _readers;
+    mutable int                                      _activeReader;
+    int                                              _lastReaderIndice;
 
 private:
     CT_DEFAULT_IA_BEGIN(CT_DataSource)

@@ -168,7 +168,7 @@ void CT_Reader_OPF::recursiveReadTopology(rapidxml::xml_node<> *xmlNode,
 
 bool CT_Reader_OPF::setFilePath(const QString &filepath)
 {
-    bool valid = false;
+    m_filePath = filepath;
 
     QHash<QString, CT_OPF_Attribute>    attributes;
     QHash<QString, CT_OPF_Type>         types;
@@ -226,12 +226,16 @@ bool CT_Reader_OPF::setFilePath(const QString &filepath)
         m_types = types;
         m_attributes = attributes;
         m_totalNode = totalNode;
-        valid = CT_AbstractReader::setFilePath(filepath);
-    }
-    else
-        PS_LOG->addErrorMessage(LogInterface::reader, tr("No types found in %1").arg(filepath));
 
-    return valid;
+        m_header = new CT_FileHeader(NULL, NULL);
+        m_header->setFile(m_filePath);
+        return true;
+    }
+    else {
+        PS_LOG->addErrorMessage(LogInterface::reader, tr("No types found in %1").arg(filepath));
+    }
+
+    return false;
 }
 
 CT_AbstractReader* CT_Reader_OPF::copy() const
@@ -498,6 +502,8 @@ void CT_Reader_OPF::protectedInit()
 void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
 {
     clearOtherModels();
+
+    CT_AbstractReader::protectedCreateOutItemDrawableModelList();
 
     // Tree Group
     CT_OutStdGroupModel *topology = new CT_OutStdGroupModel(DEF_CT_Reader_OPF_topologyOut, new CT_TTreeGroup(), tr("Topologie"));

@@ -95,7 +95,6 @@ private:
     QString                                         _readersListValue;
     QStringList                                     _filesList;
 
-    bool                                            _isGeoReader;
     QMap<QString, QPair<CT_AbstractReader*, int> >  _readersMap;
     QList<CT_AbstractReader*>                       _readersInstancesList;
     CT_FileChoiceButton*                            _fileChoiceButton;

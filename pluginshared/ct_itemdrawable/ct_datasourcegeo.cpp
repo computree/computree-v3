@@ -33,12 +33,12 @@ CT_DataSourceGeo::CT_DataSourceGeo() : CT_DataSource()
 }
 
 CT_DataSourceGeo::CT_DataSourceGeo(const CT_OutAbstractSingularItemModel *model,
-                                   const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_DataSource(model, result, readerPrototype)
+                                   const CT_AbstractResult *result) : CT_DataSource(model, result)
 {
 }
 
 CT_DataSourceGeo::CT_DataSourceGeo(const QString &modelName,
-                                   const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_DataSource(modelName, result, readerPrototype)
+                                   const CT_AbstractResult *result) : CT_DataSource(modelName, result)
 {
 }
 
@@ -58,11 +58,9 @@ QString CT_DataSourceGeo::staticGetType()
 
 bool CT_DataSourceGeo::addReader(CT_AbstractReader *reader)
 {
-    if (reader->getHeader() == NULL) {return false;}
-
-    if (reader->getHeader()->hasBoundingBox())
+    if (CT_DataSource::addReader(reader))
     {
-        if (CT_DataSource::addReader(reader))
+        if (reader->getHeader()->hasBoundingBox())
         {
             Eigen::Vector3d min, max;
             reader->getHeader()->getBoundingBox(min, max);
@@ -76,14 +74,17 @@ bool CT_DataSourceGeo::addReader(CT_AbstractReader *reader)
             if (max(2) > _maxCoordinates(2)) {_maxCoordinates(2) = max(2);}
 
             return true;
+        } else {
+            PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter un reader sans BoundingBox à une CT_DataSourceGeo"));
         }
-    } else {
-        PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter un reader sans BoundingBox à une CT_DataSourceGeo"));
     }
+
+    updateCenterFromBoundingBox();
+
     return false;
 }
 
-QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const CT_Shape2DData &data) const
+QList<QSharedPointer<CT_AbstractReader> > CT_DataSourceGeo::getReadersIntersecting(const CT_Shape2DData &data) const
 {
     Eigen::Vector3d min, max;
     data.getBoundingBox(min, max);
@@ -92,21 +93,20 @@ QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const 
 }
 
 
-QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const Eigen::Vector3d& min,const Eigen::Vector3d& max) const
+QList<QSharedPointer<CT_AbstractReader> > CT_DataSourceGeo::getReadersIntersecting(const Eigen::Vector3d& min,const Eigen::Vector3d& max) const
 {
-    QList<const CT_AbstractReader *> list;
+    QList<QSharedPointer<CT_AbstractReader> > list;
 
     if (min(0) > _maxCoordinates(0)) {return list;}
     if (min(1) > _maxCoordinates(1)) {return list;}
     if (max(0) < _minCoordinates(0)) {return list;}
     if (max(1) < _minCoordinates(1)) {return list;}
 
-    QMapIterator<int, CT_AbstractReader*> it(_readers);
+    QListIterator<QSharedPointer<CT_AbstractReader> > it(_readers);
 
     while (it.hasNext())
     {
-        it.next();
-        CT_AbstractReader* reader = it.value();
+        QSharedPointer<CT_AbstractReader> reader = it.next();
 
         Eigen::Vector3d minR, maxR;
         reader->getHeader()->getBoundingBox(minR, maxR);
@@ -118,7 +118,7 @@ QList<const CT_AbstractReader *> CT_DataSourceGeo::getReadersIntersecting(const 
         if (max(0) < minR(0)) {intersection = false;}
         if (max(1) < minR(1)) {intersection = false;}
 
-        if (intersection) {list.append(it.value());}
+        if (intersection) {list.append(reader);}
     }
 
     return list;
@@ -138,6 +138,16 @@ bool CT_DataSourceGeo::intersects(const CT_Shape2DData &data)
 
 CT_AbstractItemDrawable *CT_DataSourceGeo::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
-    return new CT_DataSourceGeo((const CT_OutAbstractSingularItemModel*)model, result, _readerPrototype->copy());
+    Q_UNUSED(copyModeList);
+
+    CT_DataSourceGeo *cpy = new CT_DataSourceGeo((const CT_OutAbstractSingularItemModel*)model, result);
+    cpy->_readers.append(_readers);
+    cpy->_lastReaderIndice = _lastReaderIndice;
+    cpy->_minCoordinates = _minCoordinates;
+    cpy->_maxCoordinates = _maxCoordinates;
+
+    cpy->updateCenterFromBoundingBox();
+
+    return cpy;
 }
 

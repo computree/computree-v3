@@ -18,6 +18,8 @@ CT_Reader_XYB::CT_Reader_XYB() : CT_AbstractReader()
 
 bool CT_Reader_XYB::setFilePath(const QString &filepath)
 {
+    m_filePath = filepath;
+
     _xc = 0;
     _yc = 0;
     _zc = 0;
@@ -111,12 +113,17 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
             }
 
             if (okx && oky && okz && okr && okc && _offset > 0)
+            {
                 valid = true;
+            }
         }
     }
 
     if(valid)
-        valid = CT_AbstractReader::setFilePath(filepath);
+    {
+        m_header = new CT_FileHeader(NULL, NULL);
+        m_header->setFile(m_filePath);
+    }
 
     return valid;
 }
@@ -138,6 +145,8 @@ void CT_Reader_XYB::protectedInit()
 
 void CT_Reader_XYB::protectedCreateOutItemDrawableModelList()
 {
+    CT_AbstractReader::protectedCreateOutItemDrawableModelList();
+
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_XYB_sceneOut, new CT_Scene(), tr("Scène")));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_XYB_intensityOut, new CT_PointsAttributesScalarTemplated<quint16>(), tr("Intensité")));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(), tr("Scanner")));

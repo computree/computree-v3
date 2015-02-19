@@ -33,26 +33,25 @@ CT_DataSource::CT_DataSource() : CT_AbstractSingularItemDrawable()
 {
     _activeReader = -1;
     _lastReaderIndice = -1;
-    _readerPrototype = NULL;
 }
 
 CT_DataSource::CT_DataSource(const CT_OutAbstractSingularItemModel *model,
-                                   const CT_AbstractResult *result, CT_AbstractReader* readerPrototype) : CT_AbstractSingularItemDrawable(model, result)
+                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(model, result)
 {
-    _readerPrototype = readerPrototype;
-    _readerPrototype->init(false);
+    _activeReader = -1;
+    _lastReaderIndice = -1;
 }
 
 CT_DataSource::CT_DataSource(const QString &modelName,
-                                   const CT_AbstractResult *result, CT_AbstractReader *readerPrototype) : CT_AbstractSingularItemDrawable(modelName, result)
+                                   const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName, result)
 {
-    _readerPrototype = readerPrototype;
-    _readerPrototype->init(false);
+    _activeReader = -1;
+    _lastReaderIndice = -1;
 }
 
 CT_DataSource::~CT_DataSource()
 {
-    if(_readerPrototype != NULL) {delete _readerPrototype;}
+    _readers.clear();
 }
 
 QString CT_DataSource::getType() const
@@ -67,37 +66,70 @@ QString CT_DataSource::staticGetType()
 
 bool CT_DataSource::addReader(CT_AbstractReader *reader)
 {
-    if (typeid(reader) == typeid(_readerPrototype))
+    if (getNumberOfReader() > 0)
     {
-        _readers.insert(++_lastReaderIndice, reader);
-        return true;
-    } else {
-        PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter un reader d'une classe différente du prototype"));
-    }
-    return false;
-}
+        QSharedPointer<CT_AbstractReader> firstReader = _readers.first();
 
-const CT_AbstractReader *CT_DataSource::getActiveReader() const
-{
-    return _readers.value(_activeReader, NULL);
+        if (reader->GetReaderName() != firstReader->GetReaderName())
+        {
+            PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter des readers de classe différente"));
+            return false;
+        }
+    }
+
+    if (reader->isValid())
+    {
+        ++_lastReaderIndice;
+        _readers.append(QSharedPointer<CT_AbstractReader>(reader));
+    } else {
+        PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Fichier (%1) non valide").arg(reader->filepath()));
+        return false;
+    }
+    return true;
 }
 
 bool CT_DataSource::activateNextReader()
 {
-    return (_readers.value(++_activeReader) != NULL);
+    ++_activeReader;
+    if (_activeReader < 0 || _activeReader > _lastReaderIndice) {return false;}
+
+    return true;
 }
+
+const QSharedPointer<CT_AbstractReader> CT_DataSource::getActiveReader() const
+{
+    if (_activeReader < 0 || _activeReader > _lastReaderIndice) {return QSharedPointer<CT_AbstractReader>();}
+
+    return _readers.at(_activeReader);
+}
+
+
+const QSharedPointer<CT_AbstractReader> CT_DataSource::getNextReader()
+{
+    ++_activeReader;
+    if (_activeReader < 0 || _activeReader > _lastReaderIndice) {return QSharedPointer<CT_AbstractReader>();}
+
+    return _readers.at(_activeReader);
+}
+
 
 int CT_DataSource::getNumberOfReader() const
 {
     return _readers.size();
 }
 
-void CT_DataSource::init()
+void CT_DataSource::init() const
 {
-    _activeReader = 1;
+    _activeReader = -1;
 }
 
 CT_AbstractItemDrawable *CT_DataSource::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
-    return new CT_DataSource((const CT_OutAbstractSingularItemModel*)model, result, _readerPrototype->copy());
+    Q_UNUSED(copyModeList);
+
+    CT_DataSource *cpy = new CT_DataSource((const CT_OutAbstractSingularItemModel*)model, result);
+    cpy->_readers.append(_readers);
+    cpy->_lastReaderIndice = _lastReaderIndice;
+
+    return cpy;
 }

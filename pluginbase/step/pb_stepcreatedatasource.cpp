@@ -25,7 +25,6 @@
 PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
     _readersListValue = "xyb";
-    _isGeoReader = false;
     _fileChoiceButton = NULL;
 
     // Create the available readers map
@@ -167,26 +166,53 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
 
     if (pair.first != NULL && _filesList.size() > 0)
     {
-        _isGeoReader = pair.first->hasBoundingBox();
 
-        if (_isGeoReader)
+        CT_DataSource* dataSource = NULL;
+        QString itemLabel = tr("Source de données");
+
+        if (pair.first->hasBoundingBox())
         {
-            res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSourceGeo(), tr("Source de données géographique"));
+            dataSource = new CT_DataSourceGeo();
+            itemLabel = tr("Source de données géographique");
 
         } else {
-            res_res->addItemModel(DEFout_grp, DEFout_datasource, new CT_DataSource(), tr("Source de données"));
+            dataSource = new CT_DataSource();
         }
 
-        CT_AbstractReader* reader = pair.first->copy();
-        if (reader->setFilePath(_filesList.first()))
+        CT_AbstractReader* firstReader = NULL;
+
+        for (int i = 0 ; i < _filesList.size() ; i++)
         {
-            CT_FileHeader *header = (CT_FileHeader*) reader->getHeader(true)->copy(NULL, NULL, CT_ResultCopyModeList());
+            CT_AbstractReader* reader = pair.first->copy();
+
+            if (reader->setFilePath(_filesList.at(i)))
+            {
+                if (dataSource->addReader(reader))
+                {
+                    reader->init();
+                    if (firstReader == NULL) {firstReader = reader;}
+                } else {
+                    delete reader;
+                }
+
+            } else {
+                delete reader;
+            }
+        }
+
+        if (firstReader != NULL)
+        {
+            CT_FileHeader *header = (CT_FileHeader*) firstReader->getHeader(true)->copy(NULL, NULL, CT_ResultCopyModeList());
 
             if (header != NULL)
             {
                 res_res->addGroupModel(DEFout_grp, DEFout_grpHeader, new CT_StandardItemGroup(), tr("Fichier"));
                 res_res->addItemModel(DEFout_grpHeader, DEFout_header, header, tr("Entête"));
             }
+
+            res_res->addItemModel(DEFout_grp, DEFout_datasource, dataSource, itemLabel);
+        } else {
+            delete dataSource;
         }
     }
 }
@@ -200,41 +226,27 @@ void PB_StepCreateDataSource::compute()
     CT_StandardItemGroup* grp= new CT_StandardItemGroup(DEFout_grp, resultOut);
     resultOut->addGroup(grp);
 
-    const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(_readersListValue);
+    CT_OutStdSingularItemModel* dataSourceModel = (CT_OutStdSingularItemModel*) PS_MODELS->searchModelForCreation(DEFout_datasource, resultOut);
 
-    CT_DataSource* item_datasource = NULL;
-
-    if (_isGeoReader)
+    if (dataSourceModel != NULL)
     {
-        item_datasource = new CT_DataSourceGeo(DEFout_datasource, resultOut, pair.first->copy());
-    } else {
-        item_datasource = new CT_DataSource(DEFout_datasource, resultOut, pair.first->copy());
-    }
+        CT_DataSource* item_datasourceBase = (CT_DataSource*) dataSourceModel->itemDrawable();
+        CT_DataSource* item_datasource = (CT_DataSource*) item_datasourceBase->copy(dataSourceModel, resultOut, CT_ResultCopyModeList());
+        grp->addItemDrawable(item_datasource);
 
-    for (int i = 0 ; i < _filesList.size() ; i++)
-    {
-        CT_AbstractReader* reader = pair.first->copy();
-
-        if (reader->setFilePath(_filesList.at(i)))
+        item_datasource->init();
+        while (item_datasource->activateNextReader())
         {
-            reader->init();
+            QSharedPointer<CT_AbstractReader> reader = item_datasource->getActiveReader();
 
-            if (item_datasource->addReader(reader))
-            {
-                CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
-                grp->addGroup(grpHeader);
+            CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
+            grp->addGroup(grpHeader);
 
-                CT_FileHeader * header = reader->getHeader(false);
-                header->setModel((CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut));
-                header->changeResult(resultOut);
-                grpHeader->addItemDrawable(header);
-            } else {
-                delete reader;
-            }
+            CT_FileHeader *header = reader->getHeader(false);
+            header->setModel((CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut));
+            header->changeResult(resultOut);
+            grpHeader->addItemDrawable(header);
         }
     }
-
-    grp->addItemDrawable(item_datasource);
-
 
 }

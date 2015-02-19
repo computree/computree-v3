@@ -16,6 +16,8 @@ CT_Reader_LArchitect_Grid::CT_Reader_LArchitect_Grid() : CT_AbstractReader()
 
 bool CT_Reader_LArchitect_Grid::setFilePath(const QString &filepath)
 {
+    m_filePath = filepath;
+
     bool valid = false;
 
     // Test File validity
@@ -117,8 +119,11 @@ bool CT_Reader_LArchitect_Grid::setFilePath(const QString &filepath)
         } else {valid = false;}
     }
 
-    if(valid)
-        valid = CT_AbstractReader::setFilePath(filepath);
+    if (valid)
+    {
+        m_header = new CT_FileHeader(NULL, NULL);
+        m_header->setFile(m_filePath);
+    }
 
     return valid;
 }
@@ -135,6 +140,8 @@ void CT_Reader_LArchitect_Grid::protectedInit()
 
 void CT_Reader_LArchitect_Grid::protectedCreateOutItemDrawableModelList()
 {
+    CT_AbstractReader::protectedCreateOutItemDrawableModelList();
+
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LArchitect_Grid_wood_surface, new CT_Grid3D<float>()));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LArchitect_Grid_leaf_surface, new CT_Grid3D<float>()));
     addOutItemDrawableModel(new CT_OutStdSingularItemModel(DEF_CT_Reader_LArchitect_Grid_wood_volume, new CT_Grid3D<float>()));
