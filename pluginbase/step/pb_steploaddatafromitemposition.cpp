@@ -8,6 +8,9 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_itemdrawable/ct_datasourcegeo.h"
+#include "ct_global/ct_context.h"
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 // Alias for indexing models
 #define DEFin_resultItems "resultItems"
@@ -19,7 +22,7 @@
 #define DEFin_dataSource "dataSource"
 
 #define DEFout_result "result"
-#define DEFout_grp "grp"
+#define DEFout_grp "grp_PB_StepLoadDataFromItemPosition"
 
 
 // Constructor : initialization of parameters
@@ -76,43 +79,53 @@ void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
     CT_OutResultModelGroup *res_result = createNewOutResultModel(DEFout_result, tr("Données chargées"));
     res_result->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
 
+    // Récupération du prototype de data_source = la dataSource
+    CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_resultDataSource);
 
-//    QList<CT_ResultGroup*> inResultList = getInputResults();
-//    CT_ResultGroup* resIn_dataSource = inResultList.at(0);
+    CT_OutAbstractResultModel* resultInModelOut = NULL;
+    CT_InAbstractSingularItemModel* sourceModel = NULL;
+    CT_DataSourceGeo* sourcePrototype = NULL;
 
-//    CT_ResultItemIterator itIn_dataSource(resIn_dataSource, this, DEFin_dataSource);
-//    if (itIn_dataSource.hasNext())
-//    {
-//        const CT_DataSourceGeo *dataSource = (const CT_DataSourceGeo*) itIn_dataSource.next();
+    // check if model have choice (can be empty if the step want to create a default out model list)
+    if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
+        resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
 
-//        if (dataSource != NULL && dataSource->getNumberOfReader() > 0)
-//        {
-//            dataSource->init();
-//            QSharedPointer<CT_AbstractReader> firstReader = dataSource->getActiveReader();
+    if(resultInModelOut != NULL)
+        sourceModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEFin_dataSource, resultInModelOut, this);
 
-//            _itemModels.clear();
-//            _groupModels.clear();
-
-//            _itemModels.append(firstReader->outItemDrawableModels());
-//            _groupModels.append(firstReader->outGroupsModel());
-
-//            QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
-//            while (itIM.hasNext())
-//            {
-//                CT_OutStdSingularItemModel* itemModel = itIM.next();
-//            }
+    if((sourceModel != NULL) && !sourceModel->getPossibilitiesSavedSelected().isEmpty())
+        sourcePrototype = (CT_DataSourceGeo*) ((CT_OutAbstractSingularItemModel*) sourceModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);
 
 
+        if (sourcePrototype != NULL && sourcePrototype->getNumberOfReader() > 0)
+        {
+            sourcePrototype->init();
+            QSharedPointer<CT_AbstractReader> firstReader = sourcePrototype->getNextReader();
+            if (!firstReader.isNull())
+            {
+                _itemModels.clear();
+                _groupModels.clear();
 
-//            QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
-//            while (itGM.hasNext())
-//            {
-//                CT_OutStdGroupModel* groupModel = itGM.next();
-//            }
+                _itemModels.append(firstReader->outItemDrawableModels());
+                _groupModels.append(firstReader->outGroupsModel());
 
-//        }
-//    }
+                // Ajout des modèles d'items
+                QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+                while (itIM.hasNext())
+                {
+                    CT_OutStdSingularItemModel* itemModel = itIM.next();
+                    res_result->addItemModel(DEFout_grp, itemModel->uniqueName(), (CT_AbstractSingularItemDrawable*) itemModel->itemDrawable(), itemModel->displayableName(), itemModel->description());
+                }
 
+                // Ajout des modèles de groupes
+                QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+                while (itGM.hasNext())
+                {
+                    CT_OutStdGroupModel* groupModel = itGM.next();
+                    res_result->addGroupModel(DEFout_grp, groupModel->uniqueName(), (CT_AbstractItemGroup*) groupModel->itemDrawable(), groupModel->displayableName(), groupModel->description());
+                }
+            }
+        }
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -158,7 +171,26 @@ void PB_StepLoadDataFromItemPosition::compute()
 
                         if (reader->readFile())
                         {
-                            // TO DO
+                            CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_result);
+                            res_result->addGroup(grp_grp);
+
+                            // Ajout des modèles d'items
+                            QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+                            while (itIM.hasNext())
+                            {
+                                CT_OutStdSingularItemModel* itemModel = itIM.next();
+                                CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), res_result, itemModel);
+                                grp_grp->addItemDrawable(item);
+                            }
+
+                            // Ajout des modèles de groupes
+                            QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+                            while (itGM.hasNext())
+                            {
+                                CT_OutStdGroupModel* groupModel = itGM.next();
+                                CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), res_result, groupModel);
+                                grp_grp->addGroup(groupe);
+                            }
                         }
                     }
                 }
@@ -167,10 +199,5 @@ void PB_StepLoadDataFromItemPosition::compute()
     }
 
 
-    // OUT results creation (move it to the appropried place in the code)
-    CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_result);
-    res_result->addGroup(grp_grp);
     
-
-
 }
