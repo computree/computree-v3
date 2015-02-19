@@ -222,6 +222,7 @@ protected:
     friend class CT_EdgeAccessor;
     friend class CT_Face;
     friend class CT_Edge;
+    friend class CT_CoordinateSystemManager;
     template<typename T, typename CLOUD> friend class CT_GlobalCloudManagerT;
     template<typename T> friend class CT_MeshAllocatorT;
     template<typename T> friend class CT_CloudIndexIteratorT;

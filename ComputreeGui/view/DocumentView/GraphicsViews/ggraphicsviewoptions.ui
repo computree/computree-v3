@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>603</width>
-    <height>557</height>
+    <width>487</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -352,32 +352,82 @@
    <item>
     <widget class="QGroupBox" name="groupBoxCameraCoordinates">
      <property name="title">
-      <string> Coordonnées de la caméra </string>
+      <string>Informations</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QCheckBox" name="checkBoxCameraPosition">
-        <property name="text">
-         <string>Position</string>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="topMargin">
+         <number>0</number>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkBoxCameraCenterCoordinates">
-        <property name="text">
-         <string>Centre de la vue</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkBoxCameraViewDirection">
-        <property name="text">
-         <string>Rotation</string>
-        </property>
-       </widget>
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string> Caméra </string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QCheckBox" name="checkBoxCameraPosition">
+             <property name="text">
+              <string>Position</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxCameraCenterCoordinates">
+             <property name="text">
+              <string>Centre de la vue</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxCameraViewDirection">
+             <property name="text">
+              <string>Rotation</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+          <zorder>checkBoxCameraPosition</zorder>
+          <zorder>checkBoxCameraPosition</zorder>
+          <zorder>checkBoxCameraPosition</zorder>
+          <zorder>checkBoxCameraCenterCoordinates</zorder>
+          <zorder>checkBoxCameraViewDirection</zorder>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string> Affichage </string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QCheckBox" name="checkBoxShowFPS">
+             <property name="text">
+              <string>FPS</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">

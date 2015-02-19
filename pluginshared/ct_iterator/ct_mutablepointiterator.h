@@ -3,6 +3,8 @@
 
 #include "ct_iterator/ct_pointiterator.h"
 
+class CT_CoordinateSystemManager;
+
 /**
  * @brief Class to iterate over points and modify it.
  * @warning Use this class only in a CT_ReaderXXX or when you create a cloud of points in your step !
@@ -93,20 +95,9 @@ public:
     inline const CT_Point& cT() const { return currentPoint(); }
 
     /**
-     * @brief Replace the current point by a new point with the coordinate system passed in parameter
-     */
-    void replaceCurrentPoint(const CT_Point &p, const CT_AbstractCoordinateSystem *coordinateSystem);
-
-    /**
-     * @brief Replace the current point by a new point with the coordinate system passed in parameter
-     */
-    void replaceCurrentPoint(const CT_Point &p, const GLuint &coordinateSystemGlobalIndex);
-
-    /**
-     * @brief Replace the current point by a new point and use the current coordinate system to convert it
+     * @brief Replace the current point by a new point
      */
     void replaceCurrentPoint(const CT_Point &p);
-
 
     // INTERNAL POINT
 
@@ -123,23 +114,22 @@ public:
     const CT_PointData& currentConstInternalPoint() const;
 
     /**
-     * @brief Replace the current point by a new point and set it the coordinate system passed in parameter
-     */
-    void replaceCurrentInternalPoint(const CT_PointData &p, const CT_AbstractCoordinateSystem *coordinateSystem);
-
-    /**
-     * @brief Replace the current point by a new point and set it the coordinate system index passed in parameter
-     */
-    void replaceCurrentInternalPoint(const CT_PointData &p, const GLuint &coordinateSystemGlobalIndex);
-
-    /**
      * @brief Replace the current point by a new point
+     * @warning Not intended for direct use by plugin developper
      */
     void replaceCurrentInternalPoint(const CT_PointData &p);
 
+    /**
+     * @brief Replace the current point by a new point. You must pass the index of the coordinate system that will be set for this point.
+     * @warning Be sure to pass a valid coordinate system index
+     * @warning Not intended for direct use by plugin developper
+     */
+    void replaceCurrentInternalPoint(const CT_PointData &p, const GLuint &csIndex);
+
 private:
 
-    CT_PointIterator *m_it;
+    CT_PointIterator            *m_it;
+    CT_CoordinateSystemManager  *m_csm;
 };
 
 #endif // CT_MUTABLEPOINTITERATOR_H

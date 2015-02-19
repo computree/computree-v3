@@ -91,7 +91,7 @@ CT_MECIR CT_Mesh::registeredHedge() const
     return m_hedge;
 }
 
-void CT_Mesh::createCylinder(double radius, double height, int sides)
+void CT_Mesh::createCylinder(double radius, double height, int sides, double xPos, double yPos, double zPos)
 {
     clear();
 
@@ -110,9 +110,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
     double maxH = height;
 
     CT_Point v;
-    v(0) = maxH;
-    v(1) = radius;
-    v(2) = 0;
+    v(0) = maxH + xPos;
+    v(1) = radius + yPos;
+    v(2) = zPos;
 
     vi.replaceCurrentPoint(v);
 
@@ -126,7 +126,7 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
 
         CT_Point v1;
 
-        v1(0) = minH;
+        v1(0) = minH + xPos;
         v1(1) = v0(1);
         v1(2) = v0(2);
 
@@ -145,9 +145,9 @@ void CT_Mesh::createCylinder(double radius, double height, int sides)
             p2 = vi.cIndex();
             p3 = p2+1;
 
-            v2(0) = maxH;
-            v2(1) = radius * cos(theta);
-            v2(2) = radius * sin(theta);
+            v2(0) = maxH + xPos;
+            v2(1) = (radius * cos(theta)) + yPos;
+            v2(2) = (radius * sin(theta)) + zPos;
 
             vi.replaceCurrentPoint(v2);
         }

@@ -31,6 +31,7 @@ private:
     public:
         CT_GlobalEdgeCloudManager *m_manager;
 
+    protected:
         void cloudDeleted(const size_t &beginIndex, const size_t &size);
         void cloudAdded(const size_t &size) { Q_UNUSED(size) }
     };

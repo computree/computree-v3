@@ -685,8 +685,6 @@ void CT_VirtualAbstractStep::clearOutResult()
 
     _outManager->resultCleared();
 
-    m_coordinateSystemRegistered.clear();
-
     setClearMemoryProgress(100);
 }
 
@@ -711,8 +709,6 @@ void CT_VirtualAbstractStep::clearOutResultFromMemory()
             setClearMemoryProgress(((i+1)*100)/size);
         }
     }
-
-    m_coordinateSystemRegistered.clear();
 
     setClearMemoryProgress(100);
 }
@@ -1488,11 +1484,6 @@ void CT_VirtualAbstractStep::setClearMemoryProgress(float progress)
 
         emit cleanMemoryInProgress(_progressClearMem);
     }
-}
-
-void CT_VirtualAbstractStep::registerCoordinateSystem(CT_CSR coordinateSystemRegistered)
-{
-    m_coordinateSystemRegistered.append(coordinateSystemRegistered);
 }
 
 ////////// PRIVATE ////////

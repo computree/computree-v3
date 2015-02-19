@@ -6,7 +6,6 @@
 #include "ct_itemdrawable/ct_pointsattributesscalartemplated.h"
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_iterator/ct_mutablepointiterator.h"
 
 #include <limits>
@@ -156,12 +155,6 @@ bool CT_Reader_XYB::protectedReadFile()
 {
     bool filter = (_filterRadius > 0);
 
-    // create a new coordinate system for the scene.
-    GLuint csIndex = 0;
-
-    if(fabs(_xc) > 1000 || fabs(_yc) > 1000 || fabs(_zc) > 1000)
-        csIndex = PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(new CT_DefaultCoordinateSystem(_xc, _yc, _zc, this));
-
     // Test File validity
     if(QFile::exists(filepath()))
     {
@@ -238,7 +231,7 @@ bool CT_Reader_XYB::protectedReadFile()
                         if (reflectance<imin) {imin = reflectance;}
                         if (reflectance>imax) {imax = reflectance;}
 
-                        mpcir->addPoint(pReaded, csIndex);
+                        mpcir->addPoint(pReaded);
 
                         collection->addT(reflectance);
                     }
@@ -259,7 +252,7 @@ bool CT_Reader_XYB::protectedReadFile()
                     if (reflectance>imax) {imax = reflectance;}
 
                     it->next();
-                    it->replaceCurrentPoint(pReaded, csIndex);
+                    it->replaceCurrentPoint(pReaded);
 
                     (*collection)[a] = reflectance;
                 }
@@ -304,8 +297,6 @@ bool CT_Reader_XYB::protectedReadFile()
             return true;
         }
     }
-
-    setNotNeedToUseCoordinateSystem();
 
     return false;
 }

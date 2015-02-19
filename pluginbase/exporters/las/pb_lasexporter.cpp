@@ -204,9 +204,6 @@ bool PB_LASExporter::protectedExportToFile()
                         setExportProgress((pCount*100)/nPoints);
                     }
                 }
-
-                if(nPoints == 0)
-                    setNotNeedToUseCoordinateSystem();
             }
 
             delete header;

@@ -13,10 +13,18 @@ public:
     CT_PointAccessor();
 
     /**
+     * @brief Returns the size of the global point cloud
+     */
+    size_t size() const;
+
+    /**
      * @brief Return the point at 'globalIndex'
      */
     CT_Point pointAt(const size_t &globalIndex) const;
 
+    /**
+     * @brief Get the point at 'globalIndex' with the use of your reference
+     */
     void pointAt(const size_t &globalIndex, CT_Point &point) const;
 
     /**
@@ -25,24 +33,30 @@ public:
     const CT_Point& constPointAt(const size_t &globalIndex) const;
 
     /**
-     * @brief Replace the point at 'globalIndex' by a new point with the coordinate system passed in parameter
+     * @brief Replace the point at 'globalIndex' by a new point
      */
-    void replacePointAt(const size_t &globalIndex, const CT_Point &p, CT_AbstractCoordinateSystem *sys);
+    void replacePointAt(const size_t &globalIndex, const CT_Point &p);
+
+
+    // INTERNAL POINT
 
     /**
      * @brief Return a reference to the point at 'globalIndex' (internal point used in cloud)
+     * @warning Not intended for direct use by plugin developper
      */
     CT_PointData& internalPointAt(const size_t &globalIndex);
 
     /**
      * @brief Return a reference to the point at 'globalIndex' (internal point used in cloud)
+     * @warning Not intended for direct use by plugin developper
      */
     const CT_PointData& constInternalPointAt(const size_t &globalIndex) const;
 
     /**
-     * @brief Returns the size of the global point cloud
+     * @brief Replace the current point by a new point
+     * @warning Not intended for direct use by plugin developper
      */
-    size_t size() const;
+    void replaceInternalPointAt(const size_t &globalIndex, const CT_PointData &p);
 
 private:
     mutable CT_Point        m_p;

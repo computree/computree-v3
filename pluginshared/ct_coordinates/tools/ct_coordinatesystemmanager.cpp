@@ -3,70 +3,112 @@
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_iterator/ct_pointiterator.h"
+#include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanagert.h"
+
+static uint hash(const uchar *p, int n)
+{
+    uint h = 0;
+
+    while (n--) {
+        h = (h << 4) + *p++;
+        h ^= (h & 0xf0000000) >> 23;
+        h &= 0x0fffffff;
+    }
+    return h;
+}
 
 CT_CoordinateSystemManager::CT_CoordinateSystemManager()
 {
     // create a new cloud that contains index of coordinate system for all points. It will be synchronized with the size of the global point cloud
     m_indexOfCoordinateSystemOfPoints = PS_REPOSITORY->createNewCloudT< CT_StdCloudRegisteredT< CT_CoordinateSystemCloudIndex >, CT_CoordinateSystemCloudIndex >(CT_Repository::SyncWithPointCloud);
 
-    m_default = registerCoordinateSystem(new CT_DefaultCoordinateSystem());
+    m_sizeOfIntTabInByte = sizeof(int)*3;
+
+    setPrecision(1);
+    init();
+
+    PS_REPOSITORY->globalCloudManager<CT_PointData>()->addGlobalCloudListener(this);
 }
 
 CT_CoordinateSystemManager::~CT_CoordinateSystemManager()
 {
+    clear();
 }
 
-CT_CSR CT_CoordinateSystemManager::registerCoordinateSystem(CT_AbstractCoordinateSystem *cs)
+bool CT_CoordinateSystemManager::setPrecision(const double &precision)
 {
-    m_cs.append(cs);
-    cs->initUsed();
-
-    setCurrentCoordinateSystem(size()-1);
-
-    return CT_CSR(cs, CT_CoordinateSystemManager::staticUnregisterCoordinateSystem);
-}
-
-bool CT_CoordinateSystemManager::removeCoordinateSystem(CT_AbstractCoordinateSystem *cs)
-{
-    return removeCoordinateSystem(indexOfCoordinateSystem(cs));
-}
-
-bool CT_CoordinateSystemManager::removeCoordinateSystem(int index)
-{
-    if(index == 0)
+    if(m_pAccess.size() != 0)
         return false;
 
-    // if it was other coordinate system after this, we must update all indexes contained in the cloud
-    if(index < m_cs.size()-1)
-        m_indexOfCoordinateSystemOfPoints->cloudT()->decreaseAfterValue(index);
+    m_csKeySum = (1677.7216*precision);
+    m_csKeyDividor = m_csKeySum*2;
 
-    CT_AbstractCoordinateSystem *cs = m_cs.takeAt(index);
-
-    if(cs == m_current)
-        setCurrentCoordinateSystem(0);
-
-    delete cs;
     return true;
 }
 
-int CT_CoordinateSystemManager::size() const
+CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::computeCoordinateSystemForPoint(const CT_Point &p, GLuint &csIndex)
 {
-    return m_cs.size();
-}
+    int tab[3];
 
-GLuint CT_CoordinateSystemManager::indexOfCoordinateSystem(const CT_AbstractCoordinateSystem *cs) const
-{
-    int i = m_cs.indexOf((CT_AbstractCoordinateSystem*)cs);
+    if(p(CT_Point::X) > 0)
+        tab[0] = (p(CT_Point::X)+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[0] = (p(CT_Point::X)-m_csKeySum)/m_csKeyDividor;
 
-    if(i < 0)
-        return 0;
+    if(p(CT_Point::Y) > 0)
+        tab[1] = (p(CT_Point::Y)+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[1] = (p(CT_Point::Y)-m_csKeySum)/m_csKeyDividor;
 
-    return i;
-}
+    if(p(CT_Point::Z) > 0)
+        tab[2] = (p(CT_Point::Z)+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[2] = (p(CT_Point::Z)-m_csKeySum)/m_csKeyDividor;
 
-CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::coordinateSystemAt(const GLuint &index) const
-{
-    return m_cs.at(index);
+    uint key = hash((uchar*)&tab[0], m_sizeOfIntTabInByte);
+
+    if(m_lastCsKeyUsed == key) {
+
+        csIndex = m_lastCsIndexUsed;
+
+        return m_lastCsUsed;
+    }
+
+    m_lastCsKeyUsed = key;
+
+    int i = 0;
+
+    QVector<uint>::const_iterator begin = m_csKey.begin();
+    QVector<uint>::const_iterator end = m_csKey.end();
+
+    while(begin != end) {
+
+        if((*begin) == key) {
+            m_lastCsUsed = m_cs[i];
+            m_lastCsIndexUsed = i;
+
+            csIndex = m_lastCsIndexUsed;
+
+            return m_lastCsUsed;
+        }
+
+        ++begin;
+        ++i;
+    }
+
+    CT_DefaultCoordinateSystem *coordinateSystem = new CT_DefaultCoordinateSystem(tab[0]*m_csKeyDividor,
+                                                                                  tab[1]*m_csKeyDividor,
+                                                                                  tab[2]*m_csKeyDividor);
+
+    m_cs.push_back(coordinateSystem);
+    m_csKey.push_back(key);
+
+    m_lastCsUsed = coordinateSystem;
+    m_lastCsIndexUsed = i;
+
+    csIndex = m_lastCsIndexUsed;
+
+    return coordinateSystem;
 }
 
 CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::coordinateSystemForPointAt(const size_t &globalIndex) const
@@ -84,55 +126,27 @@ void CT_CoordinateSystemManager::setCoordinateSystemForPointAt(const size_t &glo
     m_indexOfCoordinateSystemOfPoints->cloudT()->replaceValueAt(globalIndex, coordinateSystemIndex);
 }
 
-void CT_CoordinateSystemManager::setCoordinateSystemForPoints(CT_PCIR pcir, CT_AbstractCoordinateSystem *cs)
+int CT_CoordinateSystemManager::size() const
 {
-    if(cs != NULL)
-        setCoordinateSystemIndexForPoints(pcir, indexOfCoordinateSystem(cs));
+    return m_cs.size();
 }
 
-void CT_CoordinateSystemManager::setCoordinateSystemIndexForPoints(CT_PCIR pcir, const GLuint &coordinateSystemIndex)
+CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::coordinateSystemAt(const GLuint &csIndex) const
 {
-    if(!pcir.isNull()) {
-
-        CT_PointIterator it(pcir);
-
-        while(it.hasNext()) {
-            it.next();
-            m_indexOfCoordinateSystemOfPoints->cloudT()->replaceValueAt(it.currentGlobalIndex(), coordinateSystemIndex);
-        }
-    }
+    return m_cs.at(csIndex);
 }
 
-void CT_CoordinateSystemManager::setCurrentCoordinateSystem(CT_AbstractCoordinateSystem *cs)
+GLuint CT_CoordinateSystemManager::indexOfCoordinateSystem(const CT_AbstractCoordinateSystem *cs) const
 {
-    if(cs == NULL)
-        setCurrentCoordinateSystem(0);
-    else
-        setCurrentCoordinateSystem(indexOfCoordinateSystem(cs));
+    return m_cs.indexOf((CT_AbstractCoordinateSystem*)cs);
 }
 
-void CT_CoordinateSystemManager::setCurrentCoordinateSystem(int index)
+void CT_CoordinateSystemManager::clear()
 {
-    m_current = m_cs.at(index);
+    qDeleteAll(m_cs.begin(), m_cs.end());
 
-    m_indexOfCoordinateSystemOfPoints->cloudT()->setResizeNewValue(index);
-}
-
-CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::currentCoordinateSystem() const
-{
-    return m_current;
-}
-
-bool CT_CoordinateSystemManager::wasAtLeastOneUsed() const
-{
-    QVectorIterator<CT_AbstractCoordinateSystem*> it(m_cs);
-
-    while(it.hasNext()) {
-        if(it.next()->wasUsed())
-            return true;
-    }
-
-    return false;
+    m_cs.resize(0);
+    m_csKey.resize(0);
 }
 
 CT_CoordinateSystemCloudIndex* CT_CoordinateSystemManager::indexCloudOfCoordinateSystemOfPoints() const
@@ -140,17 +154,27 @@ CT_CoordinateSystemCloudIndex* CT_CoordinateSystemManager::indexCloudOfCoordinat
     return m_indexOfCoordinateSystemOfPoints->cloudT();
 }
 
-void CT_CoordinateSystemManager::staticUnregisterCoordinateSystem(CT_AbstractCoordinateSystem *cs)
+void CT_CoordinateSystemManager::init()
 {
-    PS_COORDINATES_SYS_MANAGER->removeCoordinateSystem(cs);
+    clear();
+
+    CT_DefaultCoordinateSystem *cs = new CT_DefaultCoordinateSystem(0, 0, 0);
+
+    m_lastCsUsed = cs;
+    m_lastCsKeyUsed = 0;
+    m_lastCsIndexUsed = 0;
+
+    m_cs.push_back(m_lastCsUsed);
+    m_csKey.push_back(m_lastCsKeyUsed);
 }
 
-void CT_CoordinateSystemManager::initUsedOfAllCoordinateSystem()
+void CT_CoordinateSystemManager::cloudDeleted(const size_t &beginIndex, const size_t &size)
 {
-    QVectorIterator<CT_AbstractCoordinateSystem*> it(m_cs);
+    Q_UNUSED(beginIndex)
+    Q_UNUSED(size)
 
-    while(it.hasNext())
-        it.next()->initUsed();
+    size_t s = m_pAccess.size();
 
-    setCurrentCoordinateSystem(0);
+    if((s-size) == 0)
+        init();
 }

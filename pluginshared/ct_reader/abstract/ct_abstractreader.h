@@ -255,17 +255,6 @@ public:
      */
     virtual CT_AbstractReader *copy() const = 0;
 
-    /********************************************************************************/
-    /************ Not intended for direct use by plugin developper ******************/
-    /********************************************************************************/
-
-    /**
-     * @brief Add a registered coordinate system to this reader. It will be deleted when out item drawable / groups will be deleted from
-     *        memory (new read of file or when reader is deleted from memory)
-     * @warning Not intended for direct use by plugin developper
-     */
-    void registerCoordinateSystem(CT_CSR coordinateSystemRegistered);
-
 public slots:
 
     /**
@@ -285,12 +274,6 @@ protected:
       * \brief Add a new readable format
       */
     void addNewReadableFormat(const FileFormat &format);
-
-    /**
-     * @brief Called by derived class in "protectedReadFile()" to inform that this reader
-     *        don't used the coordinate system
-     */
-    void setNotNeedToUseCoordinateSystem();
 
     /**
      * @brief Set the tooltip to show in gui
@@ -370,7 +353,6 @@ private:
     bool                                                    m_error;
     bool                                                    m_stop;
     mutable bool                                            m_deleteHeader;
-    QList<CT_CSR >                                          m_coordinateSystems;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();

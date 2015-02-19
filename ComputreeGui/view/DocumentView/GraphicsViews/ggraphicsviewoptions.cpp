@@ -64,6 +64,7 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->checkBoxCameraPosition, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
     connect(ui->checkBoxCameraCenterCoordinates, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
     connect(ui->checkBoxCameraViewDirection, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
+    connect(ui->checkBoxShowFPS, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
     connect(ui->buttonGroupCameraInfoPosition, SIGNAL(buttonClicked(QAbstractButton*)), this , SLOT(setCameraInfoPosition(QAbstractButton*)));
     connect(ui->buttonGroupViewType, SIGNAL(buttonClicked(QAbstractButton*)), this , SLOT(setCameraType(QAbstractButton*)));
 
@@ -145,6 +146,7 @@ void GGraphicsViewOptions::updateUiFromOptions()
     ui->checkBoxCameraPosition->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraPosition));
     ui->checkBoxCameraCenterCoordinates->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraSceneCenter));
     ui->checkBoxCameraViewDirection->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraViewDirection));
+    ui->checkBoxShowFPS->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::FpsInformation));
 
     switch(_options->drawFastest())
     {
@@ -261,6 +263,9 @@ void GGraphicsViewOptions::setCameraInfoDisplayed()
 
     if(ui->checkBoxCameraViewDirection->isChecked())
         info |= DM_GraphicsViewOptions::CameraViewDirection;
+
+    if(ui->checkBoxShowFPS->isChecked())
+        info |= DM_GraphicsViewOptions::FpsInformation;
 
     _options->setCameraInformationDisplayed(info);
 }

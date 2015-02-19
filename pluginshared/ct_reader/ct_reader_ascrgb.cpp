@@ -6,7 +6,6 @@
 #include <QDebug>
 
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_global/ct_context.h"
 #include "ct_point.h"
 
@@ -100,9 +99,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             double zmax = -std::numeric_limits<double>::max();
 
             QString line;
-            GLuint coordinateSystemIndex = 0;
             CT_Point pReaded;
-            bool first = true;
 
             while(!stream.atEnd()
                   && !isStopped())
@@ -122,13 +119,6 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     double x = values.at(0).toDouble(&okX);
                     double y = values.at(1).toDouble(&okY);
                     double z = values.at(2).toDouble(&okZ);
-
-                    if (first && okX && okY && okZ)
-                    {
-                        first = false;
-                        if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
-                            coordinateSystemIndex = (new CT_DefaultCoordinateSystem(x, y, z, this))->indexInManager();
-                    }
 
                     double valueR = values.at(3).toDouble(&okR);
                     double valueG = values.at(4).toDouble(&okG);
@@ -163,7 +153,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                             pReaded(1) = y;
                             pReaded(2) = z;
 
-                            pointCloud->addPoint(pReaded, coordinateSystemIndex);
+                            pointCloud->addPoint(pReaded);
 
                             CT_Color &color = colorCloud->addColor();
 

@@ -20,6 +20,10 @@ class PLUGINSHAREDSHARED_EXPORT CT_GlobalFaceCloudManager : public CT_GlobalClou
 public:
     CT_GlobalFaceCloudManager(const CT_AbstractGlobalEdgeCloudManager *globalEdgeCloudManager);
 
+private:
+    CT_AbstractGlobalEdgeCloudManager *m_gecm;
+
+protected:
     /**
      * @brief Called when the global cloud of edge is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
      */
@@ -29,9 +33,6 @@ public:
      * @brief Called when the size of the global cloud of edge has increased
      */
     void cloudAdded(const size_t &size);
-
-private:
-    CT_AbstractGlobalEdgeCloudManager *m_gecm;
 };
 
 #endif // CT_GLOBALFACECLOUDMANAGER_H

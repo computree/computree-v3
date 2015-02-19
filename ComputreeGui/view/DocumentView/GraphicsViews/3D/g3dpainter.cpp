@@ -65,6 +65,7 @@ G3DPainter::G3DPainter()
 
     m_shaderProgPoint = NULL;
     m_shaderProgPointError = false;
+    m_shaderProgPointSet = false;
     m_ShaderPoint = NULL;
     m_shaderPointError = false;
     m_shaderLocInitialized = false;
@@ -73,6 +74,16 @@ G3DPainter::G3DPainter()
     m_shaderLocCsMatrix = -1;
     m_shaderLocSelectionColor = -1;
     m_shaderLocCheckSelected = -1;
+
+    m_shaderDeProg = NULL;
+    m_shaderDeProgError = false;
+    m_shaderDe = NULL;
+    m_shaderDeError = false;
+    m_shaderDeLocInitialized = false;
+    m_shaderDeLocPMatrix1 = -1;
+    m_shaderDeLocPMatrix2 = -1;
+    m_shaderDeLocPMatrix3 = -1;
+    m_shaderDeLocPMatrix4 = -1;
 
     m_csMatrix.resize(64, Eigen::Matrix4f::Identity()); // 64 is the maximum number of matrix in the shader
 
@@ -127,6 +138,8 @@ void G3DPainter::setDrawFastest(bool enable)
 
 void G3DPainter::beginNewDraw()
 {
+    m_polygonMode = 0;
+
     _nCallEnableSetColor = 0;
     _nCallEnableSetForcedColor = 0;
 
@@ -147,6 +160,8 @@ void G3DPainter::beginNewDraw()
 
     m_shaderProgPointSet = false;
     m_bindShaderPointOK = false;
+
+    m_bindShaderDeOK = false;
 
     m_firstPolygonPointValid = false;
 
@@ -188,15 +203,14 @@ void G3DPainter::save()
     pushMatrix();
 
     stopDrawMultiple();
-    glGetIntegerv(GL_POLYGON_MODE, &m_polygonMode);
+    glGetIntegerv(GL_POLYGON_MODE, &m_savePolygonMode);
 }
 
 void G3DPainter::restore()
 {
     popMatrix();
 
-    stopDrawMultiple();
-    glPolygonMode(GL_FRONT_AND_BACK, m_polygonMode);
+    setPolygonMode(GL_FRONT_AND_BACK, m_savePolygonMode);
 }
 
 void G3DPainter::startRestoreIdentityMatrix(GLdouble *matrix)
@@ -734,8 +748,7 @@ void G3DPainter::drawCube(const double &x1, const double &y1, const double &z1, 
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(faces, mode);
+        setPolygonMode(faces, mode);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         // Bottom
@@ -783,8 +796,7 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
@@ -802,8 +814,7 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
@@ -820,8 +831,7 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
@@ -842,8 +852,7 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
@@ -861,8 +870,7 @@ void G3DPainter::drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
@@ -876,8 +884,7 @@ void G3DPainter::fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
@@ -891,8 +898,7 @@ void G3DPainter::drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
@@ -906,8 +912,7 @@ void G3DPainter::fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
@@ -921,8 +926,7 @@ void G3DPainter::drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
@@ -936,8 +940,7 @@ void G3DPainter::fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
 {
     if(canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
@@ -1523,9 +1526,9 @@ void G3DPainter::initPointShader()
                     log += tmp;
 
                 if(!log.isEmpty())
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderSourceFile).arg(log));
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderSourceFile).arg(log));
                 else
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderSourceFile));
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderSourceFile));
 
                 delete m_ShaderPoint;
                 m_ShaderPoint = NULL;
@@ -1542,20 +1545,18 @@ void G3DPainter::initPointShader()
 
             if(m_shaderProgPoint->shaders().isEmpty())
             {
-                m_shaderProgPointError = !m_shaderProgPoint->addShader(m_ShaderPoint);
-
-                if(!m_shaderProgPointError && !m_shaderProgPoint->link())
+                if(!m_shaderProgPoint->addShader(m_ShaderPoint) || !m_shaderProgPoint->link())
                 {
                     QString log;
                     QString tmp;
 
-                    while(!(tmp = m_ShaderPoint->log()).isEmpty())
+                    while(!(tmp = m_shaderProgPoint->log()).isEmpty())
                         log += tmp;
 
                     if(!log.isEmpty())
-                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" link error : %2").arg(m_shaderSourceFile).arg(log));
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" link error : %2").arg(m_shaderSourceFile).arg(log));
                     else
-                        GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" link error").arg(m_shaderSourceFile));
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" link error").arg(m_shaderSourceFile));
 
                     m_shaderProgPointError = true;
                 }
@@ -1564,96 +1565,93 @@ void G3DPainter::initPointShader()
     }
 }
 
-bool G3DPainter::bindPointShader(bool force)
+bool G3DPainter::bindPointShader()
 {
-    if((m_drawOnly != POINT_FROM_PC) || force)
+    initPointShader();
+
+    if(!m_shaderPointError
+            && !m_shaderProgPointError
+            && (QT_GL_CONTEXT::currentContext() != NULL))
     {
-        initPointShader();
-
-        if(!m_shaderPointError
-                && !m_shaderProgPointError
-                && (QT_GL_CONTEXT::currentContext() != NULL))
+        if(!m_shaderProgPoint->bind())
         {
-            if(!m_shaderProgPoint->bind())
-            {
-                QString log;
-                QString tmp;
+            QString log;
+            QString tmp;
 
-                while(!(tmp = m_shaderProgPoint->log()).isEmpty())
-                    log += tmp;
+            while(!(tmp = m_shaderProgPoint->log()).isEmpty())
+                log += tmp;
 
-                if(!log.isEmpty())
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" bind error : %2").arg(m_shaderSourceFile).arg(m_shaderProgPoint->log()));
-                else
-                    GUI_LOG->addErrorMessage(LogInterface::unknow, QObject::tr("Vertex shader \"%1\" bind error").arg(m_shaderSourceFile).arg(m_shaderProgPoint->log()));
-
-
-                m_shaderProgPointError = true;
-            }
+            if(!log.isEmpty())
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" bind error : %2").arg(m_shaderSourceFile).arg(log));
             else
-            {
-                if(!m_shaderProgPointSet) {
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" bind error").arg(m_shaderSourceFile));
 
-                    if(!m_shaderLocInitialized) {
-                        m_shaderLocCsIndex = m_shaderProgPoint->attributeLocation("csIndex");
-                        m_shaderLocInfo = m_shaderProgPoint->attributeLocation("info");
-                        m_shaderLocCsMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
-                        m_shaderLocSelectionColor = m_shaderProgPoint->uniformLocation("selectionColor");
-                        m_shaderLocCheckSelected = m_shaderProgPoint->uniformLocation("checkSelected");
 
-                        m_shaderLocInitialized = true;
+            m_shaderProgPointError = true;
+        }
+        else
+        {
+            if(!m_shaderProgPointSet) {
 
-                        QString err;
+                if(!m_shaderLocInitialized) {
+                    m_shaderLocCsIndex = m_shaderProgPoint->attributeLocation("csIndex");
+                    m_shaderLocInfo = m_shaderProgPoint->attributeLocation("info");
+                    m_shaderLocCsMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
+                    m_shaderLocSelectionColor = m_shaderProgPoint->uniformLocation("selectionColor");
+                    m_shaderLocCheckSelected = m_shaderProgPoint->uniformLocation("checkSelected");
 
-                        if(m_shaderLocCsIndex == -1)
-                            err += "\r\n* attribute \"csIndex\" not found.";
+                    m_shaderLocInitialized = true;
 
-                        if(m_shaderLocInfo == -1)
-                            err += "\r\n* attribute \"info\" not found.";
+                    QString err;
 
-                        if(m_shaderLocCsMatrix == -1)
-                            err += "\r\n* uniform \"csMatrix\" not found.";
+                    if(m_shaderLocCsIndex == -1)
+                        err += "\r\n* attribute \"csIndex\" not found.";
 
-                        if(m_shaderLocSelectionColor == -1)
-                            err += "\r\n* uniform \"selectionColor\" not found.";
+                    if(m_shaderLocInfo == -1)
+                        err += "\r\n* attribute \"info\" not found.";
 
-                        if(m_shaderLocCheckSelected == -1)
-                            err += "\r\n* uniform \"checkSelected\" not found.";
+                    if(m_shaderLocCsMatrix == -1)
+                        err += "\r\n* uniform \"csMatrix\" not found.";
 
-                        if(!err.isEmpty())
-                            GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderSourceFile).arg(err));
-                    }
+                    if(m_shaderLocSelectionColor == -1)
+                        err += "\r\n* uniform \"selectionColor\" not found.";
 
-                    if(m_gv->pointsInformationManager()->informations()->size() > 0)
-                    {
-                        int s = PS_COORDINATES_SYS_MANAGER->size();
+                    if(m_shaderLocCheckSelected == -1)
+                        err += "\r\n* uniform \"checkSelected\" not found.";
 
-                        for(int i=0; i<s; ++i)
-                            m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
-
-                        QColor sColor = m_gv->getOptions().getSelectedColor();
-                        m_shaderProgPoint->setUniformValue(m_shaderLocSelectionColor, QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
-
-                        m_shaderProgPoint->setUniformValue(m_shaderLocCheckSelected, (GLuint)m_gv->pointsInformationManager()->checkSelected());
-
-                        m_shaderProgPoint->enableAttributeArray("info");
-                        glVertexAttribPointer(m_shaderLocInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
-
-                        m_shaderProgPoint->enableAttributeArray("csIndex");
-                        glVertexAttribPointer(m_shaderLocCsIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
-
-                        glUniformMatrix4fv(m_shaderLocCsMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
-
-                        m_shaderProgPointSet = true;
-                    }
-
-                } else {
-                    m_shaderProgPoint->enableAttributeArray("info");
-                    m_shaderProgPoint->enableAttributeArray("csIndex");
+                    if(!err.isEmpty())
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderSourceFile).arg(err));
                 }
 
-                return true;
+                if(m_gv->pointsInformationManager()->informations()->size() > 0)
+                {
+                    int s = PS_COORDINATES_SYS_MANAGER->size();
+
+                    for(int i=0; i<s; ++i)
+                        m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
+
+                    QColor sColor = m_gv->getOptions().getSelectedColor();
+                    m_shaderProgPoint->setUniformValue(m_shaderLocSelectionColor, QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
+
+                    m_shaderProgPoint->setUniformValue(m_shaderLocCheckSelected, (GLuint)m_gv->pointsInformationManager()->checkSelected());
+
+                    m_shaderProgPoint->enableAttributeArray("info");
+                    glVertexAttribPointer(m_shaderLocInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+
+                    m_shaderProgPoint->enableAttributeArray("csIndex");
+                    glVertexAttribPointer(m_shaderLocCsIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
+
+                    glUniformMatrix4fv(m_shaderLocCsMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
+
+                    m_shaderProgPointSet = true;
+                }
+
+            } else {
+                m_shaderProgPoint->enableAttributeArray("info");
+                m_shaderProgPoint->enableAttributeArray("csIndex");
             }
+
+            return true;
         }
     }
 
@@ -1664,6 +1662,151 @@ void G3DPainter::releasePointShader(bool bindOk)
 {
     if(bindOk)
         m_shaderProgPoint->release();
+}
+
+void G3DPainter::initDoubleElementShader()
+{
+    if(QT_GL_CONTEXT::currentContext() != NULL)
+    {
+        if(!m_shaderDeError && m_shaderDe == NULL)
+        {
+            m_shaderDe = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
+
+            GLint version;
+            glGetIntegerv(GL_MAJOR_VERSION, &version);
+
+            m_shaderDeSourceFile = "./shaders/others.vert";
+
+            if(!m_shaderDe->compileSourceFile(m_shaderDeSourceFile))
+            {
+                QString log;
+                QString tmp;
+
+                while(!(tmp = m_shaderDe->log()).isEmpty())
+                    log += tmp;
+
+                if(!log.isEmpty())
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderDeSourceFile).arg(log));
+                else
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderDeSourceFile));
+
+                delete m_shaderDe;
+                m_shaderDe = NULL;
+
+                m_shaderDeError = true;
+            }
+        }
+
+        if(!m_shaderDeError
+                && !m_shaderDeProgError)
+        {
+            if(m_shaderDeProg == NULL)
+                m_shaderDeProg = new QT_GL_SHADERPROGRAM();
+
+            if(m_shaderDeProg->shaders().isEmpty())
+            {
+                if(!m_shaderDeProg->addShader(m_shaderDe) || !m_shaderDeProg->link())
+                {
+                    QString log;
+                    QString tmp;
+
+                    while(!(tmp = m_shaderDeProg->log()).isEmpty())
+                        log += tmp;
+
+                    if(!log.isEmpty())
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" link error : %2").arg(m_shaderDeSourceFile).arg(log));
+                    else
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" link error").arg(m_shaderDeSourceFile));
+
+                    m_shaderDeProgError = true;
+                }
+            }
+        }
+    }
+}
+
+bool G3DPainter::bindDoubleElementShader()
+{
+    initDoubleElementShader();
+
+    if(!m_shaderDeError
+            && !m_shaderDeProgError
+            && (QT_GL_CONTEXT::currentContext() != NULL))
+    {
+        if(!m_shaderDeProg->bind())
+        {
+            QString log;
+            QString tmp;
+
+            while(!(tmp = m_shaderDeProg->log()).isEmpty())
+                log += tmp;
+
+            if(!log.isEmpty())
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" bind error : %2").arg(m_shaderDeSourceFile).arg(log));
+            else
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" bind error").arg(m_shaderDeSourceFile));
+
+
+            m_shaderDeProgError = true;
+        }
+        else
+        {
+            if(!m_shaderDeLocInitialized) {
+                m_shaderDeLocPMatrix1 = m_shaderDeProg->attributeLocation("pMatrix1");
+                m_shaderDeLocPMatrix2 = m_shaderDeProg->attributeLocation("pMatrix2");
+                m_shaderDeLocPMatrix3 = m_shaderDeProg->attributeLocation("pMatrix3");
+                m_shaderDeLocPMatrix4 = m_shaderDeProg->attributeLocation("pMatrix4");
+
+                m_shaderDeLocInitialized = true;
+
+                QString err;
+
+                if(m_shaderDeLocPMatrix1 == -1)
+                    err += "\r\n* attribute \"pMatrix1\" not found.";
+
+                if(m_shaderDeLocPMatrix2 == -1)
+                    err += "\r\n* attribute \"pMatrix2\" not found.";
+
+                if(m_shaderDeLocPMatrix3 == -1)
+                    err += "\r\n* attribute \"pMatrix3\" not found.";
+
+                if(m_shaderDeLocPMatrix4 == -1)
+                    err += "\r\n* attribute \"pMatrix4\" not found.";
+
+                if(!err.isEmpty())
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderDeSourceFile).arg(err));
+            }
+
+            setDoubleElementMatrix(Eigen::Matrix4d::Identity());
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void G3DPainter::setDoubleElementMatrix(const Eigen::Matrix4d &mat)
+{
+    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix1, mat(0, 0), mat(1, 0), mat(2, 0), mat(3, 0));
+    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix2, mat(0, 1), mat(1, 1), mat(2, 1), mat(3, 1));
+    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix3, mat(0, 2), mat(1, 2), mat(2, 2), mat(3, 2));
+    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix4, mat(0, 3), mat(1, 3), mat(2, 3), mat(3, 3));
+}
+
+void G3DPainter::releaseDoubleElementShader(bool bindOk)
+{
+    if(bindOk)
+        m_shaderDeProg->release();
+}
+
+void G3DPainter::setPolygonMode(GLenum faces, GLenum mode)
+{
+    if(m_polygonMode != mode) {
+        stopDrawMultiple();
+        glPolygonMode(faces, mode);
+        m_polygonMode = mode;
+    }
 }
 
 //////////// PRIVATE ///////////
@@ -1748,35 +1891,46 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
     // if we have not already started a glBegin
     if(m_currentGlBeginType == GL_END_CALLED)
     {
-        // if we must only draw point or point cloud
+        // if we want to draw points or points from cloud
         if((type == GL_BEGIN_POINT) || (type == GL_BEGIN_POINT_FROM_PC))
         {
             if((type == GL_BEGIN_POINT_FROM_PC) && !m_bindShaderPointOK)
-                m_bindShaderPointOK = bindPointShader(true);
+                m_bindShaderPointOK = bindPointShader();
+            /*else if((type == GL_BEGIN_POINT) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();*/
 
             glBegin(GL_POINTS);
             m_currentGlBeginType = type;
         }
+        // else if we want to draw triangles or triangles with points from cloud
         else if((type == GL_BEGIN_TRIANGLE) || (type == GL_BEGIN_TRIANGLE_FROM_PC))
         {
             if((type == GL_BEGIN_TRIANGLE_FROM_PC) && !m_bindShaderPointOK)
-                m_bindShaderPointOK = bindPointShader(true);
+                m_bindShaderPointOK = bindPointShader();
+            /*else if((type == GL_BEGIN_TRIANGLE) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();*/
 
             glBegin(GL_TRIANGLES);
             m_currentGlBeginType = type;
         }
+        // else if we want to draw lines or lines with points from cloud
         else if((type == GL_BEGIN_LINE) || (type == GL_BEGIN_LINE_FROM_PC))
         {
             if((type == GL_BEGIN_LINE_FROM_PC) && !m_bindShaderPointOK)
-                m_bindShaderPointOK = bindPointShader(true);
+                m_bindShaderPointOK = bindPointShader();
+            /*else if((type == GL_BEGIN_LINE) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();*/
 
             glBegin(GL_LINES);
             m_currentGlBeginType = type;
         }
+        // else if we want to draw quads or quads with points from cloud
         else if((type == GL_BEGIN_QUAD) || (type == GL_BEGIN_QUAD_FROM_PC))
         {
             if((type == GL_BEGIN_QUAD_FROM_PC) && !m_bindShaderPointOK)
-                m_bindShaderPointOK = bindPointShader(true);
+                m_bindShaderPointOK = bindPointShader();
+            /*else if((type == GL_BEGIN_QUAD) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();*/
 
             glBegin(GL_QUADS);
             m_currentGlBeginType = type;
@@ -1786,7 +1940,7 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
     // if we must draw other elements or all elements we don't call glBegin
 }
 
-void G3DPainter::stopDrawMultiple(bool rPointShader)
+void G3DPainter::stopDrawMultiple(bool rPointShader, bool rDeShader)
 {
     m_firstPolygonPointValid = false;
 
@@ -1798,11 +1952,17 @@ void G3DPainter::stopDrawMultiple(bool rPointShader)
         m_currentGlBeginType = GL_END_CALLED;
     }
 
-    // if the last glBegin() has bind the point cloud shader, we must release it
+    // if we want to release the point shader
     if(m_bindShaderPointOK && rPointShader) {
         releasePointShader(m_bindShaderPointOK);
         m_bindShaderPointOK = false;
     }
+
+    // if we want to release the double element shader
+    /*if(m_bindShaderDeOK && rDeShader) {
+        releaseDoubleElementShader(m_bindShaderDeOK);
+        m_bindShaderDeOK = false;
+    }*/
 }
 
 void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginType)
@@ -1818,9 +1978,13 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
             || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
             || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
-        // we must just release the shader
+        // we must just release the point shader
         releasePointShader(m_bindShaderPointOK);
         m_bindShaderPointOK = false;
+
+        // and bind the double element shader
+        /*if(!m_bindShaderDeOK)
+            m_bindShaderDeOK = bindDoubleElementShader();*/
     }
     // else if we currently draw with double values and now we want to draw
     // with points from global cloud
@@ -1829,9 +1993,13 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
             || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
             || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
-        // we must just bind the shader
+        // we must just release the double element shader
+        /*releaseDoubleElementShader(m_bindShaderDeOK);
+        m_bindShaderDeOK = false;*/
+
+        // and bind the point shader
         if(!m_bindShaderPointOK)
-            m_bindShaderPointOK = bindPointShader(true);
+            m_bindShaderPointOK = bindPointShader();
     }
     else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called

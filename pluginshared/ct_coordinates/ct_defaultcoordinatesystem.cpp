@@ -7,64 +7,27 @@
 
 #include <limits>
 
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const CT_VirtualAbstractStep *step)
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
 {
     m_xOffset = 0;
     m_yOffset = 0;
     m_zOffset = 0;
-
-    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
 }
 
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const CT_AbstractReader *reader)
-{
-    m_xOffset = 0;
-    m_yOffset = 0;
-    m_zOffset = 0;
-
-    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
-}
-
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
-                                                       CT_AbstractCoordinateSystem::realEx y,
-                                                       CT_AbstractCoordinateSystem::realEx z,
-                                                       const CT_VirtualAbstractStep *step)
-{
-    m_xOffset = x;
-    m_yOffset = y;
-    m_zOffset = z;
-
-    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
-}
-
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
-                                                       CT_AbstractCoordinateSystem::realEx y,
-                                                       CT_AbstractCoordinateSystem::realEx z,
-                                                       const CT_AbstractReader *reader)
-{
-    m_xOffset = x;
-    m_yOffset = y;
-    m_zOffset = z;
-
-    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
-}
-
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const Eigen::Vector3d &v, const CT_VirtualAbstractStep *step)
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const Eigen::Vector3d &v)
 {
     m_xOffset = v(0);
     m_yOffset = v(1);
     m_zOffset = v(2);
-
-    ((CT_VirtualAbstractStep*)step)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
 }
 
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(const Eigen::Vector3d &v, const CT_AbstractReader *reader)
+CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                                                       CT_AbstractCoordinateSystem::realEx y,
+                                                       CT_AbstractCoordinateSystem::realEx z)
 {
-    m_xOffset = v(0);
-    m_yOffset = v(1);
-    m_zOffset = v(2);
-
-    ((CT_AbstractReader*)reader)->registerCoordinateSystem(PS_COORDINATES_SYS_MANAGER->registerCoordinateSystem(this));
+    m_xOffset = x;
+    m_yOffset = y;
+    m_zOffset = z;
 }
 
 bool CT_DefaultCoordinateSystem::canConvertImport(CT_AbstractCoordinateSystem::realEx x,
@@ -156,11 +119,4 @@ Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const
 GLuint CT_DefaultCoordinateSystem::indexInManager() const
 {
     return PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(this);
-}
-
-CT_DefaultCoordinateSystem::CT_DefaultCoordinateSystem()
-{
-    m_xOffset = 0;
-    m_yOffset = 0;
-    m_zOffset = 0;
 }

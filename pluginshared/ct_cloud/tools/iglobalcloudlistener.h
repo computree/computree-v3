@@ -8,6 +8,10 @@ class IGlobalCloudListener
 public:
     virtual ~IGlobalCloudListener() {}
 
+protected:
+
+    friend class CT_AbstractGlobalCloudManager;
+
     /**
      * @brief Called when the global cloud is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
      */

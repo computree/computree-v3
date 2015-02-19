@@ -53,7 +53,8 @@ public:
         CameraNone = 0x0,
         CameraPosition = 0x1,
         CameraSceneCenter = 0x2,
-        CameraViewDirection = 0x4
+        CameraViewDirection = 0x4,
+        FpsInformation = 0x8
     };
 
     Q_DECLARE_FLAGS(CameraInfoDisplayed, CameraInfoFlags)

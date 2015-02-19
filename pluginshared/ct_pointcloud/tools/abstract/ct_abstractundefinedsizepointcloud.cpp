@@ -9,8 +9,3 @@ CT_AbstractUndefinedSizePointCloud::CT_AbstractUndefinedSizePointCloud() : QObje
 CT_AbstractUndefinedSizePointCloud::~CT_AbstractUndefinedSizePointCloud()
 {
 }
-
-CT_AbstractPointCloud* CT_AbstractUndefinedSizePointCloud::globalPointCloud() const
-{
-    return PS_REPOSITORY->globalPointCloud();
-}

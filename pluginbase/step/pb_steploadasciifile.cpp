@@ -31,7 +31,6 @@
 
 #include "ct_step/ct_stepinitializedata.h"
 #include "ct_point.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include <QTextStream>
 #include <limits>
@@ -178,8 +177,6 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
 
     int nLine = 0;
     double currentX, currentY, currentZ, currentIntensity;
-    bool first = true;
-    GLuint csIndex = 0;
 
     bool convertionToFloatSuccess;
     int maxSize = 0;
@@ -259,15 +256,8 @@ void PB_StepLoadAsciiFile::readDataFile(QFile &f, int offset, bool little_endian
                     if ( currentZ > zmax )
                         zmax = currentZ;
 
-                    if(first) {
-                        first = false;
-
-                        if(fabs(currentX) > 1000 || fabs(currentY) > 1000 || fabs(currentZ) > 1000)
-                            csIndex = (new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this))->indexInManager();
-                    }
-
                     // Add this point to the point cloud
-                    uspc->addPoint( Eigen::Vector3d(currentX, currentY, currentZ), csIndex );
+                    uspc->addPoint( createCtPoint(currentX, currentY, currentZ) );
 
                     // Progress bar
                     setProgress( currentSizeRead*100.0/fileSize );

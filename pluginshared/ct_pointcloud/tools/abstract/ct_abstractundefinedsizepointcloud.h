@@ -34,32 +34,26 @@ public:
     virtual size_t size() const = 0;
 
     /**
-     * @brief Add a point to this cloud. You must pass a coordinate system that will be used to transform the point in
-     *        float values.
+     * @brief Add a point to this cloud.
      */
-    virtual void addPoint(const Eigen::Vector3d &point, const CT_AbstractCoordinateSystem *coordinateSystem) = 0;
+    virtual void addPoint(const CT_Point &point) = 0;
+
+    // INTERNAL POINT
 
     /**
-     * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be used to transform the point in
-     *        float values.
+     * @brief Add a point to this cloud. The coordinate system used will be the default => index 0.
+     * @warning Not intended for direct use by plugin developper
      */
-    virtual void addPoint(const Eigen::Vector3d &point, const GLuint &coordinateSystemGlobalIndex) = 0;
-
-    /**
-     * @brief Add a point to this cloud. You must pass a coordinate system that will be set for this point
-     */
-    virtual void addInternalPoint(const CT_PointData &point, const CT_AbstractCoordinateSystem *coordinateSystem) = 0;
+    virtual void addInternalPoint(const CT_PointData &point) = 0;
 
     /**
      * @brief Add a point to this cloud. You must pass the index of the coordinate system that will be set for this point
+     * @warning Be sure to pass a valid coordinate system index
+     * @warning Not intended for direct use by plugin developper
      */
-    virtual void addInternalPoint(const CT_PointData &point, const GLuint &coordinateSystemGlobalIndex) = 0;
+    virtual void addInternalPoint(const CT_PointData &point, const GLuint &csIndex) = 0;
 
 protected:
-    /**
-     * @brief Return the global point cloud
-     */
-    CT_AbstractPointCloud* globalPointCloud() const;
 
     /**
      * @brief Returns global indexes of coordinate system of points added

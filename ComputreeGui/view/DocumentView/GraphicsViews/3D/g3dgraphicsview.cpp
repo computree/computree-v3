@@ -996,6 +996,14 @@ void G3DGraphicsView::drawInternal()
     _g.setColor(Qt::red);
     _g.drawLine(0, 0, 0, 20, 0, 0);
 
+    /*for(int i=-100000; i<100000; ++i) {
+        _g.drawRectXY(Eigen::Vector2d(0, 0), Eigen::Vector2d(10, 10), i*0.0001);
+    }
+
+    for(int i=-100000; i<100000; ++i) {
+        _g.drawRectXY(Eigen::Vector2d(0, 15), Eigen::Vector2d(10, 25), i*0.0001);
+    }*/
+
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
@@ -1105,6 +1113,9 @@ void G3DGraphicsView::drawCoordinates(QPainter &painter)
         stringList.append(QString("rz : %1").arg(direction.z));
     }
 
+    if(options.getCameraInformationDisplayed() & DM_GraphicsViewOptions::FpsInformation)
+        stringList.append(QString("fps : %1").arg(m_fastestIncrementOptimizer.currentFPS()));
+
     int n = stringList.size();
 
     if(n != 0)
@@ -1117,7 +1128,7 @@ void G3DGraphicsView::drawCoordinates(QPainter &painter)
         if((options.getCameraInformationPosition() == DM_GraphicsViewOptions::InfoInUpperRightCorner)
                 || (options.getCameraInformationPosition() == DM_GraphicsViewOptions::InfoInLowerRightCorner))
         {
-            maxWidth = metrics.width(QString("aa : %1").arg(std::numeric_limits<double>::max()));
+            maxWidth = metrics.width(QString("aaa : %1").arg(std::numeric_limits<double>::max()));
 
             x = width() - maxWidth - 10;
         }

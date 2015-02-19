@@ -9,8 +9,6 @@
 #include "ct_global/ct_context.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
-
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_transformationmatrix.h"
 
@@ -97,7 +95,6 @@ void PB_StepTransformPointCloud::compute()
 
     CT_ResultGroup *resout_Scene = getOutResultList().at(0);
 
-
     CT_ResultItemIterator itMat(resin_Mat, this, DEFin_mat);
     if (itMat.hasNext())
     {
@@ -105,8 +102,6 @@ void PB_StepTransformPointCloud::compute()
 
         if (trMat != NULL)
         {
-            QMap<CT_AbstractCoordinateSystem*, GLuint> coordSysCorresp;
-
             CT_ResultItemIterator itScene(resin_Scene, this, DEFin_scene);
             while (itScene.hasNext() && !isStopped())
             {
@@ -135,35 +130,11 @@ void PB_StepTransformPointCloud::compute()
                     {
                         CT_Point point = itP.next().currentPoint();
 
-                        // get the coordinate system of this point
-                        CT_AbstractCoordinateSystem* currentSystem = itP.currentCoordinateSystem();
-
-                        GLuint transSystem = 0;
-
-                        // if the transformed coordinate system don't exist
-                        if (!coordSysCorresp.contains(currentSystem))
-                        {
-                            // get the current offset
-                            Eigen::Vector3d offset;
-                            currentSystem->offset(offset);
-
-                            // transform it
-                            trMat->transform(offset);
-
-                            // create the coordinate system transformed and get it's index
-                            transSystem = (new CT_DefaultCoordinateSystem(offset, this))->indexInManager();
-
-                            // and backup it
-                            coordSysCorresp.insert(currentSystem, transSystem);
-                        } else {
-                            transSystem = coordSysCorresp.value(currentSystem, 0);
-                        }
-
                         // transform the current point
                         trMat->transform(point);
 
                         // set it to the new point cloud
-                        outItP.next().replaceCurrentPoint(point, transSystem);
+                        outItP.next().replaceCurrentPoint(point);
 
                         if (point(0) < minX) {minX = point(0);}
                         if (point(1) < minY) {minY = point(1);}

@@ -28,17 +28,24 @@ const CT_Point& CT_PointAccessor::constPointAt(const size_t &globalIndex) const
     return m_p;
 }
 
-void CT_PointAccessor::replacePointAt(const size_t &globalIndex, const CT_Point &p, CT_AbstractCoordinateSystem *sys)
+void CT_PointAccessor::replacePointAt(const size_t &globalIndex, const CT_Point &p)
 {
+    // get the internal point
     CT_PointData &pData = internalPointAt(globalIndex);
 
-    if(sys == NULL) {
-        PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(0)->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndex, 0);
-    } else {
-        sys->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(globalIndex, PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(sys));
-    }
+    // get the coordinate system manager
+    CT_CoordinateSystemManager *csm = PS_COORDINATES_SYS_MANAGER;
+
+    GLuint csIndex;
+
+    // compute the coordinate system to use
+    CT_AbstractCoordinateSystem *coordinateSystem = csm->computeCoordinateSystemForPoint(p, csIndex);
+
+    // set for this point it's index
+    csm->setCoordinateSystemForPointAt(globalIndex, csIndex);
+
+    // convert the point
+    coordinateSystem->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
 }
 
 CT_PointData& CT_PointAccessor::internalPointAt(const size_t &globalIndex)
@@ -49,6 +56,15 @@ CT_PointData& CT_PointAccessor::internalPointAt(const size_t &globalIndex)
 const CT_PointData& CT_PointAccessor::constInternalPointAt(const size_t &globalIndex) const
 {
     return m_pCloud->constTAt(globalIndex);
+}
+
+void CT_PointAccessor::replaceInternalPointAt(const size_t &globalIndex, const CT_PointData &p)
+{
+    // get the internal point
+    CT_PointData &pData = internalPointAt(globalIndex);
+
+    // change it
+    pData = p;
 }
 
 size_t CT_PointAccessor::size() const

@@ -130,7 +130,7 @@ public:
      * @param releasePointShader : false if you know that you must call glEnd() but without release the point shader because you want
      *                             to draw another point after. (Used by a faked painter to draw with glPushName(...))
      */
-    void stopDrawMultiple(bool releasePointShader = true);
+    void stopDrawMultiple(bool rPointShader = true, bool rDeShader = true);
 
     /**
      * @brief Set the fastest increment to use in drawPointCloud method. If 0 use the fastest increment passed in parameter;
@@ -307,14 +307,40 @@ protected:
 
     /**
      * @brief Bind the point shader
-     * @return false bind is ok
+     * @return false if bind is not ok
      */
-    bool bindPointShader(bool force);
+    bool bindPointShader();
 
     /**
      * @brief Release the point shader
      */
     void releasePointShader(bool bindOk);
+
+    /**
+     * @brief Init the shader that will be used to draw elements with double values like circle, rectangle, etc...
+     */
+    void initDoubleElementShader();
+
+    /**
+     * @brief Bind the shader that will be used to draw elements with double values
+     * @return false if bind is not ok
+     */
+    bool bindDoubleElementShader();
+
+    /**
+     * @brief Set the matrix to double element shader
+     */
+    void setDoubleElementMatrix(const Eigen::Matrix4d &mat);
+
+    /**
+     * @brief Release the point shader
+     */
+    void releaseDoubleElementShader(bool bindOk);
+
+    /**
+     * @brief Change the polygon mode if it was not already set at this type
+     */
+    void setPolygonMode(GLenum faces, GLenum mode);
 
 private:
     G3DGraphicsView                     *m_gv;                  // Graphics View that used the painter
@@ -339,6 +365,19 @@ private:
     int                                 m_shaderLocSelectionColor;
     int                                 m_shaderLocCheckSelected;
 
+
+    QT_GL_SHADERPROGRAM                 *m_shaderDeProg;     // Shader program used for elements with double values
+    QT_GL_SHADER                        *m_shaderDe;
+    QString                             m_shaderDeSourceFile;
+    bool                                m_shaderDeProgError;
+    bool                                m_shaderDeError;
+    bool                                m_bindShaderDeOK;
+    bool                                m_shaderDeLocInitialized;
+    int                                 m_shaderDeLocPMatrix1;
+    int                                 m_shaderDeLocPMatrix2;
+    int                                 m_shaderDeLocPMatrix3;
+    int                                 m_shaderDeLocPMatrix4;
+
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
     double                              _defaultPointSize;      // Default point size
@@ -356,7 +395,8 @@ private:
     int                                 _nCallEnableSetForcedPointSize; // count how many times the enableSetForcedPointSize was called
 
     int                                 _nCallEnablePushMatrix;         // count how many times the enablePushMatrix was called
-    GLint                               m_polygonMode;                  // Polygon Mode backup
+    GLint                               m_polygonMode;                  // current polygon mode
+    GLint                               m_savePolygonMode;              // polygon mode backup
 
     size_t                              m_fastestIncrementPoint;        // fastest increment to use if drawFastest() return true
     int                                 m_octreeCellsDraw;              // count how many octree cells was draw

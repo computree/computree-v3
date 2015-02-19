@@ -202,12 +202,6 @@ protected:
     void addNewExportFormat(const FileFormat &format);
 
     /**
-     * @brief Called by derived class in "protectedExportToFile" to inform that this exporter
-     *        don't used the coordinate system
-     */
-    void setNotNeedToUseCoordinateSystem();
-
-    /**
       * \brief Défini la progression et emet un signal lorsque celle-ci change
       */
     void setExportProgress(int progress);

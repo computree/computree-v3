@@ -39,7 +39,7 @@ public:
     /**
      * @brief Change this mesh to a cylinder
      */
-    void createCylinder(double radius, double height, int sides);
+    void createCylinder(double radius, double height, int sides, double xPos = 0, double yPos = 0, double zPos = 0);
 
     /**
      * @brief Clear this mesh

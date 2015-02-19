@@ -379,16 +379,6 @@ bool CT_LASHeader::read(QDataStream &stream, QString &error)
     readData(_maxCoordinates(2), QObject::tr("Max Z invalid"));
     readData(_minCoordinates(2), QObject::tr("Min Z invalid"));
 
-    float x, y, z;
-    PS_COORDINATES_SYS->convertImport(get_minX(), get_minY(), get_minZ(), x, y, z);
-    _minCoordinates(0) = x;
-    _minCoordinates(1) = y;
-    _minCoordinates(2) = z;
-    PS_COORDINATES_SYS->convertImport(get_maxX(), get_maxY(), get_maxZ(), x, y, z);
-    _maxCoordinates(0) = x;
-    _maxCoordinates(1) = y;
-    _maxCoordinates(2) = z;
-
     setCenterX((maxX() + minX())/2.0);
     setCenterY((maxY() + minY())/2.0);
     setCenterZ((maxZ() + minZ())/2.0);

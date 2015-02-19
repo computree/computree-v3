@@ -20,6 +20,13 @@ public:
      */
     CT_AbstractGlobalCloudManager* globalCloudManager() const;
 
+protected:
+
+    friend class CT_AbstractCloudRegistered;
+
+    void internalRegisterCloud(CT_AbstractCloudRegistered *cr);
+    bool internalUnregisterCloud(const CT_AbstractCloudRegistered *cr);
+
     /**
      * @brief Called when the global cloud is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
      */
@@ -29,13 +36,6 @@ public:
      * @brief Called when the size of the global cloud has increased
      */
     void cloudAdded(const size_t &size);
-
-protected:
-
-    friend class CT_AbstractCloudRegistered;
-
-    void internalRegisterCloud(CT_AbstractCloudRegistered *cr);
-    bool internalUnregisterCloud(const CT_AbstractCloudRegistered *cr);
 
 private:
 

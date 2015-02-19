@@ -6,11 +6,17 @@
 CT_MutablePointIterator::CT_MutablePointIterator(const CT_AbstractPointCloudIndex *pci)
 {
     m_it = new CT_PointIterator(pci);
+
+    // get the coordinate system manager
+    m_csm = PS_COORDINATES_SYS_MANAGER;
 }
 
 CT_MutablePointIterator::CT_MutablePointIterator(CT_CIR cir)
 {
     m_it = new CT_PointIterator(cir);
+
+    // get the coordinate system manager
+    m_csm = PS_COORDINATES_SYS_MANAGER;
 }
 
 CT_MutablePointIterator::CT_MutablePointIterator(const CT_MutablePointIterator &it)
@@ -19,6 +25,9 @@ CT_MutablePointIterator::CT_MutablePointIterator(const CT_MutablePointIterator &
         m_it = NULL;
     else
         m_it = new CT_PointIterator(*it.m_it);
+
+    // get the coordinate system manager
+    m_csm = PS_COORDINATES_SYS_MANAGER;
 }
 
 CT_MutablePointIterator::~CT_MutablePointIterator()
@@ -89,41 +98,24 @@ const CT_Point &CT_MutablePointIterator::currentPoint() const
     return m_it->currentPoint();
 }
 
-void CT_MutablePointIterator::replaceCurrentPoint(const CT_Point &p, const CT_AbstractCoordinateSystem *coordinateSystem)
-{
-    CT_PointData &pData = m_it->currentInternalPoint();
-
-    if(coordinateSystem == NULL) {
-        PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(0)->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(currentGlobalIndex(), 0);
-    } else {
-        coordinateSystem->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-        PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(currentGlobalIndex(), PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(coordinateSystem));
-    }
-
-}
-
-void CT_MutablePointIterator::replaceCurrentPoint(const CT_Point &p, const GLuint &coordinateSystemGlobalIndex)
-{
-    CT_AbstractCoordinateSystem *coordinateSystem = PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(coordinateSystemGlobalIndex);
-
-    CT_PointData &pData = m_it->currentInternalPoint();
-
-    coordinateSystem->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
-
-    PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(currentGlobalIndex(), coordinateSystemGlobalIndex);
-}
-
 void CT_MutablePointIterator::replaceCurrentPoint(const CT_Point &p)
 {
-    CT_AbstractCoordinateSystem *coordinateSystem = currentCoordinateSystem();
-
+    // get the internal point
     CT_PointData &pData = m_it->currentInternalPoint();
 
+    GLuint csIndex;
+
+    // compute the coordinate system to use
+    CT_AbstractCoordinateSystem *coordinateSystem = m_csm->computeCoordinateSystemForPoint(p, csIndex);
+
+    // set for this point it's index
+    m_csm->setCoordinateSystemForPointAt(m_it->currentGlobalIndex(), csIndex);
+
+    // convert the point
     coordinateSystem->convertImport(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), pData(CT_PointData::X), pData(CT_PointData::Y), pData(CT_PointData::Z));
 }
 
-CT_PointData &CT_MutablePointIterator::currentInternalPoint()
+CT_PointData& CT_MutablePointIterator::currentInternalPoint()
 {
     return m_it->currentInternalPoint();
 }
@@ -133,24 +125,17 @@ const CT_PointData& CT_MutablePointIterator::currentConstInternalPoint() const
     return m_it->currentConstInternalPoint();
 }
 
-void CT_MutablePointIterator::replaceCurrentInternalPoint(const CT_PointData &p, const GLuint &coordinateSystemGlobalIndex)
-{
-    CT_PointData &pData = m_it->currentInternalPoint();
-    pData = p;
-
-    PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(currentGlobalIndex(), coordinateSystemGlobalIndex);
-}
-
 void CT_MutablePointIterator::replaceCurrentInternalPoint(const CT_PointData &p)
 {
     CT_PointData &pData = m_it->currentInternalPoint();
     pData = p;
 }
 
-void CT_MutablePointIterator::replaceCurrentInternalPoint(const CT_PointData &p, const CT_AbstractCoordinateSystem *coordinateSystem)
+void CT_MutablePointIterator::replaceCurrentInternalPoint(const CT_PointData &p, const GLuint &csIndex)
 {
     CT_PointData &pData = m_it->currentInternalPoint();
     pData = p;
 
-    PS_COORDINATES_SYS_MANAGER->setCoordinateSystemForPointAt(currentGlobalIndex(), PS_COORDINATES_SYS_MANAGER->indexOfCoordinateSystem(coordinateSystem));
+    // set for this point it's index
+    m_csm->setCoordinateSystemForPointAt(m_it->currentGlobalIndex(), csIndex);
 }

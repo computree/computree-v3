@@ -40,7 +40,6 @@
 #include "ct_resultgroup.h"
 
 #include "ct_global/ct_context.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include "ct_iterator/ct_mutablepointiterator.h"
 
@@ -120,7 +119,6 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
 
     CT_MutablePointIterator it(pcir);
     CT_Point pReaded;
-    GLuint indexOfCoordinateSystem = 0;
 
     double xmin = std::numeric_limits<float>::max();
     double ymin = std::numeric_limits<float>::max();
@@ -145,17 +143,12 @@ void CT_AbstractStepLoadFileInScene::readDataFile(QFile &f, int offset, bool lit
         f.read(d_data, 2);
         //getShort(d_data); // reflectance
 
-        if(a == 0) {
-            if (fabs(x) > 1000 || fabs(y) > 1000 || fabs(z) > 1000)
-                indexOfCoordinateSystem = (new CT_DefaultCoordinateSystem(x, y, z, this))->indexInManager();
-        }
-
         pReaded(0) = x;
         pReaded(1) = y;
         pReaded(2) = z;
 
         it.next();
-        it.replaceCurrentPoint(pReaded, indexOfCoordinateSystem);
+        it.replaceCurrentPoint(pReaded);
 
         if (x<xmin) {xmin = (float)x;}
 

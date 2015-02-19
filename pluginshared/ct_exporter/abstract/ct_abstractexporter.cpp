@@ -190,13 +190,8 @@ bool CT_AbstractExporter::exportToFile()
 
     d->_progress = 0;
 
-    PS_COORDINATES_SYS_MANAGER->initUsedOfAllCoordinateSystem();
-
     if(!protectedExportToFile())
         return false;
-
-    if(!PS_COORDINATES_SYS_MANAGER->wasAtLeastOneUsed())
-        PS_LOG->addErrorMessage(LogInterface::exporter, tr("Exporter error ! The exporter has not used the coordinate system !"));
 
     d->_progress = 100;
 
@@ -271,11 +266,6 @@ void CT_AbstractExporter::addNewExportFormat(const FileFormat &format)
     Q_D(CT_AbstractExporter);
 
     d->_formats.append(format);
-}
-
-void CT_AbstractExporter::setNotNeedToUseCoordinateSystem()
-{
-    PS_COORDINATES_SYS->informThatUsed();
 }
 
 void CT_AbstractExporter::setExportProgress(int progress)

@@ -39,16 +39,6 @@ public:
      */
     CT_AbstractNotModifiableCIR mergeCloudContiguous(const QList< CT_AbstractCIR > &cir_collection);
 
-    /**
-     * @brief Called when the global cloud is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
-     */
-    void cloudDeleted(const size_t &beginIndex, const size_t &size);
-
-    /**
-     * @brief Called when the size of the global cloud has increased
-     */
-    void cloudAdded(const size_t &size) { Q_UNUSED(size) }
-
 private:
 
     /**
@@ -56,7 +46,6 @@ private:
      */
     CT_AbstractGlobalCloudManagerT<T>                           *m_gcManager;
 
-private:
     void syncModifiableIndexRegistered(const size_t &beginIndex, const size_t &size);
     void syncLessMemoryIndexRegistered(const size_t &beginIndex, const size_t &size);
 
@@ -70,6 +59,18 @@ private:
     static bool staticFindIf(void *context, const size_t &value);
     static bool staticShiftIf(void *context, const size_t &value);
     static bool staticRemoveIf(void *context, const size_t &value);
+
+protected:
+
+    /**
+     * @brief Called when the global cloud is imputed of elements between beginIndex and endIndex (endIndex = beginIndex+size).
+     */
+    void cloudDeleted(const size_t &beginIndex, const size_t &size);
+
+    /**
+     * @brief Called when the size of the global cloud has increased
+     */
+    void cloudAdded(const size_t &size) { Q_UNUSED(size) }
 };
 
 #include "ct_cloudindex/tools/ct_cloudindexregistrationmanagert.hpp"

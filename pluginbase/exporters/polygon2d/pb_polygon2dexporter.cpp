@@ -93,25 +93,16 @@ bool PB_Polygon2DExporter::protectedExportToFile()
         stream << "# Format:\n";
         stream << "PolygonId\tAreaOfPolygon\tXcenter\tYcenter\tNumberOfVertice(N)\tXvertice1\tYvertice1\tXvertice2\tYvertice2\t...\tXverticeN\tYverticeN\n";
 
-        CT_AbstractCoordinateSystem::realIm x, y, z;
-        CT_AbstractCoordinateSystem::realEx xc, yc, zc;
-
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
         while (it.hasNext())
         {
             CT_Polygon2D* item = dynamic_cast<CT_Polygon2D*>(it.next());
             item->computeCentroid();
 
-            x = item->getCenterX();
-            y = item->getCenterY();
-            z = item->getCenterZ();
-
-            PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
-
             stream << item->id() << "\t";
             stream << item->getArea() << "\t";
-            stream << (double)xc << "\t";
-            stream << (double)yc << "\t";
+            stream << item->getCenterX() << "\t";
+            stream << item->getCenterY() << "\t";
             stream << item->getNumberOfVertices();
 
             if (item->getNumberOfVertices() > 0)
@@ -120,15 +111,10 @@ bool PB_Polygon2DExporter::protectedExportToFile()
                 for (int i = 0 ; i < vertices.size() ; i++)
                 {
                     Eigen::Vector2d* vertice = vertices.at(i);
-                    x = (*vertice)(0);
-                    y = (*vertice)(1);
-                    z = item->getCenterZ();
-
-                    PS_COORDINATES_SYS->convertExport(x, y, z, xc, yc, zc);
 
                     stream << "\t";
-                    stream << (double)xc << "\t";
-                    stream << (double)yc;
+                    stream << (*vertice)(0) << "\t";
+                    stream << (*vertice)(1);
                 }
             }
             stream << "\n";

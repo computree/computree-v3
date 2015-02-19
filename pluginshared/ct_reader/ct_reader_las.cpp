@@ -6,7 +6,6 @@
 #include "ct_itemdrawable/ct_pointsattributesscalarmaskt.h"
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 #include "ct_iterator/ct_mutablepointiterator.h"
 
 #include <QMessageBox>
@@ -173,10 +172,7 @@ bool CT_Reader_LAS::protectedReadFile()
     size_t nPoints = ((CT_LASHeader*)m_header)->getPointsRecordCount();
 
     if(nPoints == 0)
-    {
-        setNotNeedToUseCoordinateSystem();
         return true;
-    }
 
     bool ok = false;
 
@@ -191,9 +187,6 @@ bool CT_Reader_LAS::protectedReadFile()
 
             delete m_header;
             m_header = readHeader(error);
-
-            // create a new coordinate system for this scene.
-            GLuint csIndex = (new CT_DefaultCoordinateSystem(((CT_LASHeader*)m_header)->get_minX(), ((CT_LASHeader*)m_header)->get_minY(), ((CT_LASHeader*)m_header)->get_minZ(), this))->indexInManager();
 
             setToolTip(((CT_LASHeader*)m_header)->toString());
 
@@ -349,7 +342,7 @@ bool CT_Reader_LAS::protectedReadFile()
                 pAdded(1) = yc;
                 pAdded(2) = zc;
 
-                it.next().replaceCurrentPoint(pAdded, csIndex);
+                it.next().replaceCurrentPoint(pAdded);
 
                 pos += ((CT_LASHeader*)m_header)->m_pointDataRecordLength;
                 f.seek(pos);

@@ -43,7 +43,6 @@
 #include "ct_itemdrawable/ct_pointsattributesnormal.h"
 #include "ct_colorcloud/ct_colorcloudstdvector.h"
 #include "ct_normalcloud/ct_normalcloudstdvector.h"
-#include "ct_coordinates/ct_defaultcoordinatesystem.h"
 
 #include "ct_point.h"
 #include "ct_normal.h"
@@ -413,8 +412,6 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
     int nPoints = 0;
     int nLine = 0;
     double currentX, currentY, currentZ, currentIntensity;
-    bool first = true;
-    GLuint csIndex = 0;
     CT_Normal currentNormal;
     CT_Color currentRGB;
 
@@ -583,15 +580,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 if ( currentIntensity > imax )
                     imax = currentIntensity;
 
-                if(first) {
-                    first = false;
-
-                    if(fabs(currentX) > 1000 || fabs(currentY) > 1000 || fabs(currentZ) > 1000)
-                        csIndex = (new CT_DefaultCoordinateSystem(currentX, currentY, currentZ, this))->indexInManager();
-                }
-
                 // Add this point to the point cloud
-                uspc->addPoint( Eigen::Vector3d(currentX, currentY, currentZ), csIndex );
+                uspc->addPoint( createCtPoint(currentX, currentY, currentZ));
 
                 if (collection != NULL && oki)
                 {

@@ -19,16 +19,7 @@ public:
     CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
                                CT_AbstractCoordinateSystem::realEx y,
                                CT_AbstractCoordinateSystem::realEx z,
-                               const CT_VirtualAbstractStep *step);
-
-
-    CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
-                               CT_AbstractCoordinateSystem::realEx y,
-                               CT_AbstractCoordinateSystem::realEx z,
                                const CT_AbstractReader *reader);
-
-    CT_DefaultCoordinateSystem(const Eigen::Vector3d &v,
-                               const CT_VirtualAbstractStep *step);
 
     CT_DefaultCoordinateSystem(const Eigen::Vector3d &v,
                                const CT_AbstractReader *reader);
@@ -105,6 +96,12 @@ protected:
     friend class CT_CoordinateSystemManager;
 
     CT_DefaultCoordinateSystem();
+
+    CT_DefaultCoordinateSystem(const Eigen::Vector3d &v);
+
+    CT_DefaultCoordinateSystem(CT_AbstractCoordinateSystem::realEx x,
+                               CT_AbstractCoordinateSystem::realEx y,
+                               CT_AbstractCoordinateSystem::realEx z);
 };
 
 #endif // CT_DEFAULTCOORDINATESYSTEM_H
