@@ -104,7 +104,7 @@ CT_VirtualAbstractStep* PB_StepMatchItemsPositions::createNewInstance(CT_StepIni
 // Creation and affiliation of IN models
 void PB_StepMatchItemsPositions::createInResultModelListProtected()
 {
-    CT_InResultModelGroup *resIn_refpos = createNewInResultModel(DEFin_Resrefpos, tr("Positions de référence"));
+    CT_InResultModelGroup *resIn_refpos = createNewInResultModel(DEFin_Resrefpos, tr("Positions de référence"), "", true);
     resIn_refpos->setZeroOrMoreRootGroup();
     resIn_refpos->addGroupModel("", DEFin_grpref, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_refpos->addItemModel(DEFin_grpref, DEFin_refpos, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item de référence"));
@@ -113,7 +113,7 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refvalue, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::NUMBER, tr("Valeur"));
 
-    CT_InResultModelGroup *resIn_transpos = createNewInResultModel(DEFin_Restranspos, tr("Positions à transformer"));
+    CT_InResultModelGroup *resIn_transpos = createNewInResultModel(DEFin_Restranspos, tr("Positions à transformer"), "", true);
     resIn_transpos->setZeroOrMoreRootGroup();
     resIn_transpos->addGroupModel("", DEFin_grptrans, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_transpos->addItemModel(DEFin_grptrans, DEFin_transpos, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à transformer"));
