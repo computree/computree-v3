@@ -62,6 +62,7 @@
 #include "step/pb_stepimportsegmafilesformatching.h"
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_steptransformpointcloud.h"
+#include "step/pb_stepfilteritemsbyposition.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -206,6 +207,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepManualInventory(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSelectGroupsByReferenceHeight(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Sources de données")));

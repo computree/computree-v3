@@ -17,6 +17,7 @@
 #include <eigen/Eigen/Geometry>
 #include <QFile>
 #include <QTextStream>
+#include <limits>
 
 // Alias for indexing models
 #define DEFin_Resrefpos "Resrefpos"
@@ -278,12 +279,30 @@ void PB_StepMatchItemsPositions::compute()
         cptTrans++;
     }
     
+    Eigen::Vector2d minRef, maxRef;
+
+    // Ref Bounding Box
+    minRef(0) = std::numeric_limits<double>::max();
+    minRef(1) = std::numeric_limits<double>::max();
+    maxRef(0) = -std::numeric_limits<double>::max();
+    maxRef(1) = -std::numeric_limits<double>::max();
+
     // Convert values to relatives values
     double deltaRef = maxRefValue - minRefValue;
     for (int i = 0 ; i < refPositions.size() ; i++)
     {
         refPositions[i].second = (refPositions.at(i).second - minRefValue) / deltaRef;
+
+        if (refPositions[i].first(0) < minRef(0)) {minRef(0) = refPositions[i].first(0);}
+        if (refPositions[i].first(1) < minRef(1)) {minRef(1) = refPositions[i].first(1);}
+        if (refPositions[i].first(0) > maxRef(0)) {maxRef(0) = refPositions[i].first(0);}
+        if (refPositions[i].first(1) > maxRef(1)) {maxRef(1) = refPositions[i].first(1);}
     }
+
+    minRef(0) -= _distThreshold;
+    minRef(1) -= _distThreshold;
+    maxRef(0) += _distThreshold;
+    maxRef(1) += _distThreshold;
 
     double deltaTrans = maxTransValue - minTransValue;
     for (int i = 0 ; i < transPositions.size() ; i++)
@@ -300,11 +319,11 @@ void PB_StepMatchItemsPositions::compute()
     Eigen::Vector2d delta;
     Eigen::Vector2d vectRef;
     Eigen::Vector2d vectTrans;
+    Eigen::Vector2d minTrans, maxTrans;
+
 
     double cosTheta, theta, orientation, vectTransNorm, dist, trVal, rfVal, sizeDiff, globalScore;
     int Nbref_with_Corresp, Nbtrans_with_Corresp, NbtransRef_Similarity;
-    int refCounter, transCounter, i, j;
-
 
     Eigen::Matrix2d rotationMatrix;
     Eigen::Matrix2d rotation;
@@ -312,12 +331,18 @@ void PB_StepMatchItemsPositions::compute()
     int refPositionSize = refPositions.size();
     int transPositionsSize = transPositions.size();
 
+    QVector<bool> refPosCount(refPositionSize);
+    QVector<bool> transPosCount(transPositionsSize);
+    QVector<bool> similarPosCount(transPositionsSize);
+
+    const double M_PIx2 = 2.0 * M_PI;
+
     // Points Matching algorithm
-    for (refCounter = 0 ; refCounter < refPositionSize && !isStopped(); refCounter++)
+    for (int refCounter = 0 ; refCounter < refPositionSize && !isStopped(); refCounter++)
     {
         const Eigen::Vector2d &refPos = refPositions.at(refCounter).first;
 
-        for (transCounter = 0 ; transCounter < transPositionsSize && !isStopped(); transCounter++)
+        for (int transCounter = 0 ; transCounter < transPositionsSize && !isStopped(); transCounter++)
         {
 
             const Eigen::Vector2d &transPos = transPositions.at(transCounter).first;
@@ -329,9 +354,8 @@ void PB_StepMatchItemsPositions::compute()
             if (transVal >= _relativeSizeThreshold)
             {
                 // Search for second trans point
-                for (i = 0 ; i < transPositionsSize && !isStopped() ; i++)
+                for (int i = 0 ; i < transPositionsSize && !isStopped() ; i++)
                 {
-                   // qDebug() << "i=" << i;
 
                     if (i != transCounter)
                     {
@@ -340,7 +364,7 @@ void PB_StepMatchItemsPositions::compute()
                         vectTransNorm = vectTrans.norm();
 
                         // Search for second ref point
-                        for (j = 0 ; j < refPositionSize && !isStopped() ; j++)
+                        for (int j = 0 ; j < refPositionSize && !isStopped() ; j++)
                         {
 
                             if (j != refCounter)
@@ -359,17 +383,35 @@ void PB_StepMatchItemsPositions::compute()
 
                                     orientation = vectRef.x()*vectTrans.y() - vectRef.y()*vectTrans.x();
 
-                                    if (orientation < 0) {theta = 3.0*M_PI/2.0 + (M_PI/2.0 - theta);}
+                                    if (orientation < 0) {theta = M_PIx2 - theta;}
 
                                     rotation << cos(theta), -sin(theta),
                                                 sin(theta),  cos(theta);
 
+                                    // Ref Bounding Box
+                                    minTrans(0) = std::numeric_limits<double>::max();
+                                    minTrans(1) = std::numeric_limits<double>::max();
+                                    maxTrans(0) = -std::numeric_limits<double>::max();
+                                    maxTrans(1) = -std::numeric_limits<double>::max();
+
                                     // Apply translation and rotation to all trans points
                                     for (int k = 0 ; k < transPositionsTmp.size() ; k++)
                                     {
-                                        transPositionsTmp[k].first = transPositions[k].first + delta;
-                                        transPositionsTmp[k].first = rotation*(transPositionsTmp[k].first - refPos) + refPos;
+                                        transPositionsTmp[k].first = rotation*(transPositions[k].first + delta - refPos) + refPos;
+
+                                        const QPair<Eigen::Vector2d, double> &pair = transPositionsTmp.at(k);
+
+                                        if (pair.first(0) < minTrans(0)) {minTrans(0) = pair.first(0);}
+                                        if (pair.first(1) < minTrans(1)) {minTrans(1) = pair.first(1);}
+                                        if (pair.first(0) > maxTrans(0)) {maxTrans(0) = pair.first(0);}
+                                        if (pair.first(1) > maxTrans(1)) {maxTrans(1) = pair.first(1);}
                                     }
+
+                                    minTrans(0) -= _distThreshold;
+                                    minTrans(1) -= _distThreshold;
+                                    maxTrans(0) += _distThreshold;
+                                    maxTrans(1) += _distThreshold;
+
 
                                     // Compute match scores
 
@@ -380,48 +422,58 @@ void PB_StepMatchItemsPositions::compute()
                                     // Number of trans points with a ref point within _distThreshold AND relatives sizes are similar (difference < _relativeSizeThreshold)
                                     NbtransRef_Similarity = 0;
 
-                                    for (int rf = 0 ; rf < refPositions.size() ; rf++)
+                                    refPosCount.fill(false);
+                                    transPosCount.fill(false);
+                                    similarPosCount.fill(false);
+
+                                    for (int tr = 0 ; tr < transPositionsSize; tr++)
                                     {
-                                        const Eigen::Vector2d &rfPos = refPositions.at(rf).first;
-                                        bool trFound = false;
+                                        const Eigen::Vector2d &trPos = transPositionsTmp.at(tr).first;
+                                        trVal = transPositionsTmp.at(tr).second;
 
-                                        for (int tr = 0 ; tr < transPositionsTmp.size() && !trFound; tr++)
+                                        if (trPos(0) > minRef(0) &&
+                                            trPos(1) > minRef(1) &&
+                                            trPos(0) < minRef(0) &&
+                                            trPos(1) < minRef(1))
                                         {
-                                            const Eigen::Vector2d &trPos = transPositionsTmp.at(tr).first;
-                                            dist = (trPos - rfPos).norm();
 
-                                            if (dist < _distThreshold)
+                                            for (int rf = 0 ; rf < refPositionSize; rf++)
                                             {
-                                                Nbref_with_Corresp++;
-                                                trFound = true;
+                                                const Eigen::Vector2d &rfPos = refPositions.at(rf).first;
+
+                                                if (rfPos(0) > minTrans(0) &&
+                                                    rfPos(1) > minTrans(1) &&
+                                                    rfPos(0) < maxTrans(0) &&
+                                                    rfPos(1) < maxTrans(1))
+                                                {
+                                                    rfVal = refPositions.at(rf).second;
+                                                    dist = (trPos - rfPos).norm();
+
+                                                    if (dist < _distThreshold)
+                                                    {
+                                                        refPosCount[rf] = true;
+                                                        transPosCount[tr] = true;
+
+                                                        sizeDiff = fabs(rfVal - trVal);
+                                                        if (sizeDiff < _relativeSizeThreshold)
+                                                        {
+                                                            similarPosCount[tr] = true;
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
 
-                                    for (int tr = 0 ; tr < transPositionsTmp.size(); tr++)
+                                    for (int rf = 0 ; rf < refPositionSize; rf++)
                                     {
-                                        const Eigen::Vector2d &trPos = transPositionsTmp.at(tr).first;
-                                        trVal = transPositionsTmp.at(tr).second;
-                                        bool rfSimilar = false;
+                                        if (refPosCount[rf]) {Nbref_with_Corresp++;}
+                                    }
 
-                                        for (int rf = 0 ; rf < refPositions.size() && !rfSimilar; rf++)
-                                        {
-                                            const Eigen::Vector2d &rfPos = refPositions.at(rf).first;
-                                            rfVal = refPositions.at(rf).second;
-                                            dist = (trPos - rfPos).norm();
-
-                                            if (dist < _distThreshold)
-                                            {
-                                                Nbtrans_with_Corresp++;
-                                                sizeDiff = fabs(rfVal - trVal);
-
-                                                if (sizeDiff < _relativeSizeThreshold)
-                                                {
-                                                    NbtransRef_Similarity++;
-                                                    rfSimilar = true;
-                                                }
-                                            }
-                                        }
+                                    for (int tr = 0 ; tr < transPositionsSize; tr++)
+                                    {
+                                        if (transPosCount[tr]) {Nbtrans_with_Corresp++;}
+                                        if (similarPosCount[tr]) {NbtransRef_Similarity++;}
                                     }
 
                                     // Compute global score

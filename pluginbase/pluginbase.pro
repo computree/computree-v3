@@ -79,7 +79,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepbeginloopthroughgroups.h \
     step/pb_stepcreatedatasource.h \
     step/pb_steploaddatafromitemposition.h \
-    step/pb_steptransformpointcloud.h
+    step/pb_steptransformpointcloud.h \
+    step/pb_stepfilteritemsbyposition.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -156,7 +157,8 @@ SOURCES += \
     step/pb_stepbeginloopthroughgroups.cpp \
     step/pb_stepcreatedatasource.cpp \
     step/pb_steploaddatafromitemposition.cpp \
-    step/pb_steptransformpointcloud.cpp
+    step/pb_steptransformpointcloud.cpp \
+    step/pb_stepfilteritemsbyposition.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
