@@ -10,7 +10,6 @@
 
 CT_AbstractReader::CT_AbstractReader()
 {
-    m_deleteHeader = true;
     m_header = NULL;
     m_outHeaderModel = NULL;
     m_filePath = "";
@@ -24,7 +23,7 @@ CT_AbstractReader::~CT_AbstractReader()
     clearOutGroupsModel();
     clearOutGroups();
 
-    if (m_deleteHeader && m_header!=NULL)
+    if (m_header!=NULL)
     {
         delete m_header;
     }
@@ -83,29 +82,23 @@ bool CT_AbstractReader::isValid()
 }
 
 
-CT_FileHeader *CT_AbstractReader::takeHeader(const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
+CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
 {
-    Q_ASSERT_X(m_deleteHeader, "CT_FileHeader", "Can't take the header twice !");
-
-    if (m_deleteHeader && m_header!=NULL)
+    if (m_header!=NULL)
     {
-        m_deleteHeader = false;
-
-        if(result != NULL) {m_header->changeResult((CT_AbstractResult*)result);}
-        if(model != NULL) {m_header->setModel(model);}
-
-        return m_header;
+        CT_FileHeader* cpy = (CT_FileHeader*) m_header->copy(model, result, CT_ResultCopyModeList());
+        return cpy;
     }
     return NULL;
 }
 
-CT_FileHeader *CT_AbstractReader::takeHeader(const CT_AbstractResult *result, const QString &outModelName)
+CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result, const QString &outModelName)
 {
     CT_OutAbstractItemModel *model = dynamic_cast<CT_OutAbstractItemModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
 
     Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeHeader", "You want to take header and set it a new model searched by modelName but this model was not found or is not a itemdrawable model");
 
-    return takeHeader(result, model);
+    return takeHeaderCopy(result, model);
 }
 
 const CT_FileHeader *CT_AbstractReader::getHeader()

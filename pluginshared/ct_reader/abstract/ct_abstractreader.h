@@ -51,8 +51,8 @@ public:
       * The returned header has to be deleted by the object taking it
       *
       */
-    CT_FileHeader *takeHeader(const CT_AbstractResult *result, CT_OutAbstractItemModel *model);
-    CT_FileHeader *takeHeader(const CT_AbstractResult *result, const QString &outModelName);
+    CT_FileHeader *takeHeaderCopy(const CT_AbstractResult *result, CT_OutAbstractItemModel *model);
+    CT_FileHeader *takeHeaderCopy(const CT_AbstractResult *result, const QString &outModelName);
 
     /**
       * \brief Return the header object (read only)
@@ -352,7 +352,6 @@ private:
     int                                                     m_progress;
     bool                                                    m_error;
     bool                                                    m_stop;
-    mutable bool                                            m_deleteHeader;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();

@@ -203,7 +203,7 @@ void PB_StepGenericLoadFile::compute()
         CT_OutAbstractItemModel *headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(m_reader->outHeaderModel()->uniqueName(), out_res);
         if (headerModel != NULL)
         {
-            CT_FileHeader* header = m_reader->takeHeader(out_res, headerModel);
+            CT_FileHeader* header = m_reader->takeHeaderCopy(out_res, headerModel);
             if (header != NULL) {group->addItemDrawable(header);}
         }
 

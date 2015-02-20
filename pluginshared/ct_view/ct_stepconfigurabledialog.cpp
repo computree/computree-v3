@@ -144,6 +144,18 @@ bool CT_StepConfigurableDialog::addText(QString firstColumnLabelText,
     return false;
 }
 
+bool CT_StepConfigurableDialog::addTitle(QString titleText)
+{
+    if(_canEdit)
+    {
+        getLayout(_wid)->addWidget(new QLabel(titleText, _wid), _nRow, 0, 1, 3);
+        ++_nRow;
+
+        return true;
+    }
+
+    return false;
+}
 bool CT_StepConfigurableDialog::addInt(QString beforeLabelText,
             QString afterLabelText,
             int minValue,

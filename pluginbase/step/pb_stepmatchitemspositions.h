@@ -93,6 +93,8 @@ private:
     double      _distThreshold;
     double      _relativeSizeThreshold;
     double      _minRelativeSize;
+    double      _maxTheta;
+    bool        _possiblyInvertedDirection;
     double      _coef_nbRwc;
     double      _coef_nbTwc;
     double      _coef_nbSim;

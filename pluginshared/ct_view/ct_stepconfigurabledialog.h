@@ -86,6 +86,13 @@ public:
                  QString secondColumnLabelText,
                  QString thirdColumnLabelText);
 
+    /*! \brief Add a label line in the dialog (the text extends on the three columns)
+     *
+     * \param titleText Text to show.
+     */
+    bool addTitle(QString titleText);
+
+
     /*! \brief Add an int parameter input to a new line in the dialog
      *
      * The following graphic composants are automatically added to the next line of the dialog :\n

@@ -286,7 +286,7 @@ void PB_StepCreateDataSource::compute()
 
             if (headerModel != NULL)
             {
-                CT_FileHeader *header = reader->takeHeader(resultOut, headerModel);
+                CT_FileHeader *header = reader->takeHeaderCopy(resultOut, headerModel);
                 if (header != NULL) {grpHeader->addItemDrawable(header);}
             }
         }
@@ -296,7 +296,9 @@ void PB_StepCreateDataSource::compute()
         {
             CT_ResultGroup* resultOutLoad = outResultList.at(1);
 
-            if (dataSource->getNumberOfReader() > 0)
+            int numberOfReaders = dataSource->getNumberOfReader();
+            int cpt = 0;
+            if (numberOfReaders > 0)
             {
                 dataSource->init();
                 while (dataSource->activateNextReader())
@@ -330,6 +332,7 @@ void PB_StepCreateDataSource::compute()
                             grpLoad->addGroup(groupe);
                         }
                     }
+                    setProgress(100.0*(double)cpt++ / (double)numberOfReaders);
                 }
             }
         }

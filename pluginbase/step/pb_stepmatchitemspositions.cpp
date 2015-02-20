@@ -63,6 +63,8 @@ PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &da
     _distThreshold = 3;
     _relativeSizeThreshold = 0.2;
     _minRelativeSize = 0;
+    _maxTheta = 180;
+    _possiblyInvertedDirection = false;
     _coef_nbRwc = 1;
     _coef_nbTwc = 1;
     _coef_nbSim = 1;
@@ -174,20 +176,31 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
+    configDialog->addTitle(tr("<b>Critères d'affiliation des positions :</b>"));
+
     configDialog->addDouble(tr("Distance maximale entre points appariés :"), "m", 0, 100, 3, _distThreshold, 1);
     configDialog->addDouble(tr("Seuil de taille relative minimum entre items appariés :"), "", 0, 1, 2, _relativeSizeThreshold, 1);
     configDialog->addDouble(tr("Taille relative minimale :"), "", 0, 1, 2, _minRelativeSize, 1);
+    configDialog->addDouble(tr("Rotation maximale autorisée :"), "°", 0, 180, 2, _maxTheta);
+    configDialog->addBool(tr("Inversion de direction possible (+- 180°)"), "", "", _possiblyInvertedDirection);
+
+    configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>Critères de qualité de matching :</b>"));
+
     configDialog->addDouble(tr("Poid du critère Nb. pos. de référence ayant une pos. transformée proche :"), "", 0, 1000, 2, _coef_nbRwc);
     configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :"), "", 0, 1000, 2, _coef_nbTwc);
     configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche avec une taille similaire :"), "", 0, 1000, 2, _coef_nbSim);
 
-    configDialog->addText(tr("Mode de représentation :"), "", "");
+    configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>Mode de représentation :</b>"));
 
+    configDialog->addTitle(tr("Type de représentation :"));
     CT_ButtonGroup &bg_drawMode = configDialog->addButtonGroup(_drawMode);
 
     configDialog->addExcludeValue("", "", tr("Valeur Z"), bg_drawMode, 0);
     configDialog->addExcludeValue("", "", tr("Cercle"), bg_drawMode, 1);
-    configDialog->addText(tr("Comment représenter en Z la variable de taille ?"), "", "");
+
+    configDialog->addTitle(tr("Comment représenter en Z la variable de taille ?"));
 
     CT_ButtonGroup &bg_relativeMode = configDialog->addButtonGroup(_relativeMode);
 
@@ -205,6 +218,7 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
 
 void PB_StepMatchItemsPositions::compute()
 {
+    double maxThetaRad = M_PI*_maxTheta / 180.0;
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_refpos = inResultList.at(0);
@@ -239,7 +253,7 @@ void PB_StepMatchItemsPositions::compute()
         
         const CT_AbstractSingularItemDrawable* itemIn_refpos = (CT_AbstractSingularItemDrawable*)grpIn_grpref->firstItemByINModelName(this, DEFin_refpos);
         if (itemIn_refpos != NULL)
-        {            
+        {
             double xRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refx)->toDouble(itemIn_refpos, NULL);
             double yRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refy)->toDouble(itemIn_refpos, NULL);
             double valRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refvalue)->toDouble(itemIn_refpos, NULL);
@@ -383,110 +397,119 @@ void PB_StepMatchItemsPositions::compute()
 
                                     orientation = vectRef.x()*vectTrans.y() - vectRef.y()*vectTrans.x();
 
+
                                     if (orientation < 0) {theta = M_PIx2 - theta;}
 
-                                    rotation << cos(theta), -sin(theta),
+                                    bool rotationPossible = false;
+                                    if ((theta <= maxThetaRad) || (theta >= (M_PIx2 - maxThetaRad))) {rotationPossible = true;}
+                                    if (_possiblyInvertedDirection && ((theta >= (M_PI - maxThetaRad)) && (theta <= (M_PI + maxThetaRad)))) {rotationPossible = true;}
+
+                                    if (rotationPossible)
+                                    {
+                                        rotation << cos(theta), -sin(theta),
                                                 sin(theta),  cos(theta);
 
-                                    // Ref Bounding Box
-                                    minTrans(0) = std::numeric_limits<double>::max();
-                                    minTrans(1) = std::numeric_limits<double>::max();
-                                    maxTrans(0) = -std::numeric_limits<double>::max();
-                                    maxTrans(1) = -std::numeric_limits<double>::max();
+                                        // Ref Bounding Box
+                                        minTrans(0) = std::numeric_limits<double>::max();
+                                        minTrans(1) = std::numeric_limits<double>::max();
+                                        maxTrans(0) = -std::numeric_limits<double>::max();
+                                        maxTrans(1) = -std::numeric_limits<double>::max();
 
-                                    // Apply translation and rotation to all trans points
-                                    for (int k = 0 ; k < transPositionsTmp.size() ; k++)
-                                    {
-                                        transPositionsTmp[k].first = rotation*(transPositions[k].first + delta - refPos) + refPos;
-
-                                        const QPair<Eigen::Vector2d, double> &pair = transPositionsTmp.at(k);
-
-                                        if (pair.first(0) < minTrans(0)) {minTrans(0) = pair.first(0);}
-                                        if (pair.first(1) < minTrans(1)) {minTrans(1) = pair.first(1);}
-                                        if (pair.first(0) > maxTrans(0)) {maxTrans(0) = pair.first(0);}
-                                        if (pair.first(1) > maxTrans(1)) {maxTrans(1) = pair.first(1);}
-                                    }
-
-                                    minTrans(0) -= _distThreshold;
-                                    minTrans(1) -= _distThreshold;
-                                    maxTrans(0) += _distThreshold;
-                                    maxTrans(1) += _distThreshold;
-
-
-                                    // Compute match scores
-
-                                    // Number of ref points with a trans point within _distThreshold
-                                    Nbref_with_Corresp = 0;
-                                    // Number of trans points with a ref point within _distThreshold
-                                    Nbtrans_with_Corresp = 0;
-                                    // Number of trans points with a ref point within _distThreshold AND relatives sizes are similar (difference < _relativeSizeThreshold)
-                                    NbtransRef_Similarity = 0;
-
-                                    refPosCount.fill(false);
-                                    transPosCount.fill(false);
-                                    similarPosCount.fill(false);
-
-                                    for (int tr = 0 ; tr < transPositionsSize; tr++)
-                                    {
-                                        const Eigen::Vector2d &trPos = transPositionsTmp.at(tr).first;
-                                        trVal = transPositionsTmp.at(tr).second;
-
-                                        if (trPos(0) > minRef(0) &&
-                                            trPos(1) > minRef(1) &&
-                                            trPos(0) < minRef(0) &&
-                                            trPos(1) < minRef(1))
+                                        // Apply translation and rotation to all trans points
+                                        for (int k = 0 ; k < transPositionsTmp.size() ; k++)
                                         {
+                                            transPositionsTmp[k].first = rotation*(transPositions[k].first + delta - refPos) + refPos;
 
-                                            for (int rf = 0 ; rf < refPositionSize; rf++)
+                                            const QPair<Eigen::Vector2d, double> &pair = transPositionsTmp.at(k);
+
+                                            if (pair.first(0) < minTrans(0)) {minTrans(0) = pair.first(0);}
+                                            if (pair.first(1) < minTrans(1)) {minTrans(1) = pair.first(1);}
+                                            if (pair.first(0) > maxTrans(0)) {maxTrans(0) = pair.first(0);}
+                                            if (pair.first(1) > maxTrans(1)) {maxTrans(1) = pair.first(1);}
+                                        }
+
+                                        minTrans(0) -= _distThreshold;
+                                        minTrans(1) -= _distThreshold;
+                                        maxTrans(0) += _distThreshold;
+                                        maxTrans(1) += _distThreshold;
+
+
+                                        // Compute match scores
+
+                                        // Number of ref points with a trans point within _distThreshold
+                                        Nbref_with_Corresp = 0;
+                                        // Number of trans points with a ref point within _distThreshold
+                                        Nbtrans_with_Corresp = 0;
+                                        // Number of trans points with a ref point within _distThreshold AND relatives sizes are similar (difference < _relativeSizeThreshold)
+                                        NbtransRef_Similarity = 0;
+
+                                        refPosCount.fill(false);
+                                        transPosCount.fill(false);
+                                        similarPosCount.fill(false);
+
+                                        for (int tr = 0 ; tr < transPositionsSize; tr++)
+                                        {
+                                            const Eigen::Vector2d &trPos = transPositionsTmp.at(tr).first;
+                                            trVal = transPositionsTmp.at(tr).second;
+
+                                            if (trPos(0) > minRef(0) &&
+                                                    trPos(1) > minRef(1) &&
+                                                    trPos(0) < minRef(0) &&
+                                                    trPos(1) < minRef(1))
                                             {
-                                                const Eigen::Vector2d &rfPos = refPositions.at(rf).first;
 
-                                                if (rfPos(0) > minTrans(0) &&
-                                                    rfPos(1) > minTrans(1) &&
-                                                    rfPos(0) < maxTrans(0) &&
-                                                    rfPos(1) < maxTrans(1))
+                                                for (int rf = 0 ; rf < refPositionSize; rf++)
                                                 {
-                                                    rfVal = refPositions.at(rf).second;
-                                                    dist = (trPos - rfPos).norm();
+                                                    const Eigen::Vector2d &rfPos = refPositions.at(rf).first;
 
-                                                    if (dist < _distThreshold)
+                                                    if (rfPos(0) > minTrans(0) &&
+                                                            rfPos(1) > minTrans(1) &&
+                                                            rfPos(0) < maxTrans(0) &&
+                                                            rfPos(1) < maxTrans(1))
                                                     {
-                                                        refPosCount[rf] = true;
-                                                        transPosCount[tr] = true;
+                                                        rfVal = refPositions.at(rf).second;
+                                                        dist = (trPos - rfPos).norm();
 
-                                                        sizeDiff = fabs(rfVal - trVal);
-                                                        if (sizeDiff < _relativeSizeThreshold)
+                                                        if (dist < _distThreshold)
                                                         {
-                                                            similarPosCount[tr] = true;
+                                                            refPosCount[rf] = true;
+                                                            transPosCount[tr] = true;
+
+                                                            sizeDiff = fabs(rfVal - trVal);
+                                                            if (sizeDiff < _relativeSizeThreshold)
+                                                            {
+                                                                similarPosCount[tr] = true;
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    for (int rf = 0 ; rf < refPositionSize; rf++)
-                                    {
-                                        if (refPosCount[rf]) {Nbref_with_Corresp++;}
-                                    }
+                                        for (int rf = 0 ; rf < refPositionSize; rf++)
+                                        {
+                                            if (refPosCount[rf]) {Nbref_with_Corresp++;}
+                                        }
 
-                                    for (int tr = 0 ; tr < transPositionsSize; tr++)
-                                    {
-                                        if (transPosCount[tr]) {Nbtrans_with_Corresp++;}
-                                        if (similarPosCount[tr]) {NbtransRef_Similarity++;}
-                                    }
+                                        for (int tr = 0 ; tr < transPositionsSize; tr++)
+                                        {
+                                            if (transPosCount[tr]) {Nbtrans_with_Corresp++;}
+                                            if (similarPosCount[tr]) {NbtransRef_Similarity++;}
+                                        }
 
-                                    // Compute global score
-                                    globalScore = _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
-                                                         _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
-                                                         _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
+                                        // Compute global score
+                                        globalScore = _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
+                                                _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
+                                                _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
 
-                                    if (globalScore > bestScore)
-                                    {
-                                        bestScore = globalScore;
-                                        translationVector = delta;
-                                        rotationMatrix = rotation;
-                                        rotationCenter = refPos;
+                                        if (globalScore > bestScore)
+                                        {
+                                            bestScore = globalScore;
+                                            translationVector = delta;
+                                            rotationMatrix = rotation;
+                                            rotationCenter = refPos;
+                                        }
+
                                     }
 
                                 }
@@ -505,16 +528,16 @@ void PB_StepMatchItemsPositions::compute()
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
-                Eigen::Vector3d tmp;
-                tmp[0] = transPositions[i].first[0];
-                tmp[1] = transPositions[i].first[1];
-                tmp[2] = 1;
-                tmp = transformationMatrix*tmp;
+        Eigen::Vector3d tmp;
+        tmp[0] = transPositions[i].first[0];
+        tmp[1] = transPositions[i].first[1];
+        tmp[2] = 1;
+        tmp = transformationMatrix*tmp;
 
-                transPositions[i].first[0] = tmp[0];
-                transPositions[i].first[1] = tmp[1];
-//        transPositions[i].first = transPositions[i].first + translationVector;
-//        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
+        transPositions[i].first[0] = tmp[0];
+        transPositions[i].first[1] = tmp[1];
+        //        transPositions[i].first = transPositions[i].first + translationVector;
+        //        transPositions[i].first = rotationMatrix*(transPositions[i].first - rotationCenter) + rotationCenter;
     }
 
     // Export transmorfed coordinates
@@ -539,12 +562,12 @@ void PB_StepMatchItemsPositions::compute()
         {
             const Eigen::Vector2d &transPos = transPositions.at(transCounter).first;
 
-             Eigen::Vector2d delta = (transPos - refPos);
+            Eigen::Vector2d delta = (transPos - refPos);
 
-             if (delta.norm() < _distThreshold)
-             {
-                 distances.insert(delta.norm(), QPair<int, int>(refCounter, transCounter));
-             }
+            if (delta.norm() < _distThreshold)
+            {
+                distances.insert(delta.norm(), QPair<int, int>(refCounter, transCounter));
+            }
         }
     }
 
@@ -553,7 +576,7 @@ void PB_StepMatchItemsPositions::compute()
     QMap<int, int> correspondances;
     while (!candidates.isEmpty())
     {
-        QPair<int, int> pair = candidates.takeFirst();       
+        QPair<int, int> pair = candidates.takeFirst();
         correspondances.insert(pair.first, pair.second);
 
         for (int i = candidates.size() - 1 ; i >= 0 ; i--)
@@ -609,14 +632,14 @@ void PB_StepMatchItemsPositions::compute()
     // Apply selected transformation to trans data
     for (int i = 0 ; i < transPositions.size() ; i++)
     {
-                Eigen::Vector3d tmp;
-                tmp[0] = transPositions[i].first[0];
-                tmp[1] = transPositions[i].first[1];
-                tmp[2] = 1;
-                tmp = transformationMatrix2*tmp;
+        Eigen::Vector3d tmp;
+        tmp[0] = transPositions[i].first[0];
+        tmp[1] = transPositions[i].first[1];
+        tmp[2] = 1;
+        tmp = transformationMatrix2*tmp;
 
-                transPositions[i].first[0] = tmp[0];
-                transPositions[i].first[1] = tmp[1];
+        transPositions[i].first[0] = tmp[0];
+        transPositions[i].first[1] = tmp[1];
     }
 
     // Quality criteria
