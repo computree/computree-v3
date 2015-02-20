@@ -94,10 +94,16 @@ private:
     // Step parameters
     QString                                         _readersListValue;
     QStringList                                     _filesList;
+    bool                                            _loadAllData;
 
     QMap<QString, QPair<CT_AbstractReader*, int> >  _readersMap;
     QList<CT_AbstractReader*>                       _readersInstancesList;
     CT_FileChoiceButton*                            _fileChoiceButton;
+
+    QList<CT_OutStdSingularItemModel*>  _itemModels;
+    QList<CT_OutStdGroupModel*>         _groupModels;
+
+
 
 };
 

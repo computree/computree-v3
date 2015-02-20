@@ -14,11 +14,14 @@
 
 
 // Alias for indexing models
-#define DEFout_res "res"
-#define DEFout_grp "grp"
-#define DEFout_datasource "datasource"
-#define DEFout_grpHeader "grpHeader"
-#define DEFout_header "header"
+#define DEFout_res "res_PB_StepCreateDataSource"
+#define DEFout_grp "grp_PB_StepCreateDataSource"
+#define DEFout_datasource "datasource_PB_StepCreateDataSource"
+#define DEFout_grpHeader "grpHeader_PB_StepCreateDataSource"
+#define DEFout_header "header_PB_StepCreateDataSource"
+
+#define DEFout_grpLoad "grpLoad_PB_StepCreateDataSource"
+#define DEFout_resultLoad "resultLoad_PB_StepCreateDataSource"
 
 
 // Constructor : initialization of parameters
@@ -26,6 +29,7 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
 {
     _readersListValue = "";
     _fileChoiceButton = NULL;
+    _loadAllData = false;
 
     // Create the available readers map
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
@@ -153,6 +157,8 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
 
     QObject::connect(comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(setFormat(QString)));
     if (_readersListValue != "") {setFormat(_readersListValue);}
+
+    configDialog->addBool(tr("Charger tous les fichiers"), "", "", _loadAllData);
 }
 
 // Creation and affiliation of OUT models
@@ -201,8 +207,9 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
 
         if (firstReader != NULL)
         {
-            CT_FileHeader *header = (CT_FileHeader*) firstReader->getHeader();
+            res_res->addItemModel(DEFout_grp, DEFout_datasource, dataSource, itemLabel);
 
+            CT_FileHeader *header = (CT_FileHeader*) firstReader->getHeader();
             if (header != NULL)
             {
                 CT_FileHeader *headerCpy = (CT_FileHeader*) header->copy(NULL, NULL, CT_ResultCopyModeList());
@@ -211,7 +218,39 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
                 res_res->addItemModel(DEFout_grpHeader, DEFout_header, headerCpy, tr("Entête"));
             }
 
-            res_res->addItemModel(DEFout_grp, DEFout_datasource, dataSource, itemLabel);
+
+
+
+            if (_loadAllData)
+            {
+                // Création du groupe racine
+                CT_OutStdGroupModel *root = new CT_OutStdGroupModel(DEFout_grpLoad);
+
+                _itemModels.clear();
+                _groupModels.clear();
+
+                _itemModels.append(firstReader->outItemDrawableModels());
+                _groupModels.append(firstReader->outGroupsModel());
+
+                // Ajout des modèles d'items
+                QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+                while (itIM.hasNext())
+                {
+                    CT_OutStdSingularItemModel* itemModel = itIM.next();
+                    root->addItem((CT_OutStdSingularItemModel*)itemModel->copy());
+                }
+
+                // Ajout des modèles de groupes
+                QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+                while (itGM.hasNext())
+                {
+                    CT_OutStdGroupModel* groupModel = itGM.next();
+                    root->addGroup((CT_OutStdGroupModel*)groupModel->copy());
+                }
+
+                // Ajout du modèle de résultat
+                addOutResultModel(new CT_OutResultModelGroup(DEFout_resultLoad, root, tr("Données chargées")));
+            }
         } else {
             delete dataSource;
         }
@@ -224,21 +263,21 @@ void PB_StepCreateDataSource::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* resultOut = outResultList.at(0);
 
-    CT_StandardItemGroup* grp= new CT_StandardItemGroup(DEFout_grp, resultOut);
+    CT_StandardItemGroup* grp = new CT_StandardItemGroup(DEFout_grp, resultOut);
     resultOut->addGroup(grp);
 
     CT_OutStdSingularItemModel* dataSourceModel = (CT_OutStdSingularItemModel*) PS_MODELS->searchModelForCreation(DEFout_datasource, resultOut);
 
     if (dataSourceModel != NULL)
     {
-        CT_DataSource* item_datasourceBase = (CT_DataSource*) dataSourceModel->itemDrawable();
-        CT_DataSource* item_datasource = (CT_DataSource*) item_datasourceBase->copy(dataSourceModel, resultOut, CT_ResultCopyModeList());
-        grp->addItemDrawable(item_datasource);
+        CT_DataSource* dataSourceBase = (CT_DataSource*) dataSourceModel->itemDrawable();
+        CT_DataSource* dataSource = (CT_DataSource*) dataSourceBase->copy(dataSourceModel, resultOut, CT_ResultCopyModeList());
+        grp->addItemDrawable(dataSource);
 
-        item_datasource->init();
-        while (item_datasource->activateNextReader())
+        dataSource->init();
+        while (dataSource->activateNextReader())
         {
-            QSharedPointer<CT_AbstractReader> reader = item_datasource->getActiveReader();
+            QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
 
             CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
             grp->addGroup(grpHeader);
@@ -249,6 +288,49 @@ void PB_StepCreateDataSource::compute()
             {
                 CT_FileHeader *header = reader->takeHeader(resultOut, headerModel);
                 if (header != NULL) {grpHeader->addItemDrawable(header);}
+            }
+        }
+
+        // Load files if checkbox checked
+        if (_loadAllData)
+        {
+            CT_ResultGroup* resultOutLoad = outResultList.at(1);
+
+            if (dataSource->getNumberOfReader() > 0)
+            {
+                dataSource->init();
+                while (dataSource->activateNextReader())
+                {
+                    QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
+
+                    if (reader->readFile())
+                    {
+                        CT_StandardItemGroup* grpLoad = new CT_StandardItemGroup(DEFout_grpLoad, resultOutLoad);
+                        resultOutLoad->addGroup(grpLoad);
+
+                        // Ajout des modèles d'items
+                        QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+                        while (itIM.hasNext())
+                        {
+                            CT_OutStdSingularItemModel* itemModel = itIM.next();
+
+                            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(itemModel->uniqueName(), resultOutLoad);
+                            CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), resultOutLoad, modelCreation);
+                            grpLoad->addItemDrawable(item);
+                        }
+
+                        // Ajout des modèles de groupes
+                        QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+                        while (itGM.hasNext())
+                        {
+                            CT_OutStdGroupModel* groupModel = itGM.next();
+
+                            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(groupModel->uniqueName(), resultOutLoad);
+                            CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), resultOutLoad, modelCreation);
+                            grpLoad->addGroup(groupe);
+                        }
+                    }
+                }
             }
         }
     }
