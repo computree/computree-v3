@@ -232,6 +232,9 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
                 _itemModels.append(firstReader->outItemDrawableModels());
                 _groupModels.append(firstReader->outGroupsModel());
 
+                // Ajout du modèle de header
+                root->addItem((CT_OutStdSingularItemModel*)firstReader->outHeaderModel()->copy());
+
                 // Ajout des modèles d'items
                 QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
                 while (itIM.hasNext())
@@ -310,7 +313,12 @@ void PB_StepCreateDataSource::compute()
                         CT_StandardItemGroup* grpLoad = new CT_StandardItemGroup(DEFout_grpLoad, resultOutLoad);
                         resultOutLoad->addGroup(grpLoad);
 
-                        // Ajout des modèles d'items
+                        // Ajout du header
+                        CT_OutAbstractItemModel *modelCreationH = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(reader->outHeaderModel()->uniqueName(), resultOutLoad);
+                        CT_AbstractSingularItemDrawable *itemH = reader->takeHeaderCopy(resultOutLoad, modelCreationH);
+                        grpLoad->addItemDrawable(itemH);
+
+                        // Ajout des items
                         QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
                         while (itIM.hasNext())
                         {
@@ -321,7 +329,7 @@ void PB_StepCreateDataSource::compute()
                             grpLoad->addItemDrawable(item);
                         }
 
-                        // Ajout des modèles de groupes
+                        // Ajout des groupes
                         QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
                         while (itGM.hasNext())
                         {
