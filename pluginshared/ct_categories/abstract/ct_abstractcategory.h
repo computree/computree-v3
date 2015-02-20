@@ -30,27 +30,36 @@ public:
      * @brief Type of value (boolean or number or string, etc...)
      */
     enum ValueType {
-        BOOLEAN       = 1,    // a boolean
+        BOOLEAN       = 1,      // a boolean
 
-        DOUBLE        = 2,    // a double (it's a NUMBER_REAL too)
-        FLOAT         = 4,    // un float (it's a NUMBER_REAL too)
-        LONG_DOUBLE   = 8,    // un long double (it's a NUMBER_REAL too)
+        DOUBLE        = 2,      // a double (it's a NUMBER_REAL too)
+        FLOAT         = 4,      // un float (it's a NUMBER_REAL too)
+        LONG_DOUBLE   = 8,      // un long double (it's a NUMBER_REAL too)
 
-        NUMBER_REAL   = 14,   // a real number (it's a NUMBER too)
+        NUMBER_REAL   = 14,     // a real number (it's a NUMBER too)
 
-        INT           = 16,   // a signed integer 32 or 64 bits (depending the compilation plateforme) (it's a NUMBER_INT too)
-        UINT64        = 32,   // a unsigned integer 64 bits (it's a NUMBER_INT too)
-        SIZE_T        = 64,   // un entier non signés 32 bits ou 64 bits (dépend de la plateforme de compilation) (it's a NUMBER_INT too)
+        INT16         = 16,     // a integer 16 bits (it's a NUMBER_INT too)
+        UINT16        = 32,     // a unsigned integer 16 bits (it's a NUMBER_INT too)
+        INT32         = 64,     // a signed integer 32 bits (it's a NUMBER_INT too)
+        UINT32        = 128,    // a unsigned integer 32 bits (it's a NUMBER_INT too)
+        INT64         = 256,    // a signed integer 64 bits (it's a NUMBER_INT too)
+        UINT64        = 512,    // a unsigned integer 64 bits (it's a NUMBER_INT too)
 
-        NUMBER_INT    = 112,  // a integer (it's a NUMBER too)
+#ifdef ENVIRONMENT64
+        SIZE_T        = UINT64,    // a unsigned integer 64 bits (it's a NUMBER_INT too)
+#else
+        SIZE_T        = UINT32,    // a unsigned integer 32 bits (it's a NUMBER_INT too)
+#endif
 
-        NUMBER        = 126,  // a number
+        NUMBER_INT    = 1008,   // a integer (it's a NUMBER too)
 
-        STRING        = 128,  // a string
+        NUMBER        = 1022,   // a number
 
-        UNKNOWN       = 256,  // a unknown type
+        STRING        = 1024,    // a string
 
-        ANY           = 511   // Any ValueType (including UNKNOWN)
+        UNKNOWN       = 2048,    // a unknown type
+
+        ANY           = 4095     // Any ValueType (including UNKNOWN)
     };
     Q_ENUMS(ValueType)
 
@@ -225,13 +234,12 @@ CT_SPECIALIZE_VALUE_TYPE_TO(bool, CT_AbstractCategory::BOOLEAN, "BOOL")
 CT_SPECIALIZE_VALUE_TYPE_TO(double, CT_AbstractCategory::DOUBLE, "DOUBLE")
 CT_SPECIALIZE_VALUE_TYPE_TO(float, CT_AbstractCategory::FLOAT, "FLOAT")
 CT_SPECIALIZE_VALUE_TYPE_TO(long double, CT_AbstractCategory::LONG_DOUBLE, "LONG_DOUBLE")
-CT_SPECIALIZE_VALUE_TYPE_TO(int, CT_AbstractCategory::INT, "INT")
-
-#ifdef ENVIRONMENT32
-CT_SPECIALIZE_VALUE_TYPE_TO(quint64, CT_AbstractCategory::UINT64, "UINT64")
-#endif
-
-CT_SPECIALIZE_VALUE_TYPE_TO(size_t, CT_AbstractCategory::SIZE_T, "SIZE_T")
+CT_SPECIALIZE_VALUE_TYPE_TO(qint16, CT_AbstractCategory::INT16, "INT16")
+CT_SPECIALIZE_VALUE_TYPE_TO(quint16, CT_AbstractCategory::UINT16, "UNSIGNED INT16")
+CT_SPECIALIZE_VALUE_TYPE_TO(qint32, CT_AbstractCategory::INT32, "INT32")
+CT_SPECIALIZE_VALUE_TYPE_TO(quint32, CT_AbstractCategory::UINT32, "UNSIGNED INT32")
+CT_SPECIALIZE_VALUE_TYPE_TO(qint64, CT_AbstractCategory::INT64, "INT64")
+CT_SPECIALIZE_VALUE_TYPE_TO(quint64, CT_AbstractCategory::UINT64, "UNSIGNED INT64")
 CT_SPECIALIZE_VALUE_TYPE_TO(QString, CT_AbstractCategory::STRING, "STRING")
 
 #endif // CT_ABSTRACTCATEGORY_H
