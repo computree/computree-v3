@@ -106,6 +106,7 @@ CT_VirtualAbstractStep::CT_VirtualAbstractStep(CT_StepInitializeData &dataInit)
     _result_saved_dir = "";
     _n_result_saved = 0;
 
+    _jump_n_step = 1;
     _step_by_step_size = 0;
     _index_step_step_to_go = 0;
 
@@ -831,6 +832,7 @@ bool CT_VirtualAbstractStep::showPostConfigurationDialog()
 
 void CT_VirtualAbstractStep::ackDebugMode(int jump_n_step)
 {
+    _jump_n_step = jump_n_step; // store the value, for it to be accessible in the step (see CT_StepEndLoop for use exemple)
     _index_step_step_to_go += jump_n_step;
     _ackOfDebugMode = true;
 }

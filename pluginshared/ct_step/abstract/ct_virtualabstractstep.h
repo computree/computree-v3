@@ -1151,6 +1151,9 @@ private:
     bool                            _debugMode;             /*!< debug mode on/off */
     bool                            _ackOfDebugMode;        /*!< acquitement en mode debug */
 
+    qint64                          _step_by_step_size;                 /*!< nombre de pas a pas (utile si on veut se reperer lorsqu'il y a un probleme dans l'algo) */
+    qint64                          _index_step_step_to_go;             /*!< on va ignorer l'attente d'un ack du mode pas a pas tant que _step_by_step_size est inferieur a _index_step_step_to_go */
+
     bool                            m_modifiable;                       /*!< is that step modifiable ? */
     bool                            m_manual;                           /*!< is that step use the manual mode ? */
     bool                            m_firstCallToManualMode;            /*!< is the first call to the method ackManualMode() ? */
@@ -1160,9 +1163,6 @@ private:
     QString                         _result_absolute_path_saved_dir;    /*!< le chemin du fichier ou sont sauvegarde les resultats (absolue) */
     QString                         _result_saved_dir;                  /*!< le chemin du fichier ou sont sauvegarde les resultats (relatif) */
     int                             _n_result_saved;
-
-    qint64                          _step_by_step_size;                 /*!< nombre de pas a pas (utile si on veut se reperer lorsqu'il y a un probleme dans l'algo) */
-    qint64                          _index_step_step_to_go;             /*!< on va ignorer l'attente d'un ack du mode pas a pas tant que _step_by_step_size est inferieur a _index_step_step_to_go */
 
     QString                         _serializedResultsRelativeFilename; /*! le fichier ou sont stocké les résultats (chemin relatif) */
     int                             _nResultSerialized;                 /*! le nombre de résultat sérialisé */
@@ -1227,6 +1227,8 @@ private:
     CT_OutManager* getOutManager() const;
 
 protected:
+
+    qint64                          _jump_n_step;                       /*!< store the value given by gui, for it to be accessible in the step (see CT_StepEndLoop for use exemple) */
 
 #ifdef USE_BOOST_OLD
 

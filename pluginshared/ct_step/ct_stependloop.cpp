@@ -62,8 +62,7 @@ void CT_StepEndLoop::createOutResultModelListProtected()
 }
 
 void CT_StepEndLoop::compute()
-{
-
+{    
     _mustRecheckTree = false;
 
     CT_ResultGroup* res = getInputResults().first();
@@ -75,13 +74,13 @@ void CT_StepEndLoop::compute()
         CT_LoopCounter* counter = (CT_LoopCounter*) it.next();
         PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Fin de boucle, tour %1 sur %2")).arg(counter->getCurrentTurn()).arg(counter->getNTurns()));
 
+        // Use the debug mode at step loop scale (and not at step scale as usual)
+        if (counter->getCurrentTurn() % _jump_n_step == 0) {waitForAckIfInDebugMode();}
+
         if (counter->hasNextTurn())
         {
             counter->beginNextTurn();
             _mustRecheckTree = true;
         }
-
     }
-
-    waitForAckIfInDebugMode();
 }
