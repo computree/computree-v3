@@ -120,9 +120,9 @@ CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::firstItemAttribute(co
     return l;
 }
 
-CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::firstItemAttributeByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const
+CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::firstItemAttributeByINModelName(const CT_AbstractResult *yourInResult, const CT_VirtualAbstractStep *step, const QString &modelName) const
 {
-    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, result(), step);
+    CT_AbstractModel *model = PS_MODELS->searchModel(modelName, yourInResult, step);
 
     Q_ASSERT_X(model != NULL, "CT_AbstractSingularItemDrawable firstItemAttributeByINModelName", "You search a item attribute with a modelName but the model was not found");
 

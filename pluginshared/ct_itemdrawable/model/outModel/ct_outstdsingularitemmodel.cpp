@@ -29,28 +29,12 @@ CT_OutAbstractModel* CT_OutStdSingularItemModel::copy() const
                                                                      displayableName(),
                                                                      description());
 
-    QList<CT_AbstractItemAttribute*> defaultIA;
-
-    if(itemDrawable() != NULL)
-        defaultIA = PS_DIAM->itemAttributes(itemDrawable()->getType());
-
     QListIterator<CT_OutAbstractItemAttributeModel*> itI(itemAttributes());
 
     while(itI.hasNext())
     {
         CT_OutAbstractItemAttributeModel *iaModel = itI.next();
-        CT_AbstractModel *originalModel = iaModel->originalModel();
-
-        bool found = false;
-
-        QListIterator<CT_AbstractItemAttribute*> itIA(defaultIA);
-
-        while(itIA.hasNext()
-              && !found)
-            found = (originalModel == itIA.next()->model());
-
-        if(!found)
-            cpy->internalAddItemAttribute((CT_OutAbstractItemAttributeModel*)iaModel->copy());
+        cpy->internalAddItemAttribute((CT_OutAbstractItemAttributeModel*)iaModel->copy());
     }
 
     if(itemDrawable() != NULL)
@@ -67,6 +51,22 @@ bool CT_OutStdSingularItemModel::setComplete()
     {
         // get default item attributes of this item drawable
         QList<CT_AbstractItemAttribute*> l = PS_DIAM->itemAttributes(itemDrawable()->getType());
+        QListIterator<CT_OutAbstractItemAttributeModel*> itI(itemAttributes());
+
+        while(itI.hasNext()) {
+            CT_OutAbstractItemAttributeModel *iaModel = itI.next();
+
+            QMutableListIterator<CT_AbstractItemAttribute*> it(l);
+
+            while(it.hasNext())
+            {
+                CT_AbstractItemAttribute *att = it.next();
+
+                if(iaModel->originalModel() == att->model()->originalModel())
+                    it.remove();
+            }
+        }
+
         QListIterator<CT_AbstractItemAttribute*> it(l);
 
         while(it.hasNext())

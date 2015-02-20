@@ -136,9 +136,11 @@ bool CT_InTurnManager::createSearchModelListForCurrentTurn()
             // create a map with key = unique name of the model AND value = the model
             QMap<QString,CT_InAbstractModel*> *map = new QMap<QString,CT_InAbstractModel*>();
 
+            CT_OutAbstractResultModel *outMo = (CT_OutAbstractResultModel*)po->outModel();
+
             // and insert it in the map that contains all models for current
             // turn with key = a model that represent a result AND value = the map
-            _modelsForCurrentTurn.insert((CT_OutAbstractResultModel*)po->outModel(), map);
+            _modelsForCurrentTurn.insert(outMo, map);
 
             // get all models recursively (childrens and childrens of childrens, etc...)
             QList<CT_AbstractModel*> list = po->inModel()->recursiveGetAllModels();

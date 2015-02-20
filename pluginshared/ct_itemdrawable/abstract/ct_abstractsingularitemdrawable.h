@@ -95,14 +95,15 @@ public:
 
     /**
      * @brief Returns the item attribute corresponding to the IN model searched by modelName
-     * @param modelName : typically a DEF_... in your step
+     * @param yourInResult : the in result of your step
      * @param step : the step that contains the model to search (if your are in the "compute" method pass "this" to this parameter)
+     * @param modelName : typically a DEF_... in your step
      *
      * @warning if you pass a modelName that correspond to a OUT model the method returns the value of the method "item(OUT model)"
      *
      * @return NULL if no item attribute will be found
      */
-    CT_AbstractItemAttribute* firstItemAttributeByINModelName(const CT_VirtualAbstractStep *step, const QString &modelName) const;
+    CT_AbstractItemAttribute* firstItemAttributeByINModelName(const CT_AbstractResult *yourInResult, const CT_VirtualAbstractStep *step, const QString &modelName) const;
 
     /**
      * @brief Return all default item attributes of this item drawable

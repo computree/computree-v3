@@ -172,7 +172,7 @@ void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *paren
 void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_OutAbstractItemModel *iModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" /*+ " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepName() : "???") + " / " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable()*/);
+    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" + " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepName() : "???") + " / " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable());
 
     createForChildrens(item, iModel);
 }
@@ -188,7 +188,7 @@ void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent,
 void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_OutAbstractItemAttributeModel *iaModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->itemAttribute()->typeToString() + ")");
+    item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->itemAttribute()->typeToString() + ")" + " / " + (iaModel->lastOriginalModelWithAStep() != NULL ? iaModel->lastOriginalModelWithAStep()->step()->getStepName() : "???") + " / " + iaModel->uniqueName() + " / " + iaModel->modelTypeDisplayable());
 
     createForChildrens(item, iaModel);
 }

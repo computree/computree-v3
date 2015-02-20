@@ -254,10 +254,10 @@ void PB_StepMatchItemsPositions::compute()
         const CT_AbstractSingularItemDrawable* itemIn_refpos = (CT_AbstractSingularItemDrawable*)grpIn_grpref->firstItemByINModelName(this, DEFin_refpos);
         if (itemIn_refpos != NULL)
         {
-            double xRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refx)->toDouble(itemIn_refpos, NULL);
-            double yRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refy)->toDouble(itemIn_refpos, NULL);
-            double valRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refvalue)->toDouble(itemIn_refpos, NULL);
-            QString idRef = itemIn_refpos->firstItemAttributeByINModelName(this, DEFin_refid)->toString(itemIn_refpos, NULL);
+            double xRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refx)->toDouble(itemIn_refpos, NULL);
+            double yRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refy)->toDouble(itemIn_refpos, NULL);
+            double valRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refvalue)->toDouble(itemIn_refpos, NULL);
+            QString idRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refid)->toString(itemIn_refpos, NULL);
 
             if (valRef < minRefValue) {minRefValue = valRef;}
             if (valRef > maxRefValue) {maxRefValue = valRef;}
@@ -278,10 +278,10 @@ void PB_StepMatchItemsPositions::compute()
         const CT_AbstractSingularItemDrawable* itemIn_transpos = (CT_AbstractSingularItemDrawable*)grpIn_grptrans->firstItemByINModelName(this, DEFin_transpos);
         if (itemIn_transpos != NULL)
         {
-            double xTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transx)->toDouble(itemIn_transpos, NULL);
-            double yTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transy)->toDouble(itemIn_transpos, NULL);
-            double valTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transvalue)->toDouble(itemIn_transpos, NULL);
-            QString idTrans = itemIn_transpos->firstItemAttributeByINModelName(this, DEFin_transid)->toString(itemIn_transpos, NULL);
+            double xTrans = itemIn_transpos->firstItemAttributeByINModelName(resIn_transpos, this, DEFin_transx)->toDouble(itemIn_transpos, NULL);
+            double yTrans = itemIn_transpos->firstItemAttributeByINModelName(resIn_transpos, this, DEFin_transy)->toDouble(itemIn_transpos, NULL);
+            double valTrans = itemIn_transpos->firstItemAttributeByINModelName(resIn_transpos, this, DEFin_transvalue)->toDouble(itemIn_transpos, NULL);
+            QString idTrans = itemIn_transpos->firstItemAttributeByINModelName(resIn_transpos, this, DEFin_transid)->toString(itemIn_transpos, NULL);
 
             if (valTrans < minTransValue) {minTransValue = valTrans;}
             if (valTrans > maxTransValue) {maxTransValue = valTrans;}
