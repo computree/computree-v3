@@ -347,7 +347,7 @@ bool CT_Reader_LAS::protectedReadFile()
                 pos += ((CT_LASHeader*)m_header)->m_pointDataRecordLength;
                 f.seek(pos);
 
-                setProgress((i*100)/nPoints);
+                setProgress((100.0*i)/nPoints);
             }
 
             CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);

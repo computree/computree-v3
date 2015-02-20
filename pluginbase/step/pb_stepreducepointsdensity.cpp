@@ -180,7 +180,7 @@ void PB_StepReducePointsDensity::compute()
             }
             ++i;
 
-            if (i % 10000 == 0) {setProgress(50 * i / n_points);}
+            setProgress(50 * i / n_points);
         }
 
 
@@ -199,7 +199,7 @@ void PB_StepReducePointsDensity::compute()
 
             resPointCloudIndex->replaceIndex(i, it.value());
 
-            if (i % 10000 == 0) {setProgress(50 + 49 * i / npts);}
+            setProgress(50 + 49 * i / npts);
             ++i;
         }
 
