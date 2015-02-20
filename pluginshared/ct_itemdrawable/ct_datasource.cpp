@@ -118,9 +118,9 @@ int CT_DataSource::getNumberOfReader() const
     return _readers.size();
 }
 
-void CT_DataSource::init() const
+void CT_DataSource::init(int n) const
 {
-    _activeReader = -1;
+    _activeReader = n - 1;
 }
 
 CT_AbstractItemDrawable *CT_DataSource::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

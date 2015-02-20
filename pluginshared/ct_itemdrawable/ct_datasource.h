@@ -74,7 +74,7 @@ public:
 
     int getNumberOfReader() const;
 
-    virtual void init() const;
+    virtual void init(int n = 0) const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
