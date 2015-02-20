@@ -24,7 +24,7 @@
 // Constructor : initialization of parameters
 PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
-    _readersListValue = "xyb";
+    _readersListValue = "";
     _fileChoiceButton = NULL;
 
     // Create the available readers map
@@ -134,7 +134,6 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-
     QStringList list_readersList;
 
     QMapIterator<QString, QPair<CT_AbstractReader*, int> > it(_readersMap);
@@ -153,7 +152,7 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
     _fileChoiceButton = configDialog->addFileChoice("Choisir les fichiers", CT_FileChoiceButton::OneOrMoreExistingFiles, list_readersList.first(), _filesList);
 
     QObject::connect(comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(setFormat(QString)));
-
+    if (_readersListValue != "") {setFormat(_readersListValue);}
 }
 
 // Creation and affiliation of OUT models

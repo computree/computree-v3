@@ -253,6 +253,7 @@ CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
         addLabel(_nRow, 0, beforeLabelText);
 
         CT_ComboBox *comboBox = new CT_ComboBox(valuesList, value, beforeLabelText);
+
         _listWidgetWithValueReference.append(comboBox);
 
         addWidget(_nRow, 1, comboBox->createWidget(*_wid));
@@ -261,6 +262,7 @@ CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
 
         ++_nRow;
 
+        if (value != "") {comboBox->setWidgetValue(value);}
         return comboBox;
     }
 
@@ -280,9 +282,9 @@ CT_FileChoiceButton *CT_StepConfigurableDialog::addFileChoice(QString btLabel,
 
         addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid), 1, -1);
 
-
         ++_nRow;
 
+        fileChoiceButton->setWidgetValue(value);
         return fileChoiceButton;
     }
 

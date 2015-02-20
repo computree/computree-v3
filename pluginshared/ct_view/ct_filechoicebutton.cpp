@@ -58,7 +58,7 @@ QList<SettingsNodeGroup*> CT_FileChoiceButton::getAllValues() const
     retList.append(values);
 
     values->addValue(new SettingsNodeValue("Version", "1"));
-    values->addValue(new SettingsNodeValue("LabelValue", getValue(), _description));
+    values->addValue(new SettingsNodeValue("LabelValue", getValueAsString(), _description));
 
     return retList;
 }
@@ -74,7 +74,7 @@ bool CT_FileChoiceButton::setAllValues(const QList<SettingsNodeGroup*> &list)
     if(values.isEmpty())
         return false;
 
-    return setWidgetValue(values.first()->value());
+    return setWidgetValueAsString(values.first()->value());
 }
 
 QWidget* CT_FileChoiceButton::createWidget(QWidget &parent)
@@ -126,6 +126,18 @@ bool CT_FileChoiceButton::isValueAndWidgetValueDifferent() const
 QVariant CT_FileChoiceButton::getValue() const
 {
     return QVariant((*_data._value));
+}
+
+QVariant CT_FileChoiceButton::getValueAsString() const
+{
+    return _labelCreated->text();
+}
+
+bool CT_FileChoiceButton::setWidgetValueAsString(QVariant val)
+{
+    QString value = val.toString();
+    _labelCreated->setText(value);
+    return true;
 }
 
 bool CT_FileChoiceButton::setWidgetValue(QVariant val)

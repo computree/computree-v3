@@ -80,6 +80,9 @@ public:
 
     bool setWidgetValue(QVariant val);
 
+    QVariant getValueAsString() const;
+    bool setWidgetValueAsString(QVariant val);
+
 protected:
 
     FileChoiceButtonData   _data;
