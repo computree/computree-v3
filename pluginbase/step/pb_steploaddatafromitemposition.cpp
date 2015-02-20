@@ -76,9 +76,6 @@ void PB_StepLoadDataFromItemPosition::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_result = createNewOutResultModel(DEFout_result, tr("Données chargées"));
-    res_result->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
-
     // Récupération du prototype de data_source = la dataSource
     CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_resultDataSource);
 
@@ -97,6 +94,9 @@ void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
         sourcePrototype = (CT_DataSourceGeo*) ((CT_OutAbstractSingularItemModel*) sourceModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList() << CT_ResultCopyModeList::DontCopyItemDrawable);
 
 
+    // Création du groupe racine
+    CT_OutStdGroupModel *root = new CT_OutStdGroupModel(DEFout_grp);
+
         if (sourcePrototype != NULL && sourcePrototype->getNumberOfReader() > 0)
         {
             sourcePrototype->init();
@@ -112,9 +112,9 @@ void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
                 // Ajout des modèles d'items
                 QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
                 while (itIM.hasNext())
-                {
-                    CT_OutStdSingularItemModel* itemModel = itIM.next();
-                    res_result->addItemModel(DEFout_grp, itemModel->uniqueName(), (CT_AbstractSingularItemDrawable*) itemModel->itemDrawable(), itemModel->displayableName(), itemModel->description());
+                {                                       
+                    CT_OutStdSingularItemModel* itemModel = itIM.next();                    
+                    root->addItem((CT_OutStdSingularItemModel*)itemModel->copy());
                 }
 
                 // Ajout des modèles de groupes
@@ -122,10 +122,13 @@ void PB_StepLoadDataFromItemPosition::createOutResultModelListProtected()
                 while (itGM.hasNext())
                 {
                     CT_OutStdGroupModel* groupModel = itGM.next();
-                    res_result->addGroupModel(DEFout_grp, groupModel->uniqueName(), (CT_AbstractItemGroup*) groupModel->itemDrawable(), groupModel->displayableName(), groupModel->description());
+                    root->addGroup((CT_OutStdGroupModel*)groupModel->copy());
                 }
             }
         }
+
+        // Ajout du modèle de résultat
+        addOutResultModel(new CT_OutResultModelGroup(DEFout_result, root, tr("Données chargées")));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -179,7 +182,9 @@ void PB_StepLoadDataFromItemPosition::compute()
                             while (itIM.hasNext())
                             {
                                 CT_OutStdSingularItemModel* itemModel = itIM.next();
-                                CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), res_result, itemModel);
+
+                                CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(itemModel->uniqueName(), res_result);
+                                CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), res_result, modelCreation);
                                 grp_grp->addItemDrawable(item);
                             }
 
@@ -188,7 +193,9 @@ void PB_StepLoadDataFromItemPosition::compute()
                             while (itGM.hasNext())
                             {
                                 CT_OutStdGroupModel* groupModel = itGM.next();
-                                CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), res_result, groupModel);
+
+                                CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(groupModel->uniqueName(), res_result);
+                                CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), res_result, modelCreation);
                                 grp_grp->addGroup(groupe);
                             }
                         }

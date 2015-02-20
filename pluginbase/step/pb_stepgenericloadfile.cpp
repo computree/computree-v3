@@ -200,16 +200,11 @@ void PB_StepGenericLoadFile::compute()
         }
 
 
-        CT_FileHeader* header = m_reader->getHeader(false);
-        if (header != NULL)
+        CT_OutAbstractItemModel *headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(m_reader->outHeaderModel()->uniqueName(), out_res);
+        if (headerModel != NULL)
         {
-            CT_OutAbstractItemModel *headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(m_reader->outHeaderModel()->uniqueName(), out_res);
-            if (headerModel != NULL)
-            {
-                header->setModel(headerModel);
-                header->changeResult(out_res);
-                group->addItemDrawable(header);
-            }
+            CT_FileHeader* header = m_reader->takeHeader(out_res, headerModel);
+            if (header != NULL) {group->addItemDrawable(header);}
         }
 
         out_res->addGroup(group);

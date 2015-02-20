@@ -202,12 +202,14 @@ void PB_StepCreateDataSource::createOutResultModelListProtected()
 
         if (firstReader != NULL)
         {
-            CT_FileHeader *header = (CT_FileHeader*) firstReader->getHeader(true)->copy(NULL, NULL, CT_ResultCopyModeList());
+            CT_FileHeader *header = (CT_FileHeader*) firstReader->getHeader();
 
             if (header != NULL)
             {
+                CT_FileHeader *headerCpy = (CT_FileHeader*) header->copy(NULL, NULL, CT_ResultCopyModeList());
+
                 res_res->addGroupModel(DEFout_grp, DEFout_grpHeader, new CT_StandardItemGroup(), tr("Fichier"));
-                res_res->addItemModel(DEFout_grpHeader, DEFout_header, header, tr("Entête"));
+                res_res->addItemModel(DEFout_grpHeader, DEFout_header, headerCpy, tr("Entête"));
             }
 
             res_res->addItemModel(DEFout_grp, DEFout_datasource, dataSource, itemLabel);
@@ -242,10 +244,13 @@ void PB_StepCreateDataSource::compute()
             CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
             grp->addGroup(grpHeader);
 
-            CT_FileHeader *header = reader->getHeader(false);
-            header->setModel((CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut));
-            header->changeResult(resultOut);
-            grpHeader->addItemDrawable(header);
+            CT_OutAbstractItemModel* headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut);
+
+            if (headerModel != NULL)
+            {
+                CT_FileHeader *header = reader->takeHeader(resultOut, headerModel);
+                if (header != NULL) {grpHeader->addItemDrawable(header);}
+            }
         }
     }
 

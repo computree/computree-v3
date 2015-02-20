@@ -48,18 +48,18 @@ public:
     /**
       * \brief Return the header object
       *
-      * \param deleteHeader If set true, the reader will delete the header object in destructor
+      * The returned header has to be deleted by the object taking it
       *
       */
-    CT_FileHeader* getHeader(bool deleteHeader) const;
-
-    const CT_FileHeader* getHeader();
+    CT_FileHeader *takeHeader(const CT_AbstractResult *result, CT_OutAbstractItemModel *model);
+    CT_FileHeader *takeHeader(const CT_AbstractResult *result, const QString &outModelName);
 
     /**
-      * \brief Return a const reference on the header
+      * \brief Return the header object (read only)
       *
       */
-    const CT_FileHeader& getConstHeader() const;
+    const CT_FileHeader* getHeader();
+
 
     /**
       * \brief Configure the reader.
