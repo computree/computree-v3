@@ -301,9 +301,13 @@ void PB_StepMatchItemsPositions::compute()
     maxRef(0) = -std::numeric_limits<double>::max();
     maxRef(1) = -std::numeric_limits<double>::max();
 
+    int refPositionSize = refPositions.size();
+    int transPositionsSize = transPositions.size();
+
+
     // Convert values to relatives values
     double deltaRef = maxRefValue - minRefValue;
-    for (int i = 0 ; i < refPositions.size() ; i++)
+    for (int i = 0 ; i < refPositionSize ; i++)
     {
         refPositions[i].second = (refPositions.at(i).second - minRefValue) / deltaRef;
 
@@ -319,7 +323,7 @@ void PB_StepMatchItemsPositions::compute()
     maxRef(1) += _distThreshold;
 
     double deltaTrans = maxTransValue - minTransValue;
-    for (int i = 0 ; i < transPositions.size() ; i++)
+    for (int i = 0 ; i < transPositionsSize ; i++)
     {
         transPositions[i].second = (transPositions.at(i).second - minTransValue) / deltaTrans;
         transPositionsTmp[i].second = (transPositionsTmp.at(i).second - minTransValue) / deltaTrans;
@@ -342,8 +346,6 @@ void PB_StepMatchItemsPositions::compute()
     Eigen::Matrix2d rotationMatrix;
     Eigen::Matrix2d rotation;
 
-    int refPositionSize = refPositions.size();
-    int transPositionsSize = transPositions.size();
 
     QVector<bool> refPosCount(refPositionSize);
     QVector<bool> transPosCount(transPositionsSize);
@@ -358,7 +360,6 @@ void PB_StepMatchItemsPositions::compute()
 
         for (int transCounter = 0 ; transCounter < transPositionsSize && !isStopped(); transCounter++)
         {
-
             const Eigen::Vector2d &transPos = transPositions.at(transCounter).first;
             double transVal = transPositions.at(transCounter).second;
 
@@ -400,16 +401,20 @@ void PB_StepMatchItemsPositions::compute()
 
                                     if (orientation < 0) {theta = M_PIx2 - theta;}
 
-                                    bool rotationPossible = false;
-                                    if ((theta <= maxThetaRad) || (theta >= (M_PIx2 - maxThetaRad))) {rotationPossible = true;}
-                                    if (_possiblyInvertedDirection && ((theta >= (M_PI - maxThetaRad)) && (theta <= (M_PI + maxThetaRad)))) {rotationPossible = true;}
+                                    bool rotationPossible = true;
+                                    if (maxThetaRad < M_PI)
+                                    {
+                                        rotationPossible = false;
+                                        if ((theta <= maxThetaRad) || (theta >= (M_PIx2 - maxThetaRad))) {rotationPossible = true;}
+                                        if (_possiblyInvertedDirection && ((theta >= (M_PI - maxThetaRad)) && (theta <= (M_PI + maxThetaRad)))) {rotationPossible = true;}
+                                    }
 
                                     if (rotationPossible)
                                     {
                                         rotation << cos(theta), -sin(theta),
                                                 sin(theta),  cos(theta);
 
-                                        // Ref Bounding Box
+                                        // Trans Bounding Box
                                         minTrans(0) = std::numeric_limits<double>::max();
                                         minTrans(1) = std::numeric_limits<double>::max();
                                         maxTrans(0) = -std::numeric_limits<double>::max();
@@ -417,8 +422,9 @@ void PB_StepMatchItemsPositions::compute()
 
                                         // Apply translation and rotation to all trans points
                                         for (int k = 0 ; k < transPositionsTmp.size() ; k++)
-                                        {
-                                            transPositionsTmp[k].first = rotation*(transPositions[k].first + delta - refPos) + refPos;
+                                        {                                           
+                                            transPositionsTmp[k].first = transPositions[k].first + delta;
+                                            transPositionsTmp[k].first = rotation*(transPositionsTmp[k].first - refPos) + refPos;
 
                                             const QPair<Eigen::Vector2d, double> &pair = transPositionsTmp.at(k);
 
@@ -454,8 +460,8 @@ void PB_StepMatchItemsPositions::compute()
 
                                             if (trPos(0) > minRef(0) &&
                                                     trPos(1) > minRef(1) &&
-                                                    trPos(0) < minRef(0) &&
-                                                    trPos(1) < minRef(1))
+                                                    trPos(0) < maxRef(0) &&
+                                                    trPos(1) < maxRef(1))
                                             {
 
                                                 for (int rf = 0 ; rf < refPositionSize; rf++)
@@ -497,12 +503,13 @@ void PB_StepMatchItemsPositions::compute()
                                             if (similarPosCount[tr]) {NbtransRef_Similarity++;}
                                         }
 
-                                        // Compute global score
-                                        globalScore = _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
-                                                _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
-                                                _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
 
-                                        if (globalScore > bestScore)
+                                        // Compute global score
+                                        globalScore =   _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
+                                                        _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
+                                                        _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
+
+                                        if (globalScore > bestScore || bestScore == 0)
                                         {
                                             bestScore = globalScore;
                                             translationVector = delta;
