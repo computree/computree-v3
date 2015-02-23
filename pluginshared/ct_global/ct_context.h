@@ -11,7 +11,6 @@
 #define PS_DIAM CT_Context::staticInstance()->defaultItemAttributesManager()
 #define PS_MODELS CT_Context::staticInstance()->modelSearchHelper()
 #define PS_COORDINATES_SYS_MANAGER CT_Context::staticInstance()->coordinateSystemManager()
-#define PS_COORDINATES_SYS PS_COORDINATES_SYS_MANAGER->currentCoordinateSystem()
 
 class CT_DefaultItemAttributeManager;
 class CT_CategoryManager;
