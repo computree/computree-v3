@@ -4,13 +4,15 @@
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.h"
 #include "ct_itemdrawable/abstract/ct_abstractpointattributesscalar.h"
 #include "ct_reader/tools/las/ct_lasdefine.h"
+#include "ct_reader/tools/las/ct_lasdata.h"
 
 /**
  *  This class is a standard container for LAS points attributes
  */
 class PLUGINSHAREDSHARED_EXPORT CT_StdLASPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
-public:
+public:     
+
     CT_StdLASPointsAttributesContainer();
 
     CT_StdLASPointsAttributesContainer(const CT_OutAbstractSingularItemModel *model,
@@ -35,6 +37,8 @@ public:
      * @brief Return the list of type of attributes present in this container
      */
     QList<CT_LasDefine::LASPointAttributesType> lasPointAttributesTypes() const;
+
+    void getLASDataAt(const size_t i, CT_LASData &data) const;
 
     /**
      * @brief Return the hash map of attributes

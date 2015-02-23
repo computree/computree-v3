@@ -211,15 +211,14 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Sources de données")));
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Traitement par lots")));
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
-
-
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Boucles de scripts")));
-    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepBeginLoopThroughDataSource(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
+
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
+    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
 
     return true;
 }
@@ -258,7 +257,7 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
 
-    sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
+    sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator("Test"));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)

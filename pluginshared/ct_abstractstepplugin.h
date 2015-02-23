@@ -39,6 +39,8 @@ class CT_StepInitializeData;
 class CT_ActionsSeparator;
 class CT_StandardExporterSeparator;
 class CT_StandardReaderSeparator;
+class CT_StandardFilterSeparator;
+class CT_StandardMetricSeparator;
 
 class CT_VirtualAbstractStep;
 class CT_AbstractStepLoadFile;
@@ -123,6 +125,16 @@ public:
      *        separator contain standard readers that can read file / stream / etc... to generate items
      */
     QList<CT_StandardReaderSeparator *> getReadersAvailable() const;
+
+    /**
+     * @brief Returns a list of filters separator. A filter separator group multiple filters by a title.
+     */
+    QList<CT_StandardFilterSeparator*> getFiltersAvailable() const;
+
+    /**
+     * @brief Returns a list of metrics separator. A metric separator group multiple metrics by a title.
+     */
+    QList<CT_StandardMetricSeparator *> getMetricsAvailable() const;
 
     /**
      * @brief Returns a list of step that can read the file define by the filepath passed in parameter
@@ -222,6 +234,22 @@ protected:
     virtual bool loadReaders() = 0;
 
     /**
+     * @brief Overload this method to load your filters. Use "addNewSeparator" method to create a new separator and a filter to it.
+     * @return true if load is a success.
+     * @warning Method called in the "init" method. If you must wait that all plugins is loaded to create
+     *          your elements prefer overload the method "loadAfterAllPluginsLoaded"
+     */
+    virtual bool loadFilters();
+
+    /**
+     * @brief Overload this method to load your metrics. Use "addNewSeparator" method to create a new separator and a metrics to it.
+     * @return true if load is a success.
+     * @warning Method called in the "init" method. If you must wait that all plugins is loaded to create
+     *          your elements prefer overload the method "loadAfterAllPluginsLoaded"
+     */
+    virtual bool loadMetrics();
+
+    /**
      * @brief Inherit this method to add your step, actions, exporters, etc... after all plugins was loaded (if you must use elements from
      *        another plugin). Use "addNewSeparator" method to create a new separator and a elements to it.
      */
@@ -261,6 +289,16 @@ protected:
      * @brief Remove from memory all readers
      */
     void clearReaders();
+
+    /**
+     * @brief Remove from memory all readers
+     */
+    void clearFilters();
+
+    /**
+     * @brief Remove from memory all readers
+     */
+    void clearMetrics();
 
     /**
      * @brief Overload this method if you want to return a new QSettings that will be added to the CT_StepInitializeData. So you can
@@ -314,6 +352,19 @@ protected:
     CT_StandardReaderSeparator* addNewSeparator(CT_StandardReaderSeparator *sep);
 
     /**
+     * @brief Create a new separator that can contains exporter. You must pass a new object to this method, the object
+     *        is added to the list of separator and returned.
+     */
+    CT_StandardFilterSeparator* addNewSeparator(CT_StandardFilterSeparator *sep);
+
+    /**
+     * @brief Create a new separator that can contains reader. You must pass a new object to this method, the object
+     *        is added to the list of separator and returned.
+     */
+    CT_StandardMetricSeparator* addNewSeparator(CT_StandardMetricSeparator *sep);
+
+
+    /**
      * @brief Clear all steps / actions / readers / exporters / etc... from this plugins (call methods "clearXXX")
      */
     virtual void clearMemory();
@@ -326,6 +377,8 @@ private:
     QList<CT_ActionsSeparator*>                 m_actions;
     QList<CT_StandardExporterSeparator*>        m_exporters;
     QList<CT_StandardReaderSeparator*>          m_readers;
+    QList<CT_StandardFilterSeparator*>          m_filters;
+    QList<CT_StandardMetricSeparator*>          m_metrics;
 
     QSettings                                   *_pluginSettings;
 

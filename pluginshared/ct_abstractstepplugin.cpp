@@ -37,6 +37,8 @@
 #include "ct_actions/ct_actionsseparator.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_reader/ct_standardreaderseparator.h"
+#include "ct_filter/ct_standardfilterseparator.h"
+#include "ct_metric/ct_standardmetricseparator.h"
 
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
@@ -66,7 +68,7 @@ bool CT_AbstractStepPlugin::init()
 
     clearMemory();
 
-    bool ok = loadOpenFileStep() && loadGenericsStep() && loadCanBeAddedFirstStep() && loadActions() && loadExporters() && loadReaders();
+    bool ok = loadOpenFileStep() && loadGenericsStep() && loadCanBeAddedFirstStep() && loadActions() && loadExporters() && loadReaders() && loadFilters() && loadMetrics();
 
     return ok;
 }
@@ -152,6 +154,16 @@ QList<CT_StandardExporterSeparator*> CT_AbstractStepPlugin::getExportersAvailabl
 QList<CT_StandardReaderSeparator*> CT_AbstractStepPlugin::getReadersAvailable() const
 {
     return m_readers;
+}
+
+QList<CT_StandardFilterSeparator *> CT_AbstractStepPlugin::getFiltersAvailable() const
+{
+    return m_filters;
+}
+
+QList<CT_StandardMetricSeparator *> CT_AbstractStepPlugin::getMetricsAvailable() const
+{
+    return m_metrics;
 }
 
 QList<CT_AbstractStepLoadFile*> CT_AbstractStepPlugin::getOpenFileStep(const QString &filePath) const
@@ -253,6 +265,16 @@ CT_VirtualAbstractStep* CT_AbstractStepPlugin::createNewInstanceOfStep(const CT_
     return NULL;
 }
 
+bool CT_AbstractStepPlugin::loadFilters()
+{
+    return true;
+}
+
+bool CT_AbstractStepPlugin::loadMetrics()
+{
+    return true;
+}
+
 void CT_AbstractStepPlugin::clearGenericsStep()
 {
     qDeleteAll(_stepAvailable.begin(), _stepAvailable.end());
@@ -288,6 +310,19 @@ void CT_AbstractStepPlugin::clearReaders()
     qDeleteAll(m_readers.begin(), m_readers.end());
     m_readers.clear();
 }
+
+void CT_AbstractStepPlugin::clearFilters()
+{
+    qDeleteAll(m_filters.begin(), m_filters.end());
+    m_filters.clear();
+}
+
+void CT_AbstractStepPlugin::clearMetrics()
+{
+    qDeleteAll(m_metrics.begin(), m_metrics.end());
+    m_metrics.clear();
+}
+
 
 CT_StepInitializeData* CT_AbstractStepPlugin::createNewStepInitializeData(CT_VirtualAbstractStep *parent) const
 {
@@ -342,6 +377,22 @@ CT_StandardReaderSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardRe
     return sep;
 }
 
+CT_StandardFilterSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardFilterSeparator *sep)
+{
+    if(sep != NULL)
+        m_filters.append(sep);
+
+    return sep;
+}
+
+CT_StandardMetricSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardMetricSeparator *sep)
+{
+    if(sep != NULL)
+        m_metrics.append(sep);
+
+    return sep;
+}
+
 void CT_AbstractStepPlugin::clearMemory()
 {
     clearGenericsStep();
@@ -350,6 +401,8 @@ void CT_AbstractStepPlugin::clearMemory()
     clearActions();
     clearExporters();
     clearReaders();
+    clearFilters();
+    clearMetrics();
 }
 
 void CT_AbstractStepPlugin::initStep(CT_VirtualAbstractStep *step) const

@@ -365,7 +365,15 @@ SOURCES += \
     ct_accessor/ct_pointaccessor.cpp \
     ct_iterator/ct_mutablepointiterator.cpp \
     ct_accessor/ct_faceaccessor.cpp \
-    ct_accessor/ct_edgeaccessor.cpp
+    ct_accessor/ct_edgeaccessor.cpp \
+    ct_reader/tools/las/ct_lasdata.cpp \
+    ct_metric/abstract/ct_abstractmetric.cpp \
+    ct_metric/abstract/ct_abstractmetric_xyz.cpp \
+    ct_filter/abstract/ct_abstractfilter.cpp \
+    ct_filter/abstract/ct_abstractfilter_xyz.cpp \
+    ct_filter/abstract/ct_abstractfilter_las.cpp \
+    ct_metric/ct_standardmetricseparator.cpp \
+    ct_filter/ct_standardfilterseparator.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -832,7 +840,15 @@ HEADERS += interfaces.h \
     ct_pointcloudindex/ct_pointcloudindexlessmemory.h \
     ct_iterator/ct_mutablefaceiterator.h \
     ct_iterator/ct_mutableedgeiterator.h \
-    ct_mesh/tools/ct_meshallocator.h
+    ct_mesh/tools/ct_meshallocator.h \
+    ct_reader/tools/las/ct_lasdata.h \
+    ct_metric/abstract/ct_abstractmetric.h \
+    ct_metric/abstract/ct_abstractmetric_xyz.h \
+    ct_filter/abstract/ct_abstractfilter.h \
+    ct_filter/abstract/ct_abstractfilter_xyz.h \
+    ct_filter/abstract/ct_abstractfilter_las.h \
+    ct_metric/ct_standardmetricseparator.h \
+    ct_filter/ct_standardfilterseparator.h
 
 
 INCLUDEPATH += .
@@ -875,6 +891,8 @@ INCLUDEPATH += ./ct_view
 INCLUDEPATH += ./ct_view/inModel
 INCLUDEPATH += ./ct_view/tools
 INCLUDEPATH += ./ct_math
+INCLUDEPATH += ./ct_metric
+INCLUDEPATH += ./ct_filter
 INCLUDEPATH += ./ct_triangulation
 INCLUDEPATH += ./ct_shapedata
 INCLUDEPATH += ./ct_shapedata2d
