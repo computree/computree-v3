@@ -63,6 +63,7 @@
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_steptransformpointcloud.h"
 #include "step/pb_stepfilteritemsbyposition.h"
+#include "step/pb_stepcomputepointsmetrics.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -215,6 +216,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepBeginLoopThroughDataSource(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepComputePointsMetrics(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));

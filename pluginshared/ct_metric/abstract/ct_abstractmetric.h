@@ -8,7 +8,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractMetric : public QObject
 {
     Q_OBJECT
 public:
-    CT_AbstractMetric();
+    explicit CT_AbstractMetric();
     ~CT_AbstractMetric();
 
     virtual QString getBaseName() const = 0;

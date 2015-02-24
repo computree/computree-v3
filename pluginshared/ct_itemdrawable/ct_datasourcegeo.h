@@ -62,6 +62,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
+    virtual bool hasBoundingBox() const {return true;}
+
     virtual bool addReader(CT_AbstractReader* reader);
 
     QList<QSharedPointer<CT_AbstractReader> > getReadersIntersecting(const CT_Shape2DData &data) const;

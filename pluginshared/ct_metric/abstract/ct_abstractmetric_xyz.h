@@ -5,6 +5,7 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractMetric_XYZ : public CT_AbstractMetric
 {
+    Q_OBJECT
 public:
     CT_AbstractMetric_XYZ();
     ~CT_AbstractMetric_XYZ();

@@ -238,7 +238,6 @@ SOURCES += \
     ct_tools/itemdrawable/abstract/ct_abstractitemdrawablecollectionbuilder.cpp \
     ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.cpp \
-    ct_itemdrawable/abstract/ct_abstractmetric.cpp \
     ct_itemdrawable/ct_affiliationid.cpp \
     ct_itemdrawable/abstract/ct_abstractprofile.cpp \
     ct_itemdrawable/ct_profile.cpp \
@@ -373,7 +372,10 @@ SOURCES += \
     ct_filter/abstract/ct_abstractfilter_xyz.cpp \
     ct_filter/abstract/ct_abstractfilter_las.cpp \
     ct_metric/ct_standardmetricseparator.cpp \
-    ct_filter/ct_standardfilterseparator.cpp
+    ct_filter/ct_standardfilterseparator.cpp \
+    ct_plotmanager/abstract/ct_abstractplotmanager.cpp \
+    ct_plotmanager/ct_plotmanager_grid.cpp \
+    ct_plotmanager/ct_plotmanager_plotslist.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -648,9 +650,6 @@ HEADERS += interfaces.h \
     ct_tools/ct_numerictostringconversiont.h \
     ct_tools/ct_stringtonumericconversion.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpolygon2ddrawmanager.h \
-    ct_itemdrawable/abstract/ct_abstractmetric.h \
-    ct_itemdrawable/ct_metrict.h \
-    ct_itemdrawable/ct_metrict.hpp \
     ct_itemdrawable/ct_affiliationid.h \
     ct_itemdrawable/abstract/ct_abstractprofile.h \
     ct_itemdrawable/ct_profile.h \
@@ -845,6 +844,9 @@ HEADERS += interfaces.h \
     ct_filter/abstract/ct_abstractfilter_las.h \
     ct_metric/ct_standardmetricseparator.h \
     ct_filter/ct_standardfilterseparator.h \
+    ct_plotmanager/abstract/ct_abstractplotmanager.h \
+    ct_plotmanager/ct_plotmanager_grid.h \
+    ct_plotmanager/ct_plotmanager_plotslist.h \
     ct_iterator/ct_resultgroupiterator.h \
     ct_iterator/ct_resultitemiterator.h \
     ct_iterator/ct_resultiterator.h \
@@ -853,7 +855,6 @@ HEADERS += interfaces.h \
     ct_iterator/ct_containeriterator.h \
     ct_iterator/ct_mutablegroupiterator.h \
     ct_iterator/ct_mutableitemiterator.h
-
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

@@ -5,6 +5,7 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFilter_XYZ : public CT_AbstractFilter
 {
+    Q_OBJECT
 public:
     CT_AbstractFilter_XYZ();
     ~CT_AbstractFilter_XYZ();

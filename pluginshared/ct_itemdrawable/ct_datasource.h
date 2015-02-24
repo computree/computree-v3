@@ -64,6 +64,8 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
+    virtual bool hasBoundingBox() const {return false;}
+
     virtual bool addReader(CT_AbstractReader* reader);
 
     bool activateNextReader();
