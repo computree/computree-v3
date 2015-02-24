@@ -56,7 +56,7 @@ void DM_VertexVBOManager::preDraw()
         m_useVbo = false;
         m_refresh = false;
 
-        /*size_t nBytes = size*sizeof(CT_Point);
+        /*size_t nBytes = size*sizeof(CT_PointData);
 
         // select the vbo
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -100,13 +100,13 @@ void DM_VertexVBOManager::preDraw()
             glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
             // define the address of the points cloud in VRAM (RAM of graphics card)
-            glVertexPointer(sizeof(CT_PointData)/sizeof(float), GL_FLOAT, 0, 0);
+            glVertexPointer(3, GL_FLOAT, 0, 0);
 
             // unselect the vbo
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         else // define the address of the points cloud in RAM
-            glVertexPointer(sizeof(CT_PointData)/sizeof(float), GL_FLOAT, 0, pAccess.internalPointAt(0).vertex());
+            glVertexPointer(3, GL_FLOAT, sizeof(CT_PointData), pAccess.internalPointAt(0).vertex());
     }
 }
 
