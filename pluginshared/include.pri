@@ -184,6 +184,9 @@ contains( DEFINES, USE_PCL ) {
     }
 
     INCLUDEPATH += $${FLANN_INCLUDE_DIR_PATH}
+
+    message(OK)
+
 } else {
     DEFINES += USE_EIGEN_POINT
 
@@ -209,6 +212,8 @@ contains(DEFINES, USE_BOOST) {
     !exists($${BOOST_LIB_DIR_PATH}) {
         error( "BOOST LIB directory not found ! =>" $${BOOST_LIB_DIR_PATH})
     }
+
+    message(OK)
 
     INCLUDEPATH += $${BOOST_INCLUDE_DIR_PATH}
 

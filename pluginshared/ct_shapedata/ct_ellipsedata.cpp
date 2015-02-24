@@ -29,6 +29,8 @@
 
 #include "ct_accessor/ct_pointaccessor.h"
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 #include <math.h>
 #include <eigen/Eigen/Dense>
 

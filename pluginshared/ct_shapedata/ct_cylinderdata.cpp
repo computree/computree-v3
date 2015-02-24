@@ -27,6 +27,8 @@
 
 #include "ct_cylinderdata.h"
 
+#include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
+
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
 #include <math.h>
