@@ -58,6 +58,10 @@ public:
      */
     void replaceInternalPointAt(const size_t &globalIndex, const CT_PointData &p);
 
+#ifdef USE_PCL
+    boost::shared_ptr< pcl::PointCloud<CT_PointData> > getPCLCloud() const;
+#endif
+
 private:
     mutable CT_Point        m_p;
     CT_AbstractPointCloud   *m_pCloud;

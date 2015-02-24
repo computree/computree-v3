@@ -67,6 +67,13 @@ void CT_PointAccessor::replaceInternalPointAt(const size_t &globalIndex, const C
     pData = p;
 }
 
+#ifdef USE_PCL
+boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_PointAccessor::getPCLCloud() const
+{
+    return m_pCloud->getPCLCloud();
+}
+#endif
+
 size_t CT_PointAccessor::size() const
 {
     return m_pCloud->size();

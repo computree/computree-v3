@@ -844,7 +844,15 @@ HEADERS += interfaces.h \
     ct_filter/abstract/ct_abstractfilter_xyz.h \
     ct_filter/abstract/ct_abstractfilter_las.h \
     ct_metric/ct_standardmetricseparator.h \
-    ct_filter/ct_standardfilterseparator.h
+    ct_filter/ct_standardfilterseparator.h \
+    ct_iterator/ct_resultgroupiterator.h \
+    ct_iterator/ct_resultitemiterator.h \
+    ct_iterator/ct_resultiterator.h \
+    ct_iterator/ct_groupiterator.h \
+    ct_iterator/ct_itemiterator.h \
+    ct_iterator/ct_containeriterator.h \
+    ct_iterator/ct_mutablegroupiterator.h \
+    ct_iterator/ct_mutableitemiterator.h
 
 
 INCLUDEPATH += .
