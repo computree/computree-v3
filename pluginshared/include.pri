@@ -213,6 +213,11 @@ contains(DEFINES, USE_BOOST) {
         error( "BOOST LIB directory not found ! =>" $${BOOST_LIB_DIR_PATH})
     }
 
+    greaterThan(QT_MAJOR_VERSION, 4) {
+        load(moc)
+        QMAKE_MOC += -DBOOST_INCLUDE_GUARD_GOES_HERE
+    }
+
     message(OK)
 
     INCLUDEPATH += $${BOOST_INCLUDE_DIR_PATH}

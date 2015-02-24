@@ -43,6 +43,7 @@
 #include "ct_cloudindex/ct_cloudindexlessmemoryt.h"
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 #include <QQuaternion>
 

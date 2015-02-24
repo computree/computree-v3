@@ -34,7 +34,6 @@
 #include <cmath>
 #include "ct_coordinates/abstract/ct_abstractcoordinatesystem.h"
 
-#ifndef USE_PCL
 #include "eigen/Eigen/Core"
 
 class CT_Point;
@@ -80,8 +79,28 @@ public:
     inline void setZ(const double &z) { (*this)(2) = z; }
 };
 
+
+#ifndef USE_PCL
 class CT_PointData : public Eigen::Vector3f
 {
+#else
+
+#ifndef Q_MOC_RUN
+#define PCL_NO_PRECOMPILE
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/octree/octree_search.h>
+#include <pcl/octree/impl/octree_search.hpp>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/impl/voxel_grid.hpp>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/impl/statistical_outlier_removal.hpp>
+#endif
+
+class EIGEN_ALIGN16 CT_PointData : public pcl::_PointXYZ
+{
+#endif
+
 public:
 
     enum PVAR {
@@ -90,6 +109,8 @@ public:
         Z = 2
     };
 
+
+#ifndef USE_PCL
     inline CT_PointData(void):Eigen::Vector3f() {}
     typedef Eigen::Vector3f Base;
     // This constructor allows you to construct CT_PointData from Eigen expressions
@@ -104,54 +125,36 @@ public:
         this->Base::operator=(other);
         return *this;
     }
+#else
+    // TO BE COMPATIBLE DON'T USE variable x, y, z or data but method "[index]" or "(index)"
+    inline float& operator[](int i) { return data[i]; }
+    inline const float& operator[](int i) const { return data[i]; }
 
-    inline void copy(CT_PointData &point) const
-    {
-        point(0) = (*this)(0);
-        point(1) = (*this)(1);
-        point(2) = (*this)(2);
-    }
+    inline float& operator()(int i) { return data[i]; }
+    inline const float& operator()(int i) const { return data[i]; }
 
-    inline void setX(float x) { (*this)(0) = x; }
-    inline void setY(float y) { (*this)(1) = y; }
-    inline void setZ(float z) { (*this)(2) = z; }
+    //inline CT_PointData& operator+= (const CT_PointData& o) { x += o.x; y += o.y; z += o.z; return *this; }
+    //inline CT_PointData& operator-= (const CT_PointData& o) { x -= o.x; y -= o.y; z -= o.z; return *this; }
+    //inline CT_PointData& operator/= (const CT_PointData& o) { x /= o.x; y /= o.y; z /= o.z; return *this; }
+    //inline CT_PointData& operator*= (const CT_PointData& o) { x *= o.x; y *= o.y; z *= o.z; return *this; }
 
-    /**
-     * @brief Returns the real x coordinate of the point (converted with the coordinate system of the point)
-     * @param globalIndex : the global index of the point in the cloud
-     */
-    inline CT_AbstractCoordinateSystem::realEx xExport(const size_t &globalIndex) const
-    {
-        return CT_PointTools::staticXExport(*this, globalIndex);
-    }
+    //inline CT_PointData& operator+= (const float& o) { x += o; y += o; z += o; return *this; }
+    //inline CT_PointData& operator-= (const float& o) { x -= o; y -= o; z -= o; return *this; }
+    //inline CT_PointData& operator/= (const float& o) { x /= o; y /= o; z /= o; return *this; }
+    //inline CT_PointData& operator*= (const float& o) { x *= o; y *= o; z *= o; return *this; }
 
-    /**
-     * @brief Returns the real y coordinate of the point (converted with the coordinate system of the point)
-     * @param globalIndex : the global index of the point in the cloud
-     */
-    inline CT_AbstractCoordinateSystem::realEx yExport(const size_t &globalIndex) const
-    {
-        return CT_PointTools::staticYExport(*this, globalIndex);
-    }
+    inline CT_PointData operator+ (const CT_PointData& o) const { CT_PointData t; t.x = x + o.x; t.y = y + o.y; t.z = z + o.z; return t; }
+    inline CT_PointData operator- (const CT_PointData& o) const { CT_PointData t; t.x = x - o.x; t.y = y - o.y; t.z = z - o.z; return t; }
+    inline CT_PointData operator/ (const CT_PointData& o) const { CT_PointData t; t.x = x / o.x; t.y = y / o.y; t.z = z / o.z; return t; }
+    inline CT_PointData operator* (const CT_PointData& o) const { CT_PointData t; t.x = x * o.x; t.y = y * o.y; t.z = z * o.z; return t; }
 
-    /**
-     * @brief Returns the real z coordinate of the point (converted with the coordinate system of the point)
-     * @param globalIndex : the global index of the point in the cloud
-     */
-    inline CT_AbstractCoordinateSystem::realEx zExport(const size_t &globalIndex) const
-    {
-        return CT_PointTools::staticZExport(*this, globalIndex);
-    }
+    inline CT_PointData operator+ (const float& o) const { CT_PointData t; t.x = x + o; t.y = y + o; t.z = z + o; return t; }
+    inline CT_PointData operator- (const float& o) const { CT_PointData t; t.x = x - o; t.y = y - o; t.z = z - o; return t; }
+    inline CT_PointData operator/ (const float& o) const { CT_PointData t; t.x = x / o; t.y = y / o; t.z = z / o; return t; }
+    inline CT_PointData operator* (const float& o) const { CT_PointData t; t.x = x * o; t.y = y * o; t.z = z * o; return t; }
 
-    /**
-     * @brief Returns the real x, y and z coordinates of the point (converted with the coordinate system of the point)
-     * @param globalIndex : the global index of the point in the cloud
-     * @param x, y, z : real coordinates (output)
-     */
-    inline void xyzExport(const size_t &globalIndex, CT_AbstractCoordinateSystem::realEx &x, CT_AbstractCoordinateSystem::realEx &y, CT_AbstractCoordinateSystem::realEx &z) const
-    {
-        return CT_PointTools::staticXYZExport(*this, globalIndex, x, y ,z);
-    }
+    inline CT_PointData& operator= (const CT_PointData& o) { x = o.x; y = o.y; z = o.z; return *this; }
+#endif
 
     /**
      * @brief Returns the point converted to it's real coordinates
@@ -171,125 +174,23 @@ public:
         return CT_PointTools::staticRealPoint(*this, p, globalIndex);
     }
 
-    inline float length() const { return ( std::sqrt( (*this)(0)*(*this)(0) + (*this)(1)*(*this)(1) + (*this)(2)*(*this)(2) ) ); }
-
-    inline void setPoint(const CT_PointData &point)
-    {
-        point.copy(*this);
-    }
-
     inline float* vertex() const
     {
         return const_cast<float*>(&(*this)(0));
     }
+
+#ifndef USE_PCL
 };
-
 #else
-
-#define PCL_NO_PRECOMPILE
-#include <pcl/point_types.h>
-#include <pcl/point_cloud.h>
-#include <pcl/octree/octree_search.h>
-#include <pcl/octree/impl/octree_search.hpp>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/filters/impl/voxel_grid.hpp>
-#include <pcl/filters/statistical_outlier_removal.h>
-#include <pcl/filters/impl/statistical_outlier_removal.hpp>
-
-class EIGEN_ALIGN16 CT_PointData : public pcl::_PointXYZ
-{
-public:
-    inline CT_PointData()
-    {
-        pcl::_PointXYZ::x = pcl::_PointXYZ::y = pcl::_PointXYZ::z = 0.0f;
-    }
-
-    inline CT_PointData(float _x, float _y, float _z)
-    {
-        pcl::_PointXYZ::x = _x;
-        pcl::_PointXYZ::y = _y;
-        pcl::_PointXYZ::z = _z;
-    }
-
-    // This constructor allows construct CT_PointData from Eigen expressions
-    template<typename OtherDerived>
-    inline CT_PointData(const Eigen::MatrixBase<OtherDerived>& other)
-    {
-        Eigen::Vector3f v(other);
-        pcl::_PointXYZ::x = v(0);
-        pcl::_PointXYZ::y = v(1);
-        pcl::_PointXYZ::z = v(2);
-    }
-
-    // This method allows assign Eigen expressions to CT_PointData
-    template<typename OtherDerived>
-    inline CT_PointData& operator= (const Eigen::MatrixBase <OtherDerived>& other)
-    {
-        Eigen::Vector3f v(other);
-        pcl::_PointXYZ::x = v(0);
-        pcl::_PointXYZ::y = v(1);
-        pcl::_PointXYZ::z = v(2);
-
-        return *this;
-    }
-
-    // TO BE COMPATIBLE DON'T USE variable x, y, z or data but method "[index]" or "(index)"
-    inline float& operator[](int i) { return data[i]; }
-    inline const float& operator[](int i) const { return data[i]; }
-
-    inline float& operator()(int i) { return data[i]; }
-    inline const float& operator()(int i) const { return data[i]; }
-
-    inline CT_PointData& operator+= (const CT_PointData& o) { x += o.x; y += o.y; z += o.z; return *this; }
-    inline CT_PointData& operator-= (const CT_PointData& o) { x -= o.x; y -= o.y; z -= o.z; return *this; }
-    inline CT_PointData& operator/= (const CT_PointData& o) { x /= o.x; y /= o.y; z /= o.z; return *this; }
-    inline CT_PointData& operator*= (const CT_PointData& o) { x *= o.x; y *= o.y; z *= o.z; return *this; }
-
-    inline CT_PointData& operator+= (const float& o) { x += o; y += o; z += o; return *this; }
-    inline CT_PointData& operator-= (const float& o) { x -= o; y -= o; z -= o; return *this; }
-    inline CT_PointData& operator/= (const float& o) { x /= o; y /= o; z /= o; return *this; }
-    inline CT_PointData& operator*= (const float& o) { x *= o; y *= o; z *= o; return *this; }
-
-    inline CT_PointData operator+ (const CT_PointData& o) const { CT_PointData t; t.x = x + o.x; t.y = y + o.y; t.z = z + o.z; return t; }
-    inline CT_PointData operator- (const CT_PointData& o) const { CT_PointData t; t.x = x - o.x; t.y = y - o.y; t.z = z - o.z; return t; }
-    inline CT_PointData operator/ (const CT_PointData& o) const { CT_PointData t; t.x = x / o.x; t.y = y / o.y; t.z = z / o.z; return t; }
-    inline CT_PointData operator* (const CT_PointData& o) const { CT_PointData t; t.x = x * o.x; t.y = y * o.y; t.z = z * o.z; return t; }
-
-    inline CT_PointData operator+ (const float& o) const { CT_PointData t; t.x = x + o; t.y = y + o; t.z = z + o; return t; }
-    inline CT_PointData operator- (const float& o) const { CT_PointData t; t.x = x - o; t.y = y - o; t.z = z - o; return t; }
-    inline CT_PointData operator/ (const float& o) const { CT_PointData t; t.x = x / o; t.y = y / o; t.z = z / o; return t; }
-    inline CT_PointData operator* (const float& o) const { CT_PointData t; t.x = x * o; t.y = y * o; t.z = z * o; return t; }
-
-    inline CT_PointData& operator= (const CT_PointData& o) { x = o.x; y = o.y; z = o.z; return *this; }
-
-    inline void copy(CT_PointData &point) const
-    {
-        point(0) = (*this)(0);
-        point(1) = (*this)(1);
-        point(2) = (*this)(2);
-    }
-
-    inline void setPoint(const CT_PointData &point)
-    {
-        point.copy(*this);
-    }
-
-    inline float* vertex() const
-    {
-        return const_cast<float*>(&(*this)(0));
-    }
-
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW         // make sure our new allocators are aligned
 } EIGEN_ALIGN16;                            // enforce SSE padding for correct memory alignment
 
-/*
-POINT_CLOUD_REGISTER_POINT_STRUCT (CT_Point,
+
+POINT_CLOUD_REGISTER_POINT_STRUCT (CT_PointData,
     (float, x, x)
     (float, y, y)
     (float, z, z)
-)*/
-
-POINT_CLOUD_REGISTER_POINT_WRAPPER(CT_PointData, pcl::_PointXYZ)
+)
 
 #endif
 
