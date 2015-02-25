@@ -110,6 +110,22 @@ G3DGraphicsView* G3DPainter::graphicsView() const
 void G3DPainter::initializeGl()
 {
     QT_GL_INIT_FUNCTIONS();
+
+    m_maxVertexUniformVec4 = 0;
+    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &m_maxVertexUniformVec4);
+
+    m_maxMatrix = (m_maxVertexUniformVec4/4)-4;
+
+    GLint majV = 0;
+    GLint minV = 0;
+
+    GLenum err;
+    if((err = glGetError()) != GL_NO_ERROR)
+        glGetIntegerv(GL_MAJOR_VERSION, &majV);
+    else
+        majV = 1;
+
+    m_openglVersion = majV + ((double)minV)/10.0;
 }
 
 void G3DPainter::setPointFastestIncrement(size_t inc)
@@ -1510,20 +1526,38 @@ void G3DPainter::initPointShader()
         {
             m_ShaderPoint = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
 
-            GLint version;
-            glGetIntegerv(GL_MAJOR_VERSION, &version);
+            GUI_LOG->addInfoMessage(LogInterface::gui, QObject::tr("OpenGL version detected : %1").arg(QString().setNum(m_openglVersion, 'f', 2)));
 
-            if(version >= 3)
-                m_shaderSourceFile = "./shaders/points.vert";
-            else
+            QString shaderSourceCode;
+
+            if(m_openglVersion < 3)
                 m_shaderSourceFile = "./shaders/points_120.vert";
+            else
+                m_shaderSourceFile = "./shaders/points.vert";
 
-            if(!m_ShaderPoint->compileSourceFile(m_shaderSourceFile))
+            QFile f(m_shaderSourceFile);
+
+            if(f.open(QFile::ReadOnly)) {
+                QTextStream stream(&f);
+
+                shaderSourceCode = stream.readAll();
+
+                shaderSourceCode.replace("csMatrix[64]", QString("csMatrix[%1]").arg(m_maxMatrix));
+
+                f.close();
+            }
+
+
+            if(!m_ShaderPoint->compileSourceCode(shaderSourceCode))
             {
                 QString log;
                 QString tmp;
 
+                #ifdef __unix__
+                if(!(tmp = m_ShaderPoint->log()).isEmpty())
+                #else
                 while(!(tmp = m_ShaderPoint->log()).isEmpty())
+                #endif
                     log += tmp;
 
                 if(!log.isEmpty())
@@ -1551,7 +1585,11 @@ void G3DPainter::initPointShader()
                     QString log;
                     QString tmp;
 
+                    #ifdef __unix__
+                    if(!(tmp = m_shaderProgPoint->log()).isEmpty())
+                    #else
                     while(!(tmp = m_shaderProgPoint->log()).isEmpty())
+                    #endif
                         log += tmp;
 
                     if(!log.isEmpty())
@@ -1579,7 +1617,11 @@ bool G3DPainter::bindPointShader()
             QString log;
             QString tmp;
 
+            #ifdef __unix__
+            if(!(tmp = m_shaderProgPoint->log()).isEmpty())
+            #else
             while(!(tmp = m_shaderProgPoint->log()).isEmpty())
+            #endif
                 log += tmp;
 
             if(!log.isEmpty())
@@ -1628,6 +1670,11 @@ bool G3DPainter::bindPointShader()
                 {
                     int s = PS_COORDINATES_SYS_MANAGER->size();
 
+                    if(s > m_maxMatrix) {
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Too many coordinate system for the vertex shader !"));
+                        s = m_maxMatrix;
+                    }
+
                     for(int i=0; i<s; ++i)
                         m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
 
@@ -1673,9 +1720,6 @@ void G3DPainter::initDoubleElementShader()
         {
             m_shaderDe = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
 
-            GLint version;
-            glGetIntegerv(GL_MAJOR_VERSION, &version);
-
             m_shaderDeSourceFile = "./shaders/others.vert";
 
             if(!m_shaderDe->compileSourceFile(m_shaderDeSourceFile))
@@ -1683,7 +1727,11 @@ void G3DPainter::initDoubleElementShader()
                 QString log;
                 QString tmp;
 
+                #ifdef __unix__
+                if(!(tmp = m_shaderDe->log()).isEmpty())
+                #else
                 while(!(tmp = m_shaderDe->log()).isEmpty())
+                #endif
                     log += tmp;
 
                 if(!log.isEmpty())
@@ -1711,7 +1759,11 @@ void G3DPainter::initDoubleElementShader()
                     QString log;
                     QString tmp;
 
+                    #ifdef __unix__
+                    if(!(tmp = m_shaderDeProg->log()).isEmpty())
+                    #else
                     while(!(tmp = m_shaderDeProg->log()).isEmpty())
+                    #endif
                         log += tmp;
 
                     if(!log.isEmpty())
@@ -1739,7 +1791,11 @@ bool G3DPainter::bindDoubleElementShader()
             QString log;
             QString tmp;
 
+            #ifdef __unix__
+            if(!(tmp = m_shaderDeProg->log()).isEmpty())
+            #else
             while(!(tmp = m_shaderDeProg->log()).isEmpty())
+            #endif
                 log += tmp;
 
             if(!log.isEmpty())

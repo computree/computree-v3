@@ -4,9 +4,9 @@
 #include <QSharedPointer>
 #include "ct_global/ct_context.h"
 #include "ct_cloud/abstract/ct_abstractcloudt.h"
+#include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregistered.h"
 
 template <typename T> class CT_AbstractCloudIndexT;
-class CT_AbstractCloudIndexRegistered;
 
 template<typename T>
 class CT_CloudIndexIteratorT

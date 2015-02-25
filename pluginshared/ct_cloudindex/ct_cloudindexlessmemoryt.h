@@ -36,8 +36,8 @@ public:
 
 private:
 
-    template<typename T, class CloudIndexLessMemory> friend class CT_CloudIndexRegistrationManagerT;
-    template<typename T, typename CLOUD> friend class CT_GlobalCloudManagerT;
+    template<typename A, class CloudIndexLessMemory> friend class CT_CloudIndexRegistrationManagerT;
+    template<typename B, typename CLOUD> friend class CT_GlobalCloudManagerT;
 
     CT_CloudIndexLessMemoryT(const size_t &begin, const size_t &size);
 

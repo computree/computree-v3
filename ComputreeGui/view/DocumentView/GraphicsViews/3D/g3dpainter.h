@@ -351,6 +351,11 @@ private:
     bool                                m_firstPolygonPointValid;
     Eigen::Vector4d                     m_firstPolygonPoint;
 
+    GLint                               m_maxVertexUniformVec4; // max uniform vec4 in a shader
+    int                                 m_maxMatrix;            // max matrix in shader
+
+    double                              m_openglVersion;
+
     QT_GL_SHADERPROGRAM                 *m_shaderProgPoint;     // Shader program used for points
     QT_GL_SHADER                        *m_ShaderPoint;
     QString                             m_shaderSourceFile;

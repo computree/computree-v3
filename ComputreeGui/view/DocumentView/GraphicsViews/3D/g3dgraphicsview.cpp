@@ -847,7 +847,7 @@ void G3DGraphicsView::initFromOptions()
 
     DM_GraphicsViewOptions &options = dynamic_cast<DM_GraphicsViewOptions&>(GGraphicsView::getOptions());
 
-    setBackgroundColor(options.getBackgroundColor());
+    //setBackgroundColor(options.getBackgroundColor());
     setAxisIsDrawn(options.drawAxis());
 
     if(options.drawFastest() == DM_GraphicsViewOptions::Always)

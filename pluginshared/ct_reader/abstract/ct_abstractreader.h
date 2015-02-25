@@ -283,7 +283,7 @@ protected:
     /**
       * \brief Set the out itemdrawable model for header
       */
-    const void setOutHeaderModel(CT_OutStdSingularItemModel *headerModel);
+    void setOutHeaderModel(CT_OutStdSingularItemModel *headerModel);
 
     /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the

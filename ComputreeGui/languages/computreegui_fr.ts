@@ -93,24 +93,24 @@
 <context>
     <name>G3DGraphicsView</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1741"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1752"/>
         <source>Colorer les points par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1742"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1753"/>
         <source>Colorer les faces par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1743"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1754"/>
         <source>Colorer les edges par...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1760"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1767"/>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1774"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1771"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1778"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp" line="1785"/>
         <source>Configurer</source>
         <translation></translation>
     </message>
@@ -614,146 +614,161 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="355"/>
-        <source> Coordonnées de la caméra </source>
-        <translation></translation>
+        <source>Informations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="364"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="369"/>
+        <source> Caméra </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="375"/>
         <source>Position</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="371"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="382"/>
         <source>Centre de la vue</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="378"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="389"/>
         <source>Rotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="387"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="404"/>
+        <source> Affichage </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="410"/>
+        <source>FPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="437"/>
         <source>Coin haut gauche</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="397"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="447"/>
         <source>Coin haut droit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="407"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="457"/>
         <source>Coin bas droit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="417"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="467"/>
         <source>Coin bas gauche</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="438"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="488"/>
         <source> Vue </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="450"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="500"/>
         <source>Perspective</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="460"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="510"/>
         <source>Orthographique</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="473"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="523"/>
         <source> Octree </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="488"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="538"/>
         <source>2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="493"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="543"/>
         <source>4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="498"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="548"/>
         <source>8</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="503"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="553"/>
         <source>16</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="508"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="558"/>
         <source>32</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="513"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="563"/>
         <source>64</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="518"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="568"/>
         <source>128</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="523"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="573"/>
         <source>256</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="528"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="578"/>
         <source>512</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="533"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="583"/>
         <source>1024</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="541"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="591"/>
         <source>Nombre de cellules</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="548"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="598"/>
         <source>Afficher</source>
         <translation>Activer</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="583"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="633"/>
         <source>Sauvegarder par défaut</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="328"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="333"/>
         <source>La sauvegarde de la configuration a réussi.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="328"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="333"/>
         <source>Sauvegarde réussie</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="332"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="337"/>
         <source>Erreur lors de la sauvegarde</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="332"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="337"/>
         <source>La sauvegarde de la configuration a échoué.</source>
         <translation></translation>
     </message>
@@ -1134,13 +1149,6 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
-        <source>Une erreur est survenu lors de la lecture du script :
-
-%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="172"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Sauvegarder l&apos;arbre des étapes sous...</translation>
@@ -1153,6 +1161,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Ajouter une étape qui n&apos;a pas besoin de résultat en entrÞ</source>
         <translation type="vanished">Ajouter une étape qui peut être ajoutée en premier</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="155"/>
+        <source>Une erreur est survenu lors de la lecture du script :
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="290"/>
@@ -1940,37 +1955,44 @@ Attention cette opération peut être lente.</source>
         <translation type="vanished">G3DPainter (points) =&gt; Erreur de liaison (Bind error) : %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1520"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1530"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1690"/>
         <source>Vertex shader &quot;%1&quot; compilation error : %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1522"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1532"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1692"/>
         <source>Vertex shader &quot;%1&quot; compilation error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1550"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1558"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1718"/>
         <source>Vertex shader &quot;%1&quot; link error : %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1552"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1560"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1720"/>
         <source>Vertex shader &quot;%1&quot; link error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1587"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1586"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1746"/>
         <source>Vertex shader &quot;%1&quot; bind error : %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1589"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1588"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1748"/>
         <source>Vertex shader &quot;%1&quot; bind error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1625"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1624"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/g3dpainter.cpp" line="1778"/>
         <source>Vertex shader &quot;%1&quot; error :%2</source>
         <translation type="unfinished"></translation>
     </message>

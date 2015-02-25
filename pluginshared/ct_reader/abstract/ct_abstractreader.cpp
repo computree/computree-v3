@@ -128,7 +128,7 @@ const CT_OutStdSingularItemModel* CT_AbstractReader::outHeaderModel() const
     return m_outHeaderModel;
 }
 
-const void CT_AbstractReader::setOutHeaderModel(CT_OutStdSingularItemModel* headerModel)
+void CT_AbstractReader::setOutHeaderModel(CT_OutStdSingularItemModel* headerModel)
 {
     m_outHeaderModel = headerModel;
 }
