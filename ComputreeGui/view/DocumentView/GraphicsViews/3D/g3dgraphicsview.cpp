@@ -55,6 +55,8 @@
 
 G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::SampleBuffers), parent), GGraphicsView()
 {
+    m_openglDebugLogger = NULL;
+
     setCamera(new G3DCamera());
 
     setAttribute(Qt::WA_NoSystemBackground);
@@ -92,8 +94,6 @@ G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::Sam
     connect(QGLViewer::camera()->frame(), SIGNAL(spun()), QGLViewer::camera()->frame(), SLOT(stopSpinning()));
 
     changeStateFileName();
-
-    initFromOptions();
 }
 
 G3DGraphicsView::~G3DGraphicsView()
@@ -104,6 +104,8 @@ G3DGraphicsView::~G3DGraphicsView()
     delete m_pointsSelectionManager;
     delete m_facesSelectionManager;
     delete m_edgesSelectionManager;
+
+    delete m_openglDebugLogger;
 }
 
 QWidget* G3DGraphicsView::getViewWidget() const
@@ -633,6 +635,24 @@ DM_ElementInfoManager *G3DGraphicsView::edgesInformationManager() const
     return m_edgesSelectionManager;
 }
 
+void G3DGraphicsView::initGlError()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+    if(m_openglDebugLogger == NULL) {
+
+        QOpenGLContext *ctx = QOpenGLContext::currentContext();
+
+        if(ctx->hasExtension(QByteArrayLiteral("GL_KHR_debug"))) {
+            m_openglDebugLogger = new QOpenGLDebugLogger();
+            m_openglDebugLogger->initialize();
+
+            connect(m_openglDebugLogger, SIGNAL(messageLogged(QOpenGLDebugMessage)), this, SLOT(openGlDebugMessageIntercepted(QOpenGLDebugMessage)));
+            m_openglDebugLogger->startLogging(QOpenGLDebugLogger::AsynchronousLogging);
+        }
+    }
+#endif
+}
+
 void G3DGraphicsView::addActionOptions(ActionOptionsInterface *options)
 {
     getDocumentView().addActionOptions(options);
@@ -813,6 +833,10 @@ void G3DGraphicsView::init()
 {
     _g.initializeGl();
     m_fakeG.initializeGl();
+
+    initGlError();
+
+    initFromOptions();
 
     if(!_2dActive)
         restoreStateFromFile();
@@ -1031,8 +1055,10 @@ void G3DGraphicsView::drawInternal()
 
             if(item->isSelected())
             {
-                if(colorVBOManager() != NULL)
+                if((colorVBOManager() != NULL) && colorVBOManager()->useColorCloud()) {
+                    _g.stopDrawMultiple();
                     colorVBOManager()->setUseColorCloud(false);
+                }
 
                 _g.setUseColorCloudForPoints(false);
                 _g.setUseColorCloudForFaces(false);
@@ -1051,8 +1077,10 @@ void G3DGraphicsView::drawInternal()
 
                 DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
 
-                if(colorVBOManager() != NULL)
+                if((colorVBOManager() != NULL) && (colorVBOManager()->useColorCloud() != m_docGV->useColorCloud())) {
+                    _g.stopDrawMultiple();
                     colorVBOManager()->setUseColorCloud(m_docGV->useColorCloud());
+                }
 
                 _g.setUseColorCloudForPoints(m_docGV->useColorCloud());
                 _g.setUseColorCloudForFaces(m_docGV->useColorCloud());
@@ -1733,11 +1761,19 @@ GraphicsViewInterface::SelectionMode G3DGraphicsView::selectionModeToBasic() con
 
 void G3DGraphicsView::checkAndShowOpenGLErrors()
 {
-    // check OpenGL error
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        GUI_LOG->addMessage(LogInterface::error, LogInterface::gui, QString("OpenGL error (%1) : %2").arg((int)err).arg((char*)gluErrorString(err)));
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+    if(m_openglDebugLogger == NULL) {
+    #endif
+
+        // check OpenGL error
+        GLenum err;
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            GUI_LOG->addMessage(LogInterface::error, LogInterface::gui, QString("OpenGL error (%1) : %2").arg((int)err).arg((char*)gluErrorString(err)));
+        }
+
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
     }
+    #endif
 }
 
 void G3DGraphicsView::startRedrawTimer()
@@ -1894,6 +1930,14 @@ void G3DGraphicsView::applyAttributes()
 
     m_docGV->applyAttributes(aa);
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+void G3DGraphicsView::openGlDebugMessageIntercepted(const QOpenGLDebugMessage &mess)
+{
+    if(mess.type() == QOpenGLDebugMessage::ErrorType)
+        GUI_LOG->addErrorMessage(LogInterface::gui, QString("OpenGL error (%1) : %2").arg(mess.id()).arg(mess.message()));
+}
+#endif
 
 // SIGNAL EMITTER
 

@@ -41,6 +41,10 @@
 #include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#include <QOpenGLDebugLogger>
+#endif
+
 class GDocumentViewForGraphics;
 class G3DGraphicsView;
 class DM_ElementInfoManager;
@@ -164,6 +168,10 @@ public:
 
 private:
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+    QOpenGLDebugLogger              *m_openglDebugLogger;
+#endif
+
     QTime                           timer;
 
     GDocumentViewForGraphics        *m_docGV;
@@ -195,6 +203,7 @@ private:
     GLdouble modelViewMatrix_[16];
     GLdouble projectionMatrix_[16];
 
+    void initGlError();
 
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);
@@ -270,6 +279,10 @@ private slots:
     void changeDrawMethodToNormal();
     void itemDrawableToBeRemoved(CT_AbstractItemDrawable &item);
     void applyAttributes();
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+    void openGlDebugMessageIntercepted(const QOpenGLDebugMessage &mess);
+#endif
 };
 
 #endif // G3DGRAPHICSVIEW_H
