@@ -73,7 +73,7 @@ void DM_AbstractWorker::staticConnectWorkerToThread(DM_AbstractWorker *worker, b
         worker->init();
 }
 
-void DM_AbstractWorker::setProgress(const int &progress)
+void DM_AbstractWorker::setProgress(int progress)
 {
     int realProgress = progress;
 
@@ -82,8 +82,11 @@ void DM_AbstractWorker::setProgress(const int &progress)
 
     if(m_progress != realProgress)
     {
-        m_progress = realProgress;
-        emit progressChanged(realProgress);
+        if((realProgress % 5) == 0) {
+            m_progress = realProgress;
+
+            emit progressChanged(m_progress);
+        }
     }
 }
 

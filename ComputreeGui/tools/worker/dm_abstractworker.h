@@ -66,7 +66,7 @@ public:
     static void staticConnectWorkerToThread(DM_AbstractWorker *worker, bool deleteWorkerWhenFinished = false, bool deleteThreadWhenFinished = false, bool initWorker = true);
 
 protected slots:
-    virtual void setProgress(const int &progress);
+    virtual void setProgress(int progress);
     virtual void setProgressRanged(const int &min, const int &max);
     void setError(const QString &err);
     void setFinished();

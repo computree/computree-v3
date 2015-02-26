@@ -38,7 +38,9 @@ QColor DM_ColorLinearInterpolator::intermediateColor(double key)
     QMap<double, QColor>::const_iterator itB = it;
     QMap<double, QColor>::const_iterator itN = it;
 
-    if(it.key() > key)
+    if(it == m_gradients.begin())
+        return it.value();
+    else if(it.key() > key)
         itB = it-1;
     else if(it == m_gradients.end())
         return it.value();

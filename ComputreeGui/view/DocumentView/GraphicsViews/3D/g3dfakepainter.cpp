@@ -325,7 +325,7 @@ void G3DFakePainter::drawPointCloud(const CT_AbstractCloudIndex *pci)
     }
     else if(m_drawMode.testFlag(BackupPointCloudIndex))
     {
-        if(!m_pCloudIndexBackup.contains((CT_AbstractCloudIndex*)pci))
+        if((pci != NULL) && !m_pCloudIndexBackup.contains((CT_AbstractCloudIndex*)pci))
             m_pCloudIndexBackup.append((CT_AbstractCloudIndex*)pci);
     }
     else if(m_drawMode.testFlag(ApplyColorPoints))
@@ -374,7 +374,7 @@ void G3DFakePainter::drawMesh(const CT_AbstractMeshModel *mesh)
 
             const CT_AbstractPointCloudIndex *pci = mesh->getPointCloudIndex();
 
-            if(!m_pCloudIndexBackup.contains((CT_AbstractPointCloudIndex*)pci))
+            if((pci != NULL) && !m_pCloudIndexBackup.contains((CT_AbstractPointCloudIndex*)pci))
                 m_pCloudIndexBackup.append((CT_AbstractPointCloudIndex*)pci);
         }
 
@@ -385,7 +385,7 @@ void G3DFakePainter::drawMesh(const CT_AbstractMeshModel *mesh)
 
             const CT_AbstractCloudIndex *fci = mesh->getFaceCloudIndex();
 
-            if(!m_fCloudIndexBackup.contains((CT_AbstractCloudIndex*)fci))
+            if((fci != NULL) && !m_fCloudIndexBackup.contains((CT_AbstractCloudIndex*)fci))
                 m_fCloudIndexBackup.append((CT_AbstractCloudIndex*)fci);
         }
 
@@ -396,7 +396,7 @@ void G3DFakePainter::drawMesh(const CT_AbstractMeshModel *mesh)
 
             const CT_AbstractCloudIndex *eci = mesh->getEdgeCloudIndex();
 
-            if(!m_eCloudIndexBackup.contains((CT_AbstractCloudIndex*)eci))
+            if((eci != NULL) && !m_eCloudIndexBackup.contains((CT_AbstractCloudIndex*)eci))
                 m_eCloudIndexBackup.append((CT_AbstractCloudIndex*)eci);
         }
     }
