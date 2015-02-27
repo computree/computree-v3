@@ -157,6 +157,8 @@ void G3DPainter::beginNewDraw()
 {
     m_polygonMode = 0;
 
+    _drawFastest = true;
+
     _nCallEnableSetColor = 0;
     _nCallEnableSetForcedColor = 0;
 

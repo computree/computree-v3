@@ -74,14 +74,6 @@ bool PB_ActionSelectItemDrawableGV::mousePressEvent(QMouseEvent *e)
 
     GraphicsViewInterface::SelectionMode mode = selectionModeToBasic(view->selectionMode());
 
-    if((mode != GraphicsViewInterface::NONE) && view->mustSelectPoints())
-    {
-        document()->constructOctreeOfPoints();
-
-        if(m_status > 0)
-            return mouseReleaseEvent(e);
-    }
-
     m_mousePressed = true;
     m_status = 1;
     m_selectionRectangle.setSize(QSize(0,0));
@@ -166,32 +158,38 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
         //m_backupDrawMode = view->drawMode();
         //view->setDrawMode(GraphicsViewInterface::NORMAL);
 
-        if((mode == GraphicsViewInterface::ADD_ONE)
-            || (mode == GraphicsViewInterface::REMOVE_ONE)
-            || (mode == GraphicsViewInterface::SELECT_ONE))
+        if(mode != GraphicsViewInterface::NONE)
         {
-            view->setSelectRegionWidth(3);
-            view->setSelectRegionHeight(3);
+            if(view->mustSelectPoints())
+                document()->constructOctreeOfPoints();
 
-            view->select(e->pos());
+            if((mode == GraphicsViewInterface::ADD_ONE)
+                || (mode == GraphicsViewInterface::REMOVE_ONE)
+                || (mode == GraphicsViewInterface::SELECT_ONE))
+            {
+                view->setSelectRegionWidth(3);
+                view->setSelectRegionHeight(3);
 
-            //view->setDrawMode(m_backupDrawMode);
-        }
-        else if(mode != GraphicsViewInterface::NONE)
-        {
-            m_selectionRectangle = m_selectionRectangle.normalized();
+                view->select(e->pos());
 
-            // Define selection window dimensions
-            view->setSelectRegionWidth(m_selectionRectangle.width());
-            view->setSelectRegionHeight(m_selectionRectangle.height());
-            // Compute rectangle center and perform selection
-            view->select(m_selectionRectangle.center());
+                //view->setDrawMode(m_backupDrawMode);
+            }
+            else
+            {
+                m_selectionRectangle = m_selectionRectangle.normalized();
 
-//            setBackupDrawMode();
-            //view->setDrawMode(m_backupDrawMode);
-            document()->redrawGraphics();
+                // Define selection window dimensions
+                view->setSelectRegionWidth(m_selectionRectangle.width());
+                view->setSelectRegionHeight(m_selectionRectangle.height());
+                // Compute rectangle center and perform selection
+                view->select(m_selectionRectangle.center());
 
-            return true;
+    //            setBackupDrawMode();
+                //view->setDrawMode(m_backupDrawMode);
+                document()->redrawGraphics();
+
+                return true;
+            }
         }
     }
 

@@ -188,9 +188,8 @@ private:
     bool                            _forceDrawMode;
     G3DGraphicsViewSignalEmitter    m_signalEmitter;
     GLdouble                        m_planeCoefficients[6][4];
-    QPoint                          m_centerPointOfSelection;
 
-    QList<CT_AbstractCloudIndex*>   m_idToAddInSelection;
+    QPoint                          m_centerPointOfSelection;
 
     DM_ElementInfoManager           *m_pointsSelectionManager;
     DM_ElementInfoManager           *m_facesSelectionManager;
@@ -205,12 +204,16 @@ private:
 
     void initGlError();
 
+    void initG3DPainterForNewDraw();
+
     void addIdToSelection(const GLuint &id);
     void addPointsIDToSelection(const GLuint &id);
     void addFacesIDToSelection(const GLuint &id);
     void addEdgesIDToSelection(const GLuint &id);
     void addItemsIDToSelection(const GLuint &id);
 
+
+    void setLastIdSelected(const GLuint &id);
     void setLastItemIdSelected(const GLuint &id);
     void setLastPointIdSelected(const GLuint &id);
     void setLastFaceIdSelected(const GLuint &id);
@@ -247,7 +250,11 @@ protected:
     void draw();
     void postDraw();
     void fastDraw();
+
+    void preDrawInternal(QPaintDevice *device = NULL, bool picking = false);
     void drawInternal();
+    void postDrawInternal(bool picking = false);
+
     void drawOverlay(QPainter &painter);
     void drawWithNames();
 

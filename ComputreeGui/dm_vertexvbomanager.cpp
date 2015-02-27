@@ -100,7 +100,7 @@ void DM_VertexVBOManager::preDraw()
             glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
             // define the address of the points cloud in VRAM (RAM of graphics card)
-            glVertexPointer(3, GL_FLOAT, 0, 0);
+            glVertexPointer(3, GL_FLOAT, sizeof(CT_PointData), 0);
 
             // unselect the vbo
             glBindBuffer(GL_ARRAY_BUFFER, 0);
