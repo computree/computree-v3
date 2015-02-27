@@ -53,7 +53,7 @@
 
 #include <limits>
 
-G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::DoubleBuffer), parent), GGraphicsView()
+G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::DoubleBuffer | QGL::SampleBuffers), parent), GGraphicsView()
 {
     setAutoBufferSwap(false);
 
@@ -445,6 +445,7 @@ void G3DGraphicsView::select(const QPoint &point)
         makeCurrent();
 
         preDrawInternal(NULL, true);
+        glDisable(GL_MULTISAMPLE);
 
         lockPaint();
 
@@ -484,7 +485,7 @@ void G3DGraphicsView::select(const QPoint &point)
 
         glReadBuffer(GL_BACK);
         QImage img = grabFrameBuffer(false);
-        img.save("test.bmp", "BMP");
+        //img.save("test.bmp", "BMP");
 
         int xDeb = point.x()-(selectRegionWidth()/2);
         int yDeb = point.y()-(selectRegionHeight()/2);
@@ -1089,7 +1090,8 @@ void G3DGraphicsView::preDrawInternal(QPaintDevice *device, bool picking)
         m_painter->begin(this);
     }
 
-    m_painter->setRenderHint(QPainter::Antialiasing);
+    if(!picking)
+        m_painter->setRenderHint(QPainter::Antialiasing);
 
     // Save current OpenGL state
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -1101,8 +1103,9 @@ void G3DGraphicsView::preDrawInternal(QPaintDevice *device, bool picking)
     // Reset OpenGL parameters
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
 
-    if(((const DM_GraphicsViewOptions&)getOptions()).useLight())
+    if(!picking && ((const DM_GraphicsViewOptions&)getOptions()).useLight())
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -1114,7 +1117,7 @@ void G3DGraphicsView::preDrawInternal(QPaintDevice *device, bool picking)
     }
     //glEnable(GL_CULL_FACE);
 
-    if(getOptions().useTransparency())
+    if(!picking && getOptions().useTransparency())
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
