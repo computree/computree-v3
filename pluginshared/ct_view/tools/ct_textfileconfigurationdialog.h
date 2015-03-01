@@ -48,8 +48,10 @@ class PLUGINSHAREDSHARED_EXPORT CT_TextFileConfigurationDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent = 0, QString fileName="");
+    explicit CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent = 0, QString fileName="", bool autoDetect = true);
     ~CT_TextFileConfigurationDialog();
+
+    void init();
 
     inline QStringList getHeadersNames() {return _headersNames;}
     inline int getFieldNumber() {return _headers.size();}
@@ -63,13 +65,20 @@ public:
     inline int getColumnForField(QString neededField) {return _neededFieldsColumns.value(neededField);}
     inline QMap<QString, int> getNeededFieldColumns() {return _neededFieldsColumns;}
 
+    void setFieldColumnsSelectedFromString(QString mapAsString);
+    QString getFieldColumnsSelectedAsString(const QMap<QString, int> &map);
+
     void setFileNameWithPath(const QString &path);
     void setNLinesToSkip(const int &n);
     void setFieldColumnsSelected(const QMap<QString, int> &map);
     void setSeparator(const QString &separator);
     void setFileExtensionAccepted(const QStringList &extensions);
     void setHeader(bool header);
-    void setQLocale(QString locale);
+    void setQLocale(QString locale);    
+    void setDecimal(QString decimal);
+
+public slots:
+    void extractFieldsNames();
 
 private slots:
 
@@ -77,8 +86,17 @@ private slots:
     void on_fileChoose_clicked();
     void on_separator_currentIndexChanged(const QString &arg1);
     void on_nbLines_valueChanged(int arg1);
-    void on_extractFieldsNames_clicked();
     void on_buttonBox_accepted();
+
+    void on_cb_showCols_clicked();
+
+    void on_sb_tabSize_valueChanged(int arg1);
+
+    void on_skipLines_valueChanged(int arg1);
+
+    void on_cb_noheader_clicked();
+
+    void on_pb_detect_clicked();
 
 private:
     Ui::CT_TextFileConfigurationDialog *ui;
@@ -94,6 +112,7 @@ private:
     QStringList                 _neededFields;
     QString                     _separator;
     QStringList                 _extensions;
+    bool                        _autoDetect;
 };
 
 #endif // CT_TEXTFILECONFIGURATIONDIALOG_H

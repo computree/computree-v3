@@ -11,13 +11,16 @@ public:
     ~CT_PlotManager_plotsList();
 
     inline virtual QString getPlotManagerType() const {return "Plot List";}
-    virtual QMap<QString, CT_AreaShape2DData *> getPlotsInBoundingBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) const;
+    inline virtual size_t getPlotNumber () const {return _plotList.size();}
+
+    virtual QMap<QString, CT_AreaShape2DData *> getPlotsInBoundingBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max);
 
     void addPlot(const QString &idVal, CT_AreaShape2DData* shape);
 
+    void clear();
+
 private:
     QMap<QString, CT_AreaShape2DData*>  _plotList;
-    mutable QList<QString>              _alreadyReturned;
 };
 
 #endif // CT_PLOTMANAGER_PLOTSLIST_H

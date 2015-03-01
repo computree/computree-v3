@@ -33,6 +33,7 @@
 #include "ct_doublespinbox.h"
 #include "ct_checkbox.h"
 #include "ct_filechoicebutton.h"
+#include "ct_asciifilechoicebutton.h"
 #include "ct_combobox.h"
 #include "ct_radiobutton.h"
 #include "ct_buttongroup.h"
@@ -297,6 +298,45 @@ CT_FileChoiceButton *CT_StepConfigurableDialog::addFileChoice(QString btLabel,
         ++_nRow;
 
         fileChoiceButton->setWidgetValue(value);
+        return fileChoiceButton;
+    }
+
+    return NULL;
+}
+
+CT_AsciiFileChoiceButton *CT_StepConfigurableDialog::addAsciiFileChoice(QString btlab,
+                                                                        QString fileFilter,
+                                                                        bool autoDetect,
+                                                                        const QStringList &neededFields,
+                                                                        QString &fileName,
+                                                                        bool &header,
+                                                                        QString &separator,
+                                                                        QString &decimal,
+                                                                        int & skip,
+                                                                        QMap<QString, int> &columns,
+                                                                        QString description)
+{
+    if(_canEdit)
+    {
+
+        CT_AsciiFileChoiceButton *fileChoiceButton = new CT_AsciiFileChoiceButton(btlab,
+                                                                                  fileFilter,
+                                                                                  autoDetect,
+                                                                                  neededFields,
+                                                                                  fileName,
+                                                                                  header,
+                                                                                  separator,
+                                                                                  decimal,
+                                                                                  skip,
+                                                                                  columns,
+                                                                                  description);
+        _listWidgetWithValueReference.append(fileChoiceButton);
+
+        addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid), 1, -1);
+
+        ++_nRow;
+
+        fileChoiceButton->setWidgetValue(fileName);
         return fileChoiceButton;
     }
 

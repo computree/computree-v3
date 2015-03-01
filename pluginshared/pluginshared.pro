@@ -375,7 +375,9 @@ SOURCES += \
     ct_filter/ct_standardfilterseparator.cpp \
     ct_plotmanager/abstract/ct_abstractplotmanager.cpp \
     ct_plotmanager/ct_plotmanager_grid.cpp \
-    ct_plotmanager/ct_plotmanager_plotslist.cpp
+    ct_plotmanager/ct_plotmanager_plotslist.cpp \
+    ct_itemdrawable/ct_plotmanageritem.cpp \
+    ct_view/ct_asciifilechoicebutton.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -854,7 +856,9 @@ HEADERS += interfaces.h \
     ct_iterator/ct_itemiterator.h \
     ct_iterator/ct_containeriterator.h \
     ct_iterator/ct_mutablegroupiterator.h \
-    ct_iterator/ct_mutableitemiterator.h
+    ct_iterator/ct_mutableitemiterator.h \
+    ct_itemdrawable/ct_plotmanageritem.h \
+    ct_view/ct_asciifilechoicebutton.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

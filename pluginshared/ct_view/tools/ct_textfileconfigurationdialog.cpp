@@ -5,7 +5,7 @@
 #include "qdebug.h"
 
 
-CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent, QString fileName) :
+CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent, QString fileName, bool autoDetect) :
     QDialog(parent),
     ui(new Ui::CT_TextFileConfigurationDialog)
 {
@@ -14,6 +14,9 @@ CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neede
     // Modif michael : problème si on met a NULL ! si on ne clique pas sur le bouton filechoose
     _stream = NULL;
     _file = NULL;
+    _autoDetect = autoDetect;
+
+    if (_autoDetect) {ui->pb_detect->setVisible(false);}
 
     delete ui->fieldWidget->layout();
     _layout = new QGridLayout(ui->fieldWidget);
@@ -29,16 +32,25 @@ CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neede
     ui->nbLines->setValue(10);
     ui->cb_noheader->setChecked(false);
 
-    if (!fileName.isEmpty())
-    {
-        _filename = fileName;
+    _filename = fileName;
 
+    init();
+    extractFieldsNames();
+}
+
+void CT_TextFileConfigurationDialog::init()
+{
+    if (!_filename.isEmpty())
+    {
         // Lecture du fichier (entete)
+        delete _file;
         _file = new QFile(_filename);
-        if (_file->open(QIODevice::ReadOnly | QIODevice::Text))
+        if (_file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
         {
             _stream = new QTextStream(_file);
             _file->close();
+
+            if (_autoDetect) {on_pb_detect_clicked();}
 
             ui->filePath->setText(_filename);
             on_nbLines_valueChanged(ui->nbLines->value());
@@ -82,50 +94,40 @@ void CT_TextFileConfigurationDialog::on_fileChoose_clicked()
     // choix du fichier
     _filename = QFileDialog::getOpenFileName(this, "Choix du fichier ascii", "", filter);
 
-    if(!_filename.isEmpty())
-    {
-        // nettoyage
-        clearFieldCombos();
+    // nettoyage
+    clearFieldCombos();
 
-        // Lecture du fichier (entete)
-        _file = new QFile(_filename);
-        if (_file->open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            _stream = new QTextStream(_file);
-            _file->close();
-
-            ui->filePath->setText(_filename);
-            on_nbLines_valueChanged(ui->nbLines->value());
-        } else {
-            ui->filePath->setText("Aucun fichier valide choisi.");
-            ui->fileExtract->setText("");
-        }
-    }
+    init();
+    extractFieldsNames();
 }
 
 void CT_TextFileConfigurationDialog::on_separator_currentIndexChanged(const QString &arg1)
 {
-    if (arg1 == "Tabulation") {
-        _separator = "\t";
-    } else if (arg1 == "Virgule") {
+    if (arg1 == "Virgule") {
         _separator = ",";
     } else if (arg1 == "Point-Virgule") {
         _separator = ";";
     } else if (arg1 == "Espace") {
         _separator = " ";
+    } else {
+        _separator = "\t";
     }
+
+    on_nbLines_valueChanged(ui->nbLines->value());
+    extractFieldsNames();
 }
 
 void CT_TextFileConfigurationDialog::on_nbLines_valueChanged(int arg1)
 {
     QString result = "";
-    if (_file->open(QIODevice::ReadOnly | QIODevice::Text))
+    if (_file!=NULL && _file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         _stream->seek(0);
 
         for (int i = 0 ; i < arg1 ; i++)
         {
             QString line = _stream->readLine();
+            if (ui->cb_showCols->isChecked() && _separator != "\t") {line.replace(_separator, QString("%1\t").arg(_separator));}
             line.append("\n");
             result.append(line);
         }
@@ -150,13 +152,13 @@ void CT_TextFileConfigurationDialog::clearFieldCombos()
     _combos.clear();
 }
 
-void CT_TextFileConfigurationDialog::on_extractFieldsNames_clicked()
+void CT_TextFileConfigurationDialog::extractFieldsNames()
 {
     _headers.clear();
     _headersNames.clear();
 
 
-    if (_file->open(QIODevice::ReadOnly | QIODevice::Text))
+    if (_file!=NULL && _file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         _stream->seek(0);
         for (int i = 0 ; i < ui->skipLines->value() ; i++)
@@ -235,12 +237,7 @@ void CT_TextFileConfigurationDialog::on_buttonBox_accepted()
 
 int CT_TextFileConfigurationDialog::getNlinesToSkip()
 {
-    if (hasHeader())
-    {
-        return ui->skipLines->value() + 1;
-    } else {
-        return ui->skipLines->value();
-    }
+    return ui->skipLines->value();
 }
 
 bool CT_TextFileConfigurationDialog::hasHeader()
@@ -262,16 +259,19 @@ void CT_TextFileConfigurationDialog::setFileNameWithPath(const QString &path)
 {
     _filename = path;
     ui->filePath->setText(_filename);
+    init();
+    extractFieldsNames();
 }
 
 void CT_TextFileConfigurationDialog::setNLinesToSkip(const int &n)
 {
     ui->skipLines->setValue(n);
+    extractFieldsNames();
 }
 
 void CT_TextFileConfigurationDialog::setFieldColumnsSelected(const QMap<QString, int> &map)
 {
-    on_extractFieldsNames_clicked();
+    extractFieldsNames();
 
     QMapIterator<QLabel*, QComboBox*> it(_combos);
     while (it.hasNext())
@@ -288,33 +288,69 @@ void CT_TextFileConfigurationDialog::setFieldColumnsSelected(const QMap<QString,
     }
 }
 
+void CT_TextFileConfigurationDialog::setFieldColumnsSelectedFromString(QString mapAsString)
+{
+    QMap<QString, int> map;
+
+    QStringList list = mapAsString.split("\n");
+    for (int i = 0 ; i < list.size() ; i++)
+    {
+        QStringList list2 = list.at(i).split("\t");
+        if (list2.size() >= 2)
+        {
+            bool ok;
+            int n = list2.at(1).toInt(&ok);
+            if (ok)
+            {
+                map.insert(list2.at(0), n);
+            }
+        }
+    }
+    setFieldColumnsSelected(map);
+}
+
+QString CT_TextFileConfigurationDialog::getFieldColumnsSelectedAsString(const QMap<QString, int> &map)
+{
+    QString result = "";
+    QMapIterator<QString, int> it(map);
+    while (it.hasNext())
+    {
+        it.next();
+        result.append(it.key());
+        result.append("\t");
+        result.append(QString("%1").arg(it.value()));
+        if (it.hasNext()) {result.append("\n");}
+    }
+    return result;
+}
+
+
 void CT_TextFileConfigurationDialog::setSeparator(const QString &separator)
 {
-    _separator = separator;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    if (separator == "\t") {
-        ui->separator->setCurrentIndex(ui->separator->findText("Tabulation"));
-    } else if (separator == ",") {
+
+    if (separator == ",") {
         ui->separator->setCurrentIndex(ui->separator->findText("Virgule"));
     } else if (separator == ";") {
         ui->separator->setCurrentIndex(ui->separator->findText("Point-Virgule"));
     } else if (separator == " ") {
         ui->separator->setCurrentIndex(ui->separator->findText("Espace"));
+    }else {
+        ui->separator->setCurrentIndex(ui->separator->findText("Tabulation"));
     }
 #else
-    if (separator == "\t") {
-        ui->separator->setCurrentText("Tabulation");
-    } else if (separator == ",") {
+
+    if (separator == ",") {
         ui->separator->setCurrentText("Virgule");
     } else if (separator == ";") {
         ui->separator->setCurrentText("Point-Virgule");
     } else if (separator == " ") {
         ui->separator->setCurrentText("Espace");
+    } else {
+        ui->separator->setCurrentText("Tabulation");
     }
 #endif
-
-
 }
 
 void CT_TextFileConfigurationDialog::setFileExtensionAccepted(const QStringList &extensions)
@@ -325,6 +361,7 @@ void CT_TextFileConfigurationDialog::setFileExtensionAccepted(const QStringList 
 void CT_TextFileConfigurationDialog::setHeader(bool header)
 {
     ui->cb_noheader->setChecked(!header);
+    extractFieldsNames();
 }
 
 void CT_TextFileConfigurationDialog::setQLocale(QString locale)
@@ -337,4 +374,73 @@ void CT_TextFileConfigurationDialog::setQLocale(QString locale)
     }
 }
 
+void CT_TextFileConfigurationDialog::setDecimal(QString decimal)
+{
+    if (decimal == ".")
+    {
+        ui->rb_point->setChecked(true);
+    } else {
+        ui->rb_comma->setChecked(true);
+    }
+}
 
+
+
+
+void CT_TextFileConfigurationDialog::on_cb_showCols_clicked()
+{
+    on_nbLines_valueChanged(ui->nbLines->value());
+}
+
+void CT_TextFileConfigurationDialog::on_sb_tabSize_valueChanged(int arg1)
+{
+    ui->fileExtract->setTabStopWidth(arg1);
+    on_nbLines_valueChanged(ui->nbLines->value());
+}
+
+
+void CT_TextFileConfigurationDialog::on_skipLines_valueChanged(int arg1)
+{
+    Q_UNUSED(arg1);
+    extractFieldsNames();
+}
+
+void CT_TextFileConfigurationDialog::on_cb_noheader_clicked()
+{
+    extractFieldsNames();
+}
+
+void CT_TextFileConfigurationDialog::on_pb_detect_clicked()
+{
+
+    // Detect fieds separator automatically
+    if (_file!=NULL && _file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        _stream->seek(0);
+
+        for (int i = 0 ; i < getNlinesToSkip() && !_stream->atEnd(); i++) {_stream->readLine();}
+
+        if (hasHeader() && !_stream->atEnd()) {_stream->readLine();}
+
+        if (!_stream->atEnd())
+        {
+            QString line = _stream->readLine();
+            _file->close();
+
+            int nbTab = line.split("\t").size();
+            int nbComa = line.split(",").size();
+            int nbSemicolon = line.split(";").size();
+            int nbSpace = line.split(" ").size();
+
+            if (nbTab >= nbComa && nbTab >= nbSemicolon && nbTab >= nbSpace) {
+                setSeparator("\t");
+            } else if (nbSemicolon >= nbComa && nbSemicolon >= nbTab && nbSemicolon >= nbSpace) {
+                setSeparator(";");
+            } else if (nbComa >= nbTab && nbComa >= nbSemicolon && nbComa >= nbSpace) {
+                setSeparator(",");
+            } else if (nbSpace >= nbComa && nbSpace >= nbTab && nbSpace >= nbSemicolon) {
+                setSeparator(" ");
+            }
+        }
+    }
+}

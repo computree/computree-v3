@@ -42,6 +42,7 @@ protected:
 
 
     int _linesToSkip;                        /*!< Nombre de lignes à ignorer avant les headers*/
+    bool    _header;
     QString _separator;                      /*!< Séparateur de champs*/
     QString _localeName;
     int _columnX;                            /*!< Numéro de colonne où trouver X*/

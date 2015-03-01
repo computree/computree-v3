@@ -62,6 +62,7 @@ PB_StepLoadAsciiFile02::PB_StepLoadAsciiFile02(CT_StepInitializeData &data) : CT
 {
     _linesToSkip = 0;
     _separator = ";";
+    _header= true;
     _localeName = QLocale(QLocale::English, QLocale::UnitedKingdom).name();
     _columnX = 0;
     _columnY = 1;
@@ -87,6 +88,7 @@ SettingsNodeGroup* PB_StepLoadAsciiFile02::getAllSettings() const
     SettingsNodeGroup *root = CT_AbstractStepLoadFileInScene::getAllSettings();
     SettingsNodeGroup *group = new SettingsNodeGroup("PB_StepLoadAsciiFile02");
     group->addValue(new SettingsNodeValue("Version", "1"));
+    group->addValue(new SettingsNodeValue("Header", _header));
     group->addValue(new SettingsNodeValue("LinesToSkip", _linesToSkip));
     group->addValue(new SettingsNodeValue("Separator", _separator));
     group->addValue(new SettingsNodeValue("LocaleName", _localeName));
@@ -116,7 +118,11 @@ bool PB_StepLoadAsciiFile02::setAllSettings(const SettingsNodeGroup *settings)
     if(groups.isEmpty())
         return false;
 
-    QList<SettingsNodeValue*> values = groups.first()->valuesByTagName("LinesToSkip");
+    QList<SettingsNodeValue*> values = groups.first()->valuesByTagName("Header");
+    if(values.isEmpty()) {return false;}
+    _header = values.first()->value().toBool();
+
+    values = groups.first()->valuesByTagName("LinesToSkip");
     if(values.isEmpty()) {return false;}
     _linesToSkip = values.first()->value().toInt();
 
@@ -259,6 +265,7 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
         corresp.insert("Normale Y", _columnNY);
         corresp.insert("Normale Z", _columnNZ);
 
+        dialog.setHeader(_header);
         dialog.setNLinesToSkip(_linesToSkip);
         dialog.setSeparator(_separator);
         dialog.setQLocale(_localeName);
@@ -310,7 +317,7 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
     _columnNZ = columnNZ;
 
     _linesToSkip = dialog.getNlinesToSkip();
-    if (dialog.hasHeader()) {_linesToSkip++;}
+    _header = dialog.hasHeader();
     _separator = dialog.getSeparator();
     _localeName = dialog.getQLocaleName();
 
@@ -432,6 +439,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
     {
         stream.readLine();
     }
+
+    if (_header) {stream.readLine();}
 
     QLocale locale(_localeName);
     // While we did not reached the end of file

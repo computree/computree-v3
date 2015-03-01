@@ -44,6 +44,7 @@ class QGridLayout;
 class CT_WidgetWithValueReferenceInterface;
 class CT_ButtonGroup;
 class CT_FileChoiceButton;
+class CT_AsciiFileChoiceButton;
 class CT_ComboBox;
 class SettingsNodeGroup;
 
@@ -209,6 +210,39 @@ public:
                          CT_FileChoiceButton::NeededFileType filetype,
                          QString fileFilter,
                          QStringList &value);
+
+
+    /*! \brief Add a control allowing to choose an ASCII file to a new line in the dialog
+     *
+     * The following graphic composants are automatically added to the next line of the dialog :\n
+     * A QPushButton, with label <b>btLabel</b>. On click it open a choose file dialog.\n
+     * A QLabel
+     *
+     * \param btLabel Label of the button.
+     * \param fileFilter File filter.
+     * \param autoDetect Fields separator automatic detection.
+     * \param neededFields List of needed fields from the ascii file.
+     *
+     * \param[out] fileName Choosen file name. Note that it's also used to fix input default value.
+     * \param[out] header Does the file have a header. Note that it's also used to fix input default value.
+     * \param[out] separator Fields separator. Note that it's also used to fix input default value.
+     * \param[out] decimal Decimal separator. Note that it's also used to fix input default value.
+     * \param[out] skip Number of lines to skip before fields header line. Note that it's also used to fix input default value.
+     * \param[out] columns correspondance between needed fields and corresponding columns numbers in the file. Note that it's also used to fix input default value.
+     * \param[out] description Description (for the script export). Note that it's also used to fix input default value.
+     */
+    CT_AsciiFileChoiceButton *addAsciiFileChoice(QString btlab,
+                                                 QString fileFilter,
+                                                 bool autoDetect,
+                                                 const QStringList &neededFields,
+                                                 QString &fileName,
+                                                 bool &header,
+                                                 QString &separator,
+                                                 QString &decimal,
+                                                 int &skip,
+                                                 QMap<QString, int> &columns,
+                                                 QString description = "");
+
 
 
     /*! \brief Create a CT_ButtonGroup associated to an ibdex value

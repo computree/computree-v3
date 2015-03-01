@@ -70,6 +70,10 @@
 #include "step/pb_stepbeginloopthroughgroups.h"
 #include "step/pb_stepbeginloopthroughdatasource.h"
 #include "step/pb_steploaddatafromitemposition.h"
+#include "step/pb_stepcreateplotmanagerfromfile.h"
+#include "step/pb_stepcreateplotmanagergrid.h"
+#include "step/pb_steploadpositionsformatching.h"
+
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -216,6 +220,9 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepBeginLoopThroughDataSource(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCreatePlotManagerFromFile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCreatePlotManagerGrid(*createNewStepInitializeData(NULL)));
+
     sep->addStep(new PB_StepComputePointsMetrics(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
@@ -256,8 +263,9 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
 
     // Ajout d'une étape
     sep->addStep(new PB_StepCreateDataSource(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadPositionsForMatching(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator("Test"));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));

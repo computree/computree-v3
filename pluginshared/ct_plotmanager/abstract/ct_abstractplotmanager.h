@@ -18,8 +18,10 @@ public:
     ~CT_AbstractPlotManager();
 
     virtual QString getPlotManagerType() const = 0;
+    virtual size_t getPlotNumber () const = 0;
 
-    virtual QMap<QString, CT_AreaShape2DData*> getPlotsInBoundingBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) const = 0;
+    virtual QMap<QString, CT_AreaShape2DData*> getPlotsInBoundingBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) = 0;
+
 };
 
 #endif // CT_ABSTRACTPLOTMANAGER_H
