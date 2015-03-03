@@ -40,6 +40,7 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
                                                    bool &header,
                                                    QString &separator,
                                                    QString &decimal,
+                                                   QLocale &locale,
                                                    int & skip,
                                                    QMap<QString, int> &columns,
                                                    QString description)
@@ -54,6 +55,7 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
     _header = &header;
     _separator = &separator;
     _decimal = &decimal;
+    _locale = &locale;
     _skip = &skip;
     _columns = &columns;
 
@@ -228,6 +230,7 @@ void CT_AsciiFileChoiceButton::chooseFile()
         *_header = _dialog->hasHeader();
         *_separator = _dialog->getSeparator();
         *_decimal = QLocale(_dialog->getQLocaleName()).decimalPoint();
+        *_locale = QLocale(_dialog->getQLocaleName());
         *_skip = _dialog->getNlinesToSkip();
         _columns->clear();
         *_columns = _dialog->getNeededFieldColumns();

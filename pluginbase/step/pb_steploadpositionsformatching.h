@@ -96,6 +96,10 @@ private:
     QString _refDecimal;
     QString _transDecimal;
 
+    QLocale _refLocale;
+    QLocale _transLocale;
+
+
     int _refSkip;
     int _transSkip;
 

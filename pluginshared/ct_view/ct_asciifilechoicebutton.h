@@ -46,7 +46,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AsciiFileChoiceButton : public CT_WidgetWithV
 public:
 
 
-    CT_AsciiFileChoiceButton(QString btlab, QString fileFilter, bool autoDetect, const QStringList &neededFields, QString &fileName, bool &header, QString &separator, QString &decimal, int &skip, QMap<QString, int> &columns, QString description = "");
+    CT_AsciiFileChoiceButton(QString btlab, QString fileFilter, bool autoDetect, const QStringList &neededFields, QString &fileName, bool &header, QString &separator, QString &decimal, QLocale &locale, int &skip, QMap<QString, int> &columns, QString description = "");
 
     ~CT_AsciiFileChoiceButton();
 
@@ -76,6 +76,7 @@ protected:
     bool                *_header;
     QString             *_separator;
     QString             *_decimal;
+    QLocale             *_locale;
     int                 *_skip;
     QMap<QString, int>  *_columns;
 

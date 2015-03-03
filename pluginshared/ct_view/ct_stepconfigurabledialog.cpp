@@ -312,6 +312,7 @@ CT_AsciiFileChoiceButton *CT_StepConfigurableDialog::addAsciiFileChoice(QString 
                                                                         bool &header,
                                                                         QString &separator,
                                                                         QString &decimal,
+                                                                        QLocale &locale,
                                                                         int & skip,
                                                                         QMap<QString, int> &columns,
                                                                         QString description)
@@ -327,6 +328,7 @@ CT_AsciiFileChoiceButton *CT_StepConfigurableDialog::addAsciiFileChoice(QString 
                                                                                   header,
                                                                                   separator,
                                                                                   decimal,
+                                                                                  locale,
                                                                                   skip,
                                                                                   columns,
                                                                                   description);

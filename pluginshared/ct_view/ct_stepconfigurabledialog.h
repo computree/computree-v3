@@ -227,6 +227,7 @@ public:
      * \param[out] header Does the file have a header. Note that it's also used to fix input default value.
      * \param[out] separator Fields separator. Note that it's also used to fix input default value.
      * \param[out] decimal Decimal separator. Note that it's also used to fix input default value.
+     * \param[out] locale Locale corresponding to decimal separator. Note that it's also used to fix input default value.
      * \param[out] skip Number of lines to skip before fields header line. Note that it's also used to fix input default value.
      * \param[out] columns correspondance between needed fields and corresponding columns numbers in the file. Note that it's also used to fix input default value.
      * \param[out] description Description (for the script export). Note that it's also used to fix input default value.
@@ -239,6 +240,7 @@ public:
                                                  bool &header,
                                                  QString &separator,
                                                  QString &decimal,
+                                                 QLocale &locale,
                                                  int &skip,
                                                  QMap<QString, int> &columns,
                                                  QString description = "");
