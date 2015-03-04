@@ -422,7 +422,7 @@ void PB_StepMatchItemsPositions::compute()
 
                                         // Apply translation and rotation to all trans points
                                         for (int k = 0 ; k < transPositionsTmp.size() ; k++)
-                                        {                                           
+                                        {
                                             transPositionsTmp[k].first = transPositions[k].first + delta;
                                             transPositionsTmp[k].first = rotation*(transPositionsTmp[k].first - refPos) + refPos;
 
@@ -506,8 +506,8 @@ void PB_StepMatchItemsPositions::compute()
 
                                         // Compute global score
                                         globalScore =   _coef_nbRwc * ((double)Nbref_with_Corresp    / (double)refPositions.size())   +
-                                                        _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
-                                                        _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
+                                                _coef_nbTwc * ((double)Nbtrans_with_Corresp  / (double)transPositionsTmp.size()) +
+                                                _coef_nbSim * ((double)NbtransRef_Similarity / (double)transPositionsTmp.size()) ;
 
                                         if (globalScore > bestScore || bestScore == 0)
                                         {

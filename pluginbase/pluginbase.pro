@@ -85,7 +85,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepcomputepointsmetrics.h \
     step/pb_stepcreateplotmanagerfromfile.h \
     step/pb_stepcreateplotmanagergrid.h \
-    step/pb_steploadpositionsformatching.h
+    step/pb_steploadpositionsformatching.h \
+    step/pb_stepcompare3dgridscontents.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -168,7 +169,8 @@ SOURCES += \
     step/pb_stepcomputepointsmetrics.cpp \
     step/pb_stepcreateplotmanagerfromfile.cpp \
     step/pb_stepcreateplotmanagergrid.cpp \
-    step/pb_steploadpositionsformatching.cpp
+    step/pb_steploadpositionsformatching.cpp \
+    step/pb_stepcompare3dgridscontents.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

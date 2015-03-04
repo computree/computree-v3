@@ -73,6 +73,7 @@
 #include "step/pb_stepcreateplotmanagerfromfile.h"
 #include "step/pb_stepcreateplotmanagergrid.h"
 #include "step/pb_steploadpositionsformatching.h"
+#include "step/pb_stepcompare3dgridscontents.h"
 
 
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -200,6 +201,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCompare3DGridsContents(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Houppiers, Trouées")));
     sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
