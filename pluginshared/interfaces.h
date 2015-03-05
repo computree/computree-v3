@@ -51,7 +51,6 @@ class QPen;
 class QRectF;
 
 class DocumentInterface;
-class GraphicsViewInterface;
 class PainterInterface;
 class ActionsManagerInterface;
 class GraphicsViewInterface;
@@ -634,6 +633,7 @@ signals:
 class GraphicsViewInterface : public InDocumentViewInterface
 {
 public:
+    // Selection mode
     enum SelectionMode{
         // don't change the order !!! for a serie the first must always be SELECT_... and the last REMOVE_ONE_...
 
@@ -667,26 +667,36 @@ public:
         REMOVE_ONE_EDGE
     };
 
+    // draw mode
     enum DrawMode{
-        NORMAL,         // draw all itemdrawable normally
-        FAST            // draw all itemdrawable fast (decrease per example the number of points or the definition of circles)
+        NORMAL,                 // draw all itemdrawable normally
+        FAST                    // draw all itemdrawable faster (decrease per example the number of points or the definition of circles/ellipses/cylinder)
     };
 
+    // redraw type
+    enum RedrawType {
+        REDRAW_ALL,             // redraw all
+        REDRAW_OVERLAY_ONLY     // redraw overlay only (use this enum if you want to accelerate the drawing if you don't change anything in 3D)
+    };
+
+    // colors of elements
     enum ColorCloudType {
-        CPointCloud,
-        CFaceCloud,
-        CEdgeCloud
+        CPointCloud,            // colors of points
+        CFaceCloud,             // colors of faces
+        CEdgeCloud              // colors of edges
     };
 
+    // normals of elements
     enum NormalCloudType {
-        NPointCloud,
-        NFaceCloud,
-        NEdgeCloud
+        NPointCloud,            // normals of points
+        NFaceCloud,             // normals of faces
+        NEdgeCloud              // normals of edges
     };
 
+    // type of graphics view
     enum GraphicsViewType {
-        GV2D,
-        GV3D
+        GV2D,                   // 2D
+        GV3D                    // 3D
     };
 
     virtual ~GraphicsViewInterface() {}
@@ -818,22 +828,64 @@ public:
     virtual QList<CT_AbstractItemDrawable*> getSelectedItems() const = 0;
 
     /**
-     * @brief Call this method if you want to remove multiple points from selection
-     * @param n : number of points to remove
-     * @warning dont forget to call the "endRemoveMultiplePointsFromSelection" method when you have finished
+     * @brief Add a point to selection. Pass the global index of the point.
      */
-    virtual void beginRemoveMultiplePointsFromSelection(const size_t &n) = 0;
+    virtual void addPointsIDToSelection(const size_t &id) = 0;
 
     /**
-     * @brief remove point from selection. If you have multiple index to remove call "beginRemoveMultiplePointsFromSelection"
-     * @param globalIndex : the index of the point in the global points cloud
+     * @brief Add multiple point to selection. Pass a vector of global index of points to add.
      */
-    virtual void removePointFromSelection(const size_t &globalIndex) = 0;
+    virtual void addMultiplePointsIDToSelection(const std::vector<size_t> &idList) = 0;
 
     /**
-     * @brief Call this method when you have finished to remove multiple points from selection
+     * @brief Add a face to selection. Pass the global index of the face.
      */
-    virtual void endRemoveMultiplePointsFromSelection() = 0;
+    virtual void addFacesIDToSelection(const size_t &id) = 0;
+
+    /**
+     * @brief Add multiple face to selection. Pass a vector of global index of faces to add.
+     */
+    virtual void addMultipleFacesIDToSelection(const std::vector<size_t> &idList) = 0;
+
+    /**
+     * @brief Add a edge to selection. Pass the global index of the point.
+     */
+    virtual void addEdgesIDToSelection(const size_t &id) = 0;
+
+    /**
+     * @brief Add multiple edge to selection. Pass a vector of global index of edges to add.
+     */
+    virtual void addMultipleEdgesIDToSelection(const std::vector<size_t> &idList) = 0;
+
+    /**
+     * @brief Remove a point to selection. Pass the global index of the point.
+     */
+    virtual void removePointsIDFromSelection(const size_t &id) = 0;
+
+    /**
+     * @brief Remove multiple point to selection. Pass a vector of global index of points to remove.
+     */
+    virtual void removeMultiplePointsIDFromSelection(const std::vector<size_t> &idList) = 0;
+
+    /**
+     * @brief Remove a face to selection. Pass the global index of the face.
+     */
+    virtual void removeFacesIDFromSelection(const size_t &id) = 0;
+
+    /**
+     * @brief Remove multiple face to selection. Pass a vector of global index of faces to remove.
+     */
+    virtual void removeMultipleFacesIDFromSelection(const std::vector<size_t> &idList) = 0;
+
+    /**
+     * @brief Remove a edge to selection. Pass the global index of the point.
+     */
+    virtual void removeEdgesIDFromSelection(const size_t &id) = 0;
+
+    /**
+     * @brief Remove multiple edge to selection. Pass a vector of global index of edges to remove.
+     */
+    virtual void removeMultipleEdgesIDFromSelection(const std::vector<size_t> &idList) = 0;
 
     /**
      * @brief Call this method with true if you want to select all points, false if you want to unselect all points
@@ -841,45 +893,9 @@ public:
     virtual void setAllPointsSelected(bool select) = 0;
 
     /**
-     * @brief Call this method if you want to remove multiple faces from selection
-     * @param n : number of faces to remove
-     * @warning dont forget to call the "endRemoveMultipleFacesFromSelection" method when you have finished
-     */
-    virtual void beginRemoveMultipleFacesFromSelection(const size_t &n) = 0;
-
-    /**
-     * @brief remove face from selection. If you have multiple index to remove call "beginRemoveMultipleFacesFromSelection"
-     * @param globalIndex : the index of the face in the global points cloud
-     */
-    virtual void removeFaceFromSelection(const size_t &globalIndex) = 0;
-
-    /**
-     * @brief Call this method when you have finished to remove multiple faces from selection
-     */
-    virtual void endRemoveMultipleFacesFromSelection() = 0;
-
-    /**
      * @brief Call this method with true if you want to select all faces, false if you want to unselect all faces
      */
     virtual void setAllFacesSelected(bool select) = 0;
-
-    /**
-     * @brief Call this method if you want to remove multiple edges from selection
-     * @param n : number of edges to remove
-     * @warning dont forget to call the "endRemoveMultipleEdgesFromSelection" method when you have finished
-     */
-    virtual void beginRemoveMultipleEdgesFromSelection(const size_t &n) = 0;
-
-    /**
-     * @brief remove edge from selection. If you have multiple index to remove call "beginRemoveMultipleEdgesFromSelection"
-     * @param globalIndex : the index of the face in the global points cloud
-     */
-    virtual void removeEdgeFromSelection(const size_t &globalIndex) = 0;
-
-    /**
-     * @brief Call this method when you have finished to remove multiple edges from selection
-     */
-    virtual void endRemoveMultipleEdgesFromSelection() = 0;
 
     /**
      * @brief Call this method with true if you want to select all edges, false if you want to unselect all edges
@@ -961,6 +977,9 @@ public:
      */
     virtual void convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const = 0;
 
+    /**
+     * @brief Returns the screen projected coordinates (pixel) of the variable position.
+     */
     virtual void convert3DPositionToPixel(const Eigen::Vector3d &position, QPoint &pixel) const = 0;
 
     /**
@@ -1233,7 +1252,7 @@ public:
     /**
       * \brief Refresh all graphics in the document (if he contains graphicsView)
       */
-    virtual void redrawGraphics() = 0;
+    virtual void redrawGraphics(GraphicsViewInterface::RedrawType redrawType = GraphicsViewInterface::REDRAW_ALL) = 0;
 };
 
 /**

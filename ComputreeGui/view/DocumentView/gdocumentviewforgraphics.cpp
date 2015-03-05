@@ -178,7 +178,7 @@ QList<InDocumentViewInterface *> GDocumentViewForGraphics::views() const
     return l;
 }
 
-void GDocumentViewForGraphics::redrawGraphics()
+void GDocumentViewForGraphics::redrawGraphics(GraphicsViewInterface::RedrawType type)
 {
     m_mutex->lock();
 
@@ -187,9 +187,7 @@ void GDocumentViewForGraphics::redrawGraphics()
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-        {
-            it.next()->redraw();
-        }
+            it.next()->redraw(type);
     }
 
     m_mutex->unlock();

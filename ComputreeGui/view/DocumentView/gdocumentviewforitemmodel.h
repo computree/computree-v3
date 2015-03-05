@@ -37,7 +37,7 @@ public:
     void endRemoveMultipleItemDrawable();
 
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics() {}
+    void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL) { Q_UNUSED(type) }
     void lock() {}
     void unlock() {}
 

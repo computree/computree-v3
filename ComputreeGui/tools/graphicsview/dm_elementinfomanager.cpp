@@ -37,6 +37,27 @@ void DM_ElementInfoManager::addIDToSelection(const size_t &id)
     }
 }
 
+void DM_ElementInfoManager::addMultipleIDToSelection(const std::vector<size_t> &idList)
+{
+    if(m_infoCloud != NULL) {
+
+        std::vector<size_t>::const_iterator it = idList.begin();
+        std::vector<size_t>::const_iterator end = idList.end();
+
+        if(it != end) {
+            while(it != end) {
+
+                GLubyte &info = m_infoCloud->tAt(*it);
+                info |= m_enableSelection;
+
+                ++it;
+            }
+
+            m_selectionChanged = true;
+        }
+    }
+}
+
 void DM_ElementInfoManager::addCloudIndexToSelection(const QList<CT_AbstractCloudIndex*> &listID)
 {
     if(m_infoCloud != NULL) {
@@ -70,6 +91,27 @@ void DM_ElementInfoManager::removeIDFromSelection(const size_t &id)
         GLubyte &info = m_infoCloud->tAt(id);
         info &= m_disableSelection;
         m_selectionChanged = true;
+    }
+}
+
+void DM_ElementInfoManager::removeMultipleIDFromSelection(const std::vector<size_t> &idList)
+{
+    if(m_infoCloud != NULL) {
+
+        std::vector<size_t>::const_iterator it = idList.begin();
+        std::vector<size_t>::const_iterator end = idList.end();
+
+        if(it != end) {
+            while(it != end) {
+
+                GLubyte &info = m_infoCloud->tAt(*it);
+                info &= m_disableSelection;
+
+                ++it;
+            }
+
+            m_selectionChanged = true;
+        }
     }
 }
 

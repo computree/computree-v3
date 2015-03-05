@@ -55,7 +55,7 @@ public:
     void removeAllItemDrawable();
 
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics();
+    void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL);
     void lock();
     void unlock();
 

@@ -66,7 +66,7 @@ public:
     virtual void lockPaint() = 0;
     virtual void unlockPaint() = 0;
 
-    virtual void redraw() = 0;
+    virtual void redraw(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL) = 0;
 
     virtual DM_GraphicsViewCamera* getCamera() const = 0;
 

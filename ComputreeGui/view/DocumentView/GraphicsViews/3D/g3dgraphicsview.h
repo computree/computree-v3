@@ -96,19 +96,22 @@ public:
     CT_SECIR getSelectedEdges() const;
     QList<CT_AbstractItemDrawable*> getSelectedItems() const;
 
-    void beginRemoveMultiplePointsFromSelection(const size_t &n);
-    void removePointFromSelection(const size_t &globalIndex);
-    void endRemoveMultiplePointsFromSelection();
+    void addPointsIDToSelection(const size_t &id);
+    void addMultiplePointsIDToSelection(const std::vector<size_t> &idList);
+    void addFacesIDToSelection(const size_t &id);
+    void addMultipleFacesIDToSelection(const std::vector<size_t> &idList);
+    void addEdgesIDToSelection(const size_t &id);
+    void addMultipleEdgesIDToSelection(const std::vector<size_t> &idList);
+
+    void removePointsIDFromSelection(const size_t &id);
+    void removeMultiplePointsIDFromSelection(const std::vector<size_t> &idList);
+    void removeFacesIDFromSelection(const size_t &id);
+    void removeMultipleFacesIDFromSelection(const std::vector<size_t> &idList);
+    void removeEdgesIDFromSelection(const size_t &id);
+    void removeMultipleEdgesIDFromSelection(const std::vector<size_t> &idList);
+
     void setAllPointsSelected(bool select);
-
-    void beginRemoveMultipleFacesFromSelection(const size_t &n);
-    void removeFaceFromSelection(const size_t &globalIndex);
-    void endRemoveMultipleFacesFromSelection();
     void setAllFacesSelected(bool select);
-
-    void beginRemoveMultipleEdgesFromSelection(const size_t &n);
-    void removeEdgeFromSelection(const size_t &globalIndex);
-    void endRemoveMultipleEdgesFromSelection();
     void setAllEdgesSelected(bool select);
 
     size_t countPoints();
@@ -147,7 +150,7 @@ public:
     void lockPaint();
     void unlockPaint();
 
-    void redraw();
+    void redraw(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL);
 
     void setDrawFastest(DM_GraphicsViewOptions::DrawFastestMode mode);
     DM_GraphicsViewOptions::DrawFastestMode drawFastest() const;
@@ -207,25 +210,18 @@ private:
     void initG3DPainterForNewDraw();
 
     void addIdToSelection(const GLuint &id);
-    void addPointsIDToSelection(const GLuint &id);
-    void addFacesIDToSelection(const GLuint &id);
-    void addEdgesIDToSelection(const GLuint &id);
     void addItemsIDToSelection(const GLuint &id);
 
+    void removeIdFromSelection(const GLuint &id);
+    void removeItemsIDFromSelection(const GLuint &id);
+
+    void removeAllIdFromSelection();
 
     void setLastIdSelected(const GLuint &id);
     void setLastItemIdSelected(const GLuint &id);
     void setLastPointIdSelected(const GLuint &id);
     void setLastFaceIdSelected(const GLuint &id);
     void setLastEdgeIdSelected(const GLuint &id);
-
-    void removeIdFromSelection(const GLuint &id);
-    void removePointsIDFromSelection(const GLuint &id);
-    void removeFacesIDFromSelection(const GLuint &id);
-    void removeEdgesIDFromSelection(const GLuint &id);
-    void removeItemsIDFromSelection(const GLuint &id);
-
-    void removeAllIdFromSelection();
 
     void drawCoordinates(QPainter &painter);
     void changeStateFileName();

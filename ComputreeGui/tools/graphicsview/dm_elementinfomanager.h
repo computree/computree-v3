@@ -26,6 +26,11 @@ public:
     void addIDToSelection(const size_t &id);
 
     /**
+     * @brief Call this method when you want to add multiple index to the selection
+     */
+    void addMultipleIDToSelection(const std::vector<size_t> &idList);
+
+    /**
      * @brief Call this method when you want to add a list of index to the selection
      */
     void addCloudIndexToSelection(const QList<CT_AbstractCloudIndex*> &listID);
@@ -34,6 +39,11 @@ public:
      * @brief Call this method when you remove an index from the selection
      */
     void removeIDFromSelection(const size_t &id);
+
+    /**
+     * @brief Call this method when you want to remove multiple index from the selection
+     */
+    void removeMultipleIDFromSelection(const std::vector<size_t> &idList);
 
     /**
      * @brief Call this method when you want to remove a list of index from the selection

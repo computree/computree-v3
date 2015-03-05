@@ -1555,11 +1555,7 @@ void G3DPainter::initPointShader()
                 QString log;
                 QString tmp;
 
-                #ifdef __unix__
                 if(!(tmp = m_ShaderPoint->log()).isEmpty())
-                #else
-                while(!(tmp = m_ShaderPoint->log()).isEmpty())
-                #endif
                     log += tmp;
 
                 if(!log.isEmpty())
@@ -1587,11 +1583,7 @@ void G3DPainter::initPointShader()
                     QString log;
                     QString tmp;
 
-                    #ifdef __unix__
                     if(!(tmp = m_shaderProgPoint->log()).isEmpty())
-                    #else
-                    while(!(tmp = m_shaderProgPoint->log()).isEmpty())
-                    #endif
                         log += tmp;
 
                     if(!log.isEmpty())
@@ -1619,11 +1611,7 @@ bool G3DPainter::bindPointShader()
             QString log;
             QString tmp;
 
-            #ifdef __unix__
             if(!(tmp = m_shaderProgPoint->log()).isEmpty())
-            #else
-            while(!(tmp = m_shaderProgPoint->log()).isEmpty())
-            #endif
                 log += tmp;
 
             if(!log.isEmpty())
@@ -1729,11 +1717,7 @@ void G3DPainter::initDoubleElementShader()
                 QString log;
                 QString tmp;
 
-                #ifdef __unix__
                 if(!(tmp = m_shaderDe->log()).isEmpty())
-                #else
-                while(!(tmp = m_shaderDe->log()).isEmpty())
-                #endif
                     log += tmp;
 
                 if(!log.isEmpty())
@@ -1761,11 +1745,7 @@ void G3DPainter::initDoubleElementShader()
                     QString log;
                     QString tmp;
 
-                    #ifdef __unix__
                     if(!(tmp = m_shaderDeProg->log()).isEmpty())
-                    #else
-                    while(!(tmp = m_shaderDeProg->log()).isEmpty())
-                    #endif
                         log += tmp;
 
                     if(!log.isEmpty())
@@ -1793,11 +1773,7 @@ bool G3DPainter::bindDoubleElementShader()
             QString log;
             QString tmp;
 
-            #ifdef __unix__
             if(!(tmp = m_shaderDeProg->log()).isEmpty())
-            #else
-            while(!(tmp = m_shaderDeProg->log()).isEmpty())
-            #endif
                 log += tmp;
 
             if(!log.isEmpty())

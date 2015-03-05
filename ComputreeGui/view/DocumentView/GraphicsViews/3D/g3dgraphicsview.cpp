@@ -189,19 +189,6 @@ QList<CT_AbstractItemDrawable *> G3DGraphicsView::getSelectedItems() const
     return getDocumentView().getSelectedItemDrawable();
 }
 
-void G3DGraphicsView::beginRemoveMultiplePointsFromSelection(const size_t &n)
-{
-}
-
-void G3DGraphicsView::removePointFromSelection(const size_t &globalIndex)
-{
-    m_pointsSelectionManager->removeIDFromSelection(globalIndex);
-}
-
-void G3DGraphicsView::endRemoveMultiplePointsFromSelection()
-{
-}
-
 void G3DGraphicsView::setAllPointsSelected(bool select)
 {
     if(!select)
@@ -227,19 +214,6 @@ void G3DGraphicsView::setAllPointsSelected(bool select)
     unlockPaint();
 }
 
-void G3DGraphicsView::beginRemoveMultipleFacesFromSelection(const size_t &n)
-{
-}
-
-void G3DGraphicsView::removeFaceFromSelection(const size_t &globalIndex)
-{
-    m_facesSelectionManager->removeIDFromSelection(globalIndex);
-}
-
-void G3DGraphicsView::endRemoveMultipleFacesFromSelection()
-{
-}
-
 void G3DGraphicsView::setAllFacesSelected(bool select)
 {
     if(!select)
@@ -263,19 +237,6 @@ void G3DGraphicsView::setAllFacesSelected(bool select)
     m_facesSelectionManager->addCloudIndexToSelection(m_fakeG.faceCloudIndexBackup());
 
     unlockPaint();
-}
-
-void G3DGraphicsView::beginRemoveMultipleEdgesFromSelection(const size_t &n)
-{
-}
-
-void G3DGraphicsView::removeEdgeFromSelection(const size_t &globalIndex)
-{
-    m_edgesSelectionManager->removeIDFromSelection(globalIndex);
-}
-
-void G3DGraphicsView::endRemoveMultipleEdgesFromSelection()
-{
 }
 
 void G3DGraphicsView::setAllEdgesSelected(bool select)
@@ -570,6 +531,9 @@ void G3DGraphicsView::select(const QPoint &point)
     }
     else
     {
+        if(selectionModeToBasic() == GraphicsViewInterface::SELECT)
+            removeAllIdFromSelection();
+
         QGLViewer::select(point);
     }
 }
@@ -681,8 +645,10 @@ void G3DGraphicsView::unlockPaint()
     _mutex->unlock();
 }
 
-void G3DGraphicsView::redraw()
+void G3DGraphicsView::redraw(RedrawType type)
 {
+    // TODO : use type to optimize drawing
+
     if(QThread::currentThread() == qApp->thread())
         setDrawModeStartTimerAndRedraw();
     else
@@ -822,19 +788,34 @@ void G3DGraphicsView::addIdToSelection(const GLuint &id)
         addItemsIDToSelection(id);
 }
 
-void G3DGraphicsView::addPointsIDToSelection(const GLuint &id)
+void G3DGraphicsView::addPointsIDToSelection(const size_t &id)
 {
     m_pointsSelectionManager->addIDToSelection(id);
 }
 
-void G3DGraphicsView::addFacesIDToSelection(const GLuint &id)
+void G3DGraphicsView::addMultiplePointsIDToSelection(const std::vector<size_t> &idList)
+{
+    m_pointsSelectionManager->addMultipleIDToSelection(idList);
+}
+
+void G3DGraphicsView::addFacesIDToSelection(const size_t &id)
 {
     m_facesSelectionManager->addIDToSelection(id);
 }
 
-void G3DGraphicsView::addEdgesIDToSelection(const GLuint &id)
+void G3DGraphicsView::addMultipleFacesIDToSelection(const std::vector<size_t> &idList)
+{
+    m_facesSelectionManager->addMultipleIDToSelection(idList);
+}
+
+void G3DGraphicsView::addEdgesIDToSelection(const size_t &id)
 {
     m_edgesSelectionManager->addIDToSelection(id);
+}
+
+void G3DGraphicsView::addMultipleEdgesIDToSelection(const std::vector<size_t> &idList)
+{
+    m_edgesSelectionManager->addMultipleIDToSelection(idList);
 }
 
 void G3DGraphicsView::addItemsIDToSelection(const GLuint &id)
@@ -948,19 +929,34 @@ void G3DGraphicsView::removeIdFromSelection(const GLuint &id)
     }
 }
 
-void G3DGraphicsView::removePointsIDFromSelection(const GLuint &id)
+void G3DGraphicsView::removePointsIDFromSelection(const size_t &id)
 {
     m_pointsSelectionManager->removeIDFromSelection(id);
 }
 
-void G3DGraphicsView::removeFacesIDFromSelection(const GLuint &id)
+void G3DGraphicsView::removeMultiplePointsIDFromSelection(const std::vector<size_t> &idList)
+{
+    m_pointsSelectionManager->removeMultipleIDFromSelection(idList);
+}
+
+void G3DGraphicsView::removeFacesIDFromSelection(const size_t &id)
 {
     m_facesSelectionManager->removeIDFromSelection(id);
 }
 
-void G3DGraphicsView::removeEdgesIDFromSelection(const GLuint &id)
+void G3DGraphicsView::removeMultipleFacesIDFromSelection(const std::vector<size_t> &idList)
+{
+    m_facesSelectionManager->removeMultipleIDFromSelection(idList);
+}
+
+void G3DGraphicsView::removeEdgesIDFromSelection(const size_t &id)
 {
     m_edgesSelectionManager->removeIDFromSelection(id);
+}
+
+void G3DGraphicsView::removeMultipleEdgesIDFromSelection(const std::vector<size_t> &idList)
+{
+    m_edgesSelectionManager->removeMultipleIDFromSelection(idList);
 }
 
 void G3DGraphicsView::removeItemsIDFromSelection(const GLuint &id)
@@ -1157,14 +1153,6 @@ void G3DGraphicsView::drawInternal()
     _g.setColor(Qt::red);
     _g.drawLine(0, 0, 0, 20, 0, 0);
 
-    /*for(int i=-100000; i<100000; ++i) {
-        _g.drawRectXY(Eigen::Vector2d(0, 0), Eigen::Vector2d(10, 10), i*0.0001);
-    }
-
-    for(int i=-100000; i<100000; ++i) {
-        _g.drawRectXY(Eigen::Vector2d(0, 15), Eigen::Vector2d(10, 25), i*0.0001);
-    }*/
-
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
@@ -1174,6 +1162,17 @@ void G3DGraphicsView::drawInternal()
 
     //_g.setDrawOnly(G3DPainter::POINT_CLOUD);
     /*if(octreeC->hasElements() && !octreeC->mustBeReconstructed()) {
+        if((colorVBOManager() != NULL) && (colorVBOManager()->useColorCloud() != m_docGV->useColorCloud())) {
+            _g.stopDrawMultiple();
+            colorVBOManager()->setUseColorCloud(m_docGV->useColorCloud());
+        }
+
+        _g.setUseColorCloudForPoints(m_docGV->useColorCloud());
+        _g.setUseColorCloudForFaces(m_docGV->useColorCloud());
+        _g.setUseColorCloudForEdges(m_docGV->useColorCloud());
+
+        _g.setColor(Qt::white);
+
         _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawElements);
     } else  {*/
 
