@@ -84,6 +84,11 @@ public:
                                                              const CT_AbstractPointCloudIndex &pointCloudIndex,
                                                              const Eigen::Vector3d &pointCloudBarycenter);
 
+    static CT_Cylinder *staticCreate3DCylinderFromPointCloud(const QString &modelName,
+                                                             quint64 id,
+                                                             const CT_AbstractResult *result,
+                                                             const CT_AbstractPointCloudIndex &pointCloudIndex,
+                                                             const Eigen::Vector3d &pointCloudBarycenter);
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Cylinder)

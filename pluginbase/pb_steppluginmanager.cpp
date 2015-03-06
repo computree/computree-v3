@@ -76,6 +76,7 @@
 #include "step/pb_stepcompare3dgridscontents.h"
 #include "step/pb_stepselectcellsingrid3dbybinarypattern.h"
 #include "step/pb_stepextractlogbuffer.h"
+#include "step/pb_stepfitcylinderoncluster.h"
 
 
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -219,6 +220,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepManualInventory(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSelectGroupsByReferenceHeight(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepFitCylinderOnCluster(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
 

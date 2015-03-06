@@ -88,7 +88,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_steploadpositionsformatching.h \
     step/pb_stepcompare3dgridscontents.h \
     step/pb_stepselectcellsingrid3dbybinarypattern.h \
-    step/pb_stepextractlogbuffer.h
+    step/pb_stepextractlogbuffer.h \
+    step/pb_stepfitcylinderoncluster.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -174,7 +175,8 @@ SOURCES += \
     step/pb_steploadpositionsformatching.cpp \
     step/pb_stepcompare3dgridscontents.cpp \
     step/pb_stepselectcellsingrid3dbybinarypattern.cpp \
-    step/pb_stepextractlogbuffer.cpp
+    step/pb_stepextractlogbuffer.cpp \
+    step/pb_stepfitcylinderoncluster.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

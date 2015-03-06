@@ -111,6 +111,24 @@ CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const CT_OutAbstr
     return new CT_Cylinder((const CT_OutAbstractSingularItemModel *)model, result, data);
 }
 
+CT_Cylinder* CT_Cylinder::staticCreate3DCylinderFromPointCloud(const QString &modelName,
+                                                               quint64 id,
+                                                               const CT_AbstractResult *result,
+                                                               const CT_AbstractPointCloudIndex &pointCloudIndex,
+                                                               const Eigen::Vector3d &pointCloudBarycenter)
+{
+    Q_UNUSED(id)
+
+    CT_CylinderData *data = CT_CylinderData::staticCreate3DCylinderDataFromPointCloud(pointCloudIndex,
+                                                                                      pointCloudBarycenter);
+
+    if(data == NULL)
+        return NULL;
+
+    return new CT_Cylinder(modelName, result, data);
+}
+
+
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_CylinderData)
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_Cylinder)
