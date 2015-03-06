@@ -23,15 +23,23 @@ PB_StepSelectCellsInGrid3DByBinaryPattern::PB_StepSelectCellsInGrid3DByBinaryPat
 {
     _inThreshold = 1;
 
-    _pattern =  "1,1,0,0\n"
-                "1,1,0,0\n"
-                "1,1,0,0\n"
-                "0,1,0,0\n"
-                "1,1,0,0\n"
-                "1,1,0,0\n"
-                "1,1,0,0\n";
+    _pattern =  "1,0,0,0,0\n"
+                "1,0,0,0,0\n"
+                "1,0,0,0,0\n"
+                "1,0,0,0,0\n"
+                "1,0,0,0,0\n"
+                "1,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n"
+                "0,0,0,0,0\n";
 
-    _outThreshold = 20;
+    _outThresholdAbsolute = 20;
+    _outThresholdRelative = 0.9;
+    _selectMode = 1;
 }
 
 // Step description (tooltip of contextual menu)
@@ -85,9 +93,18 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addDouble("Valeur minimale de la grille d'entrée", "", -1e+09, 1e+09, 4, _inThreshold, 1);
-    configDialog->addString("Motif binaire", "", _pattern);
-    configDialog->addInt("Seuil de sortie", "", 0, 1e+09, _outThreshold);
+    configDialog->addDouble(tr("Valeur minimale de la grille d'entrée"), "", -1e+09, 1e+09, 4, _inThreshold, 1);
+    configDialog->addString(tr("Motif binaire"), "", _pattern);
+    configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>Choix du mode de fitrage :</b>"));
+
+    CT_ButtonGroup &bg_gridMode = configDialog->addButtonGroup(_selectMode);
+    configDialog->addExcludeValue("", "", tr("En valeur absolue :"), bg_gridMode, 0);
+    configDialog->addInt(tr("Seuil de séléction"), "", 0, 1e+09, _outThresholdAbsolute);
+
+    configDialog->addExcludeValue("", "", tr("En % de la valeur maximale :"), bg_gridMode, 1);
+    configDialog->addDouble(tr("Seuil de séléction (en % du max)"), "", 0, 100, 2, _outThresholdRelative, 100);
+
 }
 
 void PB_StepSelectCellsInGrid3DByBinaryPattern::compute()
@@ -158,10 +175,18 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::compute()
                 CT_Grid3D<bool>* outGridBool = new CT_Grid3D<bool>(DEFout_gridBool, res_rgrid, inGrid->minX(), inGrid->minY(), inGrid->minZ(), inGrid->xdim(), inGrid->ydim(), inGrid->zdim(), inGrid->resolution(), false, false);
                 grp->addItemDrawable(outGridBool);
 
+                int threshold = _outThresholdAbsolute;
+                if (_selectMode == 1)
+                {
+                    threshold = outGrid->dataMax()*_outThresholdRelative;
+                }
+
+                PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString("Seuil de séléction : %1 (valeurs observées : %2 - %3)").arg(threshold).arg(outGrid->dataMin()).arg(outGrid->dataMax()));
+
                 for (size_t indice = 0 ; indice < outGrid->nCells() ; indice++)
                 {
                     double value = outGrid->valueAtIndexAsDouble(indice);
-                    if (value >= _outThreshold)
+                    if (value >= threshold)
                     {
                         outGridBool->setValueAtIndex(indice, true);
                     }

@@ -1,23 +1,26 @@
-#ifndef PB_STEPSELECTCELLSINGRID3DBYBINARYPATTERN_H
-#define PB_STEPSELECTCELLSINGRID3DBYBINARYPATTERN_H
+#ifndef PB_STEPEXTRACTLOGBUFFER_H
+#define PB_STEPEXTRACTLOGBUFFER_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
 
+#include "ct_shapedata/ct_circledata.h"
+
+// Inclusion of auto-indexation system
+#include "ct_tools/model/ct_autorenamemodels.h"
+
 /*!
- * \class PB_StepSelectCellsInGrid3DByBinaryPattern
+ * \class PB_StepExtractLogBuffer
  * \ingroup Steps_PB
- * \brief <b>Créée une grille booléenne de séléction à partir d'un motif binaire.</b>
+ * \brief <b>Extraction des points d'une scène, situés autour d'un billon.</b>
  *
  * No detailled description for this step
  *
- * \param _inThreshold 
- * \param _pattern 
- * \param _trash 
- * \param _outThreshold 
+ * \param _circleIncrement 
+ * \param _buffer 
  *
  */
 
-class PB_StepSelectCellsInGrid3DByBinaryPattern: public CT_AbstractStep
+class PB_StepExtractLogBuffer: public CT_AbstractStep
 {
     Q_OBJECT
 
@@ -29,7 +32,7 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepSelectCellsInGrid3DByBinaryPattern(CT_StepInitializeData &dataInit);
+    PB_StepExtractLogBuffer(CT_StepInitializeData &dataInit);
 
     /*! \brief Step description
      * 
@@ -83,14 +86,16 @@ protected:
 
 private:
 
-    // Step parameters
-    double      _inThreshold;
-    QString     _pattern;
-    int         _outThresholdAbsolute;
-    double      _outThresholdRelative;
-    int         _selectMode;
+    // Declaration of autoRenames Variables (groups or items added to In models copies)
+    CT_AutoRenameModels    _outPoint_ModelName;
 
-    bool computeLists(const QString &pattern, QList<int> &rowNb, QList<int> &colNb, QList<int> &levzNb, QList<int> &vals);
+    // Step parameters
+    double    _circleIncrement;
+    double    _buffer;
+
+
+    bool contains(const CT_CircleData &circle, const Eigen::Vector3d &point) const;
+
 };
 
-#endif // PB_STEPSELECTCELLSINGRID3DBYBINARYPATTERN_H
+#endif // PB_STEPEXTRACTLOGBUFFER_H
