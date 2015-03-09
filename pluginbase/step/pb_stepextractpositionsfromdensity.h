@@ -2,6 +2,7 @@
 #define PB_STEPEXTRACTPOSITIONSFROMDENSITY_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_itemdrawable/ct_grid2dxy.h"
 
 /*!
  * \class PB_StepExtractPositionsFromDensity
@@ -85,6 +86,9 @@ private:
     double    _resolution;    /*!<  */
     double    _threshold;    /*!<  */
 
+    void fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid);
+    QList<size_t> computeColonize(size_t originColumn, size_t originRow, const CT_Grid2DXY<int> *densityGrid);
+    void appendIfNotNulValue(QList<size_t> &result, size_t col, size_t lin, const CT_Grid2DXY<int> *densityGrid);
 };
 
 #endif // PB_STEPEXTRACTPOSITIONSFROMDENSITY_H

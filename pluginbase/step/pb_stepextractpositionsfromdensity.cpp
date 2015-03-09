@@ -2,7 +2,6 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_itemdrawable/ct_point2d.h"
-#include "ct_itemdrawable/ct_grid2dxy.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
@@ -137,7 +136,7 @@ void PB_StepExtractPositionsFromDensity::compute()
         // Création de la grille de densité
         CT_StandardItemGroup* grp_Grd= new CT_StandardItemGroup(DEFout_grpGrd, res_grid);
         res_grid->addGroup(grp_Grd);
-        CT_Grid2DXY<int>* grid = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(DEFout_point2d, res_grid, xmin, ymin, xmax, ymax, _resolution, 0, -1, 0);
+        CT_Grid2DXY<int>* grid = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(DEFout_grid, res_grid, xmin, ymin, xmax, ymax, _resolution, 0, -1, 0);
         grp_Grd->addItemDrawable(grid);
 
 
@@ -160,13 +159,119 @@ void PB_StepExtractPositionsFromDensity::compute()
                 }
             }
         }
+        grid->computeMinMax();
+
+        //Seuillage
+        double threshold = _threshold * grid->dataMax();
+
+        for (size_t indice = 0 ; indice < grid->nCells() ; indice++)
+        {
+            if (grid->valueAtIndex(indice) < threshold)
+            {
+                grid->setValueAtIndex(indice, 0);
+            }
+        }
+
+        CT_Grid2DXY<int>* clusters = new CT_Grid2DXY<int>(NULL, NULL, xmin, ymin, grid->colDim(), grid->linDim(), _resolution, 0, -1, -1);
+
+        size_t colDim = grid->colDim();
+        size_t linDim = grid->linDim();
+        int lastCluster = 0;
+
+        for (size_t cx = 0 ; cx < colDim ; cx++)
+        {
+            for (size_t ly = 0 ; ly < linDim ; ly++)
+            {
+                int cluster = clusters->value(cx, ly);
+
+                if (cluster < 0)
+                {
+                    QList<size_t> liste = computeColonize(cx, ly, grid);
+                    int size = liste.size();
+                    if (size)
+                    {
+                        fillCellsInList(liste, lastCluster++, clusters);
+
+                        double x = 0;
+                        double y = 0;
+
+                        for (int i = 0 ; i < size ; i++)
+                        {
+                            Eigen::Vector3d cell;
+                            if (grid->getCellCenterCoordinates(liste.at(i), cell))
+                            {
+                                x += cell(0);
+                                y += cell(1);
+                            }
+                        }
+
+                        x /= size;
+                        y /= size;
+
+                        CT_StandardItemGroup* grpPos= new CT_StandardItemGroup(DEFout_grp, res_pos);
+                        res_pos->addGroup(grpPos);
+
+                        CT_Point2DData* point2dData = new CT_Point2DData(x, y);
+                        CT_Point2D* point2d = new CT_Point2D(DEFout_point2d, res_pos, point2dData);
+                        grpPos->addItemDrawable(point2d);
+                    }
+                }
+            }
+        }
+        delete clusters;
     }
 
-    CT_StandardItemGroup* grpPos= new CT_StandardItemGroup(DEFout_grp, res_pos);
-    res_pos->addGroup(grpPos);
+}
 
-    CT_Point2DData* point2dData = new CT_Point2DData(0, 0);
-    CT_Point2D* point2d = new CT_Point2D(DEFout_point2d, res_pos, point2dData);
-    grpPos->addItemDrawable(point2d);
 
+void PB_StepExtractPositionsFromDensity::fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid)
+{
+    if (liste.isEmpty()) {return;}
+
+    for (int i = 0 ; i < liste.size() ; i++)
+    {
+        size_t index = liste.at(i);
+        clustersGrid->setValueAtIndex(index, cluster);
+    }
+}
+
+QList<size_t> PB_StepExtractPositionsFromDensity::computeColonize(size_t originColumn, size_t originRow, const CT_Grid2DXY<int> *densityGrid)
+{
+    QList<size_t> result;
+    size_t index;
+
+    if (!densityGrid->index(originColumn, originRow, index))
+    {
+        return result;
+    }
+
+    if (densityGrid->valueAtIndex(index) > 0) {result.append(index);}
+
+    int i = 0;
+    while (i < result.size())
+    {
+        size_t current_col, current_row;
+        densityGrid->indexToGrid(result.at(i), current_col, current_row);
+
+        appendIfNotNulValue(result, current_col - 1, current_row, densityGrid);
+        appendIfNotNulValue(result, current_col, current_row - 1, densityGrid);
+        appendIfNotNulValue(result, current_col + 1, current_row, densityGrid);
+        appendIfNotNulValue(result, current_col, current_row + 1, densityGrid);
+
+        ++i;
+    }
+
+    return result;
+}
+
+void PB_StepExtractPositionsFromDensity::appendIfNotNulValue(QList<size_t> &result, size_t col, size_t lin, const CT_Grid2DXY<int> *densityGrid)
+{
+    size_t index;
+    if (densityGrid->index(col, lin, index))
+    {
+        if (densityGrid->valueAtIndex(index) > 0 && !result.contains(index))
+        {
+            result.append(index);
+        }
+    }
 }

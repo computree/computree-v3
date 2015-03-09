@@ -292,6 +292,19 @@ public:
         return true;
     }
 
+    inline bool getCellCenterCoordinates(const size_t index, Eigen::Vector3d &center) const
+    {
+        size_t col, lin;
+        if (!indexToGrid(index, col, lin)) {return false;}
+
+        center(0) = minColCoord() + col*_res + _res/2.0;
+        center(1) = minLinCoord() + lin*_res + _res/2.0;
+        center(2) = _level;
+
+        return true;
+    }
+
+
     /*!
      * \brief Get the left corner coordinates of the cell defined by (col, lin)
      * \param col Column
