@@ -19,8 +19,6 @@ public:
 
     GraphicsViewInterface::SelectionMode selectionMode() const;
 
-//    PB_ActionModifyClustersGroups::SelectionDrawMode drawMode() const;
-
 private:
     Ui::PB_ActionModifyClustersGroupsOptions *ui;
 
