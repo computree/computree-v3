@@ -78,6 +78,8 @@
 #include "step/pb_stepextractlogbuffer.h"
 #include "step/pb_stepfitcylinderoncluster.h"
 #include "step/pb_stepextractpositionsfromdensity.h"
+#include "step/pb_stepmergeclustersfrompositions.h"
+
 
 
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -213,6 +215,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Houppiers, Trouées")));
     sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepMergeClustersFromPositions(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Gestion des items")));
     sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));

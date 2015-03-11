@@ -90,7 +90,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepselectcellsingrid3dbybinarypattern.h \
     step/pb_stepextractlogbuffer.h \
     step/pb_stepfitcylinderoncluster.h \
-    step/pb_stepextractpositionsfromdensity.h
+    step/pb_stepextractpositionsfromdensity.h \
+    step/pb_stepmergeclustersfrompositions.h \
+    actions/pb_actionmodifyclustersgroups.h \
+    views/actions/pb_actionmodifyclustersgroupsoptions.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -178,7 +181,10 @@ SOURCES += \
     step/pb_stepselectcellsingrid3dbybinarypattern.cpp \
     step/pb_stepextractlogbuffer.cpp \
     step/pb_stepfitcylinderoncluster.cpp \
-    step/pb_stepextractpositionsfromdensity.cpp
+    step/pb_stepextractpositionsfromdensity.cpp \
+    step/pb_stepmergeclustersfrompositions.cpp \
+    actions/pb_actionmodifyclustersgroups.cpp \
+    views/actions/pb_actionmodifyclustersgroupsoptions.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -204,7 +210,8 @@ FORMS += \
     views/actions/pb_actionmanualinventoryoptions.ui \
     views/actions/pb_actionmanualinventoryattributesdialog.ui \
     views/actions/pb_actionvalidateinventoryoptions.ui \
-    views/actions/pb_actionvalidateinventoryattributesdialog.ui
+    views/actions/pb_actionvalidateinventoryattributesdialog.ui \
+    views/actions/pb_actionmodifyclustersgroupsoptions.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts
