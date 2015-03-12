@@ -3,6 +3,8 @@ include($${PLUGIN_SHARED_DIR}/include.pri)
 
 TARGET = plug_base
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
+
 HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     pb_pluginentry.h \
     step/pb_stepgenericexporter.h \

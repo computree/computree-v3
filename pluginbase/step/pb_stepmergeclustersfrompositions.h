@@ -2,6 +2,8 @@
 #define PB_STEPMERGECLUSTERSFROMPOSITIONS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_itemdrawable/ct_point2d.h"
+#include "ct_itemdrawable/ct_pointcluster.h"
 
 /*!
  * \class PB_StepMergeClustersFromPositions
@@ -93,6 +95,7 @@ private:
     int                                                         m_status;
 
 
+    static void addPointsToScenes(QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> &pair);
 };
 
 #endif // PB_STEPMERGECLUSTERSFROMPOSITIONS_H
