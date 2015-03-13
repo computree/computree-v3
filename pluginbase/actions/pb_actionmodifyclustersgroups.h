@@ -4,6 +4,8 @@
 #include <QRect>
 
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
+#include "ct_itemdrawable/ct_point2d.h"
+#include "ct_itemdrawable/ct_pointcluster.h"
 
 /**
  * @brief Action to select items, points, faces, edges, etc...
@@ -30,7 +32,7 @@ public:
 //        SELECT_CURRENT_MODE = SELECT_NORMAL_MODE+10             /* Selects elements as they are in the graphical view */
 //    };
 
-    PB_ActionModifyClustersGroups();
+    PB_ActionModifyClustersGroups(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map);
 
     QString uniqueName() const;
     QString title() const;
@@ -75,6 +77,21 @@ private:
 
 //    SelectionDrawMode                       m_drawMode;
     GraphicsViewInterface::DrawMode         m_backupDrawMode;
+
+    QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *_positionToCluster;
+    QMap<const CT_PointCluster*, const CT_Point2D*> *_clusterToPosition;
+
+    QList<QColor>                   _automaticColorList;
+    QMap<const CT_Point2D*, QColor> _positionsBaseColors;
+    QColor                          _colorA;
+    QColor                          _colorB;
+    QColor                          _colorTmp;
+    QColor                          _colorTrash;
+
+    const CT_Point2D*               _positionA;
+    const CT_Point2D*               _positionB;
+    QList<const CT_PointCluster*>   _temporaryClusterList;
+    QList<const CT_PointCluster*>   _trashClusterList;
 
 //    void setNewDrawMode();
 //    void setBackupDrawMode();

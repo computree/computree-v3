@@ -8,12 +8,41 @@
 
 #include "views/actions/pb_actionmodifyclustersgroupsoptions.h"
 
-PB_ActionModifyClustersGroups::PB_ActionModifyClustersGroups() : CT_AbstractActionForGraphicsView()
+PB_ActionModifyClustersGroups::PB_ActionModifyClustersGroups(QMap<const CT_Point2D *, QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> > *map) : CT_AbstractActionForGraphicsView()
 {
+    _positionToCluster = map;
+
     m_status = 0;
     m_mousePressed = false;
     m_selectionMode = GraphicsViewInterface::SELECT_ONE;
 //    m_drawMode = SELECT_CURRENT_MODE;
+
+    _automaticColorList.append(QColor(255,255,200)); // Jaune Clair
+    _automaticColorList.append(QColor(255,200,255)); // Magenta Clair
+    _automaticColorList.append(QColor(200,255,255)); // Cyan Clair
+    _automaticColorList.append(QColor(200,200,255)); // Mauve Clair
+    _automaticColorList.append(QColor(200,255,200)); // Vert Clair
+    _automaticColorList.append(QColor(255,200,200)); // Rouge Clair
+    _automaticColorList.append(QColor(255,200,150)); // Orange clair
+    _automaticColorList.append(QColor(150,200,255)); // Bleu Clair
+    _automaticColorList.append(QColor(200,255,150)); // Vert-Jaune Clair
+    _automaticColorList.append(QColor(150,255,200)); // Turquoise Clair
+    _automaticColorList.append(QColor(255,150,200)); // Rose Clair
+    _automaticColorList.append(QColor(200,150,255)); // Violet Clair
+    _automaticColorList.append(QColor(255,255,0  )); // Jaune
+    _automaticColorList.append(QColor(255,0  ,255)); // Magenta
+    _automaticColorList.append(QColor(0  ,255,255)); // Cyan
+    _automaticColorList.append(QColor(0  ,0  ,255)); // Mauve
+    _automaticColorList.append(QColor(255,150,0  )); // Orange
+    _automaticColorList.append(QColor(150,255,0  )); // Vert-Jaune
+    _automaticColorList.append(QColor(0  ,255,150)); // Turquoise
+    _automaticColorList.append(QColor(255,0  ,150)); // Rose
+    _automaticColorList.append(QColor(150,0  ,255)); // Violet
+
+    _colorA     = QColor(0  ,255,0  ); // Vert
+    _colorB     = QColor(0  ,150,255); // Bleu
+    _colorTmp   = QColor(255,255,255); // Blanc
+    _colorTrash = QColor(0  ,0  ,0  ); // Noir
 }
 
 QString PB_ActionModifyClustersGroups::uniqueName() const
@@ -57,6 +86,53 @@ void PB_ActionModifyClustersGroups::init()
         // is managed automatically
         registerOption(option);
     }
+
+    document()->removeAllItemDrawable();
+
+    int colorNum = 0;
+    int posNum = 0;
+    // Initialisation de _clusterToPosition
+    QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
+    while (it.hasNext())
+    {
+        it.next();
+        const CT_Point2D* position = it.key();
+
+        // Création de la liste des couleurs de base (hors groupes A et B)
+        _positionsBaseColors.insert(position, _automaticColorList.at(colorNum++));
+        if (colorNum >= _automaticColorList.size()) {colorNum = 0;}
+
+        // Choix par défaut des scènes A et B (initialisation)
+        if (posNum == 0)
+        {
+            _positionA = position;
+        } else if (posNum == 1)
+        {
+            _positionB = position;
+        }
+
+        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
+        for (int i = 0 ; i < pair.second->size() ; i++)
+        {
+            CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+            _clusterToPosition->insert(cluster, position);
+
+            document()->addItemDrawable(*cluster);
+
+            if (posNum == 0)
+            {
+                document()->setColor(cluster, _colorA);
+            } else if (posNum == 1)
+            {
+                document()->setColor(cluster, _colorB);
+            } else {
+                document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
+            }
+        }
+
+        posNum++;
+    }
+
 }
 
 bool PB_ActionModifyClustersGroups::mousePressEvent(QMouseEvent *e)
@@ -228,7 +304,7 @@ void PB_ActionModifyClustersGroups::drawOverlay(GraphicsViewInterface &view, QPa
 
 CT_AbstractAction* PB_ActionModifyClustersGroups::copy() const
 {
-    return new PB_ActionModifyClustersGroups();
+    return new PB_ActionModifyClustersGroups(_positionToCluster);
 }
 
 bool PB_ActionModifyClustersGroups::setSelectionMode(GraphicsViewInterface::SelectionMode mode)

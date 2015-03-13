@@ -91,11 +91,11 @@ private:
 
     // Step parameters
     bool    _interactiveMode;
-    QHash<CT_AbstractItemDrawable*, CT_AbstractItemGroup*>      m_itemDrawableToAdd;
     QList<CT_AbstractItemDrawable*>                             m_itemDrawableSelected;
     DocumentInterface                                           *m_doc;
     int                                                         m_status;
 
+    QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > _positionsData;
 
     static void addPointsToScenes(QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> &pair);
 };

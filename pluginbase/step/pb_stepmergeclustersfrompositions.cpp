@@ -116,7 +116,6 @@ void PB_StepMergeClustersFromPositions::compute()
     CT_ResultGroup* res_rsc = outResultList.at(0);
 
 
-    QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > positionsData;
     // Création de la liste des positions 2D
     CT_ResultGroupIterator itIn_grpPos(resIn_rPos, this, DEFin_grpPos);
     while (itIn_grpPos.hasNext() && !isStopped())
@@ -128,12 +127,11 @@ void PB_StepMergeClustersFromPositions::compute()
         {
             CT_PointCloudIndexVector* cloudIndexVector = new CT_PointCloudIndexVector();
             cloudIndexVector->setSortType(CT_AbstractCloudIndex::NotSorted);
-            positionsData.insert(position, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* >(cloudIndexVector, new QList<const CT_PointCluster*>()));
+            _positionsData.insert(position, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* >(cloudIndexVector, new QList<const CT_PointCluster*>()));
         }
     }
 
     setProgress(10);
-
 
     // Création des correspondance clusters / positions
     CT_ResultGroupIterator itIn_grpClusters(resIn_rclusters, this, DEFin_grpClusters);
@@ -149,7 +147,7 @@ void PB_StepMergeClustersFromPositions::compute()
             CT_Point2D* bestPosition = NULL;
             double minDist = std::numeric_limits<double>::max();
 
-            QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > itPos(positionsData);
+            QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > itPos(_positionsData);
 
             while (itPos.hasNext())
             {
@@ -165,7 +163,7 @@ void PB_StepMergeClustersFromPositions::compute()
 
             if (bestPosition != NULL)
             {
-                QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) positionsData.value(bestPosition);
+                QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > ) _positionsData.value(bestPosition);
                 pair.second->append(cluster);
             }
         }
@@ -195,7 +193,7 @@ void PB_StepMergeClustersFromPositions::compute()
 
 
     // Ajout des points aux nuages d'indices
-    QList<QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > cloudIndices = positionsData.values();
+    QList<QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > cloudIndices = _positionsData.values();
 
     QFuture<void> futur = QtConcurrent::map(cloudIndices, PB_StepMergeClustersFromPositions::addPointsToScenes);
     int progressMin = futur.progressMinimum();
@@ -264,16 +262,8 @@ void PB_StepMergeClustersFromPositions::initManualMode()
     m_itemDrawableSelected.clear();
     m_doc->removeAllItemDrawable();
 
-
-    // TODO add async with GuiManagerInterface
-    QHashIterator<CT_AbstractItemDrawable*, CT_AbstractItemGroup*> it(m_itemDrawableToAdd);
-
-    while(it.hasNext())
-        m_doc->addItemDrawable(*it.next().key());
-
     // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups());
-
+    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups(&_positionsData));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette "
