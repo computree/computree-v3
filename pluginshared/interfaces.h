@@ -111,6 +111,11 @@ public:
     virtual bool isCellVisibleInFrustrum(int x, int y, int z, GLdouble m_planeCoefficients[6][4]) const = 0;
 
     /**
+     * @brief Get the index of the point in the octree
+     */
+    virtual void indexOfPoint(const Eigen::Vector3d &point, int &ix, int &iy, int &iz) const = 0;
+
+    /**
      * @brief Returns the cells size
      */
     virtual double cellsSize() const = 0;

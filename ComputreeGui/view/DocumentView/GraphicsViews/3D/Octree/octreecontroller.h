@@ -45,7 +45,7 @@ public:
     /**
      * @brief Get the index of the point in the octree
      */
-    void indexOfPoint(const CT_Point &point, int &ix, int &iy, int &iz);
+    void indexOfPoint(const Eigen::Vector3d &point, int &ix, int &iy, int &iz) const;
 
     /**
      * @brief Returns true if the octree has points

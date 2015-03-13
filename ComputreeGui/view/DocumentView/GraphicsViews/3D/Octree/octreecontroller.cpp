@@ -79,7 +79,7 @@ void OctreeController::removePoints(const CT_AbstractPointCloudIndex *index)
     }
 }
 
-void OctreeController::indexOfPoint(const CT_Point &point, int &ix, int &iy, int &iz)
+void OctreeController::indexOfPoint(const Eigen::Vector3d &point, int &ix, int &iy, int &iz) const
 {
     ix = ((point(0) - m_octreeMinCorner.x()) / m_size);
     iy = ((point(1) - m_octreeMinCorner.y()) / m_size);
