@@ -126,7 +126,9 @@ void PB_StepMergeClustersFromPositions::compute()
         const CT_Point2D* position = (CT_Point2D*)grpIn_grpPos->firstItemByINModelName(this, DEFin_position);
         if (position != NULL)
         {
-            positionsData.insert(position, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* >(new CT_PointCloudIndexVector(), new QList<const CT_PointCluster*>()));
+            CT_PointCloudIndexVector* cloudIndexVector = new CT_PointCloudIndexVector();
+            cloudIndexVector->setSortType(CT_AbstractCloudIndex::NotSorted);
+            positionsData.insert(position, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* >(cloudIndexVector, new QList<const CT_PointCluster*>()));
         }
     }
 
@@ -216,6 +218,7 @@ void PB_StepMergeClustersFromPositions::compute()
 
         if (cloudIndexVector->size() > 0)
         {
+            cloudIndexVector->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
             CT_StandardItemGroup* grp = new CT_StandardItemGroup(DEFout_grp, res_rsc);
             res_rsc->addGroup(grp);
 
