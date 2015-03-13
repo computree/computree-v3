@@ -5,6 +5,8 @@
 #include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
 
+class CT_AbstractItemGroup;
+
 /*!
  * \class PB_StepMergeClustersFromPositions
  * \ingroup Steps_PB
