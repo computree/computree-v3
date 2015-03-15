@@ -377,12 +377,28 @@ public:
       */
     QList<DataT> neighboursValues(const size_t colx, const size_t liny, const size_t levz, const size_t distance, const bool keepNAs = false, const CenterMode centermode = CT_Grid3D::CM_DropCenter) const;
 
+
+    /** Methods for colors management
+     */
+    inline bool colorsDefined() const {return !_colorMap.isEmpty();}
+
+    inline void clearColors() {_colorMap.clear();}
+
+    inline void setDefaultColor(const QColor &color) {_defaultColor = color;}
+
+    inline void addColorForValue(DataT value, const QColor &color) {_colorMap.insert(value, color);}
+
+    inline QColor getColorForValue(DataT value) const {return _colorMap.value(value, _defaultColor);}
+
 protected:
     DataT       _NAdata;            /*!< Valeur codant NA */
 
     DataT       _dataMax;           /*!< valeur maximale du grid*/
     DataT       _dataMin;           /*!< valeur minimale du grid*/
     std::vector<DataT> _data;       /*!< Tableau contenant les donnees pour chaque case de la grille*/
+
+    QMap<DataT, QColor> _colorMap;
+    QColor              _defaultColor;
 
     CT_DEFAULT_IA_BEGIN(CT_Grid3D<DataT>)
     CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataXDimension(), &CT_Grid3D<DataT>::xdim, QObject::tr("X dimension"))

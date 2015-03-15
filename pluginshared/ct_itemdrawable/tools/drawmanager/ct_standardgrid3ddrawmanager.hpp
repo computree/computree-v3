@@ -13,6 +13,7 @@ template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::IN
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_LOW_THRESHOLDS_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigLowThresholdValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIGH_THRESHOLDS_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigHighThresholdValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_REDUCTION_COEF = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigReductionCoef();
+template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_USE_PREDEFINED_COLORS = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigUsePredefinedColors();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_TRANSPARENCY_VALUE = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigTransparencyValue();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIDE_PLANE_NB_XINF = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigXinf();
 template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::INDEX_CONFIG_HIDE_PLANE_NB_XSUP = CT_StandardGrid3DDrawManager<DataT>::staticInitConfigXsup();
@@ -50,6 +51,7 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
     double  highThresh = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIGH_THRESHOLDS_VALUE).toDouble();
     double  reductionCoef = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_REDUCTION_COEF).toDouble();
     int     transparencyValue = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_VALUE).toInt();
+    bool    usePredefinedColors = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_PREDEFINED_COLORS).toBool();
 
     size_t     nXinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XINF).toInt();
     size_t     nXsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XSUP).toInt();
@@ -102,12 +104,18 @@ void CT_StandardGrid3DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pain
                     // Draw a cube if the value it contains is between the two thresholds
                     if ( data >= lowThresh && data <= highThresh )
                     {
+                        bool predef = false;
+                        if (usePredefinedColors && item.colorsDefined())
+                        {
+                            painter.setColor(item.getColorForValue(data));
+                            predef = true;
+                        }
 
-                        if (drawAsMap && !itemDrawable.isSelected())
+                        if (!predef && drawAsMap && !itemDrawable.isSelected())
                         {
                             double h = (int) qRound((data*scaling) + offset);
                             painter.setColor( QColor::fromHsv(h,255,255,transparencyValue) );
-                        } else {
+                        } else if (!predef){
                             painter.setColor(QColor(255,255,255, transparencyValue));
                         }
 
@@ -140,6 +148,7 @@ CT_ItemDrawableConfiguration CT_StandardGrid3DDrawManager<DataT>::createDrawConf
     item.addNewConfiguration(staticInitConfigHighThresholdsEnabled(), "Forcer limite haute", CT_ItemDrawableConfiguration::Bool, false);     // Using thresholds or not
     item.addNewConfiguration(staticInitConfigHighThresholdValue(), "Limite haute (forcée)", CT_ItemDrawableConfiguration::Double, 100 );        // Voxels with value greater than this threshold will not be drawn
     item.addNewConfiguration(staticInitConfigReductionCoef(), "Coef. de reduction", CT_ItemDrawableConfiguration::Double, 1);
+    item.addNewConfiguration(staticInitConfigUsePredefinedColors(), "Utiliser couleurs pré-définies", CT_ItemDrawableConfiguration::Bool, true);             // Draw the grid with pre-defined colors
     item.addNewConfiguration(staticInitConfigTransparencyValue(), "Valeur de transparence", CT_ItemDrawableConfiguration::Int, 100);
     item.addNewConfiguration(staticInitConfigXinf(), "Nb. Plans masqués X-", CT_ItemDrawableConfiguration::Int, 0);
     item.addNewConfiguration(staticInitConfigXsup(), "Nb. Plans masqués X+", CT_ItemDrawableConfiguration::Int, 0);
@@ -187,6 +196,12 @@ template< typename DataT >
 QString CT_StandardGrid3DDrawManager<DataT>::staticInitConfigReductionCoef()
 {
     return "A3DGD_RDC";
+}
+
+template< typename DataT >
+QString CT_StandardGrid3DDrawManager<DataT>::staticInitConfigUsePredefinedColors()
+{
+    return "A3DGD_PDC";
 }
 
 template< typename DataT >

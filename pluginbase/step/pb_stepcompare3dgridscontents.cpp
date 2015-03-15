@@ -147,6 +147,17 @@ void PB_StepCompare3DGridsContents::compute()
                     CT_Grid3D<short>* gridOut = CT_Grid3D<short>::createGrid3DFromXYZCoords(DEFout_grid, res_rgrid, xmin, ymin, zmin, xmax, ymax, zmax, res, -1, -1, false);
                     grp_grp->addItemDrawable(gridOut);
 
+                    gridOut->setDefaultColor(QColor(255, 255, 255));
+                    gridOut->addColorForValue(00, QColor(255, 125, 125));
+                    gridOut->addColorForValue(01, QColor(125, 0, 0));
+                    gridOut->addColorForValue(02, QColor(0, 0, 125));
+                    gridOut->addColorForValue(10, QColor(255, 255, 125));
+                    gridOut->addColorForValue(11, QColor(255, 255, 0));
+                    gridOut->addColorForValue(12, QColor(0, 255, 0));
+                    gridOut->addColorForValue(20, QColor(125, 125, 255));
+                    gridOut->addColorForValue(21, QColor(255, 0, 0));
+                    gridOut->addColorForValue(22, QColor(0, 0, 255));
+
                     // Remplissage de la grille de sortie
                     for (size_t n = 0 ; n < gridOut->nCells() ; n++)
                     {
