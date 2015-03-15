@@ -79,7 +79,7 @@ private:
     GraphicsViewInterface::DrawMode         m_backupDrawMode;
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *_positionToCluster;
-    QMap<const CT_PointCluster*, const CT_Point2D*> *_clusterToPosition;
+    QMap<const CT_PointCluster*, const CT_Point2D*> _clusterToPosition;
 
     QList<QColor>                   _automaticColorList;
     QMap<const CT_Point2D*, QColor> _positionsBaseColors;

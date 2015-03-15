@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>758</width>
-    <height>90</height>
+    <height>69</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -38,6 +38,12 @@
    <item>
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QRadioButton" name="radioButtonItems">
         <property name="toolTip">
@@ -184,6 +190,12 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QToolButton" name="toolButtonSelectOne">
         <property name="toolTip">
@@ -446,8 +458,8 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroupSelection"/>
   <buttongroup name="buttonGroupMode"/>
+  <buttongroup name="buttonGroupSelection"/>
   <buttongroup name="buttonGroupType"/>
  </buttongroups>
 </ui>

@@ -115,7 +115,7 @@ void PB_ActionModifyClustersGroups::init()
         for (int i = 0 ; i < pair.second->size() ; i++)
         {
             CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
-            _clusterToPosition->insert(cluster, position);
+            _clusterToPosition.insert(cluster, position);
 
             document()->addItemDrawable(*cluster);
 
