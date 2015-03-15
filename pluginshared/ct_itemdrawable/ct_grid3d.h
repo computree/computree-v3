@@ -131,7 +131,8 @@ public:
                                                           double zmax,
                                                           double resolution,
                                                           DataT na,
-                                                          DataT initValue);
+                                                          DataT initValue,
+                                                          bool extends = true);
 
     static CT_Grid3D<DataT>* createGrid3DFromXYZCoords(const QString &modelName,
                                                           const CT_AbstractResult *result,
@@ -143,7 +144,8 @@ public:
                                                           double zmax,
                                                           double resolution,
                                                           DataT na,
-                                                          DataT initValue);
+                                                          DataT initValue,
+                                                          bool extends = true);
 
     /*!
      * \brief Destructor

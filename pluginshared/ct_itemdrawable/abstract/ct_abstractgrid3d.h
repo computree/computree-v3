@@ -314,6 +314,23 @@ public:
     }
 
     /*!
+     * \brief getCellCoordinates Give center coordinates of a cell
+     * \param index Index of the cell
+     * \param center  Center coordinates
+     * \return true if index is in the grid
+     */
+    inline bool getCellCenterCoordinates(const size_t index, Eigen::Vector3d &center) const
+    {
+        size_t colx, liny, levz;
+        if (!indexToGrid(index, colx, liny, levz)) {return false;}
+        double demiRes = _res / 2.0;
+        center(0) = minX() + colx*_res + demiRes;
+        center(1) = minY() + liny*_res + demiRes;
+        center(2) = minZ() + levz*_res + demiRes;
+        return true;
+    }
+
+    /*!
      * \brief Get the left corner coordinates of the cell defined by (colx, liny, levz)
      * \param colx Column
      * \param liny Row

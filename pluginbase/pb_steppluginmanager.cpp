@@ -242,6 +242,13 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
 
+    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));
+    sep->addStep(new PB_StepLoadAsciiFile02(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadObjFile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadGrid3dFile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadPbmFile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadPgmFile(*createNewStepInitializeData(NULL)));
+
     return true;
 }
 
@@ -426,7 +433,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
         QList<CT_StandardReaderSeparator*> rsl = p->getReadersAvailable();
         QListIterator<CT_StandardReaderSeparator*> itR(rsl);
 
-        CT_StepSeparator *sepGeneric = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));
+        CT_StepSeparator *sepGeneric = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement (Readers)")));
 
 
         while(itR.hasNext())

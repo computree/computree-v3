@@ -24,7 +24,7 @@
 // Constructor : initialization of parameters
 PB_StepCompare3DGridsContents::PB_StepCompare3DGridsContents(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _threshold = 0;
+    _threshold = 1;
 }
 
 // Step description (tooltip of contextual menu)
@@ -37,11 +37,17 @@ QString PB_StepCompare3DGridsContents::getStepDescription() const
 QString PB_StepCompare3DGridsContents::getStepDetailledDescription() const
 {
     return tr("Il est préférable que les grilles aient la même résolution et le même calage spatial.<br>"
+              "Considérant A = Grille initiale (avant), B = Grille finale (après)"
               "En sortie l'étape renvoie une grille contenant :<br>"
-              "* 0 si les deux grilles sont inférieures au seuil (vide durable)<br>"
-              "* 1 si la première grille est supérieur au seuil mais pas la seconde (perte)<br>"
-              "* 2 si les deux grilles sont supérieures au seuil (maintien)<br>"
-              "* 3 si la seconde grille est supérieure au seuil mais pas la première (accroissement)");
+              "* 00 : A =  NA,    B =  NA<br>"
+              "* 01 : A =  NA,    B <  Seuil<br>"
+              "* 02 : A =  NA,    B >= Seuil<br>"
+              "* 10 : A <  Seuil, B =  NA<br>"
+              "* 11 : A <  Seuil, B <  Seuil<br>"
+              "* 12 : A <  Seuil, B >= Seuil<br>"
+              "* 20 : A >= Seuil, B =  NA<br>"
+              "* 21 : A >= Seuil, B <  Seuil<br>"
+              "* 22 : A >= Seuil, B >= Seuil<br>");
 }
 
 // Step URL
@@ -62,13 +68,13 @@ CT_VirtualAbstractStep* PB_StepCompare3DGridsContents::createNewInstance(CT_Step
 // Creation and affiliation of IN models
 void PB_StepCompare3DGridsContents::createInResultModelListProtected()
 {
-    CT_InResultModelGroup *resIn_rgrid1 = createNewInResultModel(DEFin_rgrid1, tr("Grille 1 (avant)"));
+    CT_InResultModelGroup *resIn_rgrid1 = createNewInResultModel(DEFin_rgrid1, tr("Grille A (avant)"), "", true);
     resIn_rgrid1->setRootGroup(DEFin_grp1, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn_rgrid1->addItemModel(DEFin_grp1, DEFin_grid1, CT_AbstractGrid3D::staticGetType(), tr("Grille 1 (avant)"));
+    resIn_rgrid1->addItemModel(DEFin_grp1, DEFin_grid1, CT_AbstractGrid3D::staticGetType(), tr("Grille A (avant)"));
 
-    CT_InResultModelGroup *resIn_rgrid2 = createNewInResultModel(DEFin_rgrid2, tr("Grille 2 (après)"));
+    CT_InResultModelGroup *resIn_rgrid2 = createNewInResultModel(DEFin_rgrid2, tr("Grille B (après)"), "", true);
     resIn_rgrid2->setRootGroup(DEFin_grp2, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn_rgrid2->addItemModel(DEFin_grp2, DEFin_grid2,CT_AbstractGrid3D::staticGetType(), tr("Grille 2 (après)"));
+    resIn_rgrid2->addItemModel(DEFin_grp2, DEFin_grid2,CT_AbstractGrid3D::staticGetType(), tr("Grille B (après)"));
 
 }
 
@@ -138,15 +144,59 @@ void PB_StepCompare3DGridsContents::compute()
                     CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_rgrid);
                     res_rgrid->addGroup(grp_grp);
 
-                    //CT_Grid3D<short>* gridOut = new CT_Grid3D<short>::createGrid3DFromXYZCoords(DEFout_grid, res_rgrid, xmin, ymin, zmin, xmax, ymax, zmax, res, -1, 0);
-//                    grp_grp->addItemDrawable(gridOut);
+                    CT_Grid3D<short>* gridOut = CT_Grid3D<short>::createGrid3DFromXYZCoords(DEFout_grid, res_rgrid, xmin, ymin, zmin, xmax, ymax, zmax, res, -1, -1, false);
+                    grp_grp->addItemDrawable(gridOut);
 
-//                    for (size_t n = 0 ; n < gridOut->nCells() ; n++)
-//                    {
-//                        double x = gridOut->getCellCenterX(gridOut->get)
-//                    }
+                    // Remplissage de la grille de sortie
+                    for (size_t n = 0 ; n < gridOut->nCells() ; n++)
+                    {
+                        Eigen::Vector3d center;
+                        gridOut->getCellCenterCoordinates(n, center);
 
+                        double val1, val2;
+                        size_t index1, index2;
 
+                        if (grid1->indexAtXYZ(center(0), center(1), center(2), index1))
+                        {
+                            val1 = grid1->valueAtIndexAsDouble(index1);
+                        } else {
+                            val1 = NAN;
+                        }
+
+                        if (grid2->indexAtXYZ(center(0), center(1), center(2), index2))
+                        {
+                            val2 = grid2->valueAtIndexAsDouble(index2);
+                        } else {
+                            val2 = NAN;
+                        }
+
+                        if (isnan(val1)) {
+                            if (isnan(val2)) {
+                                gridOut->setValueAtIndex(n, 00);
+                            } else if (val2 < _threshold) {
+                                gridOut->setValueAtIndex(n, 01);
+                            } else {
+                                gridOut->setValueAtIndex(n, 02);
+                            }
+                        } else if (val1 < _threshold) {
+                            if (isnan(val2)) {
+                                gridOut->setValueAtIndex(n, 10);
+                            } else if (val2 < _threshold) {
+                                gridOut->setValueAtIndex(n, 11);
+                            } else {
+                                gridOut->setValueAtIndex(n, 12);
+                            }
+                        } else {
+                            if (isnan(val2)) {
+                                gridOut->setValueAtIndex(n, 20);
+                            } else if (val2 < _threshold) {
+                                gridOut->setValueAtIndex(n, 21);
+                            } else {
+                                gridOut->setValueAtIndex(n, 22);
+                            }
+                        }
+                    }
+                    gridOut->computeMinMax();
                 }
             }
         }

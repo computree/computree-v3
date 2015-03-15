@@ -150,27 +150,32 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstra
                                                               double zmax,
                                                               double resolution,
                                                               DataT na,
-                                                              DataT initValue)
+                                                              DataT initValue,
+                                                              bool extends)
 {
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= (xmin + dimx * resolution))
+    if (extends)
     {
-        dimx++;
+        // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+        while (xmax >= (xmin + dimx * resolution))
+        {
+            dimx++;
+        }
+
+        while (ymax >= (ymin + dimy * resolution))
+        {
+            dimy++;
+        }
+
+        while (zmax >= (zmin + dimz * resolution))
+        {
+            dimz++;
+        }
     }
 
-    while (ymax >= (ymin + dimy * resolution))
-    {
-        dimy++;
-    }
-
-    while (zmax >= (zmin + dimz * resolution))
-    {
-        dimz++;
-    }
 
     return new CT_Grid3D<DataT>(model, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
 }
@@ -186,26 +191,30 @@ CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const QString &mod
                                                               double zmax,
                                                               double resolution,
                                                               DataT na,
-                                                              DataT initValue)
+                                                              DataT initValue,
+                                                              bool extends)
 {
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
 
-    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
-    while (xmax >= (xmin + dimx * resolution))
+    if (extends)
     {
-        dimx++;
-    }
+        // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+        while (xmax >= (xmin + dimx * resolution))
+        {
+            dimx++;
+        }
 
-    while (ymax >= (ymin + dimy * resolution))
-    {
-        dimy++;
-    }
+        while (ymax >= (ymin + dimy * resolution))
+        {
+            dimy++;
+        }
 
-    while (zmax >= (zmin + dimz * resolution))
-    {
-        dimz++;
+        while (zmax >= (zmin + dimz * resolution))
+        {
+            dimz++;
+        }
     }
 
     return new CT_Grid3D<DataT>(modelName, result, xmin, ymin, zmin, dimx, dimy, dimz, resolution, na, initValue);
