@@ -157,6 +157,7 @@ QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &
     item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepDebug, QString(""));
     item->setEditable(false);
     item->setCheckable(true);
+    item->setBoolData(step.isDebugModeOn());
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
     list.append(item);
 
