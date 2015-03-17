@@ -1211,7 +1211,10 @@ void G3DGraphicsView::drawInternal()
                 if(lastResult != item->result())
                     hash = ii.value(item->result(), NULL);
 
-                DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
+                DM_ItemInfoForGraphics *info = NULL;
+
+                if(hash != NULL)
+                    info = static_cast<DM_ItemInfoForGraphics*>(hash->value(item, NULL));
 
                 if((colorVBOManager() != NULL) && (colorVBOManager()->useColorCloud() != m_docGV->useColorCloud())) {
                     _g.stopDrawMultiple();

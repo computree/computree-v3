@@ -390,6 +390,9 @@ CT_AbstractItemDrawable* DM_Document::findFirstItemDrawable(const CT_OutAbstract
 
 QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>* DM_Document::createItemInformationsForResult(CT_AbstractResult *result)
 {
+    if(result == NULL)
+        return NULL;
+
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = new QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*>();
     m_itemsInformation.insert(result, hash);
 
@@ -455,6 +458,9 @@ void DM_Document::recursiveAddChildrensToInformationsCollection(const CT_Abstrac
 void DM_Document::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
     connect(&item, SIGNAL(selectChange(bool)), this, SLOT(slotItemDrawableSelectionChanged(bool)), Qt::DirectConnection);
+
+    if(item.result() == NULL)
+        return;
 
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = m_itemsInformation.value(item.result(), NULL);
     DM_AbstractInfo *info = NULL;

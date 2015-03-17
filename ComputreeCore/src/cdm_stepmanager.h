@@ -181,6 +181,17 @@ public slots:
      */
     bool executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *beginStep = NULL);
 
+    /*!
+     *  \brief Lancement des traitements en mode debug OU avancer de 1 pas en mode avance automatique
+     *
+     *  \param beginStep : L'etape a partir de laquelle lancer les traitements. NULL si on desire lancer les traitements
+     *                     a partir de la premiere etape qui a subit des modifications. EVIDEMMENT : Si une etape attend un ack de debug ce parametre
+     *                     n'est pas pris en compte.
+     *
+     *  \return false si aucun traitements n'attend de ack ou si un lancement en mode non debug a deja ete effectue, true si le lancement c'est bien passe.
+     */
+    bool executeOrForwardStepAutoInDebugMode(CT_VirtualAbstractStep *beginStep = NULL);
+
     /**
      * @brief Quit the manual mode of the current step
      */
@@ -206,6 +217,16 @@ public slots:
      */
     bool setFastForwardJumpInDebugMode(int value);
 
+    /**
+     * @brief Time to sleep in ms between two call of ack debug mode
+     */
+    void setTimeToSleepInAutoDebugMode(int timeInMs);
+
+    /**
+     * @brief Number of jump to next valid waitForAckIfInDebugMode()
+     */
+    void setNJumpInAutoDebugMode(int n);
+
 private:
 
     bool internalExecuteStep(CT_VirtualAbstractStep *beginStep, bool debugMode);
@@ -230,10 +251,12 @@ private:
     CT_VirtualAbstractStep                        *_beginStep;
     bool                        _stop;
     bool                        _debugMode;
+    bool                        m_debugAutoMode;
     bool                        _force;
 
     QList<CT_VirtualAbstractStep*>                _stepRootList;
     CT_VirtualAbstractStep*                       m_currentStep;
+
 
     QMutex                      _mutex;
 
@@ -241,7 +264,7 @@ private:
 
     void recursiveClearResult(CT_VirtualAbstractStep &step);
 
-    bool ackDebugMode(int jumpNStep);
+    bool ackDebugMode(int jumpNStep, bool callPostWait = true);
 
 private slots:
 
@@ -251,6 +274,11 @@ private slots:
 
     void setDefaultQLocale(QString name);
     void slotRemoveActionsAfterStepExecuted();
+
+    /**
+     * @brief Called by a timer to go to next step automatically in debug mode
+     */
+    void autoAckDebugMode();
 
 signals:
 

@@ -43,6 +43,16 @@ public:
      */
     bool changeFastJumpInDebugMode(int nJump);
 
+    /**
+     * @brief Time to sleep in ms between two call of ack debug mode
+     */
+    void setTimeToSleepInAutoDebugMode(int timeInMs);
+
+    /**
+     * @brief Number of jump to next valid waitForAckIfInDebugMode()
+     */
+    void setNJumpInAutoDebugMode(int n);
+
     /*!
      *  \brief Faut-il serialiser les resultats automatiquement
      */
@@ -63,6 +73,16 @@ public:
      */
     int getFastJumpValueInDebugMode() const;
 
+    /**
+     * @brief Time to sleep in ms between two call of ack debug mode
+     */
+    int getTimeToSleepInAutoDebugMode() const;
+
+    /**
+     * @brief Number of jump to next valid waitForAckIfInDebugMode()
+     */
+    int getNJumpInAutoDebugMode() const;
+
     /*!
      *  \brief Charge les parametres par defaut
      */
@@ -80,6 +100,8 @@ private:
     QString     _autoSaveDirPath;
     bool        _autoClearMemory;
     QString     _locale;
+    int         m_timeToSleepInAutoDebugMode;   // wait in ms before call ackDebugMode
+    int         m_nJumpInAutoDebugMode;         // n jump in auto debug mode
 };
 
 #endif // CDM_STEPMANAGEROPTIONS_H

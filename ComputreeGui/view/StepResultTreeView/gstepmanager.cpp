@@ -474,7 +474,7 @@ bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep 
         QMessageBox msg(QMessageBox::Warning, tr("Attention"), tr("La srialisation semble tre active, si vous executez"
                                                                   " l'opration  partir de cette tape elle sera dsactive."), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
-        msg.setInformativeText(tr("Voulez-vous quand mme continuer ?"));
+        msg.setInformativeText(tr("Voulez-vous quand même continuer ?"));
 
         if(msg.clickedButton() == msg.button(QMessageBox::Yes))
         {
@@ -493,7 +493,7 @@ bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep 
             QMessageBox msg(QMessageBox::Warning, tr("Attention"), tr("Une ou plusieurs étapes sont en mode debug or vous allez lancer"
                                                                       " les traitements en mode normal."), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
-            msg.setInformativeText(tr("Voulez-vous quand mme continuer ?"));
+            msg.setInformativeText(tr("Voulez-vous quand même continuer ?"));
 
             msg.exec();
 
@@ -509,7 +509,7 @@ bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep 
             QMessageBox msg(QMessageBox::Warning, tr("Attention"), tr("Aucune étape n'est en mode debug or vous allez lancer"
                                                                       " les traitements dans ce mode."), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
 
-            msg.setInformativeText(tr("Voulez-vous quand mme continuer ?"));
+            msg.setInformativeText(tr("Voulez-vous quand même continuer ?"));
 
             msg.exec();
 
@@ -736,13 +736,9 @@ bool GStepManager::executeStep(CT_VirtualAbstractStep *step)
     if(!_stepManager->isRunning())
     {
         if(checkExecuteStepAndShowWarningMessage(step, false))
-        {
             return _stepManager->executeStep(step);
-        }
         else
-        {
             return false;
-        }
     }
 
     return _stepManager->executeStep(step);
@@ -761,13 +757,9 @@ bool GStepManager::executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *step)
     if(!_stepManager->isRunning())
     {
         if(checkExecuteStepAndShowWarningMessage(step, true))
-        {
             return _stepManager->executeOrForwardStepInDebugMode(step);
-        }
         else
-        {
             return false;
-        }
     }
 
     return _stepManager->executeOrForwardStepInDebugMode(step);
@@ -778,16 +770,25 @@ bool GStepManager::executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *s
     if(!_stepManager->isRunning())
     {
         if(checkExecuteStepAndShowWarningMessage(step, true))
-        {
             return _stepManager->executeOrForwardStepFastInDebugMode(step);
-        }
         else
-        {
             return false;
-        }
     }
 
     return _stepManager->executeOrForwardStepFastInDebugMode(step);
+}
+
+bool GStepManager::executeOrForwardStepAutoInDebugMode(CT_VirtualAbstractStep *step)
+{
+    if(!_stepManager->isRunning())
+    {
+        if(checkExecuteStepAndShowWarningMessage(step, true))
+            return _stepManager->executeOrForwardStepAutoInDebugMode(step);
+        else
+            return false;
+    }
+
+    return _stepManager->executeOrForwardStepAutoInDebugMode(step);
 }
 
 bool GStepManager::configureInputResultOfStep(CT_VirtualAbstractStep *step)

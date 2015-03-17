@@ -370,7 +370,6 @@ protected:
     DM_AsyncOperation           *m_currentAsyncOperation;
     QMutex                      m_asyncOperationTokenMutex;
     QList<DM_GuiManagerToken*>  m_tokens;
-    GMainProgressDialog         *m_asyncWaitDialog;
 
     QFutureWatcher<void>        _futureWatcher;
     QFuture<void>               _future;
@@ -380,7 +379,7 @@ protected:
 
     QList<DM_Context*>          _contextList;
 
-    QQueue<DM_AsyncOperation*>  m_queueAsyncOperationDestroyed;
+    QQueue<IMainProgressDialog*>  m_queueProgressDialogToDestroy;
 
     /**
       * \brief Initialisation (connexion des signaux, etc...)
@@ -403,7 +402,7 @@ private:
       * \brief Initialise la fentre de progression avec le texte pass en
       *        paramtre et l'affiche.
       */
-    void initProgressDialog(GMainProgressDialog *dialog, QString text, QString secondText = "");
+    void initProgressDialog(IMainProgressDialog *dialog, QString text, QString secondText = "");
 
     void addNewContext(DM_Context *context);
 

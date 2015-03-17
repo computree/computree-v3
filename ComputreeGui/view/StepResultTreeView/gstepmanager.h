@@ -193,6 +193,7 @@ public slots:
     bool executeModifyStep(CT_VirtualAbstractStep *step);
     bool executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *step = NULL);
     bool executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *step = NULL);
+    bool executeOrForwardStepAutoInDebugMode(CT_VirtualAbstractStep *step = NULL);
     bool configureInputResultOfStep(CT_VirtualAbstractStep *step);
     bool configureStep(CT_VirtualAbstractStep *step);
     bool removeStep(CT_VirtualAbstractStep *step);

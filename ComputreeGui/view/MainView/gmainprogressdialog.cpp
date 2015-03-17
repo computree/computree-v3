@@ -160,7 +160,7 @@ void GMainProgressDialog::setCancelButtonText(const QString &text)
 void GMainProgressDialog::closeEvent(QCloseEvent *event)
 {
     if(!_canClose)
-    {
         event->ignore();
-    }
+    else
+        event->accept();
 }

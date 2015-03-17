@@ -290,8 +290,9 @@ void GMainWindow::initUI()
     menuNewStepCanBeAddedFirst->setToolTip(tr("Ajouter une étape qui n'a pas besoin de résultat en entrée"));
     menuNewStepCanBeAddedFirst->setIcon(QIcon(":/Icones/Icones/add.png"));
 
-    QAction *actionStart = new QAction(tr("Lancer les traitements"), this);
+    QAction *actionStart = new QAction(tr("Lancer les traitements (CTRL+R)"), this);
     actionStart->setIcon(QIcon(QPixmap(":/Icones/Icones/play.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+    actionStart->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
 
     QAction *actionStop = new QAction(tr("Stop"), this);
     actionStop->setIcon(QIcon(QPixmap(":/Icones/Icones/stop.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
@@ -300,11 +301,16 @@ void GMainWindow::initUI()
     actionAckManualMode->setIcon(QIcon(QPixmap(":/Icones/Icones/hand.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
     actionAckManualMode->setDisabled(true);
 
-    QAction *actionForwardOneStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer d'un pas"), this);
+    QAction *actionForwardOneStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer d'un pas (F5)"), this);
     actionForwardOneStepDebug->setIcon(QIcon(":/Icones/Icones/play_debug.png"));
+    actionForwardOneStepDebug->setShortcut(Qt::Key_F5);
 
-    QAction *actionForwardFastStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer de N pas"), this);
+    QAction *actionForwardFastStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer de N pas (F10)"), this);
     actionForwardFastStepDebug->setIcon(QIcon(":/Icones/Icones/play_debug_fast.png"));
+    actionForwardFastStepDebug->setShortcut(Qt::Key_F10);
+
+    QAction *actionForwardOneStepAutoDebug = new QAction(tr("Avancer de N pas automatiquement jusqu'à la fin"), this);
+    actionForwardOneStepAutoDebug->setIcon(QIcon(":/Icones/Icones/play_movie.png"));
 
     QAction *actionNewDocument = new QAction(tr("Ajouter un nouveau document"), this);
     actionNewDocument->setIcon(QIcon(QPixmap(":/Icones/Icones/new-document.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
@@ -368,12 +374,28 @@ void GMainWindow::initUI()
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionForwardOneStepDebug);
     ui->toolBar->addAction(actionForwardFastStepDebug);
-
     QSpinBox *fastForwardSpinBox = new QSpinBox(this);
     fastForwardSpinBox->setMinimum(1);
     fastForwardSpinBox->setMaximum(9999999);
+    fastForwardSpinBox->setMaximumWidth(90);
+    fastForwardSpinBox->setToolTip(tr("Indiquez le nombre de pas à sauter avant le prochain arrêt de l'étape"));
 
     ui->toolBar->addWidget(fastForwardSpinBox);
+    ui->toolBar->addAction(actionForwardOneStepAutoDebug);
+
+    QSpinBox *jumpAutoDebugSpinBox = new QSpinBox(this);
+    jumpAutoDebugSpinBox->setMinimum(1);
+    jumpAutoDebugSpinBox->setMaximum(9999999);
+    jumpAutoDebugSpinBox->setMaximumWidth(70);
+    jumpAutoDebugSpinBox->setToolTip(tr("Indiquez le nombre de pas à sauter avant la prochaine actualisation automatique"));
+    ui->toolBar->addWidget(jumpAutoDebugSpinBox);
+
+    QSpinBox *timeAutoDebugSpinBox = new QSpinBox(this);
+    timeAutoDebugSpinBox->setMinimum(1);
+    timeAutoDebugSpinBox->setMaximum(9999999);
+    timeAutoDebugSpinBox->setMaximumWidth(70);
+    timeAutoDebugSpinBox->setToolTip(tr("Indiquez le temps en ms entre deux actualisation automatique"));
+    ui->toolBar->addWidget(timeAutoDebugSpinBox);
 
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionNewDocument);
@@ -404,6 +426,7 @@ void GMainWindow::initUI()
     ui->menuEdition->addSeparator();
     ui->menuEdition->addAction(actionForwardOneStepDebug);
     ui->menuEdition->addAction(actionForwardFastStepDebug);
+    ui->menuEdition->addAction(actionForwardOneStepAutoDebug);
 
     ui->menuFenetre->addAction(actionShowStepManagerView);
     ui->menuFenetre->addAction(actionShowItemDrawableModelManagerView);
@@ -473,7 +496,10 @@ void GMainWindow::initUI()
 
     connect(actionForwardOneStepDebug, SIGNAL(triggered()), _stepManagerView, SLOT(executeOrForwardStepInDebugMode()));
     connect(actionForwardFastStepDebug, SIGNAL(triggered()), _stepManagerView, SLOT(executeOrForwardStepFastInDebugMode()));
+    connect(actionForwardOneStepAutoDebug, SIGNAL(triggered()), _stepManagerView, SLOT(executeOrForwardStepAutoInDebugMode()));
     connect(fastForwardSpinBox, SIGNAL(valueChanged(int)), _stepManagerView->getStepManager(), SLOT(setFastForwardJumpInDebugMode(int)));
+    connect(jumpAutoDebugSpinBox, SIGNAL(valueChanged(int)), _stepManagerView->getStepManager(), SLOT(setNJumpInAutoDebugMode(int)));
+    connect(timeAutoDebugSpinBox, SIGNAL(valueChanged(int)), _stepManagerView->getStepManager(), SLOT(setTimeToSleepInAutoDebugMode(int)));
 
     connect(actionStepManagerConfiguration, SIGNAL(triggered()), _stepManagerView, SLOT(showStepManagerOptions()));
 
@@ -502,12 +528,14 @@ void GMainWindow::initUI()
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionStepManagerConfiguration, SLOT(setDisabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionForwardOneStepDebug, SLOT(setDisabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionForwardFastStepDebug, SLOT(setDisabled(bool)));
+    connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionForwardOneStepAutoDebug, SLOT(setDisabled(bool)));
 
     connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionStart, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionStop, SLOT(setDisabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionStepManagerConfiguration, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionForwardOneStepDebug, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionForwardFastStepDebug, SLOT(setEnabled(bool)));
+    connect(_stepManagerView->getStepManager(), SIGNAL(completed(bool)), actionForwardOneStepAutoDebug, SLOT(setEnabled(bool)));
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepInManualMode(bool)), actionAckManualMode, SLOT(setEnabled(bool)));
 
@@ -517,6 +545,7 @@ void GMainWindow::initUI()
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionStart, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionForwardOneStepDebug, SLOT(setEnabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionForwardFastStepDebug, SLOT(setEnabled(bool)));
+    connect(_stepManagerView->getStepManager(), SIGNAL(stepWaitForAckInDebugMode(bool)), actionForwardOneStepAutoDebug, SLOT(setEnabled(bool)));
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepAdded(CT_VirtualAbstractStep*)), this, SLOT(stepAdded(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
     connect(_stepManagerView->getStepManager(), SIGNAL(stepToBeRemoved(CT_VirtualAbstractStep*)), this, SLOT(stepToBeRemoved(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
@@ -534,6 +563,8 @@ void GMainWindow::initUI()
     connect(ui->dockWidgetLog, SIGNAL(visibilityChanged(bool)), actionShowLog, SLOT(setDisabled(bool)));
 
     fastForwardSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getFastJumpValueInDebugMode());
+    jumpAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getNJumpInAutoDebugMode());
+    timeAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getTimeToSleepInAutoDebugMode());
 }
 
 void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)

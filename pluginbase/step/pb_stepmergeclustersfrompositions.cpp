@@ -163,7 +163,7 @@ void PB_StepMergeClustersFromPositions::compute()
 
             if (bestPosition != NULL)
             {
-                QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > ) _positionsData.value(bestPosition);
+                QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = _positionsData[bestPosition];
                 pair.second->append(cluster);
             }
         }

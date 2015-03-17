@@ -101,15 +101,18 @@ DM_AsyncOperation* DM_GuiManager::requestExclusiveAsyncOperation(const DM_Abstra
 
     if(!canceled)
     {
-        _progressDialog->setCanClose(false);
-        _progressDialog->setValue(0);
-        _progressDialog->setLabelText("");
-        _progressDialog->setSecondLabelText("");
+        GMainProgressDialog *pDialog = getMainWindow()->createWaitProgressDialog();
+
+        pDialog->setWindowModality(Qt::WindowModal);
+        pDialog->setCanClose(false);
+        pDialog->setValue(0);
+        pDialog->setLabelText("");
+        pDialog->setSecondLabelText("");
 
         m_currentAsyncOperation = new DM_AsyncOperation();
-        m_currentAsyncOperation->setProgressDialog(_progressDialog);
+        m_currentAsyncOperation->setProgressDialog(pDialog);
 
-        _progressDialog->setData(m_currentAsyncOperation);
+        pDialog->setData(m_currentAsyncOperation);
 
         connect(m_currentAsyncOperation, SIGNAL(destroyed()), this, SLOT(slotCurrentAsyncOperationDestroyed()), Qt::DirectConnection);
         connect(m_currentAsyncOperation, SIGNAL(destroyed()), this, SLOT(slotCurrentAsyncOperationReleased()), Qt::QueuedConnection);
@@ -144,7 +147,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfResultOnView(CT_AbstractResult &res
                                                                  getDocumentManagerView(),
                                                                  &_asyncProgress);
 
-            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'ajout du resultat au document actif."));
+            initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant l'ajout du resultat au document actif."));
 
             _future = QtConcurrent::run(staticAddAllItemDrawableOfResultOnView, infoActionID);
             _futureWatcher.setFuture(_future);
@@ -183,7 +186,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfModelOnView(CT_AbstractResult &res,
             infoActionID.setItemModel(&model);
             infoActionID.setDocumentView(&view);
 
-            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'ajout des items au document actif."));
+            initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant l'ajout des items au document actif."));
 
             _future = QtConcurrent::run(staticAddAllItemDrawableOfModelOnView, infoActionID);
             _futureWatcher.setFuture(_future);
@@ -215,7 +218,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<CT_AbstractItemDra
                                                                  &_asyncProgress);
             infoActionID.m_docView = view;
 
-            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'ajout des CT_AbstractItemDrawable au document actif."));
+            initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant l'ajout des CT_AbstractItemDrawable au document actif."));
 
             _future = QtConcurrent::run(staticAddAllItemDrawableOfListOnView, infoActionID);
             _futureWatcher.setFuture(_future);
@@ -243,7 +246,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfResultFromView(CT_AbstractResult
                                                              getDocumentManagerView(),
                                                              &_asyncProgress);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression du resultat du(des) document(s)."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression du resultat du(des) document(s)."));
 
         _future = QtConcurrent::run(staticRemoveAllItemDrawableOfResultFromView, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -274,7 +277,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromAllViews(CT_OutAbstract
                                                              &_asyncProgress);
         infoActionID.setItemModel(&model);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des items du(des) document(s)."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des items du(des) document(s)."));
 
         _future = QtConcurrent::run(staticRemoveAllItemDrawablOfModelFromAllViews, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -306,7 +309,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromView(CT_OutAbstractItem
         infoActionID.setItemModel(&model);
         infoActionID.setDocumentView(&view);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des items du document."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des items du document."));
 
         _future = QtConcurrent::run(staticRemoveAllItemDrawableOfModelFromView, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -333,7 +336,7 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<CT_AbstractItem
                                                              getDocumentManagerView(),
                                                              &_asyncProgress);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des CT_AbstractItemDrawable du(des) document(s)."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des CT_AbstractItemDrawable du(des) document(s)."));
 
         _future = QtConcurrent::run(staticRemoveAllItemDrawableOfListFromView, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -365,7 +368,7 @@ bool DM_GuiManager::asyncRemoveStep(CT_VirtualAbstractStep &step, DM_Context *co
                                                0,
                                                0);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression de l'etape."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression de l'etape."));
 
         recursiveDeleteStepConfigurationDialog(step);
 
@@ -401,7 +404,7 @@ int DM_GuiManager::asyncRemoveAllStep(DM_Context *context)
 
         if(!infoActionStep._stepManager->getStepRootList().isEmpty())
         {
-            initProgressDialog(_progressDialog, tr("Veuillez patienter pendant la suppression des etapes."));
+            initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des etapes."));
 
             QList<CT_VirtualAbstractStep*> stepRootList = infoActionStep._stepManager->getStepRootList();
             QListIterator<CT_VirtualAbstractStep*> it(stepRootList);
@@ -437,7 +440,7 @@ bool DM_GuiManager::asyncLoadResultStep(CT_AbstractStepSerializable &step, DM_Co
         if(context != NULL)
             connect(aop, SIGNAL(destroyed()), context, SLOT(setActionFinished()), Qt::DirectConnection);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant le chargement des resultats."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant le chargement des resultats."));
 
         connect(getStepManager(), SIGNAL(loadResultInProgress(int)), &_asyncProgress, SLOT(setProgress(int)));
         connect(getStepManager(), SIGNAL(completed()), aop, SLOT(deleteLater()));
@@ -474,9 +477,9 @@ bool DM_GuiManager::asyncExport(CT_AbstractExporter *exporter,
 
         infoActionID.setIExporter(exporter);
 
-        initProgressDialog(_progressDialog, tr("Veuillez patienter pendant l'exportation."));
+        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant l'exportation."));
 
-        connect(exporter, SIGNAL(exportInProgress(int)), _progressDialog, SLOT(setValue(int)));
+        connect(exporter, SIGNAL(exportInProgress(int)), aop->progressDialog(), SLOT(setValue(int)));
 
         _future = QtConcurrent::run(staticExport, infoActionID);
         _futureWatcher.setFuture(_future);
@@ -622,26 +625,23 @@ void DM_GuiManager::init()
     connect(getStepManager(), SIGNAL(completed(bool)), this, SLOT(stepManagerCompletedLoadResultStep()), Qt::DirectConnection);
 
     _progressDialog = getMainWindow()->createWaitProgressDialog();
-    _progressDialog->setWindowModality(Qt::WindowModal);
-
-    m_asyncWaitDialog = getMainWindow()->createWaitProgressDialog();
-    m_asyncWaitDialog->setWindowModality(Qt::WindowModal);
 
     connect(&_futureWatcher, SIGNAL(finished()), &_asyncProgress, SLOT(finish()), Qt::QueuedConnection);
-
-    connect(&_asyncProgress, SIGNAL(inProgress(int)), _progressDialog, SLOT(setValue(int)), Qt::QueuedConnection);
-    connect(&_asyncProgress, SIGNAL(textChanged(QString)), _progressDialog, SLOT(setLabelText(QString)), Qt::QueuedConnection);
-
-    connect(&_asyncSecondProgress, SIGNAL(textChanged(QString)), _progressDialog, SLOT(setSecondLabelText(QString)), Qt::QueuedConnection);
-    connect(&_asyncSecondProgress, SIGNAL(inProgress(int)), _progressDialog, SLOT(setSecondValue(int)), Qt::QueuedConnection);
 }
 
 ///////////////// PRIVATE /////////////////
 
-void DM_GuiManager::initProgressDialog(GMainProgressDialog *dialog, QString text, QString secondText)
+void DM_GuiManager::initProgressDialog(IMainProgressDialog *dialog, QString text, QString secondText)
 {
     if(dialog != NULL)
     {
+        connect(&_asyncProgress, SIGNAL(inProgress(int)), dialog, SLOT(setValue(int)), Qt::QueuedConnection);
+        connect(&_asyncProgress, SIGNAL(textChanged(QString)), dialog, SLOT(setLabelText(QString)), Qt::QueuedConnection);
+
+        connect(&_asyncSecondProgress, SIGNAL(textChanged(QString)), dialog, SLOT(setSecondLabelText(QString)), Qt::QueuedConnection);
+        connect(&_asyncSecondProgress, SIGNAL(inProgress(int)), dialog, SLOT(setSecondValue(int)), Qt::QueuedConnection);
+
+        dialog->setWindowModality(Qt::WindowModal);
         dialog->setCanClose(false);
         dialog->setLabelText(text);
         dialog->setSecondLabelText(secondText);
@@ -890,7 +890,9 @@ void DM_GuiManager::slotCurrentAsyncOperationDestroyed()
 {
     QMutexLocker locker(&m_asyncOperationTokenMutex);
 
-    m_queueAsyncOperationDestroyed.enqueue(m_currentAsyncOperation);
+    if(m_currentAsyncOperation->progressDialog() != NULL)
+        m_queueProgressDialogToDestroy.enqueue(m_currentAsyncOperation->progressDialog());
+
     m_currentAsyncOperation = NULL;
 
     if(!m_tokens.isEmpty())
@@ -903,15 +905,14 @@ void DM_GuiManager::slotCurrentAsyncOperationDestroyed()
 
 void DM_GuiManager::slotCurrentAsyncOperationReleased()
 {
-    DM_AsyncOperation *obj = m_queueAsyncOperationDestroyed.dequeue();
-
     QMutexLocker locker(&m_asyncOperationTokenMutex);
 
-    if((_progressDialog->data() != NULL)
-            && (_progressDialog->data() == obj))
+    if(!m_queueProgressDialogToDestroy.isEmpty())
     {
-        _progressDialog->setData(NULL);
-        _progressDialog->setCanClose(true);
-        _progressDialog->close();
+        IMainProgressDialog *pDialog = m_queueProgressDialogToDestroy.dequeue();
+
+        pDialog->setCanClose(true);
+        pDialog->close();
+        delete pDialog;
     }
 }

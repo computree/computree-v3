@@ -40,6 +40,7 @@ CDM_StepManager::CDM_StepManager(const CDM_ScriptManagerAbstract *scriptManager,
     m_guiContext = NULL;
     m_actionsManager = (CDM_ActionsManager*)actionManager;
     _force = false;
+    m_debugAutoMode = false;
 
     _options.load();
     setDefaultQLocale(_options.getQLocale());
@@ -168,19 +169,12 @@ bool CDM_StepManager::executeStep(CT_VirtualAbstractStep *beginStep)
     if(isRunning())
     {
         if(_debugMode)
-        {
-            if(ackDebugMode(-1))
-            {
-                emit stepWaitForAckInDebugMode(false);
-
-                return true;
-            }
-        }
+            return ackDebugMode(-1);
 
         return false;
     }
 
-    return internalExecuteStep(beginStep, true);
+    return internalExecuteStep(beginStep, false);
 }
 
 bool CDM_StepManager::executeModifyStep(CT_VirtualAbstractStep *beginStep)
@@ -188,41 +182,33 @@ bool CDM_StepManager::executeModifyStep(CT_VirtualAbstractStep *beginStep)
     if(isRunning() || (beginStep == NULL) || !beginStep->isModifiable())
         return false;
 
-    return internalExecuteModifyStep(beginStep, true);
+    return internalExecuteModifyStep(beginStep, false);
 }
 
 bool CDM_StepManager::executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *beginStep)
 {
     if(!isRunning())
-    {
         return internalExecuteStep(beginStep, true);
-    }
 
-    if(ackDebugMode(1))
-    {
-        emit stepWaitForAckInDebugMode(false);
-
-        return true;
-    }
-
-    return false;
+    return ackDebugMode(1);
 }
 
 bool CDM_StepManager::executeOrForwardStepFastInDebugMode(CT_VirtualAbstractStep *beginStep)
 {
     if(!isRunning())
-    {
         return internalExecuteStep(beginStep, true);
-    }
 
-    if(ackDebugMode(_options.getFastJumpValueInDebugMode()))
-    {
-        emit stepWaitForAckInDebugMode(false);
+    return ackDebugMode(_options.getFastJumpValueInDebugMode());
+}
 
-        return true;
-    }
+bool CDM_StepManager::executeOrForwardStepAutoInDebugMode(CT_VirtualAbstractStep *beginStep)
+{
+    m_debugAutoMode = true;
 
-    return false;
+    if(!isRunning())
+        return internalExecuteStep(beginStep, true);
+
+    return ackDebugMode(1);
 }
 
 bool CDM_StepManager::quitManualMode()
@@ -269,6 +255,8 @@ void CDM_StepManager::stop()
     QMutexLocker locker(&_mutex);
 
     _stop = true;
+    m_debugAutoMode = false;
+    _debugMode = false;
 
     if(m_currentStep != NULL)
         m_currentStep->stop();
@@ -277,6 +265,16 @@ void CDM_StepManager::stop()
 bool CDM_StepManager::setFastForwardJumpInDebugMode(int value)
 {
     return _options.changeFastJumpInDebugMode(value);
+}
+
+void CDM_StepManager::setTimeToSleepInAutoDebugMode(int timeInMs)
+{
+    _options.setTimeToSleepInAutoDebugMode(timeInMs);
+}
+
+void CDM_StepManager::setNJumpInAutoDebugMode(int n)
+{
+    _options.setNJumpInAutoDebugMode(n);
 }
 
 bool CDM_StepManager::setOptions(CDM_StepManagerOptions options)
@@ -439,6 +437,9 @@ void CDM_StepManager::run()
             }
 
         }while(restart);
+
+        m_debugAutoMode = false;
+        _debugMode = false;
     }
     else if(_action == LoadSerializeResult)
     {
@@ -633,18 +634,23 @@ void CDM_StepManager::recursiveClearResult(CT_VirtualAbstractStep &step)
     return thread;
 }*/
 
-bool CDM_StepManager::ackDebugMode(int jumpNStep)
+bool CDM_StepManager::ackDebugMode(int jumpNStep, bool callPostWait)
 {
     QMutexLocker locker(&_mutex);
 
     if(m_currentStep != NULL)
     {
-        m_currentStep->postWaitForAckIfInDebugMode();
+        if(callPostWait)
+            m_currentStep->postWaitForAckIfInDebugMode();
 
         if(jumpNStep < 0)
-            m_currentStep->setDebugModeOn(false);
+            m_currentStep->ackDebugMode(100000);
         else
             m_currentStep->ackDebugMode(jumpNStep);
+
+        locker.unlock();
+
+        emit stepWaitForAckInDebugMode(false);
 
         return true;
     }
@@ -654,9 +660,16 @@ bool CDM_StepManager::ackDebugMode(int jumpNStep)
 
 void CDM_StepManager::slotStepWaitForAckInDebugMode()
 {
-    m_currentStep->preWaitForAckIfInDebugMode();
+    if(_debugMode) {
+        m_currentStep->preWaitForAckIfInDebugMode();
 
-    emit stepWaitForAckInDebugMode(true);
+        if(m_debugAutoMode)
+            QTimer::singleShot(_options.getTimeToSleepInAutoDebugMode(), this, SLOT(autoAckDebugMode()));
+        else
+            emit stepWaitForAckInDebugMode(true);
+    } else {
+        ackDebugMode(-1, false);
+    }
 }
 
 void CDM_StepManager::slotStepRequiredManualMode()
@@ -708,5 +721,10 @@ void CDM_StepManager::slotRemoveActionsAfterStepExecuted()
 {
     if(m_actionsManager != NULL)
         m_actionsManager->clearActions();
+}
+
+void CDM_StepManager::autoAckDebugMode()
+{
+    ackDebugMode(_options.getNJumpInAutoDebugMode());
 }
 

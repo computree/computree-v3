@@ -676,6 +676,7 @@ protected:
      */
     void setDebuggable(bool debuggable);
 
+public:
     /*!
      *  \brief Set a debug break point ! Attend que l'utilisateur demande de continuer si le mode debug de l'étape est activé et qu'un point
      *         d'arrêt à été défini à ce moment là.
@@ -698,7 +699,6 @@ protected:
      */
     void waitForAckIfInDebugMode();
 
-public:
     /**
      * @brief Called from gui before the step will be stopped to go in debug mode (after "waitForAckInDebugMode"). By default do nothing.
      * @warning This method is in the GUI thread !
