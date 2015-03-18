@@ -169,6 +169,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxDrawGrid">
+        <property name="text">
+         <string>Affichage de la grille</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="checkBoxUseTransparency">
         <property name="text">
          <string>Activer la transparence</string>
@@ -391,11 +398,6 @@
             </widget>
            </item>
           </layout>
-          <zorder>checkBoxCameraPosition</zorder>
-          <zorder>checkBoxCameraPosition</zorder>
-          <zorder>checkBoxCameraPosition</zorder>
-          <zorder>checkBoxCameraCenterCoordinates</zorder>
-          <zorder>checkBoxCameraViewDirection</zorder>
          </widget>
         </item>
         <item>
@@ -685,8 +687,8 @@
   </connection>
  </connections>
  <buttongroups>
+  <buttongroup name="buttonGroupCameraInfoPosition"/>
   <buttongroup name="buttonGroupViewType"/>
   <buttongroup name="buttonGroupFastest"/>
-  <buttongroup name="buttonGroupCameraInfoPosition"/>
  </buttongroups>
 </ui>

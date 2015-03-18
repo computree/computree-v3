@@ -562,6 +562,11 @@ void GDocumentViewForGraphics::validateOptions()
     m_octreeController.setNumberOfCells(options.octreeNumberOfCells());
 }
 
+void GDocumentViewForGraphics::takeAndSaveScreenshot()
+{
+    if(!_listGraphics.isEmpty())
+        _listGraphics.at(0)->takeAndSaveScreenshot();
+}
 
 void GDocumentViewForGraphics::addActualPointOfView()
 {
@@ -950,6 +955,10 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     // widget avec les X, Y, Z, etc...
     _cameraOptionsView = new GCameraGraphicsOptions(widgetContainer);
 
+    QPushButton *screenshotButton = new QPushButton(widgetContainer);
+    screenshotButton->setToolTip(tr("Enregistrer une capture d'écran"));
+    screenshotButton->setIcon(QIcon(":/Icones/Icones/screenshot.png"));
+
     // bouton qui permet d'ouvrir/enregistrer un point de vue
     _pointOfViewButton= new QToolButton(widgetContainer);
     _pointOfViewButton->setMaximumWidth(38);
@@ -1012,6 +1021,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     buttonShowOptions->setToolTip(tr("Configurer l'affichage"));
     buttonShowOptions->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
 
+    layout->addWidget(screenshotButton);
     layout->addWidget(_pointOfViewButton);
     layout->addWidget(_buttonExport);
     layout->addWidget(buttonShowOptions);
@@ -1023,6 +1033,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
 
+    connect(screenshotButton, SIGNAL(clicked()), this, SLOT(takeAndSaveScreenshot()));
     connect(buttonShowOptions, SIGNAL(clicked()), this, SLOT(showOptions()));
     connect(buttonPointsAttributes, SIGNAL(clicked()), this, SLOT(showAttributesOptions()));
     connect(_buttonPixelSize, SIGNAL(clicked()), this, SLOT(changePixelSize()));

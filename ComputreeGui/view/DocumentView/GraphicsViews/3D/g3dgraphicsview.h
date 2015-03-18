@@ -166,6 +166,7 @@ public:
     DM_ElementInfoManager* facesInformationManager() const;
     DM_ElementInfoManager* edgesInformationManager() const;
 
+    void takeAndSaveScreenshot();
 private:
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)

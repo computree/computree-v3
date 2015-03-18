@@ -38,6 +38,7 @@ DM_GraphicsViewOptions::DM_GraphicsViewOptions()
     _selectedColor = Qt::red;
     _pointSize = 1.0;
     _drawAxis = false;
+    m_drawGrid = false;
     _useColor = true;
     _drawFastest = Normal;
     _useTransparency = false;
@@ -58,6 +59,11 @@ DM_GraphicsViewOptions::~DM_GraphicsViewOptions()
 void DM_GraphicsViewOptions::drawAxis(bool draw)
 {
     _drawAxis = draw;
+}
+
+void DM_GraphicsViewOptions::setDrawGrid(bool draw)
+{
+    m_drawGrid = draw;
 }
 
 void DM_GraphicsViewOptions::useColor(bool enable)
@@ -163,6 +169,12 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
+    if(m_drawGrid != options.m_drawGrid)
+    {
+        m_drawGrid = options.m_drawGrid;
+        emitChanged = true;
+    }
+
     if(_useColor != options._useColor)
     {
         _useColor = options._useColor;
@@ -241,6 +253,7 @@ bool DM_GraphicsViewOptions::load()
     _selectedColor = CONFIG_FILE->colorValue("selectedColor", _selectedColor);
     _pointSize = CONFIG_FILE->value("pointSize", (double)_pointSize).toDouble();
     _drawAxis = CONFIG_FILE->value("drawAxis", _drawAxis).toBool();
+    m_drawGrid = CONFIG_FILE->value("drawGrid", drawGrid()).toBool();
     _useColor = CONFIG_FILE->value("useColor", _useColor).toBool();
     _drawFastest = (DrawFastestMode)CONFIG_FILE->value("drawFastest", (int)_drawFastest).toInt();
     _useTransparency = CONFIG_FILE->value("useTransparency", _useTransparency).toBool();
@@ -266,6 +279,7 @@ bool DM_GraphicsViewOptions::save()
     CONFIG_FILE->setColorValue("selectedColor", _selectedColor);
     CONFIG_FILE->setValue("pointSize", (double)_pointSize);
     CONFIG_FILE->setValue("drawAxis", _drawAxis);
+    CONFIG_FILE->setValue("drawGrid", m_drawGrid);
     CONFIG_FILE->setValue("useColor", _useColor);
     CONFIG_FILE->setValue("drawFastest", (int)_drawFastest);
     CONFIG_FILE->setValue("useTransparency", _useTransparency);
@@ -297,6 +311,7 @@ bool DM_GraphicsViewOptions::loadFromXml(QDomElement &el)
 
     _pointSize = DomUtils::qrealFromDom(el, "pointSize", _pointSize);
     _drawAxis = DomUtils::boolFromDom(el, "drawAxis", _drawAxis);
+    m_drawGrid = DomUtils::boolFromDom(el, "drawGrid", m_drawGrid);
     _useColor = DomUtils::boolFromDom(el, "useColor", _useColor);
     _drawFastest = (DrawFastestMode)DomUtils::intFromDom(el, "drawFastest", (int)_drawFastest);
     _useTransparency = DomUtils::boolFromDom(el, "useTransparency", _useTransparency);
@@ -317,6 +332,7 @@ bool DM_GraphicsViewOptions::saveToXml(QDomElement &main, QDomDocument &doc) con
     main.appendChild(DomUtils::QColorDomElement(_selectedColor, "selectedColor", doc));
     main.setAttribute("pointSize", _pointSize);
     DomUtils::setBoolAttribute(main, "drawAxis", _drawAxis);
+    DomUtils::setBoolAttribute(main, "drawGrid", m_drawGrid);
     DomUtils::setBoolAttribute(main, "useColor", _useColor);
     main.setAttribute("drawFastest", (int)_drawFastest);
     DomUtils::setBoolAttribute(main, "useTransparency", _useTransparency);

@@ -193,6 +193,11 @@ public slots:
     void validateOptions();
 
     /**
+     * @brief Save a screenshot to disk
+     */
+    void takeAndSaveScreenshot();
+
+    /**
       * \brief Ajoute le point de vue actuel du graphique au gestionnaire de point de vue
       */
     void addActualPointOfView();

@@ -70,6 +70,8 @@ public:
 
     virtual DM_GraphicsViewCamera* getCamera() const = 0;
 
+    virtual void takeAndSaveScreenshot() = 0;
+
 protected:
 
     DM_DocumentView         *_document;

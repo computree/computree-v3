@@ -64,6 +64,7 @@ private slots:
     void selectedColor(QColor color);
     void pointSize(double size);
     void drawAxis(bool e);
+    void setDrawGrid(bool e);
     void drawFastestMode(QAbstractButton* button);
     void useTransparency(bool e);
     void useLight(bool e);

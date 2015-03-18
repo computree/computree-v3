@@ -55,6 +55,7 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(_colorBackground, SIGNAL(colorChanged(QColor)), this, SLOT(backgroundColor(QColor)));
     connect(ui->doubleSpinBoxPointSize, SIGNAL(valueChanged(double)), this, SLOT(pointSize(double)));
     connect(ui->checkBoxDrawAxis, SIGNAL(clicked(bool)), this, SLOT(drawAxis(bool)));
+    connect(ui->checkBoxDrawGrid, SIGNAL(clicked(bool)), this, SLOT(setDrawGrid(bool)));
     connect(ui->checkBoxUseTransparency, SIGNAL(clicked(bool)), this, SLOT(useTransparency(bool)));
     connect(ui->checkBoxUseLight, SIGNAL(clicked(bool)), this, SLOT(useLight(bool)));
     connect(ui->spinBoxFastDrawTime, SIGNAL(valueChanged(int)), this, SLOT(fastDrawTime(int)));
@@ -140,6 +141,7 @@ void GGraphicsViewOptions::updateUiFromOptions()
 
     ui->doubleSpinBoxPointSize->setValue(_options->getPointSize());
     ui->checkBoxDrawAxis->setChecked(_options->drawAxis());
+    ui->checkBoxDrawGrid->setChecked(_options->drawGrid());
     ui->checkBoxUseTransparency->setChecked(_options->useTransparency());
     ui->checkBoxUseLight->setChecked(_options->useLight());
     ui->spinBoxFastDrawTime->setValue(_options->getFastDrawTime());
@@ -211,6 +213,11 @@ void GGraphicsViewOptions::pointSize(double size)
 void GGraphicsViewOptions::drawAxis(bool e)
 {
     _options->drawAxis(e);
+}
+
+void GGraphicsViewOptions::setDrawGrid(bool e)
+{
+    _options->setDrawGrid(e);
 }
 
 void GGraphicsViewOptions::drawFastestMode(QAbstractButton* button)

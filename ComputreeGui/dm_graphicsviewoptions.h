@@ -74,6 +74,7 @@ public:
     inline QColor getBackgroundColor() const { return _backgroundColor; }
     inline float getPointSize() const { return _pointSize; }
     inline bool drawAxis() const { return _drawAxis; }
+    inline bool drawGrid() const { return m_drawGrid; }
     inline bool useColor() const { return _useColor; }
     inline DM_GraphicsViewOptions::DrawFastestMode drawFastest() const { return _drawFastest; }
     inline bool useTransparency() const { return _useTransparency; }
@@ -90,6 +91,7 @@ public:
     void setBackgroudColor(QColor &color);
     void setPointSize(float size);
     void drawAxis(bool draw);
+    void setDrawGrid(bool draw);
     void useColor(bool enable);
     void useTransparency(bool use);
     void useLight(bool use);
@@ -115,6 +117,7 @@ private:
     QColor                      _backgroundColor;
     float                       _pointSize;
     bool                        _drawAxis;
+    bool                        m_drawGrid;
     bool                        _useColor;
     DrawFastestMode             _drawFastest;
     bool                        _useTransparency;

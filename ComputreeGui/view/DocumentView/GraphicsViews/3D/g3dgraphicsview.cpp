@@ -721,6 +721,11 @@ DM_ElementInfoManager *G3DGraphicsView::edgesInformationManager() const
     return m_edgesSelectionManager;
 }
 
+void G3DGraphicsView::takeAndSaveScreenshot()
+{
+    saveSnapshot(false, false);
+}
+
 void G3DGraphicsView::initGlError()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
@@ -1110,13 +1115,14 @@ void G3DGraphicsView::drawInternal()
 
     const DM_GraphicsViewOptions &options = constGetOptionsInternal();
 
+    // draw axis
     if(options.drawAxis()) {
         _g.setColor(Qt::blue);
-        _g.drawLine(0, 0, 0, 0, 0, 20);
+        _g.drawLine(0, 0, 0, 0, 0, sceneRadius());
         _g.setColor(Qt::green);
-        _g.drawLine(0, 0, 0, 0, 20, 0);
+        _g.drawLine(0, 0, 0, 0, sceneRadius(), 0);
         _g.setColor(Qt::red);
-        _g.drawLine(0, 0, 0, 20, 0, 0);
+        _g.drawLine(0, 0, 0, sceneRadius(), 0, 0);
     }
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
@@ -1201,6 +1207,22 @@ void G3DGraphicsView::drawInternal()
 
     if(action != NULL)
         action->draw(*this, _g);
+
+    // draw grid
+    if(options.drawGrid()) {
+        _g.setColor(Qt::white);
+        double sceneR = sceneRadius();
+        qglviewer::Vec sceneC = sceneCenter();
+        int nbSubdivisions = 10;
+
+        for (int i=0; i<=nbSubdivisions; ++i)
+        {
+            const qreal pos = sceneR*(2.0*i/nbSubdivisions-1.0);
+
+            _g.drawLine(sceneC.x + pos, sceneC.y + -sceneR, sceneC.z , sceneC.x + pos, sceneC.y + sceneR, sceneC.z);
+            _g.drawLine(sceneC.x + -sceneR, sceneC.y + pos, sceneC.z, sceneC.x + sceneR, sceneC.y + pos, sceneC.z);
+        }
+    }
 
     _g.endNewDraw();
 
@@ -1729,8 +1751,19 @@ void G3DGraphicsView::keyPressEvent(QKeyEvent *e)
             opt.setCameraInformationDisplayed(opt.getCameraInformationDisplayed() ^ DM_GraphicsViewOptions::FpsInformation);
             setOptions(opt);
             redraw();
+        } else if(shortcut(DRAW_GRID) == target) {
+            DM_GraphicsViewOptions opt;
+            opt.updateFromOtherOptions(constGetOptionsInternal());
+            opt.setDrawGrid(!opt.drawGrid());
+            setOptions(opt);
+            redraw();
         }
-        else if(shortcut(EXIT_VIEWER) != target) {
+        else if((shortcut(EXIT_VIEWER) != target)
+                && (shortcut(ENABLE_TEXT) != target)
+                && (shortcut(CAMERA_MODE) != target)
+                && (shortcut(STEREO) != target)
+                && (shortcut(ANIMATION) != target)
+                && (shortcut(EDIT_CAMERA) != target)) {
             QGLViewer::keyPressEvent(e);
         }
     }
