@@ -61,7 +61,7 @@ public:
     virtual void setOptions(const DM_GraphicsViewOptions &newOptions);
     virtual GraphicsViewOptionsInterface& getOptions();
 
-    virtual const DM_GraphicsViewOptions& getOptions() const;
+    virtual const DM_GraphicsViewOptions& constGetOptionsInternal() const;
 
     virtual void lockPaint() = 0;
     virtual void unlockPaint() = 0;

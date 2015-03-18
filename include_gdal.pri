@@ -64,7 +64,7 @@ exists(../use_gdal.ini) {
 
         DEFINES += USE_GDAL
 
-		copydata.commands = $(COPY_DIR) $$shell_path("$$GDAL_PATH/bin/*.dll") $$shell_path($$PLUGINSHARED_DESTDIR)
+        copydata.commands = $(COPY_DIR) $$shell_path("$$GDAL_PATH/bin/*.dll") $$shell_path($$PLUGINSHARED_DESTDIR)
         first.depends = $(first) copydata
         export(first.depends)
         export(copydata.commands)

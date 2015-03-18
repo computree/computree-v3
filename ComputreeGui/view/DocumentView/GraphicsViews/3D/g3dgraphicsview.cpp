@@ -51,6 +51,8 @@
 
 #include "dm_iteminfoforgraphics.h"
 
+#include <domUtils.h>
+
 #include <limits>
 
 G3DGraphicsView::G3DGraphicsView(QWidget *parent) : QGLViewer(QGLFormat(QGL::DoubleBuffer | QGL::SampleBuffers), parent), GGraphicsView()
@@ -129,22 +131,6 @@ void G3DGraphicsView::setOptions(const DM_GraphicsViewOptions &newOptions)
     GGraphicsView::setOptions(newOptions);
 
     initFromOptions();
-}
-
-GraphicsViewOptionsInterface& G3DGraphicsView::getOptions()
-{
-    GraphicsViewOptionsInterface& opt = GGraphicsView::getOptions();
-    ((DM_GraphicsViewOptions&)opt).drawAxis(axisIsDrawn());
-
-    return opt;
-}
-
-const DM_GraphicsViewOptions &G3DGraphicsView::getOptions() const
-{
-    const DM_GraphicsViewOptions& opt = GGraphicsView::getOptions();
-    ((DM_GraphicsViewOptions*)(&opt))->drawAxis(axisIsDrawn());
-
-    return opt;
 }
 
 GraphicsViewSignalEmitterInterface* G3DGraphicsView::signalEmitter() const
@@ -758,6 +744,7 @@ void G3DGraphicsView::initG3DPainterForNewDraw()
     _g.beginNewDraw();
     _g.setDrawFastest(mustDrawFastestNow());
     _g.setColor(Qt::white);
+    _g.setDefaultPointSize(getOptions().getPointSize());
     _g.setPointSize(getOptions().getPointSize());
     _g.setPointFastestIncrement(m_fastestIncrementOptimizer.fastestIncrement());
     _g.setUseNormalCloudForPoints(m_docGV->useNormalCloud());
@@ -982,31 +969,12 @@ void G3DGraphicsView::init()
 
     initGlError();
 
+    restoreStateFromFile();
+
     initFromOptions();
-
-    if(!_2dActive)
-        restoreStateFromFile();
-
-    initOptions();
 
     if(colorVBOManager() != NULL)
         colorVBOManager()->initializeGL();
-}
-
-void G3DGraphicsView::initOptions()
-{
-    glDisable(GL_LIGHT0);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-
-    DM_GraphicsViewOptions &options = dynamic_cast<DM_GraphicsViewOptions&>(((GraphicsViewOptionsInterface&)getOptions()));
-
-    QColor col = backgroundColor();
-    options.setBackgroudColor(col);
-    options.drawAxis(axisIsDrawn());
-    options.setCameraType(((QGLViewer::camera()->type() == qglviewer::Camera::PERSPECTIVE) ? CameraInterface::PERSPECTIVE : CameraInterface::ORTHOGRAPHIC));
-
-    _g.setDefaultPointSize(options.getPointSize());
 }
 
 void G3DGraphicsView::initFromOptions()
@@ -1015,10 +983,7 @@ void G3DGraphicsView::initFromOptions()
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
 
-    DM_GraphicsViewOptions &options = dynamic_cast<DM_GraphicsViewOptions&>(GGraphicsView::getOptions());
-
-    //setBackgroundColor(options.getBackgroundColor());
-    setAxisIsDrawn(options.drawAxis());
+    const DM_GraphicsViewOptions &options = constGetOptionsInternal();
 
     if(options.drawFastest() == DM_GraphicsViewOptions::Always)
     {
@@ -1038,10 +1003,7 @@ void G3DGraphicsView::initFromOptions()
 
     if(!_2dActive)
         QGLViewer::camera()->setType(((options.getCameraType() == CameraInterface::PERSPECTIVE) ? qglviewer::Camera::PERSPECTIVE : qglviewer::Camera::ORTHOGRAPHIC));
-    else
-        options.setCameraType(CameraInterface::ORTHOGRAPHIC);
 
-    _g.setDefaultPointSize(options.getPointSize());
     m_fastestIncrementOptimizer.setMinFPS(options.getMinFPS());
 }
 
@@ -1064,7 +1026,7 @@ void G3DGraphicsView::postDraw()
 
 void G3DGraphicsView::fastDraw()
 {
-    const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
+    const DM_GraphicsViewOptions &options = constGetOptionsInternal();
 
     _g.setDrawFastest(options.drawFastest() != DM_GraphicsViewOptions::Never);
 
@@ -1101,7 +1063,7 @@ void G3DGraphicsView::preDrawInternal(QPaintDevice *device, bool picking)
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
 
-    if(!picking && ((const DM_GraphicsViewOptions&)getOptions()).useLight())
+    if(!picking && constGetOptionsInternal().useLight())
     {
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -1124,7 +1086,7 @@ void G3DGraphicsView::preDrawInternal(QPaintDevice *device, bool picking)
     }
 
     if(!picking)
-        qglClearColor(backgroundColor());
+        qglClearColor(getOptions().getBackgroundColor());
     else
         qglClearColor(Qt::black);
 
@@ -1146,16 +1108,18 @@ void G3DGraphicsView::drawInternal()
 
     lockPaint();
 
-    _g.setColor(Qt::blue);
-    _g.drawLine(0, 0, 0, 0, 0, 20);
-    _g.setColor(Qt::green);
-    _g.drawLine(0, 0, 0, 0, 20, 0);
-    _g.setColor(Qt::red);
-    _g.drawLine(0, 0, 0, 20, 0, 0);
+    const DM_GraphicsViewOptions &options = constGetOptionsInternal();
+
+    if(options.drawAxis()) {
+        _g.setColor(Qt::blue);
+        _g.drawLine(0, 0, 0, 0, 0, 20);
+        _g.setColor(Qt::green);
+        _g.drawLine(0, 0, 0, 0, 20, 0);
+        _g.setColor(Qt::red);
+        _g.drawLine(0, 0, 0, 20, 0, 0);
+    }
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
-
-    const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
 
     if(octreeC->hasElements() && !octreeC->mustBeReconstructed() && options.showOctree())
         _g.drawOctreeOfPoints(octreeC, PainterInterface::DrawOctree);
@@ -1289,7 +1253,7 @@ void G3DGraphicsView::drawCoordinates(QPainter &painter)
 
     QList<QString> stringList;
 
-    const DM_GraphicsViewOptions &options = ((const G3DGraphicsView*)this)->getOptions();
+    const DM_GraphicsViewOptions &options = constGetOptionsInternal();
 
     if(options.getCameraInformationDisplayed() & DM_GraphicsViewOptions::CameraPosition)
     {
@@ -1746,8 +1710,30 @@ void G3DGraphicsView::keyPressEvent(QKeyEvent *e)
         return;
     }*/
 
-    if(!actionsHandler()->keyPressEvent(e))
-        QGLViewer::keyPressEvent(e);
+    if(!actionsHandler()->keyPressEvent(e)) {
+
+        const Qt::Key key = Qt::Key(e->key());
+        const Qt::KeyboardModifiers modifiers = e->modifiers();
+
+        const unsigned int target = key | modifiers;
+
+        if(shortcut(DRAW_AXIS) == target) {
+            DM_GraphicsViewOptions opt;
+            opt.updateFromOtherOptions(constGetOptionsInternal());
+            opt.drawAxis(!opt.drawAxis());
+            setOptions(opt);
+            redraw();
+        } else if(shortcut(DISPLAY_FPS) == target) {
+            DM_GraphicsViewOptions opt;
+            opt.updateFromOtherOptions(constGetOptionsInternal());
+            opt.setCameraInformationDisplayed(opt.getCameraInformationDisplayed() ^ DM_GraphicsViewOptions::FpsInformation);
+            setOptions(opt);
+            redraw();
+        }
+        else if(shortcut(EXIT_VIEWER) != target) {
+            QGLViewer::keyPressEvent(e);
+        }
+    }
 }
 
 void G3DGraphicsView::keyReleaseEvent(QKeyEvent *e)
@@ -1924,7 +1910,7 @@ void G3DGraphicsView::constructContextMenuAction(QMenu *menu, CT_VirtualAbstract
 
 void G3DGraphicsView::internalSetDrawMode(GraphicsViewInterface::DrawMode dMode)
 {
-    DM_GraphicsViewOptions &options = dynamic_cast<DM_GraphicsViewOptions&>(GGraphicsView::getOptions());
+    const DM_GraphicsViewOptions &options = constGetOptionsInternal();
 
     bool valid = false;
 
@@ -1995,6 +1981,109 @@ void G3DGraphicsView::openGlDebugMessageIntercepted(const QOpenGLDebugMessage &m
         GUI_LOG->addErrorMessage(LogInterface::gui, QString("OpenGL error (%1) : %2").arg(mess.id()).arg(mess.message()));
 }
 #endif
+
+
+bool G3DGraphicsView::restoreStateFromFile()
+{
+    QString name = stateFileName();
+
+    if (name.isEmpty())
+        return false;
+
+    QFileInfo fileInfo(name);
+
+    if (!fileInfo.isFile())
+        // No warning since it would be displayed at first start.
+        return false;
+
+    if (!fileInfo.isReadable())
+    {
+        GUI_LOG->addWarningMessage(LogInterface::gui, tr("Problem in state restoration : File %1 is not readable.").arg(name));
+        return false;
+    }
+
+    // Read the DOM tree form file
+    QFile f(name);
+    if (f.open(QIODevice::ReadOnly))
+    {
+        QDomDocument doc;
+        doc.setContent(&f);
+        f.close();
+        QDomElement main = doc.documentElement();
+
+        DM_GraphicsViewOptions opt;
+        opt.updateFromOtherOptions(constGetOptionsInternal());
+
+        QDomNodeList l = main.elementsByTagName("GraphicsOptions");
+
+        if(!l.isEmpty())
+            opt.loadFromXml(l.at(0).toElement());
+
+        if(!_2dActive)
+            initFromDOMElement(main);
+        else
+            opt.setCameraType(CameraInterface::ORTHOGRAPHIC);
+
+        setOptions(opt);
+    }
+    else
+    {
+        GUI_LOG->addWarningMessage(LogInterface::gui, tr("Open file error : Unable to open file %1").arg(name) + ":\n" + f.errorString());
+        return false;
+    }
+
+    return true;
+}
+
+void G3DGraphicsView::saveStateToFile()
+{
+    QString name = stateFileName();
+
+    if (name.isEmpty())
+        return;
+
+    QFileInfo fileInfo(name);
+
+    if (fileInfo.isDir())
+    {
+        GUI_LOG->addWarningMessage(LogInterface::gui, tr("Save to file error : State file name (%1) references a directory instead of a file.").arg(name));
+        return;
+    }
+
+    const QString dirName = fileInfo.absolutePath();
+    if (!QFileInfo(dirName).exists())
+    {
+        QDir dir;
+        if (!(dir.mkdir(dirName)))
+        {
+            GUI_LOG->addWarningMessage(LogInterface::gui, tr("Save to file error : Unable to create directory %1").arg(dirName));
+            return;
+        }
+    }
+
+    // Write the DOM tree to file
+    QFile f(name);
+    if (f.open(QIODevice::WriteOnly))
+    {
+        QTextStream out(&f);
+        QDomDocument doc("QGLVIEWER");
+
+        QDomElement el = domElement("QGLViewer", doc);
+
+        QDomElement nodeCustom = doc.createElement("GraphicsOptions");
+        constGetOptionsInternal().saveToXml(nodeCustom, doc);
+        el.appendChild(nodeCustom);
+
+        doc.appendChild(el);
+
+        doc.save(out, 2);
+
+        f.flush();
+        f.close();
+    }
+    else
+        GUI_LOG->addWarningMessage(LogInterface::gui, tr("Save to file error : Unable to save to file %1").arg(name) + ":\n" + f.errorString());
+}
 
 // SIGNAL EMITTER
 

@@ -536,7 +536,8 @@ void GDocumentViewForGraphics::showOptions()
 {
     if(_listGraphics.size() > 0)
     {
-        DM_GraphicsViewOptions &opt = (DM_GraphicsViewOptions&)((const GGraphicsView*)_listGraphics.at(0))->getOptions();
+        DM_GraphicsViewOptions opt;
+        opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
         opt.setOctreeNumberOfCells(m_octreeController.numberOfCells());
 
         _graphicsOptionsView->setOptions(opt);
@@ -545,9 +546,7 @@ void GDocumentViewForGraphics::showOptions()
         _graphicsOptionsView->move(screen.center() - _graphicsOptionsView->rect().center());
 
         if(_graphicsOptionsView->exec())
-        {
             validateOptions();
-        }
     }
 }
 
@@ -662,24 +661,30 @@ void GDocumentViewForGraphics::constructOctreeOfPoints()
 
 void GDocumentViewForGraphics::changePixelSize()
 {
-    DM_GraphicsViewOptions& options = (DM_GraphicsViewOptions&) _graphicsOptionsView->getOptions();
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
 
     if (_pixelSize == PX_1)
     {
         _pixelSize = PX_2;
         _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_2.png"));
-        options.setPointSize(2);
+        opt.setPointSize(2);
     } else if (_pixelSize == PX_2)
     {
         _pixelSize = PX_3;
         _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_3.png"));
-        options.setPointSize(3);
+        opt.setPointSize(3);
     } else if (_pixelSize == PX_3)
     {
         _pixelSize = PX_1;
         _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_1.png"));
-        options.setPointSize(1);
+        opt.setPointSize(1);
     }
+
+    opt.drawFastest(_drawMode);
+
+    _graphicsOptionsView->setOptions(opt);
+
     validateOptions();
 }
 
@@ -702,8 +707,6 @@ void GDocumentViewForGraphics::changePixelSize(double size)
 
 void GDocumentViewForGraphics::changeDrawMode()
 {
-    DM_GraphicsViewOptions& options = (DM_GraphicsViewOptions&) _graphicsOptionsView->getOptions();
-
     if (_drawMode == DM_GraphicsViewOptions::Normal)
     {
         _drawMode = DM_GraphicsViewOptions::Always;
@@ -720,7 +723,12 @@ void GDocumentViewForGraphics::changeDrawMode()
         _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
     }
 
-    options.drawFastest(_drawMode);
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    opt.drawFastest(_drawMode);
+
+    _graphicsOptionsView->setOptions(opt);
+
     validateOptions();
 }
 
@@ -746,9 +754,12 @@ void GDocumentViewForGraphics::changeDrawMode(DM_GraphicsViewOptions::DrawFastes
 
 void GDocumentViewForGraphics::setTransparencyActivated(bool activated)
 {
-    DM_GraphicsViewOptions& options = (DM_GraphicsViewOptions&) _graphicsOptionsView->getOptions();
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    opt.useTransparency(activated);
 
-    options.useTransparency(activated);
+    _graphicsOptionsView->setOptions(opt);
+
     validateOptions();
 }
 

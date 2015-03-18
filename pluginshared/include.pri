@@ -224,3 +224,81 @@ contains(DEFINES, USE_BOOST) {
 
     LIBS += $${BOOST_LIB_TO_LINK}
 }
+
+#OPENCV
+exists(../../use_opencv.ini) {
+
+    DEFINES += USE_OPENCV
+
+    message( ------- use_opencv.ini detected ------ )
+
+    TMP_CAT =
+
+    unix | mac {
+        TMP_CAT = $$system( cat ../../use_opencv.ini )
+    }
+
+    win32 {
+        TMP_CAT = $$system( type ..\..\use_opencv.ini )
+    }
+
+    #opencv path
+    TMP_MEMBER = $$member(TMP_CAT, 0)
+    OPENCV_INCLUDE_PATH = $$replace(TMP_MEMBER, \", )
+    TMP_MEMBER = $$member(TMP_CAT, 1)
+    OPENCV_LIB_DIR_PATH = $$replace(TMP_MEMBER, \", )
+
+    #unix
+    unix {
+        debug {
+            OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}/*300d.so
+        }
+
+        release {
+            OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}/*300.so
+        }
+    }
+
+    # windows
+    win32 {
+        msvc {
+            debug {
+                OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300d.lib
+            }
+
+            release {
+                OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300.lib
+            }
+        }
+
+        mingw {
+            debug {
+                OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300d.a
+            }
+
+            release {
+                OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300.a
+            }
+        }
+    }
+
+    # mac
+    mac {
+        debug {
+            OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300d.dylib
+        }
+
+        release {
+            OPENCV_LIB_PATH = $${OPENCV_LIB_DIR_PATH}\*300.dylib
+        }
+    }
+
+    message(OPENCV INCLUDE PATH : $$OPENCV_INCLUDE_PATH)
+    message(OPENCV LIB PATH : $$OPENCV_LIB_DIR_PATH)
+    message(OPENCV LIBS : $$OPENCV_LIB_PATH)
+
+    INCLUDEPATH += $$OPENCV_INCLUDE_PATH
+    LIBS += $$OPENCV_LIB_PATH
+} else {
+    message( ------- use_opencv.ini NOT detected ------ )
+}

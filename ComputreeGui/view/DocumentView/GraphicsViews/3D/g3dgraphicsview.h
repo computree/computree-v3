@@ -77,9 +77,6 @@ public:
 
     void setOptions(const DM_GraphicsViewOptions &newOptions);
 
-    GraphicsViewOptionsInterface& getOptions();
-    const DM_GraphicsViewOptions& getOptions() const;
-
     // Inherit from GraphicsViewInterface
     GraphicsViewSignalEmitterInterface* signalEmitter() const;
     QSharedPointer<CT_StandardColorCloudRegistered> colorCloudOf(ColorCloudType type) const;
@@ -241,7 +238,6 @@ protected:
     void internalSetDrawMode(DrawMode dMode);
 
     void init();
-    void initOptions();
     void preDraw();
     void draw();
     void postDraw();
@@ -286,6 +282,10 @@ private slots:
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
     void openGlDebugMessageIntercepted(const QOpenGLDebugMessage &mess);
 #endif
+
+public slots:
+    virtual void saveStateToFile();
+    virtual bool restoreStateFromFile();
 };
 
 #endif // G3DGRAPHICSVIEW_H

@@ -87,7 +87,7 @@ GraphicsViewOptionsInterface& DM_GraphicsView::getOptions()
     return *_options;
 }
 
-const DM_GraphicsViewOptions& DM_GraphicsView::getOptions() const
+const DM_GraphicsViewOptions& DM_GraphicsView::constGetOptionsInternal() const
 {
     return *_options;
 }

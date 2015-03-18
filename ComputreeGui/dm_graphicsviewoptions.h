@@ -32,7 +32,7 @@
 #include "interfaces.h"
 
 #include <QColor>
-
+#include <QDomElement>
 
 class DM_GraphicsViewOptions : public QObject, public GraphicsViewOptionsInterface
 {
@@ -105,6 +105,9 @@ public:
 
     bool load();
     bool save();
+
+    bool loadFromXml(QDomElement &el);
+    bool saveToXml(QDomElement &main, QDomDocument& doc) const;
 
 private:
 

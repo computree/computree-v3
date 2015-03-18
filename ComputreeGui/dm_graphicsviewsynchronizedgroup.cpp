@@ -14,11 +14,11 @@ void DM_GraphicsViewSynchronizedGroup::addGraphicsView(DM_GraphicsView *gw)
     if(!_gwList.isEmpty())
     {
         gw->getCamera()->syncWithCamera(_gwList.first()->getCamera());
-        gw->setOptions(((const DM_GraphicsView*)_gwList.first())->getOptions());
+        gw->setOptions(((const DM_GraphicsView*)_gwList.first())->constGetOptionsInternal());
     }
 
     connect(gw->getCamera(), SIGNAL(coordinatesChanged()), this, SLOT(syncCamera()));
-    connect((DM_GraphicsViewOptions*)&(gw->getOptions()), SIGNAL(optionsChanged()), this, SLOT(syncOptions()));
+    connect((DM_GraphicsViewOptions*)&(gw->constGetOptionsInternal()), SIGNAL(optionsChanged()), this, SLOT(syncOptions()));
 
     _gwList.append(gw);
 }
@@ -28,7 +28,7 @@ void DM_GraphicsViewSynchronizedGroup::removeGraphicsView(DM_GraphicsView *gw)
     if(gw != NULL)
     {
         disconnect(gw->getCamera(), NULL, this, NULL);
-        disconnect((DM_GraphicsViewOptions*)&(gw->getOptions()), NULL, this, NULL);
+        disconnect((DM_GraphicsViewOptions*)&(gw->constGetOptionsInternal()), NULL, this, NULL);
 
         _gwList.removeOne(gw);
     }
@@ -64,10 +64,8 @@ void DM_GraphicsViewSynchronizedGroup::setGraphicsViewOptionsForAll(DM_GraphicsV
         {
             DM_GraphicsView *gw = it.next();
 
-            if(&(gw->getOptions()) != newOptions)
-            {
+            if(&(gw->constGetOptionsInternal()) != newOptions)
                 gw->setOptions(*newOptions);
-            }
         }
     }
 }
