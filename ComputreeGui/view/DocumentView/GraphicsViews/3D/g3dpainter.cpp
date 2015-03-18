@@ -116,16 +116,7 @@ void G3DPainter::initializeGl()
 
     m_maxMatrix = (m_maxVertexUniformVec4/4)-4;
 
-    GLint majV = 0;
-    GLint minV = 0;
-
-    GLenum err;
-    if((err = glGetError()) != GL_NO_ERROR)
-        glGetIntegerv(GL_MAJOR_VERSION, &majV);
-    else
-        majV = 1;
-
-    m_openglVersion = majV + ((double)minV)/10.0;
+    m_openglVersion = QGLFormat::defaultFormat().majorVersion();
 }
 
 void G3DPainter::setPointFastestIncrement(size_t inc)
@@ -1527,8 +1518,6 @@ void G3DPainter::initPointShader()
         if(!m_shaderPointError && m_ShaderPoint == NULL)
         {
             m_ShaderPoint = new QT_GL_SHADER(QT_GL_SHADER::Vertex);
-
-            GUI_LOG->addInfoMessage(LogInterface::gui, QObject::tr("OpenGL version detected : %1").arg(QString().setNum(m_openglVersion, 'f', 2)));
 
             QString shaderSourceCode;
 

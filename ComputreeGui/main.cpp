@@ -33,9 +33,18 @@
     #include "qtextcodec.h"
 #endif
 
+#include <QGLFormat>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QGLFormat def = QGLFormat::defaultFormat();
+
+    if(QGLFormat::openGLVersionFlags().testFlag(QGLFormat::OpenGL_Version_3_0)) {
+        def.setVersion(3, 0);
+        QGLFormat::setDefaultFormat(def);
+    }
 
     CDM_Internationalization language;
     language.loadConfiguration();
@@ -46,6 +55,8 @@ int main(int argc, char *argv[])
 
     GGuiManager gm(&language);
     gm.initUi();
+
+    GUI_LOG->addInfoMessage(LogInterface::gui, QObject::tr("OpenGL Version used : %1.%2").arg(def.majorVersion()).arg(def.minorVersion()));
 
     return a.exec();
 }
