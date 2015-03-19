@@ -6,5 +6,5 @@ uniform mat4 pMatrix;
 void main()
 {
 	gl_FrontColor = gl_Color;
-    gl_Position = gl_ModelViewProjectionMatrix * pMatrix * gl_Vertex;
+	gl_Position = gl_ModelViewProjectionMatrix * pMatrix * gl_Vertex;
 }

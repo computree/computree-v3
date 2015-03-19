@@ -883,10 +883,22 @@ void G3DPainter::drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
+        /*double tx = m_modelViewMatrix4d(0,3);
+        double ty = m_modelViewMatrix4d(1,3);
+        double tz = z - m_modelViewMatrix4d(2,3);
+        /*double tx = 0;
+        double ty = 0;
+        double tz = z;*/
+
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), bottomRight(1), z, 1)).data());
         glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), bottomRight(1), z, 1)).data());
+
+        /*glVertex3f(topLeft(0) - tx, topLeft(1) - ty, tz);
+        glVertex3f(bottomRight(0) - tx, topLeft(1) - ty, tz);
+        glVertex3f(bottomRight(0) - tx, bottomRight(1) - ty, tz);
+        glVertex3f(topLeft(0) - tx, bottomRight(1) - ty, tz);*/
     }
 }
 
@@ -1776,10 +1788,11 @@ bool G3DPainter::bindDoubleElementShader()
         else
         {
             if(!m_shaderDeLocInitialized) {
-                m_shaderDeLocPMatrix1 = m_shaderDeProg->attributeLocation("pMatrix1");
+                m_shaderDeLocPMatrix1 = m_shaderDeProg->uniformLocation("pMatrix");
+                /*m_shaderDeLocPMatrix1 = m_shaderDeProg->attributeLocation("pMatrix1");
                 m_shaderDeLocPMatrix2 = m_shaderDeProg->attributeLocation("pMatrix2");
                 m_shaderDeLocPMatrix3 = m_shaderDeProg->attributeLocation("pMatrix3");
-                m_shaderDeLocPMatrix4 = m_shaderDeProg->attributeLocation("pMatrix4");
+                m_shaderDeLocPMatrix4 = m_shaderDeProg->attributeLocation("pMatrix4");*/
 
                 m_shaderDeLocInitialized = true;
 
@@ -1788,20 +1801,27 @@ bool G3DPainter::bindDoubleElementShader()
                 if(m_shaderDeLocPMatrix1 == -1)
                     err += "\r\n* attribute \"pMatrix1\" not found.";
 
-                if(m_shaderDeLocPMatrix2 == -1)
+                /*if(m_shaderDeLocPMatrix2 == -1)
                     err += "\r\n* attribute \"pMatrix2\" not found.";
 
                 if(m_shaderDeLocPMatrix3 == -1)
                     err += "\r\n* attribute \"pMatrix3\" not found.";
 
                 if(m_shaderDeLocPMatrix4 == -1)
-                    err += "\r\n* attribute \"pMatrix4\" not found.";
+                    err += "\r\n* attribute \"pMatrix4\" not found.";*/
 
                 if(!err.isEmpty())
                     GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderDeSourceFile).arg(err));
             }
 
-            setDoubleElementMatrix(Eigen::Matrix4d::Identity());
+            Eigen::Matrix4f tmp = m_modelViewMatrix4d.cast<float>();
+            /*tmp(0,3) = 0;
+            tmp(1,3) = 0;
+            tmp(2,3) = 0;*/
+
+            //setDoubleElementMatrix(tmp);
+
+            glUniformMatrix4fv(m_shaderDeLocPMatrix1, 1, GL_FALSE, &tmp(0,0));
 
             return true;
         }
@@ -2018,12 +2038,12 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
             || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
         // we must just release the double element shader
-        /*releaseDoubleElementShader(m_bindShaderDeOK);
-        m_bindShaderDeOK = false;*/
+        releaseDoubleElementShader(m_bindShaderDeOK);
+        m_bindShaderDeOK = false;
 
         // and bind the point shader
-        if(!m_bindShaderPointOK)
-            m_bindShaderPointOK = bindPointShader();
+        /*if(!m_bindShaderPointOK)
+            m_bindShaderPointOK = bindPointShader();*/
     }
     else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
