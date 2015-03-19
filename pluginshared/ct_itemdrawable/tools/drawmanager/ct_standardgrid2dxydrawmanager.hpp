@@ -231,6 +231,8 @@ void CT_StandardGrid2DXYDrawManager<DataT>::draw(GraphicsViewInterface &view, Pa
                     painter.setColor(QColor(125, 0, 0));
                 } else {
                     int colorLevel = ((value - (double)item.dataMin()) / amplitude)*255;
+                    if (colorLevel < 0) {colorLevel = 0;}
+                    if (colorLevel > 255) {colorLevel = 255;}
                     painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
                 }
 

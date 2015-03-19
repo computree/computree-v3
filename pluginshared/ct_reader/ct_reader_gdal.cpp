@@ -272,27 +272,38 @@ bool CT_Reader_GDAL::protectedReadFile()
 
             GDALRasterBand *poBand = data->GetRasterBand(i+1);
 
+            double padfTransform[6];
+            poBand->GetDataset()->GetGeoTransform(&padfTransform[0]);
+
+            double xMin = padfTransform[0];
+            double yMin = padfTransform[3];
+
             int nXSize = poBand->GetXSize();
             int nYSize = poBand->GetYSize();
 
+            double na = poBand->GetNoDataValue();
+
             CT_Grid2DXY<float> *grid = new CT_Grid2DXY<float>(NULL,
                                        NULL,
-                                       0,
-                                       0,
+                                       xMin,
+                                       yMin,
                                        nXSize,
                                        nYSize,
-                                       1,
-                                       1,
-                                       -1,
-                                       0);
+                                       padfTransform[1],
+                                       0,
+                                       na,
+                                       na);
 
             float *pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
+
+            size_t index = 0;
 
             for(int y=0; y<nYSize; ++y) {
                 poBand->RasterIO( GF_Read, 0, y, nXSize, 1, pafScanline, nXSize, 1, GDT_Float32, 0, 0 );
 
                 for(int x=0; x<nXSize; ++x) {
-                    grid->setValueAtXY(x, y, pafScanline[x]);
+                    grid->index(x, nYSize - y - 1, index);
+                    grid->setValueAtIndex(index, pafScanline[x]);
                 }
             }
 

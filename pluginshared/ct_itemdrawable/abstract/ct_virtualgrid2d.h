@@ -224,6 +224,8 @@ public:
       */
     QList<DataT> neighboursValues(const size_t col, const size_t lin, const size_t distance, const bool keepNAs, const CenterMode centermode) const;
 
+    inline DataT* getPointerToData() {return &_data[0];}
+
 protected:
 
 
