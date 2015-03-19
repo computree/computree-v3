@@ -66,6 +66,39 @@ void GDocumentView::init()
     createAndAddItemDrawableWidgetContainer(getCentralWidget());
 }
 
+QPoint GDocumentView::pos() const
+{
+    return getSubWindow()->pos();
+}
+
+QSize GDocumentView::size() const
+{
+    return getSubWindow()->size();
+}
+
+bool GDocumentView::isMaximized() const
+{
+    return getSubWindow()->isMaximized();
+}
+
+void GDocumentView::move(const QPoint &pos)
+{
+    getSubWindow()->move(pos);
+}
+
+void GDocumentView::resize(const QSize &size)
+{
+    getSubWindow()->resize(size);
+}
+
+void GDocumentView::setMaximized(bool val)
+{
+    if(val)
+        getSubWindow()->showMaximized();
+    else
+        getSubWindow()->showNormal();
+}
+
 MyQMdiSubWindow* GDocumentView::getSubWindow() const
 {
     return _subWindow;

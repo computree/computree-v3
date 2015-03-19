@@ -637,17 +637,18 @@ void GMainWindow::loadConfiguration()
 {
     CONFIG_FILE->beginGroup("MainWindow");
 
-    _defaultOpenDirPath = CONFIG_FILE->value("defaultOpenDirPath", "").toString();
-    _defaultSaveDirPath = CONFIG_FILE->value("defaultSaveDirPath", "").toString();
-    restoreState(CONFIG_FILE->value("windowState").toByteArray());
+        _defaultOpenDirPath = CONFIG_FILE->value("defaultOpenDirPath", "").toString();
+        _defaultSaveDirPath = CONFIG_FILE->value("defaultSaveDirPath", "").toString();
+        restoreState(CONFIG_FILE->value("windowState").toByteArray());
 
-    CONFIG_FILE->beginGroup("Document");
-    bool ok;
-    int nDoc = CONFIG_FILE->value("nDocument", 0).toInt(&ok);
-    CONFIG_FILE->endGroup();
+        CONFIG_FILE->beginGroup("Document");
 
+        bool ok;
+        int nDoc = CONFIG_FILE->value("nDocument", 0).toInt(&ok);
 
-    CONFIG_FILE->endGroup();
+        CONFIG_FILE->endGroup(); // Document
+
+    CONFIG_FILE->endGroup(); // MainWindow
 
     if(ok)
     {
@@ -660,10 +661,6 @@ void GMainWindow::loadConfiguration()
             QString type =CONFIG_FILE->value("Type", "").toString();
             QByteArray geometry = CONFIG_FILE->value("Geometry", "").toByteArray();
 
-            CONFIG_FILE->endGroup();
-            CONFIG_FILE->endGroup();
-            CONFIG_FILE->endGroup();
-
             if(type == "2D")
                 new2DDocument();
             else if(type == "3D")
@@ -675,8 +672,27 @@ void GMainWindow::loadConfiguration()
 
             DM_DocumentView *view = getDocumentManagerView()->getDocumentView(i);
 
-            if(view != NULL)
-                view->restoreGeometry(geometry);
+            if(view != NULL) {
+                if(CONFIG_FILE->value("Size", QVariant()).isNull()) {
+                    view->restoreGeometry(geometry);
+                } else {
+                    QSize size = CONFIG_FILE->value("Size", QSize()).toSize();
+                    QPoint pos = CONFIG_FILE->value("Pos", QPoint()).toPoint();
+                    bool isMaximized = CONFIG_FILE->value("Maximized", false).toBool();
+
+                    if(isMaximized)
+                        view->setMaximized(true);
+                    else {
+                        view->setMaximized(false);
+                        view->resize(size);
+                        view->move(pos);
+                    }
+                }
+            }
+
+            CONFIG_FILE->endGroup(); // DocX
+            CONFIG_FILE->endGroup(); // Document
+            CONFIG_FILE->endGroup(); // MainWindow
         }
     }
 
@@ -721,12 +737,15 @@ void GMainWindow::writeConfiguration()
 
         CONFIG_FILE->setValue("Type", type);
         CONFIG_FILE->setValue("Geometry", docV->saveGeometry());
+        CONFIG_FILE->setValue("Size", docV->size());
+        CONFIG_FILE->setValue("Pos", docV->pos());
+        CONFIG_FILE->setValue("Maximized", docV->isMaximized());
         CONFIG_FILE->endGroup();
     }
 
-    CONFIG_FILE->endGroup();
+    CONFIG_FILE->endGroup(); // Document
 
-    CONFIG_FILE->endGroup();
+    CONFIG_FILE->endGroup(); // MainWindow
 }
 
 QString GMainWindow::createFileExtensionAvailable()

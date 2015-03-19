@@ -124,6 +124,36 @@ public:
     QString getTitle() const;
 
     /**
+     * @brief Returns the position of the document
+     */
+    virtual QPoint pos() const = 0;
+
+    /**
+     * @brief Returns the size of the document
+     */
+    virtual QSize size() const = 0;
+
+    /**
+     * @brief Returns if the document is maximized
+     */
+    virtual bool isMaximized() const = 0;
+
+    /**
+     * @brief Move the document to the position passed in parameter
+     */
+    virtual void move(const QPoint &pos) = 0;
+
+    /**
+     * @brief Resize he document
+     */
+    virtual void resize(const QSize &size) = 0;
+
+    /**
+     * @brief Change the maximized state
+     */
+    virtual void setMaximized(bool val) = 0;
+
+    /**
      * @brief Return true if the document can add the CT_AbstractItemDrawable
      */
     bool canAddItemDrawable(const CT_AbstractItemDrawable *item) const;

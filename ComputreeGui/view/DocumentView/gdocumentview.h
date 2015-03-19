@@ -105,6 +105,13 @@ public:
 
     virtual void init();
 
+    QPoint pos() const;
+    QSize size() const;
+    bool isMaximized() const;
+    void move(const QPoint &pos);
+    void resize(const QSize &size);
+    void setMaximized(bool val);
+
     MyQMdiSubWindow *getSubWindow() const;
 
     QByteArray saveGeometry() const;
