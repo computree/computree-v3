@@ -66,7 +66,7 @@ public:
      * @brief Returns true if the filepath passed in parameter is accepted
      * @param filePath : path to the file
      */
-    virtual bool acceptFile(QString filePath) const;
+    virtual bool acceptFile(QString filePath, bool *allAccepted = 0) const;
 
     /**
      * @brief Returns a list of extension accepted like this ".XXX" << ".YYY" << etc...

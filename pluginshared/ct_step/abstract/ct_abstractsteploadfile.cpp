@@ -95,24 +95,30 @@ bool CT_AbstractStepLoadFile::setAllSettings(const SettingsNodeGroup *settings)
     return false;
 }
 
-bool CT_AbstractStepLoadFile::acceptFile(QString filePath) const
+bool CT_AbstractStepLoadFile::acceptFile(QString filePath, bool *allAccepted) const
 {
     QList<QString> extList = getFileExtensionAccepted();
     QListIterator<QString> it(extList);
 
     QString lowerFilePath = filePath.toLower();
 
+    bool allAcceptedTmp = false;
+    if (allAccepted != NULL) {*allAccepted = false;}
+
     while(it.hasNext())
     {
         QString ext = it.next().toLower();
 
-        if (ext == ".*") {return true;}
+        if (ext == ".*") {allAcceptedTmp = true;}
 
         if(lowerFilePath.lastIndexOf(ext) == (filePath.size()-ext.size()))
         {
             return true;
         }
     }
+
+    if (allAccepted != NULL) {*allAccepted = allAcceptedTmp;}
+    return allAcceptedTmp;
 
     return false;
 }

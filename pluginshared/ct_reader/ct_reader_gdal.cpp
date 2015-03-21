@@ -63,7 +63,25 @@ void CT_Reader_GDAL::protectedInit()
         for (int i = 0 ; i < ext.size() ; i++)
         {
             if (ext.at(i) == "") {ext[i] = "*"; }
+
+            //qDebug() << name << "=" << ext[i];
         }
+
+        if (name == "GDAL AirSAR Polarimetric Image") {ext.append("dat");}
+        if (name == "GDAL Arc/Info Binary Grid") {ext.append("adf");}
+        if (name == "GDAL Azavea Raster Grid format") {ext.append("json");}
+        if (name == "GDAL Maptech BSB Nautical Charts") {ext.append("kap");}
+        if (name == "GDAL DTED Elevation Raster") {ext.append("dt0");ext.append("dt1");ext.append("dt2");}
+        if (name == "GDAL ENVI .hdr Labelled") {ext.append("hdr");}
+        if (name == "GDAL ESRI .hdr Labelled") {ext.append("hdr");ext.append("bil");}
+        if (name == "GDAL EarthWatch .TIL") {ext.append("til");}
+        if (name == "GDAL ERMapper .ers Labelled") {ext.append("ers");}
+        if (name == "GDAL Erdas .LAN/.GIS") {ext.append("lan");ext.append("gis");}
+        if (name == "GDAL Erdas Imagine Raw") {ext.append("raw");}
+        if (name == "GDAL OziExplorer .MAP") {ext.append("map");}
+        if (name == "GDAL PCI .aux Labelled") {ext.append("aux");}
+        if (name == "GDAL UK .NTF") {ext.append("ntf");}
+
 
         addNewReadableFormat(FileFormat(ext, name));
     }

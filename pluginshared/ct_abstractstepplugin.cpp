@@ -169,6 +169,7 @@ QList<CT_StandardMetricSeparator *> CT_AbstractStepPlugin::getMetricsAvailable()
 QList<CT_AbstractStepLoadFile*> CT_AbstractStepPlugin::getOpenFileStep(const QString &filePath) const
 {
     QList<CT_AbstractStepLoadFile*> l;
+    QList<CT_AbstractStepLoadFile*> lTmp;
 
     QListIterator<CT_StepLoadFileSeparator*> it(_stepOpenFileAvailable);
 
@@ -181,10 +182,21 @@ QList<CT_AbstractStepLoadFile*> CT_AbstractStepPlugin::getOpenFileStep(const QSt
         {
             CT_AbstractStepLoadFile *step = itStep.next();
 
-            if(step->acceptFile(filePath))
-                l.append(step);
+            bool acceptAll;
+            bool acceptfile = step->acceptFile(filePath, &acceptAll);
+            if(acceptfile)
+            {
+                if (acceptAll)
+                {
+                    lTmp.append(step);
+                } else {
+                    l.append(step);
+                }
+            }
         }
     }
+
+    l.append(lTmp);
 
     return l;
 }
