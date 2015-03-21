@@ -106,6 +106,8 @@ bool CT_AbstractStepLoadFile::acceptFile(QString filePath) const
     {
         QString ext = it.next().toLower();
 
+        if (ext == ".*") {return true;}
+
         if(lowerFilePath.lastIndexOf(ext) == (filePath.size()-ext.size()))
         {
             return true;

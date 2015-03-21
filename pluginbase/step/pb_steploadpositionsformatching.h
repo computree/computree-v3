@@ -1,7 +1,7 @@
 #ifndef PB_STEPLOADPOSITIONSFORMATCHING_H
 #define PB_STEPLOADPOSITIONSFORMATCHING_H
 
-#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_step/ct_stepbeginloop.h"
 
 /*!
  * \class PB_StepLoadPositionsForMatching
@@ -15,7 +15,7 @@
  *
  */
 
-class PB_StepLoadPositionsForMatching: public CT_AbstractStepCanBeAddedFirst
+class PB_StepLoadPositionsForMatching: public CT_StepBeginLoop
 {
     Q_OBJECT
 
@@ -67,17 +67,10 @@ protected:
      */
     void createPostConfigurationDialog();
 
-    /*! \brief Output results specification
-     * 
-     * Specification of output results models created by the step (OUT)
-     */
-    void createOutResultModelListProtected();
+    virtual void createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel);
 
-    /*! \brief Algorithm of the step
-     * 
-     * Step computation, using input results, and creating output results
-     */
-    void compute();
+    virtual void compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group);
+
 
 private:
 

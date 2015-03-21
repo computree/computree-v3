@@ -23,9 +23,9 @@
 
 
 // Constructor : initialization of parameters
-PB_StepLoadPositionsForMatching::PB_StepLoadPositionsForMatching(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
+PB_StepLoadPositionsForMatching::PB_StepLoadPositionsForMatching(CT_StepInitializeData &dataInit) : CT_StepBeginLoop(dataInit)
 {
-    _neededFields << "ID" << "X" << "Y" << "VALUE";
+    _neededFields << "ID_Plot" << "ID" << "X" << "Y" << "VALUE";
 
     _refFileName = "";
     _transFileName = "";
@@ -78,19 +78,21 @@ void PB_StepLoadPositionsForMatching::createInResultModelListProtected()
 }
 
 // Creation and affiliation of OUT models
-void PB_StepLoadPositionsForMatching::createOutResultModelListProtected()
+void PB_StepLoadPositionsForMatching::createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel)
 {
+    Q_UNUSED(firstResultModel);
+
     CT_OutResultModelGroup *res_refRes = createNewOutResultModel(DEFout_refRes, tr("Positions de référence"));
     res_refRes->setRootGroup(DEFout_grpRef, new CT_StandardItemGroup(), tr("Groupe"));
     res_refRes->addItemModel(DEFout_grpRef, DEFout_ref, new CT_Point2D(), tr("Position de référence"));
     res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refVal, new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER), tr("Valeur"));
-    res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("IDsegma"));
+    res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("ID"));
 
     CT_OutResultModelGroup *res_transRes = createNewOutResultModel(DEFout_transRes, tr("Positions à transformer"));
     res_transRes->setRootGroup(DEFout_grpTrans, new CT_StandardItemGroup(), tr("Groupe"));
     res_transRes->addItemModel(DEFout_grpTrans, DEFout_trans, new CT_Point2D(), tr("Position à transformer"));
     res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transVal, new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER), tr("Valeur"));
-    res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("IDsegma"));
+    res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("ID"));
 
 }
 
@@ -103,11 +105,22 @@ void PB_StepLoadPositionsForMatching::createPostConfigurationDialog()
     configDialog->addAsciiFileChoice("Fichier de positions à transformer", "Fichier ASCII (*.txt ; *.asc)", true, _neededFields, _transFileName, _transHeader, _transSeparator, _transDecimal, _transLocale, _transSkip, _transColumns);
 }
 
-void PB_StepLoadPositionsForMatching::compute()
+void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group)
 {
+    Q_UNUSED(outRes);
+    Q_UNUSED(group);
+
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_refRes = outResultList.at(0);
     CT_ResultGroup* res_transRes = outResultList.at(1);
+
+
+    int colIDplot_ref  = _refColumns.value("ID_Plot", -1);
+    int colIDplot_trans  = _refColumns.value("ID_Plot", -1);
+    bool multiPlots = (colIDplot_ref >= 0);
+
+    QSharedPointer<CT_Counter> counter = getCounter();
+
 
 
     QFile fRef(_refFileName);
@@ -181,6 +194,7 @@ void PB_StepLoadPositionsForMatching::compute()
         QTextStream stream(&fTrans);
         stream.setLocale(_transLocale);
 
+        int colIDplot  = _transColumns.value("ID_Plot", -1);
         int colID = _transColumns.value("ID", -1);
         int colX = _transColumns.value("X", -1);
         int colY = _transColumns.value("Y", -1);

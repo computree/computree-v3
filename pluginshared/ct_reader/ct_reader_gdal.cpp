@@ -60,6 +60,11 @@ void CT_Reader_GDAL::protectedInit()
         QString name = "GDAL " + QString(m_driver->GetMetadataItem(GDAL_DMD_LONGNAME));
         name.remove(QRegExp("\\(\\..*\\)"));
 
+        for (int i = 0 ; i < ext.size() ; i++)
+        {
+            if (ext.at(i) == "") {ext[i] = "*"; }
+        }
+
         addNewReadableFormat(FileFormat(ext, name));
     }
     #endif

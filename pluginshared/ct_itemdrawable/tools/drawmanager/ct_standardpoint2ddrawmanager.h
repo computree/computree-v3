@@ -14,8 +14,10 @@ public:
 protected:
 
     const static QString INDEX_CONFIG_DRAW_POINT;
+    const static QString INDEX_CONFIG_POINT_SIZE;
 
     static QString staticInitConfigDrawPoint();
+    static QString staticInitConfigPointSize();
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 };

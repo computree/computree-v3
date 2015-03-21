@@ -390,11 +390,10 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 
         for(int i=0; i<count; ++i) {
             GDALDriver *driver = driverManager->GetDriver(i);
-            QString suffix = QString(driver->GetMetadataItem(GDAL_DMD_EXTENSION));
             QString name = QString(driver->GetMetadataItem(GDAL_DMD_LONGNAME));
             name.remove(QRegExp("\\(\\..*\\)"));
 
-            if(!suffix.isEmpty() && !name.isEmpty()) {
+            if(!name.isEmpty()) {
                 sep = addNewSeparator(new CT_StandardReaderSeparator(name));
                 sep->addReader(new CT_Reader_GDAL(driver));
             }
