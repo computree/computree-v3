@@ -28,11 +28,11 @@ void CT_StandardTriangulation2DDrawManager::draw(GraphicsViewInterface &view, Pa
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_NODES_VISIBLE).toBool())
         drawNodes(view, painter, item);
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_EDGES_VISIBLE).toBool())
-        drawEdges(view, painter, item);
-
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HULL_VISIBLE).toBool())
         drawHull(view, painter, item);
+
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_EDGES_VISIBLE).toBool())
+        drawEdges(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_VORONOI_VISIBLE).toBool())
         drawVoronoi(view, painter, item);
@@ -79,7 +79,7 @@ void CT_StandardTriangulation2DDrawManager::drawNodes(GraphicsViewInterface &vie
 
     painter.setPointSize(10.0);
 
-    painter.setForcedColor(Qt::white);
+    painter.setColor(Qt::white);
 
     QListIterator< QSharedPointer<CT_NodeT> > it(item.getDelaunayT()->getNodeList());
 
@@ -97,7 +97,7 @@ void CT_StandardTriangulation2DDrawManager::drawEdges(GraphicsViewInterface &vie
 {
     Q_UNUSED(view)
 
-    painter.setForcedColor(Qt::white);
+    painter.setColor(Qt::white);
 
     QListIterator< QSharedPointer<CT_EdgeT> > it(item.getDelaunayT()->getEdgeList());
 
@@ -116,7 +116,7 @@ void CT_StandardTriangulation2DDrawManager::drawHull(GraphicsViewInterface &view
 {
     Q_UNUSED(view)
 
-    painter.setForcedColor(Qt::red);
+    painter.setColor(Qt::red);
 
     QSharedPointer<CT_EdgeT> hull_start = item.getDelaunayT()->getHullEdgeStart();
 
@@ -141,7 +141,7 @@ void CT_StandardTriangulation2DDrawManager::drawVoronoi(GraphicsViewInterface &v
 {
     Q_UNUSED(view)
 
-    painter.setForcedColor(255, 0, 255);
+    painter.setColor(255, 0, 255);
 
     QListIterator< QSharedPointer<CT_EdgeT> > it(item.getDelaunayT()->getEdgeList());
 

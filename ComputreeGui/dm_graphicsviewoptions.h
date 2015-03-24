@@ -108,7 +108,7 @@ public:
     bool load();
     bool save();
 
-    bool loadFromXml(QDomElement &el);
+    bool loadFromXml(const QDomElement &el);
     bool saveToXml(QDomElement &main, QDomDocument& doc) const;
 
 private:

@@ -297,7 +297,7 @@ bool DM_GraphicsViewOptions::save()
     return true;
 }
 
-bool DM_GraphicsViewOptions::loadFromXml(QDomElement &el)
+bool DM_GraphicsViewOptions::loadFromXml(const QDomElement &el)
 {
     QDomNodeList l = el.elementsByTagName("backgroundColor");
 

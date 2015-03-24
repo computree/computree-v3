@@ -2049,10 +2049,8 @@ bool G3DGraphicsView::restoreStateFromFile()
 
         QDomNodeList l = main.elementsByTagName("GraphicsOptions");
 
-        if(!l.isEmpty()) {
-            QDomElement dEl = l.at(0).toElement();
-            opt.loadFromXml(dEl);
-        }
+        if(!l.isEmpty())
+            opt.loadFromXml(l.at(0).toElement());
 
         if(!_2dActive)
             initFromDOMElement(main);
