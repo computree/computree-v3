@@ -29,10 +29,10 @@ void CT_StandardTriangulation2DDrawManager::draw(GraphicsViewInterface &view, Pa
         drawNodes(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_EDGES_VISIBLE).toBool())
-        drawHull(view, painter, item);
+        drawEdges(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HULL_VISIBLE).toBool())
-        drawEdges(view, painter, item);
+        drawHull(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_VORONOI_VISIBLE).toBool())
         drawVoronoi(view, painter, item);

@@ -90,8 +90,9 @@ private:
     QSharedPointer<CT_EdgeT>       _inversed_edge; // cette arete mais inversee
     QSharedPointer<CT_EdgeT>       _next_edge;     // arete suivante dans le triangle, dans le sens anti-trigonometrique
     QSharedPointer<CT_EdgeT>       _next_edge_h;   // lien vers l'enveloppe convexe
-    QSharedPointer<CT_TriangleT> _triangle;      // triangle contenant l'arete
-    double                      _a, _b, _c;     // parametre de l'equation de la droite aX+bY+c=0
+    QSharedPointer<CT_TriangleT>   _triangle;      // triangle contenant l'arete
+    double                         _a, _b;         // parametre de l'equation de la droite aX+bY+c=0
+    long double                    _c;             // parametre de l'equation de la droite aX+bY+c=0
 
     void computeLineEquation(); // calcul les parametres de l'equation de la droite
 };

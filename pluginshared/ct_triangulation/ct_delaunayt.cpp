@@ -506,10 +506,11 @@ void CT_DelaunayT::expandHull(QSharedPointer<CT_NodeT> nd)
 // recherche d'une arete
 int CT_DelaunayT::searchEdge(QSharedPointer<CT_EdgeT> e, QSharedPointer<CT_NodeT> nd)
 {
-    int f2,f3;
+    int f2,f3,f4;
     QSharedPointer<CT_EdgeT> e0(NULL);
 
-    if((f2 = e.data()->getLeftEdge().data()->onSide(nd)) == -1)
+    f2 = e.data()->getLeftEdge().data()->onSide(nd);
+    if(f2 == -1)
     {
         if(!e.data()->getLeftEdge().data()->getInversedEdge().isNull())
         {
@@ -530,7 +531,8 @@ int CT_DelaunayT::searchEdge(QSharedPointer<CT_EdgeT> e, QSharedPointer<CT_NodeT
 
     QSharedPointer<CT_EdgeT> ee = e.data()->getLeftEdge();
 
-    if((f3 = ee.data()->getLeftEdge().data()->onSide(nd)) == -1)
+    f3 = ee.data()->getLeftEdge().data()->onSide(nd);
+    if(f3 == -1)
     {
         if(!ee.data()->getLeftEdge().data()->getInversedEdge().isNull())
         {
@@ -549,7 +551,8 @@ int CT_DelaunayT::searchEdge(QSharedPointer<CT_EdgeT> e, QSharedPointer<CT_NodeT
         e0 = ee.data()->getLeftEdge();
     }
 
-    if(e.data()->onSide(nd) == 0)
+    f4 = e.data()->onSide(nd);
+    if(f4 == 0)
     {
         e0 = e;
     }

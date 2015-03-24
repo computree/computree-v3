@@ -110,25 +110,25 @@ void CT_TriangleT::findCircle()
     // rayon du cercle = distance du centre a l'un des sommets du triangle
     _circle_radius = _an_edge.data()->getN1().data()->distance(_circle_cx, _circle_cy);
 
-    double a11 = 2*(x2-x1);
-    double a12 = 2*(y2-y1);
-    double a13 = 2*(z2-z1);
+    double a11 = 2.0*(x2-x1);
+    double a12 = 2.0*(y2-y1);
+    double a13 = 2.0*(z2-z1);
 
-    double a21 = 2*(x3-x1);
-    double a22 = 2*(y3-y1);
-    double a23 = 2*(z3-z1);
+    double a21 = 2.0*(x3-x1);
+    double a22 = 2.0*(y3-y1);
+    double a23 = 2.0*(z3-z1);
 
     double a31 = ((y2-y1)*(z3-z1) - (y3-y1)*(z2-z1));
     double a32 = ((z2-z1)*(x3-x1) - (z3-z1)*(x2-x1));
     double a33 = ((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1));
 
-    double b1 = x2*x2 + y2*y2 + z2*z2 - (x1*x1 + y1*y1 + z1*z1);
-    double b2 = x3*x3 + y3*y3 + z3*z3 - (x1*x1 + y1*y1 + z1*z1);
-    double b3 = x1 * ((y2-y1)*(z3-z1) - (y3-y1)*(z2-z1)) + y1 * ((z2-z1)*(x3-x1) - (z3-z1)*(x2-x1)) + z1 * ((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1));
+    long double b1 = x2*x2 + y2*y2 + z2*z2 - (x1*x1 + y1*y1 + z1*z1);
+    long double b2 = x3*x3 + y3*y3 + z3*z3 - (x1*x1 + y1*y1 + z1*z1);
+    long double b3 = x1 * ((y2-y1)*(z3-z1) - (y3-y1)*(z2-z1)) + y1 * ((z2-z1)*(x3-x1) - (z3-z1)*(x2-x1)) + z1 * ((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1));
 
-    double detg = a11*a22*a33 + a21*a32*a13 + a12*a23*a31 - a31*a22*a13 - a32*a23*a11 - a21*a12*a33;
+    long double detg = a11*a22*a33 + a21*a32*a13 + a12*a23*a31 - a31*a22*a13 - a32*a23*a11 - a21*a12*a33;
 
-    double detb3 = a11*a22*b3 + a21*a32*b1 + a12*b2*a31 - a31*a22*b1 - a32*b2*a11 - a21*a12*b3;
+    long double detb3 = a11*a22*b3 + a21*a32*b1 + a12*b2*a31 - a31*a22*b1 - a32*b2*a11 - a21*a12*b3;
 
     _circle_cz = detb3/detg;
 }

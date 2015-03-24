@@ -113,7 +113,9 @@ int CT_EdgeT::onSide(QSharedPointer<CT_NodeT> n) const
 {
     Eigen::Vector3d *p = n.data()->getPoint();
 
-    double s = _a*(*p)(0) + _b*(*p)(1) + _c;
+    long double s = (long double)_a*(long double)(*p)(0) + (long double)_b*(long double)(*p)(1) + _c;
+
+    if (abs(s) < 0.0001) {s = 0.0;}
 
     if(s>0.0) return 1;
     if(s<0.0) return -1;
@@ -144,5 +146,5 @@ void CT_EdgeT::computeLineEquation()
 
     _a = (*p2)(1) - (*p1)(1);
     _b = (*p1)(0) - (*p2)(0);
-    _c = ((*p2)(0)*(*p1)(1)) - ((*p1)(0)*(*p2)(1));
+    _c = ((long double)(*p2)(0)*(long double)(*p1)(1)) - (long double)((*p1)(0)*(long double)(*p2)(1));
 }
