@@ -33,6 +33,12 @@ protected:
     CT_AbstractColorCloud* createColorCloudBeforeExportToFile();
 
     /**
+     * @brief You must call this method to create the normal cloud. Call this method in the beginning of your method "protectedExportToFile()". It will
+     *        return the normal cloud that you must use (WARNING : the normal cloud returned can be NULL ! if the user don't select a point attributes)
+     */
+    CT_AbstractNormalCloud* createNormalCloudBeforeExportToFile();
+
+    /**
      * @brief You must call this method before you quit the method "protectedExportToFile()"
      */
     virtual void clearWorker();

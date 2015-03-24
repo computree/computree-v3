@@ -28,7 +28,7 @@ QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > CT_AbstractEx
 void CT_AbstractExporterPointAttributesSelection::postConfigureAttributesBuilder(CT_AbstractItemDrawableCollectionBuilder *builder)
 {
     if((&m_attributsBuilder) == builder)
-        m_attributsBuilder.onlyKeepsTheseTypesInCollection2<CT_AttributesColor, CT_AbstractAttributesScalar>();
+        m_attributsBuilder.onlyKeepsTheseTypesInCollection3<CT_AttributesColor, CT_AttributesNormal, CT_AbstractAttributesScalar>();
 }
 
 void CT_AbstractExporterPointAttributesSelection::setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder *> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const
@@ -81,6 +81,25 @@ CT_AbstractColorCloud* CT_AbstractExporterPointAttributesSelection::createColorC
     }
 
     return cc;
+}
+
+CT_AbstractNormalCloud* CT_AbstractExporterPointAttributesSelection::createNormalCloudBeforeExportToFile()
+{
+    CT_AbstractNormalCloud *nc = NULL;
+
+    if((m_attributsWorker.normalCloud().data() == NULL)
+            && (!m_attributsWorker.attributes().isEmpty()))
+    {
+        m_attributsWorker.setNormalCloud(PS_REPOSITORY->createNewNormalCloud(CT_Repository::SyncWithPointCloud));
+        m_attributsWorker.apply();
+        nc = m_attributsWorker.normalCloud()->abstractNormalCloud();
+    }
+    else if(m_attributsWorker.normalCloud().data() != NULL)
+    {
+        nc = m_attributsWorker.normalCloud()->abstractNormalCloud();
+    }
+
+    return nc;
 }
 
 void CT_AbstractExporterPointAttributesSelection::clearWorker()
