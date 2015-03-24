@@ -751,6 +751,14 @@ void G3DCameraController::fitCameraToVisibleItems()
     max.y = -std::numeric_limits<double>::max();
     max.z = -std::numeric_limits<double>::max();
 
+    /*min.x = 1000000;
+    min.y = 1000000;
+    min.z = 1000000;
+
+    max.x = 1000000.1;
+    max.y = 1000000.1;
+    max.z = 1000000.1;*/
+
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();

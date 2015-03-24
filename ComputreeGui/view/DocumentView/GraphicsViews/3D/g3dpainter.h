@@ -75,18 +75,20 @@ public:
      *        no call to glBegin multiple times.
      */
     enum MultiDrawableType {
-        POINT,              // points
-        POINT_FROM_PC,      // points from index in the global point cloud
-        LINE,               // lines
-        LINE_FROM_PC,       // lines from index in the global point cloud
-        TRIANGLE,           // triangles
-        TRIANGLE_FROM_PC,   // triangles from index in the global point cloud
-        QUAD,               // quads
-        QUAD_FROM_PC,       // quads from index in the global point cloud
+        POINT,                  // points
+        POINT_FROM_PC,          // points from index in the global point cloud
+        LINE,                   // lines
+        LINE_FROM_PC,           // lines from index in the global point cloud
+        TRIANGLE,               // triangles
+        TRIANGLE_FROM_PC,       // triangles from index in the global point cloud
+        QUAD,                   // quads
+        QUAD_FROM_PC,           // quads from index in the global point cloud
+        LINE_STRIP,             // quads
+        LINE_STRIP_FROM_PC,     // quads from index in the global point cloud
+        TRIANGLE_FAN,           // quads
+        TRIANGLE_FAN_FROM_PC,   // quads from index in the global point cloud
 
-        OTHER,              // draw only other elements
-
-        DRAW_ALL            // draw all
+        DRAW_ALL                // draw all
     };
 
     G3DPainter();
@@ -296,7 +298,10 @@ protected:
         GL_BEGIN_TRIANGLE_FROM_PC,      // glBegin(GL_TRIANGLES) but with shader
         GL_BEGIN_QUAD,                  // glBegin(GL_QUADS)
         GL_BEGIN_QUAD_FROM_PC,          // glBegin(GL_QUADS) but with shader
-        GL_OTHER,                       // other elements
+        GL_BEGIN_LINE_STRIP,            // glBegin(GL_LINE_STRIP)
+        GL_BEGIN_LINE_STRIP_FROM_PC,    // glBegin(GL_LINE_STRIP) but with shader
+        GL_BEGIN_TRIANGLE_FAN,          // glBegin(GL_TRIANGLE_FAN)
+        GL_BEGIN_TRIANGLE_FAN_FROM_PC,  // glBegin(GL_TRIANGLE_FAN) but with shader
         GL_END_CALLED                   // glEnd() called
     };
 
@@ -328,11 +333,6 @@ protected:
     bool bindDoubleElementShader();
 
     /**
-     * @brief Set the matrix to double element shader
-     */
-    void setDoubleElementMatrix(const Eigen::Matrix4d &mat);
-
-    /**
      * @brief Release the point shader
      */
     void releaseDoubleElementShader(bool bindOk);
@@ -349,7 +349,7 @@ private:
     G3DPainter::GlBeginType             m_currentGlBeginType;   // The type of the current "glBegin" if "glEnd" was not called. If "glEnd" was called this variable is "GL_END_CALLED".
 
     bool                                m_firstPolygonPointValid;
-    Eigen::Vector4d                     m_firstPolygonPoint;
+    Eigen::Vector3f                     m_firstPolygonPoint;
 
     GLint                               m_maxVertexUniformVec4; // max uniform vec4 in a shader
     int                                 m_maxMatrix;            // max matrix in shader
@@ -378,10 +378,7 @@ private:
     bool                                m_shaderDeError;
     bool                                m_bindShaderDeOK;
     bool                                m_shaderDeLocInitialized;
-    int                                 m_shaderDeLocPMatrix1;
-    int                                 m_shaderDeLocPMatrix2;
-    int                                 m_shaderDeLocPMatrix3;
-    int                                 m_shaderDeLocPMatrix4;
+    int                                 m_shaderDeLocPMatrix;
 
     QColor                              _color;                 // Color used in setCurrentColor method
     QColor                              _forcedColor;           // Color used in setCurrentForcedColor method
@@ -409,6 +406,8 @@ private:
     QStack< Eigen::Matrix4d >           m_matrixStack;                  // stack of matrix if use pushMatrix / popMatrix
     std::vector< Eigen::Matrix4f >      m_csMatrix;                     // matrix for points in the shader (matrix of coordinate system)
     Eigen::Matrix4d                     m_modelViewMatrix4d;            // model/view matrix of the camera
+    QStack< Eigen::Vector4d >           m_camTranslationStack;          // stack of camera translation coordinate
+    Eigen::Vector4d                     m_camTranslation;               // camera translation coordinate
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
     static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 25;

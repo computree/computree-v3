@@ -81,10 +81,7 @@ G3DPainter::G3DPainter()
     m_shaderDe = NULL;
     m_shaderDeError = false;
     m_shaderDeLocInitialized = false;
-    m_shaderDeLocPMatrix1 = -1;
-    m_shaderDeLocPMatrix2 = -1;
-    m_shaderDeLocPMatrix3 = -1;
-    m_shaderDeLocPMatrix4 = -1;
+    m_shaderDeLocPMatrix = -1;
 
     m_csMatrix.resize(64, Eigen::Matrix4f::Identity()); // 64 is the maximum number of matrix in the shader
 
@@ -194,6 +191,10 @@ void G3DPainter::beginNewDraw()
                                modelViewMatrix[2], modelViewMatrix[6], modelViewMatrix[10], modelViewMatrix[14],
                                modelViewMatrix[3], modelViewMatrix[7], modelViewMatrix[11], modelViewMatrix[15];
 
+        m_camTranslation(0) = m_gv->camera()->x();
+        m_camTranslation(1) = m_gv->camera()->y();
+        m_camTranslation(2) = m_gv->camera()->z();
+        m_camTranslation(3) = 1;
     }
 }
 
@@ -264,20 +265,26 @@ void G3DPainter::enableMultMatrix(bool e)
 
 void G3DPainter::pushMatrix()
 {
-    if(_nCallEnablePushMatrix == 0)
+    if(_nCallEnablePushMatrix == 0) {
         m_matrixStack.push(m_modelViewMatrix4d);
+        m_camTranslationStack.push(m_camTranslation);
+    }
 }
 
 void G3DPainter::multMatrix(const Eigen::Matrix4d &matrix)
 {
-    if(_nCallEnablePushMatrix == 0)
+    if(_nCallEnablePushMatrix == 0) {
         m_modelViewMatrix4d = m_modelViewMatrix4d * matrix;
+        m_camTranslation = matrix.inverse() * m_camTranslation;
+    }
 }
 
 void G3DPainter::popMatrix()
 {
-    if((_nCallEnablePushMatrix == 0) && (m_matrixStack.size() > 0))
+    if((_nCallEnablePushMatrix == 0) && (m_matrixStack.size() > 0)) {
         m_modelViewMatrix4d = m_matrixStack.pop();
+        m_camTranslation = m_camTranslationStack.pop();
+    }
 }
 
 void G3DPainter::setPointSize(float size)
@@ -522,9 +529,9 @@ void G3DPainter::drawPoint(const double &x, const double &y, const double &z)
         // Call this method to call "glBegin(GL_POINTS)" if it was not already called
         startDrawMultiple(GL_BEGIN_POINT);
 
-        Eigen::Vector4d v = m_modelViewMatrix4d * Eigen::Vector4d(x, y, z, 1);
-
-        glVertex3dv(v.data());
+        glVertex3f(x - m_camTranslation(0),
+                   y - m_camTranslation(1),
+                   z - m_camTranslation(2));
     }
 }
 
@@ -709,11 +716,16 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
         QList<CT_AbstractCloudIndex*> indexesToDraw;
 
         int s = octree->numberOfCells();
+        double xCellSize, yCellSize, zCellSize;
 
         for(int x=0; x<s; ++x)
         {
+            yCellSize = 0;
+
             for(int y=0; y<s; ++y)
             {
+                zCellSize = 0;
+
                 for(int z=0; z<s; ++z)
                 {
                     const CT_AbstractCloudIndex *indexes = octree->at(x, y, z);
@@ -724,8 +736,8 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
                         {
                             if(modes.testFlag(DrawOctree))
                             {
-                                Eigen::Vector3d p1(min(0)+(x*cellSize), min(1)+(y*cellSize), min(2)+(z*cellSize));
-                                Eigen::Vector3d p2(min(0)+((x+1)*cellSize), min(1)+((y+1)*cellSize), min(2)+((z+1)*cellSize));
+                                Eigen::Vector3d p1(min(0)+xCellSize, min(1)+yCellSize, min(2)+zCellSize);
+                                Eigen::Vector3d p2(min(0)+(xCellSize+cellSize), min(1)+(yCellSize+cellSize), min(2)+(zCellSize+cellSize));
                                 drawCube(p1(0), p1(1), p1(2), p2(0), p2(1), p2(2), GL_FRONT_AND_BACK, GL_LINE);
                             }
 
@@ -735,8 +747,14 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
                             ++m_octreeCellsDraw;
                         }
                     }
+
+                    zCellSize += cellSize;
                 }
+
+                yCellSize += cellSize;
             }
+
+            xCellSize += cellSize;
         }
 
         QListIterator<CT_AbstractCloudIndex*> it(indexesToDraw);
@@ -761,41 +779,50 @@ void G3DPainter::drawCube(const double &x1, const double &y1, const double &z1, 
         setPolygonMode(faces, mode);
         startDrawMultiple(GL_BEGIN_QUAD);
 
+        float x1f = x1 - m_camTranslation(0);
+        float x2f = x2 - m_camTranslation(0);
+
+        float y1f = y1 - m_camTranslation(1);
+        float y2f = y2 - m_camTranslation(1);
+
+        float z1f = z1 - m_camTranslation(2);
+        float z2f = z2 - m_camTranslation(2);
+
         // Bottom
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
+        glVertex3f(x1f, y1f, z1f);
+        glVertex3f(x2f, y1f, z1f);
+        glVertex3f(x2f, y2f, z1f);
+        glVertex3f(x1f, y2f, z1f);
 
         // Top
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
+        glVertex3f(x1f, y1f, z2f);
+        glVertex3f(x2f, y1f, z2f);
+        glVertex3f(x2f, y2f, z2f);
+        glVertex3f(x1f, y2f, z2f);
 
         // Left
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
+        glVertex3f(x1f, y1f, z1f);
+        glVertex3f(x1f, y2f, z1f);
+        glVertex3f(x1f, y2f, z2f);
+        glVertex3f(x1f, y1f, z2f);
 
         // Right
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
+        glVertex3f(x2f, y1f, z1f);
+        glVertex3f(x2f, y2f, z1f);
+        glVertex3f(x2f, y2f, z2f);
+        glVertex3f(x2f, y1f, z2f);
 
         // Front
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y1, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z2, 1)).data());
+        glVertex3f(x1f, y1f, z1f);
+        glVertex3f(x2f, y1f, z1f);
+        glVertex3f(x2f, y1f, z2f);
+        glVertex3f(x1f, y1f, z2f);
 
         // Back
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y2, z2, 1)).data());
+        glVertex3f(x1f, y2f, z1f);
+        glVertex3f(x2f, y2f, z1f);
+        glVertex3f(x2f, y2f, z2f);
+        glVertex3f(x1f, y2f, z2f);
     }
 }
 
@@ -809,10 +836,10 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
     }
 }
 
@@ -827,10 +854,10 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
         setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
     }
 }
 
@@ -845,13 +872,13 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
         glColor3ub(r2, g2, b2);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
         glColor3ub(r3, g3, b3);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
         glColor3ub(r4, g4, b4);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
     }
 }
 
@@ -866,13 +893,13 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
         startDrawMultiple(GL_BEGIN_QUAD);
 
         glColor3ub(r1, g1, b1);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
         glColor3ub(r2, g2, b2);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
         glColor3ub(r3, g3, b3);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
         glColor3ub(r4, g4, b4);
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x4, y4, z4, 1)).data());
+        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
      }
 }
 
@@ -883,22 +910,16 @@ void G3DPainter::drawRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        /*double tx = m_modelViewMatrix4d(0,3);
-        double ty = m_modelViewMatrix4d(1,3);
-        double tz = z - m_modelViewMatrix4d(2,3);
-        /*double tx = 0;
-        double ty = 0;
-        double tz = z;*/
+        float x1 = topLeft(0) - m_camTranslation(0);
+        float x2 = bottomRight(0) - m_camTranslation(0);
+        float y1 = topLeft(1) - m_camTranslation(1);
+        float y2 = bottomRight(1) - m_camTranslation(1);
+        float z0 = z - m_camTranslation(2);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), bottomRight(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), bottomRight(1), z, 1)).data());
-
-        /*glVertex3f(topLeft(0) - tx, topLeft(1) - ty, tz);
-        glVertex3f(bottomRight(0) - tx, topLeft(1) - ty, tz);
-        glVertex3f(bottomRight(0) - tx, bottomRight(1) - ty, tz);
-        glVertex3f(topLeft(0) - tx, bottomRight(1) - ty, tz);*/
+        glVertex3f(x1, y1, z0);
+        glVertex3f(x2, y1, z0);
+        glVertex3f(x2, y2, z0);
+        glVertex3f(x1, y2, z0);
     }
 }
 
@@ -909,10 +930,16 @@ void G3DPainter::fillRectXY(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), topLeft(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), topLeft(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), bottomRight(1), z, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), bottomRight(1), z, 1)).data());
+        float x1 = topLeft(0) - m_camTranslation(0);
+        float x2 = bottomRight(0) - m_camTranslation(0);
+        float y1 = topLeft(1) - m_camTranslation(1);
+        float y2 = bottomRight(1) - m_camTranslation(1);
+        float z0 = z - m_camTranslation(2);
+
+        glVertex3f(x1, y1, z0);
+        glVertex3f(x2, y1, z0);
+        glVertex3f(x2, y2, z0);
+        glVertex3f(x1, y2, z0);
     }
 }
 
@@ -923,10 +950,16 @@ void G3DPainter::drawRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, bottomRight(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, bottomRight(1), 1)).data());
+        float x1 = topLeft(0) - m_camTranslation(0);
+        float x2 = bottomRight(0) - m_camTranslation(0);
+        float z1 = topLeft(1) - m_camTranslation(2);
+        float z2 = bottomRight(1) - m_camTranslation(2);
+        float y0 = y - m_camTranslation(1);
+
+        glVertex3f(x1, y0, z1);
+        glVertex3f(x2, y0, z1);
+        glVertex3f(x2, y0, z2);
+        glVertex3f(x1, y0, z2);
     }
 }
 
@@ -937,10 +970,16 @@ void G3DPainter::fillRectXZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(bottomRight(0), y, bottomRight(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topLeft(0), y, bottomRight(1), 1)).data());
+        float x1 = topLeft(0) - m_camTranslation(0);
+        float x2 = bottomRight(0) - m_camTranslation(0);
+        float z1 = topLeft(1) - m_camTranslation(2);
+        float z2 = bottomRight(1) - m_camTranslation(2);
+        float y0 = y - m_camTranslation(1);
+
+        glVertex3f(x1, y0, z1);
+        glVertex3f(x2, y0, z1);
+        glVertex3f(x2, y0, z2);
+        glVertex3f(x1, y0, z2);
     }
 }
 
@@ -951,10 +990,16 @@ void G3DPainter::drawRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), bottomRight(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), bottomRight(1), 1)).data());
+        float y1 = topLeft(0) - m_camTranslation(1);
+        float y2 = bottomRight(0) - m_camTranslation(1);
+        float z1 = topLeft(1) - m_camTranslation(2);
+        float z2 = bottomRight(1) - m_camTranslation(2);
+        float x0 = x - m_camTranslation(0);
+
+        glVertex3f(x0, y1, z1);
+        glVertex3f(x0, y2, z1);
+        glVertex3f(x0, y2, z2);
+        glVertex3f(x0, y1, z2);
     }
 }
 
@@ -965,10 +1010,16 @@ void G3DPainter::fillRectYZ(const Eigen::Vector2d &topLeft, const Eigen::Vector2
         setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), topLeft(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, bottomRight(0), bottomRight(1), 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x, topLeft(0), bottomRight(1), 1)).data());
+        float y1 = topLeft(0) - m_camTranslation(1);
+        float y2 = bottomRight(0) - m_camTranslation(1);
+        float z1 = topLeft(1) - m_camTranslation(2);
+        float z2 = bottomRight(1) - m_camTranslation(2);
+        float x0 = x - m_camTranslation(0);
+
+        glVertex3f(x0, y1, z1);
+        glVertex3f(x0, y2, z1);
+        glVertex3f(x0, y2, z2);
+        glVertex3f(x0, y1, z2);
     }
 }
 
@@ -978,8 +1029,8 @@ void G3DPainter::drawLine(const double &x1, const double &y1, const double &z1, 
     {
         startDrawMultiple(GL_BEGIN_LINE);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
     }
 }
 
@@ -1078,24 +1129,29 @@ void G3DPainter::drawCircle(const double &x, const double &y, const double &z, c
 
         int size = cosSinA->size();
 
+
         const QPair<double, double> &fPair = (*cosSinA)[0];
-        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d((fPair.first*radius) + x, (fPair.second*radius) + y, z, 1);
-        Eigen::Vector4d firstV = lastV;
+        Eigen::Vector3f lastV(((fPair.first*radius) + x) - m_camTranslation(0),
+                              ((fPair.second*radius) + y) - m_camTranslation(1),
+                              z - m_camTranslation(2));
+        Eigen::Vector3f firstV = lastV;
 
         for(int i=1; i<size; ++i)
         {
             const QPair<double, double> &pair = (*cosSinA)[i];
 
-            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d((pair.first*radius) + x, (pair.second*radius) + y, z, 1);
+            Eigen::Vector3f newV(((pair.first*radius) + x) - m_camTranslation(0),
+                                 ((pair.second*radius) + y) - m_camTranslation(1),
+                                 z - m_camTranslation(2));
 
-            glVertex3dv(lastV.data());
-            glVertex3dv(newV.data());
+            glVertex3fv(lastV.data());
+            glVertex3fv(newV.data());
 
             lastV = newV;
         }
 
-        glVertex3dv(lastV.data());
-        glVertex3dv(firstV.data());
+        glVertex3fv(lastV.data());
+        glVertex3fv(firstV.data());
     }
 }
 
@@ -1131,27 +1187,27 @@ void G3DPainter::drawCircle3D(const Eigen::Vector3d &center, const Eigen::Vector
         int size = cosSinA->size();
 
         const QPair<double, double> &fPair = (*cosSinA)[0];
-        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d(center(0) + (radius*fPair.first)*u(0) + (radius*fPair.second)*v(0),
-                                                                      center(1) + (radius*fPair.first)*u(1) + (radius*fPair.second)*v(1),
-                                                                      center(2) + (radius*fPair.first)*u(2) + (radius*fPair.second)*v(2), 1);
-        Eigen::Vector4d firstV = lastV;
+        Eigen::Vector3f lastV((center(0) + (radius*fPair.first)*u(0) + (radius*fPair.second)*v(0)) - m_camTranslation(0),
+                              (center(1) + (radius*fPair.first)*u(1) + (radius*fPair.second)*v(1)) - m_camTranslation(1),
+                              (center(2) + (radius*fPair.first)*u(2) + (radius*fPair.second)*v(2)) - m_camTranslation(2));
+        Eigen::Vector3f firstV = lastV;
 
         for(int i=1; i<size; ++i)
         {
             const QPair<double, double> &pair = (*cosSinA)[i];
 
-            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d(center(0) + (radius*pair.first)*u(0) + (radius*pair.second)*v(0),
-                                                                         center(1) + (radius*pair.first)*u(1) + (radius*pair.second)*v(1),
-                                                                         center(2) + (radius*pair.first)*u(2) + (radius*pair.second)*v(2), 1);
+            Eigen::Vector3f newV((center(0) + (radius*pair.first)*u(0) + (radius*pair.second)*v(0)) - m_camTranslation(0),
+                                 (center(1) + (radius*pair.first)*u(1) + (radius*pair.second)*v(1)) - m_camTranslation(1),
+                                 (center(2) + (radius*pair.first)*u(2) + (radius*pair.second)*v(2)) - m_camTranslation(2));
 
-            glVertex3dv(lastV.data());
-            glVertex3dv(newV.data());
+            glVertex3fv(lastV.data());
+            glVertex3fv(newV.data());
 
             lastV = newV;
         }
 
-        glVertex3dv(lastV.data());
-        glVertex3dv(firstV.data());
+        glVertex3fv(lastV.data());
+        glVertex3fv(firstV.data());
     }
 }
 
@@ -1168,24 +1224,29 @@ void G3DPainter::drawEllipse(const double &x, const double &y, const double &z, 
 
         int size = cosSinA->size();
 
+
         const QPair<double, double> &fPair = (*cosSinA)[0];
-        Eigen::Vector4d lastV = m_modelViewMatrix4d * Eigen::Vector4d((fPair.first*radiusA) + x, (fPair.second*radiusB) + y, z, 1);
-        Eigen::Vector4d firstV = lastV;
+        Eigen::Vector3f lastV(((fPair.first*radiusA) + x) - m_camTranslation(0),
+                              ((fPair.second*radiusB) + y) - m_camTranslation(1),
+                              z - m_camTranslation(2));
+        Eigen::Vector3f firstV = lastV;
 
         for(int i=1; i<size; ++i)
         {
             const QPair<double, double> &pair = (*cosSinA)[i];
 
-            Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d((pair.first*radiusA) + x, (pair.second*radiusB) + y, z, 1);
+            Eigen::Vector3f newV(((pair.first*radiusA) + x) - m_camTranslation(0),
+                                 ((pair.second*radiusB) + y) - m_camTranslation(1),
+                                 z - m_camTranslation(2));
 
-            glVertex3dv(lastV.data());
-            glVertex3dv(newV.data());
+            glVertex3fv(lastV.data());
+            glVertex3fv(newV.data());
 
             lastV = newV;
         }
 
-        glVertex3dv(lastV.data());
-        glVertex3dv(firstV.data());
+        glVertex3fv(lastV.data());
+        glVertex3fv(firstV.data());
     }
 }
 
@@ -1197,9 +1258,9 @@ void G3DPainter::drawTriangle(const double &x1, const double &y1, const double &
     {
         startDrawMultiple(GL_BEGIN_TRIANGLE);
 
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x1, y1, z1, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x2, y2, z2, 1)).data());
-        glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(x3, y3, z3, 1)).data());
+        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
     }
 }
 
@@ -1369,11 +1430,13 @@ void G3DPainter::addPointToPolygon(const double &x, const double &y, const doubl
 {
     if(canDraw(GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE)) {
 
-        Eigen::Vector4d newV = m_modelViewMatrix4d * Eigen::Vector4d(x, y, z, 1);
+        Eigen::Vector3f newV(x - m_camTranslation(0),
+                             y - m_camTranslation(1),
+                             z - m_camTranslation(2));
 
         if(m_firstPolygonPointValid) {
-            glVertex3dv(m_firstPolygonPoint.data());
-            glVertex3dv(newV.data());
+            glVertex3fv(m_firstPolygonPoint.data());
+            glVertex3fv(newV.data());
         }
 
         m_firstPolygonPoint = newV;
@@ -1428,28 +1491,46 @@ void G3DPainter::drawPyramid(const double &topX, const double &topY, const doubl
                              const double &base3X, const double &base3Y, const double &base3Z,
                              const double &base4X, const double &base4Y, const double &base4Z)
 {
-    if(canDraw(GL_OTHER))
+    if(canDraw(GL_BEGIN_TRIANGLE_FAN) || canDraw(GL_BEGIN_QUAD))
     {
-        stopDrawMultiple();
+        float b1xf = base1X - m_camTranslation(0);
+        float b1yf = base1Y - m_camTranslation(1);
+        float b1zf = base1Z - m_camTranslation(2);
 
-        glBegin( GL_TRIANGLE_FAN );
+        float b2xf = base2X - m_camTranslation(0);
+        float b2yf = base2Y - m_camTranslation(1);
+        float b2zf = base2Z - m_camTranslation(2);
 
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(topX, topY, topZ, 1)).data());
+        float b3xf = base3X - m_camTranslation(0);
+        float b3yf = base3Y - m_camTranslation(1);
+        float b3zf = base3Z - m_camTranslation(2);
 
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base2X, base2Y, base2Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base3X, base3Y, base3Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base4X, base4Y, base4Z, 1)).data());
+        float b4xf = base4X - m_camTranslation(0);
+        float b4yf = base4Y - m_camTranslation(1);
+        float b4zf = base4Z - m_camTranslation(2);
 
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
-        glEnd();
+        if(canDraw(GL_BEGIN_TRIANGLE_FAN))
+        {
+            startDrawMultiple(GL_BEGIN_TRIANGLE_FAN);
 
-        glBegin( GL_QUADS );
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base1X, base1Y, base1Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base2X, base2Y, base2Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base3X, base3Y, base3Z, 1)).data());
-            glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(base4X, base4Y, base4Z, 1)).data());
-        glEnd();
+            glVertex3f(topX - m_camTranslation(0), topY - m_camTranslation(1), topZ - m_camTranslation(2));
+
+            glVertex3f(b1xf, b1yf, b1zf);
+            glVertex3f(b2xf, b2yf, b2zf);
+            glVertex3f(b3xf, b3yf, b3zf);
+            glVertex3f(b4xf, b4yf, b4zf);
+
+            glVertex3f(b1xf, b1yf, b1zf);
+        }
+
+        if(canDraw(GL_BEGIN_QUAD))
+        {
+            startDrawMultiple(GL_BEGIN_QUAD);
+            glVertex3f(b1xf, b1yf, b1zf);
+            glVertex3f(b2xf, b2yf, b2zf);
+            glVertex3f(b3xf, b3yf, b3zf);
+            glVertex3f(b4xf, b4yf, b4zf);
+        }
     }
 }
 
@@ -1459,10 +1540,8 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
                                   const double &initPhi, const double &endPhi,
                                   bool radians)
 {
-    if(canDraw(GL_OTHER))
+    if(canDraw(GL_BEGIN_LINE_STRIP))
     {
-        stopDrawMultiple();
-
         double iTheta = initTheta;
         double eTheta = endTheta;
         double iPhi = initPhi;
@@ -1484,7 +1563,7 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
 
         for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
         {
-            glBegin( GL_LINE_STRIP );
+            startDrawMultiple(GL_BEGIN_LINE_STRIP);
             for ( float currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
             {
                     sinPhi = sin (currentPhi);
@@ -1492,16 +1571,15 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
                     sinTheta = sin (currentTheta);
                     cosTheta = cos (currentTheta);
 
-                    glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(radius*sinPhi*cosTheta + centerX,
-                                                                       radius*sinPhi*sinTheta + centerY,
-                                                                       radius*cosPhi + centerZ, 1)).data());
+                    glVertex3f((radius*sinPhi*cosTheta + centerX) - m_camTranslation(0),
+                               (radius*sinPhi*sinTheta + centerY) - m_camTranslation(1),
+                               (radius*cosPhi + centerZ) - m_camTranslation(2));
             }
-            glEnd();
         }
 
         for ( double currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
         {
-            glBegin( GL_LINE_STRIP );
+            startDrawMultiple(GL_BEGIN_LINE_STRIP);
             for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
             {
                     sinPhi = sin (currentPhi);
@@ -1509,12 +1587,11 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
                     sinTheta = sin (currentTheta);
                     cosTheta = cos (currentTheta);
 
-                    glVertex3dv(Eigen::Vector4d(m_modelViewMatrix4d * Eigen::Vector4d(radius*sinPhi*cosTheta + centerX,
-                                                                       radius*sinPhi*sinTheta + centerY,
-                                                                       radius*cosPhi + centerZ, 1)).data());
+                    glVertex3f((radius*sinPhi*cosTheta + centerX) - m_camTranslation(0),
+                               (radius*sinPhi*sinTheta + centerY) - m_camTranslation(1),
+                               (radius*cosPhi + centerZ) - m_camTranslation(2));
 
             }
-            glEnd();
         }
     }
 }
@@ -1788,54 +1865,33 @@ bool G3DPainter::bindDoubleElementShader()
         else
         {
             if(!m_shaderDeLocInitialized) {
-                m_shaderDeLocPMatrix1 = m_shaderDeProg->uniformLocation("pMatrix");
-                /*m_shaderDeLocPMatrix1 = m_shaderDeProg->attributeLocation("pMatrix1");
-                m_shaderDeLocPMatrix2 = m_shaderDeProg->attributeLocation("pMatrix2");
-                m_shaderDeLocPMatrix3 = m_shaderDeProg->attributeLocation("pMatrix3");
-                m_shaderDeLocPMatrix4 = m_shaderDeProg->attributeLocation("pMatrix4");*/
+                m_shaderDeLocPMatrix = m_shaderDeProg->uniformLocation("pMatrix");
 
                 m_shaderDeLocInitialized = true;
 
                 QString err;
 
-                if(m_shaderDeLocPMatrix1 == -1)
-                    err += "\r\n* attribute \"pMatrix1\" not found.";
-
-                /*if(m_shaderDeLocPMatrix2 == -1)
-                    err += "\r\n* attribute \"pMatrix2\" not found.";
-
-                if(m_shaderDeLocPMatrix3 == -1)
-                    err += "\r\n* attribute \"pMatrix3\" not found.";
-
-                if(m_shaderDeLocPMatrix4 == -1)
-                    err += "\r\n* attribute \"pMatrix4\" not found.";*/
+                if(m_shaderDeLocPMatrix == -1)
+                    err += "\r\n* attribute \"pMatrix\" not found.";
 
                 if(!err.isEmpty())
                     GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderDeSourceFile).arg(err));
             }
 
             Eigen::Matrix4f tmp = m_modelViewMatrix4d.cast<float>();
-            /*tmp(0,3) = 0;
+            tmp(0,3) = 0;
             tmp(1,3) = 0;
-            tmp(2,3) = 0;*/
+            tmp(2,3) = 0;
+            tmp(3,3) = 1;
 
-            //setDoubleElementMatrix(tmp);
-
-            glUniformMatrix4fv(m_shaderDeLocPMatrix1, 1, GL_FALSE, &tmp(0,0));
+            if(m_shaderDeLocPMatrix != -1)
+                glUniformMatrix4fv(m_shaderDeLocPMatrix, 1, GL_FALSE, &tmp(0,0));
 
             return true;
         }
     }
 
     return false;
-}
-
-void G3DPainter::setDoubleElementMatrix(const Eigen::Matrix4d &mat)
-{
-    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix1, mat(0, 0), mat(1, 0), mat(2, 0), mat(3, 0));
-    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix2, mat(0, 1), mat(1, 1), mat(2, 1), mat(3, 1));
-    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix3, mat(0, 2), mat(1, 2), mat(2, 2), mat(3, 2));
-    m_shaderDeProg->setAttributeValue(m_shaderDeLocPMatrix4, mat(0, 3), mat(1, 3), mat(2, 3), mat(3, 3));
 }
 
 void G3DPainter::releaseDoubleElementShader(bool bindOk)
@@ -1918,7 +1974,16 @@ bool G3DPainter::canDraw(G3DPainter::GlBeginType type) const
     if((type == GL_BEGIN_QUAD_FROM_PC) && (m_drawOnly == QUAD_FROM_PC))
         return true;
 
-    if((type == GL_OTHER) && (m_drawOnly == OTHER))
+    if((type == GL_BEGIN_LINE_STRIP) && (m_drawOnly == LINE_STRIP))
+        return true;
+
+    if((type == GL_BEGIN_LINE_STRIP_FROM_PC) && (m_drawOnly == LINE_STRIP_FROM_PC))
+        return true;
+
+    if((type == GL_BEGIN_TRIANGLE_FAN) && (m_drawOnly == TRIANGLE_FAN))
+        return true;
+
+    if((type == GL_BEGIN_TRIANGLE_FAN_FROM_PC) && (m_drawOnly == TRIANGLE_FAN_FROM_PC))
         return true;
 
     return false;
@@ -1940,8 +2005,8 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
         {
             if((type == GL_BEGIN_POINT_FROM_PC) && !m_bindShaderPointOK)
                 m_bindShaderPointOK = bindPointShader();
-            /*else if((type == GL_BEGIN_POINT) && !m_bindShaderDeOK)
-                m_bindShaderDeOK = bindDoubleElementShader();*/
+            else if((type == GL_BEGIN_POINT) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
 
             glBegin(GL_POINTS);
             m_currentGlBeginType = type;
@@ -1951,8 +2016,8 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
         {
             if((type == GL_BEGIN_TRIANGLE_FROM_PC) && !m_bindShaderPointOK)
                 m_bindShaderPointOK = bindPointShader();
-            /*else if((type == GL_BEGIN_TRIANGLE) && !m_bindShaderDeOK)
-                m_bindShaderDeOK = bindDoubleElementShader();*/
+            else if((type == GL_BEGIN_TRIANGLE) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
 
             glBegin(GL_TRIANGLES);
             m_currentGlBeginType = type;
@@ -1962,8 +2027,8 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
         {
             if((type == GL_BEGIN_LINE_FROM_PC) && !m_bindShaderPointOK)
                 m_bindShaderPointOK = bindPointShader();
-            /*else if((type == GL_BEGIN_LINE) && !m_bindShaderDeOK)
-                m_bindShaderDeOK = bindDoubleElementShader();*/
+            else if((type == GL_BEGIN_LINE) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
 
             glBegin(GL_LINES);
             m_currentGlBeginType = type;
@@ -1973,10 +2038,20 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
         {
             if((type == GL_BEGIN_QUAD_FROM_PC) && !m_bindShaderPointOK)
                 m_bindShaderPointOK = bindPointShader();
-            /*else if((type == GL_BEGIN_QUAD) && !m_bindShaderDeOK)
-                m_bindShaderDeOK = bindDoubleElementShader();*/
+            else if((type == GL_BEGIN_QUAD) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
 
             glBegin(GL_QUADS);
+            m_currentGlBeginType = type;
+        }// else if we want to draw line strip or line strip with points from cloud
+        else if((type == GL_BEGIN_LINE_STRIP) || (type == GL_BEGIN_LINE_STRIP_FROM_PC))
+        {
+            if((type == GL_BEGIN_LINE_STRIP_FROM_PC) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader();
+            else if((type == GL_BEGIN_LINE_STRIP) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
+
+            glBegin(GL_LINE_STRIP);
             m_currentGlBeginType = type;
         }
     }
@@ -2003,10 +2078,10 @@ void G3DPainter::stopDrawMultiple(bool rPointShader, bool rDeShader)
     }
 
     // if we want to release the double element shader
-    /*if(m_bindShaderDeOK && rDeShader) {
+    if(m_bindShaderDeOK && rDeShader) {
         releaseDoubleElementShader(m_bindShaderDeOK);
         m_bindShaderDeOK = false;
-    }*/
+    }
 }
 
 void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginType)
@@ -2027,8 +2102,8 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
         m_bindShaderPointOK = false;
 
         // and bind the double element shader
-        /*if(!m_bindShaderDeOK)
-            m_bindShaderDeOK = bindDoubleElementShader();*/
+        if(!m_bindShaderDeOK)
+            m_bindShaderDeOK = bindDoubleElementShader();
     }
     // else if we currently draw with double values and now we want to draw
     // with points from global cloud
@@ -2042,8 +2117,8 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
         m_bindShaderDeOK = false;
 
         // and bind the point shader
-        /*if(!m_bindShaderPointOK)
-            m_bindShaderPointOK = bindPointShader();*/
+        if(!m_bindShaderPointOK)
+            m_bindShaderPointOK = bindPointShader();
     }
     else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
@@ -2121,18 +2196,21 @@ void G3DPainter::G3DPainterCylinder::draw(G3DPainter &painter) const
 
         while(i<s) {
 
-            Eigen::Vector4d v0 = painter.m_modelViewMatrix4d * m_v[i++];
-            Eigen::Vector4d v1 = painter.m_modelViewMatrix4d * m_v[i++];
-            Eigen::Vector4d v2 = painter.m_modelViewMatrix4d * m_v[i++];
-            Eigen::Vector4d v3 = painter.m_modelViewMatrix4d * m_v[i++];
+            const Eigen::Vector4d &v0 = m_v[i++];
+            const Eigen::Vector4d &v1 = m_v[i++];
+            const Eigen::Vector4d &v2 = m_v[i++];
+            const Eigen::Vector4d &v3 = m_v[i++];
 
-            glVertex3dv(v0.data());
-            glVertex3dv(v1.data());
-            glVertex3dv(v2.data());
+            Eigen::Vector3f v1c(v1(0) - painter.m_camTranslation(0), v1(1) - painter.m_camTranslation(1), v1(2) - painter.m_camTranslation(2));
+            Eigen::Vector3f v2c(v2(0) - painter.m_camTranslation(0), v2(1) - painter.m_camTranslation(1), v2(2) - painter.m_camTranslation(2));
 
-            glVertex3dv(v1.data());
-            glVertex3dv(v3.data());
-            glVertex3dv(v2.data());
+            glVertex3f(v0(0) - painter.m_camTranslation(0), v0(1) - painter.m_camTranslation(1), v0(2) - painter.m_camTranslation(2));
+            glVertex3fv(v1c.data());
+            glVertex3fv(v2c.data());
+
+            glVertex3fv(v1c.data());
+            glVertex3f(v3(0) - painter.m_camTranslation(0), v3(1) - painter.m_camTranslation(1), v3(2) - painter.m_camTranslation(2));
+            glVertex3fv(v2c.data());
         }
     }
 }

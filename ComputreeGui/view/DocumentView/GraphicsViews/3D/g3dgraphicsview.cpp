@@ -1125,6 +1125,19 @@ void G3DGraphicsView::drawInternal()
         _g.drawLine(0, 0, 0, sceneRadius(), 0, 0);
     }
 
+    /*_g.drawCube(1000000, 1000000, 1000000, 1000000.001, 1000000.001, 1000000.001);
+    _g.drawCircle(1000000, 1000000, 1000000, 0.001);
+    _g.drawCircle3D(Eigen::Vector3d(1000000, 1000000, 1000000), Eigen::Vector3d(0.5, 0.5, 1).normalized(), 0.001);
+    _g.drawCircle(sceneRadius(), sceneRadius(), sceneRadius(), 0.5);
+    _g.drawCylinder(2, 1, 1, 3, 5);
+    _g.drawCylinder3D(Eigen::Vector3d(1000000, 1000000, 1000000), Eigen::Vector3d(0.5, 0.5, 1).normalized(), 0.0005, 0.001);
+    _g.drawEllipse(1000000, 1000000, 1000000, 0.001, 0.0005);
+    _g.drawPoint(1000000, 1000000, 1000000);
+    _g.drawPoint(1000000, 1000000, 1000000.0005);
+    _g.drawTriangle(1000000, 1000000, 1000000,
+                    1000000.1, 1000000.1, 1000000,
+                    1000000-0.1, 1000000.1, 1000000);*/
+
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
     if(octreeC->hasElements() && !octreeC->mustBeReconstructed() && options.showOctree())
@@ -2049,8 +2062,10 @@ bool G3DGraphicsView::restoreStateFromFile()
 
         QDomNodeList l = main.elementsByTagName("GraphicsOptions");
 
-        if(!l.isEmpty())
-            opt.loadFromXml(l.at(0).toElement());
+        if(!l.isEmpty()) {
+            QDomElement el = l.at(0).toElement();
+            opt.loadFromXml(el);
+        }
 
         if(!_2dActive)
             initFromDOMElement(main);
