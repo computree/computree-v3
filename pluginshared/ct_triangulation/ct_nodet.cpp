@@ -4,7 +4,7 @@
 
 #include <math.h>
 
-CT_NodeT::CT_NodeT(float *point, QObject *associate_object, bool toBeDeleted)
+CT_NodeT::CT_NodeT(Eigen::Vector3d *point, QObject *associate_object, bool toBeDeleted)
 {
     _deletePoint = toBeDeleted;
     _point = point;
@@ -33,15 +33,15 @@ QSharedPointer<CT_EdgeT> CT_NodeT::getEdge() const
     return _edge;
 }
 
-float* CT_NodeT::getPoint() const
+Eigen::Vector3d* CT_NodeT::getPoint() const
 {
     return _point;
 }
 
 double CT_NodeT::distance(double x, double y) const
 {
-    double dx = x - _point[0];
-    double dy = y - _point[1];
+    double dx = x - (*_point)(0);
+    double dy = y - (*_point)(1);
 
     return sqrt(dx*dx + dy*dy);
 }

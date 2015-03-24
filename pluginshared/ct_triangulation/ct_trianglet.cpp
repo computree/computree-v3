@@ -81,22 +81,22 @@ CT_TriangleT::CT_TriangleT()
 
 void CT_TriangleT::findCircle()
 {
-    float *p1 = _an_edge.data()->getN1().data()->getPoint();
-    float *p2 = _an_edge.data()->getN2().data()->getPoint();
-    float *p3 = _an_edge.data()->getLeftEdge().data()->getN2().data()->getPoint();
+    Eigen::Vector3d *p1 = _an_edge.data()->getN1().data()->getPoint();
+    Eigen::Vector3d *p2 = _an_edge.data()->getN2().data()->getPoint();
+    Eigen::Vector3d *p3 = _an_edge.data()->getLeftEdge().data()->getN2().data()->getPoint();
 
     // recuperation des coordonnees des sommets
-    double x1=(double) p1[0];
-    double y1=(double) p1[1];
-    double z1=(double) p1[2];
+    double x1= (*p1)(0);
+    double y1= (*p1)(1);
+    double z1= (*p1)(2);
 
-    double x2=(double) p2[0];
-    double y2=(double) p2[1];
-    double z2=(double) p2[2];
+    double x2= (*p2)(0);
+    double y2= (*p2)(1);
+    double z2= (*p2)(2);
 
-    double x3=(double) p3[0];
-    double y3=(double) p3[1];
-    double z3=(double) p3[2];
+    double x3= (*p3)(0);
+    double y3= (*p3)(1);
+    double z3= (*p3)(2);
 
     // calcul des coefficients du syteme a resoudre
     double a=(y2-y3)*(x2-x1)-(y2-y1)*(x2-x3);

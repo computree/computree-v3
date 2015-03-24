@@ -227,16 +227,16 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_PointCloudIndexVec
     CT_DelaunayT delaunay;
 
     CT_PointIterator it(indices);
-
     while(it.hasNext())
     {
-        // TODO : use the point in double
-        CT_PointData &point = it.next().currentInternalPoint();
-        float* pt = &point(0);
+        const CT_Point &point = it.next().currentPoint();
+        Eigen::Vector3d* pt = new Eigen::Vector3d(point);
 
-        delaunay.insertNode(CT_NodeT::create(pt, NULL, false));
+        delaunay.insertNode(CT_NodeT::create(pt, NULL, true));
     }
-    return createConvexHull(delaunay);
+
+    CT_Polygon2DData* poly = createConvexHull(delaunay);
+    return poly;
 }
 
 CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_DelaunayT &triangulation)
@@ -253,9 +253,9 @@ CT_Polygon2DData* CT_Polygon2DData::createConvexHull(const CT_DelaunayT &triangu
     for (int i = 0 ; i < size ; i++)
     {
         QSharedPointer<CT_NodeT> node = nodes.at(i);
-        float* point = node.data()->getPoint();
+        Eigen::Vector3d* point = node.data()->getPoint();
 
-        Eigen::Vector2d *vertice = new Eigen::Vector2d(point[0], point[1]);
+        Eigen::Vector2d *vertice = new Eigen::Vector2d((*point)(0), (*point)(1));
         convexHull.append(vertice);
     }
 

@@ -36,7 +36,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_VoronoiNodeT
 {
 public:
 
-    static QSharedPointer<CT_VoronoiNodeT> create(float x, float y, float z)
+    static QSharedPointer<CT_VoronoiNodeT> create(double x, double y, double z)
     {
         QSharedPointer<CT_VoronoiNodeT> ptr(new CT_VoronoiNodeT(x, y, z));
 
@@ -44,15 +44,15 @@ public:
     }
 
     // retourne les coordonnees du point
-    float getX() const;
-    float getY() const;
-    float getZ() const;
+    double getX() const;
+    double getY() const;
+    double getZ() const;
 
 private:
 
-    CT_VoronoiNodeT(float x, float y, float z);
+    CT_VoronoiNodeT(double x, double y, double z);
 
-    float _x, _y, _z;
+    double _x, _y, _z;
 };
 
 #endif // CT_VORONOINODET_H

@@ -111,9 +111,9 @@ void CT_EdgeT::linkSymmetry(QSharedPointer<CT_EdgeT> inversed_edge)
 
 int CT_EdgeT::onSide(QSharedPointer<CT_NodeT> n) const
 {
-    float *p = n.data()->getPoint();
+    Eigen::Vector3d *p = n.data()->getPoint();
 
-    double s = _a*(double)p[0] + _b*(double)p[1] + _c;
+    double s = _a*(*p)(0) + _b*(*p)(1) + _c;
 
     if(s>0.0) return 1;
     if(s<0.0) return -1;
@@ -139,10 +139,10 @@ CT_EdgeT::CT_EdgeT()
 
 void CT_EdgeT::computeLineEquation()
 {
-    float *p1 = _n1.data()->getPoint();
-    float *p2 = _n2.data()->getPoint();
+    Eigen::Vector3d *p1 = _n1.data()->getPoint();
+    Eigen::Vector3d *p2 = _n2.data()->getPoint();
 
-    _a = (double)p2[1]-(double)p1[1];
-    _b = (double)p1[0]-(double)p2[0];
-    _c = ((double)p2[0]*(double)p1[1]) - ((double)p1[0]*(double)p2[1]);
+    _a = (*p2)(1) - (*p1)(1);
+    _b = (*p1)(0) - (*p2)(0);
+    _c = ((*p2)(0)*(*p1)(1)) - ((*p1)(0)*(*p2)(1));
 }

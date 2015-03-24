@@ -31,12 +31,14 @@
 #include <QSharedPointer>
 #include "ct_edget.h"
 
+#include "eigen/Eigen/Core"
+
 class CT_VoronoiNodeT;
 
 class PLUGINSHAREDSHARED_EXPORT CT_NodeT
 {
 public:
-    static QSharedPointer<CT_NodeT> create(float *point, QObject *associate_object = NULL, bool toBeDeleted = false)
+    static QSharedPointer<CT_NodeT> create(Eigen::Vector3d *point, QObject *associate_object = NULL, bool toBeDeleted = false)
     {
         QSharedPointer<CT_NodeT> ptr(new CT_NodeT(point, associate_object, toBeDeleted));
         ptr.data()->_this = ptr.toWeakRef();
@@ -54,7 +56,7 @@ public:
     // retourne une des aretes reliees a cette node
     QSharedPointer<CT_EdgeT> getEdge() const;
     // retourne le tableau des coordonnees de cette node x, y ,z
-    float* getPoint() const;
+    Eigen::Vector3d* getPoint() const;
     // retourne l'objet associe
     QObject* getAssociateObject() const;
     // retourne la liste des nodes autour reliees a cette node
@@ -67,11 +69,11 @@ public:
 
 private:
 
-    CT_NodeT(float *point, QObject *associate_object = NULL, bool toBeDeleted = false);
+    CT_NodeT(Eigen::Vector3d *point, QObject *associate_object = NULL, bool toBeDeleted = false);
 
     QWeakPointer<CT_NodeT>     _this;              // pointeur de la node
 
-    float                   *_point;            // coordonnee X, Y et Z (Z pouvant etre omis pour une triangulation 2D)
+    Eigen::Vector3d                   *_point;            // coordonnee X, Y et Z (Z pouvant etre omis pour une triangulation 2D)
     QSharedPointer<CT_EdgeT>   _edge;              // arete qui part de ce noeud
     QObject                 *_associate_object; // objet associe
     bool                    _deletePoint; // faut-il supprimer le point attaché

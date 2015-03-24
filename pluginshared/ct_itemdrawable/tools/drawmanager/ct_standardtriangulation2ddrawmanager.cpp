@@ -85,9 +85,9 @@ void CT_StandardTriangulation2DDrawManager::drawNodes(GraphicsViewInterface &vie
 
     while(it.hasNext())
     {
-        float *p = it.next().data()->getPoint();
+        Eigen::Vector3d *p = it.next().data()->getPoint();
 
-        painter.drawPoint(p[0], p[1], p[2]);
+        painter.drawPoint((*p)(0), (*p)(1), (*p)(2));
     }
 
     painter.restoreDefaultPointSize();
@@ -105,10 +105,10 @@ void CT_StandardTriangulation2DDrawManager::drawEdges(GraphicsViewInterface &vie
     {
         QSharedPointer<CT_EdgeT> ed = it.next();
 
-        float *p1 = ed.data()->getN1().data()->getPoint();
-        float *p2 = ed.data()->getN2().data()->getPoint();
+        Eigen::Vector3d *p1 = ed.data()->getN1().data()->getPoint();
+        Eigen::Vector3d *p2 = ed.data()->getN2().data()->getPoint();
 
-        painter.drawLine(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2]);
+        painter.drawLine((*p1)(0), (*p1)(1), (*p1)(2), (*p2)(0), (*p2)(1), (*p2)(2));
     }
 }
 
@@ -126,10 +126,10 @@ void CT_StandardTriangulation2DDrawManager::drawHull(GraphicsViewInterface &view
 
         do
         {
-            float *p1 = next_edge.data()->getN1().data()->getPoint();
-            float *p2 = next_edge.data()->getN2().data()->getPoint();
+            Eigen::Vector3d *p1 = next_edge.data()->getN1().data()->getPoint();
+            Eigen::Vector3d *p2 = next_edge.data()->getN2().data()->getPoint();
 
-            painter.drawLine(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2]);
+            painter.drawLine((*p1)(0), (*p1)(1), (*p1)(2), (*p2)(0), (*p2)(1), (*p2)(2));
 
             next_edge = next_edge.data()->getHullEdge();
 
