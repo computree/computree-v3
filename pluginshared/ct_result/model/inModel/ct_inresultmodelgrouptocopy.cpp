@@ -116,6 +116,8 @@ CT_InAbstractModel* CT_InResultModelGroupToCopy::copy(bool withPossibilities) co
     CT_InResultModelGroupToCopy *cpy = new CT_InResultModelGroupToCopy(uniqueName(), rootCpy, displayableName(), description(), isRecursive());
     cpy->setStep(step());
     cpy->setOriginalModel(this);
+    cpy->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(minimumNumberOfPossibilityThatMustBeSelectedForOneTurn());
+    cpy->setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(maximumNumberOfPossibilityThatCanBeSelectedForOneTurn());
 
     if(withPossibilities)
         CT_InAbstractModel::staticCopyPossibilitiesToModel(this, cpy);

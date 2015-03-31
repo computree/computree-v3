@@ -96,7 +96,7 @@ void CT_InStdModelPossibilityGroup::setEnable(bool en)
 
 bool CT_InStdModelPossibilityGroup::setMinimumNumberOfPossibilityThatMustBeSelected(int n)
 {
-    if((n > maximumNumberOfPossibilityThatCanBeSelected()) || (n <= 0))
+    if((n > maximumNumberOfPossibilityThatCanBeSelected()) || (n < 0))
         return false;
 
     m_minMustBeSelected = n;
