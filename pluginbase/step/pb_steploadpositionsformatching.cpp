@@ -11,12 +11,14 @@
 #define DEFout_ref "ref"
 #define DEFout_refVal "refval"
 #define DEFout_refID "refID"
+#define DEFout_refIDplot "refIDplot"
 
 #define DEFout_transRes "transRes"
 #define DEFout_grpTrans "grpTrans"
 #define DEFout_trans "trans"
 #define DEFout_transVal "transval"
 #define DEFout_transID "transID"
+#define DEFout_transIDplot "transIDplot"
 
 #include <QFile>
 #include <QTextStream>
@@ -87,12 +89,14 @@ void PB_StepLoadPositionsForMatching::createOutResultModelListProtected(CT_OutRe
     res_refRes->addItemModel(DEFout_grpRef, DEFout_ref, new CT_Point2D(), tr("Position de référence"));
     res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refVal, new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER), tr("Valeur"));
     res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("ID"));
+    res_refRes->addItemAttributeModel(DEFout_ref, DEFout_refIDplot, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("IDplot"));
 
     CT_OutResultModelGroup *res_transRes = createNewOutResultModel(DEFout_transRes, tr("Positions à transformer"));
     res_transRes->setRootGroup(DEFout_grpTrans, new CT_StandardItemGroup(), tr("Groupe"));
     res_transRes->addItemModel(DEFout_grpTrans, DEFout_trans, new CT_Point2D(), tr("Position à transformer"));
     res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transVal, new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER), tr("Valeur"));
     res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transID, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("ID"));
+    res_transRes->addItemAttributeModel(DEFout_trans, DEFout_transIDplot, new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID), tr("IDplot"));
 
 }
 
@@ -111,15 +115,57 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
     Q_UNUSED(group);
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* res_refRes = outResultList.at(0);
-    CT_ResultGroup* res_transRes = outResultList.at(1);
+    CT_ResultGroup* res_refRes = outResultList.at(1);
+    CT_ResultGroup* res_transRes = outResultList.at(2);
 
 
     int colIDplot_ref  = _refColumns.value("ID_Plot", -1);
     int colIDplot_trans  = _refColumns.value("ID_Plot", -1);
-    bool multiPlots = (colIDplot_ref >= 0);
+    bool multiPlots = (colIDplot_ref >= 0 && colIDplot_trans >= 0);
 
     QSharedPointer<CT_Counter> counter = getCounter();
+    size_t  currentTurn = counter->getCurrentTurn();
+
+
+    // Au premier tour : création de la liste des placettes
+    if (multiPlots && currentTurn == 1)
+    {
+        _plotsIds.clear();
+
+        QFile fRef00(_refFileName);
+        if (fRef00.exists() && fRef00.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QTextStream stream(&fRef00);
+            stream.setLocale(_refLocale);
+
+            for (int i = 0 ; i < _refSkip ; i++) {stream.readLine();}
+            if (_refHeader) {stream.readLine();}
+
+            while (!stream.atEnd())
+            {
+                QString line = stream.readLine();
+                if (!line.isEmpty())
+                {
+                    QStringList values = line.split(_refSeparator);
+
+                    if (values.size() > colIDplot_ref)
+                    {
+                        const QString &val = values.at(colIDplot_ref);
+                        if (!_plotsIds.contains(val)) {_plotsIds.append(val);}
+                    }
+                }
+            }
+            fRef00.close();
+        }
+        counter->setNTurns(_plotsIds.size());
+        if (_plotsIds.size() <= 0) {return;}
+    }
+
+
+    QString currentPlot = "";
+    if (multiPlots) {currentPlot = _plotsIds.at(currentTurn - 1);}
+    NTurnsSelected();
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Placette en cours de traitement : %1")).arg(currentPlot));
 
 
 
@@ -150,34 +196,37 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
             {
                 QString line = stream.readLine();
                 cpt++;
-                if (!line.isNull())
+                if (!line.isEmpty())
                 {
                     QStringList values = line.split(_refSeparator);
                     if (values.size() >= colMax)
                     {
-                        bool okX, okY, okVal;
-                        double x = values.at(colX).toDouble(&okX);
-                        double y = values.at(colY).toDouble(&okY);
-                        float val = values.at(colVal).toFloat(&okVal);
-                        QString id = values.at(colID);
+                        QString plot = "";
+                        if (multiPlots) {plot = values.at(colIDplot_ref);}
 
-                        if (okX && okY && okVal)
+                        if (plot == currentPlot)
                         {
-                            CT_StandardItemGroup* grp_grpRef= new CT_StandardItemGroup(DEFout_grpRef, res_refRes);
-                            res_refRes->addGroup(grp_grpRef);
+                            bool okX, okY, okVal;
+                            double x = values.at(colX).toDouble(&okX);
+                            double y = values.at(colY).toDouble(&okY);
+                            float val = values.at(colVal).toFloat(&okVal);
+                            QString id = values.at(colID);
 
-                            CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(x,y));
-                            grp_grpRef->addItemDrawable(item_ref);
+                            if (okX && okY && okVal)
+                            {
+                                CT_StandardItemGroup* grp_grpRef= new CT_StandardItemGroup(DEFout_grpRef, res_refRes);
+                                res_refRes->addGroup(grp_grpRef);
 
-                            item_ref->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_refVal, CT_AbstractCategory::DATA_HEIGHT, res_refRes, val));
-                            item_ref->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_refID, CT_AbstractCategory::DATA_ID, res_refRes, id));
+                                CT_Point2D* item_ref = new CT_Point2D(DEFout_ref, res_refRes, new CT_Point2DData(x,y));
+                                grp_grpRef->addItemDrawable(item_ref);
 
-
-
-                        } else {
-                            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Ligne %1 du fichier REF non valide")).arg(cpt));
+                                item_ref->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_refVal, CT_AbstractCategory::DATA_NUMBER, res_refRes, val));
+                                item_ref->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_refID, CT_AbstractCategory::DATA_ID, res_refRes, id));
+                                item_ref->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_refIDplot, CT_AbstractCategory::DATA_ID, res_refRes, plot));
+                            } else {
+                                PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Ligne %1 du fichier REF non valide")).arg(cpt));
+                            }
                         }
-
                     }
                 }
             }
@@ -194,7 +243,6 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
         QTextStream stream(&fTrans);
         stream.setLocale(_transLocale);
 
-        int colIDplot  = _transColumns.value("ID_Plot", -1);
         int colID = _transColumns.value("ID", -1);
         int colX = _transColumns.value("X", -1);
         int colY = _transColumns.value("Y", -1);
@@ -216,31 +264,38 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
             while (!stream.atEnd())
             {
                 QString line = stream.readLine();
-                if (!line.isNull())
+                if (!line.isEmpty())
                 {
                     QStringList values = line.split(_transSeparator);
                     if (values.size() >= colMax)
                     {
-                        bool okX, okY, okVal;
-                        double x = values.at(colX).toDouble(&okX);
-                        double y = values.at(colY).toDouble(&okY);
-                        float val = values.at(colVal).toFloat(&okVal);
-                        QString id = values.at(colID);
+                        QString plot = "";
+                        if (multiPlots) {plot = values.at(colIDplot_trans);}
 
-                        if (okX && okY && okVal)
+                        if (plot == currentPlot)
                         {
-                            CT_StandardItemGroup* grp_grpTrans= new CT_StandardItemGroup(DEFout_grpTrans, res_transRes);
-                            res_transRes->addGroup(grp_grpTrans);
 
-                            CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(x,y));
-                            grp_grpTrans->addItemDrawable(item_trans);
+                            bool okX, okY, okVal;
+                            double x = values.at(colX).toDouble(&okX);
+                            double y = values.at(colY).toDouble(&okY);
+                            float val = values.at(colVal).toFloat(&okVal);
+                            QString id = values.at(colID);
 
-                            item_trans->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_transVal, CT_AbstractCategory::DATA_HEIGHT, res_transRes, val));
-                            item_trans->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_transID, CT_AbstractCategory::DATA_ID, res_transRes, id));
-                        } else {
-                            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Ligne %1 du fichier TRANS non valide")).arg(cpt));
+                            if (okX && okY && okVal)
+                            {
+                                CT_StandardItemGroup* grp_grpTrans= new CT_StandardItemGroup(DEFout_grpTrans, res_transRes);
+                                res_transRes->addGroup(grp_grpTrans);
+
+                                CT_Point2D* item_trans = new CT_Point2D(DEFout_trans, res_transRes, new CT_Point2DData(x,y));
+                                grp_grpTrans->addItemDrawable(item_trans);
+
+                                item_trans->addItemAttribute(new CT_StdItemAttributeT<float>(DEFout_transVal, CT_AbstractCategory::DATA_NUMBER, res_transRes, val));
+                                item_trans->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_transID, CT_AbstractCategory::DATA_ID, res_transRes, id));
+                                item_trans->addItemAttribute(new CT_StdItemAttributeT<QString>(DEFout_transIDplot, CT_AbstractCategory::DATA_ID, res_transRes, plot));
+                            } else {
+                                PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Ligne %1 du fichier TRANS non valide")).arg(cpt));
+                            }
                         }
-
                     }
                 }
             }

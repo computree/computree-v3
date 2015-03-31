@@ -36,6 +36,17 @@ CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neede
 
     init();
     extractFieldsNames();
+
+    connect(ui->fileChoose, SIGNAL(clicked()), this, SLOT(fileChoose_clicked()));
+    connect(ui->separator, SIGNAL(currentIndexChanged(QString)), this, SLOT(separator_currentIndexChanged(QString)));
+    connect(ui->nbLines, SIGNAL(valueChanged(int)), this, SLOT(nbLines_valueChanged(int)));
+    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(buttonBox_accepted()));
+    connect(ui->cb_showCols, SIGNAL(clicked()), this, SLOT(cb_showCols_clicked()));
+    connect(ui->sb_tabSize, SIGNAL(valueChanged(int)), this, SLOT(sb_tabSize_valueChanged(int)));
+    connect(ui->skipLines, SIGNAL(valueChanged(int)), this, SLOT(skipLines_valueChanged(int)));
+    connect(ui->cb_noheader, SIGNAL(clicked()), this, SLOT(cb_noheader_clicked()));
+    connect(ui->pb_detect, SIGNAL(clicked()), this, SLOT(pb_detect_clicked()));
+
 }
 
 void CT_TextFileConfigurationDialog::init()
@@ -50,10 +61,10 @@ void CT_TextFileConfigurationDialog::init()
             _stream = new QTextStream(_file);
             _file->close();
 
-            if (_autoDetect) {on_pb_detect_clicked();}
+            if (_autoDetect) {pb_detect_clicked();}
 
             ui->filePath->setText(_filename);
-            on_nbLines_valueChanged(ui->nbLines->value());
+            nbLines_valueChanged(ui->nbLines->value());
         } else {
             ui->filePath->setText("Aucun fichier valide choisi.");
             ui->fileExtract->setText("");
@@ -68,7 +79,7 @@ CT_TextFileConfigurationDialog::~CT_TextFileConfigurationDialog()
     delete ui;
 }
 
-void CT_TextFileConfigurationDialog::on_fileChoose_clicked()
+void CT_TextFileConfigurationDialog::fileChoose_clicked()
 {
     QString filter = "Fichier ascii (*";
 
@@ -101,7 +112,7 @@ void CT_TextFileConfigurationDialog::on_fileChoose_clicked()
     extractFieldsNames();
 }
 
-void CT_TextFileConfigurationDialog::on_separator_currentIndexChanged(const QString &arg1)
+void CT_TextFileConfigurationDialog::separator_currentIndexChanged(const QString &arg1)
 {
     if (arg1 == "Virgule") {
         _separator = ",";
@@ -113,11 +124,11 @@ void CT_TextFileConfigurationDialog::on_separator_currentIndexChanged(const QStr
         _separator = "\t";
     }
 
-    on_nbLines_valueChanged(ui->nbLines->value());
+    nbLines_valueChanged(ui->nbLines->value());
     extractFieldsNames();
 }
 
-void CT_TextFileConfigurationDialog::on_nbLines_valueChanged(int arg1)
+void CT_TextFileConfigurationDialog::nbLines_valueChanged(int arg1)
 {
     QString result = "";
     if (_file!=NULL && _file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
@@ -218,7 +229,7 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
     }
 }
 
-void CT_TextFileConfigurationDialog::on_buttonBox_accepted()
+void CT_TextFileConfigurationDialog::buttonBox_accepted()
 {
     _neededFieldsColumns.clear();
     QMapIterator<QLabel*, QComboBox*> it(_combos);
@@ -288,7 +299,7 @@ void CT_TextFileConfigurationDialog::setFieldColumnsSelected(const QMap<QString,
     }
 }
 
-void CT_TextFileConfigurationDialog::setFieldColumnsSelectedFromString(QString mapAsString)
+QMap<QString, int> CT_TextFileConfigurationDialog::setFieldColumnsSelectedFromString(QString mapAsString)
 {
     QMap<QString, int> map;
 
@@ -307,6 +318,8 @@ void CT_TextFileConfigurationDialog::setFieldColumnsSelectedFromString(QString m
         }
     }
     setFieldColumnsSelected(map);
+
+    return map;
 }
 
 QString CT_TextFileConfigurationDialog::getFieldColumnsSelectedAsString(const QMap<QString, int> &map)
@@ -387,30 +400,30 @@ void CT_TextFileConfigurationDialog::setDecimal(QString decimal)
 
 
 
-void CT_TextFileConfigurationDialog::on_cb_showCols_clicked()
+void CT_TextFileConfigurationDialog::cb_showCols_clicked()
 {
-    on_nbLines_valueChanged(ui->nbLines->value());
+    nbLines_valueChanged(ui->nbLines->value());
 }
 
-void CT_TextFileConfigurationDialog::on_sb_tabSize_valueChanged(int arg1)
+void CT_TextFileConfigurationDialog::sb_tabSize_valueChanged(int arg1)
 {
     ui->fileExtract->setTabStopWidth(arg1);
-    on_nbLines_valueChanged(ui->nbLines->value());
+    nbLines_valueChanged(ui->nbLines->value());
 }
 
 
-void CT_TextFileConfigurationDialog::on_skipLines_valueChanged(int arg1)
+void CT_TextFileConfigurationDialog::skipLines_valueChanged(int arg1)
 {
     Q_UNUSED(arg1);
     extractFieldsNames();
 }
 
-void CT_TextFileConfigurationDialog::on_cb_noheader_clicked()
+void CT_TextFileConfigurationDialog::cb_noheader_clicked()
 {
     extractFieldsNames();
 }
 
-void CT_TextFileConfigurationDialog::on_pb_detect_clicked()
+void CT_TextFileConfigurationDialog::pb_detect_clicked()
 {
 
     // Detect fieds separator automatically

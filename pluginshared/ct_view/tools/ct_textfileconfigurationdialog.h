@@ -65,7 +65,7 @@ public:
     inline int getColumnForField(QString neededField) {return _neededFieldsColumns.value(neededField);}
     inline QMap<QString, int> getNeededFieldColumns() {return _neededFieldsColumns;}
 
-    void setFieldColumnsSelectedFromString(QString mapAsString);
+    QMap<QString, int> setFieldColumnsSelectedFromString(QString mapAsString);
     QString getFieldColumnsSelectedAsString(const QMap<QString, int> &map);
 
     void setFileNameWithPath(const QString &path);
@@ -83,20 +83,20 @@ public slots:
 private slots:
 
     void clearFieldCombos();
-    void on_fileChoose_clicked();
-    void on_separator_currentIndexChanged(const QString &arg1);
-    void on_nbLines_valueChanged(int arg1);
-    void on_buttonBox_accepted();
+    void fileChoose_clicked();
+    void separator_currentIndexChanged(const QString &arg1);
+    void nbLines_valueChanged(int arg1);
+    void buttonBox_accepted();
 
-    void on_cb_showCols_clicked();
+    void cb_showCols_clicked();
 
-    void on_sb_tabSize_valueChanged(int arg1);
+    void sb_tabSize_valueChanged(int arg1);
 
-    void on_skipLines_valueChanged(int arg1);
+    void skipLines_valueChanged(int arg1);
 
-    void on_cb_noheader_clicked();
+    void cb_noheader_clicked();
 
-    void on_pb_detect_clicked();
+    void pb_detect_clicked();
 
 private:
     Ui::CT_TextFileConfigurationDialog *ui;

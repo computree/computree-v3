@@ -11,6 +11,8 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 
+#include "ct_itemdrawable/ct_loopcounter.h"
+
 #include <limits>
 #include <eigen/Eigen/Core>
 #include <eigen/Eigen/Dense>
@@ -35,6 +37,11 @@
 #define DEFin_transy "transy"
 #define DEFin_transvalue "transvalue"
 #define DEFin_transid "transid"
+
+#define DEF_inResultCounter "Cr"
+#define DEF_inGroupCounter "Cg"
+#define DEF_inCounter "Cc"
+
 
 #define DEFout_rootGrp "rootGrp"
 #define DEFout_trMat "trMat"
@@ -73,7 +80,10 @@ PB_StepMatchItemsPositions::PB_StepMatchItemsPositions(CT_StepInitializeData &da
     _minval = 0;
     _maxval = 5;
     _exportReport = true;
+    _exportData = true;
     _reportFileName.append("matchingReport.txt");
+    _transformedDataFileName.append("transformedData.txt");
+    _transformationDataFileName.append("transformationData.txt");
 }
 
 // Step description (tooltip of contextual menu)
@@ -124,6 +134,10 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
     resIn_transpos->addItemAttributeModel(DEFin_transpos, DEFin_transvalue, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::NUMBER, tr("Valeur"));
 
+    CT_InResultModelGroup* res_counter = createNewInResultModel(DEF_inResultCounter, tr("Résultat compteur"), "", true);
+    res_counter->setRootGroup(DEF_inGroupCounter);
+    res_counter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
+    res_counter->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
 }
 
 // Creation and affiliation of OUT models
@@ -211,8 +225,14 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
     configDialog->addDouble(tr("Valeur de Z/Rayon maximum"), "m", -1e+09, 1e+09, 2, _maxval, 1);
 
     configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>Export des données :</b>"));
+
     configDialog->addBool(tr("Exporter un rapport de Recalage"), "", "", _exportReport);
     configDialog->addFileChoice(tr("Fichier d'export du rapport de Recalage"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _reportFileName);
+
+    configDialog->addBool(tr("Exporter les données dans un fichier multi-placettes"), "", "", _exportData);
+    configDialog->addFileChoice(tr("Fichier d'export (multi-placettes) de données transformées"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _transformedDataFileName);
+    configDialog->addFileChoice(tr("Fichier d'export (multi-placettes) des paramètres de transformation"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _transformationDataFileName);
 
 }
 

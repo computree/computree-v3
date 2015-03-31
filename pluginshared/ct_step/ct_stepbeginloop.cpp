@@ -97,9 +97,6 @@ void CT_StepBeginLoop::compute()
 
     }
 
-    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Début de boucle, tour %1 sur %2")).arg(_counter->getCurrentTurn()).arg(_counter->getNTurns()));
-
-
     CT_LoopCounter* loopCounter = new CT_LoopCounter(DEF_outCounter, outRes, _counter);
     group->addItemDrawable(loopCounter);
 
@@ -113,5 +110,12 @@ void CT_StepBeginLoop::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* gro
 {
     Q_UNUSED(outRes);
     Q_UNUSED(group);
+
+    NTurnsSelected();
+}
+
+void CT_StepBeginLoop::NTurnsSelected()
+{
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Début de boucle, tour %1 sur %2")).arg(_counter->getCurrentTurn()).arg(_counter->getNTurns()));
 }
 

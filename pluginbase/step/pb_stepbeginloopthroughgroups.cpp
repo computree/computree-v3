@@ -92,8 +92,9 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
 
     if (outResult_g != NULL)
     {
-        CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
         int cpt = 1;
+
+        CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
         while (it.hasNext() && (!isStopped()))
         {
             CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
@@ -105,6 +106,7 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
 
         if (_counter->getCurrentTurn() == 1) {
             _counter->setNTurns(cpt);
+            NTurnsSelected();
         }
     }
 

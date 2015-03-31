@@ -104,6 +104,9 @@ private:
     double      _maxval;
     bool        _exportReport;
     QStringList _reportFileName;
+    bool        _exportData;
+    QStringList _transformedDataFileName;
+    QStringList _transformationDataFileName;
 
 
     template <typename T> int sgn(T val)

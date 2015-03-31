@@ -99,6 +99,9 @@ private:
     QMap<QString, int> _refColumns;
     QMap<QString, int> _transColumns;
 
+    QList<QString> _plotsIds;
+
+
 };
 
 #endif // PB_STEPLOADPOSITIONSFORMATCHING_H

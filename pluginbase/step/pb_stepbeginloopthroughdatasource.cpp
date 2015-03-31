@@ -151,6 +151,7 @@ void PB_StepBeginLoopThroughDataSource::compute(CT_ResultGroup *outRes, CT_Stand
 
             if (_counter->getCurrentTurn() == 1) {
                 _counter->setNTurns(dataSource->getNumberOfReader());
+                NTurnsSelected();
             }
 
             dataSource->init((int)_counter->getCurrentTurn() - 1);

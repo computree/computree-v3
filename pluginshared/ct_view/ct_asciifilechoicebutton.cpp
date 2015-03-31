@@ -139,6 +139,8 @@ bool CT_AsciiFileChoiceButton::setAllValues(const QList<SettingsNodeGroup*> &lis
     if(values.isEmpty()) {return false;}
     _columnsAsString = values.first()->value().toString();
 
+    *_columns = _dialog->setFieldColumnsSelectedFromString(_columnsAsString);
+
     _labelCreated->setText(*_fileName);
     return okSkip;
 }

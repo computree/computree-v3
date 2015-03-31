@@ -41,6 +41,8 @@ protected:
 
     inline QSharedPointer<CT_Counter> getCounter() const {return _counter;}
 
+    void NTurnsSelected();
+
 private:
     int                         _nTurns;
 };
