@@ -169,6 +169,7 @@ void G3DPainter::beginNewDraw()
     m_bindShaderPointOK = false;
 
     m_bindShaderDeOK = false;
+    m_doubleElementMatrixMustBeUpdated = true;
 
     m_firstPolygonPointValid = false;
 
@@ -284,6 +285,7 @@ void G3DPainter::popMatrix()
     if((_nCallEnablePushMatrix == 0) && (m_matrixStack.size() > 0)) {
         m_modelViewMatrix4d = m_matrixStack.pop();
         m_camTranslation = m_camTranslationStack.pop();
+        m_doubleElementMatrixMustBeUpdated = true;
     }
 }
 
@@ -1878,14 +1880,7 @@ bool G3DPainter::bindDoubleElementShader()
                     GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" error :%2").arg(m_shaderDeSourceFile).arg(err));
             }
 
-            Eigen::Matrix4f tmp = m_modelViewMatrix4d.cast<float>();
-            tmp(0,3) = 0;
-            tmp(1,3) = 0;
-            tmp(2,3) = 0;
-            tmp(3,3) = 1;
-
-            if(m_shaderDeLocPMatrix != -1)
-                glUniformMatrix4fv(m_shaderDeLocPMatrix, 1, GL_FALSE, &tmp(0,0));
+            updateDoubleElementsMatrix(true);
 
             return true;
         }
@@ -1996,6 +1991,9 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
     // call glEnd() if it was not already called and if we change
     // the type of glBegin(...)
     callGlEndIfGlBeginChanged(type);
+
+    // update the matrix of double elements if it must be updated
+    updateDoubleElementsMatrix();
 
     // if we have not already started a glBegin
     if(m_currentGlBeginType == GL_END_CALLED)
@@ -2122,6 +2120,27 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
     }
     else if(m_currentGlBeginType != GL_END_CALLED) {
         stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
+    }
+}
+
+void G3DPainter::updateDoubleElementsMatrix(bool force)
+{
+    if(m_doubleElementMatrixMustBeUpdated || force) {
+
+        if(((m_shaderDeLocPMatrix != -1) && m_bindShaderDeOK) || force) {
+            Eigen::Matrix4f tmp = m_modelViewMatrix4d.cast<float>();
+            tmp(0,3) = 0;
+            tmp(1,3) = 0;
+            tmp(2,3) = 0;
+            tmp(3,3) = 1;
+
+            if(m_currentGlBeginType != GL_END_CALLED)
+                stopDrawMultiple(false, false);
+
+            glUniformMatrix4fv(m_shaderDeLocPMatrix, 1, GL_FALSE, &tmp(0,0));
+        }
+
+        m_doubleElementMatrixMustBeUpdated = false;
     }
 }
 

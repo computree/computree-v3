@@ -407,6 +407,7 @@ private:
     Eigen::Matrix4d                     m_modelViewMatrix4d;            // model/view matrix of the camera
     QStack< Eigen::Vector4d >           m_camTranslationStack;          // stack of camera translation coordinate
     Eigen::Vector4d                     m_camTranslation;               // camera translation coordinate
+    bool                                m_doubleElementMatrixMustBeUpdated;          // true if matrix of double elements like cylinder, etc... must be updated
 
     static QVector< QPair<double, double> > VECTOR_CIRCLE_FASTEST;
     static const int                        VECTOR_CIRCLE_FASTEST_SIZE = 25;
@@ -461,6 +462,11 @@ protected:
      * @param newGlBeginType : the new "glBegin" type that you want to call after this method.
      */
     void callGlEndIfGlBeginChanged(GlBeginType newGlBeginType);
+
+    /**
+     * @brief Send to shader of double element the matrix
+     */
+    void updateDoubleElementsMatrix(bool force = false);
 };
 
 #endif // G3DPAINTER_H

@@ -1136,7 +1136,13 @@ void G3DGraphicsView::drawInternal()
     _g.drawPoint(1000000, 1000000, 1000000.0005);
     _g.drawTriangle(1000000, 1000000, 1000000,
                     1000000.1, 1000000.1, 1000000,
-                    1000000-0.1, 1000000.1, 1000000);*/
+                    1000000-0.1, 1000000.1, 1000000);
+
+    _g.drawCylinder3D(Eigen::Vector3d(10, 0, 0), Eigen::Vector3d(2, 0, 1), 1, 2);
+    _g.drawCylinder(10, 0, 0, 1, 2);
+    _g.drawCylinder3D(Eigen::Vector3d(0, 10, 0), Eigen::Vector3d(1, 0, 2), 1, 2);
+    _g.drawCylinder(0, 10, 0, 3, 5);
+    */
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
