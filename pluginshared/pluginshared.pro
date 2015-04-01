@@ -858,7 +858,8 @@ HEADERS += interfaces.h \
     ct_iterator/ct_mutablegroupiterator.h \
     ct_iterator/ct_mutableitemiterator.h \
     ct_itemdrawable/ct_plotmanageritem.h \
-    ct_view/ct_asciifilechoicebutton.h
+    ct_view/ct_asciifilechoicebutton.h \
+    ct_tools/ct_gdaltools.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

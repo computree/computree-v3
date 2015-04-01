@@ -56,9 +56,15 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::onlyKeepsThes
                 }
             }
 
+            QList<CT_AbstractSingularItemDrawable*> lTmp;
+            itA = lTmp;
+
             if(par.collection.isEmpty())
                 itR.remove();
         }
+
+        QList< CT_ItemDrawableCollectionHierarchyResult > lTmp;
+        itR = lTmp;
 
         if(pas.results.isEmpty())
             it.remove();

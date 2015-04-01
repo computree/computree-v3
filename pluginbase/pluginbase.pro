@@ -95,7 +95,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepextractpositionsfromdensity.h \
     step/pb_stepmergeclustersfrompositions.h \
     actions/pb_actionmodifyclustersgroups.h \
-    views/actions/pb_actionmodifyclustersgroupsoptions.h
+    views/actions/pb_actionmodifyclustersgroupsoptions.h \
+    exporters/gdal/pb_gdalexporter.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -186,7 +187,8 @@ SOURCES += \
     step/pb_stepextractpositionsfromdensity.cpp \
     step/pb_stepmergeclustersfrompositions.cpp \
     actions/pb_actionmodifyclustersgroups.cpp \
-    views/actions/pb_actionmodifyclustersgroupsoptions.cpp
+    views/actions/pb_actionmodifyclustersgroupsoptions.cpp \
+    exporters/gdal/pb_gdalexporter.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

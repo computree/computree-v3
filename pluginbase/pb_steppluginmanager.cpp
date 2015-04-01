@@ -99,6 +99,7 @@
 #include "exporters/pgm/pb_pgmexporter.h"
 #include "exporters/polygon2d/pb_polygon2dexporter.h"
 #include "exporters/las/pb_lasexporter.h"
+#include "exporters/gdal/pb_gdalexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -108,6 +109,8 @@
 #include "ct_reader/ct_reader_gdal.h"
 
 #include "ct_step/ct_stepinitializedata.h"
+
+#include "ct_tools/ct_gdaltools.h"
 
 #include <QMessageBox>
 
@@ -328,7 +331,7 @@ bool PB_StepPluginManager::loadExporters()
     sep = addNewSeparator(new CT_StandardExporterSeparator("GRID2D"));
     sep->addExporter(new PB_Grid2DExporter());
 
-    sep = addNewSeparator(new CT_StandardExporterSeparator("GRID3D"));
+    sep = addNewSeparator(new CT_StandardExporterSeparator(QObject::tr("Grilles 3D")));
     sep->addExporter(new PB_Grid3DExporter());
     sep->addExporter(new PB_Grid3DAsTableExporter());
 
@@ -375,9 +378,21 @@ bool PB_StepPluginManager::loadReaders()
     return true;
 }
 
+#ifdef USE_GDAL
+bool GDALExporterLessThan(const PB_GDALExporter *s1, const PB_GDALExporter *s2)
+{
+    return s1->getExporterCustomName() < s2->getExporterCustomName();
+}
+
+bool GDALReaderLessThan(const CT_Reader_GDAL *s1, const CT_Reader_GDAL *s2)
+{
+    return CT_GdalTools::staticGdalDriverName(s1->getDriver()) < CT_GdalTools::staticGdalDriverName(s2->getDriver());
+}
+#endif
+
 bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 {
-    // load gdal drivers and create readers
+    // load gdal drivers and create readers and exporters
 #ifdef USE_GDAL
     GDALAllRegister();
     GDALDriverManager *driverManager = GetGDALDriverManager();
@@ -386,16 +401,44 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 
     if(count > 0) {
 
-        CT_StandardReaderSeparator *sep;
+        CT_StandardReaderSeparator *sepR;
+        CT_StandardExporterSeparator *sepE = NULL;
+
+        QList<CT_Reader_GDAL*> gdalReaderC;
+        QList<PB_GDALExporter*> gdalExpoC;
 
         for(int i=0; i<count; ++i) {
             GDALDriver *driver = driverManager->GetDriver(i);
-            QString name = QString(driver->GetMetadataItem(GDAL_DMD_LONGNAME));
-            name.remove(QRegExp("\\(\\..*\\)"));
+            QString name = CT_GdalTools::staticGdalDriverName(driver);
 
             if(!name.isEmpty()) {
-                sep = addNewSeparator(new CT_StandardReaderSeparator(name));
-                sep->addReader(new CT_Reader_GDAL(driver));
+                gdalReaderC.append(new CT_Reader_GDAL(driver));
+                gdalExpoC.append(new PB_GDALExporter(driver));
+            }
+        }
+
+        if(!gdalExpoC.isEmpty()) {
+            sepE = addNewSeparator(new CT_StandardExporterSeparator("GDAL"));
+
+            qSort(gdalExpoC.begin(), gdalExpoC.end(), GDALExporterLessThan);
+
+            QListIterator<PB_GDALExporter*> itGD(gdalExpoC);
+
+            while(itGD.hasNext())
+                sepE->addExporter(itGD.next());
+        }
+
+        if(!gdalReaderC.isEmpty()) {
+
+
+            qSort(gdalReaderC.begin(), gdalReaderC.end(), GDALReaderLessThan);
+
+            QListIterator<CT_Reader_GDAL*> itGD(gdalReaderC);
+
+            while(itGD.hasNext()) {
+                CT_Reader_GDAL *reader = itGD.next();
+                sepR = addNewSeparator(new CT_StandardReaderSeparator(CT_GdalTools::staticGdalDriverName(reader->getDriver())));
+                sepR->addReader(reader);
             }
         }
     }

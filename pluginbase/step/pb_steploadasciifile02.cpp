@@ -399,8 +399,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
         normalCloud = new CT_NormalCloudStdVector();
     }
 
-    qDebug() << "Normal cloud = null ? " << (normalCloud == NULL);
-    qDebug() << "Colonne x y z " << _columnNX << _columnNY << _columnNZ;
+    //qDebug() << "Normal cloud = null ? " << (normalCloud == NULL);
+    //qDebug() << "Colonne x y z " << _columnNX << _columnNY << _columnNZ;
 
     double xmin = std::numeric_limits<double>::max();
     double ymin = xmin;
@@ -483,6 +483,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentIntensity = locale.toFloat(wordsOfLine.at(_columnI), &oki);
+
+                        if(!oki) {
+                            currentIntensity = 0;
+                            oki = true;
+                        }
                     }
                 }
 
@@ -496,6 +501,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentRGB.r = locale.toInt(wordsOfLine.at(_columnR), &okr);
+
+                        if(!okr) {
+                            currentRGB.r = 0;
+                            okr = true;
+                        }
                     }
 
                     if(_columnG<0)
@@ -506,6 +516,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentRGB.g = locale.toInt(wordsOfLine.at(_columnG), &okg);
+
+                        if(!okg) {
+                            currentRGB.g = 0;
+                            okg = true;
+                        }
                     }
 
                     if(_columnB<0)
@@ -516,6 +531,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentRGB.b = locale.toInt(wordsOfLine.at(_columnB), &okb);
+
+                        if(!okb) {
+                            currentRGB.b = 0;
+                            okb = true;
+                        }
                     }
                 }
 
@@ -529,6 +549,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentNormal.normal_x = locale.toFloat(wordsOfLine.at(_columnNX), &oknx);
+
+                        if(!oknx) {
+                            currentNormal.normal_x = 0;
+                            oknx = true;
+                        }
                     }
 
                     if(_columnNY<0)
@@ -539,6 +564,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentNormal.normal_y = locale.toFloat(wordsOfLine.at(_columnNY), &okny);
+
+                        if(!okny) {
+                            currentNormal.normal_y = 0;
+                            okny = true;
+                        }
                     }
 
                     if(_columnNZ<0)
@@ -549,6 +579,11 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                     else
                     {
                         currentNormal.normal_z = locale.toFloat(wordsOfLine.at(_columnNZ), &oknz);
+
+                        if(!oknz) {
+                            currentNormal.normal_z = 0;
+                            oknz = true;
+                        }
                     }
 //                    qDebug() << "Colonnes x y z = " << _columnNX << _columnNY << _columnNZ;
 //                    qDebug() << currentLine;
@@ -592,20 +627,14 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 // Add this point to the point cloud
                 uspc->addPoint( createCtPoint(currentX, currentY, currentZ));
 
-                if (collection != NULL && oki)
-                {
+                if (collection != NULL)
                     collection->addT(currentIntensity);
-                }
 
-                if(colorCloud != NULL && okr && okg && okb)
-                {
+                if(colorCloud != NULL)
                     colorCloud->addColor(currentRGB);
-                }
 
-                if(normalCloud != NULL && oknx && okny && oknz)
-                {
+                if(normalCloud != NULL)
                     normalCloud->addNormal(currentNormal);
-                }
 
                 // Progress bar
                 setProgress( currentSizeRead*100.0/fileSize );

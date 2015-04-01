@@ -11,8 +11,8 @@ CT_ItemDrawableHierarchyCollectionWidget::CT_ItemDrawableHierarchyCollectionWidg
 {
     ui->setupUi(this);
 
-    m_canSelectColors = true;
-    m_canSelectNormals = true;
+    setCanSelectColors(false);
+    setCanSelectNormals(false);
 
     m_cloudType = cloudType;
 
@@ -105,7 +105,7 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
         }
     }
 
-    if((m_dm != NULL) && (m_cloudType != NONE) && (m_canSelectColors || m_canSelectNormals))
+    if((m_dm != NULL) && (m_cloudType != NONE) && m_canSelectColors)
     {
         QStandardItem *root = new QStandardItem();
         root->setEditable(false);
@@ -143,24 +143,6 @@ void CT_ItemDrawableHierarchyCollectionWidget::setModel(CT_ItemDrawableHierarchy
                             }
 
                             iDoc->appendRow(createItemsForColorCloud(colors));
-                            ++m_nChoice;
-                        }
-                    }
-
-                    if(m_canSelectNormals)
-                    {
-                        QSharedPointer<CT_StandardNormalCloudRegistered> normals = view->normalCloudOf(m_normalCloudType);
-
-                        if(!normals.isNull())
-                        {
-                            if(iDoc == NULL)
-                            {
-                                iDoc = new QStandardItem();
-                                iDoc->setEditable(false);
-                                iDoc->setText(doc->getTitle());
-                            }
-
-                            iDoc->appendRow(createItemsForNormalCloud(normals));
                             ++m_nChoice;
                         }
                     }
@@ -219,7 +201,7 @@ QSharedPointer<CT_StandardColorCloudRegistered> CT_ItemDrawableHierarchyCollecti
 
         if(item->data().toInt() == -1)
         {
-            CT_StandardColorCloudRegistered *cloud = (CT_StandardColorCloudRegistered*)items.first()->data(Qt::UserRole+2).value<void*>();
+            CT_StandardColorCloudRegistered *cloud = (CT_StandardColorCloudRegistered*)item->data(Qt::UserRole+2).value<void*>();
 
             QList<DocumentInterface*> docs = m_dm->documents();
             QListIterator<DocumentInterface*> it(docs);
@@ -262,7 +244,7 @@ QSharedPointer<CT_StandardNormalCloudRegistered> CT_ItemDrawableHierarchyCollect
 
         if(item->data().toInt() == -2)
         {
-            CT_StandardNormalCloudRegistered *cloud = (CT_StandardNormalCloudRegistered*)items.first()->data(Qt::UserRole+2).value<void*>();
+            CT_StandardNormalCloudRegistered *cloud = (CT_StandardNormalCloudRegistered*)item->data(Qt::UserRole+2).value<void*>();
 
             QList<DocumentInterface*> docs = m_dm->documents();
             QListIterator<DocumentInterface*> it(docs);

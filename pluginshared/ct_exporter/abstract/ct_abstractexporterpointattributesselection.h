@@ -23,8 +23,10 @@ public:
     virtual bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget);
 
 protected:
-    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     m_attributsWorker;
-    CT_ItemDrawableCollectionBuilderT<CT_AbstractPointsAttributes>                      m_attributsBuilder;
+    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     m_attributsColorPointWorker;
+    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     m_attributsNormalPointWorker;
+    CT_ItemDrawableCollectionBuilderT<CT_AbstractPointsAttributes>                      m_attributsBuilderColors;
+    CT_ItemDrawableCollectionBuilderT<CT_AbstractPointsAttributes>                      m_attributsBuilderNormals;
 
     /**
      * @brief You must call this method to create the color cloud. Call this method in the beginning of your method "protectedExportToFile()". It will

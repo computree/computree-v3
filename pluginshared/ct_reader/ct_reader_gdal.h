@@ -19,6 +19,8 @@ public:
 
     #ifdef USE_GDAL
     CT_Reader_GDAL(const GDALDriver *driver);
+
+    GDALDriver* getDriver() const { return m_driver; }
     #endif
 
     virtual ~CT_Reader_GDAL();

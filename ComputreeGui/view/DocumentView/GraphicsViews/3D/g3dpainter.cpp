@@ -108,12 +108,12 @@ void G3DPainter::initializeGl()
 {
     QT_GL_INIT_FUNCTIONS();
 
-    m_maxVertexUniformVec4 = 0;
-    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &m_maxVertexUniformVec4);
+    m_maxMatrix = (GUI_MANAGER->getOpenglTools()->maxVertexUniformVector(*this)/4)-4;
 
-    m_maxMatrix = (m_maxVertexUniformVec4/4)-4;
+    if(m_maxMatrix <= 0)
+        m_maxMatrix = 10;
 
-    m_openglVersion = QGLFormat::defaultFormat().majorVersion();
+    m_openglVersion = GUI_MANAGER->getOpenglTools()->openGlVersionUsed();
 }
 
 void G3DPainter::setPointFastestIncrement(size_t inc)
@@ -1739,7 +1739,7 @@ bool G3DPainter::bindPointShader()
                     int s = PS_COORDINATES_SYS_MANAGER->size();
 
                     if(s > m_maxMatrix) {
-                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Too many coordinate system for the vertex shader !"));
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Too many coordinate system for the vertex shader ! (%1 > %2)").arg(s).arg(m_maxMatrix));
                         s = m_maxMatrix;
                     }
 

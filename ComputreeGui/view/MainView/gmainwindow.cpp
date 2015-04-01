@@ -283,8 +283,9 @@ void GMainWindow::initUI()
     ui->widgetActionsManager->setActionsManager(getActionsManager());
     ui->widgetActionsManager->setDocumentManagerView(_docManagerView);
 
-    QAction *actionOpenFile = new QAction(tr("Ouvrir un fichier"), this);
+    QAction *actionOpenFile = new QAction(tr("Ouvrir un fichier (CTRL+O)"), this);
     actionOpenFile->setIcon(QIcon(":/Icones/Icones/folder_add_32.png"));
+    actionOpenFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
 
     menuNewStepCanBeAddedFirst = new QMenu(tr("Ajouter une étape"), this);
     menuNewStepCanBeAddedFirst->setToolTip(tr("Ajouter une étape qui n'a pas besoin de résultat en entrée"));

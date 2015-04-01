@@ -80,6 +80,16 @@ protected:
      */
     void setCanExportWithNormals(bool enable);
 
+    /**
+     * @brief Return true if this exporter can export colors information
+     */
+    bool canExportWithColors() const;
+
+    /**
+     * @brief Return true if this exporter can export normals information
+     */
+    bool canExportWithNormals() const;
+
 private:
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> >  m_buildersResults;
     bool                                                                m_canSelectColors;

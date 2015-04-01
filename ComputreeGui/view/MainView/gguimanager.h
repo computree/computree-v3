@@ -48,6 +48,7 @@ public:
     DM_ActionsManager* getActionsManager() const;
     CDM_Internationalization* getLanguageManager() const;
     DM_VertexVBOManager* vertexVBOManager() const;
+    DM_OpenGLTools* getOpenglTools() const;
 
 protected:
 
@@ -56,6 +57,7 @@ protected:
 
 private:
 
+    DM_OpenGLTools              m_openglTools;
     GMainWindow                 *_mainWindow;
     CDM_Internationalization    *m_languageManager;
 };

@@ -7,8 +7,8 @@
 
 CT_AbstractExporterAttributesSelection::CT_AbstractExporterAttributesSelection() : CT_AbstractExporter()
 {
-    m_canSelectColors = false;
-    m_canSelectNormals = false;
+    setCanExportWithColors(false);
+    setCanExportWithNormals(false);
 }
 
 bool CT_AbstractExporterAttributesSelection::configureExport()
@@ -200,4 +200,14 @@ void CT_AbstractExporterAttributesSelection::setCanExportWithColors(bool enable)
 void CT_AbstractExporterAttributesSelection::setCanExportWithNormals(bool enable)
 {
     m_canSelectNormals = enable;
+}
+
+bool CT_AbstractExporterAttributesSelection::canExportWithColors() const
+{
+    return m_canSelectColors;
+}
+
+bool CT_AbstractExporterAttributesSelection::canExportWithNormals() const
+{
+    return m_canSelectNormals;
 }

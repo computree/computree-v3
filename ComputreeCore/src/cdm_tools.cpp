@@ -27,7 +27,7 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
                 pluginName.remove(0, 5);
             }
 
-            QMenu *sepMenu = new QMenu(pluginName);
+            QMenu *plugMenu = new QMenu(pluginName);
 
             QListIterator<CT_StandardExporterSeparator*> itS(separators);
 
@@ -35,8 +35,17 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
             {
                 CT_StandardExporterSeparator *sep = itS.next();
 
-                if(!sep->exporters().isEmpty())
+                int eSize = sep->exporters().size();
+
+                if(eSize > 0)
                 {
+                    int nAdded = 0;
+
+                    QMenu *sepMenu = NULL;
+
+                    if(eSize > 1)
+                        sepMenu = new QMenu(sep->title());
+
                     QListIterator<CT_AbstractExporter*> itE(sep->exporters());
 
                     while(itE.hasNext())
@@ -51,16 +60,42 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
 
                             QObject::connect(expAction, SIGNAL(triggered()), receiver, slot);
 
-                            sepMenu->addAction(expAction);
+                            if(sepMenu != NULL)
+                                sepMenu->addAction(expAction);
+                            else
+                                plugMenu->addAction(expAction);
+
+                            ++nAdded;
                         }
+                    }
+
+                    if(sepMenu != NULL)
+                    {
+                        if(nAdded == 1)
+                        {
+                            QAction *act = sepMenu->actions().at(0);
+                            sepMenu->removeAction(act);
+                            plugMenu->addAction(act);
+
+                            delete sepMenu;
+                            sepMenu = NULL;
+                        }
+                        else if(sepMenu->isEmpty())
+                        {
+                            delete sepMenu;
+                            sepMenu = NULL;
+                        }
+
+                        if(sepMenu != NULL)
+                            plugMenu->addMenu(sepMenu);
                     }
                 }
             }
 
-            if(sepMenu->isEmpty())
-                delete sepMenu;
+            if(plugMenu->isEmpty())
+                delete plugMenu;
             else
-                menu->addMenu(sepMenu);
+                menu->addMenu(plugMenu);
         }
     }
 

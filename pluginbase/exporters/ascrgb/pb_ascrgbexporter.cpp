@@ -15,6 +15,8 @@
 
 PB_ASCRGBExporter::PB_ASCRGBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
+    setCanExportWithColors(true);
+    setCanExportWithNormals(true);
 }
 
 PB_ASCRGBExporter::~PB_ASCRGBExporter()
@@ -24,7 +26,7 @@ PB_ASCRGBExporter::~PB_ASCRGBExporter()
 
 QString PB_ASCRGBExporter::getExporterCustomName() const
 {
-    return "Points, ASCII(X,Y,Z,R,G,B)";
+    return "Points, ASCII(X,Y,Z,R,G,B,NX,NY,NZ)";
 }
 
 void PB_ASCRGBExporter::init()
@@ -75,9 +77,10 @@ bool PB_ASCRGBExporter::protectedExportToFile()
     {
         QTextStream txtStream(&file);
 
-        txtStream << "X Y Z R G B\n";
+        txtStream << "X Y Z R G B NX NY NZ\n";
 
         CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
+        CT_AbstractNormalCloud *nn = createNormalCloudBeforeExportToFile();
 
         float r = 1;
         float g = 1;
@@ -104,11 +107,11 @@ bool PB_ASCRGBExporter::protectedExportToFile()
 
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(0)) << " ";
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(1)) << " ";
-                txtStream << CT_NumericToStringConversionT<double>::toString(point(2)) << " ";
+                txtStream << CT_NumericToStringConversionT<double>::toString(point(2));
 
                 if(cc == NULL)
                 {
-                    txtStream << "0 0 0\n";
+                    txtStream << " 0 0 0";
                 }
                 else
                 {
@@ -117,9 +120,22 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                     g = (quint16)co.g / 255.0;
                     b = (quint16)co.b / 255.0;
 
-                    txtStream << r << " ";
+                    txtStream << " " << r << " ";
                     txtStream << g << " ";
-                    txtStream << b << "\n";
+                    txtStream << b;
+                }
+
+                if(nn == NULL)
+                {
+                    txtStream << " 0 0 0\n";
+                }
+                else
+                {
+                    const CT_Normal &no = nn->constNormalAt(itP.cIndex());
+
+                    txtStream << " " << no[0] << " ";
+                    txtStream << no[1] << " ";
+                    txtStream << no[2] << "\n";
                 }
 
                 ++i;

@@ -38,6 +38,7 @@
 #include "dm_multipleitemdrawablemodelmanager.h"
 #include "dm_actionsmanager.h"
 #include "dm_vertexvbomanager.h"
+#include "dm_opengltools.h"
 
 #include "cdm_stepmanager.h"
 #include "cdm_internationalization.h"
@@ -362,6 +363,11 @@ public:
      * @brief Returns the language manager
      */
     virtual CDM_Internationalization* getLanguageManager() const = 0;
+
+    /**
+     * @brief Returns the opengl tools
+     */
+    virtual DM_OpenGLTools* getOpenglTools() const = 0;
 
 protected:
 
