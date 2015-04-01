@@ -472,6 +472,8 @@ void G3DPainter::rotate(const double &alpha, const double &x, const double &y, c
     Eigen::Affine3d m = Eigen::Affine3d::Identity();
     m.rotate(Eigen::AngleAxisd(alpha, v));
 
+    m_doubleElementMatrixMustBeUpdated = true;
+
     multMatrix(m.matrix());
 }
 
@@ -510,6 +512,8 @@ void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translati
             left.z(), up.z(), dn.z(), translation.z(),
             0.0     , 0.0   , 0.0           , 1.0;
 
+    m_doubleElementMatrixMustBeUpdated = true;
+
     multMatrix(res);
 }
 
@@ -519,6 +523,8 @@ void G3DPainter::scale(const double &x, const double &y, const double &z)
     sc(0,0) = x;
     sc(1,1) = y;
     sc(2,2) = z;
+
+    m_doubleElementMatrixMustBeUpdated = true;
 
     multMatrix(sc);
 }
