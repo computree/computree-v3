@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <limits>
+#include <QFileInfo>
 
 // Alias for indexing models
 #define DEFin_Resrefpos "Resrefpos"
@@ -29,6 +30,7 @@
 #define DEFin_refy "refy"
 #define DEFin_refvalue "refvalue"
 #define DEFin_refid "refid"
+#define DEFin_refidPlot "refidplot"
 
 #define DEFin_Restranspos "Restranspos"
 #define DEFin_grptrans "grptrans"
@@ -123,6 +125,7 @@ void PB_StepMatchItemsPositions::createInResultModelListProtected()
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refx, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("Coordonnée X"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refy, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Coordonnée Y"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refid, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("ID"));
+    resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refidPlot, QList<QString>() << CT_AbstractCategory::DATA_ID, CT_AbstractCategory::ANY, tr("IDplot"));
     resIn_refpos->addItemAttributeModel(DEFin_refpos, DEFin_refvalue, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::NUMBER, tr("Valeur"));
 
     CT_InResultModelGroup *resIn_transpos = createNewInResultModel(DEFin_Restranspos, tr("Positions à transformer"), "", true);
@@ -238,6 +241,7 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
 
 void PB_StepMatchItemsPositions::compute()
 {
+
     double maxThetaRad = M_PI*_maxTheta / 180.0;
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
@@ -247,6 +251,28 @@ void PB_StepMatchItemsPositions::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_trans = outResultList.at(1);
     CT_ResultGroup* res_trans2 = outResultList.at(0);
+
+
+    // determine si il faut créer les entêtes dans les fichiers cumulés
+    bool first = true;
+    if (inResultList.size() > 2)
+    {
+        CT_ResultGroup* res_counter = inResultList.at(2);
+        CT_ResultItemIterator itCounter(res_counter, this, DEF_inCounter);
+        if (itCounter.hasNext())
+        {
+            const CT_LoopCounter* counter = (const CT_LoopCounter*) itCounter.next();
+
+            if (counter != NULL)
+            {
+                if (counter->getCurrentTurn() > 1)
+                {
+                    first = false;
+                }
+            }
+        }
+    }
+
     CT_StandardItemGroup *rootGroup = new CT_StandardItemGroup(DEFout_rootGrp,res_trans2);
     res_trans2->addGroup(rootGroup);
 
@@ -266,6 +292,8 @@ void PB_StepMatchItemsPositions::compute()
 
     // create refPositions List
     int cptRef = 0;
+    QString idRefPlot = "";
+
     CT_ResultGroupIterator itIn_grpref(resIn_refpos, this, DEFin_grpref);
     while (itIn_grpref.hasNext() && !isStopped())
     {
@@ -279,13 +307,16 @@ void PB_StepMatchItemsPositions::compute()
             double valRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refvalue)->toDouble(itemIn_refpos, NULL);
             QString idRef = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refid)->toString(itemIn_refpos, NULL);
 
+            if (cptRef == 0) {idRefPlot = itemIn_refpos->firstItemAttributeByINModelName(resIn_refpos, this, DEFin_refidPlot)->toString(itemIn_refpos, NULL);}
+
             if (valRef < minRefValue) {minRefValue = valRef;}
             if (valRef > maxRefValue) {maxRefValue = valRef;}
 
             refPositions.append(QPair<Eigen::Vector2d, double>(Eigen::Vector2d(xRef, yRef), valRef));
             refIds.insert(cptRef, idRef);
+
+            cptRef++;
         }
-        cptRef++;
     }
     
     // create transPositions List
@@ -309,8 +340,9 @@ void PB_StepMatchItemsPositions::compute()
             transPositions.append(QPair<Eigen::Vector2d, double>(Eigen::Vector2d(xTrans, yTrans), valTrans));
             transPositionsTmp.append(QPair<Eigen::Vector2d, double>(Eigen::Vector2d(xTrans, yTrans), valTrans));
             transIds.insert(cptTrans, idTrans);
+
+            cptTrans++;
         }
-        cptTrans++;
     }
     
     Eigen::Vector2d minRef, maxRef;
@@ -788,105 +820,248 @@ void PB_StepMatchItemsPositions::compute()
     CT_TransformationMatrix *transfMatItem = new CT_TransformationMatrix(DEFout_trMat, res_trans2, transf3D);
     rootGroup->addItemDrawable(transfMatItem);
 
-    QFile f(_reportFileName.first());
-    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+    QString plotName;
+    if (idRefPlot.size() > 0) {plotName = "_";}
+    plotName.append(idRefPlot);
+
+    QFileInfo fileInfo((_reportFileName.size()>0)?_reportFileName.first():"");
+    QFile reportFile(QString("%1/%2%3.%4").arg(fileInfo.absolutePath()).arg(fileInfo.baseName()).arg(plotName).arg(fileInfo.completeSuffix()));
+
+    QFile transformedDataFile((_transformedDataFileName.size()>0)?_transformedDataFileName.first():"");
+    QFile transformationDataFile((_transformationDataFileName.size()>0)?_transformationDataFileName.first():"");
+
+
+    QTextStream streamReport(&reportFile);
+    QTextStream streamTransformed(&transformedDataFile);
+    QTextStream streamTransformation(&transformationDataFile);
+
+    bool exportReport = reportFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    bool exportTransformedData = false;
+    bool exportTransformationData = false;
+
+    if (first)
     {
-        QTextStream stream(&f);
+        exportTransformedData = transformedDataFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+        exportTransformationData = transformationDataFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+    } else {
+        exportTransformedData = transformedDataFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+        exportTransformationData = transformationDataFile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+    }
 
-        stream << "# Computree Matching report (generated by PluginBase/PB_StepMatchItemsPositions)\n";
-        stream << "\n";
-        stream << "# 2D Transformation Matrix:\n";
-        stream << QString::number(resultingMatrix(0,0), 'f', 10) << "\t" << QString::number(resultingMatrix(0,1), 'f', 10) << "\t" << QString::number(resultingMatrix(0,2), 'f', 10) << "\n";
-        stream << QString::number(resultingMatrix(1,0), 'f', 10) << "\t" << QString::number(resultingMatrix(1,1), 'f', 10) << "\t" << QString::number(resultingMatrix(1,2), 'f', 10) << "\n";
-        stream << QString::number(resultingMatrix(2,0), 'f', 10) << "\t" << QString::number(resultingMatrix(2,1), 'f', 10) << "\t" << QString::number(resultingMatrix(2,2), 'f', 10) << "\n";
-        stream << "\n";
-        stream << "# 3D Transformation Matrix:\n";
-        stream << transfMatItem->getTransformationMatrixAsString();
-        stream << "\n";
-        stream << "# Matching quality criteria:\n";
-        stream << "Number of reference positions                   :" << "\t" << refPositions.size() << "\n";
-        stream << "Number of transformed positions                 :" << "\t" << transPositions.size() << "\n";
-        stream << "Number of matching positions                    :" << "\t" << nbMatches << "\n";
-        stream << "RMSE of matching distances (m)                  :" << "\t" << rmseDist << "\n";
-        stream << "RMSE of differences between matching size values:" << "\t" << rmseVal << "\n";
-        stream << "Maximum matching distance (m)                   :" << "\t" << maxDist << "\n";
-        stream << "Maximum difference between matching size values :" << "\t" << maxVal << "\n";
-        stream << "\n";
-        stream << "# Matching algorithm parameters:\n";
-        stream << "Maximum distance between matching positions (m)                           :" << "\t" << _distThreshold << "\n";
-        stream << "Maximum allowed relative difference between size values to accept matching:" << "\t" << _relativeSizeThreshold << "\n";
-        stream << "Minimum size value to consider transformed position in matching           :" << "\t" << _minRelativeSize << "\n";
-        stream << "Score weight for reference positions positive matching                    :" << "\t" << _coef_nbRwc << "\n";
-        stream << "Score weight for transformed positions positive matching                  :" << "\t" << _coef_nbTwc << "\n";
-        stream << "Score weight for size similarity                                          :" << "\t" << _coef_nbSim << "\n";
-        stream << "\n";
-        stream << "\n";
+    if (exportReport)
+    {
+        streamReport << "# Computree Matching report (generated by PluginBase/PB_StepMatchItemsPositions)\n";
+        streamReport << "\n";
+        streamReport << "# 2D Transformation Matrix:\n";
+        streamReport << QString::number(resultingMatrix(0,0), 'f', 10) << "\t" << QString::number(resultingMatrix(0,1), 'f', 10) << "\t" << QString::number(resultingMatrix(0,2), 'f', 10) << "\n";
+        streamReport << QString::number(resultingMatrix(1,0), 'f', 10) << "\t" << QString::number(resultingMatrix(1,1), 'f', 10) << "\t" << QString::number(resultingMatrix(1,2), 'f', 10) << "\n";
+        streamReport << QString::number(resultingMatrix(2,0), 'f', 10) << "\t" << QString::number(resultingMatrix(2,1), 'f', 10) << "\t" << QString::number(resultingMatrix(2,2), 'f', 10) << "\n";
+        streamReport << "\n";
+        streamReport << "# 3D Transformation Matrix:\n";
+        streamReport << transfMatItem->getTransformationMatrixAsString();
+        streamReport << "\n";
+        streamReport << "# Matching quality criteria:\n";
+        streamReport << "Number of reference positions                   :" << "\t" << refPositions.size() << "\n";
+        streamReport << "Number of transformed positions                 :" << "\t" << transPositions.size() << "\n";
+        streamReport << "Number of matching positions                    :" << "\t" << nbMatches << "\n";
+        streamReport << "RMSE of matching distances (m)                  :" << "\t" << rmseDist << "\n";
+        streamReport << "RMSE of differences between matching size values:" << "\t" << rmseVal << "\n";
+        streamReport << "Maximum matching distance (m)                   :" << "\t" << maxDist << "\n";
+        streamReport << "Maximum difference between matching size values :" << "\t" << maxVal << "\n";
+        streamReport << "\n";
+        streamReport << "# Matching algorithm parameters:\n";
+        streamReport << "Maximum distance between matching positions (m)                           :" << "\t" << _distThreshold << "\n";
+        streamReport << "Maximum allowed relative difference between size values to accept matching:" << "\t" << _relativeSizeThreshold << "\n";
+        streamReport << "Minimum size value to consider transformed position in matching           :" << "\t" << _minRelativeSize << "\n";
+        streamReport << "Score weight for reference positions positive matching                    :" << "\t" << _coef_nbRwc << "\n";
+        streamReport << "Score weight for transformed positions positive matching                  :" << "\t" << _coef_nbTwc << "\n";
+        streamReport << "Score weight for size similarity                                          :" << "\t" << _coef_nbSim << "\n";
+        streamReport << "\n";
+        streamReport << "\n";
 
-        stream << "Algorithm from:\n";
-        stream << "Marius Hauglin, Vegard Lien, Erik Naesset & Terje Gobakken (2014)\n";
-        stream << "Geo-referencing forest field plots by co-registration of terrestrial and airborne laser scanning data,\n";
-        stream << "International Journal of Remote Sensing, 35:9, 3135-3149, DOI: 10.1080/01431161.2014.903440\n";
+        streamReport << "Algorithm from:\n";
+        streamReport << "Marius Hauglin, Vegard Lien, Erik Naesset & Terje Gobakken (2014)\n";
+        streamReport << "Geo-referencing forest field plots by co-registration of terrestrial and airborne laser scanning data,\n";
+        streamReport << "International Journal of Remote Sensing, 35:9, 3135-3149, DOI: 10.1080/01431161.2014.903440\n";
 
-        stream << "\n";
-        stream << "\n";
+        streamReport << "\n";
+        streamReport << "\n";
 
-        stream << "# Positions data:\n";
-        stream << "IDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";
+        streamReport << "# Positions data:\n";
+        streamReport << "IDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";
+    }
 
+    if (exportTransformationData)
+    {
 
-
-        for (int refCounter = 0 ; refCounter < refPositions.size() ; refCounter++)
+        if (first)
         {
-            const Eigen::Vector2d &refPos = refPositions.at(refCounter).first;
-            double refVal = refPositions.at(refCounter).second;
-            double refValAbs = refVal*deltaRef + minRefValue;
-
-            stream << refIds.value(refCounter, "");
-            stream << "\t" << QString::number(refPos[0], 'f', 4);
-            stream << "\t" << QString::number(refPos[1], 'f', 4);
-            stream << "\t" << refValAbs;
-
-            int transIndice = correspondances.value(refCounter, -1);
-            if (transIndice >= 0)
-            {
-                const Eigen::Vector2d &transPos = transPositions.at(transIndice).first;
-                double transVal = transPositions.at(transIndice).second;
-                double transValAbs = transVal*deltaTrans + minTransValue;
-
-                stream << "\t" << transIds.value(transIndice, "");
-                stream << "\t" << QString::number(transPos[0], 'f', 4);
-                stream << "\t" << QString::number(transPos[1], 'f', 4);
-                stream << "\t" << transValAbs;
-                stream << "\t" << deltaDistMap.value(refCounter);
-                stream << "\t" << deltaValMap.value(refCounter);
-
-            } else {
-                stream << "\t\t\t\t\t\t";
-            }
-
-            stream << "\n";
+            streamTransformation << "IDplot" << "\t";
+            streamTransformation << "Mat00" << "\t";
+            streamTransformation << "Mat01" << "\t";
+            streamTransformation << "Mat10" << "\t";
+            streamTransformation << "Mat11" << "\t";
+            streamTransformation << "Mat02" << "\t";
+            streamTransformation << "Mat12" << "\t";
+            streamTransformation << "NbRef" << "\t";
+            streamTransformation << "NbTrans" << "\t";
+            streamTransformation << "NbMatch" << "\t";
+            streamTransformation << "RMSEdist" << "\t";
+            streamTransformation << "RMSEdeltaVal" << "\t";
+            streamTransformation << "MaxMatchDist" << "\t";
+            streamTransformation << "MaxDeltaVal" << "\t";
+            streamTransformation << "MaxdistParam" << "\t";
+            streamTransformation << "MaxDeltaValParam" << "\t";
+            streamTransformation << "MinSizeParam" << "\t";
+            streamTransformation << "RefWeightParam" << "\t";
+            streamTransformation << "TransWeightParam" << "\t";
+            streamTransformation << "SimilirityWeigthParam" << "\n";
         }
 
-        for (int transCounter = 0 ; transCounter < transPositions.size() ; transCounter++)
+        streamTransformation << idRefPlot << "\t";
+        streamTransformation << QString::number(resultingMatrix(0,0), 'f', 10) << "\t";
+        streamTransformation << QString::number(resultingMatrix(0,1), 'f', 10) << "\t";
+        streamTransformation << QString::number(resultingMatrix(1,0), 'f', 10) << "\t";
+        streamTransformation << QString::number(resultingMatrix(1,1), 'f', 10) << "\t";
+        streamTransformation << QString::number(resultingMatrix(0,2), 'f', 10) << "\t";
+        streamTransformation << QString::number(resultingMatrix(1,2), 'f', 10) << "\t";
+        streamTransformation << refPositions.size() << "\t";
+        streamTransformation << transPositions.size() << "\t";
+        streamTransformation << nbMatches << "\t";
+        streamTransformation << rmseDist << "\t";
+        streamTransformation << rmseVal << "\t";
+        streamTransformation << maxDist << "\t";
+        streamTransformation << maxVal << "\t";
+        streamTransformation << _distThreshold << "\t";
+        streamTransformation << _relativeSizeThreshold << "\t";
+        streamTransformation << _minRelativeSize << "\t";
+        streamTransformation << _coef_nbRwc << "\t";
+        streamTransformation << _coef_nbTwc << "\t";
+        streamTransformation << _coef_nbSim << "\n";
+    }
+
+
+    if (first)
+    {
+        if (exportTransformedData)
         {
-            const Eigen::Vector2d &transPos = transPositions.at(transCounter).first;
-            double transVal = transPositions.at(transCounter).second;
+            streamTransformed << "IDplot\tIDref\tXref\tYref\tValref\tIDtrans\tXtrans\tYtrans\tValtrans\tDeltaDist\tDeltaVal\n";
+        }
+        first = false;
+    }
+
+    for (int refCounter = 0 ; refCounter < refPositions.size() ; refCounter++)
+    {
+        const Eigen::Vector2d &refPos = refPositions.at(refCounter).first;
+        double refVal = refPositions.at(refCounter).second;
+        double refValAbs = refVal*deltaRef + minRefValue;
+
+        if (exportReport)
+        {
+            streamReport << refIds.value(refCounter, "");
+            streamReport << "\t" << QString::number(refPos[0], 'f', 4);
+            streamReport << "\t" << QString::number(refPos[1], 'f', 4);
+            streamReport << "\t" << refValAbs;
+        }
+
+        if (exportTransformedData)
+        {
+            streamTransformed << idRefPlot;
+            streamTransformed << "\t" << refIds.value(refCounter, "");
+            streamTransformed << "\t" << QString::number(refPos[0], 'f', 4);
+            streamTransformed << "\t" << QString::number(refPos[1], 'f', 4);
+            streamTransformed << "\t" << refValAbs;
+        }
+
+        int transIndice = correspondances.value(refCounter, -1);
+        if (transIndice >= 0)
+        {
+            const Eigen::Vector2d &transPos = transPositions.at(transIndice).first;
+            double transVal = transPositions.at(transIndice).second;
             double transValAbs = transVal*deltaTrans + minTransValue;
 
-            if (correspondances.key(transCounter, -1) < 0)
+            if (exportReport)
             {
-                stream << "\t\t\t";
-                stream << "\t" << transIds.value(transCounter, "");
-                stream << "\t" << QString::number(transPos[0], 'f', 4);
-                stream << "\t" << QString::number(transPos[1], 'f', 4);
-                stream << "\t" << transValAbs;
-                stream << "\t\t\n";
+                streamReport << "\t" << transIds.value(transIndice, "");
+                streamReport << "\t" << QString::number(transPos[0], 'f', 4);
+                streamReport << "\t" << QString::number(transPos[1], 'f', 4);
+                streamReport << "\t" << transValAbs;
+                streamReport << "\t" << deltaDistMap.value(refCounter);
+                streamReport << "\t" << deltaValMap.value(refCounter);
+            }
+
+            if (exportTransformedData)
+            {
+                streamTransformed << "\t" << transIds.value(transIndice, "");
+                streamTransformed << "\t" << QString::number(transPos[0], 'f', 4);
+                streamTransformed << "\t" << QString::number(transPos[1], 'f', 4);
+                streamTransformed << "\t" << transValAbs;
+                streamTransformed << "\t" << deltaDistMap.value(refCounter);
+                streamTransformed << "\t" << deltaValMap.value(refCounter);
+            }
+
+        } else {
+            if (exportReport)
+            {
+                streamReport << "\t\t\t\t\t\t";
+            }
+
+            if (exportTransformedData)
+            {
+                streamTransformed << "\t\t\t\t\t\t";
             }
         }
 
-        stream << "\n";
-        f.close();
+        if (exportReport)
+        {
+            streamReport << "\n";
+        }
+
+        if (exportTransformedData)
+        {
+            streamTransformed << "\n";
+        }
     }
+
+    for (int transCounter = 0 ; transCounter < transPositions.size() ; transCounter++)
+    {
+        const Eigen::Vector2d &transPos = transPositions.at(transCounter).first;
+        double transVal = transPositions.at(transCounter).second;
+        double transValAbs = transVal*deltaTrans + minTransValue;
+
+        if (correspondances.key(transCounter, -1) < 0)
+        {
+            if (exportReport)
+            {
+                streamReport << "\t\t\t";
+                streamReport << "\t" << transIds.value(transCounter, "");
+                streamReport << "\t" << QString::number(transPos[0], 'f', 4);
+                streamReport << "\t" << QString::number(transPos[1], 'f', 4);
+                streamReport << "\t" << transValAbs;
+                streamReport << "\t\t\n";
+            }
+
+            if (exportTransformedData)
+            {
+                streamTransformed << "\t\t\t";
+                streamTransformed << "\t" << transIds.value(transCounter, "");
+                streamTransformed << "\t" << QString::number(transPos[0], 'f', 4);
+                streamTransformed << "\t" << QString::number(transPos[1], 'f', 4);
+                streamTransformed << "\t" << transValAbs;
+                streamTransformed << "\t\t\n";
+            }
+
+        }
+    }
+
+    if (exportReport)
+    {
+        streamReport << "\n";
+    }
+
+    if (exportReport) {reportFile.close();}
+    if (exportTransformedData) {transformedDataFile.close();}
+    if (exportTransformationData) {transformationDataFile.close();}
 
 }
 
