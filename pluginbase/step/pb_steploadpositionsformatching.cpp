@@ -120,7 +120,7 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
 
 
     int colIDplot_ref  = _refColumns.value("ID_Plot", -1);
-    int colIDplot_trans  = _refColumns.value("ID_Plot", -1);
+    int colIDplot_trans  = _transColumns.value("ID_Plot", -1);
     bool multiPlots = (colIDplot_ref >= 0 && colIDplot_trans >= 0);
 
     QSharedPointer<CT_Counter> counter = getCounter();

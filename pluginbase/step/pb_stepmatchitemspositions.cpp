@@ -418,7 +418,7 @@ void PB_StepMatchItemsPositions::compute()
             // Compute translation for trans points
             delta = refPos - transPos;
 
-            if (transVal >= _relativeSizeThreshold)
+            if (transVal >= _minRelativeSize)
             {
                 // Search for second trans point
                 for (int i = 0 ; i < transPositionsSize && !isStopped() ; i++)
