@@ -40,7 +40,9 @@ bool CT_CoordinateSystemManager::setPrecision(const double &precision)
     if(m_pAccess.size() != 0)
         return false;
 
-    m_csKeySum = (1677.7216*precision);
+    m_csKeySum = (1700*precision);
+    //m_csKeySum = (1677.7216*precision);
+    //m_csKeySum = (10*precision);
     m_csKeyDividor = m_csKeySum*2;
 
     return true;

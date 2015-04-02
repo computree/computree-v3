@@ -72,7 +72,8 @@ G3DPainter::G3DPainter()
     m_shaderLocInitialized = false;
     m_shaderLocCsIndex = -1;
     m_shaderLocInfo = -1;
-    m_shaderLocCsMatrix = -1;
+    m_shaderLocCsOffset = -1;
+    m_shaderLocCamMatrix = -1;
     m_shaderLocSelectionColor = -1;
     m_shaderLocCheckSelected = -1;
 
@@ -82,8 +83,6 @@ G3DPainter::G3DPainter()
     m_shaderDeError = false;
     m_shaderDeLocInitialized = false;
     m_shaderDeLocPMatrix = -1;
-
-    m_csMatrix.resize(64, Eigen::Matrix4f::Identity()); // 64 is the maximum number of matrix in the shader
 
     beginNewDraw();
 }
@@ -108,7 +107,7 @@ void G3DPainter::initializeGl()
 {
     QT_GL_INIT_FUNCTIONS();
 
-    m_maxMatrix = (GUI_MANAGER->getOpenglTools()->maxVertexUniformVector(*this)/4)-4;
+    m_maxMatrix = (GUI_MANAGER->getOpenglTools()->maxVertexUniformVector(*this))-10;
 
     if(m_maxMatrix <= 0)
         m_maxMatrix = 10;
@@ -717,7 +716,7 @@ void G3DPainter::drawOctreeOfPoints(const OctreeInterface *octree, DrawOctreeMod
         QList<CT_AbstractCloudIndex*> indexesToDraw;
 
         int s = octree->numberOfCells();
-        double xCellSize, yCellSize, zCellSize;
+        double xCellSize = 0, yCellSize, zCellSize;
 
         for(int x=0; x<s; ++x)
         {
@@ -1616,122 +1615,57 @@ void G3DPainter::initPointShader()
             else
                 m_shaderSourceFile = "./shaders/points.vert";
 
-            /*if(m_openglVersion < 3)
-            {
-                shaderSourceCode = QString("#version 120\n"
-
-                                           "// selection color of points\n"
-                                           "uniform mediump vec4 selectionColor;\n"
-
-                                           "// selection check\n"
-                                           "uniform int checkSelected;\n"
-
-                                           "// maximum of 64 coordinate system (4x4 matrix)\n"
-                                           "uniform mat4 csMatrix[64];\n"
-
-                                           "// info of the point\n"
-                                           "attribute float info;\n"
-
-                                           "// index of the coordinate system matrix\n"
-                                           "attribute float csIndex;\n"
-
-                                           "int andOperator(int a, int b)\n"
-                                           "{\n"
-                                           "    int c = 0;\n"
-                                           "    for (int x = 0; x < 32; ++x)\n"
-                                           "    {\n"
-                                           "        c += c;\n"
-                                           "        if (a < 0) {\n"
-                                           "            if (b < 0) {\n"
-                                           "                c += 1;\n"
-                                           "            }\n"
-                                           "        }\n"
-                                           "        a += a;\n"
-                                           "        b += b;\n"
-                                           "    }\n"
-
-                                           "     return c;\n"
-                                           "}\n"
-
-                                           "void main()\n"
-                                           "{\n"
-                                           "    int infoInt = int(info);\n"
-                                           "    int csIndexInt = int(csIndex);\n"
-
-                                           "    if(andOperator(infoInt,checkSelected) > 0)\n"
-                                           "    {\n"
-                                           "        gl_FrontColor = selectionColor;\n"
-                                           "    }\n"
-                                           "    else\n"
-                                           "    {\n"
-                                           "        gl_FrontColor = gl_Color;\n"
-                                           "    }\n"
-
-                                           "    gl_Position = gl_ModelViewProjectionMatrix * csMatrix[csIndexInt] * gl_Vertex;\n"
-                                           "}\n");
-            }
-            else
-            {
-                shaderSourceCode = QString("#version 130\n"
-
-                                           "// selection color of points\n"
-                                           "uniform mediump vec4 selectionColor;\n"
-
-                                           "// selection check\n"
-                                           "uniform int checkSelected;\n"
-
-                                           "// maximum of 64 coordinate system (4x4 matrix)\n"
-                                           "uniform mat4 csMatrix[64];\n"
-
-                                           "// info of the point\n"
-                                           "attribute float info;\n"
-
-                                           "// index of the coordinate system matrix\n"
-                                           "attribute float csIndex;\n"
-
-                                           "void main()\n"
-                                           "{"
-                                           "    int infoInt = int(info);\n"
-                                           "    int csIndexInt = int(csIndex);\n"
-
-                                           "    if((infoInt & checkSelected) > 0)\n"
-                                           "    {\n"
-                                           "        gl_FrontColor = selectionColor;\n"
-                                           "    }\n"
-                                           "    else\n"
-                                           "    {\n"
-                                           "        gl_FrontColor = gl_Color;\n"
-                                           "    }\n"
-
-                                           "    gl_Position = gl_ModelViewProjectionMatrix * csMatrix[csIndexInt] * gl_Vertex;\n"
-                                           "}\n");
-            }*/
-
             QFile f(m_shaderSourceFile);
 
-            if(f.open(QFile::ReadOnly)) {
+            if(!f.exists()) {
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Le shader des points n'a pas été trouvé dans le dossier \"shaders\" du répertoire d'installation. Avez vous lancé le script du dossier \"computreev3/scripts\" ?"));
+
+                delete m_ShaderPoint;
+                m_ShaderPoint = NULL;
+
+                m_shaderPointError = true;
+            } else if(f.open(QFile::ReadOnly)) {
                 QTextStream stream(&f);
 
                 shaderSourceCode = stream.readAll();
 
-                shaderSourceCode.replace("csMatrix[64]", QString("csMatrix[%1]").arg(m_maxMatrix));
+                m_csOffset.resize(m_maxMatrix, Eigen::Vector3f(0, 0, 0));
+
+                shaderSourceCode.replace("csOffset[64]", QString("csOffset[%1]").arg(m_maxMatrix));
+
+                QRegExp regShaderVersion("vertex shader version ([\\d\\.]+)");
+                QString shaderVersion;
+
+                if(regShaderVersion.indexIn(shaderSourceCode) != -1)
+                    shaderVersion = regShaderVersion.cap(1);
+
+                QString versionToUse = "02.04.15";
+
+                if(shaderVersion != versionToUse)
+                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vous n'avez pas la bonne version des shaders des points (%1 au lieu de %2). Merci de lancer le script du dossier \"computreev3/scripts\".").arg(shaderVersion).arg(versionToUse));
 
                 f.close();
-            }
 
+                if(!m_ShaderPoint->compileSourceCode(shaderSourceCode))
+                {
+                    QString log;
+                    QString tmp;
 
-            if(!m_ShaderPoint->compileSourceCode(shaderSourceCode))
-            {
-                QString log;
-                QString tmp;
+                    if(!(tmp = m_ShaderPoint->log()).isEmpty())
+                        log += tmp;
 
-                if(!(tmp = m_ShaderPoint->log()).isEmpty())
-                    log += tmp;
+                    if(!log.isEmpty())
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderSourceFile).arg(log));
+                    else
+                        GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderSourceFile));
 
-                if(!log.isEmpty())
-                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error : %2").arg(m_shaderSourceFile).arg(log));
-                else
-                    GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Vertex shader \"%1\" compilation error").arg(m_shaderSourceFile));
+                    delete m_ShaderPoint;
+                    m_ShaderPoint = NULL;
+
+                    m_shaderPointError = true;
+                }
+            } else {
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Impossible d'ouvrir le fichier %1. Est-il protégé en lecture ?").arg(m_shaderSourceFile));
 
                 delete m_ShaderPoint;
                 m_ShaderPoint = NULL;
@@ -1799,7 +1733,8 @@ bool G3DPainter::bindPointShader()
                 if(!m_shaderLocInitialized) {
                     m_shaderLocCsIndex = m_shaderProgPoint->attributeLocation("csIndex");
                     m_shaderLocInfo = m_shaderProgPoint->attributeLocation("info");
-                    m_shaderLocCsMatrix = m_shaderProgPoint->uniformLocation("csMatrix");
+                    m_shaderLocCsOffset = m_shaderProgPoint->uniformLocation("csOffset");
+                    m_shaderLocCamMatrix = m_shaderProgPoint->uniformLocation("camMatrix");
                     m_shaderLocSelectionColor = m_shaderProgPoint->uniformLocation("selectionColor");
                     m_shaderLocCheckSelected = m_shaderProgPoint->uniformLocation("checkSelected");
 
@@ -1813,8 +1748,11 @@ bool G3DPainter::bindPointShader()
                     if(m_shaderLocInfo == -1)
                         err += "\r\n* attribute \"info\" not found.";
 
-                    if(m_shaderLocCsMatrix == -1)
-                        err += "\r\n* uniform \"csMatrix\" not found.";
+                    if(m_shaderLocCsOffset == -1)
+                        err += "\r\n* uniform \"csOffset\" not found.";
+
+                    if(m_shaderLocCamMatrix == -1)
+                        err += "\r\n* uniform \"camMatrix\" not found.";
 
                     if(m_shaderLocSelectionColor == -1)
                         err += "\r\n* uniform \"selectionColor\" not found.";
@@ -1835,28 +1773,58 @@ bool G3DPainter::bindPointShader()
                         s = m_maxMatrix;
                     }
 
-                    for(int i=0; i<s; ++i)
-                        m_csMatrix[i] = (m_modelViewMatrix4d * PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->toMatrix4x4()).cast<float>();
+                    Eigen::Vector3d offset;
 
-                    QColor sColor = m_gv->getOptions().getSelectedColor();
-                    m_shaderProgPoint->setUniformValue(m_shaderLocSelectionColor, QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
+                    for(int i=0; i<s; ++i) {
+                        PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->offset(offset);
 
-                    m_shaderProgPoint->setUniformValue(m_shaderLocCheckSelected, (GLuint)m_gv->pointsInformationManager()->checkSelected());
+                        Eigen::Vector3f &newOffset = m_csOffset[i];
 
-                    m_shaderProgPoint->enableAttributeArray("info");
-                    glVertexAttribPointer(m_shaderLocInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+                        newOffset[0] = m_camTranslation(0) - offset[0];
+                        newOffset[1] = m_camTranslation(1) - offset[1];
+                        newOffset[2] = m_camTranslation(2) - offset[2];
+                    }
 
-                    m_shaderProgPoint->enableAttributeArray("csIndex");
-                    glVertexAttribPointer(m_shaderLocCsIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
+                    if(m_shaderLocSelectionColor != -1) {
+                        QColor sColor = m_gv->getOptions().getSelectedColor();
+                        m_shaderProgPoint->setUniformValue(m_shaderLocSelectionColor, QVector4D(sColor.redF(), sColor.greenF(), sColor.blueF(), sColor.alphaF()));
+                    }
 
-                    glUniformMatrix4fv(m_shaderLocCsMatrix, m_csMatrix.size(), GL_FALSE, &m_csMatrix[0](0,0));
+                    if(m_shaderLocCheckSelected != -1)
+                        m_shaderProgPoint->setUniformValue(m_shaderLocCheckSelected, (GLuint)m_gv->pointsInformationManager()->checkSelected());
+
+                    if(m_shaderLocInfo != -1) {
+                        m_shaderProgPoint->enableAttributeArray(m_shaderLocInfo);
+                        glVertexAttribPointer(m_shaderLocInfo, 1, GL_UNSIGNED_BYTE, GL_FALSE, 0, &m_gv->pointsInformationManager()->informations()->constTAt(0));
+                    }
+
+                    if(m_shaderLocCsIndex != -1) {
+                        m_shaderProgPoint->enableAttributeArray(m_shaderLocCsIndex);
+                        glVertexAttribPointer(m_shaderLocCsIndex, 1, GL_UNSIGNED_INT, GL_FALSE, 0, &PS_COORDINATES_SYS_MANAGER->indexCloudOfCoordinateSystemOfPoints()->valueAt(0));
+                    }
+
+                    if(m_shaderLocCamMatrix != -1) {
+                        Eigen::Matrix4f tmpM = m_modelViewMatrix4d.cast<float>();
+                        tmpM(0,3) = 0;
+                        tmpM(1,3) = 0;
+                        tmpM(2,3) = 0;
+                        tmpM(3,3) = 1;
+
+                        glUniformMatrix4fv(m_shaderLocCamMatrix, 1, GL_FALSE, &tmpM(0,0));
+                    }
+
+                    if(!m_csOffset.empty())
+                        glUniform3fv(m_shaderLocCsOffset, m_csOffset.size(), &m_csOffset[0](0,0));
 
                     m_shaderProgPointSet = true;
                 }
 
             } else {
-                m_shaderProgPoint->enableAttributeArray("info");
-                m_shaderProgPoint->enableAttributeArray("csIndex");
+                if(m_shaderLocInfo != -1)
+                    m_shaderProgPoint->enableAttributeArray(m_shaderLocInfo);
+
+                if(m_shaderLocCsIndex != -1)
+                    m_shaderProgPoint->enableAttributeArray(m_shaderLocCsIndex);
             }
 
             return true;
@@ -1882,8 +1850,15 @@ void G3DPainter::initDoubleElementShader()
 
             m_shaderDeSourceFile = "./shaders/others.vert";
 
-            if(!m_shaderDe->compileSourceFile(m_shaderDeSourceFile))
-            {
+            if(!QFile::exists(m_shaderDeSourceFile)) {
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Le shader \"others.vert\" n'a pas été trouvé dans le dossier \"shaders\" du répertoire d'installation. Avez vous lancé le script du dossier \"computreev3/scripts\" ?"));
+
+                delete m_shaderDe;
+                m_shaderDe = NULL;
+
+                m_shaderDeError = true;
+
+            } else if(!m_shaderDe->compileSourceFile(m_shaderDeSourceFile)) {
                 QString log;
                 QString tmp;
 

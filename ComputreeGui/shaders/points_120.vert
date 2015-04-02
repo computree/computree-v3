@@ -1,13 +1,19 @@
 #version 120
 
+// if you change the version under this line you must change the version check in G3DPainter.cpp
+// vertex shader version 02.04.15
+
 // selection color of points
 uniform mediump vec4 selectionColor;
 
 // selection check
 uniform int checkSelected;
 
-// maximum of 64 coordinate system (4x4 matrix)
-uniform mat4 csMatrix[64];
+// maximum of 64 coordinate system
+uniform vec3 csOffset[64];
+
+// the matrix of the camera (without offset)
+uniform mat4 camMatrix;
 
 // info of the point
 attribute float info;
@@ -47,5 +53,12 @@ void main()
         gl_FrontColor = gl_Color;
     }
 
-    gl_Position = gl_ModelViewProjectionMatrix * csMatrix[csIndexInt] * gl_Vertex;
+    vec3 cs = csOffset[csIndexInt];
+		
+	vec4 newVertex = gl_Vertex;
+	newVertex[0] -= cs[0];
+	newVertex[1] -= cs[1];
+	newVertex[2] -= cs[2];
+	
+    gl_Position = gl_ModelViewProjectionMatrix * camMatrix * newVertex;
 }

@@ -365,7 +365,8 @@ private:
     bool                                m_shaderLocInitialized;
     int                                 m_shaderLocCsIndex;
     int                                 m_shaderLocInfo;
-    int                                 m_shaderLocCsMatrix;
+    int                                 m_shaderLocCsOffset;
+    int                                 m_shaderLocCamMatrix;
     int                                 m_shaderLocSelectionColor;
     int                                 m_shaderLocCheckSelected;
 
@@ -403,7 +404,7 @@ private:
     int                                 m_octreeCellsDraw;              // count how many octree cells was draw
 
     QStack< Eigen::Matrix4d >           m_matrixStack;                  // stack of matrix if use pushMatrix / popMatrix
-    std::vector< Eigen::Matrix4f >      m_csMatrix;                     // matrix for points in the shader (matrix of coordinate system)
+    std::vector< Eigen::Vector3f >      m_csOffset;                     // matrix for points in the shader (matrix of coordinate system)
     Eigen::Matrix4d                     m_modelViewMatrix4d;            // model/view matrix of the camera
     QStack< Eigen::Vector4d >           m_camTranslationStack;          // stack of camera translation coordinate
     Eigen::Vector4d                     m_camTranslation;               // camera translation coordinate

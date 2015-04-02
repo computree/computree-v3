@@ -102,8 +102,8 @@ void CT_DefaultCoordinateSystem::offset(CT_AbstractCoordinateSystem::realEx &x, 
 void CT_DefaultCoordinateSystem::offset(Eigen::Vector3d &v) const
 {
     v(0) = m_xOffset;
-    v(1) = m_xOffset;
-    v(2) = m_xOffset;
+    v(1) = m_yOffset;
+    v(2) = m_zOffset;
 }
 
 Eigen::Matrix4d CT_DefaultCoordinateSystem::toMatrix4x4() const

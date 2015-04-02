@@ -46,6 +46,7 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 #include "ct_attributes/abstract/ct_abstractattributesscalar.h"
+#include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
 #include "ct_accessor/ct_pointaccessor.h"
 
@@ -1146,6 +1147,17 @@ void G3DGraphicsView::drawInternal()
     for(int i=0; i<10000; ++i)
         _g.drawCylinder(0, 4, 0, 3, 5);
 */
+
+    /*int nCS = PS_COORDINATES_SYS_MANAGER->size();
+
+    Eigen::Vector3d offset;
+
+    for(int i=0; i<nCS; ++i) {
+        PS_COORDINATES_SYS_MANAGER->coordinateSystemAt(i)->offset(offset);
+
+        _g.drawCube(offset[0]-10, offset[1]-10, offset[2]-10,
+                    offset[0]+10, offset[1]+10, offset[2]+10);
+    }*/
 
     OctreeController *octreeC = (OctreeController*)m_docGV->octreeOfPoints();
 
