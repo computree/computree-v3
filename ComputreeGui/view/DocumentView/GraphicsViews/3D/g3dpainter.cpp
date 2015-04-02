@@ -169,7 +169,7 @@ void G3DPainter::beginNewDraw()
     m_bindShaderPointOK = false;
 
     m_bindShaderDeOK = false;
-    m_doubleElementMatrixMustBeUpdated = true;
+    m_doubleElementMatrixInShader = Eigen::Matrix4d::Identity();
 
     m_firstPolygonPointValid = false;
 
@@ -285,7 +285,6 @@ void G3DPainter::popMatrix()
     if((_nCallEnablePushMatrix == 0) && (m_matrixStack.size() > 0)) {
         m_modelViewMatrix4d = m_matrixStack.pop();
         m_camTranslation = m_camTranslationStack.pop();
-        m_doubleElementMatrixMustBeUpdated = true;
     }
 }
 
@@ -472,8 +471,6 @@ void G3DPainter::rotate(const double &alpha, const double &x, const double &y, c
     Eigen::Affine3d m = Eigen::Affine3d::Identity();
     m.rotate(Eigen::AngleAxisd(alpha, v));
 
-    m_doubleElementMatrixMustBeUpdated = true;
-
     multMatrix(m.matrix());
 }
 
@@ -512,8 +509,6 @@ void G3DPainter::translateThenRotateToDirection(const Eigen::Vector3d &translati
             left.z(), up.z(), dn.z(), translation.z(),
             0.0     , 0.0   , 0.0           , 1.0;
 
-    m_doubleElementMatrixMustBeUpdated = true;
-
     multMatrix(res);
 }
 
@@ -523,8 +518,6 @@ void G3DPainter::scale(const double &x, const double &y, const double &z)
     sc(0,0) = x;
     sc(1,1) = y;
     sc(2,2) = z;
-
-    m_doubleElementMatrixMustBeUpdated = true;
 
     multMatrix(sc);
 }
@@ -1623,6 +1616,97 @@ void G3DPainter::initPointShader()
             else
                 m_shaderSourceFile = "./shaders/points.vert";
 
+            /*if(m_openglVersion < 3)
+            {
+                shaderSourceCode = QString("#version 120\n"
+
+                                           "// selection color of points\n"
+                                           "uniform mediump vec4 selectionColor;\n"
+
+                                           "// selection check\n"
+                                           "uniform int checkSelected;\n"
+
+                                           "// maximum of 64 coordinate system (4x4 matrix)\n"
+                                           "uniform mat4 csMatrix[64];\n"
+
+                                           "// info of the point\n"
+                                           "attribute float info;\n"
+
+                                           "// index of the coordinate system matrix\n"
+                                           "attribute float csIndex;\n"
+
+                                           "int andOperator(int a, int b)\n"
+                                           "{\n"
+                                           "    int c = 0;\n"
+                                           "    for (int x = 0; x < 32; ++x)\n"
+                                           "    {\n"
+                                           "        c += c;\n"
+                                           "        if (a < 0) {\n"
+                                           "            if (b < 0) {\n"
+                                           "                c += 1;\n"
+                                           "            }\n"
+                                           "        }\n"
+                                           "        a += a;\n"
+                                           "        b += b;\n"
+                                           "    }\n"
+
+                                           "     return c;\n"
+                                           "}\n"
+
+                                           "void main()\n"
+                                           "{\n"
+                                           "    int infoInt = int(info);\n"
+                                           "    int csIndexInt = int(csIndex);\n"
+
+                                           "    if(andOperator(infoInt,checkSelected) > 0)\n"
+                                           "    {\n"
+                                           "        gl_FrontColor = selectionColor;\n"
+                                           "    }\n"
+                                           "    else\n"
+                                           "    {\n"
+                                           "        gl_FrontColor = gl_Color;\n"
+                                           "    }\n"
+
+                                           "    gl_Position = gl_ModelViewProjectionMatrix * csMatrix[csIndexInt] * gl_Vertex;\n"
+                                           "}\n");
+            }
+            else
+            {
+                shaderSourceCode = QString("#version 130\n"
+
+                                           "// selection color of points\n"
+                                           "uniform mediump vec4 selectionColor;\n"
+
+                                           "// selection check\n"
+                                           "uniform int checkSelected;\n"
+
+                                           "// maximum of 64 coordinate system (4x4 matrix)\n"
+                                           "uniform mat4 csMatrix[64];\n"
+
+                                           "// info of the point\n"
+                                           "attribute float info;\n"
+
+                                           "// index of the coordinate system matrix\n"
+                                           "attribute float csIndex;\n"
+
+                                           "void main()\n"
+                                           "{"
+                                           "    int infoInt = int(info);\n"
+                                           "    int csIndexInt = int(csIndex);\n"
+
+                                           "    if((infoInt & checkSelected) > 0)\n"
+                                           "    {\n"
+                                           "        gl_FrontColor = selectionColor;\n"
+                                           "    }\n"
+                                           "    else\n"
+                                           "    {\n"
+                                           "        gl_FrontColor = gl_Color;\n"
+                                           "    }\n"
+
+                                           "    gl_Position = gl_ModelViewProjectionMatrix * csMatrix[csIndexInt] * gl_Vertex;\n"
+                                           "}\n");
+            }*/
+
             QFile f(m_shaderSourceFile);
 
             if(f.open(QFile::ReadOnly)) {
@@ -2131,9 +2215,10 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
 
 void G3DPainter::updateDoubleElementsMatrix(bool force)
 {
-    if(m_doubleElementMatrixMustBeUpdated || force) {
+    if(force || (m_modelViewMatrix4d != m_doubleElementMatrixInShader)) {
+        m_doubleElementMatrixInShader = m_modelViewMatrix4d;
 
-        if(((m_shaderDeLocPMatrix != -1) && m_bindShaderDeOK) || force) {
+        if(m_shaderDeLocPMatrix != -1 && (force || m_bindShaderDeOK)) {
             Eigen::Matrix4f tmp = m_modelViewMatrix4d.cast<float>();
             tmp(0,3) = 0;
             tmp(1,3) = 0;
@@ -2145,8 +2230,6 @@ void G3DPainter::updateDoubleElementsMatrix(bool force)
 
             glUniformMatrix4fv(m_shaderDeLocPMatrix, 1, GL_FALSE, &tmp(0,0));
         }
-
-        m_doubleElementMatrixMustBeUpdated = false;
     }
 }
 
