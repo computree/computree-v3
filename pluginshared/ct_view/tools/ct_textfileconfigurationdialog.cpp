@@ -5,48 +5,31 @@
 #include "qdebug.h"
 
 
-CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent, QString fileName, bool autoDetect) :
+CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QStringList neededFields,
+                                                               QWidget *parent,
+                                                               QString fileName,
+                                                               bool autoDetect) :
     QDialog(parent),
     ui(new Ui::CT_TextFileConfigurationDialog)
 {
-    ui->setupUi(this);
+    QListIterator<QString> it(neededFields);
 
-    // Modif michael : problème si on met a NULL ! si on ne clique pas sur le bouton filechoose
-    _stream = NULL;
-    _file = NULL;
-    _autoDetect = autoDetect;
+    while(it.hasNext())
+        _neededFields.append(CT_TextFileConfigurationFields(it.next()));
 
-    if (_autoDetect) {ui->pb_detect->setVisible(false);}
+    initConstructor(fileName, autoDetect);
+}
 
-    delete ui->fieldWidget->layout();
-    _layout = new QGridLayout(ui->fieldWidget);
-
+CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QList<CT_TextFileConfigurationFields> neededFields,
+                                                               QWidget *parent,
+                                                               QString fileName,
+                                                               bool autoDetect) :
+    QDialog(parent),
+    ui(new Ui::CT_TextFileConfigurationDialog)
+{
     _neededFields = neededFields;
 
-    // paramétrage de la combo-box des séparateurs
-    ui->separator->addItem("Tabulation");
-    ui->separator->addItem("Virgule");
-    ui->separator->addItem("Point-Virgule");
-    ui->separator->addItem("Espace");
-    _separator = "\t";
-    ui->nbLines->setValue(10);
-    ui->cb_noheader->setChecked(false);
-
-    _filename = fileName;
-
-    init();
-    extractFieldsNames();
-
-    connect(ui->fileChoose, SIGNAL(clicked()), this, SLOT(fileChoose_clicked()));
-    connect(ui->separator, SIGNAL(currentIndexChanged(QString)), this, SLOT(separator_currentIndexChanged(QString)));
-    connect(ui->nbLines, SIGNAL(valueChanged(int)), this, SLOT(nbLines_valueChanged(int)));
-    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(buttonBox_accepted()));
-    connect(ui->cb_showCols, SIGNAL(clicked()), this, SLOT(cb_showCols_clicked()));
-    connect(ui->sb_tabSize, SIGNAL(valueChanged(int)), this, SLOT(sb_tabSize_valueChanged(int)));
-    connect(ui->skipLines, SIGNAL(valueChanged(int)), this, SLOT(skipLines_valueChanged(int)));
-    connect(ui->cb_noheader, SIGNAL(clicked()), this, SLOT(cb_noheader_clicked()));
-    connect(ui->pb_detect, SIGNAL(clicked()), this, SLOT(pb_detect_clicked()));
-
+    initConstructor(fileName, autoDetect);
 }
 
 void CT_TextFileConfigurationDialog::init()
@@ -66,7 +49,7 @@ void CT_TextFileConfigurationDialog::init()
             ui->filePath->setText(_filename);
             nbLines_valueChanged(ui->nbLines->value());
         } else {
-            ui->filePath->setText("Aucun fichier valide choisi.");
+            ui->filePath->setText(tr("Aucun fichier valide choisi."));
             ui->fileExtract->setText("");
         }
     }
@@ -81,7 +64,7 @@ CT_TextFileConfigurationDialog::~CT_TextFileConfigurationDialog()
 
 void CT_TextFileConfigurationDialog::fileChoose_clicked()
 {
-    QString filter = "Fichier ascii (*";
+    QString filter = tr("Fichier ascii") + " (*";
 
     QStringListIterator it(_extensions);
 
@@ -103,7 +86,7 @@ void CT_TextFileConfigurationDialog::fileChoose_clicked()
     filter += ")";
 
     // choix du fichier
-    _filename = QFileDialog::getOpenFileName(this, "Choix du fichier ascii", "", filter);
+    _filename = QFileDialog::getOpenFileName(this, tr("Choix du fichier ascii"), "", filter);
 
     // nettoyage
     clearFieldCombos();
@@ -112,17 +95,9 @@ void CT_TextFileConfigurationDialog::fileChoose_clicked()
     extractFieldsNames();
 }
 
-void CT_TextFileConfigurationDialog::separator_currentIndexChanged(const QString &arg1)
+void CT_TextFileConfigurationDialog::separator_currentIndexChanged(int index)
 {
-    if (arg1 == "Virgule") {
-        _separator = ",";
-    } else if (arg1 == "Point-Virgule") {
-        _separator = ";";
-    } else if (arg1 == "Espace") {
-        _separator = " ";
-    } else {
-        _separator = "\t";
-    }
+    _separator = ui->separator->itemData(index).toString();
 
     nbLines_valueChanged(ui->nbLines->value());
     extractFieldsNames();
@@ -168,6 +143,8 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
     _headers.clear();
     _headersNames.clear();
 
+    int headerNNumericValues = 0;
+    bool headerIsNumericValues = false;
 
     if (_file!=NULL && _file->exists() && _file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -176,6 +153,7 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
         {
             _stream->readLine();
         }
+        QRegExp regNumeric("\\d+");
 
         QString headerLine = _stream->readLine();
         QStringList headers = headerLine.split(_separator);
@@ -183,6 +161,9 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
         for (int i = 0 ; i < size ; i++)
         {
             QString value = headers.at(i);
+
+            if(regNumeric.indexIn(value) != -1)
+                ++headerNNumericValues;
 
             if (hasHeader())
             {
@@ -202,6 +183,8 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
         _headersNames.append("NODATA");
 
         _file->close();
+
+        headerIsNumericValues = headerNNumericValues >= (((float)size)/2.0);
     }
 
     //_headersNames.append("");
@@ -210,18 +193,26 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
     int sizeNeededFields = _neededFields.size();
     for (int i = 0 ; i < sizeNeededFields ; i++)
     {
-        QString neededField = _neededFields.at(i);
+        CT_TextFileConfigurationFields neededField = _neededFields.at(i);
 
-        QLabel *label = new QLabel(QString("%1").arg(neededField));
+        QLabel *label = new QLabel(QString("%1").arg(neededField.m_nameOfField));
         QComboBox *combo = new QComboBox();
         combo->addItems(_headersNames);
 
-        if (i < _headersNames.count())
+        int matchIndex = -1;
+
+        for(int j=0; j<_headersNames.size() && matchIndex == -1; ++j)
         {
-            combo->setCurrentIndex(i);
-        } else {
-            combo->setCurrentIndex(_headersNames.count()-1);
+            if(neededField.m_fieldInFileChooser.exactMatch(_headersNames.at(j)))
+                matchIndex = j;
         }
+
+        if((matchIndex >= 0) && (matchIndex < _headersNames.count()))
+            combo->setCurrentIndex(matchIndex);
+        else if((neededField.m_chooseNoDataIfNotMatch || (i >= _headersNames.count())) && !headerIsNumericValues)
+            combo->setCurrentIndex(_headersNames.count()-1);
+        else
+            combo->setCurrentIndex(i);
 
         _layout->addWidget(label, i, 0);
         _layout->addWidget(combo, i, 1);
@@ -239,7 +230,7 @@ void CT_TextFileConfigurationDialog::buttonBox_accepted()
         QString needed = it.key()->text();
         QString header = it.value()->currentText();
 
-        if (_neededFields.contains(needed) && _headers.contains(header))
+        if (_neededFields.contains(CT_TextFileConfigurationFields(needed)) && _headers.contains(header))
         {
             _neededFieldsColumns.insert(needed, _headers.value(header));
         }
@@ -340,30 +331,17 @@ QString CT_TextFileConfigurationDialog::getFieldColumnsSelectedAsString(const QM
 
 void CT_TextFileConfigurationDialog::setSeparator(const QString &separator)
 {
+    _separator = separator;
+    int size = ui->separator->count();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-
-    if (separator == ",") {
-        ui->separator->setCurrentIndex(ui->separator->findText("Virgule"));
-    } else if (separator == ";") {
-        ui->separator->setCurrentIndex(ui->separator->findText("Point-Virgule"));
-    } else if (separator == " ") {
-        ui->separator->setCurrentIndex(ui->separator->findText("Espace"));
-    }else {
-        ui->separator->setCurrentIndex(ui->separator->findText("Tabulation"));
+    for(int i=0; i<size; ++i)
+    {
+        if(ui->separator->itemData(i).toString() == separator)
+        {
+            ui->separator->setCurrentIndex(i);
+            return;
+        }
     }
-#else
-
-    if (separator == ",") {
-        ui->separator->setCurrentText("Virgule");
-    } else if (separator == ";") {
-        ui->separator->setCurrentText("Point-Virgule");
-    } else if (separator == " ") {
-        ui->separator->setCurrentText("Espace");
-    } else {
-        ui->separator->setCurrentText("Tabulation");
-    }
-#endif
 }
 
 void CT_TextFileConfigurationDialog::setFileExtensionAccepted(const QStringList &extensions)
@@ -396,9 +374,6 @@ void CT_TextFileConfigurationDialog::setDecimal(QString decimal)
         ui->rb_comma->setChecked(true);
     }
 }
-
-
-
 
 void CT_TextFileConfigurationDialog::cb_showCols_clicked()
 {
@@ -456,4 +431,43 @@ void CT_TextFileConfigurationDialog::pb_detect_clicked()
             }
         }
     }
+}
+
+void CT_TextFileConfigurationDialog::initConstructor(QString fileName, bool autoDetect)
+{
+    ui->setupUi(this);
+
+    // Modif michael : problème si on met a NULL ! si on ne clique pas sur le bouton filechoose
+    _stream = NULL;
+    _file = NULL;
+    _autoDetect = autoDetect;
+
+    if (_autoDetect) {ui->pb_detect->setVisible(false);}
+
+    delete ui->fieldWidget->layout();
+    _layout = new QGridLayout(ui->fieldWidget);
+
+    // paramétrage de la combo-box des séparateurs
+    ui->separator->addItem(tr("Tabulation"), "\t");
+    ui->separator->addItem(tr("Virgule"), ",");
+    ui->separator->addItem(tr("Point-Virgule"), ";");
+    ui->separator->addItem(tr("Espace"), " ");
+    _separator = "\t";
+    ui->nbLines->setValue(10);
+    ui->cb_noheader->setChecked(false);
+
+    _filename = fileName;
+
+    init();
+    extractFieldsNames();
+
+    connect(ui->fileChoose, SIGNAL(clicked()), this, SLOT(fileChoose_clicked()));
+    connect(ui->separator, SIGNAL(currentIndexChanged(int)), this, SLOT(separator_currentIndexChanged(int)));
+    connect(ui->nbLines, SIGNAL(valueChanged(int)), this, SLOT(nbLines_valueChanged(int)));
+    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(buttonBox_accepted()));
+    connect(ui->cb_showCols, SIGNAL(clicked()), this, SLOT(cb_showCols_clicked()));
+    connect(ui->sb_tabSize, SIGNAL(valueChanged(int)), this, SLOT(sb_tabSize_valueChanged(int)));
+    connect(ui->skipLines, SIGNAL(valueChanged(int)), this, SLOT(skipLines_valueChanged(int)));
+    connect(ui->cb_noheader, SIGNAL(clicked()), this, SLOT(cb_noheader_clicked()));
+    connect(ui->pb_detect, SIGNAL(clicked()), this, SLOT(pb_detect_clicked()));
 }

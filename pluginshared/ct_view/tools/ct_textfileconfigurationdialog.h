@@ -43,12 +43,38 @@ namespace Ui {
 class CT_TextFileConfigurationDialog;
 }
 
+struct CT_TextFileConfigurationFields
+{
+    CT_TextFileConfigurationFields(QString nOf, QRegExp regEx, bool chooseNoData) : m_nameOfField(nOf), m_fieldInFileChooser(regEx), m_chooseNoDataIfNotMatch(chooseNoData) {}
+    CT_TextFileConfigurationFields(QString nOf, QRegExp regEx) : m_nameOfField(nOf), m_fieldInFileChooser(regEx), m_chooseNoDataIfNotMatch(true) {}
+    CT_TextFileConfigurationFields(QString nOf) : m_nameOfField(nOf), m_fieldInFileChooser(QRegExp()), m_chooseNoDataIfNotMatch(true) {}
+
+    /**
+     * @brief The name of the field
+     */
+    QString         m_nameOfField;
+
+    /**
+     * @brief A regular expression to extract a possible pre-defined fields
+     */
+    QRegExp         m_fieldInFileChooser;
+
+    /**
+     * @brief At true if we must choose for this fields the value NODATA if regular expression not match
+     */
+    bool            m_chooseNoDataIfNotMatch;
+
+    bool operator ==(const CT_TextFileConfigurationFields &other) { return other.m_nameOfField == m_nameOfField; }
+};
+
 class PLUGINSHAREDSHARED_EXPORT CT_TextFileConfigurationDialog : public QDialog
 {
     Q_OBJECT
     
 public:
+
     explicit CT_TextFileConfigurationDialog(QStringList neededFields, QWidget *parent = 0, QString fileName="", bool autoDetect = true);
+    CT_TextFileConfigurationDialog(QList<CT_TextFileConfigurationFields> neededFields, QWidget *parent = 0, QString fileName="", bool autoDetect = true);
     ~CT_TextFileConfigurationDialog();
 
     void init();
@@ -84,7 +110,7 @@ private slots:
 
     void clearFieldCombos();
     void fileChoose_clicked();
-    void separator_currentIndexChanged(const QString &arg1);
+    void separator_currentIndexChanged(int index);
     void nbLines_valueChanged(int arg1);
     void buttonBox_accepted();
 
@@ -99,20 +125,22 @@ private slots:
     void pb_detect_clicked();
 
 private:
-    Ui::CT_TextFileConfigurationDialog *ui;
-    QGridLayout*                _layout;
-    QMap<QLabel*, QComboBox*>   _combos;
+    Ui::CT_TextFileConfigurationDialog      *ui;
+    QGridLayout*                            _layout;
+    QMap<QLabel*, QComboBox*>               _combos;
 
-    QString                     _filename;
-    QFile*                      _file;
-    QTextStream*                _stream;
-    QMap<QString, int>          _headers;
-    QStringList                 _headersNames;
-    QMap<QString, int>          _neededFieldsColumns;
-    QStringList                 _neededFields;
-    QString                     _separator;
-    QStringList                 _extensions;
-    bool                        _autoDetect;
+    QString                                 _filename;
+    QFile*                                  _file;
+    QTextStream*                            _stream;
+    QMap<QString, int>                      _headers;
+    QStringList                             _headersNames;
+    QMap<QString, int>                      _neededFieldsColumns;
+    QList<CT_TextFileConfigurationFields>   _neededFields;
+    QString                                 _separator;
+    QStringList                             _extensions;
+    bool                                    _autoDetect;
+
+    void initConstructor(QString fileName, bool autoDetect);
 };
 
 #endif // CT_TEXTFILECONFIGURATIONDIALOG_H

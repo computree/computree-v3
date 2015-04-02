@@ -235,17 +235,17 @@ bool PB_StepLoadAsciiFile02::postConfigure()
 bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
 {
     // première boite de dialog
-    QStringList fieldList;
-    fieldList.append("X");
-    fieldList.append("Y");
-    fieldList.append("Z");
-    fieldList.append("Intensité");
-    fieldList.append("Rouge");
-    fieldList.append("Vert");
-    fieldList.append("Bleu");
-    fieldList.append("Normale X");
-    fieldList.append("Normale Y");
-    fieldList.append("Normale Z");
+    QList<CT_TextFileConfigurationFields> fieldList;
+    fieldList.append(CT_TextFileConfigurationFields("X", QRegExp(".*[xX].*")));             // x
+    fieldList.append(CT_TextFileConfigurationFields("Y", QRegExp(".*[yY].*")));             // y
+    fieldList.append(CT_TextFileConfigurationFields("Z", QRegExp(".*[zZ].*")));             // z
+    fieldList.append(CT_TextFileConfigurationFields("Intensité", QRegExp("[iI].*")));       // intensité - intensity - intensidad - intensität - i
+    fieldList.append(CT_TextFileConfigurationFields("Rouge", QRegExp("[rR].*")));           // rouge - red - rojo - rot - r
+    fieldList.append(CT_TextFileConfigurationFields("Vert", QRegExp("[vVgG].*")));          // vert - green - verde - grün - v - g
+    fieldList.append(CT_TextFileConfigurationFields("Bleu", QRegExp("[bBaA].*")));          // bleu - blue - azul - blau - b - a
+    fieldList.append(CT_TextFileConfigurationFields("Normale X", QRegExp("[nN].*[xX]")));   // normale x - normal x - normali x - normalen x - nx
+    fieldList.append(CT_TextFileConfigurationFields("Normale Y", QRegExp("[nN].*[yY]")));   // normale y - normal y - normali y - normalen y - ny
+    fieldList.append(CT_TextFileConfigurationFields("Normale Z", QRegExp("[nN].*[zZ]")));   // normale z - normal z - normali z - normalen z - nz
 
     CT_TextFileConfigurationDialog dialog(fieldList, NULL, getFilePath());
     dialog.setFileExtensionAccepted(getFileExtensionAccepted());
