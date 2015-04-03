@@ -15,7 +15,6 @@ PB_ActionModifyClustersGroups::PB_ActionModifyClustersGroups(QMap<const CT_Point
     m_status = 0;
     m_mousePressed = false;
     m_selectionMode = GraphicsViewInterface::SELECT_ONE;
-//    m_drawMode = SELECT_CURRENT_MODE;
 
     _automaticColorList.append(QColor(255,255,200)); // Jaune Clair
     _automaticColorList.append(QColor(255,200,255)); // Magenta Clair
@@ -40,9 +39,12 @@ PB_ActionModifyClustersGroups::PB_ActionModifyClustersGroups(QMap<const CT_Point
     _automaticColorList.append(QColor(150,0  ,255)); // Violet
 
     _colorA     = QColor(0  ,255,0  ); // Vert
-    _colorB     = QColor(0  ,150,255); // Bleu
+    _colorB     = QColor(0  ,0  ,255); // Bleu
     _colorTmp   = QColor(255,255,255); // Blanc
-    _colorTrash = QColor(0  ,0  ,0  ); // Noir
+    _colorTrash = QColor(125,125,125); // Grey
+
+    _ABColors = true;
+    _onlyAB = false;
 }
 
 QString PB_ActionModifyClustersGroups::uniqueName() const
@@ -85,9 +87,18 @@ void PB_ActionModifyClustersGroups::init()
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
         registerOption(option);
+
+        connect(option, SIGNAL(setColorA(QColor)), this, SLOT(setColorA(QColor)));
+        connect(option, SIGNAL(setColorB(QColor)), this, SLOT(setColorB(QColor)));
+        connect(option, SIGNAL(selectPositionA()), this, SLOT(selectPositionA()));
+        connect(option, SIGNAL(selectPositionB()), this, SLOT(selectPositionB()));
+        connect(option, SIGNAL(onlyABChanged()), this, SLOT(onlyABChanged()));
     }
 
+
     document()->removeAllItemDrawable();
+
+    document()->beginAddMultipleItemDrawable();
 
     int colorNum = 0;
     int posNum = 0;
@@ -105,11 +116,12 @@ void PB_ActionModifyClustersGroups::init()
         // Choix par défaut des scènes A et B (initialisation)
         if (posNum == 0)
         {
-            _positionA = position;
+            _positionA = (CT_Point2D*) position;
         } else if (posNum == 1)
         {
-            _positionB = position;
+            _positionB = (CT_Point2D*) position;
         }
+
 
         const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
         for (int i = 0 ; i < pair.second->size() ; i++)
@@ -128,12 +140,71 @@ void PB_ActionModifyClustersGroups::init()
             } else {
                 document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
             }
+
         }
 
         posNum++;
     }
 
+    document()->endAddMultipleItemDrawable();
+    document()->redrawGraphics();
+
 }
+
+void PB_ActionModifyClustersGroups::updateAllClustersColors()
+{
+    const QList<const CT_PointCluster*>* listA = _positionToCluster->value(_positionA).second;
+    const QList<const CT_PointCluster*>* listB = _positionToCluster->value(_positionB).second;
+
+    //const QList<CT_AbstractItemDrawable*>& visibleItems = document()->getItemDrawable();
+
+    QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
+    while (it.hasNext())
+    {
+        it.next();
+        const CT_Point2D* position = it.key();
+        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
+
+        for (int i = 0 ; i < pair.second->size() ; i++)
+        {
+            CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+
+
+            if (_ABColors && listA->contains(cluster))
+            {
+                document()->setColor(cluster, _colorA);
+            } else if (_ABColors && listB->contains(cluster))
+            {
+                document()->setColor(cluster, _colorB);
+            } else if (_trashClusterList.contains(cluster))
+            {
+                document()->setColor(cluster, _colorTrash);
+            } else {
+                document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
+            }
+        }
+    }
+}
+
+
+void PB_ActionModifyClustersGroups::updateColorForOneCluster(const CT_Point2D* position)
+{
+    QColor clusterColor = _positionsBaseColors.value(position, _colorTmp);
+    if (_ABColors && position == _positionA) {clusterColor = _colorA;}
+    if (_ABColors && position == _positionB) {clusterColor = _colorB;}
+
+    //const QList<CT_AbstractItemDrawable*>& visibleItems = document()->getItemDrawable();
+
+    const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = _positionToCluster->value(position);
+
+    for (int i = 0 ; i < pair.second->size() ; i++)
+    {
+        CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+        document()->setColor(cluster, clusterColor);
+    }
+}
+
+
 
 bool PB_ActionModifyClustersGroups::mousePressEvent(QMouseEvent *e)
 {
@@ -141,10 +212,6 @@ bool PB_ActionModifyClustersGroups::mousePressEvent(QMouseEvent *e)
         return false;
 
     GraphicsViewInterface *view = graphicsView();
-
-//    m_backupDrawMode = view->drawMode();
-
-//    setNewDrawMode();
 
     view->setSelectionMode(selectionMode());
 
@@ -203,8 +270,6 @@ bool PB_ActionModifyClustersGroups::mouseMoveEvent(QMouseEvent *e)
 
         if(mode != GraphicsViewInterface::NONE)
         {
-//            setNewDrawMode();
-
             m_selectionRectangle.setBottomRight(e->pos());
             document()->redrawGraphics();
 
@@ -224,15 +289,10 @@ bool PB_ActionModifyClustersGroups::mouseReleaseEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton)
         m_mousePressed = false;
 
-//    if(mode != GraphicsViewInterface::NONE)
-//        setNewDrawMode();
-
     if((m_status > 0)
             && (e->button() == Qt::LeftButton))
     {
         m_status = 0;
-        //m_backupDrawMode = view->drawMode();
-        //view->setDrawMode(GraphicsViewInterface::NORMAL);
 
         if(mode != GraphicsViewInterface::NONE)
         {
@@ -247,8 +307,6 @@ bool PB_ActionModifyClustersGroups::mouseReleaseEvent(QMouseEvent *e)
                 view->setSelectRegionHeight(3);
 
                 view->select(e->pos());
-
-                //view->setDrawMode(m_backupDrawMode);
             }
             else
             {
@@ -260,8 +318,6 @@ bool PB_ActionModifyClustersGroups::mouseReleaseEvent(QMouseEvent *e)
                 // Compute rectangle center and perform selection
                 view->select(m_selectionRectangle.center());
 
-    //            setBackupDrawMode();
-                //view->setDrawMode(m_backupDrawMode);
                 document()->redrawGraphics();
 
                 return true;
@@ -318,44 +374,157 @@ bool PB_ActionModifyClustersGroups::setSelectionMode(GraphicsViewInterface::Sele
     return false;
 }
 
-//bool PB_ActionModifyClustersGroups::setDrawMode(PB_ActionModifyClustersGroups::SelectionDrawMode mode)
-//{
-//    if(!m_mousePressed)
-//    {
-//        m_drawMode = mode;
-//        return true;
-//    }
-
-//    return false;
-//}
-
 GraphicsViewInterface::SelectionMode PB_ActionModifyClustersGroups::selectionMode() const
 {
     return m_selectionMode;
 }
 
-//PB_ActionModifyClustersGroups::SelectionDrawMode PB_ActionModifyClustersGroups::drawMode() const
-//{
-//    return m_drawMode;
-//}
+void PB_ActionModifyClustersGroups::setColorA(QColor color)
+{
+    _colorA = color;
+    updateColorForOneCluster(_positionA);
+    document()->redrawGraphics();
+}
 
-//void PB_ActionModifyClustersGroups::setNewDrawMode()
-//{
-//    GraphicsViewInterface *view = graphicsView();
-//    view->setDrawModeChangeTime(0);
+void PB_ActionModifyClustersGroups::setColorB(QColor color)
+{
+    _colorB = color;
+    updateColorForOneCluster(_positionB);
+    document()->redrawGraphics();
+}
 
-//    if(drawMode() != SELECT_CURRENT_MODE)
-//        view->setDrawMode((GraphicsViewInterface::DrawMode)drawMode());
-//    else
-//        view->setDrawMode(m_backupDrawMode);
-//}
+void PB_ActionModifyClustersGroups::selectPositionA()
+{
+    QList<CT_AbstractItemDrawable*> selectedItems = document()->getSelectedItemDrawable();
 
-//void PB_ActionModifyClustersGroups::setBackupDrawMode()
-//{
-//    GraphicsViewInterface *view = graphicsView();
+    int cpt = 0;
+    while (selectedItems.size() > cpt)
+    {
+        CT_AbstractItemDrawable* item = selectedItems.at(cpt++);
+        CT_PointCluster* cluster = dynamic_cast<CT_PointCluster*>(item);
 
-//    view->setDrawModeChangeTime(view->getOptions().getFastDrawTime());
-//}
+        if (cluster != NULL)
+        {
+            const CT_Point2D* position = _clusterToPosition.value(cluster, NULL);
+
+            if (position != NULL)
+            {
+                if (position == _positionB)
+                {
+                    swapAandB();
+                    return;
+                } else
+                {
+                    CT_Point2D* oldPositionA = _positionA;
+                    _positionA = (CT_Point2D*) position;
+
+                    updateColorForOneCluster(oldPositionA);
+                    updateColorForOneCluster(_positionA);
+                    document()->redrawGraphics();
+
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void PB_ActionModifyClustersGroups::selectPositionB()
+{
+    QList<CT_AbstractItemDrawable*> selectedItems = document()->getSelectedItemDrawable();
+
+    int cpt = 0;
+    while (selectedItems.size() > cpt)
+    {
+        CT_AbstractItemDrawable* item = selectedItems.at(cpt++);
+        CT_PointCluster* cluster = dynamic_cast<CT_PointCluster*>(item);
+
+        if (cluster != NULL)
+        {
+            const CT_Point2D* position = _clusterToPosition.value(cluster, NULL);
+
+            if (position != NULL)
+            {
+                if (position == _positionA)
+                {
+                    swapAandB();
+                    return;
+                } else
+                {
+                    CT_Point2D* oldPositionB = _positionB;
+                    _positionB = (CT_Point2D*) position;
+
+                    updateColorForOneCluster(oldPositionB);
+                    updateColorForOneCluster(_positionB);
+                    document()->redrawGraphics();
+
+                    return;
+                }
+            }
+        }
+    }
+}
+
+void PB_ActionModifyClustersGroups::swapAandB()
+{
+    CT_Point2D* oldPositionB = _positionB;
+    _positionB = _positionA;
+    _positionA = oldPositionB;
+    updateColorForOneCluster(_positionA);
+    updateColorForOneCluster(_positionB);
+    document()->redrawGraphics();
+}
+
+void PB_ActionModifyClustersGroups::onlyABChanged()
+{
+    PB_ActionModifyClustersGroupsOptions *option = (PB_ActionModifyClustersGroupsOptions*)optionAt(0);
+    _onlyAB = option->isOnlyABChecked();
+    updateVisiblePositions();
+}
+
+void PB_ActionModifyClustersGroups::updateVisiblePositions()
+{
+    document()->removeAllItemDrawable();
+
+    document()->beginAddMultipleItemDrawable();
+
+    if (_onlyAB)
+    {
+        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairA = _positionToCluster->value(_positionA);
+        for (int i = 0 ; i < pairA.second->size() ; i++)
+        {
+            CT_PointCluster* cluster = (CT_PointCluster*) pairA.second->at(i);
+            document()->addItemDrawable(*cluster);
+        }
+
+        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairB = _positionToCluster->value(_positionB);
+        for (int i = 0 ; i < pairB.second->size() ; i++)
+        {
+            CT_PointCluster* cluster = (CT_PointCluster*) pairB.second->at(i);
+            document()->addItemDrawable(*cluster);
+        }
+
+    } else {
+        QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
+        while (it.hasNext())
+        {
+            it.next();
+
+            const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
+            for (int i = 0 ; i < pair.second->size() ; i++)
+            {
+                CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+                document()->addItemDrawable(*cluster);
+            }
+        }
+    }
+
+    document()->endAddMultipleItemDrawable();
+
+    document()->redrawGraphics();
+}
+
+
 
 GraphicsViewInterface::SelectionMode PB_ActionModifyClustersGroups::selectionModeToBasic(GraphicsViewInterface::SelectionMode mode) const
 {

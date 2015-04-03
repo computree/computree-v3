@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>758</width>
+    <width>928</width>
     <height>69</height>
    </rect>
   </property>
@@ -458,8 +458,8 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroupMode"/>
-  <buttongroup name="buttonGroupSelection"/>
   <buttongroup name="buttonGroupType"/>
+  <buttongroup name="buttonGroupSelection"/>
+  <buttongroup name="buttonGroupMode"/>
  </buttongroups>
 </ui>

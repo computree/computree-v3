@@ -19,6 +19,12 @@ public:
 
     GraphicsViewInterface::SelectionMode selectionMode() const;
 
+    bool isOnlyABChecked() const;
+
+protected:
+    QColor  _colorA;
+    QColor  _colorB;
+
 private:
     Ui::PB_ActionModifyClustersGroupsOptions *ui;
 
@@ -27,6 +33,14 @@ private slots:
     void on_buttonGroupType_buttonReleased(int id);
     void on_buttonGroupMode_buttonReleased(int id);
 
+    void on_pb_SetSceneA_clicked();
+    void on_pb_SetSceneB_clicked();
+
+    void on_pb_ColorA_clicked();
+    void on_pb_ColorB_clicked();
+
+    void on_cb_ShowOnlyAAndB_toggled(bool checked);
+
 public slots:
 
     void setSelectionMode(GraphicsViewInterface::SelectionMode mode);
@@ -34,6 +48,11 @@ public slots:
 signals:
 
     void selectionModeChanged(GraphicsViewInterface::SelectionMode mode);
+    void selectPositionA();
+    void selectPositionB();
+    void setColorA(QColor color);
+    void setColorB(QColor color);
+    void onlyABChanged();
 };
 
 #endif // PB_ACTIONMODIFYCLUSTERSGROUPSOPTIONS_H

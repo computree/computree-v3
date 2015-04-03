@@ -2,11 +2,19 @@
 #include "ui_pb_actionmodifyclustersgroupsoptions.h"
 #include "ct_global/ct_context.h"
 
+#include <QColorDialog>
+
 PB_ActionModifyClustersGroupsOptions::PB_ActionModifyClustersGroupsOptions(const PB_ActionModifyClustersGroups *action) :
     CT_GAbstractActionOptions(action),
     ui(new Ui::PB_ActionModifyClustersGroupsOptions)
 {
     ui->setupUi(this);
+
+    _colorA = QColor(0  ,255,0  ); // Vert
+    _colorB = QColor(0  ,0  ,255); // Bleu
+
+    ui->pb_ColorA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
+    ui->pb_ColorB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
 }
 
 PB_ActionModifyClustersGroupsOptions::~PB_ActionModifyClustersGroupsOptions()
@@ -48,6 +56,11 @@ GraphicsViewInterface::SelectionMode PB_ActionModifyClustersGroupsOptions::selec
     }
 
     return (GraphicsViewInterface::SelectionMode)mode;
+}
+
+bool PB_ActionModifyClustersGroupsOptions::isOnlyABChecked() const
+{
+    return ui->cb_ShowOnlyAAndB->isChecked();
 }
 
 void PB_ActionModifyClustersGroupsOptions::on_buttonGroupType_buttonReleased(int id)
@@ -100,4 +113,38 @@ void PB_ActionModifyClustersGroupsOptions::setSelectionMode(GraphicsViewInterfac
             ui->toolButtonRemoveMode->setChecked(true);
         }
     }
+}
+
+void PB_ActionModifyClustersGroupsOptions::on_pb_SetSceneA_clicked()
+{
+    emit selectPositionA();
+}
+
+void PB_ActionModifyClustersGroupsOptions::on_pb_SetSceneB_clicked()
+{
+    emit selectPositionB();
+}
+
+void PB_ActionModifyClustersGroupsOptions::on_pb_ColorA_clicked()
+{
+    _colorA = QColorDialog::getColor(_colorA);
+    if (!_colorA.isValid()) {return;}
+
+    ui->pb_ColorA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
+    emit setColorA(_colorA);
+}
+
+void PB_ActionModifyClustersGroupsOptions::on_pb_ColorB_clicked()
+{
+    _colorB = QColorDialog::getColor(_colorB);
+    if (!_colorB.isValid()) {return;}
+
+    ui->pb_ColorB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
+    emit setColorB(_colorB);
+}
+
+void PB_ActionModifyClustersGroupsOptions::on_cb_ShowOnlyAAndB_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit onlyABChanged();
 }

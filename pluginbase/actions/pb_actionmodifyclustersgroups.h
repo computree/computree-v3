@@ -25,13 +25,6 @@ class PB_ActionModifyClustersGroups : public CT_AbstractActionForGraphicsView
     Q_OBJECT
 public:
 
-//    enum SelectionDrawMode
-//    {
-//        SELECT_FAST_MODE = GraphicsViewInterface::FAST,         /* Set the graphics view to draw in fast mode and selects elements */
-//        SELECT_NORMAL_MODE = GraphicsViewInterface::NORMAL,     /* Set the graphics view to draw in normal mode and selects elements */
-//        SELECT_CURRENT_MODE = SELECT_NORMAL_MODE+10             /* Selects elements as they are in the graphical view */
-//    };
-
     PB_ActionModifyClustersGroups(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map);
 
     QString uniqueName() const;
@@ -41,6 +34,11 @@ public:
     QString type() const;
 
     void init();
+
+    void updateAllClustersColors();
+    void updateColorForOneCluster(const CT_Point2D *position);
+
+    void updateVisiblePositions();
 
     bool mousePressEvent(QMouseEvent *e);
     bool mouseMoveEvent(QMouseEvent *e);
@@ -60,14 +58,15 @@ public:
      */
     bool setSelectionMode(GraphicsViewInterface::SelectionMode mode);
 
-//    /**
-//     * @brief change the draw mode for this action. (SELECT_CURRENT_MODE by default)
-//     */
-//    bool setDrawMode(PB_ActionModifyClustersGroups::SelectionDrawMode mode);
-
-
     GraphicsViewInterface::SelectionMode selectionMode() const;
-//    PB_ActionModifyClustersGroups::SelectionDrawMode drawMode() const;
+
+public slots:
+    void setColorA(QColor color);
+    void setColorB(QColor color);
+    void selectPositionA();
+    void selectPositionB();
+    void swapAandB();
+    void onlyABChanged();
 
 private:
     QRect                                   m_selectionRectangle;
@@ -75,7 +74,6 @@ private:
     GraphicsViewInterface::SelectionMode    m_selectionMode;
     bool                                    m_mousePressed;
 
-//    SelectionDrawMode                       m_drawMode;
     GraphicsViewInterface::DrawMode         m_backupDrawMode;
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *_positionToCluster;
@@ -88,13 +86,13 @@ private:
     QColor                          _colorTmp;
     QColor                          _colorTrash;
 
-    const CT_Point2D*               _positionA;
-    const CT_Point2D*               _positionB;
+    CT_Point2D*                     _positionA;
+    CT_Point2D*                     _positionB;
     QList<const CT_PointCluster*>   _temporaryClusterList;
     QList<const CT_PointCluster*>   _trashClusterList;
+    bool                            _ABColors;
+    bool                            _onlyAB;
 
-//    void setNewDrawMode();
-//    void setBackupDrawMode();
 
     GraphicsViewInterface::SelectionMode selectionModeToBasic(GraphicsViewInterface::SelectionMode mode) const;
 };
