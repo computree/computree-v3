@@ -19,8 +19,26 @@ public:
 
     GraphicsViewInterface::SelectionMode selectionMode() const;
 
-    bool isOnlyABChecked() const;
+    bool isAVisible() const;
+    bool isBVisible() const;
+    bool isTMPVisible() const;
+    bool isTrashVisible() const;
+    bool isOthersVisible() const;
 
+    bool isInSceneMode() const;
+    bool isInLimitMode() const;
+    bool isInSplitMode() const;
+
+    void selectColorA(QColor color);
+    void selectColorB(QColor color);
+
+    void selectSceneMode();
+    void selectLimitMode();
+    void selectSplitMode();
+
+    void setMultiSelect(bool multi);
+    void setDistance(int val);
+    void setMaxDistance(int val);
 protected:
     QColor  _colorA;
     QColor  _colorB;
@@ -39,7 +57,21 @@ private slots:
     void on_pb_ColorA_clicked();
     void on_pb_ColorB_clicked();
 
-    void on_cb_ShowOnlyAAndB_toggled(bool checked);
+    void on_pb_toA_clicked();
+    void on_pb_toB_clicked();
+    void on_pb_toTmp_clicked();
+    void on_pb_toTrash_clicked();
+
+    void on_cb_Avisible_toggled(bool checked);
+    void on_cb_Bvisible_toggled(bool checked);
+    void on_cb_othersVisible_toggled(bool checked);
+    void on_cb_tmpVisible_toggled(bool checked);
+    void on_cb_trashVisible_toggled(bool checked);
+
+    void modeChanged(int button);
+    void byChanged(int button);
+
+    void on_sb_LengthOnAxis_valueChanged(int arg1);
 
 public slots:
 
@@ -52,7 +84,17 @@ signals:
     void selectPositionB();
     void setColorA(QColor color);
     void setColorB(QColor color);
-    void onlyABChanged();
+
+    void affectClusterToA();
+    void affectClusterToB();
+    void affectClusterToTMP();
+    void affectClusterToTrash();
+
+    void visibilityChanged();
+
+    void enterLimitMode();
+    void distanceChanged(int val);
+
 };
 
 #endif // PB_ACTIONMODIFYCLUSTERSGROUPSOPTIONS_H

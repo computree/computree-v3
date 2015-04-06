@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>928</width>
-    <height>69</height>
+    <width>956</width>
+    <height>74</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -36,83 +36,211 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="widget_2" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="topMargin">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>3</number>
       </property>
       <item>
-       <widget class="QRadioButton" name="radioButtonItems">
-        <property name="toolTip">
-         <string>Action sur les ItemDrawable</string>
+       <widget class="QWidget" name="widget_7" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <property name="spacing">
+          <number>7</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="widget_5" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <property name="spacing">
+             <number>1</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pb_ColorA">
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_SetSceneA">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Set</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cb_Avisible">
+              <property name="text">
+               <string>visible</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget_6" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="spacing">
+             <number>1</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Line" name="line_8">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_ColorB">
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_SetSceneB">
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Set</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cb_Bvisible">
+              <property name="text">
+               <string>visible</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb_othersVisible">
         <property name="text">
-         <string>Items</string>
+         <string>Autres</string>
         </property>
         <property name="checked">
-         <bool>false</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupType</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButtonPoints">
-        <property name="toolTip">
-         <string>Action sur les points</string>
-        </property>
-        <property name="text">
-         <string>Points</string>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupType</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_LimitMode">
-        <property name="text">
-         <string>Frontière</string>
-        </property>
-        <property name="checkable">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_9">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb_tmpVisible">
+        <property name="text">
+         <string>?</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupType</string>
-        </attribute>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pb_SceneMode">
-        <property name="text">
-         <string>Affectation</string>
+       <widget class="Line" name="line_10">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupType</string>
-        </attribute>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pb_SplitMode">
+       <widget class="QCheckBox" name="cb_trashVisible">
         <property name="text">
-         <string>&quot;ClusterSplit&quot;</string>
+         <string>Poubelle</string>
         </property>
-        <property name="checkable">
+        <property name="checked">
          <bool>true</bool>
         </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupType</string>
-        </attribute>
        </widget>
       </item>
       <item>
@@ -123,56 +251,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pb_SetSceneA">
-        <property name="text">
-         <string>Scène A</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_ColorA">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_SetSceneB">
-        <property name="text">
-         <string>Scène B</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_ColorB">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="cb_ShowOnlyAAndB">
-        <property name="text">
-         <string>A et B uniquement</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -188,32 +267,168 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <widget class="Line" name="line_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_2" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="topMargin">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>3</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButtonSelectOne">
-        <property name="toolTip">
-         <string>Sélectionner un élément</string>
-        </property>
+       <widget class="QPushButton" name="pb_LimitMode">
         <property name="text">
-         <string>...</string>
+         <string>Mode Frontière</string>
         </property>
-        <property name="icon">
-         <iconset resource="../../resource.qrc">
-          <normaloff>:/icons/cursor.png</normaloff>
-          <normalon>:/icons/cursor_checked.png</normalon>:/icons/cursor.png</iconset>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroupType</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="wid_limitMode" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="pb_frontierA">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>28</width>
+             <height>28</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>|-</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="sb_LengthOnAxis">
+           <property name="suffix">
+            <string>/ 1000</string>
+           </property>
+           <property name="maximum">
+            <number>999999999</number>
+           </property>
+           <property name="singleStep">
+            <number>100</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>-&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_frontierB">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>28</width>
+             <height>28</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>by :</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_001">
+           <property name="text">
+            <string>1</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupBy</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_010">
+           <property name="text">
+            <string>10</string>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupBy</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rb_100">
+           <property name="text">
+            <string>100</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupBy</string>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pb_SceneMode">
+        <property name="text">
+         <string>Mode Affectation</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -222,137 +437,12 @@
          <bool>true</bool>
         </property>
         <attribute name="buttonGroup">
-         <string notr="true">buttonGroupSelection</string>
+         <string notr="true">buttonGroupType</string>
         </attribute>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolButtonSelectMulti">
-        <property name="toolTip">
-         <string>Sélectionner de multiple éléments</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resource.qrc">
-          <normaloff>:/icons/cursor_multi.png</normaloff>
-          <normalon>:/icons/cursor_multi_Checked.png</normalon>:/icons/cursor_multi.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupSelection</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButtonReplaceMode">
-        <property name="toolTip">
-         <string>Remplacer la séléction</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resource.qrc">
-          <normaloff>:/icons/select_replaceMode.png</normaloff>
-          <normalon>:/icons/select_replaceMode_checked.png</normalon>:/icons/select_replaceMode.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupMode</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButtonAddMode">
-        <property name="toolTip">
-         <string>Ajouter à la séléction</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resource.qrc">
-          <normaloff>:/icons/select_addMode.png</normaloff>
-          <normalon>:/icons/select_addMode_checked.png</normalon>:/icons/select_addMode.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupMode</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="toolButtonRemoveMode">
-        <property name="toolTip">
-         <string>Supprimer de la séléction</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../resource.qrc">
-          <normaloff>:/icons/select_removeMode.png</normaloff>
-          <normalon>:/icons/select_removeMode_checked.png</normalon>:/icons/select_removeMode.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">buttonGroupMode</string>
-        </attribute>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="widget_3" native="true">
+       <widget class="QWidget" name="wid_sceneMode" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="leftMargin">
           <number>0</number>
@@ -367,30 +457,249 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="pb_toA">
+          <widget class="QToolButton" name="toolButtonSelectOne">
+           <property name="toolTip">
+            <string>Sélectionner un élément</string>
+           </property>
            <property name="text">
-            <string>-&gt; A</string>
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/cursor.png</normaloff>
+             <normalon>:/icons/cursor_checked.png</normalon>:/icons/cursor.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupSelection</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonSelectMulti">
+           <property name="toolTip">
+            <string>Sélectionner de multiple éléments</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/cursor_multi.png</normaloff>
+             <normalon>:/icons/cursor_multi_Checked.png</normalon>:/icons/cursor_multi.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupSelection</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pb_toTmp">
+          <widget class="QToolButton" name="toolButtonReplaceMode">
+           <property name="toolTip">
+            <string>Remplacer la séléction</string>
+           </property>
            <property name="text">
-            <string>-&gt; ?</string>
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/select_replaceMode.png</normaloff>
+             <normalon>:/icons/select_replaceMode_checked.png</normalon>:/icons/select_replaceMode.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupMode</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonAddMode">
+           <property name="toolTip">
+            <string>Ajouter à la séléction</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/select_addMode.png</normaloff>
+             <normalon>:/icons/select_addMode_checked.png</normalon>:/icons/select_addMode.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupMode</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonRemoveMode">
+           <property name="toolTip">
+            <string>Supprimer de la séléction</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/select_removeMode.png</normaloff>
+             <normalon>:/icons/select_removeMode_checked.png</normalon>:/icons/select_removeMode.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">buttonGroupMode</string>
+           </attribute>
+          </widget>
+         </item>
+         <item>
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pb_toB">
+          <widget class="QToolButton" name="pb_toA">
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="text">
-            <string>-&gt; B</string>
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/toA.png</normaloff>:/icons/toA.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>35</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pb_toTrash">
+          <widget class="QToolButton" name="pb_toB">
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="text">
-            <string>-&gt; Trash</string>
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/toA.png</normaloff>:/icons/toA.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>35</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="pb_toTmp">
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/toTmp.png</normaloff>:/icons/toTmp.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>35</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="pb_toTrash">
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../resource.qrc">
+             <normaloff>:/icons/toTrash.png</normaloff>:/icons/toTrash.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>35</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -398,45 +707,27 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_4" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>A &lt;-</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="dsb_LengthOnAxis"/>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>-&gt; B</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <widget class="Line" name="line_5">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer">
+       <widget class="QPushButton" name="pb_SplitMode">
+        <property name="text">
+         <string>Mode ClusterSplit</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroupType</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -458,8 +749,9 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroupType"/>
   <buttongroup name="buttonGroupSelection"/>
+  <buttongroup name="buttonGroupBy"/>
   <buttongroup name="buttonGroupMode"/>
+  <buttongroup name="buttonGroupType"/>
  </buttongroups>
 </ui>

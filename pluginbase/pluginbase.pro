@@ -219,3 +219,5 @@ FORMS += \
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts
+
+OTHER_FILES +=

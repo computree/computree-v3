@@ -1258,6 +1258,7 @@ public:
       * \brief Refresh all graphics in the document (if he contains graphicsView)
       */
     virtual void redrawGraphics(GraphicsViewInterface::RedrawType redrawType = GraphicsViewInterface::REDRAW_ALL) = 0;
+    virtual void fitToContent() = 0;
 };
 
 /**

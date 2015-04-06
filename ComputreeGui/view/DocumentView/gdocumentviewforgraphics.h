@@ -56,6 +56,7 @@ public:
 
     QList<InDocumentViewInterface*> views() const;
     void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL);
+    void fitToContent();
     void lock();
     void unlock();
 

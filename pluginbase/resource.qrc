@@ -50,5 +50,8 @@
         <file>icons/select_intersectMode_checked.png</file>
         <file>icons/select_removeMode_checked.png</file>
         <file>icons/select_replaceMode_checked.png</file>
+        <file>icons/toA.png</file>
+        <file>icons/toTrash.png</file>
+        <file>icons/toTmp.png</file>
     </qresource>
 </RCC>

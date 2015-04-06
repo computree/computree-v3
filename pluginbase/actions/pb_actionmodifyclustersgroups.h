@@ -66,7 +66,13 @@ public slots:
     void selectPositionA();
     void selectPositionB();
     void swapAandB();
-    void onlyABChanged();
+    void visibilityChanged();
+    void affectClusterToA();
+    void affectClusterToB();
+    void affectClusterToTMP();
+    void affectClusterToTrash();
+    void updateLimitMode();
+    void distanceChanged(int val);
 
 private:
     QRect                                   m_selectionRectangle;
@@ -88,13 +94,20 @@ private:
 
     CT_Point2D*                     _positionA;
     CT_Point2D*                     _positionB;
-    QList<const CT_PointCluster*>   _temporaryClusterList;
-    QList<const CT_PointCluster*>   _trashClusterList;
+    QList<CT_PointCluster*>         _temporaryClusterList;
+    QList<CT_PointCluster*>         _trashClusterList;
     bool                            _ABColors;
-    bool                            _onlyAB;
+    bool                            _positionsChanged;
+    QList<CT_PointCluster*>         _clustersOrdered;
+    int                             _currentLastA;
+
 
 
     GraphicsViewInterface::SelectionMode selectionModeToBasic(GraphicsViewInterface::SelectionMode mode) const;
+
+    void addToA(CT_PointCluster* cluster);
+    void addToB(CT_PointCluster* cluster);
+
 };
 
 #endif // PB_ACTIONMODIFYCLUSTERSGROUPS_H

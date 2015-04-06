@@ -193,6 +193,22 @@ void GDocumentViewForGraphics::redrawGraphics(GraphicsViewInterface::RedrawType 
     m_mutex->unlock();
 }
 
+void GDocumentViewForGraphics::fitToContent()
+{
+    m_mutex->lock();
+
+    if(!_graphicsLocked)
+    {
+        QListIterator<GGraphicsView*> it(_listGraphics);
+
+        while(it.hasNext())
+            it.next()->camera()->fitCameraToVisibleItems();
+    }
+
+    m_mutex->unlock();
+}
+
+
 void GDocumentViewForGraphics::lock()
 {
     lockGraphics();
