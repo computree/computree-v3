@@ -53,8 +53,10 @@ QString PB_GDALExporter::getExporterCustomName() const
 bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     clearErrorMessage();
-
+	
+	#ifdef USE_GDAL
     m_exportRaster = false;
+    #endif
 
     QList<CT_AbstractItemDrawable*> myVectorList;
     QList<CT_AbstractItemDrawable*> myRasterList;
@@ -84,7 +86,9 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
     if(!myVectorList.isEmpty())
         return CT_AbstractExporter::setItemDrawableToExport(myVectorList);
     else {
+		#ifdef USE_GDAL
         m_exportRaster = true;
+		#endif
         return CT_AbstractExporter::setItemDrawableToExport(myRasterList);
     }
 }
