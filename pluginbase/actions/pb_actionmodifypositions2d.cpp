@@ -17,6 +17,7 @@ PB_ActionModifyPositions2D::PB_ActionModifyPositions2D(QList<CT_Point2D*> &posit
     _normalColor   = QColor(0, 255, 0);
 
     _selectedPoint = NULL;
+    _leftButton = false;
 }
 
 PB_ActionModifyPositions2D::~PB_ActionModifyPositions2D()
@@ -108,6 +109,7 @@ bool PB_ActionModifyPositions2D::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton)
     {
+        _leftButton = true;
         if (option->isMovePositionSelected() || option->isRemovePositionSelected() || option->isAddPositionSelected())
         {
             double x, y;
@@ -142,7 +144,7 @@ bool PB_ActionModifyPositions2D::mouseMoveEvent(QMouseEvent *e)
 {
     PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
 
-    if (e->button() == Qt::LeftButton && (option->isMovePositionSelected() || option->isAddPositionSelected()))
+    if (_leftButton && (option->isMovePositionSelected() || option->isAddPositionSelected()))
     {
         if (_selectedPoint != NULL)
         {
@@ -153,6 +155,7 @@ bool PB_ActionModifyPositions2D::mouseMoveEvent(QMouseEvent *e)
                 _selectedPoint->setCenterX(x);
                 _selectedPoint->setCenterY(y);
                 document()->unlock();
+
                 document()->redrawGraphics();
                 return true;
             }
@@ -168,6 +171,7 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton)
     {
+        _leftButton = false;
         if (_selectedPoint != NULL)
         {
             if (option->isMovePositionSelected() || option->isAddPositionSelected())

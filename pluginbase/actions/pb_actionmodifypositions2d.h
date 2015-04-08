@@ -48,6 +48,7 @@ private:
     CT_Point2D*                         _selectedPoint;
     CT_OutAbstractSingularItemModel*    _model;
     CT_ResultGroup*                     _outRes;
+    bool                                _leftButton;
 
     QColor                              _selectedColor;
     QColor                              _normalColor;
