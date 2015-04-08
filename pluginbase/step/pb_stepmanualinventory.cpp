@@ -56,7 +56,7 @@ void PB_StepManualInventory::createInResultModelListProtected()
 {
     CT_InResultModelGroup *resIn_mntres = createNewInResultModel(DEFin_mntres, tr("MNT"), "", true);
     resIn_mntres->setRootGroup(DEFin_mntgrp, CT_AbstractItemGroup::staticGetType(), tr("MNT"));
-    resIn_mntres->addItemModel(DEFin_mntgrp, DEFin_mnt, CT_Grid2DXY<float>::staticGetType(), tr("MNT"));
+    resIn_mntres->addItemModel(DEFin_mntgrp, DEFin_mnt, CT_Grid2DXY<double>::staticGetType(), tr("MNT"));
 
     CT_InResultModelGroupToCopy *resIn_scres = createNewInResultModelForCopy(DEFin_scres, tr("Scènes"));
     resIn_scres->setZeroOrMoreRootGroup();
@@ -76,16 +76,16 @@ void PB_StepManualInventory::createOutResultModelListProtected()
     resCpy_scres->addItemModel(DEFin_scBase, _attributes_ModelName, new CT_AttributesList(), tr("Attributs"));
 
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_dbh_ModelName,
-                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_NUMBER),
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_NUMBER),
                                         tr("DHP (cm)"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_x_ModelName,
-                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_X),
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_X),
                                         tr("X"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_y_ModelName,
-                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_Y),
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_Y),
                                         tr("Y"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h_ModelName,
-                                        new CT_StdItemAttributeT<float>(CT_AbstractCategory::DATA_HEIGHT),
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_HEIGHT),
                                         tr("Hauteur"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_sp_ModelName,
                                         new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
@@ -121,7 +121,7 @@ void PB_StepManualInventory::compute()
     CT_ResultItemIterator itIn_mntgrp(resIn_mntres, this, DEFin_mnt);
     if (itIn_mntgrp.hasNext())
     {
-        _itemIn_mnt = (CT_Grid2DXY<float>*)itIn_mntgrp.next();
+        _itemIn_mnt = (CT_Grid2DXY<double>*)itIn_mntgrp.next();
     }
 
     if (_itemIn_mnt != NULL)
@@ -181,11 +181,11 @@ void PB_StepManualInventory::compute()
                 CT_Circle* itemCpy_dbhcircle = (CT_Circle*) bestCircle->copy(_dbhcircle_ModelName.completeName(), resCpy_scres, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference);
                 grpCpy_scBase->addItemDrawable(itemCpy_dbhcircle);
 
-                float dbh = bestCircle->getRadius() * 200.0;
-                float x = bestCircle->getCenterX();
-                float y = bestCircle->getCenterY();
-                float mntZ = _itemIn_mnt->valueAtXY(x, y);
-                float height = computeMaxZ(itemCpy_scene) - mntZ;
+                double dbh = bestCircle->getRadius() * 200.0;
+                double x = bestCircle->getCenterX();
+                double y = bestCircle->getCenterY();
+                double mntZ = _itemIn_mnt->valueAtXY(x, y);
+                double height = computeMaxZ(itemCpy_scene) - mntZ;
 
                 if ((height < 0) || (mntZ == _itemIn_mnt->NA())) {height = 0;}
 
@@ -195,16 +195,16 @@ void PB_StepManualInventory::compute()
                 CT_AttributesList* itemCpy_attributes = new CT_AttributesList(_attributes_ModelName.completeName(), resCpy_scres);
                 grpCpy_scBase->addItemDrawable(itemCpy_attributes);
 
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_dbh_ModelName.completeName(),
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_dbh_ModelName.completeName(),
                                                                                      CT_AbstractCategory::DATA_NUMBER,
                                                                                      resCpy_scres, dbh));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_x_ModelName.completeName(),
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_x_ModelName.completeName(),
                                                                                      CT_AbstractCategory::DATA_X,
                                                                                      resCpy_scres, x));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_y_ModelName.completeName(),
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_y_ModelName.completeName(),
                                                                                      CT_AbstractCategory::DATA_Y,
                                                                                      resCpy_scres, y));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<float>(_attribute_h_ModelName.completeName(),
+                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_h_ModelName.completeName(),
                                                                                      CT_AbstractCategory::DATA_HEIGHT,
                                                                                      resCpy_scres, height));
                 itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(_attribute_sp_ModelName.completeName(),
@@ -280,14 +280,14 @@ void PB_StepManualInventory::findBestCircleForEachScene()
         const CT_Scene* scene = itScenes.next();
         QList<const CT_Circle*> circles = _availableDbh->values(scene);
 
-        float mindelta = std::numeric_limits<float>::max();
+        double mindelta = std::numeric_limits<double>::max();
         const CT_Circle* bestCircle = NULL;
 
         QListIterator<const CT_Circle*> itCircles(circles);
         while (itCircles.hasNext())
         {
             const CT_Circle* currentCircle = itCircles.next();
-            float dist = std::fabs(currentCircle->getCenterZ() - (_itemIn_mnt->valueAtXY(currentCircle->getCenterX(), currentCircle->getCenterY()) + 1.3));
+            double dist = std::fabs(currentCircle->getCenterZ() - (_itemIn_mnt->valueAtXY(currentCircle->getCenterX(), currentCircle->getCenterY()) + 1.3));
 
             if (dist < mindelta)
             {
@@ -297,9 +297,9 @@ void PB_StepManualInventory::findBestCircleForEachScene()
         }
         if (bestCircle == NULL)
         {
-            float x = scene->getCenterX();
-            float y = scene->getCenterZ();
-            float z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
+            double x = scene->getCenterX();
+            double y = scene->getCenterZ();
+            double z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
 
             CT_Circle* tmpCircle = new CT_Circle(NULL, NULL, new CT_CircleData(Eigen::Vector3d(x, y, z), Eigen::Vector3d(0, 0, 1), 0.05, -9999));
             _selectedDbh->insert(scene, tmpCircle);
@@ -311,7 +311,7 @@ void PB_StepManualInventory::findBestCircleForEachScene()
     }
 }
 
-float PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
+double PB_StepManualInventory::computeMaxZ(const CT_Scene* scene)
 {
     CT_PointIterator it(scene->getPointCloudIndex());
 

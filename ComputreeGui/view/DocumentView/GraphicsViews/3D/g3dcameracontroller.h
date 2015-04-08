@@ -84,6 +84,7 @@ public slots:
     void fixCameraCenterToItemsBarycenter();
     void fixCameraCenterToSelectedItemsBarycenter();
     void fitCameraToVisibleItems();
+    void fitToSpecifiedBox(const Eigen::Vector3d &bot, const Eigen::Vector3d &top);
 
 };
 

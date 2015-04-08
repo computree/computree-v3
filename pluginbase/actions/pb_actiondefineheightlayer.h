@@ -17,7 +17,7 @@ public:
     PB_ActionDefineHeightLayer_gridContainer();
 
     CT_Grid2DXY<int>    *_densityGrid;
-    CT_Grid2DXY<float>  *_mnsGrid;
+    CT_Grid2DXY<double>  *_mnsGrid;
     double              _zmin;
     double              _zmax;
 };
@@ -30,7 +30,7 @@ public:
     PB_ActionDefineHeightLayer();
     PB_ActionDefineHeightLayer(const CT_AbstractResult *result, const QString &densityGridModel, const QString &mnsGridModel, PB_ActionDefineHeightLayer_gridContainer *gridContainer, const QList<CT_Scene*> &list, double xmin, double ymin, double zmin, double xmax, double ymax, double zmax);
 
-    void createGrids(float res);
+    void createGrids(double res);
 
     QString uniqueName() const;
     QString title() const;
@@ -40,8 +40,8 @@ public:
 
     void init();
 
-    float getZmin() const;
-    float getZmax() const;
+    double getZmin() const;
+    double getZmax() const;
 
     bool mousePressEvent(QMouseEvent *e);
     bool mouseMoveEvent(QMouseEvent *e);
@@ -74,15 +74,15 @@ private:
     PB_ActionDefineHeightLayer_gridContainer *_gridContainer;
 
     QList<CT_Scene*>     _sceneList;
-    float               _previousResolution;
-    float               _resolution;
+    double               _previousResolution;
+    double               _resolution;
     int                 _densityThreshold;
-    float               _xmin;
-    float               _ymin;
-    float               _xmax;
-    float               _ymax;
-    float               _xrange;
-    float               _yrange;
+    double               _xmin;
+    double               _ymin;
+    double               _xmax;
+    double               _ymax;
+    double               _xrange;
+    double               _yrange;
 
 };
 

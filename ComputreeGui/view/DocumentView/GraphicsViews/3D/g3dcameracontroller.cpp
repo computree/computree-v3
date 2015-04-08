@@ -754,14 +754,6 @@ void G3DCameraController::fitCameraToVisibleItems()
     max.y = -std::numeric_limits<double>::max();
     max.z = -std::numeric_limits<double>::max();
 
-    /*min.x = 1000000;
-    min.y = 1000000;
-    min.z = 1000000;
-
-    max.x = 1000000.1;
-    max.y = 1000000.1;
-    max.z = 1000000.1;*/
-
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
@@ -789,7 +781,39 @@ void G3DCameraController::fitCameraToVisibleItems()
         }
     }
 
-    if ((min.x < std::numeric_limits<double>::max()) &&
+    if((_view == NULL) || (_realCamera == NULL)) {return;}
+
+    if (    (min.x < std::numeric_limits<double>::max()) &&
+            (min.y < std::numeric_limits<double>::max()) &&
+            (min.z < std::numeric_limits<double>::max()) &&
+            (max.x > -std::numeric_limits<double>::max()) &&
+            (max.y > -std::numeric_limits<double>::max()) &&
+            (max.z > -std::numeric_limits<double>::max()))
+    {
+        //TODO : soutraire l'offset avant de passer à la caméra
+
+        ((G3DCamera*)_realCamera)->setBoundingBox(min, max);
+        _realCamera->fitBoundingBox(min, max);
+        redrawTheView();
+    }
+}
+
+void G3DCameraController::fitToSpecifiedBox(const Eigen::Vector3d &bot, const Eigen::Vector3d &top)
+{
+    if((_view == NULL) || (_realCamera == NULL)) {return;}
+
+    qglviewer::Vec min;
+    qglviewer::Vec max;
+
+    min.x = bot(0);
+    min.y = bot(1);
+    min.z = bot(2);
+
+    max.x = top(0);
+    max.y = top(1);
+    max.z = top(2);
+
+    if (    (min.x < std::numeric_limits<double>::max()) &&
             (min.y < std::numeric_limits<double>::max()) &&
             (min.z < std::numeric_limits<double>::max()) &&
             (max.x > -std::numeric_limits<double>::max()) &&

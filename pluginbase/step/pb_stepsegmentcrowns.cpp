@@ -96,7 +96,7 @@ void PB_StepSegmentCrowns::createOutResultModelListProtected()
     CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_resultOut, tr("Densité, MNS et clusters"));
 
     resultModel->setRootGroup(DEF_SearchOutGroup);
-    resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutMNSGrid, new CT_Grid2DXY<float>(), tr("MNS"));
+    resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutMNSGrid, new CT_Grid2DXY<double>(), tr("MNS"));
     resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutDensityGrid, new CT_Grid2DXY<int>(), tr("Densité"));
     resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutClustersGrid, new CT_Grid2DXY<int>(), tr("Clusters"));
 
@@ -105,13 +105,13 @@ void PB_StepSegmentCrowns::createOutResultModelListProtected()
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutConvexHull, new CT_Polygon2D(), tr("ConvexHull"));
     resultModel->addItemModel(DEF_SearchOutGroupScene, DEF_SearchOutCrownAttributes, new CT_AttributesList(), tr("Attributs du Houppier"));
     resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutCrownArea,
-                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
                                        tr("Aire du houppier"));
     resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutConvexCrownArea,
-                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
                                        tr("Aire du houppier convexe"));
     resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutZmax,
-                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
+                                       new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
                                        tr("Z max"));
     resultModel->addItemAttributeModel(DEF_SearchOutCrownAttributes, DEF_SearchOutClusterID,
                                        new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ID), NULL, 0),
@@ -241,7 +241,7 @@ void PB_StepSegmentCrowns::compute()
             PS_LOG->addMessage(LogInterface::info, LogInterface::step,tr("Enregistrement des clusters"));
             QMap<int, QList<Eigen::Vector2d*>*> cellsMapByCluster;
             QMap<int, size_t> clusterCounts;
-            QMap<int, float> clusterZMax;
+            QMap<int, double> clusterZMax;
             registerClusterCells(cellsMapByCluster, clusterCounts, clusterZMax);
 
 
@@ -360,7 +360,7 @@ void PB_StepSegmentCrowns::registerScenes(const QMap<int, CT_PointCloudIndexVect
     }
 }
 
-void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts, QMap<int, float> &clusterZMax)
+void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster, QMap<int, size_t> &clusterCounts, QMap<int, double> &clusterZMax)
 {
     for (size_t c = 0 ; c < _clustersGrid->colDim() ; c++)
     {
@@ -369,7 +369,7 @@ void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<Eigen::Vector2d*
             Eigen::Vector2d* point = new Eigen::Vector2d(_clustersGrid->getCellCenterColCoord(c), _clustersGrid->getCellCenterLinCoord(l));
 
             int cluster = _clustersGrid->value(c, l);
-            float z = _gridContainer->_mnsGrid->value(c, l);
+            double z = _gridContainer->_mnsGrid->value(c, l);
 
             if (cluster >= 0)
             {
@@ -383,7 +383,7 @@ void PB_StepSegmentCrowns::registerClusterCells(QMap<int, QList<Eigen::Vector2d*
                 }
                 liste->append(point);
 
-                float zMax = clusterZMax.value(cluster, -std::numeric_limits<float>::max());
+                double zMax = clusterZMax.value(cluster, -std::numeric_limits<double>::max());
                 if (z > zMax) {clusterZMax.insert(cluster, z);}
             }
         }
@@ -417,7 +417,7 @@ void PB_StepSegmentCrowns::createConvexHulls(QMap<int, QList<Eigen::Vector2d *> 
 void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
                                           const QMap<int, CT_Polygon2DData *> &convexHullsMap,
                                           const QMap<int, size_t> &clusterCounts,
-                                          const QMap<int, float> &clusterZMax)
+                                          const QMap<int, double> &clusterZMax)
 {
     QMap<int, size_t> clusterConvexCounts;
 
@@ -427,8 +427,8 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
     {
         size_t col, row;
         _clustersGrid->indexToGrid(i, col, row);
-        float x = _clustersGrid->getCellCenterColCoord(col);
-        float y = _clustersGrid->getCellCenterLinCoord(row);
+        double x = _clustersGrid->getCellCenterColCoord(col);
+        double y = _clustersGrid->getCellCenterLinCoord(row);
         int cluster = _clustersGrid->valueAtXY(x, y);
 
         QMapIterator<int, CT_Polygon2DData*> it_convexHullMap(convexHullsMap);
@@ -446,7 +446,7 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
     }
 
     // aire d'une cellule
-    float base_area = _clustersGrid->resolution()*_clustersGrid->resolution();
+    double base_area = _clustersGrid->resolution()*_clustersGrid->resolution();
 
     QMapIterator<int, CT_StandardItemGroup*> it(sceneGroupMap);
     while (it.hasNext())
@@ -455,19 +455,19 @@ void PB_StepSegmentCrowns::computeMetrics(const QMap<int, CT_StandardItemGroup*>
         int cluster = it.key();
         CT_StandardItemGroup* groupScene = it.value();
 
-        float crownArea = clusterCounts.value(cluster, 0)*base_area;
-        float convexHullArea = clusterConvexCounts.value(cluster, 0)*base_area;
-        float zMax = clusterZMax.value(cluster, std::numeric_limits<float>::quiet_NaN());
+        double crownArea = clusterCounts.value(cluster, 0)*base_area;
+        double convexHullArea = clusterConvexCounts.value(cluster, 0)*base_area;
+        double zMax = clusterZMax.value(cluster, std::numeric_limits<double>::quiet_NaN());
 
         CT_AttributesList* crAttributes= new CT_AttributesList(DEF_SearchOutCrownAttributes, _outResult);
         groupScene->addItemDrawable(crAttributes);
-        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutCrownArea,
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEF_SearchOutCrownArea,
                                                                        CT_AbstractCategory::DATA_AREA,
                                                                        _outResult, crownArea));
-        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutConvexCrownArea,
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEF_SearchOutConvexCrownArea,
                                                                        CT_AbstractCategory::DATA_AREA,
                                                                        _outResult, convexHullArea));
-        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutZmax,
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEF_SearchOutZmax,
                                                                        CT_AbstractCategory::DATA_Z,
                                                                        _outResult, zMax));
         crAttributes->addItemAttribute(new CT_StdItemAttributeT<int>(DEF_SearchOutClusterID,

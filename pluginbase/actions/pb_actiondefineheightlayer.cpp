@@ -44,13 +44,13 @@ PB_ActionDefineHeightLayer::PB_ActionDefineHeightLayer(const CT_AbstractResult *
     createGrids(_resolution);
 }
 
-void PB_ActionDefineHeightLayer::createGrids(float res)
+void PB_ActionDefineHeightLayer::createGrids(double res)
 {
     if (_gridContainer->_densityGrid!=NULL) {delete _gridContainer->_densityGrid;}
     if (_gridContainer->_mnsGrid!=NULL) {delete _gridContainer->_mnsGrid;}
 
     _gridContainer->_densityGrid = CT_Grid2DXY<int>::createGrid2DXYFromXYCoords(_densityGridModel, _result, _xmin, _ymin, _xmax, _ymax, res, _gridContainer->_zmin, -1, -1);
-    _gridContainer->_mnsGrid = CT_Grid2DXY<float>::createGrid2DXYFromXYCoords(_mnsGridModel, _result, _xmin, _ymin, _xmax, _ymax, res, _gridContainer->_zmin, -1, -1);
+    _gridContainer->_mnsGrid = CT_Grid2DXY<double>::createGrid2DXYFromXYCoords(_mnsGridModel, _result, _xmin, _ymin, _xmax, _ymax, res, _gridContainer->_zmin, -1, -1);
 
     _gridContainer->_densityGrid->setlevel(_gridContainer->_zmin);
     _gridContainer->_mnsGrid->setlevel(_gridContainer->_zmax);
@@ -77,12 +77,12 @@ QIcon PB_ActionDefineHeightLayer::icon() const
     return QIcon(":/icons/show_all.png");
 }
 
-float PB_ActionDefineHeightLayer::getZmin() const
+double PB_ActionDefineHeightLayer::getZmin() const
 {
     return _gridContainer->_zmin;
 }
 
-float PB_ActionDefineHeightLayer::getZmax() const
+double PB_ActionDefineHeightLayer::getZmax() const
 {
     return _gridContainer->_zmax;
 }

@@ -79,6 +79,7 @@
 #include "step/pb_stepfitcylinderoncluster.h"
 #include "step/pb_stepextractpositionsfromdensity.h"
 #include "step/pb_stepmergeclustersfrompositions.h"
+#include "step/pb_stepmodifypositions2d.h"
 
 
 
@@ -231,6 +232,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepFitCylinderOnCluster(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepModifyPositions2D(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Traitement par lots")));
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));

@@ -110,7 +110,7 @@ private:
     DocumentInterface                               *m_doc;
     int                                             m_status;
 
-    const CT_Grid2DXY<float>                        *_itemIn_mnt;
+    const CT_Grid2DXY<double>                        *_itemIn_mnt;
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
     QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
     QMap<const CT_Scene*, QString>                  *_species;
@@ -120,7 +120,7 @@ private:
     QList<CT_Circle*>                               _temporaryCircles;
 
     void findBestCircleForEachScene();
-    float computeMaxZ(const CT_Scene* scene);
+    double computeMaxZ(const CT_Scene* scene);
 
 };
 

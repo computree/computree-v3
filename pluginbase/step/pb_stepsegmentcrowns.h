@@ -142,7 +142,7 @@ private:
 
     void registerClusterCells(QMap<int, QList<Eigen::Vector2d*> *> &cellsMapByCluster,
                               QMap<int, size_t> &clusterCounts,
-                              QMap<int, float> &clusterZMax);
+                              QMap<int, double> &clusterZMax);
 
     void createConvexHulls(QMap<int, QList<Eigen::Vector2d *> *> &cellsMapByCluster,
                            const QMap<int, CT_StandardItemGroup *> &sceneGroupMap,
@@ -151,7 +151,7 @@ private:
     void computeMetrics(const QMap<int, CT_StandardItemGroup*> &sceneGroupMap,
                         const QMap<int, CT_Polygon2DData *> &convexHullsMap,
                         const QMap<int, size_t> &clusterCounts,
-                        const QMap<int, float> &clusterZMax);
+                        const QMap<int, double> &clusterZMax);
 
 };
 

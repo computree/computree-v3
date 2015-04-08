@@ -27,7 +27,7 @@ public:
         bool                _useNewClustersMap;
     };
 
-    PB_ActionSegmentGaps(const CT_Grid2DXY<int>* densityGrid, const CT_Grid2DXY<float>* mnsGrid, CT_Grid2DXY<int>* clustersGrid, bool keepOnlyConvexHull = true);
+    PB_ActionSegmentGaps(const CT_Grid2DXY<int>* densityGrid, const CT_Grid2DXY<double>* mnsGrid, CT_Grid2DXY<int>* clustersGrid, bool keepOnlyConvexHull = true);
 
     ~PB_ActionSegmentGaps();
 
@@ -53,7 +53,7 @@ public:
     void fillAllCluterPixels(const size_t col, const size_t row, const int fillingCluster);
     void appendIfSameCluster(QList<size_t> &result, size_t col, size_t lin, int cluster);
 
-    bool getCoordsForMousePosition(const QMouseEvent *e, float &x, float &y);
+    bool getCoordsForMousePosition(const QMouseEvent *e, double &x, double &y);
 
     bool mousePressEvent(QMouseEvent *e);
     bool mouseMoveEvent(QMouseEvent *e);
@@ -66,7 +66,7 @@ public:
     void draw(GraphicsViewInterface &view, PainterInterface &painter);
     void drawOverlay(GraphicsViewInterface &view, QPainter &painter);
 
-    void drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const float &resolution, const double &z_val);
+    void drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const double &resolution, const double &z_val);
 
     CT_AbstractAction* copy() const;
 
@@ -87,7 +87,7 @@ private:
 
     size_t                                  _lastIndex;
     const CT_Grid2DXY<int>*                 _densityGrid;
-    const CT_Grid2DXY<float>*               _mnsGrid;
+    const CT_Grid2DXY<double>*               _mnsGrid;
     CT_Grid2DXY<int>*                       _clustersGrid;
     size_t                                  _activeCol;
     size_t                                  _activeRow;

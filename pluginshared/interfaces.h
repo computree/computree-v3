@@ -596,6 +596,7 @@ public slots:
     virtual void fixCameraCenterToItemsBarycenter() = 0;
     virtual void fixCameraCenterToSelectedItemsBarycenter() = 0;
     virtual void fitCameraToVisibleItems() = 0;
+    virtual void fitToSpecifiedBox(const Eigen::Vector3d &bot, const Eigen::Vector3d &top) = 0;
 
 
 signals:
@@ -1259,6 +1260,7 @@ public:
       */
     virtual void redrawGraphics(GraphicsViewInterface::RedrawType redrawType = GraphicsViewInterface::REDRAW_ALL) = 0;
     virtual void fitToContent() = 0;
+    virtual void fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) = 0;
 };
 
 /**

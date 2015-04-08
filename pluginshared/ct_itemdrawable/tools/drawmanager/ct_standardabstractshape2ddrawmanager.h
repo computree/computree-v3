@@ -9,12 +9,15 @@ public:
     CT_StandardAbstractShape2DDrawManager(QString drawConfigurationName = "");
     virtual ~CT_StandardAbstractShape2DDrawManager();
 
+    void setZValue(double val);
+
 protected:
 
     const static QString INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE;
     const static QString INDEX_CONFIG_Z_VALUE;
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
+
 
     static QString staticInitConfigUseAlternativeZValue();
     static QString staticInitConfigZValue();

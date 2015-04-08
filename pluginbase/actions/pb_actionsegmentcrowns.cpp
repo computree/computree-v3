@@ -40,7 +40,7 @@ void PB_ActionSegmentCrowns::UndoRedoContent::addIndice(const size_t indice, con
     _useNewClustersMap = true;
 }
 
-PB_ActionSegmentCrowns::PB_ActionSegmentCrowns(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<float> *mnsGrid, CT_Grid2DXY<int> *clustersGrid) : CT_AbstractActionForGraphicsView()
+PB_ActionSegmentCrowns::PB_ActionSegmentCrowns(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<double> *mnsGrid, CT_Grid2DXY<int> *clustersGrid) : CT_AbstractActionForGraphicsView()
 {
     _densityGrid = densityGrid;
     _mnsGrid = mnsGrid;
@@ -392,8 +392,8 @@ void PB_ActionSegmentCrowns::changeActiveClusterColor()
 void PB_ActionSegmentCrowns::mergeClusters(int pixelNumber)
 {
     QMap<int, size_t> clustersSize;
-    QMap<int, float> clustersX;
-    QMap<int, float> clustersY;
+    QMap<int, double> clustersX;
+    QMap<int, double> clustersY;
 
     size_t ncells = _clustersGrid->nCells();
     for (size_t i = 0 ; i < ncells ; i++)
@@ -413,8 +413,8 @@ void PB_ActionSegmentCrowns::mergeClusters(int pixelNumber)
     QList<int> bigClusters;
 
     QMutableMapIterator<int, size_t> itN(clustersSize);
-    QMutableMapIterator<int, float> itX(clustersX);
-    QMutableMapIterator<int, float> itY(clustersY);
+    QMutableMapIterator<int, double> itX(clustersX);
+    QMutableMapIterator<int, double> itY(clustersY);
 
     while (itX.hasNext())
     {
@@ -440,18 +440,18 @@ void PB_ActionSegmentCrowns::mergeClusters(int pixelNumber)
     for (int s = 0 ; s < smallClusters.size() ; s++)
     {
         int smallI = smallClusters.at(s);
-        float smallX = clustersX.value(smallI);
-        float smallY = clustersY.value(smallI);
+        double smallX = clustersX.value(smallI);
+        double smallY = clustersY.value(smallI);
         int newCluster = -1;
-        float smallestDistance = std::numeric_limits<float>::max();
+        double smallestDistance = std::numeric_limits<double>::max();
 
         for (int b = 0 ; b < bigClusters.size() ; b++)
         {
             int big = bigClusters.at(b);
-            float bigX = clustersX.value(big);
-            float bigY = clustersY.value(big);
+            double bigX = clustersX.value(big);
+            double bigY = clustersY.value(big);
 
-            float distance = pow(smallX - bigX, 2) + pow(smallY - bigY, 2);
+            double distance = pow(smallX - bigX, 2) + pow(smallY - bigY, 2);
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
@@ -550,7 +550,7 @@ void PB_ActionSegmentCrowns::redo()
     }
 }
 
-bool PB_ActionSegmentCrowns::getCoordsForMousePosition(const QMouseEvent *e, float &x, float &y)
+bool PB_ActionSegmentCrowns::getCoordsForMousePosition(const QMouseEvent *e, double &x, double &y)
 {
     PB_ActionSegmentCrownsOptions *option = (PB_ActionSegmentCrownsOptions*)optionAt(0);
 
@@ -560,7 +560,7 @@ bool PB_ActionSegmentCrowns::getCoordsForMousePosition(const QMouseEvent *e, flo
 
     if (direction.z() == 0) {return false;}
 
-    float coef = (option->getHeight() - _clustersGrid->resolution()/2.0 - origin.z())/direction.z();
+    double coef = (option->getHeight() - _clustersGrid->resolution()/2.0 - origin.z())/direction.z();
 
     x = origin.x() + coef*direction.x();
     y = origin.y() + coef*direction.y();
@@ -575,7 +575,7 @@ bool PB_ActionSegmentCrowns::mousePressEvent(QMouseEvent *e)
 
     if ((e->buttons() & Qt::LeftButton))
     {
-        float x, y;
+        double x, y;
         if (getCoordsForMousePosition(e, x, y))
         {
             _clustersGrid->indexAtCoords(x, y, _lastIndex);
@@ -647,7 +647,7 @@ bool PB_ActionSegmentCrowns::mouseMoveEvent(QMouseEvent *e)
 {
     PB_ActionSegmentCrownsOptions *option = (PB_ActionSegmentCrownsOptions*)optionAt(0);
 
-    float x, y;
+    double x, y;
     if (getCoordsForMousePosition(e, x, y))
     {
         size_t index;
@@ -779,7 +779,7 @@ void PB_ActionSegmentCrowns::draw(GraphicsViewInterface &view, PainterInterface 
     painter.save();
 
     double z_val = option->getHeight();
-    float resolution = _clustersGrid->resolution();
+    double resolution = _clustersGrid->resolution();
 
     double min = 0;
     double amplitude = 0;
@@ -863,10 +863,10 @@ void PB_ActionSegmentCrowns::draw(GraphicsViewInterface &view, PainterInterface 
     painter.restore();
 }
 
-void PB_ActionSegmentCrowns::drawPencil(PainterInterface &painter, PB_ActionSegmentCrownsOptions *option, const float &resolution, const double &z_val)
+void PB_ActionSegmentCrowns::drawPencil(PainterInterface &painter, PB_ActionSegmentCrownsOptions *option, const double &resolution, const double &z_val)
 {
     int size = option->getPencilSize();
-    float width = resolution*size;
+    double width = resolution*size;
 
     Eigen::Vector2d bottom;
     _clustersGrid->getCellBottomLeftCorner(_activeCol, _activeRow, bottom);

@@ -25,6 +25,12 @@ CT_ItemDrawableConfiguration CT_StandardAbstractShape2DDrawManager::createDrawCo
     return item;
 }
 
+void CT_StandardAbstractShape2DDrawManager::setZValue(double val)
+{
+    getDrawConfiguration()->setVariableValue(CT_StandardAbstractShape2DDrawManager::staticInitConfigUseAlternativeZValue(), true);
+    getDrawConfiguration()->setVariableValue(CT_StandardAbstractShape2DDrawManager::staticInitConfigZValue(), val);
+}
+
 // PROTECTED //
 
 QString CT_StandardAbstractShape2DDrawManager::staticInitConfigUseAlternativeZValue()

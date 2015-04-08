@@ -96,7 +96,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepmergeclustersfrompositions.h \
     actions/pb_actionmodifyclustersgroups.h \
     views/actions/pb_actionmodifyclustersgroupsoptions.h \
-    exporters/gdal/pb_gdalexporter.h
+    exporters/gdal/pb_gdalexporter.h \
+    actions/pb_actionmodifypositions2d.h \
+    views/actions/pb_actionmodifypositions2doptions.h \
+    step/pb_stepmodifypositions2d.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -188,7 +191,10 @@ SOURCES += \
     step/pb_stepmergeclustersfrompositions.cpp \
     actions/pb_actionmodifyclustersgroups.cpp \
     views/actions/pb_actionmodifyclustersgroupsoptions.cpp \
-    exporters/gdal/pb_gdalexporter.cpp
+    exporters/gdal/pb_gdalexporter.cpp \
+    actions/pb_actionmodifypositions2d.cpp \
+    views/actions/pb_actionmodifypositions2doptions.cpp \
+    step/pb_stepmodifypositions2d.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -215,7 +221,8 @@ FORMS += \
     views/actions/pb_actionmanualinventoryattributesdialog.ui \
     views/actions/pb_actionvalidateinventoryoptions.ui \
     views/actions/pb_actionvalidateinventoryattributesdialog.ui \
-    views/actions/pb_actionmodifyclustersgroupsoptions.ui
+    views/actions/pb_actionmodifyclustersgroupsoptions.ui \
+    views/actions/pb_actionmodifypositions2doptions.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts

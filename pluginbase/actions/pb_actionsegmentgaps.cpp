@@ -42,7 +42,7 @@ void PB_ActionSegmentGaps::UndoRedoContent::addIndice(const size_t indice, const
     _useNewClustersMap = true;
 }
 
-PB_ActionSegmentGaps::PB_ActionSegmentGaps(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<float> *mnsGrid, CT_Grid2DXY<int> *clustersGrid, bool keepOnlyConvexHull) : CT_AbstractActionForGraphicsView()
+PB_ActionSegmentGaps::PB_ActionSegmentGaps(const CT_Grid2DXY<int> *densityGrid, const CT_Grid2DXY<double> *mnsGrid, CT_Grid2DXY<int> *clustersGrid, bool keepOnlyConvexHull) : CT_AbstractActionForGraphicsView()
 {
     _densityGrid = densityGrid;
     _mnsGrid = mnsGrid;
@@ -207,11 +207,11 @@ void PB_ActionSegmentGaps::initClusters()
         // exclude au cells outside of the convex hull
         for (size_t cx = 0 ; cx < colDim ; cx++)
         {
-            float xx = _clustersGrid->getCellCenterColCoord(cx);
+            double xx = _clustersGrid->getCellCenterColCoord(cx);
 
             for (size_t ly = 0 ; ly < linDim ; ly++)
             {
-                float yy = _clustersGrid->getCellCenterLinCoord(ly);
+                double yy = _clustersGrid->getCellCenterLinCoord(ly);
 
                 if (!polygonData->contains(xx, yy))
                 {
@@ -437,8 +437,8 @@ void PB_ActionSegmentGaps::changeActiveClusterColor()
 void PB_ActionSegmentGaps::mergeClusters(int pixelNumber)
 {
     QMap<int, size_t> clustersSize;
-    QMap<int, float> clustersX;
-    QMap<int, float> clustersY;
+    QMap<int, double> clustersX;
+    QMap<int, double> clustersY;
 
     size_t ncells = _clustersGrid->nCells();
     for (size_t i = 0 ; i < ncells ; i++)
@@ -458,8 +458,8 @@ void PB_ActionSegmentGaps::mergeClusters(int pixelNumber)
     QList<int> bigClusters;
 
     QMutableMapIterator<int, size_t> itN(clustersSize);
-    QMutableMapIterator<int, float> itX(clustersX);
-    QMutableMapIterator<int, float> itY(clustersY);
+    QMutableMapIterator<int, double> itX(clustersX);
+    QMutableMapIterator<int, double> itY(clustersY);
 
     while (itX.hasNext())
     {
@@ -485,18 +485,18 @@ void PB_ActionSegmentGaps::mergeClusters(int pixelNumber)
     for (int s = 0 ; s < smallClusters.size() ; s++)
     {
         int smallI = smallClusters.at(s);
-        float smallX = clustersX.value(smallI);
-        float smallY = clustersY.value(smallI);
+        double smallX = clustersX.value(smallI);
+        double smallY = clustersY.value(smallI);
         int newCluster = -1;
-        float smallestDistance = std::numeric_limits<float>::max();
+        double smallestDistance = std::numeric_limits<double>::max();
 
         for (int b = 0 ; b < bigClusters.size() ; b++)
         {
             int big = bigClusters.at(b);
-            float bigX = clustersX.value(big);
-            float bigY = clustersY.value(big);
+            double bigX = clustersX.value(big);
+            double bigY = clustersY.value(big);
 
-            float distance = pow(smallX - bigX, 2) + pow(smallY - bigY, 2);
+            double distance = pow(smallX - bigX, 2) + pow(smallY - bigY, 2);
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
@@ -595,7 +595,7 @@ void PB_ActionSegmentGaps::redo()
     }
 }
 
-bool PB_ActionSegmentGaps::getCoordsForMousePosition(const QMouseEvent *e, float &x, float &y)
+bool PB_ActionSegmentGaps::getCoordsForMousePosition(const QMouseEvent *e, double &x, double &y)
 {
     PB_ActionSegmentGapsOptions *option = (PB_ActionSegmentGapsOptions*)optionAt(0);
 
@@ -605,7 +605,7 @@ bool PB_ActionSegmentGaps::getCoordsForMousePosition(const QMouseEvent *e, float
 
     if (direction.z() == 0) {return false;}
 
-    float coef = (option->getHeight() - _clustersGrid->resolution()/2.0 - origin.z())/direction.z();
+    double coef = (option->getHeight() - _clustersGrid->resolution()/2.0 - origin.z())/direction.z();
 
     x = origin.x() + coef*direction.x();
     y = origin.y() + coef*direction.y();
@@ -620,7 +620,7 @@ bool PB_ActionSegmentGaps::mousePressEvent(QMouseEvent *e)
 
     if ((e->buttons() & Qt::LeftButton))
     {
-        float x, y;
+        double x, y;
         if (getCoordsForMousePosition(e, x, y))
         {
             _clustersGrid->indexAtCoords(x, y, _lastIndex);
@@ -692,7 +692,7 @@ bool PB_ActionSegmentGaps::mouseMoveEvent(QMouseEvent *e)
 {
     PB_ActionSegmentGapsOptions *option = (PB_ActionSegmentGapsOptions*)optionAt(0);
 
-    float x, y;
+    double x, y;
     if (getCoordsForMousePosition(e, x, y))
     {
         size_t index;
@@ -824,7 +824,7 @@ void PB_ActionSegmentGaps::draw(GraphicsViewInterface &view, PainterInterface &p
     painter.save();
 
     double z_val = option->getHeight();
-    float resolution = _clustersGrid->resolution();
+    double resolution = _clustersGrid->resolution();
 
     double min = 0;
     double amplitude = 0;
@@ -902,7 +902,7 @@ void PB_ActionSegmentGaps::draw(GraphicsViewInterface &view, PainterInterface &p
     painter.restore();
 }
 
-void PB_ActionSegmentGaps::drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const float &resolution, const double &z_val)
+void PB_ActionSegmentGaps::drawPencil(PainterInterface &painter, PB_ActionSegmentGapsOptions *option, const double &resolution, const double &z_val)
 {
     double delta = (0.5 + option->getPencilSize() / 2.0)*resolution;
 

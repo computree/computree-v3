@@ -208,6 +208,21 @@ void GDocumentViewForGraphics::fitToContent()
     m_mutex->unlock();
 }
 
+void GDocumentViewForGraphics::fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max)
+{
+    m_mutex->lock();
+
+    if(!_graphicsLocked)
+    {
+        QListIterator<GGraphicsView*> it(_listGraphics);
+
+        while(it.hasNext())
+            it.next()->camera()->fitToSpecifiedBox(min, max);
+    }
+
+    m_mutex->unlock();
+}
+
 
 void GDocumentViewForGraphics::lock()
 {

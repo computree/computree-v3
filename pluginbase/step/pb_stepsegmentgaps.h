@@ -121,12 +121,12 @@ private:
 
     bool                                      _keepOnlyGapsInConvexHull;
 
-    float                       _xmin;
-    float                       _ymin;
-    float                       _zmin;
-    float                       _xmax;
-    float                       _ymax;
-    float                       _zmax;
+    double                       _xmin;
+    double                       _ymin;
+    double                       _zmin;
+    double                       _xmax;
+    double                       _ymax;
+    double                       _zmax;
 
 
 

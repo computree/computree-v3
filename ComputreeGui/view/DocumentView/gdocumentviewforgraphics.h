@@ -57,6 +57,7 @@ public:
     QList<InDocumentViewInterface*> views() const;
     void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL);
     void fitToContent();
+    void fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max);
     void lock();
     void unlock();
 

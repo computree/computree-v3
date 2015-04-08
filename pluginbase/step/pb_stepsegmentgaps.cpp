@@ -97,14 +97,14 @@ void PB_StepSegmentGaps::createOutResultModelListProtected()
     CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_resultOut, tr("Densité, MNS et clusters"));
 
     resultModel->setRootGroup(DEF_SearchOutGroup);
-    resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutMNSGrid, new CT_Grid2DXY<float>(), tr("MNS"));
+    resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutMNSGrid, new CT_Grid2DXY<double>(), tr("MNS"));
     resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutDensityGrid, new CT_Grid2DXY<int>(), tr("Densité"));
     resultModel->addItemModel(DEF_SearchOutGroup, DEF_SearchOutClustersGrid, new CT_Grid2DXY<int>(), tr("Clusters"));
 
     resultModel->addGroupModel(DEF_SearchOutGroup, DEF_SearchOutGroupGap);
     resultModel->addItemModel(DEF_SearchOutGroupGap, DEF_SearchOutGapAttributes, new CT_AttributesList(), tr("Attributs de la trouée"));
     resultModel->addItemAttributeModel(DEF_SearchOutGapAttributes, DEF_SearchOutGapArea,
-                                       new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
+                                       new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_AREA), NULL, 0),
                                        tr("Aire de trouée"));
     resultModel->addItemAttributeModel(DEF_SearchOutGapAttributes, DEF_SearchOutGapClusterId,
                                        new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_ID), NULL, 0),
@@ -132,13 +132,13 @@ void PB_StepSegmentGaps::compute()
 
     m_itemDrawableToAdd.clear();
 
-    _xmin = std::numeric_limits<float>::max();
-    _ymin = std::numeric_limits<float>::max();
-    _zmin = std::numeric_limits<float>::max();
+    _xmin = std::numeric_limits<double>::max();
+    _ymin = std::numeric_limits<double>::max();
+    _zmin = std::numeric_limits<double>::max();
 
-    _xmax = -std::numeric_limits<float>::max();
-    _ymax = -std::numeric_limits<float>::max();
-    _zmax = -std::numeric_limits<float>::max();
+    _xmax = -std::numeric_limits<double>::max();
+    _ymax = -std::numeric_limits<double>::max();
+    _zmax = -std::numeric_limits<double>::max();
 
     _clustersGrid = NULL;
 
@@ -302,21 +302,21 @@ void PB_StepSegmentGaps::registerClusterCells(QMap<int, QList<Eigen::Vector2d*> 
 void PB_StepSegmentGaps::computeMetrics(QMap<int, size_t> &clusterCounts, CT_StandardItemGroup* baseGroup)
 {
     // aire d'une cellule
-    float base_area = _clustersGrid->resolution()*_clustersGrid->resolution();
+    double base_area = _clustersGrid->resolution()*_clustersGrid->resolution();
 
     QMapIterator<int, size_t> it(clusterCounts);
     while (it.hasNext())
     {
         it.next();
         int cluster = it.key();
-        float gapArea = it.value() * base_area;
+        double gapArea = it.value() * base_area;
 
         CT_StandardItemGroup* groupGap = new CT_StandardItemGroup(DEF_SearchOutGroupGap, _outResult);
         baseGroup->addGroup(groupGap);
 
         CT_AttributesList* crAttributes= new CT_AttributesList(DEF_SearchOutGapAttributes, _outResult);
         groupGap->addItemDrawable(crAttributes);
-        crAttributes->addItemAttribute(new CT_StdItemAttributeT<float>(DEF_SearchOutGapArea,
+        crAttributes->addItemAttribute(new CT_StdItemAttributeT<double>(DEF_SearchOutGapArea,
                                                                        CT_AbstractCategory::DATA_AREA,
                                                                        _outResult, gapArea));
         crAttributes->addItemAttribute(new CT_StdItemAttributeT<int>(DEF_SearchOutGapClusterId,

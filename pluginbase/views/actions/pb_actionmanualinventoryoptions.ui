@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
+    <width>701</width>
     <height>28</height>
    </rect>
   </property>
@@ -141,9 +141,6 @@
              <widget class="QCheckBox" name="cb_showScenes">
               <property name="text">
                <string>Afficher Scènes</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
               </property>
              </widget>
             </item>

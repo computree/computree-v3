@@ -45,7 +45,7 @@ CT_ItemDrawableConfiguration CT_StandardPoint2DDrawManager::createDrawConfigurat
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
     item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigDrawPoint() ,"Dessiner le point", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigPointSize() ,"Taille du point", CT_ItemDrawableConfiguration::Double, 2);
+    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigPointSize() ,"Taille du point", CT_ItemDrawableConfiguration::Double, 5);
 
     return item;
 }
