@@ -110,7 +110,8 @@
               </property>
               <property name="icon">
                <iconset resource="../../resource.qrc">
-                <normaloff>:/icons/move.png</normaloff>:/icons/move.png</iconset>
+                <normaloff>:/icons/move.png</normaloff>
+                <normalon>:/icons/move_green.png</normalon>:/icons/move.png</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -127,7 +128,8 @@
               </property>
               <property name="icon">
                <iconset resource="../../resource.qrc">
-                <normaloff>:/icons/plus.png</normaloff>:/icons/plus.png</iconset>
+                <normaloff>:/icons/plus.png</normaloff>
+                <normalon>:/icons/plus_green.png</normalon>:/icons/plus.png</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -144,7 +146,8 @@
               </property>
               <property name="icon">
                <iconset resource="../../resource.qrc">
-                <normaloff>:/icons/moins.png</normaloff>:/icons/moins.png</iconset>
+                <normaloff>:/icons/moins.png</normaloff>
+                <normalon>:/icons/moins_red.png</normalon>:/icons/moins.png</iconset>
               </property>
               <property name="checkable">
                <bool>true</bool>
@@ -241,6 +244,13 @@
               </property>
               <property name="checked">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>

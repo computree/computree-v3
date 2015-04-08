@@ -194,6 +194,7 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
                 _positions->removeOne(_selectedPoint);
                 delete _selectedPoint;
                 _selectedPoint = NULL;
+                option->selectFreeMove();
                 document()->redrawGraphics();
             }
 
@@ -214,21 +215,53 @@ bool PB_ActionModifyPositions2D::wheelEvent(QWheelEvent *e)
 
 bool PB_ActionModifyPositions2D::keyPressEvent(QKeyEvent *e)
 {
-//    if((e->key() == Qt::Key_A)
-//            && !e->isAutoRepeat())
-//    {
-//        PB_ActionSelectCellsInGrid3DOptions *option = (PB_ActionSelectCellsInGrid3DOptions*)optionAt(0);
+    if((e->key() == Qt::Key_Control) && !e->isAutoRepeat())
+    {
+        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
+        option->selectMovePosition();
+        return true;
+    }
 
-//        option->setSelectionMode(PB_ActionSelectCellsInGrid3DOptions::ADD);
-//        return true;
-//    }
+    if((e->key() == Qt::Key_Shift) && !e->isAutoRepeat())
+    {
+        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
+        option->selectAddPosition();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_Delete) && !e->isAutoRepeat())
+    {
+        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
+        if (option->isRemovePositionSelected())
+        {
+            if (_selectedPoint != NULL)
+            {
+                document()->setColor(_selectedPoint, _normalColor);
+                _selectedPoint = NULL;
+            }
+            option->selectFreeMove();
+        } else  {
+            option->selectRemovePosition();
+        }
+        return true;
+    }
+
     return false;
 
 }
 
 bool PB_ActionModifyPositions2D::keyReleaseEvent(QKeyEvent *e)
 {
-    Q_UNUSED(e);
+    if (_selectedPoint == NULL)
+    {
+        if(((e->key() == Qt::Key_Control) || (e->key() == Qt::Key_Shift)) && !e->isAutoRepeat())
+        {
+            PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
+            option->selectFreeMove();
+            return true;
+        }
+    }
+
     return false;
 }
 
@@ -240,7 +273,7 @@ void PB_ActionModifyPositions2D::draw(GraphicsViewInterface &view, PainterInterf
 
     painter.save();
 
-    painter.setColor(QColor(125, 125, 125));
+    painter.setColor(QColor(75, 75, 75));
     if (option->isDrawPlaneSelected()) {painter.fillRectXY(_min, _max, option->getZValue() - 0.01);}
 
     painter.restore();

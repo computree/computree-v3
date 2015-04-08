@@ -26,6 +26,11 @@ public:
     double getZValue();
     bool isDrawPlaneSelected();
 
+    void selectFreeMove();
+    void selectMovePosition();
+    void selectAddPosition();
+    void selectRemovePosition();
+
 private:
     Ui::PB_ActionModifyPositions2DOptions *ui;
 
