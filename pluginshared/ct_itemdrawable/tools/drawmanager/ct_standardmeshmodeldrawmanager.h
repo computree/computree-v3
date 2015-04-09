@@ -30,6 +30,9 @@ protected:
     const static QString INDEX_CONFIG_SHOW_FACES;
     const static QString INDEX_CONFIG_SHOW_EDGES;
     const static QString INDEX_CONFIG_SHOW_POINTS;
+    const static QString INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE;
+    const static QString INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE;
+    const static QString INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE;
 
     CT_FaceAccessor m_fAccess;
     CT_EdgeAccessor m_eAccess;
@@ -39,6 +42,9 @@ protected:
     static QString staticInitConfigShowFaces();
     static QString staticInitConfigShowEdges();
     static QString staticInitConfigShowPoints();
+    static QString staticInitConfigBoundingShapeVisible();
+    static QString staticInitConfigBoundingShapePointSize();
+    static QString staticInitConfigBoundingShapeCenterPointVisible();
 };
 
 #endif // CT_STANDARDMESHMODELDRAWMANAGER_H

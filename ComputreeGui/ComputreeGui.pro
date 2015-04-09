@@ -1,4 +1,3 @@
-include(../common.pri)
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
@@ -10,13 +9,8 @@ QT += opengl
 QT += xml
 
 DESTDIR = $${PLUGINSHARED_DESTDIR}
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-UI_DIR  = .ui
-RCC_DIR = .rcc
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
-
 
 HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_graphicsviewsynchronizedgroup.h \

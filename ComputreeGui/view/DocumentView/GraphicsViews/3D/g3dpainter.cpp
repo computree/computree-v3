@@ -2160,9 +2160,7 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
             || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
             || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
-        // we must just release the point shader
-        releasePointShader(m_bindShaderPointOK);
-        m_bindShaderPointOK = false;
+        stopDrawMultiple(true, false);
 
         // and bind the double element shader
         if(!m_bindShaderDeOK)
@@ -2175,9 +2173,7 @@ void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginTyp
             || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
             || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
     {
-        // we must just release the double element shader
-        releaseDoubleElementShader(m_bindShaderDeOK);
-        m_bindShaderDeOK = false;
+        stopDrawMultiple(false, true);
 
         // and bind the point shader
         if(!m_bindShaderPointOK)

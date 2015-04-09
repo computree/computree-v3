@@ -8,6 +8,9 @@
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_FACES = CT_StandardMeshModelDrawManager::staticInitConfigShowFaces();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_EDGES = CT_StandardMeshModelDrawManager::staticInitConfigShowEdges();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_POINTS = CT_StandardMeshModelDrawManager::staticInitConfigShowPoints();
+const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeVisible();
+const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE = CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapePointSize();
+const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
 CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_MeshModel" : drawConfigurationName)
 {
@@ -18,17 +21,6 @@ void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterI
     Q_UNUSED(view)
 
     const CT_AbstractMeshModel &item = dynamic_cast<const CT_AbstractMeshModel&>(itemDrawable);
-
-    painter.pushMatrix();
-
-    QMatrix4x4 m = item.transformMatrix();
-    Eigen::Matrix4d em;
-    em << m(0, 0), m(0, 1), m(0, 2), m(0, 3),
-          m(1, 0), m(1, 1), m(1, 2), m(1, 3),
-          m(2, 0), m(2, 1), m(2, 2), m(2, 3),
-          m(3, 0), m(3, 1), m(3, 2), m(3, 3);
-
-    painter.multMatrix(em);
 
     bool showFaces = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_FACES).toBool();
     bool showEdges = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_EDGES).toBool();
@@ -43,7 +35,54 @@ void CT_StandardMeshModelDrawManager::draw(GraphicsViewInterface &view, PainterI
     if(showPoints)
         painter.drawPoints(&item);
 
-    painter.popMatrix();
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool())
+    {
+        painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
+        painter.drawPoint(item.minX(), item.minY(), item.minZ());
+        painter.drawPoint(item.maxX(), item.minY(), item.minZ());
+        painter.drawPoint(item.minX(), item.maxY(), item.minZ());
+        painter.drawPoint(item.minX(), item.minY(), item.maxZ());
+        painter.drawPoint(item.maxX(), item.maxY(), item.minZ());
+        painter.drawPoint(item.minX(), item.maxY(), item.maxZ());
+        painter.drawPoint(item.maxX(), item.minY(), item.maxZ());
+        painter.drawPoint(item.maxX(), item.maxY(), item.maxZ());
+        painter.restoreDefaultPointSize();
+
+        // B
+        painter.drawLine(item.minX(), item.minY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
+        painter.drawLine(item.maxX(), item.minY(), item.minZ(), item.maxX(), item.maxY(), item.minZ());
+        painter.drawLine(item.maxX(), item.maxY(), item.minZ(), item.minX(), item.maxY(), item.minZ());
+        painter.drawLine(item.minX(), item.maxY(), item.minZ(), item.minX(), item.minY(), item.minZ());
+
+        // H
+        painter.drawLine(item.minX(), item.minY(), item.maxZ(), item.maxX(), item.minY(), item.maxZ());
+        painter.drawLine(item.maxX(), item.minY(), item.maxZ(), item.maxX(), item.maxY(), item.maxZ());
+        painter.drawLine(item.maxX(), item.maxY(), item.maxZ(), item.minX(), item.maxY(), item.maxZ());
+        painter.drawLine(item.minX(), item.maxY(), item.maxZ(), item.minX(), item.minY(), item.maxZ());
+
+        // G
+        painter.drawLine(item.minX(), item.minY(), item.minZ(), item.minX(), item.minY(), item.maxZ());
+        painter.drawLine(item.minX(), item.minY(), item.maxZ(), item.minX(), item.maxY(), item.maxZ());
+        painter.drawLine(item.minX(), item.maxY(), item.maxZ(), item.minX(), item.maxY(), item.minZ());
+        painter.drawLine(item.minX(), item.maxY(), item.minZ(), item.minX(), item.minY(), item.minZ());
+
+        // D
+        painter.drawLine(item.maxX(), item.minY(), item.minZ(), item.maxX(), item.minY(), item.maxZ());
+        painter.drawLine(item.maxX(), item.minY(), item.maxZ(), item.maxX(), item.maxY(), item.maxZ());
+        painter.drawLine(item.maxX(), item.maxY(), item.maxZ(), item.maxX(), item.maxY(), item.minZ());
+        painter.drawLine(item.maxX(), item.maxY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
+    }
+
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool())
+    {
+        painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
+
+        painter.drawPoint(item.getCenterX(),
+                          item.getCenterY(),
+                          item.getCenterZ());
+
+        painter.restoreDefaultPointSize();
+    }
 }
 
 void CT_StandardMeshModelDrawManager::drawFaces(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -120,6 +159,9 @@ CT_ItemDrawableConfiguration CT_StandardMeshModelDrawManager::createDrawConfigur
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowFaces(), "Faces", CT_ItemDrawableConfiguration::Bool, true);
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowEdges(), "Edges", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigShowPoints(), "Points", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeVisible(),"Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeCenterPointVisible(), "Centre de la Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapePointSize(), "Taille des points (Bounding Shape)", CT_ItemDrawableConfiguration::Double, 10.0);
 
     return item;
 }
@@ -128,15 +170,30 @@ CT_ItemDrawableConfiguration CT_StandardMeshModelDrawManager::createDrawConfigur
 
 QString CT_StandardMeshModelDrawManager::staticInitConfigShowFaces()
 {
-    return "SHOW_FACES";
+    return "MM_SHOW_FACES";
 }
 
 QString CT_StandardMeshModelDrawManager::staticInitConfigShowEdges()
 {
-    return "SHOW_EDGES";
+    return "MM_SHOW_EDGES";
 }
 
 QString CT_StandardMeshModelDrawManager::staticInitConfigShowPoints()
 {
-    return "SHOW_POINTS";
+    return "MM_SHOW_POINTS";
+}
+
+QString CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeVisible()
+{
+    return "MM_BSV";
+}
+
+QString CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapePointSize()
+{
+    return "MM_BSPS";
+}
+
+QString CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeCenterPointVisible()
+{
+    return "MM_BSCPS";
 }

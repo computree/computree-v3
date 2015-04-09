@@ -1,4 +1,3 @@
-include(../common.pri)
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
@@ -12,10 +11,6 @@ QT += network
 QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN
 
 DESTDIR = $${PLUGINSHARED_DESTDIR}
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-UI_DIR  = .ui
-RCC_DIR = .rcc
 
 SOURCES += \
     main.cpp \

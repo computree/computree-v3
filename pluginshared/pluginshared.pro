@@ -14,10 +14,18 @@ isEmpty(TEST_FEATURES) {
 include(../destdir.pri)
 
 DESTDIR = $${PLUGINSHARED_DESTDIR}
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-UI_DIR = .ui
-RCC_DIR = .rcc
+
+CONFIG(debug, debug|release) {
+    OBJECTS_DIR = debug/.obj
+    MOC_DIR = debug/.moc
+    UI_DIR = debug/.ui
+    RCC_DIR = debug/.rcc
+} else {
+    OBJECTS_DIR = release/.obj
+    MOC_DIR = release/.moc
+    UI_DIR = release/.ui
+    RCC_DIR = release/.rcc
+}
 
 # n'affiche plus les warnings lorsqu'un parametre de mthode n'est pas utilis
 win32-g++ {

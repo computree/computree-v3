@@ -11,10 +11,20 @@ DESTDIR = $${PLUGINSHARED_PLUGIN_DESTDIR}
 TEMPLATE = lib
 CONFIG += plugin
 
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-UI_DIR = .ui
-RCC_DIR = .rcc
+CONFIG(debug, debug|release) {
+    OBJECTS_DIR = debug/.obj
+    MOC_DIR = debug/.moc
+    UI_DIR = debug/.ui
+    RCC_DIR = debug/.rcc
+} else {
+    OBJECTS_DIR = release/.obj
+    MOC_DIR = release/.moc
+    UI_DIR = release/.ui
+    RCC_DIR = release/.rcc
+}
+
+COMPUTREE_BATCH_PLUGIN_DESTDIR = $${PLUGINSHARED_DESTDIR}/bplugins
+COMPUTREE_CORE_DIR = $${CT_PREFIX}/ComputreeCore
 
 PLUGIN_SHARED_DIR = $${CT_PREFIX}/pluginshared
 PLUGIN_SHARED_INTERFACE_DIR = $${CT_PREFIX}/pluginshared

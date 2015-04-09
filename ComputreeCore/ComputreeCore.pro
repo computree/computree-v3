@@ -1,4 +1,3 @@
-include(../common.pri)
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
@@ -11,11 +10,6 @@ QT += xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DESTDIR = $${PLUGINSHARED_DESTDIR}
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-UI_DIR  = .ui
-RCC_DIR = .rcc
-
 DEFINES += COMPUTREECORE_LIBRARY
 
 INCLUDEPATH += ./
