@@ -43,6 +43,7 @@ public:
 
     /**
      * @brief Set the successor of the node
+     * @warning if a successor already exist it will be removed and can not be used after (it will be deleted from memory at any moment)
      */
     bool setSuccessor(CT_TNodeGroup *successor);
 
@@ -58,11 +59,14 @@ public:
 
     /**
      * @brief Remove the component passed in parameter
+     * @param recursively : if true all successor of this component will be removed too
+     * @warning removed component can not be used after (it will be deleted from memory at any moment)
      */
     bool removeComponent(CT_TNodeGroup *component, bool recursively = true);
 
     /**
-     * @brief Remove the component passed in parameter
+     * @brief Remove the branch passed in parameter
+     * @warning removed branch can not be used after (it will be deleted from memory at any moment)
      */
     bool removeBranch(CT_TNodeGroup *son);
 

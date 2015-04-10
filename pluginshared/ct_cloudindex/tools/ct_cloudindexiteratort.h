@@ -41,9 +41,9 @@ public:
 
     inline void toFront() { m_currentPos = m_startPos; m_atFront = true; }
 
-    inline bool hasNext() const { if(m_startPos == m_endPos) { return false; } return m_currentPos != (m_endPos-1); }
+    inline bool hasNext() const { if(m_startPos == m_endPos) { return false; } if(m_atFront) { return m_currentPos < m_endPos; } else { return m_currentPos < (m_endPos-1); } }
 
-    inline CT_CloudIndexIteratorT<T>& next() { if(m_atFront || (m_startPos == m_endPos)) { m_currentPos = m_startPos; m_atFront = false; } else if(m_currentPos != (m_endPos-1)) { ++m_currentPos; } return *this; }
+    inline CT_CloudIndexIteratorT<T>& next() { if(m_atFront || (m_startPos == m_endPos)) { m_currentPos = m_startPos; m_atFront = false; } else { ++m_currentPos; } return *this; }
 
 
     inline void toBack() { m_currentPos = m_endPos; m_atFront = false; }

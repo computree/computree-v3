@@ -284,6 +284,9 @@ void CT_TNodeGroup::setBearer(CT_TNodeGroup *o)
 
 bool CT_TNodeGroup::addNode(CT_TNodeGroup *n)
 {
+    if(tree() == NULL)
+        return false;
+
     if(n->tree() == NULL)
         n->setTopologyTree(tree());
 

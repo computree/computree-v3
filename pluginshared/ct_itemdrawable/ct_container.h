@@ -89,16 +89,11 @@ public:
     const QList<CT_AbstractItemDrawable *>& itemThatWillBeRemovedLater() const;
 
     /**
-     * @brief Inform the container that the ItemDrawable of this container will be removed later
-     * @warning Not intended for direct use by plugin developper
-     */
-    void setItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *item);
-
-    /**
      * @brief Update the center
      */
     void updateCenter();
 
+    virtual bool contains(const CT_AbstractItemDrawable *child) const;
     virtual int indexOf(const CT_AbstractItemDrawable *child) const;
     virtual int getFastestIncrement() const;
 
@@ -107,6 +102,20 @@ public:
     virtual QList<CT_ItemDrawableConfiguration*> getDependantViewConfigurations();
 
 protected:
+
+    friend class CT_AbstractItemGroup;
+
+    /**
+     * @brief Inform the container that the ItemDrawable of this container will be removed later
+     * @warning Not intended for direct use by plugin developper
+     */
+    void setItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *item);
+
+    /**
+     * @brief Inform the container that it must undo to removed later the item passed in parameter
+     * @warning Not intended for direct use by plugin developper
+     */
+    void undoItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *item);
 
     /**
      * @brief Called from Result or item to inform that this item will be removed from the result passed in parameter

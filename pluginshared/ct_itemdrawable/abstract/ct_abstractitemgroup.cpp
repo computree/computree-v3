@@ -236,6 +236,19 @@ void CT_AbstractItemGroup::setAtLeastOneChildMustBeRemovedLater()
     _removedLater |= ChildRemoveLater;
 }
 
+void CT_AbstractItemGroup::undoWillBeRemovedLater()
+{
+    _removedLater &= ~RemoveLater;
+
+    if(parentContainer() != NULL)
+        parentContainer()->undoItemDrawableBeRemovedLater(this);
+}
+
+void CT_AbstractItemGroup::staticUndoWillBeRemovedLater(CT_AbstractItemGroup *group)
+{
+    group->willBeRemovedLater();
+}
+
 QString CT_AbstractItemGroup::internalVerifyModel(const CT_OutAbstractModel *model) const
 {
     if(dynamic_cast<const CT_OutAbstractGroupModel*>(model) == NULL)

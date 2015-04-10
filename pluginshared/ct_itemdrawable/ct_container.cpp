@@ -109,6 +109,11 @@ void CT_Container::setItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *
     m_itemRemovedLater.append((CT_AbstractItemDrawable*)item);
 }
 
+void CT_Container::undoItemDrawableBeRemovedLater(const CT_AbstractItemDrawable *item)
+{
+    m_itemRemovedLater.removeOne((CT_AbstractItemDrawable*)item);
+}
+
 void CT_Container::updateCenter()
 {
     int size = _list.size();
@@ -133,9 +138,14 @@ void CT_Container::updateCenter()
     }
 }
 
+bool CT_Container::contains(const CT_AbstractItemDrawable *child) const
+{
+    return _list.contains((CT_AbstractItemDrawable*)child);
+}
+
 int CT_Container::indexOf(const CT_AbstractItemDrawable *child) const
 {
-    return _list.indexOf(dynamic_cast<CT_AbstractItemDrawable*>((CT_AbstractItemDrawable*)child));
+    return _list.indexOf((CT_AbstractItemDrawable*)child);
 }
 
 int CT_Container::getFastestIncrement() const

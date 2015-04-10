@@ -42,9 +42,9 @@ int andOperator(int a, int b)
 void main()
 {
     int infoInt = int(info);
-	int csIndexInt = int(csIndex);
+    int csIndexInt = int(csIndex);
 
-    if(andOperator(infoInt,checkSelected) > 0)
+    if(infoInt == checkSelected)
     {
         gl_FrontColor = selectionColor;
     }

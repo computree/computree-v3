@@ -21,12 +21,32 @@ void CloudTest::testPointCloudSimple()
 
     QCOMPARE(pAccess.size(), (size_t)10);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloudIndex(pcir, 0);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloudIndex(pcir, 0, 10);
 
     pcir.clear();
 
     QCOMPARE(pAccess.size(), (size_t)0);
+}
+
+void CloudTest::testPointIterator()
+{
+    CT_PointAccessor pAccess;
+    QCOMPARE(pAccess.size(), (size_t)0);
+
+    CT_NMPCIR pcir = createPointCloud(1, 0);
+
+    QCOMPARE(pAccess.size(), (size_t)1);
+
+    checkPointCloud(pcir, 0, 1);
+    checkPointCloudIndex(pcir, 0, 1);
+
+    pcir.clear();
+
+    QCOMPARE(pAccess.size(), (size_t)0);
+
+    checkPointCloud(pcir, 0, 0);
+    checkPointCloudIndex(pcir, 0, 0);
 }
 
 void CloudTest::testPointCloudRemoveMiddle()
@@ -46,30 +66,30 @@ void CloudTest::testPointCloudRemoveMiddle()
 
     QCOMPARE(pAccess.size(), (size_t)35);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloud(pcir2, 52);
-    checkPointCloud(pcir3, 128);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloud(pcir2, 52, 20);
+    checkPointCloud(pcir3, 128, 5);
 
-    checkPointCloudIndex(pcir, 0);
-    checkPointCloudIndex(pcir2, 10);
-    checkPointCloudIndex(pcir3, 30);
+    checkPointCloudIndex(pcir, 0, 10);
+    checkPointCloudIndex(pcir2, 10, 20);
+    checkPointCloudIndex(pcir3, 30, 5);
 
     pcir2.clear();
 
     QCOMPARE(pAccess.size(), (size_t)15);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloud(pcir3, 128);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloud(pcir3, 128, 5);
 
-    checkPointCloudIndex(pcir, 0);
-    checkPointCloudIndex(pcir3, 10);
+    checkPointCloudIndex(pcir, 0, 10);
+    checkPointCloudIndex(pcir3, 10, 5);
 
     pcir.clear();
 
     QCOMPARE(pAccess.size(), (size_t)5);
 
-    checkPointCloud(pcir3, 128);
-    checkPointCloudIndex(pcir3, 0);
+    checkPointCloud(pcir3, 128, 5);
+    checkPointCloudIndex(pcir3, 0, 5);
 
     pcir3.clear();
 
@@ -90,13 +110,13 @@ void CloudTest::testUndefinedSizePointCloudSimple()
         p.setY(i);
         p.setZ(i);
 
-        pc->addPoint(p, 0);
+        pc->addPoint(p);
     }
 
     CT_NMPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloudIndex(pcir, 0);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloudIndex(pcir, 0, 10);
 
     QCOMPARE(pAccess.size(), (size_t)10);
 }
@@ -119,7 +139,7 @@ void CloudTest::testUndefinedSizePointCloudRemoveMiddle()
         p.setY(i);
         p.setZ(i);
 
-        pc->addPoint(p, 0);
+        pc->addPoint(p);
     }
 
     CT_NMPCIR pcir2 = PS_REPOSITORY->registerUndefinedSizePointCloud(pc);
@@ -130,30 +150,30 @@ void CloudTest::testUndefinedSizePointCloudRemoveMiddle()
 
     QCOMPARE(pAccess.size(), (size_t)35);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloud(pcir2, 13);
-    checkPointCloud(pcir3, 85);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloud(pcir2, 13, 20);
+    checkPointCloud(pcir3, 85, 5);
 
-    checkPointCloudIndex(pcir, 0);
-    checkPointCloudIndex(pcir2, 10);
-    checkPointCloudIndex(pcir3, 30);
+    checkPointCloudIndex(pcir, 0, 10);
+    checkPointCloudIndex(pcir2, 10, 20);
+    checkPointCloudIndex(pcir3, 30, 5);
 
     pcir2.clear();
 
     QCOMPARE(pAccess.size(), (size_t)15);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloud(pcir3, 85);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloud(pcir3, 85, 5);
 
-    checkPointCloudIndex(pcir, 0);
-    checkPointCloudIndex(pcir3, 10);
+    checkPointCloudIndex(pcir, 0, 10);
+    checkPointCloudIndex(pcir3, 10, 5);
 
     pcir3.clear();
 
     QCOMPARE(pAccess.size(), (size_t)10);
 
-    checkPointCloud(pcir, 0);
-    checkPointCloudIndex(pcir, 0);
+    checkPointCloud(pcir, 0, 10);
+    checkPointCloudIndex(pcir, 0, 10);
 
     pcir.clear();
 
@@ -340,8 +360,10 @@ CT_NMPCIR CloudTest::createPointCloud(size_t size, int initVar) const
     return pcir;
 }
 
-void CloudTest::checkPointCloud(CT_NMPCIR pcir, int initVar) const
+void CloudTest::checkPointCloud(CT_NMPCIR pcir, int initVar, size_t size) const
 {
+    size_t n = 0;
+
     CT_PointIterator it(pcir);
 
     double i = initVar;
@@ -354,11 +376,16 @@ void CloudTest::checkPointCloud(CT_NMPCIR pcir, int initVar) const
         QCOMPARE(p(CT_Point::Z), i);
 
         ++i;
+        ++n;
     }
+
+    QCOMPARE(n, size);
 }
 
-void CloudTest::checkPointCloudIndex(CT_NMPCIR pcir, int initIndex) const
+void CloudTest::checkPointCloudIndex(CT_NMPCIR pcir, int initIndex, size_t size) const
 {
+    size_t n = 0;
+
     CT_PointIterator it(pcir);
 
     size_t i = initIndex;
@@ -368,5 +395,8 @@ void CloudTest::checkPointCloudIndex(CT_NMPCIR pcir, int initIndex) const
         QCOMPARE(it.next().cIndex(), i);
 
         ++i;
+        ++n;
     }
+
+    QCOMPARE(n, size);
 }

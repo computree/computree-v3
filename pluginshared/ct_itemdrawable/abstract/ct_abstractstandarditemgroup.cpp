@@ -398,9 +398,18 @@ bool CT_AbstractStandardItemGroup::protectedAddGroup(CT_AbstractItemGroup *group
         _groupsNew.insert(group->model()->uniqueName(), container);
     }
 
+    bool checkExistInContainer = false;
+
+    if(group->willBeRemovedLater()) {
+        staticUndoWillBeRemovedLater(group);
+        checkExistInContainer = true;
+    }
+
     group->setParentGroup(this);
     group->setParentContainer(container);
-    container->addItemDrawable(group);
+
+    if(!checkExistInContainer || (checkExistInContainer && !container->contains(group)))
+        container->addItemDrawable(group);
 
     return true;
 }

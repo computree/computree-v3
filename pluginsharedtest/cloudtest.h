@@ -14,6 +14,7 @@ public:
 private slots:
     //void initTestCase();
     void testPointCloudSimple();
+    void testPointIterator();
     void testPointCloudRemoveMiddle();
     void testUndefinedSizePointCloudSimple();
     void testUndefinedSizePointCloudRemoveMiddle();
@@ -26,8 +27,8 @@ private slots:
 
 private:
     CT_NMPCIR createPointCloud(size_t size, int initVar) const;
-    void checkPointCloud(CT_NMPCIR pcir, int initVar) const;
-    void checkPointCloudIndex(CT_NMPCIR pcir, int initIndex) const;
+    void checkPointCloud(CT_NMPCIR pcir, int initVar, size_t size) const;
+    void checkPointCloudIndex(CT_NMPCIR pcir, int initIndex, size_t size) const;
 };
 
 #endif // CLOUDTEST_H

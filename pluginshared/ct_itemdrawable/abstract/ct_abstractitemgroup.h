@@ -346,6 +346,16 @@ protected:
     void setAtLeastOneChildMustBeRemovedLater();
 
     /**
+     * @brief Called from result to inform that group must undo to be removed later
+     */
+    void undoWillBeRemovedLater();
+
+    /**
+     * @brief Called from group to inform that group must undo to be removed later
+     */
+    static void staticUndoWillBeRemovedLater(CT_AbstractItemGroup *group);
+
+    /**
      * @brief Called from parent or result to delete all groups and items that must be removed later (recursively)
      * @warning Not intended for direct use by plugin developper
      */

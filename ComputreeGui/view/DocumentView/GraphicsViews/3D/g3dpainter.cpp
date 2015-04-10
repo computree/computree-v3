@@ -107,7 +107,7 @@ void G3DPainter::initializeGl()
 {
     QT_GL_INIT_FUNCTIONS();
 
-    m_maxMatrix = (GUI_MANAGER->getOpenglTools()->maxVertexUniformVector(*this))-10;
+    m_maxMatrix = (GUI_MANAGER->getOpenglTools()->maxVertexUniformVector(*this))-14;
 
     if(m_maxMatrix <= 0)
         m_maxMatrix = 10;
