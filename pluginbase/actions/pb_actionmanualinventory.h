@@ -54,9 +54,9 @@ public slots:
     void updateSpeciesList(const QString &species);
 
 private:
-    QPoint      _oldPos;
-    Qt::MouseButtons  _buttonsPressed;
-    const CT_Circle* _currentCircle;
+    QPoint              _oldPos;
+    Qt::MouseButtons    _buttonsPressed;
+    const CT_Circle*    _currentCircle;
 
 
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
@@ -64,6 +64,10 @@ private:
     QMap<const CT_Scene*, QString>                  *_species;
     QMap<const CT_Scene*, QString>                  *_ids;
     QStringList                                     _speciesList;
+
+    QColor              _othersScenesColor;
+    QColor              _activeSceneColor;
+    QColor              _currentCircleColor;
 };
 
 

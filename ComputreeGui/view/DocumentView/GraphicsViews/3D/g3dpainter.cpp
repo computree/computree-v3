@@ -1618,7 +1618,7 @@ void G3DPainter::initPointShader()
             QFile f(m_shaderSourceFile);
 
             if(!f.exists()) {
-                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Le shader des points n'a pas été trouvé dans le dossier \"shaders\" du répertoire d'installation. Avez vous lancé le script du dossier \"computreev3/scripts\" ?"));
+                GUI_LOG->addErrorMessage(LogInterface::gui, QObject::tr("Le shader des points n'a pas été trouvé dans le dossier \"shaders\" (%1) du répertoire d'installation. Avez vous lancé le script du dossier \"computreev3/scripts\" ?").arg(QFileInfo(m_shaderSourceFile).absoluteFilePath()));
 
                 delete m_ShaderPoint;
                 m_ShaderPoint = NULL;

@@ -7,7 +7,7 @@ isEmpty(CT_PREFIX_INSTALL) {
 }
 
 CONFIG(debug, debug|release) {
-    PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/ComputreeInstall
+    PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/ComputreeInstallDebug
 } else {
     PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/ComputreeInstallRelease
 }

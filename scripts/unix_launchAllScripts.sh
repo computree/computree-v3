@@ -63,12 +63,46 @@ function launchF {
 }
 
 echo;
-echo --------------------------
-echo ----- SCRIPT BEGIN -------
-echo --------------------------
+echo --------------------------------------------
+echo ----- SCRIPT BEGIN FOR DEBUG VERSION -------
+echo --------------------------------------------
 
 QTDIR=$1
-ALLDESTDIR="`pwd`/../../ComputreeInstall"
+ALLDESTDIR="`pwd`/../../ComputreeInstallDebug"
+
+for X in `pwd`/../*; do
+  if [ -d "$X" ]; then
+    launchF $X
+  fi
+done
+
+for X in `pwd`/../../plugin*; do
+  for Y in $X/*; do
+     if [ -d "$Y" ]; then
+        launchF $Y
+     fi
+  done
+done
+
+echo;
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo "If you have problem with lupdate or lrelease (could not exec...) please call this script with the path of the bin directory of QT in first argument."
+echo;
+echo "EXAMPLE : $0 /home/login/QTX/X.X/bin"
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo;
+
+echo;
+echo --------------------------------------------
+echo ----- SCRIPT BEGIN FOR RELEASE VERSION -------
+echo --------------------------------------------
+
+QTDIR=$1
+ALLDESTDIR="`pwd`/../../ComputreeInstallRelease"
 
 for X in `pwd`/../*; do
   if [ -d "$X" ]; then

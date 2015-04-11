@@ -11,8 +11,7 @@
 
 #include "ct_math/ct_mathpoint.h"
 
-PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*,
-                                                   const CT_Circle*> *selectedDbh,
+PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
                                                    QMultiMap<const CT_Scene *, const CT_Circle*> *availableDbh,
                                                    QMap<const CT_Scene*, QString> *species,
                                                    QMap<const CT_Scene *, QString> *ids,
@@ -24,6 +23,10 @@ PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*,
     _ids = ids;
     _speciesList = speciesList;
     _currentCircle = NULL;
+
+    _othersScenesColor = Qt::blue;
+    _activeSceneColor = Qt::darkRed;
+    _currentCircleColor = Qt::red;
 }
 
 PB_ActionManualInventory::~PB_ActionManualInventory()
@@ -201,11 +204,11 @@ void PB_ActionManualInventory::draw(GraphicsViewInterface &view, PainterInterfac
         if (circle != NULL)
         {
             if (circle == _currentCircle) {
-                painter.setColor(Qt::red);
+                painter.setColor(_currentCircleColor);
             } else if (seletedCircles.contains(circle)) {
                 painter.setColor(Qt::darkRed);
             } else {
-                painter.setColor(Qt::blue);
+                painter.setColor(_othersScenesColor);
             }
 
             painter.drawCircle3D(circle->getCenter(),circle->getDirection(), circle->getRadius());

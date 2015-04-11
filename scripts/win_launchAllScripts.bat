@@ -1,11 +1,11 @@
 @ECHO OFF
 
 echo;
-echo --------------------------
-echo ----- SCRIPT BEGIN -------
-echo --------------------------
+echo --------------------------------------------
+echo ----- SCRIPT BEGIN FOR DEBUG VERSION -------
+echo --------------------------------------------
 
-set ALLDESTDIR=%~dp0\..\..\ComputreeInstall
+set ALLDESTDIR=%~dp0\..\..\ComputreeInstallDebug
 
 for /d %%X in (%~dp0\..\*) do (
 	call:launch %%X %%~nX
@@ -27,6 +27,36 @@ echo;
 echo "////// !!!!!! \\\\\\\\\\\\"
 echo;
 echo;
+
+echo;
+echo --------------------------------------------
+echo ----- SCRIPT BEGIN FOR RELEASE VERSION -------
+echo --------------------------------------------
+
+set ALLDESTDIR=%~dp0\..\..\ComputreeInstallRelease
+
+for /d %%X in (%~dp0\..\*) do (
+	call:launch %%X %%~nX
+)
+
+for /d %%X in (%~dp0\..\..\plugin*) do (
+
+	for /d %%Y in (%%X\*) do (
+		call:launch %%Y %%~nY
+	)
+)
+
+echo;
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo "If you have problem with lupdate or lrelease (not found) please call this script in a QT preconfigured console"
+echo;
+echo "////// !!!!!! \\\\\\\\\\\\"
+echo;
+echo;
+
+PAUSE
 
 :launch
 
