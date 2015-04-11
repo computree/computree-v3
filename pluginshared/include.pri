@@ -299,6 +299,13 @@ exists(../../use_opencv.ini) {
 
     INCLUDEPATH += $$OPENCV_INCLUDE_PATH
     LIBS += $$OPENCV_LIB_PATH
+
+    copydata.commands = $(COPY_DIR) $$shell_path("$$OPENCV_LIB_DIR_PATH/../bin/*.dll") $$shell_path($$PLUGINSHARED_DESTDIR)
+    first.depends = $(first) copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+
 } else {
     message( ------- use_opencv.ini NOT detected ------ )
 }
