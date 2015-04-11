@@ -22,6 +22,7 @@ class OGRFeature;
  */
 class PB_GDALExporter : public CT_AbstractExporter
 {
+    Q_OBJECT
 public:
     PB_GDALExporter();
 

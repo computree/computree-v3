@@ -104,7 +104,7 @@
 <context>
     <name>CT_AbstractItemGroup</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractitemgroup.cpp" line="242"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractitemgroup.cpp" line="255"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un CT_OutAbstractGroupModel</translation>
     </message>
@@ -127,6 +127,14 @@
         <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="173"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un CT_OutAbstractGroupModel</translation>
+    </message>
+</context>
+<context>
+    <name>CT_AsciiFileChoiceButton</name>
+    <message>
+        <location filename="../ct_view/ct_asciifilechoicebutton.cpp" line="206"/>
+        <source>Choisir un fichier</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -194,22 +202,22 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="317"/>
+        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="299"/>
         <source>Nom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="318"/>
+        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="300"/>
         <source>Utiliser</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="421"/>
+        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="403"/>
         <source>Couleur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="443"/>
+        <location filename="../ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.cpp" line="425"/>
         <source>Normale</source>
         <translation type="unfinished"></translation>
     </message>
@@ -235,12 +243,12 @@
 <context>
     <name>CT_Reader_GDAL</name>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="150"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="152"/>
         <source>Layer %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="198"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="200"/>
         <source>Impossible de charger des éléments du type : </source>
         <translation type="unfinished"></translation>
     </message>
@@ -603,7 +611,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/ct_stepbeginloop.cpp" line="100"/>
+        <location filename="../ct_step/ct_stepbeginloop.cpp" line="119"/>
         <source>Début de boucle, tour %1 sur %2</source>
         <translation></translation>
     </message>
@@ -639,69 +647,110 @@
 <context>
     <name>CT_TextFileConfigurationDialog</name>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="14"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="20"/>
         <source>Configuration</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="38"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="44"/>
         <source>Choisir le fichier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="66"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="72"/>
         <source>filePath</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="88"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="94"/>
         <source>Extrait du fichier : </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="108"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="114"/>
         <source>Premières lignes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="190"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="128"/>
+        <source>Afficher colonnes, taille des tabulations :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="151"/>
+        <source>px</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="223"/>
         <source>Pas de ligne d&apos;entête dans le fichier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="218"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="288"/>
         <source>Séparateur décimal :</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="225"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="295"/>
         <source>Point</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="238"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="308"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="452"/>
         <source>Virgule</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="285"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="355"/>
         <source>Séparateur de champs :</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="305"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="381"/>
+        <source>Détécter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="237"/>
         <source>Nombre de lignes à ignorer avant la ligne d&apos;entêtes : </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="338"/>
-        <source>Extraire les noms de champs</source>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="437"/>
+        <source>Correspondance des champs :</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="394"/>
-        <source>Correspondance des champs :</source>
-        <translation></translation>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="52"/>
+        <source>Aucun fichier valide choisi.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="67"/>
+        <source>Fichier ascii</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="89"/>
+        <source>Choix du fichier ascii</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="451"/>
+        <source>Tabulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="453"/>
+        <source>Point-Virgule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="454"/>
+        <source>Espace</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -750,56 +799,56 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="281"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="386"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="283"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="404"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="498"/>
         <source>X dimension</source>
         <translation>Dimension X</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="282"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="387"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="284"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="405"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="499"/>
         <source>Y dimension</source>
         <translation>Dimension Y</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="283"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="389"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="285"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="407"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="502"/>
         <source>X min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="284"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="390"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="286"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="408"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="503"/>
         <source>Y min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="285"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="392"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="287"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="410"/>
         <location filename="../ct_itemdrawable/ct_profile.h" line="392"/>
         <source>Resolution</source>
         <translation>Résolution</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="286"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="393"/>
+        <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="288"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="411"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="509"/>
         <location filename="../ct_itemdrawable/ct_profile.h" line="393"/>
         <source>NA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="388"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="406"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="500"/>
         <source>Z dimension</source>
         <translation>Dimension Z</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="391"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="409"/>
         <location filename="../ct_itemdrawable/ct_grid4d.h" line="504"/>
         <source>Z min</source>
         <translation></translation>
@@ -859,7 +908,7 @@
         <translation>Z origine</translation>
     </message>
     <message>
-        <location filename="../ct_view/ct_stepconfigurabledialog.cpp" line="79"/>
+        <location filename="../ct_view/ct_stepconfigurabledialog.cpp" line="80"/>
         <source>Configuration</source>
         <translation></translation>
     </message>
@@ -871,11 +920,6 @@
     <message>
         <location filename="../ct_exporter/abstract/ct_abstractexporterattributesselection.cpp" line="30"/>
         <source>Configuration des autres éléments de l&apos;export</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp" line="23"/>
-        <source>Attributs</source>
         <translation></translation>
     </message>
     <message>
@@ -921,38 +965,38 @@
     </message>
     <message>
         <location filename="../ct_itemdrawable/ct_circle.h" line="92"/>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="100"/>
         <source>Erreur d&apos;ajustement du cercle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="90"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="95"/>
         <source>Direction X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="91"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
         <source>Direction Y</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="92"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="97"/>
         <source>Direction Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="93"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="98"/>
         <source>Rayon</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="94"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="99"/>
         <location filename="../ct_itemdrawable/ct_line.h" line="105"/>
         <source>Longueur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_cylinder.h" line="96"/>
+        <location filename="../ct_itemdrawable/ct_cylinder.h" line="101"/>
         <location filename="../ct_itemdrawable/ct_line.h" line="106"/>
         <source>Erreur d&apos;ajustement de la ligne</source>
         <translation></translation>
@@ -1578,17 +1622,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="81"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="83"/>
         <source>Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="88"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="90"/>
         <source>Polygones</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="95"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="97"/>
         <source>Polylignes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1780,6 +1824,21 @@
     <message>
         <location filename="../ct_itemdrawable/ct_datasource.h" line="91"/>
         <source>Nombre de readers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp" line="26"/>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_exporter/abstract/ct_abstractexporterpointattributesselection.cpp" line="27"/>
+        <source>Normals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_itemdrawable/ct_plotmanageritem.h" line="77"/>
+        <source>Nombre de placettes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
