@@ -5,12 +5,21 @@
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
-#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
+#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_math/ct_mathpoint.h"
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_global/ct_context.h"
+//#include "ct_turn/inTurn/tools/ct_inturnmanager.h"
+//#include "ct_tools/model/ct_generateoutmodelname.h"
+//#include "ct_global/ct_context.h"
+//#include "ct_model/tools/ct_modelsearchhelper.h"
+
 
 //Inclusion of actions
 #include "actions/pb_actionmodifyclustersgroups.h"
@@ -27,11 +36,6 @@
 #define DEFin_rPos "rPos"
 #define DEFin_grpPos "grpPos"
 #define DEFin_position "position"
-
-#define DEFout_rsc "rsc"
-#define DEFout_grp "grp"
-#define DEFout_scene "scene"
-
 
 // Constructor : initialization of parameters
 PB_StepMergeClustersFromPositions::PB_StepMergeClustersFromPositions(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -80,19 +84,60 @@ void PB_StepMergeClustersFromPositions::createInResultModelListProtected()
     resIn_rclusters->addGroupModel("", DEFin_grpClusters, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_rclusters->addItemModel(DEFin_grpClusters, DEFin_cluster, CT_PointCluster::staticGetType(), tr("Cluster"));
 
-    CT_InResultModelGroup *resIn_rPos = createNewInResultModel(DEFin_rPos, tr("Positions 2D"), tr(""), true);
+    CT_InResultModelGroupToCopy *resIn_rPos = createNewInResultModelForCopy(DEFin_rPos, tr("Positions 2D"), tr(""), true);
     resIn_rPos->setZeroOrMoreRootGroup();
     resIn_rPos->addGroupModel("", DEFin_grpPos, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_rPos->addItemModel(DEFin_grpPos, DEFin_position, CT_Point2D::staticGetType(), tr("Position 2D"));
 
+    resIn_rclusters->setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
+    resIn_rPos->setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
 }
+
+//void PB_StepMergeClustersFromPositions::preProcessCreateOutResultModelListProtected()
+//{
+//    CT_GenerateOutModelName generator;
+//    QList<QString> generatedNames;
+//    CT_InTurnManager *tm = getInTurnManager();
+
+//    _outclustergroupname = generator.getNewModelNameThatDontExistIn(*tm, generatedNames, "gcl");
+//    generatedNames.append(_outclustergroupname);
+//}
+
 
 // Creation and affiliation of OUT models
 void PB_StepMergeClustersFromPositions::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_rsc = createNewOutResultModel(DEFout_rsc, tr("Scènes segmentées"));
-    res_rsc->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
-    res_rsc->addItemModel(DEFout_grp, DEFout_scene, new CT_Scene(), tr("Scène segmentée"));
+    CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_rPos);
+    res->addItemModel(DEFin_grpPos, _outSceneModelName, new CT_Scene(), tr("Scène segmentée"));
+
+
+//    // récupération du modèle in du résultat
+//    CT_InAbstractResultModel *resultmodel = getInResultModel(DEFin_rclusters);
+
+//    if(!isCreateDefaultOutModelActive()
+//            && resultmodel->getPossibilitiesSavedSelected().isEmpty())
+//    {
+//        qFatal("Error while create out model in PB_StepMergeClustersFromPositions");
+//    }
+
+//    if(!isCreateDefaultOutModelActive())
+//    {
+//        // récupération du modèle out de LA possibilité liée au modèle de résultat (il n'y en a qu'une ici) comme spécifié implicitement dans addInResultModel
+//        CT_OutAbstractResultModel *resultpossibilitymodel = (CT_OutAbstractResultModel*)resultmodel->getPossibilitiesSavedSelected().first()->outModel();
+//        // récupération du modèle in de PointCluster
+//        CT_InAbstractModel *pointclustermodel = (CT_InAbstractModel*)PS_MODELS->searchModel(DEFin_cluster, resultpossibilitymodel, this);
+//        // récupération du modèle out de LA possilibité liée au modèle de Pointcluster (il n'y en a qu'une ici) CAR on a utilisé C_ChooseOneIfMultiple
+//        CT_OutAbstractModel *pointclusterpossibilitymodel = pointclustermodel->getPossibilitiesSavedSelected().first()->outModel();
+//        // récupération du modèle du groupe contenant le PointCluster
+//        DEF_CT_AbstractGroupModelOut *pointclustergroupmodel = dynamic_cast<DEF_CT_AbstractGroupModelOut*> (pointclusterpossibilitymodel->parentModel()); //groupe qui le pointcluster
+
+//        // On copie le modèle du groupe
+//        DEF_CT_AbstractGroupModelOut *pointclustergroupoutmodel = pointclustergroupmodel->copyGroup();
+//        pointclustergroupoutmodel->setUniqueName(_outclustergroupname);
+
+//        CT_OutAbstractGroupModel* model = (CT_OutAbstractGroupModel*) PS_MODELS->searchModel(DEFin_grpPos, res->getModels().first(), this);
+//        model->addGroup(pointclustergroupoutmodel);
+//    }
 
 }
 
@@ -110,19 +155,18 @@ void PB_StepMergeClustersFromPositions::compute()
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_rclusters = inResultList.at(0);
-    CT_ResultGroup* resIn_rPos = inResultList.at(1);
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_rsc = outResultList.at(0);
 
 
     // Création de la liste des positions 2D
-    CT_ResultGroupIterator itIn_grpPos(resIn_rPos, this, DEFin_grpPos);
-    while (itIn_grpPos.hasNext() && !isStopped())
+    CT_ResultGroupIterator grpPosIt(res_rsc, this, DEFin_grpPos);
+    while (grpPosIt.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup* grpIn_grpPos = (CT_AbstractItemGroup*) itIn_grpPos.next();
+        CT_AbstractItemGroup* grpPos = (CT_AbstractItemGroup*) grpPosIt.next();
 
-        const CT_Point2D* position = (CT_Point2D*)grpIn_grpPos->firstItemByINModelName(this, DEFin_position);
+        const CT_Point2D* position = (CT_Point2D*)grpPos->firstItemByINModelName(this, DEFin_position);
         if (position != NULL)
         {
             CT_PointCloudIndexVector* cloudIndexVector = new CT_PointCloudIndexVector();
@@ -137,11 +181,13 @@ void PB_StepMergeClustersFromPositions::compute()
     CT_ResultGroupIterator itIn_grpClusters(resIn_rclusters, this, DEFin_grpClusters);
     while (itIn_grpClusters.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters.next();
+        CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters.next();
         
-        const CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
+        CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
         if (cluster != NULL)
         {
+            _clustersGroups.insert(cluster, grpIn_grpClusters);
+
             const Eigen::Vector3d &center = cluster->getCenterCoordinate();
 
             CT_Point2D* bestPosition = NULL;
@@ -206,30 +252,46 @@ void PB_StepMergeClustersFromPositions::compute()
 
     setProgress(90);
     // Création des scènes
-    for (int i = 0 ; i < cloudIndices.size() ; i++)
+//    const CT_OutAbstractGroupModel* outClusterGroupModel = (CT_OutAbstractGroupModel*)PS_MODELS->searchModelForCreation(_outclustergroupname, res_rsc);
+
+
+    CT_ResultGroupIterator grpPosIt2(res_rsc, this, DEFin_grpPos);
+    while (grpPosIt2.hasNext())
     {
-        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair  = cloudIndices.at(i);
-        CT_PointCloudIndexVector* cloudIndexVector = pair.first;
+        CT_StandardItemGroup* grpPos = (CT_StandardItemGroup*) grpPosIt2.next();
+        const CT_Point2D* position = (CT_Point2D*)grpPos->firstItemByINModelName(this, DEFin_position);
 
-        pair.second->clear();
-        delete pair.second;
-
-        if (cloudIndexVector->size() > 0)
+        if (position != NULL)
         {
-            cloudIndexVector->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
-            CT_StandardItemGroup* grp = new CT_StandardItemGroup(DEFout_grp, res_rsc);
-            res_rsc->addGroup(grp);
+            QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) _positionsData.value(position);
+            CT_PointCloudIndexVector* cloudIndexVector = pair.first;
 
-            CT_Scene* scene = new CT_Scene(DEFout_scene, res_rsc, PS_REPOSITORY->registerPointCloudIndex(cloudIndexVector));
-            scene->updateBoundingBox();
-            grp->addItemDrawable(scene);
+            if (cloudIndexVector->size() > 0)
+            {
+                cloudIndexVector->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
 
-        } else {
-            delete cloudIndexVector;
+                CT_Scene* scene = new CT_Scene(_outSceneModelName.completeName(), res_rsc, PS_REPOSITORY->registerPointCloudIndex(cloudIndexVector));
+                scene->updateBoundingBox();
+                grpPos->addItemDrawable(scene);
+
+//                QListIterator<const CT_PointCluster*> itClust(*pair.second);
+//                while (itClust.hasNext())
+//                {
+//                    CT_PointCluster* cluster = (CT_PointCluster*) itClust.next();
+//                    CT_AbstractItemGroup *grpClust = (CT_AbstractItemGroup*) _clustersGroups.value(cluster)->copy(outClusterGroupModel, res_rsc, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference);
+//                    grpPos->addGroup(grpClust);
+//                }
+
+            } else {
+                delete cloudIndexVector;
+            }
+
+            pair.second->clear();
+            delete pair.second;
         }
     }
-    setProgress(100);
 
+    setProgress(100);
 }
 
 void PB_StepMergeClustersFromPositions::addPointsToScenes(QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair)

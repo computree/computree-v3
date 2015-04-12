@@ -29,6 +29,7 @@
 #define DEFin_cluster "cluster"
 #define DEFin_circle "circle"
 #define DEFin_scene "scene"
+#define DEFin_positions "positions"
 
 // Constructor : initialization of parameters
 PB_StepManualInventory::PB_StepManualInventory(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -67,6 +68,7 @@ void PB_StepManualInventory::createInResultModelListProtected()
     resIn_scres->addGroupModel(DEFin_layer, DEFin_cluster, CT_AbstractItemGroup::staticGetType(), tr("Cluster"));
     resIn_scres->addItemModel(DEFin_cluster, DEFin_circle, CT_Circle::staticGetType(), tr("Cercle"));
     resIn_scres->addItemModel(DEFin_scBase, DEFin_scene, CT_Scene::staticGetType(), tr("Scène"));
+    resIn_scres->addItemModel(DEFin_scBase, DEFin_positions, CT_Point2D::staticGetType(), tr("Position2D"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -119,6 +121,12 @@ void PB_StepManualInventory::createOutResultModelListProtected()
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_y_ModelName,
                                         new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_Y),
                                         tr("Y"));
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_z_ModelName,
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_Z),
+                                        tr("Z"));
+    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h130_ModelName,
+                                        new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_HEIGHT),
+                                        tr("H130"));
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h_ModelName,
                                         new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_HEIGHT),
                                         tr("Hauteur"));
@@ -174,9 +182,12 @@ void PB_StepManualInventory::compute()
         {
             CT_StandardItemGroup* grpCpy_scBase = (CT_StandardItemGroup*) itCpy_scBase.next();
             const CT_Scene* itemCpy_scene = (const CT_Scene*)grpCpy_scBase->firstItemByINModelName(this, DEFin_scene);
+            const CT_Point2D* itemCpy_position = (const CT_Point2D*)grpCpy_scBase->firstItemByINModelName(this, DEFin_positions);
 
-            if (itemCpy_scene != NULL)
+            if (itemCpy_scene != NULL && itemCpy_position != NULL)
             {
+                _positions.insert(itemCpy_scene, itemCpy_position);
+                
                 // Initialisation des attributs supplémentaires
                 QMap<QString, QString> &map = _suppAttributes->insert(itemCpy_scene, QMap<QString, QString>()).value();
                 QMapIterator<QString, QStringList> itPar(_paramData);
@@ -219,53 +230,63 @@ void PB_StepManualInventory::compute()
         {
             CT_StandardItemGroup* grpCpy_scBase = (CT_StandardItemGroup*) itCpy_scBaseOut.next();
             const CT_Scene* itemCpy_scene = (const CT_Scene*)grpCpy_scBase->firstItemByINModelName(this, DEFin_scene);
+            const CT_Point2D* itemCpy_position = (const CT_Point2D*)grpCpy_scBase->firstItemByINModelName(this, DEFin_positions);
 
-            CT_Circle* bestCircle = (CT_Circle*) _selectedDbh->value(itemCpy_scene, NULL);
-
-            if (bestCircle != NULL)
+            if (itemCpy_scene != NULL && itemCpy_position != NULL)
             {
-                CT_Circle* itemCpy_dbhcircle = (CT_Circle*) bestCircle->copy(_dbhcircle_ModelName.completeName(), resCpy_scres, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference);
-                grpCpy_scBase->addItemDrawable(itemCpy_dbhcircle);
+                CT_Circle* bestCircle = (CT_Circle*) _selectedDbh->value(itemCpy_scene, NULL);
 
-                double dbh = bestCircle->getRadius() * 200.0;
-                double x = bestCircle->getCenterX();
-                double y = bestCircle->getCenterY();
-                double mntZ = _itemIn_mnt->valueAtXY(x, y);
-                double height = computeMaxZ(itemCpy_scene) - mntZ;
-
-                if ((height < 0) || (mntZ == _itemIn_mnt->NA())) {height = 0;}
-
-                CT_AttributesList* itemCpy_attributes = new CT_AttributesList(_attributes_ModelName.completeName(), resCpy_scres);
-                grpCpy_scBase->addItemDrawable(itemCpy_attributes);
-
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_dbh_ModelName.completeName(),
-                                                                                     CT_AbstractCategory::DATA_NUMBER,
-                                                                                     resCpy_scres, dbh));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_x_ModelName.completeName(),
-                                                                                     CT_AbstractCategory::DATA_X,
-                                                                                     resCpy_scres, x));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_y_ModelName.completeName(),
-                                                                                     CT_AbstractCategory::DATA_Y,
-                                                                                     resCpy_scres, y));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_h_ModelName.completeName(),
-                                                                                     CT_AbstractCategory::DATA_HEIGHT,
-                                                                                     resCpy_scres, height));
-
-
-                // Initialisation des attributs supplémentaires
-                const QMap<QString, QString> &map = _suppAttributes->value(itemCpy_scene, QMap<QString, QString>());
-                QMutableMapIterator<QString, CT_AutoRenameModels> itmap(_paramAutoRename);
-                while (itmap.hasNext())
+                if (bestCircle != NULL)
                 {
-                    itmap.next();
+                    CT_Circle* itemCpy_dbhcircle = (CT_Circle*) bestCircle->copy(_dbhcircle_ModelName.completeName(), resCpy_scres, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference);
+                    grpCpy_scBase->addItemDrawable(itemCpy_dbhcircle);
 
-                    const QString &name = itmap.key();
-                    const QString &value = map.value(name, "");
-                    CT_AutoRenameModels &autoRename = itmap.value();
+                    double dbh = bestCircle->getRadius() * 200.0;
+                    double x = itemCpy_position->getCenterX(); // Use Position coordinates for Height reference
+                    double y = itemCpy_position->getCenterY();
+                    double mntZ = _itemIn_mnt->valueAtXY(x, y);
+                    double height = computeMaxZ(itemCpy_scene) - mntZ;
 
-                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(autoRename.completeName(),
-                                                                                           CT_AbstractCategory::DATA_VALUE,
-                                                                                           resCpy_scres, value));
+                    if ((height < 0) || (mntZ == _itemIn_mnt->NA())) {height = 0;}
+
+                    CT_AttributesList* itemCpy_attributes = new CT_AttributesList(_attributes_ModelName.completeName(), resCpy_scres);
+                    grpCpy_scBase->addItemDrawable(itemCpy_attributes);
+
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_dbh_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_NUMBER,
+                                                                                         resCpy_scres, dbh));
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_x_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_X,
+                                                                                         resCpy_scres, bestCircle->getCenterX()));
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_y_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_Y,
+                                                                                         resCpy_scres, bestCircle->getCenterY()));
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_z_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_Z,
+                                                                                         resCpy_scres, bestCircle->getCenterZ()));
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_h130_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_HEIGHT,
+                                                                                         resCpy_scres, bestCircle->getCenterZ() - mntZ));
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_h_ModelName.completeName(),
+                                                                                         CT_AbstractCategory::DATA_HEIGHT,
+                                                                                         resCpy_scres, height));
+
+
+                    // Initialisation des attributs supplémentaires
+                    const QMap<QString, QString> &map = _suppAttributes->value(itemCpy_scene, QMap<QString, QString>());
+                    QMutableMapIterator<QString, CT_AutoRenameModels> itmap(_paramAutoRename);
+                    while (itmap.hasNext())
+                    {
+                        itmap.next();
+
+                        const QString &name = itmap.key();
+                        const QString &value = map.value(name, "");
+                        CT_AutoRenameModels &autoRename = itmap.value();
+
+                        itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(autoRename.completeName(),
+                                                                                               CT_AbstractCategory::DATA_VALUE,
+                                                                                               resCpy_scres, value));
+                    }
                 }
             }
         }
@@ -323,12 +344,16 @@ void PB_StepManualInventory::useManualMode(bool quit)
 
 void PB_StepManualInventory::findBestCircleForEachScene()
 {
-    QList<const CT_Scene*> scenes = _availableDbh->keys();
-
-    QListIterator<const CT_Scene*> itScenes(scenes);
+    QMapIterator<const CT_Scene*, const CT_Point2D*>  itScenes(_positions);
     while (itScenes.hasNext())
     {
-        const CT_Scene* scene = itScenes.next();
+        itScenes.next();
+        const CT_Scene* scene = itScenes.key();
+        const CT_Point2D* pos = itScenes.value();
+        double x = pos->getCenterX();
+        double y = pos->getCenterY();
+        double z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
+        
         QList<const CT_Circle*> circles = _availableDbh->values(scene);
 
         double mindelta = std::numeric_limits<double>::max();
@@ -338,7 +363,7 @@ void PB_StepManualInventory::findBestCircleForEachScene()
         while (itCircles.hasNext())
         {
             const CT_Circle* currentCircle = itCircles.next();
-            double dist = std::fabs(currentCircle->getCenterZ() - (_itemIn_mnt->valueAtXY(currentCircle->getCenterX(), currentCircle->getCenterY()) + 1.3));
+            double dist = std::fabs(currentCircle->getCenterZ() - z);
 
             if (dist < mindelta)
             {
@@ -348,9 +373,6 @@ void PB_StepManualInventory::findBestCircleForEachScene()
         }
         if (bestCircle == NULL)
         {
-            double x = scene->getCenterX();
-            double y = scene->getCenterZ();
-            double z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
 
             CT_Circle* tmpCircle = new CT_Circle(NULL, NULL, new CT_CircleData(Eigen::Vector3d(x, y, z), Eigen::Vector3d(0, 0, 1), 0.05, -9999));
             _selectedDbh->insert(scene, tmpCircle);

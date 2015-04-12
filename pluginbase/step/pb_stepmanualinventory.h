@@ -4,6 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_circle.h"
+#include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_grid2dxy.h"
 #include "ct_tools/model/ct_autorenamemodels.h"
 
@@ -98,6 +99,8 @@ private:
     CT_AutoRenameModels    _attribute_dbh_ModelName;
     CT_AutoRenameModels    _attribute_x_ModelName;
     CT_AutoRenameModels    _attribute_y_ModelName;
+    CT_AutoRenameModels    _attribute_z_ModelName;
+    CT_AutoRenameModels    _attribute_h130_ModelName;
     CT_AutoRenameModels    _attribute_h_ModelName;
 
     // Step parameters
@@ -112,6 +115,7 @@ private:
 
     const CT_Grid2DXY<double>                        *_itemIn_mnt;
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
+    QMap<const CT_Scene*, const CT_Point2D*>        _positions;
     QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
     QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
 

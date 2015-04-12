@@ -138,6 +138,8 @@ public:
                                const QString &displayableName = "",
                                const QString &description = "");
 
+    const QList<CT_OutResultModelGroupCopy*> &getModels() {return m_models;}
+
 protected:
 
     friend class CT_VirtualAbstractStep;

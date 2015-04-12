@@ -4,6 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
+#include "ct_tools/model/ct_autorenamemodels.h"
 
 class CT_AbstractItemGroup;
 
@@ -73,6 +74,9 @@ protected:
      */
     void createPostConfigurationDialog();
 
+//    void preProcessCreateOutResultModelListProtected();
+
+
     /*! \brief Output results specification
      * 
      * Specification of output results models created by the step (OUT)
@@ -88,6 +92,12 @@ protected:
     void initManualMode();
     void useManualMode(bool quit);
 private:
+
+    CT_AutoRenameModels     _outSceneModelName;
+//    QString                 _outclustergroupname;
+
+    QMap<CT_PointCluster*, CT_AbstractItemGroup*> _clustersGroups;
+
 
     // Step parameters
     bool    _interactiveMode;
