@@ -75,7 +75,32 @@ void PB_ActionManualInventory::init()
         // is managed automatically
         registerOption(option);
 
-        document()->redrawGraphics();
+        Eigen::Vector3d min, max;
+
+        min(0) = std::numeric_limits<double>::max();
+        min(1) = std::numeric_limits<double>::max();
+        min(2) = std::numeric_limits<double>::max();
+
+        max(0) = -std::numeric_limits<double>::max();
+        max(1) = -std::numeric_limits<double>::max();
+        max(2) = -std::numeric_limits<double>::max();
+
+        QMapIterator<const CT_Scene*, const CT_Circle*> it(*_availableDbh);
+        while (it.hasNext())
+        {
+            it.next();
+            const CT_Circle *circle = it.value();
+
+            if (circle->getCenterX() < min(0)) {min(0) = circle->getCenterX();}
+            if (circle->getCenterY() < min(1)) {min(1) = circle->getCenterY();}
+            if (circle->getCenterZ() < min(2)) {min(2) = circle->getCenterZ();}
+
+            if (circle->getCenterX() > max(0)) {max(0) = circle->getCenterX();}
+            if (circle->getCenterY() > max(1)) {max(1) = circle->getCenterY();}
+            if (circle->getCenterZ() > max(2)) {max(2) = circle->getCenterZ();}
+        }
+
+        document()->fitToSpecifiedBox(min, max);
     }
 }
 
