@@ -99,11 +99,11 @@ private:
     CT_AutoRenameModels    _attribute_x_ModelName;
     CT_AutoRenameModels    _attribute_y_ModelName;
     CT_AutoRenameModels    _attribute_h_ModelName;
-    CT_AutoRenameModels    _attribute_sp_ModelName;
-    CT_AutoRenameModels    _attribute_id_ModelName;
 
     // Step parameters
-    QStringList    _speciesFileName;
+    QStringList                         _paramFileName;
+    QMap<QString, QStringList>          _paramData;
+    QMap<QString, CT_AutoRenameModels>  _paramAutoRename;
 
 
     // Step parameters
@@ -113,9 +113,7 @@ private:
     const CT_Grid2DXY<double>                        *_itemIn_mnt;
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
     QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
-    QMap<const CT_Scene*, QString>                  *_species;
-    QMap<const CT_Scene*, QString>                  *_ids;
-    QStringList                                     _speciesList;
+    QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
 
     QList<CT_Circle*>                               _temporaryCircles;
 

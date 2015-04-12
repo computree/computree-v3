@@ -15,6 +15,8 @@
 
 #include <limits>
 #include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
 
 // Alias for indexing models
 #define DEFin_mntres "mntres"
@@ -34,7 +36,7 @@ PB_StepManualInventory::PB_StepManualInventory(CT_StepInitializeData &dataInit) 
     m_doc = NULL;
     setManual(true);
 
-    _speciesList << "Erable" << "Hêtre" << "Chêne" << "Sapin Baumier" << "Epinette Noire";
+    _paramFileName.append("../ComputreeHowTo/param_inv.txt");
 }
 
 // Step description (tooltip of contextual menu)
@@ -67,9 +69,42 @@ void PB_StepManualInventory::createInResultModelListProtected()
     resIn_scres->addItemModel(DEFin_scBase, DEFin_scene, CT_Scene::staticGetType(), tr("Scène"));
 }
 
+// Semi-automatic creation of step parameters DialogBox
+void PB_StepManualInventory::createPostConfigurationDialog()
+{
+    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
+    configDialog->addFileChoice("Fichier de paramétrage", CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.txt)", _paramFileName);
+}
+
+
 // Creation and affiliation of OUT models
 void PB_StepManualInventory::createOutResultModelListProtected()
 {
+    // Création de la liste des attributs supplémentaires
+    if (_paramFileName.size() > 0)
+    {
+        QFile f(_paramFileName.first());
+
+        if (f.exists() && f.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QTextStream stream(&f);
+            QString paramString = stream.readAll();
+
+            QStringList paramList = paramString.split("\n", QString::SkipEmptyParts);
+            for (int i = 0 ; i  < paramList.size() ; i++)
+            {
+                QStringList values = paramList.at(i).split(";");
+
+                if (values.size() > 0)
+                {
+                    QStringList modalities = values.mid(1);
+                    _paramData.insert(values.at(0), modalities);
+                    _paramAutoRename.insert(values.at(0), CT_AutoRenameModels());
+                }
+            }
+        }
+    }
+
     CT_OutResultModelGroupToCopyPossibilities *resCpy_scres = createNewOutResultModelToCopy(DEFin_scres);
 
     resCpy_scres->addItemModel(DEFin_scBase, _dbhcircle_ModelName, new CT_Circle(), tr("Cercle du DHP"));
@@ -87,20 +122,23 @@ void PB_StepManualInventory::createOutResultModelListProtected()
     resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_h_ModelName,
                                         new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_HEIGHT),
                                         tr("Hauteur"));
-    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_sp_ModelName,
-                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE),
-                                        tr("Espèce"));
-    resCpy_scres->addItemAttributeModel(_attributes_ModelName,_attribute_id_ModelName,
-                                        new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_ID),
-                                        tr("IDterrain"));
+
+    // Ajout des modèles pour les attributs supplémentaires
+    QMutableMapIterator<QString, CT_AutoRenameModels> itAutoRename(_paramAutoRename);
+    while (itAutoRename.hasNext())
+    {
+        itAutoRename.next();
+
+        const QString &name = itAutoRename.key();
+        CT_AutoRenameModels &autoRenameModel =  itAutoRename.value();
+
+        resCpy_scres->addItemAttributeModel(_attributes_ModelName, autoRenameModel,
+                                            new CT_StdItemAttributeT<QString>(CT_AbstractCategory::DATA_VALUE), name);
+    }
+
 }
 
-// Semi-automatic creation of step parameters DialogBox
-void PB_StepManualInventory::createPostConfigurationDialog()
-{
-    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
-    configDialog->addFileChoice("Fichier d'espèces", CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.txt)", _speciesFileName);
-}
+
 
 void PB_StepManualInventory::compute()
 {
@@ -128,8 +166,7 @@ void PB_StepManualInventory::compute()
     {
         _selectedDbh = new QMap<const CT_Scene*, const CT_Circle*>();
         _availableDbh = new QMultiMap<const CT_Scene*, const CT_Circle*>();
-        _species = new QMap<const CT_Scene*, QString>();
-        _ids = new QMap<const CT_Scene*, QString>();
+        _suppAttributes = new QMap<const CT_Scene*, QMap<QString, QString> >();
 
         // Boucle sur les groupes contenant ls scènes
         CT_ResultGroupIterator itCpy_scBase(resCpy_scres, this, DEFin_scBase);
@@ -140,6 +177,14 @@ void PB_StepManualInventory::compute()
 
             if (itemCpy_scene != NULL)
             {
+                // Initialisation des attributs supplémentaires
+                QMap<QString, QString> &map = _suppAttributes->insert(itemCpy_scene, QMap<QString, QString>()).value();
+                QMapIterator<QString, QStringList> itPar(_paramData);
+                while (itPar.hasNext())
+                {
+                    itPar.next();
+                    map.insert(itPar.key(), QString());
+                }
 
                 CT_GroupIterator itCpy_layer(grpCpy_scBase, this, DEFin_layer);
                 while (itCpy_layer.hasNext() && !isStopped())
@@ -155,6 +200,7 @@ void PB_StepManualInventory::compute()
                         if (itemCpy_circle != NULL)
                         {
                             _availableDbh->insertMulti(itemCpy_scene, itemCpy_circle);
+
                         }
                     }
                 }
@@ -189,9 +235,6 @@ void PB_StepManualInventory::compute()
 
                 if ((height < 0) || (mntZ == _itemIn_mnt->NA())) {height = 0;}
 
-                QString species = _species->value(itemCpy_scene, "");
-                QString id = _ids->value(itemCpy_scene, "");
-
                 CT_AttributesList* itemCpy_attributes = new CT_AttributesList(_attributes_ModelName.completeName(), resCpy_scres);
                 grpCpy_scBase->addItemDrawable(itemCpy_attributes);
 
@@ -207,15 +250,24 @@ void PB_StepManualInventory::compute()
                 itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<double>(_attribute_h_ModelName.completeName(),
                                                                                      CT_AbstractCategory::DATA_HEIGHT,
                                                                                      resCpy_scres, height));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(_attribute_sp_ModelName.completeName(),
-                                                                                       CT_AbstractCategory::DATA_VALUE,
-                                                                                       resCpy_scres, species));
-                itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(_attribute_id_ModelName.completeName(),
-                                                                                       CT_AbstractCategory::DATA_ID,
-                                                                                       resCpy_scres, id));
 
+
+                // Initialisation des attributs supplémentaires
+                const QMap<QString, QString> &map = _suppAttributes->value(itemCpy_scene, QMap<QString, QString>());
+                QMutableMapIterator<QString, CT_AutoRenameModels> itmap(_paramAutoRename);
+                while (itmap.hasNext())
+                {
+                    itmap.next();
+
+                    const QString &name = itmap.key();
+                    const QString &value = map.value(name, "");
+                    CT_AutoRenameModels &autoRename = itmap.value();
+
+                    itemCpy_attributes->addItemAttribute(new CT_StdItemAttributeT<QString>(autoRename.completeName(),
+                                                                                           CT_AbstractCategory::DATA_VALUE,
+                                                                                           resCpy_scres, value));
+                }
             }
-
         }
 
 
@@ -224,8 +276,7 @@ void PB_StepManualInventory::compute()
 
         delete _selectedDbh;
         delete _availableDbh;
-        delete _species;
-        delete _ids;
+        delete _suppAttributes;
         qDeleteAll(_temporaryCircles);
     }
 
@@ -246,7 +297,7 @@ void PB_StepManualInventory::initManualMode()
     }
     m_doc->removeAllItemDrawable();
 
-    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, _species, _ids, _speciesList));
+    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, &_paramData, _suppAttributes));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette étape !"), QMessageBox::Ok);

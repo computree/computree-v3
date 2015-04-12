@@ -13,19 +13,18 @@
 
 PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
                                                    QMultiMap<const CT_Scene *, const CT_Circle*> *availableDbh,
-                                                   QMap<const CT_Scene*, QString> *species,
-                                                   QMap<const CT_Scene *, QString> *ids,
-                                                   const QStringList &speciesList) : CT_AbstractActionForGraphicsView()
+                                                   QMap<QString, QStringList> *paramData,
+                                                   QMap<const CT_Scene*, QMap<QString, QString> >  *suppAttributes) : CT_AbstractActionForGraphicsView()
 {
     _selectedDbh = selectedDbh;
     _availableDbh = availableDbh;
-    _species = species;
-    _ids = ids;
-    _speciesList = speciesList;
+    _paramData = paramData;
+    _suppAttributes = suppAttributes;
     _currentCircle = NULL;
 
-    _othersScenesColor = Qt::blue;
-    _activeSceneColor = Qt::darkRed;
+    _othersScenesColor = Qt::darkGray;
+    _othersCircleColor = Qt::darkRed;
+    _activeSceneColor = Qt::blue;
     _currentCircleColor = Qt::red;
 }
 
@@ -83,14 +82,6 @@ void PB_ActionManualInventory::init()
 void PB_ActionManualInventory::redraw()
 {
     document()->redrawGraphics();
-}
-
-void PB_ActionManualInventory::updateSpeciesList(const QString &species)
-{
-    if (!_speciesList.contains(species))
-    {
-        _speciesList.append(species);
-    }
 }
 
 bool PB_ActionManualInventory::mousePressEvent(QMouseEvent *e)
@@ -234,17 +225,22 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
             it.next();
             CT_Scene* scene = (CT_Scene*) it.key();
             CT_Circle* circle = (CT_Circle*) it.value();
-            QString id = _ids->value(scene);
-            QString species = _species->value(scene);
+
+            QMap<QString, QString> attrMap = _suppAttributes->value(scene);
 
             QPoint pixel;
             graphicsView()->convert3DPositionToPixel(Eigen::Vector3d(circle->getCenterX(), circle->getCenterY(), circle->getCenterZ()), pixel);
 
             painter.setPen(Qt::darkRed);
             int y =  pixel.y() + add + 2;
-            painter.drawText(pixel.x(), y, tr("ID = %1").arg(id));
-            y += add;
-            painter.drawText(pixel.x(), y, tr("Espèce = %1").arg(species));
+
+            QMapIterator<QString, QString> it(attrMap);
+            while (it.hasNext())
+            {
+                it.next();
+                painter.drawText(pixel.x(), y, tr("%1 = %2").arg(it.key()).arg(it.value()));
+                y += add;
+            }
 
         }
     }
@@ -252,7 +248,7 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
 
 CT_AbstractAction* PB_ActionManualInventory::copy() const
 {
-    return new PB_ActionManualInventory(_selectedDbh, _availableDbh, _species, _ids, _speciesList);
+    return new PB_ActionManualInventory(_selectedDbh, _availableDbh, _paramData, _suppAttributes);
 }
 
 const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
@@ -323,20 +319,21 @@ const CT_Circle* PB_ActionManualInventory::chooseForAttributes(const QPoint &poi
 
 void PB_ActionManualInventory::setAttributes(const CT_Scene* scene)
 {
-    QString currentSpecies = _species->value(scene);
-    QString currentId = _ids->value(scene);
+    QMap<QString, QString> &attrMap = (QMap<QString, QString>&) _suppAttributes->value(scene);
 
-    PB_ActionManualInventoryAttributesDialog dialog(_speciesList, currentSpecies, currentId);
-
+    PB_ActionManualInventoryAttributesDialog dialog(_paramData, attrMap);
     if (dialog.exec() == QDialog::Accepted)
-    {
-        QString newSpecies = dialog.getSpecies();
-        _species->insert(scene, newSpecies);
-        _ids->insert(scene, dialog.getId());
+    {        
+        QMutableMapIterator<QString, QString>it(attrMap);
+        while (it.hasNext())
+        {
+            it.next();
+            const QString &name = it.key();
+            QString &value  = it.value();
 
-        updateSpeciesList(newSpecies);
+            value = dialog.getValueForAttr(name);
+        }
     }
-
 }
 
 

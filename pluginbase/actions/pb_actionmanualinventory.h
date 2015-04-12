@@ -18,9 +18,8 @@ public:
 
     PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
                              QMultiMap<const CT_Scene*, const CT_Circle*> *availableDbh,
-                             QMap<const CT_Scene*, QString> *species,
-                             QMap<const CT_Scene*, QString> *ids,
-                             const QStringList &speciesList);
+                             QMap<QString, QStringList> *paramData,
+                             QMap<const CT_Scene*, QMap<QString, QString> >  *suppAttributes);
 
     ~PB_ActionManualInventory();
 
@@ -51,7 +50,6 @@ public:
 
 public slots:
     void redraw();
-    void updateSpeciesList(const QString &species);
 
 private:
     QPoint              _oldPos;
@@ -61,12 +59,14 @@ private:
 
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
     QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
-    QMap<const CT_Scene*, QString>                  *_species;
-    QMap<const CT_Scene*, QString>                  *_ids;
-    QStringList                                     _speciesList;
+
+    QMap<QString, QStringList>                      *_paramData;
+    QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
+
 
     QColor              _othersScenesColor;
     QColor              _activeSceneColor;
+    QColor              _othersCircleColor;
     QColor              _currentCircleColor;
 };
 
