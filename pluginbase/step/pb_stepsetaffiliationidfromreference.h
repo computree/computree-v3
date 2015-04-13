@@ -31,6 +31,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_tools/model/ct_autorenamemodels.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+#include "ct_tools/model/ct_autorenamemodels.h"
 
 /*!
  * \class PB_StepSetAffiliationIDFromReference
@@ -105,6 +106,10 @@ protected:
 private:
     DocumentInterface                           *m_doc;
     int                                         m_status;
+
+    CT_AutoRenameModels     _outSourceIdModelName;
+    CT_AutoRenameModels     _outTargetIdModelName;
+
 
     bool            _2Dsearch;
     bool            _manualModeActivated;

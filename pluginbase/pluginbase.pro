@@ -99,7 +99,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     exporters/gdal/pb_gdalexporter.h \
     actions/pb_actionmodifypositions2d.h \
     views/actions/pb_actionmodifypositions2doptions.h \
-    step/pb_stepmodifypositions2d.h
+    step/pb_stepmodifypositions2d.h \
+    step/pb_steploadtreemap.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -194,7 +195,8 @@ SOURCES += \
     exporters/gdal/pb_gdalexporter.cpp \
     actions/pb_actionmodifypositions2d.cpp \
     views/actions/pb_actionmodifypositions2doptions.cpp \
-    step/pb_stepmodifypositions2d.cpp
+    step/pb_stepmodifypositions2d.cpp \
+    step/pb_steploadtreemap.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

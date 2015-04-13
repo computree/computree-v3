@@ -73,6 +73,7 @@
 #include "step/pb_stepcreateplotmanagerfromfile.h"
 #include "step/pb_stepcreateplotmanagergrid.h"
 #include "step/pb_steploadpositionsformatching.h"
+#include "step/pb_steploadtreemap.h"
 #include "step/pb_stepcompare3dgridscontents.h"
 #include "step/pb_stepselectcellsingrid3dbybinarypattern.h"
 #include "step/pb_stepextractlogbuffer.h"
@@ -289,7 +290,8 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     // Ajout d'une étape
     sep->addStep(new PB_StepCreateDataSource(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepLoadPositionsForMatching(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadTreeMap(*createNewStepInitializeData(NULL)));
+    //sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator("Test"));

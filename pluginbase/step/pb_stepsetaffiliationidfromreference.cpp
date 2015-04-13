@@ -32,6 +32,7 @@
 
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
@@ -43,11 +44,9 @@
 
 #define DEF_SearchInSourceResult      "rs"
 #define DEF_SearchInSourceGroup       "gs"
-#define DEF_SearchInSourceId          "ids"
 #define DEF_SearchInSourceItem        "its"
 #define DEF_SearchInTargetResult      "rt"
 #define DEF_SearchInTargetGroup       "gt"
-#define DEF_SearchInTargetId          "idt"
 #define DEF_SearchInTargetItem        "itt"
 
 PB_StepSetAffiliationIDFromReference::PB_StepSetAffiliationIDFromReference(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -60,7 +59,7 @@ PB_StepSetAffiliationIDFromReference::PB_StepSetAffiliationIDFromReference(CT_St
 
 QString PB_StepSetAffiliationIDFromReference::getStepDescription() const
 {
-    return tr("Mise en correspondance d'ID de deux résultats");
+    return tr("Correspondance entre deux résultats");
 }
 
 QString PB_StepSetAffiliationIDFromReference::getStepDetailledDescription() const
@@ -81,13 +80,11 @@ void PB_StepSetAffiliationIDFromReference::createInResultModelListProtected()
     CT_InResultModelGroupToCopy *inResultRefCopy = createNewInResultModelForCopy(DEF_SearchInSourceResult, tr("Résultat de référence"), "", true);
     inResultRefCopy->setZeroOrMoreRootGroup();
     inResultRefCopy->addGroupModel("", DEF_SearchInSourceGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe de référence"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    inResultRefCopy->addItemModel(DEF_SearchInSourceGroup, DEF_SearchInSourceId, CT_AffiliationID::staticGetType(), tr("ID de référence"));
     inResultRefCopy->addItemModel(DEF_SearchInSourceGroup, DEF_SearchInSourceItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item de référence"));
 
     CT_InResultModelGroupToCopy *inResultAffCopy = createNewInResultModelForCopy(DEF_SearchInTargetResult, tr("Résultat à affilier"), "", true);
     inResultAffCopy->setZeroOrMoreRootGroup();
     inResultAffCopy->addGroupModel("", DEF_SearchInTargetGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe à affilier"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
-    inResultAffCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetId, CT_AffiliationID::staticGetType(), tr("ID à affilier"));
     inResultAffCopy->addItemModel(DEF_SearchInTargetGroup, DEF_SearchInTargetItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à affilier"));
 }
 
@@ -103,33 +100,33 @@ void PB_StepSetAffiliationIDFromReference::createOutResultModelListProtected()
 {
     setManual(_manualModeActivated);
 
-    createNewOutResultModelToCopy(DEF_SearchInSourceResult);
-    createNewOutResultModelToCopy(DEF_SearchInTargetResult);
+    CT_OutResultModelGroupToCopyPossibilities *inResultRefCopy = createNewOutResultModelToCopy(DEF_SearchInSourceResult);
+    inResultRefCopy->addItemModel(DEF_SearchInSourceGroup, _outSourceIdModelName, new CT_AffiliationID(), tr("ID de référence"));
+
+    CT_OutResultModelGroupToCopyPossibilities *inResultAffCopy = createNewOutResultModelToCopy(DEF_SearchInTargetResult);
+    inResultAffCopy->addItemModel(DEF_SearchInTargetGroup, _outTargetIdModelName, new CT_AffiliationID(), tr("ID à affilier"));
 }
 
 void PB_StepSetAffiliationIDFromReference::compute()
 {
     QList<CT_ResultGroup*> resultList = getOutResultList();
     CT_ResultGroup *sourceRes = resultList.at(0);
-    CT_InAbstractGroupModel* refgroupSourceModel = (CT_InAbstractGroupModel*)PS_MODELS->searchModel(DEF_SearchInSourceGroup, sourceRes, this);
-
     CT_ResultGroup *targetRes = resultList.at(1);
-    CT_InAbstractGroupModel* refgroupTargetModel = (CT_InAbstractGroupModel*)PS_MODELS->searchModel(DEF_SearchInTargetGroup, targetRes, this);
 
     QMap<CT_AbstractSingularItemDrawable*, size_t> sourceMap;
 
-    CT_ResultGroupIterator itR(sourceRes, refgroupSourceModel);
-
+    CT_ResultGroupIterator itR(sourceRes, this, DEF_SearchInSourceGroup);
     // Parcours des groupes contenant les scènes à filtrer
-    while(itR.hasNext()
-          && !isStopped())
+    while(itR.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup *groupSource = itR.next();
-        CT_AffiliationID* idSource = (CT_AffiliationID*) groupSource->firstItemByINModelName(this, DEF_SearchInSourceItem);
+        CT_AbstractItemGroup *groupSource = (CT_AbstractItemGroup*) itR.next();
         CT_AbstractSingularItemDrawable* refItemSource = groupSource->firstItemByINModelName(this, DEF_SearchInSourceItem);
 
-        if (idSource!=NULL && refItemSource!=NULL)
-        {
+        if (refItemSource!=NULL)
+        {                        
+            CT_AffiliationID* idSource = new CT_AffiliationID(_outSourceIdModelName.completeName(), sourceRes);
+            groupSource->addItemDrawable(idSource);
+
             sourceMap.insert(refItemSource, idSource->getValue());
             _sourceList.append(refItemSource);
         }
@@ -137,38 +134,38 @@ void PB_StepSetAffiliationIDFromReference::compute()
 
 
     QMap<CT_AbstractSingularItemDrawable*, CT_AffiliationID*> targetMap;
-    QMap<float, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*> > correspondances;
+    QMap<double, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*> > correspondances;
 
-    CT_ResultGroupIterator itR2(targetRes, refgroupTargetModel);
-
+    CT_ResultGroupIterator itR2(targetRes, this, DEF_SearchInTargetGroup);
     // Parcours des groupes
-    while(itR2.hasNext()
-          && !isStopped())
+    while(itR2.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup *groupTarget = itR2.next();
-        CT_AffiliationID* idTarget = (CT_AffiliationID*) groupTarget->firstItemByINModelName(this, DEF_SearchInTargetId);
+        CT_AbstractItemGroup *groupTarget = (CT_AbstractItemGroup*) itR2.next();
         CT_AbstractSingularItemDrawable* refItemTarget = groupTarget->firstItemByINModelName(this, DEF_SearchInTargetItem);
 
-        if (idTarget!=NULL && refItemTarget!=NULL)
+        if (refItemTarget!=NULL)
         {
+            CT_AffiliationID* idTarget = new CT_AffiliationID(_outTargetIdModelName.completeName(), targetRes);
+            groupTarget->addItemDrawable(idTarget);
+
             targetMap.insert(refItemTarget, idTarget);
             _targetList.append(refItemTarget);
 
-            float xTarget = refItemTarget->getCenterX();
-            float yTarget = refItemTarget->getCenterY();
-            float zTarget = refItemTarget->getCenterZ();
+            double xTarget = refItemTarget->getCenterX();
+            double yTarget = refItemTarget->getCenterY();
+            double zTarget = refItemTarget->getCenterZ();
             if (_2Dsearch) {zTarget = 0;}
 
             QMapIterator<CT_AbstractSingularItemDrawable*, size_t> it(sourceMap);
             while (it.hasNext() && !isStopped())
             {
                 it.next();
-                float xSource = it.key()->getCenterX();
-                float ySource = it.key()->getCenterY();
-                float zSource = it.key()->getCenterZ();
+                double xSource = it.key()->getCenterX();
+                double ySource = it.key()->getCenterY();
+                double zSource = it.key()->getCenterZ();
                 if (_2Dsearch) {zSource = 0;}
 
-                float distance = pow(xTarget - xSource, 2) + pow(yTarget - ySource, 2) + pow(zTarget - zSource, 2);
+                double distance = pow(xTarget - xSource, 2) + pow(yTarget - ySource, 2) + pow(zTarget - zSource, 2);
 
                 correspondances.insertMulti(distance, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*>(refItemTarget, it.key()));
             }
@@ -181,7 +178,7 @@ void PB_StepSetAffiliationIDFromReference::compute()
 
         _pairs.insert(pair.first, pair.second);
 
-        QMutableMapIterator<float, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*> > it(correspondances);
+        QMutableMapIterator<double, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractSingularItemDrawable*> > it(correspondances);
         while (it.hasNext())
         {
             it.next();

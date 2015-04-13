@@ -88,7 +88,32 @@ void PB_ActionModifyAffiliations::init()
         // is managed automatically
         registerOption(option);
 
-        document()->redrawGraphics();
+        Eigen::Vector3d min, max;
+
+        min(0) = std::numeric_limits<double>::max();
+        min(1) = std::numeric_limits<double>::max();
+        min(2) = std::numeric_limits<double>::max();
+
+        max(0) = -std::numeric_limits<double>::max();
+        max(1) = -std::numeric_limits<double>::max();
+        max(2) = -std::numeric_limits<double>::max();
+
+        QMapIterator<CT_AbstractSingularItemDrawable*, Eigen::Vector3d> it(_itemCenters);
+        while (it.hasNext())
+        {
+            it.next();
+            const Eigen::Vector3d &position = it.value();
+
+            if (position(0) < min(0)) {min(0) = position(0);}
+            if (position(1) < min(1)) {min(1) = position(1);}
+            if (position(2) < min(2)) {min(2) = position(2);}
+
+            if (position(0) > max(0)) {max(0) = position(0);}
+            if (position(1) > max(1)) {max(1) = position(1);}
+            if (position(2) > max(2)) {max(2) = position(2);}
+        }
+
+        document()->fitToSpecifiedBox(min, max);
     }
 }
 
