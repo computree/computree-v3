@@ -105,6 +105,7 @@ private:
 
     // Step parameters
     QStringList                         _paramFileName;
+    double                              _deltaH;
     QMap<QString, QStringList>          _paramData;
     QMap<QString, CT_AutoRenameModels>  _paramAutoRename;
 

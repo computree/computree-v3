@@ -15,32 +15,39 @@ class PB_ActionManualInventoryOptions : public CT_GAbstractActionOptions
 
 public:
 
-    enum Mode {
-        Mode_dbh,
-        Mode_attributes
-    };
-
     explicit PB_ActionManualInventoryOptions(const PB_ActionManualInventory *action);
     ~PB_ActionManualInventoryOptions();
 
     bool shouldAutoCenterCamera();
-    bool shouldShowScenes();
-    bool shouldShowData();
 
-    PB_ActionManualInventoryOptions::Mode getMode();
-    void toggleMode();
+    bool isSelectModeSelected();
+    bool isDbhModeSelected();
+    bool isAttributesModeSelected();
+
+    bool isShowDataChecked();
+    bool isShowActiveCirclesChecked();
+    bool isShowOtherCirclesChecked();
+    bool isShowActiveSceneChecked();
+    bool isShowOtherScenesChecked();
 
 private:
     Ui::PB_ActionManualInventoryOptions *ui;
 
 signals:
-    void parametersChanged();
+    void modeChanged();
+    void visibilityChanged();
 
 private slots:
 
+    void on_rb_select_toggled(bool checked);
     void on_rb_dbh_toggled(bool checked);
-    void on_cb_showScenes_toggled(bool checked);
+    void on_rb_attributes_toggled(bool checked);
+
     void on_cb_showData_toggled(bool checked);
+    void on_cb_activeCircles_toggled(bool checked);
+    void on_cb_otherCircles_toggled(bool checked);
+    void on_cb_activeScene_toggled(bool checked);
+    void on_cb_otherScenes_toggled(bool checked);
 };
 
 #endif // PB_ACTIONMANUALINVENTORYOPTIONS_H

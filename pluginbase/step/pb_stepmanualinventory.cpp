@@ -38,6 +38,7 @@ PB_StepManualInventory::PB_StepManualInventory(CT_StepInitializeData &dataInit) 
     setManual(true);
 
     _paramFileName.append("../ComputreeHowTo/param_inv.txt");
+    _deltaH = 0.30;
 }
 
 // Step description (tooltip of contextual menu)
@@ -76,6 +77,7 @@ void PB_StepManualInventory::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addFileChoice("Fichier de paramétrage", CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.txt)", _paramFileName);
+    configDialog->addDouble(tr("Choisir préférenciellement le diamètre à + ou - :"), "cm", 0, 10000, 0, _deltaH, 100);
 }
 
 

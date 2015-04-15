@@ -44,17 +44,20 @@ public:
 
     CT_AbstractAction* copy() const;
 
-    const CT_Circle *chooseForDbh(const QPoint &point);
-    const CT_Circle *chooseForAttributes(const QPoint &point);
+    void chooseForDbh(const QPoint &point);
+    void chooseForAttributes(const QPoint &point);
+    void selectActiveScene(const QPoint &point);
     void setAttributes(const CT_Scene *scene);
 
+    void updateVisibility(CT_Scene *scene, CT_Circle *circle);
 public slots:
-    void redraw();
+    void visibilityChanged();
 
 private:
     QPoint              _oldPos;
     Qt::MouseButtons    _buttonsPressed;
-    const CT_Circle*    _currentCircle;
+    CT_Circle*          _currentCircle;
+    CT_Scene*           _currentScene;
 
 
     QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
@@ -64,9 +67,10 @@ private:
     QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
 
 
-    QColor              _othersScenesColor;
-    QColor              _activeSceneColor;
+    QColor              _othersScenesCirclesColor;
+    QColor              _activeSceneCirclesColor;
     QColor              _othersCircleColor;
+    QColor              _othersScenesCirclesLightColor;
     QColor              _currentCircleColor;
 };
 

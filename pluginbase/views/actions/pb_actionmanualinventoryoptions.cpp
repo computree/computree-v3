@@ -22,49 +22,93 @@ bool PB_ActionManualInventoryOptions::shouldAutoCenterCamera()
     return ui->cb_centerCamera->isChecked();
 }
 
-bool PB_ActionManualInventoryOptions::shouldShowScenes()
+bool PB_ActionManualInventoryOptions::isSelectModeSelected()
 {
-    return ui->cb_showScenes->isChecked();
+    return ui->rb_select->isChecked();
 }
 
-bool PB_ActionManualInventoryOptions::shouldShowData()
+bool PB_ActionManualInventoryOptions::isDbhModeSelected()
+{
+    return ui->rb_dbh->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isAttributesModeSelected()
+{
+    return ui->rb_attributes->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isShowDataChecked()
 {
     return ui->cb_showData->isChecked();
 }
 
-PB_ActionManualInventoryOptions::Mode PB_ActionManualInventoryOptions::getMode()
+bool PB_ActionManualInventoryOptions::isShowActiveCirclesChecked()
 {
-    if (ui->rb_attributes->isChecked())
-    {
-        return Mode_attributes;
-    }
-    return Mode_dbh;
+    return ui->cb_activeCircles->isChecked();
 }
 
-void PB_ActionManualInventoryOptions::toggleMode()
+bool PB_ActionManualInventoryOptions::isShowOtherCirclesChecked()
 {
-    if (ui->rb_dbh->isChecked())
-    {
-        ui->rb_attributes->setChecked(true);
-    } else {
-        ui->rb_dbh->setChecked(true);
-    }
+    return ui->cb_otherCircles->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isShowActiveSceneChecked()
+{
+    return ui->cb_activeScene->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isShowOtherScenesChecked()
+{
+    return ui->cb_otherScenes->isChecked();
+}
+
+void PB_ActionManualInventoryOptions::on_rb_select_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit modeChanged();
 }
 
 void PB_ActionManualInventoryOptions::on_rb_dbh_toggled(bool checked)
 {
     Q_UNUSED(checked);
-    emit parametersChanged();
+    emit modeChanged();
 }
 
-void PB_ActionManualInventoryOptions::on_cb_showScenes_toggled(bool checked)
+void PB_ActionManualInventoryOptions::on_rb_attributes_toggled(bool checked)
 {
     Q_UNUSED(checked);
-    emit parametersChanged();
+    emit modeChanged();
 }
 
 void PB_ActionManualInventoryOptions::on_cb_showData_toggled(bool checked)
 {
     Q_UNUSED(checked);
-    emit parametersChanged();
+    emit visibilityChanged();
 }
+
+void PB_ActionManualInventoryOptions::on_cb_activeCircles_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
+}
+
+void PB_ActionManualInventoryOptions::on_cb_otherCircles_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
+}
+
+void PB_ActionManualInventoryOptions::on_cb_activeScene_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
+}
+
+void PB_ActionManualInventoryOptions::on_cb_otherScenes_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
+}
+
+
+

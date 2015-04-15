@@ -21,10 +21,12 @@ PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const C
     _paramData = paramData;
     _suppAttributes = suppAttributes;
     _currentCircle = NULL;
+    _currentScene = NULL;
 
-    _othersScenesColor = Qt::darkGray;
+    _activeSceneCirclesColor = Qt::blue;
+    _othersScenesCirclesColor = Qt::darkGray;
+    _othersScenesCirclesLightColor = Qt::lightGray;
     _othersCircleColor = Qt::darkRed;
-    _activeSceneColor = Qt::blue;
     _currentCircleColor = Qt::red;
 }
 
@@ -69,44 +71,24 @@ void PB_ActionManualInventory::init()
         // add the options to the graphics view
         graphicsView()->addActionOptions(option);
 
-        connect(option, SIGNAL(parametersChanged()), this, SLOT(redraw()));
+        connect(option, SIGNAL(visibilityChanged()), this, SLOT(visibilityChanged()));
 
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
         registerOption(option);
 
-        Eigen::Vector3d min, max;
-
-        min(0) = std::numeric_limits<double>::max();
-        min(1) = std::numeric_limits<double>::max();
-        min(2) = std::numeric_limits<double>::max();
-
-        max(0) = -std::numeric_limits<double>::max();
-        max(1) = -std::numeric_limits<double>::max();
-        max(2) = -std::numeric_limits<double>::max();
-
-        QMapIterator<const CT_Scene*, const CT_Circle*> it(*_availableDbh);
-        while (it.hasNext())
+        QMapIterator<const CT_Scene*, const CT_Circle*> it(*_selectedDbh);
+        if (it.hasNext())
         {
             it.next();
-            const CT_Circle *circle = it.value();
 
-            if (circle->getCenterX() < min(0)) {min(0) = circle->getCenterX();}
-            if (circle->getCenterY() < min(1)) {min(1) = circle->getCenterY();}
-            if (circle->getCenterZ() < min(2)) {min(2) = circle->getCenterZ();}
-
-            if (circle->getCenterX() > max(0)) {max(0) = circle->getCenterX();}
-            if (circle->getCenterY() > max(1)) {max(1) = circle->getCenterY();}
-            if (circle->getCenterZ() > max(2)) {max(2) = circle->getCenterZ();}
+            _currentScene = (CT_Scene*) it.key();
+            _currentCircle = (CT_Circle*) it.value();
         }
 
-        document()->fitToSpecifiedBox(min, max);
+        visibilityChanged();
+        document()->fitToContent();
     }
-}
-
-void PB_ActionManualInventory::redraw()
-{
-    document()->redrawGraphics();
 }
 
 bool PB_ActionManualInventory::mousePressEvent(QMouseEvent *e)
@@ -140,11 +122,13 @@ bool PB_ActionManualInventory::mouseReleaseEvent(QMouseEvent *e)
         if (_buttonsPressed == Qt::LeftButton)
         {
 
-            if (option->getMode() == PB_ActionManualInventoryOptions::Mode_dbh)
+            if (option->isDbhModeSelected())
             {
-                _currentCircle = chooseForDbh(e->pos());
+                chooseForDbh(e->pos());
+            } else if (option->isAttributesModeSelected()){
+                chooseForAttributes(e->pos());
             } else {
-                _currentCircle = chooseForAttributes(e->pos());
+                selectActiveScene(e->pos());
             }
 
             if (_currentCircle!=NULL && option->shouldAutoCenterCamera())
@@ -153,12 +137,6 @@ bool PB_ActionManualInventory::mouseReleaseEvent(QMouseEvent *e)
                 graphicsView()->camera()->setCY(_currentCircle->getCenterY());
                 graphicsView()->camera()->setCZ(_currentCircle->getCenterZ());
             }
-            redraw();
-            return true;
-        } else if (_buttonsPressed == Qt::RightButton)
-        {
-            option->toggleMode();
-            redraw();
             return true;
         }
     }
@@ -169,7 +147,6 @@ bool PB_ActionManualInventory::wheelEvent(QWheelEvent *e)
 {
     Q_UNUSED(e);
     return false;
-
 }
 
 bool PB_ActionManualInventory::keyPressEvent(QKeyEvent *e)
@@ -188,62 +165,42 @@ bool PB_ActionManualInventory::keyReleaseEvent(QKeyEvent *e)
 void PB_ActionManualInventory::draw(GraphicsViewInterface &view, PainterInterface &painter)
 {
     Q_UNUSED(view)
-
-    PB_ActionManualInventoryOptions *option = (PB_ActionManualInventoryOptions*)optionAt(0);
-
-    painter.save();
-
-    // Draw Scenes if needed
-    if (option->shouldShowScenes())
-    {
-        QMapIterator<const CT_Scene*, const CT_Circle*> itScenes(*_selectedDbh);
-        while (itScenes.hasNext())
-        {
-            itScenes.next();
-            CT_Scene* scene = (CT_Scene*) itScenes.key();
-
-            if (scene != NULL)
-            {
-                scene->draw(view, painter);
-            }
-        }
-    }
-
-    // Draw Circles
-    QList<const CT_Circle*> seletedCircles = _selectedDbh->values();
-    QMapIterator<const CT_Scene*, const CT_Circle*> itCircles(*_availableDbh);
-    while (itCircles.hasNext())
-    {
-        itCircles.next();
-        const CT_Circle* circle = itCircles.value();
-
-        if (circle != NULL)
-        {
-            if (circle == _currentCircle) {
-                painter.setColor(_currentCircleColor);
-            } else if (seletedCircles.contains(circle)) {
-                painter.setColor(Qt::darkRed);
-            } else {
-                painter.setColor(_othersScenesColor);
-            }
-
-            painter.drawCircle3D(circle->getCenter(),circle->getDirection(), circle->getRadius());
-        }
-    }
-
-    painter.restore();
+    Q_UNUSED(painter)
 }
 
 void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter &painter)
 {
     Q_UNUSED(view)
-
     PB_ActionManualInventoryOptions *option = (PB_ActionManualInventoryOptions*)optionAt(0);
+    int add = painter.fontMetrics().height()+2;
 
-    if (option->shouldShowData())
+    painter.setPen(QColor(255,255,255,127));
+
+    if (_currentCircle != NULL && _currentScene != NULL)
     {
-        int add = painter.fontMetrics().height()+2;
+        int y =  add + 2;
 
+        painter.drawText(2, y, tr("Attributs du cercle actif :"));
+        y += add;
+        painter.drawText(2, y, tr("Z = %1 m").arg(_currentCircle->getCenterZ()));
+        y += add;
+
+        QMap<QString, QString> attrMap = _suppAttributes->value(_currentScene);
+        QMapIterator<QString, QString> it(attrMap);
+        while (it.hasNext())
+        {
+            it.next();
+            painter.drawText(2, y, tr("%1 = %2").arg(it.key()).arg(it.value()));
+            y += add;
+        }
+    }
+
+
+
+    painter.setPen(Qt::darkRed);
+
+    if (option->isShowDataChecked())
+    {
         QMapIterator<const CT_Scene*, const CT_Circle*> it(*_selectedDbh);
         while (it.hasNext())
         {
@@ -256,7 +213,6 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
             QPoint pixel;
             graphicsView()->convert3DPositionToPixel(Eigen::Vector3d(circle->getCenterX(), circle->getCenterY(), circle->getCenterZ()), pixel);
 
-            painter.setPen(Qt::darkRed);
             int y =  pixel.y() + add + 2;
 
             QMapIterator<QString, QString> it(attrMap);
@@ -276,23 +232,23 @@ CT_AbstractAction* PB_ActionManualInventory::copy() const
     return new PB_ActionManualInventory(_selectedDbh, _availableDbh, _paramData, _suppAttributes);
 }
 
-const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
+void PB_ActionManualInventory::chooseForDbh(const QPoint &point)
 {
     Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
-    float minDist = std::numeric_limits<float>::max();
-    const CT_Circle* pickedItem = NULL;
-    const CT_Scene*  pickedItemScene = NULL;
+    double minDist = std::numeric_limits<double>::max();
+    CT_Circle* pickedItem = NULL;
+    CT_Scene*  pickedItemScene = NULL;
 
     QMapIterator<const CT_Scene*, const CT_Circle*> it(*_availableDbh);
     while (it.hasNext())
     {
         it.next();
-        const CT_Scene* scene = it.key();
-        const CT_Circle* circle = it.value();
+        CT_Scene* scene = (CT_Scene*) it.key();
+        CT_Circle* circle = (CT_Circle*) it.value();
 
-        float dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
+        double dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {
@@ -307,26 +263,50 @@ const CT_Circle* PB_ActionManualInventory::chooseForDbh(const QPoint &point)
         _selectedDbh->insert(pickedItemScene, pickedItem);
     }
 
-    return pickedItem;
+    if (pickedItemScene != _currentScene)
+    {
+        _currentCircle = pickedItem;
+        _currentScene = pickedItemScene;
+        visibilityChanged();
+
+    } else if (pickedItem != _currentCircle)
+    {
+        CT_Circle* oldCircle = _currentCircle;
+        _currentCircle = pickedItem;
+
+        document()->removeItemDrawable(*oldCircle);
+        document()->removeItemDrawable(*_currentCircle);
+        updateVisibility(_currentScene, oldCircle);
+        updateVisibility(_currentScene, _currentCircle);
+        document()->redrawGraphics();
+    }
 }
 
-const CT_Circle* PB_ActionManualInventory::chooseForAttributes(const QPoint &point)
+void PB_ActionManualInventory::chooseForAttributes(const QPoint &point)
+{
+    selectActiveScene(point);
+
+    setAttributes(_currentScene);
+    document()->redrawGraphics();
+}
+
+void PB_ActionManualInventory::selectActiveScene(const QPoint &point)
 {
     Eigen::Vector3d origin, direction;
     graphicsView()->convertClickToLine(point, origin, direction);
 
-    float minDist = std::numeric_limits<float>::max();
-    const CT_Circle* pickedItem = NULL;
-    const CT_Scene*  pickedItemScene = NULL;
+    double minDist = std::numeric_limits<double>::max();
+    CT_Circle* pickedItem = NULL;
+    CT_Scene*  pickedItemScene = NULL;
 
     QMapIterator<const CT_Scene*, const CT_Circle*> it(*_selectedDbh);
     while (it.hasNext())
     {
         it.next();
-        const CT_Scene* scene = it.key();
-        const CT_Circle* circle = it.value();
+        CT_Scene* scene = (CT_Scene*) it.key();
+        CT_Circle* circle = (CT_Circle*) it.value();
 
-        float dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
+        double dist = CT_MathPoint::distancePointLine(circle->getCenterCoordinate(), direction, origin);
 
         if (dist < minDist)
         {
@@ -336,11 +316,14 @@ const CT_Circle* PB_ActionManualInventory::chooseForAttributes(const QPoint &poi
         }
     }
 
-    redraw();
-    setAttributes(pickedItemScene);
-
-    return pickedItem;
+    if (pickedItemScene != _currentScene)
+    {
+        _currentCircle = pickedItem;
+        _currentScene = pickedItemScene;
+        visibilityChanged();
+    }
 }
+
 
 void PB_ActionManualInventory::setAttributes(const CT_Scene* scene)
 {
@@ -360,5 +343,63 @@ void PB_ActionManualInventory::setAttributes(const CT_Scene* scene)
         }
     }
 }
+
+void PB_ActionManualInventory::visibilityChanged()
+{
+
+    document()->removeAllItemDrawable();
+
+    QMapIterator<const CT_Scene*, const CT_Circle*> it(*_availableDbh);
+    while (it.hasNext())
+    {
+        it.next();
+        CT_Scene* scene = (CT_Scene*)it.key();
+        CT_Circle* circle = (CT_Circle*) it.value();
+
+        updateVisibility(scene, circle);
+    }
+    document()->redrawGraphics();
+}
+
+void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circle)
+{
+    PB_ActionManualInventoryOptions *option = (PB_ActionManualInventoryOptions*)optionAt(0);
+    if (scene == _currentScene)
+    {
+        if (option->isShowActiveCirclesChecked() || circle == _currentCircle)
+        {
+            document()->addItemDrawable(*circle);
+
+            if (circle == _currentCircle)
+            {
+                document()->setColor(circle, _currentCircleColor);
+            } else {
+                document()->setColor(circle, _activeSceneCirclesColor);
+            }
+        }
+
+        if (option->isShowActiveSceneChecked())
+        {
+            document()->addItemDrawable(*scene);
+        }
+    } else {
+        if (option->isShowOtherCirclesChecked())
+        {
+            document()->addItemDrawable(*circle);
+            if (_selectedDbh->values().contains(circle))
+            {
+                document()->setColor(circle, _othersCircleColor);
+            } else {
+                document()->setColor(circle, _othersScenesCirclesColor);
+            }
+        }
+
+        if (option->isShowOtherScenesChecked())
+        {
+            document()->addItemDrawable(*scene);
+        }
+    }
+}
+
 
 
