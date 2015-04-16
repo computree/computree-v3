@@ -26,7 +26,7 @@ PB_ActionManualInventoryAttributesDialog::PB_ActionManualInventoryAttributesDial
 
         const QString &value = _attrValues->value(name);
 
-        QWidget *wid;
+        QWidget *wid = NULL;
 
         if (list.size() > 0)
         {
@@ -47,6 +47,8 @@ PB_ActionManualInventoryAttributesDialog::PB_ActionManualInventoryAttributesDial
 
         ((QGridLayout*) ui->wid_attr->layout())->addWidget(new QLabel(name, ui->wid_attr), cpt, 0);
         ((QGridLayout*) ui->wid_attr->layout())->addWidget(wid, cpt++, 1);
+
+        if (cpt == 3) {wid->setFocus();}
     }
 }
 

@@ -20,6 +20,10 @@ public:
 
     bool shouldAutoCenterCamera();
 
+    void chooseSelectMode();
+    void chooseDbhMode();
+    void chooseAttributesMode();
+
     bool isSelectModeSelected();
     bool isDbhModeSelected();
     bool isAttributesModeSelected();
@@ -36,6 +40,8 @@ private:
 signals:
     void modeChanged();
     void visibilityChanged();
+    void chooseUpperCircle();
+    void chooseLowerCircle();
 
 private slots:
 
@@ -48,6 +54,8 @@ private slots:
     void on_cb_otherCircles_toggled(bool checked);
     void on_cb_activeScene_toggled(bool checked);
     void on_cb_otherScenes_toggled(bool checked);
+    void on_pb_upper_clicked();
+    void on_pb_lower_clicked();
 };
 
 #endif // PB_ACTIONMANUALINVENTORYOPTIONS_H

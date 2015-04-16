@@ -114,11 +114,14 @@ private:
     DocumentInterface                               *m_doc;
     int                                             m_status;
 
-    const CT_Grid2DXY<double>                        *_itemIn_mnt;
-    QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
-    QMap<const CT_Scene*, const CT_Point2D*>        _positions;
-    QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
-    QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
+    const CT_Grid2DXY<double>                                       *_itemIn_mnt;
+    QMap<const CT_Scene*, const CT_Circle*>                         *_selectedDbh;
+    QMap<const CT_Scene*, const CT_Point2D*>                        _positions;
+    QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> >     *_availableDbh;
+    QMap<const CT_Scene*, QMap<QString, QString> >                  *_suppAttributes;
+    QList<const CT_Circle*>                                         *_preferredDbh;
+    QMap<const CT_Scene*, double>                                   *_sceneDTMValues;
+
 
     QList<CT_Circle*>                               _temporaryCircles;
 

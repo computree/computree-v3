@@ -155,6 +155,9 @@ void PB_StepManualInventory::compute()
     m_doc = NULL;
     m_status = 0;
 
+    double hminLightGray = 1.3 - _deltaH;
+    double hmaxLightGray = 1.3 + _deltaH;
+
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* resCpy_scres = outResultList.at(0);
 
@@ -175,8 +178,10 @@ void PB_StepManualInventory::compute()
     if (_itemIn_mnt != NULL)
     {
         _selectedDbh = new QMap<const CT_Scene*, const CT_Circle*>();
-        _availableDbh = new QMultiMap<const CT_Scene*, const CT_Circle*>();
+        _availableDbh = new QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> >();
         _suppAttributes = new QMap<const CT_Scene*, QMap<QString, QString> >();
+        _preferredDbh = new QList<const CT_Circle*>();
+        _sceneDTMValues = new QMap<const CT_Scene*, double>();
 
         // Boucle sur les groupes contenant ls scènes
         CT_ResultGroupIterator itCpy_scBase(resCpy_scres, this, DEFin_scBase);
@@ -199,6 +204,14 @@ void PB_StepManualInventory::compute()
                     map.insert(itPar.key(), QString());
                 }
 
+                double x = itemCpy_position->getCenterX(); // Use Position coordinates for Height reference
+                double y = itemCpy_position->getCenterY();
+                double mntZ = _itemIn_mnt->valueAtXY(x, y);
+
+                _sceneDTMValues->insert(itemCpy_scene, mntZ);
+
+                QMultiMap<double, const CT_Circle*> &circleList = _availableDbh->insert(itemCpy_scene, QMultiMap<double, const CT_Circle*>()).value();
+
                 CT_GroupIterator itCpy_layer(grpCpy_scBase, this, DEFin_layer);
                 while (itCpy_layer.hasNext() && !isStopped())
                 {
@@ -212,7 +225,14 @@ void PB_StepManualInventory::compute()
                         const CT_Circle* itemCpy_circle = (CT_Circle*)grpCpy_cluster->firstItemByINModelName(this, DEFin_circle);
                         if (itemCpy_circle != NULL)
                         {
-                            _availableDbh->insertMulti(itemCpy_scene, itemCpy_circle);
+                            circleList.insertMulti(itemCpy_circle->getCenterZ() - mntZ, itemCpy_circle);
+
+                            // Liste des cercles préférrés
+                            double height = itemCpy_circle->getCenterZ() - mntZ;
+                            if (height >= hminLightGray && height <= hmaxLightGray)
+                            {
+                                _preferredDbh->append(itemCpy_circle);
+                            }
 
                         }
                     }
@@ -320,7 +340,7 @@ void PB_StepManualInventory::initManualMode()
     }
     m_doc->removeAllItemDrawable();
 
-    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, &_paramData, _suppAttributes));
+    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _sceneDTMValues, &_paramData, _suppAttributes));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette étape !"), QMessageBox::Ok);
@@ -356,7 +376,7 @@ void PB_StepManualInventory::findBestCircleForEachScene()
         double y = pos->getCenterY();
         double z = _itemIn_mnt->valueAtXY(x, y) + 1.3;
         
-        QList<const CT_Circle*> circles = _availableDbh->values(scene);
+        QList<const CT_Circle*> circles = (_availableDbh->value(scene)).values();
 
         double mindelta = std::numeric_limits<double>::max();
         const CT_Circle* bestCircle = NULL;

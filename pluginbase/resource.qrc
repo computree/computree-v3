@@ -56,5 +56,7 @@
         <file>icons/moins_red.png</file>
         <file>icons/move_green.png</file>
         <file>icons/plus_green.png</file>
+        <file>icons/lower.png</file>
+        <file>icons/upper.png</file>
     </qresource>
 </RCC>

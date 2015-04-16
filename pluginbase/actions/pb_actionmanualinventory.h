@@ -17,7 +17,9 @@ class PB_ActionManualInventory : public CT_AbstractActionForGraphicsView
 public:
 
     PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
-                             QMultiMap<const CT_Scene*, const CT_Circle*> *availableDbh,
+                             QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> > *availableDbh,
+                             QList<const CT_Circle*> *preferredDbh,
+                             QMap<const CT_Scene*, double> *sceneDTMValues,
                              QMap<QString, QStringList> *paramData,
                              QMap<const CT_Scene*, QMap<QString, QString> >  *suppAttributes);
 
@@ -32,6 +34,7 @@ public:
     void init();
 
     bool mousePressEvent(QMouseEvent *e);
+    bool mouseDoubleClickEvent(QMouseEvent *e);
     bool mouseMoveEvent(QMouseEvent *e);
     bool mouseReleaseEvent(QMouseEvent *e);
     bool wheelEvent(QWheelEvent *e);
@@ -52,23 +55,26 @@ public:
     void updateVisibility(CT_Scene *scene, CT_Circle *circle);
 public slots:
     void visibilityChanged();
+    void selectUpperCircle();
+    void selectLowerCircle();
 
 private:
-    QPoint              _oldPos;
-    Qt::MouseButtons    _buttonsPressed;
     CT_Circle*          _currentCircle;
     CT_Scene*           _currentScene;
 
 
-    QMap<const CT_Scene*, const CT_Circle*>         *_selectedDbh;
-    QMultiMap<const CT_Scene*, const CT_Circle*>    *_availableDbh;
+    QMap<const CT_Scene*, const CT_Circle*>                         *_selectedDbh;
+    QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> >     *_availableDbh;
+    QList<const CT_Circle*>                                         *_preferredDbh;
+    QMap<const CT_Scene *, double>                                  *_sceneDTMValues;
 
-    QMap<QString, QStringList>                      *_paramData;
-    QMap<const CT_Scene*, QMap<QString, QString> >  *_suppAttributes;
+    QMap<QString, QStringList>                                      *_paramData;
+    QMap<const CT_Scene*, QMap<QString, QString> >                  *_suppAttributes;
 
 
     QColor              _othersScenesCirclesColor;
     QColor              _activeSceneCirclesColor;
+    QColor              _activeSceneCirclesLightColor;
     QColor              _othersCircleColor;
     QColor              _othersScenesCirclesLightColor;
     QColor              _currentCircleColor;

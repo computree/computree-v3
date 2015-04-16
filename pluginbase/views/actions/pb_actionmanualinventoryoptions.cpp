@@ -10,6 +10,12 @@ PB_ActionManualInventoryOptions::PB_ActionManualInventoryOptions(const PB_Action
     ui(new Ui::PB_ActionManualInventoryOptions())
 {
     ui->setupUi(this);
+
+    ui->rb_select->setToolTip(tr("Séléction de la scène active, sans modification [S]"));
+    ui->rb_dbh->setToolTip(tr("Choix d'un cercle pour une scène [D]"));
+    ui->rb_attributes->setToolTip(tr("Ouverture de la saisie des attributs pour une scène [F]"));
+    ui->pb_upper->setToolTip(tr("Séléctionne le cercle supérieur (CTRL MOLETTE +)"));
+    ui->pb_lower->setToolTip(tr("Séléctionne le cercle inférieur (CTRL MOLETTE -)"));
 }
 
 PB_ActionManualInventoryOptions::~PB_ActionManualInventoryOptions()
@@ -20,6 +26,21 @@ PB_ActionManualInventoryOptions::~PB_ActionManualInventoryOptions()
 bool PB_ActionManualInventoryOptions::shouldAutoCenterCamera()
 {
     return ui->cb_centerCamera->isChecked();
+}
+
+void PB_ActionManualInventoryOptions::chooseSelectMode()
+{
+    ui->rb_select->setChecked(true);
+}
+
+void PB_ActionManualInventoryOptions::chooseDbhMode()
+{
+    ui->rb_dbh->setChecked(true);
+}
+
+void PB_ActionManualInventoryOptions::chooseAttributesMode()
+{
+    ui->rb_attributes->setChecked(true);
 }
 
 bool PB_ActionManualInventoryOptions::isSelectModeSelected()
@@ -110,5 +131,12 @@ void PB_ActionManualInventoryOptions::on_cb_otherScenes_toggled(bool checked)
     emit visibilityChanged();
 }
 
+void PB_ActionManualInventoryOptions::on_pb_upper_clicked()
+{
+    emit chooseUpperCircle();
+}
 
-
+void PB_ActionManualInventoryOptions::on_pb_lower_clicked()
+{
+    emit chooseLowerCircle();
+}
