@@ -13,8 +13,8 @@ PB_ActionModifyPositions2D::PB_ActionModifyPositions2D(QList<CT_Point2D*> &posit
     _model = model;
     _outRes = outRes;
 
-    _selectedColor = QColor(255, 0, 0);
-    _normalColor   = QColor(0, 255, 0);
+    _selectedColor = QColor(0, 255, 0);
+    _normalColor   = QColor(255, 0, 0);
 
     _selectedPoint = NULL;
     _leftButton = false;

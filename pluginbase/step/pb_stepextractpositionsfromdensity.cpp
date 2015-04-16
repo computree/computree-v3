@@ -258,6 +258,11 @@ QList<size_t> PB_StepExtractPositionsFromDensity::computeColonize(size_t originC
         appendIfNotNulValue(result, current_col + 1, current_row, densityGrid);
         appendIfNotNulValue(result, current_col, current_row + 1, densityGrid);
 
+        appendIfNotNulValue(result, current_col - 1, current_row - 1, densityGrid);
+        appendIfNotNulValue(result, current_col - 1, current_row + 1, densityGrid);
+        appendIfNotNulValue(result, current_col + 1, current_row - 1, densityGrid);
+        appendIfNotNulValue(result, current_col + 1, current_row + 1, densityGrid);
+
         ++i;
     }
 
