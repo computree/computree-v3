@@ -82,6 +82,7 @@ bool CT_TNodeGroup::setSuccessor(CT_TNodeGroup *successor)
 
     m_successor = successor;
     successor->setAncestor(this);
+    successor->setComplex(NULL);
 
     return true;
 }
@@ -114,6 +115,8 @@ bool CT_TNodeGroup::addBranch(CT_TNodeGroup *son)
 
     m_branches.append(son);
     son->setBearer(this);
+    son->setComplex(NULL);
+    son->setAncestor(NULL);
 
     return true;
 }
@@ -121,6 +124,8 @@ bool CT_TNodeGroup::addBranch(CT_TNodeGroup *son)
 bool CT_TNodeGroup::removeComponent(CT_TNodeGroup *component, bool recursively)
 {
     CT_TNodeGroup *complex = component->complex();
+
+    component->setComplex(NULL);
 
     if((component->ancestor() != NULL) && recursively)
         return component->ancestor()->setSuccessor(NULL);

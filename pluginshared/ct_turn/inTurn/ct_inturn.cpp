@@ -29,21 +29,30 @@ const QList<CT_InAbstractResultModel*>& CT_InTurn::models() const
     return _models;
 }
 
-bool CT_InTurn::isValid() const
+bool CT_InTurn::isValid(bool clearErrors) const
 {
+    if(clearErrors)
+        constClearError();
+
     QListIterator<CT_InAbstractResultModel*> it(_models);
 
     while(it.hasNext())
     {
         CT_InAbstractResultModel *model = it.next();
 
+        model->clearError();
+
         if(model->needOutputModel()
-                && (model->getPossibilitiesSavedSelected().size() < model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn()))
+                && (model->getPossibilitiesSavedSelected().size() < model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn())) {
+            addToError(QObject::tr("Le modèle %1 (%2) a %3 possibilité(s) sélectionnée(s) cependant il faut en sélectionner au minimum %4").arg(model->displayableName()).arg(model->uniqueName()).arg(model->getPossibilitiesSavedSelected().size()).arg(model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn()));
             return false;
+        }
 
         if((model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() > 0)
-                && !model->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+                && !model->recursiveIsAtLeastOnePossibilitySelectedIfItDoes()) {
+            addToError(model->errors());
             return false;
+        }
     }
 
     return true;
@@ -142,6 +151,16 @@ bool CT_InTurn::setAllValues(const QList<SettingsNodeGroup*> &list)
     return true;
 }
 
+QString CT_InTurn::errors() const
+{
+    return m_errors;
+}
+
+void CT_InTurn::clearError()
+{
+    m_errors.clear();
+}
+
 // PRIVATE //
 
 bool CT_InTurn::existInList(CT_InAbstractResultModel *model) const
@@ -155,4 +174,22 @@ bool CT_InTurn::existInList(CT_InAbstractResultModel *model) const
     }
 
     return false;
+}
+
+void CT_InTurn::addToError(const QString &err) const
+{
+    if(!m_errors.isEmpty())
+        m_errors += QObject::tr("\r\n");
+
+    m_errors += err;
+}
+
+void CT_InTurn::constClearError() const
+{
+    m_errors = "";
+}
+
+void CT_InTurn::setError(const QString &err) const
+{
+    m_errors = err;
 }

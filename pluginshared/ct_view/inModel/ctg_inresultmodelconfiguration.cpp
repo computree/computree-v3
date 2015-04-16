@@ -51,11 +51,14 @@ void CTG_InResultModelConfiguration::accept()
 
     while(it.hasNext())
     {
-        if(!it.next()->isValid())
+        CT_InTurn *turn = it.next();
+        turn->clearError();
+
+        if(!turn->isValid())
         {
-            QMessageBox::warning(this, "Avertissement", "Vous n'avez pas correctement configuré "
-                                                        "un tour, veuillez sélectionner des données "
-                                                        "d'entrée.", QMessageBox::Ok);
+            QMessageBox::warning(this, tr("Avertissement"), tr("Vous n'avez pas correctement configuré "
+                                                               "un tour, veuillez sélectionner des données "
+                                                               "d'entrée.\r\n\r\n%1").arg(turn->errors()), QMessageBox::Ok);
 
             return;
         }

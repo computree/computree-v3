@@ -23,17 +23,25 @@ bool CT_InZeroOrMoreGroupModel::isAtLeastOnePossibilitySelectedIfItDoes() const
     if(!needOutputModel())
         return true;
 
-    if((nPossibilitiesSaved() > 0) && getPossibilitiesSavedSelected().isEmpty())
+    /*if((nPossibilitiesSaved() > 0) && getPossibilitiesSavedSelected().isEmpty()) {
+        addToError(tr("Le modèle %1 (%2) a %3 possibilité(s) sauvegardée(s) cependant aucune n'est sélectionnée").arg(displayableName()).arg(uniqueName()).arg(nPossibilitiesSaved()));
         return false;
+    }*/
 
     QList<CT_AbstractModel*> l = childrensOfPossibilities();
     QListIterator<CT_AbstractModel*> it(l);
 
     while(it.hasNext())
     {
+        CT_InAbstractModel *model = (CT_InAbstractModel*)it.next();
+
+        model->clearError();
+
         // if no possibilities of this children (and recursively) is selected : we return false
-        if(!((CT_InAbstractModel*)it.next())->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+        if(!model->recursiveIsAtLeastOnePossibilitySelectedIfItDoes()) {
+            addToError(model->errors());
             return false;
+        }
     }
 
     // all it's ok because this model is obligatory but it can not add a possibility if

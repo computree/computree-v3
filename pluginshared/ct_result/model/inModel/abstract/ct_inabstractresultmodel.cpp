@@ -76,9 +76,14 @@ bool CT_InAbstractResultModel::recursiveIsAtLeastOnePossibilitySelectedIfItDoes(
 
     while(it.hasNext())
     {
+        CT_InAbstractModel *model = (CT_InAbstractModel*)it.next();
+
+        model->clearError();
         // if no possibilities of this children (and recursively) is selected : we return false
-        if(!((CT_InAbstractModel*)it.next())->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+        if(!model->recursiveIsAtLeastOnePossibilitySelectedIfItDoes()) {
+            addToError(model->errors());
             return false;
+        }
     }
 
     // all it's ok

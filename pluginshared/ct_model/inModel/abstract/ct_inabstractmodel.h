@@ -209,6 +209,17 @@ public:
      */
     virtual bool canBeComparedWith(const CT_OutAbstractModel &model) const = 0;
 
+    /**
+     * @brief Get errors that was happened since the last "clearError" was called. Errors is added when you call
+     *        method "isAtLeastOnePossibilitySelectedIfItDoes"
+     */
+    QString errors() const;
+
+    /**
+     * @brief Clear all errors
+     */
+    void clearError();
+
 protected:
 
     /**
@@ -342,6 +353,16 @@ protected:
      */
     virtual void inModelComparisonResult(CT_AbstractModel *inModel, bool ok, bool savePossibilities) { Q_UNUSED(inModel) Q_UNUSED(ok) Q_UNUSED(savePossibilities) }
 
+    /**
+     * @brief Add a new line to error
+     */
+    void addToError(const QString &err) const;
+
+    /**
+     * @brief Replace all erros by this error
+     */
+    void setError(const QString &err) const;
+
 private:
     CT_InAbstractModel::ChoiceMode          m_choiceMode;
     CT_InAbstractModel::FinderMode          m_finderMode;
@@ -350,6 +371,8 @@ private:
     CT_InStdModelPossibilityGroup           *m_possibilitiesGroup;
 
     int                                     m_nPossibilitiesWithoutSaving;
+
+    mutable QString                         m_errors;
 
     /**
      * @brief Find one/all possibilities in the out model for this model and its children

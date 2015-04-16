@@ -28,7 +28,7 @@ public:
     /*!
      *  \brief Retourne true si chaque modèle à au moins une possibilité de sélectionnée.
      */
-    bool isValid() const;
+    bool isValid(bool clearErrors = true) const;
 
     /*!
      *  \brief Retourne pour chaque modèle de ce tour la liste des résultats en fonction des possibilités cochées dans les modèles
@@ -47,9 +47,22 @@ public:
      */
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 
+    /**
+     * @brief Get errors that was happened since the last "clearError" was called. Errors is added when you call
+     *        method "isValid".
+     */
+    QString errors() const;
+
+    /**
+     * @brief Clear all errors
+     */
+    void clearError();
+
 private:
 
     QList<CT_InAbstractResultModel*>    _models;
+
+    mutable QString                     m_errors;
 
     /*!
      *  \brief Vérifie si le résultat modèle existe déjà dans la liste (compare le modelName du modèle avec ceux dans la liste).
@@ -57,6 +70,21 @@ private:
      *  \return false si le résultat modèle existe déjà dans la liste.
      */
     bool existInList(CT_InAbstractResultModel *model) const;
+
+    /**
+     * @brief Add a new line to error
+     */
+    void addToError(const QString &err) const;
+
+    /**
+     * @brief Replace all erros by this error
+     */
+    void setError(const QString &err) const;
+
+    /**
+     * @brief Clear all errors
+     */
+    void constClearError() const;
 };
 
 #endif // CT_INTURN_H

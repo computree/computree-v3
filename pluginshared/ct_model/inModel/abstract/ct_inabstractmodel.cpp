@@ -136,6 +136,9 @@ bool CT_InAbstractModel::isAtLeastOnePossibilitySelectedIfItDoes() const
             ok = true;
     }
 
+    if(!ok)
+        addToError(tr("Le modèle %1 (%2) a %3 possibilité(s) sauvegardée(s) mais aucune de sélectionné").arg(displayableName()).arg(uniqueName()).arg(m_possibilitiesGroup->getPossibilities().size()));
+
     // if no possibilities of this model was selected : we return false
     return ok;
 }
@@ -154,9 +157,14 @@ bool CT_InAbstractModel::recursiveIsAtLeastOnePossibilitySelectedIfItDoes() cons
 
     while(it.hasNext())
     {
+        CT_InAbstractModel *model = (CT_InAbstractModel*)it.next();
+        model->clearError();
+
         // if no possibilities of this children (and recursively) is selected : we return false
-        if(!((CT_InAbstractModel*)it.next())->recursiveIsAtLeastOnePossibilitySelectedIfItDoes())
+        if(!model->recursiveIsAtLeastOnePossibilitySelectedIfItDoes()) {
+            addToError(model->errors());
             return false;
+        }
     }
 
     // all it's ok
@@ -450,6 +458,16 @@ bool CT_InAbstractModel::setAllValues(const QList<SettingsNodeGroup *> &list)
     return true;
 }
 
+QString CT_InAbstractModel::errors() const
+{
+    return m_errors;
+}
+
+void CT_InAbstractModel::clearError()
+{
+    m_errors = "";
+}
+
 bool CT_InAbstractModel::deleteLastSaveCycle()
 {
     if(!m_saveCycles.isEmpty())
@@ -557,6 +575,19 @@ void CT_InAbstractModel::staticCopyPossibilitiesToModel(const CT_InAbstractModel
 CT_InStdModelPossibilityGroup* CT_InAbstractModel::possibilitiesGroup() const
 {
     return m_possibilitiesGroup;
+}
+
+void CT_InAbstractModel::addToError(const QString &err) const
+{
+    if(!m_errors.isEmpty())
+        m_errors += tr("\r\n");
+
+    m_errors += err;
+}
+
+void CT_InAbstractModel::setError(const QString &err) const
+{
+    m_errors = err;
 }
 
 int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractModel &model, bool savePossibilities, bool searchMultiple)
