@@ -143,6 +143,38 @@
              </widget>
             </item>
             <item>
+             <widget class="Line" name="line_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_toTrash">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="icon">
+               <iconset resource="../../resource.qrc">
+                <normaloff>:/icons/trash.png</normaloff>:/icons/trash.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_fromTrash">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../resource.qrc">
+                <normaloff>:/icons/cancelTrash.png</normaloff>:/icons/cancelTrash.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="Line" name="line">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -201,9 +233,22 @@
              <number>0</number>
             </property>
             <item>
+             <widget class="QLabel" name="label_2">
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Cercles :</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="cb_activeCircles">
               <property name="text">
-               <string>Cercles actifs</string>
+               <string>Actifs</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -213,7 +258,7 @@
             <item>
              <widget class="QCheckBox" name="cb_otherCircles">
               <property name="text">
-               <string>Autres cercles</string>
+               <string>Autres</string>
               </property>
               <property name="checked">
                <bool>true</bool>
@@ -221,16 +266,57 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="cb_trash">
+              <property name="text">
+               <string>Poubelle</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Scènes :</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="cb_activeScene">
               <property name="text">
-               <string>Scène active</string>
+               <string>Active</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QCheckBox" name="cb_otherScenes">
               <property name="text">
-               <string>Autres scènes</string>
+               <string>Autres</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cb_trashScenes">
+              <property name="text">
+               <string>Poubelle</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line_6">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
              </widget>
             </item>

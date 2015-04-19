@@ -14,6 +14,7 @@
 PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
                                                    QMap<const CT_Scene *, QMultiMap<double, const CT_Circle *> > *availableDbh,
                                                    QList<const CT_Circle *> *preferredDbh,
+                                                   QList<const CT_Scene*> *trashedScenes,
                                                    QMap<const CT_Scene *, double> *sceneDTMValues,
                                                    QMap<QString, QStringList> *paramData,
                                                    QMap<const CT_Scene*, QMap<QString, QString> >  *suppAttributes) : CT_AbstractActionForGraphicsView()
@@ -21,6 +22,7 @@ PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const C
     _selectedDbh = selectedDbh;
     _availableDbh = availableDbh;
     _preferredDbh = preferredDbh;
+    _trashedScenes = trashedScenes;
     _sceneDTMValues = sceneDTMValues;
     _paramData = paramData;
     _suppAttributes = suppAttributes;
@@ -33,6 +35,9 @@ PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const C
     _othersScenesCirclesLightColor = Qt::lightGray;
     _othersCircleColor = QColor(255,125,0);
     _currentCircleColor = Qt::red;
+    _trashActiveCircleColor = QColor(240,50,240);
+    _trashOtherCircleColor = QColor(170,50,170);
+
 }
 
 PB_ActionManualInventory::~PB_ActionManualInventory()
@@ -79,6 +84,8 @@ void PB_ActionManualInventory::init()
         connect(option, SIGNAL(visibilityChanged()), this, SLOT(visibilityChanged()));
         connect(option, SIGNAL(chooseUpperCircle()), this, SLOT(selectUpperCircle()));
         connect(option, SIGNAL(chooseLowerCircle()), this, SLOT(selectLowerCircle()));
+        connect(option, SIGNAL(sendToTrash()), this, SLOT(sendToTrash()));
+        connect(option, SIGNAL(retrieveFromTrash()), this, SLOT(retreiveFromTrash()));
 
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
@@ -175,6 +182,18 @@ bool PB_ActionManualInventory::keyPressEvent(QKeyEvent *e)
     {
         option->chooseAttributesMode();
         return true;
+    }  else if((e->key() == Qt::Key_Delete) && !e->isAutoRepeat())
+    {
+        if (_currentScene != NULL)
+        {
+            if (_trashedScenes->contains(_currentScene))
+            {
+                retreiveFromTrash();
+            } else {
+                sendToTrash();
+            }
+            return true;
+        }
     }
 
     return false;
@@ -209,6 +228,9 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
         y += add;
         painter.drawText(2, y, tr("H = %1 m").arg(_currentCircle->getCenterZ() - _sceneDTMValues->value(_currentScene, NAN)));
         y += add;
+        painter.drawText(2, y, tr("D = %1 cm").arg(_currentCircle->getRadius()*100.0));
+        y += add;
+
 
         QMap<QString, QString> attrMap = _suppAttributes->value(_currentScene);
         QMapIterator<QString, QString> it(attrMap);
@@ -254,7 +276,7 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
 
 CT_AbstractAction* PB_ActionManualInventory::copy() const
 {
-    return new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _sceneDTMValues, _paramData, _suppAttributes);
+    return new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _trashedScenes, _sceneDTMValues, _paramData, _suppAttributes);
 }
 
 void PB_ActionManualInventory::chooseForDbh(const QPoint &point)
@@ -423,6 +445,24 @@ void PB_ActionManualInventory::selectLowerCircle()
     }
 }
 
+void PB_ActionManualInventory::sendToTrash()
+{
+    if (_currentScene != NULL && !_trashedScenes->contains(_currentScene))
+    {
+        _trashedScenes->append(_currentScene);
+        visibilityChanged();
+    }
+}
+
+void PB_ActionManualInventory::retreiveFromTrash()
+{
+    if (_currentScene != NULL && _trashedScenes->contains(_currentScene))
+    {
+        _trashedScenes->removeOne(_currentScene);
+        visibilityChanged();
+    }
+}
+
 void PB_ActionManualInventory::visibilityChanged()
 {
 
@@ -450,52 +490,74 @@ void PB_ActionManualInventory::visibilityChanged()
 void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circle)
 {
     PB_ActionManualInventoryOptions *option = (PB_ActionManualInventoryOptions*)optionAt(0);
-    if (scene == _currentScene)
+    if (_trashedScenes->contains(scene))
     {
-        if (option->isShowActiveCirclesChecked() || circle == _currentCircle)
+        if (option->isShowTrashChecked())
         {
             document()->addItemDrawable(*circle);
 
-            if (circle == _currentCircle)
+            if (option->isShowTrashedScenesChecked())
             {
-                document()->setColor(circle, _currentCircleColor);
-            } else {
-
-                if (_preferredDbh->contains(circle))
-                {
-                    document()->setColor(circle, _activeSceneCirclesLightColor);
-                } else {
-                    document()->setColor(circle, _activeSceneCirclesColor);
-                }
+                document()->addItemDrawable(*scene);
             }
-        }
 
-        if (option->isShowActiveSceneChecked())
-        {
-            document()->addItemDrawable(*scene);
-        }
-    } else {
-        if (option->isShowOtherCirclesChecked())
-        {
-            document()->addItemDrawable(*circle);
             if (_selectedDbh->values().contains(circle))
             {
-                document()->setColor(circle, _othersCircleColor);
+                document()->setColor(circle, _trashActiveCircleColor);
             } else {
-                if (_preferredDbh->contains(circle))
-                {
-                    document()->setColor(circle, _othersScenesCirclesLightColor);
-                } else {
-                    document()->setColor(circle, _othersScenesCirclesColor);
-                }
+                document()->setColor(circle, _trashOtherCircleColor);
             }
         }
-
-        if (option->isShowOtherScenesChecked())
+    } else {
+        if (scene == _currentScene)
         {
-            document()->addItemDrawable(*scene);
+            if (option->isShowActiveCirclesChecked() || circle == _currentCircle)
+            {
+                document()->addItemDrawable(*circle);
+
+                if (circle == _currentCircle)
+                {
+                    document()->setColor(circle, _currentCircleColor);
+                } else {
+
+                    if (_preferredDbh->contains(circle))
+                    {
+                        document()->setColor(circle, _activeSceneCirclesLightColor);
+                    } else {
+                        document()->setColor(circle, _activeSceneCirclesColor);
+                    }
+                }
+            }
+
+            if (option->isShowActiveSceneChecked())
+            {
+                document()->addItemDrawable(*scene);
+            }
+        } else {
+            if (option->isShowOtherCirclesChecked())
+            {
+                document()->addItemDrawable(*circle);
+                if (_selectedDbh->values().contains(circle))
+                {
+                    document()->setColor(circle, _othersCircleColor);
+                } else {
+                    if (_preferredDbh->contains(circle))
+                    {
+                        document()->setColor(circle, _othersScenesCirclesLightColor);
+                    } else {
+                        document()->setColor(circle, _othersScenesCirclesColor);
+                    }
+                }
+            }
+
+            if (option->isShowOtherScenesChecked())
+            {
+                document()->addItemDrawable(*scene);
+            }
         }
     }
+
+
 }
 
 

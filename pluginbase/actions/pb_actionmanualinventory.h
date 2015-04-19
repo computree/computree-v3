@@ -19,6 +19,7 @@ public:
     PB_ActionManualInventory(QMap<const CT_Scene*, const CT_Circle*> *selectedDbh,
                              QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> > *availableDbh,
                              QList<const CT_Circle*> *preferredDbh,
+                             QList<const CT_Scene *> *trashedScenes,
                              QMap<const CT_Scene*, double> *sceneDTMValues,
                              QMap<QString, QStringList> *paramData,
                              QMap<const CT_Scene*, QMap<QString, QString> >  *suppAttributes);
@@ -57,6 +58,8 @@ public slots:
     void visibilityChanged();
     void selectUpperCircle();
     void selectLowerCircle();
+    void sendToTrash();
+    void retreiveFromTrash();
 
 private:
     CT_Circle*          _currentCircle;
@@ -66,6 +69,7 @@ private:
     QMap<const CT_Scene*, const CT_Circle*>                         *_selectedDbh;
     QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> >     *_availableDbh;
     QList<const CT_Circle*>                                         *_preferredDbh;
+    QList<const CT_Scene *>                                         *_trashedScenes;
     QMap<const CT_Scene *, double>                                  *_sceneDTMValues;
 
     QMap<QString, QStringList>                                      *_paramData;
@@ -78,6 +82,8 @@ private:
     QColor              _othersCircleColor;
     QColor              _othersScenesCirclesLightColor;
     QColor              _currentCircleColor;
+    QColor              _trashActiveCircleColor;
+    QColor              _trashOtherCircleColor;
 };
 
 

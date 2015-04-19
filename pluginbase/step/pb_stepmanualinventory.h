@@ -106,6 +106,7 @@ private:
     // Step parameters
     QStringList                         _paramFileName;
     double                              _deltaH;
+    double                              _maxCircleDist;
     QMap<QString, QStringList>          _paramData;
     QMap<QString, CT_AutoRenameModels>  _paramAutoRename;
 
@@ -120,10 +121,11 @@ private:
     QMap<const CT_Scene*, QMultiMap<double, const CT_Circle*> >     *_availableDbh;
     QMap<const CT_Scene*, QMap<QString, QString> >                  *_suppAttributes;
     QList<const CT_Circle*>                                         *_preferredDbh;
+    QList<const CT_Scene *>                                         *_trashedScenes;
     QMap<const CT_Scene*, double>                                   *_sceneDTMValues;
 
 
-    QList<CT_Circle*>                               _temporaryCircles;
+    QList<CT_Circle*>                                               _temporaryCircles;
 
     void findBestCircleForEachScene();
     double computeMaxZ(const CT_Scene* scene);

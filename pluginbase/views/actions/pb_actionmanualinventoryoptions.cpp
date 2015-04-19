@@ -83,6 +83,16 @@ bool PB_ActionManualInventoryOptions::isShowOtherScenesChecked()
     return ui->cb_otherScenes->isChecked();
 }
 
+bool PB_ActionManualInventoryOptions::isShowTrashChecked()
+{
+    return ui->cb_trash->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isShowTrashedScenesChecked()
+{
+    return ui->cb_trashScenes->isChecked();
+}
+
 void PB_ActionManualInventoryOptions::on_rb_select_toggled(bool checked)
 {
     Q_UNUSED(checked);
@@ -139,4 +149,26 @@ void PB_ActionManualInventoryOptions::on_pb_upper_clicked()
 void PB_ActionManualInventoryOptions::on_pb_lower_clicked()
 {
     emit chooseLowerCircle();
+}
+
+void PB_ActionManualInventoryOptions::on_pb_toTrash_clicked()
+{
+    emit sendToTrash();
+}
+
+void PB_ActionManualInventoryOptions::on_pb_fromTrash_clicked()
+{
+    emit retrieveFromTrash();
+}
+
+void PB_ActionManualInventoryOptions::on_cb_trash_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
+}
+
+void PB_ActionManualInventoryOptions::on_cb_trashScenes_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
 }

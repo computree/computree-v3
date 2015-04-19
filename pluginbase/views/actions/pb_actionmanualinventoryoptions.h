@@ -33,6 +33,8 @@ public:
     bool isShowOtherCirclesChecked();
     bool isShowActiveSceneChecked();
     bool isShowOtherScenesChecked();
+    bool isShowTrashChecked();
+    bool isShowTrashedScenesChecked();
 
 private:
     Ui::PB_ActionManualInventoryOptions *ui;
@@ -42,6 +44,8 @@ signals:
     void visibilityChanged();
     void chooseUpperCircle();
     void chooseLowerCircle();
+    void sendToTrash();
+    void retrieveFromTrash();
 
 private slots:
 
@@ -56,6 +60,10 @@ private slots:
     void on_cb_otherScenes_toggled(bool checked);
     void on_pb_upper_clicked();
     void on_pb_lower_clicked();
+    void on_pb_toTrash_clicked();
+    void on_pb_fromTrash_clicked();
+    void on_cb_trash_toggled(bool checked);
+    void on_cb_trashScenes_toggled(bool checked);
 };
 
 #endif // PB_ACTIONMANUALINVENTORYOPTIONS_H

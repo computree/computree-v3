@@ -13,6 +13,7 @@
 
 #include "ct_iterator/ct_pointiterator.h"
 
+#include <math.h>
 #include <limits>
 #include <QMessageBox>
 #include <QFile>
@@ -38,7 +39,8 @@ PB_StepManualInventory::PB_StepManualInventory(CT_StepInitializeData &dataInit) 
     setManual(true);
 
     _paramFileName.append("../ComputreeHowTo/param_inv.txt");
-    _deltaH = 0.30;
+    _deltaH = 0.15;
+    _maxCircleDist = 2;
 }
 
 // Step description (tooltip of contextual menu)
@@ -77,6 +79,7 @@ void PB_StepManualInventory::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addFileChoice("Fichier de paramétrage", CT_FileChoiceButton::OneExistingFile, "Fichier ascii (*.txt)", _paramFileName);
+    configDialog->addDouble(tr("Ne pas accepter de cercle plus loin que :"), "m", 0, 99999, 2, _maxCircleDist);
     configDialog->addDouble(tr("Choisir préférenciellement le diamètre à + ou - :"), "cm", 0, 10000, 0, _deltaH, 100);
 }
 
@@ -182,6 +185,7 @@ void PB_StepManualInventory::compute()
         _suppAttributes = new QMap<const CT_Scene*, QMap<QString, QString> >();
         _preferredDbh = new QList<const CT_Circle*>();
         _sceneDTMValues = new QMap<const CT_Scene*, double>();
+        _trashedScenes = new QList<const CT_Scene*>();
 
         // Boucle sur les groupes contenant ls scènes
         CT_ResultGroupIterator itCpy_scBase(resCpy_scres, this, DEFin_scBase);
@@ -225,15 +229,19 @@ void PB_StepManualInventory::compute()
                         const CT_Circle* itemCpy_circle = (CT_Circle*)grpCpy_cluster->firstItemByINModelName(this, DEFin_circle);
                         if (itemCpy_circle != NULL)
                         {
-                            circleList.insertMulti(itemCpy_circle->getCenterZ() - mntZ, itemCpy_circle);
+                            double dist = sqrt(pow(x - itemCpy_circle->getCenterX(), 2) + pow(y - itemCpy_circle->getCenterY(), 2));
 
-                            // Liste des cercles préférrés
-                            double height = itemCpy_circle->getCenterZ() - mntZ;
-                            if (height >= hminLightGray && height <= hmaxLightGray)
+                            if (dist <= _maxCircleDist)
                             {
-                                _preferredDbh->append(itemCpy_circle);
-                            }
+                                circleList.insertMulti(itemCpy_circle->getCenterZ() - mntZ, itemCpy_circle);
 
+                                // Liste des cercles préférrés
+                                double height = itemCpy_circle->getCenterZ() - mntZ;
+                                if (height >= hminLightGray && height <= hmaxLightGray)
+                                {
+                                    _preferredDbh->append(itemCpy_circle);
+                                }
+                            }
                         }
                     }
                 }
@@ -254,7 +262,7 @@ void PB_StepManualInventory::compute()
             const CT_Scene* itemCpy_scene = (const CT_Scene*)grpCpy_scBase->firstItemByINModelName(this, DEFin_scene);
             const CT_Point2D* itemCpy_position = (const CT_Point2D*)grpCpy_scBase->firstItemByINModelName(this, DEFin_positions);
 
-            if (itemCpy_scene != NULL && itemCpy_position != NULL)
+            if (itemCpy_scene != NULL  && itemCpy_position != NULL && !_trashedScenes->contains(itemCpy_scene))
             {
                 CT_Circle* bestCircle = (CT_Circle*) _selectedDbh->value(itemCpy_scene, NULL);
 
@@ -320,7 +328,10 @@ void PB_StepManualInventory::compute()
         delete _selectedDbh;
         delete _availableDbh;
         delete _suppAttributes;
-        qDeleteAll(_temporaryCircles);
+        delete _preferredDbh;
+        delete _sceneDTMValues;
+        delete _trashedScenes;
+        qDeleteAll(_temporaryCircles);                        
     }
 
 
@@ -340,7 +351,7 @@ void PB_StepManualInventory::initManualMode()
     }
     m_doc->removeAllItemDrawable();
 
-    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _sceneDTMValues, &_paramData, _suppAttributes));
+    m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _trashedScenes, _sceneDTMValues, &_paramData, _suppAttributes));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette étape !"), QMessageBox::Ok);

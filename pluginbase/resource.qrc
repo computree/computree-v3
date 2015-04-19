@@ -58,5 +58,7 @@
         <file>icons/plus_green.png</file>
         <file>icons/lower.png</file>
         <file>icons/upper.png</file>
+        <file>icons/cancelTrash.png</file>
+        <file>icons/trash.png</file>
     </qresource>
 </RCC>
