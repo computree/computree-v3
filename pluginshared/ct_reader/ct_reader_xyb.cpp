@@ -175,7 +175,7 @@ bool CT_Reader_XYB::protectedReadFile()
             CT_AbstractUndefinedSizePointCloud* mpcir;
             CT_NMPCIR pcir;
             CT_Point pReaded;
-            CT_MutablePointIterator *it;
+            CT_MutablePointIterator *it = NULL;
 
             if (filter)
                 mpcir = PS_REPOSITORY->createNewUndefinedSizePointCloud();
@@ -262,7 +262,7 @@ bool CT_Reader_XYB::protectedReadFile()
                 setProgress(a*100/n_points);
             }
 
-            delete it;
+            if (it != NULL) {delete it;}
 
             CT_Scene *scene;
 

@@ -5,6 +5,9 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 
+#include "ct_view/ct_asciifilechoicebutton.h"
+#include "ct_view/ct_combobox.h"
+
 // Alias for indexing models
 #define DEFout_refRes "refRes"
 #define DEFout_grpRef "grpRef"
@@ -18,7 +21,7 @@
 
 
 // Constructor : initialization of parameters
-PB_StepLoadTreeMap::PB_StepLoadTreeMap(CT_StepInitializeData &dataInit) : CT_StepBeginLoop(dataInit)
+PB_StepLoadTreeMap::PB_StepLoadTreeMap(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
     _neededFields << "ID_Plot" << "ID" << "X" << "Y" << "DBH (cm)";
 
@@ -27,6 +30,8 @@ PB_StepLoadTreeMap::PB_StepLoadTreeMap(CT_StepInitializeData &dataInit) : CT_Ste
     _refSeparator = "\t";
     _refDecimal = ".";
     _refSkip = 0;
+
+    _plotID = "";
 }
 
 // Step description (tooltip of contextual menu)
@@ -64,10 +69,8 @@ void PB_StepLoadTreeMap::createInResultModelListProtected()
 }
 
 // Creation and affiliation of OUT models
-void PB_StepLoadTreeMap::createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel)
+void PB_StepLoadTreeMap::createOutResultModelListProtected()
 {
-    Q_UNUSED(firstResultModel);
-
     CT_OutResultModelGroup *res_refRes = createNewOutResultModel(DEFout_refRes, tr("Positions de référence"));
     res_refRes->setRootGroup(DEFout_grpRef, new CT_StandardItemGroup(), tr("Groupe"));
     res_refRes->addItemModel(DEFout_grpRef, DEFout_ref, new CT_Circle2D(), tr("Position de référence"));
@@ -81,66 +84,64 @@ void PB_StepLoadTreeMap::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addAsciiFileChoice("Fichier des arbres", "Fichier ASCII (*.txt ; *.asc)", true, _neededFields, _refFileName, _refHeader, _refSeparator, _refDecimal, _refLocale, _refSkip, _refColumns);
+    QStringList list;
+
+    CT_AsciiFileChoiceButton *fileChoice = configDialog->addAsciiFileChoice("Fichier des arbres", "Fichier ASCII (*.txt ; *.asc)", true, _neededFields, _refFileName, _refHeader, _refSeparator, _refDecimal, _refLocale, _refSkip, _refColumns);
+    CT_ComboBox *cbox = configDialog->addStringChoice(tr("Choix de la placette"), "", list, _plotID);
+
+    connect(fileChoice, SIGNAL(fileChanged()), this, SLOT(fileChanged()));
+    connect(this, SIGNAL(updateComboBox(QStringList, QString)), cbox, SLOT(changeValues(QStringList, QString)));
 }
 
-void PB_StepLoadTreeMap::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group)
+void PB_StepLoadTreeMap::fileChanged()
 {
-    Q_UNUSED(outRes);
-    Q_UNUSED(group);
-
-    QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* res_refRes = outResultList.at(1);
-
+    _plotsIds.clear();
 
     int colIDplot_ref  = _refColumns.value("ID_Plot", -1);
-    bool multiPlots = (colIDplot_ref >= 0);
 
-    QSharedPointer<CT_Counter> counter = getCounter();
-    size_t  currentTurn = counter->getCurrentTurn();
+    if (colIDplot_ref < 0) {_plotID = ""; return;}
 
-
-    // Au premier tour : création de la liste des placettes
-    if (multiPlots && currentTurn == 1)
+    QFile fRef(_refFileName);
+    if (fRef.exists() && fRef.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        _plotsIds.clear();
+        QTextStream stream(&fRef);
+        stream.setLocale(_refLocale);
 
-        QFile fRef00(_refFileName);
-        if (fRef00.exists() && fRef00.open(QIODevice::ReadOnly | QIODevice::Text))
+        for (int i = 0 ; i < _refSkip ; i++) {stream.readLine();}
+        if (_refHeader) {stream.readLine();}
+
+        while (!stream.atEnd())
         {
-            QTextStream stream(&fRef00);
-            stream.setLocale(_refLocale);
-
-            for (int i = 0 ; i < _refSkip ; i++) {stream.readLine();}
-            if (_refHeader) {stream.readLine();}
-
-            while (!stream.atEnd())
+            QString line = stream.readLine();
+            if (!line.isEmpty())
             {
-                QString line = stream.readLine();
-                if (!line.isEmpty())
-                {
-                    QStringList values = line.split(_refSeparator);
+                QStringList values = line.split(_refSeparator);
 
-                    if (values.size() > colIDplot_ref)
-                    {
-                        const QString &val = values.at(colIDplot_ref);
-                        if (!_plotsIds.contains(val)) {_plotsIds.append(val);}
-                    }
+                if (values.size() > colIDplot_ref)
+                {
+                    const QString &val = values.at(colIDplot_ref);
+                    if (!_plotsIds.contains(val)) {_plotsIds.append(val);}
                 }
             }
-            fRef00.close();
         }
-        counter->setNTurns(_plotsIds.size());
-        if (_plotsIds.size() <= 0) {return;}
+        fRef.close();
     }
 
+    QString val = "";
+    if (_plotsIds.size() > 0) {val = _plotsIds.first();}
+    emit updateComboBox(_plotsIds, val);
+}
 
-    QString currentPlot = "";
-    if (multiPlots) {currentPlot = _plotsIds.at(currentTurn - 1);}
-    NTurnsSelected();
-    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Placette en cours de traitement : %1")).arg(currentPlot));
+void PB_StepLoadTreeMap::compute()
+{
 
+    QList<CT_ResultGroup*> outResultList = getOutResultList();
+    CT_ResultGroup* res_refRes = outResultList.at(0);
 
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Placette en cours de traitement : %1")).arg(_plotID));
+
+    int colIDplot_ref  = _refColumns.value("ID_Plot", -1);
+    if (colIDplot_ref < 0) {_plotID = "";}
 
     QFile fRef(_refFileName);
     if (fRef.exists() && fRef.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -160,6 +161,7 @@ void PB_StepLoadTreeMap::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* g
             if (colX   > colMax) {colMax = colX;}
             if (colY   > colMax) {colMax = colY;}
             if (colVal > colMax) {colMax = colVal;}
+            if (colIDplot_ref > colMax) {colMax = colIDplot_ref;}
 
             for (int i = 0 ; i < _refSkip ; i++) {stream.readLine();}
             if (_refHeader) {stream.readLine();}
@@ -175,9 +177,12 @@ void PB_StepLoadTreeMap::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* g
                     if (values.size() >= colMax)
                     {
                         QString plot = "";
-                        if (multiPlots) {plot = values.at(colIDplot_ref);}
+                        if (colIDplot_ref >= 0)
+                        {
+                            plot =  values.at(colIDplot_ref);
+                        }
 
-                        if (plot == currentPlot)
+                        if (plot == _plotID)
                         {
                             bool okX, okY, okVal;
                             double x = values.at(colX).toDouble(&okX);

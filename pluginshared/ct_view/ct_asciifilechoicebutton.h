@@ -96,6 +96,9 @@ public slots:
 private slots:
     void chooseFile();
 
+signals:
+    void fileChanged();
+
 };
 
 #endif // CT_ASCIIFILECHOICEBUTTON_H

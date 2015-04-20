@@ -238,6 +238,8 @@ void CT_AsciiFileChoiceButton::chooseFile()
         *_columns = _dialog->getNeededFieldColumns();
         _columnsAsString = _dialog->getFieldColumnsSelectedAsString(*_columns);
     }
+
+    emit fileChanged();
 }
 
 void CT_AsciiFileChoiceButton::setFormat(QString format)

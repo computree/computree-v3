@@ -1,7 +1,7 @@
 #ifndef PB_STEPLOADTREEMAP_H
 #define PB_STEPLOADTREEMAP_H
 
-#include "ct_step/ct_stepbeginloop.h"
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 
 /*!
  * \class PB_StepLoadTreeMap
@@ -15,7 +15,7 @@
  *
  */
 
-class PB_StepLoadTreeMap: public CT_StepBeginLoop
+class PB_StepLoadTreeMap: public CT_AbstractStepCanBeAddedFirst
 {
     Q_OBJECT
 
@@ -53,6 +53,12 @@ public:
      */
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
 
+public slots:
+    void fileChanged();
+
+signals:
+    void updateComboBox(QStringList valuesList, QString value);
+
 protected:
 
     /*! \brief Input results specification
@@ -67,9 +73,9 @@ protected:
      */
     void createPostConfigurationDialog();
 
-    virtual void createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel);
+    void createOutResultModelListProtected();
 
-    virtual void compute(CT_ResultGroup *outRes, CT_StandardItemGroup* group);
+    void compute();
 
 
 private:
@@ -78,6 +84,7 @@ private:
     QStringList _neededFields;
 
     QString _refFileName;
+    QString _plotID;
 
     bool _refHeader;
 
@@ -92,7 +99,7 @@ private:
 
     QMap<QString, int> _refColumns;
 
-    QList<QString> _plotsIds;
+    QStringList _plotsIds;
 
 
 };

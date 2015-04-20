@@ -92,7 +92,6 @@ private:
     QStringList _filesNames;        /*!< List of .xyb files names */
     bool        _radiusFiltered;    /*!< If true, only points inside given radius would be kept */
     double      _radius;            /*!<  */
-    QList<CT_AbstractReader*>   m_readers;
 
 };
 

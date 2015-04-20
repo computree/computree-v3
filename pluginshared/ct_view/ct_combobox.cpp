@@ -108,3 +108,18 @@ bool CT_ComboBox::setWidgetValue(QVariant val)
 
     return true;
 }
+
+void CT_ComboBox::changeValues(QStringList valuesList, QString value)
+{
+    _data._valuesList = valuesList;
+
+    if (_comboBoxCreated != NULL)
+    {
+        _comboBoxCreated->clear();
+        _comboBoxCreated->insertItems(0, _data._valuesList);
+        int index = _comboBoxCreated->findText(value);
+        if (index == -1) {index = 0;}
+        _comboBoxCreated->setCurrentIndex(index);
+    }
+    *(_data._value) = _comboBoxCreated->currentText();
+}

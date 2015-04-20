@@ -34,6 +34,9 @@ public:
 
     bool setWidgetValue(QVariant val);
 
+public slots:
+    void changeValues(QStringList valuesList, QString value);
+
 protected:
 
     ComboBoxData   _data;
