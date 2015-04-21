@@ -32,6 +32,7 @@ public:
 
     QVariant getValue() const;
 
+    bool setWidgetValueList(QVariant valList);
     bool setWidgetValue(QVariant val);
 
 public slots:
@@ -42,6 +43,8 @@ protected:
     ComboBoxData   _data;
     QComboBox      *_comboBoxCreated;
     QString         _description;
+
+    static QString getStringListAsString(const QStringList &liste);
 
 signals:
     void currentIndexChanged(QString value);

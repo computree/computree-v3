@@ -52,6 +52,7 @@ QList<SettingsNodeGroup*> CT_ComboBox::getAllValues() const
 
     values->addValue(new SettingsNodeValue("Version", "1"));
     values->addValue(new SettingsNodeValue("CurrentTextIndex", getValue(), _description));
+    values->addValue(new SettingsNodeValue("ValueList", getStringListAsString(_data._valuesList), _description));
 
     return retList;
 }
@@ -63,10 +64,12 @@ bool CT_ComboBox::setAllValues(const QList<SettingsNodeGroup*> &list)
         return false;
 
     QList<SettingsNodeValue*> values = list.first()->valuesByTagName("CurrentTextIndex");
+    QList<SettingsNodeValue*> valuesList = list.first()->valuesByTagName("ValueList");
 
     if(values.isEmpty())
         return false;
 
+    setWidgetValueList(valuesList.first()->value());
     return setWidgetValue(values.first()->value());
 }
 
@@ -102,6 +105,16 @@ QVariant CT_ComboBox::getValue() const
     return QVariant((*_data._value));
 }
 
+
+bool CT_ComboBox::setWidgetValueList(QVariant valList)
+{
+    QStringList liste = valList.toString().split("\t");
+    _comboBoxCreated->clear();
+    _comboBoxCreated->addItems(liste);
+
+    return true;
+}
+
 bool CT_ComboBox::setWidgetValue(QVariant val)
 {
     _comboBoxCreated->setCurrentIndex(_comboBoxCreated->findText(val.toString()));
@@ -123,3 +136,17 @@ void CT_ComboBox::changeValues(QStringList valuesList, QString value)
     }
     *(_data._value) = _comboBoxCreated->currentText();
 }
+
+
+QString CT_ComboBox::getStringListAsString(const QStringList &liste)
+{
+    QString result = "";
+
+    for (int i = 0 ; i < liste.size() ; i++)
+    {
+        result.append(liste.at(i));
+        if (i < (liste.size() - 1)) {result.append("\t");}
+    }
+    return result;
+}
+

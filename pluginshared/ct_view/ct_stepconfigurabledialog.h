@@ -32,9 +32,11 @@
 
 #include "pluginShared_global.h"
 #include "ct_filechoicebutton.h"
+#include "ct_view/tools/ct_textfileconfigurationdialog.h"
 
 
 #include <QVariantList>
+#include <QObject>
 
 class CT_VirtualAbstractStep;
 
@@ -57,8 +59,9 @@ class SettingsNodeGroup;
  * The selected values will be automatically returned in specified variables (<b>value</b> parameters).
  *
  */
-class PLUGINSHAREDSHARED_EXPORT CT_StepConfigurableDialog
+class PLUGINSHAREDSHARED_EXPORT CT_StepConfigurableDialog : public QObject
 {
+    Q_OBJECT
 public:
     CT_StepConfigurableDialog();
     ~CT_StepConfigurableDialog();
@@ -245,6 +248,18 @@ public:
                                                  QMap<QString, int> &columns,
                                                  QString description = "");
 
+    CT_AsciiFileChoiceButton *addAsciiFileChoice(QString btlab,
+                                                 QString fileFilter,
+                                                 bool autoDetect,
+                                                 QList<CT_TextFileConfigurationFields> &neededFields,
+                                                 QString &fileName,
+                                                 bool &header,
+                                                 QString &separator,
+                                                 QString &decimal,
+                                                 QLocale &locale,
+                                                 int &skip,
+                                                 QMap<QString, int> &columns,
+                                                 QString description = "");
 
 
     /*! \brief Create a CT_ButtonGroup associated to an ibdex value
@@ -295,6 +310,10 @@ public:
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 
     bool isSettingsModified() const;
+
+signals:
+
+    void openned();
 
 private:
 

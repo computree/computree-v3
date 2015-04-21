@@ -101,6 +101,8 @@ int CT_StepConfigurableDialog::exec()
 {
     endEdit();
 
+    emit openned();
+
     int ret = _dialog->exec();
 
     if(ret == 1)
@@ -308,6 +310,47 @@ CT_AsciiFileChoiceButton *CT_StepConfigurableDialog::addAsciiFileChoice(QString 
                                                                         QString fileFilter,
                                                                         bool autoDetect,
                                                                         const QStringList &neededFields,
+                                                                        QString &fileName,
+                                                                        bool &header,
+                                                                        QString &separator,
+                                                                        QString &decimal,
+                                                                        QLocale &locale,
+                                                                        int & skip,
+                                                                        QMap<QString, int> &columns,
+                                                                        QString description)
+{
+    if(_canEdit)
+    {
+
+        CT_AsciiFileChoiceButton *fileChoiceButton = new CT_AsciiFileChoiceButton(btlab,
+                                                                                  fileFilter,
+                                                                                  autoDetect,
+                                                                                  neededFields,
+                                                                                  fileName,
+                                                                                  header,
+                                                                                  separator,
+                                                                                  decimal,
+                                                                                  locale,
+                                                                                  skip,
+                                                                                  columns,
+                                                                                  description);
+        _listWidgetWithValueReference.append(fileChoiceButton);
+
+        addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid), 1, -1);
+
+        ++_nRow;
+
+        fileChoiceButton->setWidgetValue(fileName);
+        return fileChoiceButton;
+    }
+
+    return NULL;
+}
+
+CT_AsciiFileChoiceButton *CT_StepConfigurableDialog::addAsciiFileChoice(QString btlab,
+                                                                        QString fileFilter,
+                                                                        bool autoDetect,
+                                                                        QList<CT_TextFileConfigurationFields> &neededFields,
                                                                         QString &fileName,
                                                                         bool &header,
                                                                         QString &separator,

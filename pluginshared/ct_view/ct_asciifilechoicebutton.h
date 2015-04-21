@@ -47,6 +47,7 @@ public:
 
 
     CT_AsciiFileChoiceButton(QString btlab, QString fileFilter, bool autoDetect, const QStringList &neededFields, QString &fileName, bool &header, QString &separator, QString &decimal, QLocale &locale, int &skip, QMap<QString, int> &columns, QString description = "");
+    CT_AsciiFileChoiceButton(QString btlab, QString fileFilter, bool autoDetect, QList<CT_TextFileConfigurationFields> &neededFields, QString &fileName, bool &header, QString &separator, QString &decimal, QLocale &locale, int &skip, QMap<QString, int> &columns, QString description = "");
 
     ~CT_AsciiFileChoiceButton();
 
@@ -70,7 +71,6 @@ protected:
     QString     _buttonLabel;
     QString     _fileFilter;
     bool        _autoDetect;
-    QStringList _neededFields;
 
     QString             *_fileName;
     bool                *_header;

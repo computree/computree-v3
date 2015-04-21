@@ -48,7 +48,6 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
     _buttonLabel = btlab;
     _fileFilter = fileFilter;
     _autoDetect = autoDetect;
-    _neededFields = neededFields;
     _columnsAsString = "";
 
     _fileName = &fileName;
@@ -67,7 +66,45 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
     _pushButtonCreated = NULL;
     _labelCreated = NULL;
 
-    _dialog = new CT_TextFileConfigurationDialog(_neededFields, NULL, *_fileName, _autoDetect);
+    _dialog = new CT_TextFileConfigurationDialog(neededFields, NULL, *_fileName, _autoDetect);
+    _dialog->setFileExtensionAccepted(QStringList() << fileFilter);
+}
+
+CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
+                                                   QString fileFilter,
+                                                   bool autoDetect,
+                                                   QList<CT_TextFileConfigurationFields> &neededFields,
+                                                   QString &fileName,
+                                                   bool &header,
+                                                   QString &separator,
+                                                   QString &decimal,
+                                                   QLocale &locale,
+                                                   int & skip,
+                                                   QMap<QString, int> &columns,
+                                                   QString description)
+{
+    _buttonLabel = btlab;
+    _fileFilter = fileFilter;
+    _autoDetect = autoDetect;
+    _columnsAsString = "";
+
+    _fileName = &fileName;
+    _header = &header;
+    _separator = &separator;
+    _decimal = &decimal;
+    _locale = &locale;
+    _skip = &skip;
+    _columns = &columns;
+
+    _description = description;
+
+    _widgetCreated = NULL;
+    _scrollArea = NULL;
+    _verticalLayout = NULL;
+    _pushButtonCreated = NULL;
+    _labelCreated = NULL;
+
+    _dialog = new CT_TextFileConfigurationDialog(neededFields, NULL, *_fileName, _autoDetect);
     _dialog->setFileExtensionAccepted(QStringList() << fileFilter);
 }
 

@@ -23,7 +23,11 @@
 // Constructor : initialization of parameters
 PB_StepLoadTreeMap::PB_StepLoadTreeMap(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
-    _neededFields << "ID_Plot" << "ID" << "X" << "Y" << "DBH (cm)";
+    _neededFields.append(CT_TextFileConfigurationFields("ID_Plot", QRegExp(".*([iI][dD]|[pP][lL][oO][tT]|[pP][lL][aA][cC][eE][tT][tT][eE]).*"),true));
+    _neededFields.append(CT_TextFileConfigurationFields("IDtree", QRegExp(".*([iI][dD]|[nN][uU][mM]|[tT][rR][eE][eE]|[aA][rR][bB][rR][eE]).*"), true));
+    _neededFields.append(CT_TextFileConfigurationFields("X", QRegExp(".*[xX].*"), true));
+    _neededFields.append(CT_TextFileConfigurationFields("Y", QRegExp(".*[yY].*"), true));
+    _neededFields.append(CT_TextFileConfigurationFields("DBH (cm)", QRegExp("([dD][bB][hH]|[dD][iI][aA][mM]|[D]).*"), true));
 
     _refFileName = "";
     _refHeader = true;
@@ -84,11 +88,10 @@ void PB_StepLoadTreeMap::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    QStringList list;
-
     CT_AsciiFileChoiceButton *fileChoice = configDialog->addAsciiFileChoice("Fichier des arbres", "Fichier ASCII (*.txt ; *.asc)", true, _neededFields, _refFileName, _refHeader, _refSeparator, _refDecimal, _refLocale, _refSkip, _refColumns);
-    CT_ComboBox *cbox = configDialog->addStringChoice(tr("Choix de la placette"), "", list, _plotID);
+    CT_ComboBox *cbox = configDialog->addStringChoice(tr("Choix de la placette"), "", QStringList(), _plotID);
 
+    connect(configDialog, SIGNAL(openned()), this, SLOT(fileChanged()));
     connect(fileChoice, SIGNAL(fileChanged()), this, SLOT(fileChanged()));
     connect(this, SIGNAL(updateComboBox(QStringList, QString)), cbox, SLOT(changeValues(QStringList, QString)));
 }
@@ -133,7 +136,7 @@ void PB_StepLoadTreeMap::fileChanged()
 }
 
 void PB_StepLoadTreeMap::compute()
-{
+{  
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_refRes = outResultList.at(0);
@@ -149,10 +152,16 @@ void PB_StepLoadTreeMap::compute()
         QTextStream stream(&fRef);
         stream.setLocale(_refLocale);
 
-        int colID  = _refColumns.value("ID", -1);
+        int colID  = _refColumns.value("IDtree", -1);
         int colX   = _refColumns.value("X", -1);
         int colY   = _refColumns.value("Y", -1);
         int colVal = _refColumns.value("DBH (cm)", -1);
+
+        if (colID < 0) {PS_LOG->addMessage(LogInterface::error, LogInterface::step, QString(tr("Champ IDtree non défini")));}
+        if (colX < 0) {PS_LOG->addMessage(LogInterface::error, LogInterface::step, QString(tr("Champ X non défini")));}
+        if (colY < 0) {PS_LOG->addMessage(LogInterface::error, LogInterface::step, QString(tr("Champ Y non défini")));}
+        if (colVal < 0) {PS_LOG->addMessage(LogInterface::error, LogInterface::step, QString(tr("Champ DBH non défini")));}
+
 
         if (colID >=0 && colX >= 0 && colY >= 0 && colVal >= 0)
         {

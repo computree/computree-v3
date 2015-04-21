@@ -2,6 +2,7 @@
 #define PB_STEPLOADTREEMAP_H
 
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_view/tools/ct_textfileconfigurationdialog.h"
 
 /*!
  * \class PB_StepLoadTreeMap
@@ -81,7 +82,7 @@ protected:
 private:
 
     // Step parameters
-    QStringList _neededFields;
+    QList<CT_TextFileConfigurationFields> _neededFields;
 
     QString _refFileName;
     QString _plotID;

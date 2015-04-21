@@ -200,11 +200,18 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
         combo->addItems(_headersNames);
 
         int matchIndex = -1;
+        int longuestMatched = 0;
 
         for(int j=0; j<_headersNames.size() && matchIndex == -1; ++j)
         {
             if(neededField.m_fieldInFileChooser.exactMatch(_headersNames.at(j)))
-                matchIndex = j;
+            {
+                if (matchIndex < 0 || neededField.m_fieldInFileChooser.matchedLength() > longuestMatched)
+                {
+                    matchIndex = j;
+                    longuestMatched = neededField.m_fieldInFileChooser.matchedLength();
+                }
+            }
         }
 
         if((matchIndex >= 0) && (matchIndex < _headersNames.count()))
