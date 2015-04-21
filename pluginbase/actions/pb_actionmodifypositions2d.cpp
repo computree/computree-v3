@@ -273,8 +273,8 @@ void PB_ActionModifyPositions2D::draw(GraphicsViewInterface &view, PainterInterf
 
     painter.save();
 
-    painter.setColor(QColor(75, 75, 75));
-    if (option->isDrawPlaneSelected()) {painter.fillRectXY(_min, _max, option->getZValue() - 0.01);}
+    painter.setColor(QColor(75, 75, 75, 125));
+    if (option->isDrawPlaneSelected()) {painter.fillRectXY(_min, _max, option->getZValue() - 0.10);}
 
     painter.restore();
 }
