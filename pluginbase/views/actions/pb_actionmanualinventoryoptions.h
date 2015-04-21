@@ -46,6 +46,7 @@ signals:
     void chooseLowerCircle();
     void sendToTrash();
     void retrieveFromTrash();
+    void sendToValidated();
 
 private slots:
 
@@ -64,6 +65,7 @@ private slots:
     void on_pb_fromTrash_clicked();
     void on_cb_trash_toggled(bool checked);
     void on_cb_trashScenes_toggled(bool checked);
+    void on_pb_toValidated_clicked();
 };
 
 #endif // PB_ACTIONMANUALINVENTORYOPTIONS_H

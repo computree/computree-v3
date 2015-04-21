@@ -25,11 +25,16 @@ public:
 
     double getZValue();
     bool isDrawPlaneSelected();
+    bool isDrawLinesSelected();
+    bool isUpdateLinesSelected();
 
     void selectFreeMove();
     void selectMovePosition();
     void selectAddPosition();
     void selectRemovePosition();
+
+    void increaseZValue();
+    void decreaseZValue();
 
 private:
     Ui::PB_ActionModifyPositions2DOptions *ui;
@@ -45,6 +50,8 @@ private slots:
     void on_dsb_zval_valueChanged(double arg1);
     void singleStepChanged(int button);
     void on_cb_drawPlane_toggled(bool checked);
+    void on_cb_drawLines_toggled(bool checked);
+
 };
 
 #endif // PB_ACTIONMODIFYPOSITIONS2DOPTIONS_H

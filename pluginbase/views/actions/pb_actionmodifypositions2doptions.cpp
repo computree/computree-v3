@@ -12,8 +12,8 @@ PB_ActionModifyPositions2DOptions::PB_ActionModifyPositions2DOptions(const PB_Ac
     ui->setupUi(this);
 
     ui->pb_freeMove->setToolTip(tr("Déplacement normal dans la vue"));
-    ui->pb_move->setToolTip(tr("Modification d'une position [CTRL maintenu]"));
-    ui->pb_add->setToolTip(tr("Ajout d'une position [SHIFT maintenu]"));
+    ui->pb_move->setToolTip(tr("Modification d'une position [M maintenu]"));
+    ui->pb_add->setToolTip(tr("Ajout d'une position [P maintenu]"));
     ui->pb_remove->setToolTip(tr("Suppression d'une position [SUPPR avant chaque suppression]"));
 
     connect(ui->buttonGroup_step, SIGNAL(buttonClicked(int)), this, SLOT(singleStepChanged(int)));
@@ -54,6 +54,16 @@ bool PB_ActionModifyPositions2DOptions::isDrawPlaneSelected()
     return ui->cb_drawPlane->isChecked();
 }
 
+bool PB_ActionModifyPositions2DOptions::isDrawLinesSelected()
+{
+    return ui->cb_drawLines->isChecked();
+}
+
+bool PB_ActionModifyPositions2DOptions::isUpdateLinesSelected()
+{
+    return ui->cb_updateLines->isChecked();
+}
+
 void PB_ActionModifyPositions2DOptions::selectFreeMove()
 {
     ui->pb_freeMove->setChecked(true);
@@ -72,6 +82,16 @@ void PB_ActionModifyPositions2DOptions::selectAddPosition()
 void PB_ActionModifyPositions2DOptions::selectRemovePosition()
 {
     ui->pb_remove->setChecked(true);
+}
+
+void PB_ActionModifyPositions2DOptions::decreaseZValue()
+{
+    ui->dsb_zval->stepDown();
+}
+
+void PB_ActionModifyPositions2DOptions::increaseZValue()
+{
+    ui->dsb_zval->stepUp();
 }
 
 void PB_ActionModifyPositions2DOptions::on_pb_freeMove_clicked()
@@ -115,6 +135,11 @@ void PB_ActionModifyPositions2DOptions::singleStepChanged(int button)
 }
 
 void PB_ActionModifyPositions2DOptions::on_cb_drawPlane_toggled(bool checked)
+{
+    emit parametersChanged();
+}
+
+void PB_ActionModifyPositions2DOptions::on_cb_drawLines_toggled(bool checked)
 {
     emit parametersChanged();
 }

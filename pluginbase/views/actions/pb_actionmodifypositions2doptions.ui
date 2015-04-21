@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
+    <width>724</width>
     <height>30</height>
    </rect>
   </property>
@@ -238,9 +238,40 @@
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Dessiner</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QCheckBox" name="cb_drawPlane">
               <property name="text">
-               <string>Dessiner Plan</string>
+               <string>Plan</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cb_drawLines">
+              <property name="text">
+               <string>Lignes</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="cb_updateLines">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../resource.qrc">
+                <normaloff>:/icons/view-refresh.png</normaloff>:/icons/view-refresh.png</iconset>
               </property>
               <property name="checked">
                <bool>true</bool>

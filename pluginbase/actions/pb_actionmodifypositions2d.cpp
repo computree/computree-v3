@@ -18,6 +18,8 @@ PB_ActionModifyPositions2D::PB_ActionModifyPositions2D(QList<CT_Point2D*> &posit
 
     _selectedPoint = NULL;
     _leftButton = false;
+    _zmin = 0;
+    _zmax = 10;
 }
 
 PB_ActionModifyPositions2D::~PB_ActionModifyPositions2D()
@@ -187,6 +189,7 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
                     document()->setColor(_selectedPoint, _normalColor);
                     document()->redrawGraphics();
                 }
+                return true;
             } else if (option->isRemovePositionSelected())
             {
                 document()->removeItemDrawable(*_selectedPoint);
@@ -196,10 +199,9 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
                 _selectedPoint = NULL;
                 option->selectFreeMove();
                 document()->redrawGraphics();
+                return true;
             }
-
             _selectedPoint = NULL;
-            return true;
         }
     }
 
@@ -208,21 +210,33 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
 
 bool PB_ActionModifyPositions2D::wheelEvent(QWheelEvent *e)
 {
-    Q_UNUSED(e);
-    return false;
+    PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
 
+    if (e->modifiers() & Qt::ControlModifier)
+    {
+        if (e->delta()>0)
+        {
+            option->increaseZValue();
+        } else if (e->delta() < 0)
+        {
+            option->decreaseZValue();
+        }
+        return true;
+    }
+
+    return false;
 }
 
 bool PB_ActionModifyPositions2D::keyPressEvent(QKeyEvent *e)
 {
-    if((e->key() == Qt::Key_Control) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_M) && !e->isAutoRepeat())
     {
         PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
         option->selectMovePosition();
         return true;
     }
 
-    if((e->key() == Qt::Key_Shift) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_P) && !e->isAutoRepeat())
     {
         PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
         option->selectAddPosition();
@@ -254,7 +268,7 @@ bool PB_ActionModifyPositions2D::keyReleaseEvent(QKeyEvent *e)
 {
     if (_selectedPoint == NULL)
     {
-        if(((e->key() == Qt::Key_Control) || (e->key() == Qt::Key_Shift)) && !e->isAutoRepeat())
+        if((e->key() & Qt::Key_M) || (e->key() & Qt::Key_P))
         {
             PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
             option->selectFreeMove();
@@ -275,6 +289,41 @@ void PB_ActionModifyPositions2D::draw(GraphicsViewInterface &view, PainterInterf
 
     painter.setColor(QColor(75, 75, 75, 125));
     if (option->isDrawPlaneSelected()) {painter.fillRectXY(_min, _max, option->getZValue() - 0.10);}
+
+    if (option->isDrawLinesSelected())
+    {
+        if (option->isUpdateLinesSelected())
+        {
+            const QList<CT_AbstractItemDrawable*>& itemList = document()->getItemDrawable();
+
+            _zmin = std::numeric_limits<double>::max();
+            _zmax = -std::numeric_limits<double>::max();
+
+            for (int i = 0 ; i < itemList.size() ; i++)
+            {
+                Eigen::Vector3d min, max;
+                itemList.at(i)->getBoundingBox(min, max);
+
+                if (min(2) < std::numeric_limits<double>::max() &&
+                        min(2) > -std::numeric_limits<double>::max() &&
+                        max(2) < std::numeric_limits<double>::max() &&
+                        max(2) > -std::numeric_limits<double>::max())
+                {
+                    if (min(2) < _zmin) {_zmin = min(2);}
+                    if (min(2) > _zmax) {_zmax = min(2);}
+                    if (max(2) < _zmin) {_zmin = max(2);}
+                    if (max(2) > _zmax) {_zmax = max(2);}
+                }
+            }
+        }
+
+        painter.setColor(QColor(255, 0, 0));
+        for (int i = 0 ; i < _positions->size() ; i++)
+        {
+            const CT_Point2D *point = _positions->at(i);
+            painter.drawLine(point->getCenterX(), point->getCenterY(), _zmin, point->getCenterX(), point->getCenterY(), _zmax);
+        }
+    }
 
     painter.restore();
 }

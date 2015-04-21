@@ -175,6 +175,24 @@
              </widget>
             </item>
             <item>
+             <widget class="Line" name="line_7">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pb_toValidated">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../resource.qrc">
+                <normaloff>:/icons/ok.png</normaloff>:/icons/ok.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="Line" name="line">
               <property name="orientation">
                <enum>Qt::Vertical</enum>

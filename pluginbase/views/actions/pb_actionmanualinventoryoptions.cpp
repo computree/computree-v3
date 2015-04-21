@@ -16,6 +16,7 @@ PB_ActionManualInventoryOptions::PB_ActionManualInventoryOptions(const PB_Action
     ui->rb_attributes->setToolTip(tr("Ouverture de la saisie des attributs pour une scène [F]"));
     ui->pb_upper->setToolTip(tr("Séléctionne le cercle supérieur (CTRL MOLETTE +)"));
     ui->pb_lower->setToolTip(tr("Séléctionne le cercle inférieur (CTRL MOLETTE -)"));
+    ui->pb_toValidated->setToolTip(tr("Valide la scène active [V] ou [Fin]"));
 }
 
 PB_ActionManualInventoryOptions::~PB_ActionManualInventoryOptions()
@@ -161,6 +162,11 @@ void PB_ActionManualInventoryOptions::on_pb_fromTrash_clicked()
     emit retrieveFromTrash();
 }
 
+void PB_ActionManualInventoryOptions::on_pb_toValidated_clicked()
+{
+    emit sendToValidated();
+}
+
 void PB_ActionManualInventoryOptions::on_cb_trash_toggled(bool checked)
 {
     Q_UNUSED(checked);
@@ -172,3 +178,4 @@ void PB_ActionManualInventoryOptions::on_cb_trashScenes_toggled(bool checked)
     Q_UNUSED(checked);
     emit visibilityChanged();
 }
+

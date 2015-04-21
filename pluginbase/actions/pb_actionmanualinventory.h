@@ -60,6 +60,7 @@ public slots:
     void selectLowerCircle();
     void sendToTrash();
     void retreiveFromTrash();
+    void sendToValidated();
 
 private:
     CT_Circle*          _currentCircle;
@@ -75,6 +76,9 @@ private:
     QMap<QString, QStringList>                                      *_paramData;
     QMap<const CT_Scene*, QMap<QString, QString> >                  *_suppAttributes;
 
+    QList<const CT_Scene *>                                         _validatedScenes;
+
+
 
     QColor              _othersScenesCirclesColor;
     QColor              _activeSceneCirclesColor;
@@ -84,6 +88,9 @@ private:
     QColor              _currentCircleColor;
     QColor              _trashActiveCircleColor;
     QColor              _trashOtherCircleColor;
+    QColor              _validatedActiveCircleColor;
+    QColor              _validatedOtherCircleColor;
+
 };
 
 

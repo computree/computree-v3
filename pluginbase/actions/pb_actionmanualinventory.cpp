@@ -29,14 +29,18 @@ PB_ActionManualInventory::PB_ActionManualInventory(QMap<const CT_Scene*, const C
     _currentCircle = NULL;
     _currentScene = NULL;
 
-    _activeSceneCirclesColor = Qt::darkBlue;
-    _activeSceneCirclesLightColor = Qt::blue;
+    _activeSceneCirclesColor = Qt::blue;
+    _activeSceneCirclesLightColor = Qt::cyan;
     _othersScenesCirclesColor = Qt::darkGray;
     _othersScenesCirclesLightColor = Qt::lightGray;
     _othersCircleColor = QColor(255,125,0);
     _currentCircleColor = Qt::red;
     _trashActiveCircleColor = QColor(240,50,240);
     _trashOtherCircleColor = QColor(170,50,170);
+
+    _validatedActiveCircleColor = Qt::green;
+    _validatedOtherCircleColor = Qt::darkGreen;
+
 
 }
 
@@ -86,6 +90,7 @@ void PB_ActionManualInventory::init()
         connect(option, SIGNAL(chooseLowerCircle()), this, SLOT(selectLowerCircle()));
         connect(option, SIGNAL(sendToTrash()), this, SLOT(sendToTrash()));
         connect(option, SIGNAL(retrieveFromTrash()), this, SLOT(retreiveFromTrash()));
+        connect(option, SIGNAL(sendToValidated()), this, SLOT(sendToValidated()));
 
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
@@ -192,6 +197,13 @@ bool PB_ActionManualInventory::keyPressEvent(QKeyEvent *e)
             } else {
                 sendToTrash();
             }
+            return true;
+        }
+    }  else if(((e->key() == Qt::Key_End) || (e->key() == Qt::Key_V)) && !e->isAutoRepeat())
+    {
+        if (_currentScene != NULL)
+        {
+            sendToValidated();
             return true;
         }
     }
@@ -412,6 +424,8 @@ void PB_ActionManualInventory::selectUpperCircle()
             itC.next();
             _currentCircle = (CT_Circle*) itC.value();
 
+            _selectedDbh->insert(_currentScene, _currentCircle);
+
             document()->removeItemDrawable(*oldCircle);
             document()->removeItemDrawable(*_currentCircle);
             updateVisibility(_currentScene, oldCircle);
@@ -435,6 +449,8 @@ void PB_ActionManualInventory::selectLowerCircle()
             CT_Circle* oldCircle = _currentCircle;
             itC.previous();
             _currentCircle = (CT_Circle*) itC.value();
+
+            _selectedDbh->insert(_currentScene, _currentCircle);
 
             document()->removeItemDrawable(*oldCircle);
             document()->removeItemDrawable(*_currentCircle);
@@ -460,6 +476,21 @@ void PB_ActionManualInventory::retreiveFromTrash()
     {
         _trashedScenes->removeOne(_currentScene);
         visibilityChanged();
+    }
+}
+
+void PB_ActionManualInventory::sendToValidated()
+{
+    if (_currentScene != NULL)
+    {
+        if (_validatedScenes.contains(_currentScene))
+        {
+            _validatedScenes.removeOne(_currentScene);
+            visibilityChanged();
+        } else {
+            _validatedScenes.append(_currentScene);
+            visibilityChanged();
+        }
     }
 }
 
@@ -522,7 +553,12 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
 
                     if (_preferredDbh->contains(circle))
                     {
-                        document()->setColor(circle, _activeSceneCirclesLightColor);
+                        if (_validatedScenes.contains(scene))
+                        {
+                            document()->setColor(circle, _validatedActiveCircleColor);
+                        } else {
+                            document()->setColor(circle, _activeSceneCirclesLightColor);
+                        }
                     } else {
                         document()->setColor(circle, _activeSceneCirclesColor);
                     }
@@ -539,13 +575,23 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
                 document()->addItemDrawable(*circle);
                 if (_selectedDbh->values().contains(circle))
                 {
-                    document()->setColor(circle, _othersCircleColor);
-                } else {
-                    if (_preferredDbh->contains(circle))
+                    if (_validatedScenes.contains(scene))
                     {
-                        document()->setColor(circle, _othersScenesCirclesLightColor);
+                        document()->setColor(circle, _validatedActiveCircleColor);
                     } else {
-                        document()->setColor(circle, _othersScenesCirclesColor);
+                        document()->setColor(circle, _othersCircleColor);
+                    }
+                } else {
+                    if (_validatedScenes.contains(scene))
+                    {
+                        document()->setColor(circle, _validatedOtherCircleColor);
+                    } else {
+                        if (_preferredDbh->contains(circle))
+                        {
+                            document()->setColor(circle, _othersScenesCirclesLightColor);
+                        } else {
+                            document()->setColor(circle, _othersScenesCirclesColor);
+                        }
                     }
                 }
             }

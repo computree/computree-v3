@@ -53,7 +53,10 @@ private:
     QColor                              _selectedColor;
     QColor                              _normalColor;
     Eigen::Vector2d                     _min;
-    Eigen::Vector2d                     _max;
+    Eigen::Vector2d                     _max;    
+    double                              _zmin;
+    double                              _zmax;
+
 
     bool getCoordsForMousePosition(const QMouseEvent *e, double &x, double &y);
     CT_Point2D *getNearestPosition(double x, double y);
