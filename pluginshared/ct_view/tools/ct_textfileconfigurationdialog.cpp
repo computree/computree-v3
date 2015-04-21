@@ -26,8 +26,8 @@ CT_TextFileConfigurationDialog::CT_TextFileConfigurationDialog(QList<CT_TextFile
                                                                bool autoDetect) :
     QDialog(parent),
     ui(new Ui::CT_TextFileConfigurationDialog)
-{
-    _neededFields = neededFields;
+{    
+    _neededFields.append(neededFields);
 
     initConstructor(fileName, autoDetect);
 }
@@ -200,16 +200,25 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
         combo->addItems(_headersNames);
 
         int matchIndex = -1;
-        int longuestMatched = 0;
+        int bestBeginIndex = 10000;
+        int bestMatchedLength = 0;
 
-        for(int j=0; j<_headersNames.size() && matchIndex == -1; ++j)
+        for(int j=0; j<_headersNames.size(); ++j)
         {
-            if(neededField.m_fieldInFileChooser.exactMatch(_headersNames.at(j)))
+            int beginIndex = neededField.m_fieldInFileChooser.indexIn(_headersNames.at(j));
+            int matchedLength = neededField.m_fieldInFileChooser.matchedLength();
+
+            if(beginIndex >= 0)
             {
-                if (matchIndex < 0 || neededField.m_fieldInFileChooser.matchedLength() > longuestMatched)
+                if (matchIndex < 0 || beginIndex < bestBeginIndex || matchedLength > bestMatchedLength)
                 {
-                    matchIndex = j;
-                    longuestMatched = neededField.m_fieldInFileChooser.matchedLength();
+                    if ((beginIndex <  bestBeginIndex) ||
+                       ((beginIndex == bestBeginIndex) && (matchedLength > bestMatchedLength)))
+                    {
+                        matchIndex = j;
+                        bestMatchedLength = neededField.m_fieldInFileChooser.matchedLength();
+                        bestBeginIndex = beginIndex;
+                    }
                 }
             }
         }

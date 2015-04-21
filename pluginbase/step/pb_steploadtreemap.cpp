@@ -23,11 +23,11 @@
 // Constructor : initialization of parameters
 PB_StepLoadTreeMap::PB_StepLoadTreeMap(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
-    _neededFields.append(CT_TextFileConfigurationFields("ID_Plot", QRegExp(".*([iI][dD]|[pP][lL][oO][tT]|[pP][lL][aA][cC][eE][tT][tT][eE]).*"),true));
-    _neededFields.append(CT_TextFileConfigurationFields("IDtree", QRegExp(".*([iI][dD]|[nN][uU][mM]|[tT][rR][eE][eE]|[aA][rR][bB][rR][eE]).*"), true));
-    _neededFields.append(CT_TextFileConfigurationFields("X", QRegExp(".*[xX].*"), true));
-    _neededFields.append(CT_TextFileConfigurationFields("Y", QRegExp(".*[yY].*"), true));
-    _neededFields.append(CT_TextFileConfigurationFields("DBH (cm)", QRegExp("([dD][bB][hH]|[dD][iI][aA][mM]|[D]).*"), true));
+    _neededFields.append(CT_TextFileConfigurationFields("ID_Plot", QRegExp("([iI][dD]|[nN][uU][mM]|[pP][lL][oO][tT]|[pP][lL][aA][cC][eE][tT][tT][eE])"), false));
+    _neededFields.append(CT_TextFileConfigurationFields("ID_Tree", QRegExp("([iI][dD]|[nN][uU][mM])"), false));
+    _neededFields.append(CT_TextFileConfigurationFields("X", QRegExp("[xX]"), false));
+    _neededFields.append(CT_TextFileConfigurationFields("Y", QRegExp("[yY]"), false));
+    _neededFields.append(CT_TextFileConfigurationFields("DBH (cm)", QRegExp("([dD][bB][hH]|[dD][iI][aA][mM]|[D])"), false));
 
     _refFileName = "";
     _refHeader = true;
@@ -152,7 +152,7 @@ void PB_StepLoadTreeMap::compute()
         QTextStream stream(&fRef);
         stream.setLocale(_refLocale);
 
-        int colID  = _refColumns.value("IDtree", -1);
+        int colID  = _refColumns.value("ID_Tree", -1);
         int colX   = _refColumns.value("X", -1);
         int colY   = _refColumns.value("Y", -1);
         int colVal = _refColumns.value("DBH (cm)", -1);

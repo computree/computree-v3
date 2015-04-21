@@ -817,7 +817,7 @@ bool CT_VirtualAbstractStep::showInputResultConfigurationDialog()
 bool CT_VirtualAbstractStep::showPreConfigurationDialog()
 {
     //cree la fenetre de pre-configuration
-    createPreConfigurationDialog();
+    if (_preConfigDialog == NULL) {createPreConfigurationDialog();}
 
     return preConfigure();
 }
@@ -825,7 +825,7 @@ bool CT_VirtualAbstractStep::showPreConfigurationDialog()
 bool CT_VirtualAbstractStep::showPostConfigurationDialog()
 {
     // cree la fenetre de post-configuration
-    createPostConfigurationDialog();
+    if (_postConfigDialog == NULL) {createPostConfigurationDialog();}
 
     return postConfigure();
 }
