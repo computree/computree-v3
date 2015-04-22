@@ -133,6 +133,7 @@ public:
 
         // create the model
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
+        model->setAsDefaultItemAttributeModel();
 
         QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
 
@@ -177,6 +178,7 @@ public:
 
         // create the model
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
+        model->setAsDefaultItemAttributeModel();
 
         // add element to the collection
         QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);

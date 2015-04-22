@@ -65,7 +65,7 @@ bool CT_AbstractSingularItemDrawable::addItemAttribute(CT_AbstractItemAttribute 
 
 CT_AbstractItemAttribute* CT_AbstractSingularItemDrawable::itemAttribute(const CT_OutAbstractItemAttributeModel *outModel) const
 {
-    if(outModel->originalModel() != outModel)
+    if(outModel->isADefaultItemAttributeModel())
         return PS_DIAM->itemAttributeFromModel(outModel, getType());
 
     return m_itemAttributes.itemAttributeFromModel(outModel);

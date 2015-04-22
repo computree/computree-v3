@@ -72,10 +72,12 @@ CT_AbstractItemAttribute *CT_DefaultItemAttributeManager::itemAttributeFromUniqu
 
 CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::itemAttributeFromModel(const CT_OutAbstractItemAttributeModel *outModel, const QString &itemType) const
 {
-    // TODO : test performance en utilisant le type et sans utiliser le type (juste parcourir toute la map)
+    if(!outModel->isADefaultItemAttributeModel())
+        return NULL;
 
     CT_OutAbstractModel *orModel = outModel->originalModel();
 
+    // TODO : test performance en utilisant le type et sans utiliser le type (juste parcourir toute la map)
     QStringList types = itemType.split("/");
     bool ok = false;
 

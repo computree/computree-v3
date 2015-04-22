@@ -18,6 +18,11 @@ public:
      */
     CT_AbstractItemAttribute* itemAttribute() const;
 
+    /**
+     * @brief Returns true if this model or is originalModel() is a default item attribute model (default = created by the itemdrawable statically = not added by a step)
+     */
+    bool isADefaultItemAttributeModel() const;
+
 protected:
 
     /**
@@ -32,6 +37,15 @@ protected:
 
 private:
     CT_AbstractItemAttribute    *m_attribute;
+    bool                        m_default;
+
+protected:
+    friend class CT_DefaultItemAttributeManager;
+
+    /**
+     * @brief Called from CT_DefaultItemAttributeManager to set this attribute model as default
+     */
+    void setAsDefaultItemAttributeModel();
 };
 
 #endif // CT_OUTABSTRACTITEMATTRIBUTEMODEL_H
