@@ -231,12 +231,10 @@ bool PB_GroupDataExporter::protectedExportToFile()
                         if (item != NULL)
                         {
                             CT_AbstractItemAttribute *att = item->itemAttribute(itemAttModel);
-                            //if (att == NULL) {att = item->itemAttribute((CT_OutAbstractItemAttributeModel*) itemAttModel->originalModel());}
 
                             if(att != NULL)
                             {
                                 QString value = att->toString(item, &ok);
-
                                 if (ok) {txtStream << value;}
                             }
                         }

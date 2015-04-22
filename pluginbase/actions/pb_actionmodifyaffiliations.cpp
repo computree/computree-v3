@@ -305,7 +305,7 @@ void PB_ActionModifyAffiliations::draw(GraphicsViewInterface &view, PainterInter
             {
                 painter.setColor(QColor(255, 0, 255));
             } else {
-                painter.setColor(QColor(0, 0, 255));
+                painter.setColor(Qt::yellow);
             }
 
 

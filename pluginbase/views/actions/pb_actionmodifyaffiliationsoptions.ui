@@ -146,7 +146,7 @@
          <item>
           <widget class="QCheckBox" name="cb_source">
            <property name="styleSheet">
-            <string notr="true">QCheckBox { color: blue}</string>
+            <string notr="true">QCheckBox { color: yellow;background:black}</string>
            </property>
            <property name="text">
             <string>De référence</string>
@@ -159,7 +159,7 @@
          <item>
           <widget class="QCheckBox" name="cb_target">
            <property name="styleSheet">
-            <string notr="true">QCheckBox { color: green}</string>
+            <string notr="true">QCheckBox { color: lightgreen;background: black}</string>
            </property>
            <property name="text">
             <string>A affilier</string>
@@ -179,7 +179,7 @@
          <item>
           <widget class="QCheckBox" name="cb_affiliations">
            <property name="styleSheet">
-            <string notr="true">QCheckBox { color: green}</string>
+            <string notr="true">QCheckBox { color: lightgreen;background: black}</string>
            </property>
            <property name="text">
             <string>Lignes</string>
