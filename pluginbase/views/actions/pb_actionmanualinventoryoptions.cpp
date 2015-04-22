@@ -13,7 +13,7 @@ PB_ActionManualInventoryOptions::PB_ActionManualInventoryOptions(const PB_Action
 
     ui->rb_select->setToolTip(tr("Séléction de la scène active, sans modification [S]"));
     ui->rb_dbh->setToolTip(tr("Choix d'un cercle pour une scène [D]"));
-    ui->rb_attributes->setToolTip(tr("Ouverture de la saisie des attributs pour une scène [F]"));
+    ui->rb_attributes->setToolTip(tr("Ouverture de la saisie des attributs pour une scène [F] ou [C] pour la scène active"));
     ui->pb_upper->setToolTip(tr("Séléctionne le cercle supérieur (CTRL MOLETTE +)"));
     ui->pb_lower->setToolTip(tr("Séléctionne le cercle inférieur (CTRL MOLETTE -)"));
     ui->pb_toValidated->setToolTip(tr("Valide la scène active [V] ou [Fin]"));
@@ -92,6 +92,11 @@ bool PB_ActionManualInventoryOptions::isShowTrashChecked()
 bool PB_ActionManualInventoryOptions::isShowTrashedScenesChecked()
 {
     return ui->cb_trashScenes->isChecked();
+}
+
+bool PB_ActionManualInventoryOptions::isAutoValidateChecked()
+{
+    return ui->cb_autoValidate->isChecked();
 }
 
 void PB_ActionManualInventoryOptions::on_rb_select_toggled(bool checked)
@@ -178,4 +183,3 @@ void PB_ActionManualInventoryOptions::on_cb_trashScenes_toggled(bool checked)
     Q_UNUSED(checked);
     emit visibilityChanged();
 }
-

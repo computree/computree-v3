@@ -35,6 +35,7 @@ public:
     bool isShowOtherScenesChecked();
     bool isShowTrashChecked();
     bool isShowTrashedScenesChecked();
+    bool isAutoValidateChecked();
 
 private:
     Ui::PB_ActionManualInventoryOptions *ui;

@@ -114,6 +114,8 @@ bool PB_ActionModifyPositions2D::mousePressEvent(QMouseEvent *e)
         _leftButton = true;
         if (option->isMovePositionSelected() || option->isRemovePositionSelected() || option->isAddPositionSelected())
         {
+            _selectedPoint = NULL;
+
             double x, y;
             if (getCoordsForMousePosition(e, x, y))
             {
@@ -171,7 +173,7 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
 {   
     PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
 
-    if (e->button() == Qt::LeftButton)
+    if (_leftButton)
     {
         _leftButton = false;
         if (_selectedPoint != NULL)
@@ -185,6 +187,8 @@ bool PB_ActionModifyPositions2D::mouseReleaseEvent(QMouseEvent *e)
                     _selectedPoint->setCenterX(x);
                     _selectedPoint->setCenterY(y);
                     document()->unlock();
+
+                    if (option->isMovePositionSelected()) {option->selectFreeMove();}
 
                     document()->setColor(_selectedPoint, _normalColor);
                     document()->redrawGraphics();
@@ -229,36 +233,32 @@ bool PB_ActionModifyPositions2D::wheelEvent(QWheelEvent *e)
 
 bool PB_ActionModifyPositions2D::keyPressEvent(QKeyEvent *e)
 {
-    if((e->key() == Qt::Key_M) && !e->isAutoRepeat())
+    PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
+
+    if((e->key() == Qt::Key_D) && !e->isAutoRepeat())
     {
-        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
         option->selectMovePosition();
         return true;
     }
 
-    if((e->key() == Qt::Key_P) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_A) && !e->isAutoRepeat())
     {
-        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
         option->selectAddPosition();
         return true;
     }
 
-    if((e->key() == Qt::Key_Delete) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_S) && !e->isAutoRepeat())
     {
-        PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
-        if (option->isRemovePositionSelected())
-        {
-            if (_selectedPoint != NULL)
-            {
-                document()->setColor(_selectedPoint, _normalColor);
-                _selectedPoint = NULL;
-            }
-            option->selectFreeMove();
-        } else  {
-            option->selectRemovePosition();
-        }
+        option->selectRemovePosition();
         return true;
     }
+
+    if((e->key() == Qt::Key_F) && !e->isAutoRepeat())
+    {
+        option->selectFreeMove();
+        return true;
+    }
+
 
     return false;
 
@@ -266,16 +266,7 @@ bool PB_ActionModifyPositions2D::keyPressEvent(QKeyEvent *e)
 
 bool PB_ActionModifyPositions2D::keyReleaseEvent(QKeyEvent *e)
 {
-    if (_selectedPoint == NULL)
-    {
-        if((e->key() & Qt::Key_M) || (e->key() & Qt::Key_P))
-        {
-            PB_ActionModifyPositions2DOptions *option = (PB_ActionModifyPositions2DOptions*)optionAt(0);
-            option->selectFreeMove();
-            return true;
-        }
-    }
-
+    Q_UNUSED(e);
     return false;
 }
 

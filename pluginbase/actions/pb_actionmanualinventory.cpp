@@ -179,15 +179,20 @@ bool PB_ActionManualInventory::keyPressEvent(QKeyEvent *e)
     {
         option->chooseSelectMode();
         return true;
-    } else if((e->key() == Qt::Key_D) && !e->isAutoRepeat())
+    } else if ((e->key() == Qt::Key_D) && !e->isAutoRepeat())
     {
         option->chooseDbhMode();
         return true;
-    } else if((e->key() == Qt::Key_F) && !e->isAutoRepeat())
+    } else if ((e->key() == Qt::Key_F) && !e->isAutoRepeat())
     {
         option->chooseAttributesMode();
         return true;
-    }  else if((e->key() == Qt::Key_Delete) && !e->isAutoRepeat())
+    } else if (((e->key() == Qt::Key_C) || (e->key() == Qt::Key_A)) && !e->isAutoRepeat())
+    {
+        setAttributes(_currentScene);
+        document()->redrawGraphics();
+        return true;
+    } else if((e->key() == Qt::Key_Delete) && !e->isAutoRepeat())
     {
         if (_currentScene != NULL)
         {
@@ -393,6 +398,8 @@ void PB_ActionManualInventory::selectActiveScene(const QPoint &point)
 
 void PB_ActionManualInventory::setAttributes(const CT_Scene* scene)
 {
+    PB_ActionManualInventoryOptions *option = (PB_ActionManualInventoryOptions*)optionAt(0);
+
     QMap<QString, QString> &attrMap = (QMap<QString, QString>&) _suppAttributes->value(scene);
 
     PB_ActionManualInventoryAttributesDialog dialog(_paramData, attrMap);
@@ -406,6 +413,12 @@ void PB_ActionManualInventory::setAttributes(const CT_Scene* scene)
             QString &value  = it.value();
 
             value = dialog.getValueForAttr(name);
+        }
+
+        if (option->isAutoValidateChecked() && !_validatedScenes.contains(scene))
+        {
+            _validatedScenes.append(scene);
+            visibilityChanged();
         }
     }
 }

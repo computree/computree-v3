@@ -11,10 +11,10 @@ PB_ActionModifyPositions2DOptions::PB_ActionModifyPositions2DOptions(const PB_Ac
 {
     ui->setupUi(this);
 
-    ui->pb_freeMove->setToolTip(tr("Déplacement normal dans la vue"));
-    ui->pb_move->setToolTip(tr("Modification d'une position [M maintenu]"));
-    ui->pb_add->setToolTip(tr("Ajout d'une position [P maintenu]"));
-    ui->pb_remove->setToolTip(tr("Suppression d'une position [SUPPR avant chaque suppression]"));
+    ui->pb_freeMove->setToolTip(tr("Déplacement normal dans la vue [F]"));
+    ui->pb_move->setToolTip(tr("Modification d'une position [D]"));
+    ui->pb_add->setToolTip(tr("Ajout d'une position [A]"));
+    ui->pb_remove->setToolTip(tr("Suppression d'une position [S]"));
 
     connect(ui->buttonGroup_step, SIGNAL(buttonClicked(int)), this, SLOT(singleStepChanged(int)));
 }

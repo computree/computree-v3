@@ -69,8 +69,15 @@ bool CT_ComboBox::setAllValues(const QList<SettingsNodeGroup*> &list)
     if(values.isEmpty())
         return false;
 
-    setWidgetValueList(valuesList.first()->value());
-    return setWidgetValue(values.first()->value());
+    if (valuesList.size() > 0)
+    {
+        setWidgetValueList(valuesList.first()->value());
+    }
+
+    bool val = false;
+    if (values.size() >0) {val = setWidgetValue(values.first()->value());}
+
+    return val;
 }
 
 QWidget* CT_ComboBox::createWidget(QWidget &parent)
