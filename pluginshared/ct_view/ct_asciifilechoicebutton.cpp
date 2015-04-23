@@ -274,6 +274,8 @@ void CT_AsciiFileChoiceButton::chooseFile()
         _columns->clear();
         *_columns = _dialog->getNeededFieldColumns();
         _columnsAsString = _dialog->getFieldColumnsSelectedAsString(*_columns);
+
+        _labelCreated->setText(*_fileName);
     }
 
     emit fileChanged();
