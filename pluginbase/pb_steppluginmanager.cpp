@@ -80,6 +80,7 @@
 #include "step/pb_stepfitcylinderoncluster.h"
 #include "step/pb_stepextractpositionsfromdensity.h"
 #include "step/pb_stepmergeclustersfrompositions.h"
+#include "step/pb_stepmergeclustersfrompositions02.h"
 #include "step/pb_stepmodifypositions2d.h"
 
 
@@ -221,6 +222,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMergeClustersFromPositions(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepMergeClustersFromPositions02(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Gestion des items")));
     sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));

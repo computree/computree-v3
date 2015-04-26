@@ -100,7 +100,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionmodifypositions2d.h \
     views/actions/pb_actionmodifypositions2doptions.h \
     step/pb_stepmodifypositions2d.h \
-    step/pb_steploadtreemap.h
+    step/pb_steploadtreemap.h \
+    step/pb_stepmergeclustersfrompositions02.h \
+    actions/pb_actionmodifyclustersgroups02.h \
+    views/actions/pb_actionmodifyclustersgroupsoptions02.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -196,7 +199,10 @@ SOURCES += \
     actions/pb_actionmodifypositions2d.cpp \
     views/actions/pb_actionmodifypositions2doptions.cpp \
     step/pb_stepmodifypositions2d.cpp \
-    step/pb_steploadtreemap.cpp
+    step/pb_steploadtreemap.cpp \
+    step/pb_stepmergeclustersfrompositions02.cpp \
+    actions/pb_actionmodifyclustersgroups02.cpp \
+    views/actions/pb_actionmodifyclustersgroupsoptions02.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
@@ -224,7 +230,8 @@ FORMS += \
     views/actions/pb_actionvalidateinventoryoptions.ui \
     views/actions/pb_actionvalidateinventoryattributesdialog.ui \
     views/actions/pb_actionmodifyclustersgroupsoptions.ui \
-    views/actions/pb_actionmodifypositions2doptions.ui
+    views/actions/pb_actionmodifypositions2doptions.ui \
+    views/actions/pb_actionmodifyclustersgroupsoptions02.ui
 
 TRANSLATIONS += languages/pluginbase_fr.ts \
                 languages/pluginbase_en.ts
