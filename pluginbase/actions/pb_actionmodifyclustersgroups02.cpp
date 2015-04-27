@@ -10,9 +10,10 @@
 
 #include "ct_math/ct_mathpoint.h"
 
-PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_Point2D *, QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> > *map) : CT_AbstractActionForGraphicsView()
+PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_Point2D *, QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> > *map, QMultiMap<CT_PointCluster *, CT_PointCluster *> *clToCl) : CT_AbstractActionForGraphicsView()
 {
     _positionToCluster = map;
+    _clusterToCluster = clToCl;
 
     m_status = 0;
     m_mousePressed = false;
@@ -153,11 +154,8 @@ void PB_ActionModifyClustersGroups02::init()
         connect(option, SIGNAL(affectClusterToB()), this, SLOT(affectClusterToB()));
         connect(option, SIGNAL(affectClusterToTMP()), this, SLOT(affectClusterToTMP()));
         connect(option, SIGNAL(affectClusterToTrash()), this, SLOT(affectClusterToTrash()));
-        connect(option, SIGNAL(enterLimitMode()), this, SLOT(updateLimitMode()));
-        connect(option, SIGNAL(distanceChanged(int)), this, SLOT(distanceChanged(int)));
 
         _positionsChanged = true;
-        option->selectLimitMode();
 
         document()->fitToContent();
     }
@@ -347,7 +345,7 @@ bool PB_ActionModifyClustersGroups02::keyPressEvent(QKeyEvent *e)
 {   
     PB_ActionModifyClustersGroupsOptions02 *option = (PB_ActionModifyClustersGroupsOptions02*)optionAt(0);
 
-    if(option->isInSceneMode() && (e->key() == Qt::Key_Control) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_Control) && !e->isAutoRepeat())
     {
         option->setMultiSelect(true);
         setSelectionMode(option->selectionMode());
@@ -361,7 +359,7 @@ bool PB_ActionModifyClustersGroups02::keyReleaseEvent(QKeyEvent *e)
 {
     PB_ActionModifyClustersGroupsOptions02 *option = (PB_ActionModifyClustersGroupsOptions02*)optionAt(0);
 
-    if(option->isInSceneMode() && (e->key() == Qt::Key_Control) && !e->isAutoRepeat())
+    if((e->key() == Qt::Key_Control) && !e->isAutoRepeat())
     {
         option->setMultiSelect(false);
         setSelectionMode(option->selectionMode());
@@ -386,7 +384,7 @@ void PB_ActionModifyClustersGroups02::drawOverlay(GraphicsViewInterface &view, Q
 
 CT_AbstractAction* PB_ActionModifyClustersGroups02::copy() const
 {
-    return new PB_ActionModifyClustersGroups02(_positionToCluster);
+    return new PB_ActionModifyClustersGroups02(_positionToCluster, _clusterToCluster);
 }
 
 bool PB_ActionModifyClustersGroups02::setSelectionMode(GraphicsViewInterface::SelectionMode mode)
@@ -453,7 +451,6 @@ void PB_ActionModifyClustersGroups02::selectPositionA()
             }
         }
     }
-    updateLimitMode();
 }
 
 void PB_ActionModifyClustersGroups02::selectPositionB()
@@ -490,7 +487,6 @@ void PB_ActionModifyClustersGroups02::selectPositionB()
             }
         }
     }
-    updateLimitMode();
 }
 
 void PB_ActionModifyClustersGroups02::swapAandB()
@@ -694,73 +690,6 @@ void PB_ActionModifyClustersGroups02::affectClusterToTrash()
         }
     }
     document()->setSelectAllItemDrawable(false);
-    document()->redrawGraphics();
-}
-
-void PB_ActionModifyClustersGroups02::updateLimitMode()
-{
-    if (_positionsChanged)
-    {
-        Eigen::Vector3d origin = _positionA->getCenterCoordinate();
-        Eigen::Vector3d direction = _positionB->getCenterCoordinate() - _positionA->getCenterCoordinate();
-        direction.normalize();
-
-        QList<const CT_PointCluster*>* listA = _positionToCluster->value(_positionA).second;
-        QList<const CT_PointCluster*>* listB = _positionToCluster->value(_positionB).second;
-
-        if (listA != NULL && listB != NULL)
-        {
-            _positionsChanged = false;
-            _clustersOrdered.clear();
-
-            // Scene A
-            QMultiMap<float, CT_PointCluster*> map;
-            for (int i = 0 ; i < listA->size() ; i++)
-            {
-                CT_PointCluster* clusterA = (CT_PointCluster*) (listA->at(i));
-                Eigen::Vector3d point = clusterA->getCenterCoordinate();
-
-                float distance = direction(0)*(point(0) - origin(0)) + direction(1)*(point(1) - origin(1));
-                map.insert(distance, clusterA);
-            }
-            _currentLastA = map.size() - 1;
-
-            // Scene B
-            for (int i = 0 ; i < listB->size() ; i++)
-            {
-                CT_PointCluster* clusterB = (CT_PointCluster*) (listB->at(i));
-                Eigen::Vector3d point = clusterB->getCenterCoordinate();
-
-                float distance = direction(0)*(point(0) - origin(0)) + direction(1)*(point(1) - origin(1));
-                map.insert(distance, clusterB);
-            }
-            _clustersOrdered.append(map.values());
-        } else {PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Positions invalides")); return;}
-    }
-
-    PB_ActionModifyClustersGroupsOptions02 *option = (PB_ActionModifyClustersGroupsOptions02*)optionAt(0);
-    option->setMaxDistance(_clustersOrdered.size());
-    option->setDistance(_currentLastA);
-}
-
-void PB_ActionModifyClustersGroups02::distanceChanged(int val)
-{
-    if (val > _currentLastA)
-    {
-        for (int i = _currentLastA + 1 ; i <= val ; i++)
-        {
-            CT_PointCluster* cluster = _clustersOrdered.at(i - 1);
-            addToA(cluster);
-        }
-    } else if (val < _currentLastA)
-    {
-        for (int i = _currentLastA ; i > val ; i--)
-        {
-            CT_PointCluster* cluster = _clustersOrdered.at(i - 1);
-            addToB(cluster);
-        }
-    }
-    _currentLastA = val;
     document()->redrawGraphics();
 }
 

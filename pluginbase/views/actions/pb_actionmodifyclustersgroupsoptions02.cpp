@@ -9,9 +9,6 @@ PB_ActionModifyClustersGroupsOptions02::PB_ActionModifyClustersGroupsOptions02(c
     ui(new Ui::PB_ActionModifyClustersGroupsOptions02)
 {
     ui->setupUi(this);
-
-    connect(ui->buttonGroupType, SIGNAL(buttonClicked(int)), this, SLOT(modeChanged(int)));
-    connect(ui->buttonGroupBy, SIGNAL(buttonClicked(int)), this, SLOT(byChanged(int)));
 }
 
 PB_ActionModifyClustersGroupsOptions02::~PB_ActionModifyClustersGroupsOptions02()
@@ -44,11 +41,6 @@ GraphicsViewInterface::SelectionMode PB_ActionModifyClustersGroupsOptions02::sel
         return (GraphicsViewInterface::SelectionMode)mode;
     }
 
-    if(ui->pb_SplitMode->isChecked()) {
-        mode--;
-        mode += GraphicsViewInterface::SELECT_POINTS;
-    }
-
     return (GraphicsViewInterface::SelectionMode)mode;
 }
 
@@ -75,21 +67,6 @@ bool PB_ActionModifyClustersGroupsOptions02::isTrashVisible() const
 bool PB_ActionModifyClustersGroupsOptions02::isOthersVisible() const
 {
     return ui->cb_othersVisible->isChecked();
-}
-
-bool PB_ActionModifyClustersGroupsOptions02::isInSceneMode() const
-{
-    return ui->pb_SceneMode->isChecked();
-}
-
-bool PB_ActionModifyClustersGroupsOptions02::isInLimitMode() const
-{
-    return ui->pb_LimitMode->isChecked();
-}
-
-bool PB_ActionModifyClustersGroupsOptions02::isInSplitMode() const
-{
-    return ui->pb_SplitMode->isChecked();
 }
 
 void PB_ActionModifyClustersGroupsOptions02::on_buttonGroupType_buttonReleased(int id)
@@ -167,7 +144,6 @@ void PB_ActionModifyClustersGroupsOptions02::selectColorA(QColor color)
     _colorA = color;
     ui->pb_ColorA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
     ui->pb_toA->setStyleSheet("QToolButton { background-color: " + _colorA.name() + "; }");
-    ui->pb_frontierA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
 }
 
 void PB_ActionModifyClustersGroupsOptions02::on_pb_ColorB_clicked()
@@ -183,25 +159,6 @@ void PB_ActionModifyClustersGroupsOptions02::selectColorB(QColor color)
     _colorB = color;
     ui->pb_ColorB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
     ui->pb_toB->setStyleSheet("QToolButton { background-color: " + _colorB.name() + "; }");
-    ui->pb_frontierB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
-}
-
-void PB_ActionModifyClustersGroupsOptions02::selectSceneMode()
-{
-    ui->pb_SceneMode->setChecked(true);
-    modeChanged(0);
-}
-
-void PB_ActionModifyClustersGroupsOptions02::selectLimitMode()
-{
-    ui->pb_LimitMode->setChecked(true);
-    modeChanged(0);
-}
-
-void PB_ActionModifyClustersGroupsOptions02::selectSplitMode()
-{
-    ui->pb_SplitMode->setChecked(true);
-    modeChanged(0);
 }
 
 void PB_ActionModifyClustersGroupsOptions02::setMultiSelect(bool multi)
@@ -212,17 +169,6 @@ void PB_ActionModifyClustersGroupsOptions02::setMultiSelect(bool multi)
     } else {
         ui->toolButtonSelectOne->setChecked(true);
     }
-}
-
-void PB_ActionModifyClustersGroupsOptions02::setDistance(int val)
-{
-    ui->sb_LengthOnAxis->setValue(val);
-}
-
-void PB_ActionModifyClustersGroupsOptions02::setMaxDistance(int val)
-{
-    ui->sb_LengthOnAxis->setMaximum(val);
-    ui->sb_LengthOnAxis->setSuffix(QString("/ %1").arg(val));
 }
 
 void PB_ActionModifyClustersGroupsOptions02::on_pb_toA_clicked()
@@ -275,45 +221,3 @@ void PB_ActionModifyClustersGroupsOptions02::on_cb_trashVisible_toggled(bool che
     emit visibilityChanged();
 }
 
-void PB_ActionModifyClustersGroupsOptions02::modeChanged(int button)
-{
-    Q_UNUSED(button);
-
-    if (ui->pb_SceneMode->isChecked())
-    {
-        ui->wid_sceneMode->setVisible(true);
-        ui->wid_limitMode->setVisible(false);
-    } else if (ui->pb_LimitMode->isChecked())
-    {
-        ui->wid_sceneMode->setVisible(false);
-        ui->wid_limitMode->setVisible(true);
-
-        setSelectionMode(GraphicsViewInterface::SELECT_ONE);
-
-        emit enterLimitMode();
-
-    } else if (ui->pb_SplitMode->isChecked())
-    {
-        ui->wid_sceneMode->setVisible(false);
-        ui->wid_limitMode->setVisible(false);
-    }
-}
-
-void PB_ActionModifyClustersGroupsOptions02::byChanged(int button)
-{
-    Q_UNUSED(button);
-    if (ui->rb_001->isChecked())
-    {
-        ui->sb_LengthOnAxis->setSingleStep(1);
-    } else if (ui->rb_010->isChecked())
-    {
-        ui->sb_LengthOnAxis->setSingleStep(10);
-    } else  {
-        ui->sb_LengthOnAxis->setSingleStep(100);
-    }
-}
-
-void PB_ActionModifyClustersGroupsOptions02::on_sb_LengthOnAxis_valueChanged(int arg1)
-{
-    emit distanceChanged(arg1);
-}

@@ -25,20 +25,10 @@ public:
     bool isTrashVisible() const;
     bool isOthersVisible() const;
 
-    bool isInSceneMode() const;
-    bool isInLimitMode() const;
-    bool isInSplitMode() const;
-
     void selectColorA(QColor color);
     void selectColorB(QColor color);
 
-    void selectSceneMode();
-    void selectLimitMode();
-    void selectSplitMode();
-
     void setMultiSelect(bool multi);
-    void setDistance(int val);
-    void setMaxDistance(int val);
 protected:
     QColor  _colorA;
     QColor  _colorB;
@@ -67,11 +57,6 @@ private slots:
     void on_cb_othersVisible_toggled(bool checked);
     void on_cb_tmpVisible_toggled(bool checked);
     void on_cb_trashVisible_toggled(bool checked);
-
-    void modeChanged(int button);
-    void byChanged(int button);
-
-    void on_sb_LengthOnAxis_valueChanged(int arg1);
 
 public slots:
 

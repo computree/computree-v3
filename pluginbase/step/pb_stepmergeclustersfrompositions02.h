@@ -26,7 +26,39 @@ class PB_StepMergeClustersFromPositions02: public CT_AbstractStep
 {
     Q_OBJECT
 
+
 public:
+
+    class ClusterData
+    {
+    public:
+
+        ClusterData()
+        {
+
+        }
+
+        ClusterData(CT_PointCluster* cluster, double distance, CT_Point2D* position, CT_PointCluster* positionCluster)
+        {
+            _cluster = cluster;
+            _distance = distance;
+            _position = position;
+            _positionCluster = positionCluster;
+        }
+
+        CT_PointCluster* _cluster;
+        double           _distance;
+        CT_Point2D*      _position;
+        CT_PointCluster* _positionCluster;
+
+        const Eigen::Vector3d& center() {return _cluster->getCenterCoordinate();}
+
+        bool operator < (const ClusterData& cld) const
+        {
+            return (_distance < cld._distance);
+        }
+    };
+
 
     /*! \brief Step constructor
      * 
@@ -91,23 +123,31 @@ protected:
 
     void initManualMode();
     void useManualMode(bool quit);
+
 private:
 
     CT_AutoRenameModels     _outSceneModelName;
-//    QString                 _outclustergroupname;
 
     QMap<CT_PointCluster*, CT_AbstractItemGroup*> _clustersGroups;
 
 
     // Step parameters
     bool    _interactiveMode;
+    double  _hRef;
     QList<CT_AbstractItemDrawable*>                             m_itemDrawableSelected;
     DocumentInterface                                           *m_doc;
     int                                                         m_status;
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > _positionsData;
+    QMultiMap<CT_PointCluster*, CT_PointCluster*> _clusterToCluster;
 
     static void addPointsToScenes(QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> &pair);
+
+    inline static double squareDist(const Eigen::Vector3d &v1, const Eigen::Vector3d &v2)
+    {
+        return (v1(0) - v2(0))*(v1(0) - v2(0)) + (v1(1) - v2(1))*(v1(1) - v2(1)) + (v1(2) - v2(2))*(v1(2) - v2(2));
+    }
+
 };
 
 #endif // PB_STEPMERGECLUSTERSFROMPOSITIONS02_H

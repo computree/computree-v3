@@ -25,7 +25,7 @@ class PB_ActionModifyClustersGroups02 : public CT_AbstractActionForGraphicsView
     Q_OBJECT
 public:
 
-    PB_ActionModifyClustersGroups02(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map);
+    PB_ActionModifyClustersGroups02(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map, QMultiMap<CT_PointCluster*, CT_PointCluster*> *clToCl);
 
     QString uniqueName() const;
     QString title() const;
@@ -71,8 +71,6 @@ public slots:
     void affectClusterToB();
     void affectClusterToTMP();
     void affectClusterToTrash();
-    void updateLimitMode();
-    void distanceChanged(int val);
 
 private:
     QRect                                   m_selectionRectangle;
@@ -83,6 +81,7 @@ private:
     GraphicsViewInterface::DrawMode         m_backupDrawMode;
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *_positionToCluster;
+    QMultiMap<CT_PointCluster*, CT_PointCluster*>                                               *_clusterToCluster;
     QMap<const CT_PointCluster*, const CT_Point2D*> _clusterToPosition;
 
     QList<QColor>                   _automaticColorList;

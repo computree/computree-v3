@@ -1,6 +1,7 @@
 #include "pb_stepmergeclustersfrompositions02.h"
 
 #include "ct_itemdrawable/ct_scene.h"
+#include "ct_itemdrawable/ct_grid2dxy.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
@@ -15,16 +16,16 @@
 #include "ct_math/ct_mathpoint.h"
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_global/ct_context.h"
-//#include "ct_turn/inTurn/tools/ct_inturnmanager.h"
-//#include "ct_tools/model/ct_generateoutmodelname.h"
-//#include "ct_global/ct_context.h"
-//#include "ct_model/tools/ct_modelsearchhelper.h"
-
 
 //Inclusion of actions
 #include "actions/pb_actionmodifyclustersgroups02.h"
 
-#include <QtConcurrent/QtConcurrent>
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+#include <QtConcurrentMap>
+#else
+#include <QtConcurrent/QtConcurrentMap>
+#endif
+
 #include <QMessageBox>
 #include <limits>
 
@@ -37,10 +38,16 @@
 #define DEFin_grpPos "grpPos"
 #define DEFin_position "position"
 
+#define DEF_SearchInMNTResult   "mntres"
+#define DEF_SearchInMNTGroup    "mntgrp"
+#define DEF_SearchInMNT         "mntitem"
+
+
 // Constructor : initialization of parameters
 PB_StepMergeClustersFromPositions02::PB_StepMergeClustersFromPositions02(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     _interactiveMode = true;
+    _hRef = 1.3;
     m_doc = NULL;
 
     setManual(true);
@@ -78,7 +85,7 @@ CT_VirtualAbstractStep* PB_StepMergeClustersFromPositions02::createNewInstance(C
 
 // Creation and affiliation of IN models
 void PB_StepMergeClustersFromPositions02::createInResultModelListProtected()
-{
+{  
     CT_InResultModelGroup *resIn_rclusters = createNewInResultModel(DEFin_rclusters, tr(""), tr(""), true);
     resIn_rclusters->setZeroOrMoreRootGroup();
     resIn_rclusters->addGroupModel("", DEFin_grpClusters, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
@@ -88,6 +95,12 @@ void PB_StepMergeClustersFromPositions02::createInResultModelListProtected()
     resIn_rPos->setZeroOrMoreRootGroup();
     resIn_rPos->addGroupModel("", DEFin_grpPos, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_rPos->addItemModel(DEFin_grpPos, DEFin_position, CT_Point2D::staticGetType(), tr("Position 2D"));
+
+    CT_InResultModelGroup *resultMNTModel = createNewInResultModel(DEF_SearchInMNTResult, tr("MNT (Raster)"), "", true);
+    resultMNTModel->setZeroOrMoreRootGroup();
+    resultMNTModel->addGroupModel("", DEF_SearchInMNTGroup);
+    resultMNTModel->addItemModel(DEF_SearchInMNTGroup, DEF_SearchInMNT, CT_Grid2DXY<double>::staticGetType(), tr("Modèle Numérique de Terrain"));
+    resultMNTModel->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
 
     resIn_rclusters->setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
     resIn_rPos->setMaximumNumberOfPossibilityThatCanBeSelectedForOneTurn(1);
@@ -106,6 +119,7 @@ void PB_StepMergeClustersFromPositions02::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
+    configDialog->addDouble(tr("Hauteur de référence"), "", -99999, 99999, 2, _hRef);
     configDialog->addBool(tr("Correction interactive ?"), "", "", _interactiveMode);
 }
 
@@ -115,10 +129,17 @@ void PB_StepMergeClustersFromPositions02::compute()
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_rclusters = inResultList.at(0);
+    CT_ResultGroup* inMNTResult = inResultList.at(2);
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_rsc = outResultList.at(0);
 
+    // Récupération du MNT
+    CT_Grid2DXY<double>* mnt = NULL;
+    CT_ResultItemIterator it(inMNTResult, this, DEF_SearchInMNT);
+    if(it.hasNext()) {mnt = (CT_Grid2DXY<double>*) it.next();}
+
+    QMap<const CT_Point2D*, double> postionsZRef;
 
     // Création de la liste des positions 2D
     CT_ResultGroupIterator grpPosIt(res_rsc, this, DEFin_grpPos);
@@ -132,52 +153,159 @@ void PB_StepMergeClustersFromPositions02::compute()
             CT_PointCloudIndexVector* cloudIndexVector = new CT_PointCloudIndexVector();
             cloudIndexVector->setSortType(CT_AbstractCloudIndex::NotSorted);
             _positionsData.insert(position, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* >(cloudIndexVector, new QList<const CT_PointCluster*>()));
+
+            double mntVal = 0;
+            if (mnt != NULL) {mntVal = mnt->valueAtXY(position->getCenterX(), position->getCenterY());}
+            if (mntVal == mnt->NA()) {mntVal = 0;}
+
+            postionsZRef.insert(position, mntVal + _hRef);
+        }
+    }
+
+    setProgress(5);
+
+    // Création de la correspondance clusters / groupes
+    CT_ResultGroupIterator itIn_grpClusters(resIn_rclusters, this, DEFin_grpClusters);
+    while (itIn_grpClusters.hasNext() && !isStopped())
+    {
+        CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters.next();
+        CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
+        if (cluster != NULL)
+        {
+            _clustersGroups.insert(cluster, grpIn_grpClusters);
         }
     }
 
     setProgress(10);
 
+
     // Création des correspondance clusters / positions
-    CT_ResultGroupIterator itIn_grpClusters(resIn_rclusters, this, DEFin_grpClusters);
-    while (itIn_grpClusters.hasNext() && !isStopped())
+    // Phase 1 : recherche du cluster le plus proche de chaque postition
+    QList<CT_PointCluster*> clustersPhase1;
+
+    QMutableMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > itPos(_positionsData);
+    while (itPos.hasNext())
     {
-        CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters.next();
-        
-        CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
-        if (cluster != NULL)
+        itPos.next();
+        Eigen::Vector3d posCenter = itPos.key()->getCenterCoordinate();
+        posCenter(2) = postionsZRef.value(itPos.key());
+
+        CT_PointCluster* bestCluster = NULL;
+        double minDist = std::numeric_limits<double>::max();
+
+        CT_ResultGroupIterator itIn_grpClusters2(resIn_rclusters, this, DEFin_grpClusters);
+        while (itIn_grpClusters2.hasNext() && !isStopped())
         {
-            _clustersGroups.insert(cluster, grpIn_grpClusters);
+            CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters2.next();
 
+            CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
+            if (cluster != NULL && !clustersPhase1.contains(cluster))
+            {
+                const Eigen::Vector3d &center = cluster->getCenterCoordinate();
+                double distance = squareDist(posCenter, center);
+                if (distance < minDist)
+                {
+                    minDist = distance;
+                    bestCluster = cluster;
+                }
+            }
+        }
+
+        if (bestCluster != NULL)
+        {
+            clustersPhase1.append(bestCluster);
+            QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = itPos.value();
+            pair.second->append(bestCluster);
+        }
+    }
+
+    setProgress(15);
+
+    // Création des correspondance clusters / positions
+    // Phase 2 : création de la map des distances
+    QList<ClusterData> clusterDataList;
+
+    CT_ResultGroupIterator itIn_grpClusters3(resIn_rclusters, this, DEFin_grpClusters);
+    while (itIn_grpClusters3.hasNext() && !isStopped())
+    {
+        CT_AbstractItemGroup* grpIn_grpClusters = (CT_AbstractItemGroup*) itIn_grpClusters3.next();
+
+        CT_PointCluster* cluster = (CT_PointCluster*)grpIn_grpClusters->firstItemByINModelName(this, DEFin_cluster);
+        if (cluster != NULL && !clustersPhase1.contains(cluster))
+        {
             const Eigen::Vector3d &center = cluster->getCenterCoordinate();
-
+            CT_PointCluster* bestCluster = NULL;
             CT_Point2D* bestPosition = NULL;
             double minDist = std::numeric_limits<double>::max();
 
             QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > itPos(_positionsData);
-
             while (itPos.hasNext())
             {
                 itPos.next();
+                const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = itPos.value();
 
-                double distance = CT_MathPoint::distance2D(itPos.key()->getCenterCoordinate(), center);
-                if (distance < minDist)
+                if (pair.second->size() > 0)
                 {
-                    minDist = distance;
-                    bestPosition = (CT_Point2D*) itPos.key();
+                    const CT_PointCluster* clusterForPos = pair.second->first();
+                    const Eigen::Vector3d &clusterForPosCenter = clusterForPos->getCenterCoordinate();
+
+                    double distance = squareDist(clusterForPosCenter, center);
+                    if (distance < minDist)
+                    {
+                        minDist = distance;
+                        bestPosition = (CT_Point2D*) itPos.key();
+                        bestCluster = (CT_PointCluster*) clusterForPos;
+                    }
                 }
             }
 
             if (bestPosition != NULL)
             {
-                QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = _positionsData[bestPosition];
-                pair.second->append(cluster);
+                clusterDataList.append(ClusterData(cluster, minDist, bestPosition, bestCluster));
             }
         }
     }
 
-    setProgress(50);
+    setProgress(20);
 
-    
+
+    // Création des correspondance clusters / positions
+    // Phase 3 : aggrégation des clusters par proximité relative
+    int cpt = -1;
+    int nbClust = clusterDataList.size();
+    double distance = 0;
+
+    while (!clusterDataList.isEmpty() && !isStopped())
+    {
+        std::sort(clusterDataList.begin(), clusterDataList.end());
+
+        ClusterData clusterData = clusterDataList.takeFirst();
+
+        // Affectation du cluster à la position la plus proche
+        QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) _positionsData.value(clusterData._position);
+        pair.second->append(clusterData._cluster);
+
+        _clusterToCluster.insert(clusterData._positionCluster, clusterData._cluster);
+
+        // Mise à jour de la map des distances à l'aide de ce cluster
+        QListIterator<ClusterData> itClust(clusterDataList);
+        while (itClust.hasNext())
+        {
+            ClusterData& clusterD = (ClusterData&) itClust.next();
+
+            distance = squareDist(clusterData.center(), clusterD.center());
+            if (distance < clusterD._distance)
+            {
+                clusterD._position = clusterData._position;
+                clusterD._distance = distance;
+                clusterD._positionCluster = clusterData._cluster;
+            }
+        }
+
+        if (++cpt % 500 == 0) {setProgress(20.0 + ((float)cpt / (float)nbClust)*30.0);}
+    }
+
+    setProgress(50);
 
     // Début de la partie interactive
     if (_interactiveMode)
@@ -273,7 +401,7 @@ void PB_StepMergeClustersFromPositions02::initManualMode()
     m_doc->removeAllItemDrawable();
 
     // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups02(&_positionsData));
+    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups02(&_positionsData, &_clusterToCluster));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette "
@@ -299,4 +427,3 @@ void PB_StepMergeClustersFromPositions02::useManualMode(bool quit)
         }
     }
 }
-
