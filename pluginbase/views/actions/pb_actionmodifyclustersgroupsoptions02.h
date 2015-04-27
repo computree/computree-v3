@@ -58,6 +58,8 @@ private slots:
     void on_cb_tmpVisible_toggled(bool checked);
     void on_cb_trashVisible_toggled(bool checked);
 
+    void on_pb_extend_clicked();
+
 public slots:
 
     void setSelectionMode(GraphicsViewInterface::SelectionMode mode);
@@ -74,6 +76,8 @@ signals:
     void affectClusterToB();
     void affectClusterToTMP();
     void affectClusterToTrash();
+
+    void extend();
 
     void visibilityChanged();
 

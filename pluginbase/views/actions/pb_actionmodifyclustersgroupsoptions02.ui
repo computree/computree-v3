@@ -555,6 +555,17 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="pb_extend">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resource.qrc">
+          <normaloff>:/icons/colonize.png</normaloff>:/icons/colonize.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -577,9 +588,7 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroupMode"/>
-  <buttongroup name="buttonGroupType"/>
   <buttongroup name="buttonGroupSelection"/>
-  <buttongroup name="buttonGroupBy"/>
+  <buttongroup name="buttonGroupMode"/>
  </buttongroups>
 </ui>

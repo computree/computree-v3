@@ -221,3 +221,8 @@ void PB_ActionModifyClustersGroupsOptions02::on_cb_trashVisible_toggled(bool che
     emit visibilityChanged();
 }
 
+
+void PB_ActionModifyClustersGroupsOptions02::on_pb_extend_clicked()
+{
+    emit extend();
+}

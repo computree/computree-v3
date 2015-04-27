@@ -71,6 +71,7 @@ public slots:
     void affectClusterToB();
     void affectClusterToTMP();
     void affectClusterToTrash();
+    void extend();
 
 private:
     QRect                                   m_selectionRectangle;

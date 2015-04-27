@@ -154,6 +154,7 @@ void PB_ActionModifyClustersGroups02::init()
         connect(option, SIGNAL(affectClusterToB()), this, SLOT(affectClusterToB()));
         connect(option, SIGNAL(affectClusterToTMP()), this, SLOT(affectClusterToTMP()));
         connect(option, SIGNAL(affectClusterToTrash()), this, SLOT(affectClusterToTrash()));
+        connect(option, SIGNAL(extend()), this, SLOT(extend()));
 
         _positionsChanged = true;
 
@@ -690,6 +691,53 @@ void PB_ActionModifyClustersGroups02::affectClusterToTrash()
         }
     }
     document()->setSelectAllItemDrawable(false);
+    document()->redrawGraphics();
+}
+
+void PB_ActionModifyClustersGroups02::extend()
+{
+    QList<CT_AbstractItemDrawable*> selected = document()->getSelectedItemDrawable();
+
+    QList<CT_PointCluster*> toSelect;
+
+    for (int i = 0 ; i < selected.size() ; i++)
+    {
+        CT_PointCluster* cluster = dynamic_cast<CT_PointCluster*>(selected[i]);
+
+        if (cluster  != NULL)
+        {
+            QList<CT_PointCluster*> linked = _clusterToCluster->values(cluster);
+            QListIterator<CT_PointCluster*> it(linked);
+            while (it.hasNext())
+            {
+                CT_PointCluster* clust = it.next();
+                if (!toSelect.contains(clust))
+                {
+                    toSelect.append(clust);
+                    clust->setSelected(true);
+                }
+            }
+        }
+    }
+
+    int i = 0;
+    while (i < toSelect.size())
+    {
+        CT_PointCluster* cluster = toSelect[i++];
+
+        QList<CT_PointCluster*> linked = _clusterToCluster->values(cluster);
+        QListIterator<CT_PointCluster*> it2(linked);
+        while (it2.hasNext())
+        {
+            CT_PointCluster* clust = it2.next();
+            if (!toSelect.contains(clust))
+            {
+                toSelect.append(clust);
+                clust->setSelected(true);
+            }
+        }
+    }
+
     document()->redrawGraphics();
 }
 
