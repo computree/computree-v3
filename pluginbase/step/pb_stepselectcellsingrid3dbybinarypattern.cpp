@@ -23,11 +23,11 @@ PB_StepSelectCellsInGrid3DByBinaryPattern::PB_StepSelectCellsInGrid3DByBinaryPat
 {
     _inThreshold = 1;
 
-    _pattern =  "1,0,0,0,0\n"
-                "1,0,0,0,0\n"
-                "1,0,0,0,0\n"
-                "1,0,0,0,0\n"
-                "1,0,0,0,0\n"
+    _pattern =  "1,1,0,0,0\n"
+                "1,1,0,0,0\n"
+                "1,1,0,0,0\n"
+                "1,1,0,0,0\n"
+                "1,1,0,0,0\n"
                 "1,0,0,0,0\n"
                 "0,0,0,0,0\n"
                 "0,0,0,0,0\n"
@@ -83,7 +83,7 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::createOutResultModelListProtecte
 {
     CT_OutResultModelGroup *res_rgrid = createNewOutResultModel(DEFout_rgrid, tr("Grille de séléction"));
     res_rgrid->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
-    res_rgrid->addItemModel(DEFout_grp, DEFout_grid, new CT_Grid3D<int>(), tr("Grille de comptage"));
+    res_rgrid->addItemModel(DEFout_grp, DEFout_grid, new CT_Grid3D<double>(), tr("Grille de comptage"));
     res_rgrid->addItemModel(DEFout_grp, DEFout_gridBool, new CT_Grid3D<bool>(), tr("Grille de séléction"));
 
 }
@@ -109,6 +109,10 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::createPostConfigurationDialog()
 
 void PB_StepSelectCellsInGrid3DByBinaryPattern::compute()
 {
+    QList<PatternCell> parsedPattern;
+    if (!parsePattern(parsedPattern)) {return;}
+
+
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_rgrid = inResultList.at(0);
 
@@ -124,144 +128,112 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::compute()
         const CT_AbstractGrid3D* inGrid = (CT_AbstractGrid3D*)grpIn_grp->firstItemByINModelName(this, DEFin_grid);
         if (inGrid != NULL)
         {
-            QList<int> rowNb;
-            QList<int> colNb;
-            QList<int> levzNb;
-            QList<int> vals;
 
-            if(computeLists(_pattern, rowNb, colNb, levzNb, vals))
+            CT_StandardItemGroup* grp= new CT_StandardItemGroup(DEFout_grp, res_rgrid);
+            res_rgrid->addGroup(grp);
+
+            CT_Grid3D<double>* outGrid = new CT_Grid3D<double>(DEFout_grid, res_rgrid, inGrid->minX(), inGrid->minY(), inGrid->minZ(), inGrid->xdim(), inGrid->ydim(), inGrid->zdim(), inGrid->resolution(), -1, -1);
+            grp->addItemDrawable(outGrid);
+
+
+            for (size_t indexOut = 0 ; indexOut < outGrid->nCells() ; indexOut++)
             {
-                CT_StandardItemGroup* grp= new CT_StandardItemGroup(DEFout_grp, res_rgrid);
-                res_rgrid->addGroup(grp);
+                double sum = 0;
 
-                CT_Grid3D<int>* outGrid = new CT_Grid3D<int>(DEFout_grid, res_rgrid, inGrid->minX(), inGrid->minY(), inGrid->minZ(), inGrid->xdim(), inGrid->ydim(), inGrid->zdim(), inGrid->resolution(), -1, -1);
-                grp->addItemDrawable(outGrid);
-
-                int listsSize = rowNb.size();
-
-                for (size_t indice = 0 ; indice < inGrid->nCells() ; indice++)
+                size_t row, col, lev;
+                if (inGrid->indexToGrid(indexOut, col, row, lev))
                 {
-                    double value = inGrid->valueAtIndexAsDouble(indice);
-                    if (value >= _inThreshold)
+                    if (inGrid->valueAtIndexAsDouble(indexOut) > 0)
                     {
-                        if (outGrid->valueAtIndex(indice) == outGrid->NA()) {outGrid->setValueAtIndex(indice, 0);}
-
-                        size_t row, col, levz;
-                        inGrid->indexToGrid(indice, col, row, levz);
-
-                        for (int i = 0 ; i <  listsSize ; i++)
+                        QListIterator<PatternCell> it(parsedPattern);
+                        while (it.hasNext())
                         {
-                            int deltaRow = rowNb.at(i);
-                            int deltaCol = colNb.at(i);
-                            int deltaLevz = levzNb.at(i);
-                            int val = vals.at(i);
+                            const PatternCell &pat = it.next();
 
-                            size_t index;
-                            if (outGrid->index(col + deltaCol, row + deltaRow, levz + deltaLevz, index))
+                            size_t modifiedIndex;
+                            if (inGrid->index(col + pat._colRel, row + pat._rowRel, lev + pat._levRel, modifiedIndex))
                             {
-                                if (inGrid->valueAtIndexAsDouble(index) >= _inThreshold)
+                                if (inGrid->valueAtIndexAsDouble(modifiedIndex) > _inThreshold)
                                 {
-                                    outGrid->addValueAtIndex(index, val);
+                                    sum += pat._val;
                                 }
                             }
                         }
-                    }
-
-                    setProgress(90.0 * (float)indice / (float)inGrid->nCells());
-                }
-                outGrid->computeMinMax();
-
-
-                CT_Grid3D<bool>* outGridBool = new CT_Grid3D<bool>(DEFout_gridBool, res_rgrid, inGrid->minX(), inGrid->minY(), inGrid->minZ(), inGrid->xdim(), inGrid->ydim(), inGrid->zdim(), inGrid->resolution(), false, false);
-                grp->addItemDrawable(outGridBool);
-
-                int threshold = _outThresholdAbsolute;
-                if (_selectMode == 1)
-                {
-                    threshold = outGrid->dataMax()*_outThresholdRelative;
-                }
-
-                PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString("Seuil de séléction : %1 (valeurs observées : %2 - %3)").arg(threshold).arg(outGrid->dataMin()).arg(outGrid->dataMax()));
-
-                for (size_t indice = 0 ; indice < outGrid->nCells() ; indice++)
-                {
-                    double value = outGrid->valueAtIndexAsDouble(indice);
-                    if (value >= threshold)
-                    {
-                        outGridBool->setValueAtIndex(indice, true);
+                        outGrid->setValueAtIndex(indexOut, sum);
                     }
                 }
-                setProgress(100.0);
+
             }
+            outGrid->computeMinMax();
+
+
+            CT_Grid3D<bool>* outGridBool = new CT_Grid3D<bool>(DEFout_gridBool, res_rgrid, inGrid->minX(), inGrid->minY(), inGrid->minZ(), inGrid->xdim(), inGrid->ydim(), inGrid->zdim(), inGrid->resolution(), false, false);
+            grp->addItemDrawable(outGridBool);
+
+            int threshold = _outThresholdAbsolute;
+            if (_selectMode == 1)
+            {
+                threshold = outGrid->dataMax()*_outThresholdRelative;
+            }
+
+            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString("Seuil de séléction : %1 (valeurs observées : %2 - %3)").arg(threshold).arg(outGrid->dataMin()).arg(outGrid->dataMax()));
+
+            for (size_t indice = 0 ; indice < outGrid->nCells() ; indice++)
+            {
+                double value = outGrid->valueAtIndexAsDouble(indice);
+                if (value >= threshold)
+                {
+                    outGridBool->setValueAtIndex(indice, true);
+                }
+            }
+            setProgress(100.0);
         }
     }
+
 }
 
-bool PB_StepSelectCellsInGrid3DByBinaryPattern::computeLists(const QString &pattern, QList<int> &rowNb, QList<int> &colNb, QList<int> &levzNb, QList<int> &vals)
+bool PB_StepSelectCellsInGrid3DByBinaryPattern::parsePattern(QList<PatternCell> &parsedPattern)
 {
-    QStringList levels = pattern.split("\n", QString::SkipEmptyParts);
+    // Pattern parsing
+    QStringList levels = _pattern.split("\n", QString::SkipEmptyParts);
     int nlevels = levels.size();
-
     if (nlevels < 1) {return false;}
     if (nlevels % 2 == 0) {return false;}
 
-    QStringList cells = levels.at(0).split(",");
+    int maxLevel = nlevels / 2;
 
-    int ncells = cells.size();
-
-    if (ncells < 1) {return false;}
-
-    int centerLevel = (nlevels % 2);
-
-    for (int l = 0 ; l < nlevels ; l++)
+    for (int lev = 0 ; lev < nlevels ; lev++)
     {
-        cells = levels.at(l).split(",");
+        int levelNumber = maxLevel - lev;
 
-        if (cells.size() != ncells) {return false;}
+        QStringList cells = levels.at(lev).split(",");
+        int ncells = cells.size();
 
-        for (int c = 0 ; c < ncells ; c++)
+        if (ncells > 0)
         {
             bool ok;
-            int val = cells.at(c).toInt(&ok);
-            if (!ok) {return false;}
-
-            if (val != 0)
+            double val = cells.at(0).toDouble(&ok);
+            if (ok && val != 0)
             {
-                for (int col = -c ; col <= c ; col++)
-                {
-                    levzNb.append(l - centerLevel);
-                    rowNb.append(-c);
-                    colNb.append(col);
-                    vals.append(val);
-                }
+                parsedPattern.append(PatternCell(0, 0, levelNumber, val));
+            }
 
-                for (int col = -c + 1 ; col <= c - 1; col++)
+            for (int c = 1 ; c < ncells ; c++)
+            {
+                val = cells.at(c).toDouble(&ok);
+                if (ok && val != 0)
                 {
-                    levzNb.append(l - centerLevel);
-                    rowNb.append(c);
-                    colNb.append(col);
-                    vals.append(val);
+                    for (int j = -c ; j < c ; j++)
+                    {
+                        parsedPattern.append(PatternCell(-c,  j, levelNumber, val));
+                        parsedPattern.append(PatternCell( j,  c, levelNumber, val));
+                        parsedPattern.append(PatternCell( c, -j, levelNumber, val));
+                        parsedPattern.append(PatternCell(-j, -c, levelNumber, val));
+                    }
                 }
-
-                for (int row = -c + 1 ; row <= c - 1; row++)
-                {
-                    levzNb.append(l - centerLevel);
-                    rowNb.append(row);
-                    colNb.append(-c);
-                    vals.append(val);
-                }
-
-                for (int row = -c + 1 ; row <= c - 1; row++)
-                {
-                    levzNb.append(l - centerLevel);
-                    rowNb.append(row);
-                    colNb.append(c);
-                    vals.append(val);
-                }
-
             }
         }
     }
-
     return true;
 }
+

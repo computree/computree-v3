@@ -21,6 +21,22 @@ class PB_StepSelectCellsInGrid3DByBinaryPattern: public CT_AbstractStep
 {
     Q_OBJECT
 
+    struct PatternCell
+    {
+        PatternCell(int r, int c, int lev, double v)
+        {
+            _rowRel = r;
+            _colRel = c;
+            _levRel = lev;
+            _val = v;
+        }
+
+        int     _rowRel;
+        int     _colRel;
+        int     _levRel;
+        double  _val;
+    };
+
 public:
 
     /*! \brief Step constructor
@@ -90,7 +106,7 @@ private:
     double      _outThresholdRelative;
     int         _selectMode;
 
-    bool computeLists(const QString &pattern, QList<int> &rowNb, QList<int> &colNb, QList<int> &levzNb, QList<int> &vals);
+    bool parsePattern(QList<PatternCell> &parsedPattern);
 };
 
 #endif // PB_STEPSELECTCELLSINGRID3DBYBINARYPATTERN_H
