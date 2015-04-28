@@ -17,6 +17,7 @@ PB_ActionModifyAffiliationsOptions::PB_ActionModifyAffiliationsOptions(const PB_
     connect(ui->cb_showItems, SIGNAL(clicked()), this, SIGNAL(parametersChanged()));
     connect(ui->cb_showCenters, SIGNAL(clicked()), this, SIGNAL(parametersChanged()));
     connect(ui->cb_selectedOnly, SIGNAL(clicked()), this, SIGNAL(parametersChanged()));
+    connect(ui->cb_att, SIGNAL(clicked()), this, SIGNAL(parametersChanged()));
     connect(ui->pb_affiliate, SIGNAL(clicked()), this, SIGNAL(askForAffiliation()));
     connect(ui->pb_break, SIGNAL(clicked()), this, SIGNAL(askForBreakingAffiliation()));
 
@@ -74,10 +75,14 @@ bool PB_ActionModifyAffiliationsOptions::selectionActivated()
     return ui->pb_selection->isChecked();
 }
 
+bool PB_ActionModifyAffiliationsOptions::showAttributes()
+{
+    return ui->cb_att->isChecked();
+}
+
 void PB_ActionModifyAffiliationsOptions::toggleSelection()
 {
     ui->pb_selection->setChecked(!ui->pb_selection->isChecked());
 }
-
 
 

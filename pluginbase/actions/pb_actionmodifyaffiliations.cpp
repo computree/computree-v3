@@ -398,7 +398,68 @@ void PB_ActionModifyAffiliations::drawAffiliation(PainterInterface &painter, con
 void PB_ActionModifyAffiliations::drawOverlay(GraphicsViewInterface &view, QPainter &painter)
 {
     Q_UNUSED(view)
-    Q_UNUSED(painter)
+
+    PB_ActionModifyAffiliationsOptions *option = (PB_ActionModifyAffiliationsOptions*)optionAt(0);
+
+    if (option->showAttributes())
+    {
+        int add = painter.fontMetrics().height()+2;
+        int y = add;
+
+        if(_activeSource != NULL)
+        {
+            QList<CT_AbstractItemAttribute*> attList = _activeSource->itemAttributes();
+
+            if(!attList.isEmpty())
+            {
+                painter.save();
+                painter.setPen(QColor(255,0,255,127));
+                QListIterator<CT_AbstractItemAttribute*> itAtt(attList);
+
+                while(itAtt.hasNext())
+                {
+                    CT_AbstractItemAttribute *att = itAtt.next();
+
+                    QString txt = att->displayableName() + " = ";
+                    txt += att->toString(_activeSource, NULL);
+
+                    painter.drawText(2, y, txt);
+                    y += add;
+                }
+
+                painter.restore();
+
+                y += add;
+            }
+        }
+
+        if(_activeTarget != NULL)
+        {
+            QList<CT_AbstractItemAttribute*> attList = _activeTarget->itemAttributes();
+
+            if(!attList.isEmpty())
+            {
+                painter.save();
+                painter.setPen(QColor(255,255,0,127));
+                QListIterator<CT_AbstractItemAttribute*> itAtt(attList);
+
+                while(itAtt.hasNext())
+                {
+                    CT_AbstractItemAttribute *att = itAtt.next();
+
+                    QString txt = att->displayableName() + " = ";
+                    txt += att->toString(_activeTarget, NULL);
+
+                    painter.drawText(2, y, txt);
+                    y += add;
+                }
+
+                painter.restore();
+
+                y += add;
+            }
+        }
+    }
 }
 
 CT_AbstractAction *PB_ActionModifyAffiliations::copy() const

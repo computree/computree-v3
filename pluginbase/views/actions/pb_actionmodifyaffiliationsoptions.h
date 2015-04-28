@@ -25,6 +25,7 @@ public:
     bool centersVisible();
     bool onlySelectedVisible();
     bool selectionActivated();
+    bool showAttributes();
 
 public slots:
     void toggleSelection();
