@@ -214,9 +214,12 @@ void PB_StepSetAffiliationIDFromReference::compute()
 void PB_StepSetAffiliationIDFromReference::initManualMode()
 {
     if(m_doc == NULL)
-    {
+    {       
+        QMap<QString, QVariant> param;
+        param.insert("Orthographic", QVariant(true));
+
         // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument();
+        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
     }
 
     m_doc->removeAllItemDrawable();

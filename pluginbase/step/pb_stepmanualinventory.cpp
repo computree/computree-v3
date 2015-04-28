@@ -344,6 +344,7 @@ void PB_StepManualInventory::initManualMode()
 
         QMap<QString, QVariant> param;
         param.insert("Transparency", QVariant(true));
+        param.insert("Orthographic", QVariant(true));
 
         // create a new 3D document
         m_doc = getGuiContext()->documentManager()->new3DDocument(param);

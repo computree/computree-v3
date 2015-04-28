@@ -799,6 +799,22 @@ void GDocumentViewForGraphics::setTransparencyActivated(bool activated)
     validateOptions();
 }
 
+void GDocumentViewForGraphics::setCameraType(bool orthographic)
+{
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    if (orthographic)
+    {
+        opt.setCameraType(CameraInterface::ORTHOGRAPHIC);
+    } else {
+        opt.setCameraType(CameraInterface::PERSPECTIVE);
+    }
+
+    _graphicsOptionsView->setOptions(opt);
+
+    validateOptions();
+}
+
 void GDocumentViewForGraphics::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
 {
     GDocumentView::slotItemDrawableAdded(item);

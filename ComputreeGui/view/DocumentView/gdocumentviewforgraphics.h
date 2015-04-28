@@ -224,6 +224,8 @@ public slots:
     void changeDrawMode();
     void changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode mode);
     void setTransparencyActivated(bool activated);
+    void setCameraType(bool orthographic);
+
 
 protected slots:
 
