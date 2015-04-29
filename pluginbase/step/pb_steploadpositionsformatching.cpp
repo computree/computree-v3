@@ -41,6 +41,9 @@ PB_StepLoadPositionsForMatching::PB_StepLoadPositionsForMatching(CT_StepInitiali
     _refDecimal = ".";
     _transDecimal = ".";  
 
+    _refLocale = QLocale(QLocale::English, QLocale::UnitedKingdom).name();
+    _transLocale = QLocale(QLocale::English, QLocale::UnitedKingdom).name();
+
     _refSkip = 0;
     _transSkip = 0;
 }
@@ -207,9 +210,9 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
                         if (plot == currentPlot)
                         {
                             bool okX, okY, okVal;
-                            double x = values.at(colX).toDouble(&okX);
-                            double y = values.at(colY).toDouble(&okY);
-                            float val = values.at(colVal).toFloat(&okVal);
+                            double x = _refLocale.toDouble(values.at(colX), &okX);
+                            double y = _refLocale.toDouble(values.at(colY), &okY);
+                            float val = _refLocale.toFloat(values.at(colVal), &okVal);
                             QString id = values.at(colID);
 
                             if (okX && okY && okVal)
@@ -276,9 +279,9 @@ void PB_StepLoadPositionsForMatching::compute(CT_ResultGroup *outRes, CT_Standar
                         {
 
                             bool okX, okY, okVal;
-                            double x = values.at(colX).toDouble(&okX);
-                            double y = values.at(colY).toDouble(&okY);
-                            float val = values.at(colVal).toFloat(&okVal);
+                            double x = _transLocale.toDouble(values.at(colX), &okX);
+                            double y = _transLocale.toDouble(values.at(colY), &okY);
+                            float val = _transLocale.toFloat(values.at(colVal), &okVal);
                             QString id = values.at(colID);
 
                             if (okX && okY && okVal)

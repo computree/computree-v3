@@ -165,6 +165,12 @@ bool CT_AsciiFileChoiceButton::setAllValues(const QList<SettingsNodeGroup*> &lis
     if(values.isEmpty()) {return false;}
     *_decimal = values.first()->value().toString();
 
+    if (*_decimal == ",")
+    {
+        *_locale = QLocale(QLocale::French, QLocale::France).name();
+    } else {
+        *_locale = QLocale(QLocale::English, QLocale::UnitedKingdom).name();
+    }
 
     values.clear();
     values = list.first()->valuesByTagName("NbLinesToSkip");
