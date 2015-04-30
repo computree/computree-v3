@@ -103,7 +103,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_steploadtreemap.h \
     step/pb_stepmergeclustersfrompositions02.h \
     actions/pb_actionmodifyclustersgroups02.h \
-    views/actions/pb_actionmodifyclustersgroupsoptions02.h
+    views/actions/pb_actionmodifyclustersgroupsoptions02.h \
+    step/pb_stepcomputecrownprojection.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -202,7 +203,8 @@ SOURCES += \
     step/pb_steploadtreemap.cpp \
     step/pb_stepmergeclustersfrompositions02.cpp \
     actions/pb_actionmodifyclustersgroups02.cpp \
-    views/actions/pb_actionmodifyclustersgroupsoptions02.cpp
+    views/actions/pb_actionmodifyclustersgroupsoptions02.cpp \
+    step/pb_stepcomputecrownprojection.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

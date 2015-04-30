@@ -82,7 +82,7 @@
 #include "step/pb_stepmergeclustersfrompositions.h"
 #include "step/pb_stepmergeclustersfrompositions02.h"
 #include "step/pb_stepmodifypositions2d.h"
-
+#include "step/pb_stepcomputecrownprojection.h"
 
 
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -210,6 +210,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepTransformPointCloud(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepExtractLogBuffer(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepExtractPositionsFromDensity(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepComputeCrownProjection(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
     sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
