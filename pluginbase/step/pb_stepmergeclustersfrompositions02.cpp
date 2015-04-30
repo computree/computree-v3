@@ -162,7 +162,7 @@ void PB_StepMergeClustersFromPositions02::compute()
         }
     }
 
-    setProgress(5);
+    setProgress(1);
 
     // Création de la correspondance clusters / groupes
     CT_ResultGroupIterator itIn_grpClusters(resIn_rclusters, this, DEFin_grpClusters);
@@ -176,7 +176,7 @@ void PB_StepMergeClustersFromPositions02::compute()
         }
     }
 
-    setProgress(10);
+    setProgress(3);
 
 
     // Création des correspondance clusters / positions
@@ -219,7 +219,7 @@ void PB_StepMergeClustersFromPositions02::compute()
         }
     }
 
-    setProgress(15);
+    setProgress(5);
 
     // Création des correspondance clusters / positions
     // Phase 2 : création de la map des distances
@@ -266,7 +266,7 @@ void PB_StepMergeClustersFromPositions02::compute()
         }
     }
 
-    setProgress(20);
+    setProgress(10);
 
 
     // Création des correspondance clusters / positions
@@ -302,10 +302,10 @@ void PB_StepMergeClustersFromPositions02::compute()
             }
         }
 
-        if (++cpt % 500 == 0) {setProgress(20.0 + ((float)cpt / (float)nbClust)*30.0);}
+        if (++cpt % 500 == 0) {setProgress(10.0 + ((float)cpt / (float)nbClust)*70.0);}
     }
 
-    setProgress(50);
+    setProgress(80);
 
     // Début de la partie interactive
     if (_interactiveMode)
@@ -321,10 +321,6 @@ void PB_StepMergeClustersFromPositions02::compute()
     // Fin de la partie interactive
 
 
-    setProgress(60);
-
-
-
     // Ajout des points aux nuages d'indices
     QList<QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > cloudIndices = _positionsData.values();
 
@@ -333,11 +329,12 @@ void PB_StepMergeClustersFromPositions02::compute()
     int progressTotal = futur.progressMaximum() - futur.progressMinimum();
     while (!futur.isFinished())
     {
-        setProgress(60.0 + 30.0*(futur.progressValue() - progressMin)/progressTotal);
+        setProgress(80.0 + 19.0*(futur.progressValue() - progressMin)/progressTotal);
     }
 
 
-    setProgress(90);
+    setProgress(99);
+
     // Création des scènes
     CT_ResultGroupIterator grpPosIt2(res_rsc, this, DEFin_grpPos);
     while (grpPosIt2.hasNext())

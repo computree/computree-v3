@@ -24,11 +24,13 @@ public:
     bool isTMPVisible() const;
     bool isTrashVisible() const;
     bool isOthersVisible() const;
+    bool isValidatedVisible() const;
 
     void selectColorA(QColor color);
     void selectColorB(QColor color);
-
     void setMultiSelect(bool multi);
+
+    void toggleOthersVisible();
 protected:
     QColor  _colorA;
     QColor  _colorB;
@@ -60,6 +62,10 @@ private slots:
 
     void on_pb_extend_clicked();
 
+    void on_pb_validate_clicked();
+
+    void on_cb_showValidated_toggled(bool checked);
+
 public slots:
 
     void setSelectionMode(GraphicsViewInterface::SelectionMode mode);
@@ -78,6 +84,7 @@ signals:
     void affectClusterToTrash();
 
     void extend();
+    void validatePosition();
 
     void visibilityChanged();
 

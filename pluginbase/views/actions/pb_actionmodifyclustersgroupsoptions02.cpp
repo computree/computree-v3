@@ -9,6 +9,20 @@ PB_ActionModifyClustersGroupsOptions02::PB_ActionModifyClustersGroupsOptions02(c
     ui(new Ui::PB_ActionModifyClustersGroupsOptions02)
 {
     ui->setupUi(this);
+
+    ui->pb_SetSceneA->setToolTip(tr("Choisit le groupe A [double-clic GAUCHE]"));
+    ui->pb_SetSceneB->setToolTip(tr("Choisit le groupe B [double-clic DROIT]"));
+    ui->pb_extend->setToolTip(tr("Etendre la séléction [SHIFT]"));
+    ui->toolButtonSelectMulti->setToolTip(tr("Maintenir [CTRL] enfoncé pour activer temporairement"));
+
+    ui->pb_toA->setToolTip(tr("Affecte les points au groupe A [A]"));
+    ui->pb_toB->setToolTip(tr("Affecte les points au groupe Z [Z]"));
+    ui->pb_toTmp->setToolTip(tr("Affecte les points au groupe ? [E]"));
+    ui->pb_toTrash->setToolTip(tr("Affecte les points à la poubelle [R]"));
+
+    ui->cb_othersVisible->setToolTip(tr("Touche [espace] pour changer"));
+
+    ui->pb_validate->setToolTip(tr("Valider le groupe Z [V]"));
 }
 
 PB_ActionModifyClustersGroupsOptions02::~PB_ActionModifyClustersGroupsOptions02()
@@ -67,6 +81,11 @@ bool PB_ActionModifyClustersGroupsOptions02::isTrashVisible() const
 bool PB_ActionModifyClustersGroupsOptions02::isOthersVisible() const
 {
     return ui->cb_othersVisible->isChecked();
+}
+
+bool PB_ActionModifyClustersGroupsOptions02::isValidatedVisible() const
+{
+    return ui->cb_showValidated->isChecked();
 }
 
 void PB_ActionModifyClustersGroupsOptions02::on_buttonGroupType_buttonReleased(int id)
@@ -142,7 +161,7 @@ void PB_ActionModifyClustersGroupsOptions02::on_pb_ColorA_clicked()
 void PB_ActionModifyClustersGroupsOptions02::selectColorA(QColor color)
 {
     _colorA = color;
-    ui->pb_ColorA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
+    ui->pb_SetSceneA->setStyleSheet("QPushButton { background-color: " + _colorA.name() + "; }");
     ui->pb_toA->setStyleSheet("QToolButton { background-color: " + _colorA.name() + "; }");
 }
 
@@ -157,7 +176,7 @@ void PB_ActionModifyClustersGroupsOptions02::on_pb_ColorB_clicked()
 void PB_ActionModifyClustersGroupsOptions02::selectColorB(QColor color)
 {
     _colorB = color;
-    ui->pb_ColorB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
+    ui->pb_SetSceneB->setStyleSheet("QPushButton { background-color: " + _colorB.name() + "; }");
     ui->pb_toB->setStyleSheet("QToolButton { background-color: " + _colorB.name() + "; }");
 }
 
@@ -168,6 +187,16 @@ void PB_ActionModifyClustersGroupsOptions02::setMultiSelect(bool multi)
         ui->toolButtonSelectMulti->setChecked(true);
     } else {
         ui->toolButtonSelectOne->setChecked(true);
+    }
+}
+
+void PB_ActionModifyClustersGroupsOptions02::toggleOthersVisible()
+{
+    if (ui->cb_othersVisible->isChecked())
+    {
+        ui->cb_othersVisible->setChecked(false);
+    } else {
+        ui->cb_othersVisible->setChecked(true);
     }
 }
 
@@ -225,4 +254,15 @@ void PB_ActionModifyClustersGroupsOptions02::on_cb_trashVisible_toggled(bool che
 void PB_ActionModifyClustersGroupsOptions02::on_pb_extend_clicked()
 {
     emit extend();
+}
+
+void PB_ActionModifyClustersGroupsOptions02::on_pb_validate_clicked()
+{
+    emit validatePosition();
+}
+
+void PB_ActionModifyClustersGroupsOptions02::on_cb_showValidated_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    emit visibilityChanged();
 }

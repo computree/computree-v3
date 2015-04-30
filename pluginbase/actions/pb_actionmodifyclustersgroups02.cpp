@@ -31,9 +31,8 @@ PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_P
     _automaticColorList.append(QColor(150,255,200)); // Turquoise Clair
     _automaticColorList.append(QColor(255,150,200)); // Rose Clair
     _automaticColorList.append(QColor(200,150,255)); // Violet Clair
-    _automaticColorList.append(QColor(255,255,0  )); // Jaune
     _automaticColorList.append(QColor(255,0  ,255)); // Magenta
-    _automaticColorList.append(QColor(0  ,255,255)); // Cyan
+    _automaticColorList.append(QColor(0  ,0  ,255)); // Bleu
     _automaticColorList.append(QColor(0  ,0  ,255)); // Mauve
     _automaticColorList.append(QColor(255,150,0  )); // Orange
     _automaticColorList.append(QColor(150,255,0  )); // Vert-Jaune
@@ -41,12 +40,12 @@ PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_P
     _automaticColorList.append(QColor(255,0  ,150)); // Rose
     _automaticColorList.append(QColor(150,0  ,255)); // Violet
 
-    _colorA     = QColor(0  ,255,0  ); // Vert
-    _colorB     = QColor(0  ,0  ,255); // Bleu
-    _colorTmp   = QColor(255,255,255); // Blanc
-    _colorTrash = QColor(125,125,125); // Grey
+    _colorA         = QColor(255,255,0  ); // Jaune
+    _colorB         = QColor(0  ,255,255); // Cyan
+    _colorTmp       = QColor(255,255,255); // Blanc
+    _colorTrash     = QColor(125,125,125); // Grey
+    _validatedColor = QColor(0  ,255,0  ); // Vert
 
-    _ABColors = true;
     _positionsChanged = true;
 }
 
@@ -155,6 +154,7 @@ void PB_ActionModifyClustersGroups02::init()
         connect(option, SIGNAL(affectClusterToTMP()), this, SLOT(affectClusterToTMP()));
         connect(option, SIGNAL(affectClusterToTrash()), this, SLOT(affectClusterToTrash()));
         connect(option, SIGNAL(extend()), this, SLOT(extend()));
+        connect(option, SIGNAL(validatePosition()), this, SLOT(validatePosition()));
 
         _positionsChanged = true;
 
@@ -182,17 +182,22 @@ void PB_ActionModifyClustersGroups02::updateAllClustersColors()
             CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
 
 
-            if (_ABColors && listA->contains(cluster))
+            if (listA->contains(cluster))
             {
                 document()->setColor(cluster, _colorA);
-            } else if (_ABColors && listB->contains(cluster))
+            } else if (listB->contains(cluster))
             {
                 document()->setColor(cluster, _colorB);
             } else if (_trashClusterList.contains(cluster))
             {
                 document()->setColor(cluster, _colorTrash);
             } else {
-                document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
+                if (_validatedPositions.contains(position))
+                {
+                    document()->setColor(cluster, _validatedColor);
+                } else {
+                    document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
+                }
             }
         }
     }
@@ -202,8 +207,11 @@ void PB_ActionModifyClustersGroups02::updateAllClustersColors()
 void PB_ActionModifyClustersGroups02::updateColorForOneCluster(const CT_Point2D* position)
 {
     QColor clusterColor = _positionsBaseColors.value(position, _colorTmp);
-    if (_ABColors && position == _positionA) {clusterColor = _colorA;}
-    if (_ABColors && position == _positionB) {clusterColor = _colorB;}
+
+    if (_validatedPositions.contains(position)) {clusterColor = _validatedColor;}
+
+    if (position == _positionA) {clusterColor = _colorA;}
+    if (position == _positionB) {clusterColor = _colorB;}
 
     //const QList<CT_AbstractItemDrawable*>& visibleItems = document()->getItemDrawable();
 
@@ -216,7 +224,33 @@ void PB_ActionModifyClustersGroups02::updateColorForOneCluster(const CT_Point2D*
     }
 }
 
+bool PB_ActionModifyClustersGroups02::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    m_mousePressed = false;
+    m_status = 0;
+    m_selectionRectangle.setSize(QSize(0,0));
 
+    GraphicsViewInterface *view = graphicsView();
+
+    if (e->button() == Qt::LeftButton)
+    {
+        document()->setSelectAllItemDrawable(false);
+        view->setSelectionMode(GraphicsViewInterface::SELECT_ONE);
+        view->select(e->pos());
+        selectPositionA();
+        document()->setSelectAllItemDrawable(false);
+        return true;
+    } else if (e->button() == Qt::RightButton)
+    {
+        document()->setSelectAllItemDrawable(false);
+        view->setSelectionMode(GraphicsViewInterface::SELECT_ONE);
+        view->select(e->pos());
+        selectPositionB();
+        document()->setSelectAllItemDrawable(false);
+        return true;
+    }
+    return false;
+}
 
 bool PB_ActionModifyClustersGroups02::mousePressEvent(QMouseEvent *e)
 {
@@ -239,22 +273,13 @@ bool PB_ActionModifyClustersGroups02::mousePressEvent(QMouseEvent *e)
     {
         m_selectionRectangle = QRect(e->pos(), e->pos());
 
-        size_t size = 0;
-
-        if(view->mustSelectPoints())
-            size = view->countPoints();
-        else if(view->mustSelectEdges())
-            size = view->countEdges();
-        else if(view->mustSelectFaces())
-            size = view->countFaces();
-        else
-            size = view->countItems();
-
-        if(size == 0)
-            size = 1;
+        size_t size = view->countItems();
+        if(size == 0) {size = 1;}
 
         if(size != view->selectBufferSize())
+        {
             view->setSelectBufferSize(size*4);
+        }
 
         return true;
     }
@@ -350,6 +375,48 @@ bool PB_ActionModifyClustersGroups02::keyPressEvent(QKeyEvent *e)
     {
         option->setMultiSelect(true);
         setSelectionMode(option->selectionMode());
+        return true;
+    }
+
+    if((e->key() == Qt::Key_Shift) && !e->isAutoRepeat())
+    {
+        extend();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_A) && !e->isAutoRepeat())
+    {
+        affectClusterToA();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_Z) && !e->isAutoRepeat())
+    {
+        affectClusterToB();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_E) && !e->isAutoRepeat())
+    {
+        affectClusterToTMP();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_R) && !e->isAutoRepeat())
+    {
+        affectClusterToTrash();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_Space) && !e->isAutoRepeat())
+    {
+        option->toggleOthersVisible();
+        return true;
+    }
+
+    if((e->key() == Qt::Key_V) && !e->isAutoRepeat())
+    {
+        validatePosition();
         return true;
     }
 
@@ -537,12 +604,7 @@ void PB_ActionModifyClustersGroups02::addToA(CT_PointCluster* cluster)
         _clusterToPosition.insert(cluster, _positionA);
 
         // Couleur
-        if (_ABColors)
-        {
-            document()->setColor(cluster, _colorA);
-        } else {
-            document()->setColor(cluster, _positionsBaseColors.value(_positionA, _colorTmp));
-        }
+        document()->setColor(cluster, _colorA);
     }
 
 }
@@ -579,12 +641,7 @@ void PB_ActionModifyClustersGroups02::addToB(CT_PointCluster* cluster)
         _clusterToPosition.insert(cluster, _positionB);
 
         // Couleur
-        if (_ABColors)
-        {
-            document()->setColor(cluster, _colorB);
-        } else {
-            document()->setColor(cluster, _positionsBaseColors.value(_positionB, _colorTmp));
-        }
+        document()->setColor(cluster, _colorB);
     }
 
 }
@@ -741,6 +798,19 @@ void PB_ActionModifyClustersGroups02::extend()
     document()->redrawGraphics();
 }
 
+void PB_ActionModifyClustersGroups02::validatePosition()
+{
+    if (_positionB != NULL)
+    {
+        if (_validatedPositions.contains(_positionB))
+        {
+            _validatedPositions.removeOne(_positionB);
+        } else {
+            _validatedPositions.append(_positionB);
+        }
+    }
+}
+
 void PB_ActionModifyClustersGroups02::updateVisiblePositions()
 {
     PB_ActionModifyClustersGroupsOptions02 *option = (PB_ActionModifyClustersGroupsOptions02*)optionAt(0);
@@ -756,11 +826,14 @@ void PB_ActionModifyClustersGroups02::updateVisiblePositions()
         {
             it.next();
 
-            const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
-            for (int i = 0 ; i < pair.second->size() ; i++)
+            if (option->isValidatedVisible() || !_validatedPositions.contains(it.key()))
             {
-                CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
-                document()->addItemDrawable(*cluster);
+                const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
+                for (int i = 0 ; i < pair.second->size() ; i++)
+                {
+                    CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+                    document()->addItemDrawable(*cluster);
+                }
             }
         }
     } else {

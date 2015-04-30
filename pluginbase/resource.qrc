@@ -60,5 +60,6 @@
         <file>icons/upper.png</file>
         <file>icons/cancelTrash.png</file>
         <file>icons/trash.png</file>
+        <file>icons/triple-color-icon.png</file>
     </qresource>
 </RCC>

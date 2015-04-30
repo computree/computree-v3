@@ -40,6 +40,7 @@ public:
 
     void updateVisiblePositions();
 
+    bool mouseDoubleClickEvent(QMouseEvent *e);
     bool mousePressEvent(QMouseEvent *e);
     bool mouseMoveEvent(QMouseEvent *e);
     bool mouseReleaseEvent(QMouseEvent *e);
@@ -72,6 +73,7 @@ public slots:
     void affectClusterToTMP();
     void affectClusterToTrash();
     void extend();
+    void validatePosition();
 
 private:
     QRect                                   m_selectionRectangle;
@@ -91,15 +93,16 @@ private:
     QColor                          _colorB;
     QColor                          _colorTmp;
     QColor                          _colorTrash;
+    QColor                          _validatedColor;
 
     CT_Point2D*                     _positionA;
     CT_Point2D*                     _positionB;
     QList<CT_PointCluster*>         _temporaryClusterList;
     QList<CT_PointCluster*>         _trashClusterList;
-    bool                            _ABColors;
     bool                            _positionsChanged;
     QList<CT_PointCluster*>         _clustersOrdered;
     int                             _currentLastA;
+    QList<const CT_Point2D*>        _validatedPositions;
 
 
 
