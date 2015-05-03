@@ -24,6 +24,22 @@ class PB_StepComputeCrownProjection: public CT_AbstractStep
 {
     Q_OBJECT
 
+    struct level
+    {
+    public:
+        level(double zmin, double zmax, double zlevel)
+        {
+            _zmin = zmin;
+            _zmax = zmax;
+            _zlevel = zlevel;
+        }
+
+        double  _zmin;
+        double  _zmax;
+        double  _zlevel;
+        QList<Eigen::Vector2d*> _pointList;
+    };
+
 public:
 
     /*! \brief Step constructor
@@ -98,7 +114,10 @@ private:
     double    _spacing;
     double    _thickness;
 
-    void computeConvexHullForOneSceneGroup(CT_StandardItemGroup *group);
+    double    _zmin;
+    double    _zmax;
+
+    void computeConvexHullForOneSceneGroup(CT_StandardItemGroup *group) const;
 };
 
 #endif // PB_STEPCOMPUTECROWNPROJECTION_H

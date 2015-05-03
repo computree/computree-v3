@@ -28,7 +28,13 @@ void CT_StandardPolygon2DDrawManager::draw(GraphicsViewInterface &view, PainterI
     double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
     double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
-    if (useAltZVal) {zPlane = zVal;}
+
+    if (useAltZVal)
+    {
+        zPlane = zVal;
+    } else if (item.isZValueDefined()) {
+        zPlane = item.getZValue();
+    }
 
     if(drawPoints || drawLines)
     {

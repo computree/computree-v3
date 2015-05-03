@@ -28,7 +28,12 @@ void CT_StandardPoint2DDrawManager::draw(GraphicsViewInterface &view, PainterInt
     double pointSize = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINT_SIZE).toDouble();
 
     double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
-    if (useAltZVal) {zPlane = zVal;}
+    if (useAltZVal)
+    {
+        zPlane = zVal;
+    } else if (item.isZValueDefined()) {
+        zPlane = item.getZValue();
+    }
 
     if (drawPoints)
     {      

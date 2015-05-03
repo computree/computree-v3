@@ -25,10 +25,16 @@ void CT_StandardPolyline2DDrawManager::draw(GraphicsViewInterface &view, Painter
     bool drawPoints = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_POINTS).toBool();
     bool drawLines = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_LINES).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
-    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
+    double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();    
 
     double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
-    if (useAltZVal) {zPlane = zVal;}
+
+    if (useAltZVal)
+    {
+        zPlane = zVal;
+    } else if (item.isZValueDefined()) {
+        zPlane = item.getZValue();
+    }
 
     if(drawPoints || drawLines)
     {

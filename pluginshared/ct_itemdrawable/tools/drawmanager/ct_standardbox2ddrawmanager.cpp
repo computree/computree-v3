@@ -26,7 +26,12 @@ void CT_StandardBox2DDrawManager::draw(GraphicsViewInterface &view, PainterInter
     double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
 
     double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
-    if (useAltZVal) {zPlane = zVal;}
+    if (useAltZVal)
+    {
+        zPlane = zVal;
+    } else if (item.isZValueDefined()) {
+        zPlane = item.getZValue();
+    }
 
     if (drawBox)
     {

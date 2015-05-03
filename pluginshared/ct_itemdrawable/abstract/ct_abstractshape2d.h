@@ -67,6 +67,10 @@ public:
     void setCenterY(double y);
     void setCenterCoordinate(const Eigen::Vector3d &center);
 
+    void setZValue(double z);
+    double getZValue() const;
+    bool isZValueDefined() const;
+
     double getCenterX() const;
     double getCenterY() const;
 
@@ -79,6 +83,8 @@ public:
 private:
 
     CT_Shape2DData   *_data;
+    double            _zValue;
+    bool              _zValueDefined;
 
 protected:
 

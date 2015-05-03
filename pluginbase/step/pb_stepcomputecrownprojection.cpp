@@ -1,8 +1,9 @@
 #include "pb_stepcomputecrownprojection.h"
 
-#include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
+#include "ct_itemdrawable/ct_scene.h"
 #include "ct_itemdrawable/ct_beam.h"
 #include "ct_itemdrawable/ct_polygon2d.h"
+#include "ct_iterator/ct_pointiterator.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -22,6 +23,8 @@ PB_StepComputeCrownProjection::PB_StepComputeCrownProjection(CT_StepInitializeDa
     _computeSlices = true;
     _spacing = 0.5;
     _thickness = 2;
+    _zmin = std::numeric_limits<double>::max();
+    _zmax = -std::numeric_limits<double>::max();
 }
 
 // Step description (tooltip of contextual menu)
@@ -57,7 +60,7 @@ void PB_StepComputeCrownProjection::createInResultModelListProtected()
     CT_InResultModelGroupToCopy *resIn_rscene = createNewInResultModelForCopy(DEFin_rscene, tr("Scène(s)"));
     resIn_rscene->setZeroOrMoreRootGroup();
     resIn_rscene->addGroupModel("", DEFin_grpsc, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn_rscene->addItemModel(DEFin_grpsc, DEFin_scene, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Scène"));
+    resIn_rscene->addItemModel(DEFin_grpsc, DEFin_scene, CT_Scene::staticGetType(), tr("Scène"));
 
 }
 
@@ -87,33 +90,101 @@ void PB_StepComputeCrownProjection::compute()
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     _rscene = outResultList.at(0);
 
-    // COPIED results browsing
-    CT_ResultGroupIterator itCpy_grpsc(_rscene, this, DEFin_grpsc);
-    while (itCpy_grpsc.hasNext() && !isStopped())
+    // parcours des scènes pour calculer z min et max
+    QList<CT_StandardItemGroup*> groups;
+    CT_ResultGroupIterator itSc(_rscene, this, DEFin_grpsc);
+    while (itSc.hasNext() && !isStopped())
     {
-        CT_StandardItemGroup* grpCpy_grpsc = (CT_StandardItemGroup*) itCpy_grpsc.next();
-        
-        computeConvexHullForOneSceneGroup(grpCpy_grpsc);
+        CT_StandardItemGroup* grp = (CT_StandardItemGroup*) itSc.next();
+        const CT_Scene* scene = (CT_Scene*)grp->firstItemByINModelName(this, DEFin_scene);
+        if (scene != NULL)
+        {
+            Eigen::Vector3d min, max;
+            scene->getBoundingBox(min, max);
+            if (min(2) < _zmin) {_zmin = min(2);}
+            if (max(2) > _zmax) {_zmax = max(2);}
+            groups.append(grp);
+        }
+    }
+
+    QListIterator<CT_StandardItemGroup*> itGrp(groups);
+    while (itGrp.hasNext() && !isStopped())
+    {
+        computeConvexHullForOneSceneGroup(itGrp.next());
     }
 }
 
-void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_StandardItemGroup* group)
+void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_StandardItemGroup* group) const
 {
-    const CT_AbstractItemDrawableWithPointCloud* itemCpy_scene = (CT_AbstractItemDrawableWithPointCloud*)group->firstItemByINModelName(this, DEFin_scene);
-    if (itemCpy_scene != NULL)
-    {
+    const CT_Scene* scene = (CT_Scene*)group->firstItemByINModelName(this, DEFin_scene);
+    if (scene != NULL)
+    {        
+        // création des niveaux
+        QList<Eigen::Vector2d *> allPoints;
+        QList<PB_StepComputeCrownProjection::level> pointsByLevel;
+        for (double z = _zmin ; z < _zmax ; z += _spacing)
+        {
+            pointsByLevel.append(PB_StepComputeCrownProjection::level(z - _thickness, z + _thickness, z));
+        }
+
+        QMap<Eigen::Vector2d*, double> zValues;
+        // création de la liste complète des points
+        CT_PointIterator itP(scene->getPointCloudIndex());
+        while(itP.hasNext() && (!isStopped()))
+        {
+            const CT_Point &point = itP.next().currentPoint();
+            Eigen::Vector2d *point2D = new Eigen::Vector2d(point(0), point(1));
+            allPoints.append(point2D);
+            zValues.insert(point2D, point(2));
+        }
+
+        // tri par (X,Y) de la liste des points
+        CT_Polygon2DData::orderPointsByXY(allPoints);
+
+        // Création de la liste des points pour chaque tranche
+        QListIterator<Eigen::Vector2d *> itPoints(allPoints);
+        while (itPoints.hasNext())
+        {
+            Eigen::Vector2d *point = itPoints.next();
+            double z = zValues.value(point);
+
+            QListIterator<PB_StepComputeCrownProjection::level> it(pointsByLevel);
+            while (it.hasNext())
+            {
+                PB_StepComputeCrownProjection::level &levelInfo = (PB_StepComputeCrownProjection::level &) it.next();
+                if (z >= levelInfo._zmin && z < levelInfo._zmax)
+                {
+                    levelInfo._pointList.append(point);
+                }
+            }
+        }
+
+        CT_Polygon2DData *data = CT_Polygon2DData::createConvexHull(allPoints);
+        CT_Polygon2D* convexHull = new CT_Polygon2D(_convexHull_ModelName.completeName(), _rscene, data);
+        group->addItemDrawable(convexHull);
 
 
-        CT_Polygon2DData *data = new CT_Polygon2DData();
-        CT_Polygon2D* itemCpy_convexHull = new CT_Polygon2D(_convexHull_ModelName.completeName(), _rscene, data);
-        group->addItemDrawable(itemCpy_convexHull);
 
-        CT_StandardItemGroup* grpSlice= new CT_StandardItemGroup(_grpSlice_ModelName.completeName(), _rscene);
-        group->addGroup(grpSlice);
+        QListIterator<PB_StepComputeCrownProjection::level> itPtBLev(pointsByLevel);
+        while (itPtBLev.hasNext())
+        {
+            PB_StepComputeCrownProjection::level &currentLevel = (PB_StepComputeCrownProjection::level&) itPtBLev.next();
 
-        CT_Polygon2DData *dataSlice = new CT_Polygon2DData();
-        CT_Polygon2D* itemCpy_sclice = new CT_Polygon2D(_sclice_ModelName.completeName(), _rscene, dataSlice);
-        grpSlice->addItemDrawable(itemCpy_sclice);
+            CT_Polygon2DData *dataSlice = CT_Polygon2DData::createConvexHull(currentLevel._pointList);
 
+            if (dataSlice != NULL)
+            {
+                CT_StandardItemGroup* grpSlice= new CT_StandardItemGroup(_grpSlice_ModelName.completeName(), _rscene);
+                group->addGroup(grpSlice);
+
+                CT_Polygon2D* slice = new CT_Polygon2D(_sclice_ModelName.completeName(), _rscene, dataSlice);
+                slice->setZValue(currentLevel._zlevel);
+
+                grpSlice->addItemDrawable(slice);
+            }
+        }
+
+
+        qDeleteAll(allPoints);
     }
 }
