@@ -127,6 +127,7 @@ protected:
 private:
 
     CT_AutoRenameModels     _outSceneModelName;
+    CT_AutoRenameModels     _outSceneZRefModelName;
 
     QMap<CT_PointCluster*, CT_AbstractItemGroup*> _clustersGroups;
 

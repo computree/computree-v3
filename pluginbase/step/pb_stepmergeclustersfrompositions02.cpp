@@ -112,6 +112,9 @@ void PB_StepMergeClustersFromPositions02::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_rPos);
     res->addItemModel(DEFin_grpPos, _outSceneModelName, new CT_Scene(), tr("Scène segmentée"));
+    res->addItemAttributeModel(_outSceneModelName, _outSceneZRefModelName,
+                               new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
+                               tr("Z MNT"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -139,7 +142,7 @@ void PB_StepMergeClustersFromPositions02::compute()
     CT_ResultItemIterator it(inMNTResult, this, DEF_SearchInMNT);
     if(it.hasNext()) {mnt = (CT_Grid2DXY<double>*) it.next();}
 
-    QMap<const CT_Point2D*, double> postionsZRef;
+    QMap<const CT_Point2D*, double> positionsZRef;
 
     // Création de la liste des positions 2D
     CT_ResultGroupIterator grpPosIt(res_rsc, this, DEFin_grpPos);
@@ -158,7 +161,7 @@ void PB_StepMergeClustersFromPositions02::compute()
             if (mnt != NULL) {mntVal = mnt->valueAtXY(position->getCenterX(), position->getCenterY());}
             if (mntVal == mnt->NA()) {mntVal = 0;}
 
-            postionsZRef.insert(position, mntVal + _hRef);
+            positionsZRef.insert(position, mntVal + _hRef);
         }
     }
 
@@ -188,7 +191,7 @@ void PB_StepMergeClustersFromPositions02::compute()
     {
         itPos.next();
         Eigen::Vector3d posCenter = itPos.key()->getCenterCoordinate();
-        posCenter(2) = postionsZRef.value(itPos.key());
+        posCenter(2) = positionsZRef.value(itPos.key());
 
         CT_PointCluster* bestCluster = NULL;
         double minDist = std::numeric_limits<double>::max();
@@ -344,6 +347,8 @@ void PB_StepMergeClustersFromPositions02::compute()
 
         if (position != NULL)
         {
+            double zRef = positionsZRef.value(position);
+
             QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) _positionsData.value(position);
             CT_PointCloudIndexVector* cloudIndexVector = pair.first;
 
@@ -355,6 +360,7 @@ void PB_StepMergeClustersFromPositions02::compute()
                 scene->updateBoundingBox();
                 grpPos->addItemDrawable(scene);
 
+                scene->addItemAttribute(new CT_StdItemAttributeT<double>(_outSceneZRefModelName.completeName(), CT_AbstractCategory::DATA_Z, res_rsc, (zRef - _hRef)));
             } else {
                 delete cloudIndexVector;
             }
