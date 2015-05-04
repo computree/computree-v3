@@ -28,6 +28,9 @@
 #include "ct_abstractshape2d.h"
 #include "ct_global/ct_context.h"
 
+// initialize default item attributes of this class for each unique number declared
+CT_DEFAULT_IA_INIT(CT_AbstractShape2D)
+
 
 CT_AbstractShape2D::CT_AbstractShape2D() : CT_AbstractItemDrawableWithoutPointCloud()
 {
