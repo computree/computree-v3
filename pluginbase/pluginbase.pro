@@ -104,7 +104,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepmergeclustersfrompositions02.h \
     actions/pb_actionmodifyclustersgroups02.h \
     views/actions/pb_actionmodifyclustersgroupsoptions02.h \
-    step/pb_stepcomputecrownprojection.h
+    step/pb_stepcomputecrownprojection.h \
+    exporters/xyb/pb_multixybexporter.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -204,7 +205,8 @@ SOURCES += \
     step/pb_stepmergeclustersfrompositions02.cpp \
     actions/pb_actionmodifyclustersgroups02.cpp \
     views/actions/pb_actionmodifyclustersgroupsoptions02.cpp \
-    step/pb_stepcomputecrownprojection.cpp
+    step/pb_stepcomputecrownprojection.cpp \
+    exporters/xyb/pb_multixybexporter.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

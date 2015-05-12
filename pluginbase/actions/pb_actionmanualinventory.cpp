@@ -245,7 +245,7 @@ void PB_ActionManualInventory::drawOverlay(GraphicsViewInterface &view, QPainter
         y += add;
         painter.drawText(2, y, tr("H = %1 m").arg(_currentCircle->getCenterZ() - _sceneDTMValues->value(_currentScene, NAN)));
         y += add;
-        painter.drawText(2, y, tr("D = %1 cm").arg(_currentCircle->getRadius()*100.0));
+        painter.drawText(2, y, tr("D = %1 cm").arg(_currentCircle->getRadius()*200.0));
         y += add;
 
 

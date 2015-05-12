@@ -94,6 +94,7 @@
 #include "exporters/grid3d/pb_grid3dexporter.h"
 #include "exporters/grid3d/pb_grid3dastableexporter.h"
 #include "exporters/xyb/pb_xybexporter.h"
+#include "exporters/xyb/pb_multixybexporter.h"
 #include "exporters/ascrgb/pb_ascrgbexporter.h"
 #include "exporters/groupdata/pb_groupdataexporter.h"
 #include "exporters/mesh/pb_meshobjexporter.h"
@@ -328,6 +329,9 @@ bool PB_StepPluginManager::loadExporters()
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("XYB"));
     sep->addExporter(new PB_XYBExporter());
+
+    sep = addNewSeparator(new CT_StandardExporterSeparator("Multi-XYB"));
+    sep->addExporter(new PB_MultiXYBExporter());
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("ASCRGB"));
     sep->addExporter(new PB_ASCRGBExporter());
