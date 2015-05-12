@@ -174,15 +174,18 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
         group->addItemDrawable(convexHull);
 
         // Calcul des angles limites
-        double angle = 2*M_PI / (double)_nbDir;
-        QMap<double, int> dirMax;
+        QMap<QPair<double, double>, double> dirMax;
 
-        dirMax.insert(angle / 2.0, 0);
+        double angle = 2*M_PI / (double)_nbDir;
+        dirMax.insert   (QPair<double, double>(0, angle / 2.0), 0);
+        double lastAngle = angle / 2.0;
         for (int i = 1 ; i < _nbDir ; i++)
         {
-            dirMax.insert(i*angle + angle / 2.0, i);
+            double newAngle = lastAngle + angle;
+            dirMax.insert   (QPair<double, double>(lastAngle, newAngle), 0);
+            lastAngle = newAngle;
         }
-        dirMax.insert(2*M_PI + 0.1, 0);
+        dirMax.insert   (QPair<double, double>(lastAngle, 2.0 * M_PI + 0.1), 0);
 
 
         if (_computeSlices)
@@ -205,10 +208,17 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
 
                     if (_computeDirs)
                     {
+                        // init Distances
+                        QMutableMapIterator<QPair<double, double>, double> itAng(dirMax);
+                        while (itAng.hasNext())
+                        {
+                            itAng.next();
+                            itAng.setValue(0);
+                        }
+
                         // Calcul de l'enveloppe directionnelle
                         const Eigen::Vector2d &massCenter = dataSlice->getCenter();
 
-                        QMap<double, double> azToDist;
                         QListIterator<Eigen::Vector2d*> itPts(currentLevel._pointList);
                         while (itPts.hasNext())
                         {
@@ -224,9 +234,30 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
                             } else {
                                 azimut = 2*M_PI - acosy;
                             }
-                            azToDist.insert(azimut, distance);
+
+                            itAng.toFront();
+                            while (itAng.hasNext())
+                            {
+                                itAng.next();
+                                const QPair<double, double> &pair = itAng.key();
+
+                                if ((azimut >= pair.first) && (azimut < pair.second) && (distance > itAng.value())) {itAng.setValue(distance);}
+                            }
                         }
 
+                        double lastDistance = itAng.value();
+                        itAng.remove();
+                        itAng.toFront();
+                        if (itAng.value() < lastDistance) {itAng.setValue(lastDistance);}
+
+                        QVector<Eigen::Vector2d*> vertices;
+                        itAng.toFront();
+                        double lastDir = 0;
+                        while (itAng.hasNext())
+                        {
+                            itAng.next();
+
+                        }
 
                     }
                 }
