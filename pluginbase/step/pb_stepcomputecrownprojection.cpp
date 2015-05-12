@@ -25,6 +25,9 @@ PB_StepComputeCrownProjection::PB_StepComputeCrownProjection(CT_StepInitializeDa
     _thickness = 2;
     _zmin = std::numeric_limits<double>::max();
     _zmax = -std::numeric_limits<double>::max();
+
+    _computeDirs = false;
+    _nbDir = 8;
 }
 
 // Step description (tooltip of contextual menu)
@@ -69,10 +72,12 @@ void PB_StepComputeCrownProjection::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *resCpy_rscene = createNewOutResultModelToCopy(DEFin_rscene);
 
-    resCpy_rscene->addItemModel(DEFin_grpsc, _convexHull_ModelName, new CT_Polygon2D(), tr("Projection au sol"));
+    resCpy_rscene->addItemModel(DEFin_grpsc, _convexHull_ModelName, new CT_Polygon2D(), tr("Enveloppe Convexe au sol"));
+    resCpy_rscene->addItemModel(DEFin_grpsc, _directionalHull_ModelName, new CT_Polygon2D(), tr("Enveloppe Directionnelle au sol"));
     resCpy_rscene->addGroupModel(DEFin_grpsc, _grpSlice_ModelName, new CT_StandardItemGroup(), tr("Groupe"));
 
-    resCpy_rscene->addItemModel(_grpSlice_ModelName, _sclice_ModelName, new CT_Polygon2D(), tr("Projection d'une tranche"));
+    resCpy_rscene->addItemModel(_grpSlice_ModelName, _scliceCvx_ModelName, new CT_Polygon2D(), tr("Enveloppe Convexe d'une tranche"));
+    resCpy_rscene->addItemModel(_grpSlice_ModelName, _scliceDir_ModelName, new CT_Polygon2D(), tr("Enveloppe Directionnelle d'une tranche"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -80,9 +85,11 @@ void PB_StepComputeCrownProjection::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addBool("Calculer les projections par tranches", "", "", _computeSlices);
-    configDialog->addDouble("Espacement des tranches", "m", 0, 1e+09, 2, _spacing, 1);
-    configDialog->addDouble("Epaisseur des tranches", "m", 0, 1e+09, 2, _thickness, 1);
+    configDialog->addBool(tr("Calculer les enveloppes convexes par tranches"), "", "", _computeSlices);
+    configDialog->addDouble(tr("Espacement des tranches"), "m", 0, 1e+09, 2, _spacing, 1);
+    configDialog->addDouble(tr("Epaisseur des tranches"), "m", 0, 1e+09, 2, _thickness, 1);
+    configDialog->addBool(tr("Calculer les enveloppes directionnelles par tranches"), "", "", _computeDirs);
+    configDialog->addInt(tr("Nombre de directions"), "", 3, 99999, _nbDir);
 }
 
 void PB_StepComputeCrownProjection::compute()
@@ -118,7 +125,7 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
 {
     const CT_Scene* scene = (CT_Scene*)group->firstItemByINModelName(this, DEFin_scene);
     if (scene != NULL)
-    {        
+    {
         // création des niveaux
         QList<Eigen::Vector2d *> allPoints;
         QList<PB_StepComputeCrownProjection::level> pointsByLevel;
@@ -141,20 +148,23 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
         // tri par (X,Y) de la liste des points
         CT_Polygon2DData::orderPointsByXY(allPoints);
 
-        // Création de la liste des points pour chaque tranche
-        QListIterator<Eigen::Vector2d *> itPoints(allPoints);
-        while (itPoints.hasNext())
+        if (_computeSlices)
         {
-            Eigen::Vector2d *point = itPoints.next();
-            double z = zValues.value(point);
-
-            QListIterator<PB_StepComputeCrownProjection::level> it(pointsByLevel);
-            while (it.hasNext())
+            // Création de la liste des points pour chaque tranche
+            QListIterator<Eigen::Vector2d *> itPoints(allPoints);
+            while (itPoints.hasNext())
             {
-                PB_StepComputeCrownProjection::level &levelInfo = (PB_StepComputeCrownProjection::level &) it.next();
-                if (z >= levelInfo._zmin && z < levelInfo._zmax)
+                Eigen::Vector2d *point = itPoints.next();
+                double z = zValues.value(point);
+
+                QListIterator<PB_StepComputeCrownProjection::level> it(pointsByLevel);
+                while (it.hasNext())
                 {
-                    levelInfo._pointList.append(point);
+                    PB_StepComputeCrownProjection::level &levelInfo = (PB_StepComputeCrownProjection::level &) it.next();
+                    if (z >= levelInfo._zmin && z < levelInfo._zmax)
+                    {
+                        levelInfo._pointList.append(point);
+                    }
                 }
             }
         }
@@ -163,24 +173,63 @@ void PB_StepComputeCrownProjection::computeConvexHullForOneSceneGroup(CT_Standar
         CT_Polygon2D* convexHull = new CT_Polygon2D(_convexHull_ModelName.completeName(), _rscene, data);
         group->addItemDrawable(convexHull);
 
+        // Calcul des angles limites
+        double angle = 2*M_PI / (double)_nbDir;
+        QMap<double, int> dirMax;
 
-
-        QListIterator<PB_StepComputeCrownProjection::level> itPtBLev(pointsByLevel);
-        while (itPtBLev.hasNext())
+        dirMax.insert(angle / 2.0, 0);
+        for (int i = 1 ; i < _nbDir ; i++)
         {
-            PB_StepComputeCrownProjection::level &currentLevel = (PB_StepComputeCrownProjection::level&) itPtBLev.next();
+            dirMax.insert(i*angle + angle / 2.0, i);
+        }
+        dirMax.insert(2*M_PI + 0.1, 0);
 
-            CT_Polygon2DData *dataSlice = CT_Polygon2DData::createConvexHull(currentLevel._pointList);
 
-            if (dataSlice != NULL)
+        if (_computeSlices)
+        {
+            QListIterator<PB_StepComputeCrownProjection::level> itPtBLev(pointsByLevel);
+            while (itPtBLev.hasNext())
             {
-                CT_StandardItemGroup* grpSlice= new CT_StandardItemGroup(_grpSlice_ModelName.completeName(), _rscene);
-                group->addGroup(grpSlice);
+                PB_StepComputeCrownProjection::level &currentLevel = (PB_StepComputeCrownProjection::level&) itPtBLev.next();
+                CT_Polygon2DData *dataSlice = CT_Polygon2DData::createConvexHull(currentLevel._pointList);
 
-                CT_Polygon2D* slice = new CT_Polygon2D(_sclice_ModelName.completeName(), _rscene, dataSlice);
-                slice->setZValue(currentLevel._zlevel);
+                if (dataSlice != NULL)
+                {
+                    CT_StandardItemGroup* grpSlice= new CT_StandardItemGroup(_grpSlice_ModelName.completeName(), _rscene);
+                    group->addGroup(grpSlice);
 
-                grpSlice->addItemDrawable(slice);
+                    CT_Polygon2D* slice = new CT_Polygon2D(_scliceCvx_ModelName.completeName(), _rscene, dataSlice);
+                    slice->setZValue(currentLevel._zlevel);
+
+                    grpSlice->addItemDrawable(slice);
+
+                    if (_computeDirs)
+                    {
+                        // Calcul de l'enveloppe directionnelle
+                        const Eigen::Vector2d &massCenter = dataSlice->getCenter();
+
+                        QMap<double, double> azToDist;
+                        QListIterator<Eigen::Vector2d*> itPts(currentLevel._pointList);
+                        while (itPts.hasNext())
+                        {
+                            Eigen::Vector2d* pt = itPts.next();
+                            Eigen::Vector2d dir = (*pt) - massCenter;
+
+                            double distance = dir.norm();
+                            double asinx = asin(dir(0) / distance);
+                            double acosy = acos(dir(1) / distance);
+                            double azimut;
+                            if (asinx >= 0) {
+                                azimut = acosy;
+                            } else {
+                                azimut = 2*M_PI - acosy;
+                            }
+                            azToDist.insert(azimut, distance);
+                        }
+
+
+                    }
+                }
             }
         }
 

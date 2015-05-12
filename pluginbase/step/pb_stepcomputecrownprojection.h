@@ -105,14 +105,18 @@ private:
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _convexHull_ModelName;
     CT_AutoRenameModels    _grpSlice_ModelName;
-    CT_AutoRenameModels    _sclice_ModelName;
+    CT_AutoRenameModels    _scliceCvx_ModelName;
+    CT_AutoRenameModels    _directionalHull_ModelName;
+    CT_AutoRenameModels    _scliceDir_ModelName;
 
     CT_ResultGroup*        _rscene;
 
     // Step parameters
-    bool    _computeSlices;
-    double    _spacing;
-    double    _thickness;
+    bool        _computeSlices;
+    double       _spacing;
+    double      _thickness;
+    bool        _computeDirs;
+    int         _nbDir;
 
     double    _zmin;
     double    _zmax;
