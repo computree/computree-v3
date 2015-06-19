@@ -87,7 +87,7 @@ QList<QStandardItem *> GStepManager::createItemsForResult(CT_AbstractResult &res
     item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultProgress, res.getClearFromMemoryProgress());
     item->setEditable(false);
     connect(&res, SIGNAL(clearFromMemoryInProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
-    connect(&res, SIGNAL(serializeInProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
+    //connect(&res, SIGNAL(serializeInProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
     list.append(item);
 
     // visibilit
@@ -300,7 +300,7 @@ void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 
     if(item != NULL)
     {
-        connect(step, SIGNAL(resultAdded(CT_AbstractResult*)), this, SLOT(resultAdded(CT_AbstractResult*)), Qt::DirectConnection);
+        connect(step, SIGNAL(resultAdded(const CT_AbstractResult*)), this, SLOT(resultAdded(const CT_AbstractResult*)), Qt::DirectConnection);
 
         QList<QStandardItem *> newItems = createItemsForStep(*step);
 
@@ -327,19 +327,19 @@ void GStepManager::stepToBeRemoved(CT_VirtualAbstractStep *step)
     }
 }
 
-void GStepManager::resultAdded(CT_AbstractResult *res)
+void GStepManager::resultAdded(const CT_AbstractResult *res)
 {
     QStandardItem *item = findItem(res->parentStep());
 
     if(item != NULL)
     {
         _mutexResList.lock();
-        _resToBeAddedList.append(res);
+        _resToBeAddedList.append((CT_AbstractResult*)res);
         _mutexResList.unlock();
 
         // on emet un signal pour les mmes raisons que
         // lors de la suppression d'tape
-        emit addResult(item, res);
+        emit addResult(item, (CT_AbstractResult*)res);
     }
 }
 

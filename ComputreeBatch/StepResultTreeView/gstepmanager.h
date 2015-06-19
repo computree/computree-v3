@@ -123,7 +123,7 @@ private slots:
     void stepAdded(CT_VirtualAbstractStep *step);
     void stepToBeRemoved(CT_VirtualAbstractStep *step);
 
-    void resultAdded(CT_AbstractResult *res);
+    void resultAdded(const CT_AbstractResult *res);
 
     void resultToAdd(QStandardItem *parentItem, CT_AbstractResult *res);
     void itemToRemove(QStandardItem *item);

@@ -3,7 +3,7 @@
 #include "cdm_configfile.h"
 
 #include <QApplication>
-#include <iostream>
+#include <QDebug>
 
 Batch::Batch(QuitInterface *qI)
 {
@@ -111,7 +111,8 @@ void Batch::initWithArgs()
             ++i;
 
         if(i<size) {
-            std::cout << tr("Help for ComputreeCore :\r\n--help\t\t\tShow this help\r\n-script \"XXX.xsct2\"\tLoad a script\r\n-startSteps\t\tStart execution of steps").toStdString() << std::endl;
+            qWarning() << "Help for ComputreeCore :\r\n--help\t\t\tShow this help\r\n-script \"XXX.xsct2\"\tLoad a script\r\n-startSteps\t\tStart execution of steps";
+
             executionFinished();
             return;
         }
@@ -129,7 +130,7 @@ void Batch::initWithArgs()
 
             if(!error.isEmpty())
             {
-                std::cout << tr("Unable to open script :\r\n").toStdString() << error.toStdString() << std::endl;
+                qWarning((tr("Unable to open script :\r\n") + error).toUtf8());
                 executionFinished();
                 return;
             }
@@ -144,7 +145,7 @@ void Batch::initWithArgs()
                 connect(_stepManager, SIGNAL(completed()), this, SLOT(executionFinished()));
 
                 if(!_stepManager->executeStep())
-                    std::cout << tr("Error when execute steps").toStdString();
+                    qWarning() << tr("Error when execute steps");
             }
         }
     }
