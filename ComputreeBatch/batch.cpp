@@ -5,8 +5,9 @@
 #include <QApplication>
 #include <iostream>
 
-Batch::Batch()
+Batch::Batch(QuitInterface *qI)
 {
+    m_quitInterface = qI;
     _pluginManager = new CDM_PluginManager();
     _scriptManager = new CDM_ScriptManagerXML(*_pluginManager);
     _actionManager = new CDM_ActionsManager();
@@ -109,8 +110,11 @@ void Batch::initWithArgs()
         while((i<size) && (args.at(i) != "--help"))
             ++i;
 
-        if(i<size)
+        if(i<size) {
             std::cout << tr("Help for ComputreeCore :\r\n--help\t\t\tShow this help\r\n-script \"XXX.xsct2\"\tLoad a script\r\n-startSteps\t\tStart execution of steps").toStdString() << std::endl;
+            executionFinished();
+            return;
+        }
 
         i = 1;
 
@@ -126,6 +130,7 @@ void Batch::initWithArgs()
             if(!error.isEmpty())
             {
                 std::cout << tr("Unable to open script :\r\n").toStdString() << error.toStdString() << std::endl;
+                executionFinished();
                 return;
             }
 
@@ -136,6 +141,8 @@ void Batch::initWithArgs()
 
             if(i < size)
             {
+                connect(_stepManager, SIGNAL(completed()), this, SLOT(executionFinished()));
+
                 if(!_stepManager->executeStep())
                     std::cout << tr("Error when execute steps").toStdString();
             }
@@ -155,6 +162,11 @@ void Batch::loadScriptFilePath()
     QString error = _scriptManager->loadScript(_script, *_stepManager);
 
     emit scriptLoaded(error);
+}
+
+void Batch::executionFinished()
+{
+    m_quitInterface->quitApplication();
 }
 
 void Batch::removeAllStep()

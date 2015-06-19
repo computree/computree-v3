@@ -6,6 +6,7 @@ CONFIG -= plugin
 TARGET = CompuTreeBatch
 TEMPLATE = app
 QT += network
+CONFIG += console
 
 # pour que l'application recherche les librairies dans son propre dossier
 QMAKE_LFLAGS += -Wl,--rpath=\\\$\$ORIGIN

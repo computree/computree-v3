@@ -10,7 +10,7 @@ BatchDialog::BatchDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _batch = new Batch();
+    _batch = new Batch(this);
     _batchPluginManager.load();
     _pluginSelected = NULL;
 
@@ -26,6 +26,11 @@ BatchDialog::~BatchDialog()
     delete ui;
 
     delete _batch;
+}
+
+void BatchDialog::quitApplication()
+{
+    QTimer::singleShot(3000, this, SLOT(quit()));
 }
 
 void BatchDialog::initUi()

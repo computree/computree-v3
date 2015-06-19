@@ -8,13 +8,20 @@
 #include "cdm_stepmanager.h"
 #include "cdm_actionsmanager.h"
 
+class QuitInterface {
+public:
+    virtual ~QuitInterface() {}
+
+    virtual void quitApplication() = 0;
+};
+
 class Batch : public BatchInterface
 {
     Q_OBJECT
     Q_INTERFACES(BatchInterface)
 
 public:
-    Batch();
+    Batch(QuitInterface *qI);
     ~Batch();
 
     void initWithArgs();
@@ -32,6 +39,7 @@ public:
     CDM_ActionsManager *getActionManager() const;
 
 private:
+    QuitInterface           *m_quitInterface;
     CDM_PluginManager       *_pluginManager;
     CDM_ScriptManagerXML    *_scriptManager;
     CDM_StepManager         *_stepManager;
@@ -51,6 +59,7 @@ signals:
 private slots:
     void loadScriptText();
     void loadScriptFilePath();
+    void executionFinished();
 
 public slots:
     void removeAllStep();

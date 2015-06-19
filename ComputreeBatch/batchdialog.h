@@ -11,13 +11,15 @@ namespace Ui {
     class BatchDialog;
 }
 
-class BatchDialog : public QDialog
+class BatchDialog : public QDialog, public QuitInterface
 {
     Q_OBJECT
 
 public:
     explicit BatchDialog(QWidget *parent = 0);
     ~BatchDialog();
+
+    void quitApplication();
 
 private:
     Ui::BatchDialog         *ui;
