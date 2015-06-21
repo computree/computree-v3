@@ -385,7 +385,8 @@ SOURCES += \
     ct_plotmanager/ct_plotmanager_grid.cpp \
     ct_plotmanager/ct_plotmanager_plotslist.cpp \
     ct_itemdrawable/ct_plotmanageritem.cpp \
-    ct_view/ct_asciifilechoicebutton.cpp
+    ct_view/ct_asciifilechoicebutton.cpp \
+    ct_itemdrawable/ct_image2d.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -867,7 +868,9 @@ HEADERS += interfaces.h \
     ct_iterator/ct_mutableitemiterator.h \
     ct_itemdrawable/ct_plotmanageritem.h \
     ct_view/ct_asciifilechoicebutton.h \
-    ct_tools/ct_gdaltools.h
+    ct_tools/ct_gdaltools.h \
+    ct_itemdrawable/ct_image2d.h \
+    ct_itemdrawable/ct_image2d.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
