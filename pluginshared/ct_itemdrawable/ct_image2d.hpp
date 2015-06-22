@@ -29,6 +29,7 @@
 #define CT_IMAGE2D_HPP
 
 #include "ct_itemdrawable/ct_image2d.h"
+#include "opencv2/core/core.hpp"
 
 #include <math.h>
 #include <typeinfo>
@@ -39,7 +40,7 @@
 template< typename DataT> CT_DEFAULT_IA_INIT(CT_Image2D<DataT>)
 
 template< typename DataT>
-CT_Image2D<DataT>::CT_Image2D() : CT_AbstractGrid2D()
+CT_Image2D<DataT>::CT_Image2D() : CT_AbstractImage2D()
 {
     _minCoordinates(0) = 0;
     _minCoordinates(1) = 0;
@@ -58,13 +59,41 @@ CT_Image2D<DataT>::CT_Image2D() : CT_AbstractGrid2D()
 }
 
 template< typename DataT>
-CT_Image2D<DataT>::CT_Image2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractGrid2D(model, result)
+CT_Image2D<DataT>::CT_Image2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractImage2D(model, result)
 {
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
+    _res = 1;
+    _dimCol = 0;
+    _dimLin = 0;
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
+
+    _minColCoord = 0;
+    _minLinCoord = 0;
+
+    _level = 0;
 }
 
 template< typename DataT>
-CT_Image2D<DataT>::CT_Image2D(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractGrid2D(modelName, result)
+CT_Image2D<DataT>::CT_Image2D(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractImage2D(modelName, result)
 {
+    _minCoordinates(0) = 0;
+    _minCoordinates(1) = 0;
+    _minCoordinates(2) = 0;
+    _res = 1;
+    _dimCol = 0;
+    _dimLin = 0;
+    _maxCoordinates(0) = 0;
+    _maxCoordinates(1) = 0;
+    _maxCoordinates(2) = 0;
+
+    _minColCoord = 0;
+    _minLinCoord = 0;
+
+    _level = 0;
 }
 
 
@@ -76,27 +105,26 @@ CT_Image2D<DataT>::~CT_Image2D()
 template< typename DataT>
 void CT_Image2D<DataT>::initGridWithValue(const DataT val)
 {
-    for (size_t  i = 0 ; i < nCells() ; i++)
-    {
-        _data[i] = val;
-    }
+    _data.setTo(cv::Scalar_<DataT>(val));
     _dataMin = val;
     _dataMax = val;
 }
 
 template< typename DataT>
 void CT_Image2D<DataT>::computeMinMax()
-{
-    size_t ncells = nCells();
-    _dataMin = _data[0];
-    _dataMax = _data[0];
+{   
+    _dataMin = NA();
+    _dataMax = NA();
 
-    for (size_t i = 1 ; i < ncells ; i++)
+    cv::MatIterator_<DataT> it, end;
+    for(it = _data.begin(), end = _data.end() ; it != end ; ++it)
     {
-        if (_data[i] != NA())
+        DataT val = *it;
+
+        if (val != NA())
         {
-            if (_dataMax==NA() || _data[i] > _dataMax) {_dataMax = _data[i];}
-            if (_dataMin==NA() || _data[i] < _dataMin) {_dataMin = _data[i];}
+            if (_dataMax == NA() || val > _dataMax) {_dataMax = val;}
+            if (_dataMin == NA() || val < _dataMin) {_dataMin = val;}
         }
     }
 }
@@ -110,7 +138,7 @@ QString CT_Image2D<DataT>::getType() const
 template< typename DataT>
 QString CT_Image2D<DataT>::staticGetType()
 {
-    return CT_AbstractGrid2D::staticGetType() + "/CT_Image2D<" + typeid(DataT).name() + ">";
+    return CT_AbstractImage2D::staticGetType() + "/CT_Image2D<" + typeid(DataT).name() + ">";
 }
 
 template< typename DataT>
@@ -118,17 +146,18 @@ bool CT_Image2D<DataT>::setValueAtIndex(const size_t index, const DataT value)
 {
     if (index >= nCells()) {return false;}
 
-    //_data[index] = value;
+    size_t lin, col;
+    indexToGrid(index, col, lin);
 
-    return true;
+    return setValue(col, lin, value);
 }
 
 template< typename DataT>
 bool CT_Image2D<DataT>::setValue(const size_t col, const size_t lin, const DataT value)
 {
-    size_t resultIndex;
-    if (!index(col, lin, resultIndex)) {return false;}
-    return setValueAtIndex(resultIndex, value);
+    if ((col >= _dimCol) || (lin >= _dimLin)) {return false;}
+    _data(lin, col) = value;
+    return true;
 }
 
 template< typename DataT>
@@ -144,29 +173,30 @@ template< typename DataT>
 DataT CT_Image2D<DataT>::valueAtIndex(const size_t index) const
 {
     if (index >= nCells()) {return NA();}
-    return _data[index];
+
+    size_t lin, col;
+    indexToGrid(index, col, lin);
+
+    return value(col, lin);
 }
 
 template< typename DataT>
 DataT CT_Image2D<DataT>::value(const size_t col, const size_t lin) const
 {
-    size_t resultIndex;
-    if (!index(col, lin, resultIndex)) {return NA();}
-    return valueAtIndex(resultIndex);
+    if ((col >= _dimCol) || (lin >= _dimLin)) {return NA();}
+    return _data(lin, col);
 }
 
 template< typename DataT>
 DataT CT_Image2D<DataT>::dataFromArray(const size_t &x, const size_t &y) const
 {
-    size_t resultIndex;
-    if (!index(x, y, resultIndex)) {return NA();}
-    return valueAtIndex(resultIndex);
+    return value(y, x);
 }
 
 template< typename DataT>
 DataT CT_Image2D<DataT>::dataFromArray(const size_t &index) const
 {
-    return _data[index];
+    return valueAtIndex(index);
 }
 
 template< typename DataT>

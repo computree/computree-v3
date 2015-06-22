@@ -25,8 +25,8 @@
 
 *****************************************************************************/
 
-#ifndef CT_ABSTRACTGRID2D_H
-#define CT_ABSTRACTGRID2D_H
+#ifndef CT_ABSTRACTIMAGE2D_H
+#define CT_ABSTRACTIMAGE2D_H
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 #include "ct_math/ct_math.h"
@@ -34,25 +34,25 @@
 #include <eigen/Eigen/Core>
 
 /*!
- * \class CT_AbstractGrid2D
+ * \class CT_AbstractImage2D
  * \ingroup PluginShared_Items
  * \brief <b>Commun abstract base of all templated CT_Grid2D<type> </b>
  *
  * It's usefull to manage generically a grid, without knowing it template type
  *
  */
-class PLUGINSHAREDSHARED_EXPORT CT_AbstractGrid2D : public CT_AbstractItemDrawableWithoutPointCloud
+class PLUGINSHAREDSHARED_EXPORT CT_AbstractImage2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
 public:
 
     /**
       * \brief Empty Contructor vide
       */
-    CT_AbstractGrid2D();
-    CT_AbstractGrid2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
-    CT_AbstractGrid2D(const QString &modelName, const CT_AbstractResult *result);
+    CT_AbstractImage2D();
+    CT_AbstractImage2D(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result);
+    CT_AbstractImage2D(const QString &modelName, const CT_AbstractResult *result);
 
-    virtual ~CT_AbstractGrid2D();
+    virtual ~CT_AbstractImage2D();
 
 
     virtual QString getType() const;
@@ -346,4 +346,4 @@ protected:
 
 };
 
-#endif // CT_ABSTRACTGRID2D_H
+#endif // CT_ABSTRACTIMAGE2D_H

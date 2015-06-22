@@ -28,7 +28,7 @@
 #ifndef CT_IMAGE2D_H
 #define CT_IMAGE2D_H
 
-#include "ct_itemdrawable/abstract/ct_abstractgrid2d.h"
+#include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
 #include "ct_math/ct_math.h"
 
@@ -45,7 +45,7 @@ template< typename DataT > class CT_StandardGrid2DDrawManager;
  *
  */
 template< typename DataT>
-class CT_Image2D : public CT_AbstractGrid2D, public CT_ITemplatedData2DArray<DataT>
+class CT_Image2D : public CT_AbstractImage2D, public CT_ITemplatedData2DArray<DataT>
 {
 public:
 

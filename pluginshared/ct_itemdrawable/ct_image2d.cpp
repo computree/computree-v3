@@ -75,8 +75,8 @@ bool CT_Image2D<bool>::setMinValueAtIndex(const size_t index, const bool value)
 template<>
 bool CT_Image2D<bool>::addValueAtIndex(const size_t index, const bool value)
 {
-    bool currentValue = _data[index];
-    return setValueAtIndex(index, value + currentValue);
+    //bool currentValue = _data[index];
+    return true;//setValueAtIndex(index, value + currentValue);
 }
 
 template<>
