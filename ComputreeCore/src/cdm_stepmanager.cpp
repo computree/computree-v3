@@ -471,19 +471,18 @@ bool CDM_StepManager::recursiveExecuteStep(QString &scriptFileAndSerializedDirNa
     bool continueLoop = true;
     bool forceAfterExecute = force;
 
-    // si l'tape a subit de changement
-    // ou si elle n'a aucun rsultat de sortie
-    // ou si elle en a un mais qu'il a t supprim de la mmoire
+    // si l'etape a subit des changements
+    // ou si elle n'a aucun resultat de sortie et qu'elle n'a pas ete lancee
+    // ou si elle en a un mais qu'il a ete supprime de la memoire
     if(forceAfterExecute
         || step.isSettingsModified()
-        || (step.nResult() == 0)
-        || ((step.nResult() > 0)
-            && (step.getResult(0)->isClearedFromMemory())))
+        || ((step.nResult() == 0) && (step.getProgress() < 100))
+        || ((step.nResult() > 0) && (step.getResult(0)->isClearedFromMemory())))
     {
-        // on lance l'tape seulement si elle a besoin d'un rsultat
+        // on lance l'etape seulement si elle a besoin d'un resultat
         // et qu'il y en a un
         // OU
-        // que l'tape n'a pas besoin de rsultat
+        // que l'etape n'a pas besoin de resultat
         if((step.needInputResults()
             && (step.parentStep() != NULL)
             && !step.parentStep()->isStopped()

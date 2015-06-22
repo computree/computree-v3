@@ -3,6 +3,7 @@
 #include "ct_itemdrawable/ct_pointsattributescolor.h"
 #include "ct_itemdrawable/ct_pointsattributesnormal.h"
 #include "ct_itemdrawable/abstract/ct_abstractpointattributesscalar.h"
+#include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
 
 CT_AbstractExporterPointAttributesSelection::CT_AbstractExporterPointAttributesSelection() : CT_AbstractExporterAttributesSelection()
 {
@@ -76,36 +77,67 @@ bool CT_AbstractExporterPointAttributesSelection::useSelection(const CT_ItemDraw
     m_attributsColorPointWorker.setColorCloud(selectorWidget->colorCloudSelected());
     m_attributsNormalPointWorker.setNormalCloud(selectorWidget->normalCloudSelected());
 
-    QList<CT_AbstractPointsAttributes*> attributesColor;
-    QList<CT_AbstractPointsAttributes*> attributesNormal;
+    if(searchOnlyModels()) {
 
-    QList<CT_AbstractSingularItemDrawable*> list = selectorWidget->itemDrawableSelected();
-    QListIterator<CT_AbstractSingularItemDrawable*> it(list);
+        QList<CT_OutAbstractSingularItemModel*> list = selectorWidget->itemDrawableModelSelected();
+        QListIterator<CT_OutAbstractSingularItemModel*> it(list);
 
-    while(it.hasNext())
-    {
-        CT_AbstractSingularItemDrawable *item = it.next();
-        CT_PointsAttributesColor *pac = dynamic_cast<CT_PointsAttributesColor*>(item);
+        while(it.hasNext())
+        {
+            CT_OutAbstractSingularItemModel *model = it.next();
+            CT_AbstractItemDrawable *item = model->itemDrawable();
+            CT_PointsAttributesColor *pac = dynamic_cast<CT_PointsAttributesColor*>(item);
 
-        if(pac != NULL) {
-            attributesColor.append(pac);
-        } else {
-            CT_AbstractPointAttributesScalar *pas = dynamic_cast<CT_AbstractPointAttributesScalar*>(item);
-
-            if(pas != NULL) {
-                attributesColor.append(pas);
+            if(pac != NULL) {
+                m_attributesColorModel.append(model);
             } else {
+                CT_AbstractPointAttributesScalar *pas = dynamic_cast<CT_AbstractPointAttributesScalar*>(item);
 
-                CT_PointsAttributesNormal *pan = dynamic_cast<CT_PointsAttributesNormal*>(item);
+                if(pas != NULL) {
+                    m_attributesColorModel.append(model);
+                } else {
 
-                if(pan != NULL)
-                    attributesNormal.append(pan);
+                    CT_PointsAttributesNormal *pan = dynamic_cast<CT_PointsAttributesNormal*>(item);
+
+                    if(pan != NULL)
+                        m_attributesNormalModel.append(model);
+                }
             }
         }
-    }
 
-    m_attributsColorPointWorker.setAttributes(attributesColor);
-    m_attributsNormalPointWorker.setAttributes(attributesNormal);
+    } else {
+
+        QList<CT_AbstractPointsAttributes*> attributesColor;
+        QList<CT_AbstractPointsAttributes*> attributesNormal;
+
+        QList<CT_AbstractSingularItemDrawable*> list = selectorWidget->itemDrawableSelected();
+        QListIterator<CT_AbstractSingularItemDrawable*> it(list);
+
+        while(it.hasNext())
+        {
+            CT_AbstractSingularItemDrawable *item = it.next();
+            CT_PointsAttributesColor *pac = dynamic_cast<CT_PointsAttributesColor*>(item);
+
+            if(pac != NULL) {
+                attributesColor.append(pac);
+            } else {
+                CT_AbstractPointAttributesScalar *pas = dynamic_cast<CT_AbstractPointAttributesScalar*>(item);
+
+                if(pas != NULL) {
+                    attributesColor.append(pas);
+                } else {
+
+                    CT_PointsAttributesNormal *pan = dynamic_cast<CT_PointsAttributesNormal*>(item);
+
+                    if(pan != NULL)
+                        attributesNormal.append(pan);
+                }
+            }
+        }
+
+        m_attributsColorPointWorker.setAttributes(attributesColor);
+        m_attributsNormalPointWorker.setAttributes(attributesNormal);
+    }
 
     return true;
 }
@@ -113,6 +145,29 @@ bool CT_AbstractExporterPointAttributesSelection::useSelection(const CT_ItemDraw
 CT_AbstractColorCloud* CT_AbstractExporterPointAttributesSelection::createColorCloudBeforeExportToFile()
 {
     CT_AbstractColorCloud *cc = NULL;
+
+    // if we have saved models for attributes of type colors we must search the real item drawable that match with this model
+    if(!m_attributesColorModel.isEmpty()) {
+        QList<CT_AbstractPointsAttributes*> attributesColor;
+
+        CT_ItemSearchHelper helper;
+
+        QListIterator<CT_OutAbstractSingularItemModel*> itM(m_attributesColorModel);
+
+        while(itM.hasNext()) {
+            CT_ResultItemIterator it = helper.searchSingularItemsForModel(itM.next());
+
+            if(it.hasNext()) {
+                CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
+
+                if((dynamic_cast<CT_PointsAttributesColor*>(item) != NULL)
+                        || (dynamic_cast<CT_AbstractPointAttributesScalar*>(item)))
+                    attributesColor.append(dynamic_cast<CT_AbstractPointsAttributes*>(item));
+            }
+        }
+
+        m_attributsColorPointWorker.setAttributes(attributesColor);
+    }
 
     if((m_attributsColorPointWorker.colorCloud().data() == NULL)
             && (!m_attributsColorPointWorker.attributes().isEmpty()))
@@ -132,6 +187,28 @@ CT_AbstractColorCloud* CT_AbstractExporterPointAttributesSelection::createColorC
 CT_AbstractNormalCloud* CT_AbstractExporterPointAttributesSelection::createNormalCloudBeforeExportToFile()
 {
     CT_AbstractNormalCloud *nc = NULL;
+
+    // if we have saved models for attributes of type colors we must search the real item drawable that match with this model
+    if(!m_attributesNormalModel.isEmpty()) {
+        QList<CT_AbstractPointsAttributes*> attributesNormal;
+
+        CT_ItemSearchHelper helper;
+
+        QListIterator<CT_OutAbstractSingularItemModel*> itM(m_attributesNormalModel);
+
+        while(itM.hasNext()) {
+            CT_ResultItemIterator it = helper.searchSingularItemsForModel(itM.next());
+
+            if(it.hasNext()) {
+                CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
+
+                if(dynamic_cast<CT_PointsAttributesNormal*>(item) != NULL)
+                    attributesNormal.append(dynamic_cast<CT_AbstractPointsAttributes*>(item));
+            }
+        }
+
+        m_attributsNormalPointWorker.setAttributes(attributesNormal);
+    }
 
     if((m_attributsNormalPointWorker.normalCloud().data() == NULL)
             && (!m_attributsNormalPointWorker.attributes().isEmpty()))
@@ -155,4 +232,7 @@ void CT_AbstractExporterPointAttributesSelection::clearWorker()
 
     m_attributsNormalPointWorker.setAttributes(QList<CT_AbstractPointsAttributes*>());
     m_attributsNormalPointWorker.setColorCloud(QSharedPointer<CT_StandardColorCloudRegistered>(NULL));
+
+    m_attributesColorModel.clear();
+    m_attributesNormalModel.clear();
 }

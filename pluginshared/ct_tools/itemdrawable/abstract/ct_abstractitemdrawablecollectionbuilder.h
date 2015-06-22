@@ -18,7 +18,7 @@ public:
     /**
      * @brief Search elements from step passed in parameter.
      */
-    virtual bool buildFrom(const CT_VirtualAbstractStep *step) = 0;
+    virtual bool buildFrom(const CT_VirtualAbstractStep *step, bool findOnlyModels) = 0;
 
     /**
      * @brief Returns the list of results sorted by step

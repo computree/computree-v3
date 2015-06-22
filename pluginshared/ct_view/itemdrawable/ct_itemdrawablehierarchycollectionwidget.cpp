@@ -286,8 +286,34 @@ QList<CT_AbstractSingularItemDrawable *> CT_ItemDrawableHierarchyCollectionWidge
     {
         QListIterator<QStandardItem*> it(items);
 
-        while(it.hasNext())
-            l.append((CT_AbstractSingularItemDrawable*)it.next()->data(Qt::UserRole+2).value<void*>());
+        while(it.hasNext()) {
+            CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next()->data(Qt::UserRole+2).value<void*>();
+
+            if(item != NULL)
+                l.append(item);
+        }
+    }
+
+    return l;
+}
+
+QList<CT_OutAbstractSingularItemModel *> CT_ItemDrawableHierarchyCollectionWidget::itemDrawableModelSelected() const
+{
+    QList<CT_OutAbstractSingularItemModel*> l;
+
+    QList<QStandardItem*> items = recursiveItemsSelected(m_model.invisibleRootItem());
+
+    if(!items.isEmpty()
+            && (items.first()->data().toInt() >= 0))
+    {
+        QListIterator<QStandardItem*> it(items);
+
+        while(it.hasNext()) {
+            CT_OutAbstractSingularItemModel *model = (CT_OutAbstractSingularItemModel*)it.next()->data(Qt::UserRole+4).value<void*>();
+
+            if(model != NULL)
+                l.append(model);
+        }
     }
 
     return l;
@@ -336,19 +362,35 @@ QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItems(con
             {
                 const CT_ItemDrawableCollectionHierarchyResult &par = itR.next();
 
-                if(par.result != NULL)
+                CT_OutAbstractModel *model = par.modelResult;
+
+                if((model == NULL) && par.result != NULL)
+                    model = par.result->model();
+
+                if(model != NULL)
                 {
                     QStandardItem *iResult = new QStandardItem();
                     iResult->setEditable(false);
-                    iResult->setText(par.result->model()->displayableName());
+                    iResult->setText(model->displayableName());
 
-                    QListIterator<CT_AbstractSingularItemDrawable*> itA(par.collection);
+                    if(!par.modelsCollection.isEmpty()) {
+                        QListIterator<CT_OutAbstractItemModel*> itA(par.modelsCollection);
 
-                    while(itA.hasNext())
-                    {
-                        CT_AbstractSingularItemDrawable *pa = itA.next();
+                        while(itA.hasNext())
+                        {
+                            CT_OutAbstractItemModel *pa = itA.next();
 
-                        iResult->appendRow(createItemsForItemDrawable(sm, pa, index));
+                            iResult->appendRow(createItemsForItemModel(sm, pa, index));
+                        }
+                    } else {
+                        QListIterator<CT_AbstractSingularItemDrawable*> itA(par.collection);
+
+                        while(itA.hasNext())
+                        {
+                            CT_AbstractSingularItemDrawable *pa = itA.next();
+
+                            iResult->appendRow(createItemsForItemDrawable(sm, pa, index));
+                        }
                     }
 
                     if(iResult->rowCount() > 0)
@@ -370,6 +412,31 @@ QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItems(con
     return l;
 }
 
+QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItemsForItemModel(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm,
+                                                                                         const CT_OutAbstractItemModel *modelItemd,
+                                                                                         const int &index) const
+{
+    QList<QStandardItem *> l;
+
+    QStandardItem *item = new QStandardItem();
+    item->setEditable(false);
+    item->setText(modelItemd->displayableName());
+    l.append(item);
+
+    item = new QStandardItem();
+    item->setEditable(false);
+    item->setCheckable(true);
+    item->setCheckState(Qt::Unchecked);
+    item->setData(index, Qt::UserRole + 1);
+    item->setData(qVariantFromValue((void*)NULL), Qt::UserRole + 2);
+    item->setData(qVariantFromValue((void*)modelItemd), Qt::UserRole + 4);
+    item->setData(qVariantFromValue((void*)sm), Qt::UserRole + 3);
+
+    l.append(item);
+
+    return l;
+}
+
 QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItemsForItemDrawable(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm,
                                                                                             const CT_AbstractSingularItemDrawable *itemd,
                                                                                             const int &index) const
@@ -387,6 +454,7 @@ QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItemsForI
     item->setCheckState(Qt::Unchecked);
     item->setData(index, Qt::UserRole + 1);
     item->setData(qVariantFromValue((void*)itemd), Qt::UserRole + 2);
+    item->setData(qVariantFromValue((void*)NULL), Qt::UserRole + 4);
     item->setData(qVariantFromValue((void*)sm), Qt::UserRole + 3);
 
     l.append(item);

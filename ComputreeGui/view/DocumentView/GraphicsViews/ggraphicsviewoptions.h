@@ -73,8 +73,10 @@ private slots:
     void setCameraInfoDisplayed();
     void setCameraInfoPosition(QAbstractButton* button);
     void setCameraType(QAbstractButton* button);
+    void setOctreeConstructionType(QAbstractButton* button);
     void setShowOctree(bool val);
     void setOctreeNumberOfCells();
+    void setOctreeSizeOfCells(double val);
 
     void collapseOrExpandGroupBox(bool val);
     void refreshDialog();

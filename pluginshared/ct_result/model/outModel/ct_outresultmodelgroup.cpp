@@ -14,7 +14,8 @@ CT_OutResultModelGroup::CT_OutResultModelGroup(const QString &uniqueName,
                                                                                                             displayableName,
                                                                                                             resultName)
 {
-    _group = rootGroupModel;
+    _group = NULL;
+    setRootGroup(rootGroupModel);
 }
 
 QString CT_OutResultModelGroup::modelTypeDisplayable() const

@@ -42,7 +42,7 @@ protected:
     void unlockAllDocuments();
 
     template<typename CI>
-    std::vector< typename CI::size_type >* getInternalDataOfIndex(CI *index) const;
+    std::vector< ct_index_type >* getInternalDataOfIndex(CI *index) const;
 
     template<typename CIR, typename CI>
     CIR* createNewIndexRegistered(CI *index) const;

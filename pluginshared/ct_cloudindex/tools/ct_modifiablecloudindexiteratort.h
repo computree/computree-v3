@@ -10,7 +10,6 @@ class CT_ModifiableCloudIndexIteratorT
 {
 public:
     typedef CT_ModifiableCloudIndexIteratorT<T> self_type;
-    typedef typename CT_AbstractModifiableCloudIndexT<T>::size_type size_type;
 
     CT_ModifiableCloudIndexIteratorT(const CT_AbstractModifiableCloudIndexT<T> &index, const size_t &startPos = 0)
     {
@@ -19,7 +18,7 @@ public:
     }
 
     inline size_t cIndex() const { return (*m_index)[m_currentPos]; }
-    inline void cIndexReplace(const size_type &newIndex, const bool &verifyRespectSort = true) { m_index->replaceIndex(m_currentPos, newIndex, verifyRespectSort); }
+    inline void cIndexReplace(const ct_index_type &newIndex, const bool &verifyRespectSort = true) { m_index->replaceIndex(m_currentPos, newIndex, verifyRespectSort); }
 
     inline T& cT() { return operator*(); }
 

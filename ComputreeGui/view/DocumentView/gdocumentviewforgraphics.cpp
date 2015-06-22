@@ -590,7 +590,10 @@ void GDocumentViewForGraphics::validateOptions()
     while(it.hasNext())
         it.next()->setOptions(options);
 
-    m_octreeController.setNumberOfCells(options.octreeNumberOfCells());
+    if(options.octreeCellsConstructionType() == DM_GraphicsViewOptions::OctreeCellsByNumber)
+        m_octreeController.setNumberOfCells(options.octreeNumberOfCells());
+    else if (options.octreeCellsConstructionType() == DM_GraphicsViewOptions::OctreeCellsBySize)
+        m_octreeController.setSizeOfCells(options.octreeSizeOfCells());
 }
 
 void GDocumentViewForGraphics::takeAndSaveScreenshot()

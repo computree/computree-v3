@@ -37,7 +37,7 @@ public:
      * @param newIndex : the newIndex
      * @param verifyRespectSort : set to false if you want to accelerate the process and you are VERY sure to respect the sort
      */
-    virtual void replaceIndex(const size_t &i, const typename CT_AbstractCloudIndexT<T>::size_type &newIndex, const bool &verifyRespectSort = true) = 0;
+    virtual void replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort = true) = 0;
 
     /**
      * @brief add a new index a the beginning of the cloud index

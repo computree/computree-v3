@@ -871,14 +871,21 @@ void G3DPainter::drawQuadFace(const double &x1, const double &y1, const double &
         setPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glColor3ub(r1, g1, b1);
-        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
-        glColor3ub(r2, g2, b2);
-        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
-        glColor3ub(r3, g3, b3);
-        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
-        glColor3ub(r4, g4, b4);
-        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        if(_nCallEnableSetColor == 0) {
+            glColor3ub(r1, g1, b1);
+            glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+            glColor3ub(r2, g2, b2);
+            glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+            glColor3ub(r3, g3, b3);
+            glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+            glColor3ub(r4, g4, b4);
+            glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        } else {
+            glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+            glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+            glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+            glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        }
     }
 }
 
@@ -892,14 +899,21 @@ void G3DPainter::fillQuadFace(const double &x1, const double &y1, const double &
         setPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         startDrawMultiple(GL_BEGIN_QUAD);
 
-        glColor3ub(r1, g1, b1);
-        glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
-        glColor3ub(r2, g2, b2);
-        glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
-        glColor3ub(r3, g3, b3);
-        glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
-        glColor3ub(r4, g4, b4);
-        glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        if(_nCallEnableSetColor == 0) {
+            glColor3ub(r1, g1, b1);
+            glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+            glColor3ub(r2, g2, b2);
+            glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+            glColor3ub(r3, g3, b3);
+            glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+            glColor3ub(r4, g4, b4);
+            glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        } else {
+            glVertex3f(x1 - m_camTranslation(0), y1 - m_camTranslation(1), z1 - m_camTranslation(2));
+            glVertex3f(x2 - m_camTranslation(0), y2 - m_camTranslation(1), z2 - m_camTranslation(2));
+            glVertex3f(x3 - m_camTranslation(0), y3 - m_camTranslation(1), z3 - m_camTranslation(2));
+            glVertex3f(x4 - m_camTranslation(0), y4 - m_camTranslation(1), z4 - m_camTranslation(2));
+        }
      }
 }
 
@@ -1057,7 +1071,7 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
     if(canDraw(GL_BEGIN_LINE_FROM_PC))
     {
-        startDrawMultiple(GL_BEGIN_LINE_FROM_PC);
+        startDrawMultiple(GL_BEGIN_LINE_FROM_PC, false);
 
         if(!m_gv->getOptions().useColor())
             setCurrentColor();
@@ -1080,11 +1094,13 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
                 if(!infos->inlineIsInvisible(globalIndex))
                 {
-                    if(infos->inlineIsSelected(globalIndex)) {
-                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                    } else {
-                        const CT_Color &color = cc->constColorAt(globalIndex);
-                        glColor4ub(color.r, color.g, color.b, color.a);
+                    if(_nCallEnableSetColor == 0) {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            const CT_Color &color = cc->constColorAt(globalIndex);
+                            glColor4ub(color.r, color.g, color.b, color.a);
+                        }
                     }
 
                     const CT_Edge &edge = m_eAccess.constEdgeAt(globalIndex);
@@ -1101,10 +1117,12 @@ void G3DPainter::drawEdges(const CT_AbstractMeshModel *mesh)
 
                 if(!infos->inlineIsInvisible(globalIndex))
                 {
-                    if(infos->inlineIsSelected(globalIndex)) {
-                        glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                    } else {
-                        setCurrentColor();
+                    if(_nCallEnableSetColor == 0) {
+                        if(infos->inlineIsSelected(globalIndex)) {
+                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                        } else {
+                            setCurrentColor();
+                        }
                     }
 
                     const CT_Edge &edge = m_eAccess.constEdgeAt(globalIndex);
@@ -1288,7 +1306,7 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
     if(canDraw(GL_BEGIN_TRIANGLE_FROM_PC))
     {
-        startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC);
+        startDrawMultiple(GL_BEGIN_TRIANGLE_FROM_PC, false);
 
         if(!m_gv->getOptions().useColor())
             setCurrentColor();
@@ -1318,11 +1336,13 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                     if(!infos->inlineIsInvisible(globalIndex))
                     {
-                        if(infos->inlineIsSelected(globalIndex)) {
-                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                        } else {
-                            const CT_Color &color = cc->constColorAt(globalIndex);
-                            glColor4ub(color.r, color.g, color.b, color.a);
+                        if(_nCallEnableSetColor == 0) {
+                            if(infos->inlineIsSelected(globalIndex)) {
+                                glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                            } else {
+                                const CT_Color &color = cc->constColorAt(globalIndex);
+                                glColor4ub(color.r, color.g, color.b, color.a);
+                            }
                         }
 
                         glNormal3fv(nn->normalAt(globalIndex).vertex());
@@ -1343,11 +1363,13 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                     if(!infos->inlineIsInvisible(globalIndex))
                     {
-                        if(infos->inlineIsSelected(globalIndex)) {
-                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                        } else {
-                            const CT_Color &color = cc->constColorAt(globalIndex);
-                            glColor4ub(color.r, color.g, color.b, color.a);
+                        if(_nCallEnableSetColor == 0) {
+                            if(infos->inlineIsSelected(globalIndex)) {
+                                glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                            } else {
+                                const CT_Color &color = cc->constColorAt(globalIndex);
+                                glColor4ub(color.r, color.g, color.b, color.a);
+                            }
                         }
 
                         const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
@@ -1372,10 +1394,12 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                     if(!infos->inlineIsInvisible(globalIndex))
                     {
-                        if(infos->inlineIsSelected(globalIndex)) {
-                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                        } else {
-                            setCurrentColor();
+                        if(_nCallEnableSetColor == 0) {
+                            if(infos->inlineIsSelected(globalIndex)) {
+                                glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                            } else {
+                                setCurrentColor();
+                            }
                         }
 
                         glNormal3fv(nn->normalAt(globalIndex).vertex());
@@ -1396,10 +1420,12 @@ void G3DPainter::drawFaces(const CT_AbstractMeshModel *mesh)
 
                     if(!infos->inlineIsInvisible(globalIndex))
                     {
-                        if(infos->inlineIsSelected(globalIndex)) {
-                            glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
-                        } else {
-                            setCurrentColor();
+                        if(_nCallEnableSetColor == 0) {
+                            if(infos->inlineIsSelected(globalIndex)) {
+                                glColor4ub(selColor.red(), selColor.green(), selColor.blue(), selColor.alpha());
+                            } else {
+                                setCurrentColor();
+                            }
                         }
 
                         const CT_Face &face = m_fAccess.constFaceAt(globalIndex);
@@ -2049,13 +2075,13 @@ bool G3DPainter::canDraw(G3DPainter::GlBeginType type) const
     return false;
 }
 
-void G3DPainter::startDrawMultiple(GlBeginType type)
+void G3DPainter::startDrawMultiple(GlBeginType type, bool usePointColorCloudVbo)
 {
     m_firstPolygonPointValid = false;
 
     // call glEnd() if it was not already called and if we change
     // the type of glBegin(...)
-    callGlEndIfGlBeginChanged(type);
+    callGlEndIfGlBeginChanged(type, usePointColorCloudVbo);
 
     // update the matrix of double elements if it must be updated
     updateDoubleElementsMatrix();
@@ -2116,7 +2142,18 @@ void G3DPainter::startDrawMultiple(GlBeginType type)
 
             glBegin(GL_LINE_STRIP);
             m_currentGlBeginType = type;
+        }// else if we want to draw triangle fan or triangle fan with points from cloud
+        else if((type == GL_BEGIN_TRIANGLE_FAN) || (type == GL_BEGIN_TRIANGLE_FAN_FROM_PC))
+        {
+            if((type == GL_BEGIN_TRIANGLE_FAN_FROM_PC) && !m_bindShaderPointOK)
+                m_bindShaderPointOK = bindPointShader();
+            else if((type == GL_BEGIN_TRIANGLE_FAN) && !m_bindShaderDeOK)
+                m_bindShaderDeOK = bindDoubleElementShader();
+
+            glBegin(GL_TRIANGLE_FAN);
+            m_currentGlBeginType = type;
         }
+
     }
 
     // if we must draw other elements or all elements we don't call glBegin
@@ -2147,40 +2184,53 @@ void G3DPainter::stopDrawMultiple(bool rPointShader, bool rDeShader)
     }
 }
 
-void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginType)
+void G3DPainter::callGlEndIfGlBeginChanged(G3DPainter::GlBeginType newGlBeginType, bool usePointColorCloudVbo)
 {
+    bool changeFromPointCloudToPointCloud = (m_currentGlBeginType != GL_END_CALLED) && (((int)newGlBeginType) % 2 != 0) && (((int)m_currentGlBeginType) % 2 != 0);
+    bool changeFromDoubleElementToDoubleElement = (m_currentGlBeginType != GL_END_CALLED) && (((int)newGlBeginType) % 2 == 0) && (((int)m_currentGlBeginType) % 2 == 0);
+
+    bool changeFromDoubleElementToPointCloud = (m_currentGlBeginType != GL_END_CALLED) && (((int)newGlBeginType) % 2 != 0) && (((int)m_currentGlBeginType) % 2 == 0);
+    bool changeFromPointCloudToDoubleElement = (m_currentGlBeginType != GL_END_CALLED) && (((int)newGlBeginType) % 2 == 0) && (((int)m_currentGlBeginType) % 2 != 0);
+
+    // if we want to change the use of color cloud of points
+    if(m_usePColorCloud && (usePointColorCloudVbo != m_gv->colorVBOManager()->useColorCloud()))
+    {
+        // we must call glEnd()
+        stopDrawMultiple(changeFromDoubleElementToDoubleElement || changeFromPointCloudToDoubleElement,
+                        changeFromPointCloudToPointCloud || changeFromDoubleElementToPointCloud);
+
+        // change the use
+        m_gv->colorVBOManager()->setUseColorCloud(usePointColorCloudVbo);
+    }
+
     // if the current "glBegin(...)" was the same type
     if(m_currentGlBeginType == newGlBeginType) {
         return; // we must not call "glEnd"
     }
-    // else if we currently draw with points from global cloud and now we want to draw
-    // with double values
-    else if(((newGlBeginType == GL_BEGIN_POINT) && (m_currentGlBeginType == GL_BEGIN_POINT_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
+    // else if we want to draw from global point cloud
+    else if(changeFromPointCloudToPointCloud
+            || changeFromDoubleElementToPointCloud)
     {
-        stopDrawMultiple(true, false);
-
-        // and bind the double element shader
-        if(!m_bindShaderDeOK)
-            m_bindShaderDeOK = bindDoubleElementShader();
-    }
-    // else if we currently draw with double values and now we want to draw
-    // with points from global cloud
-    else if(((newGlBeginType == GL_BEGIN_POINT) && (m_currentGlBeginType == GL_BEGIN_POINT_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_LINE) && (m_currentGlBeginType == GL_BEGIN_LINE_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_TRIANGLE) && (m_currentGlBeginType == GL_BEGIN_TRIANGLE_FROM_PC))
-            || ((newGlBeginType == GL_BEGIN_QUAD) && (m_currentGlBeginType == GL_BEGIN_QUAD_FROM_PC)))
-    {
+        // call glEnd() but don't release the point shaders
         stopDrawMultiple(false, true);
 
-        // and bind the point shader
+        // and bind the point shader if not already bind
         if(!m_bindShaderPointOK)
             m_bindShaderPointOK = bindPointShader();
     }
+    // else if we want to draw double elements
+    else if(changeFromDoubleElementToDoubleElement
+            || changeFromPointCloudToDoubleElement)
+    {
+        // call glEnd() but don't release the double element shaders
+        stopDrawMultiple(true, false);
+
+        // and bind the double element shader if not already bind
+        if(!m_bindShaderDeOK)
+            m_bindShaderDeOK = bindDoubleElementShader();
+    }
     else if(m_currentGlBeginType != GL_END_CALLED) {
-        stopDrawMultiple(); // otherwise we call glEnd() if it was not already called
+        stopDrawMultiple(); // otherwise we call glEnd() if it was not already called and release all shaders
     }
 }
 

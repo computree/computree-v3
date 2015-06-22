@@ -14,6 +14,15 @@
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+CT_ResultItemIterator::CT_ResultItemIterator()
+{
+    m_result = NULL;
+    m_rootTree = NULL;
+    m_hasNextCalled = false;
+    m_current = NULL;
+    m_currentInTree = m_rootTree;
+}
+
 CT_ResultItemIterator::CT_ResultItemIterator(const CT_ResultGroup *result)
 {
     m_result = (CT_ResultGroup*)result;

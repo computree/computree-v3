@@ -1210,6 +1210,31 @@ QList<CT_ResultGroup*> CT_VirtualAbstractStep::getOutResultList() const
     return ret;
 }
 
+CT_ResultGroup* CT_VirtualAbstractStep::getOutputResultForModel(const QString &outResultUniqueName) const
+{
+    return getOutputResultForModel(getOutResultModel(outResultUniqueName));
+}
+
+CT_ResultGroup* CT_VirtualAbstractStep::getOutputResultForModel(const CT_OutAbstractResultModel *outResultModel) const
+{
+    if(outResultModel == NULL)
+        return NULL;
+
+    QList<CT_AbstractResult*> results = _outManager->getResultManager()->getResultsForCurrentTurn();
+    QListIterator<CT_AbstractResult*> it(results);
+
+    while(it.hasNext())
+    {
+        CT_AbstractResult *res = it.next();
+
+        // si ce modèle correspond à celui passé en paramètre
+        if(res->model() == outResultModel)
+            return dynamic_cast<CT_ResultGroup*>(res);
+    }
+
+    return NULL;
+}
+
 // CONFIGURATION //
 
 CT_StepConfigurableDialog* CT_VirtualAbstractStep::newStandardPreConfigurationDialog()

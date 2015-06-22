@@ -15,6 +15,16 @@ public:
     CT_AbstractExporterAttributesSelection();
 
     /**
+     * @brief Set to true to search only models in step and not real item drawable (false by default)
+     */
+    void setSearchOnlyModels(bool enable);
+
+    /**
+     * @brief Returns true if we must only search models
+     */
+    bool searchOnlyModels() const;
+
+    /**
      * @brief By default call selectAttributes()
      */
     virtual bool configureExport();
@@ -94,6 +104,7 @@ private:
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> >  m_buildersResults;
     bool                                                                m_canSelectColors;
     bool                                                                m_canSelectNormals;
+    bool                                                                m_searchModels;
 };
 
 #endif // CT_ABSTRACTEXPORTERATTRIBUTESSELECTION_H

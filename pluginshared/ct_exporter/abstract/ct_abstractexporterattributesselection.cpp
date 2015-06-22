@@ -9,6 +9,17 @@ CT_AbstractExporterAttributesSelection::CT_AbstractExporterAttributesSelection()
 {
     setCanExportWithColors(false);
     setCanExportWithNormals(false);
+    setSearchOnlyModels(false);
+}
+
+void CT_AbstractExporterAttributesSelection::setSearchOnlyModels(bool enable)
+{
+    m_searchModels = enable;
+}
+
+bool CT_AbstractExporterAttributesSelection::searchOnlyModels() const
+{
+    return m_searchModels;
 }
 
 bool CT_AbstractExporterAttributesSelection::configureExport()
@@ -119,7 +130,7 @@ void CT_AbstractExporterAttributesSelection::buildAttributesCollection()
             const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair = it.next();
             CT_AbstractItemDrawableCollectionBuilder *builder = pair.second;
 
-            if(builder->buildFrom(dynamic_cast<CT_VirtualAbstractStep*>(parent)))
+            if(builder->buildFrom(dynamic_cast<CT_VirtualAbstractStep*>(parent), m_searchModels))
             {
                 // let the derivate class post configure the builder (per example to remove certains elements)
                 postConfigureAttributesBuilder(builder);

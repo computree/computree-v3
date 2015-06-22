@@ -34,6 +34,7 @@
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 #include "ct_iterator/ct_pointiterator.h"
+#include "ct_tools/pcl/ct_pcltools.h"
 
 CT_StandardAbstractItemDrawableWithPointCloudDrawManager CT_AbstractItemDrawableWithPointCloud::IDWITHPC_DRAW_MANAGER;
 CT_DEFAULT_IA_INIT(CT_AbstractItemDrawableWithPointCloud)
@@ -120,6 +121,13 @@ const CT_AbstractPointCloudIndex* CT_AbstractItemDrawableWithPointCloud::getPoin
 {
     return m_apci;
 }
+
+#ifdef USE_PCL
+boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_AbstractItemDrawableWithPointCloud::getPCLCloud() const
+{
+    return CT_PCLTools::staticConvertToPCLCloud(this);
+}
+#endif
 
 CT_PCIR CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexRegistered() const
 {

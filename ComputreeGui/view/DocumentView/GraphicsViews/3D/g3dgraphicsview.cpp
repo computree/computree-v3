@@ -398,6 +398,9 @@ void G3DGraphicsView::select(const QPoint &point)
         lockPaint();
 
         _g.setDrawFastest(false);
+        _g.setUseColorCloudForPoints(false);
+        _g.setUseColorCloudForFaces(false);
+        _g.setUseColorCloudForEdges(false);
 
         quint32 i = 1;
 
@@ -1332,8 +1335,10 @@ void G3DGraphicsView::drawCoordinates(QPainter &painter)
         stringList.append(QString("rz : %1").arg(direction.z));
     }
 
-    if(options.getCameraInformationDisplayed() & DM_GraphicsViewOptions::FpsInformation)
+    if(options.getCameraInformationDisplayed() & DM_GraphicsViewOptions::FpsInformation) {
         stringList.append(QString("fps : %1").arg(m_fastestIncrementOptimizer.currentFPS()));
+        //stringList.append(QString("increment : %1").arg(m_fastestIncrementOptimizer.fastestIncrement()));
+    }
 
     int n = stringList.size();
 

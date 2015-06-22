@@ -67,6 +67,12 @@ public:
         InfoInLowerLeftCorner
     };
 
+    enum OctreeCellsConstructionType
+    {
+        OctreeCellsByNumber = 0,
+        OctreeCellsBySize = 1
+    };
+
     DM_GraphicsViewOptions();
     virtual ~DM_GraphicsViewOptions();
 
@@ -86,6 +92,8 @@ public:
     inline CameraInterface::CameraType getCameraType() const { return _cameraType; }
     inline bool showOctree() const { return m_showOctree; }
     inline int octreeNumberOfCells() const { return m_octreeNumberOfCells; }
+    inline double octreeSizeOfCells() const { return m_octreeSizeOfCells; }
+    inline OctreeCellsConstructionType octreeCellsConstructionType() const { return m_octreeConstructionType; }
 
     void setSelectedColor(QColor &color);
     void setBackgroudColor(QColor &color);
@@ -103,6 +111,8 @@ public:
     void setCameraType(CameraInterface::CameraType type);
     void setShowOctree(bool val);
     void setOctreeNumberOfCells(int n);
+    void setOctreeSizeOfCells(double size);
+    void setOctreeConstructionType(OctreeCellsConstructionType t);
     void updateFromOtherOptions(const DM_GraphicsViewOptions &options);
 
     bool load();
@@ -128,6 +138,8 @@ private:
     CameraInterface::CameraType _cameraType;
     bool                        m_showOctree;
     int                         m_octreeNumberOfCells;
+    double                      m_octreeSizeOfCells;
+    OctreeCellsConstructionType m_octreeConstructionType;
     int                         m_minFPS;
 
 signals:

@@ -1,5 +1,6 @@
 #include "pb_stepgenericexporter.h"
-#include "ct_exporter/abstract/ct_abstractexporter.h"
+
+#include "ct_exporter/abstract/ct_abstractexporterattributesselection.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
 
@@ -32,6 +33,12 @@ PB_StepGenericExporter::PB_StepGenericExporter(CT_StepInitializeData &dataInit,
     _pluginName = pluginName;
     _exporter = exporter;
     _exporter->setMyStep(this);
+
+    CT_AbstractExporterAttributesSelection *ex = dynamic_cast<CT_AbstractExporterAttributesSelection*>(_exporter);
+
+    if(ex != NULL)
+        ex->setSearchOnlyModels(true);
+
     _exportPath = ".";
     _exporterConfiguration = NULL;
 

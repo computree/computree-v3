@@ -79,6 +79,11 @@ public:
      */
     QList<CT_AbstractSingularItemDrawable*> itemDrawableSelected() const;
 
+    /**
+     * @brief Returns model of itemdrawable selected. Use this method if the step was not launched (results is empty)
+     */
+    QList<CT_OutAbstractSingularItemModel*> itemDrawableModelSelected() const;
+
 private:
     Ui::CT_ItemDrawableHierarchyCollectionWidget            *ui;
     CloudType                                               m_cloudType;
@@ -95,6 +100,7 @@ private:
 
     void constructHeader();
     QList<QStandardItem*> createItems(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm, const int &index) const;
+    QList<QStandardItem*> createItemsForItemModel(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm, const CT_OutAbstractItemModel *modelItemd, const int &index) const;
     QList<QStandardItem*> createItemsForItemDrawable(const CT_ItemDrawableHierarchyCollectionSelectionModel *sm, const CT_AbstractSingularItemDrawable *itemd, const int &index) const;
     QList<QStandardItem*> createItemsForColorCloud(QSharedPointer<CT_StandardColorCloudRegistered> colors) const;
     QList<QStandardItem*> createItemsForNormalCloud(QSharedPointer<CT_StandardNormalCloudRegistered> normals) const;

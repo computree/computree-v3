@@ -12,14 +12,14 @@ template<typename T>
 void CT_IndexCloudColorStdMapT<T>::insertIndexAndColor(const size_t &newIndex, const CT_Color &color)
 {
     // insert a new element, if the element already exist it will be ignored
-    this->internalData()->insert( std::pair<typename CT_IndexCloudColorStdMapT<T>::size_type,CT_Color>(newIndex, color) );
+    this->internalData()->insert( std::pair<ct_index_type,CT_Color>(newIndex, color) );
 }
 
 template<typename T>
 CT_Color* CT_IndexCloudColorStdMapT<T>::colorAtGlobalIndex(const size_t &index, const CT_Color *defaultValue) const
 {
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = this->internalData();
-    typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::const_iterator it = collect->find(index);
+    std::map< ct_index_type, CT_Color > *collect = this->internalData();
+    typename std::map< ct_index_type,CT_Color >::const_iterator it = collect->find(index);
 
     if(it != collect->end())
         return (CT_Color*)&(it->second);
@@ -30,8 +30,8 @@ CT_Color* CT_IndexCloudColorStdMapT<T>::colorAtGlobalIndex(const size_t &index, 
 template<typename T>
 CT_Color* CT_IndexCloudColorStdMapT<T>::colorAt(const size_t &index, const CT_Color *defaultValue) const
 {
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = this->internalData();
-    typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::const_iterator it = collect->begin();
+    std::map< ct_index_type, CT_Color > *collect = this->internalData();
+    typename std::map< ct_index_type,CT_Color >::const_iterator it = collect->begin();
     std::advance(it, index);
 
     if(it != collect->end())
@@ -43,9 +43,9 @@ CT_Color* CT_IndexCloudColorStdMapT<T>::colorAt(const size_t &index, const CT_Co
 template<typename T>
 void CT_IndexCloudColorStdMapT<T>::copyColors(CT_AbstractColorCloud *cc) const
 {
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = this->internalData();
-    typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::const_iterator it = collect->begin();
-    typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::const_iterator end = collect->end();
+    std::map< ct_index_type, CT_Color > *collect = this->internalData();
+    typename std::map< ct_index_type,CT_Color >::const_iterator it = collect->begin();
+    typename std::map< ct_index_type,CT_Color >::const_iterator end = collect->end();
 
     while(it != end)
     {
@@ -64,11 +64,11 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfKeys(CT_AbstractColorCloud *cc, c
     std::vector<size_t>::const_iterator itV = indexes.begin();
     std::vector<size_t>::const_iterator endV = indexes.end();
 
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = this->internalData();
+    std::map< ct_index_type, CT_Color > *collect = this->internalData();
 
     while(itV != endV)
     {
-        typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::iterator it = collect->find(*itV);
+        typename std::map< ct_index_type,CT_Color >::iterator it = collect->find(*itV);
 
         if(it != collect->end())
         {
@@ -88,7 +88,7 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfKeys(CT_AbstractColorCloud *cc, c
 template<typename T>
 void CT_IndexCloudColorStdMapT<T>::copyColorsOfCloudIndex(CT_AbstractColorCloud *cc, const QList<CT_AbstractCloudIndex*> &lci, bool eraseKeys)
 {
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = this->internalData();
+    std::map<ct_index_type, CT_Color > *collect = this->internalData();
 
     QListIterator<CT_AbstractCloudIndex*> itC(lci);
 
@@ -102,7 +102,7 @@ void CT_IndexCloudColorStdMapT<T>::copyColorsOfCloudIndex(CT_AbstractColorCloud 
 
             while(itK.hasNext())
             {
-                typename std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type,CT_Color >::iterator it = collect->find(itK.next().cIndex());
+                typename std::map< ct_index_type,CT_Color >::iterator it = collect->find(itK.next().cIndex());
 
                 if(it != collect->end())
                 {
@@ -138,8 +138,8 @@ CT_AbstractCloud* CT_IndexCloudColorStdMapT<T>::copy() const
 {
     CT_IndexCloudColorStdMapT<T> *index = new CT_IndexCloudColorStdMapT<T>();
 
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *myCollect = this->internalData();
-    std::map< typename CT_CloudIndexStdMapT<T,CT_Color>::size_type, CT_Color > *collect = index->internalData();
+    std::map< ct_index_type, CT_Color > *myCollect = this->internalData();
+    std::map< ct_index_type, CT_Color > *collect = index->internalData();
     collect->insert(myCollect->begin(), myCollect->end());
 
     return index;

@@ -15,6 +15,8 @@
 
 #include "ct_iterator/ct_pointiterator.h"
 
+#include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
+
 #include <QFileInfo>
 #include <QDateTime>
 #include <QInputDialog>
@@ -29,6 +31,7 @@ PB_LASExporter::PB_LASExporter() : CT_AbstractExporterAttributesSelection()
     setCanExportWithNormals(false);
 
     m_lasContainer = NULL;
+    m_lasContainerModel = NULL;
 }
 
 QString PB_LASExporter::getExporterCustomName() const
@@ -107,13 +110,27 @@ void PB_LASExporter::setExcludeConfiguration(const QPair<QString, CT_AbstractIte
 
 bool PB_LASExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget)
 {
+    clearWorker();
+
     QList<CT_AbstractSingularItemDrawable*> list = selectorWidget->itemDrawableSelected();
     QListIterator<CT_AbstractSingularItemDrawable*> it(list);
 
-    m_lasContainer = NULL;
-
     while(it.hasNext() && (m_lasContainer == NULL))
         m_lasContainer = dynamic_cast<CT_StdLASPointsAttributesContainer*>(it.next());
+
+    // the las container can not be found if this exporter is used in a step
+    if(m_lasContainer == NULL) {
+
+        // search the model to use
+        QList<CT_OutAbstractSingularItemModel*> listM = selectorWidget->itemDrawableModelSelected();
+        QListIterator<CT_OutAbstractSingularItemModel*> itM(listM);
+
+        while(itM.hasNext() && (m_lasContainerModel == NULL)) {
+            CT_OutAbstractSingularItemModel *model = itM.next();
+            if(dynamic_cast<CT_StdLASPointsAttributesContainer*>(model->itemDrawable()) != NULL)
+                m_lasContainerModel = model;
+        }
+    }
 
     return true;
 }
@@ -130,6 +147,15 @@ bool PB_LASExporter::protectedExportToFile()
     QString baseName = exportPathInfo.baseName();
     QString suffix = "las";
     QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
+
+    if(m_lasContainerModel != NULL) {
+
+        CT_ItemSearchHelper helper;
+        CT_ResultItemIterator it = helper.searchSingularItemsForModel(m_lasContainerModel);
+
+        if(it.hasNext())
+            m_lasContainer = dynamic_cast<CT_StdLASPointsAttributesContainer*>((CT_AbstractSingularItemDrawable*)it.next());
+    }
 
     QFile file(filePath);
 
@@ -209,13 +235,9 @@ bool PB_LASExporter::protectedExportToFile()
             delete header;
         }
 
-        clearWorker();
-
         file.close();
         return ok;
     }
-
-    clearWorker();
 
     return false;
 }
@@ -223,6 +245,7 @@ bool PB_LASExporter::protectedExportToFile()
 void PB_LASExporter::clearWorker()
 {
     m_lasContainer = NULL;
+    m_lasContainerModel = NULL;
 }
 
 CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,

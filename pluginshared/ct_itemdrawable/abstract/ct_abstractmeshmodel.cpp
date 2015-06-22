@@ -1,5 +1,7 @@
 #include "ct_abstractmeshmodel.h"
 
+#include "ct_tools/pcl/ct_pcltools.h"
+
 CT_AbstractMeshModel::CT_AbstractMeshModel() : CT_AbstractSingularItemDrawable()
 {
 }
@@ -23,3 +25,10 @@ QString CT_AbstractMeshModel::staticGetType()
 {
     return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractMeshModel";
 }
+
+#ifdef USE_PCL
+boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_AbstractMeshModel::getPCLCloud() const
+{
+    return CT_PCLTools::staticConvertToPCLCloud(this);
+}
+#endif

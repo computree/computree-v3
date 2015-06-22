@@ -15,14 +15,15 @@ CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::CT_ItemDrawableCol
 }
 
 template<typename Type, typename Type2, typename Type3, typename Type4>
-bool CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::buildFrom(const CT_VirtualAbstractStep *step)
+bool CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::buildFrom(const CT_VirtualAbstractStep *step, bool forceSearchModels)
 {
     m_collection.clear();
+    m_onlyFindModels = forceSearchModels;
 
     if(step == NULL)
         return false;
 
-    recursiveBuildFromStep(step);
+    recursiveBuildFromStep(step, forceSearchModels);
 
     return true;
 }
@@ -41,26 +42,53 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::onlyKeepsThes
         while(itR.hasNext())
         {
             CT_ItemDrawableCollectionHierarchyResult &par = itR.next();
-            QMutableListIterator<CT_AbstractSingularItemDrawable*> itA(par.collection);
 
-            while(itA.hasNext())
+            if(m_onlyFindModels)
             {
-                CT_AbstractSingularItemDrawable *item = itA.next();
+                QMutableListIterator<CT_OutAbstractItemModel*> itA(par.modelsCollection);
 
-                if((dynamic_cast<Cast1*>(item) == NULL)
-                        && (dynamic_cast<Cast2*>(item) == NULL)
-                        && (dynamic_cast<Cast3*>(item) == NULL)
-                        && (dynamic_cast<Cast4*>(item) == NULL))
+                while(itA.hasNext())
                 {
-                    itA.remove();
+                    CT_OutAbstractItemModel *model = itA.next();
+
+                    if((dynamic_cast<Cast1*>(model->itemDrawable()) == NULL)
+                            && (dynamic_cast<Cast2*>(model->itemDrawable()) == NULL)
+                            && (dynamic_cast<Cast3*>(model->itemDrawable()) == NULL)
+                            && (dynamic_cast<Cast4*>(model->itemDrawable()) == NULL))
+                    {
+                        itA.remove();
+                    }
                 }
+
+                QList<CT_OutAbstractItemModel*> lTmp;
+                itA = lTmp;
+
+                if(par.modelsCollection.isEmpty())
+                    itR.remove();
             }
+            else
+            {
+                QMutableListIterator<CT_AbstractSingularItemDrawable*> itA(par.collection);
 
-            QList<CT_AbstractSingularItemDrawable*> lTmp;
-            itA = lTmp;
+                while(itA.hasNext())
+                {
+                    CT_AbstractSingularItemDrawable *item = itA.next();
 
-            if(par.collection.isEmpty())
-                itR.remove();
+                    if((dynamic_cast<Cast1*>(item) == NULL)
+                            && (dynamic_cast<Cast2*>(item) == NULL)
+                            && (dynamic_cast<Cast3*>(item) == NULL)
+                            && (dynamic_cast<Cast4*>(item) == NULL))
+                    {
+                        itA.remove();
+                    }
+                }
+
+                QList<CT_AbstractSingularItemDrawable*> lTmp;
+                itA = lTmp;
+
+                if(par.collection.isEmpty())
+                    itR.remove();
+            }
         }
 
         QList< CT_ItemDrawableCollectionHierarchyResult > lTmp;
@@ -78,23 +106,40 @@ const QList<CT_ItemDrawableCollectionHierarchyStep>& CT_ItemDrawableCollectionBu
 }
 
 template<typename Type, typename Type2, typename Type3, typename Type4>
-void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuildFromStep(const CT_VirtualAbstractStep *step)
+void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuildFromStep(const CT_VirtualAbstractStep *step, bool findOnlyModels)
 {
-    QList<CT_ResultGroup*> results = step->getResults();
-    QListIterator<CT_ResultGroup*> it(results);
-
     CT_ItemDrawableCollectionHierarchyStep hi;
     hi.step = (CT_VirtualAbstractStep*)step;
 
-    while(it.hasNext())
-    {
-        CT_ItemDrawableCollectionHierarchyResult hir;
-        hir.result = it.next();
+    if(findOnlyModels) {
+        QList<const CT_OutAbstractResultModel*> results = step->getOutResultsModel();
+        QListIterator<const CT_OutAbstractResultModel*> it(results);
 
-        recursiveBuildFromModels(QList<CT_OutAbstractModel *>() << ((CT_OutAbstractModel*)hir.result->model()->rootModel()), hir);
+        while(it.hasNext())
+        {
+            const CT_OutAbstractResultModel *r = it.next();
+            CT_ItemDrawableCollectionHierarchyResult hir;
+            hir.modelResult = (CT_OutAbstractResultModel*)r;
 
-        if(!hir.collection.isEmpty())
-            hi.results.append(hir);
+            recursiveBuildFromModels(QList<CT_OutAbstractModel *>() << (CT_OutAbstractModel*)r, hir, findOnlyModels);
+
+            if(!hir.modelsCollection.isEmpty())
+                hi.results.append(hir);
+        }
+    } else {
+        QList<CT_ResultGroup*> results = step->getResults();
+        QListIterator<CT_ResultGroup*> it(results);
+
+        while(it.hasNext())
+        {
+            CT_ItemDrawableCollectionHierarchyResult hir;
+            hir.result = it.next();
+
+            recursiveBuildFromModels(QList<CT_OutAbstractModel *>() << ((CT_OutAbstractModel*)hir.result->model()->rootModel()), hir, findOnlyModels);
+
+            if(!hir.collection.isEmpty())
+                hi.results.append(hir);
+        }
     }
 
     if(!hi.results.empty())
@@ -103,12 +148,13 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuil
     QList<CT_VirtualAbstractStep*> steps = step->getStepChildList();
 
     while(!steps.isEmpty())
-        recursiveBuildFromStep(dynamic_cast<CT_VirtualAbstractStep*>(steps.takeFirst()));
+        recursiveBuildFromStep(dynamic_cast<CT_VirtualAbstractStep*>(steps.takeFirst()), findOnlyModels);
 }
 
 template<typename Type, typename Type2, typename Type3, typename Type4>
 void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuildFromModels(QList<CT_OutAbstractModel *> models,
-                                                                                            CT_ItemDrawableCollectionHierarchyResult &hir)
+                                                                                            CT_ItemDrawableCollectionHierarchyResult &hir,
+                                                                                            bool findOnlyModels)
 {
     QListIterator<CT_OutAbstractModel*> itM(models);
 
@@ -116,7 +162,7 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuil
     {
         CT_OutAbstractModel *model = itM.next();
 
-        if((model->result() != NULL))
+        if((model->result() != NULL) || findOnlyModels)
         {
             CT_AbstractItemDrawable *item = NULL;
 
@@ -137,24 +183,32 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuil
                 {
                     if(grModel != NULL)
                     {
-                        CT_ResultGroupIterator it((CT_ResultGroup*)model->result(), grModel);
+                        if(findOnlyModels) {
+                            hir.modelsCollection.append((CT_OutAbstractGroupModel*)grModel);
+                        } else {
+                            CT_ResultGroupIterator it((CT_ResultGroup*)model->result(), grModel);
 
-                        while(it.hasNext())
-                            hir.collection.append((CT_AbstractSingularItemDrawable*)it.next());
+                            while(it.hasNext())
+                                hir.collection.append((CT_AbstractSingularItemDrawable*)it.next());
+                        }
                     }
                     else
                     {
-                        CT_ResultItemIterator it((CT_ResultGroup*)model->result(), itemModel);
+                        if(findOnlyModels) {
+                            hir.modelsCollection.append((CT_OutAbstractSingularItemModel*)itemModel);
+                        } else {
+                            CT_ResultItemIterator it((CT_ResultGroup*)model->result(), itemModel);
 
-                        while(it.hasNext())
-                            hir.collection.append((CT_AbstractSingularItemDrawable*)it.next());
+                            while(it.hasNext())
+                                hir.collection.append((CT_AbstractSingularItemDrawable*)it.next());
+                        }
                     }
                 }
             }
 
-            // TODO if is an attribute !!
+            // TODO if it's an attribute !!
 
-            recursiveBuildFromModels(model->childrensStaticCast<CT_OutAbstractModel>(), hir);
+            recursiveBuildFromModels(model->childrensStaticCast<CT_OutAbstractModel>(), hir, findOnlyModels);
         }
     }
 }

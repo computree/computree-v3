@@ -28,6 +28,7 @@
 #ifndef CT_IMAGE2D_H
 #define CT_IMAGE2D_H
 
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
 #include "ct_math/ct_math.h"
@@ -325,6 +326,6 @@ PLUGINSHAREDSHARED_EXPORT QList<bool> CT_Image2D<bool>::neighboursValues(const s
 
 // Includes the template implementations
 #include "ct_itemdrawable/ct_image2d.hpp"
-
+#endif
 
 #endif // CT_IMAGE2D_H

@@ -63,6 +63,7 @@ protected:
 private:
     CT_ItemDrawableCollectionBuilderT<CT_StdLASPointsAttributesContainer>   m_lasAttributesContainerBuilder;
     CT_StdLASPointsAttributesContainer                                      *m_lasContainer;
+    CT_OutAbstractSingularItemModel                                         *m_lasContainerModel;
 };
 
 #endif // PB_LASEXPORTER_H

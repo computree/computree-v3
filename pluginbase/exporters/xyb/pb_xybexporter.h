@@ -40,6 +40,7 @@ private:
     CT_ItemDrawableCollectionBuilderT<CT_Scanner>                       m_scannerBuilder;
     mutable int                                                         m_scannerBuilderIndex;
     CT_Scanner                                                          *m_scanner;
+    CT_OutAbstractSingularItemModel                                     *m_scannerModel;
 
     void exportPoints(QDataStream &stream,
                       const CT_AbstractPointCloudIndex *constPCIndex,

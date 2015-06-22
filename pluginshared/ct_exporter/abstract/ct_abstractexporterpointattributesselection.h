@@ -23,8 +23,12 @@ public:
     virtual bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget);
 
 protected:
-    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     m_attributsColorPointWorker;
-    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes, CT_AbstractCloudIndex>     m_attributsNormalPointWorker;
+    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes>                            m_attributsColorPointWorker;
+    CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes>                            m_attributsNormalPointWorker;
+
+    QList<CT_OutAbstractSingularItemModel*>                                             m_attributesColorModel;
+    QList<CT_OutAbstractSingularItemModel*>                                             m_attributesNormalModel;
+
     CT_ItemDrawableCollectionBuilderT<CT_AbstractPointsAttributes>                      m_attributsBuilderColors;
     CT_ItemDrawableCollectionBuilderT<CT_AbstractPointsAttributes>                      m_attributsBuilderNormals;
 

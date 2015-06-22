@@ -12,9 +12,8 @@
  * Class that copy attributes to cloud passed in parameters.
  *
  *  TypeAttributes must be CT_AbstractPointsAttributes or CT_AbstractFaceAttributes, etc...
- *  AttributeCloudIndex must be ICloudIndex or ICloudIndex, etc...
  */
-template<typename TypeAttribute, typename AttributeCloudIndex>
+template<typename TypeAttribute>
 class CT_AttributesToCloudWorkerT : public CT_AbstractAttributesToCloudWorker
 {
 public:

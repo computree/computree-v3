@@ -146,13 +146,9 @@ bool PB_ASCRGBExporter::protectedExportToFile()
             nExported += 100;
         }
 
-        clearWorker();
-
         file.close();
         return true;
     }
-
-    clearWorker();
 
     return false;
 }

@@ -387,7 +387,10 @@ SOURCES += \
     ct_itemdrawable/ct_plotmanageritem.cpp \
     ct_view/ct_asciifilechoicebutton.cpp \
     ct_itemdrawable/ct_image2d.cpp \
-    ct_itemdrawable/abstract/ct_abstractimage2d.cpp
+    ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
+    ct_iterator/ct_mutableindexiterator.cpp \
+    ct_tools/pcl/ct_pcltools.cpp \
+    ct_itemdrawable/tools/ct_itemsearchhelper.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -870,6 +873,12 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_plotmanageritem.h \
     ct_view/ct_asciifilechoicebutton.h \
     ct_tools/ct_gdaltools.h \
+    ct_iterator/ct_mutableindexiterator.h \
+    ct_iterator/ct_mutablepointindexiterator.h \
+    ct_iterator/ct_mutablefaceindexiterator.h \
+    ct_iterator/ct_mutableedgeindexiterator.h \
+    ct_tools/pcl/ct_pcltools.h \
+    ct_itemdrawable/tools/ct_itemsearchhelper.h \
     ct_itemdrawable/ct_image2d.h \
     ct_itemdrawable/ct_image2d.hpp \
     ct_itemdrawable/abstract/ct_abstractimage2d.h

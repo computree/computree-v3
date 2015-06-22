@@ -46,7 +46,10 @@ private:
     QTime   m_fpsTimer;
     double  m_desiredFps;
     double  m_currentFps;
-    size_t  m_fi;
+    double  m_accumulatedFps;
+    int     m_fi;
+    int     m_nMeasure;
+    int     m_maxNbMeasure;
 };
 
 #endif // DM_FASTESTINCREMENTOPTIMIZER_H

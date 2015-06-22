@@ -12,6 +12,7 @@ class CT_Edge;
 
 class CT_PointIterator;
 class CT_MutablePointIterator;
+class CT_MutableIndexIterator;
 
 class CT_AbstractCoordinateSystem;
 
@@ -54,17 +55,20 @@ class CT_Mesh;
 /**
  * @brief Iterator for points
  */
-//typedef CT_MutablePointIterator                                                     CT_MutablePointIterator;
+//typedef CT_MutablePointIterator                                                   CT_MutablePointIterator;
+typedef CT_MutableIndexIterator                                                     CT_MutablePointIndexIterator;
 
 /**
  * @brief Iterator for faces
  */
-typedef CT_CloudIndexIteratorT<CT_Face>                                   CT_MutableFaceIterator;
+typedef CT_CloudIndexIteratorT<CT_Face>                                             CT_MutableFaceIterator;
+typedef CT_MutableIndexIterator                                                     CT_MutableFaceIndexIterator;
 
 /**
  * @brief Iterator for edges
  */
-typedef CT_CloudIndexIteratorT<CT_Edge>                                   CT_MutableEdgeIterator;
+typedef CT_CloudIndexIteratorT<CT_Edge>                                             CT_MutableEdgeIterator;
+typedef CT_MutableIndexIterator                                                     CT_MutableEdgeIndexIterator;
 
 
 /**

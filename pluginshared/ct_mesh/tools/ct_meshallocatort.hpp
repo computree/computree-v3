@@ -10,12 +10,18 @@
 #include "ct_cloud/tools/ct_globalpointcloudmanager.h"
 
 #include "ct_iterator/ct_mutablepointiterator.h"
+#include "ct_iterator/ct_mutablefaceiterator.h"
+#include "ct_iterator/ct_mutableedgeiterator.h"
+
+#include "ct_iterator/ct_mutablepointindexiterator.h"
+#include "ct_iterator/ct_mutablefaceindexiterator.h"
+#include "ct_iterator/ct_mutableedgeindexiterator.h"
 
 template<typename Mesh>
-CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh *mesh, const size_t &n)
+CT_MutablePointIndexIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh *mesh, const size_t &n)
 {
     if(mesh == NULL)
-        return CT_MutablePointIterator(NULL);
+        return CT_MutablePointIndexIterator(NULL);
 
     CT_PointCloudIndexVector *v = (CT_PointCloudIndexVector*)mesh->m_pVert;
     size_t lastSize = 0;
@@ -32,14 +38,17 @@ CT_MutablePointIterator CT_MeshAllocatorT<Mesh>::AddVerticeIndexes(Mesh *mesh, c
         v->resize(lastSize + n);
     }
 
-    return mesh->m_vert->begin()+lastSize;
+    CT_MutablePointIndexIterator it(mesh->m_vert);
+    it.jump(lastSize);
+
+    return it;
 }
 
 template<typename Mesh>
-CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaceIndexes(Mesh *mesh, const size_t &n)
+CT_MutableFaceIndexIterator CT_MeshAllocatorT<Mesh>::AddFaceIndexes(Mesh *mesh, const size_t &n)
 {
     if(mesh == NULL)
-        return CT_MutableFaceIterator(NULL);
+        return CT_MutableFaceIndexIterator(NULL);
 
     CT_FaceCloudIndexVector *f = (CT_FaceCloudIndexVector*)mesh->m_pFace;
     size_t lastSize = 0;
@@ -55,14 +64,17 @@ CT_MutableFaceIterator CT_MeshAllocatorT<Mesh>::AddFaceIndexes(Mesh *mesh, const
         f->resize(f->size() + n);
     }
 
-    return mesh->m_face->begin()+lastSize;
+    CT_MutableFaceIndexIterator it(mesh->m_face);
+    it.jump(lastSize);
+
+    return it;
 }
 
 template<typename Mesh>
-CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdgeIndexes(Mesh *mesh, const size_t &n)
+CT_MutableEdgeIndexIterator CT_MeshAllocatorT<Mesh>::AddHEdgeIndexes(Mesh *mesh, const size_t &n)
 {
     if(mesh == NULL)
-        return CT_MutableEdgeIterator(NULL);
+        return CT_MutableEdgeIndexIterator(NULL);
 
     CT_EdgeCloudIndexVector *e = (CT_EdgeCloudIndexVector*)mesh->m_pHedge;
     size_t lastSize = 0;
@@ -78,7 +90,10 @@ CT_MutableEdgeIterator CT_MeshAllocatorT<Mesh>::AddHEdgeIndexes(Mesh *mesh, cons
         e->resize(e->size() + n);
     }
 
-    return mesh->m_hedge->begin()+lastSize;
+    CT_MutableEdgeIndexIterator it(mesh->m_hedge);
+    it.jump(lastSize);
+
+    return it;
 }
 
 template<typename Mesh>
@@ -142,7 +157,7 @@ Iterator CT_MeshAllocatorT<Mesh>::addT(const size_t &n,
     QSharedPointer< CT_AbstractNotModifiableCloudIndexRegisteredT<T> > cir;
 
     // first index in the global cloud for the new cloud
-    typename CloudIndex::size_type firstPIndex = 0;
+    ct_index_type firstPIndex = 0;
 
     // if the mesh has already a cloud created by the cloud manager
     if(!meshCIRCollection.empty())
@@ -186,7 +201,7 @@ Iterator CT_MeshAllocatorT<Mesh>::addT(const size_t &n,
     // end of the index
     size_t s = index->size();
 
-    typename CloudIndex::size_type a = firstPIndex;
+    ct_index_type a = firstPIndex;
 
     for(size_t i=begin; i<s; ++i)
     {

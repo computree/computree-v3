@@ -265,6 +265,7 @@ protected:
     friend class CT_GroupIterator;
     friend class CT_ItemIterator;
     friend class CT_ModelSearchHelper;
+    friend class CT_ItemSearchHelper;
 
     CT_StepInitializeData       *_data;             /*!< les données d'initialisation */
 
@@ -539,6 +540,24 @@ protected:
      * @brief Returns the list of result that was created for the current turn. Use this method in your "compute" method.
      */
     QList<CT_ResultGroup*> getOutResultList() const;
+
+    /**
+     * @brief Returns the result for the current turn that correspond to the OUTPUT model name passed in
+     *        parameter. Use this method in your "compute" method.
+     * @param outResultUniqueName : the unique name of the model that represent a result to search. Example :
+     *
+     *        CT_ResultGroup* outResult = getOutputResultForModel(DEF_OUTResult1);
+     */
+    CT_ResultGroup* getOutputResultForModel(const QString &outResultUniqueName) const;
+
+    /**
+     * @brief Returns the result for the current turn that correspond to the OUTPUT model passed in
+     *        parameter. Use this method in your "compute" method.
+     * @param outResultModel : the model that represent a result to search. Example :
+     *
+     *        CT_ResultGroup* outResult = getOutputResultForModel(model);
+     */
+    CT_ResultGroup* getOutputResultForModel(const CT_OutAbstractResultModel *outResultModel) const;
 
     /************ CONFIGURATION ************/
 

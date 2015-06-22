@@ -46,7 +46,7 @@ size_t CT_CloudIndexStdVectorT<T>::indexAt(const size_t &i) const
 }
 
 template<typename T>
-const typename CT_CloudIndexStdVectorT<T>::size_type& CT_CloudIndexStdVectorT<T>::constIndexAt(const size_t &i) const
+const ct_index_type& CT_CloudIndexStdVectorT<T>::constIndexAt(const size_t &i) const
 {
 #ifdef USE_PCL
     return (*_vector.get())[i];
@@ -101,8 +101,8 @@ size_t CT_CloudIndexStdVectorT<T>::indexOf(const size_t &index) const
 {
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
     {
-        typename std::vector<size_type>::iterator first = _vector->begin();
-        typename std::vector<size_type>::iterator last = _vector->end();
+        typename std::vector<ct_index_type>::iterator first = _vector->begin();
+        typename std::vector<ct_index_type>::iterator last = _vector->end();
 
         first = std::lower_bound(first, last, index);
 
@@ -111,7 +111,7 @@ size_t CT_CloudIndexStdVectorT<T>::indexOf(const size_t &index) const
     }
     else
     {
-        typename std::vector<size_type>::const_iterator it = std::find(_vector->begin(), _vector->end(), index);
+        typename std::vector<ct_index_type>::const_iterator it = std::find(_vector->begin(), _vector->end(), index);
 
         if(it != _vector->end())
             return *it;
@@ -123,13 +123,13 @@ size_t CT_CloudIndexStdVectorT<T>::indexOf(const size_t &index) const
 template<typename T>
 size_t CT_CloudIndexStdVectorT<T>::lowerBound(const size_t &value) const
 {
-    typename std::vector<size_type>::iterator it;
-    typename std::vector<size_type>::iterator itEnd = _vector->end();
+    typename std::vector<ct_index_type>::iterator it;
+    typename std::vector<ct_index_type>::iterator itEnd = _vector->end();
 
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
         it = std::lower_bound(_vector->begin(), _vector->end(), value);
     else
-        it = std::find_if(_vector->begin(), _vector->end(), std::bind2nd(std::greater_equal<size_type>(), value));
+        it = std::find_if(_vector->begin(), _vector->end(), std::bind2nd(std::greater_equal<ct_index_type>(), value));
 
     return size() - (itEnd-it);
 }
@@ -137,13 +137,13 @@ size_t CT_CloudIndexStdVectorT<T>::lowerBound(const size_t &value) const
 template<typename T>
 size_t CT_CloudIndexStdVectorT<T>::upperBound(const size_t &value) const
 {
-    typename std::vector<size_type>::iterator it;
-    typename std::vector<size_type>::iterator itEnd = _vector->end();
+    typename std::vector<ct_index_type>::iterator it;
+    typename std::vector<ct_index_type>::iterator itEnd = _vector->end();
 
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
         it = std::upper_bound(_vector->begin(), _vector->end(), value);
     else
-        std::find_if(_vector->begin(), _vector->end(), std::bind2nd(std::greater<size_type>(), value));
+        std::find_if(_vector->begin(), _vector->end(), std::bind2nd(std::greater<ct_index_type>(), value));
 
     return size() - (itEnd-it);
 }
@@ -162,8 +162,8 @@ void CT_CloudIndexStdVectorT<T>::removeIndex(const size_t &index)
 {
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
     {
-        typename std::vector<size_type>::iterator first = _vector->begin();
-        typename std::vector<size_type>::iterator last = _vector->end();
+        typename std::vector<ct_index_type>::iterator first = _vector->begin();
+        typename std::vector<ct_index_type>::iterator last = _vector->end();
 
         first = std::lower_bound(first, last, index);
 
@@ -177,7 +177,7 @@ void CT_CloudIndexStdVectorT<T>::removeIndex(const size_t &index)
 }
 
 template<typename T>
-void CT_CloudIndexStdVectorT<T>::replaceIndex(const size_t &i, const size_type &newIndex, const bool &verifyRespectSort)
+void CT_CloudIndexStdVectorT<T>::replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort)
 {
 #ifdef USE_PCL
     (*_vector.get())[i] = newIndex;
@@ -255,12 +255,12 @@ void CT_CloudIndexStdVectorT<T>::erase(const size_t &beginIndex, const size_t &s
 
     if(cpySize > 0)
     {
-        size_type *data = _vector->data();
+        ct_index_type *data = _vector->data();
 
-        size_type *dst = data+beginIndex;
-        size_type *src = data+endIndex;
+        ct_index_type *dst = data+beginIndex;
+        ct_index_type *src = data+endIndex;
 
-        memcpy(dst, src, sizeof(size_type)*cpySize);
+        memcpy(dst, src, sizeof(ct_index_type)*cpySize);
     }
 
     resize(size()-sizes);
@@ -286,12 +286,12 @@ void CT_CloudIndexStdVectorT<T>::removeIfOrShiftIf(typename CT_CloudIndexStdVect
                                                 const bool &negativeShift,
                                                 void *context)
 {
-    typename std::vector<size_type>::iterator first = vectorFindIf<size_type>(findIf, context);
-    typename std::vector<size_type>::iterator last = _vector->end();
+    typename std::vector<ct_index_type>::iterator first = vectorFindIf<ct_index_type>(findIf, context);
+    typename std::vector<ct_index_type>::iterator last = _vector->end();
 
     if(first != last)
     {
-        typename std::vector<size_type>::iterator i = first;
+        typename std::vector<ct_index_type>::iterator i = first;
 
         size_t nI;
 
@@ -378,11 +378,11 @@ CT_AbstractCloud* CT_CloudIndexStdVectorT<T>::copy() const
     CT_CloudIndexStdVectorT<T> *index = new CT_CloudIndexStdVectorT<T>(s);
 
 #ifdef USE_PCL
-    std::vector<size_type> *vector = _vector.get();
-    std::vector<size_type> *cpyVector = index->_vector.get();
+    std::vector<ct_index_type> *vector = _vector.get();
+    std::vector<ct_index_type> *cpyVector = index->_vector.get();
 #else
-    std::vector<size_type> *vector = _vector.data();
-    std::vector<size_type> *cpyVector = index->_vector.data();
+    std::vector<ct_index_type> *vector = _vector.data();
+    std::vector<ct_index_type> *cpyVector = index->_vector.data();
 #endif
 
     for(size_t i=0; i<s; ++i)
@@ -416,7 +416,7 @@ typename std::vector<S>::iterator CT_CloudIndexStdVectorT<T>::vectorFindIf(typen
 }
 
 template<typename T>
-std::vector< typename CT_CloudIndexStdVectorT<T>::size_type >* CT_CloudIndexStdVectorT<T>::internalData() const
+std::vector< ct_index_type >* CT_CloudIndexStdVectorT<T>::internalData() const
 {
 #ifdef USE_PCL
     return _vector.get();
@@ -428,8 +428,8 @@ std::vector< typename CT_CloudIndexStdVectorT<T>::size_type >* CT_CloudIndexStdV
 template<typename T>
 void CT_CloudIndexStdVectorT<T>::internalShiftAll(const size_t &offset, const bool &negativeOffset)
 {
-    typename std::vector<size_type>::iterator first = _vector->begin();
-    typename std::vector<size_type>::iterator last = _vector->end();
+    typename std::vector<ct_index_type>::iterator first = _vector->begin();
+    typename std::vector<ct_index_type>::iterator last = _vector->end();
 
     if(negativeOffset)
     {

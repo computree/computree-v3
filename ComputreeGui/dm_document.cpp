@@ -513,10 +513,14 @@ void DM_Document::slotItemDrawableSelectionChanged(bool select)
 
 void DM_Document::slotResultDestroyed(QObject *result)
 {
+    lock();
+
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = m_itemsInformation.take((CT_AbstractResult*)result);
 
     if(hash != NULL)
         qDeleteAll(hash->begin(), hash->end());
+
+    unlock();
 
     delete hash;
 }

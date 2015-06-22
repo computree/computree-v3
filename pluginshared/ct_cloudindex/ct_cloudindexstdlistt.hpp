@@ -39,16 +39,16 @@ size_t CT_CloudIndexStdListT<T>::size() const
 template<typename T>
 size_t CT_CloudIndexStdListT<T>::indexAt(const size_t &i) const
 {
-    typename std::list<size_type>::const_iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     return *it;
 }
 
 template<typename T>
-const typename CT_CloudIndexStdListT<T>::size_type& CT_CloudIndexStdListT<T>::constIndexAt(const size_t &i) const
+const typename ct_index_type& CT_CloudIndexStdListT<T>::constIndexAt(const size_t &i) const
 {
-    typename std::list<size_type>::iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::iterator it = m_collection->begin();
     std::advance(it, i);
 
     return *it;
@@ -57,7 +57,7 @@ const typename CT_CloudIndexStdListT<T>::size_type& CT_CloudIndexStdListT<T>::co
 template<typename T>
 size_t CT_CloudIndexStdListT<T>::operator[](const size_t &i) const
 {
-    typename std::list<size_type>::const_iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     return *it;
@@ -66,7 +66,7 @@ size_t CT_CloudIndexStdListT<T>::operator[](const size_t &i) const
 template<typename T>
 void CT_CloudIndexStdListT<T>::indexAt(const size_t &i, size_t &index) const
 {
-    typename std::list<size_type>::const_iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     index = *it;
@@ -98,8 +98,8 @@ size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
 {
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
     {
-        typename std::list<size_type>::iterator first = m_collection->begin();
-        typename std::list<size_type>::iterator last = m_collection->end();
+        typename std::list<ct_index_type>::iterator first = m_collection->begin();
+        typename std::list<ct_index_type>::iterator last = m_collection->end();
 
         first = std::lower_bound(first, last, index);
 
@@ -108,7 +108,7 @@ size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
     }
     else
     {
-        typename std::list<size_type>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
+        typename std::list<ct_index_type>::const_iterator it = std::find(m_collection->begin(), m_collection->end(), index);
 
         if(it != m_collection->end())
             return *it;
@@ -120,13 +120,13 @@ size_t CT_CloudIndexStdListT<T>::indexOf(const size_t &index) const
 template<typename T>
 size_t CT_CloudIndexStdListT<T>::lowerBound(const size_t &value) const
 {
-    typename std::list<size_type>::iterator it;
-    typename std::list<size_type>::iterator itEnd = m_collection->end();
+    typename std::list<ct_index_type>::iterator it;
+    typename std::list<ct_index_type>::iterator itEnd = m_collection->end();
 
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
         it = std::lower_bound(m_collection->begin(), m_collection->end(), value);
     else
-        it = std::find_if(m_collection->begin(), m_collection->end(), std::bind2nd(std::greater_equal<size_type>(), value));
+        it = std::find_if(m_collection->begin(), m_collection->end(), std::bind2nd(std::greater_equal<ct_index_type>(), value));
 
     return size() - std::distance(it, itEnd);
 }
@@ -134,13 +134,13 @@ size_t CT_CloudIndexStdListT<T>::lowerBound(const size_t &value) const
 template<typename T>
 size_t CT_CloudIndexStdListT<T>::upperBound(const size_t &value) const
 {
-    typename std::list<size_type>::iterator it;
-    typename std::list<size_type>::iterator itEnd = m_collection->end();
+    typename std::list<ct_index_type>::iterator it;
+    typename std::list<ct_index_type>::iterator itEnd = m_collection->end();
 
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
         it = std::upper_bound(m_collection->begin(), m_collection->end(), value);
     else
-        std::find_if(m_collection->begin(), m_collection->end(), std::bind2nd(std::greater<size_type>(), value));
+        std::find_if(m_collection->begin(), m_collection->end(), std::bind2nd(std::greater<ct_index_type>(), value));
 
     return size() - std::distance(it, itEnd);
 }
@@ -159,8 +159,8 @@ void CT_CloudIndexStdListT<T>::removeIndex(const size_t &index)
 {
     if(this->sortType() == CT_AbstractCloudIndex::SortedInAscendingOrder)
     {
-        typename std::list<size_type>::iterator first = m_collection->begin();
-        typename std::list<size_type>::iterator last = m_collection->end();
+        typename std::list<ct_index_type>::iterator first = m_collection->begin();
+        typename std::list<ct_index_type>::iterator last = m_collection->end();
 
         first = std::lower_bound(first, last, index);
 
@@ -174,9 +174,9 @@ void CT_CloudIndexStdListT<T>::removeIndex(const size_t &index)
 }
 
 template<typename T>
-void CT_CloudIndexStdListT<T>::replaceIndex(const size_t &i, const size_type &newIndex, const bool &verifyRespectSort)
+void CT_CloudIndexStdListT<T>::replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort)
 {
-    typename std::list<size_type>::iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::iterator it = m_collection->begin();
     std::advance(it, i);
 
     (*it) = newIndex;
@@ -188,7 +188,7 @@ void CT_CloudIndexStdListT<T>::replaceIndex(const size_t &i, const size_type &ne
 
         if(i>0)
         {
-            typename std::list<size_type>::const_iterator itP = it;
+            typename std::list<ct_index_type>::const_iterator itP = it;
             --itP;
 
             if((*itP) <= newIndex)
@@ -197,7 +197,7 @@ void CT_CloudIndexStdListT<T>::replaceIndex(const size_t &i, const size_type &ne
 
         if(ok)
         {
-            typename std::list<size_type>::const_iterator itN = it;
+            typename std::list<ct_index_type>::const_iterator itN = it;
             ++itN;
 
             if(itN != m_collection->end())
@@ -234,10 +234,10 @@ void CT_CloudIndexStdListT<T>::push_front(const size_t &newIndex)
 template<typename T>
 void CT_CloudIndexStdListT<T>::fill()
 {
-    typename std::list<size_type>::iterator it = m_collection->begin();
-    typename std::list<size_type>::iterator end = m_collection->end();
+    typename std::list<ct_index_type>::iterator it = m_collection->begin();
+    typename std::list<ct_index_type>::iterator end = m_collection->end();
 
-    size_type i = 0;
+    ct_index_type i = 0;
 
     while(it != end)
     {
@@ -256,10 +256,10 @@ void CT_CloudIndexStdListT<T>::clear()
 template<typename T>
 void CT_CloudIndexStdListT<T>::erase(const size_t &beginIndex, const size_t &sizes)
 {
-    typename std::list<size_type>::iterator b = m_collection->begin();
+    typename std::list<ct_index_type>::iterator b = m_collection->begin();
     std::advance(b, beginIndex);
 
-    typename std::list<size_type>::iterator e = m_collection->begin();
+    typename std::list<ct_index_type>::iterator e = m_collection->begin();
     std::advance(e, beginIndex+sizes);
 
     m_collection->erase(b, e);
@@ -279,12 +279,12 @@ void CT_CloudIndexStdListT<T>::removeIfOrShiftIf(typename CT_CloudIndexStdListT<
                                                 const bool &negativeShift,
                                                 void *context)
 {
-    typename std::list<size_type>::iterator first = listFindIf<size_type>(findIf, context);
-    typename std::list<size_type>::iterator last = m_collection->end();
+    typename std::list<ct_index_type>::iterator first = listFindIf<ct_index_type>(findIf, context);
+    typename std::list<ct_index_type>::iterator last = m_collection->end();
 
     if(first != last)
     {
-        typename std::list<size_type>::iterator i = first;
+        typename std::list<ct_index_type>::iterator i = first;
 
         size_t nI;
 
@@ -326,8 +326,8 @@ void CT_CloudIndexStdListT<T>::eraseBetweenAndShiftRest(const size_t &eraseBegin
 {
     erase(eraseBeginPos, eraseSize);
 
-    typename std::list<size_type>::iterator b = m_collection->begin();
-    typename std::list<size_type>::iterator e = m_collection->end();
+    typename std::list<ct_index_type>::iterator b = m_collection->begin();
+    typename std::list<ct_index_type>::iterator e = m_collection->end();
     std::advance(b, eraseBeginPos);
 
     if(negativeOffset)
@@ -405,7 +405,7 @@ typename std::list<S>::iterator CT_CloudIndexStdListT<T>::listFindIf(typename CT
 }
 
 template<typename T>
-std::list< typename CT_CloudIndexStdListT<T>::size_type >* CT_CloudIndexStdListT<T>::internalData() const
+std::list< ct_index_type >* CT_CloudIndexStdListT<T>::internalData() const
 {
 #ifdef USE_PCL
     return m_collection.get();
@@ -417,8 +417,8 @@ std::list< typename CT_CloudIndexStdListT<T>::size_type >* CT_CloudIndexStdListT
 template<typename T>
 void CT_CloudIndexStdListT<T>::internalShiftAll(const size_t &offset, const bool &negativeOffset)
 {
-    typename std::list<size_type>::iterator first = m_collection->begin();
-    typename std::list<size_type>::iterator last = m_collection->end();
+    typename std::list<ct_index_type>::iterator first = m_collection->begin();
+    typename std::list<ct_index_type>::iterator last = m_collection->end();
 
     if(negativeOffset)
     {

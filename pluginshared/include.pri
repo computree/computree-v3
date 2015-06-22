@@ -85,6 +85,29 @@ exists(../../use_pcl.ini) {
     TMP_MEMBER = $$member(TMP_CAT, 7)
     BOOST_INCLUDE_DIR_PATH = $$replace(TMP_MEMBER, \", )
 
+    BOOST_VERSION_FILE_PATH = $${BOOST_INCLUDE_DIR_PATH}/boost/version.hpp
+
+    exists($${BOOST_VERSION_FILE_PATH}) {
+        TMP_CAT = define BOOST_LIB_VERSION
+        TMP_CAT = \"$$LITERAL_HASH$${TMP_CAT}\"
+
+        unix | mac {
+            TMP_CAT = $$system( cat \"$$replace(BOOST_VERSION_FILE_PATH, \/, \\))\" )
+        }
+
+        win32 {
+            TMP_CAT = $$system( find $${TMP_CAT} \"$$replace(BOOST_VERSION_FILE_PATH, \/, \\)\" )
+        }
+
+        BOOST_LIB_VERSION =
+
+        for(a, TMP_CAT) {
+            BOOST_LIB_VERSION = $${a}
+        }
+
+        BOOST_LIB_VERSION = $$replace(BOOST_LIB_VERSION, \", )
+    }
+
     #unix
     unix {
         isEmpty($${PCL_LIB_VERSION}) {
@@ -93,26 +116,52 @@ exists(../../use_pcl.ini) {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.so.$${PCL_LIB_VERSION}
         }
 
-        BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.so*
+        debug {
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.so*
+        }
+
+        release {
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.so*
+        }
     }
 
     # windows
     win32 {
         msvc {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/pcl_*.lib
-            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.lib
+            debug {
+                BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.lib
+            }
+
+            release {
+                BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.lib
+            }
         }
 
         mingw {
             PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dll.a
-            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.dll.a
+
+            debug {
+                BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.dll.a
+            }
+
+            release {
+                BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.dll.a
+            }
         }
     }
 
     # mac
     mac {
         PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dylib
-        BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-gd-*.dylib
+
+        debug {
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.dylib
+        }
+
+        release {
+            BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.dylib
+        }
     }
 
     message(PCL LIB VERSION : $$PCL_LIB_VERSION)
@@ -122,6 +171,7 @@ exists(../../use_pcl.ini) {
     message(EIGEN INCLUDE DIRECTORY : $$EIGEN_INCLUDE_DIR_PATH)
     message(QHULL INCLUDE DIRECTORY : $$QHULL_INCLUDE_DIR_PATH)
     message(FLANN INCLUDE DIRECTORY : $$FLANN_INCLUDE_DIR_PATH)
+    message(BOOST LIB VERSION : $$BOOST_LIB_VERSION)
     message(BOOST LIB DIRECTORY : $$BOOST_LIB_DIR_PATH)
     message(BOOST INCLUDE DIRECTORY : $$BOOST_INCLUDE_DIR_PATH)
     message(BOOST LIB TO LINK : $$BOOST_LIB_TO_LINK)

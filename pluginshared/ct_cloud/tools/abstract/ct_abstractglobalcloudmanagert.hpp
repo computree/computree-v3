@@ -35,7 +35,7 @@ void CT_AbstractGlobalCloudManagerT<T>::unlockAllDocuments()
 
 template<typename T>
 template<typename CI>
-std::vector< typename CI::size_type >* CT_AbstractGlobalCloudManagerT<T>::getInternalDataOfIndex(CI *index) const
+std::vector< ct_index_type >* CT_AbstractGlobalCloudManagerT<T>::getInternalDataOfIndex(CI *index) const
 {
     return index->internalData();
 }

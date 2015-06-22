@@ -58,7 +58,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
     QFileInfo exportPathInfo = QFileInfo(exportFilePath());
     QString path = exportPathInfo.path();
     QString baseName = exportPathInfo.baseName();
-    QString suffix = "pbm";
+    QString suffix = "obj";
     QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
 
     QFile file(filePath);

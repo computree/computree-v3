@@ -11,7 +11,6 @@ class CT_CloudIndexStdMapT : public CT_AbstractModifiableCloudIndexT<T>
 {
 public:
 
-    typedef typename CT_AbstractModifiableCloudIndexT<T>::size_type          size_type;
     typedef typename CT_AbstractModifiableCloudIndexT<T>::FindIfFunction     FindIfFunction;
     typedef typename CT_AbstractModifiableCloudIndexT<T>::RemoveIfFunction   RemoveIfFunction;
     typedef typename CT_AbstractModifiableCloudIndexT<T>::ShiftIfFunction    ShiftIfFunction;
@@ -21,7 +20,7 @@ public:
     // CT_AbstractCloudIndex
     size_t size() const;
     size_t indexAt(const size_t &i) const;
-    const size_type& constIndexAt(const size_t &i) const;
+    const ct_index_type& constIndexAt(const size_t &i) const;
     size_t operator[](const size_t &i) const;
     void indexAt(const size_t &i, size_t &index) const;
     size_t first() const;
@@ -34,7 +33,7 @@ public:
     // CT_AbstractModifiableCloudIndex
     void addIndex(const size_t &newIndex);
     void removeIndex(const size_t &index);
-    void replaceIndex(const size_t &i, const size_type &newIndex, const bool &verifyRespectSort = true);
+    void replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort = true);
 
     /**
      * @brief insert index and value in the map. If the index already exist, the value is replaced by the new.
@@ -92,7 +91,7 @@ protected:
 
     template<typename U> friend class CT_AbstractGlobalCloudManagerT;
 
-    std::map< typename CT_CloudIndexStdMapT<T,ValueT >::size_type, ValueT >* internalData() const;
+    std::map< ct_index_type, ValueT >* internalData() const;
     void internalShiftAll(const size_t &offset, const bool &negativeOffset);
     void internalClear();
 };

@@ -7,15 +7,19 @@
 
 #include <qglviewer.h>
 #include <limits>
+#include <QDebug>
 
 OctreeController::OctreeController()
 {
     m_octree = new Octree< CT_MPCIR >(32);
     m_newNumberOfCells = m_octree->size();
+    m_newSizeOfCells = 0;
+    m_sizeOfCellsCalculated = true;
+    m_newSizeOfCellsCalculated = m_sizeOfCellsCalculated;
     resetNewMinAndMax();
     m_min = m_newMin;
     m_max = m_newMax;
-    m_size = 0;
+    m_sizeOfCells = 0;
     m_forceMustBeReconstructed = false;
 }
 
@@ -26,7 +30,25 @@ OctreeController::~OctreeController()
 
 void OctreeController::setNumberOfCells(const int &s)
 {
+    if(s == 0)
+        return;
+
     m_newNumberOfCells = s;
+    m_newSizeOfCells = 0;
+    m_newSizeOfCellsCalculated = true;
+
+    if(mustBeReconstructed())
+        emit octreeMustBeReconstructed(true);
+}
+
+void OctreeController::setSizeOfCells(const double &sizeInMeters)
+{
+    if(sizeInMeters == 0)
+        return;
+
+    m_newNumberOfCells = 0;
+    m_newSizeOfCells = sizeInMeters;
+    m_newSizeOfCellsCalculated = false;
 
     if(mustBeReconstructed())
         emit octreeMustBeReconstructed(true);
@@ -81,18 +103,21 @@ void OctreeController::removePoints(const CT_AbstractPointCloudIndex *index)
 
 void OctreeController::indexOfPoint(const Eigen::Vector3d &point, int &ix, int &iy, int &iz) const
 {
-    ix = ((point(0) - m_octreeMinCorner.x()) / m_size);
-    iy = ((point(1) - m_octreeMinCorner.y()) / m_size);
-    iz = ((point(2) - m_octreeMinCorner.z()) / m_size);
+    ix = ((point(0) - m_octreeMinCorner.x()) / m_sizeOfCells);
+    iy = ((point(1) - m_octreeMinCorner.y()) / m_sizeOfCells);
+    iz = ((point(2) - m_octreeMinCorner.z()) / m_sizeOfCells);
 
-    if(ix == m_newNumberOfCells)
-        ix = m_newNumberOfCells-1;
+    int size = m_octree->size();
+    int s_m1 = size-1;
 
-    if(iy == m_newNumberOfCells)
-        iy = m_newNumberOfCells-1;
+    if(ix == size)
+        ix = s_m1;
 
-    if(iz == m_newNumberOfCells)
-        iz = m_newNumberOfCells-1;
+    if(iy == size)
+        iy = s_m1;
+
+    if(iz == size)
+        iz = s_m1;
 }
 
 bool OctreeController::hasElements() const
@@ -154,7 +179,7 @@ bool OctreeController::isCellVisibleInFrustrum(int x, int y, int z, GLdouble pla
 
 double OctreeController::cellsSize() const
 {
-    return m_size;
+    return m_sizeOfCells;
 }
 
 Eigen::Vector3d OctreeController::octreeMinCorner() const
@@ -169,7 +194,7 @@ Eigen::Vector3d OctreeController::octreeMaxCorner() const
 
 bool OctreeController::mustBeReconstructed() const
 {
-    return cornersChanged() || (m_newNumberOfCells != numberOfCells()) || !m_pointsToAdd.isEmpty();
+    return cornersChanged() || (m_newNumberOfCells != numberOfCells()) || (m_newSizeOfCells != cellsSize()) || (m_newSizeOfCellsCalculated != m_sizeOfCellsCalculated) || !m_pointsToAdd.isEmpty();
 }
 
 bool OctreeController::cornersChanged() const
@@ -184,7 +209,33 @@ void OctreeController::construct()
         m_forceMustBeReconstructed = false;
 
         delete m_octree;
-        m_octree = new Octree< CT_MPCIR >(m_newNumberOfCells);
+
+        double maxW = std::max(m_newMax.x() - m_newMin.x(), m_newMax.y() - m_newMin.y());
+        maxW = std::max(maxW, m_newMax.z() - m_newMin.z());
+
+        if(m_newSizeOfCellsCalculated) {
+            m_octree = new Octree< CT_MPCIR >(m_newNumberOfCells);
+            m_sizeOfCells = maxW / m_newNumberOfCells;
+            m_newSizeOfCells = m_sizeOfCells;
+        } else {
+            m_sizeOfCells = m_newSizeOfCells;
+            m_newNumberOfCells = std::ceil(maxW / m_sizeOfCells);
+
+            int resultPowerOfTwo = 1;
+
+            // must be a power of 2
+            if(((m_newNumberOfCells - 1) & m_newNumberOfCells) != 0) {
+
+                while (resultPowerOfTwo < m_newNumberOfCells)
+                    resultPowerOfTwo <<= 1;
+
+                m_newNumberOfCells = resultPowerOfTwo;
+            }
+
+            m_octree = new Octree< CT_MPCIR >(m_newNumberOfCells);
+        }
+
+        m_sizeOfCellsCalculated = m_newSizeOfCellsCalculated;
 
         if(m_newNumberOfCells > 0)
         {
@@ -195,11 +246,6 @@ void OctreeController::construct()
                 itAdd.next();
                 m_points.insert(itAdd.key(), itAdd.value());
             }
-
-            double maxW = std::max(m_newMax.x() - m_newMin.x(), m_newMax.y() - m_newMin.y());
-            maxW = std::max(maxW, m_newMax.z() - m_newMin.z());
-
-            m_size = maxW / m_newNumberOfCells;
 
             Eigen::Vector3d middle((m_newMax.x() + m_newMin.x())/2.0, (m_newMax.y() + m_newMin.y())/2.0, (m_newMax.z() + m_newMin.z())/2.0);
             m_octreeMaxCorner = Corner(middle.x()+(maxW/2.0), middle.y()+(maxW/2.0), middle.z()+(maxW/2.0));
@@ -236,7 +282,10 @@ void OctreeController::clear()
     m_min = m_newMin;
     m_max = m_newMax;
     m_newNumberOfCells = 0;
-    m_size = 0;
+    m_sizeOfCells = 0;
+    m_newSizeOfCells = m_sizeOfCells;
+    m_sizeOfCellsCalculated = true;
+    m_newSizeOfCellsCalculated = m_sizeOfCellsCalculated;
     delete m_octree;
     m_octree = NULL;
 }

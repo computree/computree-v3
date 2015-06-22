@@ -35,8 +35,14 @@ public:
 
     /**
      * @brief Build the collection of ItemDrawable that type (staticGetType) match with template (ItemDrawable1, ItemDrawable2, ...).
+     * @param step : the step where begin the search (algorithme go up in the hierarchy of step to find in results items searched)
+     * @param forceSearchModels : True to search only models if step was not already launched. In this case the attribute
+     *                         "modelsCollection" and "modelResult" of CT_ItemDrawableCollectionHierarchyResult will be filled.
+     *
+     *                         False to search only real ItemDrawable. In this case the attribute "collection" and "result" of CT_ItemDrawableCollectionHierarchyResult
+     *                         will be filled.
      */
-    bool buildFrom(const CT_VirtualAbstractStep *step);
+    bool buildFrom(const CT_VirtualAbstractStep *step, bool forceSearchModels);
 
     /**
      * @brief Only keeps in the collection ItemDrawable that cannot be casted in types of template (Cast1, Cast2, etc...)
@@ -60,9 +66,10 @@ public:
 
 private:
     QList<CT_ItemDrawableCollectionHierarchyStep>   m_collection;
+    bool                                            m_onlyFindModels;
 
-    void recursiveBuildFromStep(const CT_VirtualAbstractStep *step);
-    void recursiveBuildFromModels(QList<CT_OutAbstractModel*> models, CT_ItemDrawableCollectionHierarchyResult &hir);
+    void recursiveBuildFromStep(const CT_VirtualAbstractStep *step, bool findOnlyModels);
+    void recursiveBuildFromModels(QList<CT_OutAbstractModel*> models, CT_ItemDrawableCollectionHierarchyResult &hir, bool findOnlyModels);
 };
 
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.hpp"

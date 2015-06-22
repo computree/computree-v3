@@ -69,6 +69,15 @@ public:
      * @brief Finish draw multiple edges
      */
     virtual void endDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter) = 0;
+
+    #ifdef USE_PCL
+    /**
+     * @brief Convert the point cloud index to a pcl cloud.
+     * @warning Please re-use the shared_ptr returned because
+     *          a new collection is created at each call.
+     */
+    boost::shared_ptr<pcl::PointCloud<CT_PointData> > getPCLCloud() const;
+    #endif
 };
 
 #endif // CT_ABSTRACTMESHMODEL_H

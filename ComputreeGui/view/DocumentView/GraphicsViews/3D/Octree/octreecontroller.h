@@ -21,8 +21,15 @@ public:
 
     /**
      * @brief Set the number of cells between min and max
+     * @warning if you use this method the size of cells will be calculated
      */
     void setNumberOfCells(const int &s);
+
+    /**
+     * @brief Set the size of cells to use
+     * @warning if you use this method the number of cells will be calculated
+     */
+    void setSizeOfCells(const double &sizeInMeters);
 
     /**
      * @brief Returns number of cells between min and max
@@ -143,17 +150,20 @@ private:
         Corner   m_max;
     };
 
-    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_points;           // collection of points in the octree
-    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_pointsToAdd;      // collection of points not added
-    Octree< CT_MPCIR >                                                  *m_octree;          // octree
-    double                                                              m_size;             // size of a cells (in meters)
-    Corner                                                              m_min;              // minimum corner of the complete octree
-    Corner                                                              m_max;              // maximum corner of the complete octree
-    Corner                                                              m_newMin;           // new minimum corner of the complete octree (if add or remove points)
-    Corner                                                              m_newMax;           // new maximum corner of the complete octree (if add or remove points)
-    Corner                                                              m_octreeMinCorner;  // min corner of the octree
-    Corner                                                              m_octreeMaxCorner;  // max corner of the octree
-    int                                                                 m_newNumberOfCells; // new number of cells
+    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_points;                   // collection of points in the octree
+    QHash<CT_AbstractPointCloudIndex*, PointsInfo>                      m_pointsToAdd;              // collection of points not added
+    Octree< CT_MPCIR >                                                  *m_octree;                  // octree
+    bool                                                                m_sizeOfCellsCalculated;    // true if the user set the number of cells to use. false if user set the size of cells to use
+    double                                                              m_sizeOfCells;              // size of a cells (in meters)
+    Corner                                                              m_min;                      // minimum corner of the complete octree
+    Corner                                                              m_max;                      // maximum corner of the complete octree
+    Corner                                                              m_newMin;                   // new minimum corner of the complete octree (if add or remove points)
+    Corner                                                              m_newMax;                   // new maximum corner of the complete octree (if add or remove points)
+    Corner                                                              m_octreeMinCorner;          // min corner of the octree
+    Corner                                                              m_octreeMaxCorner;          // max corner of the octree
+    double                                                              m_newSizeOfCells;           // new size of cells defined by user (in meters)
+    bool                                                                m_newSizeOfCellsCalculated; // true if the user set the number of cells to use. false if user set the size of cells to use
+    int                                                                 m_newNumberOfCells;         // new number of cells defined by the user
     size_t                                                              m_nPointsToAdd;
     size_t                                                              m_pointsAdded;
     size_t                                                              m_progress;

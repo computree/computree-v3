@@ -24,6 +24,18 @@ public:
     virtual void removeIndex(const size_t &index) = 0;
 
     /**
+     * @brief Replace the index at the location 'i' in the cloud with the 'newIndex'
+     *
+     * @warning CAUTION ! If you use this method and sortType() != NotSorted, the sortType will be changed to NotSorted if the index
+     * passed in parameter don't respect the sortType. If the class don't accept to be NotSorted the sortType will be corrupted !
+     *
+     * @param i : location of the index
+     * @param newIndex : the newIndex
+     * @param verifyRespectSort : set to false if you want to accelerate the process and you are VERY sure to respect the sort
+     */
+    virtual void replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort = true) = 0;
+
+    /**
      * @brief Removes all indexes in the cloud index
      */
     virtual void clear() = 0;

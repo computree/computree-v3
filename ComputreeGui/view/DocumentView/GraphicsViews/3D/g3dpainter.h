@@ -289,8 +289,10 @@ public:
                                   bool radians = true );
 protected:
 
+    // always two type (X and X_FROM_PC) and in this order : BEGIN_X, BEGIN_X_FROM_PC
+    // see callGlEndIfGlBeginChanged(...) for more information !
     enum GlBeginType {
-        GL_BEGIN_POINT,                 // glBegin(GL_POINTS)
+        GL_BEGIN_POINT = 0,             // glBegin(GL_POINTS)
         GL_BEGIN_POINT_FROM_PC,         // glBegin(GL_POINTS) but with shader
         GL_BEGIN_LINE,                  // glBegin(GL_LINES)
         GL_BEGIN_LINE_FROM_PC,          // glBegin(GL_LINES) but with shader
@@ -449,8 +451,12 @@ protected:
     /**
      * @brief Call this method before draw a type that was in the "GlBeginType" enum. Call to function
      *        glEnd() or glBegin(...) and the bind of the shader was called automatically to begin the draw of your type.
+     *
+     * @param type : the type that you want to draw
+     * @param usePointColorCloudVbo : true if you want to use colors of points of the global index or false if you want to paint with your own color. This parameter
+     *                                is used only if param "type" is defined to draw something with a global index (GL_BEGIN_POINT_FROM_PC or GL_BEGIN_LINE_FROM_PC or etc...)
      */
-    void startDrawMultiple(GlBeginType type);    
+    void startDrawMultiple(GlBeginType type, bool usePointColorCloudVbo = true);
 
     /**
      * @brief This method call "glEnd()" if the last "glBegin(...)" was not appropriate
@@ -462,7 +468,7 @@ protected:
      *
      * @param newGlBeginType : the new "glBegin" type that you want to call after this method.
      */
-    void callGlEndIfGlBeginChanged(GlBeginType newGlBeginType);
+    void callGlEndIfGlBeginChanged(GlBeginType newGlBeginType, bool usePointColorCloudVbo = true);
 
     /**
      * @brief Send to shader of double element the matrix

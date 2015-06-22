@@ -180,9 +180,9 @@ typename CT_GlobalCloudManagerT<T, CLOUD>::CT_AbstractNotModifiableCIR CT_Global
     {       
         IndexAccessOptim *nIndex = new IndexAccessOptim(size);
 
-        std::vector< typename IndexAccessOptim::size_type > *data = this->template getInternalDataOfIndex< IndexAccessOptim >(nIndex);
+        std::vector< ct_index_type > *data = this->template getInternalDataOfIndex< IndexAccessOptim >(nIndex);
 
-        typename IndexAccessOptim::size_type a = beginIndex;
+        ct_index_type a = beginIndex;
 
         for(size_t i=0; i<size; ++i)
         {

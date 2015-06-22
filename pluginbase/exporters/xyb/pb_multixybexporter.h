@@ -21,19 +21,11 @@ public:
 
     bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
 
-    SettingsNodeGroup* saveExportConfiguration() const;
-    bool loadExportConfiguration(const SettingsNodeGroup *root);
-
-    QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > getBuilders() const;
-    void setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const;
-    bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget);
-
     virtual CT_AbstractExporter* copy() const;
 
 protected:
 
     bool protectedExportToFile();
-    void clearWorker();
 
 private:
     void exportPoints(QDataStream &stream,

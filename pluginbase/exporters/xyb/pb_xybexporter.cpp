@@ -17,6 +17,7 @@
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_point.h"
+#include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
 
 PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -24,7 +25,9 @@ PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
     setCanExportPoints(true);
     setCanExportWithColors(true);
     setCanExportWithNormals(false);
+
     m_scanner = NULL;
+    m_scannerModel = NULL;
 }
 
 PB_XYBExporter::~PB_XYBExporter()
@@ -213,15 +216,31 @@ void PB_XYBExporter::setExcludeConfiguration(const QPair<QString, CT_AbstractIte
 
 bool PB_XYBExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget)
 {
+    clearWorker();
+
     if(CT_AbstractExporterPointAttributesSelection::useSelection(selectorWidget))
     {
         QList<CT_AbstractSingularItemDrawable*> list = selectorWidget->itemDrawableSelected();
         QListIterator<CT_AbstractSingularItemDrawable*> it(list);
 
-        m_scanner = NULL;
-
         while(it.hasNext() && (m_scanner == NULL))
             m_scanner = dynamic_cast<CT_Scanner*>(it.next());
+
+        // the scanner can not be found if this exporter is used in a step
+        if(m_scanner == NULL) {
+
+            // search the model to use
+            QList<CT_OutAbstractSingularItemModel*> listM = selectorWidget->itemDrawableModelSelected();
+            QListIterator<CT_OutAbstractSingularItemModel*> itM(listM);
+
+            m_scanner = NULL;
+
+            while(itM.hasNext() && (m_scannerModel == NULL)) {
+                CT_OutAbstractSingularItemModel *model = itM.next();
+                if(dynamic_cast<CT_Scanner*>(model->itemDrawable()) != NULL)
+                    m_scannerModel = model;
+            }
+        }
 
         return true;
     }
@@ -242,6 +261,16 @@ bool PB_XYBExporter::protectedExportToFile()
     QString suffix = "xyb";
     QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
 
+    // if we don't have the scanner but his model
+    if(m_scannerModel != NULL) {
+
+        // we search the real scanner
+        CT_ItemSearchHelper helper;
+        CT_ResultItemIterator it = helper.searchSingularItemsForModel(m_scannerModel);
+
+        if(it.hasNext())
+            m_scanner = dynamic_cast<CT_Scanner*>((CT_AbstractSingularItemDrawable*)it.next());
+    }
     QFile file(filePath);
 
     if(file.open(QFile::WriteOnly | QFile::Text))
@@ -323,13 +352,9 @@ bool PB_XYBExporter::protectedExportToFile()
             nExported += 100;
         }
 
-        clearWorker();
-
         file.close();
         return true;
     }
-
-    clearWorker();
 
     return false;
 }
@@ -339,6 +364,7 @@ void PB_XYBExporter::clearWorker()
     CT_AbstractExporterPointAttributesSelection::clearWorker();
 
     m_scanner = NULL;
+    m_scannerModel = NULL;
 }
 
 void PB_XYBExporter::exportPoints(QDataStream &stream,

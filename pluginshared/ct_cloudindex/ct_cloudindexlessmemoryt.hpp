@@ -26,7 +26,7 @@ size_t CT_CloudIndexLessMemoryT<T>::indexAt(const size_t &i) const
 }
 
 template<typename T>
-const typename CT_AbstractCloudIndex::size_type& CT_CloudIndexLessMemoryT<T>::constIndexAt(const size_t &i) const
+const ct_index_type& CT_CloudIndexLessMemoryT<T>::constIndexAt(const size_t &i) const
 {
     m_temporary = i+m_begin;
     return m_temporary;

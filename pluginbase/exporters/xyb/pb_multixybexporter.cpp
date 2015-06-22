@@ -62,39 +62,6 @@ bool PB_MultiXYBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDra
     return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
-
-SettingsNodeGroup* PB_MultiXYBExporter::saveExportConfiguration() const
-{
-    SettingsNodeGroup *root = CT_AbstractExporter::saveExportConfiguration();
-    return root;
-}
-
-bool PB_MultiXYBExporter::loadExportConfiguration(const SettingsNodeGroup *root)
-{
-    return CT_AbstractExporter::loadExportConfiguration(root);
-}
-
-QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > PB_MultiXYBExporter::getBuilders() const
-{
-    return CT_AbstractExporterPointAttributesSelection::getBuilders();
-}
-
-
-void PB_MultiXYBExporter::setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder *> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const
-{
-    CT_AbstractExporterPointAttributesSelection::setExcludeConfiguration(pair, model);
-}
-
-bool PB_MultiXYBExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget)
-{
-    if(CT_AbstractExporterPointAttributesSelection::useSelection(selectorWidget))
-    {
-        return true;
-    }
-    return false;
-}
-
-
 CT_AbstractExporter* PB_MultiXYBExporter::copy() const
 {
     return new PB_MultiXYBExporter();
@@ -159,14 +126,7 @@ bool PB_MultiXYBExporter::protectedExportToFile()
         setExportProgress(100.0*(float)cpt/(float)size);
     }
 
-    clearWorker();
-
     return true;
-}
-
-void PB_MultiXYBExporter::clearWorker()
-{
-    CT_AbstractExporterPointAttributesSelection::clearWorker();
 }
 
 void PB_MultiXYBExporter::exportPoints(QDataStream &stream,

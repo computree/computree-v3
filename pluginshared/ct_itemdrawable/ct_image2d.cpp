@@ -27,6 +27,7 @@
 
 #include "ct_image2d.h"
 
+#ifdef USE_OPENCV
 /////////////////////////////////////////////////////////////////////
 /// Specialisations for bool type ///////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -116,3 +117,4 @@ QString CT_Image2D<bool>::valueAtIndexAsString(const size_t index) const
     if (valueAtIndex(index)) {return "T";}
     return "F";
 }
+#endif

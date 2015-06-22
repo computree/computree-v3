@@ -7,8 +7,8 @@
 #include "ct_attributes/ct_attributescolor.h"
 #include "ct_attributes/ct_attributesnormal.h"
 
-template<typename TypeAttribute, typename AttributeCloudIndex>
-void CT_AttributesToCloudWorkerT<TypeAttribute, AttributeCloudIndex>::apply()
+template<typename TypeAttribute>
+void CT_AttributesToCloudWorkerT<TypeAttribute>::apply()
 {
     m_cancel = false;
     setProgress(0);
@@ -38,7 +38,7 @@ void CT_AttributesToCloudWorkerT<TypeAttribute, AttributeCloudIndex>::apply()
               && !m_cancel)
         {
             TypeAttribute *pa = it.next();
-            const AttributeCloudIndex *pci = pa->abstractCloudIndex();
+            const CT_AbstractCloudIndex *pci = pa->abstractCloudIndex();
             size_t s = pa->attributesSize();
             size_t indexP;
 

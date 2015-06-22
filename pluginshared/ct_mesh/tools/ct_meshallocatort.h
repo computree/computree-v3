@@ -24,9 +24,9 @@ public:
      * @param n : number of indexes to add
      * @return an iterator to the first index added
      */
-    static CT_MutablePointIterator AddVerticeIndexes(Mesh *mesh, const size_t &n);
-    static CT_MutableFaceIterator AddFaceIndexes(Mesh *mesh, const size_t &n);
-    static CT_MutableEdgeIterator AddHEdgeIndexes(Mesh *mesh, const size_t &n);
+    static CT_MutablePointIndexIterator AddVerticeIndexes(Mesh *mesh, const size_t &n);
+    static CT_MutableFaceIndexIterator AddFaceIndexes(Mesh *mesh, const size_t &n);
+    static CT_MutableEdgeIndexIterator AddHEdgeIndexes(Mesh *mesh, const size_t &n);
 
     /**
      * @brief Add new vertices to the mesh and in consequence to the global points cloud

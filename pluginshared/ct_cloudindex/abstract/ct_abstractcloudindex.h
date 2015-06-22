@@ -5,20 +5,16 @@
 
 #ifdef USE_PCL
 #include "pcl/point_cloud.h"
+typedef int                 ct_index_type;
+#else
+typedef size_t              ct_index_type;
 #endif
-
 /**
  * A cloud of index (size_t)
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudIndex : public CT_AbstractCloud
 {
 public:
-
-#ifdef USE_PCL
-    typedef int size_type;
-#else
-    typedef size_t size_type;
-#endif
 
     enum SortType
     {
@@ -61,7 +57,7 @@ public:
     /**
      * @brief Returns a const reference of the index at the location 'i'
      */
-    virtual const CT_AbstractCloudIndex::size_type& constIndexAt(const size_t &i) const = 0;
+    virtual const ct_index_type& constIndexAt(const size_t &i) const = 0;
 
     /**
      * @brief return the first index of the cloud index

@@ -22,6 +22,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_ResultItemIterator
 {
 public:
     /**
+     * @brief Create an invalid iterator
+     */
+    CT_ResultItemIterator();
+
+    /**
      * @brief Recursively iterate over all itemdrawable of the result passed in parameter
      */
     CT_ResultItemIterator(const CT_ResultGroup *result);

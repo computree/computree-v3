@@ -14,7 +14,7 @@ public:
     // CT_AbstractCloudIndex
     size_t size() const;
     size_t indexAt(const size_t &i) const;
-    const CT_AbstractCloudIndex::size_type& constIndexAt(const size_t &i) const;
+    const ct_index_type& constIndexAt(const size_t &i) const;
     size_t operator[](const size_t &i) const;
     void indexAt(const size_t &i, size_t &index) const;
     size_t first() const;
@@ -43,7 +43,7 @@ private:
 
     size_t                                      m_begin;
     size_t                                      m_size;
-    mutable CT_AbstractCloudIndex::size_type    m_temporary;
+    mutable ct_index_type                       m_temporary;
 
 protected:
     void erase(const size_t &beginIndex, const size_t &sizes);

@@ -48,6 +48,8 @@ DM_GraphicsViewOptions::DM_GraphicsViewOptions()
     _cameraInfoPosition = DM_GraphicsViewOptions::InfoInLowerRightCorner;
     _cameraType = CameraInterface::PERSPECTIVE;
     m_octreeNumberOfCells = 32;
+    m_octreeSizeOfCells = 1;
+    m_octreeConstructionType = DM_GraphicsViewOptions::OctreeCellsByNumber;
     m_showOctree = false;
     m_minFPS = 7;
 }
@@ -139,6 +141,19 @@ void DM_GraphicsViewOptions::setOctreeNumberOfCells(int n)
         return;
 
     m_octreeNumberOfCells = n;
+}
+
+void DM_GraphicsViewOptions::setOctreeSizeOfCells(double size)
+{
+    if(size == 0)
+        return;
+
+    m_octreeSizeOfCells = size;
+}
+
+void DM_GraphicsViewOptions::setOctreeConstructionType(DM_GraphicsViewOptions::OctreeCellsConstructionType t)
+{
+    m_octreeConstructionType = t;
 }
 
 void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions &options)
@@ -235,6 +250,18 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
+    if(m_octreeSizeOfCells != options.m_octreeSizeOfCells)
+    {
+        m_octreeSizeOfCells = options.m_octreeSizeOfCells;
+        emitChanged = true;
+    }
+
+    if(m_octreeConstructionType != options.m_octreeConstructionType)
+    {
+        m_octreeConstructionType = options.m_octreeConstructionType;
+        emitChanged = true;
+    }
+
     if(m_minFPS != options.m_minFPS)
     {
         m_minFPS = options.m_minFPS;
@@ -264,6 +291,8 @@ bool DM_GraphicsViewOptions::load()
     _cameraType = (CameraInterface::CameraType)CONFIG_FILE->value("cameraType", (int)_cameraType).toInt();
     m_showOctree = CONFIG_FILE->value("showOctree", m_showOctree).toBool();
     setOctreeNumberOfCells(CONFIG_FILE->value("octreeNumberOfCells", m_octreeNumberOfCells).toInt());
+    setOctreeSizeOfCells(CONFIG_FILE->value("octreeSizeOfCells", m_octreeSizeOfCells).toDouble());
+    setOctreeConstructionType((OctreeCellsConstructionType)CONFIG_FILE->value("octreeCellsConstructionType", (int)m_octreeConstructionType).toInt());
     setMinFPS(CONFIG_FILE->value("minFPS", m_minFPS).toInt());
 
     CONFIG_FILE->endGroup();
@@ -290,6 +319,8 @@ bool DM_GraphicsViewOptions::save()
     CONFIG_FILE->setValue("cameraType", (int)_cameraType);
     CONFIG_FILE->setValue("showOctree", m_showOctree);
     CONFIG_FILE->setValue("octreeNumberOfCells", m_octreeNumberOfCells);
+    CONFIG_FILE->setValue("octreeSizeOfCells", m_octreeSizeOfCells);
+    CONFIG_FILE->setValue("octreeCellsConstructionType", (int)m_octreeConstructionType);
     CONFIG_FILE->setValue("minFPS", m_minFPS);
 
     CONFIG_FILE->endGroup();
@@ -321,6 +352,8 @@ bool DM_GraphicsViewOptions::loadFromXml(const QDomElement &el)
     _cameraInfoPosition = (CameraInfoPosition) DomUtils::intFromDom(el, "cameraInfoPosition", (int)_cameraInfoPosition);
     m_showOctree = DomUtils::boolFromDom(el, "showOctree", m_showOctree);
     setOctreeNumberOfCells(DomUtils::intFromDom(el, "octreeNumberOfCells", m_octreeNumberOfCells));
+    setOctreeSizeOfCells(DomUtils::qrealFromDom(el,"octreeSizeOfCells", m_octreeSizeOfCells));
+    setOctreeConstructionType((OctreeCellsConstructionType)DomUtils::intFromDom(el, "octreeCellsConstructionType", (int)m_octreeConstructionType));
     setMinFPS(DomUtils::intFromDom(el, "minFPS", m_minFPS));
 
     return true;
@@ -342,6 +375,8 @@ bool DM_GraphicsViewOptions::saveToXml(QDomElement &main, QDomDocument &doc) con
     main.setAttribute("cameraInfoPosition", (int)_cameraInfoPosition);
     DomUtils::setBoolAttribute(main, "showOctree", m_showOctree);
     main.setAttribute("octreeNumberOfCells", m_octreeNumberOfCells);
+    main.setAttribute("octreeSizeOfCells", m_octreeSizeOfCells);
+    main.setAttribute("octreeCellsConstructionType", (int)m_octreeConstructionType);
     main.setAttribute("minFPS", m_minFPS);
 
     return true;

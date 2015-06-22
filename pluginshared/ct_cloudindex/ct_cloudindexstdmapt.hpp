@@ -27,16 +27,16 @@ size_t CT_CloudIndexStdMapT<T, ValueT>::size() const
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::indexAt(const size_t &i) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     return it->first;
 }
 
 template<typename T, typename ValueT>
-const typename CT_CloudIndexStdMapT<T, ValueT>::size_type& CT_CloudIndexStdMapT<T, ValueT>::constIndexAt(const size_t &i) const
+const ct_index_type& CT_CloudIndexStdMapT<T, ValueT>::constIndexAt(const size_t &i) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     return it->first;
@@ -45,7 +45,7 @@ const typename CT_CloudIndexStdMapT<T, ValueT>::size_type& CT_CloudIndexStdMapT<
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::operator[](const size_t &i) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     return it->first;
@@ -54,7 +54,7 @@ size_t CT_CloudIndexStdMapT<T, ValueT>::operator[](const size_t &i) const
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::indexAt(const size_t &i, size_t &index) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->begin();
     std::advance(it, i);
 
     index = it->first;
@@ -81,8 +81,8 @@ bool CT_CloudIndexStdMapT<T, ValueT>::contains(const size_t &index) const
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::indexOf(const size_t &index) const
 {
-    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
-    typename std::map<size_type,ValueT >::iterator l = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator l = m_collection->end();
 
     f = m_collection->lower_bound(index);
 
@@ -95,8 +95,8 @@ size_t CT_CloudIndexStdMapT<T, ValueT>::indexOf(const size_t &index) const
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::lowerBound(const size_t &value) const
 {
-    typename std::map<size_type,ValueT >::iterator it;
-    typename std::map<size_type,ValueT >::iterator itEnd = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator it;
+    typename std::map<ct_index_type,ValueT >::iterator itEnd = m_collection->end();
 
     it = m_collection->lower_bound(value);
 
@@ -106,8 +106,8 @@ size_t CT_CloudIndexStdMapT<T, ValueT>::lowerBound(const size_t &value) const
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::upperBound(const size_t &value) const
 {
-    typename std::map<size_type,ValueT >::iterator it;
-    typename std::map<size_type,ValueT >::iterator itEnd = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator it;
+    typename std::map<ct_index_type,ValueT >::iterator itEnd = m_collection->end();
 
     it = m_collection->upper_bound(value);
 
@@ -124,8 +124,8 @@ void CT_CloudIndexStdMapT<T, ValueT>::addIndex(const size_t &newIndex)
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::removeIndex(const size_t &index)
 {
-    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
-    typename std::map<size_type,ValueT >::iterator l = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator l = m_collection->end();
 
     f = m_collection->lower_bound(index);
 
@@ -134,11 +134,11 @@ void CT_CloudIndexStdMapT<T, ValueT>::removeIndex(const size_t &index)
 }
 
 template<typename T, typename ValueT>
-void CT_CloudIndexStdMapT<T, ValueT>::replaceIndex(const size_t &i, const size_type &newIndex, const bool &verifyRespectSort)
+void CT_CloudIndexStdMapT<T, ValueT>::replaceIndex(const size_t &i, const ct_index_type &newIndex, const bool &verifyRespectSort)
 {
     Q_UNUSED(verifyRespectSort)
 
-    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
     std::advance(f, i);
 
     ValueT val = f->second;
@@ -150,8 +150,8 @@ void CT_CloudIndexStdMapT<T, ValueT>::replaceIndex(const size_t &i, const size_t
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::insertIndexAndValue(const size_t &index, const ValueT & value)
 {
-    std::pair< typename std::map<size_type,ValueT >::iterator, bool > ret;
-    ret = m_collection->insert( std::pair<size_type,ValueT >(index,value) );
+    std::pair< typename std::map<ct_index_type,ValueT >::iterator, bool > ret;
+    ret = m_collection->insert( std::pair<ct_index_type,ValueT >(index,value) );
 
     if (ret.second == false)
         ret.first->second = value;
@@ -160,7 +160,7 @@ void CT_CloudIndexStdMapT<T, ValueT>::insertIndexAndValue(const size_t &index, c
 template<typename T, typename ValueT>
 const ValueT CT_CloudIndexStdMapT<T, ValueT>::valueAtGlobalIndex(const size_t &index, const ValueT & defaultValue) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->find(index);
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->find(index);
 
     if(it != m_collection->end())
         return it->second;
@@ -171,7 +171,7 @@ const ValueT CT_CloudIndexStdMapT<T, ValueT>::valueAtGlobalIndex(const size_t &i
 template<typename T, typename ValueT>
 const ValueT CT_CloudIndexStdMapT<T, ValueT>::valueAt(const size_t &index, const ValueT & defaultValue) const
 {
-    typename std::map<size_type,ValueT >::const_iterator it = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::const_iterator it = m_collection->begin();
     std::advance(it, index);
 
     if(it != m_collection->end())
@@ -183,7 +183,7 @@ const ValueT CT_CloudIndexStdMapT<T, ValueT>::valueAt(const size_t &index, const
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::push_front(const size_t &newIndex)
 {
-    m_collection->insert( std::pair<size_type, ValueT >(newIndex, ValueT()) );
+    m_collection->insert( std::pair<ct_index_type, ValueT >(newIndex, ValueT()) );
 }
 
 template<typename T, typename ValueT>
@@ -201,10 +201,10 @@ void CT_CloudIndexStdMapT<T, ValueT>::clear()
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::erase(const size_t &beginIndex, const size_t &sizes)
 {
-    typename std::map<size_type,ValueT >::iterator b = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator b = m_collection->begin();
     std::advance(b, beginIndex);
 
-    typename std::map<size_type,ValueT >::iterator e = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator e = m_collection->begin();
     std::advance(e, beginIndex+sizes);
 
     m_collection->erase(b, e);
@@ -238,11 +238,11 @@ template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::eraseBetweenAndShiftRest(const size_t &eraseBeginPos, const size_t &eraseSize,
                                                                const size_t &offset, const bool &negativeOffset)
 {
-    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
-    typename std::map<size_type,ValueT >::iterator l = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator l = m_collection->end();
     std::advance(f, eraseBeginPos+eraseSize);
 
-    std::map<size_type,ValueT > tmp;
+    std::map<ct_index_type,ValueT > tmp;
 
     if(negativeOffset)
     {
@@ -320,7 +320,7 @@ typename std::map<S, ValueT>::iterator CT_CloudIndexStdMapT<T, ValueT>::mapFindI
 }
 
 template<typename T, typename ValueT>
-std::map< typename CT_CloudIndexStdMapT<T, ValueT>::size_type, ValueT >* CT_CloudIndexStdMapT<T, ValueT>::internalData() const
+std::map< ct_index_type, ValueT >* CT_CloudIndexStdMapT<T, ValueT>::internalData() const
 {
 #ifdef USE_PCL
     return m_collection.get();
@@ -332,10 +332,10 @@ std::map< typename CT_CloudIndexStdMapT<T, ValueT>::size_type, ValueT >* CT_Clou
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::internalShiftAll(const size_t &offset, const bool &negativeOffset)
 {
-    typename std::map<size_type,ValueT >::iterator f = m_collection->begin();
-    typename std::map<size_type,ValueT >::iterator l = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator l = m_collection->end();
 
-    std::map<size_type,ValueT > tmp;
+    std::map<ct_index_type,ValueT > tmp;
 
     if(negativeOffset)
     {

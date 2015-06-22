@@ -156,7 +156,7 @@ void CT_CloudIndexRegistrationManagerT<T, CloudIndexLessMemory>::syncModifiableI
                     // on décale tous les index qui sont après la fin du nuage supprimé
                     /*while(j < isize)
                     {
-                        const typename CT_AbstractModifiableCloudIndexT<T>::size_type &tmpIndex = indexModif->constIndexAt(j);
+                        const ct_index_type &tmpIndex = indexModif->constIndexAt(j);
                         indexModif->replaceIndex(i, tmpIndex - size, false);
 
                         ++j;
