@@ -16,7 +16,7 @@ class BatchDialog : public QDialog, public QuitInterface
     Q_OBJECT
 
 public:
-    explicit BatchDialog(QWidget *parent = 0);
+    explicit BatchDialog(bool useTrayIcon, QWidget *parent = 0);
     ~BatchDialog();
 
     void quitApplication();
@@ -31,7 +31,7 @@ private:
     BatchPluginManager      _batchPluginManager;
     BatchPluginInterface    *_pluginSelected;
 
-    void initUi();
+    void initUi(bool useTrayIcon);
     void createTrayIconAndMenu();
     void populatePluginsComboBox();
 

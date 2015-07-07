@@ -8,13 +8,24 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        QMessageBox::critical(0, QObject::tr("Systray"), QObject::tr("I couldn't detect any system tray on this system."));
-        return 1;
-    }
-    QApplication::setQuitOnLastWindowClosed(false);
+    QStringList args = QCoreApplication::arguments();
 
-    BatchDialog dialog;
+    bool useTrayIcon = false;
+
+    if(!args.contains("--fullbatch")) {
+
+        useTrayIcon = true;
+        if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+            QMessageBox::critical(0, QObject::tr("Systray"), QObject::tr("I couldn't detect any system tray on this system. Use \"ComputreeBatch.exe --fullbatch\" to not use the system tray."));
+            return 1;
+        }
+        QApplication::setQuitOnLastWindowClosed(false);
+    }
+
+    BatchDialog dialog(useTrayIcon);
+
+    if(!useTrayIcon)
+        dialog.show();
 
     return app.exec();
 }

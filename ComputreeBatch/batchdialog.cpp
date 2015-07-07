@@ -4,7 +4,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-BatchDialog::BatchDialog(QWidget *parent) :
+BatchDialog::BatchDialog(bool useTrayIcon, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BatchDialog)
 {
@@ -13,12 +13,14 @@ BatchDialog::BatchDialog(QWidget *parent) :
     _batch = new Batch(this);
     _batchPluginManager.load();
     _pluginSelected = NULL;
+    _trayIcon = NULL;
 
     connect(_batch, SIGNAL(loadError(QString)), this, SLOT(batchLoadingError(QString)));
 
-    initUi();
+    initUi(useTrayIcon);
 
-    _trayIcon->show();
+    if(_trayIcon != NULL)
+        _trayIcon->show();
 }
 
 BatchDialog::~BatchDialog()
@@ -33,9 +35,10 @@ void BatchDialog::quitApplication()
     QTimer::singleShot(3000, this, SLOT(quit()));
 }
 
-void BatchDialog::initUi()
+void BatchDialog::initUi(bool useTrayIcon)
 {
-    createTrayIconAndMenu();
+    if(useTrayIcon)
+        createTrayIconAndMenu();
 
     ui->pushButtonStart->setEnabled(false);
     ui->pushButtonStop->setEnabled(false);

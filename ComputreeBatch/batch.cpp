@@ -111,7 +111,7 @@ void Batch::initWithArgs()
             ++i;
 
         if(i<size) {
-            qWarning() << "Help for ComputreeCore :\r\n--help\t\t\tShow this help\r\n-script \"XXX.xsct2\"\tLoad a script\r\n-startSteps\t\tStart execution of steps";
+            qWarning() << "Help for ComputreeCore :\r\n--help\t\t\tShow this help\r\n-script \"XXX.xsct2\"\tLoad a script\r\n-startSteps\t\tStart execution of steps\r\n--fullbatch\t\tDon't use system tray icon";
 
             executionFinished();
             return;

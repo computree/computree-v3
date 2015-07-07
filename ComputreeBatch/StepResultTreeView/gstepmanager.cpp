@@ -276,10 +276,10 @@ QString GStepManager::getStepName(CT_VirtualAbstractStep &step)
         QString filePath = stepLF->getFilePath();
         QFileInfo info(filePath);
 
-        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(info.fileName());
+        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(((step.getStepCustomName() == step.getStepDisplayableName()) && !info.fileName().isEmpty()) ? info.fileName() : step.getStepCustomName());
     }
 
-    return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepName());
+    return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepCustomName() == step.getStepDisplayableName() ? step.getStepExtendedDisplayableName() : step.getStepCustomName());
 }
 
 ////////////// PRIVATE SLOTS //////////////
