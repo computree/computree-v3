@@ -111,16 +111,22 @@ exists(../../use_pcl.ini) {
     #unix
     unix {
         isEmpty($${PCL_LIB_VERSION}) {
-            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.so
+            CONFIG(debug, debug|release) {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_debug.so
+            } else {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_release.so
+            }
         } else {
-            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.so.$${PCL_LIB_VERSION}
+            CONFIG(debug, debug|release) {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_debug.so.$${PCL_LIB_VERSION}
+            } else {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_release.so.$${PCL_LIB_VERSION}
+            }
         }
 
-        debug {
+        CONFIG(debug, debug|release) {
             BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.so*
-        }
-
-        release {
+        } else {
             BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.so*
         }
     }
@@ -128,24 +134,21 @@ exists(../../use_pcl.ini) {
     # windows
     win32 {
         msvc {
-            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/pcl_*.lib
-            debug {
+            CONFIG(debug, debug|release) {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/pcl_*_debug.lib
                 BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.lib
-            }
-
-            release {
+            } else {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/pcl_*_release.lib
                 BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.lib
             }
         }
 
         mingw {
-            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dll.a
-
-            debug {
+            CONFIG(debug, debug|release) {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_debug.dll.a
                 BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.dll.a
-            }
-
-            release {
+            } else {
+                PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_release.dll.a
                 BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.dll.a
             }
         }
@@ -153,13 +156,11 @@ exists(../../use_pcl.ini) {
 
     # mac
     mac {
-        PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*.dylib
-
-        debug {
+        CONFIG(debug, debug|release) {
+            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_debug.dylib
             BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*mt-gd-$${BOOST_LIB_VERSION}.dylib
-        }
-
-        release {
+        } else {
+            PCL_LIB_PATH = $${PCL_LIB_DIR_PATH}/libpcl_*_release.dylib
             BOOST_LIB_TO_LINK = $${BOOST_LIB_DIR_PATH}/lib*-mt-$${BOOST_LIB_VERSION}.dylib
         }
     }
