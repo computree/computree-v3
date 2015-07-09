@@ -81,13 +81,13 @@ QString CT_PointsAttributesScalarTemplated<SCALAR>::getType() const
 template<typename SCALAR>
 QString CT_PointsAttributesScalarTemplated<SCALAR>::staticGetType()
 {
-    return CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarTemplated<" + QString(typeid(SCALAR).name()) + ">";
+    return CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarTemplated<" + CT_TypeInfo::name<SCALAR>() + ">";
 }
 
 template<typename SCALAR>
 QString CT_PointsAttributesScalarTemplated<SCALAR>::name() const
 {
-    return QString("CT_PointsAttributesScalarTemplated<") + QString(typeid(SCALAR).name()) + QString(">");
+    return "CT_PointsAttributesScalarTemplated<" + CT_TypeInfo::name<SCALAR>() + ">";
 }
 
 template<typename SCALAR>

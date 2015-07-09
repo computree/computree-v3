@@ -8,7 +8,7 @@ class CT_Scanner;
 class PLUGINSHAREDSHARED_EXPORT CT_StandardScannerDrawManager : public CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager
 {
 public:
-    CT_StandardScannerDrawManager(QString drawConfigurationName = "");
+    CT_StandardScannerDrawManager(QString drawConfigurationName = "CT_Scanner");
     virtual ~CT_StandardScannerDrawManager();
 
     virtual void draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const;

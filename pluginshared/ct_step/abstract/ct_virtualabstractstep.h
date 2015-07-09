@@ -89,7 +89,9 @@ public:
     virtual QString getToolTip() const;
 
     /**
-     * @brief Inherit this method if you want to return your own name.
+     * @brief Inherit this method if you want to return your own name. This name must be
+     *        unique to compare it if a script is loaded per example. If you want to show a name
+     *        in gui interface you can overload the method "getStepDisplayableName()".
      *
      *        By default call "metaObject()->className()"
      */
@@ -98,9 +100,22 @@ public:
     /**
      * @brief Inherit this method if you want to return your own extended name.
      *
-     *        By default insert the "uniqueID" of the step to the "getStepName()" result
+     *        By default insert the "uniqueID" of the step to the "getStepName()"
      */
     virtual QString getStepExtendedName() const;
+
+    /**
+     * @brief Inherit this method if you want to return your own displayable name that will be used
+     *        in gui if the customName (setStepCustomName() / getStepCustomName()) is not changed by the user.
+     */
+    virtual QString getStepDisplayableName() const;
+
+    /**
+     * @brief Inherit this method if you want to return your own displayable extended name.
+     *
+     *        By default insert the "uniqueID" of the step to the "getStepDisplayableName()"
+     */
+    virtual QString getStepExtendedDisplayableName() const;
 
     /**
      * @brief Inherit this method if you want to return your own description.
@@ -266,6 +281,8 @@ protected:
     friend class CT_ItemIterator;
     friend class CT_ModelSearchHelper;
     friend class CT_ItemSearchHelper;
+    friend class CT_ModelSaveRestoreHelper;
+    template<typename ItemDrawable1, typename ItemDrawable2, typename ItemDrawable3, typename ItemDrawable4> friend class CT_ItemDrawableCollectionBuilderT;
 
     CT_StepInitializeData       *_data;             /*!< les données d'initialisation */
 

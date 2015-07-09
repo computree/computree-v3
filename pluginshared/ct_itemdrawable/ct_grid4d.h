@@ -453,13 +453,13 @@ public:
      *
      * \return A string describing the hierarchy of computree types and the type of the grid (4dgrid and type of data in it)
      */
-    inline static QString staticGetType() { return CT_AbstractGrid4D::staticGetType() + "/CT_Grid4D<" + typeid(DataT).name() + QString(">"); }
+    inline static QString staticGetType() { return CT_AbstractGrid4D::staticGetType() + "/CT_Grid4D<" + CT_TypeInfo::name<DataT>() + QString(">"); }
 
     /*!
      * \brief name
      * \return The name of the object (4dgrid and type of data in it)
      */
-    inline virtual QString name() const { return QString("CT_Grid4D<") + typeid(DataT).name() + QString(">"); }
+    inline virtual QString name() const { return QString("CT_Grid4D<") + CT_TypeInfo::name<DataT>() + QString(">"); }
 
     /*!
      * \brief Copy method

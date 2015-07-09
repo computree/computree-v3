@@ -97,6 +97,11 @@ public:
     bool removeStep(CT_VirtualAbstractStep *step);
 
     /**
+     * @brief Remove all steps
+     */
+    bool clearStep();
+
+    /**
      * @brief Activate or not the debug mode of the step
      */
     void setStepDebugModeOn(CT_VirtualAbstractStep *step, bool debugModeOn);
@@ -137,6 +142,21 @@ public:
      * @brief Return true if the current step is in manual mode
      */
     bool isInManualMode() const;
+
+    /**
+     * @brief Returns true if a script backup was available, this is true when the application crash
+     */
+    bool isScriptBackupAvailable() const;
+
+    /**
+     * @brief Restore the last configuration backuped
+     */
+    void restoreScriptBackup();
+
+    /**
+     * @brief Returns the script backup filepath if you want to know it's path. Please don't use it to load the script (use the méthod "restoreScriptBackup")
+     */
+    QString getScriptBackupFilePath() const;
 
 public slots:
 

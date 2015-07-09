@@ -1149,7 +1149,11 @@ void G3DGraphicsView::drawInternal()
 
     for(int i=0; i<10000; ++i)
         _g.drawCylinder(0, 4, 0, 3, 5);
-*/
+
+    _g.drawPartOfSphere(0, 0, 0, 0.8, 0, 90, 0, 170, false);
+    _g.drawPartOfSphere(1, 1, 1, 0.2, 0, 360, 0, 360, false);
+
+    */
 
     /*int nCS = PS_COORDINATES_SYS_MANAGER->size();
 

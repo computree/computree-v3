@@ -419,7 +419,7 @@ void CTG_InModelPossibilitiesChoice::constructHeader()
 
     if(_possibility != NULL)
     {
-        stepName = _possibility->outModel()->step()->getStepCustomName() == _possibility->outModel()->step()->getStepName() ? _possibility->outModel()->step()->getStepExtendedName() : _possibility->outModel()->step()->getStepCustomName();
+        stepName = _possibility->outModel()->step()->getStepCustomName() == _possibility->outModel()->step()->getStepDisplayableName() ? _possibility->outModel()->step()->getStepExtendedDisplayableName() : _possibility->outModel()->step()->getStepCustomName();
     }
 
     QStringList header;

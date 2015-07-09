@@ -17,7 +17,7 @@ template< typename DataT > const QString CT_StandardGrid2DXZDrawManager<DataT>::
 
 template< typename DataT >
 CT_StandardGrid2DXZDrawManager<DataT>::CT_StandardGrid2DXZDrawManager(QString drawConfigurationName, bool mapMode, bool scale)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Grid2DXZ<%1>").arg(typeid(DataT).name()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Grid2DXZ<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
 {
     _defaultMapMode = mapMode;
     _defaultScaleState = scale;

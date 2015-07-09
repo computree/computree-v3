@@ -20,6 +20,9 @@ public:
     bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
     bool setPointsToExport(const QList<CT_AbstractCloudIndex*> &list);
 
+    SettingsNodeGroup* saveExportConfiguration() const;
+    bool loadExportConfiguration(const SettingsNodeGroup *root);
+
     virtual CT_ItemDrawableHierarchyCollectionWidget::CloudType cloudType() const;
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > getBuilders() const;
     void setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const;

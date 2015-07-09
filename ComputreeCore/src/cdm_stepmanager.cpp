@@ -12,6 +12,8 @@
 #include <QWaitCondition>
 #include <QLocale>
 
+#define CDM_SCRIPT_BACKUP_FILEPATH QDir::toNativeSeparators(".\\backupSteps")+_scripManager->getFileExtensionAccepted().first()
+
 CDM_ScriptStepObjectUserData::CDM_ScriptStepObjectUserData(QString path)
 {
     _stepLoadSerializedResultDirPath = path;
@@ -149,6 +151,15 @@ bool CDM_StepManager::removeStep(CT_VirtualAbstractStep *step)
     }
 
     return false;
+}
+
+bool CDM_StepManager::clearStep()
+{
+    if(isRunning())
+        return false;
+
+    while(!_stepRootList.isEmpty())
+        removeStep(_stepRootList.first());
 }
 
 void CDM_StepManager::setStepDebugModeOn(CT_VirtualAbstractStep *step, bool debugModeOn)
@@ -342,6 +353,31 @@ bool CDM_StepManager::isInManualMode() const
     return m_currentStep->isInManualMode();
 }
 
+bool CDM_StepManager::isScriptBackupAvailable() const
+{
+    return QFile::exists(CDM_SCRIPT_BACKUP_FILEPATH);
+}
+
+void CDM_StepManager::restoreScriptBackup()
+{
+    if(!isRunning()) {
+        clearStep();
+
+        QString path = getScriptBackupFilePath();
+        _scripManager->loadScript(path, *this);
+
+        QFile(path).remove();
+    }
+}
+
+QString CDM_StepManager::getScriptBackupFilePath() const
+{
+    if(isScriptBackupAvailable())
+        return QString(CDM_SCRIPT_BACKUP_FILEPATH);
+
+    return "";
+}
+
 ////////////// PROTECTED //////////////
 
 bool CDM_StepManager::internalExecuteStep(CT_VirtualAbstractStep *beginStep, bool debugMode)
@@ -350,6 +386,9 @@ bool CDM_StepManager::internalExecuteStep(CT_VirtualAbstractStep *beginStep, boo
     _debugMode = debugMode;
     _stop = false;
     _force = (beginStep != NULL);
+
+    //save script before launch to get the user the ability to recover the tree of steps if a crash was happening !
+    _scripManager->writeScript(CDM_SCRIPT_BACKUP_FILEPATH, true, *this);
 
     emit started(true);
 
@@ -440,6 +479,9 @@ void CDM_StepManager::run()
 
         m_debugAutoMode = false;
         _debugMode = false;
+
+        // remove the backup of the script
+        QFile(CDM_SCRIPT_BACKUP_FILEPATH).remove();
     }
     else if(_action == LoadSerializeResult)
     {

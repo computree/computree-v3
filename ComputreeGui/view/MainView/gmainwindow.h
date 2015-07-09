@@ -46,7 +46,7 @@ namespace Ui {
     class GMainWindow;
 }
 
-class GMainWindow : public QMainWindow, public DM_MainWindow
+class GMainWindow : public QMainWindow, public DM_MainWindow, public CDM_ScriptManagerAbstract::IScriptLoadCallBack
 {
     Q_OBJECT
 
@@ -69,6 +69,11 @@ public:
 
     void loadConfiguration();
     void writeConfiguration();
+
+    /**
+     * @brief Inherited from CDM_ScriptManagerAbstract::IScriptLoadCallBack
+     */
+    virtual void loadScriptError(CDM_ScriptProblem &problem);
 
 public slots:
 
@@ -108,6 +113,7 @@ private:
 
     void initUI();
     void loadPlugins(bool showMessageIfNoPluginsFounded = true);
+    void showMessageIfScriptBackupIsAvailable();
 
     QString createFileExtensionAvailable();
     QString createScriptManagerExtension(QString fileExtension);

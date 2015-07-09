@@ -199,13 +199,13 @@ QString CT_Grid2DYZ<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid2DYZ<DataT>::staticGetType()
 {
-    return CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DYZ<" + typeid(DataT).name() + ">";
+    return CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DYZ<" + CT_TypeInfo::name<DataT>() + ">";
 }
 
 template< typename DataT>
 QString CT_Grid2DYZ<DataT>::name() const
 {
-    return QString("CT_Grid2DYZ<") + typeid(DataT).name() + QString(">");
+    return QString("CT_Grid2DYZ<") + CT_TypeInfo::name<DataT>() + QString(">");
 }
 
 template< typename DataT>

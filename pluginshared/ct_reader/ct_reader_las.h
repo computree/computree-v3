@@ -52,4 +52,7 @@ protected:
     bool protectedReadFile();
 };
 
+CT_TYPEINFO_MACRO(CT_Reader_LAS::PointCore0_5, CT_Reader_LAS::PointCore0_5)
+CT_TYPEINFO_MACRO(CT_Reader_LAS::PointCore6_10, CT_Reader_LAS::PointCore6_10)
+
 #endif // CT_READER_LAS_H

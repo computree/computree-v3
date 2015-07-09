@@ -112,19 +112,22 @@ void CT_ItemDrawableCollectionBuilderT<Type, Type2, Type3, Type4>::recursiveBuil
     hi.step = (CT_VirtualAbstractStep*)step;
 
     if(findOnlyModels) {
-        QList<const CT_OutAbstractResultModel*> results = step->getOutResultsModel();
-        QListIterator<const CT_OutAbstractResultModel*> it(results);
+        QList< QList<CT_OutAbstractResultModelGroup*> > results = step->getAllOutResultModels();
+        QListIterator< QList<CT_OutAbstractResultModelGroup*> > it(results);
 
         while(it.hasNext())
         {
-            const CT_OutAbstractResultModel *r = it.next();
-            CT_ItemDrawableCollectionHierarchyResult hir;
-            hir.modelResult = (CT_OutAbstractResultModel*)r;
+            QList<CT_OutAbstractResultModelGroup*> subList = it.next();
 
-            recursiveBuildFromModels(QList<CT_OutAbstractModel *>() << (CT_OutAbstractModel*)r, hir, findOnlyModels);
+            foreach (CT_OutAbstractResultModelGroup *r, subList) {
+                CT_ItemDrawableCollectionHierarchyResult hir;
+                hir.modelResult = (CT_OutAbstractResultModel*)r;
 
-            if(!hir.modelsCollection.isEmpty())
-                hi.results.append(hir);
+                recursiveBuildFromModels(QList<CT_OutAbstractModel *>() << (CT_OutAbstractModel*)r, hir, findOnlyModels);
+
+                if(!hir.modelsCollection.isEmpty())
+                    hi.results.append(hir);
+            }
         }
     } else {
         QList<CT_ResultGroup*> results = step->getResults();

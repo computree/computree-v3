@@ -180,7 +180,7 @@ void GAboutPluginsDialog::initView()
 
 void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step)
 {
-    QString stepName = step->getStepName();
+    QString stepName = step->getPlugin()->getKeyForStep(*step);
     QString keyName = parent->text(0)+ "_" + stepName;
 
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
@@ -216,10 +216,8 @@ void GAboutPluginsDialog::createItemsForAction(QTreeWidgetItem *parent, CT_Abstr
 
 void GAboutPluginsDialog::createItemsForExporter(QTreeWidgetItem *parent, CT_AbstractExporter *ex)
 {
-    CDM_Tools tools(GUI_MANAGER->getPluginManager());
-
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, tools.createNameForExporter(ex));
+    item->setText(0, ex->getExporterName() + tr(" [%1]").arg(ex->getExporterCustomName()));
     /*item->setData(0, Qt::DisplayRole, _eManager->getPluginName(i));
     item->setData(0, Qt::UserRole, I_Export);
     item->setData(0, Qt::UserRole+1, i);*/
@@ -449,7 +447,7 @@ void GAboutPluginsDialog::exportStepData(QTextStream &stream, CT_VirtualAbstract
     QString htmlDescr = step->getStepDetailledDescription();
     convertHTMLtoTextile(htmlDescr);
 
-    stream << "h2. " << step->getStepName() << EOL << EOL;
+    stream << "h2. " << step->getPlugin()->getKeyForStep(*step) << EOL << EOL;
     stream << tr("*_Description courte_* : *") << step->getStepDescription() << "*" << EOL << EOL;
     stream << tr("*_Description détaillée_* : ");
     stream << htmlDescr;

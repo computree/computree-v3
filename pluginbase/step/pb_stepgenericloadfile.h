@@ -19,6 +19,11 @@ public:
      */
     virtual QString getStepName() const;
 
+    /**
+     * @brief Inherited to return a displayable name of the reader
+     */
+    virtual QString getStepDisplayableName() const;
+
     QString getStepDescription() const;
 
     QList<QString> getFileExtensionAccepted() const;

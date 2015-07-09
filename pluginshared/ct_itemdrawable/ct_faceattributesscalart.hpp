@@ -83,13 +83,13 @@ QString CT_FaceAttributesScalarT<SCALAR>::getType() const
 template<typename SCALAR>
 QString CT_FaceAttributesScalarT<SCALAR>::staticGetType()
 {
-    return CT_AbstractFaceAttributesScalar::staticGetType() + "/CT_FaceAttributesScalarT<" + QString(typeid(SCALAR).name()) + ">";
+    return CT_AbstractFaceAttributesScalar::staticGetType() + "/CT_FaceAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
 }
 
 template<typename SCALAR>
 QString CT_FaceAttributesScalarT<SCALAR>::name() const
 {
-    return QString("CT_FaceAttributesScalarT<") + QString(typeid(SCALAR).name()) + QString(">");
+    return "CT_FaceAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
 }
 
 template<typename SCALAR>

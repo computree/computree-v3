@@ -390,7 +390,11 @@ SOURCES += \
     ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
     ct_iterator/ct_mutableindexiterator.cpp \
     ct_tools/pcl/ct_pcltools.cpp \
-    ct_itemdrawable/tools/ct_itemsearchhelper.cpp
+    ct_itemdrawable/tools/ct_itemsearchhelper.cpp \
+    ct_model/tools/ct_modelsaverestorehelper.cpp \
+    ct_itemdrawable/ct_sphere.cpp \
+    ct_shapedata/ct_spheredata.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -881,7 +885,12 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/ct_itemsearchhelper.h \
     ct_itemdrawable/ct_image2d.h \
     ct_itemdrawable/ct_image2d.hpp \
-    ct_itemdrawable/abstract/ct_abstractimage2d.h
+    ct_itemdrawable/abstract/ct_abstractimage2d.h \
+    ct_model/tools/ct_modelsaverestorehelper.h \
+    ct_tools/ct_typeinfo.h \
+    ct_itemdrawable/ct_sphere.h \
+    ct_shapedata/ct_spheredata.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

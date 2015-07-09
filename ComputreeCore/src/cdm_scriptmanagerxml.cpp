@@ -9,6 +9,17 @@
 
 #include <QCoreApplication>
 
+#define CLEAR_SCRIPT \
+    if(!problem.getSolutionKeepSteps()) { \
+        CT_VirtualAbstractStep *p; \
+        CT_VirtualAbstractStep *pp = parent; \
+        while(pp != NULL) { \
+            p = pp; \
+            pp = pp->parentStep(); \
+            stepManager->removeStep(p); \
+        } \
+    }
+
 CDM_ScriptManagerXML::CDM_ScriptManagerXML(CDM_PluginManager &pluginManager) : CDM_ScriptManagerAbstract(pluginManager)
 {
     setPluginManager(pluginManager);
@@ -218,28 +229,89 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
             if(pluginName.isEmpty())
             {
-                return QCoreApplication::translate("recursiveLoadScript", QString("Le plugin n'est pas renseigne pour l'etape %1. Vous utilisez surement une ancienne version de script.").arg(key).toLatin1());
+                QString err = QCoreApplication::translate("recursiveLoadScript", QString("Le nom du plugin n'est pas renseigné pour l'étape \"%1\". Vous utilisez sûrement une ancienne version de script.").arg(key).toUtf8());
+
+                CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_PluginNotInformed, err, NULL, NULL, -1);
+
+                if(scriptLoadCallBack() != NULL) {
+
+                    scriptLoadCallBack()->loadScriptError(problem);
+
+                    pluginName = pluginManager->getPluginName(problem.getSolutionPluginToUse());
+                }
+
+                if(pluginName.isEmpty()) {
+
+                    CLEAR_SCRIPT
+
+                    return err;
+                }
             }
 
             CT_AbstractStepPlugin *stepPluginManager = pluginManager->getPlugin(pluginName);
 
             if(stepPluginManager == NULL)
             {
-                return QCoreApplication::translate("recursiveLoadScript", QString("Le plugin %1 pour l'etape %2 ne semble pas etre charge.").arg(pluginName).arg(key).toLatin1());
+                QString err = QCoreApplication::translate("recursiveLoadScript", QString("Le plugin \"%1\" pour l'étape \"%2\" ne semble pas être chargé.").arg(pluginName).arg(key).toUtf8());
+
+                CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_PluginNotFound, err, NULL, NULL, -1, pluginName);
+
+                if(scriptLoadCallBack() != NULL)
+                    scriptLoadCallBack()->loadScriptError(problem);
+
+                pluginName = pluginManager->getPluginName(problem.getSolutionPluginToUse());
+
+                if(!pluginName.isEmpty())
+                    stepPluginManager = pluginManager->getPlugin(pluginName);
+
+                if(pluginName.isEmpty() || (stepPluginManager == NULL)) {
+
+                    CLEAR_SCRIPT
+
+                    return err;
+                }
+
             }
+
+            int pluginIndex = pluginManager->getPluginIndex(stepPluginManager);
 
             CT_VirtualAbstractStep *step = stepPluginManager->getStepFromKey(key);
 
             if(step == NULL)
             {
-                return QCoreApplication::translate("recursiveLoadScript", QString("L'etape %1 n'a pas ete trouve dans le plugin %2.").arg(key).arg(pluginName).toLatin1());
+                QString err = QCoreApplication::translate("recursiveLoadScript", QString("L'étape \"%1\" n'a pas ete trouvée dans le plugin \"%2\".").arg(key).arg(pluginName).toUtf8());
+
+                CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_StepNotFound, err, NULL, parent, pluginIndex, pluginName, key);
+
+                if(scriptLoadCallBack() != NULL) {
+                    scriptLoadCallBack()->loadScriptError(problem);
+                    step = problem.getSolutionUseStep();
+                }
+
+                if(step == NULL) {
+
+                    CLEAR_SCRIPT
+
+                    return err;
+                } else {
+                    key = step->getPlugin()->getKeyForStep(*step);
+                }
             }
 
             QDomNodeList childList = e.childNodes();
 
             if(childList.size() < 2)
             {
-                return QCoreApplication::translate("recursiveLoadScript", QString("Erreur de la lecture des paramètres").toLatin1());
+                QString err = QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de la lecture des paramètres du script.").toUtf8());
+
+                CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_NoSolution, err, NULL, parent, pluginIndex, pluginName, key);
+
+                if(scriptLoadCallBack() != NULL)
+                    scriptLoadCallBack()->loadScriptError(problem);
+
+                CLEAR_SCRIPT
+
+                return err;
             }
 
             if(!verify)
@@ -248,7 +320,16 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
                 if(copyStep == NULL)
                 {
-                    return QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de la copie de l'etape %1 du plugin %2.").arg(key).arg(pluginName).toLatin1());
+                    QString err = QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de la copie de l'etape \"%1\" du plugin \"%2\".").arg(key).arg(pluginName).toUtf8());
+
+                    CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_NoSolution, err, copyStep, parent, pluginIndex, pluginName, key);
+
+                    if(scriptLoadCallBack() != NULL)
+                        scriptLoadCallBack()->loadScriptError(problem);
+
+                    CLEAR_SCRIPT
+
+                    return err;
                 }
 
                 QDomElement childE = childList.at(0).toElement();
@@ -263,7 +344,19 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
                 if(!copyStep->setAllSettings(rootSettingsGroup))
                 {
-                    return QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'affectation des parametres a l'etape %1 du plugin %2.").arg(key).arg(pluginName).toLatin1());
+                    QString err = QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'affectation des paramètres à l'étape \"%1\" du plugin \"%2\".").arg(key).arg(pluginName).toUtf8());
+
+                    CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_StepCanNotBeConfigured, err, copyStep, parent, pluginIndex, pluginName, key);
+
+                    if(scriptLoadCallBack() != NULL)
+                        scriptLoadCallBack()->loadScriptError(problem);
+
+                    if(!problem.isConfigureStepWellConfigured()) {
+
+                        CLEAR_SCRIPT
+
+                        return err;
+                    }
                 }
 
                 delete rootSettingsGroup;
@@ -287,7 +380,16 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
 
                 if(!copyStep->setSerializedInformation(rootSerialisationGroup))
                 {
-                    return QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'affectation des parametres de serialisation a l'etape %1 du plugin %2.").arg(key).arg(pluginName).toLatin1());
+                    QString err = QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'affectation des paramètres de serialisation à l'étape \"%1\" du plugin \"%2\".").arg(key).arg(pluginName).toUtf8());
+
+                    CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_NoSolution, err, copyStep, parent, pluginIndex, pluginName, key);
+
+                    if(scriptLoadCallBack() != NULL)
+                        scriptLoadCallBack()->loadScriptError(problem);
+
+                    CLEAR_SCRIPT
+
+                    return err;
                 }
 
                 delete rootSerialisationGroup;
@@ -302,7 +404,16 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
                 {
                     delete copyStep;
 
-                    return QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'ajout de l'etape %1 du plugin %2 au gestionnaire d'etape.").arg(key).arg(pluginName).toLatin1());
+                    QString err = QCoreApplication::translate("recursiveLoadScript", QString("Erreur lors de l'ajout de l'étape \"%1\" du plugin \"%2\" au gestionnaire d'étapes.").arg(key).arg(pluginName).toUtf8());
+
+                    CDM_ScriptProblem problem(*pluginManager, CDM_ScriptProblem::TOP_NoSolution, err, NULL, parent, pluginIndex, pluginName, key);
+
+                    if(scriptLoadCallBack() != NULL)
+                        scriptLoadCallBack()->loadScriptError(problem);
+
+                    CLEAR_SCRIPT
+
+                    return err;
                 }
                 else
                 {
@@ -344,7 +455,7 @@ QString CDM_ScriptManagerXML::recursiveLoadScript(QDomElement &e,
     }
     else
     {
-        return QCoreApplication::translate("recursiveLoadScript", "Aucun plugin n'est charge");
+        return QCoreApplication::translate("recursiveLoadScript", QString("Aucun plugin n'est chargé.").toUtf8());
     }
 
     return error;

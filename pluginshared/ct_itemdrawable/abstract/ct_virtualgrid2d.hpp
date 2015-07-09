@@ -111,7 +111,7 @@ QString CT_VirtualGrid2D<DataT>::getType() const
 template< typename DataT>
 QString CT_VirtualGrid2D<DataT>::staticGetType()
 {
-    return CT_AbstractGrid2D::staticGetType() + "/CT_VirtualGrid2D<" + typeid(DataT).name() + ">";
+    return CT_AbstractGrid2D::staticGetType() + "/CT_VirtualGrid2D<" + CT_TypeInfo::name<DataT>() + ">";
 }
 
 template< typename DataT>

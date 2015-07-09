@@ -24,7 +24,7 @@ template< typename DataT > const QString CT_StandardProfileDrawManager<DataT>::I
 
 template< typename DataT >
 CT_StandardProfileDrawManager<DataT>::CT_StandardProfileDrawManager(QString drawConfigurationName)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Profil<%1>").arg(typeid(DataT).name()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Profil<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
 {
     
 }

@@ -116,7 +116,7 @@ void CT_StandardCloudStdVectorT<T>::resize(const size_t &newSize)
     m_collection.resize(newSize);
 #endif
 
-    //PS_LOG->addDebugMessage(LogInterface::plugin, QString("cloud of type %1 resized to %2").arg(typeid(T).name()).arg(size()));
+    //PS_LOG->addDebugMessage(LogInterface::plugin, QString("cloud of type %1 resized to %2").arg(CT_TypeInfo::name<T>()).arg(size()));
 }
 
 template<typename T>

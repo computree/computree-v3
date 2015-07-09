@@ -219,7 +219,7 @@ bool CT_AbstractStepLoadFile::postConfigure()
 {
     if(!isRunning() && CT_AbstractStepSerializable::postConfigure())
     {
-        QString s = QFileDialog::getOpenFileName(0, getStepDescription(), getDefaultDirPath(), getStepName() + " compatible file ("+createAcceptedExtensionString(" *")+");;All Files (*.*)");
+        QString s = QFileDialog::getOpenFileName(0, getStepDescription(), getDefaultDirPath(), tr("%1 compatible file (%2);;All Files (*.*)").arg(getStepDisplayableName()).arg(createAcceptedExtensionString(" *")));
 
         if(!s.isEmpty())
         {

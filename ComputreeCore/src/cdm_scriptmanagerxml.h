@@ -13,6 +13,7 @@ class QTextStream;
 class COMPUTREECORESHARED_EXPORT CDM_ScriptManagerXML : public CDM_ScriptManagerAbstract
 {
 public:
+
     CDM_ScriptManagerXML(CDM_PluginManager &pluginManager);
 
     virtual ~CDM_ScriptManagerXML();

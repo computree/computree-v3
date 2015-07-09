@@ -22,6 +22,9 @@ public:
     virtual void setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const;
     virtual bool useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget);
 
+    virtual SettingsNodeGroup* saveExportConfiguration() const;
+    virtual bool loadExportConfiguration(const SettingsNodeGroup *root);
+
 protected:
     CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes>                            m_attributsColorPointWorker;
     CT_AttributesToCloudWorkerT<CT_AbstractPointsAttributes>                            m_attributsNormalPointWorker;

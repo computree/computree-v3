@@ -463,7 +463,7 @@ void CT_VirtualAbstractStep::stop()
 
 void CT_VirtualAbstractStep::quitManualMode()
 {
-    PS_LOG->addMessage(LogInterface::info, LogInterface::step, getStepName() + tr(" quit manual mode"));
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, getStepCustomName() + tr(" quit manual mode"));
 
     if(getGuiContext() != NULL)
         useManualMode(true);
@@ -606,10 +606,20 @@ QString CT_VirtualAbstractStep::getStepExtendedName() const
     return getStepName() + " (" + QString().setNum(uniqueID()) + ")";
 }
 
+QString CT_VirtualAbstractStep::getStepDisplayableName() const
+{
+    return getStepName();
+}
+
+QString CT_VirtualAbstractStep::getStepExtendedDisplayableName() const
+{
+    return getStepDisplayableName() + " (" + QString().setNum(uniqueID()) + ")";
+}
+
 QString CT_VirtualAbstractStep::getStepCustomName() const
 {
     if(_customName.isEmpty())
-        return getStepName();
+        return getStepExtendedDisplayableName();
 
     return _customName;
 }
@@ -845,7 +855,7 @@ void CT_VirtualAbstractStep::setGuiContext(const GuiContextInterface *context)
 void CT_VirtualAbstractStep::ackManualMode()
 {
     if(m_firstCallToManualMode)
-        PS_LOG->addMessage(LogInterface::info, LogInterface::step, getStepName() + tr(" enter manual mode"));
+        PS_LOG->addMessage(LogInterface::info, LogInterface::step, getStepCustomName() + tr(" enter manual mode"));
 
     if(m_firstCallToManualMode
             && getGuiContext() != NULL)
@@ -866,7 +876,7 @@ bool CT_VirtualAbstractStep::addInResultModel(CT_InAbstractResultModel *model)
 {
     if(!_inManager->getResultModelManager()->addResultModel(model))
     {
-        qFatal(QString("Erreur lors de l'ajout d'un CT_InAbstractResultModel dans l'étape %1").arg(getStepName()).toLatin1());
+        qFatal(QString("Erreur lors de l'ajout d'un CT_InAbstractResultModel dans l'étape %1").arg(getStepCustomName()).toLatin1());
         return false;
     }
 
@@ -1040,7 +1050,7 @@ bool CT_VirtualAbstractStep::addOutResultModel(CT_OutAbstractResultModelGroup *m
 {
     if(!_outManager->getResultModelManager()->addResultModel(model))
     {
-        qFatal(QString("Erreur lors de l'ajout d'un CT_OutResultModelGroup dans l'étape %1").arg(getStepName()).toLatin1());
+        qFatal(QString("Erreur lors de l'ajout d'un CT_OutResultModelGroup dans l'étape %1").arg(getStepCustomName()).toLatin1());
         return false;
     }
 
@@ -1241,7 +1251,7 @@ CT_StepConfigurableDialog* CT_VirtualAbstractStep::newStandardPreConfigurationDi
 {
     delete _preConfigDialog;
     _preConfigDialog = new CT_StepConfigurableDialog();
-    _preConfigDialog->setWindowTitle(_preConfigDialog->windowTitle() + QString(" (%1)").arg(_customName.isEmpty() ? getStepExtendedName() : _customName));
+    _preConfigDialog->setWindowTitle(_preConfigDialog->windowTitle() + QString(" (%1)").arg(_customName.isEmpty() ? getStepCustomName() : _customName));
     return _preConfigDialog;
 }
 
@@ -1316,7 +1326,7 @@ CT_StepConfigurableDialog* CT_VirtualAbstractStep::newStandardPostConfigurationD
 {
     delete _postConfigDialog;
     _postConfigDialog = new CT_StepConfigurableDialog();
-    _postConfigDialog->setWindowTitle(_postConfigDialog->windowTitle() + QString(" (%1)").arg(_customName.isEmpty() ? getStepExtendedName() : _customName));
+    _postConfigDialog->setWindowTitle(_postConfigDialog->windowTitle() + QString(" (%1)").arg(_customName.isEmpty() ? getStepCustomName() : _customName));
 
     return _postConfigDialog;
 }
@@ -1548,7 +1558,7 @@ void CT_VirtualAbstractStep::setLaunchTime(QDateTime launchTime)
 
 void CT_VirtualAbstractStep::runProcessing(bool modificationMode)
 {
-    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepName() + tr(" - Start computing"));
+    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Start computing"));
 
     _running = true;
     _stop = false;
@@ -1647,7 +1657,7 @@ void CT_VirtualAbstractStep::runProcessing(bool modificationMode)
     _turnIndexManager->resetTurnIndex();
     _running = false;
 
-    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepName() + tr(" - Computing completed"));
+    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Computing completed"));
 
     emit isCompleted();
 }

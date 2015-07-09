@@ -4,7 +4,7 @@
 
 const QString CT_StandardScannerDrawManager::INDEX_CONFIG_FIELD_OF_VIEW = CT_StandardScannerDrawManager::staticInitConfigFieldOfView();
 
-CT_StandardScannerDrawManager::CT_StandardScannerDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? "CT_Scanner" : drawConfigurationName)
+CT_StandardScannerDrawManager::CT_StandardScannerDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName)
 {
     
 }

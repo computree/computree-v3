@@ -159,7 +159,7 @@ int CDM_PluginManager::countPluginLoaded() const
 
 QString CDM_PluginManager::getPluginName(int i) const
 {
-    if(isAPluginLoaded())
+    if(isAPluginLoaded() && (i>=0) && (i<countPluginLoaded()))
     {
         QMap<QString, QPluginLoader*>::const_iterator it = _plugins.constBegin();
 
@@ -211,7 +211,7 @@ void CDM_PluginManager::setSearchPath(QString path)
 
 CT_AbstractStepPlugin* CDM_PluginManager::getPlugin(int i) const
 {
-    if(isAPluginLoaded())
+    if(isAPluginLoaded() && (i>=0) && (i<countPluginLoaded()))
     {
         QMap<QString, QPluginLoader*>::const_iterator it = _plugins.constBegin();
 
@@ -249,6 +249,27 @@ CT_AbstractStepPlugin* CDM_PluginManager::getPlugin(QString pluginName) const
     }
 
     return NULL;
+}
+
+int CDM_PluginManager::getPluginIndex(CT_AbstractStepPlugin *p) const
+{
+    if(isAPluginLoaded())
+    {
+        int i = 0;
+
+        QMap<QString, QPluginLoader*>::const_iterator it = _plugins.constBegin();
+
+        while((it != _plugins.constEnd()))
+        {
+            if(qobject_cast<PluginEntryInterface*>(it.value()->instance())->getPlugin() == p)
+                return i;
+
+            ++it;
+            ++i;
+        }
+    }
+
+    return -1;
 }
 
 void CDM_PluginManager::clearPlugins()

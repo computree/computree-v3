@@ -5,6 +5,7 @@
 
 #include "cdm_stepmanager.h"
 #include "cdm_pluginmanager.h"
+#include "cdm_scriptproblem.h"
 
 /**
   * \brief Classe permettant d'ecrire/lire un script d'etapes afin de creer les etapes et les ajouter
@@ -13,8 +14,30 @@
 class COMPUTREECORESHARED_EXPORT CDM_ScriptManagerAbstract
 {
 public:
+
+    class IScriptLoadCallBack {
+    public:
+        virtual ~IScriptLoadCallBack() {}
+
+        /**
+         * @brief Method called when a script problem occurs
+         * @param problem : the problem to use to set the solution
+         */
+        virtual void loadScriptError(CDM_ScriptProblem &problem) = 0;
+    };
+
     CDM_ScriptManagerAbstract(CDM_PluginManager &pluginManager);
     virtual ~CDM_ScriptManagerAbstract() {}
+
+    /**
+     * @brief Set the object who get the callback error when a script is not successfully loaded
+     */
+    void setScriptLoadCallBack(IScriptLoadCallBack *c);
+
+    /**
+     * @brief Returns the object that was called when an error ocurred when a script is loaded
+     */
+    IScriptLoadCallBack* scriptLoadCallBack() const;
 
     /*!
      *  \brief Defini le plugin manager utilise pour creer les etapes
@@ -62,6 +85,7 @@ public:
 private:
 
     CDM_PluginManager       *_pluginManager;
+    IScriptLoadCallBack     *m_callBack;
 };
 
 #endif // CDM_SCRIPTMANAGERABSTRACT_H

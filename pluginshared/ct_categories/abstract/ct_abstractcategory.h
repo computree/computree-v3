@@ -1,7 +1,7 @@
 #ifndef CT_ABSTRACTCATEGORY_H
 #define CT_ABSTRACTCATEGORY_H
 
-#include "pluginShared_global.h"
+#include "ct_tools/ct_typeinfo.h"
 
 #include <QObject>
 #include <QString>
@@ -38,12 +38,14 @@ public:
 
         NUMBER_REAL   = 14,     // a real number (it's a NUMBER too)
 
-        INT16         = 16,     // a integer 16 bits (it's a NUMBER_INT too)
-        UINT16        = 32,     // a unsigned integer 16 bits (it's a NUMBER_INT too)
-        INT32         = 64,     // a signed integer 32 bits (it's a NUMBER_INT too)
-        UINT32        = 128,    // a unsigned integer 32 bits (it's a NUMBER_INT too)
-        INT64         = 256,    // a signed integer 64 bits (it's a NUMBER_INT too)
-        UINT64        = 512,    // a unsigned integer 64 bits (it's a NUMBER_INT too)
+        INT8          = 16,     // a integer 8 bits (it's a NUMBER_INT too)
+        UINT8         = 32,     // a unsigned integer 8 bits (it's a NUMBER_INT too)
+        INT16         = 64,     // a integer 16 bits (it's a NUMBER_INT too)
+        UINT16        = 128,    // a unsigned integer 16 bits (it's a NUMBER_INT too)
+        INT32         = 256,    // a signed integer 32 bits (it's a NUMBER_INT too)
+        UINT32        = 512,    // a unsigned integer 32 bits (it's a NUMBER_INT too)
+        INT64         = 1024,   // a signed integer 64 bits (it's a NUMBER_INT too)
+        UINT64        = 2048,   // a unsigned integer 64 bits (it's a NUMBER_INT too)
 
 #ifdef ENVIRONMENT64
         SIZE_T        = UINT64,    // a unsigned integer 64 bits (it's a NUMBER_INT too)
@@ -51,15 +53,15 @@ public:
         SIZE_T        = UINT32,    // a unsigned integer 32 bits (it's a NUMBER_INT too)
 #endif
 
-        NUMBER_INT    = 1008,   // a integer (it's a NUMBER too)
+        NUMBER_INT    = 4080,   // a integer (it's a NUMBER too) = (16+32+64+128+256+....)
 
-        NUMBER        = 1022,   // a number
+        NUMBER        = 4094,   // a number = (NUMBER_INT + NUMBER_REAL)
 
-        STRING        = 1024,    // a string
+        STRING        = 4096,   // a string
 
-        UNKNOWN       = 2048,    // a unknown type
+        UNKNOWN       = 8192,   // a unknown type
 
-        ANY           = 4095     // Any ValueType (including UNKNOWN)
+        ANY           = 16383   // Any ValueType (including UNKNOWN)
     };
     Q_ENUMS(ValueType)
 
@@ -167,7 +169,7 @@ public:
     template <typename VType>
     static inline CT_AbstractCategory::ValueType staticValueTypeToCategoryType()
     {
-        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
+        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + CT_TypeInfo::name<VType>() + ") ===>" + __FILE__ + __LINE__));
 
         return CT_AbstractCategory::UNKNOWN;
     }
@@ -178,7 +180,7 @@ public:
     template <typename VType>
     static inline QString staticValueTypeToCategoryTypeString()
     {
-        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + typeid(VType).name() + ") ===>" + __FILE__ + __LINE__));
+        qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + CT_TypeInfo::name<VType>() + ") ===>" + __FILE__ + __LINE__));
 
         return QString("UNKNOWN");
     }
@@ -234,6 +236,8 @@ CT_SPECIALIZE_VALUE_TYPE_TO(bool, CT_AbstractCategory::BOOLEAN, "BOOL")
 CT_SPECIALIZE_VALUE_TYPE_TO(double, CT_AbstractCategory::DOUBLE, "DOUBLE")
 CT_SPECIALIZE_VALUE_TYPE_TO(float, CT_AbstractCategory::FLOAT, "FLOAT")
 CT_SPECIALIZE_VALUE_TYPE_TO(long double, CT_AbstractCategory::LONG_DOUBLE, "LONG_DOUBLE")
+CT_SPECIALIZE_VALUE_TYPE_TO(qint8, CT_AbstractCategory::INT8, "INT18")
+CT_SPECIALIZE_VALUE_TYPE_TO(quint8, CT_AbstractCategory::UINT8, "UNSIGNED INT8")
 CT_SPECIALIZE_VALUE_TYPE_TO(qint16, CT_AbstractCategory::INT16, "INT16")
 CT_SPECIALIZE_VALUE_TYPE_TO(quint16, CT_AbstractCategory::UINT16, "UNSIGNED INT16")
 CT_SPECIALIZE_VALUE_TYPE_TO(qint32, CT_AbstractCategory::INT32, "INT32")

@@ -152,7 +152,7 @@ QList<QStandardItem*> CTG_InResultModelTurnChoice::createItemsForResultModel(CT_
         item->_possibility = possibility;
         list.append(item);
 
-        item = new CTG_InResultModelTurnChoiceItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepName() ? possibility->outModel()->step()->getStepExtendedName() : possibility->outModel()->step()->getStepCustomName());
+        item = new CTG_InResultModelTurnChoiceItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepDisplayableName() ? possibility->outModel()->step()->getStepExtendedDisplayableName() : possibility->outModel()->step()->getStepCustomName());
         item->setDragEnabled(false);
         item->setDropEnabled(false);
         item->setEditable(false);

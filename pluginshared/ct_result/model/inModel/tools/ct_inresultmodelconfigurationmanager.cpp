@@ -31,7 +31,7 @@ CT_InResultModelConfigurationManager::CreateDialogReturn CT_InResultModelConfigu
     if(_configDialog == NULL)
     {
         _configDialog = new CTG_InResultModelConfiguration(NULL);
-        _configDialog->setWindowTitle(_configDialog->windowTitle() + QString(" (%1)").arg(_inManager->step()->getStepCustomName() == _inManager->step()->getStepName() ? _inManager->step()->getStepExtendedName() : _inManager->step()->getStepCustomName()));
+        _configDialog->setWindowTitle(_configDialog->windowTitle() + QString(" (%1)").arg(_inManager->step()->getStepCustomName() == _inManager->step()->getStepDisplayableName() ? _inManager->step()->getStepExtendedDisplayableName() : _inManager->step()->getStepCustomName()));
         _configDialog->setInManager(_inManager);
     }
 

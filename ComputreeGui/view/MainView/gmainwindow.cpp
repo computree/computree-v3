@@ -36,6 +36,10 @@
 #include "gdocumentviewforgraphics.h"
 #include "gdocumentviewforitemmodel.h"
 
+#include "dm_stepsfrompluginsmodelconstructor.h"
+#include "view/Steps/gstepviewdefault.h"
+#include "view/Steps/dm_steptreeviewdefaultproxymodel.h"
+
 #include "GraphicsViews/3D/g3dgraphicsview.h"
 
 #include "gaboutdialog.h"
@@ -56,6 +60,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QHBoxLayout>
 
 #include <QSpinBox>
 
@@ -68,6 +73,8 @@ GMainWindow::GMainWindow(QWidget *parent) :
     initUI();
 
     arrangeDocksInColumn();
+
+    getScriptManager()->setScriptLoadCallBack(this);
 }
 
 GMainWindow::~GMainWindow()
@@ -147,18 +154,9 @@ void GMainWindow::openFile(QString &loadDirectory)
         loadDirectory = info.path();
 
         if(getScriptManager()->acceptFile(s))
-        {
-            QString error = getScriptManager()->loadScript(s, *getStepManager());
-
-            if(!error.isEmpty())
-            {
-                QMessageBox::critical(this, tr("Erreur chargement du script"), tr("Une erreur est survenu lors de la lecture du script :\r\n\r\n%1").arg(error));
-            }
-        }
+            getScriptManager()->loadScript(s, *getStepManager());
         else
-        {
             _stepManagerView->addOpenFileStep(s);
-        }
     }
 }
 
@@ -634,6 +632,26 @@ void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)
     }
 }
 
+void GMainWindow::showMessageIfScriptBackupIsAvailable()
+{
+    if(getStepManager()->isScriptBackupAvailable()) {
+
+        int ret = QMessageBox::warning(this, tr("Récupération automatique"), tr("<html>L'application a semble-t-il rencontrée un problème "
+                                                                                "lors de la dernière exécution des étapes. Un script a été "
+                                                                                "sauvegardé automatiquement afin de rétablir votre dernière "
+                                                                                "configuration.<br/><br/><b>Voulez-vous recharger votre dernière "
+                                                                                "configuration connue ?</b></html>"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        if(ret == QMessageBox::Yes)
+        {
+            getStepManager()->restoreScriptBackup();
+        }
+        else if(ret == QMessageBox::No)
+        {
+            QFile(getStepManager()->getScriptBackupFilePath()).remove();
+        }
+    }
+}
+
 void GMainWindow::loadConfiguration()
 {
     CONFIG_FILE->beginGroup("MainWindow");
@@ -701,6 +719,8 @@ void GMainWindow::loadConfiguration()
 
     if(getDocumentManagerView()->nbDocumentView() == 0)
         newDocument();
+
+    showMessageIfScriptBackupIsAvailable();
 }
 
 void GMainWindow::writeConfiguration()
@@ -747,6 +767,120 @@ void GMainWindow::writeConfiguration()
     CONFIG_FILE->endGroup(); // Document
 
     CONFIG_FILE->endGroup(); // MainWindow
+}
+
+void GMainWindow::loadScriptError(CDM_ScriptProblem &problem)
+{
+    QString title = tr("Erreur de chargement du script");
+    QString info = tr("Une erreur est survenue lors de la lecture du script :<br/><br/><i>%1</i>").arg(problem.getProblemString());
+
+    // problem of type : plugin name not informed in script or invalid
+    if((problem.getProblemType() == CDM_ScriptProblem::TOP_PluginNotInformed) || (problem.getProblemType() == CDM_ScriptProblem::TOP_PluginNotFound)) {
+
+        int s = getPluginManager()->countPluginLoaded();
+
+        if(s > 0)
+        {
+            // solution is to choose a plugin to use
+            QStringList l;
+
+            int ci = 0;
+
+            QString pn = problem.getProblemPluginName().trimmed();
+
+            for(int i=0; i<s; ++i) {
+                QString name = getPluginManager()->getPluginName(i);
+
+                if(!pn.isEmpty() && name.startsWith(pn))
+                    ci = i;
+
+                l << name;
+            }
+
+            bool ok;
+            QString pluginName = QInputDialog::getItem(this, title, tr("<html>%1<br/><br/><b>Choisissez le plugin à utiliser ?</b></html>").arg(info), l, ci, false, &ok);
+
+            if(ok) {
+                problem.setSolutionPluginToUse(l.indexOf(pluginName));
+                return;
+            }
+        }
+
+    // problem of type : step not found in the plugin
+    } else if(problem.getProblemType() == CDM_ScriptProblem::TOP_StepNotFound) {
+
+        // solution is to choose a step
+        QDialog dialog(this);
+        dialog.setWindowTitle(title);
+        QHBoxLayout *hLayout = new QHBoxLayout(&dialog);
+        QVBoxLayout *vLayout = new QVBoxLayout();
+
+        QLabel *label = new QLabel(&dialog);
+        label->setText(tr("<html>%1<br/><br/><b>Choisissez une étape de remplacement :</b></html>").arg(info));
+
+        // create the view of steps available in the plugin currently used
+        GStepViewDefault *view = new GStepViewDefault(&dialog);
+        view->init(*getPluginManager());
+
+        // plugin currently used
+        view->constructor()->setUseStepsOfPlugins(QList<CT_AbstractStepPlugin*>() << getPluginManager()->getPlugin(problem.getSolutionPluginToUse()));
+
+        // set if must show StepLoadFile, StepCanBeAddedFirst and StepGeneric
+        view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepCBAF, problem.getParentStep() == NULL);
+        view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepLF, problem.getParentStep() == NULL);
+        view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepG, problem.getParentStep() != NULL);
+
+        // set the parent step to use
+        view->proxy()->setParentStep(problem.getParentStep());
+
+        // don't show step not compatible
+        view->proxy()->setShowStepNotCompatible(false);
+
+        // reconstruct the view
+        view->reconstruct();
+
+        // search the step
+        view->searchStepByNameAndExpandParent(problem.getProblemStepName());
+
+        vLayout->addWidget(label);
+        vLayout->addWidget(view);
+
+        hLayout->addLayout(vLayout);
+        QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Vertical, &dialog);
+        hLayout->addWidget(buttons);
+
+        connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+        connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+        if(dialog.exec() == QDialog::Accepted) {
+            QModelIndexList l = view->treeView()->selectionModel()->selectedIndexes();
+
+            if(!l.isEmpty()) {
+                // if a step was choosed by user
+                problem.setSolutionUseStep(view->constructor()->stepFromIndex(view->proxy()->mapToSource(l.first())));
+
+                if(problem.getSolutionUseStep() != NULL)
+                    return;
+            }
+        }
+
+    // problem of type : step can not be configured with element of script
+    } else if(problem.getProblemType() == CDM_ScriptProblem::TOP_StepCanNotBeConfigured) {
+
+        if(QMessageBox::critical(this, title, tr("<html>%1<br/><br/><b>Voulez vous configurer l'étape manuellement ?</b></html>").arg(info), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+        {
+            // solution is to configure manually the step
+            if(problem.solutionConfigureStep())
+                return;
+        }
+    }
+
+    // problem not resolved or not resolvable
+
+    // solution is just to ask the user if he wants to keep loaded steps or remove it
+    int resp = QMessageBox::critical(this, title, tr("<html>%1<br/><br/><b>Que voulez vous faire ?</b></html>").arg(info), tr("Ne pas charger le script"), tr("Charger le script jusqu'à cette erreur"));
+
+    problem.setSolutionKeepSteps(resp == 1);
 }
 
 QString GMainWindow::createFileExtensionAvailable()
@@ -957,7 +1091,7 @@ void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
                         CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                         MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                        action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
+                        action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepCustomName()));
                         action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
                         if (step->isManual())

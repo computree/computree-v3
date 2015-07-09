@@ -354,7 +354,7 @@ QList<QStandardItem *> CT_ItemDrawableHierarchyCollectionWidget::createItems(con
         {
             QStandardItem *iStep = new QStandardItem();
             iStep->setEditable(false);
-            iStep->setText(pas.step->getStepName());
+            iStep->setText(pas.step->getStepDisplayableName());
 
             QListIterator< CT_ItemDrawableCollectionHierarchyResult > itR(pas.results);
 

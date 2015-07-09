@@ -30,7 +30,8 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_fastestincrementoptimizer.h \
     dm_colorvbomanager.h \
     dm_vertexvbomanager.h \
-    dm_opengltools.h
+    dm_opengltools.h \
+    dm_stepsfrompluginsmodelconstructor.h
 
 # OTHER
 SOURCES += main.cpp \
@@ -60,7 +61,8 @@ SOURCES += main.cpp \
     dm_fastestincrementoptimizer.cpp \
     dm_colorvbomanager.cpp \
     dm_vertexvbomanager.cpp \
-    dm_opengltools.cpp
+    dm_opengltools.cpp \
+    dm_stepsfrompluginsmodelconstructor.cpp
 
 HEADERS += \
     dm_document.h \

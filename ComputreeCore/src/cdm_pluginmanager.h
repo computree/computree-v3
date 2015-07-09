@@ -90,6 +90,11 @@ public:
      */
     CT_AbstractStepPlugin* getPlugin(QString pluginName) const;
 
+    /**
+     * @brief Returns the index of the plugin in the list
+     */
+    int getPluginIndex(CT_AbstractStepPlugin *p) const;
+
 private:
 
     QMap<QString, QPluginLoader*>   _plugins;

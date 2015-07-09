@@ -17,6 +17,8 @@
 
 #include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
 
+#include "ct_model/tools/ct_modelsaverestorehelper.h"
+
 #include <QFileInfo>
 #include <QDateTime>
 #include <QInputDialog>
@@ -86,6 +88,48 @@ bool PB_LASExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list
     }
 
     return CT_AbstractExporter::setPointsToExport(myList);
+}
+
+SettingsNodeGroup* PB_LASExporter::saveExportConfiguration() const
+{
+    SettingsNodeGroup *root = CT_AbstractExporterAttributesSelection::saveExportConfiguration();
+
+    SettingsNodeGroup *myRoot = new SettingsNodeGroup("PB_LASExporter");
+
+    if(m_lasContainerModel != NULL) {
+
+        CT_ModelSaveRestoreHelper helper;
+        myRoot->addGroup(helper.saveToSearchOutModel(m_lasContainerModel, "LasContainerModel"));
+    }
+
+    root->addGroup(myRoot);
+
+    return root;
+}
+
+bool PB_LASExporter::loadExportConfiguration(const SettingsNodeGroup *root)
+{
+    clearWorker();
+
+    if(CT_AbstractExporterAttributesSelection::loadExportConfiguration(root))
+    {
+        QList<SettingsNodeGroup*> groups = root->groupsByTagName("PB_LASExporter");
+
+        if(groups.isEmpty())
+            return true;
+
+        groups = groups.first()->groupsByTagName("LasContainerModel");
+
+        if(groups.isEmpty())
+            return true;
+
+        CT_ModelSaveRestoreHelper helper;
+        m_lasContainerModel = dynamic_cast<CT_OutAbstractSingularItemModel *>(helper.searchModelFromSettings(groups.first(), myStep()));
+
+        return (m_lasContainerModel != NULL);
+    }
+
+    return false;
 }
 
 CT_ItemDrawableHierarchyCollectionWidget::CloudType PB_LASExporter::cloudType() const

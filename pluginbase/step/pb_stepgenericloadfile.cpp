@@ -34,8 +34,27 @@ QString PB_StepGenericLoadFile::getStepName() const
 {
     const QList<FileFormat> &list = m_reader->readableFormats();
 
+    QString name = m_reader->GetReaderName() + "[";
+
+    foreach (const FileFormat &f, list) {
+
+        name += " ";
+
+        foreach (const QString &s, f.suffixes())
+            name += s;
+    }
+
+    name += "]";
+
+    return name;
+}
+
+QString PB_StepGenericLoadFile::getStepDisplayableName() const
+{
+    const QList<FileFormat> &list = m_reader->readableFormats();
+
     if(list.isEmpty())
-        return CT_AbstractStepLoadFile::getStepName();
+        return CT_AbstractStepLoadFile::getStepDisplayableName();
 
     return list.first().description();
 }

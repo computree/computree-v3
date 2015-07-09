@@ -47,7 +47,11 @@ SOURCES += \
     $$PWD/StepResultTreeView/myqmenu.cpp \    
 	view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.cpp \
     view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dcamera.cpp
+    view/DocumentView/GraphicsViews/3D/g3dcamera.cpp \
+    $$PWD/Steps/dm_steptreeviewdefaultproxymodel.cpp \
+    $$PWD/Steps/gstepstreeviewdefault.cpp \
+    $$PWD/Steps/gstepviewdefault.cpp \
+    $$PWD/Steps/gstepsdockwidget.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -102,7 +106,11 @@ HEADERS += \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
     view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h \
-    view/DocumentView/GraphicsViews/3D/g3dcamera.h
+    view/DocumentView/GraphicsViews/3D/g3dcamera.h \
+    $$PWD/Steps/dm_steptreeviewdefaultproxymodel.h \
+    $$PWD/Steps/gstepstreeviewdefault.h \
+    $$PWD/Steps/gstepviewdefault.h \
+    $$PWD/Steps/gstepsdockwidget.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
@@ -124,7 +132,9 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/MainView/glogwidget.ui \
     view/MainView/gredmineparametersdialog.ui \
     view/Tools/gcomboboxwithemptytitlewidget.ui \
-    $$PWD/MainView/gineedhelpdialog.ui
+    $$PWD/MainView/gineedhelpdialog.ui \
+    $$PWD/Steps/gstepviewdefault.ui \
+    $$PWD/Steps/gstepsdockwidget.ui
 
 INCLUDEPATH += view/DocumentView/GraphicsView
 INCLUDEPATH += view/DocumentView/GraphicsView/3D

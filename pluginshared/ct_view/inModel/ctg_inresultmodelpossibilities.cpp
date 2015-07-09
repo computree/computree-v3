@@ -121,7 +121,7 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
     retList.append(rootOther);
 
     // Etape du modèle d'entrée
-    /*rootOther = new QStandardItem(resModel->step()->getStepCustomName() == resModel->step()->getStepName() ? resModel->step()->getStepExtendedName() : resModel->step()->getStepCustomName());
+    /*rootOther = new QStandardItem(resModel->step()->getStepCustomName() == resModel->step()->getStepDisplayableName() ? resModel->step()->getStepExtendedDisplayableName() : resModel->step()->getStepCustomName());
     rootOther->setDragEnabled(false);
     rootOther->setEditable(false);
     retList.append(rootOther);*/
@@ -154,7 +154,7 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
         rowList.append(item);
 
         // Etape du modèle de sortie
-        item = new QStandardItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepName() ? possibility->outModel()->step()->getStepExtendedName() : possibility->outModel()->step()->getStepCustomName());
+        item = new QStandardItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepDisplayableName() ? possibility->outModel()->step()->getStepExtendedDisplayableName() : possibility->outModel()->step()->getStepCustomName());
         item->setDragEnabled(true);
         item->setEditable(false);
         item->setData(dragText, Qt::UserRole+1);

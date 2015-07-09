@@ -276,13 +276,13 @@ QString CT_Grid3D<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid3D<DataT>::staticGetType()
 {
-    return CT_AbstractGrid3D::staticGetType() + "/CT_Grid3D<" + typeid(DataT).name() + ">";
+    return CT_AbstractGrid3D::staticGetType() + "/CT_Grid3D<" + CT_TypeInfo::name<DataT>() + ">";
 }
 
 template< typename DataT>
 QString CT_Grid3D<DataT>::name() const
 {
-    return QString("CT_Grid3D<") + typeid(DataT).name() + QString(">");
+    return QString("CT_Grid3D<") + CT_TypeInfo::name<DataT>() + QString(">");
 }
 
 template< typename DataT>

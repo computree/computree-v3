@@ -1581,7 +1581,11 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
             ePhi *= M_PI/180.0;
         }
 
-        double nbSteps = 60;
+        double nbSteps = VECTOR_CIRCLE_NORMAL_SIZE;
+
+        if(drawFastest())
+            nbSteps = VECTOR_CIRCLE_FASTEST_SIZE;
+
         double stepTheta = fabs(eTheta-iTheta) / nbSteps;
         double stepPhi = fabs(ePhi-iPhi) / nbSteps;
 
@@ -1589,13 +1593,14 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
 
         for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
         {
+            sinTheta = sin (currentTheta);
+            cosTheta = cos (currentTheta);
+
             startDrawMultiple(GL_BEGIN_LINE_STRIP);
-            for ( float currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
+            for ( double currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
             {
                     sinPhi = sin (currentPhi);
                     cosPhi = cos (currentPhi);
-                    sinTheta = sin (currentTheta);
-                    cosTheta = cos (currentTheta);
 
                     glVertex3f((radius*sinPhi*cosTheta + centerX) - m_camTranslation(0),
                                (radius*sinPhi*sinTheta + centerY) - m_camTranslation(1),
@@ -1605,11 +1610,12 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
 
         for ( double currentPhi = iPhi ; currentPhi <= ePhi ; currentPhi += stepPhi )
         {
+            sinPhi = sin (currentPhi);
+            cosPhi = cos (currentPhi);
+
             startDrawMultiple(GL_BEGIN_LINE_STRIP);
             for ( double currentTheta = iTheta ; currentTheta <= eTheta ;  currentTheta += stepTheta )
             {
-                    sinPhi = sin (currentPhi);
-                    cosPhi = cos (currentPhi);
                     sinTheta = sin (currentTheta);
                     cosTheta = cos (currentTheta);
 
@@ -1619,6 +1625,91 @@ void G3DPainter::drawPartOfSphere(const double &centerX, const double &centerY, 
 
             }
         }
+
+        /*QVector< QPair<double, double> > *sphereCosSin = &G3DPainter::VECTOR_CIRCLE_NORMAL;
+
+        if(drawFastest())
+            sphereCosSin = &G3DPainter::VECTOR_CIRCLE_FASTEST;
+
+        int size = sphereCosSin->size();
+
+        double step = M_PI_MULT_2/size;
+
+        qDebug() << "step " << step;
+
+        double iTheta = initTheta;
+        double eTheta = endTheta;
+        double iPhi = initPhi;
+        double ePhi = endPhi;
+
+        if ( !radians )
+        {
+            iTheta *= M_PI/180.0;
+            eTheta *= M_PI/180.0;
+            iPhi *= M_PI/180.0;
+            ePhi *= M_PI/180.0;
+
+        }
+
+        if(iTheta > eTheta)
+            qSwap(iTheta, eTheta);
+
+        if(iPhi > ePhi)
+            qSwap(iTheta, eTheta);
+
+        int bT = initTheta/step;
+        int eT = endTheta/step;
+        int bP = initPhi/step;
+        int eP = endPhi/step;
+
+        qDebug() << "bT " << bT;
+        qDebug() << "eT " << eT;
+        qDebug() << "bP " << bP;
+        qDebug() << "eP " << eP;
+        if(bT < 0)
+            bT = 0;
+
+        if(bP < 0)
+            bP = 0;
+
+        if(eT > size)
+            eT = size;
+
+        if(eP > size)
+            eP = size;
+
+        for ( int i = bT ; i <= eT ; ++i )
+        {
+            startDrawMultiple(GL_BEGIN_LINE_STRIP);
+            for ( int j = bP ;j <= eP ; ++j )
+            {
+                const QPair<double, double> &pairP = (*sphereCosSin)[j];
+                const QPair<double, double> &pairT = (*sphereCosSin)[i];
+
+                glVertex3f((radius*pairP.second*pairT.first + centerX) - m_camTranslation(0),
+                           (radius*pairP.second*pairT.second + centerY) - m_camTranslation(1),
+                           (radius*pairP.first + centerZ) - m_camTranslation(2));
+            }
+            stopDrawMultiple(false, false);
+        }
+
+        for ( int j = bP ;j <= eP ; ++j )
+        {
+            startDrawMultiple(GL_BEGIN_LINE_STRIP);
+            for ( int i = bT ; i <= eT ; ++i )
+            {
+                const QPair<double, double> &pairP = (*sphereCosSin)[j];
+                const QPair<double, double> &pairT = (*sphereCosSin)[i];
+
+                glVertex3f((radius*pairP.second*pairT.first + centerX) - m_camTranslation(0),
+                           (radius*pairP.second*pairT.second + centerY) - m_camTranslation(1),
+                           (radius*pairP.first + centerZ) - m_camTranslation(2));
+
+            }
+            stopDrawMultiple(false, false);
+        }*/
+
+        stopDrawMultiple(false, false);
     }
 }
 

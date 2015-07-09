@@ -1,6 +1,8 @@
 #include "gitemdrawablemodelmanager.h"
 #include "ui_gitemdrawablemodelmanager.h"
 
+#include <QDebug>
+
 #include "view/DocumentView/gdocumentmanagerview.h"
 #include "view/Tools/modelqstandarditem.h"
 
@@ -14,6 +16,9 @@
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractitemmodel.h"
 #include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+
+#include "tools/graphicsview/dm_colorlinearinterpolator.h"
 
 GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
     QWidget(parent),
@@ -185,6 +190,33 @@ QMenu* GItemDrawableModelManager::constructContextMenu()
         {
             QAction *action = menu->addAction(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()), this, SLOT(setAutomaticColorForModelSelected()));
             action->setData(i);
+        }
+    }
+
+    QList<const CT_AbstractModel*> list = getSelectedIModels();
+
+    if(!list.isEmpty())
+    {
+        const CT_OutAbstractSingularItemModel *model = dynamic_cast<const CT_OutAbstractSingularItemModel*>(list.first());
+
+        if((model != NULL) && !model->itemAttributes().isEmpty())
+        {
+            menu = contextMenu->addMenu(tr("Colorier par..."));
+
+            if(m_docManagerView != NULL)
+            {
+                int s = m_docManagerView->nbDocumentView();
+
+                for(int i=0; i<s; ++i)
+                {
+                    QMenu *subMenu = menu->addMenu(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()));
+
+                    foreach (CT_OutAbstractItemAttributeModel *attModel, model->itemAttributes()) {
+                        QAction *action = subMenu->addAction(attModel->displayableName(), this, SLOT(setColorByAttributeForModelSelected()));
+                        action->setData(qVariantFromValue(GActionSetColorByInfo(attModel, i)));
+                    }
+                }
+            }
         }
     }
 
@@ -501,6 +533,70 @@ void GItemDrawableModelManager::setAutomaticColorForModelSelected()
 
                 while(it.hasNext())
                     doc->setColor((CT_AbstractItemDrawable*)it.next(), _colorOptions.getNextColor());
+
+                doc->redrawGraphics();
+            }
+        }
+    }
+}
+
+void GItemDrawableModelManager::setColorByAttributeForModelSelected()
+{
+    GActionSetColorByInfo actInfo = ((QAction*)sender())->data().value<GActionSetColorByInfo>();
+
+    CT_AbstractResult *res = result();
+
+    if(res != NULL)
+    {
+        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
+
+        if(!sModel.isEmpty())
+        {
+            const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
+
+            if(iModel != NULL)
+            {
+                DM_ColorLinearInterpolator interpolator;
+                interpolator.setKeyValueAt(0, Qt::black);
+                interpolator.setKeyValueAt(1, Qt::white);
+                interpolator.finalize();
+
+                DM_DocumentView *doc = m_docManagerView->getDocumentView(actInfo.m_docIndex);
+                CT_ResultIterator it((CT_ResultGroup*)res, iModel);
+
+                double minValue = std::numeric_limits<double>::max();
+                double maxValue = -minValue;
+                bool ok;
+
+                while(it.hasNext()) {
+
+                    CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
+                    CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
+                    double value = att->toDouble(item, &ok);
+
+                    minValue = qMin(minValue, value);
+                    maxValue = qMax(maxValue, value);
+                }
+
+                double range = maxValue-minValue;
+
+                if(range == 0)
+                    range = 1;
+
+                CT_ResultIterator it2((CT_ResultGroup*)res, iModel);
+
+                while(it2.hasNext()) {
+
+                    CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it2.next();
+                    CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
+                    double vv = att->toDouble(item, &ok);
+
+                    // convert the value to be between 0 and 1
+                    double key = (vv-minValue)/range;
+
+                    // get the intermediate color and set it to document
+                    doc->setColor(item, interpolator.intermediateColor(key));
+                }
 
                 doc->redrawGraphics();
             }

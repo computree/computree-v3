@@ -5,6 +5,8 @@
 #include "ct_itemdrawable/abstract/ct_abstractpointattributesscalar.h"
 #include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
 
+#include "ct_model/tools/ct_modelsaverestorehelper.h"
+
 CT_AbstractExporterPointAttributesSelection::CT_AbstractExporterPointAttributesSelection() : CT_AbstractExporterAttributesSelection()
 {
 }
@@ -140,6 +142,86 @@ bool CT_AbstractExporterPointAttributesSelection::useSelection(const CT_ItemDraw
     }
 
     return true;
+}
+
+SettingsNodeGroup *CT_AbstractExporterPointAttributesSelection::saveExportConfiguration() const
+{
+    CT_ModelSaveRestoreHelper helper;
+
+    SettingsNodeGroup *root = CT_AbstractExporterAttributesSelection::saveExportConfiguration();
+
+    SettingsNodeGroup *myRoot = new SettingsNodeGroup("CT_AbstractExporterPointAttributesSelection");
+
+    if(!m_attributesColorModel.isEmpty())
+    {
+        QListIterator< CT_OutAbstractSingularItemModel* > it(m_attributesColorModel);
+
+        while(it.hasNext())
+        {
+            CT_OutAbstractSingularItemModel *model = it.next();
+
+            SettingsNodeGroup *node = helper.saveToSearchOutModel(model, "ColorModel");
+
+            myRoot->addGroup(node);
+        }
+    }
+
+    if(!m_attributesNormalModel.isEmpty())
+    {
+        QListIterator< CT_OutAbstractSingularItemModel* > it(m_attributesNormalModel);
+
+        while(it.hasNext())
+        {
+            CT_OutAbstractSingularItemModel *model = it.next();
+
+            SettingsNodeGroup *node = helper.saveToSearchOutModel(model, "NormalModel");
+
+            myRoot->addGroup(node);
+        }
+    }
+
+    root->addGroup(myRoot);
+
+    return root;
+}
+
+bool CT_AbstractExporterPointAttributesSelection::loadExportConfiguration(const SettingsNodeGroup *root)
+{
+    clearWorker();
+
+    if(CT_AbstractExporterAttributesSelection::loadExportConfiguration(root))
+    {
+        CT_ModelSaveRestoreHelper helper;
+
+        QList<SettingsNodeGroup*> groups = root->groupsByTagName("CT_AbstractExporterPointAttributesSelection");
+
+        if(groups.isEmpty())
+            return true;
+
+        // load colors model
+        QList<SettingsNodeGroup*> colorsGroup = groups.first()->groupsByTagName("ColorModel");
+
+        foreach (SettingsNodeGroup *node, colorsGroup) {
+            CT_OutAbstractSingularItemModel *model = dynamic_cast<CT_OutAbstractSingularItemModel *>(helper.searchModelFromSettings(node, myStep()));
+
+            if(model != NULL)
+                m_attributesColorModel.append(model);
+        }
+
+        // load normals model
+        QList<SettingsNodeGroup*> normalsGroup = groups.first()->groupsByTagName("NormalModel");
+
+        foreach (SettingsNodeGroup *node, normalsGroup) {
+            CT_OutAbstractSingularItemModel *model = dynamic_cast<CT_OutAbstractSingularItemModel *>(helper.searchModelFromSettings(node, myStep()));
+
+            if(model != NULL)
+                m_attributesNormalModel.append(model);
+        }
+
+        return (colorsGroup.size() == m_attributesColorModel.size()) && (normalsGroup.size() == m_attributesNormalModel.size());
+    }
+
+    return false;
 }
 
 CT_AbstractColorCloud* CT_AbstractExporterPointAttributesSelection::createColorCloudBeforeExportToFile()

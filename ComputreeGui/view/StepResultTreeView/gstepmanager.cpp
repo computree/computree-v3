@@ -451,15 +451,15 @@ QString GStepManager::staticGetStepName(CT_VirtualAbstractStep &step)
         QString filePath = stepLF->getFilePath();
         QFileInfo info(filePath);
 
-        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(((step.getStepCustomName() == step.getStepName()) && !info.fileName().isEmpty()) ? info.fileName() : step.getStepCustomName());
+        return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(((step.getStepCustomName() == step.getStepExtendedDisplayableName()) && !info.fileName().isEmpty()) ? info.fileName() : step.getStepCustomName());
     }
 
-    return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepCustomName() == step.getStepName() ? step.getStepExtendedName() : step.getStepCustomName());
+    return QString("%1%2").arg(step.isSettingsModified() ? "*" : "").arg(step.getStepCustomName() == step.getStepExtendedDisplayableName() ? step.getStepExtendedDisplayableName() : step.getStepCustomName());
 }
 
 void GStepManager::showMessageStepNotDebuggable()
 {
-    QMessageBox::warning(this, tr("Debug"), tr("L'tape ne semble pas tre dbogable."));
+    QMessageBox::warning(this, tr("Debug"), tr("L'étape ne semble pas être débogable."));
 }
 
 bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep *step, bool debugMode)

@@ -36,7 +36,7 @@ void CT_FileLogListener::addMessage(const int &severity, const int &type, const 
 
                 QTextStream stream(&m_file);
 
-                stream << s;
+                stream << s << "\r\n";
 
                 m_file.close();
             }

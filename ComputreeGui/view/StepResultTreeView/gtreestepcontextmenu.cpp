@@ -87,7 +87,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailab
                 CT_VirtualAbstractStep *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
+                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepDisplayableName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
 
                 if (step->isManual())
@@ -169,7 +169,7 @@ void GTreeStepContextMenu::addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparato
                 CT_AbstractStepCanBeAddedFirst *step = itStep.next();
 
                 MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepName()));
+                action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepDisplayableName()));
                 action->setIcon(QIcon(":/Icones/Icones/add.png"));
                 action->setEnabled(true);
 

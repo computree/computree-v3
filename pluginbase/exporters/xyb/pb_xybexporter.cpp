@@ -18,6 +18,7 @@
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_point.h"
 #include "ct_itemdrawable/tools/ct_itemsearchhelper.h"
+#include "ct_model/tools/ct_modelsaverestorehelper.h"
 
 PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 {
@@ -90,107 +91,44 @@ bool PB_XYBExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list
 
 SettingsNodeGroup* PB_XYBExporter::saveExportConfiguration() const
 {
-    SettingsNodeGroup *root = CT_AbstractExporter::saveExportConfiguration();
+    SettingsNodeGroup *root = CT_AbstractExporterPointAttributesSelection::saveExportConfiguration();
 
-    /*SettingsNodeGroup *myRoot = new SettingsNodeGroup("PB_XYBExporter");
+    SettingsNodeGroup *myRoot = new SettingsNodeGroup("PB_XYBExporter");
 
-    if(!m_attributes.isEmpty())
-    {
-        QListIterator< PBACS > it(m_attributes);
+    if(m_scannerModel != NULL) {
 
-        while(it.hasNext())
-        {
-            PBACS pas = it.next();
-            QListIterator<PBACR> itR(pas.results);
-
-            while(itR.hasNext())
-            {
-                PBACR par = itR.next();
-                QListIterator<IPointAttributes*> itA(par.collection);
-
-                while(itA.hasNext())
-                {
-                    IPointAttributes *pa = itA.next();
-
-                    SettingsNodeGroup *paG = new SettingsNodeGroup("PointAttributes");
-
-                    SettingsNodeValue *paV = new SettingsNodeValue("step", pas.step->getStepName());
-                    paG->addValue(paV);
-
-                    paV = new SettingsNodeValue("result", par.result->getModel()->name());
-                    paG->addValue(paV);
-
-                    paV = new SettingsNodeValue("attributes", pa->getModel()->name());
-                    paG->addValue(paV);
-
-                    paV = new SettingsNodeValue("checked", (m_worker.m_attributes.contains(pa) ? "true" : "false"));
-                    paG->addValue(paV);
-
-                    myRoot->addGroup(paG);
-                }
-            }
-        }
+        CT_ModelSaveRestoreHelper helper;
+        myRoot->addGroup(helper.saveToSearchOutModel(m_scannerModel, "ScannerModel"));
     }
 
-    root->addGroup(myRoot);*/
+    root->addGroup(myRoot);
 
     return root;
 }
 
 bool PB_XYBExporter::loadExportConfiguration(const SettingsNodeGroup *root)
 {
-    /*m_worker.m_attributes.clear();
+    clearWorker();
 
-    QList<SettingsNodeGroup*> groups = root->groupsByTagName("PB_XYBExporter");
-
-    if(groups.isEmpty())
-        return false;
-
-    groups = groups.first()->groupsByTagName("PointAttributes");
-
-    QListIterator< SettingsNodeGroup* > itGroups(groups);
-    QListIterator< PBACS > it(m_attributes);
-
-    while(it.hasNext())
+    if(CT_AbstractExporterPointAttributesSelection::loadExportConfiguration(root))
     {
-        PBACS pas = it.next();
-        QListIterator<PBACR> itR(pas.results);
+        QList<SettingsNodeGroup*> groups = root->groupsByTagName("PB_XYBExporter");
 
-        while(itR.hasNext())
-        {
-            PBACR par = itR.next();
-            QListIterator<IPointAttributes*> itA(par.collection);
+        if(groups.isEmpty())
+            return true;
 
-            while(itA.hasNext())
-            {
-                if(!itGroups.hasNext())
-                    return false;
+        groups = groups.first()->groupsByTagName("ScannerModel");
 
-                SettingsNodeGroup *group = itGroups.next();
-                IPointAttributes *pa = itA.next();
+        if(groups.isEmpty())
+            return true;
 
-                QList<SettingsNodeValue*> values = group->valuesByTagName("result");
+        CT_ModelSaveRestoreHelper helper;
+        m_scannerModel = dynamic_cast<CT_OutAbstractSingularItemModel *>(helper.searchModelFromSettings(groups.first(), myStep()));
 
-                if(values.isEmpty() || (values.first()->value().toString() != par.result->getModel()->name()))
-                    return false;
+        return (m_scannerModel != NULL);
+    }
 
-                values = group->valuesByTagName("attributes");
-
-                if(values.isEmpty() || (values.first()->value().toString() != pa->getModel()->name()))
-                    return false;
-
-                values = group->valuesByTagName("checked");
-
-                if(values.isEmpty())
-                    return false;
-
-                if(values.first()->value().toString() == "true")
-                    m_worker.m_attributes.append(pa);
-            }
-        }
-    }*/
-
-    return CT_AbstractExporter::loadExportConfiguration(root);
+    return false;
 }
 
 QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > PB_XYBExporter::getBuilders() const
