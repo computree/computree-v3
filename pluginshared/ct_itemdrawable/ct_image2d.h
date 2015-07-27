@@ -31,6 +31,7 @@
 #ifdef USE_OPENCV
 #include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
+#include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h"
 #include "ct_math/ct_math.h"
 
 #include "opencv2/core/mat.hpp"
@@ -72,9 +73,83 @@ public:
 
 
     /*!
+     * \brief Contructor with integer column and row coordinates
+     *
+     * \param model Item model for creation
+     * \param result Result containing the item
+     * \param xmin Minimum X coordinate (bottom left corner)
+     * \param ymin Minimum Y coordinate (bottom left corner)
+     * \param dimx Number of colums
+     * \param dimy Number of rows
+     * \param resolution Size of a cell
+     * \param zlevel Default Z value for raster plane
+     * \param na Value used to code NA
+     * \param initValue Initialisation value for raster cells
+     */
+    CT_Image2D(const CT_OutAbstractSingularItemModel *model,
+                const CT_AbstractResult *result,
+                double xmin,
+                double ymin,
+                size_t dimx,
+                size_t dimy,
+                double resolution,
+                double zlevel,
+                DataT na,
+                DataT initValue);
+
+    CT_Image2D(const QString &modelName,
+                const CT_AbstractResult *result,
+                double xmin,
+                double ymin,
+                size_t dimx,
+                size_t dimy,
+                double resolution,
+                double zlevel,
+                DataT na,
+                DataT initValue);
+
+    /*!
      * \brief Destructor
      */
     virtual ~CT_Image2D();
+
+
+    /*!
+      * \brief CT_Grid2DXY factory with min and max (X,Y) coordinates
+      *
+      * \param model Item model for creation
+      * \param result Result containing the item
+      * \param xmin Minimum X coordinate (bottom left corner)
+      * \param ymin Minimum Y coordinate (bottom left corner)
+      * \param xmax Maximum X coordinate (upper right corner)
+      * \param ymax Maximum Y coordinate (upper right corner)
+      * \param resolution Size of a cell
+      * \param zlevel Default Z value for raster plane
+      * \param na Value used to code NA
+      * \param initValue Initialisation value for raster cells
+      * \param coodConstructor Not used, only to ensure constructor different signatures
+      */
+    static CT_Image2D<DataT>* createImage2DFromXYCoords(const CT_OutAbstractSingularItemModel *model,
+                                                          const CT_AbstractResult *result,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double resolution,
+                                                          double zlevel,
+                                                          DataT na,
+                                                          DataT initValue);
+
+    static CT_Image2D<DataT>* createImage2DFromXYCoords(const QString &modelName,
+                                                          const CT_AbstractResult *result,
+                                                          double xmin,
+                                                          double ymin,
+                                                          double xmax,
+                                                          double ymax,
+                                                          double resolution,
+                                                          double zlevel,
+                                                          DataT na,
+                                                          DataT initValue);
 
 
     /*!
@@ -89,7 +164,18 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    virtual QString name() const = 0;
+    virtual QString name() const;
+
+    /*!
+     * \brief Copy method
+     *
+     * \param model Item model for the copy
+     * \param result Result containing the copy
+     * \param copyModeList Copy mode
+     * \return Item copy
+     */
+    virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
+    virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     const CT_ITemplatedData2DArray<DataT>* iTemplatedData2DArray() const { return this; }
 
@@ -229,9 +315,6 @@ public:
 
     inline DataT* getPointerToData() {return &_data[0];}
 
-protected:
-
-
     /**
       * \brief Gives the value at (x,y) coordinate
       * \param col X coordinate
@@ -275,6 +358,12 @@ protected:
       * \return True if the value has actually been updated
       */
     bool addValueAtCoords(const double x, const double y, const DataT value);
+
+
+    inline cv::Mat_<DataT>* getMat() {return &_data;}
+
+    const static CT_StandardImage2DDrawManager<DataT> IMAGE2D_DRAW_MANAGER;
+
 
     DataT               _NAdata;    /*!< Valeur codant NA */
 

@@ -394,7 +394,8 @@ SOURCES += \
     ct_model/tools/ct_modelsaverestorehelper.cpp \
     ct_itemdrawable/ct_sphere.cpp \
     ct_shapedata/ct_spheredata.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp
+    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -890,7 +891,9 @@ HEADERS += interfaces.h \
     ct_tools/ct_typeinfo.h \
     ct_itemdrawable/ct_sphere.h \
     ct_shapedata/ct_spheredata.h \
-    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.h
+    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

@@ -134,11 +134,11 @@ public:
     inline bool lin(const double linCoord, size_t &row) const
     {
         if (linCoord < minLinCoord() || linCoord > maxLinCoord()) {return false;}
-        if (linCoord == maxLinCoord())
+        if (linCoord == minLinCoord())
         {
             row = _dimLin - 1;
         }
-        row = (size_t) floor((linCoord - minLinCoord()) / _res);
+        row = (size_t) floor((maxLinCoord() - linCoord) / _res);
         return true;
     }
 
@@ -271,7 +271,7 @@ public:
      * \param lin Row, first one is 0
      * \return Row coordinate
      */
-    inline double getCellCenterLinCoord(const size_t lin) const {return minLinCoord() + lin*_res + _res/2;}
+    inline double getCellCenterLinCoord(const size_t lin) const {return maxLinCoord() - lin*_res - _res/2;}
 
     /*!
      * \brief getCellCoordinates Give min and max coordinates of a cell
@@ -285,7 +285,7 @@ public:
         size_t col, lin;
         if (!indexToGrid(index, col, lin)) {return false;}
         bottom(0) = minColCoord() + col*_res;
-        bottom(1) = minLinCoord() + lin*_res;
+        bottom(1) = maxLinCoord() - (lin + 1)*_res;
 
         top(0) = bottom(0) + _res;
         top(1) = bottom(1) + _res;
@@ -298,7 +298,7 @@ public:
         if (!indexToGrid(index, col, lin)) {return false;}
 
         center(0) = minColCoord() + col*_res + _res/2.0;
-        center(1) = minLinCoord() + lin*_res + _res/2.0;
+        center(1) = maxLinCoord() - lin*_res - _res/2.0;
         center(2) = _level;
 
         return true;
@@ -316,7 +316,7 @@ public:
     {
         if ((col >= _dimCol) || (lin >= _dimLin)) {return false;}
         bottom(0) = minColCoord() + col*_res;
-        bottom(1) = minLinCoord() + lin*_res;
+        bottom(1) = maxLinCoord() - (lin + 1)*_res;
 
         return true;
     }
@@ -332,7 +332,7 @@ public:
     {
 
         return getCellBottomLeftCorner((size_t) floor((colCoord - minColCoord()) / _res),
-                                       (size_t) floor((linCoord - minLinCoord()) / _res),
+                                       (size_t) floor((maxLinCoord() - linCoord) / _res),
                                        bottom);
     }
 
