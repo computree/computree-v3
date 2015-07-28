@@ -360,7 +360,7 @@ public:
     bool addValueAtCoords(const double x, const double y, const DataT value);
 
 
-    inline cv::Mat_<DataT>* getMat() {return &_data;}
+    inline cv::Mat_<DataT>& getMat() {return _data;}
 
     const static CT_StandardImage2DDrawManager<DataT> IMAGE2D_DRAW_MANAGER;
 
