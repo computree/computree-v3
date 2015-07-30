@@ -188,7 +188,12 @@ echo    DEFINES += USE_GDAL >> %GDALDESTFILE%
 
 echo; >> %GDALDESTFILE%
 echo    INCLUDEPATH += $$GDAL_INC_PATH >> %GDALDESTFILE%
-echo    LIBS += $$GDAL_LIBS_PATH >> %GDALDESTFILE%
+echo    LIBS += -L$$GDAL_LIBS_PATH >> %GDALDESTFILE%
+
+echo; >> %GDALDESTFILE%
+echo for(a, GDAL_LIB_ADD) { >> %GDALDESTFILE%
+echo 		LIBS += -l$${a} >> %GDALDESTFILE%
+echo } >> %OSGDESTFILE%
 
 echo; >> %GDALDESTFILE%
 echo 	message(You want to use GDAL : ok^) >> %GDALDESTFILE%
@@ -242,7 +247,16 @@ echo    DEFINES += USE_OPENCV >> %OPENCVDESTFILE%
 
 echo; >> %OPENCVDESTFILE%
 echo    INCLUDEPATH += $$OPENCV_INC_PATH >> %OPENCVDESTFILE%
-echo    LIBS += $$OPENCV_LIBS_PATH >> %OPENCVDESTFILE%
+echo    LIBS += -L$$OPENCV_LIBS_PATH >> %OPENCVDESTFILE%
+
+echo; >> %OPENCVDESTFILE%
+echo 	for(a, OPENCV_LIB_ADD) { >> %OPENCVDESTFILE%
+echo 		CONFIG(debug, debug^|release^) { >> %OPENCVDESTFILE%
+echo 			LIBS += -l$${a}_debug >> %OPENCVDESTFILE%
+echo 		} else { >> %OPENCVDESTFILE%
+echo 			LIBS += -l$${a}_release >> %OPENCVDESTFILE%
+echo 		} >> %OPENCVDESTFILE%
+echo 	} >> %OPENCVDESTFILE%
 	
 echo; >> %OPENCVDESTFILE%
 echo 	message(You want to use OPENCV : ok^) >> %OPENCVDESTFILE%
