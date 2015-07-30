@@ -179,43 +179,57 @@ public:
     virtual ~PainterInterface() {}
 
     /**
-     * @brief Returns true if we draw fastest
+     * @brief Save the current color, pen, etc...
      */
-    virtual bool drawFastest() const = 0;
-
     virtual void save() = 0;
+
+    /**
+     * @brief Restore the last color, pen, etc... that was saved
+     */
     virtual void restore() = 0;
 
-    virtual void startRestoreIdentityMatrix(GLdouble *matrix = NULL) = 0;
-    virtual void stopRestoreIdentityMatrix() = 0;
+    /**
+     * @brief Set to false if you want to disable all next call to "setPointSize" method will be ignored.
+     * @warning Don't forget to call enableSetPointSize(true) at the end of your method where you have called enableSetPointSize(false) !
+     */
+    virtual void enableSetPointSize(bool enable) = 0;
 
-    virtual void enableMultMatrix(bool e) = 0;
-
-    virtual void pushMatrix() = 0;
-    virtual void multMatrix(const Eigen::Matrix4d &matrix) = 0;
-    virtual void popMatrix() = 0;
-
+    /**
+     * @brief Change the point size for futur draw
+     */
     virtual void setPointSize(float size) = 0;
+
+    /**
+     * @brief Restore the default point size
+     */
     virtual void restoreDefaultPointSize() = 0;
 
+    /**
+     * @brief Modify the pen for futur draw
+     */
     virtual void setPen(const QPen &pen) = 0;
+
+    /**
+     * @brief Restore the default pen
+     */
     virtual void restoreDefaultPen() = 0;
 
+    /**
+     * @brief Set to false if you want to disable all next call to "setColor" method will be ignored.
+     * @warning Don't forget to call enableSetColor(true) at the end of your method where you have called enableSetColor(false) !
+     */
+    virtual void enableSetColor(bool enable) = 0;
+
+    /**
+     * @brief Change the color for futur draw
+     */
     virtual void setColor(int r, int g, int b) = 0;
     virtual void setColor(QColor color) = 0;
-    virtual void setForcedColor(int r, int g, int b) = 0;
-    virtual void setForcedColor(QColor color) = 0;
+
+    /**
+     * @brief Returns the current color used
+     */
     virtual QColor getColor() = 0;
-
-    virtual void enableSetColor(bool enable) = 0;
-    virtual void enableSetForcedColor(bool enable) = 0;
-
-    virtual void enableSetPointSize(bool enable) = 0;
-    virtual void enableSetForcedPointSize(bool enable) = 0;
-
-    virtual void translate(const double &x, const double &y, const double &z) = 0;
-    virtual void rotate(const double &alpha, const double &x, const double &y, const double &z) = 0;
-    virtual void scale(const double &x, const double &y, const double &z) = 0;
 
     /**
      * @brief Draw a point that was not in the global points cloud (otherwise use drawPoint(globalIndex) method)
@@ -547,15 +561,6 @@ public:
 
     // returns quaternion
     virtual void getOrientation(double &q0, double &q1, double &q2, double &q3) const = 0;
-    virtual bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const = 0;
-
-    // Returns the screen projected coordinates of a point src defined in the world coordinate system.
-    virtual Eigen::Vector3d projectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
-    // same method as previous but use matrix of opengl instead of the matrix of camera.
-    virtual Eigen::Vector3d openGLProjectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
-
-    // Returns the world unprojected coordinates of a point src defined in the screen coordinate system.
-    virtual Eigen::Vector3d unprojectedCoordinatesOf(const Eigen::Vector3d &src) const = 0;
 
     /**
      * @brief Returns the normalized up vector of the Camera, defined in the world coordinate system.
@@ -673,18 +678,6 @@ public:
         REMOVE_ONE_EDGE
     };
 
-    // draw mode
-    enum DrawMode{
-        NORMAL,                 // draw all itemdrawable normally
-        FAST                    // draw all itemdrawable faster (decrease per example the number of points or the definition of circles/ellipses/cylinder)
-    };
-
-    // redraw type
-    enum RedrawType {
-        REDRAW_ALL,             // redraw all
-        REDRAW_OVERLAY_ONLY     // redraw overlay only (use this enum if you want to accelerate the drawing if you don't change anything in 3D)
-    };
-
     // colors of elements
     enum ColorCloudType {
         CPointCloud,            // colors of points
@@ -736,37 +729,6 @@ public:
      * @brief Return the type of the view
      */
     virtual GraphicsViewType type() const = 0;
-
-    /**
-     * @brief Set the draw mode. If you set the mode to FAST it will reset to NORMAL after "drawModeChangeTime()" ms.
-     */
-    virtual void setDrawMode(DrawMode dMode) = 0;
-
-    /**
-     * @brief Get the draw mode
-     */
-    virtual GraphicsViewInterface::DrawMode drawMode() const = 0;
-
-    /**
-     * @brief Set the time (in ms) the mode takes to change from FAST to NORMAL. If you set 0 the mode actually
-     *        set don't change.
-     */
-    virtual void setDrawModeChangeTime(const int &msec) = 0;
-
-    /**
-     * @brief Get how many time the mode takes to change from FAST to NORMAL.
-     */
-    virtual int drawModeChangeTime() const = 0;
-
-    /**
-     * @brief Set the select buffer size (you must multiply the number of elements to select by 4 to know the buffer size to set)
-     */
-    virtual void setSelectBufferSize(size_t size) = 0;
-
-    /**
-     * @brief Return the select buffer size
-     */
-    virtual size_t selectBufferSize() const = 0;
 
     /**
      * @brief Set the selection width. Default is 3;
@@ -927,39 +889,6 @@ public:
      * @brief Returns how many items is drawn
      */
     virtual size_t countItems() = 0;
-
-    /**
-     * @brief Returns the 6 plane equations of the Camera frustum.
-     *        The six 4-component vectors of coef respectively correspond
-     *        to the left, right, near, far, top and bottom Camera frustum planes.
-     *        Each vector holds a plane equation of the form:
-     *
-     *          a*x + b*y + c*z + d = 0
-     *
-     *        where a, b, c and d are the 4 components of each vector, in that order.
-     */
-    virtual bool getCameraFrustumPlanesCoefficients(GLdouble coef[6][4]) const = 0;
-
-    /**
-     * @brief Returns the distance of the point passed in parameter to the frustrum plane
-     * @param index : index of the frustrum plane (between 0 and 6 excluded)
-     * @param x/y/z : the point
-     */
-    virtual float distanceToFrustumPlane(int index, const double &x, const double &y, const double &z) const = 0;
-
-    /**
-     * @brief Returns true if the aaBox is visible by the camera
-     * @param minCorner / maxCorner : corners of the box
-     * @param entirely : set to true if the box is entirely visible
-     */
-    virtual bool aaBoxIsVisible(const Eigen::Vector3d& minCorner, const Eigen::Vector3d& maxCorner, bool *entirely = NULL) const = 0;
-
-    /**
-     * @brief Returns true if the sphere is visible by the camera
-     * @param center : center of the sphere
-     * @param radius : radius of the sphere
-     */
-    virtual bool sphereIsVisible(const Eigen::Vector3d& center, double radius) const = 0;
 
     /**
      * @brief Returns the coordinates of the 3D point located at pixel (x,y) on screen.
@@ -1258,9 +1187,7 @@ public:
     /**
       * \brief Refresh all graphics in the document (if he contains graphicsView)
       */
-    virtual void redrawGraphics(GraphicsViewInterface::RedrawType redrawType = GraphicsViewInterface::REDRAW_ALL) = 0;
-    virtual void fitToContent() = 0;
-    virtual void fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) = 0;
+    virtual void redrawGraphics() = 0;
 };
 
 /**

@@ -27,7 +27,7 @@ QString CT_AbstractMeshModel::staticGetType()
 }
 
 #ifdef USE_PCL
-boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_AbstractMeshModel::getPCLCloud() const
+boost::shared_ptr< CT_PCLCloud > CT_AbstractMeshModel::getPCLCloud() const
 {
     return CT_PCLTools::staticConvertToPCLCloud(this);
 }

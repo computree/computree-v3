@@ -4,11 +4,11 @@
 #include "ct_cloudindex/tools/ct_cloudindexregistrationmanagert.h"
 
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
-#include "ct_colorcloud/ct_colorcloudstdvector.h"
+#include "ct_colorcloud/ct_colorcloudosg.h"
 #include "ct_colorcloud/ct_indexcloudcolorstdmapt.h"
 
 #include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
-#include "ct_normalcloud/ct_normalcloudstdvector.h"
+#include "ct_normalcloud/ct_normalcloudosg.h"
 
 #include "ct_cloudindex/ct_cloudindexstdlistt.h"
 
@@ -33,21 +33,14 @@ CT_AbstractUndefinedSizePointCloud* CT_Repository::createNewUndefinedSizePointCl
     return m_gpcManager->createNewUndefinedSizePointCloud();
 }
 
-CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith, bool withAlphaInformation)
+CT_CCR CT_Repository::createNewColorCloud(SyncCloudWith syncWith)
 {
-    if(syncWith == SyncWithPointCloud)
-        return m_syncPointCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
-    else if(syncWith == SyncWithFaceCloud)
-        return m_syncFaceCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
-    else if(syncWith == SyncWithEdgeCloud)
-        return m_syncEdgeCloudManager->createNewCloud<CT_StandardColorCloudRegistered, CT_ColorCloudStdVector, bool>(&withAlphaInformation);
-
-    return CT_CCR(NULL);
+    return createNewCloudT<CT_StandardColorCloudRegistered, CT_ColorCloudOsg>(syncWith);
 }
 
 CT_NCR CT_Repository::createNewNormalCloud(SyncCloudWith syncWith)
 {
-    return createNewCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudStdVector>(syncWith);
+    return createNewCloudT<CT_StandardNormalCloudRegistered, CT_NormalCloudOsg>(syncWith);
 }
 
 CT_MCIR CT_Repository::createNewIndexCloud(CT_Repository::SyncCloudWith syncWith)
@@ -95,6 +88,11 @@ CT_MFCIR CT_Repository::registerFaceCloudIndex(CT_AbstractModifiableFaceCloudInd
 CT_MECIR CT_Repository::registerEdgeCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index)
 {
     return registerCloudIndex<CT_Edge>(index);
+}
+
+const CT_InternalPointCloud* CT_Repository::internalConstPointCloud() const
+{
+    return m_gpcManager->globalCloud();
 }
 
 CT_AbstractPointCloud* CT_Repository::globalPointCloud() const

@@ -32,7 +32,7 @@ void CT_StandardUndefinedSizePointCloud::addPoint(const CT_Point &p)
     GLuint csIndex;
 
     // compute the coordinate system to use
-    CT_AbstractCoordinateSystem *coordinateSystem = m_csm->computeCoordinateSystemForPoint(p, csIndex);
+    CT_AbstractCoordinateSystem *coordinateSystem = m_csm->computeCoordinateSystemForPointAndAddItToCollection(p, csIndex);
 
     // backup for this point it's coordinate system index
     m_csIndexes.push_back(csIndex);
@@ -53,10 +53,10 @@ void CT_StandardUndefinedSizePointCloud::addInternalPoint(const CT_PointData &po
     m_csIndexes.push_back(csIndex);
 }
 
-CT_StandardUndefinedSizePointCloud::CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_PointCloudStdVector *cloud) : CT_AbstractUndefinedSizePointCloud()
+CT_StandardUndefinedSizePointCloud::CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_InternalPointCloud *cloud) : CT_AbstractUndefinedSizePointCloud()
 {
     m_bIndex = beginIndex;
-    m_pc = (CT_PointCloudStdVector*)cloud;
+    m_pc = (CT_InternalPointCloud*)cloud;
     m_csm = PS_COORDINATES_SYS_MANAGER;
 }
 

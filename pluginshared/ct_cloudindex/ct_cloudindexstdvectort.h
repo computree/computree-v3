@@ -1,12 +1,13 @@
 #ifndef CT_CLOUDINDEXSTDVECTORT_H
 #define CT_CLOUDINDEXSTDVECTORT_H
 
-#include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindext.h"
+#include "ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.h"
 
 #ifndef USE_PCL
 #include <QSharedPointer>
 #include <vector>
 #endif
+
 
 /**
  * A cloud of index (size_t) for T (point, face, etc...) that can be modifiabled and use a std::vector.
@@ -21,6 +22,7 @@ public:
     typedef typename CT_AbstractModifiableCloudIndexT<T>::ShiftIfFunction    ShiftIfFunction;
 
     CT_CloudIndexStdVectorT(const size_t &size = 0);
+    ~CT_CloudIndexStdVectorT();
 
     /**
      * @brief Define the sort type for the cloud.
@@ -77,13 +79,14 @@ public:
 
 private:
 #ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> > _vector;
+    boost::shared_ptr< std::vector<int> >               _vector;
+    CT_CloudIndexStdVectorTMethodImpl<int>              *m_impl;
 #else
-    QSharedPointer< std::vector<size_t> >    _vector;
+    QSharedPointer< std::vector<ct_index_type> >        _vector;
+    CT_CloudIndexStdVectorTMethodImpl<ct_index_type>    *m_impl;
 #endif
 
-    template<typename S>
-    typename std::vector<S>::iterator vectorFindIf(FindIfFunction findIf, void *context) const;
+    typename std::vector<ct_index_type>::iterator vectorFindIf(FindIfFunction findIf, void *context) const;
 
 protected:
 

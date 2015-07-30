@@ -3,10 +3,6 @@
 
 #include "ct_abstractcloud.h"
 
-#ifdef USE_PCL
-#include "pcl/point_cloud.h"
-#endif
-
 /**
  * @brief A cloud of T
  */
@@ -30,10 +26,6 @@ public:
 
     virtual T& operator[](const size_t &index) = 0;
     virtual const T& operator[](const size_t &index) const = 0;
-
-#ifdef USE_PCL
-    virtual boost::shared_ptr< pcl::PointCloud<T> > getPCLCloud() const = 0;
-#endif
 };
 
 #endif // CT_ABSTRACTCLOUDT_H

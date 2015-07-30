@@ -65,6 +65,10 @@ private:
 
     PB_ActionSlicePointCloud_dataContainer* _dataContainer;
 
+private slots:
+    void redrawOverlay();
+    void redrawOverlayAnd3D();
+
 };
 
 

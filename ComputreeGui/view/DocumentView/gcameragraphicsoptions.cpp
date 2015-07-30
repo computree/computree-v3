@@ -56,6 +56,7 @@ GCameraGraphicsOptions::GCameraGraphicsOptions(QWidget *parent) :
     ui->comboBoxPointOfView->addItem(QIcon(":/Icones/Icones/right.png"),"");
     ui->comboBoxPointOfView->addItem(QIcon(":/Icones/Icones/front.png"),"");
     ui->comboBoxPointOfView->addItem(QIcon(":/Icones/Icones/back.png"),"");
+    ui->comboBoxPointOfView->setCurrentIndex(4); // front
 
     setPushButtonSyncToolTip();
 }
@@ -136,10 +137,10 @@ void GCameraGraphicsOptions::on_comboBoxPointOfView_activated(int index)
     if(_camera != NULL)
     {
         if      (index == 0) {_camera->alignCameraToZAxis();}
-        else if (index == 1) {_camera->alignCameraToInvXAxis();}
+        else if (index == 1) {_camera->alignCameraToYAxis();}
         else if (index == 2) {_camera->alignCameraToInvZAxis();}
-        else if (index == 3) {_camera->alignCameraToXAxis();}
-        else if (index == 4) {_camera->alignCameraToInvYAxis();}
-        else if (index == 5) {_camera->alignCameraToYAxis();}
+        else if (index == 3) {_camera->alignCameraToInvYAxis();}
+        else if (index == 4) {_camera->alignCameraToXAxis();}
+        else if (index == 5) {_camera->alignCameraToInvXAxis();}
     }
 }

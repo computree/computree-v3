@@ -5,6 +5,6 @@ CT_AbstractNormalCloud* CT_StandardNormalCloudRegistered::abstractNormalCloud() 
     return cloudT();
 }
 
-CT_StandardNormalCloudRegistered::CT_StandardNormalCloudRegistered(CT_AbstractNormalCloud *normalCloud) : CT_StdCloudRegisteredT<CT_AbstractNormalCloud>(normalCloud)
+CT_StandardNormalCloudRegistered::CT_StandardNormalCloudRegistered(CT_NormalCloudOsg *normalCloud) : CT_StdCloudRegisteredT<CT_NormalCloudOsg>(normalCloud)
 {
 }

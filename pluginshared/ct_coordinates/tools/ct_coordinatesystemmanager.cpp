@@ -48,26 +48,11 @@ bool CT_CoordinateSystemManager::setPrecision(const double &precision)
     return true;
 }
 
-CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::computeCoordinateSystemForPoint(const CT_Point &p, GLuint &csIndex)
+CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::computeCoordinateSystemForPointAndAddItToCollection(const CT_Point &p, GLuint &csIndex)
 {
     int tab[3];
 
-    if(p(CT_Point::X) > 0)
-        tab[0] = (p(CT_Point::X)+m_csKeySum)/m_csKeyDividor;
-    else
-        tab[0] = (p(CT_Point::X)-m_csKeySum)/m_csKeyDividor;
-
-    if(p(CT_Point::Y) > 0)
-        tab[1] = (p(CT_Point::Y)+m_csKeySum)/m_csKeyDividor;
-    else
-        tab[1] = (p(CT_Point::Y)-m_csKeySum)/m_csKeyDividor;
-
-    if(p(CT_Point::Z) > 0)
-        tab[2] = (p(CT_Point::Z)+m_csKeySum)/m_csKeyDividor;
-    else
-        tab[2] = (p(CT_Point::Z)-m_csKeySum)/m_csKeyDividor;
-
-    uint key = hash((uchar*)&tab[0], m_sizeOfIntTabInByte);
+    uint key = computeUniqueKeyForCoordinatesAndFillTab(p(CT_Point::X), p(CT_Point::Y), p(CT_Point::Z), tab);
 
     if(m_lastCsKeyUsed == key) {
 
@@ -102,6 +87,8 @@ CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::computeCoordinateSystem
                                                                                   tab[1]*m_csKeyDividor,
                                                                                   tab[2]*m_csKeyDividor);
 
+    coordinateSystem->setUniqueKey(key);
+
     m_cs.push_back(coordinateSystem);
     m_csKey.push_back(key);
 
@@ -111,6 +98,42 @@ CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::computeCoordinateSystem
     csIndex = m_lastCsIndexUsed;
 
     return coordinateSystem;
+}
+
+CT_AbstractCoordinateSystem *CT_CoordinateSystemManager::createCoordinateSystemForCoordinates(const double &x, const double &y, const double &z) const
+{
+    int tab[3];
+
+    uint key = computeUniqueKeyForCoordinatesAndFillTab(x, y, z, tab);
+
+    CT_DefaultCoordinateSystem *s =  new CT_DefaultCoordinateSystem(tab[0]*m_csKeyDividor,
+                                                                    tab[1]*m_csKeyDividor,
+                                                                    tab[2]*m_csKeyDividor);
+    s->setUniqueKey(key);
+
+    return s;
+}
+
+uint CT_CoordinateSystemManager::computeUniqueKeyForCoordinates(const double &x, const double &y, const double &z) const
+{
+    int tab[3];
+
+    if(x > 0)
+        tab[0] = (x+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[0] = (x-m_csKeySum)/m_csKeyDividor;
+
+    if(y > 0)
+        tab[1] = (y+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[1] = (y-m_csKeySum)/m_csKeyDividor;
+
+    if(z > 0)
+        tab[2] = (z+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[2] = (z-m_csKeySum)/m_csKeyDividor;
+
+    return hash((uchar*)&tab[0], m_sizeOfIntTabInByte);
 }
 
 CT_AbstractCoordinateSystem* CT_CoordinateSystemManager::coordinateSystemForPointAt(const size_t &globalIndex) const
@@ -149,6 +172,26 @@ void CT_CoordinateSystemManager::clear()
 
     m_cs.resize(0);
     m_csKey.resize(0);
+}
+
+uint CT_CoordinateSystemManager::computeUniqueKeyForCoordinatesAndFillTab(const double &x, const double &y, const double &z, int *tab) const
+{
+    if(x > 0)
+        tab[0] = (x+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[0] = (x-m_csKeySum)/m_csKeyDividor;
+
+    if(y > 0)
+        tab[1] = (y+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[1] = (y-m_csKeySum)/m_csKeyDividor;
+
+    if(z > 0)
+        tab[2] = (z+m_csKeySum)/m_csKeyDividor;
+    else
+        tab[2] = (z-m_csKeySum)/m_csKeyDividor;
+
+    return hash((uchar*)&tab[0], m_sizeOfIntTabInByte);
 }
 
 CT_CoordinateSystemCloudIndex* CT_CoordinateSystemManager::indexCloudOfCoordinateSystemOfPoints() const

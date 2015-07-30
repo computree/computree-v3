@@ -106,7 +106,7 @@ void CT_MutablePointIterator::replaceCurrentPoint(const CT_Point &p)
     GLuint csIndex;
 
     // compute the coordinate system to use
-    CT_AbstractCoordinateSystem *coordinateSystem = m_csm->computeCoordinateSystemForPoint(p, csIndex);
+    CT_AbstractCoordinateSystem *coordinateSystem = m_csm->computeCoordinateSystemForPointAndAddItToCollection(p, csIndex);
 
     // set for this point it's index
     m_csm->setCoordinateSystemForPointAt(m_it->currentGlobalIndex(), csIndex);

@@ -11,6 +11,8 @@ class CT_AbstractCloudIndex;
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudIndexRegistered
 {
 public:
+    typedef void (*DeleteHandler)(CT_AbstractCloudIndex *ci);
+
     CT_AbstractCloudIndexRegistered();
     virtual ~CT_AbstractCloudIndexRegistered();
 
@@ -18,6 +20,12 @@ public:
      * @brief Return the cloud index
      */
     virtual CT_AbstractCloudIndex* abstractCloudIndex() const = 0;
+
+    void setAutoDeleteCloudIndex(bool autoDelete);
+    bool mustAutoDeleteCloudIndex() const;
+
+protected:
+    bool   m_autoDelete;
 };
 
 #endif // CT_ABSTRACTCLOUDINDEXREGISTERED_H

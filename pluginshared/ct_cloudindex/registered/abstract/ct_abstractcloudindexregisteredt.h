@@ -13,6 +13,7 @@ template<typename T>
 class CT_AbstractCloudIndexRegisteredT : virtual public CT_AbstractCloudIndexRegistered
 {
 public:
+    CT_AbstractCloudIndexRegisteredT();
     ~CT_AbstractCloudIndexRegisteredT();
 
     CT_AbstractCloudIndexT<T>* operator->() const;

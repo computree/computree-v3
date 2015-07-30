@@ -29,6 +29,7 @@ class DM_ItemDrawableViewConfigurationBuilder : public QObject
 
 public:
     DM_ItemDrawableViewConfigurationBuilder(bool searchInChildren = false);
+    ~DM_ItemDrawableViewConfigurationBuilder();
 
     /**
      * @brief Return the configuration with the name 'name'
@@ -40,6 +41,11 @@ public:
      */
     QList<DM_ItemDrawableViewConfiguration> configurations() const;
 
+    /**
+     * @brief Return the collection of itemdrawable that was impacted by the configuration passed in parameter
+     */
+    QList<CT_AbstractItemDrawable*> itemDrawablesForConfiguration(CT_ItemDrawableConfiguration *config) const;
+
 public slots:
 
     void addItemDrawable(CT_AbstractItemDrawable &item);
@@ -47,9 +53,12 @@ public slots:
     void clear();
 
 private:
-    QMap<CT_ItemDrawableConfiguration*, size_t>    m_config;
+    QMap<CT_ItemDrawableConfiguration*, QList<CT_AbstractItemDrawable*>* >    m_config;
     bool                                        m_searchInChildren;
     QMutex                                      m_mutex;
+
+    int addItemDrawableConfigurationToCollection(CT_ItemDrawableConfiguration *t, CT_AbstractItemDrawable &item);
+    int removeItemDrawableConfigurationFromCollection(CT_ItemDrawableConfiguration *t, CT_AbstractItemDrawable &item);
 
 signals:
     void listChanged();

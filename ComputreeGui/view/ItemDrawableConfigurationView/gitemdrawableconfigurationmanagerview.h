@@ -34,13 +34,17 @@
 #include <QMutex>
 
 #include "dm_documentview.h"
+#include "dm_itemdrawableconfigurationmanagerview.h"
 #include "tools/itemdrawable/dm_itemdrawableviewconfigurationbuilder.h"
 
 namespace Ui {
     class GItemDrawableConfigurationManagerView;
 }
 
-class GItemDrawableConfigurationManagerView : public QWidget
+/**
+ * @brief View that show all configurations present in the document ("setDocument" method) and allows to change their values
+ */
+class GItemDrawableConfigurationManagerView : public QWidget, public DM_ItemDrawableConfigurationManagerView
 {
     Q_OBJECT
 
@@ -48,16 +52,22 @@ public:
     explicit GItemDrawableConfigurationManagerView(QWidget *parent = 0);
     ~GItemDrawableConfigurationManagerView();
 
-    DM_DocumentView* getDocumentView();
+    /**
+     * @brief Returns the document used by this manager
+     */
+    DM_DocumentView* getDocumentView() const;
+
+    /**
+     * @brief Return the collection of itemdrawable that was impacted by the configuration passed in parameter
+     */
+    QList<CT_AbstractItemDrawable*> itemDrawablesForConfiguration(CT_ItemDrawableConfiguration *config) const;
 
 public slots:
 
+    /**
+     * @brief Set the document to use. All configuration of all itemdrawable present in the document will be show
+     */
     void setDocument(DM_DocumentView *doc);
-
-signals:
-
-    void mustAddItem(CT_ItemDrawableConfiguration *config);
-    void mustRemoveItem(CT_ItemDrawableConfiguration *config);
 
 private:
     Ui::GItemDrawableConfigurationManagerView   *ui;
@@ -66,20 +76,58 @@ private:
     bool                                        m_init;
     QMutex                                      m_mutex;
 
+    /**
+     * @brief Called to initialize the combobox and the table widget when a new document is set
+     */
     void initView();
-    void setEmptyComboBoxText();
+
+    /**
+     * @brief Called to initialize table's header
+     */
     void setTableHeader();
+
+    /**
+     * @brief Called to clear the table widget
+     */
     void clearTableWidget();
 
 private slots:
 
+    /**
+     * @brief Called when we must add a new configuration to the view
+     */
     void slotMustAddItem(DM_ItemDrawableViewConfiguration config);
+
+    /**
+     * @brief Called when we must remove the configuration from the view
+     */
     void slotMustRemoveItem(DM_ItemDrawableViewConfiguration config);
 
+    /**
+     * @brief Called when the current item of the combobox that contains configuration name changed (user has changed the configuration to show)
+     */
     void on_widgetComboBox_currentItemChanged(const QString &text);
 
+    /**
+     * @brief Called when a value changed in the table (user has changed a value)
+     */
     void on_tableWidgetConfiguration_itemChanged(QTableWidgetItem *item);
-    void comboBoxIndexChanged(QString value);
+
+    /**
+     * @brief Called when the current index changed in a combox of the table (user has changed a value)
+     */
+    void tableWidgetComboBoxIndexChanged(QString value);
+
+    /**
+     * @brief Called to set to the log that the type was not implemented
+     */
+    void logDebugTypeNotImplemented(CT_ItemDrawableConfiguration::Type type);
+
+signals:
+    /**
+     * @brief Emitted when a value changed from a configuration
+     */
+    void valueOfConfigurationChanged(CT_ItemDrawableConfiguration *config, QVariant lastValue, QVariant newValue, CT_ItemDrawableConfiguration::Type typeOfValue);
 };
 
 #endif // GITEMDRAWABLECONFIGURATIONMANAGERVIEW_H

@@ -39,8 +39,7 @@
 #include "gmultipleitemdrawablemodelmanager.h"
 #include "gitemdrawableconfigurationmanagerview.h"
 #include "GraphicsViews/ggraphicsviewsynchronizedgroup.h"
-#include "dm_vertexvbomanager.h"
-
+#include "view/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.h"
 
 namespace Ui {
     class GMainWindow;
@@ -64,6 +63,7 @@ public:
 
     DM_DocumentManagerView* getDocumentManagerView() const;
     DM_MultipleItemDrawableModelManager* getItemDrawableModelManager() const;
+    GItemDrawableConfigurationManagerView* getItemDrawableConfigurationManager() const;
 
     GMainProgressDialog* createWaitProgressDialog();
 
@@ -100,6 +100,7 @@ private:
     GStepManager                            *_stepManagerView;
     GMultipleItemDrawableModelManager       *_itemDrawableModelView;
     GItemDrawableConfigurationManagerView   *_itemDrawableConfigurationView;
+    DM_ItemDrawableConfigurationAndGraphicsViewSynchronizer m_itemDrawableConfigurationSyncWithGraphicsViewManager;
     GGraphicsViewSynchronizedGroup          *_graphicsViewSyncGroupView;
 
     QString                                 _defaultOpenDirPath;
@@ -110,6 +111,8 @@ private:
     QMenu                                   *menuNewStepCanBeAddedFirst;
 
     QLabel                                  *_permanentLabelForMessage;
+
+    bool                                    m_inLoadConfiguration;
 
     void initUI();
     void loadPlugins(bool showMessageIfNoPluginsFounded = true);

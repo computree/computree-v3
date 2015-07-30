@@ -103,10 +103,10 @@ CT_CircleData* CT_CircleData::staticCreateZAxisAlignedCircleDataFromPointCloudWi
     if(size < 3)
         return NULL;
 
-    CT_StandardCloudStdVectorT<CT_Point> *newPointCloud = NULL;
+    std::vector<CT_Point> *newPointCloud = NULL;
 
     if(preProcessingAction != NULL)
-        newPointCloud = new CT_StandardCloudStdVectorT<CT_Point>(size);
+        newPointCloud = new std::vector<CT_Point>(size);
 
     double somme_x = 0;
     double somme_y = 0;

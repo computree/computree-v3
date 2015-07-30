@@ -14,7 +14,6 @@ SOURCES += \
     view/ItemDrawableConfigurationView/gitemdrawableconfigurationmanagerview.cpp \
     view/MainView/gaboutdialog.cpp \
     view/DocumentView/gpointofviewdocumentmanager.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dpainter.cpp \
     view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp \
     view/DocumentView/GraphicsViews/ggraphicsviewsynchronizedgroup.cpp \
     view/DocumentView/GraphicsViews/ggraphicsview.cpp \
@@ -22,7 +21,7 @@ SOURCES += \
     view/DocumentView/gdocumentviewforitemmodel.cpp \
     view/MainView/gaboutpluginsdialog.cpp \
     view/DocumentView/gcameracoordinatesoptions.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dcameracontroller.cpp \
+    view/DocumentView/GraphicsViews/3D/Camera/g3dcameracontroller.cpp \
     view/StepResultTreeView/myqaction.cpp \
     view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp \
     view/ItemDrawableModelView/gmultipleitemdrawablemodelmanager.cpp \
@@ -31,7 +30,6 @@ SOURCES += \
     view/Tools/gradient/gradientarrow.cpp \
     view/DocumentView/GraphicsViews/ColorGradient/gcolorgradientview.cpp \
     view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dgraphicsview.cpp \
     view/MainView/gaboutstepdialog.cpp \
     view/ActionsView/gactionsmanager.cpp \
     view/DocumentView/GraphicsViews/PointsAttributes/gminmaxattributesscalarconfiguration.cpp \
@@ -42,16 +40,30 @@ SOURCES += \
     view/DocumentView/ItemModelViews/gitemmodelview.cpp \
     view/DocumentView/ItemModelViews/cg_customtreeitemmodel.cpp \
     view/DocumentView/ItemModelViews/cg_customtreeitem.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dfakepainter.cpp \
     $$PWD/MainView/gineedhelpdialog.cpp \
     $$PWD/StepResultTreeView/myqmenu.cpp \    
 	view/DocumentView/GraphicsViews/3D/Octree/octreecontroller.cpp \
     view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.cpp \
-    view/DocumentView/GraphicsViews/3D/g3dcamera.cpp \
     $$PWD/Steps/dm_steptreeviewdefaultproxymodel.cpp \
     $$PWD/Steps/gstepstreeviewdefault.cpp \
     $$PWD/Steps/gstepviewdefault.cpp \
-    $$PWD/Steps/gstepsdockwidget.cpp
+    $$PWD/Steps/gstepsdockwidget.cpp \
+    view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_2dcameramanipulator.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_3dcameramanipulator.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_singleitemdrawabletoosgworker.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/dm_osgscenemanager.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_osgpicker.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_globalpointspolytopeintersector.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_itemdrawablepolytopeintersector.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Visitor/dm_boundingsphereitemselectedvisitor.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.cpp \
+    $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -69,7 +81,6 @@ HEADERS += \
     view/ItemDrawableConfigurationView/gitemdrawableconfigurationmanagerview.h \
     view/MainView/gaboutdialog.h \
     view/DocumentView/gpointofviewdocumentmanager.h \
-    view/DocumentView/GraphicsViews/3D/g3dpainter.h \
     view/DocumentView/GraphicsViews/ggraphicsviewoptions.h \
     view/DocumentView/GraphicsViews/ggraphicsviewsynchronizedgroup.h \
     view/DocumentView/GraphicsViews/ggraphicsview.h \
@@ -77,7 +88,7 @@ HEADERS += \
     view/DocumentView/gdocumentviewforitemmodel.h \
     view/MainView/gaboutpluginsdialog.h \
     view/DocumentView/gcameracoordinatesoptions.h \
-    view/DocumentView/GraphicsViews/3D/g3dcameracontroller.h \
+    view/DocumentView/GraphicsViews/3D/Camera/g3dcameracontroller.h \
     view/StepResultTreeView/myqaction.h \
     view/ItemDrawableModelView/gitemdrawablemodelmanager.h \
     view/ItemDrawableModelView/gmultipleitemdrawablemodelmanager.h \
@@ -86,7 +97,6 @@ HEADERS += \
     view/Tools/gradient/gradientarrow.h \
     view/DocumentView/GraphicsViews/ColorGradient/gcolorgradientview.h \
     view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h \
-    view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h \
     view/ActionsView/gactionsmanager.h \
     view/DocumentView/GraphicsViews/PointsAttributes/gminmaxattributesscalarconfiguration.h \
     view/MainView/gaboutstepdialog.h \
@@ -97,7 +107,6 @@ HEADERS += \
     view/DocumentView/ItemModelViews/gitemmodelview.h \
     view/DocumentView/ItemModelViews/cg_customtreeitemmodel.h \
     view/DocumentView/ItemModelViews/cg_customtreeitem.h \
-    view/DocumentView/GraphicsViews/3D/g3dfakepainter.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
     $$PWD/MainView/gineedhelpdialog.h \
@@ -106,11 +115,26 @@ HEADERS += \
     view/DocumentView/GraphicsViews/3D/Octree/octree.h \
     view/DocumentView/GraphicsViews/3D/Octree/octree.hpp \
     view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h \
-    view/DocumentView/GraphicsViews/3D/g3dcamera.h \
     $$PWD/Steps/dm_steptreeviewdefaultproxymodel.h \
     $$PWD/Steps/gstepstreeviewdefault.h \
     $$PWD/Steps/gstepviewdefault.h \
-    $$PWD/Steps/gstepsdockwidget.h
+    $$PWD/Steps/gstepsdockwidget.h \
+    view/DocumentView/GraphicsViews/3D/gosggraphicsview.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_2dcameramanipulator.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_3dcameramanipulator.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_singleitemdrawabletoosgworker.h \
+    $$PWD/DocumentView/GraphicsViews/3D/dm_osgscenemanager.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_osgpicker.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_globalpointspolytopeintersector.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Picking/dm_itemdrawablepolytopeintersector.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Visitor/dm_boundingsphereitemselectedvisitor.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.h \
+    $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

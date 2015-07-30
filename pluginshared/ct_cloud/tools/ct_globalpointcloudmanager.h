@@ -13,7 +13,7 @@
  * CT_AbstractCloudSyncToGlobalCloudManagerT when points of the cloud is deleted or added. So we can sync index and
  * other cloud with this global cloud.
  */
-class PLUGINSHAREDSHARED_EXPORT CT_GlobalPointCloudManager : public QObject, public CT_GlobalCloudManagerT<CT_PointData, CT_PointCloudStdVector>
+class PLUGINSHAREDSHARED_EXPORT CT_GlobalPointCloudManager : public QObject, public CT_GlobalCloudManagerT<CT_PointData, CT_InternalPointCloud>
 {
     Q_OBJECT
 

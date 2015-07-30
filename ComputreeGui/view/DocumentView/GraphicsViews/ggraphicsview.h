@@ -45,9 +45,33 @@ public:
     void setCurrentAction(CT_AbstractActionForGraphicsView *action);
     void setDefaultAction(CT_AbstractActionForGraphicsView *action);
 
+    DM_ActionsHandler* actionsHandler() const;
+
+    /**
+     * @brief Add option of a action to the GraphicsView
+     *
+     *        If you want to remove the widget from the view you can delete it or
+     *        call method "removeActionOptions"
+     *
+     * @warning You must be in the GUI thread to call this method !
+     */
+    virtual void addActionOptions(ActionOptionsInterface *options);
+
+    /**
+     * @brief Delete the widget. If you want to hide them call
+     *        method "QWidget::hide()".
+     */
+    virtual void removeActionOptions(ActionOptionsInterface *options);
+
+    /**
+     * @brief Returns the widget that represents this graphics to attach it to a layout per example
+     */
     virtual QWidget* getViewWidget() const = 0;
 
-    DM_ActionsHandler* actionsHandler() const;
+    /**
+     * @brief Returns true if this graphics view is 2D
+     */
+    virtual bool is2DView() const = 0;
 
 private:
     DM_ActionsHandler               *m_actionsHandler;

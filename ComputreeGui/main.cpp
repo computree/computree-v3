@@ -33,6 +33,8 @@
     #include "qtextcodec.h"
 #endif
 
+#include "dm_osgnotifyhandler.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -43,6 +45,8 @@ int main(int argc, char *argv[])
     #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     #endif
+
+    osg::setNotifyHandler(new DM_OSGNotifyHandler());
 
     GGuiManager gm(&language);
     gm.initUi();

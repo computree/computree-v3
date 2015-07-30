@@ -1,5 +1,5 @@
 TEMPLATE      = subdirs
-SUBDIRS       = pluginshared pluginbase QGLViewer ComputreeCore ComputreeGui
+SUBDIRS       = pluginshared pluginbase ComputreeCore ComputreeGui
 CONFIG       += console ordered
 
 win32-msvc2013 {

@@ -20,7 +20,7 @@ void CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(GraphicsV
 
     const CT_AbstractItemDrawableWithoutPointCloud &item = dynamic_cast<const CT_AbstractItemDrawableWithoutPointCloud&>(itemDrawable);
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool())
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool() && item.hasBoundingBox())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
         painter.drawPoint(item.minX(), item.minY(), item.minZ());
@@ -58,7 +58,7 @@ void CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(GraphicsV
         painter.drawLine(item.maxX(), item.maxY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
     }
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool())
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool() && item.hasBoundingBox())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
         painter.drawPoint(item.getCenterX(), item.getCenterY(), item.getCenterZ());

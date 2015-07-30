@@ -30,6 +30,7 @@
 #include "ui_gitemdrawableconfigurationmanagerview.h"
 
 #include "dm_documentmanager.h"
+#include "dm_guimanager.h"
 
 #include <QLineEdit>
 #include <QDebug>
@@ -54,9 +55,14 @@ GItemDrawableConfigurationManagerView::~GItemDrawableConfigurationManagerView()
     delete m_configBuilder;
 }
 
-DM_DocumentView* GItemDrawableConfigurationManagerView::getDocumentView()
+DM_DocumentView* GItemDrawableConfigurationManagerView::getDocumentView() const
 {
     return _doc;
+}
+
+QList<CT_AbstractItemDrawable *> GItemDrawableConfigurationManagerView::itemDrawablesForConfiguration(CT_ItemDrawableConfiguration *config) const
+{
+    return m_configBuilder->itemDrawablesForConfiguration(config);
 }
 
 void GItemDrawableConfigurationManagerView::setDocument(DM_DocumentView *doc)
@@ -190,13 +196,9 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
                     item->setText(tr("Afficher"));
 
                     if(value.toBool())
-                    {
                         item->setCheckState(Qt::Checked);
-                    }
                     else
-                    {
                         item->setCheckState(Qt::Unchecked);
-                    }
 
                     ui->tableWidgetConfiguration->setItem(i, 1, item);
                 }
@@ -211,7 +213,7 @@ void GItemDrawableConfigurationManagerView::on_widgetComboBox_currentItemChanged
 
                     ui->tableWidgetConfiguration->setCellWidget(i, 1, cb);
 
-                    connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(comboBoxIndexChanged(QString)));
+                    connect(cb, SIGNAL(currentIndexChanged(QString)), this, SLOT(tableWidgetComboBoxIndexChanged(QString)));
                 }
                 else
                 {
@@ -259,6 +261,8 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
                 {
                     config->setVariableValue(i, enable);
 
+                    emit valueOfConfigurationChanged(config, QVariant(!enable), QVariant(enable), type);
+
                     _doc->getManager()->redrawAllDocument();
                 }
             }
@@ -269,6 +273,8 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
                 if (succeeded && newValue != value.toDouble())
                 {
                     config->setVariableValue(i, newValue);
+
+                    emit valueOfConfigurationChanged(config, value, QVariant(newValue), type);
 
                     _doc->getManager()->redrawAllDocument();
                 }
@@ -281,18 +287,20 @@ void GItemDrawableConfigurationManagerView::on_tableWidgetConfiguration_itemChan
                 {
                     config->setVariableValue(i, newValue);
 
+                    emit valueOfConfigurationChanged(config, value, QVariant(newValue), type);
+
                     _doc->getManager()->redrawAllDocument();
                 }
             }
             else
             {
-                qDebug() << "[GItemDrawableConfigurationManagerView] Modification du type " << type << " non implemente.";
+                logDebugTypeNotImplemented(type);
             }
         }
     }
 }
 
-void GItemDrawableConfigurationManagerView::comboBoxIndexChanged(QString value)
+void GItemDrawableConfigurationManagerView::tableWidgetComboBoxIndexChanged(QString value)
 {
     QComboBox *cb = dynamic_cast<QComboBox*>(sender());
 
@@ -333,13 +341,20 @@ void GItemDrawableConfigurationManagerView::comboBoxIndexChanged(QString value)
 
                     config->setVariableValue(i, QVariant(sList));
 
+                    emit valueOfConfigurationChanged(config, varValue, QVariant(sList), type);
+
                     _doc->getManager()->redrawAllDocument();
                 }
             }
             else
             {
-                qDebug() << "[GItemDrawableConfigurationManagerView] Modification du type " << type << " non implemente.";
+                logDebugTypeNotImplemented(type);
             }
         }
     }
+}
+
+void GItemDrawableConfigurationManagerView::logDebugTypeNotImplemented(CT_ItemDrawableConfiguration::Type type)
+{
+    GUI_LOG->addDebugMessage(LogInterface::gui, tr("[GItemDrawableConfigurationManagerView] Modification du type \"%1\" non implementé.").arg(type));
 }

@@ -29,12 +29,22 @@
 
 #include "ct_itemdrawableconfiguration.h"
 
-CT_ItemDrawableConfiguration::CT_ItemDrawableConfiguration(const QString &displayableName)
+CT_ItemDrawableConfiguration::CT_ItemDrawableConfiguration(const QString &displayableName) : QObject()
 {
     _name = displayableName;
 }
 
-CT_ItemDrawableConfiguration::CT_ItemDrawableConfiguration(const QString &displayableName, const QString &nameForComparison)
+CT_ItemDrawableConfiguration::CT_ItemDrawableConfiguration(const CT_ItemDrawableConfiguration &other) : QObject()
+{
+    _name = other._name;
+    _nameForComparison = other._nameForComparison;
+    _list_config_index = other._list_config_index;
+    _list_config_name = other._list_config_name;
+    _list_config_value = other._list_config_value;
+    _list_config_type = other._list_config_type;
+}
+
+CT_ItemDrawableConfiguration::CT_ItemDrawableConfiguration(const QString &displayableName, const QString &nameForComparison) : QObject()
 {
     _name = displayableName;
     _nameForComparison = nameForComparison;
@@ -109,6 +119,8 @@ bool CT_ItemDrawableConfiguration::setVariableValue(int i, const QVariant &value
         && (i<size()))
     {
         _list_config_value.replace(i, value);
+
+        emit valueChanged(i);
 
         return true;
     }

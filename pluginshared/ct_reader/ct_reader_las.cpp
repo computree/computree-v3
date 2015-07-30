@@ -260,7 +260,7 @@ bool CT_Reader_LAS::protectedReadFile()
 
             if(containsItemDrawableModel(DEF_CT_Reader_LAS_colorOut))
             {
-                colorsV = new CT_ColorCloudStdVector(nPoints, true);
+                colorsV = new CT_ColorCloudStdVector(nPoints);
                 colorsRV = new CT_StandardCloudStdVectorT<quint16>(nPoints);
                 colorsGV = new CT_StandardCloudStdVectorT<quint16>(nPoints);
                 colorsBV = new CT_StandardCloudStdVectorT<quint16>(nPoints);
@@ -319,10 +319,10 @@ bool CT_Reader_LAS::protectedReadFile()
 
                     stream >> colR >> colG >> colB;
 
-                    colRGBA.r = colR/256;
-                    colRGBA.g = colG/256;
-                    colRGBA.b = colB/256;
-                    colRGBA.a = 255;
+                    colRGBA.r() = colR/256;
+                    colRGBA.g() = colG/256;
+                    colRGBA.b() = colB/256;
+                    colRGBA.a() = 255;
                 }
 
                 // NIR is always after colors if exist

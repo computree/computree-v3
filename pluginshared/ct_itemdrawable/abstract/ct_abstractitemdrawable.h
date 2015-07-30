@@ -33,7 +33,6 @@
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 
 #include <eigen/Eigen/Core>
-#include <QMatrix4x4>
 
 class CT_OutAbstractItemModel;
 class CT_AbstractResult;
@@ -252,11 +251,6 @@ public:
     virtual void draw(GraphicsViewInterface &view, PainterInterface &painter);
 
     /**
-     * @brief Returns the transformation matrix of this item
-     */
-    const QMatrix4x4& transformMatrix() const;
-
-    /**
      * @brief Define if this item must delete from memory its childrens. True by default.
      */
     void setAutoDelete(bool autoDelete);
@@ -310,11 +304,6 @@ protected:
     void setId(quint64 id);
 
     /**
-     * @brief Set the transformation matrix
-     */
-    void setMatrix4x4(const QMatrix4x4 &matrix);
-
-    /**
      * @brief Overloaded to cast the model to check the validity.
      */
     virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
@@ -328,7 +317,6 @@ private:
     QString                     _name;
     bool                        _autoDelete;
     CT_AbstractItemDrawable     *_parent;
-    QMatrix4x4                  m_transformMatrix;
     Eigen::Vector3d             _centerCoordinate;
 
     CT_AbstractItemDrawableDrawManager  *_baseDrawManager;

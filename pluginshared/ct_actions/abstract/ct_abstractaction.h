@@ -4,6 +4,8 @@
 #include "interfaces.h"
 #include "pluginShared_global.h"
 
+class CT_GAbstractActionOptions;
+
 /**
  * @brief Represent an action for the GUI
  */
@@ -199,10 +201,10 @@ protected:
     void setFinished(bool val);
 
     /**
-     * @brief Register a ActionOptionsInterface to be manage automatically. The method
+     * @brief Register a CT_GAbstractActionOptions to be manage automatically. The method
      *        hideOptions() and showOptions() hide and show all options registered.
      */
-    void registerOption(ActionOptionsInterface *options);
+    virtual void registerOption(CT_GAbstractActionOptions *options);
 
     /**
      * @brief Return the number of options registered

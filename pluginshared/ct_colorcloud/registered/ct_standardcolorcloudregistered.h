@@ -2,12 +2,12 @@
 #define CT_STANDARDCOLORCLOUDREGISTERED_H
 
 #include "ct_cloud/registered/ct_stdcloudregisteredt.h"
-#include "ct_colorcloud/abstract/ct_abstractcolorcloud.h"
+#include "ct_colorcloud/ct_colorcloudosg.h"
 
 /**
  * A color cloud registered. It's size is sync with a global cloud.
  */
-class PLUGINSHAREDSHARED_EXPORT CT_StandardColorCloudRegistered : public CT_StdCloudRegisteredT<CT_AbstractColorCloud>
+class PLUGINSHAREDSHARED_EXPORT CT_StandardColorCloudRegistered : public CT_StdCloudRegisteredT<CT_ColorCloudOsg>
 {
 public:
     CT_AbstractColorCloud* abstractColorCloud() const;
@@ -16,7 +16,7 @@ protected:
 
     friend class CT_CloudSyncToGlobalCloudManager;
 
-    CT_StandardColorCloudRegistered(CT_AbstractColorCloud *colorCloud);
+    CT_StandardColorCloudRegistered(CT_ColorCloudOsg *colorCloud);
 };
 
 #endif // CT_STANDARDCOLORCLOUDREGISTERED_H

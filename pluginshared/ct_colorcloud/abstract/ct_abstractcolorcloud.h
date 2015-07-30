@@ -43,13 +43,6 @@ public:
      * @brief Returns a const reference to the color at index 'index'
      */
     virtual const CT_Color& operator[](const size_t &index) const = 0;
-
-#ifdef USE_PCL
-    /**
-     * @brief Returns the pcl cloud of colors
-     */
-    virtual boost::shared_ptr< pcl::PointCloud<CT_Color> > getPCLCloud() const = 0;
-#endif
 };
 
 #endif // CT_ABSTRACTCOLORCLOUD_H

@@ -1,5 +1,8 @@
 # this is the common include for all the plugins
 
+# to make qmake more faster :
+CONFIG -= depend_includepath
+
 include(destdir.pri)
 
 contains ( QT_VERSION, "^5.*" ) {

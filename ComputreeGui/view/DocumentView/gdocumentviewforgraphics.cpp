@@ -3,15 +3,14 @@
 #include "dm_guimanager.h"
 
 #include "view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.h"
-#include "view/DocumentView/GraphicsViews/3D/g3dfakepainter.h"
-#include "view/DocumentView/GraphicsViews/3D/Octree/octreebuilder.h"
-#include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
 
 #include "cdm_tools.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
+
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
 
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
@@ -27,10 +26,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMessageBox>
-
-
-DM_VertexVBOManager* GDocumentViewForGraphics::VERTEX_VBO_MANAGER = NULL;
-int GDocumentViewForGraphics::N_DOCUMENT_VIEW_FOR_GRAPHICS = 0;
+#include <QProgressDialog>
 
 GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager, QString title, QString type) : GDocumentView(manager, title)
 {
@@ -38,16 +34,24 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     _graphicsLocked = false;
     _type = type;
     _pofManager.loadDefault();
-    m_useColorCloud = true;
     m_useNormalCloud = true;
     _pixelSize = PX_1;
     _drawMode = DM_GraphicsViewOptions::Normal;
-    m_colorVboManager = new DM_ColorVBOManager();
 
-    ++N_DOCUMENT_VIEW_FOR_GRAPHICS;
+    m_pointsColorCloudRegistered = CT_CCR(NULL);
+    m_pointsAttribCloudRegistered = QSharedPointer< AttribCloudRegisteredType >(NULL);
 
-    if(VERTEX_VBO_MANAGER == NULL)
-        VERTEX_VBO_MANAGER = new DM_VertexVBOManager();
+    m_timerUpdateColors.setSingleShot(true);
+    m_timerUpdateColors.setInterval(50);
+
+    m_timerDirtyColorsOfPoints.setSingleShot(true);
+    m_timerDirtyColorsOfPoints.setInterval(50);
+
+    connect(&m_timerUpdateColors, SIGNAL(timeout()), this, SLOT(mustUpdateItemDrawablesThatColorWasModified()), Qt::QueuedConnection);
+    connect(&m_timerDirtyColorsOfPoints, SIGNAL(timeout()), this, SLOT(mustDirtyColorsOfItemDrawablesWithPoints()), Qt::QueuedConnection);
+
+    connect(this, SIGNAL(startUpdateColorsTimer()), &m_timerUpdateColors, SLOT(start()), Qt::QueuedConnection);
+    connect(this, SIGNAL(startDirtyColorsOfPointTimer()), &m_timerDirtyColorsOfPoints, SLOT(start()), Qt::QueuedConnection);
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -70,7 +74,6 @@ void GDocumentViewForGraphics::init()
 void GDocumentViewForGraphics::addGraphics(GGraphicsView *graphics)
 {
     graphics->setDocumentView(this);
-    graphics->setColorVBOManager(m_colorVboManager);
     graphics->setAttributesManager(&m_attributesManager);
 
     _listGraphics.append(graphics);
@@ -166,6 +169,18 @@ void GDocumentViewForGraphics::removeAllItemDrawable()
     unlockGraphics();
 }
 
+void GDocumentViewForGraphics::updateDrawing3DOfItemDrawablesInGraphicsView(const QList<CT_AbstractItemDrawable *> &items)
+{
+    lockGraphics();
+
+    QListIterator<GGraphicsView*> it(_listGraphics);
+
+    while(it.hasNext())
+        it.next()->updateDrawing3DOfItemDrawables(items);
+
+    unlockGraphics();
+}
+
 QList<InDocumentViewInterface *> GDocumentViewForGraphics::views() const
 {
     QList<InDocumentViewInterface *> l;
@@ -178,7 +193,7 @@ QList<InDocumentViewInterface *> GDocumentViewForGraphics::views() const
     return l;
 }
 
-void GDocumentViewForGraphics::redrawGraphics(GraphicsViewInterface::RedrawType type)
+void GDocumentViewForGraphics::redrawGraphics()
 {
     m_mutex->lock();
 
@@ -187,42 +202,16 @@ void GDocumentViewForGraphics::redrawGraphics(GraphicsViewInterface::RedrawType 
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            it.next()->redraw(type);
+            it.next()->redraw();
     }
 
     m_mutex->unlock();
 }
 
-void GDocumentViewForGraphics::fitToContent()
+void GDocumentViewForGraphics::dirtyColorsOfPoints()
 {
-    m_mutex->lock();
-
-    if(!_graphicsLocked)
-    {
-        QListIterator<GGraphicsView*> it(_listGraphics);
-
-        while(it.hasNext())
-            it.next()->camera()->fitCameraToVisibleItems();
-    }
-
-    m_mutex->unlock();
+    emit startDirtyColorsOfPointTimer();
 }
-
-void GDocumentViewForGraphics::fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max)
-{
-    m_mutex->lock();
-
-    if(!_graphicsLocked)
-    {
-        QListIterator<GGraphicsView*> it(_listGraphics);
-
-        while(it.hasNext())
-            it.next()->camera()->fitToSpecifiedBox(min, max);
-    }
-
-    m_mutex->unlock();
-}
-
 
 void GDocumentViewForGraphics::lock()
 {
@@ -356,29 +345,27 @@ void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, con
 
     info->setColor(color);
 
-    if(!_listGraphics.isEmpty())
-    {
-        createColorCloudRegistered<CT_AbstractPointsAttributes>();
-        createColorCloudRegistered<CT_AbstractFaceAttributes>();
-        createColorCloudRegistered<CT_AbstractEdgeAttributes>();
-
-        G3DFakePainter painter;
-        painter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(_listGraphics.first()));
-        painter.setDrawMode(G3DFakePainter::ApplyColorPoints | G3DFakePainter::ApplyColorEdges | G3DFakePainter::ApplyColorFaces);
-        painter.setApplyColor(color);
-        painter.setPointsColorCloud(colorCloudRegistered<CT_AbstractPointsAttributes>());
-        painter.setEdgesColorCloud(colorCloudRegistered<CT_AbstractEdgeAttributes>());
-        painter.setFacesColorCloud(colorCloudRegistered<CT_AbstractFaceAttributes>());
-
-        ((CT_AbstractItemDrawable*)item)->draw(*_listGraphics.first(), painter);
-    }
-
     CT_AbstractItemGroup *group = dynamic_cast<CT_AbstractItemGroup*>((CT_AbstractItemDrawable*)item);
 
     if(group != NULL)
         recursiveSetColor(group, color);
 
-    m_colorVboManager->refresh();
+    emit startUpdateColorsTimer();
+}
+
+bool GDocumentViewForGraphics::isColorModified(const CT_AbstractItemDrawable *item)
+{
+    QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = getItemsInformations().value(item->result(), NULL);
+
+    if(hash != NULL)
+    {
+        DM_ItemInfoForGraphics *info = static_cast<DM_ItemInfoForGraphics*>(hash->value((CT_AbstractItemDrawable*)item, NULL));
+
+        if(info != NULL)
+            return info->isColorModified();
+    }
+
+    return false;
 }
 
 QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
@@ -400,126 +387,25 @@ QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
     return QColor();
 }
 
-bool GDocumentViewForGraphics::useOctreeOfPoints() const
+GOsgGraphicsView::ColorArrayType *GDocumentViewForGraphics::getOrCreateGlobalColorArrayForPoints()
 {
-    return true;
+    if(m_pointsColorCloudRegistered.isNull())
+        m_pointsColorCloudRegistered = PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud);
+
+    return m_pointsColorCloudRegistered->cloudT()->osgArray();
 }
 
-OctreeInterface* GDocumentViewForGraphics::octreeOfPoints() const
+CT_CCR GDocumentViewForGraphics::getGlobalColorArrayRegisteredForPoints() const
 {
-    return const_cast<OctreeController*>(&m_octreeController);
+    return m_pointsColorCloudRegistered;
 }
 
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractPointsAttributes>()
+GDocumentViewForGraphics::AttribCloudType::AType* GDocumentViewForGraphics::getOrCreateGlobalAttribArrayForPoints()
 {
-    if(colorCloudRegistered<CT_AbstractPointsAttributes>().data() == NULL)
-        setColorCloudRegistered<CT_AbstractPointsAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud, false));
-}
+    if(m_pointsAttribCloudRegistered.isNull())
+        m_pointsAttribCloudRegistered = PS_REPOSITORY->createNewCloudT< AttribCloudRegisteredType, AttribCloudType >(CT_Repository::SyncWithPointCloud);
 
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractFaceAttributes>()
-{
-    if(colorCloudRegistered<CT_AbstractFaceAttributes>().data() == NULL)
-        setColorCloudRegistered<CT_AbstractFaceAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithFaceCloud, false));
-}
-
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractEdgeAttributes>()
-{
-    if(colorCloudRegistered<CT_AbstractEdgeAttributes>().data() == NULL)
-        setColorCloudRegistered<CT_AbstractEdgeAttributes>(PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithEdgeCloud, false));
-}
-
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    lock();
-
-    m_pColorCloudRegistered = cc;
-    m_colorVboManager->setCurrentColorCloud(cc);
-
-    unlock();
-}
-
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    lock();
-
-    m_fColorCloudRegistered = cc;
-
-    unlock();
-}
-
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc)
-{
-    lock();
-
-    m_eColorCloudRegistered = cc;
-
-    unlock();
-}
-
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractPointsAttributes>() const
-{
-    return m_pColorCloudRegistered;
-}
-
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractFaceAttributes>() const
-{
-    return m_fColorCloudRegistered;
-}
-
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractEdgeAttributes>() const
-{
-    return m_eColorCloudRegistered;
-}
-
-void GDocumentViewForGraphics::setUseColorCloud(bool use)
-{
-    m_useColorCloud = use;
-}
-
-bool GDocumentViewForGraphics::useColorCloud() const
-{
-    return m_useColorCloud;
-}
-
-template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    lock();
-
-    m_pNormalCloudRegistered = nn;
-
-    unlock();
-}
-
-template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn)
-{
-    lock();
-
-    m_fNormalCloudRegistered = nn;
-
-    unlock();
-}
-
-template<>
-QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractPointsAttributes>() const
-{
-    return m_pNormalCloudRegistered;
-}
-
-template<>
-QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractFaceAttributes>() const
-{
-    return m_fNormalCloudRegistered;
+    return m_pointsAttribCloudRegistered->cloudT()->osgArray();
 }
 
 void GDocumentViewForGraphics::setUseNormalCloud(bool use)
@@ -559,8 +445,6 @@ void GDocumentViewForGraphics::applyAttributes(DM_AbstractAttributes *dpa)
 
     disconnect(thread, NULL, dpa, NULL);
     disconnect(dpa, NULL, thread, NULL);
-
-    m_colorVboManager->refresh();
 }
 
 void GDocumentViewForGraphics::showOptions()
@@ -569,7 +453,6 @@ void GDocumentViewForGraphics::showOptions()
     {
         DM_GraphicsViewOptions opt;
         opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
-        opt.setOctreeNumberOfCells(m_octreeController.numberOfCells());
 
         _graphicsOptionsView->setOptions(opt);
 
@@ -589,11 +472,6 @@ void GDocumentViewForGraphics::validateOptions()
 
     while(it.hasNext())
         it.next()->setOptions(options);
-
-    if(options.octreeCellsConstructionType() == DM_GraphicsViewOptions::OctreeCellsByNumber)
-        m_octreeController.setNumberOfCells(options.octreeNumberOfCells());
-    else if (options.octreeCellsConstructionType() == DM_GraphicsViewOptions::OctreeCellsBySize)
-        m_octreeController.setSizeOfCells(options.octreeSizeOfCells());
 }
 
 void GDocumentViewForGraphics::takeAndSaveScreenshot()
@@ -622,12 +500,10 @@ void GDocumentViewForGraphics::addActualPointOfView()
 
         _pofManager.addPointOfView(getKeyForPointOfViewManager(),
                                               DM_PointOfView(name,
-                                                             cam->x(),
-                                                             cam->y(),
-                                                             cam->z(),
-                                                             cam->rx(),
-                                                             cam->ry(),
-                                                             cam->rz(),
+                                                             cam->cx(),
+                                                             cam->cy(),
+                                                             cam->cz(),
+                                                             cam->focusDistance(),
                                                              q0,
                                                              q1,
                                                              q2,
@@ -641,8 +517,7 @@ void GDocumentViewForGraphics::setPointOfView(DM_PointOfView *pof)
     {
         DM_GraphicsViewCamera *cam = _cameraOptionsView->getCamera();
 
-        cam->setPosition(pof->x(), pof->y(), pof->z());
-        cam->setOrientation(pof->q0(), pof->q1(), pof->q2(), pof->q3());
+        cam->setPointOfView(pof->x(), pof->y(), pof->z(), pof->distance(), pof->q0(), pof->q1(), pof->q2(), pof->q3(), true);
     }
 }
 
@@ -656,46 +531,6 @@ void GDocumentViewForGraphics::showAttributesOptions()
     dialog.move(screen.center() - dialog.rect().center());
 
     dialog.exec();
-}
-
-void GDocumentViewForGraphics::constructOctreeOfPoints()
-{
-    if(m_octreeController.mustBeReconstructed())
-    {
-        DM_AsyncOperation *aop = GUI_MANAGER->requestExclusiveAsyncOperation();
-
-        if(aop != NULL)
-        {
-            // create a thread for the builder
-            QThread *thread = new QThread();
-
-            // create a builder
-            OctreeBuilder *builder = new OctreeBuilder();
-            builder->moveToThread(thread);
-            builder->addData(aop, true);
-            builder->setDocument(this);
-            builder->setOctreeController(&m_octreeController);
-
-            aop->progressDialog()->setCanClose(false);
-            aop->progressDialog()->setLabelText(QObject::tr("Veuillez patienter pendant la construction de l'octree"));
-            aop->progressDialog()->setSecondLabelText("");
-            aop->progressDialog()->setValue(0);
-            aop->progressDialog()->show();
-
-            connect(builder, SIGNAL(progressChanged(int)), aop, SLOT(setProgress(int)), Qt::QueuedConnection);
-            connect(aop, SIGNAL(cancel()), builder, SLOT(cancel()), Qt::QueuedConnection);
-
-            DM_AbstractWorker::staticConnectWorkerToThread(builder, true, true, true);
-
-            QEventLoop event;
-
-            connect(builder, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
-            connect(thread, SIGNAL(finished()), &event, SLOT(quit()), Qt::DirectConnection);
-
-            thread->start();
-            event.exec();
-        }
-    }
 }
 
 void GDocumentViewForGraphics::changePixelSize()
@@ -818,41 +653,6 @@ void GDocumentViewForGraphics::setCameraType(bool orthographic)
     validateOptions();
 }
 
-void GDocumentViewForGraphics::slotItemDrawableAdded(CT_AbstractItemDrawable &item)
-{
-    GDocumentView::slotItemDrawableAdded(item);
-
-    if(!getGraphicsList().isEmpty())
-    {
-        G3DFakePainter fakePainter;
-        fakePainter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(getGraphicsList().first()));
-        fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
-        item.draw(*getGraphicsList().first(), fakePainter);
-        QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());
-
-        while(it.hasNext())
-            m_octreeController.addPoints(dynamic_cast<CT_AbstractPointCloudIndex*>(it.next()));
-    }
-}
-
-void GDocumentViewForGraphics::slotItemToBeRemoved(CT_AbstractItemDrawable &item)
-{
-    GDocumentView::slotItemToBeRemoved(item);
-
-    if(!getGraphicsList().isEmpty())
-    {
-        G3DFakePainter fakePainter;
-        fakePainter.setGraphicsView(dynamic_cast<G3DGraphicsView*>(getGraphicsList().first()));
-        fakePainter.setDrawMode(G3DFakePainter::BackupPointCloudIndex);
-        item.draw(*getGraphicsList().first(), fakePainter);
-        QListIterator<CT_AbstractCloudIndex*> it(fakePainter.pointCloudIndexBackup());
-
-        while(it.hasNext())
-            m_octreeController.removePoints(dynamic_cast<CT_AbstractPointCloudIndex*>(it.next()));
-    }
-}
-
-
 void GDocumentViewForGraphics::syncChanged(bool enable)
 {
     if(enable)
@@ -966,21 +766,33 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     delete exCopy;
 }
 
+void GDocumentViewForGraphics::mustUpdateItemDrawablesThatColorWasModified()
+{
+    if(!_listGraphics.isEmpty())
+        _listGraphics.first()->updateItemDrawablesThatColorWasModified();
+
+    QHashIterator<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *> it = getItemsInformations();
+
+    while(it.hasNext())
+    {
+        it.next();
+        QHashIterator<CT_AbstractItemDrawable *, DM_AbstractInfo *> it2(*it.value());
+
+        while(it2.hasNext())
+            static_cast<DM_ItemInfoForGraphics*>(it2.next().value())->setColorModified(false);
+    }
+}
+
+void GDocumentViewForGraphics::mustDirtyColorsOfItemDrawablesWithPoints()
+{
+    if(!_listGraphics.isEmpty())
+        _listGraphics.first()->dirtyColorsOfItemDrawablesWithPoints();
+}
+
 void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
 {
     if(canClose())
     {
-        --N_DOCUMENT_VIEW_FOR_GRAPHICS;
-
-        if(N_DOCUMENT_VIEW_FOR_GRAPHICS == 0)
-        {
-            delete VERTEX_VBO_MANAGER;
-            VERTEX_VBO_MANAGER = NULL;
-        }
-
-        delete m_colorVboManager;
-        m_colorVboManager = NULL;
-
         m_mutex->lock();
         qDeleteAll(_listGraphics.begin(), _listGraphics.end());
         _listGraphics.clear();
@@ -1051,14 +863,6 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
     _buttonDrawMode->setEnabled(true);
 
-    _buttonConstructOctree = new QPushButton(widgetContainer);
-    _buttonConstructOctree->setMaximumWidth(33);
-    _buttonConstructOctree->setMinimumWidth(33);
-    _buttonConstructOctree->setToolTip(tr("(Re)construire un octree"));
-    _buttonConstructOctree->setIcon(QIcon(":/Icones/Icones/octree.png"));
-    //_buttonConstructOctree->setText("OCTREE");
-    _buttonConstructOctree->setEnabled(false);
-
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(pluginExporterManagerReloaded()));
 
     // fenetre de configuration des options
@@ -1078,7 +882,6 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(buttonPointsAttributes);
     layout->addWidget(_buttonDrawMode);
     layout->addWidget(_buttonPixelSize);
-    layout->addWidget(_buttonConstructOctree);
     layout->addWidget(_cameraOptionsView);
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
@@ -1092,9 +895,6 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     connect(_pointOfViewMenu, SIGNAL(setPointOfView(DM_PointOfView*)), this, SLOT(setPointOfView(DM_PointOfView*)), Qt::DirectConnection);
 
     connect(_cameraOptionsView, SIGNAL(syncGraphics(bool)), this, SLOT(syncChanged(bool)));
-
-    connect(&m_octreeController, SIGNAL(octreeMustBeReconstructed(bool)), _buttonConstructOctree, SLOT(setEnabled(bool)));
-    connect(_buttonConstructOctree, SIGNAL(clicked()), this, SLOT(constructOctreeOfPoints()));
 
     connect(_graphicsOptionsView, SIGNAL(pointSizeChanged(double)), this, SLOT(changePixelSize(double)));
     connect(_graphicsOptionsView, SIGNAL(drawModeChanged(DM_GraphicsViewOptions::DrawFastestMode)), this, SLOT(changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode)));

@@ -157,9 +157,9 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
                             CT_Color &color = colorCloud->addColor();
 
-                            color.r = r;
-                            color.g = g;
-                            color.b = b;
+                            color.r() = r;
+                            color.g() = g;
+                            color.b() = b;
                         }
                     }
                 }

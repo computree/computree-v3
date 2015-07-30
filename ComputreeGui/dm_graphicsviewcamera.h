@@ -38,12 +38,13 @@ class DM_GraphicsViewCamera : public CameraInterface
 public:
     DM_GraphicsViewCamera();
 
-    virtual void syncWithCamera(const DM_GraphicsViewCamera *cam);
-
 public slots:
+    virtual void syncWithCamera(const DM_GraphicsViewCamera *cam) = 0;
     virtual void alignCameraToInvXAxis() = 0;
     virtual void alignCameraToInvYAxis() = 0;
     virtual void alignCameraToInvZAxis() = 0;
+
+    virtual void setPointOfView(double cx, double cy, double cz, double distance, double rx, double ry, double rz, double rw, bool redrawView = true) = 0;
 };
 
 #endif // DM_GRAPHICSVIEWCAMERA_H

@@ -16,8 +16,11 @@ void DM_AttributesNormalT<Type>::checkAndSetNecessaryCloudToDoc()
 {
     GDocumentViewForGraphics *doc = document();
 
+    // TODO
+    /*
     if(doc->normalCloudRegistered<Type>().data() == NULL)
         doc->setNormalCloudRegistered<Type>(PS_REPOSITORY->createNewNormalCloud(this->syncWithCloud()));
+        */
 }
 
 template<typename Type>

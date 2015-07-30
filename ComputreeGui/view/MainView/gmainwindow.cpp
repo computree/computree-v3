@@ -40,8 +40,6 @@
 #include "view/Steps/gstepviewdefault.h"
 #include "view/Steps/dm_steptreeviewdefaultproxymodel.h"
 
-#include "GraphicsViews/3D/g3dgraphicsview.h"
-
 #include "gaboutdialog.h"
 #include "gaboutpluginsdialog.h"
 #include "gineedhelpdialog.h"
@@ -61,6 +59,9 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QDialogButtonBox>
+#include <QToolTip>
 
 #include <QSpinBox>
 
@@ -69,6 +70,7 @@ GMainWindow::GMainWindow(QWidget *parent) :
     ui(new Ui::GMainWindow)
 {
     ui->setupUi(this);
+    m_inLoadConfiguration = false;
 
     initUI();
 
@@ -123,19 +125,24 @@ DM_MultipleItemDrawableModelManager* GMainWindow::getItemDrawableModelManager() 
     return _itemDrawableModelView;
 }
 
+GItemDrawableConfigurationManagerView *GMainWindow::getItemDrawableConfigurationManager() const
+{
+    return _itemDrawableConfigurationView;
+}
+
 void GMainWindow::newDocument()
 {
-    _docManagerView->new3DDocument(true);
+    _docManagerView->new3DDocument(true, m_inLoadConfiguration);
 }
 
 void GMainWindow::new2DDocument()
 {
-    _docManagerView->new2DDocument(true);
+    _docManagerView->new2DDocument(true, m_inLoadConfiguration);
 }
 
 void GMainWindow::newItemModelDocument()
 {
-    _docManagerView->newTreeViewDocument(true);
+    _docManagerView->newTreeViewDocument(true, m_inLoadConfiguration);
 }
 
 void GMainWindow::openFile()
@@ -454,6 +461,8 @@ void GMainWindow::initUI()
     _itemDrawableConfigurationView = new GItemDrawableConfigurationManagerView(this);
     ui->verticalLayoutItemDrawableConfigurationManager->addWidget(_itemDrawableConfigurationView);
 
+    m_itemDrawableConfigurationSyncWithGraphicsViewManager.setItemDrawableConfigurationView(_itemDrawableConfigurationView);
+
     _graphicsViewSyncGroupView = new GGraphicsViewSynchronizedGroup(this);
     ui->verticalLayoutGraphicsViewSyncGroup->addWidget(_graphicsViewSyncGroupView);
 
@@ -654,11 +663,26 @@ void GMainWindow::showMessageIfScriptBackupIsAvailable()
 
 void GMainWindow::loadConfiguration()
 {
+    m_inLoadConfiguration = true;
+
     CONFIG_FILE->beginGroup("MainWindow");
 
         _defaultOpenDirPath = CONFIG_FILE->value("defaultOpenDirPath", "").toString();
         _defaultSaveDirPath = CONFIG_FILE->value("defaultSaveDirPath", "").toString();
+
         restoreState(CONFIG_FILE->value("windowState").toByteArray());
+
+        if(!CONFIG_FILE->value("windowSize", QVariant()).isNull()) {
+            QSize size = CONFIG_FILE->value("windowSize", QSize()).toSize();
+            QPoint pos = CONFIG_FILE->value("windowPos", QPoint()).toPoint();
+            bool isMaximized = CONFIG_FILE->value("windowIsMaximized", false).toBool();
+
+            if(!isMaximized) {
+                setWindowState(Qt::WindowNoState);
+                resize(size);
+                move(pos);
+            }
+        }
 
         CONFIG_FILE->beginGroup("Document");
 
@@ -680,6 +704,10 @@ void GMainWindow::loadConfiguration()
             QString type =CONFIG_FILE->value("Type", "").toString();
             QByteArray geometry = CONFIG_FILE->value("Geometry", "").toByteArray();
 
+            CONFIG_FILE->endGroup(); // DocX
+            CONFIG_FILE->endGroup(); // Document
+            CONFIG_FILE->endGroup(); // MainWindow
+
             if(type == "2D")
                 new2DDocument();
             else if(type == "3D")
@@ -688,6 +716,10 @@ void GMainWindow::loadConfiguration()
                 newItemModelDocument();
             else
                 ok = false;
+
+            CONFIG_FILE->beginGroup("MainWindow");
+            CONFIG_FILE->beginGroup("Document");
+            CONFIG_FILE->beginGroup(QString("Doc%1").arg(i));
 
             DM_DocumentView *view = getDocumentManagerView()->getDocumentView(i);
 
@@ -717,6 +749,8 @@ void GMainWindow::loadConfiguration()
 
     loadPlugins();
 
+    m_inLoadConfiguration = false;
+
     if(getDocumentManagerView()->nbDocumentView() == 0)
         newDocument();
 
@@ -730,6 +764,9 @@ void GMainWindow::writeConfiguration()
     CONFIG_FILE->setValue("defaultOpenDirPath", _defaultOpenDirPath);
     CONFIG_FILE->setValue("defaultSaveDirPath", _defaultSaveDirPath);
     CONFIG_FILE->setValue("windowState", saveState());
+    CONFIG_FILE->setValue("windowSize", size());
+    CONFIG_FILE->setValue("windowPos", pos());
+    CONFIG_FILE->setValue("windowIsMaximized", windowState().testFlag(Qt::WindowMaximized));
 
     CONFIG_FILE->beginGroup("Document");
     CONFIG_FILE->setValue("nDocument", getDocumentManagerView()->nbDocumentView());
@@ -745,7 +782,7 @@ void GMainWindow::writeConfiguration()
         {
             if(!((GDocumentViewForGraphics*)docV)->getGraphicsList().isEmpty())
             {
-                if(((G3DGraphicsView*)((GDocumentViewForGraphics*)docV)->getGraphicsList().first())->is2DViewActived())
+                if((((GDocumentViewForGraphics*)docV)->getGraphicsList().first())->is2DView())
                     type = "2D";
                 else
                     type = "3D";

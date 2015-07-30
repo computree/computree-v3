@@ -42,13 +42,6 @@ public:
      * @brief Returns a const reference to the normal at index 'index'
      */
     virtual const CT_Normal& operator[](const size_t &index) const = 0;
-
-#ifdef USE_PCL
-    /**
-     * @brief Returns the pcl cloud of normals
-     */
-    virtual boost::shared_ptr< pcl::PointCloud<CT_Normal> > getPCLCloud() const = 0;
-#endif
 };
 
 #endif // CT_ABSTRACTNORMALCLOUD_H

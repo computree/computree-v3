@@ -85,7 +85,9 @@ void PB_StepFitCylinderOnCluster::compute()
         if (itemCpy_points != NULL)
         {           
             CT_Cylinder* itemCpy_cyl = CT_Cylinder::staticCreate3DCylinderFromPointCloud(_cyl_ModelName.completeName(), itemCpy_points->id(), resCpy_rpoints, *(itemCpy_points->getPointCloudIndex()), itemCpy_points->getCenterCoordinate());
-            grpCpy_grp->addItemDrawable(itemCpy_cyl);
+
+            if(itemCpy_cyl != NULL)
+                grpCpy_grp->addItemDrawable(itemCpy_cyl);
         }
 
     }    

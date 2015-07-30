@@ -2,6 +2,7 @@
 #define CT_STANDARDCLOUDSTDVECTORT_H
 
 #include "ct_cloud/abstract/ct_abstractcloudt.h"
+#include "ct_tools/pcl/ct_pcltools.h"
 #include <vector>
 
 /**
@@ -11,13 +12,9 @@ template<typename T>
 class CT_StandardCloudStdVectorT : virtual public CT_AbstractCloudT<T>
 {
 public:
-#ifdef USE_PCL
-    typedef typename std::vector<T, Eigen::aligned_allocator<T> >::iterator        Iterator;
-    typedef typename std::vector<T, Eigen::aligned_allocator<T> >::const_iterator  Const_Iterator;
-#else
     typedef typename std::vector<T>::iterator        Iterator;
     typedef typename std::vector<T>::const_iterator  Const_Iterator;
-#endif
+
     CT_StandardCloudStdVectorT(size_t size = 0);
 
     Iterator begin();
@@ -34,10 +31,6 @@ public:
     void addT(const T &val);
     T& addT();
 
-#ifdef USE_PCL
-    boost::shared_ptr< pcl::PointCloud<T> > getPCLCloud() const;
-#endif
-
     /**
      * @brief Copy data of other source
      * @warning No verification is defined for the validity of size and destIndex
@@ -48,11 +41,7 @@ public:
 
 protected:
 
-#ifdef USE_PCL
-    boost::shared_ptr< pcl::PointCloud<T> >   m_collection;
-#else
     std::vector<T>   m_collection;
-#endif
 
     template<typename A, typename CLOUD> friend class CT_GlobalCloudManagerT;
 
@@ -73,20 +62,12 @@ protected:
 
     inline const T& pTAt(const size_t &index) const
     {
-    #ifdef USE_PCL
-        return m_collection->points[index];
-    #else
         return m_collection[index];
-    #endif
     }
 
     inline T& pTAt(const size_t &index)
     {
-    #ifdef USE_PCL
-        return m_collection->points[index];
-    #else
         return m_collection[index];
-    #endif
     }
 };
 
@@ -96,11 +77,7 @@ class CT_StandardCloudStdVectorT<bool> : virtual public CT_AbstractCloudT<bool>
 {
 
 protected:
-#ifdef USE_PCL
-    boost::shared_ptr< pcl::PointCloud<qint8> >     m_collection;
-#else
     std::vector<qint8>                              m_collection;
-#endif
 };
 
 #include "ct_cloud/ct_standardcloudstdvectort.hpp"

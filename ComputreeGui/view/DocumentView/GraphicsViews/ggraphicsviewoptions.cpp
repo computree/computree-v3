@@ -74,17 +74,10 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->groupBoxCameraCoordinates, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxColorAndSize, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxDrawing, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
-    connect(ui->groupBoxOctree, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxOptim, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxView, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
 
-    connect(ui->checkBoxShowOctree, SIGNAL(toggled(bool)), this, SLOT(setShowOctree(bool)));
-    connect(ui->comboBoxOctreeNbCells, SIGNAL(currentTextChanged(QString)), this, SLOT(setOctreeNumberOfCells()));
-    connect(ui->doubleSpinBoxOctreeSizeOfCells, SIGNAL(valueChanged(double)), this, SLOT(setOctreeSizeOfCells(double)));
-
     connect(ui->spinBoxMinFPS, SIGNAL(valueChanged(int)), this, SLOT(setMinFPS(int)));
-
-    connect(ui->buttonGroupOctreeCellsType, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(setOctreeConstructionType(QAbstractButton*)));
 
     QString style = QString("QGroupBox::indicator {"
                                 "width: 12px;"
@@ -100,7 +93,6 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     ui->groupBoxCameraCoordinates->setStyleSheet(style);
     ui->groupBoxColorAndSize->setStyleSheet(style);
     ui->groupBoxDrawing->setStyleSheet(style);
-    ui->groupBoxOctree->setStyleSheet(style);
     ui->groupBoxOptim->setStyleSheet(style);
     ui->groupBoxView->setStyleSheet(style);
 
@@ -185,24 +177,6 @@ void GGraphicsViewOptions::updateUiFromOptions()
     case CameraInterface::ORTHOGRAPHIC : ui->radioButtonOrthographic->setChecked(true);
         break;
     }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    ui->comboBoxOctreeNbCells->setCurrentIndex(ui->comboBoxOctreeNbCells->findText(QString().setNum(_options->octreeNumberOfCells())));
-#else
-    ui->comboBoxOctreeNbCells->setCurrentText(QString().setNum(_options->octreeNumberOfCells()));
-#endif
-
-    ui->doubleSpinBoxOctreeSizeOfCells->setValue(_options->octreeSizeOfCells());
-
-    if(_options->octreeCellsConstructionType() == DM_GraphicsViewOptions::OctreeCellsByNumber) {
-        ui->radioButtonOctreeNbCells->setChecked(true);
-        setOctreeConstructionType(ui->radioButtonOctreeNbCells);
-    } else {
-        ui->radioButtonOctreeSizeOfCells->setChecked(true);
-        setOctreeConstructionType(ui->radioButtonOctreeSizeOfCells);
-    }
-
-    ui->checkBoxShowOctree->setChecked(_options->showOctree());
 
     ui->spinBoxMinFPS->setValue(_options->getMinFPS());
 }
@@ -314,34 +288,6 @@ void GGraphicsViewOptions::setCameraInfoPosition(QAbstractButton* button)
 void GGraphicsViewOptions::setCameraType(QAbstractButton *button)
 {
     _options->setCameraType((button == ui->radioButtonPerspective ? CameraInterface::PERSPECTIVE : CameraInterface::ORTHOGRAPHIC));
-}
-
-void GGraphicsViewOptions::setOctreeConstructionType(QAbstractButton *button)
-{
-    if(button == ui->radioButtonOctreeNbCells) {
-        ui->doubleSpinBoxOctreeSizeOfCells->setEnabled(false);
-        ui->comboBoxOctreeNbCells->setEnabled(true);
-        _options->setOctreeConstructionType(DM_GraphicsViewOptions::OctreeCellsByNumber);
-    } else {
-        ui->comboBoxOctreeNbCells->setEnabled(false);
-        ui->doubleSpinBoxOctreeSizeOfCells->setEnabled(true);
-        _options->setOctreeConstructionType(DM_GraphicsViewOptions::OctreeCellsBySize);
-    }
-}
-
-void GGraphicsViewOptions::setShowOctree(bool val)
-{
-    _options->setShowOctree(val);
-}
-
-void GGraphicsViewOptions::setOctreeNumberOfCells()
-{
-    _options->setOctreeNumberOfCells(ui->comboBoxOctreeNbCells->currentText().toInt());
-}
-
-void GGraphicsViewOptions::setOctreeSizeOfCells(double val)
-{
-    _options->setOctreeSizeOfCells(val);
 }
 
 void GGraphicsViewOptions::collapseOrExpandGroupBox(bool val)

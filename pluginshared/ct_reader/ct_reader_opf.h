@@ -3,8 +3,8 @@
 
 #include "ct_reader/abstract/ct_abstractreader.h"
 #include "ct_attributes/abstract/ct_abstractitemattribute.h"
-#include "ct_itemdrawable/ct_meshmodel.h"
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
+#include "ct_mesh/ct_mesh.h"
 #include "ct_point.h"
 
 #include "rapidxml/rapidxml_utils.hpp"
@@ -49,12 +49,6 @@ public:
     QHash<QString, CT_OPF_Attribute>    m_attributes;
 };
 
-class CT_OPF_Face
-{
-public:
-    size_t   m_pointsIndex[3];
-};
-
 class CT_OPF_Mesh
 {
 public:
@@ -73,7 +67,6 @@ private:
 
 class QXmlStreamReader;
 class CT_TOPFNodeGroup;
-class CT_StandardMeshModelOPFDrawManager;
 
 /**
  * @brief Read OPF File (http://amapstudio.cirad.fr/)
@@ -100,9 +93,6 @@ private:
     QHash<int, CT_OPF_Mesh*>                            m_meshes;
     QHash<int, CT_OPF_Mesh*>                            m_shapes;
     QList<CT_AbstractItemDrawableDrawManager*>          m_drawManager;
-    static CT_StandardMeshModelOPFDrawManager           *DRAW_MANAGER;
-    static CT_ItemDrawableConfiguration                 *DRAW_CONFIGURATION;
-    static int                                          N_READER_OPF;
 
     int                                                 m_totalNode;
 

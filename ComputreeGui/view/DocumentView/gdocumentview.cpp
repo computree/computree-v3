@@ -36,23 +36,20 @@
 
 GDocumentView::GDocumentView(GDocumentManagerView &manager, QString title) : DM_DocumentView(manager, title)
 {
-    _subWindow = new MyQMdiSubWindow(*this, &manager);
+    _subWindow = new MyQMdiSubWindow(*this);
     _subWindow->setMinimumSize(QSize(400, 100));
 
     connect(_subWindow, SIGNAL(toBeClosed(QCloseEvent*)), this, SLOT(closeEvent(QCloseEvent*)), Qt::DirectConnection);
 
     // un widget qui contient....
-    _centralWidget = new QWidget(_subWindow);
+    _centralWidget = new QWidget();
 
     QVBoxLayout *layoutCentralWidget = new QVBoxLayout();
     layoutCentralWidget->setContentsMargins(0, 0, 0, 0);
     layoutCentralWidget->setSpacing(3);
+    _centralWidget->setLayout(layoutCentralWidget);
 
-    delete getCentralWidget()->layout();
-
-    getCentralWidget()->setLayout(layoutCentralWidget);
-
-    _subWindow->setWidget(getCentralWidget());
+    _subWindow->setWidget(_centralWidget);
     _subWindow->setWindowTitle(title);
 }
 

@@ -116,9 +116,9 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                 else
                 {
                     const CT_Color &co = cc->constColorAt(itP.cIndex());
-                    r = (quint16)co.r / 255.0;
-                    g = (quint16)co.g / 255.0;
-                    b = (quint16)co.b / 255.0;
+                    r = (quint16)co.r() / 255.0;
+                    g = (quint16)co.g() / 255.0;
+                    b = (quint16)co.b() / 255.0;
 
                     txtStream << " " << r << " ";
                     txtStream << g << " ";

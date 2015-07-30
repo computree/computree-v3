@@ -158,7 +158,7 @@ void PB_ActionModifyClustersGroups02::init()
 
         _positionsChanged = true;
 
-        document()->fitToContent();
+        dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
     }
 
 }
@@ -272,14 +272,6 @@ bool PB_ActionModifyClustersGroups02::mousePressEvent(QMouseEvent *e)
         || (mode == GraphicsViewInterface::REMOVE)))
     {
         m_selectionRectangle = QRect(e->pos(), e->pos());
-
-        size_t size = view->countItems();
-        if(size == 0) {size = 1;}
-
-        if(size != view->selectBufferSize())
-        {
-            view->setSelectBufferSize(size*4);
-        }
 
         return true;
     }

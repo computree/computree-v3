@@ -107,11 +107,6 @@ public:
      */
     void setPointCloudIndexRegistered(CT_PCIR pcir);
 
-    /**
-     * @brief Change the transform matrix of this scene
-     */
-    void setTransformMatrix(const QMatrix4x4 &matrix);
-
 #ifdef USE_BOOST_OLD
 private:
 

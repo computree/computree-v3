@@ -144,7 +144,7 @@ void PB_ActionSegmentGaps::init()
         graphicsView()->addActionOptions(option);
 
         connect(option, SIGNAL(askForClusterCreation()), this, SLOT(addCluster()));
-        connect(option, SIGNAL(parametersChanged()), this, SLOT(redraw()));
+        connect(option, SIGNAL(parametersChanged()), this, SLOT(redrawOverlayAnd3D()));
         connect(option, SIGNAL(activeClusterChanged()), this, SLOT(changeActiveClusterColor()));
         connect(option, SIGNAL(undo()), this, SLOT(undo()));
         connect(option, SIGNAL(redo()), this, SLOT(redo()));
@@ -159,13 +159,18 @@ void PB_ActionSegmentGaps::init()
         option->setActiveCluster(0);
         changeActiveClusterColor();
 
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
-void PB_ActionSegmentGaps::redraw()
+void PB_ActionSegmentGaps::redrawOverlay()
 {
     document()->redrawGraphics();
+}
+
+void PB_ActionSegmentGaps::redrawOverlayAnd3D()
+{
+    setDrawing3DChanged();
 }
 
 void PB_ActionSegmentGaps::initClusters()
@@ -246,7 +251,7 @@ void PB_ActionSegmentGaps::initClusters()
     option->setClusterNumber(_lastCluster + 1);
     option->setActiveCluster(_lastCluster);
 
-    document()->redrawGraphics();
+    redrawOverlayAnd3D();
 }
 
 void PB_ActionSegmentGaps::drawLimit(PB_ActionSegmentGapsOptions *option, size_t maxCol, size_t maxRow)
@@ -530,7 +535,7 @@ void PB_ActionSegmentGaps::mergeClusters(int pixelNumber)
         addUndoContent(content);
     }
 
-    document()->redrawGraphics();
+    redrawOverlayAnd3D();
 }
 
 
@@ -560,7 +565,7 @@ void PB_ActionSegmentGaps::undo()
         }
         _redoList.append(undoContent);        
         option->setUndoRedo(!_undoList.isEmpty(), !_redoList.isEmpty());
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
@@ -591,7 +596,7 @@ void PB_ActionSegmentGaps::redo()
 
         _undoList.append(redoContent);
         option->setUndoRedo(!_undoList.isEmpty(), !_redoList.isEmpty());
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
@@ -632,7 +637,7 @@ bool PB_ActionSegmentGaps::mousePressEvent(QMouseEvent *e)
                 {
                     option->setActiveCluster(cluster);
                 }
-                document()->redrawGraphics();
+                redrawOverlayAnd3D();
                 return true;
             } else if (option->getMode() == PB_ActionSegmentGapsOptions::CHANGECENTERCELL)
             {
@@ -662,7 +667,7 @@ bool PB_ActionSegmentGaps::mousePressEvent(QMouseEvent *e)
                 if (option->getMode() == PB_ActionSegmentGapsOptions::DRAWLIMITS)
                 {
                     drawLimit(option, maxCol, maxRow);
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 } else if (option->getMode() == PB_ActionSegmentGapsOptions::FILLAREA)
                 {
@@ -679,7 +684,7 @@ bool PB_ActionSegmentGaps::mousePressEvent(QMouseEvent *e)
                         }
                     }
 
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 }
             }
@@ -716,7 +721,7 @@ bool PB_ActionSegmentGaps::mouseMoveEvent(QMouseEvent *e)
                 if (option->getMode() == PB_ActionSegmentGapsOptions::DRAWLIMITS)
                 {
                     drawLimit(option, maxCol, maxRow);
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 } else if (option->getMode() == PB_ActionSegmentGapsOptions::FILLAREA)
                 {
@@ -733,11 +738,11 @@ bool PB_ActionSegmentGaps::mouseMoveEvent(QMouseEvent *e)
                         }
                     }
 
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 }
             }
-            document()->redrawGraphics();
+            redrawOverlay();
         }
     }
     return false;

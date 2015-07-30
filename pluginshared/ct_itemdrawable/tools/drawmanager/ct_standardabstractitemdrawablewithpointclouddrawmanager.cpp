@@ -30,7 +30,7 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
 
     painter.setColor(Qt::white);
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool())
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool() && item.hasBoundingBox())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
         painter.drawPoint(item.minX(), item.minY(), item.minZ());
@@ -68,7 +68,7 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
         painter.drawLine(item.maxX(), item.maxY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
     }
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool())
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool() && item.hasBoundingBox())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
 

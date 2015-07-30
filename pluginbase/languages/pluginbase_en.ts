@@ -131,19 +131,30 @@
 <context>
     <name>PB_ActionManualInventory</name>
     <message>
-        <location filename="../actions/pb_actionmanualinventory.cpp" line="43"/>
-        <location filename="../actions/pb_actionmanualinventory.cpp" line="48"/>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="58"/>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="63"/>
         <source>Inventaire Manuel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionmanualinventory.cpp" line="245"/>
-        <source>ID = %1</source>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="244"/>
+        <source>Attributs du cercle actif :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionmanualinventory.cpp" line="247"/>
-        <source>Espèce = %1</source>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="246"/>
+        <source>H = %1 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="248"/>
+        <source>D = %1 cm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="257"/>
+        <location filename="../actions/pb_actionmanualinventory.cpp" line="286"/>
+        <source>%1 = %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -155,13 +166,8 @@
         <translation type="unfinished">Configuration</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmanualinventoryattributesdialog.ui" line="26"/>
-        <source>ID terrain</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../views/actions/pb_actionmanualinventoryattributesdialog.ui" line="33"/>
-        <source>Espèce</source>
+        <location filename="../views/actions/pb_actionmanualinventoryattributesdialog.ui" line="41"/>
+        <source>&lt;b&gt;Saisie des attributs supplémentaires :&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -173,8 +179,13 @@
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="96"/>
-        <source>Choix diamètre 1.30 m</source>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="86"/>
+        <source>Séléction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="99"/>
+        <source>Choix cercle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -183,18 +194,80 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="126"/>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="205"/>
         <source>Synchro. Caméra</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="143"/>
-        <source>Afficher Scènes</source>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="262"/>
+        <source>Cercles :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="150"/>
-        <source>Afficher Données</source>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="269"/>
+        <source>Actifs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="279"/>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="326"/>
+        <source>Autres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="289"/>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="333"/>
+        <source>Poubelle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="309"/>
+        <source>Scènes :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="316"/>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="347"/>
+        <source>Attributs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.ui" line="354"/>
+        <source>Validation Auto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="14"/>
+        <source>Séléction de la scène active, sans modification [S]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="15"/>
+        <source>Choix d&apos;un cercle pour une scène [D]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="16"/>
+        <source>Ouverture de la saisie des attributs pour une scène [F] ou [C] pour la scène active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="17"/>
+        <source>Séléctionne le cercle supérieur (CTRL MOLETTE +)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="18"/>
+        <source>Séléctionne le cercle inférieur (CTRL MOLETTE -)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmanualinventoryoptions.cpp" line="19"/>
+        <source>Valide la scène active [V] ou [Fin]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -279,47 +352,52 @@
         <translation>Only selected</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="23"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.ui" line="222"/>
+        <source>Attributs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="24"/>
         <source>Afficher les lignes reliant les items affiliés</source>
         <translation>Show lines connecting joined items</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="24"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="25"/>
         <source>N&apos;afficher que les items sélectionnés (de référence et à affilier</source>
         <translation>Display only selected items (of reference and to join)</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="25"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="26"/>
         <source>Afficher les centres des items</source>
         <translation>Show centers of items</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="26"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="27"/>
         <source>Afficher les items</source>
         <translation>Show items</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="27"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="28"/>
         <source>Afficher les items de référence</source>
         <translation>Show item of reference</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="28"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="29"/>
         <source>Afficher les items à affilier</source>
         <translation>Show item to join</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="29"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="30"/>
         <source>Affilier l&apos;item de référence et l&apos;item à affilier sélectionnés (A)</source>
         <translation>Show the item of reference and the item to join selected (A)</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="30"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="31"/>
         <source>Supprimer l&apos;affiliation de l&apos;item à affilier sélectionné (Z)</source>
         <translation>Delete the join of the item selected (Z)</translation>
     </message>
     <message>
-        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="32"/>
+        <location filename="../views/actions/pb_actionmodifyaffiliationsoptions.cpp" line="33"/>
         <source>Activer la selection (S) :
 - Clic gauche = sélectionner un item de référence
 - Clic droit  = sélectionner un item à affilier</source>
@@ -341,18 +419,41 @@
         <translation type="unfinished">Elements selection</translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="524"/>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="533"/>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="566"/>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="575"/>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="648"/>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="683"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="507"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="516"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="549"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="558"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="631"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="666"/>
         <source>Pas de liste pour la position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="738"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups.cpp" line="721"/>
         <source>Positions invalides</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_ActionModifyClustersGroups02</name>
+    <message>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="59"/>
+        <source>Sélection</source>
+        <translation type="unfinished">Selection</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="64"/>
+        <source>Sélection d&apos;éléments</source>
+        <translation type="unfinished">Elements selection</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="580"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="589"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="617"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="626"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="694"/>
+        <location filename="../actions/pb_actionmodifyclustersgroups02.cpp" line="729"/>
+        <source>Pas de liste pour la position</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -480,10 +581,142 @@
     </message>
 </context>
 <context>
+    <name>PB_ActionModifyClustersGroupsOptions02</name>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="20"/>
+        <source>Sélection</source>
+        <translation type="unfinished">Selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="87"/>
+        <source>Groupe A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="132"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="197"/>
+        <source>visible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="155"/>
+        <source>Groupe Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="229"/>
+        <source>Autres groupes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="239"/>
+        <source>? (en attente)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="249"/>
+        <source>Poubelle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="305"/>
+        <source>Sélectionner un élément</source>
+        <translation type="unfinished">Select an element</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="308"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="338"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="372"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="402"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="429"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="514"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="537"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="560"/>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="583"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="335"/>
+        <source>Sélectionner de multiple éléments</source>
+        <translation type="unfinished">Select multiple elements</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="369"/>
+        <source>Remplacer la séléction</source>
+        <translation type="unfinished">Replace selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="399"/>
+        <source>Ajouter à la séléction</source>
+        <translation type="unfinished">Add to selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="426"/>
+        <source>Supprimer de la séléction</source>
+        <translation type="unfinished">Remove from selection</translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.ui" line="624"/>
+        <source>Afficher validés</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="13"/>
+        <source>Choisit le groupe A [double-clic GAUCHE]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="14"/>
+        <source>Choisit le groupe B [double-clic DROIT]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="15"/>
+        <source>Etendre la séléction [SHIFT]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="16"/>
+        <source>Maintenir [CTRL] enfoncé pour activer temporairement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="18"/>
+        <source>Affecte les points au groupe A [A]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="19"/>
+        <source>Affecte les points au groupe Z [Z]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="20"/>
+        <source>Affecte les points au groupe ? [E]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="21"/>
+        <source>Affecte les points à la poubelle [R]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="23"/>
+        <source>Touche [espace] pour changer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifyclustersgroupsoptions02.cpp" line="25"/>
+        <source>Valider le groupe Z [V]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PB_ActionModifyPositions2D</name>
     <message>
-        <location filename="../actions/pb_actionmodifypositions2d.cpp" line="34"/>
-        <location filename="../actions/pb_actionmodifypositions2d.cpp" line="39"/>
+        <location filename="../actions/pb_actionmodifypositions2d.cpp" line="36"/>
+        <location filename="../actions/pb_actionmodifypositions2d.cpp" line="41"/>
         <source>Modifier positions 2D</source>
         <translation type="unfinished"></translation>
     </message>
@@ -517,27 +750,37 @@
     </message>
     <message>
         <location filename="../views/actions/pb_actionmodifypositions2doptions.ui" line="243"/>
-        <source>Dessiner Plan</source>
+        <source>Dessiner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../views/actions/pb_actionmodifypositions2doptions.ui" line="250"/>
+        <source>Plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../views/actions/pb_actionmodifypositions2doptions.ui" line="260"/>
+        <source>Lignes</source>
+        <translation type="unfinished">Lines</translation>
+    </message>
+    <message>
         <location filename="../views/actions/pb_actionmodifypositions2doptions.cpp" line="14"/>
-        <source>Déplacement normal dans la vue</source>
+        <source>Déplacement normal dans la vue [F]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../views/actions/pb_actionmodifypositions2doptions.cpp" line="15"/>
-        <source>Modification d&apos;une position [CTRL maintenu]</source>
+        <source>Modification d&apos;une position [D]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../views/actions/pb_actionmodifypositions2doptions.cpp" line="16"/>
-        <source>Ajout d&apos;une position [SHIFT maintenu]</source>
+        <source>Ajout d&apos;une position [A]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../views/actions/pb_actionmodifypositions2doptions.cpp" line="17"/>
-        <source>Suppression d&apos;une position [SUPPR avant chaque suppression]</source>
+        <source>Suppression d&apos;une position [S]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -609,22 +852,22 @@
 <context>
     <name>PB_ActionSegmentCrowns</name>
     <message>
-        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="599"/>
+        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="604"/>
         <source>Caméra centrée en</source>
         <translation>Camera center on</translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="888"/>
+        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="893"/>
         <source>Cluster = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="889"/>
+        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="894"/>
         <source>MNS : Z = %1 m</source>
         <translation>DSM : Z = %1 m</translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="890"/>
+        <location filename="../actions/pb_actionsegmentcrowns.cpp" line="895"/>
         <source>Densité = %1 pts</source>
         <translation>Density = %1 pts</translation>
     </message>
@@ -819,7 +1062,7 @@ If pressed: the active cluster is drawn in red, even in cluster mode</translatio
 <context>
     <name>PB_ActionSegmentGaps</name>
     <message>
-        <location filename="../actions/pb_actionsegmentgaps.cpp" line="644"/>
+        <location filename="../actions/pb_actionsegmentgaps.cpp" line="649"/>
         <source>Caméra centrée en</source>
         <translation>Camera centered coordinate</translation>
     </message>
@@ -1281,12 +1524,12 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_ActionSelectItemDrawableGV</name>
     <message>
-        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="26"/>
+        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="25"/>
         <source>Sélection</source>
         <translation>Selection</translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="31"/>
+        <location filename="../actions/pb_actionselectitemdrawablegv.cpp" line="30"/>
         <source>Sélection d&apos;éléments</source>
         <translation>Elements selection</translation>
     </message>
@@ -1650,22 +1893,22 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_LASExporter</name>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="41"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="46"/>
         <source>Fichiers LAS .las</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="59"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="64"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation type="unfinished">- No item of type CT_IAccessPointCloud</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="81"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="86"/>
         <source>- Aucun points à exporter</source>
         <translation type="unfinished">- No point to export</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="175"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="245"/>
         <source>Problème lors de l&apos;écriture de l&apos;en-tête du fichier</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1681,6 +1924,29 @@ In 3D mode, the tool only works on selected cells</translation>
         <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="44"/>
         <source>Aucun ItemDrawable du type CT_MeshModel</source>
         <translation>No ItemDrawable of type CT_MeshModel</translation>
+    </message>
+</context>
+<context>
+    <name>PB_MultiXYBExporter</name>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="40"/>
+        <source>Fichiers .xyb (1 fichier/scène)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="58"/>
+        <source>- Aucun ItemDrawable du type CT_Scene</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="120"/>
+        <source>Fichier %1 créé</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="123"/>
+        <source>Errreur : impossible de créer le fichier %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1912,6 +2178,80 @@ In 3D mode, the tool only works on selected cells</translation>
         <location filename="../step/pb_stepcompare3dgridscontents.cpp" line="86"/>
         <source>Grille</source>
         <translation type="unfinished">Grid</translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepComputeCrownProjection</name>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="36"/>
+        <source>Projection de houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="42"/>
+        <source>No detailled description for this step</source>
+        <translation type="unfinished">No detailled description for this step</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="63"/>
+        <source>Scène(s)</source>
+        <translation type="unfinished">Scene(s)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="65"/>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="77"/>
+        <source>Groupe</source>
+        <translation type="unfinished">Group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="66"/>
+        <source>Scène</source>
+        <translation type="unfinished">Scene</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="75"/>
+        <source>Enveloppe Convexe au sol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="76"/>
+        <source>Enveloppe Directionnelle au sol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="79"/>
+        <source>Enveloppe Convexe d&apos;une tranche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="80"/>
+        <source>Enveloppe Directionnelle d&apos;une tranche</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="88"/>
+        <source>Calculer les enveloppes convexes par tranches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="89"/>
+        <source>Espacement des tranches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="90"/>
+        <source>Epaisseur des tranches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="91"/>
+        <source>Calculer les enveloppes directionnelles par tranches</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcomputecrownprojection.cpp" line="92"/>
+        <source>Nombre de directions</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2396,17 +2736,17 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
 <context>
     <name>PB_StepGenericExporter</name>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="166"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="173"/>
         <source>Résultat</source>
         <translation>Result</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="172"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="179"/>
         <source>Item</source>
         <translation>Item</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="210"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="217"/>
         <source>Exporter sous...</source>
         <translation>Export as...</translation>
     </message>
@@ -2414,7 +2754,7 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
 <context>
     <name>PB_StepGenericLoadFile</name>
     <message>
-        <location filename="../step/pb_stepgenericloadfile.cpp" line="55"/>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="74"/>
         <source>Charge un fichier du type</source>
         <translation>Load a file of type</translation>
     </message>
@@ -2614,43 +2954,43 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
 <context>
     <name>PB_StepLoadMultiXYBFiles</name>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="52"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="51"/>
         <source>Chargement d&apos;une liste de fichiers xyb</source>
         <translation>Loading a list of xyb files</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
         <source>IndividualScenes</source>
         <translation>Individual Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
         <source>g</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
         <source>IndividualScene</source>
         <translation>Individual Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
         <source>IndividualIntensity</source>
         <translation>Individual Intensity</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="76"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
         <source>ScanPosition</source>
         <translation>Scanner</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="78"/>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="80"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="77"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="79"/>
         <source>MergedScene</source>
         <translation>Merged Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="79"/>
+        <location filename="../step/pb_steploadmultixybfiles.cpp" line="78"/>
         <source>gm</source>
         <translation>Group</translation>
     </message>
@@ -2709,166 +3049,259 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
 <context>
     <name>PB_StepLoadPositionsForMatching</name>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="51"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="54"/>
         <source>Charge deux fichiers de positions pour mise en correspondance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="57"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="60"/>
         <source>No detailled description for this step</source>
         <translation type="unfinished">No detailled description for this step</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="87"/>
-        <source>Positions de référence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="88"/>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="95"/>
-        <source>Groupe</source>
-        <translation type="unfinished">Group</translation>
-    </message>
-    <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="89"/>
-        <source>Position de référence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../step/pb_steploadpositionsformatching.cpp" line="90"/>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="97"/>
-        <source>Valeur</source>
+        <source>Positions de référence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadpositionsformatching.cpp" line="91"/>
         <location filename="../step/pb_steploadpositionsformatching.cpp" line="98"/>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
+        <source>Groupe</source>
+        <translation type="unfinished">Group</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadpositionsformatching.cpp" line="92"/>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="99"/>
-        <source>IDplot</source>
+        <source>Position de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="93"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="100"/>
+        <source>Valeur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadpositionsformatching.cpp" line="94"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="101"/>
+        <source>IDtree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="95"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="102"/>
+        <source>IDplot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="97"/>
         <source>Positions à transformer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="96"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="99"/>
         <source>Position à transformer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="168"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="171"/>
         <source>Placette en cours de traitement : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="227"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="230"/>
         <source>Ligne %1 du fichier REF non valide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpositionsformatching.cpp" line="296"/>
+        <location filename="../step/pb_steploadpositionsformatching.cpp" line="299"/>
         <source>Ligne %1 du fichier TRANS non valide</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepLoadTreeMap</name>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="45"/>
+        <source>Charge une tree map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="51"/>
+        <source>No detailled description for this step</source>
+        <translation type="unfinished">No detailled description for this step</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="79"/>
+        <source>Positions de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="80"/>
+        <source>Groupe</source>
+        <translation type="unfinished">Group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="81"/>
+        <source>Position de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="82"/>
+        <source>DBH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="83"/>
+        <source>IDtree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="84"/>
+        <source>IDplot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="93"/>
+        <source>Choix de la placette</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="145"/>
+        <source>Placette en cours de traitement : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="161"/>
+        <source>Champ IDtree non défini</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="162"/>
+        <source>Champ X non défini</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="163"/>
+        <source>Champ Y non défini</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="164"/>
+        <source>Champ DBH non défini</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadtreemap.cpp" line="215"/>
+        <source>Ligne %1 du fichier REF non valide</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PB_StepManualInventory</name>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="43"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="49"/>
         <source>Séléction d&apos;un dbh / scène</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="57"/>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="58"/>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="59"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="63"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="64"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="65"/>
         <source>MNT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="61"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="67"/>
         <source>Scènes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="63"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="69"/>
         <source>Groupe de base</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="64"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="70"/>
         <source>Niveau Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="65"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="71"/>
         <source>Cluster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="66"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="72"/>
         <source>Cercle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="67"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="73"/>
         <source>Scène</source>
         <translation type="unfinished">Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="75"/>
-        <source>Cercle du DHP</source>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="74"/>
+        <source>Position2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="76"/>
-        <source>Attributs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="80"/>
-        <source>DHP (cm)</source>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="82"/>
+        <source>Ne pas accepter de cercle plus loin que :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_stepmanualinventory.cpp" line="83"/>
+        <source>Choisir préférenciellement le diamètre à + ou - :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="117"/>
+        <source>Cercle du DHP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="118"/>
+        <source>Attributs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="122"/>
+        <source>DHP (cm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="125"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="86"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="128"/>
         <source>Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="89"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="131"/>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="134"/>
+        <source>H130</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="137"/>
         <source>Hauteur</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="92"/>
-        <source>Espèce</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="95"/>
-        <source>IDterrain</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="252"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="358"/>
         <source>Mode manuel</source>
         <translation type="unfinished">Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmanualinventory.cpp" line="252"/>
+        <location filename="../step/pb_stepmanualinventory.cpp" line="358"/>
         <source>Bienvenue dans le mode manuel de cette étape !</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3203,59 +3636,131 @@ Leave the mouse over a button to get info.</translation>
 <context>
     <name>PB_StepMergeClustersFromPositions</name>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="48"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="52"/>
         <source>Regroupe des clusters à partir de positions 2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="54"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="58"/>
         <source>Cette étape permet de générer une scène pour chaque positions 2D fournie.&lt;br&gt;Chaque cluster d&apos;entrée est affilié à la position la plus proche (en 2D XY).&lt;br&gt;&lt;br&gt;Ensuite une action interactive permet de corriger cette attribution automatique.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="80"/>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="85"/>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="94"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="84"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="89"/>
         <source>Groupe</source>
         <translation type="unfinished">Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="81"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="85"/>
         <source>Cluster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="83"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="87"/>
         <source>Positions 2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="86"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="90"/>
         <source>Position 2D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="93"/>
         <source>Scènes segmentées</source>
-        <translation type="unfinished">Segmented scenes</translation>
+        <translation type="obsolete">Segmented scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="95"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="111"/>
         <source>Scène segmentée</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="104"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="149"/>
         <source>Correction interactive ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="269"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="331"/>
         <source>Mode manuel</source>
         <translation type="unfinished">Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="269"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions.cpp" line="331"/>
+        <source>Bienvenue dans le mode manuel de cette étape de filtrage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PB_StepMergeClustersFromPositions02</name>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="59"/>
+        <source>Regroupe des clusters à partir de positions 2D (V2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="65"/>
+        <source>Cette étape permet de générer une scène pour chaque positions 2D fournie.&lt;br&gt;Chaque cluster d&apos;entrée est affilié à la position la plus proche (en 2D XY).&lt;br&gt;&lt;br&gt;Ensuite une action interactive permet de corriger cette attribution automatique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="91"/>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="96"/>
+        <source>Groupe</source>
+        <translation type="unfinished">Group</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="92"/>
+        <source>Cluster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="94"/>
+        <source>Positions 2D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="97"/>
+        <source>Position 2D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="99"/>
+        <source>MNT (Raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="102"/>
+        <source>Modèle Numérique de Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="114"/>
+        <source>Scène segmentée</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="117"/>
+        <source>Z MNT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="125"/>
+        <source>Hauteur de référence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="126"/>
+        <source>Correction interactive ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="410"/>
+        <source>Mode manuel</source>
+        <translation type="unfinished">Manual mode</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepmergeclustersfrompositions02.cpp" line="410"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3286,12 +3791,12 @@ Leave the mouse over a button to get info.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmodifypositions2d.cpp" line="136"/>
+        <location filename="../step/pb_stepmodifypositions2d.cpp" line="137"/>
         <source>Mode manuel</source>
         <translation type="unfinished">Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepmodifypositions2d.cpp" line="136"/>
+        <location filename="../step/pb_stepmodifypositions2d.cpp" line="137"/>
         <source>Bienvenue dans le mode manuel de cette étape</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3845,62 +4350,66 @@ Keep mouse on a button to obtain more informations.</translation>
 <context>
     <name>PB_StepSetAffiliationIDFromReference</name>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="63"/>
         <source>Mise en correspondance d&apos;ID de deux résultats</source>
-        <translation>Correspondance between ID&apos;s of two results</translation>
+        <translation type="vanished">Correspondance between ID&apos;s of two results</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="68"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="67"/>
         <source>No detailled description for this step</source>
         <translation>No detailled description for this step</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="81"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="80"/>
         <source>Résultat de référence</source>
         <translation>Reference result</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="83"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="82"/>
         <source>Groupe de référence</source>
         <translation>Reference group</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="84"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="104"/>
         <source>ID de référence</source>
         <translation>Reference ID</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="85"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="83"/>
         <source>Item de référence</source>
         <translation>Reference Item</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="87"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="85"/>
         <source>Résultat à affilier</source>
         <translation>Result to affiliate</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="89"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="87"/>
         <source>Groupe à affilier</source>
         <translation>Group to affiliate</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="90"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="107"/>
         <source>ID à affilier</source>
         <translation>ID to affiliate</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="91"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="88"/>
         <source>Item à affilier</source>
         <translation>ID to affiliate</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="98"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="62"/>
+        <source>Correspondance entre deux résultats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="95"/>
         <source>Affiliation par position 2D (3D sinon)</source>
         <translation>Use 2D position for affiliation (3D else)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="99"/>
+        <location filename="../step/pb_stepsetaffiliationidfromreference.cpp" line="96"/>
         <source>Correction des affiliations en mode manuel</source>
         <translation>Correct affiliation manually</translation>
     </message>
@@ -4176,22 +4685,22 @@ Please select parameters for slicing.</translation>
 <context>
     <name>PB_XYBExporter</name>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="41"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="45"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation>XYB Files (Points binary encoded)</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="59"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="63"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation>- No item of type CT_IAccessPointCloud</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="81"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="85"/>
         <source>- Aucun points à exporter</source>
         <translation>- No point to export</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="198"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="139"/>
         <source>Scanners</source>
         <translation></translation>
     </message>
@@ -4199,52 +4708,52 @@ Please select parameters for slicing.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="143"/>
+        <location filename="../pb_steppluginmanager.cpp" line="146"/>
         <source>Plugin_Base initialized</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="205"/>
+        <location filename="../pb_steppluginmanager.cpp" line="208"/>
         <source>Nuages de points</source>
         <translation>Points clouds</translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="212"/>
+        <location filename="../pb_steppluginmanager.cpp" line="216"/>
         <source>Voxels</source>
         <translation>Voxels</translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="219"/>
+        <location filename="../pb_steppluginmanager.cpp" line="223"/>
         <source>Houppiers, Trouées</source>
         <translation>Crowns, Gaps</translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="224"/>
+        <location filename="../pb_steppluginmanager.cpp" line="229"/>
         <source>Gestion des items</source>
         <translation>Items management</translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="237"/>
+        <location filename="../pb_steppluginmanager.cpp" line="242"/>
         <source>Traitement par lots</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="247"/>
+        <location filename="../pb_steppluginmanager.cpp" line="252"/>
         <source>Test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="250"/>
+        <location filename="../pb_steppluginmanager.cpp" line="255"/>
         <source>Etapes de chargement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="336"/>
+        <location filename="../pb_steppluginmanager.cpp" line="345"/>
         <source>Grilles 3D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="480"/>
+        <location filename="../pb_steppluginmanager.cpp" line="489"/>
         <source>Etapes de chargement (Readers)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4253,7 +4762,7 @@ Please select parameters for slicing.</translation>
         <translation type="vanished">Script loops</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="96"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="143"/>
         <source>Attributs</source>
         <translation type="unfinished"></translation>
     </message>

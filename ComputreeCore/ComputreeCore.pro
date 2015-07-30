@@ -1,5 +1,5 @@
 include(../shared.pri)
-include($${PLUGIN_SHARED_DIR}/include.pri)
+#include(../include_all.pri)
 
 CONFIG -= plugin
 TARGET = CompuTreeCore

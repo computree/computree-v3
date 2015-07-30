@@ -34,8 +34,6 @@
 #include "dm_graphicsviewcamera.h"
 #include "tools/attributes/worker/dm_attributesmanager.h"
 
-#include "dm_colorvbomanager.h"
-
 class DM_GraphicsView : public GraphicsViewInterface
 {
     Q_INTERFACES(GraphicsViewInterface)
@@ -45,10 +43,7 @@ public:
     virtual ~DM_GraphicsView();
 
     virtual void setDocumentView(const DM_DocumentView *doc);
-    DM_DocumentView& getDocumentView() const;
-
-    void setColorVBOManager(const DM_ColorVBOManager *cVbo);
-    DM_ColorVBOManager* colorVBOManager() const;
+    DM_DocumentView* getDocumentView() const;
 
     void setAttributesManager(const DM_AttributesManager *manager);
     DM_AttributesManager* attributesManager() const;
@@ -66,18 +61,25 @@ public:
     virtual void lockPaint() = 0;
     virtual void unlockPaint() = 0;
 
-    virtual void redraw(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL) = 0;
+    virtual void redraw() = 0;
+
+    virtual void updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable*> &list) = 0;
+
+    virtual void updateItemDrawablesThatColorWasModified() = 0;
+    virtual void dirtyColorsOfItemDrawablesWithPoints() = 0;
 
     virtual DM_GraphicsViewCamera* getCamera() const = 0;
 
     virtual void takeAndSaveScreenshot() = 0;
+
+    virtual void getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
+    virtual void getBoundingBoxOfAllItemDrawableSelectedInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
 
 protected:
 
     DM_DocumentView         *_document;
     DM_GraphicsViewOptions  *_options;
     DM_AttributesManager    *m_attributesManager;
-    DM_ColorVBOManager      *m_vboManager;
 };
 
 #endif // DM_GRAPHICSVIEW_H

@@ -73,7 +73,8 @@ public:
     void addUndoContent(UndoRedoContent* content);
 
 public slots:
-    void redraw();
+    void redrawOverlay();
+    void redrawOverlayAnd3D();
     void addCluster(bool updateUi = true);
     void changeActiveClusterColor();
     void undo();

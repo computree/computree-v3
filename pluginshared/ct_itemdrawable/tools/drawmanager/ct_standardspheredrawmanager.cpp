@@ -17,5 +17,5 @@ void CT_StandardSphereDrawManager::draw(GraphicsViewInterface &view, PainterInte
 
     CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(view, painter, itemDrawable);
 
-    painter.drawPartOfSphere(item.getCenterX(), item.getCenterY(), item.getCenterZ(), item.getRadius(), 0, 360, 0, 360, false);
+    painter.drawPartOfSphere(item.getCenterX(), item.getCenterY(), item.getCenterZ(), item.getRadius(), -M_PI, M_PI, -M_PI, M_PI, true);
 }

@@ -3,6 +3,8 @@
 
 #include "ct_itemdrawable/ct_tnodegroup.h"
 
+#include <QMatrix4x4>
+
 class CT_OutOPFNodeGroupModel;
 
 /**
@@ -50,11 +52,15 @@ public:
      * @brief Set the matrix readed in OPF File
      */
     void setOPFMatrix(const QMatrix4x4 &matrix);
+    QMatrix4x4 opfMatrix() const;
 
     /**
      * @brief Returns the specific model for CT_TOPFNodeGroup
      */
     CT_OutOPFNodeGroupModel* opfModel() const;
+
+private:
+    QMatrix4x4  m_opfMatrix;
 };
 
 #endif // CT_TOPFNODEGROUP_H

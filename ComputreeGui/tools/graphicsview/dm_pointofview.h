@@ -35,21 +35,18 @@ class DM_PointOfView
 {
 public:
     DM_PointOfView();
-    DM_PointOfView(QString name, double x, double y, double z, double rotX, double rotY, double rotZ);
-    DM_PointOfView(QString name, double x, double y, double z, double rotX, double rotY, double rotZ, double q0, double q1, double q2, double q3);
+    DM_PointOfView(QString name, double cx, double cy, double cz, double distance, double q0, double q1, double q2, double q3);
     DM_PointOfView(const DM_PointOfView &pof);
 
     inline QString name() const { return _name; }
     inline double x() const { return _x; }
     inline double y() const { return _y; }
     inline double z() const { return _z; }
+    inline double distance() const { return _d; }
     inline double q0() const { return _q0; }
     inline double q1() const { return _q1; }
     inline double q2() const { return _q2; }
     inline double q3() const { return _q3; }
-    inline double rotX() const { return _rotX; }
-    inline double rotY() const { return _rotY; }
-    inline double rotZ() const { return _rotZ; }
 
     QString toString() const;
     QString toSaveString() const;
@@ -63,10 +60,7 @@ private:
     double _x;
     double _y;
     double _z;
-    double _rotX;
-    double _rotY;
-    double _rotZ;
-    bool   _quaternionInformation;
+    double _d;
     double _q0;
     double _q1;
     double _q2;

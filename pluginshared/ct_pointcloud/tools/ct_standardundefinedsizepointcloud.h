@@ -3,7 +3,7 @@
 
 #include "ct_defines.h"
 #include "ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.h"
-#include "ct_cloud/ct_standardcloudstdvectort.h"
+#include "ct_pointcloud/ct_internalpointcloud.h"
 
 class CT_CoordinateSystemManager;
 
@@ -53,14 +53,14 @@ public:
 private:
 
     size_t                                  m_bIndex;
-    CT_PointCloudStdVector                  *m_pc;
+    CT_InternalPointCloud                   *m_pc;
     std::vector<GLuint>                     m_csIndexes;
     CT_CoordinateSystemManager              *m_csm;
 
 protected:
     friend class CT_GlobalPointCloudManager;
 
-    CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_PointCloudStdVector *cloud);
+    CT_StandardUndefinedSizePointCloud(const size_t &beginIndex, const CT_InternalPointCloud *cloud);
 
     /**
      * @brief Returns global indexes of coordinate system of points added

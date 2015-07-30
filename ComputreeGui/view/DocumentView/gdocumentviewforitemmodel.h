@@ -37,9 +37,7 @@ public:
     void endRemoveMultipleItemDrawable();
 
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL) { Q_UNUSED(type) }
-    void fitToContent() {}
-    void fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max) {Q_UNUSED(min); Q_UNUSED(max);}
+    void redrawGraphics() {}
     void lock() {}
     void unlock() {}
 

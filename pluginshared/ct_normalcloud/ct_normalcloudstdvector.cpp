@@ -50,10 +50,3 @@ CT_AbstractCloud* CT_NormalCloudStdVector::copy() const
 
     return cloud;
 }
-
-#ifdef USE_PCL
-boost::shared_ptr< pcl::PointCloud<CT_Normal> > CT_NormalCloudStdVector::getPCLCloud() const
-{
-    return CT_StandardCloudStdVectorT<CT_Normal>::getPCLCloud();
-}
-#endif

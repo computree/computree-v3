@@ -83,11 +83,9 @@ void PB_ActionSlicePointCloud::init()
         // is managed automatically
         registerOption(option);
 
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
-
-
 
 void PB_ActionSlicePointCloud::update()
 {
@@ -96,7 +94,17 @@ void PB_ActionSlicePointCloud::update()
     _dataContainer->_thickness = option->getThickness();
     _dataContainer->_spacing = option->getSpacing();
 
+    redrawOverlayAnd3D();
+}
+
+void PB_ActionSlicePointCloud::redrawOverlay()
+{
     document()->redrawGraphics();
+}
+
+void PB_ActionSlicePointCloud::redrawOverlayAnd3D()
+{
+    setDrawing3DChanged();
 }
 
 bool PB_ActionSlicePointCloud::mousePressEvent(QMouseEvent *e)

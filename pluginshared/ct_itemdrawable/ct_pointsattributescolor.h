@@ -14,8 +14,7 @@ public:
 
     CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
-                             CT_PCIR pcir,
-                             bool withAlphaInformation);
+                             CT_PCIR pcir);
 
     CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
@@ -24,8 +23,7 @@ public:
 
     CT_PointsAttributesColor(const QString &modelName,
                              const CT_AbstractResult *result,
-                             CT_PCIR pcir,
-                             bool withAlphaInformation);
+                             CT_PCIR pcir);
 
     CT_PointsAttributesColor(const QString &modelName,
                              const CT_AbstractResult *result,

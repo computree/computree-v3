@@ -140,7 +140,7 @@ void PB_ActionSegmentCrowns::init()
         graphicsView()->addActionOptions(option);
 
         connect(option, SIGNAL(askForClusterCreation()), this, SLOT(addCluster()));
-        connect(option, SIGNAL(parametersChanged()), this, SLOT(redraw()));
+        connect(option, SIGNAL(parametersChanged()), this, SLOT(redrawOverlayAnd3D()));
         connect(option, SIGNAL(activeClusterChanged()), this, SLOT(changeActiveClusterColor()));
         connect(option, SIGNAL(undo()), this, SLOT(undo()));
         connect(option, SIGNAL(redo()), this, SLOT(redo()));
@@ -155,13 +155,18 @@ void PB_ActionSegmentCrowns::init()
         option->setActiveCluster(0);
         changeActiveClusterColor();
 
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
-void PB_ActionSegmentCrowns::redraw()
+void PB_ActionSegmentCrowns::redrawOverlay()
 {
     document()->redrawGraphics();
+}
+
+void PB_ActionSegmentCrowns::redrawOverlayAnd3D()
+{
+    setDrawing3DChanged();
 }
 
 void PB_ActionSegmentCrowns::initClusters()
@@ -201,7 +206,7 @@ void PB_ActionSegmentCrowns::initClusters()
     option->setClusterNumber(_lastCluster + 1);
     option->setActiveCluster(_lastCluster);
 
-    document()->redrawGraphics();
+    redrawOverlayAnd3D();
 }
 
 void PB_ActionSegmentCrowns::drawLimit(PB_ActionSegmentCrownsOptions *option, size_t maxCol, size_t maxRow)
@@ -485,7 +490,7 @@ void PB_ActionSegmentCrowns::mergeClusters(int pixelNumber)
         addUndoContent(content);
     }
 
-    document()->redrawGraphics();
+    redrawOverlayAnd3D();
 }
 
 
@@ -515,7 +520,7 @@ void PB_ActionSegmentCrowns::undo()
         }
         _redoList.append(undoContent);        
         option->setUndoRedo(!_undoList.isEmpty(), !_redoList.isEmpty());
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
@@ -546,7 +551,7 @@ void PB_ActionSegmentCrowns::redo()
 
         _undoList.append(redoContent);
         option->setUndoRedo(!_undoList.isEmpty(), !_redoList.isEmpty());
-        document()->redrawGraphics();
+        redrawOverlayAnd3D();
     }
 }
 
@@ -587,7 +592,7 @@ bool PB_ActionSegmentCrowns::mousePressEvent(QMouseEvent *e)
                 {
                     option->setActiveCluster(cluster);
                 }
-                document()->redrawGraphics();
+                redrawOverlayAnd3D();
                 return true;
             } else if (option->getMode() == PB_ActionSegmentCrownsOptions::CHANGECENTERCELL)
             {
@@ -600,7 +605,7 @@ bool PB_ActionSegmentCrowns::mousePressEvent(QMouseEvent *e)
                 PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("%1 x=%2, y=%3, z=%4").arg(baseStr).arg(x).arg(y).arg(option->getHeight()));
 
                 option->setMode(PB_ActionSegmentCrownsOptions::FREEMOVE);
-
+                redrawOverlay();
                 return true;
             } else
             {
@@ -617,7 +622,7 @@ bool PB_ActionSegmentCrowns::mousePressEvent(QMouseEvent *e)
                 if (option->getMode() == PB_ActionSegmentCrownsOptions::DRAWLIMITS)
                 {
                     drawLimit(option, maxCol, maxRow);
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 } else if (option->getMode() == PB_ActionSegmentCrownsOptions::FILLAREA)
                 {
@@ -634,7 +639,7 @@ bool PB_ActionSegmentCrowns::mousePressEvent(QMouseEvent *e)
                         }
                     }
 
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 }
             }
@@ -671,7 +676,7 @@ bool PB_ActionSegmentCrowns::mouseMoveEvent(QMouseEvent *e)
                 if (option->getMode() == PB_ActionSegmentCrownsOptions::DRAWLIMITS)
                 {
                     drawLimit(option, maxCol, maxRow);
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 } else if (option->getMode() == PB_ActionSegmentCrownsOptions::FILLAREA)
                 {
@@ -688,11 +693,11 @@ bool PB_ActionSegmentCrowns::mouseMoveEvent(QMouseEvent *e)
                         }
                     }
 
-                    document()->redrawGraphics();
+                    redrawOverlayAnd3D();
                     return true;
                 }
             }
-            document()->redrawGraphics();
+            redrawOverlay();
         }
     }
     return false;

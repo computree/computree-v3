@@ -31,16 +31,6 @@ DM_AttributesScalarT<Type>::~DM_AttributesScalarT()
 }
 
 template<typename Type>
-void DM_AttributesScalarT<Type>::checkAndSetNecessaryCloudToDoc()
-{
-    GDocumentViewForGraphics *doc = document();
-
-    if(doc->colorCloudRegistered<Type>().data() == NULL)
-        doc->createColorCloudRegistered<Type>();
-}
-
-
-template<typename Type>
 void DM_AttributesScalarT<Type>::setAutoAdjust(bool automatic)
 {
     m_autoAdjust = automatic;
@@ -143,12 +133,10 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
     const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
     size_t size = index->size();
 
-    QSharedPointer<CT_StandardColorCloudRegistered> spcc = doc->colorCloudRegistered<Type>();
+    osg::ref_ptr<GOsgGraphicsView::ColorArrayType> colorArray = doc->getOrCreateGlobalColorArrayForPoints();
 
-    if(spcc.data() != NULL)
+    if(colorArray.valid())
     {
-        CT_AbstractColorCloud *cc = spcc->abstractColorCloud();
-
         QList<ConcurrentMapInfo*>   list;
 
         size_t i = 0;
@@ -165,16 +153,17 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
                 i = size;
 
             info->m_end = i;
-            info->m_cc = cc;
+            info->m_cc = colorArray;
             info->m_index = index;
             info->m_interpolator = &interpolator;
             info->m_manualMin = m_manualMin;
             info->m_range = range;
+            info->m_fAccess = &m_fAccess;
+            info->m_eAccess = &m_eAccess;
 
             list << info;
         };
 
-        //QtConcurrent::blockingMap(list, staticApply);
         QFuture<void> future = QtConcurrent::map(list, staticApply);
         m_watcher.setFuture(future);
 
@@ -182,14 +171,13 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
 
         qDeleteAll(list.begin(), list.end());
 
-        doc->redrawGraphics();
+        doc->dirtyColorsOfPoints();
 
         return true;
     }
 
     return false;
 }
-
 
 template<typename Type>
 void DM_AttributesScalarT<Type>::attributesDeleted()
@@ -246,30 +234,6 @@ void DM_AttributesScalarT<Type>::constructColorInterpolator(DM_ColorLinearInterp
     }
 
     interpolator.finalize();
-}
-
-template<typename Type>
-void DM_AttributesScalarT<Type>::staticApply(ConcurrentMapInfo *info)
-{
-    size_t indexP;
-
-    for(size_t i=info->m_begin; i<info->m_end; ++i)
-    {
-        double vv = info->m_as->dValueAt(i);
-        // convert the value to be between 0 and 1
-        double key = (vv-info->m_manualMin)/info->m_range;
-
-        // get the intermediate color
-        QColor color = info->m_interpolator->intermediateColor(key);
-
-        info->m_index->indexAt(i, indexP);
-        // set the color of the point at this document
-        CT_Color &colorC = info->m_cc->colorAt(indexP);
-        colorC.b = (color.blueF()*255.0);
-        colorC.g = (color.greenF()*255.0);
-        colorC.r = (color.redF()*255.0);
-        colorC.a = (color.alphaF()*255.0);
-    }
 }
 
 #endif // DM_ATTRIBUTESSCALART_HPP

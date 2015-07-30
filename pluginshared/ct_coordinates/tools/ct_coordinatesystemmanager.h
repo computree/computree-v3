@@ -27,10 +27,20 @@ public:
     bool setPrecision(const double &precision);
 
     /**
-     * @brief Compute the coordinate system for point passed in parameter. If already not exist (used by another point) we will create it.
-     * @return Return the coordinate system to use to convert the point and set in parameter "csIndex" the index of the coordinate system.
+     * @brief Compute the coordinate system for point passed in parameter. If already not exist (used by another point) we will create it and add it to the collection.
+     * @return Return the coordinate system that must be used to convert the point and set in parameter "csIndex" the index of the coordinate system.
      */
-    CT_AbstractCoordinateSystem* computeCoordinateSystemForPoint(const CT_Point &p, GLuint &csIndex);
+    CT_AbstractCoordinateSystem* computeCoordinateSystemForPointAndAddItToCollection(const CT_Point &p, GLuint &csIndex);
+
+    /**
+     * @brief Create the coordinate system for coordinates passed in parameter. Don't forget to delete the pointer if you don't use it later !
+     */
+    CT_AbstractCoordinateSystem* createCoordinateSystemForCoordinates(const double &x, const double &y, const double &z) const;
+
+    /**
+     * @brief Return the unique key that represent a coordinate system for coordinates passed in parameter
+     */
+    uint computeUniqueKeyForCoordinates(const double &x, const double &y, const double &z) const;
 
     /**
      * @brief Returns the coordinate system for the point at index 'globalIndex' in the global points cloud
@@ -97,6 +107,11 @@ private:
      * @brief Clear all coordinate system
      */
     void clear();
+
+    /**
+     * @brief Return the unique key that represent a coordinate system for coordinates passed in parameter and fill tab passed in parameter
+     */
+    uint computeUniqueKeyForCoordinatesAndFillTab(const double &x, const double &y, const double &z, int *tab) const;
 
 protected:
 

@@ -10,9 +10,8 @@
 class PLUGINSHAREDSHARED_EXPORT CT_ColorCloudStdVector : public CT_StandardCloudStdVectorT<CT_Color>, public CT_AbstractColorCloud
 {
 public:
-    CT_ColorCloudStdVector(bool withAlphaInformation);
-    CT_ColorCloudStdVector(size_t size, bool withAlphaInformation);
-    CT_ColorCloudStdVector(size_t size, bool *withAlphaInformation);
+    CT_ColorCloudStdVector();
+    CT_ColorCloudStdVector(size_t size, void *nullParam = NULL);
 
     /**
      * @brief Returns the number of colors
@@ -28,11 +27,6 @@ public:
      * @brief Add a default color to the cloud and return a reference to it
      */
     CT_Color& addColor();
-
-    /**
-     * @brief Returns true if must use the alpha information of colors
-     */
-    bool hasAlphaInformation() const;
 
     /**
      * @brief Returns a reference to the color at index 'index'
@@ -58,16 +52,6 @@ public:
      * @brief Returns a copy of this cloud
      */
     CT_AbstractCloud* copy() const;
-
-#ifdef USE_PCL
-    /**
-     * @brief Returns the pcl cloud of colors
-     */
-    boost::shared_ptr< pcl::PointCloud<CT_Color> > getPCLCloud() const;
-#endif
-
-private:
-    bool                    m_withAlphaInformation;
 };
 
 #endif // CT_COLORCLOUDSTDVECTOR_H

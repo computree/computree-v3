@@ -120,11 +120,6 @@ void CT_Scene::setPointCloudIndexRegistered(CT_PCIR pcir)
     if(!pcir.isNull()) {updateBoundingBox();}
 }
 
-void CT_Scene::setTransformMatrix(const QMatrix4x4 &matrix)
-{
-    setMatrix4x4(matrix);
-}
-
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_Scene)
 #endif

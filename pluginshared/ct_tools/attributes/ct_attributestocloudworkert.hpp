@@ -7,6 +7,8 @@
 #include "ct_attributes/ct_attributescolor.h"
 #include "ct_attributes/ct_attributesnormal.h"
 
+#include "ct_cloudindex/abstract/ct_abstractcloudindex.h"
+
 template<typename TypeAttribute>
 void CT_AttributesToCloudWorkerT<TypeAttribute>::apply()
 {
@@ -66,9 +68,9 @@ void CT_AttributesToCloudWorkerT<TypeAttribute>::apply()
                             pci->indexAt(i, indexP);
                             CT_Color &color = cc->colorAt(indexP);
 
-                            color.r = ((pas->dValueAt(i)-min)*255)/range;
-                            color.g = color.r;
-                            color.b = color.r;
+                            color.r() = ((pas->dValueAt(i)-min)*255)/range;
+                            color.g() = color.r();
+                            color.b() = color.r();
 
                             ++currentSize;
 

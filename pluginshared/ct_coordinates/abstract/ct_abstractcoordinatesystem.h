@@ -41,6 +41,12 @@ public:
 
     Q_DECLARE_FLAGS(DatasToConvert, DataToConvert)
 
+    CT_AbstractCoordinateSystem()
+    {
+        m_used = false;
+        m_uniqueKey = 0;
+    }
+
     virtual ~CT_AbstractCoordinateSystem() {}
 
     /**
@@ -91,8 +97,14 @@ public:
      */
     virtual GLuint indexInManager() const = 0;
 
+    /**
+     * @brief Return the unique key of this coordinate system
+     */
+    uint uniqueKey() const { return m_uniqueKey; }
+
 private:
     mutable bool        m_used;
+    uint                m_uniqueKey;
 
 protected:
     friend class CT_AbstractReader;
@@ -114,6 +126,11 @@ protected:
      * @brief Returns true if the coordinate system was used
      */
     bool wasUsed() const { return m_used; }
+
+    /**
+     * @brief Set the unique key of this coordinate system
+     */
+    void setUniqueKey(uint key) { m_uniqueKey = key; }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(CT_AbstractCoordinateSystem::DatasToConvert)

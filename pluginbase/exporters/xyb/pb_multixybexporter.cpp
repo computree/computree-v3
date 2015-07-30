@@ -150,7 +150,7 @@ void PB_MultiXYBExporter::exportPoints(QDataStream &stream,
         else
         {
             const CT_Color &col = cc->constColorAt(it.cIndex());
-            quint16 tmp = (quint16)col.b;
+            quint16 tmp = (quint16)col.r();
             stream << tmp;
         }
     }

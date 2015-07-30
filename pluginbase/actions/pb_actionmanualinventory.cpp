@@ -106,7 +106,7 @@ void PB_ActionManualInventory::init()
         }
 
         visibilityChanged();
-        document()->fitToContent();
+        dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
     }
 }
 

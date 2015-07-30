@@ -13,8 +13,7 @@ public:
 
     CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
-                             CT_ECIR pcir,
-                             bool withAlphaInformation);
+                             CT_ECIR pcir);
 
     CT_EdgeAttributesColor(const CT_OutAbstractSingularItemModel *model,
                              const CT_AbstractResult *result,
@@ -24,8 +23,7 @@ public:
 
     CT_EdgeAttributesColor(const QString &modelName,
                      const CT_AbstractResult *result,
-                     CT_ECIR pcir,
-                     bool withAlphaInformation);
+                     CT_ECIR pcir);
 
     CT_EdgeAttributesColor(const QString &modelName,
                      const CT_AbstractResult *result,

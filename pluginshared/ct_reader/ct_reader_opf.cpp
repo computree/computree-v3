@@ -6,7 +6,7 @@
 #include "ct_itemdrawable/ct_itemattributelist.h"
 #include "ct_itemdrawable/ct_ttreegroup.h"
 #include "ct_itemdrawable/ct_topfnodegroup.h"
-#include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h"
+#include "ct_itemdrawable/ct_opfmeshmodel.h"
 #include "ct_attributes/ct_stditemattributet.h"
 #include "ct_mesh/tools/ct_meshallocatort.h"
 #include "ct_mesh/ct_face.h"
@@ -19,23 +19,9 @@
 #include <limits>
 
 const QVector<QString> CT_Reader_OPF::TOPOLOGY_NAMES = QVector<QString>() << "topology" << "decomp" << "follow" << "branch";
-CT_StandardMeshModelOPFDrawManager* CT_Reader_OPF::DRAW_MANAGER = NULL;
-CT_ItemDrawableConfiguration* CT_Reader_OPF::DRAW_CONFIGURATION = NULL;
-int CT_Reader_OPF::N_READER_OPF = 0;
 
 CT_Reader_OPF::CT_Reader_OPF() : CT_AbstractReader()
 {
-    ++N_READER_OPF;
-
-    if(DRAW_MANAGER == NULL)
-        DRAW_MANAGER = new CT_StandardMeshModelOPFDrawManager("OPF Mesh Model");
-
-    if(DRAW_CONFIGURATION == NULL)
-    {
-        DRAW_CONFIGURATION = new CT_ItemDrawableConfiguration(DRAW_MANAGER->createDrawConfiguration("OPF Mesh Model"));
-        DRAW_MANAGER->setDrawConfiguration(DRAW_CONFIGURATION);
-        DRAW_MANAGER->setAutoDeleteDrawConfiguration(false);
-    }
 }
 
 CT_Reader_OPF::~CT_Reader_OPF()
@@ -44,17 +30,6 @@ CT_Reader_OPF::~CT_Reader_OPF()
     clearOtherModels();
     clearMeshes();
     clearShapes();
-
-    --N_READER_OPF;
-
-    if(N_READER_OPF == 0)
-    {
-        delete DRAW_CONFIGURATION;
-        DRAW_CONFIGURATION = NULL;
-
-        delete DRAW_MANAGER;
-        DRAW_MANAGER = NULL;
-    }
 }
 
 void CT_Reader_OPF::recursiveReadTopologyForModel(rapidxml::xml_node<> *node,
@@ -324,7 +299,7 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
 
             int size = points.size()/3;
 
-            CT_MutablePointIterator itP = CT_MeshAllocatorT<CT_Mesh>::AddVertices(mesh->m_mesh, size);
+            CT_MutablePointIterator itP = CT_MeshAllocator::AddVertices(mesh->m_mesh, size);
             debPointIndex = itP.next().cIndex();
 
             CT_Point pAdded;
@@ -352,11 +327,11 @@ void CT_Reader_OPF::readMesh(rapidxml::xml_node<> *xmlNode)
                 QString tmp = QString(xmlFace->value()).trimmed();
                 QStringList points = tmp.split(QRegExp("\\s+"));
 
-                CT_MutableFaceIterator itF = CT_MeshAllocatorT<CT_Mesh>::AddFaces(mesh->m_mesh, 1);
+                CT_MutableFaceIterator itF = CT_MeshAllocator::AddFaces(mesh->m_mesh, 1);
 
                 CT_Face &face = itF.next().cT();
 
-                CT_MutableEdgeIterator beginHe = CT_MeshAllocatorT<CT_Mesh>::AddHEdges(mesh->m_mesh, 3);
+                CT_MutableEdgeIterator beginHe = CT_MeshAllocator::AddHEdges(mesh->m_mesh, 3);
 
                 size_t faceIndex = itF.cIndex();
 
@@ -476,22 +451,114 @@ void CT_Reader_OPF::readGeometry(rapidxml::xml_node<> *xmlNode, CT_TOPFNodeGroup
 
 void CT_Reader_OPF::transformAndCreateMesh(CT_Mesh *mesh, Eigen::Vector3d &min, Eigen::Vector3d &max, CT_TOPFNodeGroup *node, const double &dUp, const double &dDwn, const QString &typeName)
 {
-    CT_MeshModel *mm = new CT_MeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, mesh);
-    mm->setAutoDeleteMesh(false);
-    mm->setBoundingBox(min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
-    mm->setTransformMatrix(node->transformMatrix());
+    CT_Mesh *newMesh = new CT_Mesh();
 
-    CT_StandardMeshModelOPFDrawManager *dM = new CT_StandardMeshModelOPFDrawManager("OPF Mesh Model");
-    dM->setDUp(dUp);
-    dM->setDDown(dDwn);
-    dM->setDrawConfiguration(DRAW_CONFIGURATION);
-    dM->setAutoDeleteDrawConfiguration(false);
+    double deltaX = max.x() - min.x();
 
-    m_drawManager.append(dM);
+    if(deltaX == 0)
+        return;
 
-    mm->setAlternativeDrawManager(dM);
+    const QMatrix4x4 &matrix = node->opfMatrix();
 
-    node->addItemDrawable(mm);
+    double deltaD = dDwn - dUp;
+
+    size_t nP = mesh->vert().size();
+    size_t nF = mesh->face().size();
+
+    CT_MutablePointIterator itP = CT_MeshAllocator::AddVertices(newMesh, nP);
+    CT_MutableFaceIterator itF = CT_MeshAllocator::AddFaces(newMesh, nF);
+
+    CT_MutablePointIterator itOP(mesh->pVert());
+    CT_MutableFaceIterator itOF(mesh->pFace());
+
+    if(itP.hasNext()){
+
+        itP.next();
+
+        size_t debPointIndex = itP.cIndex();
+
+        itP.toFront();
+
+        while(itP.hasNext())
+        {
+            itOP.next();
+            itP.next();
+
+            const CT_Point &oPoint = itOP.currentPoint();
+            CT_Point point;
+
+            float dx = oPoint[CT_Point::X] - min.x();
+            float factorW = dDwn - (deltaD * (dx / deltaX));
+
+            point.setX(oPoint[CT_Point::X]);
+            point.setY(oPoint[CT_Point::Y] * factorW);
+            point.setZ(oPoint[CT_Point::Z] * factorW);
+
+            CT_MathPoint::transform(matrix, point);
+
+            point.setX(point[CT_Point::X]/100.0);
+            point.setY(point[CT_Point::Y]/100.0);
+            point.setZ(point[CT_Point::Z]/100.0);
+
+            itP.replaceCurrentPoint(point);
+        }
+
+        while(itF.hasNext())
+        {
+            itOF.next();
+            itF.next();
+
+            const CT_Face &oFace = itOF.cT();
+            CT_Face &face = itF.cT();
+
+            CT_MutableEdgeIterator itE = CT_MeshAllocator::AddHEdges(newMesh, 3);
+            itE.next();
+
+            size_t faceIndex = itF.cIndex();
+
+            size_t p0 = oFace.iPointAt(0) + debPointIndex;
+            size_t p1 = oFace.iPointAt(1) + debPointIndex;
+            size_t p2 = oFace.iPointAt(2) + debPointIndex;
+
+            size_t e1Index = itE.cIndex();
+            size_t e2Index;
+            size_t e3Index;
+
+            face.setEdge(e1Index);
+
+            CT_Edge &e1 = itE.cT();
+            e1.setPoint0(p0);
+            e1.setPoint1(p1);
+            e1.setFace(faceIndex);
+            itE.next();
+
+            CT_Edge &e2 = itE.cT();
+            e2.setPoint0(p1);
+            e2.setPoint1(p2);
+            e1.setFace(faceIndex);
+            e2Index = itE.cIndex();
+            itE.next();
+
+            CT_Edge &e3 = itE.cT();
+            e3.setPoint0(p2);
+            e3.setPoint1(p0);
+            e3.setFace(faceIndex);
+            e3Index = itE.cIndex();
+
+            e1.setNext(e2Index);
+            e1.setPrevious(e3Index);
+            e2.setNext(e3Index);
+            e2.setPrevious(e1Index);
+            e3.setNext(e1Index);
+            e3.setPrevious(e2Index);
+        }
+    }
+
+    CT_OPFMeshModel *meshModel = new CT_OPFMeshModel((CT_OutAbstractSingularItemModel*)m_models.value(typeName +  + "_mesh", NULL), NULL, newMesh);
+    meshModel->setDUp(dUp);
+    meshModel->setDDown(dDwn);
+
+    node->addItemDrawable(meshModel);
 }
 
 void CT_Reader_OPF::protectedInit()
@@ -522,11 +589,8 @@ void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
         node->setOPFLevel(type.m_level);
         m_models.insert(node->uniqueName(), node);
 
-        // Mesh
-        CT_MeshModel *meshModel = new CT_MeshModel();
-        meshModel->setAlternativeDrawManager(DRAW_MANAGER);
-
-        CT_OutStdSingularItemModel *mesh = new CT_OutStdSingularItemModel(type.m_name + "_mesh", meshModel, tr("Mesh"));
+        // Mesh model
+        CT_OutStdSingularItemModel *mesh = new CT_OutStdSingularItemModel(type.m_name + "_mesh", new CT_OPFMeshModel(), tr("Mesh"));
         m_models.insert(mesh->uniqueName(), mesh);
 
 

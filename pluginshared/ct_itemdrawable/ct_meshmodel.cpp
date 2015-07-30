@@ -91,11 +91,6 @@ void CT_MeshModel::clearMesh()
     m_mesh = NULL;
 }
 
-void CT_MeshModel::setTransformMatrix(const QMatrix4x4 &matrix)
-{
-    setMatrix4x4(matrix);
-}
-
 CT_AbstractItemDrawable* CT_MeshModel::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_MeshModel* meshm = new CT_MeshModel((const CT_OutAbstractSingularItemModel *)model, result, m_mesh);

@@ -275,6 +275,13 @@ void DM_Document::setColor(const CT_AbstractItemDrawable *item, const QColor &co
     Q_UNUSED(color)
 }
 
+bool DM_Document::isColorModified(const CT_AbstractItemDrawable *item)
+{
+    Q_UNUSED(item)
+
+    return false;
+}
+
 QColor DM_Document::getColor(const CT_AbstractItemDrawable *item)
 {
     Q_UNUSED(item)

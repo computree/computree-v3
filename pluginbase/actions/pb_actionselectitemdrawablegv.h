@@ -23,13 +23,6 @@ class PB_ActionSelectItemDrawableGV : public CT_AbstractActionForGraphicsView
     Q_OBJECT
 public:
 
-//    enum SelectionDrawMode
-//    {
-//        SELECT_FAST_MODE = GraphicsViewInterface::FAST,         /* Set the graphics view to draw in fast mode and selects elements */
-//        SELECT_NORMAL_MODE = GraphicsViewInterface::NORMAL,     /* Set the graphics view to draw in normal mode and selects elements */
-//        SELECT_CURRENT_MODE = SELECT_NORMAL_MODE+10             /* Selects elements as they are in the graphical view */
-//    };
-
     PB_ActionSelectItemDrawableGV();
 
     QString uniqueName() const;
@@ -58,14 +51,8 @@ public:
      */
     bool setSelectionMode(GraphicsViewInterface::SelectionMode mode);
 
-//    /**
-//     * @brief change the draw mode for this action. (SELECT_CURRENT_MODE by default)
-//     */
-//    bool setDrawMode(PB_ActionSelectItemDrawableGV::SelectionDrawMode mode);
-
 
     GraphicsViewInterface::SelectionMode selectionMode() const;
-//    PB_ActionSelectItemDrawableGV::SelectionDrawMode drawMode() const;
 
 private:
     QRect                                   m_selectionRectangle;
@@ -73,13 +60,10 @@ private:
     GraphicsViewInterface::SelectionMode    m_selectionMode;
     bool                                    m_mousePressed;
 
-//    SelectionDrawMode                       m_drawMode;
-    GraphicsViewInterface::DrawMode         m_backupDrawMode;
-
-//    void setNewDrawMode();
-//    void setBackupDrawMode();
-
     GraphicsViewInterface::SelectionMode selectionModeToBasic(GraphicsViewInterface::SelectionMode mode) const;
+
+private slots:
+    void redrawOverlay();
 };
 
 #endif // PB_ACTIONSELECTITEMDRAWABLEGV_H

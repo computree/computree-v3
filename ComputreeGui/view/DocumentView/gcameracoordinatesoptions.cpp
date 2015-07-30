@@ -72,16 +72,16 @@ void GCameraCoordinatesOptions::updateView()
 void GCameraCoordinatesOptions::on_pushButtonValid_clicked()
 {
     if(_camController != NULL)
-    {
-        _camController->setPosition(ui->doubleSpinBoxX->value(),
-                                    ui->doubleSpinBoxY->value(),
-                                    ui->doubleSpinBoxZ->value(),
-                                    false);
-
+    {        
         _camController->setSceneCenter(ui->doubleSpinBoxCX->value(),
                                        ui->doubleSpinBoxCY->value(),
                                        ui->doubleSpinBoxCZ->value(),
                                        false);
+
+        _camController->setPosition(ui->doubleSpinBoxX->value(),
+                                    ui->doubleSpinBoxY->value(),
+                                    ui->doubleSpinBoxZ->value(),
+                                    false);
 
         _camController->setViewDirection(ui->doubleSpinBoxRX->value(),
                                          ui->doubleSpinBoxRY->value(),

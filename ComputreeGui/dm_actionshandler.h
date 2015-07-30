@@ -68,7 +68,7 @@ public:
 
 private:
     QList<CT_AbstractAction*>     m_actions;
-    int                         m_maxActions;
+    int                             m_maxActions;
     CT_AbstractAction             *m_activeAction;
     CT_AbstractAction             *m_defaultAction;
     CDM_ActionsManager          *m_actionManager;

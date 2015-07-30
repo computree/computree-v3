@@ -7,7 +7,7 @@
 #include "ct_mesh/ct_edge.h"
 
 /**
- * Class who manage globals cloud of edge. The manager create a CT_PointCloudStdVector that have
+ * Class who manage globals cloud of edge. The manager create a CT_EdgeCloudStdVector that have
  * a collection of CT_Edge.
  *
  * It's an utility class who manage a global cloud. It will inform the CT_AbstractCloudIndexRegistrationManagerT and all

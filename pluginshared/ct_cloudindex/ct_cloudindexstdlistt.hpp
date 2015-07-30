@@ -46,7 +46,7 @@ size_t CT_CloudIndexStdListT<T>::indexAt(const size_t &i) const
 }
 
 template<typename T>
-const typename ct_index_type& CT_CloudIndexStdListT<T>::constIndexAt(const size_t &i) const
+const ct_index_type& CT_CloudIndexStdListT<T>::constIndexAt(const size_t &i) const
 {
     typename std::list<ct_index_type>::iterator it = m_collection->begin();
     std::advance(it, i);

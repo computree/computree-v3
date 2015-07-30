@@ -16,8 +16,12 @@ public:
     void setColor(const QColor &color);
     inline QColor& color() { return m_color; }
 
+    inline bool isColorModified() { return m_colorModified; }
+    void setColorModified(bool e);
+
 private:
     QColor  m_color;
+    bool    m_colorModified;
 };
 
 #endif // DM_ITEMINFOFORGRAPHICS_H

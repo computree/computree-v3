@@ -2,46 +2,23 @@
 #define CT_COLOR_H
 
 #include <QtGlobal>
-
-#ifdef USE_PCL
-
-#define PCL_NO_PRECOMPILE
-#include <pcl/point_types.h>
-
-// pcl::RGB is a bgra structure
-struct CT_Color : pcl::RGB {
-
-#else
-
 #include "pluginShared_global.h"
 
-class PLUGINSHAREDSHARED_EXPORT CT_Color
+#include <osg/Array>
+
+class PLUGINSHAREDSHARED_EXPORT CT_Color : public osg::Vec4ub
 {
 public:
-    union
+    inline CT_Color() : osg::Vec4ub(255, 255, 255, 255)
     {
-        struct
-        {
-            quint8 b;
-            quint8 g;
-            quint8 r;
-            quint8 a;
-        };
-        quint8 data[4];
-    };
-#endif
-
-public:
-    inline CT_Color()
-    {
-        r = g = b = a = 255;
     }
 
-    inline quint8& operator[](int i) { return (&b)[i]; }
-    inline const quint8& operator[](int i) const { return (&b)[i]; }
+    inline CT_Color(value_type r, value_type g, value_type b, value_type a) : osg::Vec4ub(r, g, b ,a)
+    {
+    }
 
-    inline quint8& operator()(int i) { return (&b)[i]; }
-    inline const quint8& operator()(int i) const { return (&b)[i]; }
+    inline value_type& operator()(unsigned int i) { return _v[i]; }
+    inline const value_type& operator()(unsigned int i) const { return _v[i]; }
 
     inline void copy(CT_Color &color) const
     {

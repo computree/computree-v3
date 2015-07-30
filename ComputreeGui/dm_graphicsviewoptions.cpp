@@ -29,15 +29,14 @@
 #include "dm_graphicsviewoptions.h"
 #include "cdm_configfile.h"
 
-// from QLGVIEWER
-#include <domUtils.h>
+#include "dm_domutils.h"
 
 DM_GraphicsViewOptions::DM_GraphicsViewOptions()
 {
     _backgroundColor = QColor(48, 48, 48);
     _selectedColor = Qt::red;
     _pointSize = 1.0;
-    _drawAxis = false;
+    _drawAxis = true;
     m_drawGrid = false;
     _useColor = true;
     _drawFastest = Normal;
@@ -333,47 +332,47 @@ bool DM_GraphicsViewOptions::loadFromXml(const QDomElement &el)
     QDomNodeList l = el.elementsByTagName("backgroundColor");
 
     if(!l.isEmpty())
-        _backgroundColor = DomUtils::QColorFromDom(l.at(0).toElement());
+        _backgroundColor = DM_DomUtils::QColorFromDom(l.at(0).toElement());
 
     l = el.elementsByTagName("selectedColor");
 
     if(!l.isEmpty())
-        _selectedColor = DomUtils::QColorFromDom(l.at(0).toElement());
+        _selectedColor = DM_DomUtils::QColorFromDom(l.at(0).toElement());
 
-    _pointSize = DomUtils::qrealFromDom(el, "pointSize", _pointSize);
-    _drawAxis = DomUtils::boolFromDom(el, "drawAxis", _drawAxis);
-    m_drawGrid = DomUtils::boolFromDom(el, "drawGrid", m_drawGrid);
-    _useColor = DomUtils::boolFromDom(el, "useColor", _useColor);
-    _drawFastest = (DrawFastestMode)DomUtils::intFromDom(el, "drawFastest", (int)_drawFastest);
-    _useTransparency = DomUtils::boolFromDom(el, "useTransparency", _useTransparency);
-    _useLight = DomUtils::boolFromDom(el, "useLight", _useLight);
-    _fastDrawTime = DomUtils::intFromDom(el, "fastDrawTime", _fastDrawTime);
-    _cameraInfoDisplayed = (CameraInfoDisplayed)DomUtils::intFromDom(el, "cameraInfoDisplayed", (int)_cameraInfoDisplayed);
-    _cameraInfoPosition = (CameraInfoPosition) DomUtils::intFromDom(el, "cameraInfoPosition", (int)_cameraInfoPosition);
-    m_showOctree = DomUtils::boolFromDom(el, "showOctree", m_showOctree);
-    setOctreeNumberOfCells(DomUtils::intFromDom(el, "octreeNumberOfCells", m_octreeNumberOfCells));
-    setOctreeSizeOfCells(DomUtils::qrealFromDom(el,"octreeSizeOfCells", m_octreeSizeOfCells));
-    setOctreeConstructionType((OctreeCellsConstructionType)DomUtils::intFromDom(el, "octreeCellsConstructionType", (int)m_octreeConstructionType));
-    setMinFPS(DomUtils::intFromDom(el, "minFPS", m_minFPS));
+    _pointSize = DM_DomUtils::qrealFromDom(el, "pointSize", _pointSize);
+    _drawAxis = DM_DomUtils::boolFromDom(el, "drawAxis", _drawAxis);
+    m_drawGrid = DM_DomUtils::boolFromDom(el, "drawGrid", m_drawGrid);
+    _useColor = DM_DomUtils::boolFromDom(el, "useColor", _useColor);
+    _drawFastest = (DrawFastestMode)DM_DomUtils::intFromDom(el, "drawFastest", (int)_drawFastest);
+    _useTransparency = DM_DomUtils::boolFromDom(el, "useTransparency", _useTransparency);
+    _useLight = DM_DomUtils::boolFromDom(el, "useLight", _useLight);
+    _fastDrawTime = DM_DomUtils::intFromDom(el, "fastDrawTime", _fastDrawTime);
+    _cameraInfoDisplayed = (CameraInfoDisplayed)DM_DomUtils::intFromDom(el, "cameraInfoDisplayed", (int)_cameraInfoDisplayed);
+    _cameraInfoPosition = (CameraInfoPosition) DM_DomUtils::intFromDom(el, "cameraInfoPosition", (int)_cameraInfoPosition);
+    m_showOctree = DM_DomUtils::boolFromDom(el, "showOctree", m_showOctree);
+    setOctreeNumberOfCells(DM_DomUtils::intFromDom(el, "octreeNumberOfCells", m_octreeNumberOfCells));
+    setOctreeSizeOfCells(DM_DomUtils::qrealFromDom(el,"octreeSizeOfCells", m_octreeSizeOfCells));
+    setOctreeConstructionType((OctreeCellsConstructionType)DM_DomUtils::intFromDom(el, "octreeCellsConstructionType", (int)m_octreeConstructionType));
+    setMinFPS(DM_DomUtils::intFromDom(el, "minFPS", m_minFPS));
 
     return true;
 }
 
 bool DM_GraphicsViewOptions::saveToXml(QDomElement &main, QDomDocument &doc) const
 {
-    main.appendChild(DomUtils::QColorDomElement(_backgroundColor, "backgroundColor", doc));
-    main.appendChild(DomUtils::QColorDomElement(_selectedColor, "selectedColor", doc));
+    main.appendChild(DM_DomUtils::QColorDomElement(_backgroundColor, "backgroundColor", doc));
+    main.appendChild(DM_DomUtils::QColorDomElement(_selectedColor, "selectedColor", doc));
     main.setAttribute("pointSize", _pointSize);
-    DomUtils::setBoolAttribute(main, "drawAxis", _drawAxis);
-    DomUtils::setBoolAttribute(main, "drawGrid", m_drawGrid);
-    DomUtils::setBoolAttribute(main, "useColor", _useColor);
+    DM_DomUtils::setBoolAttribute(main, "drawAxis", _drawAxis);
+    DM_DomUtils::setBoolAttribute(main, "drawGrid", m_drawGrid);
+    DM_DomUtils::setBoolAttribute(main, "useColor", _useColor);
     main.setAttribute("drawFastest", (int)_drawFastest);
-    DomUtils::setBoolAttribute(main, "useTransparency", _useTransparency);
-    DomUtils::setBoolAttribute(main, "useLight", _useLight);
+    DM_DomUtils::setBoolAttribute(main, "useTransparency", _useTransparency);
+    DM_DomUtils::setBoolAttribute(main, "useLight", _useLight);
     main.setAttribute("fastDrawTime", _fastDrawTime);
     main.setAttribute("cameraInfoDisplayed", (int)_cameraInfoDisplayed);
     main.setAttribute("cameraInfoPosition", (int)_cameraInfoPosition);
-    DomUtils::setBoolAttribute(main, "showOctree", m_showOctree);
+    DM_DomUtils::setBoolAttribute(main, "showOctree", m_showOctree);
     main.setAttribute("octreeNumberOfCells", m_octreeNumberOfCells);
     main.setAttribute("octreeSizeOfCells", m_octreeSizeOfCells);
     main.setAttribute("octreeCellsConstructionType", (int)m_octreeConstructionType);

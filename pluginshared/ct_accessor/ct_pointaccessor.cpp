@@ -4,6 +4,8 @@
 #include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
+#include "ct_tools/pcl/ct_pcltools.h"
+
 CT_PointAccessor::CT_PointAccessor()
 {
     m_pCloud = PS_REPOSITORY->globalPointCloud();
@@ -39,7 +41,7 @@ void CT_PointAccessor::replacePointAt(const size_t &globalIndex, const CT_Point 
     GLuint csIndex;
 
     // compute the coordinate system to use
-    CT_AbstractCoordinateSystem *coordinateSystem = csm->computeCoordinateSystemForPoint(p, csIndex);
+    CT_AbstractCoordinateSystem *coordinateSystem = csm->computeCoordinateSystemForPointAndAddItToCollection(p, csIndex);
 
     // set for this point it's index
     csm->setCoordinateSystemForPointAt(globalIndex, csIndex);
@@ -68,9 +70,9 @@ void CT_PointAccessor::replaceInternalPointAt(const size_t &globalIndex, const C
 }
 
 #ifdef USE_PCL
-boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_PointAccessor::getPCLCloud() const
+boost::shared_ptr<CT_PCLCloud> CT_PointAccessor::getPCLCloud() const
 {
-    return m_pCloud->getPCLCloud();
+    return CT_PCLTools::staticConvertToPCLCloud(m_pCloud);
 }
 #endif
 

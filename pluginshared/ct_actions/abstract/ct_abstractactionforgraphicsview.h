@@ -10,6 +10,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractActionForGraphicsView : public CT_AbstractAction
 {
+    Q_OBJECT
+
 public:
     CT_AbstractActionForGraphicsView();
 
@@ -44,12 +46,33 @@ public:
 protected:
 
     /**
+     * @brief Register a CT_GAbstractActionOptions to be manage automatically. The method
+     *        hideOptions() and showOptions() hide and show all options registered.
+     *        This method also manage the signal drawing3DChanged() emitted by the options to call
+     *        automatically the method setDrawing3DChanged() of this action.
+     */
+    void registerOption(CT_GAbstractActionOptions *options);
+
+    /**
      * @brief Called when the graphics view changed
      */
     virtual void graphicsViewChangedEvent() {}
 
+protected slots:
+
+    /**
+     * @brief Call this method when your "draw" method must draw something else that previously
+     */
+    void setDrawing3DChanged();
+
 private:
     GraphicsViewInterface   *m_gView;
+
+signals:
+    /**
+     * @brief Emitted when the 3D drawing of the action was changed
+     */
+    void drawing3DChanged();
 };
 
 #endif // CT_ABSTRACTACTIONFORGRAPHICSVIEW_H

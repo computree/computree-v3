@@ -6,7 +6,7 @@
 #include <QColorDialog>
 
 PB_ActionSlicePointCloudOptions::PB_ActionSlicePointCloudOptions(const PB_ActionSlicePointCloud *action) :
-    CT_GAbstractActionOptions(action),
+    CT_GAbstractActionForGraphicsViewOptions(action),
     ui(new Ui::PB_ActionSlicePointCloudOptions())
 {
     ui->setupUi(this);

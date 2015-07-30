@@ -71,14 +71,9 @@ CDM_Internationalization *GGuiManager::getLanguageManager() const
     return m_languageManager;
 }
 
-DM_VertexVBOManager* GGuiManager::vertexVBOManager() const
+DM_ItemDrawableConfigurationManagerView* GGuiManager::getItemDrawableConfigurationManagerView() const
 {
-    return GDocumentViewForGraphics::staticUniqueVertexVBOManager();
-}
-
-DM_OpenGLTools* GGuiManager::getOpenglTools() const
-{
-    return const_cast<DM_OpenGLTools*>(&m_openglTools);
+    return _mainWindow->getItemDrawableConfigurationManager();
 }
 
 DM_MultipleItemDrawableModelManager* GGuiManager::getItemDrawableModelManager() const
@@ -92,11 +87,7 @@ void GGuiManager::initUi()
     _mainWindow->getPluginManager()->setGuiManager(this);
     _mainWindow->showMaximized();
 
-    m_openglTools.init();
-
     _mainWindow->loadConfiguration();
 
     init();
-
-    GUI_LOG->addInfoMessage(LogInterface::gui, QObject::tr("OpenGL Version used : %1").arg(m_openglTools.openGlVersionUsed()));
 }

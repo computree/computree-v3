@@ -31,16 +31,3 @@
 DM_GraphicsViewCamera::DM_GraphicsViewCamera()
 {
 }
-
-void DM_GraphicsViewCamera::syncWithCamera(const DM_GraphicsViewCamera *cam)
-{
-    if(cam != NULL)
-    {
-        double q0, q1, q2, q3;
-
-        cam->getOrientation(q0, q1, q2, q3);
-
-        setPosition(cam->x(), cam->y(), cam->z(), false);
-        setOrientation(q0, q1, q2, q3, true);
-    }
-}

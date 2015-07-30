@@ -13,7 +13,6 @@ PB_ActionSelectItemDrawableGV::PB_ActionSelectItemDrawableGV() : CT_AbstractActi
     m_status = 0;
     m_mousePressed = false;
     m_selectionMode = GraphicsViewInterface::SELECT_ONE;
-//    m_drawMode = SELECT_CURRENT_MODE;
 }
 
 QString PB_ActionSelectItemDrawableGV::uniqueName() const
@@ -66,10 +65,6 @@ bool PB_ActionSelectItemDrawableGV::mousePressEvent(QMouseEvent *e)
 
     GraphicsViewInterface *view = graphicsView();
 
-//    m_backupDrawMode = view->drawMode();
-
-//    setNewDrawMode();
-
     view->setSelectionMode(selectionMode());
 
     GraphicsViewInterface::SelectionMode mode = selectionModeToBasic(view->selectionMode());
@@ -83,23 +78,6 @@ bool PB_ActionSelectItemDrawableGV::mousePressEvent(QMouseEvent *e)
             || (mode == GraphicsViewInterface::REMOVE)))
     {
         m_selectionRectangle = QRect(e->pos(), e->pos());
-
-        size_t size = 0;
-
-        if(view->mustSelectPoints())
-            size = view->countPoints();
-        else if(view->mustSelectEdges())
-            size = view->countEdges();
-        else if(view->mustSelectFaces())
-            size = view->countFaces();
-        else
-            size = view->countItems();
-
-        if(size == 0)
-            size = 1;
-
-        if(size != view->selectBufferSize())
-            view->setSelectBufferSize(size*4);
 
         return true;
     }
@@ -127,10 +105,8 @@ bool PB_ActionSelectItemDrawableGV::mouseMoveEvent(QMouseEvent *e)
 
         if(mode != GraphicsViewInterface::NONE)
         {
-//            setNewDrawMode();
-
             m_selectionRectangle.setBottomRight(e->pos());
-            document()->redrawGraphics();
+            redrawOverlay();
 
             return true;
         }
@@ -148,15 +124,10 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
     if(e->button() == Qt::LeftButton)
         m_mousePressed = false;
 
-//    if(mode != GraphicsViewInterface::NONE)
-//        setNewDrawMode();
-
     if((m_status > 0)
             && (e->button() == Qt::LeftButton))
     {
         m_status = 0;
-        //m_backupDrawMode = view->drawMode();
-        //view->setDrawMode(GraphicsViewInterface::NORMAL);
 
         if(mode != GraphicsViewInterface::NONE)
         {
@@ -171,8 +142,6 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
                 view->setSelectRegionHeight(3);
 
                 view->select(e->pos());
-
-                //view->setDrawMode(m_backupDrawMode);
             }
             else
             {
@@ -184,16 +153,12 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
                 // Compute rectangle center and perform selection
                 view->select(m_selectionRectangle.center());
 
-    //            setBackupDrawMode();
-                //view->setDrawMode(m_backupDrawMode);
-                document()->redrawGraphics();
-
                 return true;
             }
         }
     }
 
-    document()->redrawGraphics();
+    redrawOverlay();
 
     return false;
 }
@@ -242,44 +207,10 @@ bool PB_ActionSelectItemDrawableGV::setSelectionMode(GraphicsViewInterface::Sele
     return false;
 }
 
-//bool PB_ActionSelectItemDrawableGV::setDrawMode(PB_ActionSelectItemDrawableGV::SelectionDrawMode mode)
-//{
-//    if(!m_mousePressed)
-//    {
-//        m_drawMode = mode;
-//        return true;
-//    }
-
-//    return false;
-//}
-
 GraphicsViewInterface::SelectionMode PB_ActionSelectItemDrawableGV::selectionMode() const
 {
     return m_selectionMode;
 }
-
-//PB_ActionSelectItemDrawableGV::SelectionDrawMode PB_ActionSelectItemDrawableGV::drawMode() const
-//{
-//    return m_drawMode;
-//}
-
-//void PB_ActionSelectItemDrawableGV::setNewDrawMode()
-//{
-//    GraphicsViewInterface *view = graphicsView();
-//    view->setDrawModeChangeTime(0);
-
-//    if(drawMode() != SELECT_CURRENT_MODE)
-//        view->setDrawMode((GraphicsViewInterface::DrawMode)drawMode());
-//    else
-//        view->setDrawMode(m_backupDrawMode);
-//}
-
-//void PB_ActionSelectItemDrawableGV::setBackupDrawMode()
-//{
-//    GraphicsViewInterface *view = graphicsView();
-
-//    view->setDrawModeChangeTime(view->getOptions().getFastDrawTime());
-//}
 
 GraphicsViewInterface::SelectionMode PB_ActionSelectItemDrawableGV::selectionModeToBasic(GraphicsViewInterface::SelectionMode mode) const
 {
@@ -289,4 +220,9 @@ GraphicsViewInterface::SelectionMode PB_ActionSelectItemDrawableGV::selectionMod
         m -= GraphicsViewInterface::REMOVE_ONE;
 
     return (GraphicsViewInterface::SelectionMode)m;
+}
+
+void PB_ActionSelectItemDrawableGV::redrawOverlay()
+{
+    document()->redrawGraphics();
 }

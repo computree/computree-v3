@@ -46,7 +46,7 @@ public:
      * @warning Please re-use the shared_ptr returned because
      *          a new collection is created at each call.
      */
-    boost::shared_ptr<pcl::PointCloud<CT_PointData> > getPCLCloud() const;
+    boost::shared_ptr< CT_PCLCloud > getPCLCloud() const;
     #endif
 
     /**

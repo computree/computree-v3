@@ -23,7 +23,7 @@ public:
     /**
      * @brief Check if the doc has the necessary cloud (color cloud) or set it if not
      */
-    void checkAndSetNecessaryCloudToDoc();
+    void checkAndSetNecessaryCloudToDoc() {}
 
     // SETTER
     /**
@@ -111,7 +111,9 @@ private:
         DM_ColorLinearInterpolator      *m_interpolator;
         CT_AbstractAttributesScalar     *m_as;
         const CT_AbstractCloudIndex     *m_index;
-        CT_AbstractColorCloud           *m_cc;
+        osg::ref_ptr<GOsgGraphicsView::ColorArrayType> m_cc;
+        CT_FaceAccessor                 *m_fAccess;
+        CT_EdgeAccessor                 *m_eAccess;
         double                          m_range;
         double                          m_manualMin;
         size_t                          m_begin;
@@ -124,13 +126,27 @@ private:
     double                          m_manualMax;
     QLinearGradient                 m_gradient;
     bool                            m_useSharedGradient;
+    CT_FaceAccessor                 m_fAccess;
+    CT_EdgeAccessor                 m_eAccess;
     QFutureWatcher<void>            m_watcher;
 
     void autoAdjustMinMax();
     void constructColorInterpolator(DM_ColorLinearInterpolator &interpolator) const;
 
-    static void staticApply(ConcurrentMapInfo *info);
+    static void staticApply(ConcurrentMapInfo *info) { Q_UNUSED(info) }
 };
+
+// specialisation for points
+template<>
+void DM_AttributesScalarT<CT_AbstractPointsAttributes>::staticApply(DM_AttributesScalarT<CT_AbstractPointsAttributes>::ConcurrentMapInfo *info);
+
+// specialisation for faces
+template<>
+void DM_AttributesScalarT<CT_AbstractFaceAttributes>::staticApply(DM_AttributesScalarT<CT_AbstractFaceAttributes>::ConcurrentMapInfo *info);
+
+// specialisation for edges
+template<>
+void DM_AttributesScalarT<CT_AbstractEdgeAttributes>::staticApply(DM_AttributesScalarT<CT_AbstractEdgeAttributes>::ConcurrentMapInfo *info);
 
 #include "tools/attributes/worker/dm_attributesscalart.hpp"
 

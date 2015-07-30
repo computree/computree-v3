@@ -13,8 +13,7 @@ public:
 
     CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
-                           CT_FCIR pcir,
-                           bool withAlphaInformation);
+                           CT_FCIR pcir);
 
     CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                            const CT_AbstractResult *result,
@@ -23,8 +22,7 @@ public:
 
     CT_FaceAttributesColor(const QString &modelName,
                            const CT_AbstractResult *result,
-                           CT_FCIR pcir,
-                           bool withAlphaInformation);
+                           CT_FCIR pcir);
 
     CT_FaceAttributesColor(const QString &modelName,
                            const CT_AbstractResult *result,

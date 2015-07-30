@@ -244,6 +244,11 @@ public:
     virtual void setColor(const CT_AbstractItemDrawable *item, const QColor &color);
 
     /**
+     * @brief Returns true if the color of the itemdrawable passed in parameter is modified. By default return false.
+     */
+    virtual bool isColorModified(const CT_AbstractItemDrawable *item);
+
+    /**
      * @brief Return the color of the item passed in parameter. By default return invalid color.
      */
     virtual QColor getColor(const CT_AbstractItemDrawable *item);

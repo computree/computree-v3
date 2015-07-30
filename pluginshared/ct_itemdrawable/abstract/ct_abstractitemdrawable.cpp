@@ -87,11 +87,6 @@ void CT_AbstractItemDrawable::setId(quint64 id)
     _id = id;
 }
 
-void CT_AbstractItemDrawable::setMatrix4x4(const QMatrix4x4 &matrix)
-{
-    m_transformMatrix = matrix;
-}
-
 QString CT_AbstractItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const
 {
     if(dynamic_cast<const CT_OutAbstractItemModel*>(model) == NULL)
@@ -236,11 +231,6 @@ const CT_AbstractItemDrawableDrawManager* CT_AbstractItemDrawable::getAlternativ
 const CT_AbstractItemDrawableDrawManager* CT_AbstractItemDrawable::getBaseDrawManager() const
 {
     return _baseDrawManager;
-}
-
-const QMatrix4x4& CT_AbstractItemDrawable::transformMatrix() const
-{
-    return m_transformMatrix;
 }
 
 void CT_AbstractItemDrawable::setItemDrawableParent(const CT_AbstractItemDrawable *parent)

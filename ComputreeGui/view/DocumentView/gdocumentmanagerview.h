@@ -67,9 +67,9 @@ public:
 
     void redrawAllDocument();
 
-    DocumentInterface* new3DDocument(bool fromGui);
-    DocumentInterface* new2DDocument(bool fromGui);
-    DocumentInterface* newTreeViewDocument(bool fromGui);
+    DocumentInterface* new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
+    DocumentInterface* new2DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
+    DocumentInterface* newTreeViewDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
 
     // DocumentManagerInterface
     void lockAllDocuments();
@@ -107,7 +107,7 @@ private:
     QList<GDocumentView*>           m_docFromGuiAddedInManualMode;
     QList<GDocumentView*>           m_docToCloseAfterQuitManualMode;
 
-    void addDocumentView(GDocumentView &view, bool fromGui);
+    void addDocumentView(GDocumentView &view, bool fromGui, bool inLoadConfigurationFromMainWindow);
     QMdiSubWindow* subWindowFromDocument(DocumentInterface *doc) const;
 
 public slots:

@@ -9,10 +9,9 @@ CT_FaceAttributesColor::CT_FaceAttributesColor() : CT_AbstractFaceAttributes(), 
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                const CT_AbstractResult *result,
-                                               CT_FCIR pcir,
-                                               bool withAlphaInformation) : CT_AbstractFaceAttributes(model,
+                                               CT_FCIR pcir) : CT_AbstractFaceAttributes(model,
                                                                                                       result,
-                                                                                                      pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
+                                                                                                      pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size()))
 {
 }
 
@@ -27,10 +26,9 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const CT_OutAbstractSingularItemM
 
 CT_FaceAttributesColor::CT_FaceAttributesColor(const QString &modelName,
                                                const CT_AbstractResult *result,
-                                               CT_FCIR pcir,
-                                               bool withAlphaInformation) : CT_AbstractFaceAttributes(modelName,
+                                               CT_FCIR pcir) : CT_AbstractFaceAttributes(modelName,
                                                                                                       result,
-                                                                                                      pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
+                                                                                                      pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size()))
 {
 }
 

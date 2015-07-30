@@ -5,7 +5,8 @@
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_iterator/ct_pointiterator.h"
 
-#include <qglviewer.h>
+#include <osg/Matrix>
+
 #include <limits>
 #include <QDebug>
 
@@ -292,7 +293,7 @@ void OctreeController::clear()
 
 double OctreeController::distanceToFrustumPlane(int index, const double &x, const double &y, const double &z, GLdouble planeCoefficients[6][4]) const
 {
-    return qglviewer::Vec(x, y, z) * qglviewer::Vec(planeCoefficients[index]) - planeCoefficients[index][3];
+    return osg::Vec3d(x, y, z) * osg::Vec3d(planeCoefficients[index][0], planeCoefficients[index][1], planeCoefficients[index][2]) - planeCoefficients[index][3];
 }
 
 bool OctreeController::aaBoxIsVisible(const Eigen::Vector3d &p1, const Eigen::Vector3d &p2, GLdouble planeCoefficients[6][4], bool *entirely) const

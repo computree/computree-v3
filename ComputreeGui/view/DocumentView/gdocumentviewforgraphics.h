@@ -3,19 +3,21 @@
 
 #include "gdocumentview.h"
 
-#include "dm_vertexvbomanager.h"
-
 #include "GraphicsViews/ggraphicsview.h"
 #include "GraphicsViews/ggraphicsviewoptions.h"
 #include "gcameragraphicsoptions.h"
 #include "gpointofviewdocumentmanager.h"
 #include "tools/attributes/worker/dm_attributesmanager.h"
 
-#include "GraphicsViews/3D/Octree/octreecontroller.h"
-
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractfaceattributes.h"
 #include "ct_itemdrawable/abstract/ct_abstractedgeattributes.h"
+
+#include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+
+#include "view/DocumentView/GraphicsViews/3D/gosggraphicsview.h"
+
+#include <osg/Array>
 
 #include <QHBoxLayout>
 #include <QToolButton>
@@ -54,10 +56,11 @@ public:
     void removeAllSelectedItemDrawable();
     void removeAllItemDrawable();
 
+    void updateDrawing3DOfItemDrawablesInGraphicsView(const QList<CT_AbstractItemDrawable*> &items);
+
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics(GraphicsViewInterface::RedrawType type = GraphicsViewInterface::REDRAW_ALL);
-    void fitToContent();
-    void fitToSpecifiedBox(const Eigen::Vector3d &min, const Eigen::Vector3d &max);
+    void redrawGraphics();
+    void dirtyColorsOfPoints();
     void lock();
     void unlock();
 
@@ -81,37 +84,26 @@ public:
     virtual void setColor(const CT_AbstractItemDrawable *item, const QColor &color);
 
     /**
+     * @brief Returns true if the color of the itemdrawable passed in parameter is modified.
+     */
+    virtual bool isColorModified(const CT_AbstractItemDrawable *item);
+
+    /**
      * @brief Return the color of the item passed in parameter.
      */
     virtual QColor getColor(const CT_AbstractItemDrawable *item);
 
     /**
-     * @brief Returns true if this document use octree for points. By default return false.
+     * @brief Returns the global color array for points. If it don't exist it will be created before return it.
      */
-    virtual bool useOctreeOfPoints() const;
+    GOsgGraphicsView::ColorArrayType* getOrCreateGlobalColorArrayForPoints();
+    CT_CCR getGlobalColorArrayRegisteredForPoints() const;
 
     /**
-     * @brief Returns the octree of points or NULL if usePointsOctree() return false. By default return NULL.
+     * @brief Returns the global attrib array to set if a points is selected or not
      */
-    virtual OctreeInterface* octreeOfPoints() const;
-
-    template<typename Type>
-    void createColorCloudRegistered() { }
-
-    template<typename Type>
-    void setColorCloudRegistered(QSharedPointer<CT_StandardColorCloudRegistered> cc) { Q_UNUSED(cc) }
-
-    template<typename Type>
-    QSharedPointer<CT_StandardColorCloudRegistered> colorCloudRegistered() const { return QSharedPointer<CT_StandardColorCloudRegistered>(); }
-
-    void setUseColorCloud(bool use);
-    bool useColorCloud() const;
-
-    template<typename Type>
-    void setNormalCloudRegistered(QSharedPointer<CT_StandardNormalCloudRegistered> nn) { Q_UNUSED(nn) }
-
-    template<typename Type>
-    QSharedPointer<CT_StandardNormalCloudRegistered> normalCloudRegistered() const { return QSharedPointer<CT_StandardNormalCloudRegistered>(); }
+    typedef CT_StandardCloudOsgT<GLbyte, osg::Array::ByteArrayType, 1, GL_UNSIGNED_BYTE>     AttribCloudType;
+    AttribCloudType::AType *getOrCreateGlobalAttribArrayForPoints();
 
     void setUseNormalCloud(bool use);
     bool useNormalCloud() const;
@@ -121,28 +113,24 @@ public:
      */
     void applyAttributes(DM_AbstractAttributes *dpa);
 
-    /**
-     * @brief Returns the unique vertex VBO manager
-     */
-    static DM_VertexVBOManager* staticUniqueVertexVBOManager() { return VERTEX_VBO_MANAGER; }
-
 private:
+
+    typedef CT_StdCloudRegisteredT< GDocumentViewForGraphics::AttribCloudType >               AttribCloudRegisteredType;
+
 
     GGraphicsViewOptions                                            *_graphicsOptionsView;
     GCameraGraphicsOptions                                          *_cameraOptionsView;
+
     DM_AttributesManager                                            m_attributesManager;
-    QSharedPointer<CT_StandardColorCloudRegistered>                 m_pColorCloudRegistered;
-    QSharedPointer<CT_StandardColorCloudRegistered>                 m_fColorCloudRegistered;
-    QSharedPointer<CT_StandardColorCloudRegistered>                 m_eColorCloudRegistered;
-    QSharedPointer<CT_StandardNormalCloudRegistered>                m_pNormalCloudRegistered;
-    QSharedPointer<CT_StandardNormalCloudRegistered>                m_fNormalCloudRegistered;
+
     bool                                                            m_useColorCloud;
     bool                                                            m_useNormalCloud;
-    OctreeController                                                m_octreeController;
-    DM_ColorVBOManager                                              *m_colorVboManager;
 
-    static DM_VertexVBOManager                                      *VERTEX_VBO_MANAGER;
-    static int                                                      N_DOCUMENT_VIEW_FOR_GRAPHICS;
+    QTimer                                                          m_timerUpdateColors;
+    QTimer                                                          m_timerDirtyColorsOfPoints;
+
+    CT_CCR                                                          m_pointsColorCloudRegistered;
+    QSharedPointer< AttribCloudRegisteredType >                     m_pointsAttribCloudRegistered;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;
@@ -155,7 +143,6 @@ private:
     QPushButton                 *_buttonExport;
     QPushButton                 *_buttonPixelSize;
     QPushButton                 *_buttonDrawMode;
-    QPushButton                 *_buttonConstructOctree;
 
     QString                     _type;
 
@@ -214,11 +201,6 @@ public slots:
      */
     void showAttributesOptions();
 
-    /**
-     * @brief (Re)construct the octree. Do nothing by default.
-     */
-    virtual void constructOctreeOfPoints();
-
     void changePixelSize();
     void changePixelSize(double size);
     void changeDrawMode();
@@ -228,9 +210,6 @@ public slots:
 
 
 protected slots:
-
-    virtual void slotItemDrawableAdded(CT_AbstractItemDrawable &item);
-    virtual void slotItemToBeRemoved(CT_AbstractItemDrawable &item);
     virtual void closeEvent(QCloseEvent *closeEvent);
 
 private slots:
@@ -238,43 +217,16 @@ private slots:
     void syncChanged(bool enable);
     void pluginExporterManagerReloaded();
     void exporterActionTriggered();
+    void mustUpdateItemDrawablesThatColorWasModified();
+    void mustDirtyColorsOfItemDrawablesWithPoints();
 
 signals:
 
     void syncEnabled(const GDocumentViewForGraphics *view);
     void syncDisabled(const GDocumentViewForGraphics *view);
+
+    void startDirtyColorsOfPointTimer();
+    void startUpdateColorsTimer();
 };
-
-
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractPointsAttributes>();
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractFaceAttributes>();
-template<>
-void GDocumentViewForGraphics::createColorCloudRegistered<CT_AbstractEdgeAttributes>();
-
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-template<>
-void GDocumentViewForGraphics::setColorCloudRegistered<CT_AbstractEdgeAttributes>(QSharedPointer<CT_StandardColorCloudRegistered> cc);
-
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractPointsAttributes>() const;
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractFaceAttributes>() const;
-template<>
-QSharedPointer<CT_StandardColorCloudRegistered> GDocumentViewForGraphics::colorCloudRegistered<CT_AbstractEdgeAttributes>() const;
-
-template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractPointsAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
-template<>
-void GDocumentViewForGraphics::setNormalCloudRegistered<CT_AbstractFaceAttributes>(QSharedPointer<CT_StandardNormalCloudRegistered> nn);
-
-template<>
-QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractPointsAttributes>() const;
-template<>
-QSharedPointer<CT_StandardNormalCloudRegistered> GDocumentViewForGraphics::normalCloudRegistered<CT_AbstractFaceAttributes>() const;
 
 #endif // GDOCUMENTVIEWFORGRAPHICS_H

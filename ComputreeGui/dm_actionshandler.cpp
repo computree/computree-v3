@@ -1,7 +1,5 @@
 #include "dm_actionshandler.h"
 
-#include "dm_guimanager.h"
-
 #include "ct_actions/abstract/ct_abstractaction.h"
 
 #include <QEvent>
@@ -20,11 +18,11 @@ DM_ActionsHandler::~DM_ActionsHandler()
     {
         CT_AbstractAction *ac = m_actions.takeFirst();
 
-        if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
+        if(!actionManager()->existActionCompareAddress(ac))
             delete ac;
     }
 
-    if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(m_defaultAction))
+    if(!actionManager()->existActionCompareAddress(m_defaultAction))
         delete m_defaultAction;
 }
 
@@ -61,7 +59,7 @@ void DM_ActionsHandler::setCurrentAction(CT_AbstractAction *action)
 
         if(m_activeAction != NULL)
         {
-            if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
+            if(!actionManager()->existActionCompareAddress(action))
                 delete action;
 
             m_actions.removeOne(m_activeAction);
@@ -81,7 +79,7 @@ void DM_ActionsHandler::setCurrentAction(CT_AbstractAction *action)
 
             if(m_activeAction->isFinished())
             {
-                if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(m_activeAction))
+                if(!actionManager()->existActionCompareAddress(m_activeAction))
                     delete m_activeAction;
 
                 m_activeAction = NULL;
@@ -101,7 +99,7 @@ void DM_ActionsHandler::setCurrentAction(CT_AbstractAction *action)
                     CT_AbstractAction *ac = m_actions.takeFirst();
                     ac->finish();
 
-                    if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
+                    if(!actionManager()->existActionCompareAddress(ac))
                         delete ac;
                 }
             }
@@ -141,7 +139,7 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
             {
                 ac->finish();
 
-                if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
+                if(!actionManager()->existActionCompareAddress(ac))
                     delete ac;
             }
         }
@@ -154,7 +152,7 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
 
         ac->finish();
 
-        if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(ac))
+        if(!actionManager()->existActionCompareAddress(ac))
             delete ac;
 
         setCurrentAction(NULL);
@@ -166,7 +164,7 @@ void DM_ActionsHandler::removeActions(const QString &uniqueName)
     {
         m_defaultAction->finish();
 
-        if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(m_defaultAction))
+        if(!actionManager()->existActionCompareAddress(m_defaultAction))
             delete m_defaultAction;
 
         m_defaultAction = NULL;
@@ -181,7 +179,7 @@ void DM_ActionsHandler::setDefaultAction(CT_AbstractAction *action)
     {
         m_defaultAction->finish();
 
-        if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(m_defaultAction))
+        if(!actionManager()->existActionCompareAddress(m_defaultAction))
             delete m_defaultAction;
     }
 
@@ -194,7 +192,7 @@ void DM_ActionsHandler::setDefaultAction(CT_AbstractAction *action)
 
         if(m_defaultAction->isFinished())
         {
-            if(!GUI_MANAGER->getActionsManager()->existActionCompareAddress(m_defaultAction))
+            if(!actionManager()->existActionCompareAddress(m_defaultAction))
                 delete m_defaultAction;
 
             m_defaultAction = NULL;

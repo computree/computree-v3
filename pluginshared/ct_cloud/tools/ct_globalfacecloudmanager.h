@@ -6,7 +6,7 @@
 #include "ct_mesh/ct_face.h"
 
 /**
- * Class who manage globals cloud of face. The manager create a CT_PointCloudStdVector that have
+ * Class who manage globals cloud of face. The manager create a CT_FaceCloudStdVector that have
  * a collection of CT_Face.
  *
  * It's an utility class who manage a global cloud. It will inform the CT_AbstractCloudIndexRegistrationManagerT and all

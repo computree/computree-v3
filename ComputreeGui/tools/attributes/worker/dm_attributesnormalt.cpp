@@ -13,6 +13,8 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
 
     size_t size = it.size();
 
+    // TODO
+    /*
     QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractPointsAttributes>();
 
     if(spn.data() != NULL)
@@ -29,9 +31,9 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
 
             // set the normal of the point at this document
             CT_Normal &nxnynz = nn->normalAt(indexP);
-            nxnynz.normal_x = xyz(0) + nxnynz_pa.normal_x;
-            nxnynz.normal_y = xyz(1) + nxnynz_pa.normal_y;
-            nxnynz.normal_z = xyz(2) + nxnynz_pa.normal_z;
+            nxnynz.x() = xyz(0) + nxnynz_pa.x();
+            nxnynz.y() = xyz(1) + nxnynz_pa.y();
+            nxnynz.z() = xyz(2) + nxnynz_pa.z();
 
             setProgress((i*100)/size);
             ++i;
@@ -40,7 +42,7 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
         doc->redrawGraphics();
 
         return true;
-    }
+    }*/
 
     return false;
 }
@@ -56,6 +58,8 @@ bool DM_AttributesNormalT<CT_AbstractFaceAttributes>::process(GDocumentViewForGr
     size_t size = index->size();
     size_t indexF;
 
+    // TODO
+    /*
     QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractFaceAttributes>();
 
     if(spn.data() != NULL)
@@ -78,7 +82,7 @@ bool DM_AttributesNormalT<CT_AbstractFaceAttributes>::process(GDocumentViewForGr
 
         return true;
     }
-
+*/
     return false;
 }
 

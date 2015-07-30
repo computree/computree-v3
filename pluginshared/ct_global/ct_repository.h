@@ -61,10 +61,9 @@ public:
      *        a cloud is deleted.
      *
      * @param syncWith : define what cloud sync
-     * @param withAlphaInformation : true if you want a rgba color cloud instead of a rgb
      * @return return the colors cloud registered
      */
-    CT_CCR createNewColorCloud(SyncCloudWith syncWith, bool withAlphaInformation = false);
+    CT_CCR createNewColorCloud(SyncCloudWith syncWith);
 
     /**
      * @brief Create a new normals cloud whose is size is synchronized with the global XXX cloud. This means that the size
@@ -211,6 +210,11 @@ public:
     CT_MPCIR registerPointCloudIndex(CT_AbstractModifiablePointCloudIndex *index);
     CT_MFCIR registerFaceCloudIndex(CT_AbstractModifiableFaceCloudIndex *index);
     CT_MECIR registerEdgeCloudIndex(CT_AbstractModifiableEdgeCloudIndex *index);
+
+    /**
+     * @brief Returns the internal point cloud (use this method to pass it to osg)
+     */
+    const CT_InternalPointCloud* internalConstPointCloud() const;
 
 protected:
 

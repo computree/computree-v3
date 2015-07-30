@@ -2,6 +2,7 @@
 #define CT_GLOBALCLOUDMANAGERT_H
 
 #include "ct_cloud/tools/abstract/ct_abstractglobalcloudmanagert.h"
+#include "ct_pointcloud/ct_internalpointcloud.h"
 
 struct CT_GlobalCloudIndex
 {

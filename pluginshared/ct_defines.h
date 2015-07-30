@@ -10,6 +10,8 @@ class CT_PointData;
 class CT_Face;
 class CT_Edge;
 
+class CT_InternalPointCloud;
+
 class CT_PointIterator;
 class CT_MutablePointIterator;
 class CT_MutableIndexIterator;
@@ -49,6 +51,20 @@ class CT_GlobalEdgeCloudManager;
 
 template<typename MeshType> class CT_MeshAllocatorT;
 class CT_Mesh;
+
+#ifdef USE_PCL
+    #ifndef Q_MOC_RUN
+        #define PCL_NO_PRECOMPILE
+        #include <pcl/point_types.h>
+        #include <pcl/point_cloud.h>
+        #include <pcl/octree/octree_search.h>
+        #include <pcl/octree/impl/octree_search.hpp>
+        #include <pcl/filters/voxel_grid.h>
+        #include <pcl/filters/impl/voxel_grid.hpp>
+        #include <pcl/filters/statistical_outlier_removal.h>
+        #include <pcl/filters/impl/statistical_outlier_removal.hpp>
+    #endif
+#endif
 
 // typedef iterator
 
@@ -107,8 +123,12 @@ typedef CT_AbstractCloudT<CT_Edge>                                              
 /**
  * @brief Cloud of points of type std::vector
  */
-typedef CT_StandardCloudStdVectorT<CT_PointData>                                    CT_PointCloudStdVector;
+//typedef CT_InternalPointCloud                                                       CT_PointCloudStdVector;
 
+#ifdef USE_PCL
+typedef pcl::PointXYZ                                                               CT_PCLPoint;
+typedef pcl::PointCloud<CT_PCLPoint>                                                CT_PCLCloud;
+#endif
 /**
  * @brief Cloud of faces of type std::vector
  */

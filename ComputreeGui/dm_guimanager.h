@@ -37,8 +37,7 @@
 #include "dm_documentmanagerview.h"
 #include "dm_multipleitemdrawablemodelmanager.h"
 #include "dm_actionsmanager.h"
-#include "dm_vertexvbomanager.h"
-#include "dm_opengltools.h"
+#include "dm_itemdrawableconfigurationmanagerview.h"
 
 #include "cdm_stepmanager.h"
 #include "cdm_internationalization.h"
@@ -340,11 +339,6 @@ public:
     CDM_PluginManager* getPluginManager() const;
 
     /**
-     * @brief Returns the vertex vbo manager
-     */
-    virtual DM_VertexVBOManager* vertexVBOManager() const = 0;
-
-    /**
       * \brief Retourne la vue qui gre les documents (gestionnaire de document)
       */
     virtual DM_DocumentManagerView* getDocumentManagerView() const = 0;
@@ -365,9 +359,9 @@ public:
     virtual CDM_Internationalization* getLanguageManager() const = 0;
 
     /**
-     * @brief Returns the opengl tools
+     * @brief Returns the manager of itemdrawable's configuration
      */
-    virtual DM_OpenGLTools* getOpenglTools() const = 0;
+    virtual DM_ItemDrawableConfigurationManagerView* getItemDrawableConfigurationManagerView() const = 0;
 
 protected:
 

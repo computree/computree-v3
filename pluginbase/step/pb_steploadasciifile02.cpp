@@ -495,45 +495,45 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 {
                     if(_columnR<0)
                     {
-                        currentRGB.r = 0;
+                        currentRGB.r() = 0;
                         okr = true;
                     }
                     else
                     {
-                        currentRGB.r = locale.toInt(wordsOfLine.at(_columnR), &okr);
+                        currentRGB.r() = locale.toInt(wordsOfLine.at(_columnR), &okr);
 
                         if(!okr) {
-                            currentRGB.r = 0;
+                            currentRGB.r() = 0;
                             okr = true;
                         }
                     }
 
                     if(_columnG<0)
                     {
-                        currentRGB.g = 0;
+                        currentRGB.g() = 0;
                         okg = true;
                     }
                     else
                     {
-                        currentRGB.g = locale.toInt(wordsOfLine.at(_columnG), &okg);
+                        currentRGB.g() = locale.toInt(wordsOfLine.at(_columnG), &okg);
 
                         if(!okg) {
-                            currentRGB.g = 0;
+                            currentRGB.g() = 0;
                             okg = true;
                         }
                     }
 
                     if(_columnB<0)
                     {
-                        currentRGB.b = 0;
+                        currentRGB.b() = 0;
                         okb = true;
                     }
                     else
                     {
-                        currentRGB.b = locale.toInt(wordsOfLine.at(_columnB), &okb);
+                        currentRGB.b() = locale.toInt(wordsOfLine.at(_columnB), &okb);
 
                         if(!okb) {
-                            currentRGB.b = 0;
+                            currentRGB.b() = 0;
                             okb = true;
                         }
                     }
@@ -543,45 +543,45 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                 {
                     if(_columnNX<0)
                     {
-                        currentNormal.normal_x = 0;
+                        currentNormal.x() = 0;
                         oknx = true;
                     }
                     else
                     {
-                        currentNormal.normal_x = locale.toFloat(wordsOfLine.at(_columnNX), &oknx);
+                        currentNormal.x() = locale.toFloat(wordsOfLine.at(_columnNX), &oknx);
 
                         if(!oknx) {
-                            currentNormal.normal_x = 0;
+                            currentNormal.x() = 0;
                             oknx = true;
                         }
                     }
 
                     if(_columnNY<0)
                     {
-                        currentNormal.normal_y = 0;
+                        currentNormal.y() = 0;
                         okny = true;
                     }
                     else
                     {
-                        currentNormal.normal_y = locale.toFloat(wordsOfLine.at(_columnNY), &okny);
+                        currentNormal.y() = locale.toFloat(wordsOfLine.at(_columnNY), &okny);
 
                         if(!okny) {
-                            currentNormal.normal_y = 0;
+                            currentNormal.y() = 0;
                             okny = true;
                         }
                     }
 
                     if(_columnNZ<0)
                     {
-                        currentNormal.normal_z = 0;
+                        currentNormal.z() = 0;
                         oknz = true;
                     }
                     else
                     {
-                        currentNormal.normal_z = locale.toFloat(wordsOfLine.at(_columnNZ), &oknz);
+                        currentNormal.z() = locale.toFloat(wordsOfLine.at(_columnNZ), &oknz);
 
                         if(!oknz) {
-                            currentNormal.normal_z = 0;
+                            currentNormal.z() = 0;
                             oknz = true;
                         }
                     }

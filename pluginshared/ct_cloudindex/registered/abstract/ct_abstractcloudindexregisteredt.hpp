@@ -4,9 +4,15 @@
 #include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h"
 
 template<typename T>
+CT_AbstractCloudIndexRegisteredT<T>::CT_AbstractCloudIndexRegisteredT() : CT_AbstractCloudIndexRegistered()
+{
+}
+
+template<typename T>
 CT_AbstractCloudIndexRegisteredT<T>::~CT_AbstractCloudIndexRegisteredT()
 {
-    delete m_ci;
+    if(mustAutoDeleteCloudIndex())
+        delete m_ci;
 }
 
 template<typename T>

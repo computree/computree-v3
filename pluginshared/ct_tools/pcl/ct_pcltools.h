@@ -14,9 +14,10 @@ public:
     /**
      * @brief Convert a cloud index to a pcl point cloud
      */
-    static boost::shared_ptr< pcl::PointCloud<CT_PointData> > staticConvertToPCLCloud(CT_PCIR pcir);
-    static boost::shared_ptr< pcl::PointCloud<CT_PointData> > staticConvertToPCLCloud(const CT_IAccessPointCloud *item);
-    static boost::shared_ptr< pcl::PointCloud<CT_PointData> > staticConvertToPCLCloud(const CT_AbstractPointCloudIndex *pci);
+    static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(CT_PCIR pcir);
+    static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_IAccessPointCloud *item);
+    static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_AbstractPointCloudIndex *pci);
+    static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_AbstractCloudT<CT_PointData> *ipc);
 
     /**
      * @brief Convert a index from a pcl cloud to a global index for Computree

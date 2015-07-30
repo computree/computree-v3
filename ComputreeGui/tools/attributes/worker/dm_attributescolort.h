@@ -22,7 +22,7 @@ public:
     /**
      * @brief Check if the doc has the necessary cloud (color cloud) or set it if not
      */
-    void checkAndSetNecessaryCloudToDoc();
+    void checkAndSetNecessaryCloudToDoc() {}
 
     /**
      * @brief accept only Type (Point, Face, etc...) and colors
@@ -41,13 +41,25 @@ protected:
      * @brief Apply the color to the [Type] of the document. Use [Type] cloud index from I[Type]Attributes.
      * @param doc : document to use
      */
-    bool process(GDocumentViewForGraphics *doc);
+    bool process(GDocumentViewForGraphics *doc) {  Q_UNUSED(doc) return false; }
 
     void attributesDeleted();
 
 private:
     CT_AttributesColor  *m_ac;
 };
+
+// specialisation for points
+template<>
+bool DM_AttributesColorT<CT_AbstractPointsAttributes>::process(GDocumentViewForGraphics *doc);
+
+// specialisation for faces
+template<>
+bool DM_AttributesColorT<CT_AbstractFaceAttributes>::process(GDocumentViewForGraphics *doc);
+
+// specialisation for edges
+template<>
+bool DM_AttributesColorT<CT_AbstractEdgeAttributes>::process(GDocumentViewForGraphics *doc);
 
 #include "tools/attributes/worker/dm_attributescolort.hpp"
 

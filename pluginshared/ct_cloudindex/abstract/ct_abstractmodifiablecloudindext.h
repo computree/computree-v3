@@ -17,6 +17,8 @@ public:
     typedef bool (*RemoveIfFunction) (void *context, const size_t &value);
     typedef bool (*ShiftIfFunction) (void *context, const size_t &value);
 
+    CT_AbstractModifiableCloudIndexT() : CT_AbstractCloudIndexT<T>() {}
+
     /**
      * @brief add a new index in the cloud
      *
@@ -109,18 +111,6 @@ public:
      */
     virtual void eraseBetweenAndShiftRest(const size_t &eraseBeginPos, const size_t &eraseSize,
                                           const size_t &offset, const bool &negativeOffset) = 0;
-
-private:
-    template<typename A> friend class CT_CloudIndexStdVectorT;
-    template<typename A> friend class CT_CloudIndexStdListT;
-    template<typename A, typename B> friend class CT_CloudIndexStdMapT;
-
-
-    // private and :
-    // friend class CT_CloudIndexStdVectorT
-    //
-    // why ? show CT_CloudIndexLessMemoryT constructor in ct_cloudindexstdvectort.h
-    CT_AbstractModifiableCloudIndexT() : CT_AbstractCloudIndexT<T>() {}
 };
 
 #endif // CT_ABSTRACTMODIFIABLECLOUDINDEXT_H

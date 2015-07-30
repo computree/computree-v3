@@ -1,3 +1,6 @@
+# to make qmake more faster :
+CONFIG -= depend_includepath
+
 TARGET = pluginShared
 QT += xml
 QT += opengl
@@ -34,7 +37,7 @@ win32-g++ {
 
 DEFINES += PLUGINSHARED_LIBRARY
 
-include(include.pri)
+include(../include_all.pri)
 
 !isEmpty(TEST_FEATURES) {
     SOURCES +=
@@ -305,7 +308,6 @@ SOURCES += \
     ct_itemdrawable/ct_planarbspline.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardplanarbsplinedrawmanager.cpp \
     ct_itemdrawable/ct_itemattributelist.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp \
     ct_itemdrawable/ct_faceattributesnormal.cpp \
     ct_itemdrawable/ct_attributeslist.cpp \
     ct_coordinates/ct_defaultcoordinatesystem.cpp \
@@ -395,8 +397,13 @@ SOURCES += \
     ct_itemdrawable/ct_sphere.cpp \
     ct_shapedata/ct_spheredata.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.cpp
-
+    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.cpp \
+	ct_pointcloud/ct_internalpointcloud.cpp \
+	ct_colorcloud/ct_colorcloudosg.cpp \
+    ct_normalcloud/ct_normalcloudosg.cpp \
+    ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.cpp \
+    ct_itemdrawable/ct_opfmeshmodel.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -765,7 +772,6 @@ HEADERS += interfaces.h \
     rapidxml/rapidxml_iterators.hpp \
     rapidxml/rapidxml_print.hpp \
     rapidxml/rapidxml_utils.hpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h \
     ct_itemdrawable/ct_attributeslist.h \
     ct_coordinates/abstract/ct_abstractcoordinatesystem.h \
     ct_coordinates/ct_defaultcoordinatesystem.h \
@@ -893,7 +899,16 @@ HEADERS += interfaces.h \
     ct_shapedata/ct_spheredata.h \
     ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.h \
     ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h \
-    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.hpp
+    ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.hpp \
+	ct_pointcloud/ct_internalpointcloud.h \
+    ct_cloud/ct_standardcloudosgt.h \
+    ct_cloud/ct_standardcloudosgt.hpp \
+    ct_colorcloud/ct_colorcloudosg.h \
+    ct_normalcloud/ct_normalcloudosg.h \
+    ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.h \
+    ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.h \
+    ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.hpp \
+    ct_itemdrawable/ct_opfmeshmodel.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

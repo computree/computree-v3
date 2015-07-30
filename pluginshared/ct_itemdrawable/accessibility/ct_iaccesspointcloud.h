@@ -22,7 +22,7 @@ public:
      * @warning Please re-use the shared_ptr returned because
      *          a new collection is created at each call.
      */
-    virtual boost::shared_ptr<pcl::PointCloud<CT_PointData> > getPCLCloud() const = 0;
+    virtual boost::shared_ptr< CT_PCLCloud > getPCLCloud() const = 0;
     #endif
 };
 

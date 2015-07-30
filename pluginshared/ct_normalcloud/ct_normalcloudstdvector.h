@@ -52,12 +52,6 @@ public:
      */
     CT_AbstractCloud* copy() const;
 
-#ifdef USE_PCL
-    /**
-     * @brief Returns the pcl cloud of normals
-     */
-    boost::shared_ptr< pcl::PointCloud<CT_Normal> > getPCLCloud() const;
-#endif
 };
 
 #endif // CT_NORMALCLOUDSTDVECTOR_H

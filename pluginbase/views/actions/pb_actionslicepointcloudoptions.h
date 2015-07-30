@@ -1,7 +1,7 @@
 #ifndef PB_ACTIONSLICEPOINTCLOUDOPTIONS_H
 #define PB_ACTIONSLICEPOINTCLOUDOPTIONS_H
 
-#include "ct_view/actions/abstract/ct_gabstractactionoptions.h"
+#include "ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.h"
 
 class PB_ActionSlicePointCloud;
 
@@ -9,7 +9,7 @@ namespace Ui {
 class PB_ActionSlicePointCloudOptions;
 }
 
-class PB_ActionSlicePointCloudOptions : public CT_GAbstractActionOptions
+class PB_ActionSlicePointCloudOptions : public CT_GAbstractActionForGraphicsViewOptions
 {
     Q_OBJECT
 

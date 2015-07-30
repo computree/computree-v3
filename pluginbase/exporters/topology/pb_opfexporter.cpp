@@ -5,10 +5,8 @@
 #include "ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.h"
 
 #include "ct_itemdrawable/ct_itemattributelist.h"
-#include "ct_itemdrawable/ct_meshmodel.h"
+#include "ct_itemdrawable/ct_opfmeshmodel.h"
 #include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
-
-#include "ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.h"
 
 #include "ct_point.h"
 #include "ct_mesh/ct_face.h"
@@ -397,7 +395,7 @@ bool PB_OPFExporter::writeGeometry(QTextStream &stream, CT_TOPFNodeGroup *node, 
 
         stream << prefix << "\t<mat>" << endl;
 
-        QMatrix4x4 matrix = node->transformMatrix();
+        QMatrix4x4 matrix = node->opfMatrix();
 
         stream << prefix << "\t\t" << matrix(0,0)*100.0 << "\t" << matrix(0,1)*100.0 << "\t" << matrix(0,2)*100.0 << "\t" << matrix(0,3)*100.0 << endl;
         stream << prefix << "\t\t" << matrix(1,0)*100.0 << "\t" << matrix(1,1)*100.0 << "\t" << matrix(1,2)*100.0 << "\t" << matrix(1,3)*100.0 << endl;
@@ -405,12 +403,12 @@ bool PB_OPFExporter::writeGeometry(QTextStream &stream, CT_TOPFNodeGroup *node, 
 
         stream << prefix << "\t</mat>" << endl;
 
-        const CT_StandardMeshModelOPFDrawManager *dManager = dynamic_cast<const CT_StandardMeshModelOPFDrawManager*>(mesh->getAlternativeDrawManager());
+        CT_OPFMeshModel *opfMeshModel = dynamic_cast<CT_OPFMeshModel*>(mesh);
 
-        if(dManager != NULL)
+        if(opfMeshModel != NULL)
         {
-            stream << prefix << "\t<dUp>" << dManager->dUp() << "</dUp>" << endl;
-            stream << prefix << "\t<dDwn>" << dManager->dDown() << "</dDwn>" << endl;
+            stream << prefix << "\t<dUp>" << opfMeshModel->dUp() << "</dUp>" << endl;
+            stream << prefix << "\t<dDwn>" << opfMeshModel->dDown() << "</dDwn>" << endl;
         }
         else
         {

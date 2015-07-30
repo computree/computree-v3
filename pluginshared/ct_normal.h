@@ -1,40 +1,24 @@
 #ifndef CT_NORMAL_H
 #define CT_NORMAL_H
 
-#ifdef USE_PCL
-
-#define PCL_NO_PRECOMPILE
-#include <pcl/point_types.h>
-
-struct CT_Normal : pcl::Normal {
-
-#else
-
 #include "pluginShared_global.h"
 
- // TODO => pass CT_Normal to double like CT_Point / CT_PointData !
-class PLUGINSHAREDSHARED_EXPORT CT_Normal
+#include <osg/Vec4f>
+
+class PLUGINSHAREDSHARED_EXPORT CT_Normal : public osg::Vec4f
 {
 public:
-    union
+
+    inline CT_Normal() : osg::Vec4f()
     {
-        float data_n[4];
-        struct
-        {
-            float normal_x;
-            float normal_y;
-            float normal_z;
-            float curvature;
-        };
-    };
-#endif
+    }
 
-public:
-    inline float& operator[](int i) { return data_n[i]; }
-    inline const float& operator[](int i) const { return data_n[i]; }
+    inline CT_Normal(value_type x, value_type y, value_type z, value_type curvature) : osg::Vec4f(x, y, z, curvature)
+    {
+    }
 
-    inline float& operator()(int i) { return data_n[i]; }
-    inline const float& operator()(int i) const { return data_n[i]; }
+    inline value_type& operator()(unsigned int i) { return _v[i]; }
+    inline const value_type& operator()(unsigned int i) const { return _v[i]; }
 
     inline void copy(CT_Normal &normal) const
     {
@@ -47,11 +31,6 @@ public:
     inline void setNormal(const CT_Normal &normal)
     {
         normal.copy(*this);
-    }
-
-    inline float* vertex() const
-    {
-        return const_cast<float*>(&(*this)(0));
     }
 };
 

@@ -51,7 +51,7 @@ const CT_AbstractPointCloudIndex* CT_AbstractPointsAttributes::getPointCloudInde
 }
 
 #ifdef USE_PCL
-boost::shared_ptr<pcl::PointCloud<CT_PointData> > CT_AbstractPointsAttributes::getPCLCloud() const
+boost::shared_ptr< CT_PCLCloud > CT_AbstractPointsAttributes::getPCLCloud() const
 {
     return CT_PCLTools::staticConvertToPCLCloud(this);
 }

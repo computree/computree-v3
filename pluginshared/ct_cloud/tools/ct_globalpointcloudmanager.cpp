@@ -5,7 +5,7 @@
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
-CT_GlobalPointCloudManager::CT_GlobalPointCloudManager() : QObject(), CT_GlobalCloudManagerT<CT_PointData, CT_PointCloudStdVector>()
+CT_GlobalPointCloudManager::CT_GlobalPointCloudManager() : QObject(), CT_GlobalCloudManagerT<CT_PointData, CT_InternalPointCloud>()
 {
     m_uspc.first = NULL;
 }

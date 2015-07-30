@@ -5,7 +5,7 @@ CT_AbstractColorCloud* CT_StandardColorCloudRegistered::abstractColorCloud() con
     return cloudT();
 }
 
-CT_StandardColorCloudRegistered::CT_StandardColorCloudRegistered(CT_AbstractColorCloud *colorCloud) : CT_StdCloudRegisteredT<CT_AbstractColorCloud>(colorCloud)
+CT_StandardColorCloudRegistered::CT_StandardColorCloudRegistered(CT_ColorCloudOsg *colorCloud) : CT_StdCloudRegisteredT<CT_ColorCloudOsg>(colorCloud)
 {
 }
 

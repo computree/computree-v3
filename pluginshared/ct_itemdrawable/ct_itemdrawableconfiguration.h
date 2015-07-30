@@ -33,12 +33,16 @@
 #include "interfaces.h"
 #include "pluginShared_global.h"
 
+#include <QObject>
+
 /**
  * @brief Can be used to define painting configuration. Per example if you want to change the points size (use a Double)
  *        or if you want to draw a cube filled or plain (use a Bool), etc....
  */
-class PLUGINSHAREDSHARED_EXPORT CT_ItemDrawableConfiguration
+class PLUGINSHAREDSHARED_EXPORT CT_ItemDrawableConfiguration : public QObject
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -66,6 +70,7 @@ public:
      * @param displayableName : used in GUI. Must not be empty !
      */
     CT_ItemDrawableConfiguration(const QString &displayableName);
+    CT_ItemDrawableConfiguration(const CT_ItemDrawableConfiguration &other);
 
     /**
      * @brief Returns a displayable name
@@ -174,6 +179,12 @@ private:
     QList<QString>                              _list_config_name;
     QList<QVariant>                             _list_config_value;
     QList<CT_ItemDrawableConfiguration::Type>   _list_config_type;
+
+signals:
+    /**
+     * @brief Emitted when a value changed, if you want to use it to update the view
+     */
+    void valueChanged(int index);
 };
 
 #endif // CT_ITEMDRAWABLECONFIGURATION_H

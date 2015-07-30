@@ -39,6 +39,9 @@ private:
     template<typename A, class CloudIndexLessMemory> friend class CT_CloudIndexRegistrationManagerT;
     template<typename B, typename CLOUD> friend class CT_GlobalCloudManagerT;
 
+    /**
+     * @brief The constructor is private because only the CT_GlobalCloudManagerT can create this type of cloud index
+     */
     CT_CloudIndexLessMemoryT(const size_t &begin, const size_t &size);
 
     size_t                                      m_begin;

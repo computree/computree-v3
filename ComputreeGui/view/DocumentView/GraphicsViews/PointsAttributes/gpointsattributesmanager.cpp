@@ -60,10 +60,7 @@ void GPointsAttributesManager::setDocument(const GDocumentViewForGraphics *doc)
     m_doc = (GDocumentViewForGraphics*)doc;
 
     if(m_doc != NULL)
-    {
-        ui->checkBoxShowColors->setChecked(m_doc->useColorCloud());
         ui->checkBoxShowNormals->setChecked(m_doc->useNormalCloud());
-    }
 }
 
 void GPointsAttributesManager::closeEvent(QCloseEvent *e)
@@ -663,12 +660,6 @@ void GPointsAttributesManager::on_colorGradientView_arrowMove(qreal lastPos, con
     Q_UNUSED(arrow)
 
     ui->pushButtonSave->setEnabled(true);
-}
-
-void GPointsAttributesManager::on_checkBoxShowColors_stateChanged(int state)
-{
-    m_doc->setUseColorCloud(state == Qt::Checked);
-    m_doc->redrawGraphics();
 }
 
 void GPointsAttributesManager::on_checkBoxShowNormals_stateChanged(int state)

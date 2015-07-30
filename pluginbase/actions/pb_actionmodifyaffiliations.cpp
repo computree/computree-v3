@@ -113,7 +113,7 @@ void PB_ActionModifyAffiliations::init()
             if (position(2) > max(2)) {max(2) = position(2);}
         }
 
-        document()->fitToSpecifiedBox(min, max);
+        dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitToSpecifiedBox(min, max);
     }
 }
 

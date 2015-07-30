@@ -88,7 +88,7 @@ void PB_ActionModifyPositions2D::init()
             document()->setColor(point, _normalColor);
         }
 
-        document()->fitToContent();
+        dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
     }
 }
 

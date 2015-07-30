@@ -2,6 +2,8 @@
 
 #include "ct_global/ct_context.h"
 
+#include "ct_view/actions/abstract/ct_gabstractactionoptions.h"
+
 #include <QEvent>
 
 QString CT_AbstractAction::TYPE_SELECTION = "Selection";
@@ -122,7 +124,7 @@ void CT_AbstractAction::setFinished(bool val)
     m_finished = val;
 }
 
-void CT_AbstractAction::registerOption(ActionOptionsInterface *options)
+void CT_AbstractAction::registerOption(CT_GAbstractActionOptions *options)
 {
     m_options.append(options);
 }

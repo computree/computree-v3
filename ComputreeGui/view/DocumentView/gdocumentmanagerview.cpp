@@ -33,7 +33,7 @@
 #include "gdocumentviewforgraphics.h"
 #include "gdocumentviewforitemmodel.h"
 #include "view/DocumentView/ItemModelViews/gtreeview.h"
-#include "view/DocumentView/GraphicsViews/3D/g3dgraphicsview.h"
+#include "view/DocumentView/GraphicsViews/3D/gosggraphicsview.h"
 #include "view/DocumentView/GraphicsViews/ggraphicsviewsynchronizedgroup.h"
 
 #include "ct_result/abstract/ct_abstractresult.h"
@@ -65,24 +65,28 @@ void GDocumentManagerView::setSyncManager(const GGraphicsViewSynchronizedGroup *
     m_syncMan = (GGraphicsViewSynchronizedGroup*)syncMan;
 }
 
-void GDocumentManagerView::addDocumentView(GDocumentView &view, bool fromGui)
+void GDocumentManagerView::addDocumentView(GDocumentView &view, bool fromGui, bool inLoadConfigurationFromMainWindow)
 {
     view.getSubWindow()->setParent(this);
     view.setDocumentCloseFilter(this);
     view.setDocumentAddFilter(this);
 
-    if(subWindowList().isEmpty())
-    {
-        view.getSubWindow()->showMaximized();
-    }
-    else
-    {
-        if((activeSubWindow() != NULL)
-            && activeSubWindow()->isMaximized())
-            activeSubWindow()->showNormal();
-
+    if(inLoadConfigurationFromMainWindow) {
         view.getSubWindow()->showNormal();
-        tileSubWindows();
+    } else {
+        if(subWindowList().isEmpty())
+        {
+            view.getSubWindow()->showMaximized();
+        }
+        else
+        {
+            if((activeSubWindow() != NULL)
+                && activeSubWindow()->isMaximized())
+                activeSubWindow()->showNormal();
+
+            view.getSubWindow()->showNormal();
+            tileSubWindows();
+        }
     }
 
     connect(&view, SIGNAL(closed(DM_DocumentView*)), this, SIGNAL(documentToBeClosed(DM_DocumentView*)), Qt::DirectConnection);
@@ -436,27 +440,28 @@ void GDocumentManagerView::redrawAllDocument()
     m_mutex->unlock();
 }
 
-DocumentInterface *GDocumentManagerView::new3DDocument(bool fromGui)
+DocumentInterface *GDocumentManagerView::new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow)
 {
     GDocumentViewForGraphics *doc = new GDocumentViewForGraphics(*this, tr("Document %1").arg(GDocumentView::NUMBER), "NORMAL");
     doc->init();
-    G3DGraphicsView *graphics = new G3DGraphicsView(doc->getSubWindow());
+    GOsgGraphicsView *graphics = new GOsgGraphicsView(doc->getSubWindow());
 
     doc->addGraphics(graphics);
 
     connect(doc, SIGNAL(syncEnabled(const GDocumentViewForGraphics*)), m_syncMan, SLOT(addAllGraphicsFromDocumentView(const GDocumentViewForGraphics*)));
     connect(doc, SIGNAL(syncDisabled(const GDocumentViewForGraphics*)), m_syncMan, SLOT(removeDocumentView(const GDocumentViewForGraphics*)));
 
-    addDocumentView(*doc, fromGui);
+    addDocumentView(*doc, fromGui, inLoadConfigurationFromMainWindow);
+    graphics->init();
 
     return doc;
 }
 
-DocumentInterface *GDocumentManagerView::new2DDocument(bool fromGui)
+DocumentInterface *GDocumentManagerView::new2DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow)
 {
     GDocumentViewForGraphics *doc = new GDocumentViewForGraphics(*this, tr("Document %1 (2D)").arg(GDocumentView::NUMBER), "2D");
     doc->init();
-    G3DGraphicsView *graphics = new G3DGraphicsView(doc->getSubWindow());
+    GOsgGraphicsView *graphics = new GOsgGraphicsView(doc->getSubWindow());
     graphics->active2dView(true);
 
     doc->addGraphics(graphics);
@@ -464,12 +469,13 @@ DocumentInterface *GDocumentManagerView::new2DDocument(bool fromGui)
     connect(doc, SIGNAL(syncEnabled(const GDocumentViewForGraphics*)), m_syncMan, SLOT(addAllGraphicsFromDocumentView(const GDocumentViewForGraphics*)));
     connect(doc, SIGNAL(syncDisabled(const GDocumentViewForGraphics*)), m_syncMan, SLOT(removeDocumentView(const GDocumentViewForGraphics*)));
 
-    addDocumentView(*doc, fromGui);
+    addDocumentView(*doc, fromGui, inLoadConfigurationFromMainWindow);
+    graphics->init();
 
     return doc;
 }
 
-DocumentInterface *GDocumentManagerView::newTreeViewDocument(bool fromGui)
+DocumentInterface *GDocumentManagerView::newTreeViewDocument(bool fromGui, bool inLoadConfigurationFromMainWindow)
 {
     GDocumentViewForItemModel *doc = new GDocumentViewForItemModel(*this, tr("Document %1 (ItemModel)").arg(GDocumentView::NUMBER));
     doc->init();
@@ -481,7 +487,7 @@ DocumentInterface *GDocumentManagerView::newTreeViewDocument(bool fromGui)
 
     connect(treeView, SIGNAL(syncWith(const GItemModelView*)), m_syncMan, SLOT(syncItemModelWith(const GItemModelView*)));
 
-    addDocumentView(*doc, fromGui);
+    addDocumentView(*doc, fromGui, inLoadConfigurationFromMainWindow);
 
     return doc;
 }
@@ -518,12 +524,12 @@ void GDocumentManagerView::unlockAllDocuments()
 
 DocumentInterface* GDocumentManagerView::new3DDocument()
 {
-    return new3DDocument(false);
+    return new3DDocument(false, false);
 }
 
 DocumentInterface *GDocumentManagerView::new3DDocument(const QMap<QString, QVariant> &param)
 {
-    GDocumentViewForGraphics* document = (GDocumentViewForGraphics*) new3DDocument(false);
+    GDocumentViewForGraphics* document = (GDocumentViewForGraphics*) new3DDocument(false, false);
 
     QVariant variant;
 
@@ -545,12 +551,12 @@ DocumentInterface *GDocumentManagerView::new3DDocument(const QMap<QString, QVari
 
 DocumentInterface* GDocumentManagerView::new2DDocument()
 {
-    return new2DDocument(false);
+    return new2DDocument(false, false);
 }
 
 DocumentInterface* GDocumentManagerView::newTreeViewDocument()
 {
-    return newTreeViewDocument(false);
+    return newTreeViewDocument(false, false);
 }
 
 int GDocumentManagerView::nDocuments() const

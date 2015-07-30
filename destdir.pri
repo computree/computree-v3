@@ -15,3 +15,9 @@ CONFIG(debug, debug|release) {
 PLUGINSHARED_PLUGIN_DESTDIR = $${PLUGINSHARED_DESTDIR}/plugins
 
 message(Element(s) will be installed to $${PLUGINSHARED_DESTDIR})
+
+contains(QMAKE_TARGET.arch, x86_64) {
+    DEFINES += ENVIRONMENT64
+} else {
+    DEFINES += ENVIRONMENT32
+}

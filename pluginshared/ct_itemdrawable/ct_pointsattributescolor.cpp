@@ -10,10 +10,9 @@ CT_PointsAttributesColor::CT_PointsAttributesColor() : CT_AbstractPointsAttribut
 
 CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractSingularItemModel *model,
                                                    const CT_AbstractResult *result,
-                                                   CT_PCIR pcir,
-                                                   bool withAlphaInformation) : CT_AbstractPointsAttributes(model,
-                                                                                                            result,
-                                                                                                            pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
+                                                   CT_PCIR pcir) : CT_AbstractPointsAttributes(model,
+                                                                                               result,
+                                                                                               pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size()))
 {
     setBaseDrawManager(&PAC_DRAW_MANAGER);
 }
@@ -30,10 +29,9 @@ CT_PointsAttributesColor::CT_PointsAttributesColor(const CT_OutAbstractSingularI
 
 CT_PointsAttributesColor::CT_PointsAttributesColor(const QString &modelName,
                                                    const CT_AbstractResult *result,
-                                                   CT_PCIR pcir,
-                                                   bool withAlphaInformation) : CT_AbstractPointsAttributes(modelName,
+                                                   CT_PCIR pcir) : CT_AbstractPointsAttributes(modelName,
                                                                                                             result,
-                                                                                                            pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size(), withAlphaInformation))
+                                                                                                            pcir), CT_AttributesColor(new CT_ColorCloudStdVector(pcir->size()))
 {
     setBaseDrawManager(&PAC_DRAW_MANAGER);
 }

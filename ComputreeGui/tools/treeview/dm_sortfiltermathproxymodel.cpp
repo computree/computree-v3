@@ -68,6 +68,8 @@ bool DM_SortFilterMathProxyModel::setMathExpression(const QString &expression)
         return false;
 
     m_mathExpression = expression;
+
+    QChar dPoint = QLocale::system().decimalPoint();
     m_mathExpression.replace('.', QLocale::system().decimalPoint());
     m_mathExpression.replace(',', QLocale::system().decimalPoint());
 
@@ -106,6 +108,8 @@ bool DM_SortFilterMathProxyModel::filterAcceptsRow(int source_row, const QModelI
 
     QString tmp = m_mathExpression;
     tmp.replace(m_var, key);
+    tmp.replace('.', QLocale::system().decimalPoint());
+    tmp.replace(',', QLocale::system().decimalPoint());
 
     mu::string_type expression_buffer;
     QByteArray expression_array = tmp.toLocal8Bit();
@@ -116,10 +120,12 @@ bool DM_SortFilterMathProxyModel::filterAcceptsRow(int source_row, const QModelI
     {
         // test expression
         m_parser.SetExpr(expression_buffer);
-        return m_parser.Eval() != 0;
+        bool v =  m_parser.Eval() != 0;
+        return v;
     }
     catch(mu::Parser::exception_type &e)
     {
+        GUI_LOG->addErrorMessage(LogInterface::gui, tr("Exception muParser : %1").arg(QString::fromStdString(e.GetMsg())));
         return false;
     }
 

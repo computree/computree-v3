@@ -51,7 +51,12 @@ CT_AbstractItemDrawable* CT_TOPFNodeGroup::copy(const CT_OutAbstractItemModel *m
 
 void CT_TOPFNodeGroup::setOPFMatrix(const QMatrix4x4 &matrix)
 {
-    setMatrix4x4(matrix);
+    m_opfMatrix = matrix;
+}
+
+QMatrix4x4 CT_TOPFNodeGroup::opfMatrix() const
+{
+    return m_opfMatrix;
 }
 
 CT_OutOPFNodeGroupModel* CT_TOPFNodeGroup::opfModel() const

@@ -34,7 +34,6 @@ DM_GraphicsView::DM_GraphicsView()
     _options->load();
     _document = NULL;
     m_attributesManager = NULL;
-    m_vboManager = NULL;
 }
 
 DM_GraphicsView::~DM_GraphicsView()
@@ -47,19 +46,9 @@ void DM_GraphicsView::setDocumentView(const DM_DocumentView *doc)
     _document = (DM_DocumentView*)doc;
 }
 
-DM_DocumentView& DM_GraphicsView::getDocumentView() const
+DM_DocumentView* DM_GraphicsView::getDocumentView() const
 {
-    return *_document;
-}
-
-void DM_GraphicsView::setColorVBOManager(const DM_ColorVBOManager *cVbo)
-{
-    m_vboManager = (DM_ColorVBOManager*)cVbo;
-}
-
-DM_ColorVBOManager* DM_GraphicsView::colorVBOManager() const
-{
-    return m_vboManager;
+    return _document;
 }
 
 void DM_GraphicsView::setAttributesManager(const DM_AttributesManager *manager)
