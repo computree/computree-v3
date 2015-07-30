@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QFileDialog>
+#include <stdexcept>
 
 uint GOsgGraphicsView::NUMBER_OF_VIEWS = 0;
 

@@ -397,7 +397,6 @@ SOURCES += \
     ct_itemdrawable/ct_sphere.cpp \
     ct_shapedata/ct_spheredata.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
-    ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.cpp \
 	ct_pointcloud/ct_internalpointcloud.cpp \
 	ct_colorcloud/ct_colorcloudosg.cpp \

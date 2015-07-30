@@ -28,25 +28,25 @@ namespace GlobalPointsPolytopeIntersectorUtils
                 case(GL_TRIANGLES): {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=3)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],_vertexArrayPtr[*(iptr+2)],
+                        this->operator()(this->_vertexArrayPtr[*iptr],this->_vertexArrayPtr[*(iptr+1)],this->_vertexArrayPtr[*(iptr+2)],
                                         *iptr, *(iptr+1), *(iptr+2),
-                                        _treatVertexDataAsTemporary);
+                                        this->_treatVertexDataAsTemporary);
                     break;
                 }
 
                 case(GL_LINES): {
                     IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=2)
-                        this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
+                        this->operator()(this->_vertexArrayPtr[*iptr],this->_vertexArrayPtr[*(iptr+1)],
                                          *iptr, *(iptr+1),
-                                         _treatVertexDataAsTemporary);
+                                         this->_treatVertexDataAsTemporary);
                     break;
                 }
 
                 case(GL_POINTS): {
                     IndexPointer ilast = &indices[count];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
-                        this->operator()(_vertexArrayPtr[*iptr],*iptr,_treatVertexDataAsTemporary);
+                        this->operator()(this->_vertexArrayPtr[*iptr],*iptr,this->_treatVertexDataAsTemporary);
                     break;
                 }
 

@@ -8,7 +8,6 @@ CT_StandardSphereDrawManager::CT_StandardSphereDrawManager(QString drawConfigura
 
 CT_StandardSphereDrawManager::~CT_StandardSphereDrawManager()
 {
-
 }
 
 void CT_StandardSphereDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const

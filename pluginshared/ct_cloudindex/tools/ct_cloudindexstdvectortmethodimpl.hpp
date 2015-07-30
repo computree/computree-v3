@@ -380,9 +380,9 @@ void CT_CloudIndexStdVectorTMethodImpl<T>::internalClear()
 template<typename T>
 void CT_CloudIndexStdVectorTMethodImpl<T>::copy(std::vector<T> &destination)
 {
-    std::vector<T>::const_iterator it = _vector.begin();
-    std::vector<T>::const_iterator end = _vector.begin();
-    std::vector<T>::iterator itDest = destination.begin();
+    typename std::vector<T>::const_iterator it = _vector.begin();
+    typename std::vector<T>::const_iterator end = _vector.begin();
+    typename std::vector<T>::iterator itDest = destination.begin();
 
     while(it != end) {
         (*itDest) = (*it);

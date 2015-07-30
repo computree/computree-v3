@@ -39,27 +39,6 @@ function launchF {
      	fi
      fi
   done
-
-  if [ -d "$1/shaders" ]; then
-    echo;
-    echo Copy shaders of $bName
-    echo;
-
-    mkdir -p "$ALLDESTDIR/shaders"
-
-    let nFiles=0
-
-    for j in $1/shaders/*; do
-       if [ -f "$j" ]; then
-         echo $(basename "$j")
-	 cp $j $ALLDESTDIR/shaders
-	 let nFiles=nFiles+1
-       fi
-    done
-
-    echo;
-    echo "$nFiles files copied"
-  fi
 }
 
 echo;

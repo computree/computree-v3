@@ -3,6 +3,7 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardabstractitemdrawablewithoutpointclouddrawmanager.h"
 
+#ifdef USE_OPENCV
 template< typename DataT>
 class CT_StandardImage2DDrawManager : public CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager
 {
@@ -44,5 +45,6 @@ private:
 };
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.hpp"
+#endif
 
 #endif // CT_STANDARDIMAGE2DDRAWMANAGER_H

@@ -1,8 +1,12 @@
 #ifndef CT_STANDARDIMAGE2DDRAWMANAGER_HPP
 #define CT_STANDARDIMAGE2DDRAWMANAGER_HPP
 
-#include "ct_itemdrawable/tools/drawmanager/CT_StandardImage2DDrawManager.h"
+#include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h"
+
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/ct_image2d.h"
+#include "ct_tools/ct_typeinfo.h"
+
 #include <typeinfo>
 
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeEnabled();
@@ -335,5 +339,5 @@ QString CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeShowGrid()
 {
     return "IM2D_SHGRD";
 }
-
+#endif
 #endif // CT_STANDARDIMAGE2DDRAWMANAGER_HPP
