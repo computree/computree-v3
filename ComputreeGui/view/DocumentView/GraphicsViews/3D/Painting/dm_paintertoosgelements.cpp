@@ -1020,6 +1020,8 @@ void DM_PainterToOsgElements::addNewPoint_Global(const size_t &globalIndex)
     osg::PositionAttitudeTransform *t = getOrCreateTransformForCoordinateSystem_Global(cs);
     osg::Geometry *geo = getOrCreateGeometryForTypeAndTransform_Global(osg::PrimitiveSet::POINTS, t);
 
+    geo = checkIfMustCreateANewDrawableForGlobalPointsAndDotItIfYes(t, geo);
+
     addVertexIndexToGeometry_Global(globalIndex, geo);
 }
 
@@ -1365,6 +1367,30 @@ void DM_PainterToOsgElements::adjustSizeOfLocalVertexAttribArray()
             && (m_geometriesConfiguration->localVertexAttribArray() != NULL)) {
         m_geometriesConfiguration->localVertexAttribArray()->resizeArray(m_localVertexArray->size());
     }
+}
+
+osg::Geometry* DM_PainterToOsgElements::checkIfMustCreateANewDrawableForGlobalPointsAndDotItIfYes(osg::PositionAttitudeTransform *t, osg::Geometry *lastGeometry)
+{
+    osg::Geometry *geo = lastGeometry;
+
+    if(((DM_DrawElementsUIntSynchronized*)geo->getPrimitiveSet(0))->size() > 10000) {
+        QHash<osg::PrimitiveSet::Mode, osg::Geometry*> *hash = m_globalGeometries.value(t, NULL);
+
+        DM_DrawElementsUIntSynchronized *de = new DM_DrawElementsUIntSynchronized(osg::PrimitiveSet::POINTS);
+
+        CT_MPCIR mpcir = PS_REPOSITORY->registerPointCloudIndex(de);
+        mpcir->setAutoDeleteCloudIndex(false);
+
+        m_result.m_pointCloudIndexRegisteredCollection.append(mpcir);
+
+        geo = createGeometry(de, &m_globalGeometries);
+
+        hash->insertMulti(osg::PrimitiveSet::POINTS, geo);
+
+        t->getChild(0)->asGeode()->addDrawable(geo);
+    }
+
+    return geo;
 }
 
 bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const QColor &color, bool colorArrayAlreadyModified)

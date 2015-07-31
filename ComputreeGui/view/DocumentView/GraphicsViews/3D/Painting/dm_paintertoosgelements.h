@@ -32,14 +32,12 @@ struct DM_PainterToOsgElementsResult
  *  |
  *  |-- osg::Group (Elements that can't be draw with the global vertex array managed by the pluginShared)
  *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 0)
- *  |       |       |-- osg::Group (Elements like triangles, lines, etc...)
  *  |       |               |-- osg::Geode (A geode that will contains all drawables)
  *  |       |                   |-- osg::Drawable (Points per example)
  *  |       |                   |-- osg::Drawable (Lines per example)
  *  |       |                   |-- osg::Drawable (Triangles per example)
  *  |       |
  *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 6)
- *  |               |-- osg::Group (Elements like triangles, lines, etc...)
  *  |                       |-- osg::Geode (A geode that will contains all drawables)
  *  |                           |-- osg::Drawable (Points per example)
  *  |                           |-- osg::Drawable (Lines per example)
@@ -47,14 +45,12 @@ struct DM_PainterToOsgElementsResult
  *  |
  *  |-- osg::Group (Elements that can be draw with the global vertex array managed by the pluginShared)
  *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 0)
- *  |       |       |-- osg::Group (Elements like triangles, lines, etc...)
  *  |       |               |-- osg::Geode (A geode that will contains all drawables)
  *  |       |                   |-- osg::Drawable (Points per example)
  *  |       |                   |-- osg::Drawable (Lines per example)
  *  |       |                   |-- osg::Drawable (Triangles per example)
  *  |       |
  *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 6)
- *  |               |-- osg::Group (Elements like triangles, lines, etc...)
  *  |                       |-- osg::Geode (A geode that will contains all drawables)
  *  |                           |-- osg::Drawable (Points per example)
  *  |                           |-- osg::Drawable (Lines per example)
@@ -475,9 +471,10 @@ public:
     virtual void restoreDefaultPen() {}
 
 private:
-    typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >    GeometryCollection;
-    typedef QHash<uint, osg::PositionAttitudeTransform*>                                                CoordinateSystemCollection;
-    typedef osg::Vec3Array                                                                              LocalVertexArray;
+    typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >            GeometryCollection;
+    typedef QHashIterator<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >    GeometryCollectionIterator;
+    typedef QHash<uint, osg::PositionAttitudeTransform*>                                                        CoordinateSystemCollection;
+    typedef osg::Vec3Array                                                                                      LocalVertexArray;
 
     class DM_OSGCylinder {
     public:
@@ -738,6 +735,12 @@ private:
      * @brief Set the size of the vertex attrib array used by local geometries to the size of vertex array used by local geometries
      */
     void adjustSizeOfLocalVertexAttribArray();
+
+    /**
+     * @brief Check if the geometry passed in parameter has too many points and if yes create a new geometry, add it to
+     *        the hashmap (m_globalGeometries) and return it. Otherwise return the geometry passed in parameter.
+     */
+    osg::Geometry* checkIfMustCreateANewDrawableForGlobalPointsAndDotItIfYes(osg::PositionAttitudeTransform *t, osg::Geometry *lastGeometry);
 
     /**
      * @brief Change the color in the first color array founded recursively in the group passed in parameter
