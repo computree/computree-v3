@@ -30,3 +30,14 @@ bool DM_3DCameraManipulator::performMovementMiddleMouseButton(const double event
     zoomModel( dy * getThrowScale( eventTimeDelta ), true );
     return true;
 }
+
+bool DM_3DCameraManipulator::performMouseDeltaMovement( const float dx, const float dy )
+{
+    // rotate camera
+    if( getVerticalAxisFixed() )
+        rotateWithFixedVertical( dx, dy );
+    else
+        rotateTrackball( 0.f, 0.f, dx, dy, 1.f );
+
+    return true;
+}
