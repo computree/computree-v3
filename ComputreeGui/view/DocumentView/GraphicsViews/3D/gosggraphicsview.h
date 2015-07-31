@@ -2,8 +2,11 @@
 #define GOSGGRAPHICSVIEW_H
 
 #include <QMutex>
+#include <qglobal.h>
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+
+//#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+#if (QT_MAJOR_VERSION <= 5 && QT_MINOR_VERSION < 4)
 #include <QGLWidget>
 #define Q_GL_WIDGET QGLWidget
 #else
