@@ -1,11 +1,11 @@
 unix {
-	OSG_INC_PATH = "/usr/include" 
-	OSG_LIB_PATH = "/usr/lib" 
+    OSG_INC_PATH = "/usr/include"
+    OSG_LIB_PATH = "/usr/lib"
 }
 
 windows {
-	OSG_INC_PATH = "C:/Program Files/OpenSceneGraph/include" 
-	OSG_LIB_PATH = "C:/Program Files/OpenSceneGraph/lib"
+    OSG_INC_PATH = "C:/Program Files/OpenSceneGraph/include"
+    OSG_LIB_PATH = "C:/Program Files/OpenSceneGraph/lib"
 }
 
 OSG_LIB_ADD = osg 
@@ -20,11 +20,11 @@ OSG_LIB_ADD += osgUtil
 OSG_LIB_ADD += osgDB
  
 !exists($${OSG_INC_PATH}) { 
-	error( "OSG INCLUDE directory not found ! => " $${OSG_INC_PATH}) 
+    error( "OSG INCLUDE directory not found ! => " $${OSG_INC_PATH})
 } 
  
 !exists($${OSG_LIB_PATH}) { 
-	error( "OSG LIBS directory not found ! => " $${OSG_LIB_PATH}) 
+    error( "OSG LIBS directory not found ! => " $${OSG_LIB_PATH})
 } 
  
 INCLUDEPATH += $$OSG_INC_PATH 
@@ -32,11 +32,11 @@ INCLUDEPATH += $$OSG_INC_PATH
 LIBS += -L$$OSG_LIB_PATH 
  
 for(a, OSG_LIB_ADD) { 
-	CONFIG(debug, debug|release) { 
-		LIBS += -l$${a}d 
-	} else { 
-		LIBS += -l$${a} 
-	} 
+    CONFIG(debug, debug|release) {
+            LIBS += -l$${a}d
+    } else {
+            LIBS += -l$${a}
+    }
 } 
  
 DEFINES += OSG_CONFIG_OK 
