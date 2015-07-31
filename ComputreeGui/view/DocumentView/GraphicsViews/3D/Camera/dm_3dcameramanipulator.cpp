@@ -2,6 +2,7 @@
 
 DM_3DCameraManipulator::DM_3DCameraManipulator() : osgGA::TrackballManipulator()
 {
+    setMinimumDistance(5);
 }
 
 bool DM_3DCameraManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
@@ -33,8 +34,13 @@ bool DM_3DCameraManipulator::performMovementMiddleMouseButton(const double event
 
 void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded )
 {
+    if(_distance > _minimumDistance)
+        _distance -= dy*fabs(_distance);
+    else
+        _distance -= dy*_minimumDistance;
+
     // scale
-    float scale = 1.0f + dy;
+    /*float scale = 1.0f - dy;
 
     // minimum distance
     float minDist = _minimumDistance;
@@ -52,8 +58,8 @@ void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded
         {
             // push the camera forward
             float scale = -_distance;
-            Matrixd rotation_matrix( _rotation );
-            Vec3d dv = (Vec3d( 0.0f, 0.0f, -1.0f ) * rotation_matrix) * (dy * scale);
+            osg::Matrixd rotation_matrix( _rotation );
+            osg::Vec3d dv = (osg::Vec3d( 0.0f, 0.0f, -1.0f ) * rotation_matrix) * (dy * scale);
             _center += dv;
         }
         else
@@ -61,6 +67,6 @@ void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded
             // set distance on its minimum value
             _distance = minDist;
         }
-    }
+    }*/
 }
 
