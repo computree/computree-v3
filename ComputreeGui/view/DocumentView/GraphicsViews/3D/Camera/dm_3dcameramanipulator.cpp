@@ -31,13 +31,36 @@ bool DM_3DCameraManipulator::performMovementMiddleMouseButton(const double event
     return true;
 }
 
-bool DM_3DCameraManipulator::performMouseDeltaMovement( const float dx, const float dy )
+void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded )
 {
-    // rotate camera
-    if( getVerticalAxisFixed() )
-        rotateWithFixedVertical( dx, dy );
-    else
-        rotateTrackball( 0.f, 0.f, dx, dy, 1.f );
+    // scale
+    float scale = 1.0f + dy;
 
-    return true;
+    // minimum distance
+    float minDist = _minimumDistance;
+    if( getRelativeFlag( _minimumDistanceFlagIndex ) )
+        minDist *= _modelSize;
+
+    if( _distance*scale > minDist )
+    {
+        // regular zoom
+        _distance *= scale;
+    }
+    else
+    {
+        if( pushForwardIfNeeded )
+        {
+            // push the camera forward
+            float scale = -_distance;
+            Matrixd rotation_matrix( _rotation );
+            Vec3d dv = (Vec3d( 0.0f, 0.0f, -1.0f ) * rotation_matrix) * (dy * scale);
+            _center += dv;
+        }
+        else
+        {
+            // set distance on its minimum value
+            _distance = minDist;
+        }
+    }
 }
+
