@@ -114,5 +114,10 @@ macx {
     }
 }
 
+unix:{
+    # add your own with quoting gyrations to make sure $ORIGIN gets to the command line unexpanded
+    QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\'"
+}
+
 OTHER_FILES +=
 
