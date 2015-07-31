@@ -4,6 +4,18 @@ DM_3DCameraManipulator::DM_3DCameraManipulator() : osgGA::TrackballManipulator()
 {
 }
 
+bool DM_3DCameraManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
+{
+    // rotate camera
+    if( getVerticalAxisFixed() )
+        rotateWithFixedVertical( dx, dy );
+    else
+        rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
+                         _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
+                         getThrowScale( eventTimeDelta ) );
+    return true;
+}
+
 bool DM_3DCameraManipulator::performMovementRightMouseButton(const double eventTimeDelta, const double dx, const double dy)
 {
     // pan model

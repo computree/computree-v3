@@ -11,6 +11,7 @@ public:
 protected:
     virtual ~DM_3DCameraManipulator() {}
 
+    virtual bool performMovementLeftMouseButton(const double eventTimeDelta, const double dx, const double dy);
     virtual bool performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy );
     virtual bool performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy );
 };
