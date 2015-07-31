@@ -193,7 +193,7 @@ echo    LIBS += -L$$GDAL_LIBS_PATH >> %GDALDESTFILE%
 echo; >> %GDALDESTFILE%
 echo for(a, GDAL_LIB_ADD) { >> %GDALDESTFILE%
 echo 		LIBS += -l$${a} >> %GDALDESTFILE%
-echo } >> %OSGDESTFILE%
+echo } >> %GDALDESTFILE%
 
 echo; >> %GDALDESTFILE%
 echo 	message(You want to use GDAL : ok^) >> %GDALDESTFILE%
