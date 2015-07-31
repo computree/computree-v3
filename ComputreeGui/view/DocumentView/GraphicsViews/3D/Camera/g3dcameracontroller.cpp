@@ -508,8 +508,37 @@ void G3DCameraController::fitToSpecifiedBox(const Eigen::Vector3d &bot, const Ei
 
         double dist = boundingSphere.radius();
 
+        osg::Camera *camera = NULL;
+        osgViewer::ViewerBase::Cameras cams;
+        m_view->getCompositeViewer()->getCameras(cams);
+
+        if(!cams.empty())
+            camera = cams.front();
+
+        if (camera)
+        {
+            // try to compute dist from frustum
+            double left,right,bottom,top,zNear,zFar;
+            if (camera->getProjectionMatrixAsFrustum(left,right,bottom,top,zNear,zFar))
+            {
+                double vertical2 = fabs(right - left) / zNear / 2.;
+                double horizontal2 = fabs(top - bottom) / zNear / 2.;
+                double dim = horizontal2 < vertical2 ? horizontal2 : vertical2;
+                double viewAngle = atan2(dim,1.);
+                dist = boundingSphere.radius() / (sin(viewAngle)*3);
+            }
+            else
+            {
+                // try to compute dist from ortho
+                if (camera->getProjectionMatrixAsOrtho(left,right,bottom,top,zNear,zFar))
+                {
+                    dist = fabs(zFar - zNear) / 2.;
+                }
+            }
+        }
+
         m_camManipulator->setCenter(bb.center());
-        m_camManipulator->setDistance(dist+.3);
+        m_camManipulator->setDistance(dist);
         redrawTheView();
     }
 }
