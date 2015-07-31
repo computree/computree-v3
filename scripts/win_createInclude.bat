@@ -252,9 +252,9 @@ echo    LIBS += -L$$OPENCV_LIBS_PATH >> %OPENCVDESTFILE%
 echo; >> %OPENCVDESTFILE%
 echo 	for(a, OPENCV_LIB_ADD) { >> %OPENCVDESTFILE%
 echo 		CONFIG(debug, debug^|release^) { >> %OPENCVDESTFILE%
-echo 			LIBS += -l$${a}_debug >> %OPENCVDESTFILE%
+echo 			LIBS += -l$${a}d >> %OPENCVDESTFILE%
 echo 		} else { >> %OPENCVDESTFILE%
-echo 			LIBS += -l$${a}_release >> %OPENCVDESTFILE%
+echo 			LIBS += -l$${a} >> %OPENCVDESTFILE%
 echo 		} >> %OPENCVDESTFILE%
 echo 	} >> %OPENCVDESTFILE%
 	
