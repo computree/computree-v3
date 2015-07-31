@@ -525,7 +525,7 @@ void G3DCameraController::fitToSpecifiedBox(const Eigen::Vector3d &bot, const Ei
                 double horizontal2 = fabs(top - bottom) / zNear / 2.;
                 double dim = horizontal2 < vertical2 ? horizontal2 : vertical2;
                 double viewAngle = atan2(dim,1.);
-                dist = boundingSphere.radius() / (sin(viewAngle)*3);
+                dist = boundingSphere.radius() / (sin(viewAngle));
             }
             else
             {

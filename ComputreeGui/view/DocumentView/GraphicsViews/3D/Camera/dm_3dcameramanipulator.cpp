@@ -13,7 +13,7 @@ bool DM_3DCameraManipulator::performMovementLeftMouseButton( const double eventT
     else
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
                          _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
-                         getThrowScale( eventTimeDelta ) );
+                         2.0*getThrowScale( eventTimeDelta ) );
     return true;
 }
 
