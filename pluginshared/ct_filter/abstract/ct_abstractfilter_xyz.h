@@ -2,6 +2,8 @@
 #define CT_ABSTRACTFILTER_XYZ_H
 
 #include "ct_filter/abstract/ct_abstractfilter.h"
+#include  "ct_pointcloudindex/ct_pointcloudindexvector.h"
+
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFilter_XYZ : public CT_AbstractFilter
 {
@@ -9,6 +11,17 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractFilter_XYZ : public CT_AbstractFilter
 public:
     CT_AbstractFilter_XYZ();
     ~CT_AbstractFilter_XYZ();
+
+    bool setPointCloudIndex(const CT_AbstractPointCloudIndex* inCloud);
+
+    virtual CT_PointCloudIndexVector *filterPointCloudIndex() const;
+    virtual void validatePoint(CT_PointIterator& pointIt) const = 0;
+
+protected:
+
+    const CT_AbstractPointCloudIndex* _inCloud;
+    CT_PointCloudIndexVector* _outCloud;
+
 };
 
 #endif // CT_ABSTRACTFILTER_XYZ_H

@@ -37,8 +37,6 @@
 #include "ct_actions/ct_actionsseparator.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_reader/ct_standardreaderseparator.h"
-#include "ct_filter/ct_standardfilterseparator.h"
-#include "ct_metric/ct_standardmetricseparator.h"
 
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
@@ -156,12 +154,12 @@ QList<CT_StandardReaderSeparator*> CT_AbstractStepPlugin::getReadersAvailable() 
     return m_readers;
 }
 
-QList<CT_StandardFilterSeparator *> CT_AbstractStepPlugin::getFiltersAvailable() const
+QList<CT_AbstractFilter *> CT_AbstractStepPlugin::getFiltersAvailable() const
 {
     return m_filters;
 }
 
-QList<CT_StandardMetricSeparator *> CT_AbstractStepPlugin::getMetricsAvailable() const
+QList<CT_AbstractMetric *> CT_AbstractStepPlugin::getMetricsAvailable() const
 {
     return m_metrics;
 }
@@ -389,20 +387,16 @@ CT_StandardReaderSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardRe
     return sep;
 }
 
-CT_StandardFilterSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardFilterSeparator *sep)
+void CT_AbstractStepPlugin::addNewFilter(CT_AbstractFilter *filter)
 {
-    if(sep != NULL)
-        m_filters.append(sep);
-
-    return sep;
+    if(filter != NULL)
+        m_filters.append(filter);
 }
 
-CT_StandardMetricSeparator *CT_AbstractStepPlugin::addNewSeparator(CT_StandardMetricSeparator *sep)
+void CT_AbstractStepPlugin::addNewMetric(CT_AbstractMetric *metric)
 {
-    if(sep != NULL)
-        m_metrics.append(sep);
-
-    return sep;
+    if(metric != NULL)
+        m_metrics.append(metric);
 }
 
 void CT_AbstractStepPlugin::clearMemory()

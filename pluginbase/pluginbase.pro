@@ -105,7 +105,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionmodifyclustersgroups02.h \
     views/actions/pb_actionmodifyclustersgroupsoptions02.h \
     step/pb_stepcomputecrownprojection.h \
-    exporters/xyb/pb_multixybexporter.h
+    exporters/xyb/pb_multixybexporter.h \
+    step/pb_stepapplypointfilters.h \
+    filter/pb_filterbyreturntype.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -206,7 +208,9 @@ SOURCES += \
     actions/pb_actionmodifyclustersgroups02.cpp \
     views/actions/pb_actionmodifyclustersgroupsoptions02.cpp \
     step/pb_stepcomputecrownprojection.cpp \
-    exporters/xyb/pb_multixybexporter.cpp
+    exporters/xyb/pb_multixybexporter.cpp \
+    step/pb_stepapplypointfilters.cpp \
+    filter/pb_filterbyreturntype.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

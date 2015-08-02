@@ -381,8 +381,6 @@ SOURCES += \
     ct_filter/abstract/ct_abstractfilter.cpp \
     ct_filter/abstract/ct_abstractfilter_xyz.cpp \
     ct_filter/abstract/ct_abstractfilter_las.cpp \
-    ct_metric/ct_standardmetricseparator.cpp \
-    ct_filter/ct_standardfilterseparator.cpp \
     ct_plotmanager/abstract/ct_abstractplotmanager.cpp \
     ct_plotmanager/ct_plotmanager_grid.cpp \
     ct_plotmanager/ct_plotmanager_plotslist.cpp \
@@ -867,8 +865,6 @@ HEADERS += interfaces.h \
     ct_filter/abstract/ct_abstractfilter.h \
     ct_filter/abstract/ct_abstractfilter_xyz.h \
     ct_filter/abstract/ct_abstractfilter_las.h \
-    ct_metric/ct_standardmetricseparator.h \
-    ct_filter/ct_standardfilterseparator.h \
     ct_plotmanager/abstract/ct_abstractplotmanager.h \
     ct_plotmanager/ct_plotmanager_grid.h \
     ct_plotmanager/ct_plotmanager_plotslist.h \

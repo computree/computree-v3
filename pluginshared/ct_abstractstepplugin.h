@@ -30,6 +30,8 @@
 
 #include "interfaces.h"
 #include "pluginShared_global.h"
+#include "ct_filter/abstract/ct_abstractfilter.h"
+#include "ct_metric/abstract/ct_abstractmetric.h"
 
 class CT_StepSeparator;
 class CT_StepLoadFileSeparator;
@@ -39,8 +41,6 @@ class CT_StepInitializeData;
 class CT_ActionsSeparator;
 class CT_StandardExporterSeparator;
 class CT_StandardReaderSeparator;
-class CT_StandardFilterSeparator;
-class CT_StandardMetricSeparator;
 
 class CT_VirtualAbstractStep;
 class CT_AbstractStepLoadFile;
@@ -129,12 +129,12 @@ public:
     /**
      * @brief Returns a list of filters separator. A filter separator group multiple filters by a title.
      */
-    QList<CT_StandardFilterSeparator*> getFiltersAvailable() const;
+    QList<CT_AbstractFilter *> getFiltersAvailable() const;
 
     /**
      * @brief Returns a list of metrics separator. A metric separator group multiple metrics by a title.
      */
-    QList<CT_StandardMetricSeparator *> getMetricsAvailable() const;
+    QList<CT_AbstractMetric *> getMetricsAvailable() const;
 
     /**
      * @brief Returns a list of step that can read the file define by the filepath passed in parameter
@@ -352,16 +352,14 @@ protected:
     CT_StandardReaderSeparator* addNewSeparator(CT_StandardReaderSeparator *sep);
 
     /**
-     * @brief Create a new separator that can contains exporter. You must pass a new object to this method, the object
-     *        is added to the list of separator and returned.
+     * @brief Add a new Filter to filters list.
      */
-    CT_StandardFilterSeparator* addNewSeparator(CT_StandardFilterSeparator *sep);
+    void addNewFilter(CT_AbstractFilter *filter);
 
     /**
-     * @brief Create a new separator that can contains reader. You must pass a new object to this method, the object
-     *        is added to the list of separator and returned.
+     * @brief Add new Metric to metrics list.
      */
-    CT_StandardMetricSeparator* addNewSeparator(CT_StandardMetricSeparator *sep);
+    void addNewMetric(CT_AbstractMetric *metric);
 
 
     /**
@@ -377,8 +375,8 @@ private:
     QList<CT_ActionsSeparator*>                 m_actions;
     QList<CT_StandardExporterSeparator*>        m_exporters;
     QList<CT_StandardReaderSeparator*>          m_readers;
-    QList<CT_StandardFilterSeparator*>          m_filters;
-    QList<CT_StandardMetricSeparator*>          m_metrics;
+    QList<CT_AbstractFilter*>                   m_filters;
+    QList<CT_AbstractMetric*>                   m_metrics;
 
     QSettings                                   *_pluginSettings;
 

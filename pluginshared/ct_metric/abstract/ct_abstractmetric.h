@@ -15,6 +15,7 @@ public:
     virtual QString getParametersAsString() const = 0;
     virtual QString getShortDescription() const = 0;
     virtual QString getDetailledDescription() const = 0;
+    virtual CT_AbstractMetric* copy() const  = 0;
 
 };
 
