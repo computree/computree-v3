@@ -12,6 +12,8 @@
 
 #include "filter/pb_filterbyreturntype.h"
 
+#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
+
 // Alias for indexing models
 #define DEFin_res "res"
 #define DEFin_grp "grp"
@@ -74,9 +76,17 @@ void PB_StepApplyPointFilters::createOutResultModelListProtected()
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepApplyPointFilters::createPostConfigurationDialog()
 {
-    CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
+   // CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addBool("", "", "", _aaa);
+    //configDialog->addBool("", "", "", _aaa);
+    QList<CT_AbstractConfigurableElement*> list;
+
+    list.append(new PB_FilterByReturnType(PB_FilterByReturnType::First));
+    list.append(new PB_FilterByReturnType(PB_FilterByReturnType::Last));
+    list.append(new PB_FilterByReturnType(PB_FilterByReturnType::Only));
+
+    CT_ManageConfigurableElementsDialog dialog(list, tr("Filtres disponibles"));
+    dialog.exec();
 }
 
 void PB_StepApplyPointFilters::compute()
@@ -95,6 +105,7 @@ void PB_StepApplyPointFilters::compute()
         if (points != NULL && lasAtt != NULL)
         {
             PB_FilterByReturnType filter(PB_FilterByReturnType::Last);
+
             filter.setPointCloudIndex(points->getPointCloudIndex());
             filter.setLASAttributesContainer(lasAtt);
 

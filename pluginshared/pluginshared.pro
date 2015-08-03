@@ -400,7 +400,10 @@ SOURCES += \
 	ct_colorcloud/ct_colorcloudosg.cpp \
     ct_normalcloud/ct_normalcloudosg.cpp \
     ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.cpp \
-    ct_itemdrawable/ct_opfmeshmodel.cpp
+    ct_itemdrawable/ct_opfmeshmodel.cpp \
+    ct_filter/abstract/ct_abstractconfigurableelement.cpp \
+    ct_view/tools/ct_manageconfigurableelementsdialog.cpp \
+    ct_view/tools/ct_elementlistdialog.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -903,7 +906,10 @@ HEADERS += interfaces.h \
     ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.h \
     ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.h \
     ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.hpp \
-    ct_itemdrawable/ct_opfmeshmodel.h
+    ct_itemdrawable/ct_opfmeshmodel.h \
+    ct_filter/abstract/ct_abstractconfigurableelement.h \
+    ct_view/tools/ct_manageconfigurableelementsdialog.h \
+    ct_view/tools/ct_elementlistdialog.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
@@ -960,7 +966,9 @@ FORMS += \
     ct_view/inModel/ctg_inturnmanager.ui \
     ct_view/inModel/ctg_inmodelpossibilitieschoice.ui \
     ct_view/tools/ct_textfileconfigurationdialog.ui \
-    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui
+    ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui \
+    ct_view/tools/ct_manageconfigurableelementsdialog.ui \
+    ct_view/tools/ct_elementlistdialog.ui
 
 TRANSLATIONS += languages/pluginshared_fr.ts \
                 languages/pluginshared_en.ts

@@ -24,11 +24,12 @@ public:
     void createConfigurationDialog();
     void updateParamtersAfterConfiguration();
 
+    void updateName();
 
     QString getParametersAsString() const;
     QString getShortDescription() const;
     QString getDetailledDescription() const;
-    CT_AbstractFilter* copy() const;
+    CT_AbstractConfigurableElement* copy() const;
 
     void validatePoint(CT_PointIterator& pointIt, CT_LASData &LADData) const;
 

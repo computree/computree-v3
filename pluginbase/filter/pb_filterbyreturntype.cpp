@@ -7,7 +7,7 @@ PB_FilterByReturnType::PB_FilterByReturnType() : CT_AbstractFilter_LAS()
     _type = PB_FilterByReturnType::All;
     _typeAsString = getStringForType(_type);
     _outCloud = new CT_PointCloudIndexVector();
-    _filterName = QString("FLT%1").arg(_typeAsString);
+    updateName();
 }
 
 PB_FilterByReturnType::PB_FilterByReturnType(PB_FilterByReturnType::ReturnType type) : CT_AbstractFilter_LAS()
@@ -15,7 +15,7 @@ PB_FilterByReturnType::PB_FilterByReturnType(PB_FilterByReturnType::ReturnType t
     _type = type;
     _typeAsString = getStringForType(_type);
     _outCloud = new CT_PointCloudIndexVector();
-    _filterName = QString("FLT%1").arg(_typeAsString);
+    updateName();
 }
 
 void PB_FilterByReturnType::createConfigurationDialog()
@@ -25,7 +25,7 @@ void PB_FilterByReturnType::createConfigurationDialog()
     QStringList typesList;
     for (int type = PB_FilterByReturnType::ReturnType_begin ; type <= PB_FilterByReturnType::ReturnType_end ; type++)
     {
-        typesList.append(_typeAsString);
+        typesList.append(getStringForType((PB_FilterByReturnType::ReturnType) type));
     }
 
     configDialog->addStringChoice(tr("Type de retours à conserver"), "", typesList, _typeAsString);
@@ -34,6 +34,12 @@ void PB_FilterByReturnType::createConfigurationDialog()
 void PB_FilterByReturnType::updateParamtersAfterConfiguration()
 {
     _type = getTypeForString(_typeAsString);
+    updateName();
+}
+
+void PB_FilterByReturnType::updateName()
+{
+    _name = QString("PBF_%1").arg(_typeAsString);
 }
 
 QString PB_FilterByReturnType::getParametersAsString() const
@@ -59,7 +65,7 @@ QString PB_FilterByReturnType::getDetailledDescription() const
               "- All : don't filter on return type");
 }
 
-CT_AbstractFilter *PB_FilterByReturnType::copy() const
+CT_AbstractConfigurableElement *PB_FilterByReturnType::copy() const
 {
     return new PB_FilterByReturnType(_type);
 }
