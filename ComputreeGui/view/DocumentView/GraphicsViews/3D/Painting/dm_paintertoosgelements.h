@@ -117,7 +117,7 @@ public:
     /**
      * @brief Change color of the itemdrawable represented by the osg::Group (result) recovered by the method "results()" of this class
      */
-    static void staticChangeColorOfItemDrawableInResult(osg::Group *result, const QColor &color);
+    static void staticChangeColorOfItemDrawableInResult(CT_AbstractItemDrawable *item, GraphicsViewInterface *gv, osg::Group *result, const QColor &color);
 
     /**
      * @brief Dirty display list of globals elements in osg::Group that represent a itemdrawable: result recovered by the method "results()" of this class
@@ -746,6 +746,9 @@ private:
      * @brief Change the color in the first color array founded recursively in the group passed in parameter
      */
     static bool staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const QColor &color, bool colorArrayAlreadyModified = false);
+
+    // TODO
+    static bool staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex*> &indexes, const QColor &color, osg::Group *node, bool colorArrayAlreadyModified = false);
 
     /**
      * @brief Dirty the display list of all drawable in the group recursively

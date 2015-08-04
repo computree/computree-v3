@@ -99,7 +99,7 @@ void DM_OsgSceneManager::updateItemDrawablesThatColorWasModified()
         osg::ref_ptr<osg::Group> g = it.value();
 
         if(m_view->getDocumentView()->isColorModified(it.key()))
-            DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(g.get(), m_view->getDocumentView()->getColor(it.key()));
+            DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(it.key(), m_view, g.get(), m_view->getDocumentView()->getColor(it.key()));
     }
 }
 

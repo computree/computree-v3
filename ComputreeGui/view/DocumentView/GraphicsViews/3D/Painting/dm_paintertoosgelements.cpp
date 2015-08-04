@@ -15,6 +15,7 @@
 
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h"
+#include "view/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.h"
 
 #define MIN_DOUBLE_VALUE_IN_METERS 0.0001
 
@@ -80,12 +81,14 @@ void DM_PainterToOsgElements::setUseDisplayList(bool enable)
     m_useDisplayList = enable;
 }
 
-void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(osg::Group *result, const QColor &color)
+void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(CT_AbstractItemDrawable *item, GraphicsViewInterface *gv, osg::Group *result, const QColor &color)
 {
     if(result == NULL)
         return;
 
     int s;
+    bool localOK = false;
+    bool globalOK = false;
 
     if((s = result->getNumChildren()) > 0)
     {
@@ -93,8 +96,23 @@ void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(osg::Group
         {
             osg::Group *g = result->getChild(i)->asGroup();
 
-            if((g != NULL) && ((g->getName() == NAME_LOCAL_GEOMETRIES_GROUP) || (g->getName() == NAME_GLOBAL_GEOMETRIES_GROUP)))
-                staticRecursiveChangeColorOfFirstColorArrayInGroup(g, color);
+            if(g != NULL) {
+                if((g->getName() == NAME_LOCAL_GEOMETRIES_GROUP) && !localOK) {
+                    staticRecursiveChangeColorOfFirstColorArrayInGroup(g, color);
+                } else if((g->getName() == NAME_GLOBAL_GEOMETRIES_GROUP) && !globalOK) {
+                    DM_FakePainter p;
+                    p.setComputingMode(DM_FakePainter::BackupPointCloudIndex
+                                       | DM_FakePainter::BackupPointCloudIndexIfEdge
+                                       | DM_FakePainter::BackupPointCloudIndexIfFace);
+                    item->draw(*gv, p);
+
+                    staticChangeColorOfCloudsOfFirstColorArrayInGroup(p.pointCloudIndexBackup(), color, g);
+                }
+
+                if(localOK && globalOK)
+                    return;
+            }
+
         }
     }
 }
@@ -1427,6 +1445,61 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
 
                             for(size_t j=0; j<size; ++j)
                                 (*colorArray)[j] = osgColor;
+                        }
+
+                        for(int j=0; j<nD; ++j)
+                            geode->getDrawable(j)->dirtyDisplayList();
+
+                        colorArrayAlreadyModified = true;
+                    }
+                }
+            }
+        }
+    }
+
+    return colorArrayAlreadyModified;
+}
+
+bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex *> &indexes, const QColor &color, osg::Group *node, bool colorArrayAlreadyModified)
+{
+    uint n = node->getNumChildren();
+
+    for(uint i=0; i<n; ++i)
+    {
+        osg::Node *n = node->getChild(i);
+        osg::Group *g = n->asGroup();
+
+        if((g != NULL) && staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, color, g, colorArrayAlreadyModified))
+        {
+            colorArrayAlreadyModified = true;
+        }
+        else if(n->asGeode() != NULL)
+        {
+            osg::Geode *geode = n->asGeode();
+
+            int nD = geode->getNumDrawables();
+
+            if(nD > 0) {
+                osg::Geometry *geo = geode->getDrawable(0)->asGeometry();
+
+                if(geo != NULL) {
+                    ColorArrayType *colorArray = (ColorArrayType*)geo->getColorArray();
+
+                    if(colorArray != NULL) {
+
+                        if(!colorArrayAlreadyModified) {
+                            ColorArrayType::value_type osgColor(color.red(), color.green(), color.blue(), color.alpha());
+
+                            QListIterator<CT_AbstractCloudIndex*> it(indexes);
+
+                            while(it.hasNext()) {
+                                CT_AbstractCloudIndex *index = it.next();
+                                size_t size = index->size();
+
+                                for(size_t i=0; i<size; ++i) {
+                                    (*colorArray)[index->indexAt(i)] = osgColor;
+                                }
+                            }
                         }
 
                         for(int j=0; j<nD; ++j)

@@ -28,8 +28,6 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINTS_VISIBLE).toBool())
         painter.drawPointCloud(item.getPointCloudIndex());
 
-    painter.setColor(Qt::white);
-
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool() && item.hasBoundingBox())
     {
         painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
