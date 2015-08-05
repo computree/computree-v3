@@ -677,10 +677,13 @@ void GMainWindow::loadConfiguration()
             QPoint pos = CONFIG_FILE->value("windowPos", QPoint()).toPoint();
             bool isMaximized = CONFIG_FILE->value("windowIsMaximized", false).toBool();
 
+            setWindowState(Qt::WindowNoState);
+
             if(!isMaximized) {
-                setWindowState(Qt::WindowNoState);
                 resize(size);
                 move(pos);
+            } else {
+                showMaximized();
             }
         }
 
