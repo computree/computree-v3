@@ -9,7 +9,7 @@
 #include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_polygon2d.h"
 #include "ct_itemdrawable/ct_polyline2d.h"
-#include "ct_itemdrawable/abstract/ct_abstractgrid2d.h"
+#include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 
 #ifdef USE_GDAL
 #include "gdal_priv.h"

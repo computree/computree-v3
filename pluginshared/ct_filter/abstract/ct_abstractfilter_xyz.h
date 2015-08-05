@@ -10,6 +10,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractFilter_XYZ : public CT_AbstractFilter
     Q_OBJECT
 public:
     CT_AbstractFilter_XYZ();
+    CT_AbstractFilter_XYZ(const CT_AbstractFilter_XYZ *other);
     ~CT_AbstractFilter_XYZ();
 
     bool setPointCloudIndex(const CT_AbstractPointCloudIndex* inCloud);

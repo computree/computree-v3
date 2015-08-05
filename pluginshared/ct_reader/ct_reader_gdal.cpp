@@ -5,7 +5,7 @@
 #include "ogrsf_frmts.h"
 #endif
 
-#include "ct_itemdrawable/ct_grid2dxy.h"
+#include "ct_itemdrawable/ct_image2d.h"
 #include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_polygon2d.h"
 #include "ct_itemdrawable/ct_polyline2d.h"
@@ -142,7 +142,7 @@ void CT_Reader_GDAL::protectedCreateOutItemDrawableModelList()
         if(n != 0) {
             for(int i=0; i<n; ++i) {
                 QString name = GDALGetColorInterpretationName(data->GetRasterBand(i+1)->GetColorInterpretation());
-                addOutItemDrawableModel(new CT_OutStdSingularItemModel(QString(DEF_CT_Reader_GDAL_rasterOut).arg(i), new CT_Grid2DXY<float>(), (name.isEmpty() || (name == "Undefined")) ? QString("Raster %1").arg(i) : name));
+                addOutItemDrawableModel(new CT_OutStdSingularItemModel(QString(DEF_CT_Reader_GDAL_rasterOut).arg(i), new CT_Image2D<float>(), (name.isEmpty() || (name == "Undefined")) ? QString("Raster %1").arg(i) : name));
             }
         } else {
             n = data->GetLayerCount();
@@ -277,15 +277,16 @@ bool CT_Reader_GDAL::protectedReadFile()
             double padfTransform[6];
             poBand->GetDataset()->GetGeoTransform(&padfTransform[0]);
 
-            double xMin = padfTransform[0];
-            double yMin = padfTransform[3];
-
             int nXSize = poBand->GetXSize();
             int nYSize = poBand->GetYSize();
 
+            double xMin = padfTransform[0];
+            double yMin = padfTransform[3] - nYSize*padfTransform[1];
+
+
             double na = poBand->GetNoDataValue();
 
-            CT_Grid2DXY<float> *grid = new CT_Grid2DXY<float>(NULL,
+            CT_Image2D<float> *grid = new CT_Image2D<float>(NULL,
                                        NULL,
                                        xMin,
                                        yMin,
@@ -304,7 +305,7 @@ bool CT_Reader_GDAL::protectedReadFile()
                 poBand->RasterIO( GF_Read, 0, y, nXSize, 1, pafScanline, nXSize, 1, GDT_Float32, 0, 0 );
 
                 for(int x=0; x<nXSize; ++x) {
-                    grid->index(x, nYSize - y - 1, index);
+                    grid->index(x, y, index);
                     grid->setValueAtIndex(index, pafScanline[x]);
                 }
             }

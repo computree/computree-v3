@@ -1,5 +1,5 @@
 #include "pb_grid2dexporter.h"
-#include "ct_itemdrawable/abstract/ct_abstractgrid2d.h"
+#include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 
 #include <math.h>
 #include <QMessageBox>
@@ -39,7 +39,7 @@ bool PB_Grid2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawa
     while(it.hasNext())
     {
         CT_AbstractItemDrawable *item = it.next();
-        if(dynamic_cast<CT_AbstractGrid2D*>(item) != NULL)
+        if(dynamic_cast<CT_AbstractImage2D*>(item) != NULL)
         {
             myList.append(item);
             ++nGrids;
@@ -48,7 +48,7 @@ bool PB_Grid2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawa
 
     if(nGrids == 0)
     {
-        setErrorMessage(tr("Aucun ItemDrawable du type CT_AbstractGrid2D"));
+        setErrorMessage(tr("Aucun ItemDrawable du type CT_AbstractImage2D"));
         return false;
     }
 
@@ -87,7 +87,7 @@ bool PB_Grid2DExporter::protectedExportToFile()
     QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
-        CT_AbstractGrid2D* item = dynamic_cast<CT_AbstractGrid2D*>(it.next());
+        CT_AbstractImage2D* item = dynamic_cast<CT_AbstractImage2D*>(it.next());
         if (item != NULL)
         {
             QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
@@ -117,7 +117,7 @@ bool PB_Grid2DExporter::protectedExportToFile()
                     for (size_t xx = 0 ; xx < xdim ; xx++)
                     {
                         size_t sIndex;
-                        item->index(xx, ydim - yy - 1, sIndex);
+                        item->index(xx, yy, sIndex);
                         stream << item->valueAtIndexAsString(sIndex);
 
                         if (xx < xdim - 1) {stream << "\t";}

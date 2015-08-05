@@ -19,16 +19,19 @@ public:
     };
 
     PB_FilterByReturnType();
-    PB_FilterByReturnType(PB_FilterByReturnType::ReturnType type);
+    PB_FilterByReturnType(const PB_FilterByReturnType* other);
 
     void createConfigurationDialog();
     void updateParamtersAfterConfiguration();
 
     void updateName();
 
-    QString getParametersAsString() const;
     QString getShortDescription() const;
     QString getDetailledDescription() const;
+
+    QString getParametersAsString() const;
+    virtual bool setParametersFromString(QString parameters);
+
     CT_AbstractConfigurableElement* copy() const;
 
     void validatePoint(CT_PointIterator& pointIt, CT_LASData &LADData) const;

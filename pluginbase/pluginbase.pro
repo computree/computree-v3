@@ -84,7 +84,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_steptransformpointcloud.h \
     step/pb_stepfilteritemsbyposition.h \
     step/pb_stepbeginloopthroughdatasource.h \
-    step/pb_stepcomputepointsmetrics.h \
     step/pb_stepcreateplotmanagerfromfile.h \
     step/pb_stepcreateplotmanagergrid.h \
     step/pb_steploadpositionsformatching.h \
@@ -107,7 +106,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepcomputecrownprojection.h \
     exporters/xyb/pb_multixybexporter.h \
     step/pb_stepapplypointfilters.h \
-    filter/pb_filterbyreturntype.h
+    filter/pb_filterbyreturntype.h \
+    step/pb_stepcomputepointmetrics.h \
+    metric/pb_metricquantiles.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -187,7 +188,6 @@ SOURCES += \
     step/pb_steptransformpointcloud.cpp \
     step/pb_stepfilteritemsbyposition.cpp \
     step/pb_stepbeginloopthroughdatasource.cpp \
-    step/pb_stepcomputepointsmetrics.cpp \
     step/pb_stepcreateplotmanagerfromfile.cpp \
     step/pb_stepcreateplotmanagergrid.cpp \
     step/pb_steploadpositionsformatching.cpp \
@@ -210,7 +210,9 @@ SOURCES += \
     step/pb_stepcomputecrownprojection.cpp \
     exporters/xyb/pb_multixybexporter.cpp \
     step/pb_stepapplypointfilters.cpp \
-    filter/pb_filterbyreturntype.cpp
+    filter/pb_filterbyreturntype.cpp \
+    step/pb_stepcomputepointmetrics.cpp \
+    metric/pb_metricquantiles.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

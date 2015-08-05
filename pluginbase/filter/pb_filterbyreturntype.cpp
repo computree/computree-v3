@@ -5,14 +5,14 @@
 PB_FilterByReturnType::PB_FilterByReturnType() : CT_AbstractFilter_LAS()
 {
     _type = PB_FilterByReturnType::All;
-    _typeAsString = getStringForType(_type);
+    _typeAsString = "returnType";
     _outCloud = new CT_PointCloudIndexVector();
     updateName();
 }
 
-PB_FilterByReturnType::PB_FilterByReturnType(PB_FilterByReturnType::ReturnType type) : CT_AbstractFilter_LAS()
+PB_FilterByReturnType::PB_FilterByReturnType(const PB_FilterByReturnType *other) : CT_AbstractFilter_LAS(other)
 {
-    _type = type;
+    _type = other->_type;
     _typeAsString = getStringForType(_type);
     _outCloud = new CT_PointCloudIndexVector();
     updateName();
@@ -28,7 +28,9 @@ void PB_FilterByReturnType::createConfigurationDialog()
         typesList.append(getStringForType((PB_FilterByReturnType::ReturnType) type));
     }
 
-    configDialog->addStringChoice(tr("Type de retours à conserver"), "", typesList, _typeAsString);
+    _typeAsString = getStringForType(_type);
+
+    configDialog->addStringChoice(tr("Type de retours à conserver"), "", typesList, _typeAsString);  
 }
 
 void PB_FilterByReturnType::updateParamtersAfterConfiguration()
@@ -50,6 +52,12 @@ QString PB_FilterByReturnType::getParametersAsString() const
     return result;
 }
 
+bool PB_FilterByReturnType::setParametersFromString(QString parameters)
+{
+    _type = getTypeForString(parameters);
+    return true;
+}
+
 QString PB_FilterByReturnType::getShortDescription() const
 {
     return tr("Filter by return type");
@@ -67,7 +75,7 @@ QString PB_FilterByReturnType::getDetailledDescription() const
 
 CT_AbstractConfigurableElement *PB_FilterByReturnType::copy() const
 {
-    return new PB_FilterByReturnType(_type);
+    return new PB_FilterByReturnType(this);
 }
 
 void PB_FilterByReturnType::validatePoint(CT_PointIterator &pointIt, CT_LASData &lasData) const
@@ -91,7 +99,7 @@ QString PB_FilterByReturnType::getStringForType(PB_FilterByReturnType::ReturnTyp
         case PB_FilterByReturnType::Only : return "only";
     }
 
-    return "";
+    return "all";
 }
 
 PB_FilterByReturnType::ReturnType PB_FilterByReturnType::getTypeForString(QString returnTypeAsString) const

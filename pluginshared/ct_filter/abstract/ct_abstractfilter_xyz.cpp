@@ -6,9 +6,13 @@ CT_AbstractFilter_XYZ::CT_AbstractFilter_XYZ() : CT_AbstractFilter()
     _inCloud = NULL;
 }
 
+CT_AbstractFilter_XYZ::CT_AbstractFilter_XYZ(const CT_AbstractFilter_XYZ *other) : CT_AbstractFilter(other)
+{
+    _inCloud = other->_inCloud;
+}
+
 CT_AbstractFilter_XYZ::~CT_AbstractFilter_XYZ()
 {
-    _inCloud = NULL;
 }
 
 bool CT_AbstractFilter_XYZ::setPointCloudIndex(const CT_AbstractPointCloudIndex *inCloud)

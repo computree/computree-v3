@@ -20,12 +20,14 @@ public:
     explicit CT_ManageConfigurableElementsDialog(QList<CT_AbstractConfigurableElement*> &elements, QString title, QWidget *parent = 0);
     ~CT_ManageConfigurableElementsDialog();
 
+     QList<CT_AbstractConfigurableElement*> getSeletedElements() const;
+
 private slots:
     void on_pb_new_clicked();
-
     void on_pb_modify_clicked();
-
     void on_pb_delete_clicked();
+
+    void cancelClicked();
 
 private:
     Ui::CT_ManageConfigurableElementsDialog *ui;

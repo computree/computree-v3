@@ -6,17 +6,23 @@ CT_ManageConfigurableElementsDialog::CT_ManageConfigurableElementsDialog(QList<C
     ui(new Ui::CT_ManageConfigurableElementsDialog)
 {
     ui->setupUi(this);
-
     this->setWindowTitle(title);
 
     _baseElements = elements;
-
     _listDialog = new CT_ElementListDialog(_baseElements, this);
+
+    connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_pb_modify_clicked()));
+    connect(this, SIGNAL(rejected()), this, SLOT(cancelClicked()));
 }
 
 CT_ManageConfigurableElementsDialog::~CT_ManageConfigurableElementsDialog()
 {
     delete ui;
+}
+
+QList<CT_AbstractConfigurableElement *> CT_ManageConfigurableElementsDialog::getSeletedElements() const
+{
+    return _addedElements.values();
 }
 
 void CT_ManageConfigurableElementsDialog::on_pb_new_clicked()
@@ -65,4 +71,10 @@ void CT_ManageConfigurableElementsDialog::on_pb_delete_clicked()
 
     if (selectedElement != NULL) {delete selectedElement;}
     if (item != NULL) {delete item;}
+}
+
+void CT_ManageConfigurableElementsDialog::cancelClicked()
+{
+    qDeleteAll(_addedElements.values());
+    _addedElements.clear();
 }

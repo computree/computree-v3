@@ -1,25 +1,14 @@
-#ifndef PB_STEPCOMPUTEPOINTSMETRICS_H
-#define PB_STEPCOMPUTEPOINTSMETRICS_H
+#ifndef PB_STEPCOMPUTEPOINTMETRICS_H
+#define PB_STEPCOMPUTEPOINTMETRICS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_filter/abstract/ct_abstractconfigurableelement.h"
+#include "ct_filter/abstract/ct_abstractfilter.h"
 
-/*!
- * \class PB_StepComputePointsMetrics
- * \ingroup Steps_PB
- * \brief <b>Calcul de métriques à partir de nuages de points.</b>
- *
- * Cette étape gère plusieurs sortes d'éléments :
-- Une(des) scène(s) d'entrée
-- Un gestionnaire de placettes (enprises dans un fichier, génération auto...)
-- Un gestionnaire de Filtres de points (CT_AbstractXYZFilter)
-- Un gestionnaire de Métriques de points (CT_AbstractXYZMetric)
+// Inclusion of auto-indexation system
+#include "ct_tools/model/ct_autorenamemodels.h"
 
-Elle est conçue pour fonctionner au sein d'une boucle de script, et donc garder en mémoire les placettes incomplètes à un tour de boucle. 
- *
- *
- */
-
-class PB_StepComputePointsMetrics: public CT_AbstractStep
+class PB_StepComputePointMetrics: public CT_AbstractStep
 {
     Q_OBJECT
 
@@ -31,7 +20,8 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepComputePointsMetrics(CT_StepInitializeData &dataInit);
+    PB_StepComputePointMetrics(CT_StepInitializeData &dataInit);
+    ~PB_StepComputePointMetrics();
 
     /*! \brief Step description
      * 
@@ -85,8 +75,12 @@ protected:
 
 private:
 
-    // Step parameters
-    // No parameter for this step
+    // Declaration of autoRenames Variables (groups or items added to In models copies)
+    CT_AutoRenameModels    _outMetrics_ModelName;
+
+    QList<CT_AbstractConfigurableElement *> _availableMetrics;
+    QList<CT_AbstractConfigurableElement *> _selectedMetrics;
+
 };
 
-#endif // PB_STEPCOMPUTEPOINTSMETRICS_H
+#endif // PB_STEPCOMPUTEPOINTMETRICS_H

@@ -2,20 +2,12 @@
 #define PB_STEPAPPLYPOINTFILTERS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_filter/abstract/ct_abstractconfigurableelement.h"
+#include "ct_filter/abstract/ct_abstractfilter.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
 
-/*!
- * \class PB_StepApplyPointFilters
- * \ingroup Steps_PB
- * \brief <b>Applique des filtres sur les points.</b>
- *
- * No detailled description for this step
- *
- * \param _aaa 
- *
- */
 
 class PB_StepApplyPointFilters: public CT_AbstractStep
 {
@@ -30,6 +22,7 @@ public:
      * \param dataInit Step parameters object
      */
     PB_StepApplyPointFilters(CT_StepInitializeData &dataInit);
+    ~PB_StepApplyPointFilters();
 
     /*! \brief Step description
      * 
@@ -86,8 +79,10 @@ private:
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outPoints_ModelName;
 
-    // Step parameters
-    bool    _aaa;    /*!<  */
+    QMap<CT_AbstractConfigurableElement*, CT_AutoRenameModels*>    _modelNames;
+
+    QList<CT_AbstractConfigurableElement *> _availableFilters;
+    QList<CT_AbstractConfigurableElement *> _selectedFilters;
 
 };
 

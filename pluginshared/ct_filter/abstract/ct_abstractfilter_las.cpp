@@ -8,6 +8,12 @@ CT_AbstractFilter_LAS::CT_AbstractFilter_LAS() : CT_AbstractFilter_XYZ()
     _LASPointCloudIndex  = NULL;
 }
 
+CT_AbstractFilter_LAS::CT_AbstractFilter_LAS(const CT_AbstractFilter_LAS *other) : CT_AbstractFilter_XYZ(other)
+{
+    _lasAttributes = other->_lasAttributes;
+    _LASPointCloudIndex  = other->_LASPointCloudIndex;
+}
+
 CT_AbstractFilter_LAS::~CT_AbstractFilter_LAS()
 {
     _lasAttributes = NULL;

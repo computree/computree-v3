@@ -4,6 +4,8 @@
 #include "pluginShared_global.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 
+#include <QDebug>
+
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractConfigurableElement : public QObject
 {
     Q_OBJECT
@@ -12,14 +14,19 @@ public:
     ~CT_AbstractConfigurableElement();
 
     inline QString getName() {return _name;}
+
     virtual QString getShortDescription() const = 0;
     virtual QString getDetailledDescription() const = 0;
+
+    virtual QString getParametersAsString() const = 0;
+    virtual bool setParametersFromString(QString parameters) = 0;
+
     virtual CT_AbstractConfigurableElement* copy() const = 0;
 
     bool configure();
 
 protected:
-    QString     _name;
+    QString                     _name;
     CT_StepConfigurableDialog*  _configDialog;
 
     CT_StepConfigurableDialog* addConfigurationDialog();

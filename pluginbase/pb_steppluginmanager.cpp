@@ -63,7 +63,7 @@
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_steptransformpointcloud.h"
 #include "step/pb_stepfilteritemsbyposition.h"
-#include "step/pb_stepcomputepointsmetrics.h"
+#include "step/pb_stepcomputepointmetrics.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -112,6 +112,9 @@
 #include "ct_reader/ct_reader_opf.h"
 #include "ct_reader/ct_reader_las.h"
 #include "ct_reader/ct_reader_gdal.h"
+
+#include "filter/pb_filterbyreturntype.h"
+#include "metric/pb_metricquantiles.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -239,7 +242,6 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepModifyPositions2D(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepApplyPointFilters(*createNewStepInitializeData(NULL)));
 
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Traitement par lots")));
@@ -249,7 +251,8 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepCreatePlotManagerFromFile(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCreatePlotManagerGrid(*createNewStepInitializeData(NULL)));
 
-    sep->addStep(new PB_StepComputePointsMetrics(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepApplyPointFilters(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepComputePointMetrics(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
@@ -389,6 +392,18 @@ bool PB_StepPluginManager::loadReaders()
     sep = addNewSeparator(new CT_StandardReaderSeparator("LAS Files"));
     sep->addReader(new CT_Reader_LAS());
 
+    return true;
+}
+
+bool PB_StepPluginManager::loadFilters()
+{
+    addNewFilter(new PB_FilterByReturnType());
+    return true;
+}
+
+bool PB_StepPluginManager::loadMetrics()
+{
+    addNewMetric(new PB_MetricQuantiles());
     return true;
 }
 

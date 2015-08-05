@@ -68,7 +68,7 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
 
         if(dynamic_cast<CT_AbstractShape2D*>(item) != NULL)
             myVectorList.append(item);
-        else if(dynamic_cast<CT_AbstractGrid2D*>(item) != NULL)
+        else if(dynamic_cast<CT_AbstractImage2D*>(item) != NULL)
             myRasterList.append(item);
     }
 
@@ -124,7 +124,7 @@ bool PB_GDALExporter::protectedExportToFile()
 #ifdef USE_GDAL
 bool PB_GDALExporter::exportRaster(const QString &filepath)
 {
-    CT_AbstractGrid2D *grid = dynamic_cast<CT_AbstractGrid2D*>(itemDrawableToExport().first());
+    CT_AbstractImage2D *grid = dynamic_cast<CT_AbstractImage2D*>(itemDrawableToExport().first());
 
     size_t nXSize = grid->colDim();
     size_t nYSize = grid->linDim();
@@ -150,7 +150,7 @@ bool PB_GDALExporter::exportRaster(const QString &filepath)
 
     padfTransform[0] = grid->minX();
     padfTransform[1] = grid->resolution();
-    padfTransform[3] = grid->minY();
+    padfTransform[3] = grid->minY() + nYSize*padfTransform[1];
 
     dataset->SetGeoTransform( padfTransform );
 
@@ -161,7 +161,7 @@ bool PB_GDALExporter::exportRaster(const QString &filepath)
     for(int y=0; y<nYSize; ++y) {
 
         for(int x=0; x<nXSize; ++x) {
-            grid->index(x, nYSize - y - 1, index);
+            grid->index(x, y, index);
             pafScanline[x] = grid->valueAtIndexAsDouble(index);
         }
 

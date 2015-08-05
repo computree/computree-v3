@@ -10,6 +10,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractFilter_LAS : public CT_AbstractFilter
     Q_OBJECT
 public:
     CT_AbstractFilter_LAS();
+    CT_AbstractFilter_LAS(const CT_AbstractFilter_LAS* other);
     ~CT_AbstractFilter_LAS();
 
     bool setLASAttributesContainer(const CT_StdLASPointsAttributesContainer *lasAttributes);

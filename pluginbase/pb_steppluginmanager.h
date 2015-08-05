@@ -59,6 +59,8 @@ protected:
     bool loadActions();
     bool loadExporters();
     bool loadReaders();
+    bool loadFilters();
+    bool loadMetrics();
 
     bool loadAfterAllPluginsLoaded();
     void aboutToBeUnloaded();
