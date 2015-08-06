@@ -22,12 +22,16 @@ public:
 
      QList<CT_AbstractConfigurableElement*> getSeletedElements() const;
 
+     void setSuffix(QString suffixe);
+     QString getSuffix();
+
 private slots:
     void on_pb_new_clicked();
     void on_pb_modify_clicked();
     void on_pb_delete_clicked();
 
     void cancelClicked();
+    void trimLE(QString str);
 
 private:
     Ui::CT_ManageConfigurableElementsDialog *ui;

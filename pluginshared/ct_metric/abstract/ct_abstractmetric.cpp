@@ -31,10 +31,25 @@ CT_AbstractMetric::~CT_AbstractMetric()
     _attributes.clear();
 }
 
+QString CT_AbstractMetric::getCompleteName()
+{
+    QString result = getName();
+    if (_attributes.size() > 0)
+    {
+        result.append(": ");
+        QMutableMapIterator<QString, AttributeObject*> it(_attributes);
+        while (it.hasNext())
+        {
+            AttributeObject *attributeObject = it.next().value();
+            result.append(attributeObject->_name);
+            if (it.hasNext()) {result.append(",");}
+        }
+    }
+    return result;
+}
+
 void CT_AbstractMetric::initAttributesModels(CT_OutResultModelGroupToCopyPossibilities* resPoss, const CT_AutoRenameModels &parentModel)
 {
-    createAttributes();
-
     QMutableMapIterator<QString, AttributeObject*> it(_attributes);
     while (it.hasNext())
     {
@@ -56,7 +71,7 @@ void CT_AbstractMetric::initAttributesModels(CT_OutResultModelGroupToCopyPossibi
         resPoss->addItemAttributeModel(parentModel,
                                        *(attributeObject->_autoRenameModel),
                                        attributePrototype,
-                                       attributeObject->_name);
+                                       QString("%1%2").arg(attributeObject->_name).arg(_suffix));
     }
 }
 
@@ -72,16 +87,25 @@ void CT_AbstractMetric::computeMetric(CT_AbstractSingularItemDrawable *item)
         if (attributeObject->_instance != NULL)
         {
             item->addItemAttribute(attributeObject->_instance);
+            attributeObject->_instance = NULL;
         }
     }
+}
 
-    _attributes.clear();
+void CT_AbstractMetric::postConfigure()
+{
+    createAttributes();
+}
+
+void CT_AbstractMetric::setSuffix(QString suffix)
+{
+    _suffix = suffix;
 }
 
 
 void CT_AbstractMetric::addAttribute(QString name, CT_AbstractMetric::AttributeType type, QString category)
 {
-    _attributes.insert(name, new AttributeObject(QString("%1_%2").arg(getName()).arg(name), type, category, new CT_AutoRenameModels()));
+    _attributes.insert(name, new AttributeObject(name, type, category, new CT_AutoRenameModels()));
 }
 
 

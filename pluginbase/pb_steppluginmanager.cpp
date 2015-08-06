@@ -64,6 +64,7 @@
 #include "step/pb_steptransformpointcloud.h"
 #include "step/pb_stepfilteritemsbyposition.h"
 #include "step/pb_stepcomputepointmetrics.h"
+#include "step/pb_stepcomputerastermetrics.h"
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
@@ -84,7 +85,7 @@
 #include "step/pb_stepmodifypositions2d.h"
 #include "step/pb_stepcomputecrownprojection.h"
 #include "step/pb_stepapplypointfilters.h"
-
+#include "step/pb_steploadplotareas.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -115,6 +116,7 @@
 
 #include "filter/pb_filterbyreturntype.h"
 #include "metric/pb_metricquantiles.h"
+#include "metric/pb_metriccomputestats.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -251,8 +253,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepCreatePlotManagerFromFile(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCreatePlotManagerGrid(*createNewStepInitializeData(NULL)));
 
+    sep->addStep(new PB_StepLoadPlotAreas(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepApplyPointFilters(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepComputePointMetrics(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepComputeRasterMetrics(*createNewStepInitializeData(NULL)));
     sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
@@ -404,7 +408,7 @@ bool PB_StepPluginManager::loadFilters()
 bool PB_StepPluginManager::loadMetrics()
 {
     addNewMetric(new PB_MetricQuantiles());
-    return true;
+    addNewMetric(new PB_MetricComputeStats());return true;
 }
 
 #ifdef USE_GDAL

@@ -1,15 +1,16 @@
-#ifndef PB_METRICQUANTILES_H
-#define PB_METRICQUANTILES_H
+#ifndef PB_METRICCOMPUTESTATS_H
+#define PB_METRICCOMPUTESTATS_H
+
 
 #include "ct_metric/abstract/ct_abstractmetric_xyz.h"
 
-class PB_MetricQuantiles : public CT_AbstractMetric_XYZ
+class PB_MetricComputeStats : public CT_AbstractMetric_XYZ
 {
     Q_OBJECT
 public:
 
-    PB_MetricQuantiles();
-    PB_MetricQuantiles(const PB_MetricQuantiles* other);
+    PB_MetricComputeStats();
+    PB_MetricComputeStats(const PB_MetricComputeStats* other);
 
     QString getName();
 
@@ -29,8 +30,12 @@ public:
     CT_AbstractConfigurableElement* copy() const;
 
 private:
-    QString _typeAsString;
-
+    bool _computeHmean;
+    bool _computeHsd;
+    bool _computeHskew;
+    bool _computeHkurt;
+    bool _computeHcv;
 };
 
-#endif // PB_METRICQUANTILES_H
+
+#endif // PB_METRICCOMPUTESTATS_H

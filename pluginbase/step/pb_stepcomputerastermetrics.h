@@ -1,5 +1,5 @@
-#ifndef PB_STEPCOMPUTEPOINTMETRICS_H
-#define PB_STEPCOMPUTEPOINTMETRICS_H
+#ifndef PB_STEPCOMPUTERASTERMETRICS_H
+#define PB_STEPCOMPUTERASTERMETRICS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_filter/abstract/ct_abstractconfigurableelement.h"
@@ -8,7 +8,7 @@
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
 
-class PB_StepComputePointMetrics: public CT_AbstractStep
+class PB_StepComputeRasterMetrics: public CT_AbstractStep
 {
     Q_OBJECT
 
@@ -20,8 +20,8 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepComputePointMetrics(CT_StepInitializeData &dataInit);
-    ~PB_StepComputePointMetrics();
+    PB_StepComputeRasterMetrics(CT_StepInitializeData &dataInit);
+    ~PB_StepComputeRasterMetrics();
 
     /*! \brief Step description
      * 
@@ -77,11 +77,10 @@ private:
 
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outMetrics_ModelName;
-    QString                _inSceneDisplayableName;
 
     QList<CT_AbstractConfigurableElement *> _availableMetrics;
     QList<CT_AbstractConfigurableElement *> _selectedMetrics;
 
 };
 
-#endif // PB_STEPCOMPUTEPOINTMETRICS_H
+#endif // PB_STEPCOMPUTERASTERMETRICS_H

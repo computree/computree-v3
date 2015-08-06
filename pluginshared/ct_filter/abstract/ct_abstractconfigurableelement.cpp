@@ -3,7 +3,6 @@
 CT_AbstractConfigurableElement::CT_AbstractConfigurableElement()
 {
     _configDialog = NULL;
-    _name = "";
 }
 
 CT_AbstractConfigurableElement::~CT_AbstractConfigurableElement()
@@ -19,11 +18,8 @@ bool CT_AbstractConfigurableElement::configure()
 
     if (_configDialog != NULL)
     {
-        if (_configDialog->exec() == 1)
-        {
-            updateParamtersAfterConfiguration();
-            return true;
-        } else {return false;}
+        _configDialog->exec();
+        updateParamtersAfterConfiguration();
     }
     return true;
 }

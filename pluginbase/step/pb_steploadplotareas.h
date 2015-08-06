@@ -1,14 +1,12 @@
-#ifndef PB_STEPCOMPUTEPOINTMETRICS_H
-#define PB_STEPCOMPUTEPOINTMETRICS_H
+#ifndef PB_STEPLOADPLOTAREAS_H
+#define PB_STEPLOADPLOTAREAS_H
 
-#include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_filter/abstract/ct_abstractconfigurableelement.h"
-#include "ct_filter/abstract/ct_abstractfilter.h"
-
-// Inclusion of auto-indexation system
+#include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_view/tools/ct_textfileconfigurationdialog.h"
 #include "ct_tools/model/ct_autorenamemodels.h"
 
-class PB_StepComputePointMetrics: public CT_AbstractStep
+
+class PB_StepLoadPlotAreas: public CT_AbstractStepCanBeAddedFirst
 {
     Q_OBJECT
 
@@ -20,8 +18,7 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepComputePointMetrics(CT_StepInitializeData &dataInit);
-    ~PB_StepComputePointMetrics();
+    PB_StepLoadPlotAreas(CT_StepInitializeData &dataInit);
 
     /*! \brief Step description
      * 
@@ -61,27 +58,26 @@ protected:
      */
     void createPostConfigurationDialog();
 
-    /*! \brief Output results specification
-     * 
-     * Specification of output results models created by the step (OUT)
-     */
     void createOutResultModelListProtected();
 
-    /*! \brief Algorithm of the step
-     * 
-     * Step computation, using input results, and creating output results
-     */
     void compute();
+
 
 private:
 
-    // Declaration of autoRenames Variables (groups or items added to In models copies)
-    CT_AutoRenameModels    _outMetrics_ModelName;
-    QString                _inSceneDisplayableName;
+    // Step parameters
+    QList<CT_TextFileConfigurationFields> _neededFields;
 
-    QList<CT_AbstractConfigurableElement *> _availableMetrics;
-    QList<CT_AbstractConfigurableElement *> _selectedMetrics;
+    QString _refFileName;
+    QString _plotID;
+    bool _refHeader;
+    QString _refSeparator;
+    QString _refDecimal;
+    QLocale _refLocale;
+    int _refSkip;
+    QMap<QString, int> _refColumns;
 
+    CT_AutoRenameModels _areaModelName;
 };
 
-#endif // PB_STEPCOMPUTEPOINTMETRICS_H
+#endif // PB_STEPLOADPLOTAREAS_H

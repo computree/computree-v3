@@ -5,12 +5,15 @@
 PB_MetricQuantiles::PB_MetricQuantiles() : CT_AbstractMetric_XYZ()
 {
     _typeAsString = "Hmax";
-    updateName();
 }
 
 PB_MetricQuantiles::PB_MetricQuantiles(const PB_MetricQuantiles *other) : CT_AbstractMetric_XYZ(other)
 {
-    updateName();
+}
+
+QString PB_MetricQuantiles::getName()
+{
+    return QString("PBM_Quantiles");
 }
 
 void PB_MetricQuantiles::createConfigurationDialog()
@@ -22,12 +25,6 @@ void PB_MetricQuantiles::createConfigurationDialog()
 
 void PB_MetricQuantiles::updateParamtersAfterConfiguration()
 {
-    updateName();
-}
-
-void PB_MetricQuantiles::updateName()
-{
-    _name = QString("PBM_%1").arg(_typeAsString);
 }
 
 QString PB_MetricQuantiles::getParametersAsString() const
@@ -57,7 +54,7 @@ void PB_MetricQuantiles::computeMetric()
     {
         const CT_Point& point = itP.next().currentPoint();
 
-        if (point(2) > hmax) {hmax = point(2);}
+        if (_plotArea->contains(point(0), point(1)) && point(2) > hmax) {hmax = point(2);}
     }
     setAttributeValue("Hmax", hmax);
 }

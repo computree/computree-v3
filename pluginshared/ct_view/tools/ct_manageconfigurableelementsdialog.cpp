@@ -7,12 +7,14 @@ CT_ManageConfigurableElementsDialog::CT_ManageConfigurableElementsDialog(QList<C
 {
     ui->setupUi(this);
     this->setWindowTitle(title);
+    ui->lb_title2->setText(title);
 
     _baseElements = elements;
     _listDialog = new CT_ElementListDialog(_baseElements, this);
 
     connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_pb_modify_clicked()));
     connect(this, SIGNAL(rejected()), this, SLOT(cancelClicked()));
+    connect(ui->le_suffix, SIGNAL(textEdited(QString)), this, SLOT(trimLE(QString)));
 }
 
 CT_ManageConfigurableElementsDialog::~CT_ManageConfigurableElementsDialog()
@@ -25,6 +27,16 @@ QList<CT_AbstractConfigurableElement *> CT_ManageConfigurableElementsDialog::get
     return _addedElements.values();
 }
 
+void CT_ManageConfigurableElementsDialog::setSuffix(QString suffixe)
+{
+    ui->lb_title2->setText(suffixe);
+}
+
+QString CT_ManageConfigurableElementsDialog::getSuffix()
+{
+    return ui->lb_title2->text();
+}
+
 void CT_ManageConfigurableElementsDialog::on_pb_new_clicked()
 {
     _listDialog->exec();
@@ -34,9 +46,10 @@ void CT_ManageConfigurableElementsDialog::on_pb_new_clicked()
     {
         CT_AbstractConfigurableElement* newElement = selectedElement->copy();
         newElement->configure();
+        newElement->postConfigure();
 
         QListWidgetItem* newItem = new QListWidgetItem(ui->listWidget);
-        newItem->setText(newElement->getName());
+        newItem->setText(newElement->getCompleteName());
         newItem->setToolTip(newElement->getDetailledDescription());
         newItem->setSelected(true);
         newItem->setFlags(newItem->flags() | Qt::ItemIsUserCheckable);
@@ -57,7 +70,7 @@ void CT_ManageConfigurableElementsDialog::on_pb_modify_clicked()
     if (selectedElement != NULL)
     {
         selectedElement->configure();
-        item->setText(selectedElement->getName());
+        item->setText(selectedElement->getCompleteName());
     }
 }
 
@@ -77,4 +90,10 @@ void CT_ManageConfigurableElementsDialog::cancelClicked()
 {
     qDeleteAll(_addedElements.values());
     _addedElements.clear();
+}
+
+void CT_ManageConfigurableElementsDialog::trimLE(QString str)
+{
+    Q_UNUSED(str);
+    ui->le_suffix->setText(ui->le_suffix->text().remove(QRegularExpression("\\W")));
 }

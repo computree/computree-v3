@@ -21,10 +21,11 @@ public:
     PB_FilterByReturnType();
     PB_FilterByReturnType(const PB_FilterByReturnType* other);
 
+    QString getName();
+    QString getCompleteName();
+
     void createConfigurationDialog();
     void updateParamtersAfterConfiguration();
-
-    void updateName();
 
     QString getShortDescription() const;
     QString getDetailledDescription() const;

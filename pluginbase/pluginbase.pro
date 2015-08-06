@@ -108,7 +108,10 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepapplypointfilters.h \
     filter/pb_filterbyreturntype.h \
     step/pb_stepcomputepointmetrics.h \
-    metric/pb_metricquantiles.h
+    metric/pb_metricquantiles.h \
+    step/pb_steploadplotareas.h \
+    step/pb_stepcomputerastermetrics.h \
+    metric/pb_metriccomputestats.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -212,7 +215,10 @@ SOURCES += \
     step/pb_stepapplypointfilters.cpp \
     filter/pb_filterbyreturntype.cpp \
     step/pb_stepcomputepointmetrics.cpp \
-    metric/pb_metricquantiles.cpp
+    metric/pb_metricquantiles.cpp \
+    step/pb_steploadplotareas.cpp \
+    step/pb_stepcomputerastermetrics.cpp \
+    metric/pb_metriccomputestats.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

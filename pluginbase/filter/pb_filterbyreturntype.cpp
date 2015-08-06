@@ -5,9 +5,8 @@
 PB_FilterByReturnType::PB_FilterByReturnType() : CT_AbstractFilter_LAS()
 {
     _type = PB_FilterByReturnType::All;
-    _typeAsString = "returnType";
+    _typeAsString = "All";
     _outCloud = new CT_PointCloudIndexVector();
-    updateName();
 }
 
 PB_FilterByReturnType::PB_FilterByReturnType(const PB_FilterByReturnType *other) : CT_AbstractFilter_LAS(other)
@@ -15,7 +14,16 @@ PB_FilterByReturnType::PB_FilterByReturnType(const PB_FilterByReturnType *other)
     _type = other->_type;
     _typeAsString = getStringForType(_type);
     _outCloud = new CT_PointCloudIndexVector();
-    updateName();
+}
+
+QString PB_FilterByReturnType::getName()
+{
+    return QString("PBF_ReturnType");
+}
+
+QString PB_FilterByReturnType::getCompleteName()
+{
+    return getStringForType(_type);
 }
 
 void PB_FilterByReturnType::createConfigurationDialog()
@@ -36,12 +44,6 @@ void PB_FilterByReturnType::createConfigurationDialog()
 void PB_FilterByReturnType::updateParamtersAfterConfiguration()
 {
     _type = getTypeForString(_typeAsString);
-    updateName();
-}
-
-void PB_FilterByReturnType::updateName()
-{
-    _name = QString("PBF_%1").arg(_typeAsString);
 }
 
 QString PB_FilterByReturnType::getParametersAsString() const

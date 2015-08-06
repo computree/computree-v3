@@ -13,7 +13,9 @@ public:
     CT_AbstractConfigurableElement();
     ~CT_AbstractConfigurableElement();
 
-    inline QString getName() {return _name;}
+    virtual QString getName() {return "";}
+
+    virtual QString getCompleteName() {return getName();}
 
     virtual QString getShortDescription() const = 0;
     virtual QString getDetailledDescription() const = 0;
@@ -23,15 +25,15 @@ public:
 
     virtual CT_AbstractConfigurableElement* copy() const = 0;
 
-    bool configure();
+    virtual bool configure();
+
+    virtual void postConfigure() = 0;
 
 protected:
-    QString                     _name;
     CT_StepConfigurableDialog*  _configDialog;
 
     CT_StepConfigurableDialog* addConfigurationDialog();
 
-    virtual void updateName() {}
     virtual void createConfigurationDialog() {}
     virtual void updateParamtersAfterConfiguration() {}
 

@@ -28,9 +28,13 @@ public:
 
     ~CT_AbstractMetric();
 
+    virtual QString getCompleteName();
+
     void initAttributesModels(CT_OutResultModelGroupToCopyPossibilities* resPoss, const CT_AutoRenameModels &parentModel);
 
     void computeMetric(CT_AbstractSingularItemDrawable *item);
+
+    virtual void postConfigure();
 
 protected:
     struct AttributeObject {
@@ -66,11 +70,13 @@ protected:
 
     CT_ResultGroup*                   _result;
     QMap<QString, AttributeObject*> _attributes;
+    QString                         _suffix;
 
 
     virtual void createAttributes() = 0;
     virtual void computeMetric() = 0;
 
+    void setSuffix(QString suffix);
 
     void addAttribute(QString name, CT_AbstractMetric::AttributeType type, QString category);
 

@@ -12,6 +12,8 @@ public:
     CT_AbstractFilter(const CT_AbstractFilter* other);
     ~CT_AbstractFilter();
 
+    virtual void postConfigure(){}
+
 };
 
 #endif // CT_ABSTRACTFILTER_H
