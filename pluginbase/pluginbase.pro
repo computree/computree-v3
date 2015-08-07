@@ -111,7 +111,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     metric/pb_metricquantiles.h \
     step/pb_steploadplotareas.h \
     step/pb_stepcomputerastermetrics.h \
-    metric/pb_metriccomputestats.h
+    metric/pb_metriccomputestats.h \
+    filter/pb_filterremoveupperoutliers.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -218,7 +219,8 @@ SOURCES += \
     metric/pb_metricquantiles.cpp \
     step/pb_steploadplotareas.cpp \
     step/pb_stepcomputerastermetrics.cpp \
-    metric/pb_metriccomputestats.cpp
+    metric/pb_metriccomputestats.cpp \
+    filter/pb_filterremoveupperoutliers.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

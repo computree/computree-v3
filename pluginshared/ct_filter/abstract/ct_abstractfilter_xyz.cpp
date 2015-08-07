@@ -15,13 +15,15 @@ CT_AbstractFilter_XYZ::~CT_AbstractFilter_XYZ()
 {
 }
 
-bool CT_AbstractFilter_XYZ::setPointCloudIndex(const CT_AbstractPointCloudIndex *inCloud)
+bool CT_AbstractFilter_XYZ::setPointCloudIndex(const CT_AbstractItemDrawableWithPointCloud *inItem)
 {
     _inCloud = NULL;
+    _inItem = NULL;
 
-    if (inCloud == NULL) {return false;}
+    if (inItem == NULL) {return false;}
 
-    _inCloud = inCloud;
+    _inCloud = inItem->getPointCloudIndex();
+    _inItem = inItem;
     return true;
 }
 

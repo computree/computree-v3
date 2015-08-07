@@ -115,8 +115,11 @@
 #include "ct_reader/ct_reader_gdal.h"
 
 #include "filter/pb_filterbyreturntype.h"
+#include "filter/pb_filterremoveupperoutliers.h"
+
 #include "metric/pb_metricquantiles.h"
 #include "metric/pb_metriccomputestats.h"
+
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -402,6 +405,7 @@ bool PB_StepPluginManager::loadReaders()
 bool PB_StepPluginManager::loadFilters()
 {
     addNewFilter(new PB_FilterByReturnType());
+    addNewFilter(new PB_FilterRemoveUpperOutliers());
     return true;
 }
 

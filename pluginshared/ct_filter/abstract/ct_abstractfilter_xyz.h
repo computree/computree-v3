@@ -2,6 +2,7 @@
 #define CT_ABSTRACTFILTER_XYZ_H
 
 #include "ct_filter/abstract/ct_abstractfilter.h"
+#include  "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include  "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
 
@@ -13,13 +14,14 @@ public:
     CT_AbstractFilter_XYZ(const CT_AbstractFilter_XYZ *other);
     ~CT_AbstractFilter_XYZ();
 
-    bool setPointCloudIndex(const CT_AbstractPointCloudIndex* inCloud);
+    bool setPointCloudIndex(const CT_AbstractItemDrawableWithPointCloud* inItem);
 
     virtual CT_PointCloudIndexVector *filterPointCloudIndex() const;
     virtual void validatePoint(CT_PointIterator& pointIt) const = 0;
 
 protected:
 
+    const CT_AbstractItemDrawableWithPointCloud*    _inItem;
     const CT_AbstractPointCloudIndex* _inCloud;
     CT_PointCloudIndexVector* _outCloud;
 
