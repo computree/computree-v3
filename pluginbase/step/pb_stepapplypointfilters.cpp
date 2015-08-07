@@ -120,7 +120,7 @@ void PB_StepApplyPointFilters::createOutResultModelListProtected()
         CT_AutoRenameModels* modelName = new CT_AutoRenameModels();
         _modelNames.insert(filter, modelName);
 
-        resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getName());
+        resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getCompleteName());
     }
 }
 
@@ -142,9 +142,10 @@ void PB_StepApplyPointFilters::compute()
             QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
             while (it.hasNext())
             {
-                CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) it.next();
+                CT_AbstractConfigurableElement* element = it.next();
+                CT_AutoRenameModels* modelName = _modelNames.value(element);
+                CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) element->copy();
                 CT_AbstractFilter_LAS* filterLAS = dynamic_cast<CT_AbstractFilter_LAS*>(filter);
-                CT_AutoRenameModels* modelName = _modelNames.value(filter);
 
                 if (filter != NULL && modelName != NULL)
                 {
@@ -167,6 +168,8 @@ void PB_StepApplyPointFilters::compute()
                         outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(outCloud));
 
                     } else {delete outCloud;}
+
+                    delete filter;
                 }
             }
         }

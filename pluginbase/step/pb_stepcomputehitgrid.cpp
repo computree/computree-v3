@@ -108,7 +108,6 @@ void PB_StepComputeHitGrid::createOutResultModelListProtected()
     res->addItemModel(DEF_SearchInGroup, _itemOut_prx_ModelName, new CT_Profile<int>(), tr("ProfilX"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_pry_ModelName, new CT_Profile<int>(), tr("ProfilY"));
     res->addItemModel(DEF_SearchInGroup, _itemOut_prz_ModelName, new CT_Profile<int>(), tr("ProfilZ"));
-    res->addItemModel(DEF_SearchInGroup, _itemOut_prdiag_ModelName, new CT_Profile<int>(), tr("ProfilDiag"));
     res->addItemModel(DEF_SearchInGroup, _hits_ModelName, new CT_Grid3D<int>(), tr("Hits"));
 }
 
@@ -202,11 +201,6 @@ void PB_StepComputeHitGrid::compute()
                                                                               minX, minY, scene->maxZ(),
                                                                               _res, -1, 0);
 
-            CT_Profile<int>* proDiag = CT_Profile<int>::createProfileFromSegment(_itemOut_prdiag_ModelName.completeName(), outResult,
-                                                                              minX, minY, minZ,
-                                                                              scene->maxX(), scene->maxY(), scene->maxZ(),
-                                                                              _res, -1, 0);
-
             grxy->initDrawManager("XY Density", true, true);
             grxz->initDrawManager("XZ Density", true, true);
             gryz->initDrawManager("YZ Density", true, true);
@@ -218,9 +212,8 @@ void PB_StepComputeHitGrid::compute()
             group->addItemDrawable(proX);
             group->addItemDrawable(proY);
             group->addItemDrawable(proZ);
-            group->addItemDrawable(proDiag);
 
-            PB_ComputeHitsThread* hitsThread = new PB_ComputeHitsThread(hitGrid, grxy, grxz, gryz, proX, proY, proZ, proDiag, scene);
+            PB_ComputeHitsThread* hitsThread = new PB_ComputeHitsThread(hitGrid, grxy, grxz, gryz, proX, proY, proZ, scene);
             connect(hitsThread, SIGNAL(progressChanged()), this, SLOT(updateProgress()));
             hitsThread->start();
             _threadList.append(hitsThread);

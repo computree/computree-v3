@@ -28,9 +28,16 @@ CT_PointCloudIndexVector* CT_AbstractFilter_LAS::filterPointCloudIndex() const
     while(itP.hasNext())
     {
         size_t index = itP.next().currentGlobalIndex();
-        _lasAttributes->getLASDataAt(_LASPointCloudIndex->indexOf(index), lasData);
 
-        validatePoint(itP, lasData);
+        if (_LASPointCloudIndex->contains(index))
+        {
+            size_t localIndex = _LASPointCloudIndex->indexOf(index);
+            _lasAttributes->getLASDataAt(localIndex, lasData);
+
+            validatePoint(itP, lasData);
+        } else {
+            PS_LOG->addMessage(LogInterface::info, LogInterface::filter, tr("Pas d'informations LAS pour le point %1 : point non conservé").arg(index));
+        }
     }
 
     return _outCloud;

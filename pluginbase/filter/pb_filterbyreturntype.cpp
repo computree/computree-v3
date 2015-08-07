@@ -77,7 +77,10 @@ QString PB_FilterByReturnType::getDetailledDescription() const
 
 CT_AbstractConfigurableElement *PB_FilterByReturnType::copy() const
 {
-    return new PB_FilterByReturnType(this);
+    PB_FilterByReturnType* filter = new PB_FilterByReturnType(this);
+    filter->_type = _type;
+    filter->_typeAsString = _typeAsString;
+    return filter;
 }
 
 void PB_FilterByReturnType::validatePoint(CT_PointIterator &pointIt, CT_LASData &lasData) const

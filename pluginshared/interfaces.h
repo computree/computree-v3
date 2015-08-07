@@ -1334,6 +1334,8 @@ public:
         action,
         reader,
         exporter,
+        filter,
+        metric,
         unknow
     };
 

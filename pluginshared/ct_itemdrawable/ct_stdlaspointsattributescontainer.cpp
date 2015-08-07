@@ -1,5 +1,6 @@
 #include "ct_stdlaspointsattributescontainer.h"
 
+#include <QDebug>
 CT_StdLASPointsAttributesContainer::CT_StdLASPointsAttributesContainer() : CT_AbstractPointsAttributesContainer()
 {
 }

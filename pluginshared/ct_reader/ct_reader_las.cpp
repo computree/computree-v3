@@ -413,19 +413,34 @@ bool CT_Reader_LAS::protectedReadFile()
             addOutItemDrawable(DEF_CT_Reader_LAS_attributesOut, container);
 
             addOutItemDrawable(DEF_CT_Reader_LAS_intensityOut, new CT_PointsAttributesScalarTemplated<quint16>(NULL, NULL, pcir, intensitiesV));
-            addOutItemDrawable(DEF_CT_Reader_LAS_returnNumberOut, rn0_5);
-            addOutItemDrawable(DEF_CT_Reader_LAS_returnNumberOut, rn6_10);
-            addOutItemDrawable(DEF_CT_Reader_LAS_numberOfReturnsOut, nor0_5);
-            addOutItemDrawable(DEF_CT_Reader_LAS_numberOfReturnsOut, nor6_10);
+
+            if(mask6_10V == NULL) {
+                addOutItemDrawable(DEF_CT_Reader_LAS_returnNumberOut, rn0_5);
+                addOutItemDrawable(DEF_CT_Reader_LAS_numberOfReturnsOut, nor0_5);
+            } else {
+                addOutItemDrawable(DEF_CT_Reader_LAS_returnNumberOut, rn6_10);
+                addOutItemDrawable(DEF_CT_Reader_LAS_numberOfReturnsOut, nor6_10);
+            }
+
             addOutItemDrawable(DEF_CT_Reader_LAS_classificationFlagsOut, cf);
             addOutItemDrawable(DEF_CT_Reader_LAS_scannerChannelOut, sc);
-            addOutItemDrawable(DEF_CT_Reader_LAS_scanDirectionFlagsOut, sdf0_5);
-            addOutItemDrawable(DEF_CT_Reader_LAS_scanDirectionFlagsOut, sdf6_10);
-            addOutItemDrawable(DEF_CT_Reader_LAS_edgeOfFlightLineOut, efl0_5);
-            addOutItemDrawable(DEF_CT_Reader_LAS_edgeOfFlightLineOut, efl6_10);
+
+            if(mask6_10V == NULL) {
+                addOutItemDrawable(DEF_CT_Reader_LAS_scanDirectionFlagsOut, sdf0_5);
+                addOutItemDrawable(DEF_CT_Reader_LAS_edgeOfFlightLineOut, efl0_5);
+            } else {
+                addOutItemDrawable(DEF_CT_Reader_LAS_scanDirectionFlagsOut, sdf6_10);
+                addOutItemDrawable(DEF_CT_Reader_LAS_edgeOfFlightLineOut, efl6_10);
+            }
+
             addOutItemDrawable(DEF_CT_Reader_LAS_classificationOut, new CT_PointsAttributesScalarTemplated<quint8>(NULL, NULL, pcir, classificationsV));
-            addOutItemDrawable(DEF_CT_Reader_LAS_scanAngleRankOut, scanAngleRank0_5);
-            addOutItemDrawable(DEF_CT_Reader_LAS_scanAngleRankOut, scanAngleRank6_10);
+
+            if(mask6_10V == NULL) {
+                addOutItemDrawable(DEF_CT_Reader_LAS_scanAngleRankOut, scanAngleRank0_5);
+            } else {
+                addOutItemDrawable(DEF_CT_Reader_LAS_scanAngleRankOut, scanAngleRank6_10);
+            }
+
             addOutItemDrawable(DEF_CT_Reader_LAS_userDataOut, new CT_PointsAttributesScalarTemplated<quint8>(NULL, NULL, pcir, userDataV));
             addOutItemDrawable(DEF_CT_Reader_LAS_pointSourceIDOut, new CT_PointsAttributesScalarTemplated<quint16>(NULL, NULL, pcir, pointSourceIDV));
             addOutItemDrawable(DEF_CT_Reader_LAS_gpsTimeOut, (gpsTimeV == NULL ? NULL : new CT_PointsAttributesScalarTemplated<double>(NULL, NULL, pcir, gpsTimeV)));

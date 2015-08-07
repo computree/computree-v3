@@ -34,7 +34,7 @@ PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
                                            CT_Grid2DXY<int> *grdXY,
                                            CT_Grid2DXZ<int> *grdXZ,
                                            CT_Grid2DYZ<int> *grdYZ, CT_Profile<int> *proX, CT_Profile<int> *proY,
-                                           CT_Profile<int>  *proZ, CT_Profile<int> *proDiag,
+                                           CT_Profile<int>  *proZ,
                                            const CT_Scene *scene) : CT_MonitoredQThread()
 {
     _grilleHits = grilleHits;
@@ -44,7 +44,6 @@ PB_ComputeHitsThread::PB_ComputeHitsThread(CT_Grid3D<int> *grilleHits,
     _proX = proX;
     _proY = proY;
     _proZ = proZ;
-    _proDiag = proDiag;
     _scene = scene;
 }
 
@@ -66,13 +65,12 @@ void PB_ComputeHitsThread::run()
         {
             // Hits Computing
             _grilleHits->addValueAtIndex(indice, 1);
-            _grdXY->addValueAtXY(point(0), point(1), 1);
-            _grdXZ->addValueAtXZ(point(0), point(2), 1);
-            _grdYZ->addValueAtYZ(point(1), point(2), 1);
-            _proX->addValueForXYZ(point(0), point(1), point(2), 1);
-            _proY->addValueForXYZ(point(0), point(1), point(2), 1);
-            _proZ->addValueForXYZ(point(0), point(1), point(2), 1);
-            _proDiag->addValueForXYZ(point(0), point(1), point(2), 1);
+            if (_grdXY != NULL) {_grdXY->addValueAtXY(point(0), point(1), 1);}
+            if (_grdXZ != NULL) {_grdXZ->addValueAtXZ(point(0), point(2), 1);}
+            if (_grdYZ != NULL) {_grdYZ->addValueAtYZ(point(1), point(2), 1);}
+            if (_proX != NULL)  {_proX->addValueForXYZ(point(0), point(1), point(2), 1);}
+            if (_proY != NULL)  {_proY->addValueForXYZ(point(0), point(1), point(2), 1);}
+            if (_proZ != NULL)  {_proZ->addValueForXYZ(point(0), point(1), point(2), 1);}
         } else {
             qDebug() << "Le point "<< i << " de la scene n'est pas dans la grille";
         }
@@ -88,13 +86,12 @@ void PB_ComputeHitsThread::run()
     }
 
     _grilleHits->computeMinMax();
-    _grdXY->computeMinMax();
-    _grdXZ->computeMinMax();
-    _grdYZ->computeMinMax();
-    _proX->computeMinMax();
-    _proY->computeMinMax();
-    _proZ->computeMinMax();
-    _proDiag->computeMinMax();
+    if (_grdXY != NULL) {_grdXY->computeMinMax();}
+    if (_grdXZ != NULL) {_grdXZ->computeMinMax();}
+    if (_grdYZ != NULL) {_grdYZ->computeMinMax();}
+    if (_proX != NULL) {_proX->computeMinMax();}
+    if (_proY != NULL) {_proY->computeMinMax();}
+    if (_proZ != NULL) {_proZ->computeMinMax();}
 
     _progress = 100;
     emit progressChanged();

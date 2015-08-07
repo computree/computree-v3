@@ -59,7 +59,6 @@ public:
                          CT_Profile<int>  *proX,
                          CT_Profile<int>  *proY,
                          CT_Profile<int>  *proZ,
-                         CT_Profile<int>  *proDiag,
                          const CT_Scene *scene);
 
     void run();
@@ -72,7 +71,6 @@ private:
     CT_Profile<int>*    _proX;
     CT_Profile<int>*    _proY;
     CT_Profile<int>*    _proZ;
-    CT_Profile<int>*    _proDiag;
     const CT_Scene*     _scene;
 };
 
