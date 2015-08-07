@@ -69,7 +69,7 @@ template<typename T>
 size_t CT_CloudIndexLessMemoryT<T>::indexOf(const size_t &index) const
 {
     if((index >= m_begin) && (index <= last()))
-        return index;
+        return index-m_begin;
 
     return size();
 }
