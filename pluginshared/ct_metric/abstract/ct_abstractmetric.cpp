@@ -42,7 +42,7 @@ QString CT_AbstractMetric::getCompleteName()
         {
             AttributeObject *attributeObject = it.next().value();
             result.append(attributeObject->_name);
-            if (it.hasNext()) {result.append(",");}
+            if (it.hasNext()) {result.append(", ");}
         }
     }
     return result;

@@ -251,6 +251,8 @@ public:
 
     inline const Eigen::Vector3d &getDirection() const {return _direction;}
 
+    inline size_t getDim() const {return _dim;}
+
 
 protected:
     size_t          _dim;       /*!< Nombre de cases du profile */

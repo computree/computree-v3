@@ -4,11 +4,13 @@
 CT_AbstractFilter_XYZ::CT_AbstractFilter_XYZ() : CT_AbstractFilter()
 {
     _inCloud = NULL;
+    _outCloud = new CT_PointCloudIndexVector();
 }
 
 CT_AbstractFilter_XYZ::CT_AbstractFilter_XYZ(const CT_AbstractFilter_XYZ *other) : CT_AbstractFilter(other)
 {
     _inCloud = other->_inCloud;
+    _outCloud = new CT_PointCloudIndexVector();
 }
 
 CT_AbstractFilter_XYZ::~CT_AbstractFilter_XYZ()
@@ -20,7 +22,7 @@ bool CT_AbstractFilter_XYZ::setPointCloudIndex(const CT_AbstractItemDrawableWith
     _inCloud = NULL;
     _inItem = NULL;
 
-    if (inItem == NULL) {return false;}
+    if (inItem == NULL || inItem->getPointCloudIndex() == NULL) {return false;}
 
     _inCloud = inItem->getPointCloudIndex();
     _inItem = inItem;

@@ -6,14 +6,12 @@ PB_FilterByReturnType::PB_FilterByReturnType() : CT_AbstractFilter_LAS()
 {
     _type = PB_FilterByReturnType::All;
     _typeAsString = "All";
-    _outCloud = new CT_PointCloudIndexVector();
 }
 
 PB_FilterByReturnType::PB_FilterByReturnType(const PB_FilterByReturnType *other) : CT_AbstractFilter_LAS(other)
 {
     _type = other->_type;
     _typeAsString = getStringForType(_type);
-    _outCloud = new CT_PointCloudIndexVector();
 }
 
 QString PB_FilterByReturnType::getName()

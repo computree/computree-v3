@@ -3,7 +3,6 @@
 
 PB_FilterRemoveUpperOutliers::PB_FilterRemoveUpperOutliers() : CT_AbstractFilter_XYZ()
 {
-    _outCloud = new CT_PointCloudIndexVector();
     _resolution = 1.0;
     _threshold = 2;
     _dc = 1;
@@ -11,7 +10,6 @@ PB_FilterRemoveUpperOutliers::PB_FilterRemoveUpperOutliers() : CT_AbstractFilter
 
 PB_FilterRemoveUpperOutliers::PB_FilterRemoveUpperOutliers(const PB_FilterRemoveUpperOutliers *other) : CT_AbstractFilter_XYZ(other)
 {
-    _outCloud = new CT_PointCloudIndexVector();
     _resolution = 1.0;
     _threshold = 2.0;
     _dc = 1;

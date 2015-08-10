@@ -28,9 +28,21 @@ public:
 
     CT_AbstractConfigurableElement* copy() const;
 
-private:
-    QString _typeAsString;
 
+
+    static double computeQuantile(const QList<double> &values, double quantile);
+private:
+    double _quantMin;
+    double _quantMax;
+    double _quantStep;
+    QString _prefix;
+    bool _hmin;
+    bool _hmed;
+    bool _h99;
+    bool _hmax;
+
+
+    QString getQuantileString(double quantile);
 };
 
 #endif // PB_METRICQUANTILES_H

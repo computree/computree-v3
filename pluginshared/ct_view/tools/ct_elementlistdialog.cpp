@@ -18,7 +18,7 @@ CT_ElementListDialog::CT_ElementListDialog(QList<CT_AbstractConfigurableElement 
 
         QListWidgetItem* newItem = new QListWidgetItem(ui->listWidget);
         newItem->setText(element->getName());
-        newItem->setToolTip(element->getDetailledDescription());
+        newItem->setToolTip(QString("<b>%1</b><br>%2").arg(element->getShortDescription()).arg(element->getDetailledDescription()));
 
         _elements.insert(newItem, element);
 

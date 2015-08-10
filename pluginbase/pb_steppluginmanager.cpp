@@ -86,6 +86,7 @@
 #include "step/pb_stepcomputecrownprojection.h"
 #include "step/pb_stepapplypointfilters.h"
 #include "step/pb_steploadplotareas.h"
+#include "step/pb_stepcorrectalsprofile.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -224,7 +225,7 @@ bool PB_StepPluginManager::loadGenericsStep()
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
     sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCorrectALSProfile(*createNewStepInitializeData(NULL)));    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSelectCellsInGrid3DByBinaryPattern(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCompare3DGridsContents(*createNewStepInitializeData(NULL)));

@@ -50,7 +50,7 @@ void CT_ManageConfigurableElementsDialog::on_pb_new_clicked()
 
         QListWidgetItem* newItem = new QListWidgetItem(ui->listWidget);
         newItem->setText(newElement->getCompleteName());
-        newItem->setToolTip(newElement->getDetailledDescription());
+        newItem->setToolTip(QString("<b>%1</b><br>%2").arg(newElement->getShortDescription()).arg(newElement->getDetailledDescription()));
         newItem->setSelected(true);
         newItem->setFlags(newItem->flags() | Qt::ItemIsUserCheckable);
         newItem->setCheckState(Qt::Checked);

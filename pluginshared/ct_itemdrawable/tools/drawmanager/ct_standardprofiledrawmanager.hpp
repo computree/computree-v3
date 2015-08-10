@@ -182,7 +182,7 @@ CT_ItemDrawableConfiguration CT_StandardProfileDrawManager<DataT>::createDrawCon
 {
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
-    item.addNewConfiguration(staticInitConfigColumnModeEnabled(), "Mode colonne", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigColumnModeEnabled(), "Mode colonne", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(staticInitConfigColumnRadius(), "Rayon de colonne", CT_ItemDrawableConfiguration::Double, 0.50);
     item.addNewConfiguration(staticInitConfigGraphModeEnabled(), "Mode graph", CT_ItemDrawableConfiguration::Bool, true);
     item.addNewConfiguration(staticInitConfigDrawAxis(), "Dessiner axe", CT_ItemDrawableConfiguration::Bool, true);

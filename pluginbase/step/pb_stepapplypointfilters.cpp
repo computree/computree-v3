@@ -95,7 +95,7 @@ void PB_StepApplyPointFilters::createInResultModelListProtected()
     resIn_res->setZeroOrMoreRootGroup();
     resIn_res->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_res->addItemModel(DEFin_grp, DEFin_points, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Item contenant des points"));
-    resIn_res->addItemModel(DEFin_grp, DEFin_lasAtt, CT_StdLASPointsAttributesContainer::staticGetType(), tr("Attributs LAS"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsOptional);
+    resIn_res->addItemModel(DEFin_grp, DEFin_lasAtt, CT_StdLASPointsAttributesContainer::staticGetType(), tr("Attributs LAS"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -137,7 +137,7 @@ void PB_StepApplyPointFilters::compute()
         
         const CT_AbstractItemDrawableWithPointCloud* points = (CT_AbstractItemDrawableWithPointCloud*)grp->firstItemByINModelName(this, DEFin_points);
         const CT_StdLASPointsAttributesContainer* lasAtt = (CT_StdLASPointsAttributesContainer*)grp->firstItemByINModelName(this, DEFin_lasAtt);
-        if (points != NULL)
+        if (points != NULL && lasAtt != NULL)
         {
             QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
             while (it.hasNext())
@@ -151,7 +151,7 @@ void PB_StepApplyPointFilters::compute()
                 {
                     filter->setPointCloudIndex(points);
 
-                    if (filterLAS != NULL && lasAtt != NULL)
+                    if (filterLAS != NULL)
                     {
                         ((CT_AbstractFilter_LAS*) filter)->setLASAttributesContainer(lasAtt);
                     }

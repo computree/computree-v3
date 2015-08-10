@@ -17,7 +17,7 @@ PB_MetricComputeStats::PB_MetricComputeStats(const PB_MetricComputeStats *other)
 
 QString PB_MetricComputeStats::getName()
 {
-    return QString("PB_ComputeStats");
+    return QString("PB_Stats");
 }
 
 void PB_MetricComputeStats::createConfigurationDialog()
@@ -156,7 +156,13 @@ QString PB_MetricComputeStats::getShortDescription() const
 
 QString PB_MetricComputeStats::getDetailledDescription() const
 {
-    return tr("");
+    return tr("Les valeurs suivantes sont calculées :<br>"
+              "- Hmean : Moyenne<br>"
+              "- Hsd   : Ecart-type (non biaisé)<br>"
+              "_ Hskew : Skewness  (non biaisé)<br>"
+              "- Hkurt : Kurtosis  (non biaisé)<br>"
+              "- Hcv   : Coefficient de variation<br>"
+              "<em>N.B. : Les formules du Skewness et du Kurtosis sont issues du package e1071 de R (versions SAS).</em>");
 }
 
 CT_AbstractConfigurableElement *PB_MetricComputeStats::copy() const
