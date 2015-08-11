@@ -27,6 +27,7 @@
 // Constructor : initialization of parameters
 PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit) : CT_AbstractStepCanBeAddedFirst(dataInit)
 {
+    qDebug() << "";
     _readersListValue = "";
     _fileChoiceButton = NULL;
     _loadAllData = false;
@@ -58,7 +59,7 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
 
                 for (int n = 0 ; n < formats.size() ; n++)
                 {
-                    const FileFormat& format = formats.at(i);
+                    const FileFormat& format = formats.at(n);
 
                     QString key = QString("%2 - %1").arg(reader->GetReaderName()).arg(format.description());
                     _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
