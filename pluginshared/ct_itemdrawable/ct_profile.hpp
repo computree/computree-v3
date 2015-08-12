@@ -507,6 +507,93 @@ QList<DataT> CT_Profile<DataT>::neighboursValues(const size_t &index, const size
 }
 
 template< typename DataT>
+double CT_Profile<DataT>::getOtsuThreshold(CT_Profile<DataT> *outProfileLow, CT_Profile<DataT> *outProfileHigh) {
+    double total = 0;
+    double sum = 0;
+
+    for (int i = 0; i < nCells(); ++i)
+    {
+        sum += lengthForIndex(i) * valueAtIndex(i);
+        total += valueAtIndex(i);
+    }
+    double sumB = 0;
+    double wB = 0;
+    double wF = 0;
+    double mB;
+    double mF;
+    double max = 0.0;
+    double between = 0.0;
+    double threshold1 = 0.0;
+    double threshold2 = 0.0;
+
+    for (int i = 0; i < nCells(); ++i) {
+        wB += valueAtIndex(i);
+        if (wB == 0)
+            continue;
+        wF = total - wB;
+        if (wF == 0)
+            break;
+        sumB += lengthForIndex(i) * valueAtIndex(i);
+        mB = sumB / wB;
+        mF = (sum - sumB) / wF;
+        between = wB * wF * (mB - mF) * (mB - mF);
+        if ( between >= max ) {
+            threshold1 = lengthForIndex(i);
+            if ( between > max ) {
+                threshold2 = lengthForIndex(i);
+            }
+            max = between;
+        }
+    }
+    double threshold = ( threshold1 + threshold2 ) / 2.0;
+
+    // create filtered profiles
+    if (outProfileLow != NULL || outProfileHigh != NULL)
+    {
+        for (int i = 0; i < nCells(); ++i)
+        {
+            double length = lengthForIndex(i);
+            if (outProfileLow  != NULL && length >= threshold)
+            {
+                outProfileLow->setValueAtIndex(i, 0);
+            } else {
+                outProfileLow->setValueAtIndex(i, valueAtIndex(i));
+            }
+
+            if (outProfileHigh != NULL && length < threshold)
+            {
+                outProfileHigh->setValueAtIndex(i, 0);
+            } else {
+                outProfileHigh->setValueAtIndex(i, valueAtIndex(i));
+            }
+        }
+
+        if (outProfileLow  != NULL)  {outProfileLow->computeMinMax();}
+        if (outProfileHigh  != NULL) {outProfileHigh->computeMinMax();}
+    }
+
+    return threshold;
+}
+
+template< typename DataT>
+void CT_Profile<DataT>::standardize()
+{
+    DataT sum = 0;
+    for (int i = 0; i < nCells(); ++i)
+    {
+        DataT val = valueAtIndex(i);
+        if (val != NA()) {sum += val;}
+    }
+
+    for (int i = 0; i < nCells(); ++i)
+    {
+        DataT val = valueAtIndex(i);
+        if (val != NA()) {setValueAtIndex(i, (DataT) ((double)val / (double)sum));}
+    }
+}
+
+
+template< typename DataT>
 CT_AbstractItemDrawable* CT_Profile<DataT>::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

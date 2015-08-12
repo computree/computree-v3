@@ -2,6 +2,7 @@
 #define PB_STEPCORRECTALSPROFILE_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_itemdrawable/ct_profile.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
@@ -84,6 +85,9 @@ private:
 
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _profile_ModelName;
+    CT_AutoRenameModels    _profileAtt_ModelName;
+    CT_AutoRenameModels    _profileLow_ModelName;
+    CT_AutoRenameModels    _profileHigh_ModelName;
 
     // Step parameters
     double                  _threshold;

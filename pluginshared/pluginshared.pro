@@ -941,6 +941,7 @@ INCLUDEPATH += ./ct_result/tools
 INCLUDEPATH += ./ct_itemdrawable
 INCLUDEPATH += ./ct_itemdrawable/abstract
 INCLUDEPATH += ./ct_itemdrawable/tools
+INCLUDEPATH += ./ct_itemdrawable/tools/drawmanager
 INCLUDEPATH += ./ct_itemdrawable/tools/gridtools
 INCLUDEPATH += ./ct_itemdrawable/tools/pointclustertools
 INCLUDEPATH += ./ct_itemdrawable/model/abstract

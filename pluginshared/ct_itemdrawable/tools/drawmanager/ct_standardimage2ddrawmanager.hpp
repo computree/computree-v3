@@ -240,8 +240,8 @@ void CT_StandardImage2DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
                     painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
                 }
 
-                Eigen::Vector2d tLeft(x - demiRes, y - demiRes);
-                Eigen::Vector2d bRight(tLeft(0)+item.resolution(), tLeft(1)+item.resolution());
+                Eigen::Vector2d tLeft(x - demiRes, y + demiRes);
+                Eigen::Vector2d bRight(tLeft(0)+item.resolution(), tLeft(1)-item.resolution());
 
                 painter.fillRectXY(tLeft, bRight, z_val);
 

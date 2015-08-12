@@ -38,6 +38,7 @@ linux-g++:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.so*
 linux-g++-64:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.so*
 mac:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.dylib
 
+
 msvc:DEFINES += _USE_MATH_DEFINES
 
 INCLUDEPATH += $${PLUGIN_SHARED_INTERFACE_DIR}

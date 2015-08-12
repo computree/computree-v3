@@ -1,23 +1,23 @@
-#ifndef PB_STEPEXTRACTPOSITIONSFROMDENSITY_H
-#define PB_STEPEXTRACTPOSITIONSFROMDENSITY_H
+#ifndef PB_STEPADDATTRIBUTEVALUE_H
+#define PB_STEPADDATTRIBUTEVALUE_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_itemdrawable/ct_grid2dxy.h"
+#include "ct_itemdrawable/ct_profile.h"
+
+// Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
 
 /*!
- * \class PB_StepExtractPositionsFromDensity
+ * \class PB_StepAddAttributeValue
  * \ingroup Steps_PB
- * \brief <b>Créée des positions 2D à partir de la densité des points.</b>
+ * \brief <b>Corrigé le profil de densité de points ALS.</b>
  *
  * No detailled description for this step
  *
- * \param _resolution 
- * \param _threshold 
  *
  */
 
-class PB_StepExtractPositionsFromDensity: public CT_AbstractStep
+class PB_StepAddAttributeValue: public CT_AbstractStep
 {
     Q_OBJECT
 
@@ -29,7 +29,7 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepExtractPositionsFromDensity(CT_StepInitializeData &dataInit);
+    PB_StepAddAttributeValue(CT_StepInitializeData &dataInit);
 
     /*! \brief Step description
      * 
@@ -83,20 +83,12 @@ protected:
 
 private:
 
+    // Declaration of autoRenames Variables (groups or items added to In models copies)
+    CT_AutoRenameModels    _Att_ModelName;
+
     // Step parameters
-    double    _resolution;
-    double    _threshold;
-    int       _thresholdN;
-    int       _relativeMode;
-
-    CT_AutoRenameModels    _grpPosition2D_ModelName;
-    CT_AutoRenameModels    _position2D_ModelName;
-    CT_AutoRenameModels    _position2DAtt_ModelName;
-    CT_AutoRenameModels    _grid2D_ModelName;
-
-    void fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid, CT_Grid2DXY<int> *densityGrid, int &density);
-    QList<size_t> computeColonize(size_t originColumn, size_t originRow, const CT_Grid2DXY<int> *densityGrid);
-    void appendIfNotNulValue(QList<size_t> &result, size_t col, size_t lin, const CT_Grid2DXY<int> *densityGrid);
+    QString                 _name;
+    double                  _value;
 };
 
-#endif // PB_STEPEXTRACTPOSITIONSFROMDENSITY_H
+#endif // PB_STEPADDATTRIBUTEVALUE_H

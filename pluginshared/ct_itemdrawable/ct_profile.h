@@ -374,6 +374,24 @@ public:
       */
     QList<DataT> neighboursValues(const size_t &index, const size_t &distance, const bool keepNAs = false, const CenterMode centermode = CT_Profile::CM_DropCenter) const;
 
+
+    /**
+      * \brief Standardize the profil
+      *
+      * After, the sum of the profil values is equal to 1
+      *
+      */
+    void standardize();
+
+    /**
+      * \brief Compute OTSU threshold for the profil
+      * \param outProfileLow  : copy of the profil, with 0 values under the threshold
+      * \param outProfileHigh : copy of the profil, with 0 values over  the threshold
+      * \return Threshold value (as a length on the profil)
+      */
+    double getOtsuThreshold(CT_Profile<DataT> *outProfileLow, CT_Profile<DataT> *outProfileHigh);
+
+
 protected:
     DataT       _NAdata;            /*!< Valeur codant NA */
 

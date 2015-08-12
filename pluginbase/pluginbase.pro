@@ -114,7 +114,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     metric/pb_metriccomputestats.h \
     filter/pb_filterremoveupperoutliers.h \
     step/pb_stepcorrectalsprofile.h \
-    step/pb_stepexportitemlist.h
+    step/pb_stepexportitemlist.h \
+    step/pb_stepaddattributevalue.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -224,11 +225,13 @@ SOURCES += \
     metric/pb_metriccomputestats.cpp \
     filter/pb_filterremoveupperoutliers.cpp \
     step/pb_stepcorrectalsprofile.cpp \
-    step/pb_stepexportitemlist.cpp
+    step/pb_stepexportitemlist.cpp \
+    step/pb_stepaddattributevalue.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
 INCLUDEPATH += ./views
+INCLUDEPATH += ./step
 INCLUDEPATH += ./views/actions
 
 RESOURCES += \

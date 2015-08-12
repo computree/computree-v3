@@ -38,6 +38,7 @@ protected:
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 
+
 private:
     bool    _defaultMapMode;
     bool    _defaultScaleState;

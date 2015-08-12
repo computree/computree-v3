@@ -1,6 +1,5 @@
 #include "pb_stepcorrectalsprofile.h"
 
-#include "ct_itemdrawable/ct_profile.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -18,13 +17,13 @@
 // Constructor : initialization of parameters
 PB_StepCorrectALSProfile::PB_StepCorrectALSProfile(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _threshold = 3.0;
+    _threshold = 0.0;
 }
 
 // Step description (tooltip of contextual menu)
 QString PB_StepCorrectALSProfile::getStepDescription() const
 {
-    return tr("Corrigé le profil de densité de points ALS");
+    return tr("Corriger le profil de densité de points ALS");
 }
 
 // Step detailled description
@@ -62,8 +61,10 @@ void PB_StepCorrectALSProfile::createInResultModelListProtected()
 void PB_StepCorrectALSProfile::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *resCpy_res = createNewOutResultModelToCopy(DEFin_res);
-
     resCpy_res->addItemModel(DEFin_grp, _profile_ModelName, new CT_Profile<double>(), tr("Profil corrigé"));
+    resCpy_res->addItemAttributeModel(_profile_ModelName, _profileAtt_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("Seuil OTSU"));
+    resCpy_res->addItemModel(DEFin_grp, _profileLow_ModelName, new CT_Profile<double>(),  tr("Profil corrigé OTSU bas"));
+    resCpy_res->addItemModel(DEFin_grp, _profileHigh_ModelName, new CT_Profile<double>(), tr("Profil corrigé OTSU haut"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -93,13 +94,19 @@ void PB_StepCorrectALSProfile::compute()
             CT_Profile<double>* outProfile = new CT_Profile<double>(_profile_ModelName.completeName(), res,
                                                                     inProfile->minX(), inProfile->minY(), inProfile->minZ(),
                                                                     dir(0), dir(1), dir(2), inProfile->getDim(), inProfile->resolution(), inProfile->NA(), 0);
+            CT_Profile<double>* outProfileLow = new CT_Profile<double>(_profileLow_ModelName.completeName(), res,
+                                                                    inProfile->minX(), inProfile->minY(), inProfile->minZ(),
+                                                                    dir(0), dir(1), dir(2), inProfile->getDim(), inProfile->resolution(), inProfile->NA(), 0);
+            CT_Profile<double>* outProfileHigh = new CT_Profile<double>(_profileHigh_ModelName.completeName(), res,
+                                                                    inProfile->minX(), inProfile->minY(), inProfile->minZ(),
+                                                                    dir(0), dir(1), dir(2), inProfile->getDim(), inProfile->resolution(), inProfile->NA(), 0);
 
             for (size_t index = 0 ; index < inProfile->getDim() ; index++)
             {
                 int inVal = inProfile->valueAtIndex(index);
                 if (inVal == inProfile->NA() || (inProfile->lengthForIndex(index) < _threshold))
                 {
-                    outProfile->setValueAtIndex(index, outProfile->NA());
+                    outProfile->setValueAtIndex(index, 0);
                 } else {
                     double sum = 0;
                     for (size_t i = 0 ; i <= index ; i++)
@@ -115,9 +122,17 @@ void PB_StepCorrectALSProfile::compute()
             }
             outProfile->computeMinMax();
 
+            outProfile->addItemAttribute(new CT_StdItemAttributeT<double>(_profileAtt_ModelName.completeName(),
+                                                                          CT_AbstractCategory::DATA_VALUE,
+                                                                          res,
+                                                                          outProfile->getOtsuThreshold(outProfileLow, outProfileHigh)));
+
             grp->addItemDrawable(outProfile);
+            grp->addItemDrawable(outProfileLow);
+            grp->addItemDrawable(outProfileHigh);
         }
     }
 
 
 }
+
