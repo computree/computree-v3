@@ -72,6 +72,7 @@ void PB_StepExtractPositionsFromDensity::createOutResultModelListProtected()
     res->addGroupModel(DEFin_grp, _grpPosition2D_ModelName, new CT_StandardItemGroup(), tr("Positions 2D (grp)"));
     res->addItemModel(_grpPosition2D_ModelName, _position2D_ModelName, new CT_Point2D(), tr("Positions 2D"));
     res->addItemAttributeModel(_position2D_ModelName, _position2DAtt_ModelName, new CT_StdItemAttributeT<int>(CT_AbstractCategory::DATA_NUMBER), tr("Densité"));
+    res->addItemAttributeModel(_position2D_ModelName, _position2DAttMax_ModelName, new CT_StdItemAttributeT<int>(CT_AbstractCategory::DATA_NUMBER), tr("DensitéMax"));
     res->addItemModel(DEFin_grp, _grid2D_ModelName, new CT_Grid2DXY<int>(), tr("Grille de densité"));
 
 }
@@ -160,7 +161,8 @@ void PB_StepExtractPositionsFromDensity::compute()
                         if (size > 0)
                         {
                             int density = 0;
-                            fillCellsInList(liste, lastCluster++, clusters, grid, density);
+                            int densityMax = 0;
+                            fillCellsInList(liste, lastCluster++, clusters, grid, density, densityMax);
 
                             double x = 0;
                             double y = 0;
@@ -190,6 +192,10 @@ void PB_StepExtractPositionsFromDensity::compute()
                                                                                           res,
                                                                                           density));
 
+                            point2d->addItemAttribute(new CT_StdItemAttributeT<int>(_position2DAttMax_ModelName.completeName(),
+                                                                                          CT_AbstractCategory::DATA_NUMBER,
+                                                                                          res,
+                                                                                          densityMax));
                         }
                     }
                 }
@@ -201,16 +207,20 @@ void PB_StepExtractPositionsFromDensity::compute()
 }
 
 
-void PB_StepExtractPositionsFromDensity::fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid, CT_Grid2DXY<int> *densityGrid, int &density)
+void PB_StepExtractPositionsFromDensity::fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid, CT_Grid2DXY<int> *densityGrid, int &density, int &densityMax)
 {
     if (liste.isEmpty()) {return;}
 
     density = 0;
+    densityMax = 0;
     for (int i = 0 ; i < liste.size() ; i++)
     {
         size_t index = liste.at(i);
         clustersGrid->setValueAtIndex(index, cluster);
-        density += densityGrid->valueAtIndex(index);
+
+        int value = densityGrid->valueAtIndex(index);
+        density += value;
+        if (value > densityMax) {densityMax = value;}
     }
 }
 

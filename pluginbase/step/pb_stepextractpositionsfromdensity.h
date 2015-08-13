@@ -92,9 +92,10 @@ private:
     CT_AutoRenameModels    _grpPosition2D_ModelName;
     CT_AutoRenameModels    _position2D_ModelName;
     CT_AutoRenameModels    _position2DAtt_ModelName;
+    CT_AutoRenameModels    _position2DAttMax_ModelName;
     CT_AutoRenameModels    _grid2D_ModelName;
 
-    void fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid, CT_Grid2DXY<int> *densityGrid, int &density);
+    void fillCellsInList(QList<size_t> &liste, const int cluster, CT_Grid2DXY<int> *clustersGrid, CT_Grid2DXY<int> *densityGrid, int &density, int &densityMax);
     QList<size_t> computeColonize(size_t originColumn, size_t originRow, const CT_Grid2DXY<int> *densityGrid);
     void appendIfNotNulValue(QList<size_t> &result, size_t col, size_t lin, const CT_Grid2DXY<int> *densityGrid);
 };
