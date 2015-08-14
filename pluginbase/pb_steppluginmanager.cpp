@@ -89,6 +89,7 @@
 #include "step/pb_stepcorrectalsprofile.h"
 #include "step/pb_stepexportitemlist.h"
 #include "step/pb_stepaddattributevalue.h"
+#include "step/pb_stepdetectverticalalignments.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -252,7 +253,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepModifyPositions2D(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepExportItemList(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepAddAttributeValue(*createNewStepInitializeData(NULL)));
-
+    sep->addStep(new PB_StepDetectVerticalAlignments(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Traitement par lots")));
     sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));

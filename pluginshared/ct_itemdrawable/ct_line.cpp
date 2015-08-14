@@ -43,14 +43,16 @@ CT_Line::CT_Line(const CT_OutAbstractSingularItemModel *model,
 {
     setBaseDrawManager(&LINE_DRAW_MANAGER);
 
-    _minCoordinates(0) = std::min(data->x1(), data->x2());
-    _minCoordinates(1) = std::min(data->y1(), data->y2());
-    _minCoordinates(2) = std::min(data->z1(), data->z2());
+    if (data != NULL)
+    {
+        _minCoordinates(0) = std::min(data->x1(), data->x2());
+        _minCoordinates(1) = std::min(data->y1(), data->y2());
+        _minCoordinates(2) = std::min(data->z1(), data->z2());
 
-    _maxCoordinates(0) = std::max(data->x1(), data->x2());
-    _maxCoordinates(1) = std::max(data->y1(), data->y2());
-    _maxCoordinates(2) = std::max(data->z1(), data->z2());
-
+        _maxCoordinates(0) = std::max(data->x1(), data->x2());
+        _maxCoordinates(1) = std::max(data->y1(), data->y2());
+        _maxCoordinates(2) = std::max(data->z1(), data->z2());
+    }
 }
 
 CT_Line::CT_Line(const QString &modelName,
@@ -59,13 +61,16 @@ CT_Line::CT_Line(const QString &modelName,
 {
     setBaseDrawManager(&LINE_DRAW_MANAGER);
 
-    _minCoordinates(0) = std::min(data->x1(), data->x2());
-    _minCoordinates(1) = std::min(data->y1(), data->y2());
-    _minCoordinates(2) = std::min(data->z1(), data->z2());
+    if (data != NULL)
+    {
+        _minCoordinates(0) = std::min(data->x1(), data->x2());
+        _minCoordinates(1) = std::min(data->y1(), data->y2());
+        _minCoordinates(2) = std::min(data->z1(), data->z2());
 
-    _maxCoordinates(0) = std::max(data->x1(), data->x2());
-    _maxCoordinates(1) = std::max(data->y1(), data->y2());
-    _maxCoordinates(2) = std::max(data->z1(), data->z2());
+        _maxCoordinates(0) = std::max(data->x1(), data->x2());
+        _maxCoordinates(1) = std::max(data->y1(), data->y2());
+        _maxCoordinates(2) = std::max(data->z1(), data->z2());
+    }
 }
 
 QString CT_Line::getType() const

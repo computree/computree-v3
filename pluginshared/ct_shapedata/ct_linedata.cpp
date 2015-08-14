@@ -232,6 +232,10 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
     double temp4;
     double temp5;
 
+    double zmin = std::numeric_limits<double>::max();
+    double zmax = -std::numeric_limits<double>::max();
+
+
     QListIterator<Eigen::Vector3d> it(l_gp);
 
     while(it.hasNext())
@@ -241,6 +245,9 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
         x = point(0);
         y = point(1);
         z = point(2);
+
+        if (z < zmin) {zmin = z;}
+        if (z > zmax) {zmax = z;}
 
         Xm += x;
         Ym += y;
@@ -349,6 +356,7 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
 
         it.toFront();
 
+
         while(it.hasNext())
         {
             const Eigen::Vector3d& point = it.next();
@@ -378,6 +386,24 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
     Eigen::Vector3d p1(Xm, Ym, Zm);
     Eigen::Vector3d p2(u, v, w);
 
-    return new CT_LineData(p1, p2, temp5, n);
+    Eigen::Vector3d point1;
+    Eigen::Vector3d point2;
+
+    Eigen::Vector3d dir = p2 - p1;
+    dir.normalize();
+
+    double tn = (zmin - p1(2)) / dir(2);
+
+    point1(0) = p1(0) + tn*dir(0);
+    point1(1) = p1(1) + tn*dir(1);
+    point1(2) = zmin;
+
+    tn = (zmax - p1(2)) / dir(2);
+
+    point2(0) = p1(0) + tn*dir(0);
+    point2(1) = p1(1) + tn*dir(1);
+    point2(2) = zmax;
+
+    return new CT_LineData(point1, point2, temp5, n);
 
 }

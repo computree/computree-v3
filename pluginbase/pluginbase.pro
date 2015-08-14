@@ -115,7 +115,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     filter/pb_filterremoveupperoutliers.h \
     step/pb_stepcorrectalsprofile.h \
     step/pb_stepexportitemlist.h \
-    step/pb_stepaddattributevalue.h
+    step/pb_stepaddattributevalue.h \
+    step/pb_stepdetectverticalalignments.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -226,7 +227,8 @@ SOURCES += \
     filter/pb_filterremoveupperoutliers.cpp \
     step/pb_stepcorrectalsprofile.cpp \
     step/pb_stepexportitemlist.cpp \
-    step/pb_stepaddattributevalue.cpp
+    step/pb_stepaddattributevalue.cpp \
+    step/pb_stepdetectverticalalignments.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
