@@ -234,6 +234,10 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
 
     double zmin = std::numeric_limits<double>::max();
     double zmax = -std::numeric_limits<double>::max();
+    double xmin = std::numeric_limits<double>::max();
+    double xmax = -std::numeric_limits<double>::max();
+
+    Eigen::Vector3d pt1, pt2;
 
 
     QListIterator<Eigen::Vector3d> it(l_gp);
@@ -242,10 +246,15 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
     {
         const Eigen::Vector3d& point = it.next();
 
+        if (n == 0) {pt1 = point;}
+        if (n == 1) {pt2 = point;}
+
         x = point(0);
         y = point(1);
         z = point(2);
 
+        if (x < zmin) {xmin = x;}
+        if (x > zmax) {xmax = x;}
         if (z < zmin) {zmin = z;}
         if (z > zmax) {zmax = z;}
 
@@ -255,6 +264,10 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
 
         ++n;
     }
+
+    if (n < 2) {return NULL;}
+    else if (n == 2) {return new CT_LineData(pt1, pt2, 0, n);}
+
 
     temp1 = n;
 
@@ -392,17 +405,32 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
     Eigen::Vector3d dir = p2 - p1;
     dir.normalize();
 
-    double tn = (zmin - p1(2)) / dir(2);
+    if (abs(zmax - zmin) > 0.1)
+    {
+        double tn = (zmin - p1(2)) / dir(2);
 
-    point1(0) = p1(0) + tn*dir(0);
-    point1(1) = p1(1) + tn*dir(1);
-    point1(2) = zmin;
+        point1(0) = p1(0) + tn*dir(0);
+        point1(1) = p1(1) + tn*dir(1);
+        point1(2) = zmin;
 
-    tn = (zmax - p1(2)) / dir(2);
+        tn = (zmax - p1(2)) / dir(2);
 
-    point2(0) = p1(0) + tn*dir(0);
-    point2(1) = p1(1) + tn*dir(1);
-    point2(2) = zmax;
+        point2(0) = p1(0) + tn*dir(0);
+        point2(1) = p1(1) + tn*dir(1);
+        point2(2) = zmax;
+    } else {
+        double tn = (xmin - p1(0)) / dir(0);
+
+        point1(0) = xmin;
+        point1(1) = p1(1) + tn*dir(1);
+        point1(2) = p1(2) + tn*dir(2);
+
+        tn = (xmax - p1(0)) / dir(0);
+
+        point2(0) = xmax;
+        point2(1) = p1(1) + tn*dir(1);
+        point2(2) = p1(2) + tn*dir(2);
+    }
 
     return new CT_LineData(point1, point2, temp5, n);
 

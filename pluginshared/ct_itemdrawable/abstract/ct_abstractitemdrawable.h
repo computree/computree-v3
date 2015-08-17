@@ -125,6 +125,8 @@ public:
      */
     void setModel(const CT_OutAbstractItemModel *model);
 
+    void setModel(const QString &modelUniqueName);
+
     /**
      * @brief Returns the parent item
      */

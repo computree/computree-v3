@@ -1,6 +1,7 @@
 #include "pb_metricquantiles.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_iterator/ct_pointiterator.h"
+#include "ct_math/ct_mathstatistics.h"
 
 PB_MetricQuantiles::PB_MetricQuantiles() : CT_AbstractMetric_XYZ()
 {
@@ -107,14 +108,14 @@ void PB_MetricQuantiles::computeMetric()
     for (int i = 0 ; i <= nb ; i++)
     {
         double quant = _quantMin + i*_quantStep;
-        val = computeQuantile(values, quant);
+        val = CT_MathStatistics::computeQuantile(values, quant, false);
         setAttributeValue(getQuantileString(quant), val);
     }
 
-    if (_hmin) {val = values.first();                setAttributeValue("Hmin", val);}
-    if (_hmed) {val = computeQuantile(values, 0.50); setAttributeValue("Hmed", val);}
-    if (_h99)  {val = computeQuantile(values, 0.99); setAttributeValue("H99",  val);}
-    if (_hmax) {val = values.last();                 setAttributeValue("Hmax", val);}
+    if (_hmin) {val = values.first();                                           setAttributeValue("Hmin", val);}
+    if (_hmed) {val = CT_MathStatistics::computeQuantile(values, 0.50, false);  setAttributeValue("Hmed", val);}
+    if (_h99)  {val = CT_MathStatistics::computeQuantile(values, 0.99, false);  setAttributeValue("H99",  val);}
+    if (_hmax) {val = values.last();                                            setAttributeValue("Hmax", val);}
 }
 
 QString PB_MetricQuantiles::getShortDescription() const
@@ -148,16 +149,4 @@ QString PB_MetricQuantiles::getQuantileString(double quantile)
     QString number = QString::number(100.0*quantile, 'f', 0);
     if (number.size() <2) {number.prepend("0");}
     return QString("%1%2").arg(_prefix).arg(number);
-}
-
-double PB_MetricQuantiles::computeQuantile(const QList<double> &values, double quantile)
-{
-    double n = quantile*values.size();
-    int intPart = (int) n;
-    double fractPart = n - (double)intPart;
-
-    if (intPart < 0) {return values.first();}
-    if (intPart >= values.size() - 1) {return values.last();}
-    if (fractPart == 0) {return values.at(intPart);}
-    return values.at(intPart) + fractPart * (values.at(intPart + 1) - values.at(intPart));
 }

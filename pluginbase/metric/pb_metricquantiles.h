@@ -28,9 +28,6 @@ public:
 
     CT_AbstractConfigurableElement* copy() const;
 
-
-
-    static double computeQuantile(const QList<double> &values, double quantile);
 private:
     double _quantMin;
     double _quantMax;

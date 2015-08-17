@@ -404,7 +404,8 @@ SOURCES += \
     ct_filter/abstract/ct_abstractconfigurableelement.cpp \
     ct_view/tools/ct_manageconfigurableelementsdialog.cpp \
     ct_view/tools/ct_elementlistdialog.cpp \
-    ct_metric/abstract/ct_abstractmetric_raster.cpp
+    ct_metric/abstract/ct_abstractmetric_raster.cpp \
+    ct_math/ct_mathstatistics.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -911,7 +912,8 @@ HEADERS += interfaces.h \
     ct_filter/abstract/ct_abstractconfigurableelement.h \
     ct_view/tools/ct_manageconfigurableelementsdialog.h \
     ct_view/tools/ct_elementlistdialog.h \
-    ct_metric/abstract/ct_abstractmetric_raster.h
+    ct_metric/abstract/ct_abstractmetric_raster.h \
+    ct_math/ct_mathstatistics.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

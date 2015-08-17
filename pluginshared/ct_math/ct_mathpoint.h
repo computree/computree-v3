@@ -98,7 +98,7 @@ public:
     }
 
 
-    inline static double distancePointLine ( const Eigen::Vector3d &p, const Eigen::Vector3d &lineDirection, Eigen::Vector3d &pointOnLine )
+    inline static double distancePointLine ( const Eigen::Vector3d &p, const Eigen::Vector3d &lineDirection, const Eigen::Vector3d &pointOnLine )
     {
         // Vector from pointOnLine to p
         Eigen::Vector3d polP;

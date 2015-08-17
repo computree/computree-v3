@@ -3,6 +3,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
 #include "ct_itemdrawable/ct_line.h"
+#include "ct_itemdrawable/ct_attributeslist.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -11,6 +12,8 @@
 
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_math/ct_sphericalline3d.h"
+#include "ct_math/ct_mathstatistics.h"
+#include "ct_math/ct_mathpoint.h"
 
 // Alias for indexing models
 #define DEFin_res "res"
@@ -22,11 +25,14 @@
 // Constructor : initialization of parameters
 PB_StepDetectVerticalAlignments::PB_StepDetectVerticalAlignments(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _maxAngle = 30.0;
     _distThreshold = 4.0;
-    _lineDistThreshold = 1.5;
+    _maxAngle = 30.0;
+
     _minPtsNb = 3;
-    _lengthThreshold = 0.2;
+    _lineDistThreshold = 1.0;
+
+    _lengthThreshold = 1.0;
+    _heightThreshold = 0.6;
 }
 
 // Step description (tooltip of contextual menu)
@@ -69,11 +75,23 @@ void PB_StepDetectVerticalAlignments::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepDetectVerticalAlignments::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroupToCopyPossibilities *resCpy_res = createNewOutResultModelToCopy(DEFin_res);
+    CT_OutResultModelGroupToCopyPossibilities *resCpy = createNewOutResultModelToCopy(DEFin_res);
 
-    resCpy_res->addGroupModel(DEFin_grp, _grpCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters"));
-    resCpy_res->addItemModel(_grpCluster_ModelName, _cluster_ModelName, new CT_PointCluster(), tr("Cluster"));
-    resCpy_res->addItemModel(_grpCluster_ModelName, _line_ModelName, new CT_Line(), tr("Ligne"));
+    resCpy->addGroupModel(DEFin_grp, _grpCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters conservés"));
+    resCpy->addItemModel(_grpCluster_ModelName, _cluster_ModelName, new CT_PointCluster(), tr("Cluster conservé"));
+    resCpy->addItemModel(_grpCluster_ModelName, _line_ModelName, new CT_Line(), tr("Ligne conservée"));
+    resCpy->addItemModel(_grpCluster_ModelName, _att_ModelName, new CT_AttributesList(), tr("Distribution des distances"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attMin_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMin"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attQ25_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ25"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attQ50_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMed"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attQ75_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ75"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attMax_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMax"));
+    resCpy->addItemAttributeModel(_att_ModelName, _attMean_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMean"));
+
+    resCpy->addGroupModel(DEFin_grp, _grpDroppedCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters éliminés"));
+    resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedCluster_ModelName, new CT_PointCluster(), tr("Cluster éliminé"));
+    resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedLine_ModelName, new CT_Line(), tr("Ligne éliminée"));
+
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -81,11 +99,19 @@ void PB_StepDetectVerticalAlignments::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addDouble(tr("Angle zénithal maximal"), "°", 0, 180, 2, _maxAngle);
-    configDialog->addDouble(tr("Distance maximum entre deux points d'une ligne"), "m", 0, 1000, 2, _distThreshold);
-    configDialog->addDouble(tr("Distance maximum XY entre deux lignes"), "m", 0, 1000, 2, _lineDistThreshold);
-    configDialog->addInt(tr("Nombre de points minimum dans un cluster"), "", 3, 1000, _minPtsNb);
-    configDialog->addDouble(tr("Longueur relative minimale des segments"), "%", 0, 100, 0, _lengthThreshold, 100);
+    configDialog->addTitle( tr("<b>1- Paramètres de validation des droites candidates :</b>"));
+    configDialog->addDouble(tr("Distance maximum entre deux points d'une droite candidate"), "m", 0, 1000, 2, _distThreshold);
+    configDialog->addDouble(tr("Angle zénithal maximal pour une droite candidate"), "°", 0, 180, 2, _maxAngle);
+
+    configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>2- Paramètres de création des clusters (à partir des droites candidates) :</b>"));
+    configDialog->addInt(   tr("Nombre de points minimum dans un cluster"), "", 3, 1000, _minPtsNb);
+    configDialog->addDouble(tr("Distance maximum XY entre deux droites candidates à agréger"), "m", 0, 1000, 2, _lineDistThreshold);
+
+    configDialog->addEmpty();
+    configDialog->addTitle(tr("<b>3- Paramètres validation des clusters obtenus :</b>"));
+    configDialog->addDouble(tr("Supprimer les clusters dont la longueur est inférieure à"), "m", 0, 1000, 2, _lengthThreshold);
+    configDialog->addDouble(tr("Supprimer les clusters qui commence au dessus de "), "% de Hscene", 0, 100, 0, _heightThreshold, 100);
 }
 
 void PB_StepDetectVerticalAlignments::compute()
@@ -108,10 +134,8 @@ void PB_StepDetectVerticalAlignments::compute()
         {
             const CT_AbstractPointCloudIndex* pointCloudIndex = scene->getPointCloudIndex();
 
-            double deltaZ = scene->maxZ() - scene->minZ();
-
-            double lengthThreshold = _lengthThreshold*deltaZ;
-
+            //double deltaZ = scene->maxZ() - scene->minZ();
+            double hMax = (scene->maxZ() - scene->minZ())*_heightThreshold + scene->minZ();
 
             // Parcours tous les couples de points 2 à deux
             CT_PointIterator itP1(pointCloudIndex);
@@ -203,26 +227,26 @@ void PB_StepDetectVerticalAlignments::compute()
 
 
             // Constitution des clusters de points alignés
-            QMultiMap<size_t, QList<size_t>* > pointsClusters;
+            QMap<CT_PointCluster*, CT_LineData*> pointsClusters;
+            QMap<CT_PointCluster*, PB_StepDetectVerticalAlignments::DistValues*> distValues;
             QList<PB_StepDetectVerticalAlignments::LineData*> attributedLines;
             QList<size_t> insertedPoints;
 
             for (int i = 0 ; i < candidateLines.size() ; i++)
             {
                 PB_StepDetectVerticalAlignments::LineData* candidateLine = candidateLines.at(i);
+                CT_PointCluster* cluster = new CT_PointCluster(_cluster_ModelName.completeName(), res);
 
                 if (!attributedLines.contains(candidateLine))
                 {
-                    QList<size_t>* indexList = new QList<size_t>();
-
-                    if (!insertedPoints.contains(candidateLine->_index1) && !indexList->contains(candidateLine->_index1))
+                    if (!insertedPoints.contains(candidateLine->_index1))
                     {
-                        indexList->append(candidateLine->_index1);
+                        cluster->addPoint(candidateLine->_index1);
                         insertedPoints.append(candidateLine->_index1);
                     }
-                    if (!insertedPoints.contains(candidateLine->_index2) && !indexList->contains(candidateLine->_index2))
+                    if (!insertedPoints.contains(candidateLine->_index2))
                     {
-                        indexList->append(candidateLine->_index2);
+                        cluster->addPoint(candidateLine->_index2);
                         insertedPoints.append(candidateLine->_index2);
                     }
                     attributedLines.append(candidateLine);
@@ -233,24 +257,64 @@ void PB_StepDetectVerticalAlignments::compute()
                         PB_StepDetectVerticalAlignments::LineData* validLine = validLines.at(j);
                         if (!attributedLines.contains(validLine))
                         {
-                            if (!insertedPoints.contains(validLine->_index1) && !indexList->contains(validLine->_index1))
+                            if (!insertedPoints.contains(validLine->_index1))
                             {
-                                indexList->append(validLine->_index1);
+                                cluster->addPoint(validLine->_index1);
                                 insertedPoints.append(validLine->_index1);
                             }
-                            if (!insertedPoints.contains(validLine->_index2) && !indexList->contains(validLine->_index2))
+                            if (!insertedPoints.contains(validLine->_index2))
                             {
-                                indexList->append(validLine->_index2);
+                                cluster->addPoint(validLine->_index2);
                                 insertedPoints.append(validLine->_index2);
                             }
                             attributedLines.append(validLine);
                         }
                     }
 
-                    pointsClusters.insert(indexList->size(), indexList);
+                    const CT_AbstractPointCloudIndex* cloudIndex = cluster->getPointCloudIndex();
+                    size_t nbPts = cloudIndex->size();
+
+                    if (nbPts >= 2)
+                    {
+                        CT_LineData* lineData = CT_LineData::staticCreateLineDataFromPointCloud(*cloudIndex);
+                        pointsClusters.insert(cluster, lineData);
+
+                        // Calcul des distances entre les points et la ligne
+                        PB_StepDetectVerticalAlignments::DistValues* distVal = new PB_StepDetectVerticalAlignments::DistValues();
+
+                        distVal->_min  = std::numeric_limits<double>::max();
+                        distVal->_max  = 0;
+                        distVal->_mean = 0;
+
+                        QList<double> distances;
+
+                        const Eigen::Vector3d &dir = lineData->getDirection();
+
+                        CT_PointIterator it(cloudIndex);
+                        while(it.hasNext())
+                        {
+                            it.next();
+                            const CT_Point &p = it.currentPoint();
+                            double distToLine = CT_MathPoint::distancePointLine(p, dir, lineData->getP1());
+                            distances.append(distToLine);
+
+                            distVal->_mean += distToLine;
+                            if (distToLine < distVal->_min) {distVal->_min = distToLine;}
+                            if (distToLine > distVal->_max) {distVal->_max = distToLine;}
+                        }
+
+                        distVal->_mean /= nbPts;
+
+                        distVal->_q25 = CT_MathStatistics::computeQuantile(distances, 0.25, true);
+                        distVal->_q50 = CT_MathStatistics::computeQuantile(distances, 0.50, true);
+                        distVal->_q75 = CT_MathStatistics::computeQuantile(distances, 0.75, true);
+
+                        distValues.insert(cluster, distVal);
+                    } else {
+                        delete cluster;
+                    }
                 }
             }
-
 
             qDeleteAll(candidateLines);
             candidateLines.clear();
@@ -258,67 +322,179 @@ void PB_StepDetectVerticalAlignments::compute()
             attributedLines.clear();
             insertedPoints.clear();
 
-            // Création des pointClusters
-            QMapIterator<size_t, QList<size_t>* > itCl(pointsClusters);
-            itCl.toBack();
-            while (itCl.hasPrevious())
+
+            // Regroupement des clusters par proximité
+            // Affiliation des clusters proches deux à deux
+            QMultiMap<CT_PointCluster*, CT_PointCluster*> clusterPairs;
+            QMultiMap<double, CT_PointCluster*> clusterLengths;
+
+            QList<CT_PointCluster*> allClusters = pointsClusters.keys();
+            for (int i1 = 0 ; i1 < allClusters.size() ; i1++)
             {
-                itCl.previous();
-                QList<size_t>* list = itCl.value();
+                CT_PointCluster* cluster1 = allClusters.at(i1);
+                CT_LineData*        line1 = pointsClusters.value(cluster1);
+                const CT_AbstractPointCloudIndex* cloudIndex = cluster1->getPointCloudIndex();
 
-                if (list->size() >= _minPtsNb)
+                clusterLengths.insert(line1->length(), cluster1);
+
+                for (int i2 = 0 ; i2 < allClusters.size(); i2++)
                 {
-                    CT_StandardItemGroup* grpCl = new CT_StandardItemGroup(_grpCluster_ModelName.completeName(), res);
-
-                    CT_PointCluster* cluster = new CT_PointCluster(_cluster_ModelName.completeName(), res);
-
-                    QListIterator<size_t> itPts(*list);
-                    while (itPts.hasNext())
+                    if (i1 != i2)
                     {
-                        size_t index = itPts.next();
-                        cluster->addPoint(index);
+                        CT_PointCluster* cluster2 = allClusters.at(i2);
+                        CT_LineData*        line2 = pointsClusters.value(cluster2);
+                        PB_StepDetectVerticalAlignments::DistValues* dv2 = distValues.value(cluster2);
+
+                        const Eigen::Vector3d &dir2 = line2->getDirection();
+                        const Eigen::Vector3d &pt2 = line2->getP1();
+
+                        bool proximity = false;
+                        CT_PointIterator it(cloudIndex);
+                        while(it.hasNext() && !proximity)
+                        {
+                            it.next();
+                            const CT_Point &p = it.currentPoint();
+                            double distToLine = CT_MathPoint::distancePointLine(p, dir2, pt2);
+
+                            if (distToLine < dv2->_max)
+                            {
+                                proximity = true;
+                            }
+                        }
+
+                        if (proximity)
+                        {
+                            if (!clusterPairs.contains(cluster1, cluster2)) {clusterPairs.insert(cluster1, cluster2);}
+                            if (!clusterPairs.contains(cluster2, cluster1)) {clusterPairs.insert(cluster2, cluster1);}
+                        }
                     }
 
-                    const CT_AbstractPointCloudIndex* cloudIndex = cluster->getPointCloudIndex();
-                    CT_LineData* lineData = CT_LineData::staticCreateLineDataFromPointCloud(*cloudIndex);
+                }
+            }
 
+            // inventaire des clusters à éliminer pour cause proximité
+            QList<CT_PointCluster*> toRemoveBecauseOfProximity;
+            QList<CT_PointCluster*> processedClusters;
+            QMapIterator<double, CT_PointCluster*> itLe(clusterLengths);
+            itLe.toBack();
+            while (itLe.hasPrevious())
+            {
+                itLe.previous();
+                CT_PointCluster* cluster = itLe.value();
+                processedClusters.append(cluster);
 
-                    if (lineData != NULL)
+                QList<CT_PointCluster*> toRemove = clusterPairs.values(cluster);
+                for (int i = 0 ; i < toRemove.size() ; i++)
+                {
+                    CT_PointCluster* cli = toRemove.at(i);
+
+                    if (!processedClusters.contains(cli))
                     {
-                        Eigen::Vector3d pointLow  = lineData->getP1();
-                        Eigen::Vector3d pointHigh = lineData->getP2();
-
-                        if (lineData->getP1()(2) < lineData->getP2()(2))
+                        QList<CT_PointCluster*> toRemove2 = clusterPairs.values(cli);
+                        for (int j = 0 ; j < toRemove2.size() ; j++)
                         {
-                            pointLow  = lineData->getP2();
-                            pointHigh = lineData->getP1();
+                            CT_PointCluster* clj = toRemove2.at(j);
+                            if (!toRemove.contains(clj) && !processedClusters.contains(clj)) {toRemove.append(clj);}
                         }
 
-                        float phi, theta, length;
-                        CT_SphericalLine3D::convertToSphericalCoordinates(&pointLow, &pointHigh, phi, theta, length);
-
-                        if (phi < _maxAngle && lineData->length() > lengthThreshold)
-                        {
-                            CT_Line* line = new CT_Line(_line_ModelName.completeName(), res, lineData);
-
-                            grp->addGroup(grpCl);
-                            grpCl->addItemDrawable(cluster);
-                            grpCl->addItemDrawable(line);
-                        } else {
-                            delete cluster;
-                            delete grpCl;
-                            delete lineData;
-                        }
-
-                    } else {
-                        delete cluster;
-                        delete grpCl;
-                        qDebug() << "Problème";
+                        toRemoveBecauseOfProximity.append(cli);
                     }
                 }
-                delete list;
             }
-        }       
+
+
+
+            // Création des pointClusters
+            QMapIterator<CT_PointCluster*, CT_LineData* > itCl2(pointsClusters);
+            while (itCl2.hasNext())
+            {
+                itCl2.next();
+                CT_PointCluster* cluster = itCl2.key();
+                CT_LineData* lineData = itCl2.value();
+                PB_StepDetectVerticalAlignments::DistValues* distVal = distValues.value(cluster);
+
+                if (lineData != NULL && distVal != NULL)
+                {
+
+                    // Calcul de l'angle Phi
+                    Eigen::Vector3d pointLow  = lineData->getP1();
+                    Eigen::Vector3d pointHigh = lineData->getP2();
+
+                    if (lineData->getP1()(2) < lineData->getP2()(2))
+                    {
+                        pointLow  = lineData->getP2();
+                        pointHigh = lineData->getP1();
+                    }
+
+                    float phi, theta, length;
+                    CT_SphericalLine3D::convertToSphericalCoordinates(&pointHigh, &pointLow, phi, theta, length);
+
+                    const CT_AbstractPointCloudIndex* cloudIndex = cluster->getPointCloudIndex();
+                    size_t nbPts = cloudIndex->size();
+
+                    // Test de validité pour le cluster
+                    if (    nbPts >= _minPtsNb &&                           // Nombre de points
+                            phi < maxAngleRadians &&                        // Verticalité
+                            lineData->length() > _lengthThreshold &&        // Longueur
+                            cluster->minZ() < hMax &&                       // Hauteur de base
+                            !toRemoveBecauseOfProximity.contains(cluster))  // Proximité
+                    {
+
+                        // Création des items
+                        CT_StandardItemGroup* grpCl = new CT_StandardItemGroup(_grpCluster_ModelName.completeName(), res);
+                        grp->addGroup(grpCl);
+                        grpCl->addItemDrawable(cluster);
+
+                        CT_Line* line = new CT_Line(_line_ModelName.completeName(), res, lineData);
+                        grpCl->addItemDrawable(line);
+
+                        CT_AttributesList* attList = new CT_AttributesList(_att_ModelName.completeName(), res);
+                        grpCl->addItemDrawable(attList);
+
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMin_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_min));
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ25_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_q25));
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ50_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_q50));
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ75_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_q75));
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMax_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_max));
+                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMean_ModelName.completeName(),
+                                                                                   CT_AbstractCategory::DATA_VALUE,
+                                                                                   res,
+                                                                                   distVal->_mean));
+
+                    } else {
+                        CT_StandardItemGroup* grpClDropped = new CT_StandardItemGroup(_grpDroppedCluster_ModelName.completeName(), res);
+                        grp->addGroup(grpClDropped);
+
+                        cluster->setModel(_droppedCluster_ModelName.completeName());
+                        grpClDropped->addItemDrawable(cluster);
+
+                        CT_Line* line = new CT_Line(_droppedLine_ModelName.completeName(), res, lineData);
+                        grpClDropped->addItemDrawable(line);
+                    }
+
+                } else {
+                    delete cluster;
+                    qDebug() << "Problème";
+                }
+            }
+
+            qDeleteAll(distValues.values());
+        }
     }
 
 }

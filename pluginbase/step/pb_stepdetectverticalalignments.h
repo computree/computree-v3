@@ -112,6 +112,15 @@ private:
 
     };
 
+    struct DistValues {
+        double _min;
+        double _max;
+        double _mean;
+        double _q25;
+        double _q50;
+        double _q75;
+    };
+
     static bool lessThan(LineData *s1, LineData *s2)
     {
         return s1->_phi < s2->_phi;
@@ -122,6 +131,18 @@ private:
     CT_AutoRenameModels    _grpCluster_ModelName;
     CT_AutoRenameModels    _cluster_ModelName;
     CT_AutoRenameModels    _line_ModelName;
+    CT_AutoRenameModels    _att_ModelName;
+    CT_AutoRenameModels    _attMin_ModelName;
+    CT_AutoRenameModels    _attQ25_ModelName;
+    CT_AutoRenameModels    _attQ50_ModelName;
+    CT_AutoRenameModels    _attQ75_ModelName;
+    CT_AutoRenameModels    _attMax_ModelName;
+    CT_AutoRenameModels    _attMean_ModelName;
+
+    CT_AutoRenameModels    _grpDroppedCluster_ModelName;
+    CT_AutoRenameModels    _droppedCluster_ModelName;
+    CT_AutoRenameModels    _droppedLine_ModelName;
+
 
     // Step parameters
     double    _maxAngle;
@@ -129,6 +150,7 @@ private:
     double    _lineDistThreshold;
     int       _minPtsNb;
     double    _lengthThreshold;
+    double    _heightThreshold;
 
 };
 

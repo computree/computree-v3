@@ -29,6 +29,8 @@
 #include "ct_abstractresult.h"
 #include "ct_outabstractitemmodel.h"
 #include "ct_virtualabstractstep.h"
+#include "ct_global/ct_context.h"
+#include "ct_model/tools/ct_modelsearchhelper.h"
 
 #include <math.h>
 
@@ -341,6 +343,20 @@ bool CT_AbstractItemDrawable::isAutoDelete() const
 
 void CT_AbstractItemDrawable::setModel(const CT_OutAbstractItemModel *model)
 {
+    internalSetModel(model);
+}
+
+void CT_AbstractItemDrawable::setModel(const QString &modelUniqueName)
+{
+    CT_AbstractResult *result = this->result();
+    Q_ASSERT_X(!modelUniqueName.isEmpty(), "CT_AbstractItem constructor", "When you create a Element the modelName must not be empty !");
+    Q_ASSERT_X((result != NULL), "CT_AbstractItem constructor", "When you create a Element with a modelName the result must not be NULL !");
+    Q_ASSERT_X((result->parentStep() != NULL), "CT_AbstractItem constructor", "When you create a Element with a modelName the result must know its parent step");
+
+    CT_OutAbstractModel *model = PS_MODELS->searchModelForCreation(modelUniqueName, result);
+
+    Q_ASSERT_X(model != NULL, "CT_AbstractItem constructor", "You created a CT_AbstractItem with a modelName but the model was not found");
+
     internalSetModel(model);
 }
 
