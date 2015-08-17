@@ -33,6 +33,7 @@ PB_StepDetectVerticalAlignments::PB_StepDetectVerticalAlignments(CT_StepInitiali
 
     _lengthThreshold = 1.0;
     _heightThreshold = 0.6;
+    _ratioDist = 0.2;
 }
 
 // Step description (tooltip of contextual menu)
@@ -80,13 +81,12 @@ void PB_StepDetectVerticalAlignments::createOutResultModelListProtected()
     resCpy->addGroupModel(DEFin_grp, _grpCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters conservés"));
     resCpy->addItemModel(_grpCluster_ModelName, _cluster_ModelName, new CT_PointCluster(), tr("Cluster conservé"));
     resCpy->addItemModel(_grpCluster_ModelName, _line_ModelName, new CT_Line(), tr("Ligne conservée"));
-    resCpy->addItemModel(_grpCluster_ModelName, _att_ModelName, new CT_AttributesList(), tr("Distribution des distances"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attMin_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMin"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attQ25_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ25"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attQ50_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMed"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attQ75_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ75"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attMax_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMax"));
-    resCpy->addItemAttributeModel(_att_ModelName, _attMean_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMean"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attMin_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMin"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attQ25_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ25"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attQ50_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMed"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attQ75_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ75"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attMax_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMax"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attMean_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMean"));
 
     resCpy->addGroupModel(DEFin_grp, _grpDroppedCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters éliminés"));
     resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedCluster_ModelName, new CT_PointCluster(), tr("Cluster éliminé"));
@@ -112,6 +112,7 @@ void PB_StepDetectVerticalAlignments::createPostConfigurationDialog()
     configDialog->addTitle(tr("<b>3- Paramètres validation des clusters obtenus :</b>"));
     configDialog->addDouble(tr("Supprimer les clusters dont la longueur est inférieure à"), "m", 0, 1000, 2, _lengthThreshold);
     configDialog->addDouble(tr("Supprimer les clusters qui commence au dessus de "), "% de Hscene", 0, 100, 0, _heightThreshold, 100);
+    configDialog->addDouble(tr("Valeur max. pour (DistMed - DistMoy) / DistMoy"), "%", 0, 100, 0, _ratioDist, 100);
 }
 
 void PB_StepDetectVerticalAlignments::compute()
@@ -132,6 +133,7 @@ void PB_StepDetectVerticalAlignments::compute()
         const CT_AbstractItemDrawableWithPointCloud* scene = (CT_AbstractItemDrawableWithPointCloud*)grp->firstItemByINModelName(this, DEFin_scene);
         if (scene != NULL)
         {
+            setProgress(1);
             const CT_AbstractPointCloudIndex* pointCloudIndex = scene->getPointCloudIndex();
 
             //double deltaZ = scene->maxZ() - scene->minZ();
@@ -181,9 +183,12 @@ void PB_StepDetectVerticalAlignments::compute()
                 }
             }
 
+            setProgress(30);
+
             // Tri par Phi croissant
             qSort(candidateLines.begin(), candidateLines.end(), PB_StepDetectVerticalAlignments::lessThan);
 
+            setProgress(40);
 
             // Affiliation des lignes proches deux à deux
             QMultiMap<PB_StepDetectVerticalAlignments::LineData*, PB_StepDetectVerticalAlignments::LineData*> linePairs;
@@ -224,6 +229,7 @@ void PB_StepDetectVerticalAlignments::compute()
                 }
             }
 
+            setProgress(60);
 
 
             // Constitution des clusters de points alignés
@@ -316,6 +322,8 @@ void PB_StepDetectVerticalAlignments::compute()
                 }
             }
 
+            setProgress(70);
+
             qDeleteAll(candidateLines);
             candidateLines.clear();
             linePairs.clear();
@@ -372,6 +380,8 @@ void PB_StepDetectVerticalAlignments::compute()
                 }
             }
 
+            setProgress(80);
+
             // inventaire des clusters à éliminer pour cause proximité
             QList<CT_PointCluster*> toRemoveBecauseOfProximity;
             QList<CT_PointCluster*> processedClusters;
@@ -402,6 +412,7 @@ void PB_StepDetectVerticalAlignments::compute()
                 }
             }
 
+            setProgress(90);
 
 
             // Création des pointClusters
@@ -432,12 +443,15 @@ void PB_StepDetectVerticalAlignments::compute()
                     const CT_AbstractPointCloudIndex* cloudIndex = cluster->getPointCloudIndex();
                     size_t nbPts = cloudIndex->size();
 
+                    double critere = (distVal->_q50 - distVal->_mean) / distVal->_mean;
+
                     // Test de validité pour le cluster
-                    if (    nbPts >= _minPtsNb &&                           // Nombre de points
-                            phi < maxAngleRadians &&                        // Verticalité
-                            lineData->length() > _lengthThreshold &&        // Longueur
-                            cluster->minZ() < hMax &&                       // Hauteur de base
-                            !toRemoveBecauseOfProximity.contains(cluster))  // Proximité
+                    if (    nbPts >= _minPtsNb &&                               // Nombre de points
+                            phi < maxAngleRadians &&                            // Verticalité
+                            lineData->length() > _lengthThreshold &&            // Longueur
+                            cluster->minZ() < hMax &&                           // Hauteur de base
+                            !toRemoveBecauseOfProximity.contains(cluster) &&    // Proximité
+                            critere < _ratioDist)
                     {
 
                         // Création des items
@@ -448,30 +462,27 @@ void PB_StepDetectVerticalAlignments::compute()
                         CT_Line* line = new CT_Line(_line_ModelName.completeName(), res, lineData);
                         grpCl->addItemDrawable(line);
 
-                        CT_AttributesList* attList = new CT_AttributesList(_att_ModelName.completeName(), res);
-                        grpCl->addItemDrawable(attList);
-
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMin_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attMin_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_min));
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ25_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ25_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_q25));
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ50_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ50_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_q50));
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ75_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attQ75_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_q75));
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMax_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attMax_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_max));
-                        attList->addItemAttribute(new CT_StdItemAttributeT<double>(_attMean_ModelName.completeName(),
+                        line->addItemAttribute(new CT_StdItemAttributeT<double>(_attMean_ModelName.completeName(),
                                                                                    CT_AbstractCategory::DATA_VALUE,
                                                                                    res,
                                                                                    distVal->_mean));
@@ -494,6 +505,9 @@ void PB_StepDetectVerticalAlignments::compute()
             }
 
             qDeleteAll(distValues.values());
+
+            setProgress(99);
+
         }
     }
 

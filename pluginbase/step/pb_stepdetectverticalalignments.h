@@ -131,7 +131,6 @@ private:
     CT_AutoRenameModels    _grpCluster_ModelName;
     CT_AutoRenameModels    _cluster_ModelName;
     CT_AutoRenameModels    _line_ModelName;
-    CT_AutoRenameModels    _att_ModelName;
     CT_AutoRenameModels    _attMin_ModelName;
     CT_AutoRenameModels    _attQ25_ModelName;
     CT_AutoRenameModels    _attQ50_ModelName;
@@ -151,6 +150,7 @@ private:
     int       _minPtsNb;
     double    _lengthThreshold;
     double    _heightThreshold;
+    double    _ratioDist;
 
 };
 
