@@ -193,7 +193,7 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addTitle(tr("<b>Critères d'affiliation des positions :</b>"));
+    configDialog->addTitle(tr("Critères d'affiliation des positions :"));
 
     configDialog->addDouble(tr("Distance maximale entre points appariés :"), "m", 0, 100, 3, _distThreshold, 1);
     configDialog->addDouble(tr("Seuil de taille relative minimum entre items appariés :"), "", 0, 1, 2, _relativeSizeThreshold, 1);
@@ -202,14 +202,14 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
     configDialog->addBool(tr("Inversion de direction possible (+- 180°)"), "", "", _possiblyInvertedDirection);
 
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>Critères de qualité de matching :</b>"));
+    configDialog->addTitle(tr("Critères de qualité de matching :"));
 
     configDialog->addDouble(tr("Poid du critère Nb. pos. de référence ayant une pos. transformée proche :"), "", 0, 1000, 2, _coef_nbRwc);
     configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche :"), "", 0, 1000, 2, _coef_nbTwc);
     configDialog->addDouble(tr("Poid du critère Nb. pos. transformées ayant une pos. de référence proche avec une taille similaire :"), "", 0, 1000, 2, _coef_nbSim);
 
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>Mode de représentation :</b>"));
+    configDialog->addTitle(tr("Mode de représentation :"));
 
     configDialog->addTitle(tr("Type de représentation :"));
     CT_ButtonGroup &bg_drawMode = configDialog->addButtonGroup(_drawMode);
@@ -228,7 +228,7 @@ void PB_StepMatchItemsPositions::createPostConfigurationDialog()
     configDialog->addDouble(tr("Valeur de Z/Rayon maximum"), "m", -1e+09, 1e+09, 2, _maxval, 1);
 
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>Export des données :</b>"));
+    configDialog->addTitle(tr("Export des données :"));
 
     configDialog->addBool(tr("Exporter un rapport de Recalage"), "", "", _exportReport);
     configDialog->addFileChoice(tr("Fichier d'export du rapport de Recalage"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _reportFileName);

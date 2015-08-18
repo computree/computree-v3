@@ -36,7 +36,7 @@
 
 #include "opencv2/core/mat.hpp"
 
-template< typename DataT > class CT_StandardGrid2DDrawManager;
+template< typename DataT > class CT_StandardImage2DDrawManager;
 
 /*!
  * \class CT_Image2D

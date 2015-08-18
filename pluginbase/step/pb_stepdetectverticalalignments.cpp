@@ -99,17 +99,17 @@ void PB_StepDetectVerticalAlignments::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addTitle( tr("<b>1- Paramètres de validation des droites candidates :</b>"));
+    configDialog->addTitle( tr("1- Paramètres de validation des droites candidates :"));
     configDialog->addDouble(tr("Distance maximum entre deux points d'une droite candidate"), "m", 0, 1000, 2, _distThreshold);
     configDialog->addDouble(tr("Angle zénithal maximal pour une droite candidate"), "°", 0, 180, 2, _maxAngle);
 
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>2- Paramètres de création des clusters (à partir des droites candidates) :</b>"));
+    configDialog->addTitle(tr("2- Paramètres de création des clusters (à partir des droites candidates) :"));
     configDialog->addInt(   tr("Nombre de points minimum dans un cluster"), "", 3, 1000, _minPtsNb);
     configDialog->addDouble(tr("Distance maximum XY entre deux droites candidates à agréger"), "m", 0, 1000, 2, _lineDistThreshold);
 
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>3- Paramètres validation des clusters obtenus :</b>"));
+    configDialog->addTitle(tr("3- Paramètres validation des clusters obtenus :"));
     configDialog->addDouble(tr("Supprimer les clusters dont la longueur est inférieure à"), "m", 0, 1000, 2, _lengthThreshold);
     configDialog->addDouble(tr("Supprimer les clusters qui commence au dessus de "), "% de Hscene", 0, 100, 0, _heightThreshold, 100);
     configDialog->addDouble(tr("Valeur max. pour (DistMed - DistMoy) / DistMoy"), "%", 0, 100, 0, _ratioDist, 100);

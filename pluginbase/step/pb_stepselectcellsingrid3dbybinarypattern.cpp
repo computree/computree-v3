@@ -96,7 +96,7 @@ void PB_StepSelectCellsInGrid3DByBinaryPattern::createPostConfigurationDialog()
     configDialog->addDouble(tr("Valeur minimale de la grille d'entrée"), "", -1e+09, 1e+09, 4, _inThreshold, 1);
     configDialog->addString(tr("Motif binaire"), "", _pattern);
     configDialog->addEmpty();
-    configDialog->addTitle(tr("<b>Choix du mode de fitrage :</b>"));
+    configDialog->addTitle(tr("Choix du mode de fitrage :"));
 
     CT_ButtonGroup &bg_gridMode = configDialog->addButtonGroup(_selectMode);
     configDialog->addExcludeValue("", "", tr("En valeur absolue :"), bg_gridMode, 0);
