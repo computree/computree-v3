@@ -116,7 +116,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepcorrectalsprofile.h \
     step/pb_stepexportitemlist.h \
     step/pb_stepaddattributevalue.h \
-    step/pb_stepdetectverticalalignments.h
+    step/pb_stepdetectverticalalignments.h \
+    step/pb_stepconvertfloatimagetoqint32.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -228,7 +229,8 @@ SOURCES += \
     step/pb_stepcorrectalsprofile.cpp \
     step/pb_stepexportitemlist.cpp \
     step/pb_stepaddattributevalue.cpp \
-    step/pb_stepdetectverticalalignments.cpp
+    step/pb_stepdetectverticalalignments.cpp \
+    step/pb_stepconvertfloatimagetoqint32.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

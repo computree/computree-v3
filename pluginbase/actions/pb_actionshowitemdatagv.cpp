@@ -109,7 +109,7 @@ bool PB_ActionShowItemDataGV::mouseReleaseEvent(QMouseEvent *e)
         it.next();
 
         const CT_Point &p = it.currentPoint();
-        PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(p(0)).arg(p(1)).arg(p(2)));
+        PS_LOG->addMessage(LogInterface::info, LogInterface::action, QString("(X Y Z) = \t%1\t%2\t%3").arg(QString::number(p(0), 'f', 2)).arg(QString::number(p(1), 'f', 2)).arg(QString::number(p(2), 'f', 2)));
     }
 
     return result;

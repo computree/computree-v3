@@ -90,6 +90,7 @@
 #include "step/pb_stepexportitemlist.h"
 #include "step/pb_stepaddattributevalue.h"
 #include "step/pb_stepdetectverticalalignments.h"
+#include "step/pb_stepconvertfloatimagetoqint32.h"
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -270,6 +271,7 @@ bool PB_StepPluginManager::loadGenericsStep()
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepConvertFloatImageToqint32(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));
     sep->addStep(new PB_StepLoadAsciiFile02(*createNewStepInitializeData(NULL)));
