@@ -292,6 +292,17 @@ public:
         return true;
     }
 
+    inline bool getCellCenterCoordinates(const size_t col, const size_t lin, Eigen::Vector3d &center) const
+    {
+        if (col >= colDim() || lin >= linDim()) {return false;}
+
+        center(0) = minColCoord() + col*_res + _res/2.0;
+        center(1) = maxLinCoord() - lin*_res - _res/2.0;
+        center(2) = _level;
+
+        return true;
+    }
+
     inline bool getCellCenterCoordinates(const size_t index, Eigen::Vector3d &center) const
     {
         size_t col, lin;
@@ -303,6 +314,7 @@ public:
 
         return true;
     }
+
 
 
     /*!
