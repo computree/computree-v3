@@ -3,6 +3,9 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h"
 
+#include <stdlib.h>
+#include <time.h>
+
 #ifdef USE_OPENCV
 #include "ct_itemdrawable/ct_image2d.h"
 #include "ct_tools/ct_typeinfo.h"
@@ -19,6 +22,7 @@ template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::I
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_MAP_MODE_ZLEVEL_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeZLevelEnabled();
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_MAP_MODE_ZLEVEL_VALUE = CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeZLevelValue();
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_MAP_MODE_SHOW_GRID = CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeShowGrid();
+template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_MAP_MODE_CLUSTER_MODE = CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeClusterMode();
 
 template< typename DataT >
 CT_StandardImage2DDrawManager<DataT>::CT_StandardImage2DDrawManager(QString drawConfigurationName, bool mapMode, bool scale)
@@ -49,11 +53,41 @@ void CT_StandardImage2DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
     bool modeMap = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_ENABLED).toBool();
     bool fixerZ = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_ZLEVEL_ENABLED).toBool();
     double z = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_ZLEVEL_VALUE).toDouble();
-    bool show_grid = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_SHOW_GRID).toDouble();
+    bool show_grid = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_SHOW_GRID).toBool();
+    bool clusterMode = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_MAP_MODE_CLUSTER_MODE).toBool();
 
     double amplitude = item.dataMax() - item.dataMin();
     double scaling = (zmax - zmin) / amplitude;
     double demiRes = item.resolution()/2.0;
+
+    // Create list of colors
+    QMap<DataT, QColor> colors;
+    if (clusterMode)
+    {
+        for (size_t cx = 0 ; cx < item.colDim()-1 ; cx++)
+        {
+            for (size_t ly = 0 ; ly < item.linDim()-1 ; ly++)
+            {
+                DataT value = item.value(cx, ly);
+                if (!colors.contains(value))
+                {
+                    colors.insert(value, QColor());
+                }
+            }
+        }
+
+        std::srand (std::time(NULL));
+        QMutableMapIterator<DataT, QColor> it(colors);
+        while (it.hasNext())
+        {
+            it.next();
+            QColor &color = it.value();
+            color.setRed(25 + std::rand() % 225);
+            color.setGreen(25 + std::rand() % 225);
+            color.setBlue(25 + std::rand() % 255);
+        }
+    }
+
 
     if (mode3D)
     {
@@ -234,10 +268,16 @@ void CT_StandardImage2DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
                 {
                     painter.setColor(QColor(125, 0, 0));
                 } else {
-                    int colorLevel = ((value - (double)item.dataMin()) / amplitude)*255;
-                    if (colorLevel < 0) {colorLevel = 0;}
-                    if (colorLevel > 255) {colorLevel = 255;}
-                    painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
+
+                    if (clusterMode)
+                    {
+                        painter.setColor(colors.value(value, QColor(255, 255, 255)));
+                    } else {
+                        int colorLevel = ((value - (double)item.dataMin()) / amplitude)*255;
+                        if (colorLevel < 0) {colorLevel = 0;}
+                        if (colorLevel > 255) {colorLevel = 255;}
+                        painter.setColor(QColor(colorLevel, colorLevel, colorLevel));
+                    }
                 }
 
                 Eigen::Vector2d tLeft(x - demiRes, y + demiRes);
@@ -274,6 +314,7 @@ CT_ItemDrawableConfiguration CT_StandardImage2DDrawManager<DataT>::createDrawCon
     item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), "Mode 3D    : Mettre à l'échelle", CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
     item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), "Mode 3D    : Z min de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 0);
     item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), "Mode 3D    : Z max de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 5);
+    item.addNewConfiguration(staticInitConfigMapModeClusterMode(), "Colorisation par valeurs uniques", CT_ItemDrawableConfiguration::Bool, false);
 
     return item;
 }
@@ -338,6 +379,12 @@ template< typename DataT >
 QString CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeShowGrid()
 {
     return "IM2D_SHGRD";
+}
+
+template< typename DataT >
+QString CT_StandardImage2DDrawManager<DataT>::staticInitConfigMapModeClusterMode()
+{
+    return "IM2D_COLMD";
 }
 #endif
 #endif // CT_STANDARDIMAGE2DDRAWMANAGER_HPP

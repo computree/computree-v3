@@ -25,6 +25,7 @@ protected:
     const static QString INDEX_CONFIG_MAP_MODE_ZLEVEL_ENABLED;
     const static QString INDEX_CONFIG_MAP_MODE_ZLEVEL_VALUE;
     const static QString INDEX_CONFIG_MAP_MODE_SHOW_GRID;
+    const static QString INDEX_CONFIG_MAP_MODE_CLUSTER_MODE;
 
     static QString staticInitConfig3DModeEnabled();
     static QString staticInitConfig3DModeLinkPointsEnabled();
@@ -36,6 +37,7 @@ protected:
     static QString staticInitConfigMapModeZLevelEnabled();
     static QString staticInitConfigMapModeZLevelValue();
     static QString staticInitConfigMapModeShowGrid();
+    static QString staticInitConfigMapModeClusterMode();
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 
