@@ -43,6 +43,15 @@ private:
     PB_FilterByReturnType::ReturnType   _type;
     QString                             _typeAsString;
 
+    QSet<quint8>   _classifToKeep;
+    bool        _filterByClassif;
+    bool        _keepVegetation;
+    bool        _keepGround;
+    bool        _keepNotClassified;
+    bool        _keepBuldings;
+    bool        _keepWater;
+    QString     _keepValues;
+
 
     QString getStringForType(PB_FilterByReturnType::ReturnType returnType) const;
     PB_FilterByReturnType::ReturnType getTypeForString(QString returnTypeAsString) const;
