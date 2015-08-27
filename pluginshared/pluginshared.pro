@@ -405,7 +405,13 @@ SOURCES += \
     ct_view/tools/ct_manageconfigurableelementsdialog.cpp \
     ct_view/tools/ct_elementlistdialog.cpp \
     ct_metric/abstract/ct_abstractmetric_raster.cpp \
-    ct_math/ct_mathstatistics.cpp
+    ct_math/ct_mathstatistics.cpp \
+    ct_math/delaunay2d/ct_delaunayoutline.cpp \
+    ct_math/delaunay2d/ct_delaunayside.cpp \
+    ct_math/delaunay2d/ct_delaunaytriangle.cpp \
+    ct_math/delaunay2d/ct_delaunaytriangulation.cpp \
+    ct_math/delaunay2d/ct_delaunayvertex.cpp \
+    ct_math/delaunay2d/ct_delaunayvorovertex.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -913,7 +919,13 @@ HEADERS += interfaces.h \
     ct_view/tools/ct_manageconfigurableelementsdialog.h \
     ct_view/tools/ct_elementlistdialog.h \
     ct_metric/abstract/ct_abstractmetric_raster.h \
-    ct_math/ct_mathstatistics.h
+    ct_math/ct_mathstatistics.h \
+    ct_math/delaunay2d/ct_delaunayoutline.h \
+    ct_math/delaunay2d/ct_delaunayside.h \
+    ct_math/delaunay2d/ct_delaunaytriangle.h \
+    ct_math/delaunay2d/ct_delaunaytriangulation.h \
+    ct_math/delaunay2d/ct_delaunayvertex.h \
+    ct_math/delaunay2d/ct_delaunayvorovertex.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
