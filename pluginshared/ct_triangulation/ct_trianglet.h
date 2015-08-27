@@ -62,6 +62,8 @@ public:
     // retourne une des aretes du triangle (pour avoir les autres aretes il faut appeler la methode getLeftEdge())
     QSharedPointer<CT_EdgeT> getAnEdge() const;
 
+    void clear();
+
     // retourne le centre et rayon du cercle circonscrit du triangle
     double getCx() const;
     double getCy() const;

@@ -7,8 +7,30 @@ CT_DelaunayT::CT_DelaunayT()
 {
 }
 
+CT_DelaunayT::~CT_DelaunayT()
+{
+    clear();
+    _hull_edge_start.clear();
+    _act_edge.clear();
+}
+
 void CT_DelaunayT::clear()
 {
+    for (int i = 0 ; i < _list_edges.size() ; i++)
+    {
+        _list_edges[i].clear();
+    }
+
+    for (int i = 0 ; i < _list_nodes.size() ; i++)
+    {
+        _list_nodes[i].clear();
+    }
+
+    for (int i = 0 ; i < _list_triangles.size() ; i++)
+    {
+        _list_triangles[i].clear();
+    }
+
     _list_edges.clear();
     _list_nodes.clear();
     _list_triangles.clear();

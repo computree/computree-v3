@@ -48,6 +48,8 @@ public:
         return ptr;
     }
 
+    void clear();
+
     // retourne le premier point (node) de l'arete
     QSharedPointer<CT_NodeT> getN1() const;
     // retourne le deuxieme point (node) de l'arete

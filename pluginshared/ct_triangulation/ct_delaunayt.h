@@ -40,6 +40,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_DelaunayT
 {
 public:
     CT_DelaunayT();
+    ~CT_DelaunayT();
 
     // supprimer tous les points ajoutes a la liste des points et efface les informations de la triangulation
     void clear();

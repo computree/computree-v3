@@ -21,6 +21,11 @@ QSharedPointer<CT_EdgeT> CT_TriangleT::getAnEdge() const
     return _an_edge;
 }
 
+void CT_TriangleT::clear()
+{
+   _an_edge.clear();
+}
+
 bool CT_TriangleT::isInCircle(QSharedPointer<CT_NodeT> n) const
 {
     return (n.data()->distance(_circle_cx, _circle_cy) < _circle_radius);

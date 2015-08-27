@@ -12,6 +12,16 @@ void CT_EdgeT::update(QSharedPointer<CT_NodeT> n1, QSharedPointer<CT_NodeT> n2)
     setN1Edge();
 }
 
+void CT_EdgeT::clear()
+{
+    _n1.clear();
+    _n2.clear();
+    _inversed_edge.clear();
+    _next_edge.clear();
+    _next_edge_h.clear();
+    _triangle.clear();
+}
+
 QSharedPointer<CT_NodeT> CT_EdgeT::getN1() const
 {
     return _n1;
