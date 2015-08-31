@@ -10,7 +10,7 @@
 #include "ct_itemdrawable/ct_image2d.h"
 #include "ct_tools/ct_typeinfo.h"
 
-#include <typeinfo>
+#include <ctime>
 
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeEnabled();
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_LINK_POINTS_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeLinkPointsEnabled();
@@ -42,7 +42,7 @@ void CT_StandardImage2DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
 {
     CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(view, painter, itemDrawable);
 
-    const CT_Image2D<DataT> &item = dynamic_cast<const CT_Image2D<DataT>&>(itemDrawable);
+    const CT_Image2D<DataT> &item = dynamic_cast< const CT_Image2D<DataT>& >(itemDrawable);
 
     bool mode3D = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_3D_MODE_ENABLED).toBool();
     bool relier = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_3D_MODE_LINK_POINTS_ENABLED).toBool();

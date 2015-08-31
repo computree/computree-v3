@@ -29,6 +29,7 @@
 #define CT_IMAGE2D_HPP
 
 #include "ct_itemdrawable/ct_image2d.h"
+#include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h"
 #include "opencv2/core/core.hpp"
 
 #include <math.h>

@@ -31,7 +31,6 @@
 #ifdef USE_OPENCV
 #include "ct_itemdrawable/abstract/ct_abstractimage2d.h"
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
-#include "ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.h"
 #include "ct_math/ct_math.h"
 
 #include "opencv2/core/mat.hpp"

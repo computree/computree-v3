@@ -2,6 +2,9 @@ unix {
 	contains(DEFINES, USE_OPENCV3) {
 		OPENCV_INC_PATH = "/usr/local/include" 
 		OPENCV_LIBS_PATH = "/usr/local/lib"
+
+                # add your own with quoting gyrations to make sure $ORIGIN gets to the command line unexpanded
+                QMAKE_LFLAGS += "-Wl,-rpath,\'/usr/local/lib\'"
 	} 
 }
  
