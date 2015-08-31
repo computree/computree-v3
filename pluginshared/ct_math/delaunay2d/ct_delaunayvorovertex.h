@@ -43,6 +43,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_DelaunayVoroVertex
 public:
     CT_DelaunayVoroVertex (const CT_DelaunayTriangle *trit, CT_DelaunayVertex *v1t, CT_DelaunayVertex *v2t);
 
+    ~CT_DelaunayVoroVertex();
+
     // give the other vertex of the side
     CT_DelaunayVertex *next(const CT_DelaunayVertex *vt);
 

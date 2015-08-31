@@ -83,6 +83,8 @@ public:
     inline double x() {return (*_data)(0);}
     inline double y() {return (*_data)(1);}
 
+    inline Eigen::Vector3d* getData() {return _data;}
+
 
 private:
 

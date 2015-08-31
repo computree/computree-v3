@@ -41,6 +41,16 @@ CT_DelaunayTriangle::CT_DelaunayTriangle(CT_DelaunayVertex *v1t, CT_DelaunayVert
     calculateCircle();
 }
 
+CT_DelaunayTriangle::~CT_DelaunayTriangle()
+{
+    _v1 = NULL;
+    _v2 = NULL;
+    _v3 = NULL;
+    _n12 = NULL;
+    _n23 = NULL;
+    _n31 = NULL;
+}
+
 void CT_DelaunayTriangle::setNeighbor(CT_DelaunayVertex *vt1, CT_DelaunayVertex *vt2, CT_DelaunayTriangle *ngb)
 {
 

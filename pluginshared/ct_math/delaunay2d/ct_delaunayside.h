@@ -44,6 +44,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_DelaunaySide
 public:
     CT_DelaunaySide (CT_DelaunayTriangle* trit, CT_DelaunayVertex* v1t, CT_DelaunayVertex* v2t);
 
+    ~CT_DelaunaySide();
+
     // give the other vertex of the side
     CT_DelaunayVertex *next(CT_DelaunayVertex* vt);
 

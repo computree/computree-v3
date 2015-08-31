@@ -53,7 +53,7 @@ public:
     CT_DelaunayTriangulation ();
     ~CT_DelaunayTriangulation ();
 
-    void clear();
+    void clear(bool clearToInsert = true);
 
 
     // Construct the 4 corners of the triangulation, and the 2 first triangles
@@ -138,7 +138,7 @@ public:
 
 
     // add a DelaunayVertex to the toInsert list
-    void addVertex (Eigen::Vector3d *data, bool deleteData);
+    CT_DelaunayVertex* addVertex (Eigen::Vector3d *data, bool deleteData);
 
 
     // add all vertices present in toInsert list to the triangulation

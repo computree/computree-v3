@@ -45,6 +45,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_DelaunayTriangle
 public:
     CT_DelaunayTriangle (CT_DelaunayVertex* v1t, CT_DelaunayVertex* v2t, CT_DelaunayVertex* v3t);
 
+    ~CT_DelaunayTriangle();
+
     // set the good neighbor, in function of the two vertices given
     void setNeighbor (CT_DelaunayVertex* vt1, CT_DelaunayVertex* vt2, CT_DelaunayTriangle* ngb);
 

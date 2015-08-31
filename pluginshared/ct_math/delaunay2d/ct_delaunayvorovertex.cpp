@@ -34,6 +34,12 @@ CT_DelaunayVoroVertex::CT_DelaunayVoroVertex(const CT_DelaunayTriangle *trit, CT
     _v2 = v2t;
 }
 
+CT_DelaunayVoroVertex::~CT_DelaunayVoroVertex()
+{
+    _v1 = NULL;
+    _v2 = NULL;
+}
+
 CT_DelaunayVertex* CT_DelaunayVoroVertex::next(const CT_DelaunayVertex* vt)
 {
     if      (vt == _v1) {return _v2;}

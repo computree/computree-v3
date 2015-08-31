@@ -34,6 +34,13 @@ CT_DelaunaySide::CT_DelaunaySide(CT_DelaunayTriangle *trit, CT_DelaunayVertex *v
     _v2 = v2t;
 }
 
+CT_DelaunaySide::~CT_DelaunaySide()
+{
+    _tri = NULL;
+    _v1 = NULL;
+    _v2 = NULL;
+}
+
 CT_DelaunayVertex* CT_DelaunaySide::next(CT_DelaunayVertex *vt)
 {
     if      (vt == _v1) {return _v2;}

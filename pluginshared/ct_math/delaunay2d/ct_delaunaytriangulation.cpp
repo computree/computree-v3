@@ -59,28 +59,38 @@ CT_DelaunayTriangulation::~CT_DelaunayTriangulation()
     clear();
 }
 
-void CT_DelaunayTriangulation::clear()
+void CT_DelaunayTriangulation::clear(bool clearToInsert)
 {
     _initialized = false;
 
     if (_corners[0] != NULL) {delete _corners[0];}
-    if (_corners[1] != NULL) {delete _corners[0];}
-    if (_corners[2] != NULL) {delete _corners[0];}
-    if (_corners[3] != NULL) {delete _corners[0];}
+    if (_corners[1] != NULL) {delete _corners[1];}
+    if (_corners[2] != NULL) {delete _corners[2];}
+    if (_corners[3] != NULL) {delete _corners[3];}
+
+    qDeleteAll(_duplicatePositions.keys());
+    _duplicatePositions.clear();
+
+    if (clearToInsert)
+    {
+        qDeleteAll(_toInsert);
+        _toInsert.clear();
+    }
 
     qDeleteAll(_insertedVertices);
-    qDeleteAll(_outOfBoundsVertices);
-    qDeleteAll(_duplicatePositions.keys());
-    qDeleteAll(_triangles);
-
     _insertedVertices.clear();
+
+    qDeleteAll(_outOfBoundsVertices);
     _outOfBoundsVertices.clear();
-    _duplicatePositions.clear();
+
+    getTriangles();
+    qDeleteAll(_triangles);
     _triangles.clear();
 }
 
 void CT_DelaunayTriangulation::init(double x1, double y1, double x2, double y2)
 {
+    clear(!_initialized);
 
     if (!_initialized)
     {
@@ -337,6 +347,9 @@ const QList<CT_DelaunayVertex *> &CT_DelaunayTriangulation::computeVoronoiDiagra
 
 const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
 {
+    qDeleteAll(_outlines);
+    _outlines.clear();
+
     const QList<CT_DelaunayTriangle *> &lst = getTriangles();
     QList<CT_DelaunaySide*> sides;
     CT_DelaunayTriangle* tri;
@@ -372,11 +385,11 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
                 if ((i != j) && (sides.at(i)->equals(sides.at(j))))
                 {
                     if (i < j) {
-                        sides.removeAt(j);
-                        sides.removeAt(i);
+                        delete sides.takeAt(j);
+                        delete sides.takeAt(i);
                     } else {
-                        sides.removeAt(i);
-                        sides.removeAt(j);
+                        delete sides.takeAt(i);
+                        delete sides.takeAt(j);
                     }
                     break;
                 }
@@ -391,7 +404,7 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
 
             CT_DelaunayVertex* first = sd->_v1;
             CT_DelaunayVertex* next = sd->next (first);
-
+            delete sd;
 
             while (next != first)
             {
@@ -405,17 +418,22 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
                 sides.removeOne(sd);
 
                 next = sd->next(next);
+                delete sd;
             }
 
             outline->addVertex (next);
             _outlines.append(outline);
+
         }
+
+        qDeleteAll(sides);
+        sides.clear();
     }
 
     return _outlines;
 }
 
-void CT_DelaunayTriangulation::addVertex(Eigen::Vector3d *data, bool deleteData)
+CT_DelaunayVertex *CT_DelaunayTriangulation::addVertex(Eigen::Vector3d *data, bool deleteData)
 {
     CT_DelaunayVertex *vt  = new CT_DelaunayVertex(data, deleteData);
 
@@ -424,7 +442,7 @@ void CT_DelaunayTriangulation::addVertex(Eigen::Vector3d *data, bool deleteData)
         if (vt->equals(_insertedVertices.at(i)))
         {
             _duplicatePositions.insert(vt, _insertedVertices.at(i));
-            return;
+            return vt;
         }
     }
 
@@ -434,10 +452,12 @@ void CT_DelaunayTriangulation::addVertex(Eigen::Vector3d *data, bool deleteData)
         if (vt->equals(_toInsert.at(i)))
         {
             _duplicatePositions.insert(vt, _toInsert.at(i));
-            return;
+            return vt;
         }
     }
     _toInsert.append(vt);
+
+    return vt;
 }
 
 bool CT_DelaunayTriangulation::doInsertion()
@@ -485,7 +505,10 @@ bool CT_DelaunayTriangulation::doInsertion()
 
             // if only one insertion, triangles list is not more up to date:
             _triangles.clear();
+
+            qDeleteAll(_outlines);
             _outlines.clear();
+
             _neighborsComputed = false;
             _voronoiDiagramComputed = false;
 
@@ -561,7 +584,10 @@ bool CT_DelaunayTriangulation::doInsertion()
 
             // for externals drawings : copy the two lists in public instance lists
             if (_savingMode) {
+                qDeleteAll(_lastDestrLst);
                 _lastDestrLst.clear();
+
+                qDeleteAll(_lastBorderLst);
                 _lastBorderLst.clear();
 
                 _lastDestrLst.append(destrLst);
@@ -585,12 +611,14 @@ bool CT_DelaunayTriangulation::doInsertion()
 
             vFirst = side->_v1;
             vNext = side->_v2;
-            borderLst.removeOne(side);
+            borderLst.removeOne(side);            
 
             t1 = new CT_DelaunayTriangle (vFirst, vNext, vt);
             n1 = side->_tri;
             t1->_n12 = n1;
             if (n1 != NULL) {n1->setNeighbor(vFirst, vNext, t1);}
+
+            delete side;
 
             _refTriangle = t1;
             // NB: so the refTriangle is set to be the first triangle created this step
@@ -622,6 +650,7 @@ bool CT_DelaunayTriangulation::doInsertion()
                 t1->_n23 = t2;
 
                 t1 = t2;
+                delete side;
             }
 
             // linking first triangle to last one
@@ -629,7 +658,10 @@ bool CT_DelaunayTriangulation::doInsertion()
             _refTriangle->_n31 = t2;
 
             // clearing the lists and tables for next loop
+            qDeleteAll(destrLst);
             destrLst.clear();
+
+            qDeleteAll(borderLst);
             borderLst.clear();
         }
     }

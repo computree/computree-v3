@@ -41,6 +41,10 @@ CT_DelaunayVertex::CT_DelaunayVertex(double x, double y)
 CT_DelaunayVertex::~CT_DelaunayVertex()
 {
     if (_deleteData) {delete _data;}
+    _neighbors.clear();
+
+    qDeleteAll(_voroVertices);
+    _voroVertices.clear();
 }
 
 void CT_DelaunayVertex::initNeighbors()

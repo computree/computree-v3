@@ -47,6 +47,8 @@ class PLUGINSHAREDSHARED_EXPORT CT_DelaunayOutline
 public:
     CT_DelaunayOutline ();
 
+    ~CT_DelaunayOutline ();
+
 
     void addVertex (CT_DelaunayVertex* vt);
 

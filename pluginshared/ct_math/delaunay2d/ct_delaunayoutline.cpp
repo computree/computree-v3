@@ -30,6 +30,11 @@ CT_DelaunayOutline::CT_DelaunayOutline()
 {
 }
 
+CT_DelaunayOutline::~CT_DelaunayOutline()
+{
+    _vertices.clear();
+}
+
 void CT_DelaunayOutline::addVertex(CT_DelaunayVertex *vt)
 {
     for (int i = 0 ; i < _vertices.size () ; i++)
