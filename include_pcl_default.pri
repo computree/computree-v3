@@ -1,5 +1,5 @@
 unix {
-	!contains(DEFINES, DONT_USE_PCL) {
+	contains(DEFINES, USE_PCL) {
 		PCL_LIBS_PATH = "/usr/lib" 
 		PCL_INC_PATH = "/usr/include/pcl-1.7" 
 		EIGEN_INC_PATH = "/usr/include/eigen3" 

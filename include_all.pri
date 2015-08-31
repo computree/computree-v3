@@ -15,7 +15,11 @@
 }
 
 !exists(include_opencv.pri) {
-    message("OPENCV will not be used")
+    !exists(include_opencv_default.pri) {
+        message("OPENCV will not be used")
+    } else {
+        include(include_opencv_default.pri)
+    }
 } else {
     include(include_opencv.pri)
 }
