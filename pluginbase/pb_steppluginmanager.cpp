@@ -111,6 +111,7 @@
 #include "exporters/polygon2d/pb_polygon2dexporter.h"
 #include "exporters/las/pb_lasexporter.h"
 #include "exporters/gdal/pb_gdalexporter.h"
+#include "exporters/ascid/pb_ascidexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -356,6 +357,10 @@ bool PB_StepPluginManager::loadExporters()
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("ASCRGB"));
     sep->addExporter(new PB_ASCRGBExporter());
+
+    sep = addNewSeparator(new CT_StandardExporterSeparator("ASCID"));
+    sep->addExporter(new PB_ASCIDExporter());
+
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("PROFILE"));
     sep->addExporter(new PB_ProfileExporter());
