@@ -17,8 +17,6 @@
 
 PB_ASCIDExporter::PB_ASCIDExporter() : CT_AbstractExporterPointAttributesSelection()
 {
-    setCanExportWithColors(true);
-    setCanExportWithNormals(true);
 }
 
 PB_ASCIDExporter::~PB_ASCIDExporter()
