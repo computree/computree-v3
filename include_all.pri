@@ -4,24 +4,32 @@
     include(include_gdal.pri)
 }
 
-!exists(include_pcl.pri) {
+contains(DEFINES, USE_PCL_DEFAULT) {
     !exists(include_pcl_default.pri) {
         message("PCL will not be used")
     } else {
         include(include_pcl_default.pri)
     }
 } else {
-    include(include_pcl.pri)
+    !exists(include_pcl.pri) {
+        message("PCL will not be used")
+    } else {
+        include(include_pcl.pri)
+    }
 }
 
-!exists(include_opencv.pri) {
+contains(DEFINES, USE_OPENCV_DEFAULT) {
     !exists(include_opencv_default.pri) {
         message("OPENCV will not be used")
     } else {
         include(include_opencv_default.pri)
     }
 } else {
-    include(include_opencv.pri)
+    !exists(include_opencv.pri) {
+        message("OPENCV will not be used")
+    } else {
+        include(include_opencv.pri)
+    }
 }
 
 !exists(include_osg.pri) {
