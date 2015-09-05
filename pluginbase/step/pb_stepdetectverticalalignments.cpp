@@ -2,6 +2,7 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
+#include "ct_itemdrawable/ct_polygon2d.h"
 #include "ct_itemdrawable/ct_line.h"
 #include "ct_itemdrawable/ct_attributeslist.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
@@ -81,6 +82,7 @@ void PB_StepDetectVerticalAlignments::createOutResultModelListProtected()
     resCpy->addGroupModel(DEFin_grp, _grpCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters conservés"));
     resCpy->addItemModel(_grpCluster_ModelName, _cluster_ModelName, new CT_PointCluster(), tr("Cluster conservé"));
     resCpy->addItemModel(_grpCluster_ModelName, _line_ModelName, new CT_Line(), tr("Ligne conservée"));
+    resCpy->addItemModel(_grpCluster_ModelName, _convexProj_ModelName, new CT_Polygon2D(), tr("Enveloppe convexe projetée"));
     resCpy->addItemAttributeModel(_line_ModelName, _attMin_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMin"));
     resCpy->addItemAttributeModel(_line_ModelName, _attQ25_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ25"));
     resCpy->addItemAttributeModel(_line_ModelName, _attQ50_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMed"));
@@ -91,6 +93,7 @@ void PB_StepDetectVerticalAlignments::createOutResultModelListProtected()
     resCpy->addGroupModel(DEFin_grp, _grpDroppedCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters éliminés"));
     resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedCluster_ModelName, new CT_PointCluster(), tr("Cluster éliminé"));
     resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedLine_ModelName, new CT_Line(), tr("Ligne éliminée"));
+    resCpy->addItemModel(_grpDroppedCluster_ModelName, _convexProjDropped_ModelName, new CT_Polygon2D(), tr("Enveloppe convexe projetée éliminée"));
 
 }
 
@@ -443,6 +446,29 @@ void PB_StepDetectVerticalAlignments::compute()
                     const CT_AbstractPointCloudIndex* cloudIndex = cluster->getPointCloudIndex();
                     size_t nbPts = cloudIndex->size();
 
+                    // Enveloppe convexe des points projetés perpendiculairement à la ligne
+                    QList<Eigen::Vector2d*> projPts;
+                    Eigen::Hyperplane<double, 3> plane(lineData->getDirection(), lineData->getP1());
+                    CT_PointIterator itCI(cloudIndex);
+                    while(itCI.hasNext())
+                    {
+                        itCI.next();
+                        const CT_Point &pt = itCI.currentPoint();
+
+                        Eigen::Vector3d projectedPt = plane.projection(pt);
+                        projPts.append(new Eigen::Vector2d(projectedPt(0), projectedPt(1)));
+                    }
+
+                    CT_Polygon2DData::orderPointsByXY(projPts);
+                    CT_Polygon2DData* polyData = CT_Polygon2DData::createConvexHull(projPts);
+                    CT_Polygon2D* poly = NULL;
+                    if (polyData != NULL)
+                    {
+                        poly = new CT_Polygon2D(_convexProj_ModelName.completeName(), res, polyData);
+                        poly->setZValue(lineData->getP1()(2));
+                    }
+                    qDeleteAll(projPts);
+
                     double critere = (distVal->_q50 - distVal->_mean) / distVal->_mean;
 
                     // Test de validité pour le cluster
@@ -458,6 +484,10 @@ void PB_StepDetectVerticalAlignments::compute()
                         CT_StandardItemGroup* grpCl = new CT_StandardItemGroup(_grpCluster_ModelName.completeName(), res);
                         grp->addGroup(grpCl);
                         grpCl->addItemDrawable(cluster);
+                        if (polyData != NULL)
+                        {
+                            grpCl->addItemDrawable(poly);
+                        }
 
                         CT_Line* line = new CT_Line(_line_ModelName.completeName(), res, lineData);
                         grpCl->addItemDrawable(line);
@@ -493,6 +523,12 @@ void PB_StepDetectVerticalAlignments::compute()
 
                         cluster->setModel(_droppedCluster_ModelName.completeName());
                         grpClDropped->addItemDrawable(cluster);
+
+                        if (polyData != NULL)
+                        {
+                            poly->setModel(_convexProjDropped_ModelName.completeName());
+                            grpClDropped->addItemDrawable(poly);
+                        }
 
                         CT_Line* line = new CT_Line(_droppedLine_ModelName.completeName(), res, lineData);
                         grpClDropped->addItemDrawable(line);

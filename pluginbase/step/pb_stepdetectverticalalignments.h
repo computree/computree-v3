@@ -131,6 +131,7 @@ private:
     CT_AutoRenameModels    _grpCluster_ModelName;
     CT_AutoRenameModels    _cluster_ModelName;
     CT_AutoRenameModels    _line_ModelName;
+    CT_AutoRenameModels    _convexProj_ModelName;
     CT_AutoRenameModels    _attMin_ModelName;
     CT_AutoRenameModels    _attQ25_ModelName;
     CT_AutoRenameModels    _attQ50_ModelName;
@@ -141,6 +142,7 @@ private:
     CT_AutoRenameModels    _grpDroppedCluster_ModelName;
     CT_AutoRenameModels    _droppedCluster_ModelName;
     CT_AutoRenameModels    _droppedLine_ModelName;
+    CT_AutoRenameModels    _convexProjDropped_ModelName;
 
 
     // Step parameters
