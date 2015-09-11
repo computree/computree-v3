@@ -265,7 +265,8 @@ CT_LineData* CT_LineData::staticCreateLineDataFromPointCloud(const QList<Eigen::
         ++n;
     }
 
-    if (n < 2) {return NULL;}
+    if (n < 1) {return NULL;}
+    else if (n <  2) {return new CT_LineData(pt1, Eigen::Vector3d(pt1(0), pt1(1), pt1(2) + 1.0), 0, n);}
     else if (n == 2) {return new CT_LineData(pt1, pt2, 0, n);}
 
 
