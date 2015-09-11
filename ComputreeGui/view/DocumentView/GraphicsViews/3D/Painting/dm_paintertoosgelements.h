@@ -4,6 +4,8 @@
 #include "interfaces.h"
 
 #include <QStack>
+#include <QTime>
+#include <QDebug>
 
 #include <osg/Group>
 #include <osg/ShapeDrawable>
@@ -471,6 +473,10 @@ public:
     virtual void restoreDefaultPen() {}
 
 private:
+    osg::PositionAttitudeTransform *m_translationTest;
+    uint m_globalCoordinateSystemsLastUsedKeyTest;
+    osg::PositionAttitudeTransform* m_globalCoordinateSystemsLastUsedValueTest;
+
     typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >            GeometryCollection;
     typedef QHashIterator<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >    GeometryCollectionIterator;
     typedef QHash<uint, osg::PositionAttitudeTransform*>                                                        CoordinateSystemCollection;

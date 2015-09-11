@@ -1,6 +1,7 @@
 #ifndef PB_STEPCONVERTFLOATIMAGETOQINT32_H
 #define PB_STEPCONVERTFLOATIMAGETOQINT32_H
 
+#ifdef USE_OPENCV
 #include "ct_step/abstract/ct_abstractstep.h"
 
 // Inclusion of auto-indexation system
@@ -88,5 +89,7 @@ private:
     // Step parameters
     // No parameter for this step
 };
+
+#endif
 
 #endif // PB_STEPCONVERTFLOATIMAGETOQINT32_H

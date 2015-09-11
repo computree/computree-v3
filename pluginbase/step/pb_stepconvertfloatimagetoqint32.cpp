@@ -1,5 +1,6 @@
 #include "pb_stepconvertfloatimagetoqint32.h"
 
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/ct_image2d.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
@@ -98,3 +99,4 @@ void PB_StepConvertFloatImageToqint32::compute()
 
     }    
 }
+#endif

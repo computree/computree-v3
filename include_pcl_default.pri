@@ -20,7 +20,7 @@ contains(DEFINES, USE_PCL_DEFAULT) {
     }
 }
  
-!isEmpty(PCL_INC_PATH) {  
+!isEmpty(PCL_INC_PATH) {
     !exists($${PCL_INC_PATH}) {
         error( "PCL INCLUDE directory not found ! => " $${PCL_INC_PATH})
     }
