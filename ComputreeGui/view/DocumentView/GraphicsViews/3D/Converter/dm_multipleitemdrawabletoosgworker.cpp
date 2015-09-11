@@ -1,12 +1,9 @@
 #include "dm_multipleitemdrawabletoosgworker.h"
 
-#include "dm_guimanager.h"
 #include "view/DocumentView/GraphicsViews/3D/Picking/dm_osgpicker.h"
 
 #include <osg/ShadeModel>
 
-#include <QtConcurrent/QtConcurrent>
-#include <QThreadPool>
 #include <QMutexLocker>
 
 #define SHADER_INFO_LOCATION 6
@@ -67,8 +64,10 @@ DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraph
     m_timerComputeQueue.setInterval(100);
     m_timerComputeQueue.setSingleShot(true);
 
-    connect(&m_timerComputeQueue, SIGNAL(timeout()), this, SLOT(computeQueue()), Qt::QueuedConnection);
+    connect(&m_timerComputeQueue, SIGNAL(timeout()), this, SLOT(computeCollection()), Qt::QueuedConnection);
     connect(this, SIGNAL(mustStartTimer()), &m_timerComputeQueue, SLOT(start()), Qt::QueuedConnection);
+
+    connect(&m_futureWatcher, SIGNAL(finished()), this, SLOT(computeCollectionFinished()), Qt::QueuedConnection);
 
     m_mutex = new QMutex(QMutex::Recursive);
     m_stop = false;
@@ -89,7 +88,6 @@ DM_MultipleItemDrawableToOsgWorker::~DM_MultipleItemDrawableToOsgWorker()
 {
     m_stop = true;
 
-    //while(isRunning());
     m_mutex->lock();
     m_mutex->unlock();
 
@@ -163,47 +161,11 @@ void DM_MultipleItemDrawableToOsgWorker::staticComputeQtConcurrent(DM_SingleItem
     worker->compute();
 }
 
-void DM_MultipleItemDrawableToOsgWorker::run()
-{
-    /*while(!m_stop) {
-        int ideal = QThread::idealThreadCount();
-
-        if(ideal < 2)
-            ideal = 2;
-
-        while((QThreadPool::globalInstance()->activeThreadCount() >= ideal) && !m_stop) {
-            // wait loop
-            msleep(10);
-        }
-
-        if(!m_stop)
-        {
-            QMutexLocker locker(m_mutex);
-
-            while(!m_queue.isEmpty() && (QThreadPool::globalInstance()->activeThreadCount() < ideal)) {
-                DM_SingleItemDrawableToOsgWorker *worker = new DM_SingleItemDrawableToOsgWorker(m_view);
-                CT_AbstractItemDrawable *item = m_queue.dequeue();
-                worker->setColor(m_infos.take(item));
-                worker->setItemDrawable(item);
-
-                DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
-                newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
-
-                worker->setGeometriesConfiguration(newConfig);
-
-                connect(worker, SIGNAL(finished(DM_SingleItemDrawableToOsgWorker*)), this, SLOT(workerFinished(DM_SingleItemDrawableToOsgWorker*)), Qt::DirectConnection);
-
-                QThreadPool::globalInstance()->start(worker);
-            }
-        }
-    }*/
-}
-
 void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable &item, const QColor &defaultColor)
 {
     QMutexLocker locker(m_mutex);
 
-    DM_SingleItemDrawableToOsgWorker *worker = m_toCompute.value(&item, NULL);
+    DM_SingleItemDrawableToOsgWorker *worker = m_toConvert.value(&item, NULL);
 
     if(worker == NULL) {
         DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
@@ -214,18 +176,10 @@ void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable
         worker->setItemDrawable(&item);
         worker->setGeometriesConfiguration(newConfig);
 
-        m_toCompute.insert(&item, worker);
+        m_toConvert.insert(&item, worker);
     } else {
         worker->setColor(defaultColor);
     }
-
-    /*if(!m_queue.contains(&item)) {
-        m_queue.enqueue(&item);
-        m_infos.insert(&item, defaultColor);
-        connect(&item, SIGNAL(destroyed(QObject*)), this, SLOT(itemDrawableDestroyed(QObject*)), Qt::DirectConnection);
-    } else {
-        m_infos.insert(&item, defaultColor);
-    }*/
 
     locker.unlock();
 
@@ -241,11 +195,8 @@ void DM_MultipleItemDrawableToOsgWorker::removeItemDrawable(CT_AbstractItemDrawa
 {
     QMutexLocker locker(m_mutex);
 
-    /*m_queue.removeOne(item);
-    m_infos.remove(item);*/
-
-    if(!m_toCompute.isEmpty())
-        delete m_toCompute.take(item);
+    if(!m_toConvert.isEmpty())
+        delete m_toConvert.take(item);
 
     disconnect(item, NULL, this, NULL);
 }
@@ -255,44 +206,28 @@ void DM_MultipleItemDrawableToOsgWorker::itemDrawableDestroyed(QObject *o)
     removeItemDrawable((CT_AbstractItemDrawable*)o);
 }
 
-/*void DM_MultipleItemDrawableToOsgWorker::workerFinished(DM_SingleItemDrawableToOsgWorker *w)
+void DM_MultipleItemDrawableToOsgWorker::computeCollection()
 {
-    QMutexLocker locker(m_mutex);
+    m_mutex->lock();
 
-    disconnect(w->itemDrawable(), NULL, this, NULL);
+    m_aop = GUI_MANAGER->requestExclusiveAsyncOperation();
 
-    m_results.insert(w->itemDrawable(), w->result());
+    if(m_aop != NULL)
+    {
+        GUI_MANAGER->initProgressDialog(m_aop->progressDialog(), tr("Veuillez patienter pendant la conversion des items."));
 
-    emit newResultAvailable();
-}*/
+        connect(&m_futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_aop, SLOT(setProgressRange(int,int)), Qt::QueuedConnection);
+        connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), m_aop, SLOT(setProgress(int)), Qt::QueuedConnection);
 
-void DM_MultipleItemDrawableToOsgWorker::computeQueue()
+        m_toConvertTemporary = m_toConvert.values();
+        m_future = QtConcurrent::map(m_toConvertTemporary, staticComputeQtConcurrent);
+        m_futureWatcher.setFuture(m_future);
+    }
+}
+
+void DM_MultipleItemDrawableToOsgWorker::computeCollectionFinished()
 {
-    QTime t;
-    t.start();
-
-    QMutexLocker locker(m_mutex);
-
-    /*while(!m_queue.isEmpty()) {
-        DM_SingleItemDrawableToOsgWorker *worker = new DM_SingleItemDrawableToOsgWorker(m_view);
-        CT_AbstractItemDrawable *item = m_queue.dequeue();
-        worker->setColor(m_infos.take(item));
-        worker->setItemDrawable(item);
-
-        DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
-        newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
-
-        worker->setGeometriesConfiguration(newConfig);
-
-        worker->compute();
-
-        m_results.insert(worker->itemDrawable(), worker->result());
-    }*/
-
-    QFuture<void> f = QtConcurrent::map(m_toCompute, staticComputeQtConcurrent);
-    f.waitForFinished();
-
-    QHashIterator<CT_AbstractItemDrawable*, DM_SingleItemDrawableToOsgWorker*> it(m_toCompute);
+    QHashIterator<CT_AbstractItemDrawable*, DM_SingleItemDrawableToOsgWorker*> it(m_toConvert);
 
     while(it.hasNext()) {
         it.next();
@@ -302,11 +237,12 @@ void DM_MultipleItemDrawableToOsgWorker::computeQueue()
         delete it.value();
     }
 
-    m_toCompute.clear();
+    m_toConvert.clear();
 
-    locker.unlock();
+    m_mutex->unlock();
 
-    qDebug() << "elapsed : " << t.elapsed();
+    delete m_aop;
+    m_aop = NULL;
 
     emit newResultAvailable();
 }

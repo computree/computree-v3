@@ -363,6 +363,12 @@ public:
      */
     virtual DM_ItemDrawableConfigurationManagerView* getItemDrawableConfigurationManagerView() const = 0;
 
+    /**
+      * \brief Initialise la fentre de progression avec le texte pass en
+      *        paramtre et l'affiche.
+      */
+    void initProgressDialog(IMainProgressDialog *dialog, QString text, QString secondText = "");
+
 protected:
 
     static DM_GuiManager*   _uniqueInstance;
@@ -397,12 +403,6 @@ protected:
     virtual DM_MultipleItemDrawableModelManager* getItemDrawableModelManager() const = 0;
 
 private:
-
-    /**
-      * \brief Initialise la fentre de progression avec le texte pass en
-      *        paramtre et l'affiche.
-      */
-    void initProgressDialog(IMainProgressDialog *dialog, QString text, QString secondText = "");
 
     void addNewContext(DM_Context *context);
 

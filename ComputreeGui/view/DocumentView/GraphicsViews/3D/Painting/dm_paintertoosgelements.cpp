@@ -30,8 +30,12 @@ std::string DM_PainterToOsgElements::NAME_LOCAL_GEOMETRIES_GROUP = "L";
 
 DM_PainterToOsgElements::DM_PainterToOsgElements()
 {
-    m_globalCoordinateSystemsLastUsedKeyTest = std::numeric_limits<uint>::max();
-    m_translationTest = NULL;
+    m_globalCoordinateSystemsLastUsedKey = 0;
+    m_globalCoordinateSystemsLastUsedValue = NULL;
+
+    m_localCoordinateSystemsLastUsedKey = 0;
+    m_localCoordinateSystemsLastUsedValue = NULL;
+
     m_result.m_rootGroup = new osg::Group();
 
     m_cancel = false;
@@ -818,6 +822,10 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
 {
     uint key = PS_COORDINATES_SYS_MANAGER->computeUniqueKeyForCoordinates(x, y ,z);
 
+    if((m_localCoordinateSystemsLastUsedKey != NULL) && (m_localCoordinateSystemsLastUsedKey == key)) {
+        return m_localCoordinateSystemsLastUsedValue;
+    }
+
     osg::PositionAttitudeTransform *translation = m_localCoordinateSystems.value(key, NULL);
 
     if(translation == NULL) {
@@ -838,29 +846,18 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
         translation->setPosition(osg::Vec3d(v[0], v[1], v[2]));
     }
 
+    m_localCoordinateSystemsLastUsedKey = key;
+    m_localCoordinateSystemsLastUsedValue = translation;
+
     return translation;
 }
 
 osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformForCoordinateSystem_Global(CT_AbstractCoordinateSystem *cs)
 {
-    /*if(m_translationTest == NULL) {
-        m_translationTest = new osg::PositionAttitudeTransform();
-        m_translationTest->addChild(new osg::Geode());
-
-        getOrCreateGroup(DM_PainterToOsgElements::NAME_GLOBAL_GEOMETRIES_GROUP)->addChild(m_translationTest);
-
-        Eigen::Vector3d v;
-        cs->offset(v);
-
-        m_translationTest->setPosition(osg::Vec3d(v[0], v[1], v[2]));
-    }
-
-    return m_translationTest;*/
-
     uint key = cs->uniqueKey();
 
-    if(m_globalCoordinateSystemsLastUsedKeyTest == key) {
-        return m_globalCoordinateSystemsLastUsedValueTest;
+    if((m_globalCoordinateSystemsLastUsedKey != NULL) && (m_globalCoordinateSystemsLastUsedKey == key)) {
+        return m_globalCoordinateSystemsLastUsedValue;
     }
 
     osg::PositionAttitudeTransform *translation = m_globalCoordinateSystems.value(key, NULL);
@@ -880,31 +877,10 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
         translation->setPosition(osg::Vec3d(v[0], v[1], v[2]));
     }
 
-    m_globalCoordinateSystemsLastUsedKeyTest = key;
-    m_globalCoordinateSystemsLastUsedValueTest = translation;
+    m_globalCoordinateSystemsLastUsedKey = key;
+    m_globalCoordinateSystemsLastUsedValue = translation;
 
     return translation;
-
-    /*uint key = cs->uniqueKey();
-
-    osg::PositionAttitudeTransform *translation = m_globalCoordinateSystems.value(key, NULL);
-
-    if(translation == NULL) {
-
-        translation = new osg::PositionAttitudeTransform();
-        m_globalCoordinateSystems.insert(key, translation);
-
-        translation->addChild(new osg::Geode());
-
-        getOrCreateGroup(DM_PainterToOsgElements::NAME_GLOBAL_GEOMETRIES_GROUP)->addChild(translation);
-
-        Eigen::Vector3d v;
-        cs->offset(v);
-
-        translation->setPosition(osg::Vec3d(v[0], v[1], v[2]));
-    }
-
-    return translation;*/
 }
 
 osg::Geometry *DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_Global(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform)

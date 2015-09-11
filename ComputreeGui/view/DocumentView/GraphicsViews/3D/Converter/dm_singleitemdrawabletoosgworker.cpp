@@ -41,10 +41,7 @@ void DM_SingleItemDrawableToOsgWorker::compute()
 
 void DM_SingleItemDrawableToOsgWorker::run()
 {
-    /*QTime t;
-    t.start();*/
     m_item->draw(m_view, m_painter);
-    //qDebug() << t.elapsed();
 
     m_painter.finish();
     m_result = m_painter.results();

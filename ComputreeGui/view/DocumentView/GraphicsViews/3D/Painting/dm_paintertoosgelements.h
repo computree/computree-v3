@@ -473,10 +473,6 @@ public:
     virtual void restoreDefaultPen() {}
 
 private:
-    osg::PositionAttitudeTransform *m_translationTest;
-    uint m_globalCoordinateSystemsLastUsedKeyTest;
-    osg::PositionAttitudeTransform* m_globalCoordinateSystemsLastUsedValueTest;
-
     typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >            GeometryCollection;
     typedef QHashIterator<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >    GeometryCollectionIterator;
     typedef QHash<uint, osg::PositionAttitudeTransform*>                                                        CoordinateSystemCollection;
@@ -524,11 +520,15 @@ private:
      * @brief Collection of coordinate system already created for local vertex array
      */
     CoordinateSystemCollection              m_localCoordinateSystems;
+    uint                                    m_localCoordinateSystemsLastUsedKey;
+    osg::PositionAttitudeTransform*         m_localCoordinateSystemsLastUsedValue;
 
     /**
      * @brief Collection of coordinate system already created for global vertex array
      */
     CoordinateSystemCollection              m_globalCoordinateSystems;
+    uint                                    m_globalCoordinateSystemsLastUsedKey;
+    osg::PositionAttitudeTransform*         m_globalCoordinateSystemsLastUsedValue;
 
     /**
      * @brief Collection of geometries classed by transform and type of primitive (used for elements that don't use the global vertex array)

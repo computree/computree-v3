@@ -18,6 +18,7 @@ private:
 
 public slots:
     void setProgress(const int &progress);
+    void setProgressRange(const int &min, const int &max);
 
 signals:
     void cancel();

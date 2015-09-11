@@ -25,3 +25,8 @@ void DM_AsyncOperation::setProgress(const int &progress)
 {
     m_progressDialog->setValue(progress);
 }
+
+void DM_AsyncOperation::setProgressRange(const int &min, const int &max)
+{
+    m_progressDialog->setProgressRange(min, max);
+}

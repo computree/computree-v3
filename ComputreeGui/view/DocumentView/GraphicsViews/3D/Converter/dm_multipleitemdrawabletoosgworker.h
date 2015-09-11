@@ -1,9 +1,11 @@
 #ifndef DM_MULTIPLEITEMDRAWABLETOOSGWORKER_H
 #define DM_MULTIPLEITEMDRAWABLETOOSGWORKER_H
 
-#include <QThread>
-#include <QQueue>
+#include <QHash>
 #include <QMutex>
+#include <QtConcurrent/QtConcurrent>
+
+#include "dm_guimanager.h"
 
 #include "view/DocumentView/GraphicsViews/3D/Converter/dm_singleitemdrawabletoosgworker.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.h"
@@ -13,7 +15,7 @@
  * @brief This class will convert all itemdrawable passed in parameter to osg element if you want to add it in
  *        a scene. The conversion is made in multithread (async) !
  */
-class DM_MultipleItemDrawableToOsgWorker : public QThread
+class DM_MultipleItemDrawableToOsgWorker : public QObject
 {
     Q_OBJECT
 
@@ -39,10 +41,11 @@ public:
 private:
     GOsgGraphicsView                                                        &m_view;
 
-    QHash<CT_AbstractItemDrawable*, DM_SingleItemDrawableToOsgWorker*>      m_toCompute;
-
-    //QQueue<CT_AbstractItemDrawable*>                                        m_queue;
-    //QHash<CT_AbstractItemDrawable*, QColor>                                 m_infos;
+    QHash<CT_AbstractItemDrawable*, DM_SingleItemDrawableToOsgWorker*>      m_toConvert;
+    QList<DM_SingleItemDrawableToOsgWorker*>                                m_toConvertTemporary;
+    QFuture<void>                                                           m_future;
+    QFutureWatcher<void>                                                    m_futureWatcher;
+    DM_AsyncOperation                                                       *m_aop;
 
     DM_GeometriesConfiguration                                              m_geometriesConfiguration;
 
@@ -79,20 +82,21 @@ private slots:
     void itemDrawableDestroyed(QObject *o);
 
     /**
-     * @brief Called when the worker is finished
+     * @brief Called by the timer when time out and must convert the collection of elements (m_toConvert)
      */
-    //void workerFinished(DM_SingleItemDrawableToOsgWorker *w);
+    void computeCollection();
 
-    /**
-     * @brief Called by the timer when time out
-     */
-    void computeQueue();
+    void computeCollectionFinished();
+
 signals:
     /**
      * @brief Emitted when new results is available
      */
     void newResultAvailable();
 
+    /**
+     * @brief Emitted to start the timer that call the method computeCollection()
+     */
     void mustStartTimer();
 };
 

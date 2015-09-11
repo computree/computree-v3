@@ -73,6 +73,7 @@ public slots:
 
     void setLabelText(QString text);
     void setValue(int progress);
+    void setProgressRange(const int &min, const int &max);
 
     void setSecondLabelText(QString text);
     void setSecondValue(int progress);

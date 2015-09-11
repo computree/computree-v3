@@ -120,6 +120,11 @@ void GMainProgressDialog::setValue(int progress)
     _firstProgressBar->setValue(progress);
 }
 
+void GMainProgressDialog::setProgressRange(const int &min, const int &max)
+{
+    _firstProgressBar->setRange(min, max);
+}
+
 void GMainProgressDialog::setSecondLabelText(QString text)
 {
     _secondLabel->setText(text);

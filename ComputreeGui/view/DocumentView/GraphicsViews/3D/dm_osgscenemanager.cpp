@@ -35,8 +35,6 @@ DM_OsgSceneManager::DM_OsgSceneManager(GOsgGraphicsView &view, osg::ref_ptr<osg:
     connect(m_converter, SIGNAL(newResultAvailable()), this, SLOT(converterResultAvailable()), Qt::QueuedConnection);
     connect(this, SIGNAL(mustStartRemoveTimer()), &m_timer, SLOT(start()), Qt::QueuedConnection);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateToRemove()), Qt::QueuedConnection);
-
-    m_converter->start();
 }
 
 DM_OsgSceneManager::~DM_OsgSceneManager()

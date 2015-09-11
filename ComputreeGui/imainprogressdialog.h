@@ -18,6 +18,7 @@ public slots:
 
     virtual void setLabelText(QString text) = 0;
     virtual void setValue(int progress) = 0;
+    virtual void setProgressRange(const int &min, const int &max) = 0;
 
     virtual void setSecondLabelText(QString text) = 0;
     virtual void setSecondValue(int progress) = 0;
