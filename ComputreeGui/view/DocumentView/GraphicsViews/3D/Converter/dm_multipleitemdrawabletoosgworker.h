@@ -38,8 +38,11 @@ public:
 
 private:
     GOsgGraphicsView                                                        &m_view;
-    QQueue<CT_AbstractItemDrawable*>                                        m_queue;
-    QHash<CT_AbstractItemDrawable*, QColor>                                 m_infos;
+
+    QHash<CT_AbstractItemDrawable*, DM_SingleItemDrawableToOsgWorker*>      m_toCompute;
+
+    //QQueue<CT_AbstractItemDrawable*>                                        m_queue;
+    //QHash<CT_AbstractItemDrawable*, QColor>                                 m_infos;
 
     DM_GeometriesConfiguration                                              m_geometriesConfiguration;
 
@@ -51,7 +54,8 @@ private:
 
     void createGlobalShader();
     void createLocalShader();
-    void createGeometriesConfiguration();
+
+    static void staticComputeQtConcurrent(DM_SingleItemDrawableToOsgWorker *worker);
 
 protected:
     void run();
@@ -77,7 +81,7 @@ private slots:
     /**
      * @brief Called when the worker is finished
      */
-    void workerFinished(DM_SingleItemDrawableToOsgWorker *w);
+    //void workerFinished(DM_SingleItemDrawableToOsgWorker *w);
 
     /**
      * @brief Called by the timer when time out
