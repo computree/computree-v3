@@ -1078,27 +1078,9 @@ void DM_PainterToOsgElements::addNewPoint_Local(const double &x, const double &y
 
 void DM_PainterToOsgElements::addNewLine_Local(const double &x1, const double &y1, const double &z1,
                                                  const double &x2, const double &y2, const double &z2)
-{
-    // TODO : split line if it has gone through coordinate system
-
-    if(fabs(x2-x1) < MIN_DOUBLE_VALUE_IN_METERS
-            && fabs(y2-y1) < MIN_DOUBLE_VALUE_IN_METERS
-            && fabs(z2-z1) < MIN_DOUBLE_VALUE_IN_METERS)
-        return;
-
-    size_t i;
-    LocalVertexArray *verts = getOrCreateVertexArray_Local(2, i);
-    LocalColorArrayType* colors = getOrCreateColorArray_Local();
-
-    osg::PositionAttitudeTransform *t = getOrCreateTransformForCoordinates_Local(x1, y1, z1);
-
-    osg::Geometry *geo = getOrCreateGeometryForTypeAndTransform_Local(osg::PrimitiveSet::LINES, t);
-
-    addVertexToGeometryAndVertexArrayWithTransform_Local(x1, y1, z1, geo, verts, i, t); ++i;
-    addVertexToGeometryAndVertexArrayWithTransform_Local(x2, y2, z2, geo, verts, i, t);
-
-    colors->push_back(m_currentConfig.m_color);
-    colors->push_back(m_currentConfig.m_color);
+{    
+    addNewLine_Local(x1, y1, z1, m_currentConfig.m_color,
+                     x2, y2, z2, m_currentConfig.m_color);
 }
 
 void DM_PainterToOsgElements::addNewLine_Local(const double &x1, const double &y1, const double &z1,
@@ -1106,6 +1088,16 @@ void DM_PainterToOsgElements::addNewLine_Local(const double &x1, const double &y
                                                const double &x2, const double &y2, const double &z2,
                                                const int &r2, const int &g2, const int &b2)
 {
+    addNewLine_Local(x1, y1, z1, staticIntColorToInternalColor(r1, g1, b1, 255),
+                     x2, y2, z2, staticIntColorToInternalColor(r2, g2, b2, 255));
+}
+
+void DM_PainterToOsgElements::addNewLine_Local(const double &x1, const double &y1, const double &z1,
+                                               const LocalColorArrayType::value_type &c1,
+                                               const double &x2, const double &y2, const double &z2,
+                                               const LocalColorArrayType::value_type &c2)
+{
+    // TODO : split line if it has gone through coordinate system
     if(fabs(x2-x1) < MIN_DOUBLE_VALUE_IN_METERS
             && fabs(y2-y1) < MIN_DOUBLE_VALUE_IN_METERS
             && fabs(z2-z1) < MIN_DOUBLE_VALUE_IN_METERS)
@@ -1122,22 +1114,51 @@ void DM_PainterToOsgElements::addNewLine_Local(const double &x1, const double &y
     addVertexToGeometryAndVertexArrayWithTransform_Local(x1, y1, z1, geo, verts, i, t); ++i;
     addVertexToGeometryAndVertexArrayWithTransform_Local(x2, y2, z2, geo, verts, i, t);
 
-    colors->push_back(staticIntColorToInternalColor(r1, g1, b1, 255));
-    colors->push_back(staticIntColorToInternalColor(r2, g2, b2, 255));
+    colors->push_back(c1);
+    colors->push_back(c2);
 }
 
 void DM_PainterToOsgElements::addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
                                                    const double &x2, const double &y2, const double &z2,
                                                    const double &x3, const double &y3, const double &z3)
 {
-    // TODO : split triangle if it has gone through coordinate system
+    addNewTriangle_Local(x1, y1, z1,
+                         m_currentConfig.m_color,
+                         x2, y2, z2,
+                         m_currentConfig.m_color,
+                         x3, y3, z3,
+                         m_currentConfig.m_color);
+}
 
+void DM_PainterToOsgElements::addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
+                                                   const int &r1, const int &g1, const int &b1, const int &a1,
+                                                   const double &x2, const double &y2, const double &z2,
+                                                   const int &r2, const int &g2, const int &b2, const int &a2,
+                                                   const double &x3, const double &y3, const double &z3,
+                                                   const int &r3, const int &g3, const int &b3, const int &a3)
+{
+    addNewTriangle_Local(x1, y1, z1,
+                         staticIntColorToInternalColor(r1, g1, b1, a1),
+                         x2, y2, z2,
+                         staticIntColorToInternalColor(r2, g2, b2, a2),
+                         x3, y3, z3,
+                         staticIntColorToInternalColor(r3, g3, b3, a3));
+}
+
+void DM_PainterToOsgElements::addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
+                                                   const LocalColorArrayType::value_type &c1,
+                                                   const double &x2, const double &y2, const double &z2,
+                                                   const LocalColorArrayType::value_type &c2,
+                                                   const double &x3, const double &y3, const double &z3,
+                                                   const LocalColorArrayType::value_type &c3)
+{
+    // TODO : split triangle if it has gone through coordinate system
     size_t i;
     LocalVertexArray *verts = getOrCreateVertexArray_Local(3, i);
     LocalColorArrayType* colors = getOrCreateColorArray_Local();
-    colors->push_back(m_currentConfig.m_color);
-    colors->push_back(m_currentConfig.m_color);
-    colors->push_back(m_currentConfig.m_color);
+    colors->push_back(c1);
+    colors->push_back(c2);
+    colors->push_back(c3);
 
     osg::PositionAttitudeTransform *t = getOrCreateTransformForCoordinates_Local(x1, y1, z1);
 
@@ -1283,21 +1304,14 @@ void DM_PainterToOsgElements::addNewQuadFace_Local(const double &x1, const doubl
                                                      const double &x4, const double &y4, const double &z4,
                                                      bool filled)
 {
-    osg::Vec4ub c = staticInternalColorToIntColor(m_currentConfig.m_color);
-
-    int r = c.r();
-    int g = c.g();
-    int b = c.b();
-    int a = c.a();
-
     addNewQuadFace_Local(x1, y1, z1,
-                         r, g, b, a,
+                         m_currentConfig.m_color,
                          x2, y2, z2,
-                         r, g, b, a,
+                         m_currentConfig.m_color,
                          x3, y3, z3,
-                         r, g, b, a,
+                         m_currentConfig.m_color,
                          x4, y4, z4,
-                         r, g, b, a,
+                         m_currentConfig.m_color,
                          filled);
 }
 
@@ -1311,10 +1325,36 @@ void DM_PainterToOsgElements::addNewQuadFace_Local(const double &x1, const doubl
                                                      const int &r4, const int &g4, const int &b4, const int &a4,
                                                      bool filled)
 {
+    LocalColorArrayType::value_type c1 = staticIntColorToInternalColor(r1, g1, b1, a1);
+    LocalColorArrayType::value_type c2 = staticIntColorToInternalColor(r2, g2, b2, a2);
+    LocalColorArrayType::value_type c3 = staticIntColorToInternalColor(r3, g3, b3, a3);
+    LocalColorArrayType::value_type c4 = staticIntColorToInternalColor(r4, g4, b4, a4);
+
+    addNewQuadFace_Local(x1, y1, z1,
+                         c1,
+                         x2, y2, z2,
+                         c2,
+                         x3, y3, z3,
+                         c3,
+                         x4, y4, z4,
+                         c4,
+                         filled);
+}
+
+void DM_PainterToOsgElements::addNewQuadFace_Local(const double &x1, const double &y1, const double &z1,
+                                                   const LocalColorArrayType::value_type &c1,
+                                                   const double &x2, const double &y2, const double &z2,
+                                                   const LocalColorArrayType::value_type &c2,
+                                                   const double &x3, const double &y3, const double &z3,
+                                                   const LocalColorArrayType::value_type &c3,
+                                                   const double &x4, const double &y4, const double &z4,
+                                                   const LocalColorArrayType::value_type &c4,
+                                                   bool filled)
+{
     // TODO : split quads if it has gone through coordinate system
 
     if(filled) {
-        size_t indexInVertexArray;
+        /*size_t indexInVertexArray;
         LocalVertexArray* verts = getOrCreateVertexArray_Local(4, indexInVertexArray);
         LocalColorArrayType* colors = getOrCreateColorArray_Local();
 
@@ -1337,15 +1377,16 @@ void DM_PainterToOsgElements::addNewQuadFace_Local(const double &x1, const doubl
 
         primitiveSet->push_back(indexInVertexArray);
         colors->push_back(staticIntColorToInternalColor(r4, g4, b4, a4) );
-        (*verts)[indexInVertexArray++] = osg::Vec3d(x4-t->getPosition().x(), y4-t->getPosition().y(), z4-t->getPosition().z());
+        (*verts)[indexInVertexArray++] = osg::Vec3d(x4-t->getPosition().x(), y4-t->getPosition().y(), z4-t->getPosition().z());*/
+        addNewTriangle_Local(x1, y1, z1, c1, x2, y2, z2, c2, x3, y3, z3, c3);
+        addNewTriangle_Local(x3, y3, z3, c3, x4, y4, z4, c4, x1, y1, z1, c1);
 
     } else {
-        addNewLine_Local(x1, y1, z1, r1, g1, b1, x2, y2, z2, r2, g2, b2);
-        addNewLine_Local(x2, y2, z2, r2, g2, b2, x3, y3, z3, r3, g3, b3);
-        addNewLine_Local(x3, y3, z3, r3, g3, b3, x4, y4, z4, r4, g4, b4);
-        addNewLine_Local(x4, y4, z4, r4, g4, b4, x1, y1, z1, r1, g1, b1);
+        addNewLine_Local(x1, y1, z1, c1, x2, y2, z2, c2);
+        addNewLine_Local(x2, y2, z2, c2, x3, y3, z3, c3);
+        addNewLine_Local(x3, y3, z3, c3, x4, y4, z4, c4);
+        addNewLine_Local(x4, y4, z4, c4, x1, y1, z1, c1);
     }
-
 }
 
 void DM_PainterToOsgElements::getMinMax(double &xmin, double &xmax, double &ymin, double &ymax, double &zmin, double &zmax, double x1, double y1, double z1, double x2, double y2, double z2)

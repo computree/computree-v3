@@ -678,10 +678,16 @@ private:
      */
     void addNewLine_Local(const double &x1, const double &y1, const double &z1,
                           const double &x2, const double &y2, const double &z2);
+
     void addNewLine_Local(const double &x1, const double &y1, const double &z1,
                           const int &r1, const int &g1, const int &b1,
                           const double &x2, const double &y2, const double &z2,
                           const int &r2, const int &g2, const int &b2);
+
+    void addNewLine_Local(const double &x1, const double &y1, const double &z1,
+                          const LocalColorArrayType::value_type &c1,
+                          const double &x2, const double &y2, const double &z2,
+                          const LocalColorArrayType::value_type &c2);
 
     /**
      * @brief Create or add a new triangle to the geometry that draw triangles
@@ -689,6 +695,20 @@ private:
     void addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
                               const double &x2, const double &y2, const double &z2,
                               const double &x3, const double &y3, const double &z3);
+
+    void addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
+                              const int &r1, const int &g1, const int &b1, const int &a1,
+                              const double &x2, const double &y2, const double &z2,
+                              const int &r2, const int &g2, const int &b2, const int &a2,
+                              const double &x3, const double &y3, const double &z3,
+                              const int &r3, const int &g3, const int &b3, const int &a3);
+
+    void addNewTriangle_Local(const double &x1, const double &y1, const double &z1,
+                              const LocalColorArrayType::value_type &c1,
+                              const double &x2, const double &y2, const double &z2,
+                              const LocalColorArrayType::value_type &c2,
+                              const double &x3, const double &y3, const double &z3,
+                              const LocalColorArrayType::value_type &c3);
 
     /**
      * @brief Create or add a new arc to the geometry that draw arcs
@@ -725,6 +745,16 @@ private:
                               const int &r3, const int &g3, const int &b3, const int &a3,
                               const double &x4, const double &y4, const double &z4,
                               const int &r4, const int &g4, const int &b4, const int &a4,
+                              bool filled);
+
+    void addNewQuadFace_Local(const double &x1, const double &y1, const double &z1,
+                              const LocalColorArrayType::value_type &c1,
+                              const double &x2, const double &y2, const double &z2,
+                              const LocalColorArrayType::value_type &c2,
+                              const double &x3, const double &y3, const double &z3,
+                              const LocalColorArrayType::value_type &c3,
+                              const double &x4, const double &y4, const double &z4,
+                              const LocalColorArrayType::value_type &c4,
                               bool filled);
 
     /**
