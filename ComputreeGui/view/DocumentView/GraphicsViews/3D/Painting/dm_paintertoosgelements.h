@@ -651,12 +651,7 @@ private:
     /**
      * @brief Create the geometry and return it
      */
-    osg::Geometry* createGeometry(osg::PrimitiveSet *primitiveSet, GeometryCollection *geoCollectionToUse);
-
-    /**
-     * @brief After you have set the state set of the geometry please call this method to initialize other parameters
-     */
-    static void staticInitDrawableDefaultStateSet(osg::Drawable *drawable, osg::PrimitiveSet::Mode type);
+    osg::Geometry* createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, GeometryCollection *geoCollectionToUse);
 
     /**
      * @brief Add a new point to the geometry that draw points from global points cloud

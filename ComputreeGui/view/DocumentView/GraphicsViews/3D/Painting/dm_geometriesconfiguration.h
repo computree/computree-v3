@@ -24,6 +24,7 @@ public:
      * @brief Set the state set to use with global geometries (points from global points cloud)
      */
     void setGlobalGeometriesStateSet(osg::StateSet *set);
+    void setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set);
 
     /**
      * @brief Set the vertex attributes array that will be used by the shader for vertex of the global points cloud
@@ -39,6 +40,7 @@ public:
      * @brief Set the state set to use with local geometries (points from circle, triangle, etc...)
      */
     void setLocalGeometriesStateSet(osg::StateSet *set);
+    void setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set);
 
     /**
      * @brief Set the vertex attributes array that will be used by the shader for local vertex
@@ -61,17 +63,19 @@ public:
     uint localColorVertexAttribArrayLocationIndex() const;
     uint globalColorVertexAttribArrayLocationIndex() const;
 
-    osg::StateSet* globalStateSet() const;
-    osg::StateSet* localStateSet() const;
+    osg::StateSet* globalStateSet(osg::PrimitiveSet::Mode mode) const;
+    osg::StateSet* localStateSet(osg::PrimitiveSet::Mode mode) const;
 
 private:
     osg::ref_ptr< DM_PainterToOsgElements::ColorArrayType >                 m_globalColorArray;
 
     osg::ref_ptr<osg::StateSet>                                             m_globalStateSet;
+    QHash<osg::PrimitiveSet::Mode, osg::ref_ptr<osg::StateSet> >            m_globalStateSetByPrimitiveSetMode;
     uint                                                                    m_globalVertexAttribArrayLocationIndex;
     osg::ref_ptr<osg::Array>                                                m_globalVertexAttribArray;
 
     osg::ref_ptr<osg::StateSet>                                             m_localStateSet;
+    QHash<osg::PrimitiveSet::Mode, osg::ref_ptr<osg::StateSet> >            m_localStateSetByPrimitiveSetMode;
     uint                                                                    m_localVertexAttribArrayLocationIndex;
     osg::ref_ptr<osg::Array>                                                m_localVertexAttribArray;
 

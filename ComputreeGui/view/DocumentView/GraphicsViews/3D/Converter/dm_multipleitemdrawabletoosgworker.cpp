@@ -3,6 +3,7 @@
 #include "view/DocumentView/GraphicsViews/3D/Picking/dm_osgpicker.h"
 
 #include <osg/ShadeModel>
+#include <osg/PolygonMode>
 
 #include <QMutexLocker>
 
@@ -130,17 +131,33 @@ void DM_MultipleItemDrawableToOsgWorker::createGlobalShader()
 
         ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
         ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
+        ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
+
+        // Enable blending, select transparent bin.
+        ss->setMode( GL_BLEND, osg::StateAttribute::ON );
+        ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+
+        // Set blend function
+        osg::BlendFunc *bf = new osg::BlendFunc;
+        bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        ss->setAttributeAndModes(bf);
+
+        // Disable conflicting modes.
+        ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+
+        osg::StateSet *ssQuads = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
+        ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
 
         m_geometriesConfiguration.setGlobalGeometriesStateSet(ss);
-
+        m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, ssQuads);
     }
 }
 
 void DM_MultipleItemDrawableToOsgWorker::createLocalShader()
 {
-    if(m_geometriesConfiguration.globalStateSet() != NULL) {
+    if(m_geometriesConfiguration.globalStateSet(osg::PrimitiveSet::POINTS) != NULL) {
 
-        osg::Program *program = (osg::Program*)m_geometriesConfiguration.globalStateSet()->getAttribute(osg::StateAttribute::PROGRAM);
+        osg::Program *program = (osg::Program*)m_geometriesConfiguration.globalStateSet(osg::PrimitiveSet::POINTS)->getAttribute(osg::StateAttribute::PROGRAM);
 
         if(program != NULL) {
             osg::StateSet *ss = new osg::StateSet;
@@ -150,8 +167,32 @@ void DM_MultipleItemDrawableToOsgWorker::createLocalShader()
 
             ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
             ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
+            ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
+
+            // Enable blending, select transparent bin.
+            ss->setMode( GL_BLEND, osg::StateAttribute::ON );
+            ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+
+            // Set blend function
+            osg::BlendFunc *bf = new osg::BlendFunc;
+            bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            ss->setAttributeAndModes(bf);
+
+            // Conversely, disable writing to depth buffer so that
+            // a transparent polygon will allow polygons behind it to shine thru.
+            // OSG renders transparent polygons after opaque ones.
+            /*osg::Depth* depth = new osg::Depth;
+            depth->setWriteMask( false );
+            geo->getOrCreateStateSet()->setAttributeAndModes( depth, osg::StateAttribute::ON );*/
+
+            // Disable conflicting modes.
+            ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+
+            osg::StateSet *ssQuads = new osg::StateSet(*ss, osg::CopyOp::DEEP_COPY_ALL);
+            ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
 
             m_geometriesConfiguration.setLocalGeometriesStateSet(ss);
+            m_geometriesConfiguration.setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, ssQuads);
         }
     }
 }

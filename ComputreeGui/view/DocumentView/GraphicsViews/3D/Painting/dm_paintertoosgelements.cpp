@@ -9,7 +9,6 @@
 
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geode>
-#include <osg/PolygonMode>
 #include <osg/Geometry>
 #include <osg/Depth>
 
@@ -613,7 +612,7 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
 {
     if(!isCanceled()) {
 
-        osg::Geometry *geo = createGeometry(NULL, &m_localGeometries);
+        osg::Geometry *geo = createGeometry(NULL, osg::PrimitiveSet::LINE_STRIP, &m_localGeometries);
 
         if(geo == NULL)
             return;
@@ -908,7 +907,7 @@ osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_L
 
     if((geo = hash->value(type, NULL)) == NULL) {
         if(geoCollectionToUse == &m_localGeometries)
-            geo = createGeometry(new osg::DrawElementsUInt(type), geoCollectionToUse);
+            geo = createGeometry(new osg::DrawElementsUInt(type), type, geoCollectionToUse);
         else {
             DM_DrawElementsUIntSynchronized *de = new DM_DrawElementsUIntSynchronized(type);
 
@@ -917,7 +916,7 @@ osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_L
 
             m_result.m_pointCloudIndexRegisteredCollection.append(mpcir);
 
-            geo = createGeometry(de, geoCollectionToUse);
+            geo = createGeometry(de, type, geoCollectionToUse);
         }
 
         hash->insert(type, geo);
@@ -972,7 +971,7 @@ DM_PainterToOsgElements::LocalColorArrayType* DM_PainterToOsgElements::getOrCrea
     return m_localGeometriesColorArray;
 }
 
-osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primitiveSet, GeometryCollection *geoCollectionToUse)
+osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, GeometryCollection *geoCollectionToUse)
 {
     osg::Geometry* geo = new osg::Geometry;
 
@@ -992,62 +991,38 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
         geo->setColorArray(getOrCreateColorArray_Local());
         geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-        if((m_geometriesConfiguration != NULL) &&
-                (m_geometriesConfiguration->localStateSet() != NULL)
-                && (m_geometriesConfiguration->localVertexAttribArray() != NULL)) {
-            geo->setStateSet(m_geometriesConfiguration->localStateSet());
-            geo->setVertexAttribArray(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), m_geometriesConfiguration->localVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
-            geo->setVertexAttribNormalize(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), false);
+        if(m_geometriesConfiguration != NULL) {
+
+            osg::StateSet *ss = m_geometriesConfiguration->localStateSet(primitiveSetMode);
+
+            if(ss != NULL)
+                geo->setStateSet(ss);
+
+            if(m_geometriesConfiguration->localVertexAttribArray() != NULL) {
+                geo->setVertexAttribArray(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), m_geometriesConfiguration->localVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
+                geo->setVertexAttribNormalize(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), false);
+            }
         }
 
     } else {
         if(m_geometriesConfiguration != NULL)
         {
+            osg::StateSet *ss = m_geometriesConfiguration->globalStateSet(primitiveSetMode);
+
+            if(ss != NULL)
+                geo->setStateSet(ss);
+
             geo->setColorArray(m_geometriesConfiguration->globalColorArray());
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-            if((m_geometriesConfiguration->localStateSet() != NULL)
-                    && (m_geometriesConfiguration->globalVertexAttribArray() != NULL)) {
-                geo->setStateSet(m_geometriesConfiguration->globalStateSet());
+            if(m_geometriesConfiguration->globalVertexAttribArray() != NULL) {
                 geo->setVertexAttribArray(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), m_geometriesConfiguration->globalVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
                 geo->setVertexAttribNormalize(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), false);
             }
         }
     }
 
-    staticInitDrawableDefaultStateSet(geo, (primitiveSet == NULL ? osg::PrimitiveSet::POINTS : (osg::PrimitiveSet::Mode)primitiveSet->getMode()));
-
     return geo;
-}
-
-void DM_PainterToOsgElements::staticInitDrawableDefaultStateSet(osg::Drawable *drawable, osg::PrimitiveSet::Mode type)
-{
-    drawable->getOrCreateStateSet()->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
-
-    if(type == osg::PrimitiveSet::QUADS)
-        drawable->getOrCreateStateSet()->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
-
-    if((type == osg::PrimitiveSet::QUADS)
-            || (type == osg::PrimitiveSet::TRIANGLES)) {
-        // Enable blending, select transparent bin.
-        drawable->getOrCreateStateSet()->setMode( GL_BLEND, osg::StateAttribute::ON );
-        drawable->getOrCreateStateSet()->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-
-        // Set blend function
-        osg::BlendFunc *bf = new osg::BlendFunc;
-        bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        drawable->getOrCreateStateSet()->setAttributeAndModes(bf);
-
-        // Conversely, disable writing to depth buffer so that
-        // a transparent polygon will allow polygons behind it to shine thru.
-        // OSG renders transparent polygons after opaque ones.
-        /*osg::Depth* depth = new osg::Depth;
-        depth->setWriteMask( false );
-        geo->getOrCreateStateSet()->setAttributeAndModes( depth, osg::StateAttribute::ON );*/
-
-        // Disable conflicting modes.
-        drawable->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-    }
 }
 
 void DM_PainterToOsgElements::addNewPoint_Global(const size_t &globalIndex)
@@ -1420,7 +1395,7 @@ osg::Geometry* DM_PainterToOsgElements::checkIfMustCreateANewDrawableForGlobalPo
 
         m_result.m_pointCloudIndexRegisteredCollection.append(mpcir);
 
-        geo = createGeometry(de, &m_globalGeometries);
+        geo = createGeometry(de, osg::PrimitiveSet::POINTS, &m_globalGeometries);
 
         hash->insertMulti(osg::PrimitiveSet::POINTS, geo);
 
@@ -1699,7 +1674,8 @@ osg::Geometry* DM_PainterToOsgElements::DM_OSGCylinder::draw(DM_PainterToOsgElem
     int s = m_v.size();
 
     if(s > 0) {
-        osg::Geometry *geometry = painter.createGeometry(NULL, &painter.m_localGeometries);
+        osg::Geometry *geometry = painter.createGeometry(NULL, osg::PrimitiveSet::TRIANGLES, &painter.m_localGeometries);
+
         osg::Vec3Array *vertexArray = (osg::Vec3Array*)geometry->getVertexArray();
         LocalColorArrayType *colorArray = (LocalColorArrayType*)geometry->getColorArray();
 

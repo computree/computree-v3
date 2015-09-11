@@ -20,6 +20,11 @@ void DM_GeometriesConfiguration::setGlobalGeometriesStateSet(osg::StateSet *set)
     m_globalStateSet = set;
 }
 
+void DM_GeometriesConfiguration::setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set)
+{
+    m_globalStateSetByPrimitiveSetMode.insert(mode, set);
+}
+
 void DM_GeometriesConfiguration::setGlobalVertexAttribArray(uint index, osg::Array *vAttribArray)
 {
     m_globalVertexAttribArrayLocationIndex = index;
@@ -34,6 +39,11 @@ void DM_GeometriesConfiguration::setGlobalColorVertexAttribArrayLocationIndex(ui
 void DM_GeometriesConfiguration::setLocalGeometriesStateSet(osg::StateSet *set)
 {
     m_localStateSet = set;
+}
+
+void DM_GeometriesConfiguration::setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set)
+{
+    m_localStateSetByPrimitiveSetMode.insert(mode, set);
 }
 
 void DM_GeometriesConfiguration::setLocalVertexAttribArray(uint index, osg::Array *vAttribArray)
@@ -82,12 +92,22 @@ uint DM_GeometriesConfiguration::localVertexAttribArrayLocationIndex() const
     return m_localVertexAttribArrayLocationIndex;
 }
 
-osg::StateSet *DM_GeometriesConfiguration::globalStateSet() const
+osg::StateSet* DM_GeometriesConfiguration::globalStateSet(osg::PrimitiveSet::Mode mode) const
 {
+    osg::StateSet *set = m_globalStateSetByPrimitiveSetMode.value(mode, NULL);
+
+    if(set != NULL)
+        return set;
+
     return m_globalStateSet;
 }
 
-osg::StateSet *DM_GeometriesConfiguration::localStateSet() const
+osg::StateSet* DM_GeometriesConfiguration::localStateSet(osg::PrimitiveSet::Mode mode) const
 {
+    osg::StateSet *set = m_localStateSetByPrimitiveSetMode.value(mode, NULL);
+
+    if(set != NULL)
+        return set;
+
     return m_localStateSet;
 }
