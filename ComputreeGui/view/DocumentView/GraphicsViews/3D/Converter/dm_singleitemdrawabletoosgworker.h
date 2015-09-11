@@ -46,6 +46,9 @@ public:
      */
     DM_PainterToOsgElementsResult result() const;
 
+public slots:
+    void compute();
+
 protected:
     void run();
 

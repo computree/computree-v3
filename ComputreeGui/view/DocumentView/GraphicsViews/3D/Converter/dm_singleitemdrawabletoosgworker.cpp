@@ -34,6 +34,11 @@ DM_PainterToOsgElementsResult DM_SingleItemDrawableToOsgWorker::result() const
     return m_result;
 }
 
+void DM_SingleItemDrawableToOsgWorker::compute()
+{
+    run();
+}
+
 void DM_SingleItemDrawableToOsgWorker::run()
 {
     /*QTime t;

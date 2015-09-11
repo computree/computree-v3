@@ -63,6 +63,12 @@ static const char *vertexShader = {
 
 DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraphicsView &view) : m_view(view)
 {
+    m_timerComputeQueue.setInterval(100);
+    m_timerComputeQueue.setSingleShot(true);
+
+    connect(&m_timerComputeQueue, SIGNAL(timeout()), this, SLOT(computeQueue()), Qt::QueuedConnection);
+    connect(this, SIGNAL(mustStartTimer()), &m_timerComputeQueue, SLOT(start()), Qt::QueuedConnection);
+
     m_mutex = new QMutex(QMutex::Recursive);
     m_stop = false;
 
@@ -82,7 +88,9 @@ DM_MultipleItemDrawableToOsgWorker::~DM_MultipleItemDrawableToOsgWorker()
 {
     m_stop = true;
 
-    while(isRunning());
+    //while(isRunning());
+    m_mutex->lock();
+    m_mutex->unlock();
 
     delete m_mutex;
 }
@@ -151,7 +159,7 @@ void DM_MultipleItemDrawableToOsgWorker::createLocalShader()
 
 void DM_MultipleItemDrawableToOsgWorker::run()
 {
-    while(!m_stop) {
+    /*while(!m_stop) {
         int ideal = QThread::idealThreadCount();
 
         if(ideal < 2)
@@ -182,7 +190,7 @@ void DM_MultipleItemDrawableToOsgWorker::run()
                 QThreadPool::globalInstance()->start(worker);
             }
         }
-    }
+    }*/
 }
 
 void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable &item, const QColor &defaultColor)
@@ -196,6 +204,10 @@ void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable
     } else {
         m_infos.insert(&item, defaultColor);
     }
+
+    locker.unlock();
+
+    emit mustStartTimer();
 }
 
 void DM_MultipleItemDrawableToOsgWorker::removeItemDrawable(CT_AbstractItemDrawable &item)
@@ -225,6 +237,36 @@ void DM_MultipleItemDrawableToOsgWorker::workerFinished(DM_SingleItemDrawableToO
     disconnect(w->itemDrawable(), NULL, this, NULL);
 
     m_results.insert(w->itemDrawable(), w->result());
+
+    emit newResultAvailable();
+}
+
+void DM_MultipleItemDrawableToOsgWorker::computeQueue()
+{
+    QTime t;
+    t.start();
+
+    QMutexLocker locker(m_mutex);
+
+    while(!m_queue.isEmpty()) {
+        DM_SingleItemDrawableToOsgWorker *worker = new DM_SingleItemDrawableToOsgWorker(m_view);
+        CT_AbstractItemDrawable *item = m_queue.dequeue();
+        worker->setColor(m_infos.take(item));
+        worker->setItemDrawable(item);
+
+        DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
+        newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
+
+        worker->setGeometriesConfiguration(newConfig);
+
+        worker->compute();
+
+        m_results.insert(worker->itemDrawable(), worker->result());
+    }
+
+    locker.unlock();
+
+    qDebug() << "elapsed : " << t.elapsed();
 
     emit newResultAvailable();
 }

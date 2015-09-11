@@ -47,6 +47,8 @@ private:
     QHash< CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult >        m_results;
     bool                                                                    m_stop;
 
+    QTimer                                                                  m_timerComputeQueue;
+
     void createGlobalShader();
     void createLocalShader();
     void createGeometriesConfiguration();
@@ -66,6 +68,7 @@ public slots:
     void removeItemDrawable(CT_AbstractItemDrawable &item);
     void removeItemDrawable(CT_AbstractItemDrawable *item);
 
+private slots:
     /**
      * @brief Called when an itemdrawable is destroyed
      */
@@ -76,11 +79,17 @@ public slots:
      */
     void workerFinished(DM_SingleItemDrawableToOsgWorker *w);
 
+    /**
+     * @brief Called by the timer when time out
+     */
+    void computeQueue();
 signals:
     /**
      * @brief Emitted when new results is available
      */
     void newResultAvailable();
+
+    void mustStartTimer();
 };
 
 #endif // DM_MULTIPLEITEMDRAWABLETOOSGWORKER_H
