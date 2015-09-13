@@ -13,7 +13,6 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_filter/abstract/ct_abstractfilter_xyz.h"
 #include "ct_filter/abstract/ct_abstractfilter_las.h"
-#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
 
 #include <QDebug>
 
@@ -101,12 +100,76 @@ void PB_StepApplyPointFilters::createInResultModelListProtected()
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepApplyPointFilters::createPostConfigurationDialog()
 {
-    CT_ManageConfigurableElementsDialog dialog(_availableFilters, tr("Filtres séléctionnés"));
-    dialog.exec();
-
-    qDeleteAll(_selectedFilters);
-    _selectedFilters.append(dialog.getSeletedElements());
+    _configDialog = new CT_ManageConfigurableElementsDialog(tr("Filtres séléctionnés"), _availableFilters, &_selectedFilters);
 }
+
+bool PB_StepApplyPointFilters::postConfigure()
+{
+    if(_configDialog != NULL)
+    {
+        if(_configDialog->exec() == 1)
+        {
+            setSettingsModified(true);
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
+SettingsNodeGroup* PB_StepApplyPointFilters::getAllSettings() const
+{
+    SettingsNodeGroup *root = CT_VirtualAbstractStep::getAllSettings();
+    SettingsNodeGroup *group = new SettingsNodeGroup("PB_StepApplyPointFilters");
+    group->addValue(new SettingsNodeValue("Version", "1"));
+
+    if(_configDialog != NULL)
+    {
+        SettingsNodeGroup *postC = new SettingsNodeGroup("ConfigDialog");
+        postC->addValue(new SettingsNodeValue("Config", _configDialog->getConfig()));
+        group->addGroup(postC);
+    }
+
+    root->addGroup(group);
+    return root;
+}
+
+bool PB_StepApplyPointFilters::setAllSettings(const SettingsNodeGroup *settings)
+{
+    bool ok = CT_VirtualAbstractStep::setAllSettings(settings);
+
+    if(ok && _configDialog != NULL)
+    {
+        QString config = "";
+
+        QList<SettingsNodeGroup*> groups = settings->groupsByTagName("PB_StepApplyPointFilters");
+        if(groups.isEmpty()) {return false;}
+
+        SettingsNodeGroup *rootStep = groups.first();
+
+        QList<SettingsNodeGroup*> groups2 = rootStep->groupsByTagName("ConfigDialog");
+        if(groups2.isEmpty()) {return false;}
+
+        SettingsNodeGroup *rootConfig = groups2.first();
+
+        QList<SettingsNodeValue*> values = rootConfig->valuesByTagName("Config");
+
+        if(!values.isEmpty())
+        {
+            config = values.first()->value().toString();
+        }
+
+        QString errors = _configDialog->setConfig(config);
+
+        if (!errors.isEmpty())
+        {
+            PS_LOG->addMessage(LogInterface::error, LogInterface::action, errors);
+        }
+    }
+
+    return ok;
+}
+
 
 // Creation and affiliation of OUT models
 void PB_StepApplyPointFilters::createOutResultModelListProtected()

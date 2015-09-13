@@ -7,6 +7,7 @@
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
+#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
 
 class PB_StepComputeRasterMetrics: public CT_AbstractStep
 {
@@ -61,6 +62,8 @@ protected:
      */
     void createPostConfigurationDialog();
 
+    bool postConfigure();
+
     /*! \brief Output results specification
      * 
      * Specification of output results models created by the step (OUT)
@@ -77,6 +80,8 @@ private:
 
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outMetrics_ModelName;
+
+    CT_ManageConfigurableElementsDialog *_configDialog;
 
     QList<CT_AbstractConfigurableElement *> _availableMetrics;
     QList<CT_AbstractConfigurableElement *> _selectedMetrics;

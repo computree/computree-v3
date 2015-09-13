@@ -50,6 +50,7 @@ PB_StepComputeRasterMetrics::PB_StepComputeRasterMetrics(CT_StepInitializeData &
             }
         }
     }
+
 }
 
 PB_StepComputeRasterMetrics::~PB_StepComputeRasterMetrics()
@@ -98,12 +99,23 @@ void PB_StepComputeRasterMetrics::createInResultModelListProtected()
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepComputeRasterMetrics::createPostConfigurationDialog()
 {
-    CT_ManageConfigurableElementsDialog dialog(_availableMetrics, tr("Métriques séléctionnées"));
-    dialog.exec();
-
-    qDeleteAll(_selectedMetrics);
-    _selectedMetrics.append(dialog.getSeletedElements());
+    _configDialog = new CT_ManageConfigurableElementsDialog(tr("Métriques séléctionnées"), _availableMetrics, &_selectedMetrics);
 }
+
+bool PB_StepComputeRasterMetrics::postConfigure()
+{
+    if(_configDialog != NULL)
+    {
+        if(_configDialog->exec() == 1)
+        {
+            setSettingsModified(true);
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
 
 // Creation and affiliation of OUT models
 void PB_StepComputeRasterMetrics::createOutResultModelListProtected()

@@ -4,6 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_filter/abstract/ct_abstractconfigurableelement.h"
 #include "ct_filter/abstract/ct_abstractfilter.h"
+#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
@@ -61,6 +62,8 @@ protected:
      */
     void createPostConfigurationDialog();
 
+    bool postConfigure();
+
     /*! \brief Output results specification
      * 
      * Specification of output results models created by the step (OUT)
@@ -78,6 +81,8 @@ private:
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outMetrics_ModelName;
     QString                _inSceneDisplayableName;
+
+    CT_ManageConfigurableElementsDialog *_configDialog;
 
     QList<CT_AbstractConfigurableElement *> _availableMetrics;
     QList<CT_AbstractConfigurableElement *> _selectedMetrics;

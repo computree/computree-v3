@@ -17,10 +17,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_ManageConfigurableElementsDialog : public QDi
     Q_OBJECT
 
 public:
-    explicit CT_ManageConfigurableElementsDialog(QList<CT_AbstractConfigurableElement*> &elements, QString title, QWidget *parent = 0);
+    explicit CT_ManageConfigurableElementsDialog(QString title, QList<CT_AbstractConfigurableElement*> &elements, QList<CT_AbstractConfigurableElement*> *selectedElements, QWidget *parent = 0);
     ~CT_ManageConfigurableElementsDialog();
 
-     QList<CT_AbstractConfigurableElement*> getSeletedElements() const;
+    QString getConfig() const;
+    QString setConfig(const QString &config);
 
      void setSuffix(QString suffixe);
      QString getSuffix();
@@ -39,6 +40,7 @@ private:
     CT_ElementListDialog*   _listDialog;
 
     QList<CT_AbstractConfigurableElement*> _baseElements;
+    QList<CT_AbstractConfigurableElement*> *_selectedElements;
     QMap<QListWidgetItem*, CT_AbstractConfigurableElement*> _addedElements;
 };
 

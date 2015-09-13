@@ -4,6 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_filter/abstract/ct_abstractconfigurableelement.h"
 #include "ct_filter/abstract/ct_abstractfilter.h"
+#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
@@ -48,6 +49,11 @@ public:
      */
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
 
+
+    bool setAllSettings(const SettingsNodeGroup *settings);
+
+    SettingsNodeGroup *getAllSettings() const;
+
 protected:
 
     /*! \brief Input results specification
@@ -61,6 +67,9 @@ protected:
      * DialogBox asking for step parameters
      */
     void createPostConfigurationDialog();
+
+    bool postConfigure();
+
 
     /*! \brief Output results specification
      * 
@@ -78,6 +87,8 @@ private:
 
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outPoints_ModelName;
+
+    CT_ManageConfigurableElementsDialog *_configDialog;
 
     QMap<CT_AbstractConfigurableElement*, CT_AutoRenameModels*>    _modelNames;
 

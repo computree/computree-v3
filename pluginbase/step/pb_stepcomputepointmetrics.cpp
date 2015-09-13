@@ -126,16 +126,25 @@ void PB_StepComputePointMetrics::createPostConfigurationDialog()
     }
 
 
-    CT_ManageConfigurableElementsDialog dialog(_availableMetrics, tr("Métriques séléctionnées"));
-    dialog.setSuffix(_inSceneDisplayableName);
-
-    dialog.exec();
-
-    _inSceneDisplayableName = dialog.getSuffix();
-
-    qDeleteAll(_selectedMetrics);
-    _selectedMetrics.append(dialog.getSeletedElements());
+    _configDialog = new CT_ManageConfigurableElementsDialog(tr("Métriques séléctionnées"), _availableMetrics, &_selectedMetrics);
+    _configDialog->setSuffix(_inSceneDisplayableName);
 }
+
+bool PB_StepComputePointMetrics::postConfigure()
+{
+    if(_configDialog != NULL)
+    {
+        if(_configDialog->exec() == 1)
+        {
+            _inSceneDisplayableName = _configDialog->getSuffix();
+            setSettingsModified(true);
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
 
 // Creation and affiliation of OUT models
 void PB_StepComputePointMetrics::createOutResultModelListProtected()
