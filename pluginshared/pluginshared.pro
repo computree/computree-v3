@@ -411,7 +411,8 @@ SOURCES += \
     ct_math/delaunay2d/ct_delaunaytriangle.cpp \
     ct_math/delaunay2d/ct_delaunaytriangulation.cpp \
     ct_math/delaunay2d/ct_delaunayvertex.cpp \
-    ct_math/delaunay2d/ct_delaunayvorovertex.cpp
+    ct_math/delaunay2d/ct_delaunayvorovertex.cpp \
+    ct_itemdrawable/tools/image2dtools/ct_image2dnaturalneighboursinterpolator.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -925,7 +926,8 @@ HEADERS += interfaces.h \
     ct_math/delaunay2d/ct_delaunaytriangle.h \
     ct_math/delaunay2d/ct_delaunaytriangulation.h \
     ct_math/delaunay2d/ct_delaunayvertex.h \
-    ct_math/delaunay2d/ct_delaunayvorovertex.h
+    ct_math/delaunay2d/ct_delaunayvorovertex.h \
+    ct_itemdrawable/tools/image2dtools/ct_image2dnaturalneighboursinterpolator.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
