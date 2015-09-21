@@ -105,6 +105,21 @@ public:
     typedef CT_StandardCloudOsgT<GLbyte, osg::Array::ByteArrayType, 1, GL_UNSIGNED_BYTE>     AttribCloudType;
     AttribCloudType::AType *getOrCreateGlobalAttribArrayForPoints();
 
+    /**
+     * @brief Returns true if this document has the capacity of change the visibility of an itemdrawable
+     */
+    bool canChangeVisibility() const;
+
+    /**
+     * @brief Change the visibility of the item in the document
+     */
+    void setVisible(const CT_AbstractItemDrawable *item, bool visible);
+
+    /**
+     * @brief Returns the visibility of the item in the document.
+     */
+    bool isVisible(const CT_AbstractItemDrawable *item) const;
+
     void setUseNormalCloud(bool use);
     bool useNormalCloud() const;
 

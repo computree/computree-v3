@@ -408,6 +408,37 @@ GDocumentViewForGraphics::AttribCloudType::AType* GDocumentViewForGraphics::getO
     return m_pointsAttribCloudRegistered->cloudT()->osgArray();
 }
 
+bool GDocumentViewForGraphics::canChangeVisibility() const
+{
+    return true;
+}
+
+void GDocumentViewForGraphics::setVisible(const CT_AbstractItemDrawable *item, bool visible)
+{
+    lockGraphics();
+
+    QListIterator<GGraphicsView*> it(_listGraphics);
+
+    while(it.hasNext())
+        it.next()->setVisible(item, visible);
+
+    unlockGraphics();
+}
+
+bool GDocumentViewForGraphics::isVisible(const CT_AbstractItemDrawable *item) const
+{
+    bool isVisible = false;
+
+    QListIterator<GGraphicsView*> it(_listGraphics);
+
+    while(it.hasNext()) {
+        if(it.next()->isVisible(item))
+            isVisible = true;
+    }
+
+    return isVisible;
+}
+
 void GDocumentViewForGraphics::setUseNormalCloud(bool use)
 {
     m_useNormalCloud = use;

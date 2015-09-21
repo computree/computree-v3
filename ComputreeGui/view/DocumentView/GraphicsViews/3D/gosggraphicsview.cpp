@@ -756,6 +756,24 @@ int GOsgGraphicsView::height() const
     return Q_GL_WIDGET::height();
 }
 
+void GOsgGraphicsView::setVisible(const CT_AbstractItemDrawable *item, bool visible)
+{
+    osg::Group *g = m_sceneManager->itemDrawableToGroup((CT_AbstractItemDrawable*)item);
+
+    if(g != NULL)
+        DM_OsgSceneManager::staticSetVisible(g, visible);
+}
+
+bool GOsgGraphicsView::isVisible(const CT_AbstractItemDrawable *item) const
+{
+    osg::Group *g = m_sceneManager->itemDrawableToGroup((CT_AbstractItemDrawable*)item);
+
+    if(g != NULL)
+        return DM_OsgSceneManager::staticIsVisible(g);
+
+    return false;
+}
+
 void GOsgGraphicsView::resizeGL(int width, int height)
 {
     getEventQueue()->windowResize( this->x(), this->y(), width, height );

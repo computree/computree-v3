@@ -130,9 +130,8 @@ void PB_StepMergeClustersFromPositions02::compute()
 {
     setManual(_interactiveMode);
 
-    QList<CT_ResultGroup*> inResultList = getInputResults();
-    CT_ResultGroup* resIn_rclusters = inResultList.at(0);
-    CT_ResultGroup* inMNTResult = inResultList.at(2);
+    CT_ResultGroup* resIn_rclusters = getInputResultsForModel(DEFin_rclusters).first();
+    CT_ResultGroup* inMNTResult = getInputResultsForModel(DEF_SearchInMNTResult).first();
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_rsc = outResultList.at(0);

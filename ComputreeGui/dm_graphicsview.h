@@ -75,6 +75,9 @@ public:
     virtual void getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
     virtual void getBoundingBoxOfAllItemDrawableSelectedInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
 
+    virtual void setVisible(const CT_AbstractItemDrawable *item, bool visible) = 0;
+    virtual bool isVisible(const CT_AbstractItemDrawable *item) const = 0;
+
 protected:
 
     DM_DocumentView         *_document;

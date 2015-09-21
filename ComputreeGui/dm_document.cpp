@@ -299,6 +299,20 @@ OctreeInterface *DM_Document::octreeOfPoints() const
     return NULL;
 }
 
+bool DM_Document::canChangeVisibility() const
+{
+    return false;
+}
+
+void DM_Document::setVisible(const CT_AbstractItemDrawable *item, bool visible)
+{
+}
+
+bool DM_Document::isVisible(const CT_AbstractItemDrawable *item) const
+{
+    return false;
+}
+
 void DM_Document::constructOctreeOfPoints()
 {
 }

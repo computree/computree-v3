@@ -140,7 +140,7 @@ bool CT_InTurnManager::createSearchModelListForCurrentTurn()
 
             // and insert it in the map that contains all models for current
             // turn with key = a model that represent a result AND value = the map
-            _modelsForCurrentTurn.insert(outMo, map);
+            _modelsForCurrentTurn.insertMulti(outMo, map);
 
             // get all models recursively (childrens and childrens of childrens, etc...)
             QList<CT_AbstractModel*> list = po->inModel()->recursiveGetAllModels();
@@ -194,12 +194,22 @@ CT_InAbstractResultModel* CT_InTurnManager::getInResultModel(const QString &uniq
 
 CT_InAbstractModel* CT_InTurnManager::getInModel(const CT_OutAbstractResultModel &outResultModel, QString modelName) const
 {
-    QMap<QString,CT_InAbstractModel*> *map = _modelsForCurrentTurn.value((CT_OutAbstractResultModel*)(&outResultModel), NULL);
+    QList<QMap<QString,CT_InAbstractModel*>* > lmap = _modelsForCurrentTurn.values((CT_OutAbstractResultModel*)(&outResultModel));
 
-    if(map == NULL)
+    if(lmap.isEmpty())
         return NULL;
 
-    return map->value(modelName, NULL);
+    QListIterator<QMap<QString,CT_InAbstractModel*>* > it(lmap);
+
+    while(it.hasNext()) {
+        QMap<QString,CT_InAbstractModel*> *map = it.next();
+        CT_InAbstractModel *model = map->value(modelName, NULL);
+
+        if(model != NULL)
+            return model;
+    }
+
+    return NULL;
 }
 
 CT_InAbstractModel* CT_InTurnManager::getInModel(const QString &outResultUniqueName, const QString &uniqueName) const

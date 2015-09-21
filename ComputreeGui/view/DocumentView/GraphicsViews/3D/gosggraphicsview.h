@@ -394,6 +394,16 @@ public:
      */
     virtual int height() const;
 
+    /**
+     * @brief Change the visibility of the item in the document
+     */
+    virtual void setVisible(const CT_AbstractItemDrawable *item, bool visible);
+
+    /**
+     * @brief Returns the visibility of the item in the document.
+     */
+    virtual bool isVisible(const CT_AbstractItemDrawable *item) const;
+
 protected:
 
     void resizeGL(int width, int height);

@@ -7,6 +7,7 @@
 
 #include <osg/ValueObject>
 #include <QEventLoop>
+#include <algorithm>
 
 #define PICKING_BIT     0x2
 #define VISIBILITY_BIT  0x1
@@ -27,14 +28,11 @@ DM_OsgSceneManager::DM_OsgSceneManager(GOsgGraphicsView &view, osg::ref_ptr<osg:
     m_itemRoot = new osg::Group;
     m_scene->addChild(m_itemRoot.get());
     m_scene->addChild(m_groupContainsDrawablesOfAction.get());
-    m_timer.setSingleShot(true);
-    m_timer.setInterval(50);
 
     initCullMaskOfViews();
 
     connect(m_converter, SIGNAL(newResultAvailable()), this, SLOT(converterResultAvailable()), Qt::QueuedConnection);
-    connect(this, SIGNAL(mustStartRemoveTimer()), &m_timer, SLOT(start()), Qt::QueuedConnection);
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateToRemove()), Qt::QueuedConnection);
+    connect(view.signalEmitter(), SIGNAL(drawingFinished()), this, SLOT(updateToRemove()), Qt::DirectConnection);
 }
 
 DM_OsgSceneManager::~DM_OsgSceneManager()
@@ -53,10 +51,13 @@ void DM_OsgSceneManager::removeItemDrawable(CT_AbstractItemDrawable &item)
     m_converter->removeItemDrawable(item);
 
     QMutexLocker locker(m_mutex);
-    m_toRemove.append(&item);
-    locker.unlock();
 
-    emit mustStartRemoveTimer();
+    DM_PainterToOsgElementsResult r = m_results.take(&item);
+
+    if(r.m_rootGroup.valid())
+        m_toRemove.push_back(r);
+
+    locker.unlock();
 }
 
 void DM_OsgSceneManager::updateItemDrawable(CT_AbstractItemDrawable &item)
@@ -89,15 +90,15 @@ void DM_OsgSceneManager::updateItemDrawablesThatColorWasModified()
 {
     QMutexLocker locker(m_mutex);
 
-    QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(m_hashGroup);
+    ResultCollectionIterator it(m_results);
 
     while(it.hasNext()) {
         it.next();
 
-        osg::ref_ptr<osg::Group> g = it.value();
+        const DM_PainterToOsgElementsResult &r = it.value();
 
         if(m_view->getDocumentView()->isColorModified(it.key()))
-            DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(it.key(), m_view, g.get(), m_view->getDocumentView()->getColor(it.key()));
+            DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(it.key(), m_view, r.m_rootGroup.get(), m_view->getDocumentView()->getColor(it.key()));
     }
 }
 
@@ -107,19 +108,19 @@ void DM_OsgSceneManager::dirtyDisplayListOfGlobalElementsOfItemDrawable(CT_Abstr
 
     if(item == NULL) {
 
-        QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(m_hashGroup);
+        ResultCollectionIterator it(m_results);
 
         while(it.hasNext()) {
             it.next();
 
-            osg::ref_ptr<osg::Group> g = it.value();
+            const DM_PainterToOsgElementsResult &r = it.value();
 
-            DM_PainterToOsgElements::staticDirtyDisplayListOfGlobalElements(g.get());
+            DM_PainterToOsgElements::staticDirtyDisplayListOfGlobalElements(r.m_rootGroup.get());
         }
     } else {
-        osg::ref_ptr<osg::Group> g = m_hashGroup.value(item);
+        const DM_PainterToOsgElementsResult &r = m_results.value(item);
 
-        DM_PainterToOsgElements::staticDirtyDisplayListOfGlobalElements(g.get());
+        DM_PainterToOsgElements::staticDirtyDisplayListOfGlobalElements(r.m_rootGroup.get());
     }
 }
 
@@ -129,19 +130,19 @@ void DM_OsgSceneManager::dirtyDisplayListOfLocalElementsOfItemDrawable(CT_Abstra
 
     if(item == NULL) {
 
-        QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(m_hashGroup);
+        ResultCollectionIterator it(m_results);
 
         while(it.hasNext()) {
             it.next();
 
-            osg::ref_ptr<osg::Group> g = it.value();
+            const DM_PainterToOsgElementsResult &r = it.value();
 
-            DM_PainterToOsgElements::staticDirtyDisplayListOfLocalElements(g.get());
+            DM_PainterToOsgElements::staticDirtyDisplayListOfLocalElements(r.m_rootGroup.get());
         }
     } else {
-        osg::ref_ptr<osg::Group> g = m_hashGroup.value(item);
+        const DM_PainterToOsgElementsResult &r = m_results.value(item);
 
-        DM_PainterToOsgElements::staticDirtyDisplayListOfLocalElements(g.get());
+        DM_PainterToOsgElements::staticDirtyDisplayListOfLocalElements(r.m_rootGroup.get());
     }
 }
 
@@ -151,19 +152,19 @@ void DM_OsgSceneManager::dirtyDisplayListOfAllElementsOfItemDrawable(CT_Abstract
 
     if(item == NULL) {
 
-        QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(m_hashGroup);
+        ResultCollectionIterator it(m_results);
 
         while(it.hasNext()) {
             it.next();
 
-            osg::ref_ptr<osg::Group> g = it.value();
+            const DM_PainterToOsgElementsResult &r = it.value();
 
-            DM_PainterToOsgElements::staticDirtyDisplayListOfAllElements(g.get());
+            DM_PainterToOsgElements::staticDirtyDisplayListOfAllElements(r.m_rootGroup.get());
         }
     } else {
-        osg::ref_ptr<osg::Group> g = m_hashGroup.value(item);
+        const DM_PainterToOsgElementsResult &r = m_results.value(item);
 
-        DM_PainterToOsgElements::staticDirtyDisplayListOfAllElements(g.get());
+        DM_PainterToOsgElements::staticDirtyDisplayListOfAllElements(r.m_rootGroup.get());
     }
 }
 
@@ -196,19 +197,23 @@ void DM_OsgSceneManager::getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::V
     max[2] = bbox.zMax();
 }
 
-QList<osg::ref_ptr<osg::Group> > DM_OsgSceneManager::itemDrawableGroups() const
+QList< DM_OsgSceneManager::ResultCollection::mapped_type > DM_OsgSceneManager::itemDrawableResults() const
 {
-    return m_hashGroup.values();
+    QMutexLocker locker(m_mutex);
+
+    return m_results.values();
 }
 
-QHash<CT_AbstractItemDrawable *, osg::ref_ptr<osg::Group> > DM_OsgSceneManager::itemDrawableAndGroup() const
+const DM_OsgSceneManager::ResultCollection &DM_OsgSceneManager::itemDrawableAndResults() const
 {
-    return m_hashGroup;
+    return m_results;
 }
 
 osg::Group* DM_OsgSceneManager::itemDrawableToGroup(CT_AbstractItemDrawable *item) const
 {
-    return m_hashGroup.value(item, osg::ref_ptr<osg::Group>(NULL)).get();
+    QMutexLocker locker(m_mutex);
+
+    return m_results.value(item).m_rootGroup.get();
 }
 
 void DM_OsgSceneManager::staticSetEnablePicking(osg::Node *node, bool enable)
@@ -233,6 +238,11 @@ void DM_OsgSceneManager::staticSetVisible(osg::Node *node, bool enable)
         mask &= ~VISIBILITY_BIT;
 
     node->setNodeMask(mask);
+}
+
+bool DM_OsgSceneManager::staticIsVisible(osg::Node *node)
+{
+    return (node->getNodeMask() & VISIBILITY_BIT);
 }
 
 void DM_OsgSceneManager::staticSetPickerTraversalMask(osgUtil::IntersectionVisitor &visitor)
@@ -284,25 +294,35 @@ void DM_OsgSceneManager::converterResultAvailable()
     QHash< CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > l = m_converter->takeResults();
     QHashIterator< CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > it(l);
 
+    size_t index = m_itemRoot->getNumChildren();
+
     while(it.hasNext()) {
         it.next();
 
-        DM_PainterToOsgElementsResult previousResult = m_hashResult.take(it.key());
-        m_hashGroup.remove(it.key());
+        CT_AbstractItemDrawable *item = it.key();
+        const DM_PainterToOsgElementsResult &result = it.value();
+
+        DM_PainterToOsgElementsResult previousResult = m_results.value(item);
+
+        m_results.insert(item, result);
+
+        DM_OsgSceneManager::staticSetEnablePicking(result.m_rootGroup.get(), true);
+
+        result.m_rootGroup->setUserValue<int>(HAS_ITEM_KEY, HAS_ITEM_VALUE_OK);
+
+        DM_CustomUserData *userData = new DM_CustomUserData(item, index);
+        result.m_rootGroup->setUserData(userData);
+
+        connect(this, SIGNAL(internalItemRemoved(size_t,size_t,size_t)), userData, SLOT(indexRemoved(size_t,size_t,size_t)), Qt::DirectConnection);
 
         // if update
-        if(previousResult.m_rootGroup.valid())
-            m_itemRoot->removeChild(previousResult.m_rootGroup.release());
-
-        m_hashGroup.insert(it.key(), it.value().m_rootGroup);
-        m_hashResult.insert(it.key(), it.value());
-
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().m_rootGroup.get(), true);
-
-        it.value().m_rootGroup->setUserValue<int>(HAS_ITEM_KEY, HAS_ITEM_VALUE_OK);
-        it.value().m_rootGroup->setUserData(new DM_CustomUserData(it.key()));
-
-        m_itemRoot->addChild(it.value().m_rootGroup.get());
+        if(previousResult.m_rootGroup.valid()) {
+            m_itemRoot->setChild(((DM_CustomUserData*)previousResult.m_rootGroup->getUserData())->indexInParent(), result.m_rootGroup.get());
+            previousResult.m_rootGroup.release();
+        } else {
+            m_itemRoot->addChild(result.m_rootGroup.get());
+            ++index;
+        }
     }
 
     m_view->update();
@@ -340,21 +360,59 @@ void DM_OsgSceneManager::cancelCurrentActionConversion()
     }
 }
 
+bool sortResultByIndex(const DM_PainterToOsgElementsResult &r1, const DM_PainterToOsgElementsResult &r2) {
+    return ((DM_CustomUserData*)r1.m_rootGroup->getUserData())->indexInParent() < ((DM_CustomUserData*)r2.m_rootGroup->getUserData())->indexInParent();
+}
+
 void DM_OsgSceneManager::updateToRemove()
 {
     QMutexLocker locker(m_mutex);
 
-    m_timer.stop();
+    std::sort(m_toRemove.begin(), m_toRemove.end(), sortResultByIndex);
 
-    while(!m_toRemove.isEmpty())
-    {
-        CT_AbstractItemDrawable *d = m_toRemove.takeFirst();
-        DM_PainterToOsgElementsResult res = m_hashResult.take(d);
-        m_hashGroup.remove(d);
+    RemoveCollection::iterator it = m_toRemove.begin();
+    RemoveCollection::iterator end = m_toRemove.end();
 
-        if(res.m_rootGroup.valid())
-            m_itemRoot->removeChild(res.m_rootGroup.release()); // TODO : problem when remove child with large amount of vertex in local vertex array => crash in painter.drawText after ???!!
+    if(it != end) {
+
+        DM_PainterToOsgElementsResult rFirst = *it;
+        staticSetVisible(rFirst.m_rootGroup.get(), false);
+        size_t beginIndex = ((DM_CustomUserData*)rFirst.m_rootGroup->getUserData())->indexInParent();
+        size_t endIndex = beginIndex;
+
+        DM_CustomUserData *userData = (DM_CustomUserData*)rFirst.m_rootGroup->getUserData();
+
+        ++it;
+
+        while(it != end) {
+            DM_PainterToOsgElementsResult r = *it;
+            staticSetVisible(r.m_rootGroup.get(), false);
+            userData = (DM_CustomUserData*)r.m_rootGroup->getUserData();
+
+            size_t index = userData->indexInParent();
+
+            if(index == endIndex+1)
+                ++endIndex;
+            else {
+                size_t count = (endIndex-beginIndex)+1;
+                m_itemRoot->removeChildren(beginIndex, count);
+
+                beginIndex = index;
+                endIndex = beginIndex;
+
+                emit internalItemRemoved(beginIndex, endIndex, count);
+            }
+
+            ++it;
+        }
+
+        size_t count = (endIndex-beginIndex)+1;
+        m_itemRoot->removeChildren(beginIndex, count);
+
+        emit internalItemRemoved(beginIndex, endIndex, count);
     }
+
+    m_toRemove.clear();
 
     m_view->update();
 }
@@ -382,20 +440,5 @@ void DM_OsgSceneManager::updateDrawableForCurrentAction()
         connect(m_currentActionConverter, SIGNAL(finished()), this, SLOT(actionConverterResultAvailable()), Qt::QueuedConnection);
 
         thread->start();
-
-        // create a converter
-        /*m_currentActionConverter = new DM_ActionToOsgWorker();
-        m_currentActionConverter->setGraphicsView(m_view);
-        m_currentActionConverter->setActionToConvert(m_currentAction);
-        m_currentActionConverter->apply();
-        m_groupContainsDrawablesOfAction->removeChild(0, m_groupContainsDrawablesOfAction->getNumChildren());
-        osg::ref_ptr<osg::Group> results = m_currentActionConverter->results();
-        staticSetEnablePicking(results.get(), false);
-        m_groupContainsDrawablesOfAction->addChild(results.get());
-
-        delete m_currentActionConverter;
-        m_currentActionConverter = NULL;
-
-        m_view->update();*/
     }
 }

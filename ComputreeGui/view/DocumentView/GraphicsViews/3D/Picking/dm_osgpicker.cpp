@@ -338,11 +338,13 @@ void DM_OsgPicker::removeAllIdFromSelection()
     }
     m_selectionPointsChanged = true;
 
-    QList<osg::ref_ptr<osg::Group> > groups = m_sceneManager->itemDrawableGroups();
-    QListIterator<osg::ref_ptr<osg::Group> > it(groups);
+    const DM_OsgSceneManager::ResultCollection &itemsRepresentedByGroup = m_sceneManager->itemDrawableAndResults();
+    DM_OsgSceneManager::ResultCollectionIterator it(itemsRepresentedByGroup);
 
-    while(it.hasNext())
-        setVertexAttribArrayOfItemDrawableSelected(it.next().get(), false);
+    while(it.hasNext()) {
+        it.next();
+        setVertexAttribArrayOfItemDrawableSelected(it.value().m_rootGroup.get(), false);
+    }
 
     getDocumentView()->setSelectAllItemDrawable(false);
 
@@ -405,12 +407,12 @@ void DM_OsgPicker::selectItemsInWindowOrByPolytope(SelectionMode basicMode, doub
     osgUtil::IntersectionVisitor iv( intersector );
     DM_OsgSceneManager::staticSetPickerTraversalMask(iv);
 
-    QHash<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > items = m_sceneManager->itemDrawableAndGroup();
-    QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(items);
+    const DM_OsgSceneManager::ResultCollection &itemsRepresentedByGroup = m_sceneManager->itemDrawableAndResults();
+    DM_OsgSceneManager::ResultCollectionIterator it(itemsRepresentedByGroup);
 
     while(it.hasNext()) {
         it.next();
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().get(), false);
+        DM_OsgSceneManager::staticSetEnablePicking(it.value().m_rootGroup.get(), false);
     }
 
     bool continueLoop = true;
@@ -423,7 +425,9 @@ void DM_OsgPicker::selectItemsInWindowOrByPolytope(SelectionMode basicMode, doub
 
         it.next();
 
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().get(), true);
+        const DM_OsgSceneManager::ResultCollection::mapped_type &result = it.value();
+
+        DM_OsgSceneManager::staticSetEnablePicking(result.m_rootGroup.get(), true);
 
         m_osgView->getCamera()->accept( iv );
 
@@ -459,14 +463,14 @@ void DM_OsgPicker::selectItemsInWindowOrByPolytope(SelectionMode basicMode, doub
             }
         }
 
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().get(), false);
+        DM_OsgSceneManager::staticSetEnablePicking(result.m_rootGroup.get(), false);
     }
 
     it.toFront();
 
     while(it.hasNext()) {
         it.next();
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().get(), true);
+        DM_OsgSceneManager::staticSetEnablePicking(it.value().m_rootGroup.get(), true);
     }
 }
 
@@ -504,12 +508,12 @@ void DM_OsgPicker::selectPEFInWindowOrByPolytope(DM_OsgPicker::SelectionMode bas
     osgUtil::IntersectionVisitor iv( intersector );
     DM_OsgSceneManager::staticSetPickerTraversalMask(iv);
 
-    QHash<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > items = m_sceneManager->itemDrawableAndGroup();
-    QHashIterator<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > it(items);
+    const DM_OsgSceneManager::ResultCollection &itemsRepresentedByGroup = m_sceneManager->itemDrawableAndResults();
+    DM_OsgSceneManager::ResultCollectionIterator it(itemsRepresentedByGroup);
 
     while(it.hasNext()) {
         it.next();
-        osg::ref_ptr<osg::Group> local = DM_PainterToOsgElements::staticGetLocalGeometriesGroup(it.value().get());
+        osg::ref_ptr<osg::Group> local = DM_PainterToOsgElements::staticGetLocalGeometriesGroup(it.value().m_rootGroup.get());
 
         if(local.valid())
             DM_OsgSceneManager::staticSetEnablePicking(local.get(), false);
@@ -576,7 +580,7 @@ void DM_OsgPicker::selectPEFInWindowOrByPolytope(DM_OsgPicker::SelectionMode bas
 
     while(it.hasNext()) {
         it.next();
-        osg::ref_ptr<osg::Group> local = DM_PainterToOsgElements::staticGetLocalGeometriesGroup(it.value().get());
+        osg::ref_ptr<osg::Group> local = DM_PainterToOsgElements::staticGetLocalGeometriesGroup(it.value().m_rootGroup.get());
 
         if(local.valid())
             DM_OsgSceneManager::staticSetEnablePicking(local.get(), true);

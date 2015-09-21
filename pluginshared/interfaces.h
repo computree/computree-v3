@@ -1130,6 +1130,21 @@ public:
      */
     virtual OctreeInterface* octreeOfPoints() const = 0;
 
+    /**
+     * @brief Returns true if this document has the capacity of change the visibility of an itemdrawable
+     */
+    virtual bool canChangeVisibility() const = 0;
+
+    /**
+     * @brief Change the visibility of the item in the document
+     */
+    virtual void setVisible(const CT_AbstractItemDrawable *item, bool visible) = 0;
+
+    /**
+     * @brief Returns the visibility of the item in the document.
+     */
+    virtual bool isVisible(const CT_AbstractItemDrawable *item) const = 0;
+
 public slots:
     /**
      * @brief (Re)construct the octree

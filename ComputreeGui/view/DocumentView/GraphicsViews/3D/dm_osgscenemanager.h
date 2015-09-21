@@ -2,6 +2,8 @@
 #define DM_OSGSCENEMANAGER_H
 
 #include <QTimer>
+#include <QHash>
+#include <QHashIterator>
 
 #include <osg/Group>
 #include <osgUtil/IntersectionVisitor>
@@ -17,19 +19,40 @@ class GOsgGraphicsView;
 /**
  * @brief Used by DM_OsgSceneManager to keep a reference to an CT_AbstractItemDrawable in a node
  */
-class DM_CustomUserData : public osg::Referenced
+class DM_CustomUserData : public QObject, public osg::Referenced
 {
+    Q_OBJECT
+
 public:
-    DM_CustomUserData(CT_AbstractItemDrawable *item) {
+    DM_CustomUserData(CT_AbstractItemDrawable *item, size_t indexInParent) {
         m_item = item;
+        m_indexInParent = indexInParent;
     }
+
+    /*~DM_CustomUserData(){
+        int a;
+    }*/
 
     CT_AbstractItemDrawable* itemDrawable() const {
         return m_item;
     }
 
+    size_t indexInParent() const {
+        return m_indexInParent;
+    }
+
 private:
     CT_AbstractItemDrawable *m_item;
+    size_t                  m_indexInParent;
+
+public slots:
+    /**
+     * @brief Connect this slot to update the index of this object
+     */
+    void indexRemoved(size_t beginIndex, size_t endIndex, size_t count) {
+        if(m_indexInParent > endIndex)
+            m_indexInParent -= count;
+    }
 };
 
 /**
@@ -43,6 +66,9 @@ class DM_OsgSceneManager : public QObject
 public:
     DM_OsgSceneManager(GOsgGraphicsView &view, osg::ref_ptr<osg::Group> scene);
     ~DM_OsgSceneManager();
+
+    typedef QHash<CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > ResultCollection;
+    typedef QHashIterator<CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > ResultCollectionIterator;
 
 public slots:
 
@@ -100,14 +126,14 @@ public slots:
     void getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     /**
-     * @brief Return all groups that represent itemdrawable (one group for one itemdrawable). It's results from DM_PainterToOsgElements
+     * @brief Return all results that represent itemdrawable (one result for one itemdrawable). It's results from DM_PainterToOsgElements
      */
-    QList<osg::ref_ptr<osg::Group> > itemDrawableGroups() const;
+    QList< ResultCollection::mapped_type > itemDrawableResults() const;
 
     /**
      * @brief Return a hashmap with the itemdrawable in key and it's group in value
      */
-    QHash<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> > itemDrawableAndGroup() const;
+    const ResultCollection& itemDrawableAndResults() const;
 
     /**
      * @brief Return the osg::Group that correspond to the item passed in parameter
@@ -125,6 +151,11 @@ public slots:
     static void staticSetVisible(osg::Node *node, bool enable);
 
     /**
+     * @brief Return true if the node is visible
+     */
+    static bool staticIsVisible(osg::Node *node);
+
+    /**
      * @brief Set the picker visitor traversal mask to ignore elements that was not visible and must not be picked
      */
     static void staticSetPickerTraversalMask(osgUtil::IntersectionVisitor &visitor);
@@ -140,19 +171,19 @@ public slots:
     static CT_AbstractItemDrawable* staticConvertNodeToItemDrawable(const osg::Node &node);
 
 private:
+    typedef std::vector<DM_PainterToOsgElementsResult> RemoveCollection;
+
     osg::ref_ptr<osg::Group>                                        m_scene;                        // the root scene
     osg::ref_ptr<osg::Group>                                        m_itemRoot;                     // the root groups that contains all itemdrawable converted to osg groups
     osg::ref_ptr<osg::Program>                                      m_shaderForGlobalGeometries;    // the sahder to use with the global points cloud
     DM_MultipleItemDrawableToOsgWorker                              *m_converter;                   // convert itemdrawable to osg structure
     DM_ActionToOsgWorker                                            *m_currentActionConverter;      // convert a action to osg structure
-    QHash<CT_AbstractItemDrawable*, osg::ref_ptr<osg::Group> >      m_hashGroup;                    // a hash to search a group from an item
-    QHash<CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > m_hashResult;                   // a hash to backup result for item
+    ResultCollection                                                m_results;                      // a hash to backup result for item
     GOsgGraphicsView                                                *m_view;
-    QList<CT_AbstractItemDrawable*>                                 m_toRemove;
+    RemoveCollection                                                m_toRemove;
     QMutex                                                          m_actionMutex;
     DM_PainterToOsgElementsResult                                   m_actionResult;
     QMutex                                                          *m_mutex;
-    QTimer                                                          m_timer;
     CT_AbstractActionForGraphicsView                                *m_currentAction;
     osg::ref_ptr<osg::Group>                                        m_groupContainsDrawablesOfAction;
 
@@ -189,9 +220,9 @@ private slots:
 
 signals:
     /**
-     * @brief Emitted when we must start the timer that will call the method "updateToRemove()" on timeout
+     * @brief Emitted when one or more items was removed.
      */
-    void mustStartRemoveTimer();
+    void internalItemRemoved(size_t beginIndex, size_t endIndex, size_t count);
 };
 
 #endif // DM_OSGSCENEMANAGER_H
