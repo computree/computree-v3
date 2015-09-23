@@ -249,9 +249,6 @@ void DM_PainterToOsgElements::setColor(QColor color)
 {
     if(isSetColorEnable())
         m_currentConfig.m_color = staticIntColorToInternalColor(color.red(), color.green(), color.blue(), color.alpha());
-
-    if(m_currentConfig.m_color.r() != 0)
-        m_currentConfig.m_color.r() = 150;
 }
 
 QColor DM_PainterToOsgElements::getColor()
