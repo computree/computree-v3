@@ -249,6 +249,9 @@ void DM_PainterToOsgElements::setColor(QColor color)
 {
     if(isSetColorEnable())
         m_currentConfig.m_color = staticIntColorToInternalColor(color.red(), color.green(), color.blue(), color.alpha());
+
+    if(m_currentConfig.m_color.r() != 0)
+        m_currentConfig.m_color.r() = 150;
 }
 
 QColor DM_PainterToOsgElements::getColor()
@@ -931,6 +934,7 @@ void DM_PainterToOsgElements::addVertexIndexToGeometry_Global(const size_t &glob
 {
     osg::DrawElementsUInt *primitiveSet = static_cast<osg::DrawElementsUInt*>(geo->getPrimitiveSet(0));
     primitiveSet->push_back(globalIndex);
+    (*(ColorArrayType*)geo->getColorArray())[globalIndex] = m_currentConfig.m_color;
 }
 
 void DM_PainterToOsgElements::addVertexToGeometryAndVertexArrayWithTransform_Local(const double &x, const double &y, const double &z,
@@ -1634,7 +1638,7 @@ DM_PainterToOsgElements::LocalColorArrayType::value_type DM_PainterToOsgElements
     return LocalColorArrayType::value_type(((double)r)/255.0, ((double)g)/255.0, ((double)b)/255.0, ((double)a)/255.0);
     #else
     return LocalColorArrayType::value_type(r, g, b, a);
-#endif
+    #endif
 }
 
 DM_PainterToOsgElements::LocalColorArrayType::value_type DM_PainterToOsgElements::staticQColorToInternalColor(const QColor &color)

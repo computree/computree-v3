@@ -91,7 +91,6 @@ void PB_ActionModifyClustersGroups02::init()
         registerOption(option);
 
         document()->removeAllItemDrawable();
-        document()->beginAddMultipleItemDrawable();
 
         int colorNum = 0;
         int posNum = 0;
@@ -121,19 +120,25 @@ void PB_ActionModifyClustersGroups02::init()
             {
                 CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
                 _clusterToPosition.insert(cluster, position);
-
-                document()->addItemDrawable(*cluster);
             }
 
             posNum++;
         }
+
+        updateAllClustersColors();
+
+        document()->beginAddMultipleItemDrawable();
+
+        QMapIterator<const CT_PointCluster*, const CT_Point2D*> itC(_clusterToPosition);
+
+        while(itC.hasNext())
+            document()->addItemDrawable(*(CT_PointCluster*)itC.next().key());
 
         document()->endAddMultipleItemDrawable();
 
         option->selectColorA(_colorA);
         option->selectColorB(_colorB);
 
-        updateAllClustersColors();
         document()->redrawGraphics();
 
         connect(option, SIGNAL(setColorA(QColor)), this, SLOT(setColorA(QColor)));
