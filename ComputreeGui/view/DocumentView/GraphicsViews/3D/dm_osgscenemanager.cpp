@@ -310,14 +310,19 @@ void DM_OsgSceneManager::converterResultAvailable()
 
         result.m_rootGroup->setUserValue<int>(HAS_ITEM_KEY, HAS_ITEM_VALUE_OK);
 
-        DM_CustomUserData *userData = new DM_CustomUserData(item, index);
+        size_t currentIndex = index;
+
+        if(previousResult.m_rootGroup.valid())
+            currentIndex = ((DM_CustomUserData*)previousResult.m_rootGroup->getUserData())->indexInParent();
+
+        DM_CustomUserData *userData = new DM_CustomUserData(item, currentIndex);
         result.m_rootGroup->setUserData(userData);
 
         connect(this, SIGNAL(internalItemRemoved(size_t,size_t,size_t)), userData, SLOT(indexRemoved(size_t,size_t,size_t)), Qt::DirectConnection);
 
         // if update
         if(previousResult.m_rootGroup.valid()) {
-            m_itemRoot->setChild(((DM_CustomUserData*)previousResult.m_rootGroup->getUserData())->indexInParent(), result.m_rootGroup.get());
+            m_itemRoot->setChild(currentIndex, result.m_rootGroup.get());
             previousResult.m_rootGroup.release();
         } else {
             m_itemRoot->addChild(result.m_rootGroup.get());

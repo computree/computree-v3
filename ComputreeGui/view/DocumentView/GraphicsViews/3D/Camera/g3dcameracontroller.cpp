@@ -43,7 +43,7 @@ void G3DCameraController::setLastItemSelectedCameraCenter(double x, double y, do
 
 void G3DCameraController::emitCoordinatesChanged()
 {
-    emit coordinatesChanged();;
+    emit coordinatesChanged();
 }
 
 double G3DCameraController::x() const
