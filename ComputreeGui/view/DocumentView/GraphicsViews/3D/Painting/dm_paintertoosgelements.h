@@ -154,6 +154,11 @@ public:
      */
     static osg::Array* staticGetLocalVertexAttribArray(osg::Group *result, const uint &locationIndex);
 
+    /**
+     * @brief Get the Result (that represent an itemdrawable) that was the parent of the drawable passed in parameter
+     */
+    static osg::Group* staticGetResultFromDrawable(osg::Drawable *drawable);
+
     // METHODS NECESSARY TO GET WHAT DRAW THE ITEMDRAWABLE
 
     /**

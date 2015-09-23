@@ -18,6 +18,9 @@
 
 #define MIN_DOUBLE_VALUE_IN_METERS 0.0001
 
+#define WAS_RESULT_GROUP_KEY "DM_PainterToOsgElements"
+#define WAS_RESULT_GROUP_VALUE_OK 1
+
 QVector< QPair<double, double> > DM_PainterToOsgElements::VECTOR_CIRCLE_FASTEST = DM_PainterToOsgElements::staticInitCircleVector(DM_PainterToOsgElements::VECTOR_CIRCLE_FASTEST_SIZE);
 QVector< QPair<double, double> > DM_PainterToOsgElements::VECTOR_CIRCLE_NORMAL = DM_PainterToOsgElements::staticInitCircleVector(DM_PainterToOsgElements::VECTOR_CIRCLE_NORMAL_SIZE);
 
@@ -36,6 +39,7 @@ DM_PainterToOsgElements::DM_PainterToOsgElements()
     m_localCoordinateSystemsLastUsedValue = NULL;
 
     m_result.m_rootGroup = new osg::Group();
+    m_result.m_rootGroup->setUserValue(WAS_RESULT_GROUP_KEY, WAS_RESULT_GROUP_VALUE_OK);
 
     m_cancel = false;
     m_useDisplayList = true;
@@ -230,6 +234,25 @@ osg::Array* DM_PainterToOsgElements::staticGetLocalVertexAttribArray(osg::Group 
                 return staticRecursiveGetVertexAttribArray(g, locationIndex);
             }
         }
+    }
+
+    return NULL;
+}
+
+osg::Group* DM_PainterToOsgElements::staticGetResultFromDrawable(osg::Drawable *drawable)
+{
+    osg::Node *n = drawable->getParent(0);
+    int value;
+
+    while(n != NULL) {
+        if(n->getUserValue(WAS_RESULT_GROUP_KEY, value)) {
+            if(value == WAS_RESULT_GROUP_VALUE_OK)
+                return n->asGroup();
+            else
+                return NULL;
+        }
+
+        n = n->getParent(0);
     }
 
     return NULL;

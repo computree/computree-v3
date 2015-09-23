@@ -1,6 +1,7 @@
 #include "dm_itemdrawablepolytopeintersector.h"
 
 #include <osg/TemplatePrimitiveFunctor>
+#include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
 
 namespace ItemDrawablePolytopeIntersectorUtils
 {
@@ -410,7 +411,7 @@ osgUtil::Intersector* DM_ItemDrawablePolytopeIntersector::clone(osgUtil::Interse
 
 bool DM_ItemDrawablePolytopeIntersector::enter(const osg::Node& node)
 {
-    if (reachedLimit() || containsIntersections()) return false;
+    if (reachedLimit()) return false;
     return !node.isCullingActive() || m_polytope.contains( node.getBound() );
 }
 
@@ -421,7 +422,7 @@ void DM_ItemDrawablePolytopeIntersector::leave()
 
 void DM_ItemDrawablePolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
-    if (reachedLimit() || containsIntersections()) return;
+    if (reachedLimit()) return;
 
     if ( !m_polytope.contains( drawable->getBound() ) ) return;
 
@@ -430,8 +431,13 @@ void DM_ItemDrawablePolytopeIntersector::intersect(osgUtil::IntersectionVisitor&
 
     drawable->accept(func);
 
-    if(func.isIntersected())
-        setIntersected();
+    if(func.isIntersected()) {
+
+        osg::Group *g = DM_PainterToOsgElements::staticGetResultFromDrawable(drawable);
+
+        if(g != NULL)
+            setIntersected(g);
+    }
 }
 
 void DM_ItemDrawablePolytopeIntersector::reset()
@@ -441,12 +447,13 @@ void DM_ItemDrawablePolytopeIntersector::reset()
     m_isIntersected = false;
 }
 
-void DM_ItemDrawablePolytopeIntersector::setIntersected()
+void DM_ItemDrawablePolytopeIntersector::setIntersected(osg::Group *r)
 {
     if(m_parent != NULL)
-        m_parent->setIntersected();
+        m_parent->setIntersected(r);
 
     m_isIntersected = true;
+    m_results.insert(r);
 }
 
 

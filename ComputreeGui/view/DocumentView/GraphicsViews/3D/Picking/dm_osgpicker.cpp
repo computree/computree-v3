@@ -404,73 +404,58 @@ void DM_OsgPicker::selectItemsInWindowOrByPolytope(SelectionMode basicMode, doub
     else
         intersector = new DM_ItemDrawablePolytopeIntersector(*polytope);
 
+    if((basicMode == GraphicsViewInterface::SELECT_ONE)
+            || (basicMode == GraphicsViewInterface::ADD_ONE)
+            || (basicMode == GraphicsViewInterface::REMOVE_ONE)) {
+        intersector->setIntersectionLimit(DM_ItemDrawablePolytopeIntersector::LIMIT_ONE);
+    }
+
     osgUtil::IntersectionVisitor iv( intersector );
     DM_OsgSceneManager::staticSetPickerTraversalMask(iv);
 
-    const DM_OsgSceneManager::ResultCollection &itemsRepresentedByGroup = m_sceneManager->itemDrawableAndResults();
-    DM_OsgSceneManager::ResultCollectionIterator it(itemsRepresentedByGroup);
+    m_osgView->getCamera()->accept( iv );
 
-    while(it.hasNext()) {
-        it.next();
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().m_rootGroup.get(), false);
-    }
+    if(intersector->containsIntersections())
+    {
+        QSetIterator<osg::Group*> itR(intersector->results());
 
-    bool continueLoop = true;
+        bool continueLoop = true;
 
-    it.toFront();
+        while(itR.hasNext() && continueLoop) {
+            osg::Group *r = itR.next();
 
-    while(it.hasNext() && continueLoop) {
+            CT_AbstractItemDrawable *item = DM_OsgSceneManager::staticConvertNodeToItemDrawable(*r);
 
-        intersector->reset();
+            if(item != NULL) {
 
-        it.next();
+                switch(basicMode) {
+                    case GraphicsViewInterface::SELECT:     addItemToSelection(item);
+                                                            break;
 
-        const DM_OsgSceneManager::ResultCollection::mapped_type &result = it.value();
+                    case GraphicsViewInterface::SELECT_ONE: addItemToSelection(item);
+                                                            continueLoop = false;
+                                                            break;
 
-        DM_OsgSceneManager::staticSetEnablePicking(result.m_rootGroup.get(), true);
+                    case GraphicsViewInterface::ADD:        addItemToSelection(item);
+                                                            break;
 
-        m_osgView->getCamera()->accept( iv );
+                    case GraphicsViewInterface::ADD_ONE:    addItemToSelection(item);
+                                                            continueLoop = false;
+                                                            break;
 
-        if(intersector->containsIntersections())
-        {
-            CT_AbstractItemDrawable *item = it.key();
+                    case GraphicsViewInterface::REMOVE:     removeItemFromSelection(item);
+                                                            break;
 
-            switch(basicMode) {
-                case GraphicsViewInterface::SELECT:     addItemToSelection(item);
-                                                        break;
+                    case GraphicsViewInterface::REMOVE_ONE: removeItemFromSelection(item);
+                                                            continueLoop = false;
+                                                            break;
 
-                case GraphicsViewInterface::SELECT_ONE: addItemToSelection(item);
-                                                        continueLoop = false;
-                                                        break;
+                    default: continueLoop = false;
+                             break;
 
-                case GraphicsViewInterface::ADD:        addItemToSelection(item);
-                                                        break;
-
-                case GraphicsViewInterface::ADD_ONE:    addItemToSelection(item);
-                                                        continueLoop = false;
-                                                        break;
-
-                case GraphicsViewInterface::REMOVE:     removeItemFromSelection(item);
-                                                        break;
-
-                case GraphicsViewInterface::REMOVE_ONE: removeItemFromSelection(item);
-                                                        continueLoop = false;
-                                                        break;
-
-                default: continueLoop = false;
-                         break;
-
+                }
             }
         }
-
-        DM_OsgSceneManager::staticSetEnablePicking(result.m_rootGroup.get(), false);
-    }
-
-    it.toFront();
-
-    while(it.hasNext()) {
-        it.next();
-        DM_OsgSceneManager::staticSetEnablePicking(it.value().m_rootGroup.get(), true);
     }
 }
 

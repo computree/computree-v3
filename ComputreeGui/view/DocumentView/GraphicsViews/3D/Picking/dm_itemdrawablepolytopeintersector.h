@@ -2,6 +2,7 @@
 #define DM_ITEMDRAWABLEPOLYTOPEINTERSECTOR_H
 
 #include <osgUtil/IntersectionVisitor>
+#include <QSet>
 
 /**
  * @brief Use this class to pick itemdrawable.
@@ -41,15 +42,18 @@ public:
 
     virtual bool containsIntersections() { return m_parent ? m_parent->m_isIntersected : m_isIntersected; }
 
+    virtual const QSet<osg::Group*>& results() { return m_parent ? m_parent->results() : m_results; }
+
 private:
     DM_ItemDrawablePolytopeIntersector* m_parent;
     osg::Polytope                       m_polytope;
     bool                                m_isIntersected; // at true if at least one Vec3 is contained in the polytope
+    QSet<osg::Group*>                   m_results;
 
     /**
      * @brief Call this if intersection is founded
      */
-    void setIntersected();
+    void setIntersected(osg::Group *r);
 };
 
 #endif // DM_ITEMDRAWABLEPOLYTOPEINTERSECTOR_H
