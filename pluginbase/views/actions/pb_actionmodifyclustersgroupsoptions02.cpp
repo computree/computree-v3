@@ -88,13 +88,6 @@ bool PB_ActionModifyClustersGroupsOptions02::isValidatedVisible() const
     return ui->cb_showValidated->isChecked();
 }
 
-void PB_ActionModifyClustersGroupsOptions02::on_buttonGroupType_buttonReleased(int id)
-{
-    Q_UNUSED(id)
-
-    (dynamic_cast<PB_ActionModifyClustersGroups02*>(action()))->setSelectionMode(selectionMode());
-}
-
 void PB_ActionModifyClustersGroupsOptions02::on_buttonGroupMode_buttonReleased(int id)
 {
     Q_UNUSED(id)

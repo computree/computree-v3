@@ -123,17 +123,6 @@ void PB_ActionModifyClustersGroups02::init()
                 _clusterToPosition.insert(cluster, position);
 
                 document()->addItemDrawable(*cluster);
-
-                if (posNum == 0)
-                {
-                    document()->setColor(cluster, _colorA);
-                } else if (posNum == 1)
-                {
-                    document()->setColor(cluster, _colorB);
-                } else {
-                    document()->setColor(cluster, _positionsBaseColors.value(position, _colorTmp));
-                }
-
             }
 
             posNum++;
@@ -143,6 +132,9 @@ void PB_ActionModifyClustersGroups02::init()
 
         option->selectColorA(_colorA);
         option->selectColorB(_colorB);
+
+        updateAllClustersColors();
+        document()->redrawGraphics();
 
         connect(option, SIGNAL(setColorA(QColor)), this, SLOT(setColorA(QColor)));
         connect(option, SIGNAL(setColorB(QColor)), this, SLOT(setColorB(QColor)));
@@ -167,8 +159,6 @@ void PB_ActionModifyClustersGroups02::updateAllClustersColors()
 {
     const QList<const CT_PointCluster*>* listA = _positionToCluster->value(_positionA).second;
     const QList<const CT_PointCluster*>* listB = _positionToCluster->value(_positionB).second;
-
-    //const QList<CT_AbstractItemDrawable*>& visibleItems = document()->getItemDrawable();
 
     QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
     while (it.hasNext())
@@ -212,8 +202,6 @@ void PB_ActionModifyClustersGroups02::updateColorForOneCluster(const CT_Point2D*
 
     if (position == _positionA) {clusterColor = _colorA;}
     if (position == _positionB) {clusterColor = _colorB;}
-
-    //const QList<CT_AbstractItemDrawable*>& visibleItems = document()->getItemDrawable();
 
     const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = _positionToCluster->value(position);
 
@@ -807,66 +795,42 @@ void PB_ActionModifyClustersGroups02::updateVisiblePositions()
 {
     PB_ActionModifyClustersGroupsOptions02 *option = (PB_ActionModifyClustersGroupsOptions02*)optionAt(0);
 
-
-    document()->removeAllItemDrawable();
-    document()->beginAddMultipleItemDrawable();
-
-    if (option->isOthersVisible())
+    QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
+    while (it.hasNext())
     {
-        QMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > it(*_positionToCluster);
-        while (it.hasNext())
+        it.next();
+        const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
+        for (int i = 0 ; i < pair.second->size() ; i++)
         {
-            it.next();
-
-            if (option->isValidatedVisible() || !_validatedPositions.contains(it.key()))
-            {
-                const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = it.value();
-                for (int i = 0 ; i < pair.second->size() ; i++)
-                {
-                    CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
-                    document()->addItemDrawable(*cluster);
-                }
-            }
-        }
-    } else {
-        if (option->isAVisible())
-        {
-            const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairA = _positionToCluster->value(_positionA);
-            for (int i = 0 ; i < pairA.second->size() ; i++)
-            {
-                CT_PointCluster* cluster = (CT_PointCluster*) pairA.second->at(i);
-                document()->addItemDrawable(*cluster);
-            }
-        }
-
-        if (option->isBVisible())
-        {
-            const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairB = _positionToCluster->value(_positionB);
-            for (int i = 0 ; i < pairB.second->size() ; i++)
-            {
-                CT_PointCluster* cluster = (CT_PointCluster*) pairB.second->at(i);
-                document()->addItemDrawable(*cluster);
-            }
+            CT_PointCluster* cluster = (CT_PointCluster*) pair.second->at(i);
+            document()->setVisible(cluster, option->isOthersVisible() && (option->isValidatedVisible() || !_validatedPositions.contains(it.key())));
         }
     }
 
-    if (option->isTMPVisible())
+    const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairA = _positionToCluster->value(_positionA);
+    for (int i = 0 ; i < pairA.second->size() ; i++)
     {
-        for (int i = 0 ; i < _temporaryClusterList.size() ; i++)
-        {
-            document()->addItemDrawable(*(_temporaryClusterList.at(i)));
-        }
+        CT_PointCluster* cluster = (CT_PointCluster*) pairA.second->at(i);
+        document()->setVisible(cluster, option->isAVisible());
     }
 
-    if (option->isTrashVisible())
+    const QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pairB = _positionToCluster->value(_positionB);
+    for (int i = 0 ; i < pairB.second->size() ; i++)
     {
-        for (int i = 0 ; i < _trashClusterList.size() ; i++)
-        {
-            document()->addItemDrawable(*(_trashClusterList.at(i)));
-        }
+        CT_PointCluster* cluster = (CT_PointCluster*) pairB.second->at(i);
+        document()->setVisible(cluster, option->isBVisible());
     }
 
-    document()->endAddMultipleItemDrawable();
+    for (int i = 0 ; i < _temporaryClusterList.size() ; i++)
+    {
+        document()->setVisible(_temporaryClusterList.at(i), option->isTMPVisible());
+    }
+
+    for (int i = 0 ; i < _trashClusterList.size() ; i++)
+    {
+        document()->setVisible(_trashClusterList.at(i), option->isTrashVisible());
+    }
+
     document()->redrawGraphics();
 }
 
