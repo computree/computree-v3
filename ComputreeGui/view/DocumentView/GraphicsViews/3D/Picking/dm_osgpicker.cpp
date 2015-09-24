@@ -570,6 +570,9 @@ void DM_OsgPicker::selectPEFInWindowOrByPolytope(DM_OsgPicker::SelectionMode bas
         if(local.valid())
             DM_OsgSceneManager::staticSetEnablePicking(local.get(), true);
     }
+
+    if(m_selectionPointsChanged)
+        m_sceneManager->dirtyDisplayListOfAllElementsOfItemDrawable();
 }
 
 CT_AbstractModifiablePointCloudIndex* DM_OsgPicker::convertSelectedPointsToIndexCloud() const

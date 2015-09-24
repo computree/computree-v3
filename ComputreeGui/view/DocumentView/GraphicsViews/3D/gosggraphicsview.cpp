@@ -197,6 +197,9 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
     m_view->addEventHandler(m_captureScreenHandler);
     //m_view->addEventHandler(new osgViewer::StatsHandler);
 
+    DM_2DCameraManipulator *manipulator2D = ((DM_2DCameraManipulator*)m_manSwitch->getMatrixManipulatorWithIndex(1));
+    manipulator2D->setCamera(m_view->getCamera());
+
     m_hudCamera = createHUDCameraForEnablePaintingOverlayWithQPainter(m_graphicsWindow, 800, 600);
 
     m_compositeViewer = createCompositeViewer(m_view);
@@ -275,7 +278,7 @@ void GOsgGraphicsView::init()
 
 void GOsgGraphicsView::stopSpinning()
 {
-    DM_3DCameraManipulator *manipulator = dynamic_cast<DM_3DCameraManipulator*>(m_manSwitch->getCurrentMatrixManipulator());
+    osgGA::OrbitManipulator *manipulator = dynamic_cast<osgGA::OrbitManipulator*>(m_manSwitch->getCurrentMatrixManipulator());
 
     if(manipulator != NULL) {
         osg::Quat rot(manipulator->getRotation());
@@ -401,15 +404,13 @@ bool GOsgGraphicsView::restoreStateFromFile()
 void GOsgGraphicsView::active2dView(bool enable)
 {
     if(enable) {
-        // TODO : problem 2D camera !
-        m_view->getCamera()->setViewMatrixAsLookAt(-osg::Z_AXIS*3, osg::Vec3(0, 0, 0), osg::Y_AXIS);
-        m_view->getCamera()->setProjectionMatrixAsOrtho(-1, 1, -1, 1, 1.0f, 10000.0f);
+        getCamera()->alignCameraToZAxis();
         m_manSwitch->selectMatrixManipulator(1);
         m_camController.setRealCameraManipulator((osgGA::OrbitManipulator*)m_manSwitch->getCurrentMatrixManipulator());
     } else {
-        m_view->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f );
         m_manSwitch->selectMatrixManipulator(0);
         m_camController.setRealCameraManipulator((osgGA::OrbitManipulator*)m_manSwitch->getCurrentMatrixManipulator());
+        setCameraType(CameraInterface::PERSPECTIVE);
     }
 }
 
@@ -822,6 +823,11 @@ void GOsgGraphicsView::resizeGL(int width, int height)
     getEventQueue()->windowResize( this->x(), this->y(), width, height );
     m_graphicsWindow->resized( this->x(), this->y(), width, height );
     onResize( width, height );
+
+    DM_2DCameraManipulator *manip = dynamic_cast<DM_2DCameraManipulator*>(m_manSwitch->getCurrentMatrixManipulator());
+
+    if(manip != NULL)
+        manip->updateCameraOrthographic();
 }
 
 void GOsgGraphicsView::onResize(int width, int height)
