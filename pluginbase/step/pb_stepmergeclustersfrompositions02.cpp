@@ -48,6 +48,7 @@ PB_StepMergeClustersFromPositions02::PB_StepMergeClustersFromPositions02(CT_Step
 {
     _interactiveMode = true;
     _hRef = 1.3;
+    _dMax = 2.0;
     m_doc = NULL;
 
     setManual(true);
@@ -123,6 +124,7 @@ void PB_StepMergeClustersFromPositions02::createPostConfigurationDialog()
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
 
     configDialog->addDouble(tr("Hauteur de référence"), "", -99999, 99999, 2, _hRef);
+    configDialog->addDouble(tr("Distance maximum entre clusters d'un même groupe"), "", 0, 99999, 2, _dMax);
     configDialog->addBool(tr("Correction interactive ?"), "", "", _interactiveMode);
 }
 
@@ -182,7 +184,7 @@ void PB_StepMergeClustersFromPositions02::compute()
 
 
     // Création des correspondance clusters / positions
-    // Phase 1 : recherche du cluster le plus proche de chaque postition
+    // Phase 1 : recherche du cluster le plus proche de chaque position
     QList<CT_PointCluster*> clustersPhase1;
 
     QMutableMapIterator<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > itPos(_positionsData);
@@ -205,7 +207,7 @@ void PB_StepMergeClustersFromPositions02::compute()
             {
                 const Eigen::Vector3d &center = cluster->getCenterCoordinate();
                 double distance = squareDist(posCenter, center);
-                if (distance < minDist)
+                if (distance <= _dMax && distance < minDist)
                 {
                     minDist = distance;
                     bestCluster = cluster;
@@ -276,31 +278,41 @@ void PB_StepMergeClustersFromPositions02::compute()
     int cpt = -1;
     int nbClust = clusterDataList.size();
     double distance = 0;
+    bool changed = true;
 
     while (!clusterDataList.isEmpty() && !isStopped())
     {
-        std::sort(clusterDataList.begin(), clusterDataList.end());
+        if (changed)
+        {
+            std::sort(clusterDataList.begin(), clusterDataList.end());
+            changed = false;
+        }
 
         ClusterData clusterData = clusterDataList.takeFirst();
 
-        // Affectation du cluster à la position la plus proche
-        QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) _positionsData.value(clusterData._position);
-        pair.second->append(clusterData._cluster);
-
-        _clusterToCluster.insert(clusterData._positionCluster, clusterData._cluster);
-
-        // Mise à jour de la map des distances à l'aide de ce cluster
-        QListIterator<ClusterData> itClust(clusterDataList);
-        while (itClust.hasNext())
+        if (clusterData._distance > _dMax)
         {
-            ClusterData& clusterD = (ClusterData&) itClust.next();
+            _trash.append(clusterData._cluster);
+        } else {
+            // Affectation du cluster à la position la plus proche
+            QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &pair = (QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > &) _positionsData.value(clusterData._position);
+            pair.second->append(clusterData._cluster);
 
-            distance = squareDist(clusterData.center(), clusterD.center());
-            if (distance < clusterD._distance)
+            _clusterToCluster.insert(clusterData._positionCluster, clusterData._cluster);
+
+            // Mise à jour de la map des distances à l'aide de ce cluster
+            for (int i = 0 ; i < clusterDataList.size() ; i++)
             {
-                clusterD._position = clusterData._position;
-                clusterD._distance = distance;
-                clusterD._positionCluster = clusterData._cluster;
+                ClusterData& clusterD = (ClusterData&) clusterDataList.at(i);
+
+                distance = squareDist(clusterData.center(), clusterD.center());
+                if (distance < _dMax && distance < clusterD._distance)
+                {
+                    clusterD._position = clusterData._position;
+                    clusterD._distance = distance;
+                    clusterD._positionCluster = clusterData._cluster;
+                    changed = true;
+                }
             }
         }
 
@@ -403,7 +415,7 @@ void PB_StepMergeClustersFromPositions02::initManualMode()
     m_doc->removeAllItemDrawable();
 
     // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)
-    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups02(&_positionsData, &_clusterToCluster));
+    m_doc->setCurrentAction(new PB_ActionModifyClustersGroups02(&_positionsData, &_clusterToCluster, &_trash));
 
 
     QMessageBox::information(NULL, tr("Mode manuel"), tr("Bienvenue dans le mode manuel de cette "

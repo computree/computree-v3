@@ -10,10 +10,11 @@
 
 #include "ct_math/ct_mathpoint.h"
 
-PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_Point2D *, QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> > *map, QMultiMap<CT_PointCluster *, CT_PointCluster *> *clToCl) : CT_AbstractActionForGraphicsView()
+PB_ActionModifyClustersGroups02::PB_ActionModifyClustersGroups02(QMap<const CT_Point2D *, QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> > *map, QMultiMap<CT_PointCluster *, CT_PointCluster *> *clToCl, QList<CT_PointCluster *> *trash) : CT_AbstractActionForGraphicsView()
 {
     _positionToCluster = map;
     _clusterToCluster = clToCl;
+    _trashClusterList = trash;
 
     m_status = 0;
     m_mousePressed = false;
@@ -130,9 +131,15 @@ void PB_ActionModifyClustersGroups02::init()
         document()->beginAddMultipleItemDrawable();
 
         QMapIterator<const CT_PointCluster*, const CT_Point2D*> itC(_clusterToPosition);
-
         while(itC.hasNext())
+        {
             document()->addItemDrawable(*(CT_PointCluster*)itC.next().key());
+        }
+
+        for (int i = 0 ; i < _trashClusterList->size() ; i++)
+        {
+            document()->addItemDrawable(*(_trashClusterList->at(i)));
+        }
 
         document()->endAddMultipleItemDrawable();
 
@@ -183,7 +190,7 @@ void PB_ActionModifyClustersGroups02::updateAllClustersColors()
             } else if (listB->contains(cluster))
             {
                 document()->setColor(cluster, _colorB);
-            } else if (_trashClusterList.contains(cluster))
+            } else if (_trashClusterList->contains(cluster))
             {
                 document()->setColor(cluster, _colorTrash);
             } else {
@@ -437,7 +444,7 @@ void PB_ActionModifyClustersGroups02::drawOverlay(GraphicsViewInterface &view, Q
 
 CT_AbstractAction* PB_ActionModifyClustersGroups02::copy() const
 {
-    return new PB_ActionModifyClustersGroups02(_positionToCluster, _clusterToCluster);
+    return new PB_ActionModifyClustersGroups02(_positionToCluster, _clusterToCluster, _trashClusterList);
 }
 
 bool PB_ActionModifyClustersGroups02::setSelectionMode(GraphicsViewInterface::SelectionMode mode)
@@ -583,7 +590,7 @@ void PB_ActionModifyClustersGroups02::addToA(CT_PointCluster* cluster)
 
         // Suppression
         _temporaryClusterList.removeOne(cluster);
-        _trashClusterList.removeOne(cluster);
+        _trashClusterList->removeOne(cluster);
 
         // Ajout
         _clusterToPosition.insert(cluster, _positionA);
@@ -620,7 +627,7 @@ void PB_ActionModifyClustersGroups02::addToB(CT_PointCluster* cluster)
 
         // Suppression
         _temporaryClusterList.removeOne(cluster);
-        _trashClusterList.removeOne(cluster);
+        _trashClusterList->removeOne(cluster);
 
         // Ajout
         _clusterToPosition.insert(cluster, _positionB);
@@ -687,7 +694,7 @@ void PB_ActionModifyClustersGroups02::affectClusterToTMP()
                 } else {PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Pas de liste pour la position"));}
                 _clusterToPosition.remove(cluster);
             }
-            _trashClusterList.removeOne(cluster);
+            _trashClusterList->removeOne(cluster);
 
             // Ajout
             if (!_temporaryClusterList.contains(cluster))
@@ -725,9 +732,9 @@ void PB_ActionModifyClustersGroups02::affectClusterToTrash()
             _temporaryClusterList.removeOne(cluster);
 
             // Ajout
-            if (!_trashClusterList.contains(cluster))
+            if (!_trashClusterList->contains(cluster))
             {
-                _trashClusterList.append(cluster);
+                _trashClusterList->append(cluster);
                 document()->setColor(cluster, _colorTrash);
             }
         }
@@ -831,9 +838,9 @@ void PB_ActionModifyClustersGroups02::updateVisiblePositions()
         document()->setVisible(_temporaryClusterList.at(i), option->isTMPVisible());
     }
 
-    for (int i = 0 ; i < _trashClusterList.size() ; i++)
+    for (int i = 0 ; i < _trashClusterList->size() ; i++)
     {
-        document()->setVisible(_trashClusterList.at(i), option->isTrashVisible());
+        document()->setVisible(_trashClusterList->at(i), option->isTrashVisible());
     }
 
     document()->redrawGraphics();

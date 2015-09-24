@@ -25,7 +25,7 @@ class PB_ActionModifyClustersGroups02 : public CT_AbstractActionForGraphicsView
     Q_OBJECT
 public:
 
-    PB_ActionModifyClustersGroups02(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map, QMultiMap<CT_PointCluster*, CT_PointCluster*> *clToCl);
+    PB_ActionModifyClustersGroups02(QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *map, QMultiMap<CT_PointCluster*, CT_PointCluster*> *clToCl, QList<CT_PointCluster*> *trash);
 
     QString uniqueName() const;
     QString title() const;
@@ -83,6 +83,8 @@ private:
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > *_positionToCluster;
     QMultiMap<CT_PointCluster*, CT_PointCluster*>                                               *_clusterToCluster;
+    QList<CT_PointCluster*>                                                                     *_trashClusterList;
+
     QMap<const CT_PointCluster*, const CT_Point2D*> _clusterToPosition;
 
     QList<QColor>                   _automaticColorList;
@@ -96,7 +98,6 @@ private:
     CT_Point2D*                     _positionA;
     CT_Point2D*                     _positionB;
     QList<CT_PointCluster*>         _temporaryClusterList;
-    QList<CT_PointCluster*>         _trashClusterList;
     bool                            _positionsChanged;
     QList<CT_PointCluster*>         _clustersOrdered;
     int                             _currentLastA;

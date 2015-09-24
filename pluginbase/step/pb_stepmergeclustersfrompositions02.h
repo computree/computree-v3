@@ -134,6 +134,7 @@ private:
 
     // Step parameters
     bool    _interactiveMode;
+    double  _dMax;
     double  _hRef;
     QList<CT_AbstractItemDrawable*>                             m_itemDrawableSelected;
     DocumentInterface                                           *m_doc;
@@ -141,6 +142,7 @@ private:
 
     QMap<const CT_Point2D*, QPair<CT_PointCloudIndexVector*, QList<const CT_PointCluster*>* > > _positionsData;
     QMultiMap<CT_PointCluster*, CT_PointCluster*> _clusterToCluster;
+    QList<CT_PointCluster*>                       _trash;
 
     static void addPointsToScenes(QPair<CT_PointCloudIndexVector *, QList<const CT_PointCluster *> *> &pair);
 
