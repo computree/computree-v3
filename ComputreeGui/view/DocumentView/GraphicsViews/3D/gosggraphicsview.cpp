@@ -195,7 +195,7 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
     m_captureScreenHandler = createScreenCaptureHandler();
     m_view = createView(createMainCamera(m_graphicsWindow), m_manSwitch.get(), m_scene.get());
     m_view->addEventHandler(m_captureScreenHandler);
-    m_view->addEventHandler(new osgViewer::StatsHandler);
+    //m_view->addEventHandler(new osgViewer::StatsHandler);
 
     m_hudCamera = createHUDCameraForEnablePaintingOverlayWithQPainter(m_graphicsWindow, 800, 600);
 
