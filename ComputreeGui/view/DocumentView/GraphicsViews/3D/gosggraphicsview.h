@@ -454,6 +454,8 @@ private:
     QString                                             m_defaultStateFileName;
     uint                                                m_uniqueIndex;
 
+    osg::ref_ptr<osg::Camera>                           m_hudCamera;
+
     static uint                                         NUMBER_OF_VIEWS;
 
     /**

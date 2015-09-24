@@ -6,6 +6,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Point>
 #include <osgDB/WriteFile>
+#include <osgViewer/Renderer>
 
 #include "dm_guimanager.h"
 
@@ -133,6 +134,46 @@ osgViewer::ScreenCaptureHandler* createScreenCaptureHandler() {
     return screenCapture;
 }
 
+osg::Camera* createHUDCameraForEnablePaintingOverlayWithQPainter(osg::GraphicsContext *gc, int width, int height) {
+
+    osg::Camera *camera = new osg::Camera;
+    camera->setRenderer(new osgViewer::Renderer(camera));
+    camera->setProjectionResizePolicy(osg::Camera::FIXED);
+    camera->setGraphicsContext(gc);
+    camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
+
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+    camera->setViewMatrix(osg::Matrix::identity());
+
+    // only clear the depth buffer
+    camera->setClearMask(0);
+    camera->setAllowEventFocus(false);
+
+    camera->setViewport(0, 0, width, height);
+
+    if (fabs(height*1280.0) <= fabs(width*1024.0))
+        camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,width*1024/height,0.0,1024));
+    else
+        camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,1280,1024-height*1280/width,1024));
+
+    osg::Geode* geode = new osg::Geode();
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+    osgText::Text* label = new osgText::Text;
+
+    label->setColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+    label->setCharacterSize(20.0f);
+    label->setPosition(osg::Vec3(1.0f, 1024.0f, 0.0f));
+    label->setText("eheh");
+
+    geode->addDrawable(label);
+
+    camera->addChild(geode);
+
+    return camera;
+}
+
 /////////////////// GOsgGraphicsView /////////////////////
 
 GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGraphicsView()
@@ -155,6 +196,8 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
     m_view = createView(createMainCamera(m_graphicsWindow), m_manSwitch.get(), m_scene.get());
     m_view->addEventHandler(m_captureScreenHandler);
     m_view->addEventHandler(new osgViewer::StatsHandler);
+
+    m_hudCamera = createHUDCameraForEnablePaintingOverlayWithQPainter(m_graphicsWindow, 800, 600);
 
     m_compositeViewer = createCompositeViewer(m_view);
 
@@ -877,8 +920,10 @@ void GOsgGraphicsView::paintOverlayCameraInformation(QPainter &painter)
     }
 
     if(options.getCameraInformationDisplayed() & DM_GraphicsViewOptions::FpsInformation) {
-        osg::FrameStamp *fs = m_compositeViewer->getViewerFrameStamp();
-        stringList.append(QString("fps : %1").arg((int)(fs->getFrameNumber()/fs->getReferenceTime())));
+        double fpsValue;
+        m_compositeViewer->getViewerStats()->collectStats("frame_rate",true);
+        m_compositeViewer->getViewerStats()->getAveragedAttribute("Frame rate", fpsValue, true);
+        stringList.append(QString("fps : %1").arg((int)fpsValue));
     }
 
     int n = stringList.size();
