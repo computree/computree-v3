@@ -37,7 +37,7 @@ public:
     void endRemoveMultipleItemDrawable();
 
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics() {}
+    void redrawGraphics(DocumentInterface::RedrawOptions opt = DocumentInterface::RO_NoOptions) {}
     void lock() {}
     void unlock() {}
 

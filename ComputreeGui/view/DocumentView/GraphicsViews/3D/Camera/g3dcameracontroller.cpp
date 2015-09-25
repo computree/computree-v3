@@ -369,73 +369,101 @@ double eps() { return 1e-3; }
 
 void G3DCameraController::alignCameraToInvXAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d((fabs(eye.x()) > eps()) ? -fabs(eye.x()) : -6, 0, 0), center, osg::Z_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue de dos
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0,0.0,0.0));
+    m_camManipulator->setRotation(osg::Quat(-90.0f, osg::Vec3f(1.0f,0.0f,0.0f)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setElevation(0.0f);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 
 void G3DCameraController::alignCameraToInvYAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d(0, (fabs(eye.y()) > eps()) ? fabs(eye.y()) : 6, 0), center, osg::Z_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue coté droit
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0, 0.0, 0.0));
+    m_camManipulator->setRotation(osg::Quat(90.0f, osg::Vec3f(0.0f, 1.0f, 0.0f)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setElevation(0.0f);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 
 void G3DCameraController::alignCameraToInvZAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d(0, 0, (fabs(eye.z()) > eps()) ? -fabs(eye.z()) : -6), center, osg::X_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue de dessous
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0f, 0.0f, 0.0f));
+    m_camManipulator->setRotation(osg::Quat(1, 0, 0, 0));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 
 void G3DCameraController::alignCameraToXAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d((fabs(eye.x()) > eps()) ? fabs(eye.x()) : 6, 0, 0), center, osg::Z_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue de face
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0,0.0,0.0));
+    m_camManipulator->setRotation(osg::Quat(90.0f, osg::Vec3f(1.0f,0.0f,0.0f)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setElevation(0.0f);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 
 void G3DCameraController::alignCameraToYAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d(0, (fabs(eye.y()) > eps()) ? -fabs(eye.y()) : -6, 0), center, osg::Z_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue coté gauche
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0, 0.0, 0.0));
+    m_camManipulator->setRotation(osg::Quat(-90.0f, osg::Vec3f(0.0f, 1.0f, 0.0f)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setElevation(0.0f);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 
 void G3DCameraController::alignCameraToZAxis()
 {
-    osg::Vec3d eye;
-    osg::Vec3d center;
-    osg::Vec3d up;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    m_camManipulator->getTransformation(eye, center, up);
-    m_camManipulator->setHomePosition(osg::Vec3d(0, 0, (fabs(eye.z()) > eps()) ? fabs(eye.z()) : 6), center, -osg::X_AXIS);
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue de dessus
     m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0f, 0.0f, 0.0f));
+    m_camManipulator->setRotation(osg::Quat(0.0f, osg::Vec3f(0.0f, 0.0f, 1.0f)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setDistance(distance);
+
     redrawTheView();
 }
 

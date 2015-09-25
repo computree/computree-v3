@@ -59,7 +59,7 @@ public:
     void updateDrawing3DOfItemDrawablesInGraphicsView(const QList<CT_AbstractItemDrawable*> &items);
 
     QList<InDocumentViewInterface*> views() const;
-    void redrawGraphics();
+    void redrawGraphics(DocumentInterface::RedrawOptions opt = RO_NoOptions);
     void dirtyColorsOfPoints();
     void lock();
     void unlock();

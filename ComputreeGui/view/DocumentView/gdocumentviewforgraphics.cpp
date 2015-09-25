@@ -193,7 +193,7 @@ QList<InDocumentViewInterface *> GDocumentViewForGraphics::views() const
     return l;
 }
 
-void GDocumentViewForGraphics::redrawGraphics()
+void GDocumentViewForGraphics::redrawGraphics(DocumentInterface::RedrawOptions opt)
 {
     m_mutex->lock();
 
@@ -202,10 +202,13 @@ void GDocumentViewForGraphics::redrawGraphics()
         QListIterator<GGraphicsView*> it(_listGraphics);
 
         while(it.hasNext())
-            it.next()->redraw();
+            it.next()->redraw(opt.testFlag(DocumentInterface::RO_WaitForConversionCompleted) ? DM_GraphicsView::RO_WaitForConversionCompleted : DM_GraphicsView::RO_NoOptions);
     }
 
     m_mutex->unlock();
+
+    if(opt.testFlag(DocumentInterface::RO_UpdateItemSelected))
+        dirtyColorsOfPoints();
 }
 
 void GDocumentViewForGraphics::dirtyColorsOfPoints()

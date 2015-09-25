@@ -180,6 +180,8 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
 {
     m_mutex = new QMutex(QMutex::Recursive);
 
+    m_conversionInProgress = false;
+
     m_signalEmitter.setGraphicsView(this);
 
     m_mouseButtonPressed = false;
@@ -1213,8 +1215,28 @@ bool GOsgGraphicsView::event(QEvent *event)
     return handled;
 }
 
-void GOsgGraphicsView::redraw()
+void GOsgGraphicsView::conversionBegin()
 {
+    m_conversionInProgress = true;
+}
+
+void GOsgGraphicsView::conversionCompleted()
+{
+    m_conversionInProgress = false;
+    emit internalStopWaitingForConversionCompleted();
+}
+
+void GOsgGraphicsView::redraw(RedrawOptions opt)
+{
+    if(opt.testFlag(DM_GraphicsView::RO_WaitForConversionCompleted)
+            && m_conversionInProgress) {
+        QEventLoop loop;
+
+        connect(this, SIGNAL(internalStopWaitingForConversionCompleted()), &loop, SLOT(quit()), Qt::QueuedConnection);
+
+        loop.exec(QEventLoop::ExcludeUserInputEvents);
+    }
+
     update();
 }
 

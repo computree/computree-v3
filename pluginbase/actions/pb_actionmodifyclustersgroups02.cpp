@@ -146,7 +146,7 @@ void PB_ActionModifyClustersGroups02::init()
         option->selectColorA(_colorA);
         option->selectColorB(_colorB);
 
-        document()->redrawGraphics();
+        document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
 
         connect(option, SIGNAL(setColorA(QColor)), this, SLOT(setColorA(QColor)));
         connect(option, SIGNAL(setColorB(QColor)), this, SLOT(setColorB(QColor)));

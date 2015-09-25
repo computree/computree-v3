@@ -39,6 +39,14 @@ class DM_GraphicsView : public GraphicsViewInterface
     Q_INTERFACES(GraphicsViewInterface)
 
 public:
+
+    enum RedrawOption {
+        RO_NoOptions = 0x00,                    // No particular options
+        RO_WaitForConversionCompleted = 0x02    // Pass this element to wait for conversion of item previously added/removed was completed
+    };
+
+    Q_DECLARE_FLAGS(RedrawOptions, RedrawOption)
+
     DM_GraphicsView();
     virtual ~DM_GraphicsView();
 
@@ -61,7 +69,7 @@ public:
     virtual void lockPaint() = 0;
     virtual void unlockPaint() = 0;
 
-    virtual void redraw() = 0;
+    virtual void redraw(DM_GraphicsView::RedrawOptions opt = DM_GraphicsView::RO_NoOptions) = 0;
 
     virtual void updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable*> &list) = 0;
 
@@ -84,5 +92,7 @@ protected:
     DM_GraphicsViewOptions  *_options;
     DM_AttributesManager    *m_attributesManager;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(DM_GraphicsView::RedrawOptions)
 
 #endif // DM_GRAPHICSVIEW_H

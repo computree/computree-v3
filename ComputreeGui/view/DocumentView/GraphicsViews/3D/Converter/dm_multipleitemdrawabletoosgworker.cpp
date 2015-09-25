@@ -95,6 +95,11 @@ DM_MultipleItemDrawableToOsgWorker::~DM_MultipleItemDrawableToOsgWorker()
     delete m_mutex;
 }
 
+bool DM_MultipleItemDrawableToOsgWorker::isConversionInProgress() const
+{
+    return !m_toConvert.isEmpty();
+}
+
 QHash<CT_AbstractItemDrawable *, DM_PainterToOsgElementsResult> DM_MultipleItemDrawableToOsgWorker::takeResults()
 {
     QMutexLocker locker(m_mutex);
@@ -260,9 +265,13 @@ void DM_MultipleItemDrawableToOsgWorker::computeCollection()
         connect(&m_futureWatcher, SIGNAL(progressRangeChanged(int,int)), m_aop, SLOT(setProgressRange(int,int)), Qt::QueuedConnection);
         connect(&m_futureWatcher, SIGNAL(progressValueChanged(int)), m_aop, SLOT(setProgress(int)), Qt::QueuedConnection);
 
-        m_toConvertTemporary = m_toConvert.values();
-        m_future = QtConcurrent::map(m_toConvertTemporary, staticComputeQtConcurrent);
-        m_futureWatcher.setFuture(m_future);
+        if(!m_toConvert.isEmpty()) {
+            m_toConvertTemporary = m_toConvert.values();
+            m_future = QtConcurrent::map(m_toConvertTemporary, staticComputeQtConcurrent);
+            m_futureWatcher.setFuture(m_future);
+        } else {
+            computeCollectionFinished();
+        }
     }
 }
 

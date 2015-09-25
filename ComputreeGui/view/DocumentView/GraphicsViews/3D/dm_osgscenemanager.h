@@ -70,6 +70,11 @@ public:
     typedef QHash<CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > ResultCollection;
     typedef QHashIterator<CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > ResultCollectionIterator;
 
+    /**
+     * @brief Returns true if a conversion is in progress or in wait to begin
+     */
+    bool isConversionInProgress() const;
+
 public slots:
 
     /**
@@ -181,6 +186,7 @@ private:
     ResultCollection                                                m_results;                      // a hash to backup result for item
     GOsgGraphicsView                                                *m_view;
     RemoveCollection                                                m_toRemove;
+    QTimer                                                          m_timerUpdateRemove;
     QMutex                                                          m_actionMutex;
     DM_PainterToOsgElementsResult                                   m_actionResult;
     QMutex                                                          *m_mutex;
@@ -219,6 +225,12 @@ private slots:
     void updateDrawableForCurrentAction();
 
 signals:
+
+    /**
+     * @brief Emitted when the time to remove item must be started.
+     */
+    void internalMustStartRemoveTimer();
+
     /**
      * @brief Emitted when one or more items was removed.
      */

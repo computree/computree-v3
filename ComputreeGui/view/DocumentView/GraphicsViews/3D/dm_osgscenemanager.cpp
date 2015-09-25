@@ -28,11 +28,14 @@ DM_OsgSceneManager::DM_OsgSceneManager(GOsgGraphicsView &view, osg::ref_ptr<osg:
     m_itemRoot = new osg::Group;
     m_scene->addChild(m_itemRoot.get());
     m_scene->addChild(m_groupContainsDrawablesOfAction.get());
+    m_timerUpdateRemove.setSingleShot(true);
+    m_timerUpdateRemove.setInterval(50);
 
     initCullMaskOfViews();
 
     connect(m_converter, SIGNAL(newResultAvailable()), this, SLOT(converterResultAvailable()), Qt::QueuedConnection);
-    connect(view.signalEmitter(), SIGNAL(drawingFinished()), this, SLOT(updateToRemove()), Qt::DirectConnection);
+    connect(this, SIGNAL(internalMustStartRemoveTimer()), &m_timerUpdateRemove, SLOT(start()), Qt::QueuedConnection);
+    connect(&m_timerUpdateRemove, SIGNAL(timeout()), this, SLOT(updateToRemove()), Qt::QueuedConnection);
 }
 
 DM_OsgSceneManager::~DM_OsgSceneManager()
@@ -41,8 +44,14 @@ DM_OsgSceneManager::~DM_OsgSceneManager()
     delete m_mutex;
 }
 
+bool DM_OsgSceneManager::isConversionInProgress() const
+{
+    return m_converter->isConversionInProgress();
+}
+
 void DM_OsgSceneManager::addItemDrawable(CT_AbstractItemDrawable &item)
 {
+    m_view->conversionBegin();
     m_converter->addItemDrawable(item, m_view->getDocumentView()->getColor(&item));
 }
 
@@ -58,10 +67,13 @@ void DM_OsgSceneManager::removeItemDrawable(CT_AbstractItemDrawable &item)
         m_toRemove.push_back(r);
 
     locker.unlock();
+
+    emit internalMustStartRemoveTimer();
 }
 
 void DM_OsgSceneManager::updateItemDrawable(CT_AbstractItemDrawable &item)
 {
+    m_view->conversionBegin();
     m_converter->addItemDrawable(item, m_view->getDocumentView()->getColor(&item));
 }
 
@@ -330,7 +342,7 @@ void DM_OsgSceneManager::converterResultAvailable()
         }
     }
 
-    m_view->update();
+    m_view->conversionCompleted();
 }
 
 void DM_OsgSceneManager::actionConverterResultAvailable()
@@ -348,7 +360,7 @@ void DM_OsgSceneManager::actionConverterResultAvailable()
         m_currentActionConverter = NULL;
     }
 
-    m_view->update();
+    m_view->conversionCompleted();
 }
 
 void DM_OsgSceneManager::cancelCurrentActionConversion()
@@ -418,8 +430,6 @@ void DM_OsgSceneManager::updateToRemove()
     }
 
     m_toRemove.clear();
-
-    m_view->update();
 }
 
 void DM_OsgSceneManager::updateDrawableForCurrentAction()
@@ -430,6 +440,7 @@ void DM_OsgSceneManager::updateDrawableForCurrentAction()
     if((m_currentActionConverter == NULL)
             && (m_currentAction != NULL)) {
 
+        m_view->conversionBegin();
         // create a thread for the builder
         QThread *thread = new QThread();
 

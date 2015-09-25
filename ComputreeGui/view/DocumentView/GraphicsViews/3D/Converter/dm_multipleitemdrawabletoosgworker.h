@@ -24,6 +24,11 @@ public:
     ~DM_MultipleItemDrawableToOsgWorker();
 
     /**
+     * @brief Returns true if a conversion is in progress or in wait to begin
+     */
+    bool isConversionInProgress() const;
+
+    /**
      * @brief Return results of this worker and clear it
      */
     QHash< CT_AbstractItemDrawable*, DM_PainterToOsgElementsResult > takeResults();

@@ -131,7 +131,7 @@ public:
     /**
      * @brief Called when we must redraw
      */
-    virtual void redraw();
+    virtual void redraw(DM_GraphicsView::RedrawOptions opt = DM_GraphicsView::RO_NoOptions);
 
     /**
      * @brief Returns the camera used by this graphics view
@@ -429,6 +429,20 @@ protected:
     void wheelEvent(QWheelEvent *e);
     bool event( QEvent* event );
 
+protected:
+
+    friend class DM_OsgSceneManager;
+
+    /**
+     * @brief Called from osg scene manager when conversion is beginning
+     */
+    void conversionBegin();
+
+    /**
+     * @brief Called from osg scene manager when conversion is completed
+     */
+    void conversionCompleted();
+
 private:
     QMutex                                              *m_mutex;
 
@@ -455,6 +469,8 @@ private:
     uint                                                m_uniqueIndex;
 
     osg::ref_ptr<osg::Camera>                           m_hudCamera;
+
+    bool                                                m_conversionInProgress;
 
     static uint                                         NUMBER_OF_VIEWS;
 
@@ -484,7 +500,10 @@ private:
     bool restoreStateFromFile();
 
 signals:
-
+    /**
+     * @brief Emitted when the conversion of itemdrawable added was completed
+     */
+    void internalStopWaitingForConversionCompleted();
 };
 
 #endif // GOSGGRAPHICSVIEW_H
