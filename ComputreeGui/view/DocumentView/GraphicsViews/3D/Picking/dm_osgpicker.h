@@ -15,8 +15,10 @@ class DM_DocumentView;
 /**
  * @brief Use this class to make picking in a osg view
  */
-class DM_OsgPicker
+class DM_OsgPicker : public QObject
 {
+    Q_OBJECT
+
 public:
 
     typedef osg::ByteArray                          LocalVertexAttribArray;
@@ -155,6 +157,23 @@ private:
     void selectPEFInWindowOrByPolytope(SelectionMode basicMode, double mx, double my, double w, double h, osg::Polytope *polytope, DM_GlobalPointsPolytopeIntersector::ElementFilter filter);
 
     CT_AbstractModifiablePointCloudIndex *convertSelectedPointsToIndexCloud() const;
+
+private slots:
+
+    /**
+     * @brief Called when an itemdrawable was added to the GOsgGraphicsView
+     */
+    void itemAddedToView(CT_AbstractItemDrawable &item);
+
+    /**
+     * @brief Called when an itemdrawable was removed from the GOsgGraphicsView
+     */
+    void itemRemovedFromView(CT_AbstractItemDrawable &item);
+
+    /**
+     * @brief Called when an item emit signal "selectChange"
+     */
+    void itemSelectionChanged(bool selected, CT_AbstractItemDrawable *item);
 };
 
 #endif // DM_OSGPICKER_H

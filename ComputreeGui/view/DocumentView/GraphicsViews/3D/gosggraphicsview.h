@@ -504,6 +504,16 @@ signals:
      * @brief Emitted when the conversion of itemdrawable added was completed
      */
     void internalStopWaitingForConversionCompleted();
+
+    /**
+     * @brief Emitted when an itemdrawable was added to this view
+     */
+    void itemDrawableAdded(CT_AbstractItemDrawable &item);
+
+    /**
+     * @brief Emitted when an itemdrawable was removed from this view
+     */
+    void itemDrawableRemoved(CT_AbstractItemDrawable &item);
 };
 
 #endif // GOSGGRAPHICSVIEW_H

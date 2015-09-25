@@ -281,12 +281,12 @@ signals:
     /**
      * @brief Emitted when the selection state change
      */
-    void selectChange(bool value);
+    void selectChange(bool value, CT_AbstractItemDrawable *item = NULL);
 
     /**
      * @brief Emitted when the display state change
      */
-    void displayChange(bool value);
+    void displayChange(bool value, CT_AbstractItemDrawable *item = NULL);
 
 protected:
 

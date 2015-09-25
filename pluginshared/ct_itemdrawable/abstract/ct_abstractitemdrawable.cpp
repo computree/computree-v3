@@ -108,7 +108,7 @@ void CT_AbstractItemDrawable::setSelected(bool value)
     {
         _selected = value;
 
-        emit selectChange(_selected);
+        emit selectChange(_selected, this);
     }
 }
 
@@ -129,7 +129,7 @@ void CT_AbstractItemDrawable::setDisplayed(bool value)
 
         _displayed = value;
 
-        emit displayChange(_displayed);
+        emit displayChange(_displayed, this);
     }
 }
 

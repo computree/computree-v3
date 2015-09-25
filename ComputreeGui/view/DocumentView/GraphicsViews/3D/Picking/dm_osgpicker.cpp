@@ -26,6 +26,9 @@ DM_OsgPicker::DM_OsgPicker(GOsgGraphicsView *view, osgViewer::View *osgView, DM_
     if(getDocumentView() != NULL)
         m_globalVertexAttribArray = ((GDocumentViewForGraphics*)getDocumentView())->getOrCreateGlobalAttribArrayForPoints();
 
+    connect(m_view, SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), this, SLOT(itemAddedToView(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(m_view, SIGNAL(itemDrawableRemoved(CT_AbstractItemDrawable&)), this, SLOT(itemRemovedFromView(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+
     setSelectionMode(GraphicsViewInterface::NONE);
     setSelectRegionWidth(3);
     setSelectRegionHeight(3);
@@ -156,14 +159,8 @@ void DM_OsgPicker::addItemIDToSelection(const GLuint &id)
 
 void DM_OsgPicker::addItemToSelection(CT_AbstractItemDrawable *item)
 {
-    if((item != NULL) && !item->isSelected()) {
+    if((item != NULL) && !item->isSelected())
         item->setSelected(true);
-
-        setGlobalCloudPointsOfItemDrawableSelected(item, true);
-        setVertexAttribArrayOfItemDrawableSelected(item, true);
-
-        m_sceneManager->dirtyDisplayListOfAllElementsOfItemDrawable(item);
-    }
 }
 
 void DM_OsgPicker::removeItemIDFromSelection(const GLuint &id)
@@ -173,14 +170,8 @@ void DM_OsgPicker::removeItemIDFromSelection(const GLuint &id)
 
 void DM_OsgPicker::removeItemFromSelection(CT_AbstractItemDrawable *item)
 {
-    if((item != NULL) && item->isSelected()) {
+    if((item != NULL) && item->isSelected())
         item->setSelected(false);
-
-        setGlobalCloudPointsOfItemDrawableSelected(item, false);
-        setVertexAttribArrayOfItemDrawableSelected(item, false);
-
-        m_sceneManager->dirtyDisplayListOfAllElementsOfItemDrawable(item);
-    }
 }
 
 void DM_OsgPicker::addPointIdToSelection(const size_t &globalIndex)
@@ -594,4 +585,22 @@ CT_AbstractModifiablePointCloudIndex* DM_OsgPicker::convertSelectedPointsToIndex
     delete sel;
 
     return NULL;
+}
+
+void DM_OsgPicker::itemAddedToView(CT_AbstractItemDrawable &item)
+{
+    connect(&item, SIGNAL(selectChange(bool,CT_AbstractItemDrawable*)), this, SLOT(itemSelectionChanged(bool,CT_AbstractItemDrawable*)), Qt::DirectConnection);
+}
+
+void DM_OsgPicker::itemRemovedFromView(CT_AbstractItemDrawable &item)
+{
+    disconnect(&item, NULL, this, NULL);
+}
+
+void DM_OsgPicker::itemSelectionChanged(bool selected, CT_AbstractItemDrawable *item)
+{
+    setGlobalCloudPointsOfItemDrawableSelected(item, selected);
+    setVertexAttribArrayOfItemDrawableSelected(item, selected);
+
+    m_sceneManager->dirtyDisplayListOfAllElementsOfItemDrawable(item);
 }

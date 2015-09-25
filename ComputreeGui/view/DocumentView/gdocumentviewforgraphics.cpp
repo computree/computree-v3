@@ -206,9 +206,6 @@ void GDocumentViewForGraphics::redrawGraphics(DocumentInterface::RedrawOptions o
     }
 
     m_mutex->unlock();
-
-    if(opt.testFlag(DocumentInterface::RO_UpdateItemSelected))
-        dirtyColorsOfPoints();
 }
 
 void GDocumentViewForGraphics::dirtyColorsOfPoints()

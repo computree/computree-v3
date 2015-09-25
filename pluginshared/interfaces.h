@@ -1020,7 +1020,6 @@ public:
 
     enum RedrawOption {
         RO_NoOptions = 0x00,                    // No particular options
-        RO_UpdateItemSelected = 0x01,           // If you use the method setSelected of itemdrawable pass this option to update items with selection color
         RO_WaitForConversionCompleted = 0x02    // Pass this element to wait for conversion of item previously added/removed was completed
     };
 

@@ -274,6 +274,8 @@ void GOsgGraphicsView::init()
 
     connect(getDocumentView(), SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), m_sceneManager, SLOT(addItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
     connect(getDocumentView(), SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), m_sceneManager, SLOT(removeItemDrawable(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(getDocumentView(), SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), this, SIGNAL(itemDrawableAdded(CT_AbstractItemDrawable&)), Qt::DirectConnection);
+    connect(getDocumentView(), SIGNAL(itemDrawableToBeRemoved(CT_AbstractItemDrawable&)), this, SIGNAL(itemDrawableRemoved(CT_AbstractItemDrawable&)), Qt::DirectConnection);
 
     restoreStateFromFile();
 }
