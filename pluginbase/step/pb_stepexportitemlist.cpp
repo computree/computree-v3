@@ -6,6 +6,9 @@
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
 
+#include "ct_abstractstepplugin.h"
+#include "ct_exporter/ct_standardexporterseparator.h"
+
 #include "ct_itemdrawable/ct_profile.h"
 #include "exporters/profile/pb_profileexporter.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
@@ -24,6 +27,45 @@
 // Constructor : initialization of parameters
 PB_StepExportItemList::PB_StepExportItemList(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
+    _suffixFileName = "";
+
+
+//    // Create the available readers map
+//    PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
+//    int s = pm->countPluginLoaded();
+
+//    for(int i=0; i<s; ++i)
+//    {
+//        CT_AbstractStepPlugin *p = pm->getPlugin(i);
+
+//        QList<CT_StandardExporterSeparator*> rsl = p->getExportersAvailable();
+//        QListIterator<CT_StandardExporterSeparator*> itR(rsl);
+
+//        while(itR.hasNext())
+//        {
+//            CT_StandardExporterSeparator *rs = itR.next();
+//            QListIterator<CT_AbstractExporter*> itE(rs->exporters());
+
+//            while(itE.hasNext())
+//            {
+//                CT_AbstractExporter *exporter = itE.next();
+//                CT_AbstractExporter *exporterCpy = exporter->copy();
+//                exporterCpy->init();
+//                _exportersInstancesList.append(exporterCpy);
+
+//                const QList<FileFormat>& formats = exporterCpy->readableFormats();
+
+//                for (int n = 0 ; n < formats.size() ; n++)
+//                {
+//                    const FileFormat& format = formats.at(n);
+
+//                    QString key = QString("%2 - %1").arg(exporter->GetReaderName()).arg(format.description());
+//                    _exportersMap.insert(key, QPair<CT_AbstractExporter*, int>(exporterCpy, n));
+//                }
+
+//            }
+//        }
+//    }
 }
 
 // Step description (tooltip of contextual menu)
@@ -78,6 +120,7 @@ void PB_StepExportItemList::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addFileChoice(tr("Répertoire d'export"), CT_FileChoiceButton::OneExistingFolder, "", _dir);
+    configDialog->addString(tr("Suffixe de nom de fichier"), "", _suffixFileName);
 }
 
 void PB_StepExportItemList::compute()
@@ -116,6 +159,7 @@ void PB_StepExportItemList::compute()
             }
 
             path.append(attributeValue);
+            path.append(_suffixFileName);
 
             PB_ProfileExporter exporter;
             exporter.setExportFilePath(path);

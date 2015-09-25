@@ -2,6 +2,7 @@
 #define PB_STEPEXPORTITEMLIST_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_exporter/abstract/ct_abstractexporter.h"
 
 /*!
  * \class PB_StepExportItemList
@@ -81,6 +82,11 @@ private:
 
     // Step parameters
     QStringList _dir;
+    QString _suffixFileName;
+
+    QMap<QString, QPair<CT_AbstractExporter*, int> >  _exportersMap;
+    QList<CT_AbstractExporter*>                       _exportersInstancesList;
+
 };
 
 #endif // PB_STEPEXPORTITEMLIST_H
