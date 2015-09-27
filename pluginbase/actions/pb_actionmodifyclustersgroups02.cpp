@@ -203,6 +203,11 @@ void PB_ActionModifyClustersGroups02::updateAllClustersColors()
             }
         }
     }
+
+    for (int i = 0 ; i < _trashClusterList->size() ; i++)
+    {
+        document()->setColor(_trashClusterList->at(i), _colorTrash);
+    }
 }
 
 
