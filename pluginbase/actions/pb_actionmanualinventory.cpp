@@ -106,6 +106,28 @@ void PB_ActionManualInventory::init()
         }
 
         visibilityChanged();
+
+        document()->removeAllItemDrawable();
+        QMapIterator<const CT_Scene*, QMultiMap<double, const CT_Circle*> > itAv(*_availableDbh);
+        while (itAv.hasNext())
+        {
+            itAv.next();
+            CT_Scene* scene = (CT_Scene*) itAv.key();
+            const QMultiMap<double, const CT_Circle*> &circleMap = itAv.value();
+
+            document()->addItemDrawable(*scene);
+
+            QMapIterator<double, const CT_Circle*> itC(circleMap);
+            while (itC.hasNext())
+            {
+                itC.next();
+                CT_Circle* circle = (CT_Circle*) itC.value();
+                document()->addItemDrawable(*circle);
+            }
+        }
+
+        document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
+
         dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
     }
 }
@@ -133,9 +155,9 @@ bool PB_ActionManualInventory::mouseDoubleClickEvent(QMouseEvent *e)
 
         if (_currentCircle!=NULL && option->shouldAutoCenterCamera())
         {
-            graphicsView()->camera()->setCX(_currentCircle->getCenterX());
-            graphicsView()->camera()->setCY(_currentCircle->getCenterY());
-            graphicsView()->camera()->setCZ(_currentCircle->getCenterZ());
+            graphicsView()->camera()->setSceneCenter(_currentCircle->getCenterX(),
+                                                     _currentCircle->getCenterY(),
+                                                     _currentCircle->getCenterZ());
         }
         return true;
     }
@@ -345,8 +367,6 @@ void PB_ActionManualInventory::chooseForDbh(const QPoint &point)
         CT_Circle* oldCircle = _currentCircle;
         _currentCircle = pickedItem;
 
-        document()->removeItemDrawable(*oldCircle);
-        document()->removeItemDrawable(*_currentCircle);
         updateVisibility(_currentScene, oldCircle);
         updateVisibility(_currentScene, _currentCircle);
         document()->redrawGraphics();
@@ -439,8 +459,6 @@ void PB_ActionManualInventory::selectUpperCircle()
 
             _selectedDbh->insert(_currentScene, _currentCircle);
 
-            document()->removeItemDrawable(*oldCircle);
-            document()->removeItemDrawable(*_currentCircle);
             updateVisibility(_currentScene, oldCircle);
             updateVisibility(_currentScene, _currentCircle);
             document()->redrawGraphics();
@@ -465,8 +483,6 @@ void PB_ActionManualInventory::selectLowerCircle()
 
             _selectedDbh->insert(_currentScene, _currentCircle);
 
-            document()->removeItemDrawable(*oldCircle);
-            document()->removeItemDrawable(*_currentCircle);
             updateVisibility(_currentScene, oldCircle);
             updateVisibility(_currentScene, _currentCircle);
             document()->redrawGraphics();
@@ -509,9 +525,6 @@ void PB_ActionManualInventory::sendToValidated()
 
 void PB_ActionManualInventory::visibilityChanged()
 {
-
-    document()->removeAllItemDrawable();
-
     QMapIterator<const CT_Scene*, QMultiMap<double, const CT_Circle*> > it(*_availableDbh);
     while (it.hasNext())
     {
@@ -538,12 +551,9 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
     {
         if (option->isShowTrashChecked())
         {
-            document()->addItemDrawable(*circle);
+            document()->setVisible(circle, true);
 
-            if (option->isShowTrashedScenesChecked())
-            {
-                document()->addItemDrawable(*scene);
-            }
+            document()->setVisible(scene, option->isShowTrashedScenesChecked());
 
             if (_selectedDbh->values().contains(circle))
             {
@@ -551,13 +561,15 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
             } else {
                 document()->setColor(circle, _trashOtherCircleColor);
             }
+        } else {
+            document()->setVisible(circle, false);
         }
     } else {
         if (scene == _currentScene)
         {
             if (option->isShowActiveCirclesChecked() || circle == _currentCircle)
             {
-                document()->addItemDrawable(*circle);
+                document()->setVisible(circle, true);
 
                 if (circle == _currentCircle)
                 {
@@ -576,16 +588,16 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
                         document()->setColor(circle, _activeSceneCirclesColor);
                     }
                 }
+            } else {
+                document()->setVisible(circle, false);
             }
 
-            if (option->isShowActiveSceneChecked())
-            {
-                document()->addItemDrawable(*scene);
-            }
+            document()->setVisible(scene, option->isShowActiveSceneChecked());
         } else {
             if (option->isShowOtherCirclesChecked())
             {
-                document()->addItemDrawable(*circle);
+                document()->setVisible(circle, true);
+
                 if (_selectedDbh->values().contains(circle))
                 {
                     if (_validatedScenes.contains(scene))
@@ -608,11 +620,11 @@ void PB_ActionManualInventory::updateVisibility(CT_Scene* scene, CT_Circle* circ
                     }
                 }
             }
-
-            if (option->isShowOtherScenesChecked())
-            {
-                document()->addItemDrawable(*scene);
+            else {
+                document()->setVisible(circle, false);
             }
+
+            document()->setVisible(scene, option->isShowOtherScenesChecked());
         }
     }
 
