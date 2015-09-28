@@ -86,7 +86,14 @@ void PB_ActionSelectCellsInGrid3D::init()
         updateLevel(option->level());
         updateThickness(option->thickness());
         changeGridColor(option->gridColor());
-        document()->redrawGraphics();
+        document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
+
+        if (_refGrid != NULL)
+        {
+            Eigen::Vector3d min, max;
+            _refGrid->getBoundingBox(min, max);
+            dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitToSpecifiedBox(min, max);
+        }
     }
 }
 
@@ -159,7 +166,7 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates.append(index);
                         m_status = 3;
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
                 } else if (mode == PB_ActionSelectCellsInGrid3DOptions::EXTENDS && (e->buttons() & Qt::LeftButton))
@@ -169,7 +176,7 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates = computeExtends3D(index);
                         if (_candidates.size() > 0) {m_status = 1;}
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
 
@@ -180,14 +187,14 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates = computeColonize3D(index);
                         if (_candidates.size() > 0) {m_status = 1;}
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
 
                 } else
                 {
                     updateSelection(index);
-                    document()->redrawGraphics();
+                    updateDrawing();
                     return true;
                 }
             }
@@ -209,7 +216,7 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates.append(index);
                         m_status = 3;
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
 
@@ -220,7 +227,7 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates = computeExtends(colx, liny);
                         if (_candidates.size() > 0) {m_status = 1;}
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
 
@@ -231,14 +238,14 @@ bool PB_ActionSelectCellsInGrid3D::mousePressEvent(QMouseEvent *e)
                         _candidates.clear();
                         _candidates = computeColonize(colx, liny);
                         if (_candidates.size() > 0) {m_status = 1;}
-                        document()->redrawGraphics();
+                        updateDrawing();
                         return true;
                     }
 
                 } else
                 {
                     updateSelection(x, y, z);
-                    document()->redrawGraphics();
+                    updateDrawing();
                     return true;
                 }
             }
@@ -259,7 +266,7 @@ bool PB_ActionSelectCellsInGrid3D::mouseMoveEvent(QMouseEvent *e)
         if (getCoordsInActiveLevelForMousePosition(e, x, y, z))
         {
             updateSelection(x, y, z);
-            document()->redrawGraphics();
+            updateDrawing();
         }
         return true;
     }
@@ -456,7 +463,7 @@ bool PB_ActionSelectCellsInGrid3D::keyPressEvent(QKeyEvent *e)
                 _boolGrid->setValueAtIndex(_candidates.at(i), !_refState);
             }
             _candidates.clear();
-            document()->redrawGraphics();
+            updateDrawing();
             PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Extension validée"));
             return true;
         } else if (mode == PB_ActionSelectCellsInGrid3DOptions::COLONIZE && m_status == 1)
@@ -468,7 +475,7 @@ bool PB_ActionSelectCellsInGrid3D::keyPressEvent(QKeyEvent *e)
                 _boolGrid->setValueAtIndex(_candidates.at(i), true);
             }
             _candidates.clear();
-            document()->redrawGraphics();
+            updateDrawing();
             PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Colonization validée"));
             return true;
         } else if (mode == PB_ActionSelectCellsInGrid3DOptions::CHANGECENTERCELL && m_status == 3)
@@ -492,7 +499,7 @@ bool PB_ActionSelectCellsInGrid3D::keyPressEvent(QKeyEvent *e)
             m_status = 0;
             _candidates.clear();
             option->setSelectionMode(PB_ActionSelectCellsInGrid3DOptions::FREEMOVE);
-            document()->redrawGraphics();
+            updateDrawing();
             return true;
         }
         return true;
@@ -511,7 +518,7 @@ bool PB_ActionSelectCellsInGrid3D::keyPressEvent(QKeyEvent *e)
             m_status = 0;
             option->setSelectionMode(PB_ActionSelectCellsInGrid3DOptions::FREEMOVE);
             _candidates.clear();
-            document()->redrawGraphics();
+            updateDrawing();
             PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Opération annulée"));
             return true;
         }
@@ -804,19 +811,20 @@ void PB_ActionSelectCellsInGrid3D::updateLevel(int level)
 {
     _level = level;
     initActiveGridForLevel();
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 void PB_ActionSelectCellsInGrid3D::updateThickness(int thickness)
 {
     _thickness = thickness;
     initActiveGridForLevel();
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 void PB_ActionSelectCellsInGrid3D::updateDrawing()
 {
-    document()->redrawGraphics();
+    setDrawing3DChanged();
+    document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
 }
 
 void PB_ActionSelectCellsInGrid3D::updateCumulMode(PB_ActionSelectCellsInGrid3DOptions::CumulateMode mode)
@@ -824,7 +832,7 @@ void PB_ActionSelectCellsInGrid3D::updateCumulMode(PB_ActionSelectCellsInGrid3DO
     _cumulMode = mode;
     initActiveGridForLevel();
     PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Changement de mode de cumul pris en compte"));
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 void PB_ActionSelectCellsInGrid3D::updateSelectionMode(PB_ActionSelectCellsInGrid3DOptions::GridSelectionMode mode)
@@ -843,7 +851,7 @@ void PB_ActionSelectCellsInGrid3D::updateSelectionMode(PB_ActionSelectCellsInGri
         _previewMode = mode;
     }
 
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 
@@ -863,20 +871,20 @@ void PB_ActionSelectCellsInGrid3D::copyFull()
 void PB_ActionSelectCellsInGrid3D::change2D3DMode(bool mode3D)
 {
     _mode3D = mode3D;
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 
 void PB_ActionSelectCellsInGrid3D::changeCoef(double coef)
 {
     _reductionCoef = coef;
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 void PB_ActionSelectCellsInGrid3D::changeGridColor(QColor color)
 {
     _gridColor = color;
-    document()->redrawGraphics();
+    updateDrawing();
 }
 
 void PB_ActionSelectCellsInGrid3D::copyLevel(size_t refLevel, size_t first, size_t last)

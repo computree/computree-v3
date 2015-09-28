@@ -230,8 +230,6 @@ void PB_StepSlicePointCloud::initManualMode()
         _m_doc->setCurrentAction(action, false);
     }
 
-    _m_doc->removeAllItemDrawable();
-
     QMessageBox::information(NULL,
                              tr("Mode manuel"),
                              tr("Bienvenue dans le mode manuel de cette étape.\n"

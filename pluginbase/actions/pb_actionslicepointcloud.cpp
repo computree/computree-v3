@@ -82,8 +82,12 @@ void PB_ActionSlicePointCloud::init()
         // register the option to the superclass, so the hideOptions and showOptions
         // is managed automatically
         registerOption(option);
-
-        redrawOverlayAnd3D();
+        for (int i = 0 ; i < _sceneList->size() ; i++)
+        {
+            document()->addItemDrawable(*(_sceneList->at(i)));
+        }
+        document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
+        dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
     }
 }
 
@@ -105,6 +109,7 @@ void PB_ActionSlicePointCloud::redrawOverlay()
 void PB_ActionSlicePointCloud::redrawOverlayAnd3D()
 {
     setDrawing3DChanged();
+    document()->redrawGraphics();
 }
 
 bool PB_ActionSlicePointCloud::mousePressEvent(QMouseEvent *e)
@@ -192,11 +197,6 @@ void PB_ActionSlicePointCloud::draw(GraphicsViewInterface &view, PainterInterfac
     if (_dataContainer->_thickness == 0) {return;}
 
     painter.save();
-
-    for (int i = 0 ; i < _sceneList->size() ; i++)
-    {
-        _sceneList->at(i)->draw(view, painter);
-    }
 
     QColor oldColor = painter.getColor();
     painter.setColor(QColor(0,125,0,100));
