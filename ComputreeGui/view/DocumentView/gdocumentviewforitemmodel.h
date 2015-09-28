@@ -38,6 +38,7 @@ public:
 
     QList<InDocumentViewInterface*> views() const;
     void redrawGraphics(DocumentInterface::RedrawOptions opt = DocumentInterface::RO_NoOptions) {}
+    void updateItems(const QList<CT_AbstractItemDrawable*> &items) {}
     void lock() {}
     void unlock() {}
 

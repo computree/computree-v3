@@ -208,6 +208,11 @@ void GDocumentViewForGraphics::redrawGraphics(DocumentInterface::RedrawOptions o
     m_mutex->unlock();
 }
 
+void GDocumentViewForGraphics::updateItems(const QList<CT_AbstractItemDrawable *> &items)
+{
+    updateDrawing3DOfItemDrawablesInGraphicsView(items);
+}
+
 void GDocumentViewForGraphics::dirtyColorsOfPoints()
 {
     emit startDirtyColorsOfPointTimer();

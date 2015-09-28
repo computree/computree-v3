@@ -60,6 +60,8 @@ public:
 
     QList<InDocumentViewInterface*> views() const;
     void redrawGraphics(DocumentInterface::RedrawOptions opt = RO_NoOptions);
+    void updateItems(const QList<CT_AbstractItemDrawable*> &items);
+
     void dirtyColorsOfPoints();
     void lock();
     void unlock();
