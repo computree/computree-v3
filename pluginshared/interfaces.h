@@ -1210,6 +1210,8 @@ public:
       * \brief Refresh all graphics in the document (if he contains graphicsView)
       */
     virtual void redrawGraphics(DocumentInterface::RedrawOptions opt = RO_NoOptions) = 0;
+
+    virtual void updateItems(const QList<CT_AbstractItemDrawable*> &items) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DocumentInterface::RedrawOptions)
