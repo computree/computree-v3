@@ -90,7 +90,7 @@ void DM_OsgSceneManager::setCurrentAction(CT_AbstractAction *newAction)
 
     if(m_currentAction != NULL) {
         connect(m_currentAction, SIGNAL(destroyed()), this, SLOT(cancelCurrentActionConversion()), Qt::DirectConnection);
-        connect(m_currentAction, SIGNAL(drawing3DChanged()), this, SLOT(updateDrawableForCurrentAction()), Qt::QueuedConnection);
+        connect(m_currentAction, SIGNAL(drawing3DChanged()), this, SLOT(updateDrawableForCurrentAction()), Qt::DirectConnection);
     }
 
     lock.unlock();
