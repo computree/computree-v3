@@ -1,20 +1,14 @@
-#ifndef PB_STEPEXPORTITEMLIST_H
-#define PB_STEPEXPORTITEMLIST_H
+#ifndef PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H
+#define PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_exporter/abstract/ct_abstractexporter.h"
+#include "ct_itemdrawable/ct_image2d.h"
 
-/*!
- * \class PB_StepExportItemList
- * \ingroup Steps_PB
- * \brief <b>Exporter une liste d'items à l'aide d'un exporter.</b>
- *
- * No detailled description for this step
- *
- *
- */
+// Inclusion of auto-indexation system
+#include "ct_tools/model/ct_autorenamemodels.h"
 
-class PB_StepExportItemList: public CT_AbstractStep
+
+class PB_StepComputeAttributeMapFromClusters: public CT_AbstractStep
 {
     Q_OBJECT
 
@@ -26,9 +20,7 @@ public:
      * 
      * \param dataInit Step parameters object
      */
-    PB_StepExportItemList(CT_StepInitializeData &dataInit);
-
-    ~PB_StepExportItemList();
+    PB_StepComputeAttributeMapFromClusters(CT_StepInitializeData &dataInit);
 
     /*! \brief Step description
      * 
@@ -53,6 +45,7 @@ public:
      * Step copy, used when a step is added by step contextual menu
      */
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
+
 
 protected:
 
@@ -82,16 +75,11 @@ protected:
 
 private:
 
-    // Step parameters
-    QStringList _dir;
-    QString _suffixFileName;
+    double                  _naValue;
+    double                  _defaultValue;
 
-    QMap<QString, CT_AbstractExporter*>             _exportersMap;
-    QList<CT_AbstractExporter*>                      _exportersInstancesList;
-
-    QString                                         _exportersListValue;
-
+    CT_AutoRenameModels    _attMap_ModelName;
 
 };
 
-#endif // PB_STEPEXPORTITEMLIST_H
+#endif // PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H

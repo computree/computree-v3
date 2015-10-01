@@ -92,6 +92,7 @@
 #include "step/pb_stepdetectverticalalignments.h"
 #ifdef USE_OPENCV
 #include "step/pb_stepconvertfloatimagetoqint32.h"
+#include "step/pb_stepcomputeattributemapfromclusters.h"
 #endif
 
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -276,6 +277,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
     sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepConvertFloatImageToqint32(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepComputeAttributeMapFromClusters(*createNewStepInitializeData(NULL)));
     #endif
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));

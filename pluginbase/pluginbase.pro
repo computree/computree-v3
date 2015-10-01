@@ -118,7 +118,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepaddattributevalue.h \
     step/pb_stepdetectverticalalignments.h \
     step/pb_stepconvertfloatimagetoqint32.h \
-    exporters/ascid/pb_ascidexporter.h
+    exporters/ascid/pb_ascidexporter.h \
+    step/pb_stepcomputeattributemapfromclusters.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -232,7 +233,8 @@ SOURCES += \
     step/pb_stepaddattributevalue.cpp \
     step/pb_stepdetectverticalalignments.cpp \
     step/pb_stepconvertfloatimagetoqint32.cpp \
-    exporters/ascid/pb_ascidexporter.cpp
+    exporters/ascid/pb_ascidexporter.cpp \
+    step/pb_stepcomputeattributemapfromclusters.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

@@ -30,48 +30,54 @@ PB_StepExportItemList::PB_StepExportItemList(CT_StepInitializeData &dataInit) : 
     _suffixFileName = "";
 
 
-//    // Create the available readers map
-//    PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
-//    int s = pm->countPluginLoaded();
+    // Create the available exporter map
+    PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
+    int s = pm->countPluginLoaded();
 
-//    for(int i=0; i<s; ++i)
-//    {
-//        CT_AbstractStepPlugin *p = pm->getPlugin(i);
+    for(int i=0; i<s; ++i)
+    {
+        CT_AbstractStepPlugin *p = pm->getPlugin(i);
 
-//        QList<CT_StandardExporterSeparator*> rsl = p->getExportersAvailable();
-//        QListIterator<CT_StandardExporterSeparator*> itR(rsl);
+        QList<CT_StandardExporterSeparator*> rsl = p->getExportersAvailable();
+        QListIterator<CT_StandardExporterSeparator*> itR(rsl);
 
-//        while(itR.hasNext())
-//        {
-//            CT_StandardExporterSeparator *rs = itR.next();
-//            QListIterator<CT_AbstractExporter*> itE(rs->exporters());
+        while(itR.hasNext())
+        {
+            CT_StandardExporterSeparator *rs = itR.next();
+            QListIterator<CT_AbstractExporter*> itE(rs->exporters());
 
-//            while(itE.hasNext())
-//            {
-//                CT_AbstractExporter *exporter = itE.next();
-//                CT_AbstractExporter *exporterCpy = exporter->copy();
-//                exporterCpy->init();
-//                _exportersInstancesList.append(exporterCpy);
+            while(itE.hasNext())
+            {
+                CT_AbstractExporter *exporter = itE.next();
+                CT_AbstractExporter *exporterCpy = exporter->copy();
+                exporterCpy->init();
+                _exportersInstancesList.append(exporterCpy);
 
-//                const QList<FileFormat>& formats = exporterCpy->readableFormats();
+                const QList<FileFormat>& formats = exporterCpy->exportFormats();
 
-//                for (int n = 0 ; n < formats.size() ; n++)
-//                {
-//                    const FileFormat& format = formats.at(n);
+                for (int n = 0 ; n < formats.size() ; n++)
+                {
+                    const FileFormat& format = formats.at(n);
 
-//                    QString key = QString("%2 - %1").arg(exporter->GetReaderName()).arg(format.description());
-//                    _exportersMap.insert(key, QPair<CT_AbstractExporter*, int>(exporterCpy, n));
-//                }
+                    QString key = QString("%2 - %1").arg(exporter->getExporterName()).arg(format.description());
+                    _exportersMap.insert(key, exporterCpy);
+                }
 
-//            }
-//        }
-//    }
+            }
+        }
+    }
 }
+
+PB_StepExportItemList::~PB_StepExportItemList()
+{
+    qDeleteAll(_exportersInstancesList);
+}
+
 
 // Step description (tooltip of contextual menu)
 QString PB_StepExportItemList::getStepDescription() const
 {
-    return tr("Exporter une liste d'items à l'aide d'un exporter");
+    return tr("Export paramétré par une entête de fichier");
 }
 
 // Step detailled description
@@ -112,7 +118,6 @@ void PB_StepExportItemList::createOutResultModelListProtected()
 {
     CT_OutResultModelGroup *res_res = createNewOutResultModel(DEFout_res, tr("Résultat"));
     res_res->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
-
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -121,6 +126,23 @@ void PB_StepExportItemList::createPostConfigurationDialog()
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addFileChoice(tr("Répertoire d'export"), CT_FileChoiceButton::OneExistingFolder, "", _dir);
     configDialog->addString(tr("Suffixe de nom de fichier"), "", _suffixFileName);
+
+    QStringList list_exportersList;
+
+    QMapIterator<QString, CT_AbstractExporter*> it(_exportersMap);
+    while (it.hasNext())
+    {
+        it.next();
+        list_exportersList.append(it.key());
+    }
+
+    if (list_exportersList.isEmpty())
+    {
+        list_exportersList.append(tr("ERREUR : aucun exporter disponible"));
+    }
+
+    configDialog->addStringChoice("Choix du type de fichier", "", list_exportersList, _exportersListValue);
+
 }
 
 void PB_StepExportItemList::compute()
@@ -161,18 +183,19 @@ void PB_StepExportItemList::compute()
             path.append(attributeValue);
             path.append(_suffixFileName);
 
-            PB_ProfileExporter exporter;
-            exporter.setExportFilePath(path);
-            if (exporter.setItemDrawableToExport(list))
+            CT_AbstractExporter* exporter = _exportersMap.value(_exportersListValue);
+
+            exporter->setExportFilePath(path);
+            if (exporter->setItemDrawableToExport(list))
             {
-                exporter.exportToFile();
+                exporter->exportToFile();
             }
         }
 
     }
     
 
-    // OUT results creation (move it to the appropried place in the code)
+    // OUT results creation
     CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_res);
     res_res->addGroup(grp_grp);  
 
