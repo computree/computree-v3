@@ -120,6 +120,14 @@ uint DM_MultipleItemDrawableToOsgWorker::staticLocalVertexAttribArrayLocationInd
     return SHADER_INFO_LOCATION;
 }
 
+DM_GeometriesConfiguration DM_MultipleItemDrawableToOsgWorker::getGeometriesConfiguration() const
+{
+    DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
+    newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
+
+    return newConfig;
+}
+
 void DM_MultipleItemDrawableToOsgWorker::createGlobalShader()
 {
     osg::ref_ptr<osg::Program> program = new osg::Program;
@@ -214,8 +222,7 @@ void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable
     DM_SingleItemDrawableToOsgWorker *worker = m_toConvert.value(&item, NULL);
 
     if(worker == NULL) {
-        DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
-        newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
+        DM_GeometriesConfiguration newConfig = getGeometriesConfiguration();
 
         worker = new DM_SingleItemDrawableToOsgWorker(m_view);
         worker->setColor(defaultColor);

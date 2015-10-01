@@ -43,6 +43,11 @@ public:
      */
     static uint staticLocalVertexAttribArrayLocationIndex();
 
+    /**
+     * @brief Get geometries configuration to set
+     */
+    DM_GeometriesConfiguration getGeometriesConfiguration() const;
+
 private:
     GOsgGraphicsView                                                        &m_view;
 

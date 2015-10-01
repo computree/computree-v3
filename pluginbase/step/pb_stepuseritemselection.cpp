@@ -176,19 +176,12 @@ void PB_StepUserItemSelection::recursiveRemoveGroup(CT_AbstractItemGroup *parent
 
 void PB_StepUserItemSelection::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-
-    }
     m_itemDrawableSelected.clear();
     m_doc->removeAllItemDrawable();
-
 
     if (_mode == 0)
     {

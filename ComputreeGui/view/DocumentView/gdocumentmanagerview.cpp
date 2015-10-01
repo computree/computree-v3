@@ -527,28 +527,6 @@ DocumentInterface* GDocumentManagerView::new3DDocument()
     return new3DDocument(false, false);
 }
 
-DocumentInterface *GDocumentManagerView::new3DDocument(const QMap<QString, QVariant> &param)
-{
-    GDocumentViewForGraphics* document = (GDocumentViewForGraphics*) new3DDocument(false, false);
-
-    QVariant variant;
-
-    if (param.contains("Transparency"))
-    {
-        variant = param.value("Transparency");
-        document->setTransparencyActivated(variant.toBool());
-    }
-
-    if (param.contains("Orthographic"))
-    {
-        variant = param.value("Orthographic");
-        document->setCameraType(variant.toBool());
-    }
-
-    return document;
-
-}
-
 DocumentInterface* GDocumentManagerView::new2DDocument()
 {
     return new2DDocument(false, false);

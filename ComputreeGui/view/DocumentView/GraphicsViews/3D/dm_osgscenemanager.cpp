@@ -26,8 +26,8 @@ DM_OsgSceneManager::DM_OsgSceneManager(GOsgGraphicsView &view, osg::ref_ptr<osg:
     m_currentActionConverter = NULL;
     m_groupContainsDrawablesOfAction = new osg::Group;
     m_itemRoot = new osg::Group;
-    m_scene->addChild(m_itemRoot.get());
     m_scene->addChild(m_groupContainsDrawablesOfAction.get());
+    m_scene->addChild(m_itemRoot.get());
     m_timerUpdateRemove.setSingleShot(true);
     m_timerUpdateRemove.setInterval(50);
 
@@ -430,6 +430,10 @@ void DM_OsgSceneManager::updateToRemove()
     }
 
     m_toRemove.clear();
+
+    locker.unlock();
+
+    m_view->update();
 }
 
 void DM_OsgSceneManager::updateDrawableForCurrentAction()
@@ -449,6 +453,7 @@ void DM_OsgSceneManager::updateDrawableForCurrentAction()
         m_currentActionConverter->moveToThread(thread);
         m_currentActionConverter->setGraphicsView(m_view);
         m_currentActionConverter->setActionToConvert(m_currentAction);
+        m_currentActionConverter->setGeometriesConfiguration(m_converter->getGeometriesConfiguration());
 
         // don't delete the converter when finished but only the thread
         DM_AbstractWorker::staticConnectWorkerToThread(m_currentActionConverter, false, true, true);

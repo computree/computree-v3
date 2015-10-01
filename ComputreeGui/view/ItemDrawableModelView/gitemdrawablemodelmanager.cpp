@@ -19,6 +19,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "tools/graphicsview/dm_colorlinearinterpolator.h"
+#include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
 
 GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
     QWidget(parent),
@@ -531,8 +532,12 @@ void GItemDrawableModelManager::setAutomaticColorForModelSelected()
                 DM_DocumentView *doc = m_docManagerView->getDocumentView(docIndex);
                 CT_ResultIterator it((CT_ResultGroup*)res, iModel);
 
-                while(it.hasNext())
-                    doc->setColor((CT_AbstractItemDrawable*)it.next(), _colorOptions.getNextColor());
+                while(it.hasNext()) {
+                    QColor keepAlphaColor = _colorOptions.getNextColor();
+                    keepAlphaColor.setAlpha(KEEP_ALPHA_COLOR);
+
+                    doc->setColor((CT_AbstractItemDrawable*)it.next(), keepAlphaColor);
+                }
 
                 doc->redrawGraphics();
             }

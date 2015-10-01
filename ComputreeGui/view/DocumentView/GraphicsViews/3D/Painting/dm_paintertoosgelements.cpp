@@ -99,6 +99,8 @@ void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(CT_Abstrac
     bool localOK = false;
     bool globalOK = false;
 
+    LocalColorArrayType::value_type osgColor = staticQColorToInternalColor(color);
+
     if((s = result->getNumChildren()) > 0)
     {
         for(int i=0; i<s; ++i)
@@ -107,7 +109,7 @@ void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(CT_Abstrac
 
             if(g != NULL) {
                 if((g->getName() == NAME_LOCAL_GEOMETRIES_GROUP) && !localOK) {
-                    staticRecursiveChangeColorOfFirstColorArrayInGroup(g, color);
+                    staticRecursiveChangeColorOfFirstColorArrayInGroup(g, osgColor);
                 } else if((g->getName() == NAME_GLOBAL_GEOMETRIES_GROUP) && !globalOK) {
                     DM_FakePainter p;
                     p.setComputingMode(DM_FakePainter::BackupPointCloudIndex
@@ -115,7 +117,7 @@ void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(CT_Abstrac
                                        | DM_FakePainter::BackupPointCloudIndexIfFace);
                     item->draw(*gv, p);
 
-                    staticChangeColorOfCloudsOfFirstColorArrayInGroup(p.pointCloudIndexBackup(), color, g);
+                    staticChangeColorOfCloudsOfFirstColorArrayInGroup(p.pointCloudIndexBackup(), osgColor, g);
                 }
 
                 if(localOK && globalOK)
@@ -1375,33 +1377,7 @@ void DM_PainterToOsgElements::addNewQuadFace_Local(const double &x1, const doubl
                                                    const LocalColorArrayType::value_type &c4,
                                                    bool filled)
 {
-    // TODO : split quads if it has gone through coordinate system
-
     if(filled) {
-        /*size_t indexInVertexArray;
-        LocalVertexArray* verts = getOrCreateVertexArray_Local(4, indexInVertexArray);
-        LocalColorArrayType* colors = getOrCreateColorArray_Local();
-
-        osg::PositionAttitudeTransform *t = getOrCreateTransformForCoordinates_Local((x2-x1)/2.0, (y2-y1)/2.0, (z2-z1)/2.0);
-        osg::Geometry *geo = getOrCreateGeometryForTypeAndTransform_Local(osg::PrimitiveSet::QUADS, t);
-
-        osg::DrawElementsUInt *primitiveSet = static_cast<osg::DrawElementsUInt*>(geo->getPrimitiveSet(0));
-
-        primitiveSet->push_back(indexInVertexArray);
-        colors->push_back(staticIntColorToInternalColor(r1, g1, b1, a1) );
-        (*verts)[indexInVertexArray++] = osg::Vec3d(x1-t->getPosition().x(), y1-t->getPosition().y(), z1-t->getPosition().z());
-
-        primitiveSet->push_back(indexInVertexArray);
-        colors->push_back(staticIntColorToInternalColor(r2, g2, b2, a2) );
-        (*verts)[indexInVertexArray++] = osg::Vec3d(x2-t->getPosition().x(), y2-t->getPosition().y(), z2-t->getPosition().z());
-
-        primitiveSet->push_back(indexInVertexArray);
-        colors->push_back(staticIntColorToInternalColor(r3, g3, b3, a3) );
-        (*verts)[indexInVertexArray++] = osg::Vec3d(x3-t->getPosition().x(), y3-t->getPosition().y(), z3-t->getPosition().z());
-
-        primitiveSet->push_back(indexInVertexArray);
-        colors->push_back(staticIntColorToInternalColor(r4, g4, b4, a4) );
-        (*verts)[indexInVertexArray++] = osg::Vec3d(x4-t->getPosition().x(), y4-t->getPosition().y(), z4-t->getPosition().z());*/
         addNewTriangle_Local(x1, y1, z1, c1, x2, y2, z2, c2, x3, y3, z3, c3);
         addNewTriangle_Local(x3, y3, z3, c3, x4, y4, z4, c4, x1, y1, z1, c1);
 
@@ -1470,7 +1446,7 @@ osg::Geometry* DM_PainterToOsgElements::checkIfMustCreateANewDrawableForGlobalPo
     return geo;
 }
 
-bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const QColor &color, bool colorArrayAlreadyModified)
+bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const LocalColorArrayType::value_type &osgColor, bool colorArrayAlreadyModified)
 {
     uint n = node->getNumChildren();
 
@@ -1479,7 +1455,7 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
         osg::Node *n = node->getChild(i);
         osg::Group *g = n->asGroup();
 
-        if((g != NULL) && staticRecursiveChangeColorOfFirstColorArrayInGroup(g, color, colorArrayAlreadyModified))
+        if((g != NULL) && staticRecursiveChangeColorOfFirstColorArrayInGroup(g, osgColor, colorArrayAlreadyModified))
         {
             colorArrayAlreadyModified = true;
         }
@@ -1498,12 +1474,17 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
                     if(colorArray != NULL) {
 
                         if(!colorArrayAlreadyModified) {
-                            ColorArrayType::value_type osgColor(color.red(), color.green(), color.blue(), color.alpha());
-
                             size_t size = colorArray->size();
 
-                            for(size_t j=0; j<size; ++j)
-                                (*colorArray)[j] = osgColor;
+                            if(osgColor.a() != KEEP_ALPHA_COLOR)  {
+                                for(size_t j=0; j<size; ++j)
+                                    (*colorArray)[j] = osgColor;
+                            } else {
+                                for(size_t j=0; j<size; ++j) {
+                                    LocalColorArrayType::value_type &currentOsgColor = (*colorArray)[j];
+                                    currentOsgColor.set(osgColor.r(), osgColor.g(), osgColor.b(), currentOsgColor.a());
+                                }
+                            }
                         }
 
                         for(int j=0; j<nD; ++j)
@@ -1519,7 +1500,7 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
     return colorArrayAlreadyModified;
 }
 
-bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex *> &indexes, const QColor &color, osg::Group *node, bool colorArrayAlreadyModified)
+bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex *> &indexes, const LocalColorArrayType::value_type &osgColor, osg::Group *node, bool colorArrayAlreadyModified)
 {
     uint n = node->getNumChildren();
 
@@ -1528,7 +1509,7 @@ bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(
         osg::Node *n = node->getChild(i);
         osg::Group *g = n->asGroup();
 
-        if((g != NULL) && staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, color, g, colorArrayAlreadyModified))
+        if((g != NULL) && staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, osgColor, g, colorArrayAlreadyModified))
         {
             colorArrayAlreadyModified = true;
         }
@@ -1547,16 +1528,26 @@ bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(
                     if(colorArray != NULL) {
 
                         if(!colorArrayAlreadyModified) {
-                            ColorArrayType::value_type osgColor(color.red(), color.green(), color.blue(), color.alpha());
-
                             QListIterator<CT_AbstractCloudIndex*> it(indexes);
 
-                            while(it.hasNext()) {
-                                CT_AbstractCloudIndex *index = it.next();
-                                size_t size = index->size();
+                            if(osgColor.a() != KEEP_ALPHA_COLOR)  {
+                                while(it.hasNext()) {
+                                    CT_AbstractCloudIndex *index = it.next();
+                                    size_t size = index->size();
 
-                                for(size_t i=0; i<size; ++i) {
-                                    (*colorArray)[index->indexAt(i)] = osgColor;
+                                    for(size_t i=0; i<size; ++i) {
+                                        (*colorArray)[index->indexAt(i)] = osgColor;
+                                    }
+                                }
+                            } else {
+                                while(it.hasNext()) {
+                                    CT_AbstractCloudIndex *index = it.next();
+                                    size_t size = index->size();
+
+                                    for(size_t i=0; i<size; ++i) {
+                                        LocalColorArrayType::value_type &currentOsgColor = (*colorArray)[index->indexAt(i)];
+                                        currentOsgColor.set(osgColor.r(), osgColor.g(), osgColor.b(), currentOsgColor.a());
+                                    }
                                 }
                             }
                         }

@@ -120,16 +120,14 @@ void PB_StepModifyPositions2D::compute()
 
 void PB_StepModifyPositions2D::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-        param.insert("Orthographic", QVariant(true));
+    // change camera type to orthographic
+    if(m_doc != NULL && !m_doc->views().isEmpty())
+        dynamic_cast<GraphicsViewInterface*>(m_doc->views().at(0))->camera()->setType(CameraInterface::ORTHOGRAPHIC);
 
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-    }
     m_doc->removeAllItemDrawable();
 
     m_doc->setCurrentAction(new PB_ActionModifyPositions2D(_positions, _modelCreation, _outRes));

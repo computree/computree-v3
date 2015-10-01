@@ -17,6 +17,8 @@
 
 #include "ct_colorcloud/ct_colorcloudosg.h"
 
+#define KEEP_ALPHA_COLOR 0
+
 class DM_GeometriesConfiguration;
 
 struct DM_PainterToOsgElementsResult
@@ -781,10 +783,12 @@ private:
     /**
      * @brief Change the color in the first color array founded recursively in the group passed in parameter
      */
-    static bool staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const QColor &color, bool colorArrayAlreadyModified = false);
+    static bool staticRecursiveChangeColorOfFirstColorArrayInGroup(osg::Group *node, const LocalColorArrayType::value_type &osgColor, bool colorArrayAlreadyModified = false);
 
-    // TODO
-    static bool staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex*> &indexes, const QColor &color, osg::Group *node, bool colorArrayAlreadyModified = false);
+    /**
+     * @brief Change the color in the first color array founded recursively in the group passed in parameter of all points that indexes is contained in the list
+     */
+    static bool staticChangeColorOfCloudsOfFirstColorArrayInGroup(const QList<CT_AbstractCloudIndex*> &indexes, const LocalColorArrayType::value_type &osgColor, osg::Group *node, bool colorArrayAlreadyModified = false);
 
     /**
      * @brief Dirty the display list of all drawable in the group recursively

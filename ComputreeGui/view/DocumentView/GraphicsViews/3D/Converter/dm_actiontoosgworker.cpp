@@ -6,6 +6,7 @@ DM_ActionToOsgWorker::DM_ActionToOsgWorker() : DM_AbstractWorker()
     m_gv = NULL;
 
     m_painter.setUseDisplayList(false);
+    m_painter.setGeometriesConfiguration(&m_geoConfig);
 
     connect(this, SIGNAL(canceled()), this, SLOT(cancelEvent()), Qt::DirectConnection);
 }
@@ -23,6 +24,11 @@ void DM_ActionToOsgWorker::setGraphicsView(GraphicsViewInterface *gv)
 DM_PainterToOsgElementsResult DM_ActionToOsgWorker::results() const
 {
     return m_painter.results();
+}
+
+void DM_ActionToOsgWorker::setGeometriesConfiguration(const DM_GeometriesConfiguration &config)
+{
+    m_geoConfig = config;
 }
 
 void DM_ActionToOsgWorker::apply()

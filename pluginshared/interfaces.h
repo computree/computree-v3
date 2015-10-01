@@ -1244,12 +1244,6 @@ public:
     virtual DocumentInterface* new3DDocument() = 0;
 
     /**
-     * @brief Create a new document with 3D View
-     */
-    virtual DocumentInterface* new3DDocument(const QMap<QString, QVariant> &param) = 0;
-
-
-    /**
      * @brief Create a new document with 2D View
      */
     virtual DocumentInterface* new2DDocument() = 0;

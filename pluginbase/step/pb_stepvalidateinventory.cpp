@@ -175,16 +175,10 @@ void PB_StepValidateInventory::compute()
 
 void PB_StepValidateInventory::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-
-    }
     m_doc->removeAllItemDrawable();
 
     m_doc->setCurrentAction(new PB_ActionValidateInventory(_selectedItem, _availableItem, _species, _ids, _speciesList));

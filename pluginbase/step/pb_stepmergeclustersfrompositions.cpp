@@ -311,16 +311,10 @@ void PB_StepMergeClustersFromPositions::addPointsToScenes(QPair<CT_PointCloudInd
 
 void PB_StepMergeClustersFromPositions::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-
-    }
     m_itemDrawableSelected.clear();
     m_doc->removeAllItemDrawable();
 

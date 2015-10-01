@@ -20,6 +20,7 @@
 #include "tools/treeview/dm_sortfiltermathproxymodel.h"
 
 #include "view/ItemDrawableView/gitemdrawablemanageroptionscolor.h"
+#include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
@@ -414,8 +415,12 @@ void GTreeView::slotColorAuto()
     {
         QListIterator<CT_AbstractItemDrawable*> it(l);
 
-        while(it.hasNext())
-            doc->setColor(it.next(), m_options.getNextColor());
+        while(it.hasNext()) {
+            QColor keepAlphaColor = m_options.getNextColor();
+            keepAlphaColor.setAlpha(KEEP_ALPHA_COLOR);
+
+            doc->setColor(it.next(), keepAlphaColor);
+        }
 
         doc->redrawGraphics();
 

@@ -1,12 +1,12 @@
 #ifndef PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H
 #define PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H
 
+#ifdef USE_OPENCV
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_itemdrawable/ct_image2d.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
-
 
 class PB_StepComputeAttributeMapFromClusters: public CT_AbstractStep
 {
@@ -81,5 +81,6 @@ private:
     CT_AutoRenameModels    _attMap_ModelName;
 
 };
+#endif
 
 #endif // PB_STEPCOMPUTEATTRIBUTEMAPFROMCLUSTERS_H

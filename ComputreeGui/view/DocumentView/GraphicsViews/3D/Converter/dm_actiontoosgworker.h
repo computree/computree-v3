@@ -4,6 +4,7 @@
 #include "tools/worker/dm_abstractworker.h"
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
+#include "view/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.h"
 
 #include <osg/Group>
 
@@ -32,6 +33,11 @@ public:
      */
     DM_PainterToOsgElementsResult results() const;
 
+    /**
+     * @brief Set configuration to set to geometries
+     */
+    void setGeometriesConfiguration(const DM_GeometriesConfiguration &config);
+
 public slots:
     void apply();
 
@@ -39,6 +45,7 @@ private:
     CT_AbstractActionForGraphicsView    *m_action;
     GraphicsViewInterface               *m_gv;
     DM_PainterToOsgElements             m_painter;
+    DM_GeometriesConfiguration          m_geoConfig;
 
 private slots:
     void cancelEvent();

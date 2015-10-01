@@ -1,4 +1,7 @@
 #include "pb_stepcomputeattributemapfromclusters.h"
+
+#ifdef USE_OPENCV
+
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
@@ -140,5 +143,5 @@ void PB_StepComputeAttributeMapFromClusters::compute()
         setProgress(100);
     }
 }
-
+#endif
 

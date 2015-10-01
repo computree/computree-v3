@@ -219,11 +219,8 @@ void PB_StepSlicePointCloud::initManualMode()
 {
     if(_m_doc == NULL)
     {
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-
         // create a new 3D document
-        _m_doc = getGuiContext()->documentManager()->new3DDocument(param);
+        _m_doc = getGuiContext()->documentManager()->new3DDocument();
 
         PB_ActionSlicePointCloud* action = new PB_ActionSlicePointCloud(_sceneList, _xmin, _ymin, _zmin, _xmax, _ymax, _zmax, _dataContainer);
         // set the action (a copy of the action is added at all graphics view, and the action passed in parameter is deleted)

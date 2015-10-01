@@ -339,17 +339,14 @@ void PB_StepManualInventory::compute()
 
 void PB_StepManualInventory::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        QMap<QString, QVariant> param;
-        param.insert("Transparency", QVariant(true));
-        param.insert("Orthographic", QVariant(true));
+    // change camera type to orthographic
+    if(m_doc != NULL && !m_doc->views().isEmpty())
+        dynamic_cast<GraphicsViewInterface*>(m_doc->views().at(0))->camera()->setType(CameraInterface::ORTHOGRAPHIC);
 
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-
-    }
     m_doc->removeAllItemDrawable();
 
     m_doc->setCurrentAction(new PB_ActionManualInventory(_selectedDbh, _availableDbh, _preferredDbh, _trashedScenes, _sceneDTMValues, &_paramData, _suppAttributes));

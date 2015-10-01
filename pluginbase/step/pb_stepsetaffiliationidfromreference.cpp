@@ -213,14 +213,13 @@ void PB_StepSetAffiliationIDFromReference::compute()
 
 void PB_StepSetAffiliationIDFromReference::initManualMode()
 {
+    // create a new 3D document
     if(m_doc == NULL)
-    {       
-        QMap<QString, QVariant> param;
-        param.insert("Orthographic", QVariant(true));
+        m_doc = getGuiContext()->documentManager()->new3DDocument();
 
-        // create a new 3D document
-        m_doc = getGuiContext()->documentManager()->new3DDocument(param);
-    }
+    // change camera type to orthographic
+    if(m_doc != NULL && !m_doc->views().isEmpty())
+        dynamic_cast<GraphicsViewInterface*>(m_doc->views().at(0))->camera()->setType(CameraInterface::ORTHOGRAPHIC);
 
     m_doc->removeAllItemDrawable();
 
