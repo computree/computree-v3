@@ -6,6 +6,7 @@
 
 class CT_InResultModelManager;
 class CT_InAbstractResultModel;
+class CTG_InTurnManager;
 
 namespace Ui {
 class CTG_InResultModelPossibilities;
@@ -41,25 +42,36 @@ public:
      */
     void setInResultModelManager(const CT_InResultModelManager *manager);
     
+    void setInTurnManager(const CTG_InTurnManager *manager);
+
     void setReadOnly(bool enabled);
 
 private:
     Ui::CTG_InResultModelPossibilities          *ui;
     CT_InResultModelManager                     *_manager;
+    CTG_InTurnManager                           *m_gTurnManager;
 
+    bool                                        m_readOnly;
     CTG_InResultModelPossibilitiesDragModel     _viewModel;
 
     void clearModel();
     void constructModel();
     void constructHeader();
+    void updateModel();
 
     QList<QStandardItem*> createItemsForResultModel(CT_InAbstractResultModel *resModel);
 
+protected:
+    void showEvent(QShowEvent * event);
+
 signals:
 
-    void resultChoosed(const QString &mimeData);
+    void enableResultPossibility(const QString &mimeData);
+    void disableResultPossibility(const QString &mimeData);
+    void showResultPossibility(const QString &mimeData);
 
 private slots:
+    void on_treeView_clicked(const QModelIndex &index);
     void on_treeView_doubleClicked(const QModelIndex &index);
 };
 

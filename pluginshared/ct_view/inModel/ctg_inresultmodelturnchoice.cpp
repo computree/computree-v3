@@ -62,7 +62,7 @@ void CTG_InResultModelTurnChoice::dragEnterEvent(QDragEnterEvent *event)
 
 void CTG_InResultModelTurnChoice::dropEvent(QDropEvent *event)
 {
-    setResultChoosed(event->mimeData()->text());
+    enableResultPossibility(event->mimeData()->text());
 }
 
 void CTG_InResultModelTurnChoice::clearModel()
@@ -168,6 +168,49 @@ QList<QStandardItem*> CTG_InResultModelTurnChoice::createItemsForResultModel(CT_
     }
 
     return retList;
+}
+
+CT_InAbstractResultModel *CTG_InResultModelTurnChoice::getModelFromMimeData(const QString &mimeData)
+{
+    if(acceptResult(mimeData))
+    {
+        QStringList values = mimeData.split(";;");
+        QString name = values.first();
+
+        CT_InAbstractResultModel *model = NULL;
+        QListIterator<CT_InAbstractResultModel*> it(_turn->models());
+
+        while((model == NULL)
+              && it.hasNext())
+        {
+            model = it.next();
+
+            if(model->uniqueName() != name)
+                model = NULL;
+        }
+
+        return model;
+    }
+
+    return NULL;
+}
+
+CT_InStdModelPossibility* CTG_InResultModelTurnChoice::getPossibilityFromMimeData(const QString &mimeData, int *outPossibilityIndex)
+{
+    CT_InAbstractResultModel *model =  getModelFromMimeData(mimeData);
+
+    if(model != NULL) {
+        QStringList values = mimeData.split(";;");
+        int possibilityIndex = values.at(1).toInt();
+
+        if(outPossibilityIndex != NULL)
+            *outPossibilityIndex = possibilityIndex;
+
+        if(model->getPossibilitiesSaved().size() > possibilityIndex)
+            return model->getPossibilitiesSaved().at(possibilityIndex);
+    }
+
+    return NULL;
 }
 
 bool CTG_InResultModelTurnChoice::acceptResult(const QString &mimeData)
@@ -276,37 +319,52 @@ void CTG_InResultModelTurnChoice::removeSelectedPossibility()
     }
 }
 
-void CTG_InResultModelTurnChoice::setResultChoosed(const QString &mimeData)
+void CTG_InResultModelTurnChoice::enableResultPossibility(const QString &mimeData)
 {
-    if(acceptResult(mimeData))
-    {
-        QStringList values = mimeData.split(";;");
-        QString name = values.first();
-        int possibilityIndex = values.at(1).toInt();
+    m_possibilityToSelect = NULL;
+    CT_InAbstractResultModel *model = getModelFromMimeData(mimeData);
 
-        CT_InAbstractResultModel *model = NULL;
-        QListIterator<CT_InAbstractResultModel*> it(_turn->models());
+    if(model != NULL) {
+        int possibilityIndex;
+        m_possibilityToSelect = getPossibilityFromMimeData(mimeData, &possibilityIndex);
 
-        while((model == NULL)
-              && it.hasNext())
+        if(m_possibilityToSelect != NULL)
         {
-            model = it.next();
+            // on coche la possibilité
+            m_possibilityToSelect->setSelected(true);
 
-            if(model->uniqueName() != name)
-                model = NULL;
+            // on coche par défaut cette possibilité si c'est possible ainsi que ses enfants
+            if(model->canSelectPossibilitiesByDefault(QList<int>() << possibilityIndex, true))
+                model->selectPossibilitiesByDefault(QList<int>() << possibilityIndex, true);
         }
-
-        m_possibilityToSelect = (CT_InStdResultModelPossibility*)model->getPossibilitiesSaved().at(possibilityIndex);
-
-        // on coche la possibilié "droppé"
-        m_possibilityToSelect->setSelected(true);
-
-        // on coche par défaut cette possibilité si c'est possible ainsi que ses enfants
-        if(model->canSelectPossibilitiesByDefault(QList<int>() << possibilityIndex, true))
-            model->selectPossibilitiesByDefault(QList<int>() << possibilityIndex, true);
-
-        m_itemToSelect = NULL;
-
-        constructModel();
     }
+
+    // on reconstruit le modèle
+    m_itemToSelect = NULL;
+
+    constructModel();
+}
+
+void CTG_InResultModelTurnChoice::disableResultPossibility(const QString &mimeData)
+{
+    m_possibilityToSelect = getPossibilityFromMimeData(mimeData, NULL);
+
+    // on décoche la possibilité
+    if(m_possibilityToSelect != NULL)
+        m_possibilityToSelect->setSelected(false);
+
+    // on reconstruit le modèle
+    m_itemToSelect = NULL;
+
+    constructModel();
+}
+
+void CTG_InResultModelTurnChoice::showResultPossibility(const QString &mimeData)
+{
+    m_possibilityToSelect = getPossibilityFromMimeData(mimeData, NULL);
+
+    // on reconstruit le modèle
+    m_itemToSelect = NULL;
+
+    constructModel();
 }

@@ -7,6 +7,7 @@
 #include "ct_virtualabstractstep.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_view/inModel/ctg_inturnmanager.h"
 
 #include <QMimeData>
 #include <QModelIndex>
@@ -30,11 +31,24 @@ CTG_InResultModelPossibilities::CTG_InResultModelPossibilities(QWidget *parent) 
     ui->treeView->setModel(&_viewModel);
     ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->treeView->setDragDropMode(QAbstractItemView::DragOnly);
-    ui->treeView->setDragEnabled(true);
+    ui->treeView->setDragEnabled(false);
 
-    constructHeader();
+    // to have text with black color when it was disabled
+    ui->treeView->setStyleSheet(QString("QTreeView::item {"
+                                "color: rgb(0, 0, 0);"
+                                "}"
+                                "QTreeView::item:has-children:!hover:!selected {"
+                                "background: rgb(172, 226, 169);"
+                                "}"
+                                "QTreeView::item:!has-children:!hover:!selected {"
+                                "background: rgb(220, 220, 220);"
+                                "}"));
+    m_readOnly = false;
 
     _manager = NULL;
+    m_gTurnManager = NULL;
+
+    constructHeader();
 }
 
 CTG_InResultModelPossibilities::~CTG_InResultModelPossibilities()
@@ -51,8 +65,14 @@ void CTG_InResultModelPossibilities::setInResultModelManager(const CT_InResultMo
     ui->treeView->expandAll();
 }
 
+void CTG_InResultModelPossibilities::setInTurnManager(const CTG_InTurnManager *manager)
+{
+    m_gTurnManager = (CTG_InTurnManager*)manager;
+}
+
 void CTG_InResultModelPossibilities::setReadOnly(bool enabled)
 {
+    m_readOnly = enabled;
     ui->treeView->setDragEnabled(!enabled);
 }
 
@@ -99,6 +119,32 @@ void CTG_InResultModelPossibilities::constructHeader()
 #endif
 }
 
+void CTG_InResultModelPossibilities::updateModel()
+{
+    int n = _viewModel.invisibleRootItem()->rowCount();
+
+    for(int i=0; i<n; ++i) {
+        QStandardItem *item = _viewModel.invisibleRootItem()->child(i, 0);
+
+        int m = item->rowCount();
+
+        for(int j=0; j<m; ++j) {
+            QStandardItem *pItem = item->child(j, 0);
+
+            // TODO WARNING : this will be correct if we have only ONE turn !
+            CT_InStdModelPossibility *possibilityOfCurrentTurn = NULL;
+
+            if(m_gTurnManager != NULL)
+                possibilityOfCurrentTurn = m_gTurnManager->getPossibilityFromMimeDataForCurrentTurn(pItem->data().toString(), NULL);
+
+            // Nom du modèle de sortie (avec case à cocher)
+            pItem->setCheckState(((possibilityOfCurrentTurn != NULL) && possibilityOfCurrentTurn->isSelected()) ? Qt::Checked : Qt::Unchecked);
+            // modifiable ou non en fonction du paramètre readonly
+            pItem->setEnabled(!m_readOnly);
+        }
+    }
+}
+
 QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(CT_InAbstractResultModel *resModel)
 {
     QList<QStandardItem*> retList;
@@ -125,6 +171,10 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
     rootOther->setDragEnabled(false);
     rootOther->setEditable(false);
     retList.append(rootOther);*/
+    rootOther = new QStandardItem("");
+    rootOther->setDragEnabled(false);
+    rootOther->setEditable(false);
+    retList.append(rootOther);
 
     int i = 0;
 
@@ -139,23 +189,26 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
 
         QList<QStandardItem*> rowList;
 
-        // Nom du modèle de sortie
+        // Nom du modèle de sortie (avec case à cocher)
         QStandardItem *item = new QStandardItem(possibility->outModel()->displayableName());
-        item->setDragEnabled(true);
+        item->setDragEnabled(false);
+        item->setCheckable(true);
+        item->setCheckState(Qt::Unchecked);
         item->setEditable(false);
+        item->setEnabled(!m_readOnly);
         item->setData(dragText, Qt::UserRole+1);
         rowList.append(item);
 
         // Description du modèle de sortie
         item = new QStandardItem(possibility->outModel()->description());
-        item->setDragEnabled(true);
+        item->setDragEnabled(false);
         item->setEditable(false);
         item->setData(dragText, Qt::UserRole+1);
         rowList.append(item);
 
         // Etape du modèle de sortie
         item = new QStandardItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepDisplayableName() ? possibility->outModel()->step()->getStepExtendedDisplayableName() : possibility->outModel()->step()->getStepCustomName());
-        item->setDragEnabled(true);
+        item->setDragEnabled(false);
         item->setEditable(false);
         item->setData(dragText, Qt::UserRole+1);
         rowList.append(item);
@@ -168,10 +221,70 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
     return retList;
 }
 
-void CTG_InResultModelPossibilities::on_treeView_doubleClicked(const QModelIndex &index)
+void CTG_InResultModelPossibilities::showEvent(QShowEvent *event)
 {
+    updateModel();
+
+    QWidget::showEvent(event);
+}
+
+void CTG_InResultModelPossibilities::on_treeView_clicked(const QModelIndex &index)
+{
+    bool ok = false;
+
     QStandardItem *item = _viewModel.itemFromIndex(index);
 
-    if(item->data().isValid())
-        emit resultChoosed(item->data().toString());
+    if(item->parent() != NULL) {
+        item = item->parent()->child(item->row(), 0);
+
+        if(item->data().isValid()) {
+            ok = true;
+            if(item->checkState() == Qt::Checked) {
+                emit enableResultPossibility(item->data().toString());
+            } else {
+                emit disableResultPossibility(item->data().toString());
+            }
+
+            updateModel();
+
+            ui->treeView->selectionModel()->select(index, QItemSelectionModel::Clear | QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows);
+        }
+    }
+
+    if(!ok)
+        emit showResultPossibility("");
+}
+
+void CTG_InResultModelPossibilities::on_treeView_doubleClicked(const QModelIndex &index)
+{
+    bool ok = false;
+
+    QStandardItem *item = _viewModel.itemFromIndex(index);
+
+    if(item->parent() != NULL) {
+        item = item->parent()->child(item->row(), 0);
+
+        if(item->data().isValid()){
+            if(!m_readOnly) {
+                if(item->checkState() == Qt::Checked)
+                    item->setCheckState(Qt::Unchecked);
+                else
+                    item->setCheckState(Qt::Checked);
+
+                if(item->checkState() == Qt::Checked) {
+                    ok = true;
+                    emit enableResultPossibility(item->data().toString());
+                } else if(item->checkState() == Qt::Unchecked) {
+                    ok = true;
+                    emit disableResultPossibility(item->data().toString());
+                }
+            } else {
+                ok = true;
+                emit showResultPossibility(item->data().toString());
+            }
+        }
+    }
+
+    if(!ok)
+        emit showResultPossibility("");
 }

@@ -16,6 +16,7 @@ CTG_InTurnManager::CTG_InTurnManager(QWidget *parent) :
 
     _manager = NULL;
     m_readOnly = false;
+    m_canAddANewTab = false;
 
     ui->tabWidget->setContextMenuPolicy(Qt::ActionsContextMenu);
 
@@ -49,6 +50,44 @@ void CTG_InTurnManager::setReadOnly(bool enabled)
     m_readOnly = enabled;
 }
 
+CT_InAbstractResultModel *CTG_InTurnManager::getModelFromMimeDataForCurrentTurn(const QString &mimeData)
+{
+    int index = ui->tabWidget->currentIndex();
+    QWidget *wid = ui->tabWidget->widget(index);
+
+    int count = wid->layout()->count();
+
+    for(int i=0; i<count; ++i)
+    {
+        CTG_InResultModelTurnChoice *turnChoice = dynamic_cast<CTG_InResultModelTurnChoice*>(wid->layout()->itemAt(i)->widget());
+
+        if(turnChoice != NULL)
+            return turnChoice->getModelFromMimeData(mimeData);
+    }
+
+    return NULL;
+}
+
+CT_InStdModelPossibility *CTG_InTurnManager::getPossibilityFromMimeDataForCurrentTurn(const QString &mimeData, int *outPossibilityIndex)
+{
+    int index = ui->tabWidget->currentIndex();
+    QWidget *wid = ui->tabWidget->widget(index);
+
+    if(wid != NULL) {
+        int count = wid->layout()->count();
+
+        for(int i=0; i<count; ++i)
+        {
+            CTG_InResultModelTurnChoice *turnChoice = dynamic_cast<CTG_InResultModelTurnChoice*>(wid->layout()->itemAt(i)->widget());
+
+            if(turnChoice != NULL)
+                return turnChoice->getPossibilityFromMimeData(mimeData, outPossibilityIndex);
+        }
+    }
+
+    return NULL;
+}
+
 void CTG_InTurnManager::clearTabs()
 {
     while(ui->tabWidget->count() > 0)
@@ -78,7 +117,7 @@ void CTG_InTurnManager::constructTabs()
             ++i;
         }
 
-        if(ui->tabWidget->count() < _manager->maximumTurn())
+        if(m_canAddANewTab && (ui->tabWidget->count() < _manager->maximumTurn()))
             ui->tabWidget->addTab(new QWidget(), "+");
     }
 
@@ -90,7 +129,8 @@ void CTG_InTurnManager::constructTabs()
 QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
 {
     QWidget *wid = new QWidget(NULL);
-    wid->setWindowTitle(QString("Tour %1").arg(index));
+    //wid->setWindowTitle(QString("Tour %1").arg(index));
+    wid->setWindowTitle(tr("Modèles"));
 
     QVBoxLayout *layout = new QVBoxLayout();
 
@@ -98,6 +138,7 @@ QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
     turnChoice->setReadOnly(m_readOnly);
     turnChoice->setTurn(turn);
     layout->addWidget(turnChoice);
+    turnChoice->setVisible(false);
 
     CTG_InModelPossibilitiesChoice *pChoice = new CTG_InModelPossibilitiesChoice(wid);
     pChoice->setReadOnly(m_readOnly);
@@ -112,13 +153,40 @@ QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
 
 bool CTG_InTurnManager::isAddTab(int index) const
 {
-    int count = ui->tabWidget->count();
+    if(m_canAddANewTab) {
+        int count = ui->tabWidget->count();
 
-    if((index > 0)
-            && (index == (count-1)))
-        return true;
+        if((index > 0)
+                && (index == (count-1)))
+            return true;
+    }
 
     return false;
+}
+
+void CTG_InTurnManager::setResultPossibility(const QString &mimeData, CTG_InTurnManager::ActionType action)
+{
+    int index = ui->tabWidget->currentIndex();
+    QWidget *wid = ui->tabWidget->widget(index);
+
+    int count = wid->layout()->count();
+
+    for(int i=0; i<count; ++i)
+    {
+        CTG_InResultModelTurnChoice *turnChoice = dynamic_cast<CTG_InResultModelTurnChoice*>(wid->layout()->itemAt(i)->widget());
+
+        if(turnChoice != NULL)
+        {
+            if(action == Enable)
+                turnChoice->enableResultPossibility(mimeData);
+            else if(action == Disable)
+                turnChoice->disableResultPossibility(mimeData);
+            else
+                turnChoice->showResultPossibility(mimeData);
+
+            return;
+        }
+    }
 }
 
 void CTG_InTurnManager::currentTabChanged(int index)
@@ -152,9 +220,9 @@ void CTG_InTurnManager::currentTabChanged(int index)
             }
             else
             {
-                QMessageBox::warning(this, "Avertissement", "Impossible de créer un nouveau tour car le dernier "
+                QMessageBox::warning(this, tr("Avertissement"), tr("Impossible de créer un nouveau tour car le dernier "
                                                             "n'est pas valide. Veuillez sélectionner au moins un élément "
-                                                            "pour chaque résultat puis ré-essayez.", QMessageBox::Ok);
+                                                            "pour chaque résultat puis ré-essayez."), QMessageBox::Ok);
 
                 ui->tabWidget->setCurrentIndex(_lastIndex);
             }
@@ -180,26 +248,22 @@ void CTG_InTurnManager::removeCurrentTurn()
         }
         else
         {
-            QMessageBox::warning(this, "Avertissement", "Vous ne pouvez pas supprimer le tour car il en faut au moins un.", QMessageBox::Ok);
+            QMessageBox::warning(this, tr("Avertissement"), tr("Vous ne pouvez pas supprimer le tour car il en faut au moins un."), QMessageBox::Ok);
         }
     }
 }
 
-void CTG_InTurnManager::setResultChoosed(const QString &mimeData)
+void CTG_InTurnManager::enableResultPossibility(const QString &mimeData)
 {
-    int index = ui->tabWidget->currentIndex();
-    QWidget *wid = ui->tabWidget->widget(index);
+    setResultPossibility(mimeData, Enable);
+}
 
-    int count = wid->layout()->count();
+void CTG_InTurnManager::disableResultPossibility(const QString &mimeData)
+{
+    setResultPossibility(mimeData, Disable);
+}
 
-    for(int i=0; i<count; ++i)
-    {
-        CTG_InResultModelTurnChoice *turnChoice = dynamic_cast<CTG_InResultModelTurnChoice*>(wid->layout()->itemAt(i)->widget());
-
-        if(turnChoice != NULL)
-        {
-            turnChoice->setResultChoosed(mimeData);
-            return;
-        }
-    }
+void CTG_InTurnManager::showResultPossibility(const QString &mimeData)
+{
+    setResultPossibility(mimeData, Show);
 }

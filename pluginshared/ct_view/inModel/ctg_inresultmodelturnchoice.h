@@ -6,6 +6,7 @@
 
 class CT_InTurn;
 class CT_InAbstractResultModel;
+class CT_InStdModelPossibility;
 class CT_InStdResultModelPossibility;
 
 namespace Ui {
@@ -51,6 +52,9 @@ public:
 
     void setReadOnly(bool enabled);
 
+    CT_InAbstractResultModel* getModelFromMimeData(const QString &mimeData);
+    CT_InStdModelPossibility* getPossibilityFromMimeData(const QString &mimeData, int *outPossibilityIndex);
+
 protected:
 
     /*!
@@ -68,7 +72,7 @@ private:
     CT_InTurn                           *_turn;
 
     QStandardItemModel                  _viewModel;
-    CT_InStdResultModelPossibility      *m_possibilityToSelect;
+    CT_InStdModelPossibility            *m_possibilityToSelect;
     QStandardItem                       *m_itemToSelect;
 
     /*!
@@ -93,6 +97,7 @@ private:
      */
     QList<QStandardItem*> createItemsForResultModel(CT_InAbstractResultModel *resModel);
 
+
 private slots:
 
     bool acceptResult(const QString &mimeData);
@@ -101,7 +106,9 @@ private slots:
     void removeSelectedPossibility();
 
 public slots:
-    void setResultChoosed(const QString &mimeData);
+    void enableResultPossibility(const QString &mimeData);
+    void disableResultPossibility(const QString &mimeData);
+    void showResultPossibility(const QString &mimeData);
 
 signals:
 

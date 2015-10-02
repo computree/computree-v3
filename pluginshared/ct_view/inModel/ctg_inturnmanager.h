@@ -5,6 +5,8 @@
 
 class CT_InTurnManager;
 class CT_InTurn;
+class CT_InAbstractResultModel;
+class CT_InStdModelPossibility;
 
 namespace Ui {
 class CTG_InTurnManager;
@@ -24,12 +26,22 @@ public:
 
     void setReadOnly(bool enabled);
 
+    CT_InAbstractResultModel* getModelFromMimeDataForCurrentTurn(const QString &mimeData);
+    CT_InStdModelPossibility *getPossibilityFromMimeDataForCurrentTurn(const QString &mimeData, int *outPossibilityIndex);
+
 private:
+    enum ActionType {
+        Enable,
+        Disable,
+        Show
+    };
+
     Ui::CTG_InTurnManager   *ui;
     CT_InTurnManager        *_manager;
 
     bool                    _constructEnabled;
     int                     _lastIndex;
+    bool                    m_canAddANewTab;
     bool                    m_readOnly;
 
     void clearTabs();
@@ -38,13 +50,16 @@ private:
     QWidget* createTabForTurn(CT_InTurn *turn, int index);
     bool isAddTab(int index) const;
 
+    void setResultPossibility(const QString &mimeData, ActionType action);
 private slots:
 
     void currentTabChanged(int index);
     void removeCurrentTurn();
 
 public slots:
-    void setResultChoosed(const QString &mimeData);
+    void enableResultPossibility(const QString &mimeData);
+    void disableResultPossibility(const QString &mimeData);
+    void showResultPossibility(const QString &mimeData);
 };
 
 #endif // CTG_INTURNMANAGER_H

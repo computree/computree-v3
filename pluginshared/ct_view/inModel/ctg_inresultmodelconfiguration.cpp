@@ -13,7 +13,9 @@ CTG_InResultModelConfiguration::CTG_InResultModelConfiguration(QWidget *parent) 
 
     _inManager = NULL;
 
-    connect(ui->inResultModelPossibilities, SIGNAL(resultChoosed(QString)), ui->inTurnManager, SLOT(setResultChoosed(QString)));
+    connect(ui->inResultModelPossibilities, SIGNAL(enableResultPossibility(QString)), ui->inTurnManager, SLOT(enableResultPossibility(QString)), Qt::DirectConnection);
+    connect(ui->inResultModelPossibilities, SIGNAL(disableResultPossibility(QString)), ui->inTurnManager, SLOT(disableResultPossibility(QString)), Qt::DirectConnection);
+    connect(ui->inResultModelPossibilities, SIGNAL(showResultPossibility(QString)), ui->inTurnManager, SLOT(showResultPossibility(QString)), Qt::DirectConnection);
 }
 
 CTG_InResultModelConfiguration::~CTG_InResultModelConfiguration()
@@ -25,6 +27,7 @@ void CTG_InResultModelConfiguration::setInManager(const CT_InManager *manager)
 {
     _inManager = (CT_InManager*)manager;
 
+    ui->inResultModelPossibilities->setInTurnManager(ui->inTurnManager);
     ui->inResultModelPossibilities->setInResultModelManager(manager->getResultModelManager());
     ui->inTurnManager->setInTurnManager(manager->getTurnManager());
 }
