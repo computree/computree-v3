@@ -63,7 +63,8 @@ SOURCES += \
     $$PWD/DocumentView/GraphicsViews/3D/Visitor/dm_boundingsphereitemselectedvisitor.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.cpp \
     $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.cpp \
-    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.cpp
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -134,7 +135,8 @@ HEADERS += \
     $$PWD/DocumentView/GraphicsViews/3D/Visitor/dm_boundingsphereitemselectedvisitor.h \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.h \
     $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.h \
-    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

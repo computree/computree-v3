@@ -117,7 +117,7 @@ float G3DCameraController::focusDistance() const
 
 CameraInterface::CameraType G3DCameraController::type() const
 {
-    return ((dynamic_cast<DM_3DCameraManipulator*>(m_camManipulator.get()) != NULL) ? CameraInterface::PERSPECTIVE : CameraInterface::ORTHOGRAPHIC);
+    return m_view->isOrthographicCamera() ? CameraInterface::ORTHOGRAPHIC : CameraInterface::PERSPECTIVE;
 }
 
 const GLdouble* G3DCameraController::orientationMatrix() const

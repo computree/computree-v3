@@ -57,10 +57,10 @@ osg::ref_ptr<osg::Geometry> createBeam(double x, double y, double z, QColor qtCo
     return beam;
 }
 
-osgGA::KeySwitchMatrixManipulator* createManipulatorSwitch() {
+osgGA::KeySwitchMatrixManipulator* createManipulatorSwitch(CameraInterface *camController, osg::Camera *camera) {
     osgGA::KeySwitchMatrixManipulator *sw = new osgGA::KeySwitchMatrixManipulator();
-    sw->addMatrixManipulator('1', "3D", new DM_3DCameraManipulator());
-    sw->addMatrixManipulator('2', "2D", new DM_2DCameraManipulator());
+    sw->addMatrixManipulator('1', "3D", new DM_3DCameraManipulator(camController, camera));
+    sw->addMatrixManipulator('2', "2D", new DM_2DCameraManipulator(camera));
     sw->setHomePosition(osg::Vec3(6, 0, 0), osg::Vec3(0, 0, 0), osg::Z_AXIS);
 
     return sw;
@@ -190,17 +190,14 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
 
     m_graphicsWindow = createGraphicsWindow(this);
 
-    m_manSwitch = createManipulatorSwitch();
+    osg::Camera *mainCamera = createMainCamera(m_graphicsWindow);
+    m_manSwitch = createManipulatorSwitch(&m_camController, mainCamera);
     m_axis = createAxis();
     m_scene = createScene(m_axis.get());
 
     m_captureScreenHandler = createScreenCaptureHandler();
-    m_view = createView(createMainCamera(m_graphicsWindow), m_manSwitch.get(), m_scene.get());
+    m_view = createView(mainCamera, m_manSwitch.get(), m_scene.get());
     m_view->addEventHandler(m_captureScreenHandler);
-    //m_view->addEventHandler(new osgViewer::StatsHandler);
-
-    DM_2DCameraManipulator *manipulator2D = ((DM_2DCameraManipulator*)m_manSwitch->getMatrixManipulatorWithIndex(1));
-    manipulator2D->setCamera(m_view->getCamera());
 
     m_hudCamera = createHUDCameraForEnablePaintingOverlayWithQPainter(m_graphicsWindow, 800, 600);
 
@@ -216,37 +213,6 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
     setFocusPolicy(Qt::StrongFocus);
     setMinimumSize(100, 100);
     setMouseTracking(true);
-
-    //DM_PainterToOsgElements g;
-    /*double initPos = 1000000;
-
-    g.drawCube(initPos, initPos, initPos, initPos+.001, initPos+.001, initPos+.001);
-    g.drawCircle(initPos, initPos, initPos, 0.001);
-    g.drawCircle3D(Eigen::Vector3d(initPos, initPos, initPos), Eigen::Vector3d(0.5, 0.5, 1), 0.001);
-    g.drawCircle(initPos, initPos, initPos, 0.5);
-    g.drawCylinder(initPos, initPos, initPos, 3, 5);
-    g.drawCylinder3D(Eigen::Vector3d(initPos, initPos, initPos), Eigen::Vector3d(0.5, 0.5, 1), 0.0005, 0.001);
-    g.drawEllipse(initPos, initPos, initPos, 0.001, 0.0005);
-    g.drawPoint(initPos, initPos, initPos);
-    g.drawPoint(initPos, initPos, initPos+.0005);*/
-    /*g.drawTriangle(0, 0, 0,
-                    1, 1, 0,
-                    -1, 1, 0);*/
-
-    /*g.drawCylinder3D(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(1, 1, 1), 0.1, 0.6);
-    g.drawCylinder(2, 0, 0, 1, 2);
-    g.drawCylinder3D(Eigen::Vector3d(0, 10, 0), Eigen::Vector3d(1, 0, 2), 0.3, 3.7);
-    g.drawCylinder(0, 4, 0, 3, 5);
-
-    for(int i=0; i<4; ++i)
-        g.drawCylinder(0, 4, 0, 3, 5);
-
-    g.drawPartOfSphere(0, 0, 0, 0.8, -M_PI, M_PI, -M_PI, M_PI, true);
-    g.drawPartOfSphere(1, 1, 1, 0.2, 0, 360, 0, 360, false);
-
-    ((DM_3DCameraManipulator*)m_manSwitch->getMatrixManipulatorWithIndex(0))->setCenter(osg::Vec3d(initPos, initPos, initPos));*/
-
-    //m_scene->addChild(g.results().get());
 }
 
 GOsgGraphicsView::~GOsgGraphicsView()
@@ -408,11 +374,16 @@ bool GOsgGraphicsView::restoreStateFromFile()
 void GOsgGraphicsView::active2dView(bool enable)
 {
     if(enable) {
+        DM_GraphicsViewOptions opt;
+        opt.updateFromOtherOptions(constGetOptionsInternal());
+        opt.setCameraType(CameraInterface::ORTHOGRAPHIC);
+        setOptions(opt);
+
         getCamera()->alignCameraToZAxis();
-        m_manSwitch->selectMatrixManipulator(1);
+        m_manSwitch->selectMatrixManipulator(1); // active 2D camera manipulator
         m_camController.setRealCameraManipulator((osgGA::OrbitManipulator*)m_manSwitch->getCurrentMatrixManipulator());
     } else {
-        m_manSwitch->selectMatrixManipulator(0);
+        m_manSwitch->selectMatrixManipulator(0); // active 3D camera manipulator
         m_camController.setRealCameraManipulator((osgGA::OrbitManipulator*)m_manSwitch->getCurrentMatrixManipulator());
         setCameraType(CameraInterface::PERSPECTIVE);
     }
@@ -426,12 +397,30 @@ osgViewer::CompositeViewer* GOsgGraphicsView::getCompositeViewer() const
 void GOsgGraphicsView::setCameraType(CameraInterface::CameraType type)
 {
     if(!is2DView()) {
+        DM_GraphicsViewOptions opt;
+        opt.updateFromOtherOptions(constGetOptionsInternal());
+
+        if(opt.getCameraType() != type) {
+            opt.setCameraType(type);
+            setOptions(opt);
+        }
+
         if(type == CameraInterface::ORTHOGRAPHIC) {
-            m_view->getCamera()->setProjectionMatrixAsOrtho(-1, 1, -1, 1, 1.0f, 10000.0f);
+            dynamic_cast<DM_OrthographicCameraManipulator*>(m_manSwitch->getCurrentMatrixManipulator())->updateCameraOrthographic();
         } else {
             m_view->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f );
         }
     }
+}
+
+bool GOsgGraphicsView::isOrthographicCamera() const
+{
+    return (constGetOptionsInternal().getCameraType() == CameraInterface::ORTHOGRAPHIC);
+}
+
+bool GOsgGraphicsView::isPerspectiveCamera() const
+{
+    return (constGetOptionsInternal().getCameraType() == CameraInterface::PERSPECTIVE);
 }
 
 QWidget* GOsgGraphicsView::getViewWidget() const
@@ -446,7 +435,13 @@ bool GOsgGraphicsView::is2DView() const
 
 void GOsgGraphicsView::setOptions(const DM_GraphicsViewOptions &newOptions)
 {
-    GGraphicsView::setOptions(newOptions);
+    DM_GraphicsViewOptions tmp;
+    tmp.updateFromOtherOptions(newOptions);
+
+    if(is2DView())
+        tmp.setCameraType(CameraInterface::ORTHOGRAPHIC);
+
+    GGraphicsView::setOptions(tmp);
 
     const DM_GraphicsViewOptions &opt = constGetOptionsInternal();
 
@@ -465,6 +460,8 @@ void GOsgGraphicsView::setOptions(const DM_GraphicsViewOptions &newOptions)
     }
 
     point->setSize(opt.getPointSize());
+
+    setCameraType(opt.getCameraType());
 }
 
 void GOsgGraphicsView::unlockPaint()
@@ -828,10 +825,8 @@ void GOsgGraphicsView::resizeGL(int width, int height)
     m_graphicsWindow->resized( this->x(), this->y(), width, height );
     onResize( width, height );
 
-    DM_2DCameraManipulator *manip = dynamic_cast<DM_2DCameraManipulator*>(m_manSwitch->getCurrentMatrixManipulator());
-
-    if(manip != NULL)
-        manip->updateCameraOrthographic();
+    if(isOrthographicCamera())
+        dynamic_cast<DM_OrthographicCameraManipulator*>(m_manSwitch->getCurrentMatrixManipulator())->updateCameraOrthographic();
 }
 
 void GOsgGraphicsView::onResize(int width, int height)

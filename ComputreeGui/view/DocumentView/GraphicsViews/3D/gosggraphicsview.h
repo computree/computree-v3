@@ -103,6 +103,16 @@ public:
      */
     void setCameraType(CameraInterface::CameraType type);
 
+    /**
+     * @brief Return true if the camera is orthographic
+     */
+    bool isOrthographicCamera() const;
+
+    /**
+     * @brief Return true if the camera is perspective
+     */
+    bool isPerspectiveCamera() const;
+
     // -------- GGraphicsView ---------- //
     /**
      * @brief Returns the widget that represents this graphics to attach it to a layout per example

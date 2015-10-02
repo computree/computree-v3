@@ -349,6 +349,7 @@ bool DM_GraphicsViewOptions::loadFromXml(const QDomElement &el)
     _fastDrawTime = DM_DomUtils::intFromDom(el, "fastDrawTime", _fastDrawTime);
     _cameraInfoDisplayed = (CameraInfoDisplayed)DM_DomUtils::intFromDom(el, "cameraInfoDisplayed", (int)_cameraInfoDisplayed);
     _cameraInfoPosition = (CameraInfoPosition) DM_DomUtils::intFromDom(el, "cameraInfoPosition", (int)_cameraInfoPosition);
+    _cameraType = (CameraInterface::CameraType) DM_DomUtils::intFromDom(el, "cameraType", (int)_cameraType);
     m_showOctree = DM_DomUtils::boolFromDom(el, "showOctree", m_showOctree);
     setOctreeNumberOfCells(DM_DomUtils::intFromDom(el, "octreeNumberOfCells", m_octreeNumberOfCells));
     setOctreeSizeOfCells(DM_DomUtils::qrealFromDom(el,"octreeSizeOfCells", m_octreeSizeOfCells));
@@ -372,6 +373,7 @@ bool DM_GraphicsViewOptions::saveToXml(QDomElement &main, QDomDocument &doc) con
     main.setAttribute("fastDrawTime", _fastDrawTime);
     main.setAttribute("cameraInfoDisplayed", (int)_cameraInfoDisplayed);
     main.setAttribute("cameraInfoPosition", (int)_cameraInfoPosition);
+    main.setAttribute("cameraType", (int)_cameraType);
     DM_DomUtils::setBoolAttribute(main, "showOctree", m_showOctree);
     main.setAttribute("octreeNumberOfCells", m_octreeNumberOfCells);
     main.setAttribute("octreeSizeOfCells", m_octreeSizeOfCells);

@@ -96,7 +96,10 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     ui->groupBoxOptim->setStyleSheet(style);
     ui->groupBoxView->setStyleSheet(style);
 
-    //setFixedSize(size());
+    // disable visibility of this parameters because with OSG it will not be used
+    ui->groupBoxOptim->setVisible(false);
+    ui->checkBoxUseLight->setVisible(false);
+    ui->checkBoxUseTransparency->setVisible(false);
 }
 
 GGraphicsViewOptions::~GGraphicsViewOptions()
