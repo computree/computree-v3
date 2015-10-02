@@ -64,7 +64,7 @@ CT_VirtualAbstractStep* PB_StepAddAffiliationID::createNewInstance(CT_StepInitia
 void PB_StepAddAffiliationID::createInResultModelListProtected()
 {
     // search a IN result that will be copied in the list of OUT results of this step
-    CT_InResultModelGroupToCopy *res = createNewInResultModelForCopy(DEF_SearchInResult, tr("Résultat à affilier"));
+    CT_InResultModelGroupToCopy *res = createNewInResultModelForCopy(DEF_SearchInResult, tr("Résultat à affilier"), tr("Veuillez choisir le résultat auquel vous voulez ajouter un ID"));
 
     // we want a result with zero or more groups
     res->setZeroOrMoreRootGroup();

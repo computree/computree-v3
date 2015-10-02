@@ -11,6 +11,9 @@
 
 #include <QMimeData>
 #include <QModelIndex>
+#include <QMessageBox>
+
+#define HELP_COLUMN 2
 
 QMimeData* CTG_InResultModelPossibilitiesDragModel::mimeData(const QModelIndexList &indexes) const
 {
@@ -103,19 +106,19 @@ void CTG_InResultModelPossibilities::constructHeader()
 {
     QStringList header;
     header << tr("Nom des résultats");
-    header << tr("Description");
     header << tr("Etape");
+    header << tr("Aide"); // if you change the header don't missing to change HELP_COLUMN defined at the top of this file
 
     _viewModel.setHorizontalHeaderLabels(header);
 
 #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     ui->treeView->header()->setResizeMode(0, QHeaderView::ResizeToContents);
     ui->treeView->header()->setResizeMode(1, QHeaderView::ResizeToContents);
-    ui->treeView->header()->setResizeMode(2, QHeaderView::ResizeToContents);
+    ui->treeView->header()->setResizeMode(2, QHeaderView::Fixed);
 #else
     ui->treeView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->treeView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    ui->treeView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    ui->treeView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
 #endif
 }
 
@@ -158,22 +161,24 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
     QStandardItem *rootName = new QStandardItem(resModel->displayableName());
     rootName->setDragEnabled(false);
     rootName->setEditable(false);
+    rootName->setData(resModel->description());
     retList.append(rootName);
-
-    // Description du modèle d'entrée
-    QStandardItem *rootOther = new QStandardItem(resModel->description());
-    rootOther->setDragEnabled(false);
-    rootOther->setEditable(false);
-    retList.append(rootOther);
 
     // Etape du modèle d'entrée
     /*rootOther = new QStandardItem(resModel->step()->getStepCustomName() == resModel->step()->getStepDisplayableName() ? resModel->step()->getStepExtendedDisplayableName() : resModel->step()->getStepCustomName());
     rootOther->setDragEnabled(false);
     rootOther->setEditable(false);
     retList.append(rootOther);*/
+    QStandardItem *rootOther = new QStandardItem("");
+    rootOther->setDragEnabled(false);
+    rootOther->setEditable(false);
+    retList.append(rootOther);
+
+    // Aide
     rootOther = new QStandardItem("");
     rootOther->setDragEnabled(false);
     rootOther->setEditable(false);
+    rootOther->setIcon(QIcon(":/Icones/Icones/help.png"));
     retList.append(rootOther);
 
     int i = 0;
@@ -199,15 +204,15 @@ QList<QStandardItem*> CTG_InResultModelPossibilities::createItemsForResultModel(
         item->setData(dragText, Qt::UserRole+1);
         rowList.append(item);
 
-        // Description du modèle de sortie
-        item = new QStandardItem(possibility->outModel()->description());
+        // Etape du modèle de sortie
+        item = new QStandardItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepDisplayableName() ? possibility->outModel()->step()->getStepExtendedDisplayableName() : possibility->outModel()->step()->getStepCustomName());
         item->setDragEnabled(false);
         item->setEditable(false);
         item->setData(dragText, Qt::UserRole+1);
         rowList.append(item);
 
-        // Etape du modèle de sortie
-        item = new QStandardItem(possibility->outModel()->step()->getStepCustomName() == possibility->outModel()->step()->getStepDisplayableName() ? possibility->outModel()->step()->getStepExtendedDisplayableName() : possibility->outModel()->step()->getStepCustomName());
+        // Vide
+        item = new QStandardItem("");
         item->setDragEnabled(false);
         item->setEditable(false);
         item->setData(dragText, Qt::UserRole+1);
@@ -230,13 +235,22 @@ void CTG_InResultModelPossibilities::showEvent(QShowEvent *event)
 
 void CTG_InResultModelPossibilities::on_treeView_clicked(const QModelIndex &index)
 {
+    QStandardItem *item = _viewModel.itemFromIndex(index);
+    QStandardItem *parent = _viewModel.itemFromIndex(index.parent());
+
+    if(parent != NULL)
+        item = parent->child(item->row(), 0);
+    else
+        item = _viewModel.invisibleRootItem()->child(item->row(), 0);
+
+    if((item != NULL) && (item->rowCount() != 0) && (index.column() == HELP_COLUMN)) {
+        QMessageBox::information(this, tr("Aide"), tr("<html>Description du résultat d'entrée : <br/><br/>%1</html>").arg(item->data().toString()));
+        return;
+    }
+
     bool ok = false;
 
-    QStandardItem *item = _viewModel.itemFromIndex(index);
-
-    if(item->parent() != NULL) {
-        item = item->parent()->child(item->row(), 0);
-
+    if(item != NULL) {
         if(item->data().isValid()) {
             ok = true;
             if(item->checkState() == Qt::Checked) {
