@@ -37,6 +37,7 @@
 
 #include <QVariantList>
 #include <QObject>
+#include <QMouseEvent>
 
 class CT_VirtualAbstractStep;
 
@@ -49,6 +50,26 @@ class CT_FileChoiceButton;
 class CT_AsciiFileChoiceButton;
 class CT_ComboBox;
 class SettingsNodeGroup;
+
+class HelpButton : public QLabel {
+    Q_OBJECT
+
+public:
+    HelpButton(QWidget *parent) : QLabel(parent) {}
+
+    QString helpText;
+
+protected:
+    void mousePressEvent(QMouseEvent * event) {
+        if(event->button() == Qt::LeftButton)
+            emit clicked(helpText);
+
+        QLabel::mousePressEvent(event);
+    }
+
+signals:
+    void clicked(QString helpText);
+};
 
 /*!
  * \class CT_StepConfigurableDialog
@@ -114,7 +135,8 @@ public:
                 QString afterLabelText,
                 int minValue,
                 int maxValue,
-                int &value);
+                int &value,
+                QString helpText = "");
 
     /*! \brief Add a double parameter input to a new line in the dialog
      *
@@ -141,7 +163,8 @@ public:
                    double maxValue,
                    int nDecimals,
                    double &value,
-                   double multValue = 1);
+                   double multValue = 1,
+                   QString helpText = "");
 
     /*! \brief Add a bool parameter input to a new line in the dialog
      *
@@ -158,7 +181,8 @@ public:
     bool addBool(QString beforeLabelText,
                  QString afterLabelText,
                  QString checkBoxText,
-                 bool &value);
+                 bool &value,
+                 QString helpText = "");
 
 
     /*! \brief Add an QString parameter input to a new line in the dialog
@@ -174,7 +198,8 @@ public:
      */
     bool addString(QString beforeLabelText,
                    QString afterLabelText,
-                   QString &value);
+                   QString &value,
+                   QString helpText = "");
 
 
     /*! \brief Add a list of choice for a parameter to a new line in the dialog
@@ -190,9 +215,10 @@ public:
      * \param[out] value Output variable for the value. Note that it's also used to fix input default value.
      */
     CT_ComboBox *addStringChoice(QString beforeLabelText,
-                         QString afterLabelText,
-                         QStringList valuesList,
-                         QString &value);
+                                 QString afterLabelText,
+                                 QStringList valuesList,
+                                 QString &value,
+                                 QString helpText = "");
 
     /*! \brief Add a control allowing to choose af file to a new line in the dialog
      *
@@ -210,9 +236,10 @@ public:
      * \param[out] value Output variable for the value. Note that it's also used to fix input default value.
      */
     CT_FileChoiceButton* addFileChoice(QString btLabel,
-                         CT_FileChoiceButton::NeededFileType filetype,
-                         QString fileFilter,
-                         QStringList &value);
+                                       CT_FileChoiceButton::NeededFileType filetype,
+                                       QString fileFilter,
+                                       QStringList &value,
+                                       QString helpText = "");
 
 
     /*! \brief Add a control allowing to choose an ASCII file to a new line in the dialog
@@ -295,7 +322,8 @@ public:
                          QString afterLabelText,
                          QString radioButtonText,
                          CT_ButtonGroup &group,
-                         int id);
+                         int id,
+                         QString helpText = "");
 
     /*! \brief Add a new empty line in the dialog
      *
@@ -330,6 +358,10 @@ private:
     QGridLayout* getLayout(QWidget *wid) const;
     void addWidget(int row, int column, QWidget *wid, int rowSpan = 1, int colSpan = 1);
     void addLabel(int row, int column, QString text);
+    void addHelpButton(int row, int column, QString helpText);
+
+private slots:
+    void showHelpMessage(QString helpText);
 };
 
 #endif // CT_STEPCONFIGURABLEDIALOG_H

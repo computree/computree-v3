@@ -48,6 +48,7 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QLayoutItem>
+#include <QMessageBox>
 
 CT_StepConfigurableDialog::CT_StepConfigurableDialog()
 {
@@ -160,21 +161,25 @@ bool CT_StepConfigurableDialog::addTitle(QString titleText)
     return false;
 }
 bool CT_StepConfigurableDialog::addInt(QString beforeLabelText,
-            QString afterLabelText,
-            int minValue,
-            int maxValue,
-            int &value)
+                                       QString afterLabelText,
+                                       int minValue,
+                                       int maxValue,
+                                       int &value,
+                                       QString helpText)
 {
     if(_canEdit)
     {
         addLabel(_nRow, 0, beforeLabelText);
 
         CT_SpinBox *spinBox = new CT_SpinBox(minValue, maxValue, value, beforeLabelText);
+
         _listWidgetWithValueReference.append(spinBox);
 
         addWidget(_nRow, 1, spinBox->createWidget(*_wid));
 
         addLabel(_nRow, 2, afterLabelText);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -190,18 +195,22 @@ bool CT_StepConfigurableDialog::addDouble(QString beforeLabelText,
                                           double maxValue,
                                           int nDecimals,
                                           double &value,
-                                          double multValue)
+                                          double multValue,
+                                          QString helpText)
 {
     if(_canEdit)
     {
         addLabel(_nRow, 0, beforeLabelText);
 
         CT_DoubleSpinBox *spinBox = new CT_DoubleSpinBox(minValue, maxValue, nDecimals, value, multValue, beforeLabelText);
+
         _listWidgetWithValueReference.append(spinBox);
 
         addWidget(_nRow, 1, spinBox->createWidget(*_wid));
 
         addLabel(_nRow, 2, afterLabelText);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -214,18 +223,22 @@ bool CT_StepConfigurableDialog::addDouble(QString beforeLabelText,
 bool CT_StepConfigurableDialog::addBool(QString beforeLabelText,
                                         QString afterLabelText,
                                         QString checkBoxText,
-                                        bool &value)
+                                        bool &value,
+                                        QString helpText)
 {
     if(_canEdit)
     {
         addLabel(_nRow, 0, beforeLabelText);
 
         CT_CheckBox *checkBox = new CT_CheckBox(checkBoxText, value, beforeLabelText);
+
         _listWidgetWithValueReference.append(checkBox);
 
         addWidget(_nRow, 1, checkBox->createWidget(*_wid));
 
         addLabel(_nRow, 2, afterLabelText);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -236,19 +249,23 @@ bool CT_StepConfigurableDialog::addBool(QString beforeLabelText,
 }
 
 bool CT_StepConfigurableDialog::addString(QString beforeLabelText,
-            QString afterLabelText,
-            QString &value)
+                                          QString afterLabelText,
+                                          QString &value,
+                                          QString helpText)
 {
     if(_canEdit)
     {
         addLabel(_nRow, 0, beforeLabelText);
 
         CT_LineEdit *lineEdit = new CT_LineEdit(value, beforeLabelText);
+
         _listWidgetWithValueReference.append(lineEdit);
 
         addWidget(_nRow, 1, lineEdit->createWidget(*_wid));
 
         addLabel(_nRow, 2, afterLabelText);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -259,9 +276,10 @@ bool CT_StepConfigurableDialog::addString(QString beforeLabelText,
 }
 
 CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
-                     QString afterLabelText,
-                     QStringList valuesList,
-                     QString &value)
+                                                        QString afterLabelText,
+                                                        QStringList valuesList,
+                                                        QString &value,
+                                                        QString helpText)
 {
     if(_canEdit)
     {
@@ -275,6 +293,8 @@ CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
 
         addLabel(_nRow, 2, afterLabelText);
 
+        addHelpButton(_nRow, 3, helpText);
+
         ++_nRow;
 
         if (value != "") {comboBox->setWidgetValue(value);}
@@ -285,17 +305,21 @@ CT_ComboBox* CT_StepConfigurableDialog::addStringChoice(QString beforeLabelText,
 }
 
 CT_FileChoiceButton *CT_StepConfigurableDialog::addFileChoice(QString btLabel,
-                     CT_FileChoiceButton::NeededFileType filetype,
-                     QString fileFilter,
-                     QStringList &value)
+                                                              CT_FileChoiceButton::NeededFileType filetype,
+                                                              QString fileFilter,
+                                                              QStringList &value,
+                                                              QString helpText)
 {
     if(_canEdit)
     {
 
         CT_FileChoiceButton *fileChoiceButton = new CT_FileChoiceButton(btLabel, filetype, fileFilter, value, btLabel);
+
         _listWidgetWithValueReference.append(fileChoiceButton);
 
         addWidget(_nRow, 0, fileChoiceButton->createWidget(*_wid), 1, -1);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -401,7 +425,8 @@ bool CT_StepConfigurableDialog::addExcludeValue(QString beforeLabelText,
                                                 QString afterLabelText,
                                                 QString radioButtonText,
                                                 CT_ButtonGroup &group,
-                                                int id)
+                                                int id,
+                                                QString helpText)
 {
     if(_canEdit)
     {
@@ -424,6 +449,8 @@ bool CT_StepConfigurableDialog::addExcludeValue(QString beforeLabelText,
         addWidget(_nRow, 1, radioButton->createWidget(*_wid));
 
         addLabel(_nRow, 2, afterLabelText);
+
+        addHelpButton(_nRow, 3, helpText);
 
         ++_nRow;
 
@@ -529,4 +556,23 @@ void CT_StepConfigurableDialog::addWidget(int row, int column, QWidget *wid, int
 void CT_StepConfigurableDialog::addLabel(int row, int column, QString text)
 {
     getLayout(_wid)->addWidget(new QLabel(text, _wid), row, column);
+}
+
+void CT_StepConfigurableDialog::addHelpButton(int row, int column, QString helpText)
+{
+    if(!helpText.isEmpty()) {
+        HelpButton *button = new HelpButton(_wid);
+        button->setPixmap(QPixmap(":/Icones/Icones/help.png").scaledToHeight(25,Qt::SmoothTransformation));
+        button->helpText = helpText;
+        button->setToolTip(helpText);
+
+        connect(button, SIGNAL(clicked(QString)), this, SLOT(showHelpMessage(QString)));
+
+        addWidget(row, column, button);
+    }
+}
+
+void CT_StepConfigurableDialog::showHelpMessage(QString helpText)
+{
+    QMessageBox::information(_wid, tr("Aide"), helpText);
 }
