@@ -18,12 +18,13 @@ public:
         interpolateForOneCell(index);
     }
 
+    void interpolateForOneCell(const size_t &index);
+
 private:
     CT_Image2D<float>* _raster;
     CT_Image2D<float>* _rasterInterpol;
     int     _nCells;
 
-    void interpolateForOneCell(const size_t &index);
 
 };
 

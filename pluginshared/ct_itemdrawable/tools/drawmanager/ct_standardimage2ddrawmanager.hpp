@@ -84,7 +84,7 @@ void CT_StandardImage2DDrawManager<DataT>::draw(GraphicsViewInterface &view, Pai
             QColor &color = it.value();
             color.setRed(25 + std::rand() % 225);
             color.setGreen(25 + std::rand() % 225);
-            color.setBlue(25 + std::rand() % 255);
+            color.setBlue(25 + std::rand() % 225);
         }
     }
 
