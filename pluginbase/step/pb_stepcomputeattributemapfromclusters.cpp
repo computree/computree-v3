@@ -14,6 +14,7 @@
 #define DEFin_res "res"
 #define DEFin_mainGrp "maingrp"
 #define DEFin_clusters "clusters"
+#define DEFin_attrib "attribut"
 #define DEFin_grp "grp"
 #define DEFin_item "item"
 #define DEFin_itemID "itemID"
@@ -60,6 +61,7 @@ void PB_StepComputeAttributeMapFromClusters::createInResultModelListProtected()
     res->setZeroOrMoreRootGroup();
     res->addGroupModel("", DEFin_mainGrp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     res->addItemModel(DEFin_mainGrp, DEFin_clusters, CT_Image2D<qint32>::staticGetType(), tr("Image (Clusters)"));
+    res->addItemModel(DEFin_mainGrp, DEFin_attrib, CT_AbstractImage2D::staticGetType(), tr("Image (attribut)"));
 
     res->addGroupModel(DEFin_mainGrp, DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     res->addItemModel(DEFin_grp, DEFin_item, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"));
@@ -97,8 +99,9 @@ void PB_StepComputeAttributeMapFromClusters::compute()
     {
         CT_StandardItemGroup* mainGrp = (CT_StandardItemGroup*) itCpy.next();
         CT_Image2D<qint32>* clustersIn = (CT_Image2D<qint32>*)mainGrp->firstItemByINModelName(this, DEFin_clusters);
+        CT_AbstractImage2D* attribIn = (CT_AbstractImage2D*)mainGrp->firstItemByINModelName(this, DEFin_attrib);
 
-        if (clustersIn != NULL)
+        if (clustersIn != NULL && attribIn != NULL)
         {
             CT_Image2D<double>* attMap = new CT_Image2D<double>(_attMap_ModelName.completeName(), res, clustersIn->minX(), clustersIn->minY(), clustersIn->colDim(), clustersIn->linDim(), clustersIn->resolution(), clustersIn->level(), _naValue, _defaultValue);
             mainGrp->addItemDrawable(attMap);
@@ -128,6 +131,11 @@ void PB_StepComputeAttributeMapFromClusters::compute()
                         qint32 cluster = clustersIn->value(xx, yy);
 
                         double attVal = attValsMap.value(cluster, _defaultValue);
+                        if (cluster <= 0)
+                        {
+                            attVal = attribIn->valueAtIndexAsDouble(index);
+                        }
+
                         attMap->setValue(xx, yy, attVal);
                     } else {
                         qDebug() << "Problème";

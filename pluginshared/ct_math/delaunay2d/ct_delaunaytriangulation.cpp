@@ -465,6 +465,7 @@ bool CT_DelaunayTriangulation::doInsertion()
     if (!_initialized) {return false;} // we need 4 corners to continue
 
     CT_DelaunayTriangle* t1;
+    CT_DelaunayTriangle* t1old;
     CT_DelaunayTriangle* t2;
     CT_DelaunayTriangle* n1;
     CT_DelaunayVertex* vt;
@@ -516,8 +517,10 @@ bool CT_DelaunayTriangulation::doInsertion()
             // 1) find the triangle which contains the point to be inserted
             // faster way, actually used (walk through the triangulation from refTriangle)
 
-            while ((!t1->contains(xt, yt))) {
-
+            t1old = NULL; // to avoid infinite loops
+            while ((!t1->contains(xt, yt)) && t1old != t1)
+            {
+                t1old = t1;
                 t1 = t1->getNextTriangleTo(xt, yt);
             }
 
