@@ -63,10 +63,10 @@ void CT_DelaunayTriangulation::clear(bool clearToInsert)
 {
     _initialized = false;
 
-    if (_corners[0] != NULL) {delete _corners[0];}
-    if (_corners[1] != NULL) {delete _corners[1];}
-    if (_corners[2] != NULL) {delete _corners[2];}
-    if (_corners[3] != NULL) {delete _corners[3];}
+    if (_corners[0] != NULL) {delete _corners[0];_corners[0] = NULL;}
+    if (_corners[1] != NULL) {delete _corners[1];_corners[1] = NULL;}
+    if (_corners[2] != NULL) {delete _corners[2];_corners[2] = NULL;}
+    if (_corners[3] != NULL) {delete _corners[3];_corners[3] = NULL;}
 
     qDeleteAll(_duplicatePositions.keys());
     _duplicatePositions.clear();
@@ -82,6 +82,12 @@ void CT_DelaunayTriangulation::clear(bool clearToInsert)
 
     qDeleteAll(_outOfBoundsVertices);
     _outOfBoundsVertices.clear();
+
+    qDeleteAll(_lastDestrLst);
+    _lastDestrLst.clear();
+
+    qDeleteAll(_lastBorderLst);
+    _lastBorderLst.clear();
 
     getTriangles();
     qDeleteAll(_triangles);

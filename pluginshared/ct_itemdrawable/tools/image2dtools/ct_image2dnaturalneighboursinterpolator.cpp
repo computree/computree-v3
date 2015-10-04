@@ -80,6 +80,7 @@ void CT_Image2DNaturalNeighboursInterpolator::interpolateForOneCell(const size_t
                 _rasterInterpol->setValue(xi, yi, sum / sum_poids);
             }
         }
+
     }
 }
 

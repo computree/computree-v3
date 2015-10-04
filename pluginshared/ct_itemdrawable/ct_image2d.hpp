@@ -186,6 +186,7 @@ CT_Image2D<DataT>::CT_Image2D(const QString &modelName,
 template< typename DataT>
 CT_Image2D<DataT>::~CT_Image2D()
 {
+    _data.release();
 }
 
 template< typename DataT>
