@@ -113,9 +113,7 @@ void PB_StepMergeClustersFromPositions02::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_rPos);
     res->addItemModel(DEFin_grpPos, _outSceneModelName, new CT_Scene(), tr("Scène segmentée"));
-    res->addItemAttributeModel(_outSceneModelName, _outSceneZRefModelName,
-                               new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(CT_AbstractCategory::DATA_Z), NULL, 0),
-                               tr("Z MNT"));
+    res->addItemAttributeModel(_outSceneModelName, _outSceneZRefModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_Z), tr("Z MNT"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
