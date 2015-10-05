@@ -33,6 +33,8 @@
 
 #include <eigen/Eigen/Core>
 
+#define EPSILON_GRID2D 0.000001    // 10^-6
+
 /*!
  * \class CT_AbstractImage2D
  * \ingroup PluginShared_Items
@@ -116,6 +118,9 @@ public:
      */
     inline bool col(const double colCoord, size_t &column) const
     {
+        if (fabs(colCoord - minColCoord()) < EPSILON_GRID2D) {column = 0;         return true;}
+        if (fabs(colCoord - maxColCoord()) < EPSILON_GRID2D) {column = _dimCol - 1; return true;}
+
         if (colCoord < minColCoord() || colCoord > maxColCoord()) {return false;}
         if (colCoord == maxColCoord())
         {
@@ -133,6 +138,9 @@ public:
      */
     inline bool lin(const double linCoord, size_t &row) const
     {
+        if (fabs(linCoord - minLinCoord()) < EPSILON_GRID2D) {row = 0;         return true;}
+        if (fabs(linCoord - maxLinCoord()) < EPSILON_GRID2D) {row = _dimLin - 1; return true;}
+
         if (linCoord < minLinCoord() || linCoord > maxLinCoord()) {return false;}
         if (linCoord == minLinCoord())
         {

@@ -33,6 +33,10 @@
 
 #include <eigen/Eigen/Core>
 #include <QMutex>
+#include <QDebug>
+
+#define EPSILON_GRID3D 0.000001    // 10^-6
+
 
 /*!
  * \class CT_AbstractGrid3D
@@ -117,6 +121,9 @@ public:
      */
     inline bool colX(const double x, size_t &colx) const
     {
+        if (fabs(x - minX()) < EPSILON_GRID3D) {colx = 0;         return true;}
+        if (fabs(x - maxX()) < EPSILON_GRID3D) {colx = _dimx - 1; return true;}
+
         if (x < minX() || x > maxX()) {return false;}
         if (x == maxX())
         {
@@ -135,6 +142,9 @@ public:
      */
     inline bool linY(const double y, size_t &liny) const
     {
+        if (fabs(y - minY()) < EPSILON_GRID3D) {liny = 0;         return true;}
+        if (fabs(y - maxY()) < EPSILON_GRID3D) {liny = _dimy - 1; return true;}
+
         if (y < minY() || y > maxY()) {return false;}
         if (y == maxY())
         {
@@ -153,6 +163,9 @@ public:
      */
     inline bool levelZ(const double z, size_t &levz) const
     {
+        if (fabs(z - minZ()) < EPSILON_GRID3D) {levz = 0;         return true;}
+        if (fabs(z - maxZ()) < EPSILON_GRID3D) {levz = _dimz - 1; return true;}
+
         if (z < minZ() || z > maxZ()) {return false;}
         if (z == maxZ())
         {
@@ -197,6 +210,7 @@ public:
     inline bool indexAtXYZ(const double x, const double y, const double z, size_t &returnedIndex) const
     {
         size_t colx, liny, levz;
+
         if (!colX(x, colx) || !linY(y, liny) || !levelZ(z, levz)) {return false;}
 
         return index(colx, liny, levz, returnedIndex);

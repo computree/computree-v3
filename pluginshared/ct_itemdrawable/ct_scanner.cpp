@@ -233,8 +233,8 @@ CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
     if ( moreStability )
     {
         // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(2) = 0;
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(2) = 0;
+        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(0) = 0;
+        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(1) = 0;
         fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
     }
 
@@ -273,8 +273,8 @@ void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
     if ( moreStability )
     {
         // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(2) = 0;
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(2) = 0;
+        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(0) = 0;
+        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(1) = 0;
         fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
     }
 

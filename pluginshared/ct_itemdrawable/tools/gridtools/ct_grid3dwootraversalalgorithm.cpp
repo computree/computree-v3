@@ -13,8 +13,8 @@ CT_Grid3DWooTraversalAlgorithm::CT_Grid3DWooTraversalAlgorithm(const CT_Abstract
     _visitorList = list;
     _numberOfVisitors = list.size();
     _calibrationGrid = grid;
-    _calibrationGrid->getMinCoordinates(_gridBottom);
-    _calibrationGrid->getMaxCoordinates(_gridTop);
+
+    _calibrationGrid->getBoundingBox(_gridBottom, _gridTop);
     _gridRes = _calibrationGrid->resolution();
     _keepFirst = keepFirst;
 
@@ -63,11 +63,18 @@ void CT_Grid3DWooTraversalAlgorithm::compute(CT_Beam &data)
 
         // Wether the ray is along the direction axis or opposite, the tMax value computation will differ (the first encountered boundary may be forward or backward)
 
-        for (int i = 0 ; i < 3 ; i++) {
-            _stepAxis(i) > 0 ?
-                    _boundary(i) = ((_currentCol+1)*_gridRes) + _gridBottom(i) :
-                    _boundary(i) = (_currentCol*_gridRes) + _gridBottom(i);
-        }
+        _stepAxis(0) > 0 ?
+                _boundary(0) = ((_currentCol+1)*_gridRes) + _gridBottom(0) :
+                _boundary(0) = (_currentCol*_gridRes) + _gridBottom(0);
+
+        _stepAxis(1) > 0 ?
+                _boundary(1) = ((_currentLin+1)*_gridRes) + _gridBottom(1) :
+                _boundary(1) = (_currentLin*_gridRes) + _gridBottom(1);
+
+        _stepAxis(2) > 0 ?
+                _boundary(2) = ((_currentLevz+1)*_gridRes) + _gridBottom(2) :
+                _boundary(2) = (_currentLevz*_gridRes) + _gridBottom(2);
+
 
         // Initializing the tMax values                
         for (int i = 0 ; i < 3 ; i++) {
