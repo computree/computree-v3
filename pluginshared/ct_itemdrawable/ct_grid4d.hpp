@@ -10,8 +10,6 @@
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT> CT_DEFAULT_IA_INIT(CT_Grid4D<DataT>)
-
 template< typename DataT>
 const CT_StandardGrid4DDrawManager<DataT> CT_Grid4D<DataT>::ABSGRID4D_DRAW_MANAGER;
 

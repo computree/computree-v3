@@ -38,8 +38,6 @@
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT> CT_DEFAULT_IA_INIT(CT_Grid3D<DataT>)
-
 template< typename DataT>
 const CT_StandardGrid3DDrawManager<DataT> CT_Grid3D<DataT>::ABSGRID3D_DRAW_MANAGER;
 

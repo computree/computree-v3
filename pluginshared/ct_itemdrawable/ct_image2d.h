@@ -383,6 +383,33 @@ public:
 // Spécialisations
 
 template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<bool>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<float>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<double>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<unsigned long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<qint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<quint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<qint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<quint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<qint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<quint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<qint64>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Image2D<quint64>)
+
+template<>
 inline bool CT_Image2D<bool>::NA() const {return false;}
 
 template<>

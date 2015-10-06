@@ -57,7 +57,7 @@
  *            CT_DEFAULT_IA_END(CT_Cylinder)
  */
 #define CT_DEFAULT_IA_V2(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName) \
-    PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName);
+    PS_DIAM->addItemAttribute(ClassNameSI::staticGetType(), CategoryUniqueName, GetterMethod_OR_Value, DisplayableName);
 
 /**
  * @brief Call CT_DEFAULT_IA_V3 in the private section of your singular item class
@@ -73,7 +73,7 @@
  *            CT_DEFAULT_IA_END(CT_Cylinder)
  */
 #define CT_DEFAULT_IA_V3(ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey) \
-    PS_DIAM->addItemAttribute(#ClassNameSI, CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey);
+    PS_DIAM->addItemAttribute(ClassNameSI::staticGetType(), CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey);
 
 /**
  * @brief Call CT_DEFAULT_IA_INIT in the top of your source file (.cpp or .hpp) and pass the name of your singular item class
@@ -135,12 +135,18 @@ public:
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
         model->setAsDefaultItemAttributeModel();
 
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
+        QStringList classNameSplit = className.split("/");
+        QString useClassName = className;
+
+        if(classNameSplit.size() > 1)
+            useClassName = classNameSplit.last();
+
+        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(useClassName);
 
         if(newL == NULL)
         {
             newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
-            m_collection.insert(className, newL);
+            m_collection.insert(useClassName, newL);
         }
 
         CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();
@@ -180,13 +186,19 @@ public:
         CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
         model->setAsDefaultItemAttributeModel();
 
+        QStringList classNameSplit = className.split("/");
+        QString useClassName = className;
+
+        if(classNameSplit.size() > 1)
+            useClassName = classNameSplit.last();
+
         // add element to the collection
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(className);
+        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(useClassName);
 
         if(newL == NULL)
         {
             newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
-            m_collection.insert(className, newL);
+            m_collection.insert(useClassName, newL);
         }
 
         CT_DefaultItemAttributeManagerContainer *c = new CT_DefaultItemAttributeManagerContainer();

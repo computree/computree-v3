@@ -38,8 +38,6 @@
 #include "ct_math/ct_math.h"
 #include "qdebug.h"
 
-template< typename DataT > CT_DEFAULT_IA_INIT(CT_Profile<DataT>)
-
 template< typename DataT>
 const CT_StandardProfileDrawManager<DataT> CT_Profile<DataT>::ABSPROFILE_DRAW_MANAGER;
 

@@ -36,8 +36,6 @@
 
 #include "qdebug.h"
 
-template< typename DataT> CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<DataT>)
-
 template< typename DataT>
 CT_VirtualGrid2D<DataT>::CT_VirtualGrid2D() : CT_AbstractGrid2D()
 {

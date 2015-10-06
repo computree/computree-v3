@@ -38,8 +38,6 @@
 
 #include "qdebug.h"
 
-template< typename DataT> CT_DEFAULT_IA_INIT(CT_Image2D<DataT>)
-
 template< typename DataT>
 const CT_StandardImage2DDrawManager<DataT> CT_Image2D<DataT>::IMAGE2D_DRAW_MANAGER;
 
