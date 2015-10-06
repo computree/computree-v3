@@ -729,7 +729,7 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
         geode->addDrawable(geo);
 
         osg::PositionAttitudeTransform *tr = new osg::PositionAttitudeTransform();
-        tr->setPosition(osg::Vec3d(centerX, centerY, centerX));
+        tr->setPosition(osg::Vec3d(centerX, centerY, centerZ));
         tr->setScale(osg::Vec3(radius, radius, radius));
 
         tr->addChild(geode);

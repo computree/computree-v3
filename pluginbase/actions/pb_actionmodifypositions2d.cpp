@@ -89,6 +89,7 @@ void PB_ActionModifyPositions2D::init()
         }
 
         dynamic_cast<GraphicsViewInterface*>(document()->views().first())->camera()->fitCameraToVisibleItems();
+        document()->redrawGraphics(DocumentInterface::RO_WaitForConversionCompleted);
     }
 }
 
@@ -101,6 +102,7 @@ void PB_ActionModifyPositions2D::zValChanged()
        ((CT_StandardPoint2DDrawManager*) _positions->first()->getBaseDrawManager())->setZValue(option->getZValue());
     }
 
+    setDrawing3DChanged();
     document()->redrawGraphics();
 }
 

@@ -3,6 +3,7 @@
 #include "ct_itemdrawable/tools/gridtools/ct_grid3dwootraversalalgorithm.h"
 #include "ct_itemdrawable/tools/gridtools/ct_grid3dbeamvisitor_indexlist.h"
 #include "ct_global/ct_context.h"
+#include "ct_shape2ddata/ct_polygon2ddata.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -75,6 +76,8 @@ void PB_ActionSelectCellsInGrid3D::init()
         connect(option, SIGNAL(mode2D3DChanged(bool)), this, SLOT(change2D3DMode(bool)));
         connect(option, SIGNAL(coefChanged(double)), this, SLOT(changeCoef(double)));
         connect(option, SIGNAL(gridColorChanged(QColor)), this, SLOT(changeGridColor(QColor)));
+        connect(option, SIGNAL(askForSelectionOfNotEmptyCells()), this, SLOT(selectNotEmptyCells()));
+        connect(option, SIGNAL(askForConvexHull()), this, SLOT(createConvexHull()));
 
         // add the options to the graphics view
         graphicsView()->addActionOptions(option);
@@ -501,6 +504,19 @@ bool PB_ActionSelectCellsInGrid3D::keyPressEvent(QKeyEvent *e)
             option->setSelectionMode(PB_ActionSelectCellsInGrid3DOptions::FREEMOVE);
             updateDrawing();
             return true;
+        } else if (mode == PB_ActionSelectCellsInGrid3DOptions::FREEMOVE && m_status == 1)
+        {
+            if (_candidates.size()>0)
+            {
+                for (int i = 0 ; i < _candidates.size() ; i++)
+                {
+                    _boolGrid->setValueAtIndex(_candidates.at(i), true);
+                }
+            }
+            m_status = 0;
+            _candidates.clear();
+            updateDrawing();
+            return true;
         }
         return true;
     }
@@ -884,6 +900,65 @@ void PB_ActionSelectCellsInGrid3D::changeCoef(double coef)
 void PB_ActionSelectCellsInGrid3D::changeGridColor(QColor color)
 {
     _gridColor = color;
+    updateDrawing();
+}
+
+void PB_ActionSelectCellsInGrid3D::selectNotEmptyCells()
+{
+    for (size_t xx = 0 ; xx < _refGrid->xdim() ; xx++)
+    {
+        for (size_t yy = 0 ; yy < _refGrid->ydim() ; yy++)
+        {
+            size_t index;
+            if (_refGrid->index(xx, yy, _level, index))
+            {
+                size_t index2D = yy*_refGrid->xdim() + xx;
+                if (_active2DGrid.at(index2D) > 0)
+                {
+                    _boolGrid->setValue(xx, yy, _level, true);
+                }
+            }
+        }
+    }
+    updateDrawing();
+}
+
+void PB_ActionSelectCellsInGrid3D::createConvexHull()
+{
+    updateSelectionMode(PB_ActionSelectCellsInGrid3DOptions::FREEMOVE);
+
+    QList<Eigen::Vector2d*> vertices;
+
+    for (size_t xx = 0 ; xx < _refGrid->xdim() ; xx++)
+    {
+        for (size_t yy = 0 ; yy < _refGrid->ydim() ; yy++)
+        {
+            if (_boolGrid->value(xx, yy, _level) == true)
+            {
+                vertices.append(new Eigen::Vector2d(xx, yy));
+            }
+        }
+    }
+
+    CT_Polygon2DData* convexHull = CT_Polygon2DData::createConvexHull(vertices);
+
+    for (size_t xx = 0 ; xx < _refGrid->xdim() ; xx++)
+    {
+        for (size_t yy = 0 ; yy < _refGrid->ydim() ; yy++)
+        {
+            if (convexHull->contains(xx, yy))
+            {
+                size_t index;
+                _boolGrid->index(xx, yy, _level, index);
+                _candidates.append(index);
+            }
+        }
+    }
+
+    delete convexHull;
+    qDeleteAll(vertices);
+
+    if (_candidates.size() > 0) {m_status = 1;}
     updateDrawing();
 }
 

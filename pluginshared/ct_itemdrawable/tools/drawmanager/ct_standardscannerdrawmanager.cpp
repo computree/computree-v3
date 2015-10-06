@@ -61,7 +61,7 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
 
     else
     {
-        painter.drawPartOfSphere( scanner.getPosition().x(), scanner.getPosition().y(), scanner.getPosition().z(), scaling, scanner.getInitTheta()-scanner.getHFov(), scanner.getInitTheta(), scanner.getInitPhi(), scanner.getInitPhi() + scanner.getVFov());
+        painter.drawPartOfSphere( scanner.getPosition().x(), scanner.getPosition().y(), scanner.getPosition().z(), scaling, scanner.getInitTheta(), scanner.getInitTheta()-scanner.getHFov(), scanner.getInitPhi(), scanner.getInitPhi() + scanner.getVFov());
 
         // Drawing the four major limits of the field of view
         drawLineToPosition( painter, scanner, scanner.getInitTheta()-scanner.getHFov(), scanner.getInitPhi() );

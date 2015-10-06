@@ -80,6 +80,8 @@ signals:
     void mode2D3DChanged(bool mode3Dselected);
     void coefChanged(double coef);
     void gridColorChanged(QColor color);
+    void askForSelectionOfNotEmptyCells();
+    void askForConvexHull();
 
 private slots:
     void on_sb_level_valueChanged(int arg1);
@@ -96,6 +98,8 @@ private slots:
     void on_pb_remove_clicked();
     void on_pb_freemove_clicked();
     void on_pb_colonizeParam_clicked();
+    void on_pb_selectNotEmptyCells_clicked();
+    void on_pb_convexHull_clicked();
 };
 
 #endif // PB_ACTIONSELECTCELLSINGRID3DOPTIONS_H

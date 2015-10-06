@@ -1465,7 +1465,7 @@ void CT_VirtualAbstractStep::setManual(bool manualModeOn)
 }
 
 void CT_VirtualAbstractStep::requestManualMode()
-{    
+{
     if(m_manual)
     {
         m_mustQuitManualMode = false;

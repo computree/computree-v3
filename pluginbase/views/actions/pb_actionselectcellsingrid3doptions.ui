@@ -444,6 +444,20 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="pb_selectNotEmptyCells">
+           <property name="text">
+            <string>Select &gt; 0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_convexHull">
+           <property name="text">
+            <string>Convex</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="pb_gridon">
            <property name="text">
             <string/>

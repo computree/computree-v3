@@ -330,3 +330,15 @@ void PB_ActionSelectCellsInGrid3DOptions::on_pb_colonizeParam_clicked()
 {
     _colonizeDialog.exec();
 }
+
+void PB_ActionSelectCellsInGrid3DOptions::on_pb_selectNotEmptyCells_clicked()
+{
+    setSelectionMode(FREEMOVE);
+    emit askForSelectionOfNotEmptyCells();
+}
+
+void PB_ActionSelectCellsInGrid3DOptions::on_pb_convexHull_clicked()
+{
+    setSelectionMode(FREEMOVE);
+    emit askForConvexHull();
+}

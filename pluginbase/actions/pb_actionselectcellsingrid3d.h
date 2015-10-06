@@ -56,6 +56,8 @@ public slots:
     void change2D3DMode(bool mode3D);
     void changeCoef(double coef);
     void changeGridColor(QColor color);
+    void selectNotEmptyCells();
+    void createConvexHull();
 
 private:
     int                                     m_status;
