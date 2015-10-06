@@ -115,6 +115,7 @@
 #include "exporters/las/pb_lasexporter.h"
 #include "exporters/gdal/pb_gdalexporter.h"
 #include "exporters/ascid/pb_ascidexporter.h"
+#include "exporters/grid3dhist/pb_grid3dhistexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -370,6 +371,9 @@ bool PB_StepPluginManager::loadExporters()
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("PROFILE"));
     sep->addExporter(new PB_ProfileExporter());
+
+    sep = addNewSeparator(new CT_StandardExporterSeparator("GRID3Dhist"));
+    sep->addExporter(new PB_Grid3DHistExporter());
 
     sep = addNewSeparator(new CT_StandardExporterSeparator("GRID2D"));
     sep->addExporter(new PB_Grid2DExporter());
