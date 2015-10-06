@@ -96,7 +96,7 @@ bool PB_Grid3DHistExporter::protectedExportToFile()
             double value = item->valueAtIndexAsDouble(index);
 
             size_t count = hist.value(value, 0);
-            hist.insert(value, count);
+            hist.insert(value, ++count);
         }
 
         QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
