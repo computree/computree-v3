@@ -109,7 +109,7 @@ void PB_StepExportItemList::createInResultModelListProtected()
     resIn->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item contenant le nom du fichier"));
     resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Nom"));
-    resIn->addItemModel(DEFin_grp, DEFin_item, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item à exporter"));
+    resIn->addItemModel(DEFin_grp, DEFin_item, CT_AbstractItemDrawable::staticGetType(), tr("Item à exporter"));
 
 }
 
@@ -161,7 +161,7 @@ void PB_StepExportItemList::compute()
         const CT_AbstractItemGroup* grpIn_grp = (CT_AbstractItemGroup*) itIn_grp.next();
         
         const CT_AbstractSingularItemDrawable* itemWithAttribute = (CT_AbstractSingularItemDrawable*)grpIn_grp->firstItemByINModelName(this, DEFin_itemWithAttribute);
-        CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*)grpIn_grp->firstItemByINModelName(this, DEFin_item);
+        CT_AbstractItemDrawable* item = (CT_AbstractItemDrawable*)grpIn_grp->firstItemByINModelName(this, DEFin_item);
 
         if (itemWithAttribute != NULL && item != NULL)
         {
