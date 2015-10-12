@@ -275,73 +275,106 @@ void PB_StepCreateDataSource::compute()
     if (dataSourceModel != NULL)
     {
         CT_DataSource* dataSourceBase = (CT_DataSource*) dataSourceModel->itemDrawable();
-        CT_DataSource* dataSource = (CT_DataSource*) dataSourceBase->copy(dataSourceModel, resultOut, CT_ResultCopyModeList());
-        grp->addItemDrawable(dataSource);
+        CT_DataSource* dataSource = NULL;
 
-        dataSource->init();
-        while (dataSource->activateNextReader())
+        if (dynamic_cast<CT_DataSourceGeo*>(dataSourceBase) != NULL)
         {
-            QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
+            dataSource = new CT_DataSourceGeo(dataSourceModel, resultOut);
+        } else {
+            dataSource = new CT_DataSource(dataSourceModel, resultOut);
 
-            CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
-            grp->addGroup(grpHeader);
-
-            CT_OutAbstractItemModel* headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut);
-
-            if (headerModel != NULL)
-            {
-                CT_FileHeader *header = reader->takeHeaderCopy(resultOut, headerModel);
-                if (header != NULL) {grpHeader->addItemDrawable(header);}
-            }
         }
 
-        // Load files if checkbox checked
-        if (_loadAllData)
+        const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(_readersListValue);
+
+        if (pair.first != NULL && _filesList.size() > 0)
         {
-            CT_ResultGroup* resultOutLoad = outResultList.at(1);
 
-            int numberOfReaders = dataSource->getNumberOfReader();
-            int cpt = 0;
-            if (numberOfReaders > 0)
+            for (int i = 0 ; i < _filesList.size() ; i++)
             {
-                dataSource->init();
-                while (dataSource->activateNextReader())
+                CT_AbstractReader* reader = pair.first->copy();
+
+                if (reader->setFilePath(_filesList.at(i)))
                 {
-                    QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
-
-                    if (reader->readFile())
+                    if (dataSource->addReader(reader))
                     {
-                        CT_StandardItemGroup* grpLoad = new CT_StandardItemGroup(DEFout_grpLoad, resultOutLoad);
-                        resultOutLoad->addGroup(grpLoad);
-
-                        // Ajout du header
-                        CT_OutAbstractItemModel *modelCreationH = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(reader->outHeaderModel()->uniqueName(), resultOutLoad);
-                        CT_AbstractSingularItemDrawable *itemH = reader->takeHeaderCopy(resultOutLoad, modelCreationH);
-                        grpLoad->addItemDrawable(itemH);
-
-                        // Ajout des items
-                        QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
-                        while (itIM.hasNext())
-                        {
-                            CT_OutStdSingularItemModel* itemModel = itIM.next();
-
-                            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(itemModel->uniqueName(), resultOutLoad);
-                            CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), resultOutLoad, modelCreation);
-                            grpLoad->addItemDrawable(item);
-                        }
-
-                        // Ajout des groupes
-                        QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
-                        while (itGM.hasNext())
-                        {
-                            CT_OutStdGroupModel* groupModel = itGM.next();
-
-                            CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(groupModel->uniqueName(), resultOutLoad);
-                            CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), resultOutLoad, modelCreation);
-                            grpLoad->addGroup(groupe);
-                        }
+                        reader->init();
+                    } else {
+                        delete reader;
                     }
-                    setProgress(100.0*(double)cpt++ / (double)numberOfReaders);
+
+                } else {
+                    delete reader;
+                }
+            }
+
+            grp->addItemDrawable(dataSource);
+
+            dataSource->init();
+            while (dataSource->activateNextReader())
+            {
+                QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
+
+                CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
+                grp->addGroup(grpHeader);
+
+                CT_OutAbstractItemModel* headerModel = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(DEFout_header, resultOut);
+
+                if (headerModel != NULL)
+                {
+                    CT_FileHeader *header = reader->takeHeaderCopy(resultOut, headerModel);
+                    if (header != NULL) {grpHeader->addItemDrawable(header);}
+                }
+            }
+
+            // Load files if checkbox checked
+            if (_loadAllData)
+            {
+                CT_ResultGroup* resultOutLoad = outResultList.at(1);
+
+                int numberOfReaders = dataSource->getNumberOfReader();
+                int cpt = 0;
+                if (numberOfReaders > 0)
+                {
+                    dataSource->init();
+                    while (dataSource->activateNextReader())
+                    {
+                        QSharedPointer<CT_AbstractReader> reader = dataSource->getActiveReader();
+
+                        if (reader->readFile())
+                        {
+                            CT_StandardItemGroup* grpLoad = new CT_StandardItemGroup(DEFout_grpLoad, resultOutLoad);
+                            resultOutLoad->addGroup(grpLoad);
+
+                            // Ajout du header
+                            CT_OutAbstractItemModel *modelCreationH = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(reader->outHeaderModel()->uniqueName(), resultOutLoad);
+                            CT_AbstractSingularItemDrawable *itemH = reader->takeHeaderCopy(resultOutLoad, modelCreationH);
+                            grpLoad->addItemDrawable(itemH);
+
+                            // Ajout des items
+                            QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+                            while (itIM.hasNext())
+                            {
+                                CT_OutStdSingularItemModel* itemModel = itIM.next();
+
+                                CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(itemModel->uniqueName(), resultOutLoad);
+                                CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), resultOutLoad, modelCreation);
+                                grpLoad->addItemDrawable(item);
+                            }
+
+                            // Ajout des groupes
+                            QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+                            while (itGM.hasNext())
+                            {
+                                CT_OutStdGroupModel* groupModel = itGM.next();
+
+                                CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(groupModel->uniqueName(), resultOutLoad);
+                                CT_AbstractItemGroup *groupe = reader->takeFirstGroupOfModel(groupModel->uniqueName(), resultOutLoad, modelCreation);
+                                grpLoad->addGroup(groupe);
+                            }
+                        }
+                        setProgress(100.0*(double)cpt++ / (double)numberOfReaders);
+                    }
                 }
             }
         }

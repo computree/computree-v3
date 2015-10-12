@@ -80,6 +80,8 @@ public:
 
     inline void beginNextTurn() {_counter->beginNextTurn();}
 
+    inline void setCurrentTurn(size_t n) {_counter->setcurrentTurn(n);}
+
 
     /*!
      * \brief Copy method

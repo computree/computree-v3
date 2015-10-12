@@ -81,6 +81,8 @@ void CT_StepEndLoop::compute()
         {
             counter->beginNextTurn();
             _mustRecheckTree = true;
+        } else {
+            counter->setCurrentTurn(1);
         }
     }
 }
