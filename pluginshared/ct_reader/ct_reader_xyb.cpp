@@ -214,7 +214,9 @@ bool CT_Reader_XYB::protectedReadFile()
 
                 if (filter)
                 {
-                    double distance2D = sqrt(x*x + y*y);
+                    double dx = x - _xc;
+                    double dy = y - _yc;
+                    double distance2D = sqrt(dx*dx + dy*dy);
 
                     if (distance2D <= _filterRadius)
                     {

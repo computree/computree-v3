@@ -29,6 +29,7 @@
 #define PB_STEPREDUCEPOINTSDENSITY_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_tools/model/ct_autorenamemodels.h"
 
 /*!
  * \class PB_StepReducePointsDensity
@@ -95,6 +96,8 @@ protected:
     void compute();
 
 private:
+
+    CT_AutoRenameModels _outScene_ModelName;
 
     double _resolution;                            /*!< sample grid resolution*/
     double _halfResolution;                            /*!< sample grid resolution*/

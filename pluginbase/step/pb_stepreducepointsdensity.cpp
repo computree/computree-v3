@@ -33,8 +33,11 @@
 #include "ct_itemdrawable/model/inModel/ct_instdsingularitemmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 
-#include "ct_result/model/inModel/ct_inresultmodelgroup.h"
-#include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+#include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
+#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
+
+#include "ct_iterator/ct_resultgroupiterator.h"
 
 #include "ct_result/ct_resultgroup.h"
 #include "ct_itemdrawable/ct_scene.h"
@@ -55,10 +58,8 @@
 
 #define DEF_SearchInResult "r"
 #define DEF_SearchInScene   "sc"
+#define DEF_SearchInGroup "grp"
 
-#define DEF_SearchOutGroup  "g"
-#define DEF_SearchOutScene  "sc"
-#define DEF_SearchOutResult "r"
 
 PB_StepReducePointsDensity::PB_StepReducePointsDensity(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
@@ -85,23 +86,17 @@ CT_VirtualAbstractStep* PB_StepReducePointsDensity::createNewInstance(CT_StepIni
 
 void PB_StepReducePointsDensity::createInResultModelListProtected()
 {
-    CT_InResultModelGroup *resultModel = createNewInResultModel(DEF_SearchInResult, tr("Scène(s)"));
+    CT_InResultModelGroupToCopy *resultModel = createNewInResultModelForCopy(DEF_SearchInResult, tr("Scène(s)"));
     resultModel->setZeroOrMoreRootGroup();
-    resultModel->addItemModel("",
-                              DEF_SearchInScene,
-                              CT_Scene::staticGetType(),
-                              tr("Scène"));
+    resultModel->addGroupModel("", DEF_SearchInGroup);
+    resultModel->addItemModel(DEF_SearchInGroup, DEF_SearchInScene, CT_Scene::staticGetType(), tr("Scène"));
 }
 
 // Création et affiliation des modèles OUT
 void PB_StepReducePointsDensity::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_SearchOutResult, tr("Scène à densité réduite"));
-    resultModel->setRootGroup(DEF_SearchOutGroup);
-    resultModel->addItemModel(DEF_SearchOutGroup,
-                              DEF_SearchOutScene,
-                              new CT_Scene(),
-                              tr("Scène"));
+    CT_OutResultModelGroupToCopyPossibilities *resultModel = createNewOutResultModelToCopy(DEF_SearchInResult);
+    resultModel->addItemModel(DEF_SearchInGroup, _outScene_ModelName, new CT_Scene(), tr("Scène réduite"));
 }
 
 void PB_StepReducePointsDensity::createPostConfigurationDialog()
@@ -114,111 +109,111 @@ void PB_StepReducePointsDensity::createPostConfigurationDialog()
 void PB_StepReducePointsDensity::compute()
 {
 
-    // Result IN
-    QList<CT_ResultGroup*> inResultList = getInputResults();
-    CT_ResultGroup *inResult = inResultList.first();
-    CT_InAbstractSingularItemModel *inSceneModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEF_SearchInScene, inResult, this);
-
     // Result OUT
     const QList<CT_ResultGroup*> &outResList = getOutResultList();
     CT_ResultGroup *outResult = outResList.first();
 
-    CT_ResultItemIterator itR(inResult, inSceneModel);
+    CT_ResultGroupIterator itR(outResult, this, DEF_SearchInGroup);
 
     CT_PointAccessor pAccess;
 
-    while(itR.hasNext()
-          && !isStopped())
+    while(itR.hasNext() && !isStopped())
     {
-        CT_Scene *in_scene = (CT_Scene*)itR.next();
-        CT_PointIterator itP(in_scene->getPointCloudIndex());
-        size_t n_points = itP.size();
+        CT_StandardItemGroup* grp = (CT_StandardItemGroup*) itR.next();
 
-        _minx = in_scene->minX();
-        _miny = in_scene->minY();
-        _minz = in_scene->minZ();
+        CT_Scene *in_scene = (CT_Scene*)grp->firstItemByINModelName(this, DEF_SearchInScene);
 
-        _dimx = ceil((in_scene->maxX() - _minx)/_resolution);
-        _dimy = ceil((in_scene->maxY() - _miny)/_resolution);
-        _dimz = ceil((in_scene->maxZ() - _minz)/_resolution);
-
-        _halfResolution = _resolution / 2;
-
-        PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène d'entrée comporte %1 points.")).arg(n_points));
-
-        QMap<size_t, size_t> indexMap;
-
-        // Extraction des points de la placette
-        size_t i = 0;
-
-        while(itP.hasNext() && !isStopped())
+        if (in_scene != NULL)
         {
-            const CT_Point &point = itP.next().currentPoint();
-            size_t pointIndex = itP.cIndex();
+            CT_PointIterator itP(in_scene->getPointCloudIndex());
+            size_t n_points = itP.size();
 
-            size_t col, row, levz;
-            size_t grdIndex = gridIndex(point(0), point(1), point(2), col, row, levz);
+            _minx = in_scene->minX();
+            _miny = in_scene->minY();
+            _minz = in_scene->minZ();
 
-            size_t previousPointGlobalIndex = indexMap.value(grdIndex, std::numeric_limits<size_t>::max());
+            _dimx = ceil((in_scene->maxX() - _minx)/_resolution);
+            _dimy = ceil((in_scene->maxY() - _miny)/_resolution);
+            _dimz = ceil((in_scene->maxZ() - _minz)/_resolution);
 
-            if (previousPointGlobalIndex == std::numeric_limits<size_t>::max())
+            _halfResolution = _resolution / 2;
+
+            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène d'entrée comporte %1 points.")).arg(n_points));
+
+            QMap<size_t, size_t> indexMap;
+
+            // Extraction des points de la placette
+            size_t i = 0;
+
+            while(itP.hasNext() && !isStopped())
             {
-                indexMap.insert(grdIndex, pointIndex);
+                const CT_Point &point = itP.next().currentPoint();
+                size_t pointIndex = itP.cIndex();
+
+                size_t col, row, levz;
+                size_t grdIndex = gridIndex(point(0), point(1), point(2), col, row, levz);
+
+                size_t previousPointGlobalIndex = indexMap.value(grdIndex, std::numeric_limits<size_t>::max());
+
+                if (previousPointGlobalIndex == std::numeric_limits<size_t>::max())
+                {
+                    indexMap.insert(grdIndex, pointIndex);
+                } else {
+
+                    double gridx, gridy, gridz;
+                    cellCoordinates(col, row, levz, gridx, gridy, gridz);
+
+                    double distance = pow(point(0) - gridx, 2) + pow(point(1) - gridy, 2) + pow(point(2) - gridz, 2);
+
+                    const CT_Point &previousPoint = pAccess.constPointAt(previousPointGlobalIndex);
+
+                    double previousDistance = pow(previousPoint(0) - gridx, 2) + pow(previousPoint(1) - gridy, 2) + pow(previousPoint(2) - gridz, 2);
+
+                    if (distance < previousDistance)
+                        indexMap.insert(grdIndex, pointIndex);
+                }
+                ++i;
+
+                setProgress(50 * i / n_points);
+            }
+
+
+            QMapIterator<size_t, size_t> it(indexMap);
+
+            size_t npts = indexMap.size();
+            i = 0;
+
+            CT_PointCloudIndexVector *resPointCloudIndex = new CT_PointCloudIndexVector(npts);
+            resPointCloudIndex->setSortType(CT_AbstractCloudIndex::NotSorted);
+
+
+            while (it.hasNext() && (!isStopped()))
+            {
+                it.next();
+
+                resPointCloudIndex->replaceIndex(i, it.value());
+
+                setProgress(50 + 49 * i / npts);
+                ++i;
+            }
+
+            resPointCloudIndex->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
+
+            if (resPointCloudIndex->size() > 0)
+            {
+                CT_Scene *outScene = new CT_Scene(_outScene_ModelName.completeName(), outResult);
+
+                outScene->setBoundingBox(in_scene->minX(),in_scene->minY(),in_scene->minZ(), in_scene->maxX(),in_scene->maxY(),in_scene->maxZ());
+                outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(resPointCloudIndex));
+
+                grp->addItemDrawable(outScene);
+
+                PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène de densité réduite comporte %1 points.")).arg(outScene->getPointCloudIndex()->size()));
             } else {
 
-                double gridx, gridy, gridz;
-                cellCoordinates(col, row, levz, gridx, gridy, gridz);
-
-                double distance = pow(point(0) - gridx, 2) + pow(point(1) - gridy, 2) + pow(point(2) - gridz, 2);
-
-                const CT_Point &previousPoint = pAccess.constPointAt(previousPointGlobalIndex);
-
-                double previousDistance = pow(previousPoint(0) - gridx, 2) + pow(previousPoint(1) - gridy, 2) + pow(previousPoint(2) - gridz, 2);
-
-                if (distance < previousDistance)
-                    indexMap.insert(grdIndex, pointIndex);
+                PS_LOG->addMessage(LogInterface::info, LogInterface::step, tr("Aucun point conservé pour cette scène"));
             }
-            ++i;
 
-            setProgress(50 * i / n_points);
-        }
-
-
-        QMapIterator<size_t, size_t> it(indexMap);
-
-        size_t npts = indexMap.size();
-        i = 0;
-
-        CT_PointCloudIndexVector *resPointCloudIndex = new CT_PointCloudIndexVector(npts);
-        resPointCloudIndex->setSortType(CT_AbstractCloudIndex::NotSorted);
-
-
-        while (it.hasNext() && (!isStopped()))
-        {
-            it.next();
-
-            resPointCloudIndex->replaceIndex(i, it.value());
-
-            setProgress(50 + 49 * i / npts);
-            ++i;
-        }
-
-        resPointCloudIndex->setSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
-
-        if (resPointCloudIndex->size() > 0)
-        {
-            CT_StandardItemGroup *outGroup = new CT_StandardItemGroup(DEF_SearchOutGroup, outResult);
-            CT_Scene *outScene = new CT_Scene(DEF_SearchOutScene, outResult);
-
-            outScene->setBoundingBox(in_scene->minX(),in_scene->minY(),in_scene->minZ(), in_scene->maxX(),in_scene->maxY(),in_scene->maxZ());
-            outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(resPointCloudIndex));
-            outGroup->addItemDrawable(outScene);
-            outResult->addGroup(outGroup);
-
-            PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("La scène de densité réduite comporte %1 points.")).arg(outScene->getPointCloudIndex()->size()));
-        } else {
-
-            PS_LOG->addMessage(LogInterface::info, LogInterface::step, tr("Aucun point conservé pour cette scène"));
         }
 
         setProgress(99);
