@@ -83,12 +83,12 @@ void PB_StepGenericExporter::init()
 
 QString PB_StepGenericExporter::getStepName() const
 {
-    return "PB_StepGenericExporter__" + ((CT_AbstractExporter*)_exporter)->getExporterName();
+    return QString("Exporter %1").arg(_exporter->getExporterName());
 }
 
 QString PB_StepGenericExporter::getStepDisplayableName() const
 {
-    return ((CT_AbstractExporter*)_exporter)->getExporterName();
+    return QString("Exporter %1").arg(_exporter->getExporterName());
 }
 
 SettingsNodeGroup* PB_StepGenericExporter::getAllSettings() const

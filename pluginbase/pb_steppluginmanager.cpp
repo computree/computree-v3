@@ -25,7 +25,6 @@
 
 *****************************************************************************/
 
-
 #include "pb_steppluginmanager.h"
 
 #include "ct_stepseparator.h"
@@ -90,6 +89,8 @@
 #include "step/pb_stepexportitemlist.h"
 #include "step/pb_stepaddattributevalue.h"
 #include "step/pb_stepdetectverticalalignments.h"
+#include "step/pb_stepselectbboxbyfilename.h"
+
 #ifdef USE_OPENCV
 #include "step/pb_stepconvertfloatimagetoqint32.h"
 #include "step/pb_stepcomputeattributemapfromclusters.h"
@@ -123,6 +124,7 @@
 #include "ct_reader/ct_reader_opf.h"
 #include "ct_reader/ct_reader_las.h"
 #include "ct_reader/ct_reader_gdal.h"
+#include "ct_reader/ct_reader_terrascanprj.h"
 
 #include "filter/pb_filterbyreturntype.h"
 #include "filter/pb_filterremoveupperoutliers.h"
@@ -180,7 +182,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewFilterStep<PB_StepSlicePointCloud>(CT_StepsMenu::LP_PointCloud);
     addNewGeometryTransformStep<PB_StepTransformPointCloud>(CT_StepsMenu::LP_PointCloud);
     addNewExtractStep<PB_StepExtractLogBuffer>(CT_StepsMenu::LP_PointCloud);
-    addNewOtherStep<PB_StepComputeCrownProjection>(QObject::tr("Houppiers"));
+    addNewOtherStep<PB_StepComputeCrownProjection>(QObject::tr("Houppiers"));        
 
     CT_StepSeparator *sep;
 
@@ -220,6 +222,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCreatePlotManagerFromFile(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCreatePlotManagerGrid(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSelectBBoxByFileName(*createNewStepInitializeData(NULL)));
 
     sep->addStep(new PB_StepLoadPlotAreas(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepApplyPointFilters(*createNewStepInitializeData(NULL)));
@@ -248,21 +251,6 @@ bool PB_StepPluginManager::loadOpenFileStep()
 {
     clearOpenFileStep();
 
-    /*CT_StepLoadFileSeparator *sep = addNewSeparator(new CT_StepLoadFileSeparator(("ASCII Files")));
-    sep->addStep(new PB_StepLoadAsciiFile02(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepLoadFileSeparator(("OBJ file")));
-    sep->addStep(new PB_StepLoadObjFile(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepLoadFileSeparator(("Grid3D file")));
-    sep->addStep(new PB_StepLoadGrid3dFile(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepLoadFileSeparator(("pbm file")));
-    sep->addStep(new PB_StepLoadPbmFile(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepLoadFileSeparator(("pgm file")));
-    sep->addStep(new PB_StepLoadPgmFile(*createNewStepInitializeData(NULL)));*/
-
     addNewLoadStep<PB_StepLoadAsciiFile02>(QObject::tr("ASCII Files"));
     addNewLoadStep<PB_StepLoadObjFile>(QObject::tr("OBJ Files"));
     addNewLoadStep<PB_StepLoadGrid3dFile>(QObject::tr("Grid3D Files"));
@@ -275,19 +263,6 @@ bool PB_StepPluginManager::loadOpenFileStep()
 bool PB_StepPluginManager::loadCanBeAddedFirstStep()
 {
     clearCanBeAddedFirstStep();
-
-    // Ajoute une nouvelle section d'étapes pouvant être ajouter en tête de script
-    /*CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
-
-    // Ajout d'une étape
-    sep->addStep(new PB_StepCreateDataSource(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadPositionsForMatching(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadTreeMap(*createNewStepInitializeData(NULL)));
-    //sep->addStep(new PB_StepImportSegmaFilesForMatching(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
-
-    sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator("Test"));
-    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));*/
 
     addNewCreateStep<PB_StepCreateDataSource>(CT_StepsMenu::LP_DataSource);
     addNewLoadStep<PB_StepLoadPositionsForMatching>();
@@ -316,54 +291,23 @@ bool PB_StepPluginManager::loadExporters()
 {
     clearExporters();
 
-    CT_StandardExporterSeparator *sep = addNewSeparator(new CT_StandardExporterSeparator("CSV"));
+    CT_StandardExporterSeparator *sep = addNewSeparator(new CT_StandardExporterSeparator("Exporters"));
     sep->addExporter(new PB_CSVExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("GroupData"));
     sep->addExporter(new PB_GroupDataExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("XYB"));
     sep->addExporter(new PB_XYBExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("Multi-XYB"));
     sep->addExporter(new PB_MultiXYBExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("ASCRGB"));
     sep->addExporter(new PB_ASCRGBExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("ASCID"));
     sep->addExporter(new PB_ASCIDExporter());
-
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("PROFILE"));
     sep->addExporter(new PB_ProfileExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("GRID3Dhist"));
     sep->addExporter(new PB_Grid3DHistExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("GRID2D"));
     sep->addExporter(new PB_Grid2DExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator(QObject::tr("Grilles 3D")));
     sep->addExporter(new PB_Grid3DExporter());
     sep->addExporter(new PB_Grid3DAsTableExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("POLYGON2D"));
     sep->addExporter(new PB_Polygon2DExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("MESH"));
     sep->addExporter(new PB_MeshObjExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("TOPOLOGY"));
     sep->addExporter(new PB_OPFExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("PBM"));
     sep->addExporter(new PB_PbmExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("PGM"));
     sep->addExporter(new PB_PgmExporter());
-
-    sep = addNewSeparator(new CT_StandardExporterSeparator("LAS"));
     sep->addExporter(new PB_LASExporter());
 
     return true;
@@ -373,20 +317,13 @@ bool PB_StepPluginManager::loadReaders()
 {
     clearReaders();
 
-    CT_StandardReaderSeparator *sep = addNewSeparator(new CT_StandardReaderSeparator("Binary Files"));
+    CT_StandardReaderSeparator *sep = addNewSeparator(new CT_StandardReaderSeparator("Readers"));
     sep->addReader(new CT_Reader_XYB());
-
-    sep = addNewSeparator(new CT_StandardReaderSeparator("LArchitect Grids"));
     sep->addReader(new CT_Reader_LArchitect_Grid());
-
-    sep = addNewSeparator(new CT_StandardReaderSeparator("ASCII Files"));
     sep->addReader(new CT_Reader_ASCRGB());
-
-    sep = addNewSeparator(new CT_StandardReaderSeparator("OPF Files"));
     sep->addReader(new CT_Reader_OPF());
-
-    sep = addNewSeparator(new CT_StandardReaderSeparator("LAS Files"));
     sep->addReader(new CT_Reader_LAS());
+    sep->addReader(new CT_Reader_TerraScanPrj());
 
     return true;
 }
@@ -473,10 +410,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
     // create step for exporter and readers
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
 
-    CT_StepSeparator *sepGE = addNewSeparator(new CT_StepSeparator(DEF_ExporterSeparatorTitle));
-
     int s = pm->countPluginLoaded();
-
     for(int i=0; i<s; ++i)
     {
         CT_AbstractStepPlugin *p = pm->getPlugin(i);
@@ -494,30 +428,31 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             while(itE.hasNext())
             {
                 CT_AbstractExporter *exporter = itE.next();
-                sepGE->addStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()));
+                QString subMenu = "Exporters";
+                if (dynamic_cast<PB_GDALExporter*>(exporter) != NULL)
+                {
+                    subMenu = "GDAL Exporters";
+                }
+                addNewStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()), CT_StepsMenu::LO_Export, subMenu);
             }
         }
 
         QList<CT_StandardReaderSeparator*> rsl = p->getReadersAvailable();
         QListIterator<CT_StandardReaderSeparator*> itR(rsl);
-
-        CT_StepSeparator *sepGeneric = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement (Readers)")));
-
-
         while(itR.hasNext())
         {
             CT_StandardReaderSeparator *rs = itR.next();
 
-            CT_StepLoadFileSeparator *sepReaders = addNewSeparator(new CT_StepLoadFileSeparator(rs->getTitle()));
-
             QListIterator<CT_AbstractReader*> itE(rs->readers());
-
             while(itE.hasNext())
             {
                 CT_AbstractReader *reader = itE.next();
-                sepReaders->addStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()));
-
-                sepGeneric->addStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()));
+                QString subMenu = "Readers";
+                if (dynamic_cast<CT_Reader_GDAL*>(reader) != NULL)
+                {
+                    subMenu = "GDAL Readers";
+                }
+                addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()), CT_StepsMenu::LO_Load, subMenu);
             }
         }
 

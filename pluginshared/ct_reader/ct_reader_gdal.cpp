@@ -50,7 +50,17 @@ CT_AbstractReader* CT_Reader_GDAL::copy() const
     return new CT_Reader_GDAL(m_driver);
     #else
     return new CT_Reader_GDAL();
+#endif
+}
+
+QString CT_Reader_GDAL::GetReaderName()
+{
+    #ifdef USE_GDAL
+    if(m_driver != NULL) {
+        return CT_GdalTools::staticGdalDriverName(m_driver);
+    }
     #endif
+    return metaObject()->className();
 }
 
 void CT_Reader_GDAL::protectedInit()

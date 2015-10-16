@@ -50,6 +50,16 @@ QString PB_GDALExporter::getExporterCustomName() const
     return CT_AbstractExporter::getExporterCustomName();
 }
 
+QString PB_GDALExporter::getExporterName() const
+{
+#ifdef USE_GDAL
+    if(m_driver != NULL) {
+        return CT_GdalTools::staticGdalDriverName(m_driver);
+    }
+#endif
+    return CT_AbstractExporter::getExporterName();
+}
+
 bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     clearErrorMessage();

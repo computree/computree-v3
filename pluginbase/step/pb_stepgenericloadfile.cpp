@@ -34,7 +34,7 @@ QString PB_StepGenericLoadFile::getStepName() const
 {
     const QList<FileFormat> &list = m_reader->readableFormats();
 
-    QString name = m_reader->GetReaderName() + "[";
+    QString name = "Reader " + m_reader->GetReaderName() + "[";
 
     foreach (const FileFormat &f, list) {
 

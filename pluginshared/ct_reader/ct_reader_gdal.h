@@ -29,6 +29,9 @@ public:
 
     virtual CT_AbstractReader* copy() const;
 
+    virtual QString GetReaderName();
+
+
 protected:
 
     void protectedInit();

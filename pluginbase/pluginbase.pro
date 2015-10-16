@@ -1,6 +1,8 @@
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
+DEFINES += _CRT_SECURE_NO_WARNINGS
+
 TARGET = plug_base
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
@@ -120,7 +122,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepconvertfloatimagetoqint32.h \
     exporters/ascid/pb_ascidexporter.h \
     step/pb_stepcomputeattributemapfromclusters.h \
-    exporters/grid3dhist/pb_grid3dhistexporter.h
+    exporters/grid3dhist/pb_grid3dhistexporter.h \
+    step/pb_stepselectbboxbyfilename.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -236,7 +239,8 @@ SOURCES += \
     step/pb_stepconvertfloatimagetoqint32.cpp \
     exporters/ascid/pb_ascidexporter.cpp \
     step/pb_stepcomputeattributemapfromclusters.cpp \
-    exporters/grid3dhist/pb_grid3dhistexporter.cpp
+    exporters/grid3dhist/pb_grid3dhistexporter.cpp \
+    step/pb_stepselectbboxbyfilename.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

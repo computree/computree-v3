@@ -136,7 +136,7 @@ bool CT_MenuLevel::existStepInCollection(CT_VirtualAbstractStep *step)
     while(it.hasNext()) {
         CT_VirtualAbstractStep *s = it.next();
 
-        if(s->metaObject()->className() == className)
+        if(s->metaObject()->className() == className && s->getStepName() == step->getStepName())
             return true;
     }
 

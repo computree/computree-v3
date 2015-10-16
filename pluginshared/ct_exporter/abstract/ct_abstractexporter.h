@@ -31,7 +31,7 @@ public:
      *
      *        call "metaObject()->className()"
      */
-    QString getExporterName() const;
+    virtual QString getExporterName() const;
 
     /**
      * @brief Return Exporter custom name

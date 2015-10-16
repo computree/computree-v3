@@ -34,6 +34,8 @@ public:
 
     QString getExporterCustomName() const;
 
+    virtual QString getExporterName() const;
+
     bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
 
     CT_AbstractExporter* copy() const;
