@@ -40,10 +40,13 @@
 #include "gitemdrawableconfigurationmanagerview.h"
 #include "GraphicsViews/ggraphicsviewsynchronizedgroup.h"
 #include "view/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.h"
+#include "view/MainView/gstepchooserdialog.h"
 
 namespace Ui {
     class GMainWindow;
 }
+
+class GStepViewDefault;
 
 class GMainWindow : public QMainWindow, public DM_MainWindow, public CDM_ScriptManagerAbstract::IScriptLoadCallBack
 {
@@ -52,6 +55,8 @@ class GMainWindow : public QMainWindow, public DM_MainWindow, public CDM_ScriptM
 public:
     explicit GMainWindow(QWidget *parent = 0);
     ~GMainWindow();
+
+    void init();
 
 protected:
 
@@ -94,6 +99,9 @@ public slots:
     void arrangeDocksInColumn();
     void actionHovered();
 
+    void showStepChooser();
+    void hideStepChooser();
+
 private:
     Ui::GMainWindow                         *ui;
     GDocumentManagerView                    *_docManagerView;
@@ -108,9 +116,9 @@ private:
 
     QAction                                 *actionSaveScript;
     QAction                                 *actionAProposPlugin;
-    QMenu                                   *menuNewStepCanBeAddedFirst;
 
     QLabel                                  *_permanentLabelForMessage;
+    GStepChooserDialog                      *m_stepChooserDialog;
 
     bool                                    m_inLoadConfiguration;
 
@@ -118,8 +126,9 @@ private:
     void loadPlugins(bool showMessageIfNoPluginsFounded = true);
     void showMessageIfScriptBackupIsAvailable();
 
-    QString createFileExtensionAvailable();
-    QString createScriptManagerExtension(QString fileExtension);
+    QString createFileExtensionAvailable() const;
+    void getFileExtensionAvailableInStepsOfLevelRecursively(CT_MenuLevel *level, QHash<QString, QStringList> &hash) const;
+    QString createScriptManagerExtension(QString preString, QString postString) const;
 
 private slots:
 
@@ -132,9 +141,6 @@ private slots:
 
     void stepAdded(CT_VirtualAbstractStep *step);
     void stepToBeRemoved(CT_VirtualAbstractStep *step);
-    void menuNewStepCanBeAddedFirstAboutToShow();
-
-    void addCanBeAddedFirstStepFromMyQAction();
 };
 
 #endif // GMAINWINDOW_H

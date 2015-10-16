@@ -67,7 +67,7 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
     _labelCreated = NULL;
 
     _dialog = new CT_TextFileConfigurationDialog(neededFields, NULL, *_fileName, _autoDetect);
-    _dialog->setFileExtensionAccepted(QStringList() << fileFilter);
+    _dialog->setFileExtensionAccepted(QList<FileFormat>() << FileFormat(fileFilter, ""));
 }
 
 CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
@@ -105,7 +105,7 @@ CT_AsciiFileChoiceButton::CT_AsciiFileChoiceButton(QString btlab,
     _labelCreated = NULL;
 
     _dialog = new CT_TextFileConfigurationDialog(neededFields, NULL, *_fileName, _autoDetect);
-    _dialog->setFileExtensionAccepted(QStringList() << fileFilter);
+    _dialog->setFileExtensionAccepted(QList<FileFormat>() << FileFormat(fileFilter, ""));
 }
 
 CT_AsciiFileChoiceButton::~CT_AsciiFileChoiceButton()

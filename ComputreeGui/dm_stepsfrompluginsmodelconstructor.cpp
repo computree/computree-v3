@@ -7,6 +7,7 @@
 #include "ct_stepseparator.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 
 DM_StepsFromPluginsModelConstructor::DM_StepsFromPluginsModelConstructor(const CDM_PluginManager &manager) : m_pluginManager(manager)
 {
@@ -16,11 +17,6 @@ DM_StepsFromPluginsModelConstructor::DM_StepsFromPluginsModelConstructor(const C
 DM_StepsFromPluginsModelConstructor::~DM_StepsFromPluginsModelConstructor()
 {
     delete m_model;
-}
-
-void DM_StepsFromPluginsModelConstructor::setUseStepsOfPlugins(const QList<CT_AbstractStepPlugin *> &plugins)
-{
-    m_plugins = plugins;
 }
 
 void DM_StepsFromPluginsModelConstructor::setTypeVisible(DM_StepsFromPluginsModelConstructor::ItemType type, bool enable)
@@ -53,51 +49,25 @@ bool DM_StepsFromPluginsModelConstructor::isTypeVisible(DM_StepsFromPluginsModel
 void DM_StepsFromPluginsModelConstructor::resetConfig()
 {
     m_notVisible.clear();
-    m_plugins.clear();
 }
 
 void DM_StepsFromPluginsModelConstructor::construct()
 {
     m_model->clear();
+    m_model->setHorizontalHeaderLabels(QStringList() << QObject::tr("Nom") << QObject::tr("Plugin"));
 
-    foreach (CT_AbstractStepPlugin *plugin, m_plugins) {
+    QStandardItem *rootItem = m_model->invisibleRootItem();
 
-        QList<QStandardItem*> items = createItemsForPlugin(plugin);
+    CT_StepsMenu *menu = m_pluginManager.stepsMenu();
 
-        QStandardItem *rootItem = NULL;
+    QList<CT_MenuLevel*> levels = menu->levels();
+    QListIterator<CT_MenuLevel*> it(levels);
+
+    while(it.hasNext()) {
+        QList<QStandardItem*> items = createItemsForLevelAndSubLevelRecursively(it.next());
 
         if(!items.isEmpty())
-            rootItem = items.first();
-        else
-            rootItem = m_model->invisibleRootItem();
-
-        QList<QStandardItem*> baseSepItems;
-
-        QStandardItem *baseSepItem = NULL;
-
-        if(isTypeVisible(IT_Separator)) {
-            baseSepItem = new QStandardItem(QObject::tr("Autres"));
-            baseSepItem->setEditable(false);
-            baseSepItem->setData((int)IT_SeparatorOther, DR_Type);
-
-            baseSepItems << baseSepItem;
-        }
-
-        createAndAddItems<CT_StepLoadFileSeparator, CT_AbstractStepLoadFile>(plugin->getOpenFileStepAvailable(), baseSepItem, rootItem, IT_StepLF);
-
-        createAndAddItems<CT_StepCanBeAddedFirstSeparator, CT_AbstractStepCanBeAddedFirst>(plugin->getCanBeAddedFirstStepAvailable(), baseSepItem, rootItem, IT_StepCBAF);
-
-        createAndAddItems<CT_StepSeparator, CT_VirtualAbstractStep>(plugin->getGenericsStepAvailable(), baseSepItem, rootItem, IT_StepG);
-
-        if((baseSepItem != NULL) && (baseSepItem->rowCount() > 0))
-            rootItem->appendRow(baseSepItems);
-        else
-            qDeleteAll(baseSepItems.begin(), baseSepItems.end());
-
-        if(!items.isEmpty() && (rootItem->rowCount() > 0))
-            m_model->invisibleRootItem()->appendRow(items);
-        else
-            qDeleteAll(items.begin(), items.end());
+            rootItem->appendRow(items);
     }
 }
 
@@ -116,67 +86,57 @@ CT_VirtualAbstractStep *DM_StepsFromPluginsModelConstructor::stepFromIndex(const
     return NULL;
 }
 
-QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForPlugin(CT_AbstractStepPlugin *plugin) const
+QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForLevelAndSubLevelRecursively(const CT_MenuLevel *level, bool rootLevel)
 {
     QList<QStandardItem*> l;
 
-    if(!isTypeVisible(IT_Plugin))
-        return l;
-
-    QString pluginName = m_pluginManager.getPluginName(plugin);
-
-    if (pluginName.startsWith("plug_"))
-        pluginName.remove(0, 5);
-
-    QStandardItem *item = new QStandardItem(pluginName);
+    QStandardItem *item = new QStandardItem(level->displayableName());
     item->setEditable(false);
-    item->setData(qVariantFromValue((void*)plugin), DR_Pointer);
-    item->setData((int)IT_Plugin, DR_Type);
+    item->setData(qVariantFromValue((void*)level), DR_Pointer);
+    item->setData((int)rootLevel ? IT_RootLevel : IT_SubLevel, DR_Type);
+    item->setData((int)rootLevel ? IT_RootLevel : IT_SubLevel, DR_SecondaryType);
     l << item;
 
-    return l;
-}
+    QStandardItem *colItem = new QStandardItem();
+    colItem->setEditable(false);
+    colItem->setData(qVariantFromValue((void*)level), DR_Pointer);
+    colItem->setData((int)rootLevel ? IT_RootLevel : IT_SubLevel, DR_Type);
+    colItem->setData((int)rootLevel ? IT_RootLevel : IT_SubLevel, DR_SecondaryType);
+    l << colItem;
 
-QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForSeparator(CT_StepSeparator *sep) const
-{
-    QList<QStandardItem*> l;
+    // sub levels
+    QList<CT_MenuLevel*> levels = level->levels();
+    QListIterator<CT_MenuLevel*> it(levels);
 
-    if(isTypeVisible(IT_SeparatorG) && !sep->getTitle().isEmpty()) {
-        QStandardItem *item = new QStandardItem(sep->getTitle());
-        item->setEditable(false);
-        item->setData(qVariantFromValue((void*)sep), DR_Pointer);
-        item->setData((int)IT_SeparatorG, DR_Type);
-        l << item;
+    while(it.hasNext()) {
+        QList<QStandardItem*> items = createItemsForLevelAndSubLevelRecursively(it.next(), false);
+
+        if(!items.isEmpty())
+            item->appendRow(items);
     }
 
-    return l;
-}
+    // steps
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
 
-QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForSeparator(CT_StepLoadFileSeparator *sep) const
-{
-    QList<QStandardItem*> l;
+    while(itS.hasNext()) {
+        CT_VirtualAbstractStep *step = itS.next();
+        QList<QStandardItem*> items;
 
-    if(isTypeVisible(IT_SeparatorLF) && !sep->typeOfFile().isEmpty()) {
-        QStandardItem *item = new QStandardItem(sep->typeOfFile());
-        item->setEditable(false);
-        item->setData(qVariantFromValue((void*)sep), DR_Pointer);
-        item->setData((int)IT_SeparatorLF, DR_Type);
-        l << item;
+        if(dynamic_cast<CT_AbstractStepLoadFile*>(step) != NULL)
+            items = createItemsForStep(step, IT_StepLF);
+        else if(dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(step) != NULL)
+            items = createItemsForStep(step, IT_StepCBAF);
+        else
+            items = createItemsForStep(step, IT_StepG);
+
+        if(!items.isEmpty())
+            item->appendRow(items);
     }
 
-    return l;
-}
-
-QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForSeparator(CT_StepCanBeAddedFirstSeparator *sep) const
-{
-    QList<QStandardItem*> l;
-
-    if(isTypeVisible(IT_SeparatorCBAF) && !sep->getTitle().isEmpty()) {
-        QStandardItem *item = new QStandardItem(sep->getTitle());
-        item->setEditable(false);
-        item->setData(qVariantFromValue((void*)sep), DR_Pointer);
-        item->setData((int)IT_SeparatorCBAF, DR_Type);
-        l << item;
+    if(item->rowCount() == 0) {
+        qDeleteAll(l.begin(), l.end());
+        l.clear();
     }
 
     return l;
@@ -190,37 +150,20 @@ QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForStep(C
     item->setEditable(false);
     item->setData(qVariantFromValue((void*)step), DR_Pointer);
     item->setData((int)stepType, DR_Type);
+    item->setData((int)stepType, DR_SecondaryType);
+    l << item;
+
+    QString pluginName = m_pluginManager.getPluginName(step->getPlugin());
+
+    if (pluginName.startsWith("plug_"))
+        pluginName.remove(0, 5);
+
+    item = new QStandardItem(pluginName);
+    item->setEditable(false);
+    item->setData(qVariantFromValue((void*)step->getPlugin()), DR_Pointer);
+    item->setData((int)IT_Plugin, DR_Type);
+    item->setData((int)stepType, DR_SecondaryType);
     l << item;
 
     return l;
-}
-
-template<typename SEPTYPE, typename STEPTYPE>
-void DM_StepsFromPluginsModelConstructor::createAndAddItems(const QList<SEPTYPE *> &l, QStandardItem *baseSeparatorItem, QStandardItem *rootItem, ItemType stepType)
-{
-    foreach (SEPTYPE *sep, l) {
-
-        QList<QStandardItem*> itemsSep = createItemsForSeparator(sep);
-        QStandardItem *parentItem = baseSeparatorItem;
-
-        if(!itemsSep.isEmpty())
-            parentItem = itemsSep.first();
-
-        if(parentItem == NULL)
-            parentItem = rootItem;
-
-        QList<STEPTYPE*> steps = sep->getStepList();
-
-        foreach (STEPTYPE *step, steps) {
-            QList<QStandardItem*> items2 = createItemsForStep(step, stepType);
-
-            if(!items2.isEmpty())
-                parentItem->appendRow(items2);
-        }
-
-        if(!itemsSep.isEmpty() && (parentItem == itemsSep.first()) && (parentItem->rowCount() > 0))
-            rootItem->appendRow(itemsSep);
-        else
-            qDeleteAll(itemsSep.begin(), itemsSep.end());
-    }
 }

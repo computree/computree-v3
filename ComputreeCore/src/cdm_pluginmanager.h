@@ -8,6 +8,9 @@
 #include <QPluginLoader>
 
 #include "src/cdm_log.h"
+#include "src/cdm_stepsmenumanager.h"
+
+#include "ct_step/tools/menu/ct_stepsmenu.h"
 
 /**
   * \brief Classe permettant de charger/gerer les plugins disponibles
@@ -37,6 +40,16 @@ public:
      * @brief get the plugin manager
      */
     PluginManagerInterface* pluginManager() const;
+
+    /**
+     * @brief get the menu to fill with steps and level
+     */
+    CT_StepsMenu* stepsMenu() const;
+
+    /**
+     * @brief get the menu manager
+     */
+    CDM_StepsMenuManager* stepsMenuManager() const;
 
     /*!
      *  \brief Charge/Recharge les plugins.
@@ -97,13 +110,15 @@ public:
 
 private:
 
-    QMap<QString, QPluginLoader*>   _plugins;
+    QMap<QString, QPluginLoader*>       _plugins;
 
-    QString                         _defaultPluginDirPath;
-    QString                         _errorWhenLoad;
+    QString                             _defaultPluginDirPath;
+    QString                             _errorWhenLoad;
 
-    GuiManagerInterface             *m_guiManager;
-    CDM_Log                         m_log;
+    GuiManagerInterface                 *m_guiManager;
+    CDM_Log                             m_log;
+
+    CDM_StepsMenuManager                m_stepsMenuManager;
 
     void clearPlugins();
 
@@ -117,6 +132,7 @@ signals:
      *        if you want to cancel the loading (connect with Qt::DirectConnection)
      */
     void startLoading(bool &cancel);
+    void beginLoading();
     void finishLoading();
 };
 

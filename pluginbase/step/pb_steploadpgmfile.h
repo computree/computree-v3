@@ -26,7 +26,7 @@ public:
     QString getStepDescription() const;
 
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
-    QList<QString> getFileExtensionAccepted() const;
+    QList<FileFormat> getFileExtensionAccepted() const;
 
 protected:
     void createOutResultModelListProtected();

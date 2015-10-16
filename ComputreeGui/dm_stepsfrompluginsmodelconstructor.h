@@ -14,7 +14,8 @@ class DM_StepsFromPluginsModelConstructor
 public:
     enum DataRole {
         DR_Type = Qt::UserRole + 1,             // use this data role index to get the type of pointer contained in this item => data(DR_Type) return an int that was a ItemType
-        DR_Pointer = Qt::UserRole + 2           // use this data role index to get a pointer to a "XXX", check type of pointer with DR_Type to get an ItemType
+        DR_Pointer = Qt::UserRole + 2,          // use this data role index to get a pointer to a "XXX", check type of pointer with DR_Type to get an ItemType
+        DR_SecondaryType = Qt::UserRole + 3     // use this data role index to get the secondary type (for customisation)
     };
 
     enum ItemType {
@@ -28,35 +29,20 @@ public:
 
         IT_Step = 14,                           // call data(DR_Type) and check if return && IT_Step to check if the pointer is "CT_VirtualAbstractStep*"
 
+            IT_RootLevel = 16,                  // call data(DR_Type) and check if return && IT_RootLevel to check if the pointer is a "CT_MenuLevel" and it's a root level
+            IT_SubLevel = 32,                   // call data(DR_Type) and check if return && IT_SubLevel to check if the pointer is a "CT_MenuLevel" and it's a sub level
 
-        // IT_SeparatorG, IT_SeparatorLF, IT_SeparatorCBAF and IT_SeparatorOther is IT_SeparatorOldVersion and is IT_Separator
+        IT_Level = 48,                          // call data(DR_Type) and check if return && IT_Level to check if the pointer is a "CT_MenuLevel"
 
-                IT_SeparatorG = 16,             // call data(DR_Type) and check if return && IT_SeparatorG to check if the pointer is "CT_StepSeparator*"
-                IT_SeparatorLF = 32,            // call data(DR_Type) and check if return && IT_SeparatorLF to check if the pointer is "CT_StepLoadFileSeparator*"
-                IT_SeparatorCBAF = 64,          // call data(DR_Type) and check if return && IT_SeparatorCBAF to check if the pointer is "CT_StepCanBeAddedFirstSeparator*"
-                IT_SeparatorOther = 128,        // call data(DR_Type) and check if return && IT_SeparatorOther to check if the separator is just text (Autres)
+        IT_Text = 64,                           // no pointer available, just text
 
-            IT_SeparatorOldVersion = 240,       // call data(DR_Type) and check if return && IT_SeparatorOldVersion to check if the pointer is a separator of type IT_SeparatorG or IT_SeparatorLF or IT_SeparatorCBAF
-
-        // IT_SeparatorNewVersion is IT_Separator
-
-            IT_SeparatorNewVersion = 256,       // call data(DR_Type) and check if return && IT_SeparatorNewVersion to check if the separator is a new version (the new version is not a pointer to a separator, is just text)
-
-        IT_Separator = 496,                     // call data(DR_Type) and check if return && IT_Separator to check if the pointer is a separator (be carreful that you can not get a pointer for IT_SeparatorNewVersion)
-
-        IT_Text = 512,                          // no pointer available, just text
-
-        IT_All =  1023                          // all types
+        IT_All =  127                            // all types
     };
 
     DM_StepsFromPluginsModelConstructor(const CDM_PluginManager &manager);
     ~DM_StepsFromPluginsModelConstructor();
 
-    /**
-     * @brief Set plugins that will be used to create the tree
-     * @param plugins : plugins to use
-     */
-    void setUseStepsOfPlugins(const QList<CT_AbstractStepPlugin*> &plugins);
+    void setFavoritesVisible(bool enable);
 
     /**
      * @brief Set if the model must contains rows for type passed in parameter or not. if the type is not visible but it contains children, these latter
@@ -101,32 +87,13 @@ public:
 
 private:
     const CDM_PluginManager         &m_pluginManager;
-    QList<CT_AbstractStepPlugin*>   m_plugins;
     QStandardItemModel              *m_model;
     QList<ItemType>                 m_notVisible;
 
-    template<typename SEPTYPE, typename STEPTYPE>
-    void createAndAddItems(const QList<SEPTYPE*> &l, QStandardItem *baseSeparatorItem, QStandardItem *rootItem, ItemType stepType);
-
     /**
-     * @brief Create and return a list of QStandardItem that will be added to the tree for a plugin
+     * @brief Create and return a list of QStandardItem that will be added to the tree for a level and it's sub level recursively
      */
-    QList<QStandardItem*> createItemsForPlugin(CT_AbstractStepPlugin *plugin) const;
-
-    /**
-     * @brief Create and return a list of QStandardItem that will be added to the tree for a separator
-     */
-    QList<QStandardItem*> createItemsForSeparator(CT_StepSeparator *sep) const;
-
-    /**
-     * @brief Create and return a list of QStandardItem that will be added to the tree for a separator
-     */
-    QList<QStandardItem*> createItemsForSeparator(CT_StepLoadFileSeparator *sep) const;
-
-    /**
-     * @brief Create and return a list of QStandardItem that will be added to the tree for a separator
-     */
-    QList<QStandardItem*> createItemsForSeparator(CT_StepCanBeAddedFirstSeparator *sep) const;
+    QList<QStandardItem*> createItemsForLevelAndSubLevelRecursively(const CT_MenuLevel *level, bool rootLevel = true);
 
     /**
      * @brief Create and return a list of QStandardItem that will be added to the tree for a step

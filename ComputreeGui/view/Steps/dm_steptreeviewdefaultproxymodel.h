@@ -21,15 +21,52 @@ public:
     typedef bool (*functionGetStepName)(QString &, const QModelIndex&, void*);
 
     /**
+     * @brief Returns if type passed in parameter is visible or not in the view
+     */
+    bool isTypeVisible(DM_StepsFromPluginsModelConstructor::ItemType type) const;
+
+    /**
+     * @brief Returns the personalized value for the role and type passed in parameter
+     */
+    QVariant getValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::ItemType type, Qt::ItemDataRole role) const;
+
+    /**
+     * @brief Returns the personalized value of the index for the role passed in parameter
+     */
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+    /**
+     * @brief Returns true if the plugin filter is enabled
+     */
+    bool pluginsFilterEnabled() const;
+
+    /**
+     * @brief Returns the list of plugins used for filtering steps
+     */
+    QList<CT_AbstractStepPlugin*> pluginsForFiltering() const;
+
+    /**
+     * @brief Set the function to call to get the name of steps
+     */
+    void setStepsNameFunction(functionGetStepName f, void *context);
+
+public slots:
+    /**
+     * @brief The list of plugins you set will be used to remove steps that was not in plugin list. If you call this
+     *        method the plugins filter will be enabled by default (setPluginsFilterEnabled(true))
+     */
+    void setUseStepsOfPlugins(const QList<CT_AbstractStepPlugin*> &plugins);
+
+    /**
+     * @brief Enable or not the plugins filters (setUseStepsOfPlugins)
+     */
+    void setPluginsFilterEnabled(bool enable);
+
+    /**
      * @brief Set if the type passed in parameter must be visible or not in the view.
      * @warning If the type passed in parameter is not visible, childrens are not visible too !
      */
     void setTypeVisible(DM_StepsFromPluginsModelConstructor::ItemType type, bool enable);
-
-    /**
-     * @brief Returns if type passed in parameter is visible or not in the view
-     */
-    bool isTypeVisible(DM_StepsFromPluginsModelConstructor::ItemType type) const;
 
     /**
      * @brief Personalize the value for the role and type passed in parameter
@@ -38,16 +75,6 @@ public:
      * @param val : the value to use, can be invalid to use default returned by QSortFilterProxyModel
      */
     void setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::ItemType type, Qt::ItemDataRole role, QVariant val);
-
-    /**
-     * @brief Returns the personalized value for the role and type passed in parameter
-     */
-    QVariant getValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::ItemType type, Qt::ItemDataRole role) const;
-
-    /**
-     * @brief Set the function to call to get the name of steps
-     */
-    void setStepsNameFunction(functionGetStepName f, void *context);
 
     /**
      * @brief Set if steps that were not compatible with the parent step (method "setParentStep") must be visible in the view
@@ -62,11 +89,6 @@ public:
      */
     void setParentStep(CT_VirtualAbstractStep *parent);
 
-    /**
-     * @brief Returns the personalized value of the index for the role passed in parameter
-     */
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-
 protected:
     /**
      * @brief Check if the row is accepted or not
@@ -78,6 +100,8 @@ private:
     CT_VirtualAbstractStep                                                                      *m_parentStep;
     QList<DM_StepsFromPluginsModelConstructor::ItemType>                                        m_typesNotVisible;
     QMap<DM_StepsFromPluginsModelConstructor::ItemType, QHash<Qt::ItemDataRole, QVariant>* >    m_values;   // must be sorted in ascendant order
+    QList<CT_AbstractStepPlugin*>                                                               m_plugins;
+    bool                                                                                        m_pluginsFilterEnable;
     functionGetStepName                                                                         m_stepsNameF;
     void*                                                                                       m_stepsNameContext;
 

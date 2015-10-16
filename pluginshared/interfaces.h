@@ -70,6 +70,7 @@ class CT_AbstractCloudIndex;
 class CT_OutAbstractModel;
 class CT_StandardColorCloudRegistered;
 class CT_StandardNormalCloudRegistered;
+class CT_StepsMenu;
 
 typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SPCIR;
 typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SFCIR;
@@ -1324,6 +1325,11 @@ public:
      * @brief get the plugin manager
      */
     virtual PluginManagerInterface* pluginManager() const = 0;
+
+    /**
+     * @brief get the menu to populate with steps
+     */
+    virtual CT_StepsMenu* stepsMenu() const = 0;
 };
 
 /**

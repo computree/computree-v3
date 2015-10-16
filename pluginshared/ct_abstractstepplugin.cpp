@@ -45,11 +45,14 @@
 #include "ct_turn/inTurn/tools/ct_inturnmanager.h"
 #include "ct_result/tools/ct_outmanager.h"
 
+#include "ct_step/tools/menu/ct_menulevel.h"
+
 #include <QSettings>
 
 CT_AbstractStepPlugin::CT_AbstractStepPlugin()
 {
     _pluginSettings = NULL;
+    m_coreInterface = NULL;
 }
 
 CT_AbstractStepPlugin::~CT_AbstractStepPlugin()
@@ -73,50 +76,17 @@ bool CT_AbstractStepPlugin::init()
 
 bool CT_AbstractStepPlugin::initAfterAllPluginsLoaded()
 {
-    bool ok = loadAfterAllPluginsLoaded();
+    return loadAfterAllPluginsLoaded();
+}
 
-    if(ok)
-    {
-        // initialise les résultats en entrée de chaque étape pour quelles puissent utiliser
-        // la méthode acceptAddAfterThisStep(...)
-        QList<CT_StepSeparator*> listGenerics = getGenericsStepAvailable();
-        QListIterator<CT_StepSeparator*> itG(listGenerics);
+void CT_AbstractStepPlugin::finishInitialization()
+{
+    QList<CT_MenuLevel*> subLevels = menuOfSteps()->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
 
-        while(itG.hasNext())
-        {
-            QList<CT_VirtualAbstractStep*> stepList = itG.next()->getStepList();
-            QListIterator<CT_VirtualAbstractStep*> itS(stepList);
-
-            while(itS.hasNext())
-                initStep(dynamic_cast<CT_VirtualAbstractStep*>(itS.next()));
-        }
-
-        QList<CT_StepLoadFileSeparator*> listOpen = getOpenFileStepAvailable();
-        QListIterator<CT_StepLoadFileSeparator*> itO(listOpen);
-
-        while(itO.hasNext())
-        {
-            QList<CT_AbstractStepLoadFile*> stepList = itO.next()->getStepList();
-            QListIterator<CT_AbstractStepLoadFile*> itS(stepList);
-
-            while(itS.hasNext())
-                initStep(dynamic_cast<CT_VirtualAbstractStep*>(itS.next()));
-        }
-
-        QList<CT_StepCanBeAddedFirstSeparator*> listFirst = getCanBeAddedFirstStepAvailable();
-        QListIterator<CT_StepCanBeAddedFirstSeparator*> itF(listFirst);
-
-        while(itF.hasNext())
-        {
-            QList<CT_AbstractStepCanBeAddedFirst*> stepList = itF.next()->getStepList();
-            QListIterator<CT_AbstractStepCanBeAddedFirst*> itS(stepList);
-
-            while(itS.hasNext())
-                initStep(dynamic_cast<CT_VirtualAbstractStep*>(itS.next()));
-        }
+    while(it.hasNext()) {
+        initAllStepOfThisPluginInLevelsRecursively(it.next());
     }
-
-    return ok;
 }
 
 void CT_AbstractStepPlugin::unload()
@@ -206,7 +176,7 @@ QString CT_AbstractStepPlugin::getKeyForStep(const CT_VirtualAbstractStep &step)
 
 CT_VirtualAbstractStep* CT_AbstractStepPlugin::getStepFromKey(QString key) const
 {
-    QListIterator<CT_StepLoadFileSeparator*> it(_stepOpenFileAvailable);
+    /*QListIterator<CT_StepLoadFileSeparator*> it(_stepOpenFileAvailable);
 
     while(it.hasNext())
     {
@@ -252,9 +222,9 @@ CT_VirtualAbstractStep* CT_AbstractStepPlugin::getStepFromKey(QString key) const
             if(step->getStepName() == key)
                 return step;
         }
-    }
+    }*/
 
-    return NULL;
+    return searchStepFromKeyOfThisPluginInMenuRecursively(menuOfSteps(), key);
 }
 
 CT_VirtualAbstractStep* CT_AbstractStepPlugin::createNewInstanceOfStep(const CT_VirtualAbstractStep &step, CT_VirtualAbstractStep *parent) const
@@ -339,26 +309,76 @@ CT_StepInitializeData* CT_AbstractStepPlugin::createNewStepInitializeData(CT_Vir
     return new CT_StepInitializeData(parent, *this, _pluginSettings);
 }
 
+CT_VirtualAbstractStep* CT_AbstractStepPlugin::searchStepFromKeyOfThisPluginInMenuRecursively(CT_StepsMenu *menu, const QString &key) const
+{
+    QList<CT_MenuLevel*> subLevels = menu->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
+
+    while(it.hasNext()) {
+        CT_VirtualAbstractStep *step = searchStepFromKeyOfThisPluginInLevelsRecursively(it.next(), key);
+
+        if(step != NULL)
+            return step;
+    }
+
+    return NULL;
+}
+
+CT_VirtualAbstractStep* CT_AbstractStepPlugin::searchStepFromKeyOfThisPluginInLevelsRecursively(CT_MenuLevel *level, const QString &key) const
+{
+    CT_VirtualAbstractStep *step = NULL;
+
+    QList<CT_MenuLevel*> subLevels = level->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
+
+    while(it.hasNext()) {
+        CT_MenuLevel *subLevel = it.next();
+
+        step = searchStepFromKeyOfThisPluginInLevelsRecursively(subLevel, key);
+
+        if(step != NULL)
+            return step;
+    }
+
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        step = itS.next();
+
+        if((step->getPlugin() == this) && (step->getStepName() == key))
+            return step;
+    }
+
+    return NULL;
+}
+
 CT_StepSeparator* CT_AbstractStepPlugin::addNewSeparator(CT_StepSeparator *sep)
 {
-    if(sep != NULL)
+    if(sep != NULL) {
+        sep->m_menuOfSteps = menuOfSteps();
         _stepAvailable.append(sep);
+    }
 
     return sep;
 }
 
 CT_StepLoadFileSeparator* CT_AbstractStepPlugin::addNewSeparator(CT_StepLoadFileSeparator *sep)
 {
-    if(sep != NULL)
+    if(sep != NULL) {
+        sep->m_menuOfSteps = menuOfSteps();
         _stepOpenFileAvailable.append(sep);
+    }
 
     return sep;
 }
 
 CT_StepCanBeAddedFirstSeparator* CT_AbstractStepPlugin::addNewSeparator(CT_StepCanBeAddedFirstSeparator *sep)
 {
-    if(sep != NULL)
+    if(sep != NULL) {
+        sep->m_menuOfSteps = menuOfSteps();
         _stepCanBeAddedFirstAvailable.append(sep);
+    }
 
     return sep;
 }
@@ -399,6 +419,26 @@ void CT_AbstractStepPlugin::addNewMetric(CT_AbstractMetric *metric)
         m_metrics.append(metric);
 }
 
+void CT_AbstractStepPlugin::addNewStep(CT_VirtualAbstractStep *step, CT_StepsMenu::LevelOperationType levelOperation, const QString &subLevelDisplayableName)
+{
+    CT_MenuLevel *level = menuOfSteps()->getOrCreateRootLevel(levelOperation);
+
+    if(!subLevelDisplayableName.isEmpty())
+        level = CT_MenuLevel::getOrCreateLevel(subLevelDisplayableName, level);
+
+    level->addStepToCollectionOrDeleteIt(step);
+}
+
+void CT_AbstractStepPlugin::addNewStep(CT_VirtualAbstractStep *step, CT_StepsMenu::LevelOperationType levelOperation, CT_StepsMenu::LevelPredefined subLevelPredefined)
+{
+    addNewStep(step, levelOperation, CT_StepsMenu::staticPredefinedToString(subLevelPredefined));
+}
+
+CT_StepsMenu *CT_AbstractStepPlugin::menuOfSteps() const
+{
+    return m_coreInterface->stepsMenu();
+}
+
 void CT_AbstractStepPlugin::clearMemory()
 {
     clearGenericsStep();
@@ -434,9 +474,98 @@ void CT_AbstractStepPlugin::initStep(CT_VirtualAbstractStep *step) const
     step->setCreateDefaultOutModelActive(false);
 }
 
+void CT_AbstractStepPlugin::convertStepSeparatorToOperationAndLevel()
+{
+    CT_MenuLevel *rootLevel = menuOfSteps()->getOrCreateRootLevel(CT_StepsMenu::LO_Other);
+
+    QList<CT_StepSeparator*> listGenerics = getGenericsStepAvailable();
+    QListIterator<CT_StepSeparator*> itG(listGenerics);
+
+    while(itG.hasNext())
+    {
+        CT_StepSeparator *sep = itG.next();
+
+        CT_MenuLevel *level = rootLevel;
+
+        if(!sep->getTitle().isEmpty())
+            level = CT_MenuLevel::getOrCreateLevel(sep->getTitle(), rootLevel);
+
+        QList<CT_VirtualAbstractStep*> stepList = sep->getStepList();
+        QListIterator<CT_VirtualAbstractStep*> itS(stepList);
+
+        while(itS.hasNext())
+            level->addStepToCollectionOrDeleteIt(itS.next()->createNewInstance(*createNewStepInitializeData(NULL)));
+    }
+
+    rootLevel = menuOfSteps()->getOrCreateRootLevel(CT_StepsMenu::LO_Load);
+
+    QList<CT_StepLoadFileSeparator*> listOpen = getOpenFileStepAvailable();
+    QListIterator<CT_StepLoadFileSeparator*> itO(listOpen);
+
+    while(itO.hasNext())
+    {
+        CT_StepLoadFileSeparator *sep = itO.next();
+
+        CT_MenuLevel *level = rootLevel;
+
+        if(!sep->typeOfFile().isEmpty())
+            level = CT_MenuLevel::getOrCreateLevel(sep->typeOfFile(), rootLevel);
+
+        QList<CT_AbstractStepLoadFile*> stepList = sep->getStepList();
+        QListIterator<CT_AbstractStepLoadFile*> itS(stepList);
+
+        while(itS.hasNext())
+            level->addStepToCollectionOrDeleteIt(itS.next()->createNewInstance(*createNewStepInitializeData(NULL)));
+    }
+
+    rootLevel = menuOfSteps()->getOrCreateRootLevel(CT_StepsMenu::LO_Other);
+
+    QList<CT_StepCanBeAddedFirstSeparator*> listFirst = getCanBeAddedFirstStepAvailable();
+    QListIterator<CT_StepCanBeAddedFirstSeparator*> itF(listFirst);
+
+    while(itF.hasNext())
+    {
+        CT_StepCanBeAddedFirstSeparator *sep = itF.next();
+
+        CT_MenuLevel *level = rootLevel;
+
+        if(!sep->getTitle().isEmpty())
+            level = CT_MenuLevel::getOrCreateLevel(sep->getTitle(), rootLevel);
+
+        QList<CT_AbstractStepCanBeAddedFirst*> stepList = sep->getStepList();
+        QListIterator<CT_AbstractStepCanBeAddedFirst*> itS(stepList);
+
+        while(itS.hasNext())
+            level->addStepToCollectionOrDeleteIt(itS.next()->createNewInstance(*createNewStepInitializeData(NULL)));
+    }
+}
+
+void CT_AbstractStepPlugin::initAllStepOfThisPluginInLevelsRecursively(CT_MenuLevel *level)
+{
+    QList<CT_MenuLevel*> subLevels = level->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
+
+    while(it.hasNext()) {
+        CT_MenuLevel *subLevel = it.next();
+
+        initAllStepOfThisPluginInLevelsRecursively(subLevel);
+    }
+
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        CT_VirtualAbstractStep *step = itS.next();
+
+        if(step->getPlugin() == this)
+            initStep(step);
+    }
+}
+
 void CT_AbstractStepPlugin::setCoreInterface(const CoreInterface *core)
 {
     PS_CONTEXT->setCoreInterface(core);
+    m_coreInterface = (CoreInterface*)core;
 }
 
 void CT_AbstractStepPlugin::setGuiManager(const GuiManagerInterface *gManager)

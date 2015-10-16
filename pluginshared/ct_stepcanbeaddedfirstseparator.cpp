@@ -27,6 +27,8 @@
 
 #include "ct_stepcanbeaddedfirstseparator.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_step/tools/menu/ct_stepsmenu.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 
 CT_StepCanBeAddedFirstSeparator::CT_StepCanBeAddedFirstSeparator(const QString &title)
 {
@@ -35,14 +37,14 @@ CT_StepCanBeAddedFirstSeparator::CT_StepCanBeAddedFirstSeparator(const QString &
 
 CT_StepCanBeAddedFirstSeparator::~CT_StepCanBeAddedFirstSeparator()
 {
-    qDeleteAll(_stepList.begin(), _stepList.end());
 }
 
 bool CT_StepCanBeAddedFirstSeparator::addStep(CT_AbstractStepCanBeAddedFirst *step)
 {
-    if(step != NULL)
-    {
-        addStep(*step);
+    if(step != NULL) {
+        CT_MenuLevel *level = m_menuOfSteps->getOrCreateRootLevel(CT_StepsMenu::LO_Other);
+        level = level->getOrCreateLevel(_title, level);
+        level->addStepToCollectionOrDeleteIt(step);
     }
 
     return (step != NULL);
@@ -55,10 +57,5 @@ QString CT_StepCanBeAddedFirstSeparator::getTitle() const
 
 QList<CT_AbstractStepCanBeAddedFirst*> CT_StepCanBeAddedFirstSeparator::getStepList() const
 {
-    return _stepList;
-}
-
-void CT_StepCanBeAddedFirstSeparator::addStep(CT_AbstractStepCanBeAddedFirst &step)
-{
-    _stepList.append(&step);
+    return QList<CT_AbstractStepCanBeAddedFirst*>();
 }

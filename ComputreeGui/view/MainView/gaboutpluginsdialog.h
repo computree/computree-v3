@@ -43,6 +43,7 @@ private:
     bool                    _mustReloadStep;
 
     void initView();
+    void createItemsForLevelRecursively(QTreeWidgetItem *parent, const CT_MenuLevel *level, const CT_AbstractStepPlugin *plugin);
     void createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step);
     void createItemsForAction(QTreeWidgetItem *parent, CT_AbstractAction *act);
     void createItemsForExporter(QTreeWidgetItem *parent, CT_AbstractExporter *ex);

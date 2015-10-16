@@ -46,11 +46,12 @@ public:
 
 protected:
 
-    void addStep(CT_AbstractStepCanBeAddedFirst &step);
+    friend class CT_AbstractStepPlugin;
+
+    CT_StepsMenu                *m_menuOfSteps;
 
 private:
 
-    QList<CT_AbstractStepCanBeAddedFirst*> _stepList;
     QString                     _title;
 };
 

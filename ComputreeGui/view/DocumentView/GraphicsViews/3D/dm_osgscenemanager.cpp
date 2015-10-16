@@ -193,7 +193,7 @@ void DM_OsgSceneManager::getBoundingBoxOfAllItemDrawablePresentInScene(Eigen::Ve
     max[2] = bound.center().z()+bound.radius();
 }
 
-void DM_OsgSceneManager::getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const
+bool DM_OsgSceneManager::getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
     DM_BoundingSphereItemSelectedVisitor vi;
     m_itemRoot->accept(vi);
@@ -207,6 +207,8 @@ void DM_OsgSceneManager::getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::V
     max[0] = bbox.xMax();
     max[1] = bbox.yMax();
     max[2] = bbox.zMax();
+
+    return bbox.valid();
 }
 
 QList< DM_OsgSceneManager::ResultCollection::mapped_type > DM_OsgSceneManager::itemDrawableResults() const

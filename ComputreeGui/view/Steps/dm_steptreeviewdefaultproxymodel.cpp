@@ -5,14 +5,15 @@ DM_StepTreeViewDefaultProxyModel::DM_StepTreeViewDefaultProxyModel(QObject *pare
 {
     setShowStepNotCompatible(true);
     setParentStep(NULL);
+    setPluginsFilterEnabled(true);
 
-    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_Plugin, Qt::BackgroundRole, QColor(64, 64, 64));
+    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_RootLevel, Qt::BackgroundRole, QColor(64, 64, 64));
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_Step, Qt::BackgroundRole, QColor(175, 171, 171));
-    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_Separator, Qt::BackgroundRole, QColor(91, 155, 213));
+    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_SubLevel, Qt::BackgroundRole, QColor(91, 155, 213));
 
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::ForegroundRole, QColor(255, 255, 255));
 
-    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::TextAlignmentRole, Qt::AlignCenter);
+    //setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::TextAlignmentRole, Qt::AlignCenter);
 
     setStepsNameFunction(NULL, NULL);
 }
@@ -30,6 +31,8 @@ void DM_StepTreeViewDefaultProxyModel::setTypeVisible(DM_StepsFromPluginsModelCo
     }
 
     m_typesNotVisible.append(type);
+
+    invalidate();
 }
 
 bool DM_StepTreeViewDefaultProxyModel::isTypeVisible(DM_StepsFromPluginsModelConstructor::ItemType type) const
@@ -98,14 +101,31 @@ void DM_StepTreeViewDefaultProxyModel::setStepsNameFunction(functionGetStepName 
     m_stepsNameContext = context;
 }
 
+void DM_StepTreeViewDefaultProxyModel::setUseStepsOfPlugins(const QList<CT_AbstractStepPlugin *> &plugins)
+{
+    m_plugins = plugins;
+    setPluginsFilterEnabled(true);
+}
+
+void DM_StepTreeViewDefaultProxyModel::setPluginsFilterEnabled(bool enable)
+{
+    m_pluginsFilterEnable = enable;
+
+    invalidate();
+}
+
 void DM_StepTreeViewDefaultProxyModel::setShowStepNotCompatible(bool enable)
 {
     m_showNotCompatible = enable;
+
+    invalidate();
 }
 
 void DM_StepTreeViewDefaultProxyModel::setParentStep(CT_VirtualAbstractStep *parent)
 {
     m_parentStep = parent;
+
+    invalidate();
 }
 
 QVariant DM_StepTreeViewDefaultProxyModel::data(const QModelIndex &index, int role) const
@@ -121,13 +141,23 @@ QVariant DM_StepTreeViewDefaultProxyModel::data(const QModelIndex &index, int ro
                 return str;
         }
 
-        QVariant v = getValueForTypeAndRole(type, (Qt::ItemDataRole)role);
+        QVariant v = getValueForTypeAndRole((DM_StepsFromPluginsModelConstructor::ItemType)index.data(DM_StepsFromPluginsModelConstructor::DR_SecondaryType).toInt(), (Qt::ItemDataRole)role);
 
         if(v.isValid())
             return v;
     }
 
     return QSortFilterProxyModel::data(index, role);
+}
+
+bool DM_StepTreeViewDefaultProxyModel::pluginsFilterEnabled() const
+{
+    return m_pluginsFilterEnable;
+}
+
+QList<CT_AbstractStepPlugin *> DM_StepTreeViewDefaultProxyModel::pluginsForFiltering() const
+{
+    return m_plugins;
 }
 
 bool DM_StepTreeViewDefaultProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -162,7 +192,7 @@ bool DM_StepTreeViewDefaultProxyModel::recursiveAcceptRow(const QModelIndex &ind
                 return false;
         }
 
-        DM_StepsFromPluginsModelConstructor::ItemType type = (DM_StepsFromPluginsModelConstructor::ItemType)index.data(DM_StepsFromPluginsModelConstructor::DR_Type).toInt();
+        DM_StepsFromPluginsModelConstructor::ItemType type = (DM_StepsFromPluginsModelConstructor::ItemType)index.data(DM_StepsFromPluginsModelConstructor::DR_SecondaryType).toInt();
 
         if(!isTypeVisible(type))
             return false;
@@ -183,13 +213,22 @@ bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index) cons
 {
     CT_VirtualAbstractStep *step = (CT_VirtualAbstractStep*)index.data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>();
 
+    if(pluginsFilterEnabled()) {
+        if(!m_plugins.contains(step->getPlugin()))
+            return false;
+    }
+
     bool acceptAfterStep = true;
 
-    if(m_parentStep != NULL)
+    if(m_parentStep == NULL) {
+        if(step->needInputResults())
+            acceptAfterStep = false;
+    } else {
         acceptAfterStep = step->acceptAddAfterThisStep(m_parentStep);
+    }
 
     if(m_showNotCompatible && !acceptAfterStep)
-        return false;
+        return true;
 
-    return true;
+    return acceptAfterStep;
 }

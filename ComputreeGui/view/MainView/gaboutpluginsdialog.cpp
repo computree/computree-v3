@@ -16,6 +16,7 @@
 #include "ct_exporter/abstract/ct_abstractexporter.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 #include "ct_abstractstepplugin.h"
 
 #include <QListWidgetItem>
@@ -77,58 +78,12 @@ void GAboutPluginsDialog::initView()
 
         CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
 
-        // Etape de chargement de fichiers
-        QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
-        QListIterator<CT_StepLoadFileSeparator*> it0(l0);
+        // Levels
+        QList<CT_MenuLevel*> levels = _pManager->stepsMenu()->levels();
+        QListIterator<CT_MenuLevel*> itL(levels);
 
-        if(it0.hasNext())
-        {
-            QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("Load File Step"));
-
-            while(it0.hasNext())
-            {
-                QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
-
-                while(!l00.isEmpty())
-                    createItemsForStep(itemF, l00.takeFirst());
-            }
-        }
-
-        // Etape pouvant être ajouté en premier
-        QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
-        QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
-
-        if(it1.hasNext())
-        {
-            QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("Can be added first Step"));
-
-            while(it1.hasNext())
-            {
-                QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
-
-                while(!l11.isEmpty())
-                    createItemsForStep(itemF, l11.takeFirst());
-            }
-        }
-
-        // Etape générique
-        QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
-        QListIterator<CT_StepSeparator*> it2(l2);
-
-        if(it2.hasNext())
-        {
-            QTreeWidgetItem *itemF = new QTreeWidgetItem(item);
-            itemF->setText(0, tr("Normal Step"));
-
-            while(it2.hasNext())
-            {
-                QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
-
-                while(!l22.isEmpty())
-                    createItemsForStep(itemF, l22.takeFirst());
-            }
+        while(itL.hasNext()) {
+            createItemsForLevelRecursively(item, itL.next(), sPManager);
         }
 
         // Actions
@@ -176,6 +131,32 @@ void GAboutPluginsDialog::initView()
         ui->pushButtonRecharger->setToolTip(tr("Vous ne pouvez pas recharger les plugins tant que vous avez des étapes dans l'arbre des traitements"));
     else
         ui->pushButtonRecharger->setToolTip("");
+}
+
+void GAboutPluginsDialog::createItemsForLevelRecursively(QTreeWidgetItem *parent, const CT_MenuLevel *level, const CT_AbstractStepPlugin *plugin)
+{
+    QTreeWidgetItem *item = new QTreeWidgetItem(parent);
+    item->setData(0, Qt::DisplayRole, level->displayableName());
+
+    QList<CT_MenuLevel*> levels = level->levels();
+    QListIterator<CT_MenuLevel*> itL(levels);
+
+    while(itL.hasNext()) {
+        createItemsForLevelRecursively(item, itL.next(), plugin);
+    }
+
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        CT_VirtualAbstractStep *step = itS.next();
+
+        if(step->getPlugin() == plugin)
+            createItemsForStep(item, step);
+    }
+
+    if(item->childCount() == 0)
+        delete item;
 }
 
 void GAboutPluginsDialog::createItemsForStep(QTreeWidgetItem *parent, CT_VirtualAbstractStep *step)

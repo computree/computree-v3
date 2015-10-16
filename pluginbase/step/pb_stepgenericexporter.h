@@ -30,8 +30,11 @@ public:
     // CT_AbstractStep non obligatoire :
     void init();
 
-    // surcharger pour avoir le nom du plugin
+    // surcharger pour ajouter PB_StepGenericExporter__
     QString getStepName() const;
+
+    // surcharger pour afficher le nom de l'exporter
+    QString getStepDisplayableName() const;
 
     // CT_AbstractStep non obligatoire :
     SettingsNodeGroup* getAllSettings() const;

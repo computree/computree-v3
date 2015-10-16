@@ -36,12 +36,10 @@ CT_VirtualAbstractStep* PB_StepLoadGrid3dFile::createNewInstance(CT_StepInitiali
     return new PB_StepLoadGrid3dFile(dataInit);
 }
 
-QList<QString> PB_StepLoadGrid3dFile::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepLoadGrid3dFile::getFileExtensionAccepted() const
 {
-    QList<QString> list;
-    list << ".grid3d";
-    list << ".grd3d";
-    list << ".GRD3D";
+    QList<FileFormat> list;
+    list << FileFormat(QStringList() << "grid3d" << "grd3d" << "GRD3D", tr("Grid 3D Files"));
 
     return list;
 }

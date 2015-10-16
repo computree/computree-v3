@@ -61,14 +61,6 @@ private:
 
     CT_VirtualAbstractStep* selectedStep();
 
-    void addAllStepOnMenu(QList<CT_StepSeparator*> stepAvailable, MyQMenu *menuStep, bool insert = false);
-    void addAllStepOnMenu(QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable, MyQMenu *menuStep);
-
-    /*!
-     *  \brief Connecte les signaux de l'action aux slots de cette classe
-     */
-    void connectAction(QAction *action, bool insert = false);
-
 signals:
 
     void executeSelectedStep(CT_VirtualAbstractStep *selectedStep);
@@ -77,8 +69,6 @@ signals:
     void configureSelectedStep(CT_VirtualAbstractStep *selectedStep);
     void deleteSelectedStep(CT_VirtualAbstractStep *selectedStep);
     void loadResultOfSelectedStep(CT_AbstractStepSerializable *selectedStep);
-    void addStep(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
-    void insertStep(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
     void expand();
     void expandAll();
     void collapse();
@@ -95,10 +85,6 @@ private slots:
     void showStepInformations();
     void deleteStepRequired();
     void loadResultRequired();
-    void newStepRequired();
-    void insertStepRequired();
-
-    void actionHovered();
 };
 
 #endif // TREESTEPCONTEXTMENU_H

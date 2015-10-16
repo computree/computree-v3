@@ -3,6 +3,7 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_cloudindex/ct_cloudindexstdvectort.h"
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregisteredt.h"
+#include "ct_accessor/ct_pointaccessor.h"
 
 #include "view/DocumentView/GraphicsViews/3D/dm_osgscenemanager.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.h"
@@ -150,6 +151,57 @@ CT_CIR DM_OsgPicker::getSelectedPoints()
     }
 
     return m_selectedPointsBackup;
+}
+
+bool DM_OsgPicker::getBoundingBoxOfAllPointSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const
+{
+    bool valid = false;
+    size_t globalIndex = 0;
+    CT_PointAccessor pAccess;
+
+    min[0] = std::numeric_limits<double>::max();
+    min[1] = min[0];
+    min[2] = min[0];
+
+    max[0] = -min[0];
+    max[1] = max[0];
+    max[2] = max[0];
+
+    GlobalVertexAttribArrayType::const_iterator it =  m_globalVertexAttribArray.get()->begin();
+    GlobalVertexAttribArrayType::const_iterator end =  m_globalVertexAttribArray.get()->end();
+
+    while(it != end) {
+
+        // if point is selected
+        if((*it) & ENABLE_SELECTION) {
+            const CT_Point &p = pAccess.constPointAt(globalIndex);
+
+            min[0] = qMin(min[0], p[0]);
+            min[1] = qMin(min[1], p[1]);
+            min[2] = qMin(min[2], p[2]);
+
+            max[0] = qMax(max[0], p[0]);
+            max[1] = qMax(max[1], p[1]);
+            max[2] = qMax(max[2], p[2]);
+
+            valid = true;
+        }
+
+        ++it;
+        ++globalIndex;
+    }
+
+    if(!valid) {
+        min[0] = 0;
+        min[1] = 0;
+        min[2] = 0;
+
+        max[0] = 0;
+        max[1] = 0;
+        max[2] = 0;
+    }
+
+    return valid;
 }
 
 void DM_OsgPicker::addItemIDToSelection(const GLuint &id)

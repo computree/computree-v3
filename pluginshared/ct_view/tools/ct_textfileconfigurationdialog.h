@@ -38,6 +38,7 @@
 
 #include <QDialog>
 #include "pluginShared_global.h"
+#include "interfaces.h"
 
 namespace Ui {
 class CT_TextFileConfigurationDialog;
@@ -98,7 +99,7 @@ public:
     void setNLinesToSkip(const int &n);
     void setFieldColumnsSelected(const QMap<QString, int> &map);
     void setSeparator(const QString &separator);
-    void setFileExtensionAccepted(const QStringList &extensions);
+    void setFileExtensionAccepted(const QList<FileFormat> &extensions);
     void setHeader(bool header);
     void setQLocale(QString locale);    
     void setDecimal(QString decimal);
@@ -137,7 +138,7 @@ private:
     QMap<QString, int>                      _neededFieldsColumns;
     QList<CT_TextFileConfigurationFields>   _neededFields;
     QString                                 _separator;
-    QStringList                             _extensions;
+    QList<FileFormat>                       _extensions;
     bool                                    _autoDetect;
 
     void initConstructor(QString fileName, bool autoDetect);

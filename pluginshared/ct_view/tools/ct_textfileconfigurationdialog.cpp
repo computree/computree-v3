@@ -64,24 +64,33 @@ CT_TextFileConfigurationDialog::~CT_TextFileConfigurationDialog()
 
 void CT_TextFileConfigurationDialog::fileChoose_clicked()
 {
-    QString filter = tr("Fichier ascii") + " (*";
+    QString filter = tr("Fichier ascii") + " (";
 
-    QStringListIterator it(_extensions);
+    QListIterator<FileFormat> it(_extensions);
 
-    if(it.hasNext())
-    {
-        while(it.hasNext())
+    QString tmp;
+
+    while(it.hasNext()) {
+        const FileFormat &ff = it.next();
+
+        QStringListIterator itS(ff.suffixes());
+
+        if(itS.hasNext() && !tmp.isEmpty())
+            filter += " ";
+
+        while(itS.hasNext())
         {
-            filter += it.next();
+            tmp += "*." + itS.next();
 
-            if(it.hasNext())
-                filter += " *";
+            if(itS.hasNext())
+                filter += " ";
         }
     }
+
+    if(tmp.isEmpty())
+        filter += "*.*";
     else
-    {
-        filter += ".*";
-    }
+        filter += tmp;
 
     filter += ")";
 
@@ -360,7 +369,7 @@ void CT_TextFileConfigurationDialog::setSeparator(const QString &separator)
     }
 }
 
-void CT_TextFileConfigurationDialog::setFileExtensionAccepted(const QStringList &extensions)
+void CT_TextFileConfigurationDialog::setFileExtensionAccepted(const QList<FileFormat> &extensions)
 {
     _extensions = extensions;
 }

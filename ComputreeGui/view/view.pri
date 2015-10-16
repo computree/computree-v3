@@ -64,7 +64,9 @@ SOURCES += \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.cpp \
     $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.cpp \
-    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.cpp
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.cpp \
+    $$PWD/MainView/gfavoritesmenudialog.cpp \
+    $$PWD/MainView/gstepchooserdialog.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -136,7 +138,9 @@ HEADERS += \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_actiontoosgworker.h \
     $$PWD/ItemDrawableConfigurationView/dm_itemdrawableconfigurationandgraphicsviewsynchronizer.h \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h \
-    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.h
+    $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.h \
+    $$PWD/MainView/gfavoritesmenudialog.h \
+    $$PWD/MainView/gstepchooserdialog.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
@@ -160,7 +164,9 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/Tools/gcomboboxwithemptytitlewidget.ui \
     $$PWD/MainView/gineedhelpdialog.ui \
     $$PWD/Steps/gstepviewdefault.ui \
-    $$PWD/Steps/gstepsdockwidget.ui
+    $$PWD/Steps/gstepsdockwidget.ui \
+    $$PWD/MainView/gfavoritesmenudialog.ui \
+    $$PWD/MainView/gstepchooserdialog.ui
 
 INCLUDEPATH += view/DocumentView/GraphicsView
 INCLUDEPATH += view/DocumentView/GraphicsView/3D

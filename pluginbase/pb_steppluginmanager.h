@@ -46,9 +46,6 @@ public:
 
     bool init();
 
-    QString getKeyForStep(const CT_VirtualAbstractStep &step) const;
-    CT_VirtualAbstractStep* getStepFromKey(QString key) const;
-
 protected:
 
     QSettings* initQSettings();

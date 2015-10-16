@@ -5,17 +5,26 @@
 
 #include <QDir>
 #include <QDebug>
+#include <QApplication>
+
+#define FAVORITES_FILENAME "favorites.ctc"
+#define FAVORITES_FILEPATH QDir::toNativeSeparators(qApp->applicationDirPath() + "\\" + FAVORITES_FILENAME)
 
 CDM_PluginManager::CDM_PluginManager()
 {
     _defaultPluginDirPath = "./plugins";
     m_guiManager = NULL;
+    m_stepsMenuManager.setPluginManager(this);
 
     loadConfiguration();
 }
 
 CDM_PluginManager::~CDM_PluginManager()
 {
+    stepsMenuManager()->saveFavoritesTo(FAVORITES_FILEPATH);
+
+    stepsMenuManager()->clear();
+
     clearPlugins();
 
     writeConfiguration();
@@ -34,6 +43,16 @@ LogInterface* CDM_PluginManager::log() const
 PluginManagerInterface* CDM_PluginManager::pluginManager() const
 {
     return const_cast<PluginManagerInterface*>((const PluginManagerInterface*)this);
+}
+
+CT_StepsMenu *CDM_PluginManager::stepsMenu() const
+{
+    return stepsMenuManager()->stepsMenu();
+}
+
+CDM_StepsMenuManager *CDM_PluginManager::stepsMenuManager() const
+{
+    return const_cast<CDM_StepsMenuManager*>(&m_stepsMenuManager);
 }
 
 void CDM_PluginManager::loadConfiguration()
@@ -65,6 +84,10 @@ bool CDM_PluginManager::load()
         _errorWhenLoad = "";
 
         clearPlugins();
+
+        stepsMenuManager()->clear();
+
+        emit beginLoading();
 
         QDir dir(_defaultPluginDirPath);
 
@@ -130,7 +153,12 @@ bool CDM_PluginManager::load()
 
             for(int i=0; i<s; ++i)
                 getPlugin(i)->initAfterAllPluginsLoaded();
+
+            for(int i=0; i<s; ++i)
+                getPlugin(i)->finishInitialization();
         }
+
+        stepsMenuManager()->loadFavoritesFrom(FAVORITES_FILEPATH);
     }
     else
     {

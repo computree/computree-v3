@@ -189,13 +189,10 @@ CT_VirtualAbstractStep* PB_StepLoadAsciiFile02::createNewInstance(CT_StepInitial
     return new PB_StepLoadAsciiFile02(dataInit);
 }
 
-QList<QString> PB_StepLoadAsciiFile02::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepLoadAsciiFile02::getFileExtensionAccepted() const
 {
-    QList<QString> list;
-    list << ".xyz";
-    list << ".asc";
-    list << ".txt";
-    list << ".csv";
+    QList<FileFormat> list;
+    list << FileFormat(QStringList() << "xyz" << "asc" << "txt" << "csv", tr("Ascii Files"));
 
     return list;
 }

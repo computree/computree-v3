@@ -1276,7 +1276,9 @@ void GOsgGraphicsView::getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vecto
 
 void GOsgGraphicsView::getBoundingBoxOfAllItemDrawableSelectedInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    return m_sceneManager->getBoundingBoxOfAllItemDrawableSelectedInScene(min, max);
+    if(!m_sceneManager->getBoundingBoxOfAllItemDrawableSelectedInScene(min, max)) {
+        m_picker->getBoundingBoxOfAllPointSelectedInScene(min, max);
+    }
 }
 
 // --- GOsgGraphicsViewSignalEmitter --- //

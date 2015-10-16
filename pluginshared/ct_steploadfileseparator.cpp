@@ -29,6 +29,8 @@
 
 #include "ct_steploadfileseparator.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
+#include "ct_step/tools/menu/ct_stepsmenu.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 
 CT_StepLoadFileSeparator::CT_StepLoadFileSeparator(const QString &typeOfFile)
 {
@@ -37,14 +39,14 @@ CT_StepLoadFileSeparator::CT_StepLoadFileSeparator(const QString &typeOfFile)
 
 CT_StepLoadFileSeparator::~CT_StepLoadFileSeparator()
 {
-    qDeleteAll(_stepList.begin(), _stepList.end());
 }
 
 bool CT_StepLoadFileSeparator::addStep(CT_AbstractStepLoadFile *step)
 {
-    if(step != NULL)
-    {
-        addStep(*step);
+    if(step != NULL) {
+        CT_MenuLevel *level = m_menuOfSteps->getOrCreateRootLevel(CT_StepsMenu::LO_Load);
+        level = level->getOrCreateLevel(_typeOfFile, level);
+        level->addStepToCollectionOrDeleteIt(step);
     }
 
     return (step != NULL);
@@ -57,10 +59,5 @@ QString CT_StepLoadFileSeparator::typeOfFile() const
 
 QList<CT_AbstractStepLoadFile*> CT_StepLoadFileSeparator::getStepList() const
 {
-    return _stepList;
-}
-
-void CT_StepLoadFileSeparator::addStep(CT_AbstractStepLoadFile &step)
-{
-    _stepList.append(&step);
+    return QList<CT_AbstractStepLoadFile*>();
 }

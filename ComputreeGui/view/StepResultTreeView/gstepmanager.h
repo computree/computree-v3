@@ -185,10 +185,24 @@ private:
 
 public slots:
 
+    /**
+     * @brief Add the step to child list of the selected step if one was selected. Otherwise add step to the root level if it was a
+     *        CT_AbstractStepCanBeAddedFirst or a CT_AbstractStepLoadFile
+     */
+    void addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep *stepToCopy);
+
+    /**
+     * @brief Add the step to child list of the parent step passed in parameter. If parent is NULL add step to the root level if it was a
+     *        CT_AbstractStepCanBeAddedFirst or a CT_AbstractStepLoadFile
+     */
+    void addStepToParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
+
+    /**
+     * @brief Insert the step to child list of the parent step passed in parameter. If parent is NULL step was not added.
+     */
+    void insertStepInParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
+
     void addOpenFileStep(QString filePath);
-    void addGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
-    void addCanBeAddedFirstStepAndConfigure(CT_AbstractStepCanBeAddedFirst *stepToCopy);
-    void insertGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
     bool executeStep(CT_VirtualAbstractStep *step = NULL);
     bool executeModifyStep(CT_VirtualAbstractStep *step);
     bool executeOrForwardStepInDebugMode(CT_VirtualAbstractStep *step = NULL);
@@ -223,6 +237,8 @@ private slots:
     void resultToRemove(QStandardItem *parentItem, MyQStandardItem *resItem);
     void itemToRemove(QStandardItem *item);
 
+    void selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+
     void expandSelected();
     void expandAllTypeOfSelected();
     void collapseSelected();
@@ -235,6 +251,7 @@ signals:
     void addResult(QStandardItem *parentItem, CT_AbstractResult *res);
     void removeResult(QStandardItem *parentItem, MyQStandardItem *resItem);
     void removeItem(QStandardItem *item);
+    void stepSelected(CT_VirtualAbstractStep *step);
 };
 
 #endif // GSTEPMANAGER_H

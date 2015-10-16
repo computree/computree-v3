@@ -69,9 +69,9 @@ public:
     virtual bool acceptFile(QString filePath, bool *allAccepted = 0) const;
 
     /**
-     * @brief Returns a list of extension accepted like this ".XXX" << ".YYY" << etc...
+     * @brief Returns the list of extension accepted by this step
      */
-    virtual QList<QString> getFileExtensionAccepted() const = 0;
+    virtual QList<FileFormat> getFileExtensionAccepted() const = 0;
 
     /**
      * @brief Set the path to the file to read

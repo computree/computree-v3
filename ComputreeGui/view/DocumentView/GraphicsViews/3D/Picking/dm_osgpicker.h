@@ -95,6 +95,11 @@ public:
 
     CT_CIR getSelectedPoints();
 
+    /**
+     * @brief Returns the bounding box of all global points selected. Returns false if no point is selected.
+     */
+    bool getBoundingBoxOfAllPointSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
+
     void addItemIDToSelection(const GLuint &id);
     void addItemToSelection(CT_AbstractItemDrawable *item);
 

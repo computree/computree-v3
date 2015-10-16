@@ -40,10 +40,10 @@ CT_VirtualAbstractStep* PB_StepLoadPbmFile::createNewInstance(CT_StepInitializeD
     return new PB_StepLoadPbmFile(dataInit);
 }
 
-QList<QString> PB_StepLoadPbmFile::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepLoadPbmFile::getFileExtensionAccepted() const
 {
-    QList<QString> list;
-    list << ".pbm";
+    QList<FileFormat> list;
+    list << FileFormat("pbm", tr("PBM Files"));
 
     return list;
 }

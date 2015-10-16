@@ -74,23 +74,9 @@ QString PB_StepGenericLoadFile::getStepDescription() const
     return tr("Charge un fichier du type") + ext;
 }
 
-QList<QString> PB_StepGenericLoadFile::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepGenericLoadFile::getFileExtensionAccepted() const
 {
-    QList<QString> l;
-
-    QListIterator<FileFormat> it(m_reader->readableFormats());
-
-    while(it.hasNext())
-    {
-        const FileFormat &ff = it.next();
-
-        QListIterator<QString> itS(ff.suffixes());
-
-        while(itS.hasNext())
-            l.append("." + itS.next());
-    }
-
-    return l;
+    return m_reader->readableFormats();
 }
 
 bool PB_StepGenericLoadFile::setFilePath(QString filePath)

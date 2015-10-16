@@ -5,7 +5,8 @@
 GStepsTreeViewDefault::GStepsTreeViewDefault(QWidget *parent) :
     QTreeView(parent)
 {
-    setIndentation(0);
+    // uncomment to disable the indentation and the arrow
+    //setIndentation(0);
     setAnimated(true);
     setAutoExpandDelay(300);
     setExpandsOnDoubleClick(false);
@@ -16,54 +17,59 @@ GStepsTreeViewDefault::GStepsTreeViewDefault(QWidget *parent) :
 void GStepsTreeViewDefault::indexClicked(const QModelIndex &index)
 {
     if(index.isValid()
-            && index.model() != NULL
-            && (index.model()->rowCount(index) > 0))
+            && (index.model() != NULL))
     {
-        m_indexToExpand = index;
+        QModelIndex newIndex = index.model()->sibling(index.row(), 0, index);
 
-        bool ok = false;
+        if(newIndex.isValid()
+            && (newIndex.model() != NULL)
+            && (newIndex.model()->rowCount(newIndex) > 0)) {
+            m_indexToExpand = newIndex;
 
-        if(!isExpanded(index)) {
+            bool ok = false;
 
-            QModelIndex parent = index.parent();
+            if(!isExpanded(newIndex)) {
 
-            if(parent.isValid()) {
-                int s = model()->rowCount(parent);
-                int i = 0;
+                QModelIndex parent = newIndex.parent();
 
-                while((i < s) && !ok) {
-                    QModelIndex child = parent.child(i, 0);
+                if(parent.isValid()) {
+                    int s = model()->rowCount(parent);
+                    int i = 0;
 
-                    if(isExpanded(child))
-                    {
-                        collapse(child);
-                        ok = true;
+                    while((i < s) && !ok) {
+                        QModelIndex child = parent.child(i, 0);
+
+                        if(isExpanded(child))
+                        {
+                            collapse(child);
+                            ok = true;
+                        }
+
+                        ++i;
                     }
+                } else {
+                    int s = model()->rowCount();
+                    int i = 0;
 
-                    ++i;
-                }
-            } else {
-                int s = model()->rowCount();
-                int i = 0;
+                    while((i < s) && !ok) {
+                        QModelIndex child = model()->index(i, 0);
 
-                while((i < s) && !ok) {
-                    QModelIndex child = model()->index(i, 0);
+                        if(isExpanded(child))
+                        {
+                            collapse(child);
+                            ok = true;
+                        }
 
-                    if(isExpanded(child))
-                    {
-                        collapse(child);
-                        ok = true;
+                        ++i;
                     }
-
-                    ++i;
                 }
             }
-        }
 
-        if(ok)
-            QTimer::singleShot(autoExpandDelay()+20, this, SLOT(expandLastIndex()));
-        else
-            expandLastIndex();
+            if(ok)
+                QTimer::singleShot(autoExpandDelay()+20, this, SLOT(expandLastIndex()));
+            else
+                expandLastIndex();
+        }
     }
 }
 

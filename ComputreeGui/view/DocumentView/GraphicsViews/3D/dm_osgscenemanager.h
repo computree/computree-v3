@@ -126,9 +126,9 @@ public slots:
     void getBoundingBoxOfAllItemDrawablePresentInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     /**
-     * @brief Returns the bounding box of all item drawable selected in the scene
+     * @brief Returns the bounding box of all item drawable selected in the scene. Returns false if the boundingbox is not valid (no item selected)
      */
-    void getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
+    bool getBoundingBoxOfAllItemDrawableSelectedInScene(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     /**
      * @brief Return all results that represent itemdrawable (one result for one itemdrawable). It's results from DM_PainterToOsgElements

@@ -167,50 +167,6 @@ bool PB_StepPluginManager::init()
     return CT_AbstractStepPlugin::init();
 }
 
-QString PB_StepPluginManager::getKeyForStep(const CT_VirtualAbstractStep &step) const
-{
-    const PB_StepGenericExporter *sEx = dynamic_cast<const PB_StepGenericExporter*>(&step);
-
-    if(sEx != NULL)
-        return QString("PB_StepGenericExporter__") + sEx->getStepName();
-
-    return CT_AbstractStepPlugin::getKeyForStep(step);
-}
-
-CT_VirtualAbstractStep* PB_StepPluginManager::getStepFromKey(QString key) const
-{
-    if(key.startsWith("PB_StepGenericExporter"))
-    {
-        key = key.remove("PB_StepGenericExporter__");
-
-        QList<CT_StepSeparator*> separators = getGenericsStepAvailable();
-        QListIterator<CT_StepSeparator*> it(separators);
-
-        while(it.hasNext())
-        {
-            CT_StepSeparator *separator = it.next();
-
-            if(separator->getTitle() == DEF_ExporterSeparatorTitle)
-            {
-                QList<CT_VirtualAbstractStep*> steps = separator->getStepList();
-                QListIterator<CT_VirtualAbstractStep*> itS(steps);
-
-                while(itS.hasNext())
-                {
-                    PB_StepGenericExporter *step = dynamic_cast<PB_StepGenericExporter*>(itS.next());
-
-                    if(key == step->getStepName())
-                        return step;
-                }
-
-                return NULL;
-            }
-        }
-    }
-
-    return CT_AbstractStepPlugin::getStepFromKey(key);
-}
-
 QSettings* PB_StepPluginManager::initQSettings()
 {
     QSettings *settings = new QSettings("pluginBase.ini", QSettings::IniFormat);
@@ -220,21 +176,18 @@ QSettings* PB_StepPluginManager::initQSettings()
 
 bool PB_StepPluginManager::loadGenericsStep()
 {
-    clearGenericsStep();
+    addNewFilterStep<PB_StepReducePointsDensity>(CT_StepsMenu::LP_PointCloud);
+    addNewFilterStep<PB_StepSlicePointCloud>(CT_StepsMenu::LP_PointCloud);
+    addNewGeometryTransformStep<PB_StepTransformPointCloud>(CT_StepsMenu::LP_PointCloud);
+    addNewExtractStep<PB_StepExtractLogBuffer>(CT_StepsMenu::LP_PointCloud);
+    addNewOtherStep<PB_StepComputeCrownProjection>(QObject::tr("Houppiers"));
 
-    CT_StepSeparator *sep = addNewSeparator(new CT_StepSeparator());
-
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Nuages de points")));
-    sep->addStep(new PB_StepReducePointsDensity(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSlicePointCloud(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepTransformPointCloud(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepExtractLogBuffer(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepExtractPositionsFromDensity(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepComputeCrownProjection(*createNewStepInitializeData(NULL)));
+    CT_StepSeparator *sep;
 
     sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
     sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepCorrectALSProfile(*createNewStepInitializeData(NULL)));    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepCorrectALSProfile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepSelectCellsInGrid3DByBinaryPattern(*createNewStepInitializeData(NULL)));
     sep->addStep(new PB_StepCompare3DGridsContents(*createNewStepInitializeData(NULL)));
@@ -295,7 +248,7 @@ bool PB_StepPluginManager::loadOpenFileStep()
 {
     clearOpenFileStep();
 
-    CT_StepLoadFileSeparator *sep = addNewSeparator(new CT_StepLoadFileSeparator(("ASCII Files")));
+    /*CT_StepLoadFileSeparator *sep = addNewSeparator(new CT_StepLoadFileSeparator(("ASCII Files")));
     sep->addStep(new PB_StepLoadAsciiFile02(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepLoadFileSeparator(("OBJ file")));
@@ -308,7 +261,13 @@ bool PB_StepPluginManager::loadOpenFileStep()
     sep->addStep(new PB_StepLoadPbmFile(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepLoadFileSeparator(("pgm file")));
-    sep->addStep(new PB_StepLoadPgmFile(*createNewStepInitializeData(NULL)));
+    sep->addStep(new PB_StepLoadPgmFile(*createNewStepInitializeData(NULL)));*/
+
+    addNewLoadStep<PB_StepLoadAsciiFile02>(QObject::tr("ASCII Files"));
+    addNewLoadStep<PB_StepLoadObjFile>(QObject::tr("OBJ Files"));
+    addNewLoadStep<PB_StepLoadGrid3dFile>(QObject::tr("Grid3D Files"));
+    addNewLoadStep<PB_StepLoadPbmFile>(QObject::tr("PBM Files"));
+    addNewLoadStep<PB_StepLoadPgmFile>(QObject::tr("PGM Files"));
 
     return true;
 }
@@ -318,7 +277,7 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     clearCanBeAddedFirstStep();
 
     // Ajoute une nouvelle section d'étapes pouvant être ajouter en tête de script
-    CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
+    /*CT_StepCanBeAddedFirstSeparator *sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator());
 
     // Ajout d'une étape
     sep->addStep(new PB_StepCreateDataSource(*createNewStepInitializeData(NULL)));
@@ -328,7 +287,14 @@ bool PB_StepPluginManager::loadCanBeAddedFirstStep()
     sep->addStep(new PB_StepLoadMultiXYBFiles(*createNewStepInitializeData(NULL)));
 
     sep = addNewSeparator(new CT_StepCanBeAddedFirstSeparator("Test"));
-    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
+    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));*/
+
+    addNewCreateStep<PB_StepCreateDataSource>(CT_StepsMenu::LP_DataSource);
+    addNewLoadStep<PB_StepLoadPositionsForMatching>();
+    addNewLoadStep<PB_StepLoadTreeMap>(QObject::tr("Tree maps"));
+    addNewLoadStep<PB_StepImportSegmaFilesForMatching>(QObject::tr("Segma"));
+    addNewLoadStep<PB_StepLoadMultiXYBFiles>(CT_StepsMenu::LP_PointCloud);
+    addNewWorkflowStep<CT_StepBeginLoop>();
 
     // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;

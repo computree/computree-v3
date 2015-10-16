@@ -48,12 +48,12 @@ public:
 
 protected:
 
-    void addStep(CT_AbstractStepLoadFile &step);
+    friend class CT_AbstractStepPlugin;
+
+    CT_StepsMenu    *m_menuOfSteps;
 
 private:
-
-    QString                 _typeOfFile;
-    QList<CT_AbstractStepLoadFile*>    _stepList;
+    QString         _typeOfFile;
 };
 
 #endif // CT_STEPLOADFILESEPARATOR_H

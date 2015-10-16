@@ -27,73 +27,27 @@
 
 #include "ct_stepseparator.h"
 #include "ct_step/abstract/ct_virtualabstractstep.h"
+#include "ct_step/tools/menu/ct_stepsmenu.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 
 CT_StepSeparator::CT_StepSeparator(const QString &customMenu)
 {
     m_levelCustom = customMenu;
-    m_levelOperation = LO_None;
-    m_levelElement = LE_Custom;
-}
-
-CT_StepSeparator::CT_StepSeparator(CT_StepSeparator::LevelOperationType levelOperation, const QString &levelElementCustom)
-{
-    m_levelOperation = levelOperation;
-    m_levelCustom =  levelElementCustom;
-    m_levelElement = LE_Custom;
-}
-
-CT_StepSeparator::CT_StepSeparator(CT_StepSeparator::LevelOperationType levelOperation, LevelElementsType levelElement)
-{
-    m_levelOperation = levelOperation;
-    m_levelElement = levelElement;
-}
-
-CT_StepSeparator::CT_StepSeparator(CT_StepSeparator::LevelOperationType levelOperation, LevelElementsType levelElement, const QString &levelElementCustomTitle)
-{
-    m_levelOperation = levelOperation;
-    m_levelElement = levelElement;
-    m_levelCustom =  levelElementCustomTitle;
 }
 
 CT_StepSeparator::~CT_StepSeparator()
 {
-    qDeleteAll(_stepList.begin(), _stepList.end());
 }
 
 bool CT_StepSeparator::addStep(CT_VirtualAbstractStep *step)
 {
-    if(step != NULL)
-        addStep(*step);
+    if(step != NULL) {
+        CT_MenuLevel *level = m_menuOfSteps->getOrCreateRootLevel(CT_StepsMenu::LO_Other);
+        level = level->getOrCreateLevel(m_levelCustom, level);
+        level->addStepToCollectionOrDeleteIt(step);
+    }
 
     return (step != NULL);
-}
-
-CT_StepSeparator::LevelOperationType CT_StepSeparator::getLevelOperation() const
-{
-    return m_levelOperation;
-}
-
-CT_StepSeparator::LevelElementsType CT_StepSeparator::getLevelElement() const
-{
-    return m_levelElement;
-}
-
-QString CT_StepSeparator::getLevelOperationToString() const
-{
-    switch(m_levelOperation) {
-    default: return "";
-    }
-
-    return "";
-}
-
-QString CT_StepSeparator::getLevelElementToString() const
-{
-    switch(m_levelElement) {
-    default: return "";
-    }
-
-    return "";
 }
 
 QString CT_StepSeparator::getTitle() const
@@ -103,10 +57,5 @@ QString CT_StepSeparator::getTitle() const
 
 QList<CT_VirtualAbstractStep*> CT_StepSeparator::getStepList() const
 {
-    return _stepList;
-}
-
-void CT_StepSeparator::addStep(CT_VirtualAbstractStep &step)
-{
-    _stepList.append(&step);
+    return QList<CT_VirtualAbstractStep*>();
 }

@@ -32,8 +32,9 @@
 #include "pluginShared_global.h"
 #include "ct_filter/abstract/ct_abstractfilter.h"
 #include "ct_metric/abstract/ct_abstractmetric.h"
+#include "ct_stepseparator.h"
+#include "ct_step/tools/menu/ct_stepsmenu.h"
 
-class CT_StepSeparator;
 class CT_StepLoadFileSeparator;
 class CT_StepCanBeAddedFirstSeparator;
 class CT_StepInitializeData;
@@ -79,11 +80,15 @@ public:
     virtual bool init();
 
     /**
-     * @brief Initialize step / readers / exporters / actions / etc.... Must be called from the core for each plugins AFTER ALL plugins was loaded.
-     * @warning If you overload this method remember to call the method of the superclass !
+     * @brief Add other step in function of other plugins.
      * @return true if the initialization is a success.
      */
-    virtual bool initAfterAllPluginsLoaded();
+    bool initAfterAllPluginsLoaded();
+
+    /**
+     * @brief Initialize step / readers / exporters / actions / etc.... Must be called from the core for each plugins AFTER ALL plugins was loaded
+     */
+    void finishInitialization();
 
     /**
      * @brief Called from plugin manager when this plugin will be unloaded
@@ -316,6 +321,18 @@ protected:
     virtual CT_StepInitializeData* createNewStepInitializeData(CT_VirtualAbstractStep *parent) const;
 
     /**
+     * @brief Search the steps (of this plugin) with key passed in parameter in level and sub level of the menu recursively and return it
+     *        if he found it otherwise return NULL
+     */
+    CT_VirtualAbstractStep* searchStepFromKeyOfThisPluginInMenuRecursively(CT_StepsMenu *menu, const QString &key) const;
+
+    /**
+     * @brief Search the steps (of this plugin) with key passed in parameter in level and sub level recursively and return it
+     *        if he found it otherwise return NULL
+     */
+    CT_VirtualAbstractStep* searchStepFromKeyOfThisPluginInLevelsRecursively(CT_MenuLevel *level, const QString &key) const;
+
+    /**
      * @brief Create a new separator that can contains standard step. You must pass a new object to this method, the object
      *        is added to the list of separator and returned.
      */
@@ -361,6 +378,193 @@ protected:
      */
     void addNewMetric(CT_AbstractMetric *metric);
 
+    /**
+     * @brief Add a new step that can be classified with a type of operation.
+     * @info Prefer use the method "menuOfSteps" that returns the menu where you can customize level it's name
+     *       level.
+     */
+    void addNewStep(CT_VirtualAbstractStep *step, CT_StepsMenu::LevelOperationType levelOperation, const QString &subLevelDisplayableName);
+    void addNewStep(CT_VirtualAbstractStep *step, CT_StepsMenu::LevelOperationType levelOperation, CT_StepsMenu::LevelPredefined subLevelPredefined);
+
+    /**
+     * @brief Add a new step that can be classified with a type of operation.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewStep(CT_StepsMenu::LevelOperationType levelOperation, const QString &subLevelDisplayableName = "") {
+        addNewStep(new STEP(*createNewStepInitializeData(NULL)), levelOperation, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewStep(CT_StepsMenu::LevelOperationType levelOperation, CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep(new STEP(*createNewStepInitializeData(NULL)), levelOperation, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "load" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewLoadStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Load, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewLoadStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Load, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "export" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewExportStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Export, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewExportStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Export, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "create" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewCreateStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Create, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewCreateStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Create, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "filter" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewFilterStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Filter, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewFilterStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Filter, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "extract" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewExtractStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Extract, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewExtractStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Extract, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "geometry transform" step.
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewGeometryTransformStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_GeometryTransform, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewGeometryTransformStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_GeometryTransform, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "analyze" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewAnalyzeStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Analyze, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewAnalyzeStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Analyze, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "detect" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewDetectStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Detect, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewDetectStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Detect, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "workflow" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewWorkflowStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_WorkFlow, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewWorkflowStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_WorkFlow, subLevelPredefined);
+    }
+
+    /**
+     * @brief Add a new "other" step.
+     * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+     * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+     *       level it's name.
+     */
+    template<class STEP>
+    void addNewOtherStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Other, subLevelDisplayableName);
+    }
+
+    template<class STEP>
+    void addNewOtherStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Other, subLevelPredefined);
+    }
+
+    /**
+     * @brief Returns the menu for add level and steps
+     */
+    CT_StepsMenu* menuOfSteps() const;
 
     /**
      * @brief Clear all steps / actions / readers / exporters / etc... from this plugins (call methods "clearXXX")
@@ -368,6 +572,7 @@ protected:
     virtual void clearMemory();
 
 private:
+    CoreInterface                               *m_coreInterface;
 
     QList<CT_StepSeparator*>                    _stepAvailable;
     QList<CT_StepLoadFileSeparator*>            _stepOpenFileAvailable;
@@ -380,11 +585,23 @@ private:
 
     QSettings                                   *_pluginSettings;
 
+    friend class CT_MenuLevel;
+
     /**
      * @brief Initialize the step passed in parameter. Call this method after all plugins is loaded !
      * @param step : the step to init
      */
     void initStep(CT_VirtualAbstractStep *step) const;
+
+    /**
+     * @brief Convert all separators loaded to operation and level
+     */
+    void convertStepSeparatorToOperationAndLevel();
+
+    /**
+     * @brief Init all steps of this plugin in levels of the general menu
+     */
+    void initAllStepOfThisPluginInLevelsRecursively(CT_MenuLevel *level);
 };
 
 #endif // CT_ABSTRACTSTEPPLUGIN_H

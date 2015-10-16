@@ -66,5 +66,6 @@
         <file>Icones/flag_fr.png</file>
         <file>Icones/play_movie.png</file>
         <file>Icones/screenshot.png</file>
+        <file>Icones/favorite.png</file>
     </qresource>
 </RCC>

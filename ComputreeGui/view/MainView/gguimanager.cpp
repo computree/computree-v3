@@ -84,6 +84,7 @@ DM_MultipleItemDrawableModelManager* GGuiManager::getItemDrawableModelManager() 
 void GGuiManager::initUi()
 {
     _mainWindow = new GMainWindow();
+    _mainWindow->init();
     _mainWindow->getPluginManager()->setGuiManager(this);
     _mainWindow->showMaximized();
 

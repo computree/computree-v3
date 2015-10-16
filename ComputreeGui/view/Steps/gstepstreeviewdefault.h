@@ -3,6 +3,9 @@
 
 #include <QTreeView>
 
+/**
+ * @brief Inherit from QTreeView to add a animated expand/collapse effect. (use by class GStepViewDefault)
+ */
 class GStepsTreeViewDefault : public QTreeView
 {
     Q_OBJECT

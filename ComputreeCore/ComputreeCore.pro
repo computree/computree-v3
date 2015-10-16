@@ -36,7 +36,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     src/cdm_log.h \
     src/cdm_tools.h \
     src/cdm_internationalization.h \
-    src/cdm_scriptproblem.h
+    src/cdm_scriptproblem.h \
+    src/cdm_stepsmenumanager.h
 
 SOURCES += \
     src/cdm_configfile.cpp \
@@ -56,4 +57,5 @@ SOURCES += \
     src/cdm_log.cpp \
     src/cdm_tools.cpp \
     src/cdm_internationalization.cpp \
-    src/cdm_scriptproblem.cpp
+    src/cdm_scriptproblem.cpp \
+    src/cdm_stepsmenumanager.cpp

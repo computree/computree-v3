@@ -97,23 +97,29 @@ bool CT_AbstractStepLoadFile::setAllSettings(const SettingsNodeGroup *settings)
 
 bool CT_AbstractStepLoadFile::acceptFile(QString filePath, bool *allAccepted) const
 {
-    QList<QString> extList = getFileExtensionAccepted();
-    QListIterator<QString> it(extList);
+    QList<FileFormat> extList = getFileExtensionAccepted();
+    QListIterator<FileFormat> it(extList);
 
-    QString lowerFilePath = filePath.toLower();
+    QFileInfo info(filePath);
+    QString suffixToTest = info.suffix().toLower();
 
     bool allAcceptedTmp = false;
     if (allAccepted != NULL) {*allAccepted = false;}
 
     while(it.hasNext())
     {
-        QString ext = it.next().toLower();
+        FileFormat ff = it.next();
 
-        if (ext == ".*") {allAcceptedTmp = true;}
+        QListIterator<QString> itS(ff.suffixes());
 
-        if(lowerFilePath.lastIndexOf(ext) == (filePath.size()-ext.size()))
-        {
-            return true;
+        while(itS.hasNext()) {
+
+            QString ext = itS.next().toLower();
+
+            if (ext == "*") {allAcceptedTmp = true;}
+
+            if(suffixToTest == ext)
+                return true;
         }
     }
 
@@ -169,11 +175,17 @@ QString CT_AbstractStepLoadFile::createAcceptedExtensionString(const QString &pr
 {
     QString tmp;
 
-    QList<QString> ext = getFileExtensionAccepted();
-    QListIterator<QString> it(ext);
+    QList<FileFormat> ext = getFileExtensionAccepted();
+    QListIterator<FileFormat> it(ext);
 
-    while(it.hasNext())
-        tmp += preString + it.next();
+    while(it.hasNext()) {
+        FileFormat ff = it.next();
+
+        QListIterator<QString> itS(ff.suffixes());
+
+        while(itS.hasNext())
+            tmp += preString + "." + itS.next();
+    }
 
     return tmp;
 }
@@ -230,8 +242,10 @@ bool CT_AbstractStepLoadFile::postConfigure()
                 setDefaultDirPath(info.dir().path());
                 setFilePath(s);
             }
+
+            return true;
         }
     }
 
-    return true;
+    return false;
 }

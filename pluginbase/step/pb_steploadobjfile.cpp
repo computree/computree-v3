@@ -42,10 +42,10 @@ CT_VirtualAbstractStep* PB_StepLoadObjFile::createNewInstance(CT_StepInitializeD
     return new PB_StepLoadObjFile(dataInit);
 }
 
-QList<QString> PB_StepLoadObjFile::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepLoadObjFile::getFileExtensionAccepted() const
 {
-    QList<QString> list;
-    list << ".obj";
+    QList<FileFormat> list;
+    list << FileFormat("obj", tr("Obj Files"));
 
     return list;
 }

@@ -88,8 +88,6 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
     _view.setContextMenuPolicy(Qt::CustomContextMenu);
     //_view.setExpandsOnDoubleClick(true);
 
-    connect(_contextMenuStep, SIGNAL(addStep(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), this, SLOT(addGenericStepAndConfigure(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), Qt::QueuedConnection);
-    connect(_contextMenuStep, SIGNAL(insertStep(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), this, SLOT(insertGenericStepAndConfigure(CT_VirtualAbstractStep*,CT_VirtualAbstractStep*)), Qt::QueuedConnection);
     connect(_contextMenuStep, SIGNAL(executeSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
     connect(_contextMenuStep, SIGNAL(executeModifySelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeModifyStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
     connect(_contextMenuStep, SIGNAL(configureInputResultOfSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(configureInputResultOfStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
@@ -109,6 +107,7 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     connect(&_view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showViewContextMenu(QPoint)), Qt::QueuedConnection);
     connect(&_view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)), Qt::QueuedConnection);
+    connect(_view.selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectionChanged(QItemSelection,QItemSelection)));
 
     connect(this, SIGNAL(addResult(QStandardItem*,CT_AbstractResult*)), this, SLOT(resultToAdd(QStandardItem*,CT_AbstractResult*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeResult(QStandardItem*,MyQStandardItem*)), this, SLOT(resultToRemove(QStandardItem*,MyQStandardItem*)), Qt::QueuedConnection);
@@ -540,6 +539,11 @@ bool GStepManager::configureStepAndAdd(CT_VirtualAbstractStep *newStep, CT_Virtu
                         {
                             _stepManager->addStep(newStep, parentStep);
 
+                            MyQStandardItem *item = findItem(newStep);
+
+                            if(item != NULL)
+                                _view.selectionModel()->select(_model.indexFromItem(item), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
                             return true;
                         }
                     }
@@ -583,6 +587,31 @@ void GStepManager::recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *it
 
     for(int i=0; i<size; ++i)
         recursiveExpandCollapseItemOfResultsGroup((MyQStandardItem*)item->child(i), expand);
+}
+
+void GStepManager::addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep *stepToCopy)
+{
+    MyQStandardItem *item = getSelectedItem();
+
+    if((item == NULL) || (item->step() == NULL)) {
+        CT_AbstractStepLoadFile *lfStep = dynamic_cast<CT_AbstractStepLoadFile*>(stepToCopy);
+
+        if(lfStep != NULL) {
+            addStepToParentAndConfigure(NULL, lfStep);
+            return;
+        }
+
+        CT_AbstractStepCanBeAddedFirst *cbafStep = dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(stepToCopy);
+
+        if(cbafStep != NULL) {
+            addStepToParentAndConfigure(NULL, cbafStep);
+            return;
+        }
+
+        GUI_LOG->addErrorMessage(LogInterface::gui, tr("Impossible d'ajouter l'étape %1 à la racine car elle n'est pas du type CT_AbstractStepLoadFile ou CT_AbstractStepCanBeAddedFirst").arg(staticGetStepName(*stepToCopy)));
+    } else if(item->step() != NULL) {
+        addStepToParentAndConfigure(item->step(), stepToCopy);
+    }
 }
 
 ////////////// PUBLIC SLOTS //////////////
@@ -678,7 +707,20 @@ void GStepManager::addOpenFileStep(QString filePath)
     }
 }
 
-void GStepManager::addGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
+void GStepManager::addStepToParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
+{
+    if(stepToCopy->getPlugin() != NULL)
+    {
+        if((parentStep == NULL) && stepToCopy->needInputResults())
+            return;
+
+        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
+
+        configureStepAndAdd(newStep, parentStep);
+    }
+}
+
+void GStepManager::insertStepInParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
 {
     if((parentStep != NULL)
             && (stepToCopy->getPlugin() != NULL))
@@ -686,49 +728,6 @@ void GStepManager::addGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep
         CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
 
         configureStepAndAdd(newStep, parentStep);
-    }
-}
-
-void GStepManager::addCanBeAddedFirstStepAndConfigure(CT_AbstractStepCanBeAddedFirst *stepToCopy)
-{
-    if(stepToCopy->getPlugin() != NULL)
-    {
-        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, NULL);
-
-        configureStepAndAdd(newStep, NULL);
-    }
-}
-
-void GStepManager::insertGenericStepAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
-{
-    if((parentStep != NULL)
-            && (stepToCopy->getPlugin() != NULL))
-    {
-        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
-
-        if(newStep != NULL)
-        {
-            if(newStep->showPreConfigurationDialog())
-            {
-                if(newStep->initInResultModelList())
-                {
-                    if(newStep->showInputResultConfigurationDialog())
-                    {
-                        if(newStep->showPostConfigurationDialog())
-                        {
-                            if(newStep->initAfterConfiguration())
-                            {
-                                _stepManager->insertStep(newStep, *parentStep);
-
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-
-            delete newStep;
-        }
     }
 }
 
@@ -1195,6 +1194,16 @@ void GStepManager::itemToRemove(QStandardItem *item)
     {
         _model.invisibleRootItem()->removeRow(item->row());
     }
+}
+
+void GStepManager::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    MyQStandardItem *item = getSelectedItem();
+
+    if((item != NULL) && (item->step() != NULL))
+        emit stepSelected(item->step());
+    else
+        emit stepSelected(NULL);
 }
 
 void GStepManager::expandSelected()

@@ -41,10 +41,10 @@ CT_VirtualAbstractStep* PB_StepLoadPgmFile::createNewInstance(CT_StepInitializeD
     return new PB_StepLoadPgmFile(dataInit);
 }
 
-QList<QString> PB_StepLoadPgmFile::getFileExtensionAccepted() const
+QList<FileFormat> PB_StepLoadPgmFile::getFileExtensionAccepted() const
 {
-    QList<QString> list;
-    list << ".pgm";
+    QList<FileFormat> list;
+    list << FileFormat("pgm", tr("PGM Files"));
 
     return list;
 }

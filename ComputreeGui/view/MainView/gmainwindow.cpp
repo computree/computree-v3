@@ -43,6 +43,7 @@
 #include "gaboutdialog.h"
 #include "gaboutpluginsdialog.h"
 #include "gineedhelpdialog.h"
+#include "gfavoritesmenudialog.h"
 
 #include "myqaction.h"
 #include "myqmenu.h"
@@ -52,6 +53,7 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
 #include "ct_global/ct_context.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
@@ -70,13 +72,6 @@ GMainWindow::GMainWindow(QWidget *parent) :
     ui(new Ui::GMainWindow)
 {
     ui->setupUi(this);
-    m_inLoadConfiguration = false;
-
-    initUI();
-
-    arrangeDocksInColumn();
-
-    getScriptManager()->setScriptLoadCallBack(this);
 }
 
 GMainWindow::~GMainWindow()
@@ -87,6 +82,17 @@ GMainWindow::~GMainWindow()
 
     delete _stepManagerView;
     delete _docManagerView;
+}
+
+void GMainWindow::init()
+{
+    m_inLoadConfiguration = false;
+
+    initUI();
+
+    arrangeDocksInColumn();
+
+    getScriptManager()->setScriptLoadCallBack(this);
 }
 
 void GMainWindow::closeEvent(QCloseEvent *ev)
@@ -174,7 +180,7 @@ void GMainWindow::saveScript()
 
 void GMainWindow::saveScript(QString &saveDirectory)
 {
-    QString s = QFileDialog::getSaveFileName(this, tr("Sauvegarder l'arbre des tapes sous..."), saveDirectory, createScriptManagerExtension(""));
+    QString s = QFileDialog::getSaveFileName(this, tr("Sauvegarder l'arbre des tapes sous..."), saveDirectory, createScriptManagerExtension(tr("Script File (*"), ");;"));
 
     if(!s.isEmpty())
     {
@@ -288,13 +294,16 @@ void GMainWindow::initUI()
     ui->widgetActionsManager->setActionsManager(getActionsManager());
     ui->widgetActionsManager->setDocumentManagerView(_docManagerView);
 
+    _stepManagerView = new GStepManager(*getStepManager(), this);
+    _stepManagerView->getStepManager()->setGuiContext(this);
+
+    m_stepChooserDialog = new GStepChooserDialog(this);
+    m_stepChooserDialog->setStepManager(_stepManagerView);
+    m_stepChooserDialog->init();
+
     QAction *actionOpenFile = new QAction(tr("Ouvrir un fichier (CTRL+O)"), this);
     actionOpenFile->setIcon(QIcon(":/Icones/Icones/folder_add_32.png"));
     actionOpenFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-
-    menuNewStepCanBeAddedFirst = new QMenu(tr("Ajouter une étape"), this);
-    menuNewStepCanBeAddedFirst->setToolTip(tr("Ajouter une étape qui n'a pas besoin de résultat en entrée"));
-    menuNewStepCanBeAddedFirst->setIcon(QIcon(":/Icones/Icones/add.png"));
 
     QAction *actionStart = new QAction(tr("Lancer les traitements (CTRL+R)"), this);
     actionStart->setIcon(QIcon(QPixmap(":/Icones/Icones/play.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
@@ -350,6 +359,10 @@ void GMainWindow::initUI()
     actionShowActionsManagerView->setDisabled(true);
     QAction *actionShowLog = new QAction(ui->dockWidgetLog->windowTitle(), this);
     actionShowLog->setDisabled(true);
+    QAction *actionShowStepChooserDialog = new QAction(m_stepChooserDialog->windowTitle(), this);
+    actionShowStepChooserDialog->setIcon(QIcon(":/Icones/Icones/add.png"));
+    actionShowStepChooserDialog->setToolTip(tr("Ajouter une étape (affiche la fenêtre de choix des étapes)"));
+    actionShowStepChooserDialog->setDisabled(true);
 
     QAction *actionArrangeDocksInTabs = new QAction(tr("Composants en onglets"), this);
     QAction *actionArrangeDocksInColumn = new QAction(tr("Composants en colonne"), this);
@@ -361,14 +374,8 @@ void GMainWindow::initUI()
     actionSaveScript = new QAction(tr("Sauvegarder l'arbre des etapes"), this);
     actionSaveScript->setIcon(QIcon(":/Icones/Icones/media-floppy.png"));
 
-    QToolButton *toolButton = new QToolButton(this);
-    toolButton->setIcon(menuNewStepCanBeAddedFirst->icon());
-    toolButton->setToolTip(menuNewStepCanBeAddedFirst->toolTip());
-    toolButton->setMenu(menuNewStepCanBeAddedFirst);
-    toolButton->setPopupMode(QToolButton::InstantPopup);
-
     ui->toolBar->addAction(actionOpenFile);
-    ui->toolBar->addWidget(toolButton);
+    ui->toolBar->addAction(actionShowStepChooserDialog);
     ui->toolBar->addAction(actionStart);
     ui->toolBar->addAction(actionStop);
     ui->toolBar->addAction(actionSaveScript);
@@ -421,8 +428,6 @@ void GMainWindow::initUI()
     ui->menuFichier->addAction(actionNew2DDocument);
     ui->menuFichier->addAction(actionNewItemModelDocument);
     ui->menuFichier->addSeparator();
-    ui->menuFichier->addMenu(menuNewStepCanBeAddedFirst);
-    ui->menuFichier->addSeparator();
     ui->menuFichier->addAction(actionQuitter);
 
     ui->menuEdition->addAction(actionStart);
@@ -440,6 +445,7 @@ void GMainWindow::initUI()
     ui->menuFenetre->addAction(actionShowGraphicsSyncManagerView);
     ui->menuFenetre->addAction(actionShowActionsManagerView);
     ui->menuFenetre->addAction(actionShowLog);
+    ui->menuFenetre->addAction(actionShowStepChooserDialog);
     ui->menuFenetre->addAction(actionArrangeDocksInTabs);
     ui->menuFenetre->addAction(actionArrangeDocksInColumnWithLogAtBottom);
     ui->menuFenetre->addAction(actionArrangeDocksInColumn);
@@ -449,9 +455,6 @@ void GMainWindow::initUI()
     ui->menuAide->addAction(actionINeedHelp);
 
     ui->horizontalLayoutDocumentView->addWidget(_docManagerView);
-
-    _stepManagerView = new GStepManager(*getStepManager(), this);
-    _stepManagerView->getStepManager()->setGuiContext(this);
     ui->verticalLayoutStepTreeView->addWidget(_stepManagerView);
 
     _itemDrawableModelView = new GMultipleItemDrawableModelManager(this);
@@ -520,6 +523,7 @@ void GMainWindow::initUI()
     connect(actionShowGraphicsSyncManagerView, SIGNAL(triggered()), ui->dockWidgetGraphicsViewSynchronizedGroup, SLOT(showNormal()));
     connect(actionShowActionsManagerView, SIGNAL(triggered()), ui->dockWidgetActionsManager, SLOT(showNormal()));
     connect(actionShowLog, SIGNAL(triggered()), ui->dockWidgetLog, SLOT(showNormal()));
+    connect(actionShowStepChooserDialog, SIGNAL(triggered()), m_stepChooserDialog, SLOT(showNormal()));
     connect(actionArrangeDocksInTabs, SIGNAL(triggered()), this, SLOT(arrangeDocksInTabs()));
     connect(actionArrangeDocksInColumnWithLogAtBottom, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumnWithLogAtBottom()));
     connect(actionArrangeDocksInColumn, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumn()));
@@ -529,7 +533,6 @@ void GMainWindow::initUI()
 
     connect(actionAPropos, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
     connect(actionAProposPlugin, SIGNAL(triggered()), this, SLOT(showAboutPluginsDialog()));
-    connect(menuNewStepCanBeAddedFirst, SIGNAL(aboutToShow()), this, SLOT(menuNewStepCanBeAddedFirstAboutToShow()));
 
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionStart, SLOT(setDisabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionStop, SLOT(setEnabled(bool)));
@@ -569,10 +572,13 @@ void GMainWindow::initUI()
     connect(ui->dockWidgetGraphicsViewSynchronizedGroup, SIGNAL(visibilityChanged(bool)), actionShowGraphicsSyncManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetActionsManager, SIGNAL(visibilityChanged(bool)), actionShowActionsManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetLog, SIGNAL(visibilityChanged(bool)), actionShowLog, SLOT(setDisabled(bool)));
+    connect(m_stepChooserDialog, SIGNAL(visibilityChanged(bool)), actionShowStepChooserDialog, SLOT(setDisabled(bool)));
 
     fastForwardSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getFastJumpValueInDebugMode());
     jumpAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getNJumpInAutoDebugMode());
-    timeAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getTimeToSleepInAutoDebugMode());
+    timeAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getTimeToSleepInAutoDebugMode());  
+
+    m_stepChooserDialog->show();
 }
 
 void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)
@@ -694,6 +700,16 @@ void GMainWindow::loadConfiguration()
 
         CONFIG_FILE->endGroup(); // Document
 
+        CONFIG_FILE->beginGroup("StepsChooser");
+
+        QSize size = CONFIG_FILE->value("Size", m_stepChooserDialog->size()).toSize();
+        QPoint pos = CONFIG_FILE->value("Pos", m_stepChooserDialog->pos()).toPoint();
+
+        m_stepChooserDialog->resize(size);
+        m_stepChooserDialog->move(pos);
+
+        CONFIG_FILE->endGroup(); // StepsChooser
+
     CONFIG_FILE->endGroup(); // MainWindow
 
     if(ok)
@@ -806,6 +822,14 @@ void GMainWindow::writeConfiguration()
 
     CONFIG_FILE->endGroup(); // Document
 
+    CONFIG_FILE->beginGroup("StepsChooser");
+
+    CONFIG_FILE->setValue("Geometry", m_stepChooserDialog->saveGeometry());
+    CONFIG_FILE->setValue("Size", m_stepChooserDialog->size());
+    CONFIG_FILE->setValue("Pos", m_stepChooserDialog->pos());
+
+    CONFIG_FILE->endGroup(); // StepsChooser
+
     CONFIG_FILE->endGroup(); // MainWindow
 }
 
@@ -863,7 +887,7 @@ void GMainWindow::loadScriptError(CDM_ScriptProblem &problem)
         view->init(*getPluginManager());
 
         // plugin currently used
-        view->constructor()->setUseStepsOfPlugins(QList<CT_AbstractStepPlugin*>() << getPluginManager()->getPlugin(problem.getSolutionPluginToUse()));
+        view->proxy()->setUseStepsOfPlugins(QList<CT_AbstractStepPlugin*>() << getPluginManager()->getPlugin(problem.getSolutionPluginToUse()));
 
         // set if must show StepLoadFile, StepCanBeAddedFirst and StepGeneric
         view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepCBAF, problem.getParentStep() == NULL);
@@ -923,9 +947,9 @@ void GMainWindow::loadScriptError(CDM_ScriptProblem &problem)
     problem.setSolutionKeepSteps(resp == 1);
 }
 
-QString GMainWindow::createFileExtensionAvailable()
+QString GMainWindow::createFileExtensionAvailable() const
 {
-    CDM_PluginManager *pluginManager = getStepManager()->getScriptManager()->getPluginManager();
+    CDM_PluginManager *pluginManager = getPluginManager();
 
     static QString fileExtension;
 
@@ -934,49 +958,29 @@ QString GMainWindow::createFileExtensionAvailable()
 
     fileExtension += tr("All Valid Files (");
 
-    // VALID FILES
+    // ALL VALID FILES (script and from load file step)
 
-    QList<QString> listScript = getScriptManager()->getFileExtensionAccepted();
-    QListIterator<QString> itScript(listScript);
+    fileExtension += createScriptManagerExtension("", "");
 
-    if(itScript.hasNext())
-    {
-        fileExtension += "*" + itScript.next();
+    QHash<QString, QStringList> hashFileFormat;
+    CT_StepsMenu *menu = pluginManager->stepsMenu();
+    QList<CT_MenuLevel*> levels = menu->levels();
+    QListIterator<CT_MenuLevel*> it(levels);
 
-        while(itScript.hasNext())
-        {
-            fileExtension += " *" + itScript.next();
-        }
+    while(it.hasNext()) {
+        getFileExtensionAvailableInStepsOfLevelRecursively(it.next(), hashFileFormat);
     }
 
-    if(pluginManager->isAPluginLoaded())
-    {
-        int count = pluginManager->countPluginLoaded();
+    QHashIterator<QString, QStringList> itH(hashFileFormat);
 
-        for(int i=0; i<count; ++i)
-        {
-            QList<CT_StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
+    while(itH.hasNext()) {
+        itH.next();
 
-            QListIterator<CT_StepLoadFileSeparator*> it(listSeparator);
+        const QStringList &suffixes = itH.value();
+        QListIterator<QString> itS(suffixes);
 
-            while(it.hasNext())
-            {
-                QList<CT_AbstractStepLoadFile *> listStep = it.next()->getStepList();
-                QListIterator<CT_AbstractStepLoadFile*> itStep(listStep);
-
-                while(itStep.hasNext())
-                {
-                    CT_AbstractStepLoadFile *step = itStep.next();
-
-                    QList<QString> ext = step->getFileExtensionAccepted();
-                    QListIterator<QString> itExt(ext);
-
-                    while(itExt.hasNext())
-                    {
-                        fileExtension += " *" + itExt.next();
-                    }
-                }
-            }
+        while(itS.hasNext()) {
+            fileExtension += " *." + itS.next();
         }
     }
 
@@ -984,65 +988,89 @@ QString GMainWindow::createFileExtensionAvailable()
 
     // FILE BY TYPE
 
-    fileExtension = createScriptManagerExtension(fileExtension);
+    itH.toFront();
 
-    if(pluginManager->isAPluginLoaded())
-    {
-        int count = pluginManager->countPluginLoaded();
+    while(itH.hasNext()) {
+        itH.next();
 
-        for(int i=0; i<count; ++i)
-        {
-            QList<CT_StepLoadFileSeparator*> listSeparator = pluginManager->getPlugin(i)->getOpenFileStepAvailable();
+        fileExtension += itH.key() + " (";
 
-            QListIterator<CT_StepLoadFileSeparator*> it(listSeparator);
+        const QStringList &suffixes = itH.value();
+        QListIterator<QString> itS(suffixes);
 
-            while(it.hasNext())
-            {
-                CT_StepLoadFileSeparator *sep = it.next();
-
-                fileExtension += sep->typeOfFile() + " (";
-
-                QList<CT_AbstractStepLoadFile *> listStep = sep->getStepList();
-                QListIterator<CT_AbstractStepLoadFile*> itStep(listStep);
-
-                while(itStep.hasNext())
-                {
-                    CT_AbstractStepLoadFile *step = itStep.next();
-
-                    QList<QString> ext = step->getFileExtensionAccepted();
-                    QListIterator<QString> itExt(ext);
-
-                    while(itExt.hasNext())
-                    {
-                        fileExtension += " *" + itExt.next();
-                    }
-                }
-
-                fileExtension += ");;";
-            }
+        while(itS.hasNext()) {
+            fileExtension += " *." + itS.next();
         }
+
+        fileExtension += ");;";
     }
 
+    // ALL files
+
     fileExtension += tr("All files") + " (*.*)";
+
+    fileExtension.replace("( ", "(");
 
     return fileExtension;
 }
 
-QString GMainWindow::createScriptManagerExtension(QString fileExtension)
+void GMainWindow::getFileExtensionAvailableInStepsOfLevelRecursively(CT_MenuLevel *level, QHash<QString, QStringList> &hash) const
 {
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        CT_AbstractStepLoadFile *lfStep = dynamic_cast<CT_AbstractStepLoadFile*>(itS.next());
+
+        if(lfStep != NULL) {
+            QList<FileFormat> ffs = lfStep->getFileExtensionAccepted();
+            QListIterator<FileFormat> itFFs(ffs);
+
+            while(itFFs.hasNext()) {
+                const FileFormat &ff = itFFs.next();
+
+                if(!ff.suffixes().isEmpty()) {
+                    QStringList sl = hash.value(ff.description(), QStringList());
+                    QListIterator<QString> itSs(ff.suffixes());
+
+                    while(itSs.hasNext()) {
+                        QString suffixe = itSs.next();
+
+                        if(!sl.contains(suffixe))
+                            sl.append(suffixe);
+                    }
+
+                    hash.insert(ff.description(), sl);
+                }
+            }
+        }
+    }
+
+    QList<CT_MenuLevel*> levels = level->levels();
+    QListIterator<CT_MenuLevel*> it(levels);
+
+    while(it.hasNext()) {
+        getFileExtensionAvailableInStepsOfLevelRecursively(it.next(), hash);
+    }
+}
+
+QString GMainWindow::createScriptManagerExtension(QString preString, QString postString) const
+{
+    QString fileExtension;
+
     QList<QString> listScript = getScriptManager()->getFileExtensionAccepted();
     QListIterator<QString> itScript(listScript);
 
     if(itScript.hasNext())
     {
-        fileExtension += tr("Script File (*") + itScript.next();
+        fileExtension = preString + "*" + itScript.next();
 
         while(itScript.hasNext())
         {
             fileExtension += " *" + itScript.next();
         }
 
-        fileExtension += ");;";
+        fileExtension += postString;
     }
 
     return fileExtension;
@@ -1089,97 +1117,6 @@ void GMainWindow::stepToBeRemoved(CT_VirtualAbstractStep *step)
     actionSaveScript->setEnabled(n > 0);
 }
 
-void GMainWindow::menuNewStepCanBeAddedFirstAboutToShow()
-{
-    CDM_PluginManager *pluginManager = getStepManager()->getScriptManager()->getPluginManager();
-
-    menuNewStepCanBeAddedFirst->clear();
-
-    if(pluginManager->isAPluginLoaded())
-    {
-        int n = pluginManager->countPluginLoaded();
-
-        for(int i=0; i<n; ++i)
-        {
-            QString pluginName = pluginManager->getPluginName(i);
-            if (pluginName.left(5) == "plug_")
-            {
-                pluginName.remove(0, 5);
-            }
-
-            MyQMenu *menuStep = new MyQMenu(pluginName, this);
-            menuStep->setIcon(QIcon(":/Icones/Icones/add.png"));
-
-            QList<CT_StepCanBeAddedFirstSeparator*> stepAvailable = pluginManager->getPlugin(i)->getCanBeAddedFirstStepAvailable();
-            QListIterator<CT_StepCanBeAddedFirstSeparator*> it(stepAvailable);
-
-            while(it.hasNext())
-            {
-                CT_StepCanBeAddedFirstSeparator *sep = it.next();
-                QList<CT_AbstractStepCanBeAddedFirst*> stepList = sep->getStepList();
-                QListIterator<CT_AbstractStepCanBeAddedFirst*> itStep(stepList);
-
-                if(itStep.hasNext())
-                {
-                    MyQMenu *underMenu = NULL;
-
-                    if(!sep->getTitle().isEmpty())
-                        underMenu = new MyQMenu(sep->getTitle(), this);
-
-                    while(itStep.hasNext())
-                    {
-                        CT_AbstractStepCanBeAddedFirst *step = itStep.next();
-
-                        MyQAction *action = new MyQAction(step, tr("%1").arg(step->getStepDescription()), this);
-                        action->setToolTip(tr("%1 (F1 pour plus d'info)").arg(step->getStepCustomName()));
-                        action->setIcon(QIcon(":/Icones/Icones/add.png"));
-
-                        if (step->isManual())
-                        {
-                            QFont font;
-                            font.setItalic(true);
-                            action->setFont(font);
-                        }
-
-                        if(underMenu == NULL)
-                            menuStep->addAction(action);
-                        else
-                            underMenu->addAction(action);
-
-                        connect(action, SIGNAL(triggered()), this, SLOT(addCanBeAddedFirstStepFromMyQAction()));
-                        connect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
-                    }
-
-                    if(underMenu != NULL)
-                        menuStep->addMenu(underMenu);
-
-                    menuStep->addSeparator();
-                }
-            }
-
-            if(menuStep->actions().isEmpty())
-            {
-                MyQAction *action = new MyQAction(NULL, tr("Aucune action"), this);
-                action->setEnabled(false);
-
-                menuStep->addAction(action);
-            }
-
-            menuNewStepCanBeAddedFirst->addMenu(menuStep);
-        }
-    }
-}
-
-void GMainWindow::addCanBeAddedFirstStepFromMyQAction()
-{
-    MyQAction *action = (MyQAction*)sender();
-
-    if(action->step() != NULL)
-    {
-        _stepManagerView->addCanBeAddedFirstStepAndConfigure(dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(action->step()));
-    }
-}
-
 void GMainWindow::actionHovered()
 {
     QAction *action = (QAction*)sender();
@@ -1190,4 +1127,14 @@ void GMainWindow::actionHovered()
     p.setY(p.y() + 10);
 
     QToolTip::showText(p, s);
+}
+
+void GMainWindow::showStepChooser()
+{
+    m_stepChooserDialog->show();
+}
+
+void GMainWindow::hideStepChooser()
+{
+    m_stepChooserDialog->hide();
 }

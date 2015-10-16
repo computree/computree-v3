@@ -83,13 +83,18 @@ void PB_StepGenericExporter::init()
 
 QString PB_StepGenericExporter::getStepName() const
 {
+    return "PB_StepGenericExporter__" + ((CT_AbstractExporter*)_exporter)->getExporterName();
+}
+
+QString PB_StepGenericExporter::getStepDisplayableName() const
+{
     return ((CT_AbstractExporter*)_exporter)->getExporterName();
 }
 
 SettingsNodeGroup* PB_StepGenericExporter::getAllSettings() const
 {
     SettingsNodeGroup *root = CT_VirtualAbstractStep::getAllSettings();
-    SettingsNodeGroup *group = new SettingsNodeGroup("PB_StepGenericExporter__" + getStepName());
+    SettingsNodeGroup *group = new SettingsNodeGroup(getStepName());
     group->addValue(new SettingsNodeValue("Version", "1"));
     group->addValue(new SettingsNodeValue("ExportPath", _exportFilename));
 
@@ -118,7 +123,7 @@ bool PB_StepGenericExporter::setAllSettings(const SettingsNodeGroup *settings)
     if(!CT_VirtualAbstractStep::setAllSettings(settings))
         return false;
 
-    QList<SettingsNodeGroup*> groups = settings->groupsByTagName("PB_StepGenericExporter__" + getStepName());
+    QList<SettingsNodeGroup*> groups = settings->groupsByTagName(getStepName());
 
     if(groups.isEmpty())
         return false;

@@ -26,7 +26,7 @@ public:
 
     QString getStepDescription() const;
 
-    QList<QString> getFileExtensionAccepted() const;
+    QList<FileFormat> getFileExtensionAccepted() const;
 
     bool setFilePath(QString filePath);
 
