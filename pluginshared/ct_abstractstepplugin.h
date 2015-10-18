@@ -435,98 +435,98 @@ protected:
     }
 
     /**
-     * @brief Add a new "create" step.
+     * @brief Add a new "points" step.
      * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewCreateStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_Create, subLevelDisplayableName);
+    void addNewPointsStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Points, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewCreateStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_Create, subLevelPredefined);
+    void addNewPointsStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Points, subLevelPredefined);
     }
 
     /**
-     * @brief Add a new "filter" step.
+     * @brief Add a new "geometrical shapes" step.
      * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewFilterStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_Filter, subLevelDisplayableName);
+    void addNewGeometricalShapesStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_GeometricalShapes, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewFilterStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_Filter, subLevelPredefined);
+    void addNewGeometricalShapesStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_GeometricalShapes, subLevelPredefined);
     }
 
     /**
-     * @brief Add a new "extract" step.
+     * @brief Add a new "voxels" step.
      * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewExtractStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_Extract, subLevelDisplayableName);
+    void addNewVoxelsStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Voxels, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewExtractStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_Extract, subLevelPredefined);
+    void addNewVoxelsStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Voxels, subLevelPredefined);
     }
 
     /**
-     * @brief Add a new "geometry transform" step.
+     * @brief Add a new "rasters" step.
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewGeometryTransformStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_GeometryTransform, subLevelDisplayableName);
+    void addNewRastersStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Rasters, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewGeometryTransformStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_GeometryTransform, subLevelPredefined);
+    void addNewRastersStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Rasters, subLevelPredefined);
     }
 
     /**
-     * @brief Add a new "analyze" step.
+     * @brief Add a new "metrics" step.
      * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewAnalyzeStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_Analyze, subLevelDisplayableName);
+    void addNewMetricsStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Metrics, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewAnalyzeStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_Analyze, subLevelPredefined);
+    void addNewMetricsStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Metrics, subLevelPredefined);
     }
 
     /**
-     * @brief Add a new "detect" step.
+     * @brief Add a new "meshes" step.
      * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
      * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
      *       level it's name.
      */
     template<class STEP>
-    void addNewDetectStep(const QString &subLevelDisplayableName = "") {
-        addNewStep<STEP>(CT_StepsMenu::LO_Detect, subLevelDisplayableName);
+    void addNewMeshesStep(const QString &subLevelDisplayableName = "") {
+        addNewStep<STEP>(CT_StepsMenu::LO_Meshes, subLevelDisplayableName);
     }
 
     template<class STEP>
-    void addNewDetectStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep<STEP>(CT_StepsMenu::LO_Detect, subLevelPredefined);
+    void addNewMeshesStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+        addNewStep<STEP>(CT_StepsMenu::LO_Meshes, subLevelPredefined);
     }
 
     /**

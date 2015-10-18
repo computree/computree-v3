@@ -178,100 +178,85 @@ QSettings* PB_StepPluginManager::initQSettings()
 
 bool PB_StepPluginManager::loadGenericsStep()
 {
-    addNewFilterStep<PB_StepReducePointsDensity>(CT_StepsMenu::LP_PointCloud);
-    addNewFilterStep<PB_StepSlicePointCloud>(CT_StepsMenu::LP_PointCloud);
-    addNewGeometryTransformStep<PB_StepTransformPointCloud>(CT_StepsMenu::LP_PointCloud);
-    addNewExtractStep<PB_StepExtractLogBuffer>(CT_StepsMenu::LP_PointCloud);
-    addNewOtherStep<PB_StepComputeCrownProjection>(QObject::tr("Houppiers"));        
+    addNewPointsStep<PB_StepReducePointsDensity>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<PB_StepSlicePointCloud>(CT_StepsMenu::LP_Extract);
+    addNewPointsStep<PB_StepTransformPointCloud>(CT_StepsMenu::LP_Transform);
+    addNewPointsStep<PB_StepExtractLogBuffer>(CT_StepsMenu::LP_Extract);
 
-    CT_StepSeparator *sep;
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Voxels")));
-    sep->addStep(new PB_StepComputeHitGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepCorrectALSProfile(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectCellsInGrid3D(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepFilterPointsByBoolGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectCellsInGrid3DByBinaryPattern(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepCompare3DGridsContents(*createNewStepInitializeData(NULL)));
+    addNewVoxelsStep<PB_StepComputeHitGrid>(CT_StepsMenu::LP_Create);
+    addNewMetricsStep<PB_StepCorrectALSProfile>("");
+    addNewVoxelsStep<PB_StepSelectCellsInGrid3D>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<PB_StepFilterPointsByBoolGrid>(CT_StepsMenu::LP_Filter);
+    addNewVoxelsStep<PB_StepSelectCellsInGrid3DByBinaryPattern>(CT_StepsMenu::LP_Filter);
+    addNewVoxelsStep<PB_StepCompare3DGridsContents>("");
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Houppiers, Trouées")));
-    sep->addStep(new PB_StepSegmentCrowns(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSegmentGaps(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepMergeClustersFromPositions(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepMergeClustersFromPositions02(*createNewStepInitializeData(NULL)));
+    addNewGeometricalShapesStep<PB_StepSegmentCrowns>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepSegmentGaps>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions02>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepComputeCrownProjection>(CT_StepsMenu::LP_Crowns);
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Gestion des items")));
-    sep->addStep(new PB_StepAddAffiliationID(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSetAffiliationIDFromReference(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepUserItemSelection(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepUserItemCopy(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepManualInventory(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectGroupsByReferenceHeight(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepValidateInventory(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepFitCylinderOnCluster(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepFilterItemsByPosition(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepMatchItemsPositions(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepModifyPositions2D(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepExportItemList(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepAddAttributeValue(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepDetectVerticalAlignments(*createNewStepInitializeData(NULL)));
+    addNewWorkflowStep<PB_StepAddAffiliationID>("");
+    addNewWorkflowStep<PB_StepSetAffiliationIDFromReference>("");
+    addNewWorkflowStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
+    addNewWorkflowStep<PB_StepUserItemCopy>(CT_StepsMenu::LP_Filter);
+    addNewGeometricalShapesStep<PB_StepManualInventory>(CT_StepsMenu::LP_DBH);
+    addNewWorkflowStep<PB_StepSelectGroupsByReferenceHeight>(CT_StepsMenu::LP_Filter);
+    addNewGeometricalShapesStep<PB_StepValidateInventory>(CT_StepsMenu::LP_DBH);
+    addNewGeometricalShapesStep<PB_StepFitCylinderOnCluster>(CT_StepsMenu::LP_Fit);
+    addNewGeometricalShapesStep<PB_StepFilterItemsByPosition>(CT_StepsMenu::LP_Filter);
+    addNewGeometricalShapesStep<PB_StepMatchItemsPositions>("");
+    addNewGeometricalShapesStep<PB_StepModifyPositions2D>(CT_StepsMenu::LP_Transform);
+    addNewExportStep<PB_StepExportItemList>("");
+    addNewMetricsStep<PB_StepAddAttributeValue>("");
+    addNewGeometricalShapesStep<PB_StepDetectVerticalAlignments>(CT_StepsMenu::LP_Stems);
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Traitement par lots")));
-    sep->addStep(new PB_StepLoadDataFromItemPosition(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepBeginLoopThroughDataSource(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepBeginLoopThroughGroups(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepCreatePlotManagerFromFile(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepCreatePlotManagerGrid(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepSelectBBoxByFileName(*createNewStepInitializeData(NULL)));
+    addNewLoadStep<PB_StepLoadDataFromItemPosition>("");
+    addNewWorkflowStep<CT_StepBeginLoop>(CT_StepsMenu::LP_Loops);
+    addNewWorkflowStep<PB_StepBeginLoopThroughDataSource>(CT_StepsMenu::LP_Loops);
+    addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
+    addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
+    addNewWorkflowStep<PB_StepCreatePlotManagerFromFile>("");
+    addNewWorkflowStep<PB_StepCreatePlotManagerGrid>("");
+    addNewWorkflowStep<PB_StepSelectBBoxByFileName>("");
 
-    sep->addStep(new PB_StepLoadPlotAreas(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepApplyPointFilters(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepComputePointMetrics(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepComputeRasterMetrics(*createNewStepInitializeData(NULL)));
-    sep->addStep(new CT_StepEndLoop(*createNewStepInitializeData(NULL)));
+    addNewLoadStep<PB_StepLoadPlotAreas>("");
+    addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
+    addNewMetricsStep<PB_StepComputePointMetrics>("");
+    addNewMetricsStep<PB_StepComputeRasterMetrics>("");
 
-    #ifdef USE_OPENCV
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Test")));
-    sep->addStep(new CT_StepBeginLoop(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepConvertFloatImageToqint32(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepComputeAttributeMapFromClusters(*createNewStepInitializeData(NULL)));
-    #endif
+    addNewLoadStep<PB_StepCreateDataSource>("");
+    addNewLoadStep<PB_StepLoadAsciiFile02>("");
+    addNewLoadStep<PB_StepLoadObjFile>("");
+    addNewLoadStep<PB_StepLoadGrid3dFile>("");
+    addNewLoadStep<PB_StepLoadPbmFile>("");
+    addNewLoadStep<PB_StepLoadPgmFile>("");
+    addNewLoadStep<PB_StepLoadAsciiFile02>("");
+    addNewLoadStep<PB_StepLoadObjFile>("");
+    addNewLoadStep<PB_StepLoadGrid3dFile>("");
+    addNewLoadStep<PB_StepLoadPbmFile>("");
+    addNewLoadStep<PB_StepLoadPgmFile>("");
+    addNewLoadStep<PB_StepLoadPositionsForMatching>();
+    addNewLoadStep<PB_StepLoadTreeMap>("");
+    addNewLoadStep<PB_StepImportSegmaFilesForMatching>("");
+    addNewLoadStep<PB_StepLoadMultiXYBFiles>("");
 
-    sep = addNewSeparator(new CT_StepSeparator(QObject::tr("Etapes de chargement")));
-    sep->addStep(new PB_StepLoadAsciiFile02(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadObjFile(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadGrid3dFile(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadPbmFile(*createNewStepInitializeData(NULL)));
-    sep->addStep(new PB_StepLoadPgmFile(*createNewStepInitializeData(NULL)));
+#ifdef USE_OPENCV
+    addNewRastersStep<PB_StepConvertFloatImageToqint32>(CT_StepsMenu::LP_Transform);
+    addNewMetricsStep<PB_StepComputeAttributeMapFromClusters>("");
+#endif
 
     return true;
 }
 
 bool PB_StepPluginManager::loadOpenFileStep()
 {
-    clearOpenFileStep();
-
-    addNewLoadStep<PB_StepLoadAsciiFile02>(QObject::tr("ASCII Files"));
-    addNewLoadStep<PB_StepLoadObjFile>(QObject::tr("OBJ Files"));
-    addNewLoadStep<PB_StepLoadGrid3dFile>(QObject::tr("Grid3D Files"));
-    addNewLoadStep<PB_StepLoadPbmFile>(QObject::tr("PBM Files"));
-    addNewLoadStep<PB_StepLoadPgmFile>(QObject::tr("PGM Files"));
-
     return true;
 }
 
 bool PB_StepPluginManager::loadCanBeAddedFirstStep()
 {
-    clearCanBeAddedFirstStep();
-
-    addNewCreateStep<PB_StepCreateDataSource>(CT_StepsMenu::LP_DataSource);
-    addNewLoadStep<PB_StepLoadPositionsForMatching>();
-    addNewLoadStep<PB_StepLoadTreeMap>(QObject::tr("Tree maps"));
-    addNewLoadStep<PB_StepImportSegmaFilesForMatching>(QObject::tr("Segma"));
-    addNewLoadStep<PB_StepLoadMultiXYBFiles>(CT_StepsMenu::LP_PointCloud);
-    addNewWorkflowStep<CT_StepBeginLoop>();
-
-    // Si toutes les étapes ont pu être ajoutées, la méthode renvoie true (on peut continuer)
     return true;
 }
 

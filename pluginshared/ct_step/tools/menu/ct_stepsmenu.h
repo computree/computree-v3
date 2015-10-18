@@ -21,12 +21,12 @@ public:
         LO_Favorites,       // Favorites Step. Must not be used by plugins ! Only by gui or core
         LO_Load,                // Steps that load/import files
         LO_Export,              // Steps that exports files
-        LO_Create,              // Steps that create something new from scratch
-        LO_Filter,              // Steps that filter/reduce/remove something
-        LO_Extract,             // Steps that extract something from a result
-        LO_GeometryTransform,   // Steps that modify the gometry of elements
-        LO_Analyze,             // Steps that analyze and produce metrics or compare elements per example
-        LO_Detect,              // Steps that detect elements
+        LO_Points,              // Steps that works with points
+        LO_GeometricalShapes,   // Steps that works with geometrical shapes
+        LO_Voxels,              // Steps that works wih voxels
+        LO_Rasters,             // Steps that works with rasters
+        LO_Metrics,             // Steps that works with metrics
+        LO_Meshes,              // Steps that works with meshes
         LO_WorkFlow,            // Steps that can control the worklow of all other steps
         LO_Other,               // Steps that can not be ordered in one of other operation
         LO_InternalUse
@@ -36,40 +36,20 @@ public:
      * @brief Other levels can use this predefined values to be sorted in the same level for all plugins
      */
     enum LevelPredefined {
-        LP_Rotate,
-        LP_Translate,
-        LP_Scale,
+        LP_Filter,
+        LP_Create,
+        LP_Extract,
+        LP_Detect,
+        LP_Transform,
+        LP_Classify,
+        LP_Fit,
         LP_Colorize,
-        LP_Triangulate,
-        LP_Smooth,
-        LP_Deforme,
-        LP_Repair,
-        LP_Simplify,
-        LP_Texturize,
-        LP_Beam,
-        LP_Box,
-        LP_Circle,
-        LP_Cluster,
-        LP_Cylinder,
-        LP_DataSource,
-        LP_DataSourceGeo,
-        LP_EdgeAttributes,
-        LP_Ellipse,
-        LP_FaceAttributes,
-        LP_Grid,
-        LP_Image,
-        LP_Line,
-        LP_Mesh,
-        LP_BSpline,
-        LP_Point,
-        LP_PointCloud,
-        LP_PointAttributes,
-        LP_Polygon,
-        LP_Polyline,
-        LP_Profile,
-        LP_Scanner,
-        LP_Sphere,
-        LP_Normal,
+        LP_Clusters,
+        LP_Loops,
+        LP_Crowns,
+        LP_DEM,
+        LP_Stems,
+        LP_DBH,
         LP_ItemAttributes
     };
 
