@@ -90,6 +90,7 @@
 #include "step/pb_stepaddattributevalue.h"
 #include "step/pb_stepdetectverticalalignments.h"
 #include "step/pb_stepselectbboxbyfilename.h"
+#include "step/pb_stepfiltermaximabyclusterpositions.h"
 
 #ifdef USE_OPENCV
 #include "step/pb_stepconvertfloatimagetoqint32.h"
@@ -190,12 +191,14 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewPointsStep<PB_StepFilterPointsByBoolGrid>(CT_StepsMenu::LP_Filter);
     addNewVoxelsStep<PB_StepSelectCellsInGrid3DByBinaryPattern>(CT_StepsMenu::LP_Filter);
     addNewVoxelsStep<PB_StepCompare3DGridsContents>("");
+    addNewRastersStep<PB_StepFilterMaximaByClusterPositions>("");
 
     addNewGeometricalShapesStep<PB_StepSegmentCrowns>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepSegmentGaps>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions02>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepComputeCrownProjection>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepExtractPositionsFromDensity>("");
 
     addNewWorkflowStep<PB_StepAddAffiliationID>("");
     addNewWorkflowStep<PB_StepSetAffiliationIDFromReference>("");
