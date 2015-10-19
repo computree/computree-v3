@@ -3,6 +3,8 @@
 
 #include "ct_step/abstract/ct_abstractstep.h"
 
+#include "ct_itemdrawable/ct_standarditemgroup.h"
+
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
 #include "ct_point.h"
@@ -75,6 +77,30 @@ protected:
     void compute();
 
 private:
+
+    class AlignmentsDetectorForScene
+    {
+    public:
+
+        AlignmentsDetectorForScene(PB_StepDetectVerticalAlignments* step, CT_ResultGroup* res)
+        {
+            _step = step;
+            _res = res;
+        }
+
+        typedef void result_type;
+        void operator()(CT_StandardItemGroup* grp)
+        {
+            detectAlignmentsForScene(grp);
+        }
+
+        void detectAlignmentsForScene(CT_StandardItemGroup* grp);
+
+    private:
+        PB_StepDetectVerticalAlignments* _step;
+        CT_ResultGroup* _res;
+    };
+
 
     struct LineData {
         LineData(const CT_Point &pLow, const CT_Point &pHigh, size_t index1, size_t index2, float phi, double bottomLevel, double topLevel)
