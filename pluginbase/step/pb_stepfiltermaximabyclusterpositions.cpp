@@ -17,9 +17,6 @@
 #define DEFin_grp "grp"
 #define DEFin_image "image"
 #define DEFin_maxima "maxima"
-
-
-#define DEFin_resPos "resPos"
 #define DEFin_grpPos "grpPos"
 #define DEFin_position "pos"
 
@@ -64,11 +61,8 @@ void PB_StepFilterMaximaByClusterPositions::createInResultModelListProtected()
     resIn_res->addItemModel(DEFin_grp, DEFin_image, CT_Image2D<float>::staticGetType(), tr("Image (hauteurs)"));
     resIn_res->addItemModel(DEFin_grp, DEFin_maxima, CT_Image2D<qint32>::staticGetType(), tr("Maxima"));
 
-    resIn_res = createNewInResultModelForCopy(DEFin_resPos, tr("Positions"));
-    resIn_res->setZeroOrMoreRootGroup();
-    resIn_res->addGroupModel("", DEFin_grpPos, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+    resIn_res->addGroupModel(DEFin_grp, DEFin_grpPos, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_res->addItemModel(DEFin_grpPos, DEFin_position, CT_PointCluster::staticGetType(), tr("Cluster Position"));
-
 }
 
 // Creation and affiliation of OUT models
@@ -77,11 +71,9 @@ void PB_StepFilterMaximaByClusterPositions::createOutResultModelListProtected()
     CT_OutResultModelGroupToCopyPossibilities *resCpy_res = createNewOutResultModelToCopy(DEFin_res);
     resCpy_res->addItemModel(DEFin_grp, _filteredMaxima_ModelName, new CT_Image2D<qint32>(), tr("Maxima filtrés"));
 
-
-    CT_OutResultModelGroupToCopyPossibilities *resCpy_res2 = createNewOutResultModelToCopy(DEFin_resPos);
-    resCpy_res2->addItemModel(DEFin_grpPos, _attMaximaItem_ModelName, new CT_AttributesList(), tr("MaximaID"));
-    resCpy_res2->addItemAttributeModel(_attMaximaItem_ModelName, _attMaxima_ModelName, new CT_StdItemAttributeT<qint32>(CT_AbstractCategory::DATA_ID), tr("MaximaID"));
-    resCpy_res2->addItemAttributeModel(_attMaximaItem_ModelName, _attClusterID_ModelName, new CT_StdItemAttributeT<quint64>(CT_AbstractCategory::DATA_ID), tr("PointClusterID"));
+    resCpy_res->addItemModel(DEFin_grpPos, _attMaximaItem_ModelName, new CT_AttributesList(), tr("MaximaID"));
+    resCpy_res->addItemAttributeModel(_attMaximaItem_ModelName, _attMaxima_ModelName, new CT_StdItemAttributeT<qint32>(CT_AbstractCategory::DATA_ID), tr("MaximaID"));
+    resCpy_res->addItemAttributeModel(_attMaximaItem_ModelName, _attClusterID_ModelName, new CT_StdItemAttributeT<quint64>(CT_AbstractCategory::DATA_ID), tr("PointClusterID"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -130,7 +122,6 @@ void PB_StepFilterMaximaByClusterPositions::compute()
 {
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res = outResultList.at(0);
-    CT_ResultGroup* resPos = outResultList.at(1);
 
 
     QMap<double, double> searchRadii;
@@ -138,22 +129,6 @@ void PB_StepFilterMaximaByClusterPositions::compute()
 
     QMap<double, double> exclusionRadii;
     if (_fileNameExclusionRadii.size() > 0) {readRadii(_fileNameExclusionRadii.first(), exclusionRadii);}
-
-
-    // List of positions
-    QList<CT_PointCluster*> positions;
-    QMap<CT_PointCluster*, CT_StandardItemGroup*> positionsGroups;
-    CT_ResultGroupIterator itCpy_grpPos(resPos, this, DEFin_grpPos);
-    while (itCpy_grpPos.hasNext() && !isStopped())
-    {
-        CT_StandardItemGroup* grp = (CT_StandardItemGroup*) itCpy_grpPos.next();
-        CT_PointCluster* position = (CT_PointCluster*) grp->firstItemByINModelName(this, DEFin_position);
-        if (position != NULL)
-        {
-            positions.append(position);
-            positionsGroups.insert(position, grp);
-        }
-    }
 
 
     CT_ResultGroupIterator itCpy_grp(res, this, DEFin_grp);
@@ -164,7 +139,23 @@ void PB_StepFilterMaximaByClusterPositions::compute()
         CT_Image2D<float>* imageIn = (CT_Image2D<float>*)grp->firstItemByINModelName(this, DEFin_image);
 
         if (maximaIn != NULL)
-        {
+        {                        
+            // List of positions
+            QList<CT_PointCluster*> positions;
+            QMap<CT_PointCluster*, CT_StandardItemGroup*> positionsGroups;
+            CT_GroupIterator itCpy_grpPos(grp, this, DEFin_grpPos);
+            while (itCpy_grpPos.hasNext() && !isStopped())
+            {
+                CT_StandardItemGroup* grpPos = (CT_StandardItemGroup*) itCpy_grpPos.next();
+                CT_PointCluster* position = (CT_PointCluster*) grpPos->firstItemByINModelName(this, DEFin_position);
+                if (position != NULL)
+                {
+                    positions.append(position);
+                    positionsGroups.insert(position, grpPos);
+                }
+            }
+
+
             Eigen::Vector2d min;
             maximaIn->getMinCoordinates(min);
             CT_Image2D<qint32>* filteredMaxima = new CT_Image2D<qint32>(_filteredMaxima_ModelName.completeName(), res, min(0), min(1), maximaIn->colDim(), maximaIn->linDim(), maximaIn->resolution(), maximaIn->level(), maximaIn->NA(), 0);
@@ -330,7 +321,6 @@ void PB_StepFilterMaximaByClusterPositions::compute()
 
             setProgress(70);
 
-
             QMap<qint32, qint32> newIds;
             qint32 cpt = 1;
             // effectively delete toRemove maximum and numbers them in a continuous way
@@ -353,13 +343,13 @@ void PB_StepFilterMaximaByClusterPositions::compute()
                                 CT_PointCluster *position = maximaClusters.value(maximaID, NULL);
                                 if (position != NULL)
                                 {
-                                    CT_StandardItemGroup *grp = positionsGroups.value(position);
-                                    if (grp != NULL)
+                                    CT_StandardItemGroup *grpPos = positionsGroups.value(position);
+                                    if (grpPos != NULL)
                                     {
-                                        CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), resPos);
-                                        item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, resPos, newId));
-                                        item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, resPos, position->id()));
-                                        grp->addItemDrawable(item);
+                                        CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), res);
+                                        item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, newId));
+                                        item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, position->id()));
+                                        grpPos->addItemDrawable(item);
                                     }
                                 }
                             }
@@ -376,9 +366,9 @@ void PB_StepFilterMaximaByClusterPositions::compute()
                 CT_StandardItemGroup *grp = positionsGroups.value(positions.at(i));
                 if (grp != NULL)
                 {
-                    CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), resPos);
-                    item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, resPos, 0));
-                    item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, resPos, positions.at(i)->id()));
+                    CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), res);
+                    item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, 0));
+                    item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, positions.at(i)->id()));
                     grp->addItemDrawable(item);
                 }
             }
@@ -389,6 +379,10 @@ void PB_StepFilterMaximaByClusterPositions::compute()
             filteredMaxima->computeMinMax();
 
             qDeleteAll(maximaCoords.values());
+
+            positions.clear();
+            positionsGroups.clear();
+
             setProgress(99);
         }
     }
