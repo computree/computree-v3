@@ -124,7 +124,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepcomputeattributemapfromclusters.h \
     exporters/grid3dhist/pb_grid3dhistexporter.h \
     step/pb_stepselectbboxbyfilename.h \
-    step/pb_stepfiltermaximabyclusterpositions.h
+    step/pb_stepfiltermaximabyclusterpositions.h \
+    step/pb_stepsegmentcrownsfromstemclusters.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -242,7 +243,8 @@ SOURCES += \
     step/pb_stepcomputeattributemapfromclusters.cpp \
     exporters/grid3dhist/pb_grid3dhistexporter.cpp \
     step/pb_stepselectbboxbyfilename.cpp \
-    step/pb_stepfiltermaximabyclusterpositions.cpp
+    step/pb_stepfiltermaximabyclusterpositions.cpp \
+    step/pb_stepsegmentcrownsfromstemclusters.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
