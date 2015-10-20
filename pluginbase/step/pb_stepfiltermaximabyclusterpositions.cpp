@@ -141,7 +141,7 @@ void PB_StepFilterMaximaByClusterPositions::compute()
         if (maximaIn != NULL)
         {                        
             // List of positions
-            QList<CT_PointCluster*> positions;
+            QMultiMap<int, CT_PointCluster*> positions;
             QMap<CT_PointCluster*, CT_StandardItemGroup*> positionsGroups;
             CT_GroupIterator itCpy_grpPos(grp, this, DEFin_grpPos);
             while (itCpy_grpPos.hasNext() && !isStopped())
@@ -150,7 +150,7 @@ void PB_StepFilterMaximaByClusterPositions::compute()
                 CT_PointCluster* position = (CT_PointCluster*) grpPos->firstItemByINModelName(this, DEFin_position);
                 if (position != NULL)
                 {
-                    positions.append(position);
+                    positions.insert(position->getPointCloudIndexSize(), position);
                     positionsGroups.insert(position, grpPos);
                 }
             }
@@ -237,45 +237,49 @@ void PB_StepFilterMaximaByClusterPositions::compute()
             setProgress(30);
 
             // affect clusters positions to maxima
-
             QMap<qint32, CT_PointCluster*> maximaClusters;
 
-            for (int i = 0 ; i < mxSize ; i++)
+            QMapIterator<int, CT_PointCluster*> itPos(positions);
+            itPos.toBack();
+            while (itPos.hasPrevious())
             {
-                qint32 id = orderedMaxima.at(i);
+                itPos.previous();
+                CT_PointCluster* position = itPos.value();
+                const CT_PointClusterBarycenter &barycenter = position->getBarycenter();
 
-                if (id > 0)
+                bool found = false;
+                for (int i = 0 ; i < mxSize && !found; i++)
                 {
-                    double x = coords[i](0);
-                    double y = coords[i](1);
-                    double z = coords[i](2);
-                    double radius = getRadius(z, searchRadii);
-
-                    CT_PointCluster* bestPosition = NULL;
-                    size_t bestCount = 0;
-                    for (int j = 0 ; j < positions.size() ; j++)
+                    qint32 id = orderedMaxima.at(i);
+                    if (id > 0)
                     {
-                        CT_PointCluster* position = positions.at(j);
+                        double x = coords[i](0);
+                        double y = coords[i](1);
+                        double z = coords[i](2);
+                        double radius = getRadius(z, searchRadii);
 
-                        double dist = sqrt(pow(position->getCenterX() - x, 2) + pow(position->getCenterY() - y, 2));
+                        double dist = sqrt(pow(barycenter.x() - x, 2) + pow(barycenter.y() - y, 2));
+
                         if (dist < radius)
                         {
-                            if (position->getPointCloudIndexSize() > bestCount)
-                            {
-                                bestCount = position->getPointCloudIndexSize();
-                                bestPosition = position;
-                            }
+                            found = true;
+                            maximaClusters.insert(id, position);
                         }
                     }
+                }
 
-                    if (bestPosition != NULL)
+                if (!found)
+                {
+                    CT_StandardItemGroup *grp = positionsGroups.value(position);
+                    if (grp != NULL)
                     {
-                        positions.removeOne(bestPosition);
-                        maximaClusters.insert(id, bestPosition);
+                        CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), res);
+                        item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, 0));
+                        item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, position->id()));
+                        grp->addItemDrawable(item);
                     }
                 }
             }
-
 
             // For each radius, test others
             for (int i = 0 ; i < mxSize ; i++)
@@ -294,7 +298,7 @@ void PB_StepFilterMaximaByClusterPositions::compute()
                     {
                         qint32 idTested = orderedMaxima.at(j);
 
-                        if (idTested > 0 && !maximaClusters.contains(idTested))
+                        if (i != j && idTested > 0 && !maximaClusters.contains(idTested))
                         {
                             double dist = sqrt(pow(x - coords[j](0), 2) + pow(y - coords[j](1), 2));
                             if (dist < radius)
@@ -358,18 +362,6 @@ void PB_StepFilterMaximaByClusterPositions::compute()
                             filteredMaxima->setValue(xx, yy, 0);
                         }
                     }
-                }
-            }
-
-            for (int i = 0 ; i < positions.size() ; i++)
-            {
-                CT_StandardItemGroup *grp = positionsGroups.value(positions.at(i));
-                if (grp != NULL)
-                {
-                    CT_AttributesList *item = new CT_AttributesList(_attMaximaItem_ModelName.completeName(), res);
-                    item->addItemAttribute(new CT_StdItemAttributeT<qint32>(_attMaxima_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, 0));
-                    item->addItemAttribute(new CT_StdItemAttributeT<quint64>(_attClusterID_ModelName.completeName(), CT_AbstractCategory::DATA_ID, res, positions.at(i)->id()));
-                    grp->addItemDrawable(item);
                 }
             }
 
