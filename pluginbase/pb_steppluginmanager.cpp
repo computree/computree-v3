@@ -91,6 +91,7 @@
 #include "step/pb_stepdetectverticalalignments.h"
 #include "step/pb_stepselectbboxbyfilename.h"
 #include "step/pb_stepfiltermaximabyclusterpositions.h"
+#include "step/pb_stepsegmentcrownsfromstemclusters.h"
 
 #ifdef USE_OPENCV
 #include "step/pb_stepconvertfloatimagetoqint32.h"
@@ -198,6 +199,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions02>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepComputeCrownProjection>(CT_StepsMenu::LP_Crowns);
+    addNewGeometricalShapesStep<PB_StepSegmentCrownsFromStemClusters>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepExtractPositionsFromDensity>("");
 
     addNewWorkflowStep<PB_StepAddAffiliationID>("");
