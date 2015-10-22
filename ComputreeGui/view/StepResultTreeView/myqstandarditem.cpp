@@ -30,7 +30,6 @@
 
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 #include "ct_result/abstract/ct_abstractresult.h"
-#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
 MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
                                 CT_AbstractResult *res,
@@ -39,32 +38,17 @@ MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
 {
     _step = step;
     _result = res;
-    _itemDrawable = NULL;
     _columnType = type;
 
     if(_step != NULL)
         connect(_step, SIGNAL(destroyed()), this, SLOT(stepDestroyed()), Qt::DirectConnection);
 
     if(_result != NULL)
-        connect(_result, SIGNAL(destroyed()), this, SLOT(itemDrawableDestroyed()), Qt::DirectConnection);
+        connect(_result, SIGNAL(destroyed()), this, SLOT(resultDestroyed()), Qt::DirectConnection);
 
     setData(type, ColumnTypeRole);
 }
 
-MyQStandardItem::MyQStandardItem(CT_AbstractItemDrawable *id,
-                                MyQStandardItem::ColumnType type,
-                                const QString &text) : QStandardItem(text)
-{
-    _step = NULL;
-    _result = NULL;
-    _itemDrawable = id;
-    _columnType = type;
-
-    if(_itemDrawable != NULL)
-        connect(_itemDrawable, SIGNAL(destroyed()), this, SLOT(itemDrawableDestroyed()), Qt::DirectConnection);
-
-    setData(type, ColumnTypeRole);
-}
 
 MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
                                 CT_AbstractResult *res,
@@ -73,7 +57,6 @@ MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
 {
     _step = step;
     _result = res;
-    _itemDrawable = NULL;
     _columnType = type;
     setData(value, Qt::DisplayRole);
 
@@ -81,20 +64,7 @@ MyQStandardItem::MyQStandardItem(CT_VirtualAbstractStep *step,
         connect(_step, SIGNAL(destroyed()), this, SLOT(stepDestroyed()), Qt::DirectConnection);
 
     if(_result != NULL)
-        connect(_result, SIGNAL(destroyed()), this, SLOT(itemDrawableDestroyed()), Qt::DirectConnection);
-
-    setData(type, ColumnTypeRole);
-}
-
-MyQStandardItem::MyQStandardItem(CT_AbstractItemDrawable *id,
-                                MyQStandardItem::ColumnType type,
-                                const QVariant &value) : QStandardItem()
-{
-    _step = NULL;
-    _result = NULL;
-    _itemDrawable = id;
-    _columnType = type;
-    setData(value, Qt::DisplayRole);
+        connect(_result, SIGNAL(destroyed()), this, SLOT(resultDestroyed()), Qt::DirectConnection);
 
     setData(type, ColumnTypeRole);
 }
@@ -171,13 +141,6 @@ void MyQStandardItem::setBoolDataToFalseWhenDataIsTrue(bool data, Qt::ItemDataRo
 void MyQStandardItem::stepDestroyed()
 {
     _step = NULL;
-}
-
-void MyQStandardItem::itemDrawableDestroyed()
-{
-    emit itemDrawableToBeDestroyed();
-
-    _itemDrawable = NULL;
 }
 
 void MyQStandardItem::resultDestroyed()

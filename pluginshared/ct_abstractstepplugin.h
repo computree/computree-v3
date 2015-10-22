@@ -602,6 +602,14 @@ private:
      * @brief Init all steps of this plugin in levels of the general menu
      */
     void initAllStepOfThisPluginInLevelsRecursively(CT_MenuLevel *level);
+
+    /**
+     * @brief Search all steps of this plugin in levels of the general menu that accept to open the file passed in parameter
+     */
+    void searchOpenFileStepInLevelRecursively(CT_MenuLevel *level,
+                                              const QString &filepath,
+                                              QList<CT_AbstractStepLoadFile*> &listOfStepThatAcceptThisFile,
+                                              QList<CT_AbstractStepLoadFile*> &listOfStepThatAcceptAllFiles) const;
 };
 
 #endif // CT_ABSTRACTSTEPPLUGIN_H

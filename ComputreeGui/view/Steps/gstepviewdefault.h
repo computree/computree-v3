@@ -20,8 +20,8 @@ class GStepViewDefault : public QWidget
 public:
 
     enum DisplayNameConfig {
-        DNC_Key = 1,
-        DNC_StepName = 2,
+        DNC_StepKey = 1,
+        DNC_StepShortDescription = 2,
         DNC_StepDisplayableName = 4
     };
 
@@ -30,6 +30,9 @@ public:
     explicit GStepViewDefault(QWidget *parent = 0);
     ~GStepViewDefault();
 
+    /**
+     * @brief Init the view. Call it after the constructor or you will see nothing.
+     */
     void init(const CDM_PluginManager &pManager);
 
     /**
@@ -53,6 +56,11 @@ public:
     void setDisplayConfiguration(DisplayNameConfigs configs);
 
     /**
+     * @brief Returns the display configuration
+     */
+    DisplayNameConfigs displayConfiguration() const;
+
+    /**
      * @brief Set a context menu to a type defined in parameter
      */
     void setContextMenuOnType(QMenu *contextMenu, DM_StepsFromPluginsModelConstructor::ItemType type);
@@ -68,6 +76,9 @@ public:
     CT_MenuLevel* currentLevelSelected() const;
 
 public slots:
+    /**
+     * @brief Reconstruct the model of the tree view
+     */
     void reconstruct();
 
     /**
@@ -86,23 +97,71 @@ private:
     DisplayNameConfigs                                              m_nameConfig;
     QMap<DM_StepsFromPluginsModelConstructor::ItemType, QMenu*>     m_contextMenus; // must be sorted in ascending order !
 
+    /**
+     * @brief Search a step recursively by it's name : displayable or not, extended or custom, etc... and expand the parent to let the user
+     *        show immediately the step
+     */
     bool recursiveSearchStepByNameAndExpandParent(const QModelIndex &index, const QString &anyName);
 
+    /**
+     * @brief Resize column of tree view in function of the size of the treeview and the maximum size
+     *        of text that was in the last column. So the last column will always have the good size to
+     *        show the entire maximum text.
+     */
     void resizeColumnsOfTreeView();
 
+    /**
+     * @brief Returns the max size of the text contained in the column index passed in parameter (recursively)
+     */
+    void getMaxSizeOfColumnsRecursively(QStandardItem *item, const QString &text, const QFontMetrics &fm, const int &columnIndex, int &maxSize);
+
+    /**
+     * @brief Returns the context menu for the type passed in parameter
+     */
     QMenu* contextMenuForType(DM_StepsFromPluginsModelConstructor::ItemType type);
+
+    /**
+     * @brief The function that returns the name of the step to show
+     */
+    static bool staticStepsName(QString &name, const QModelIndex &index, void *context);
 
 protected:
 
+    /**
+     * @brief Overloaded to resize column of the treeview when the size changed
+     */
     void resizeEvent(QResizeEvent *e);
 
 private slots:
+
+    /**
+     * @brief Called when the user click on the push button that will configure the name of step shown
+     */
     void on_pushButtonConfigStepName_clicked();
 
+    /**
+     * @brief Called when the user click on the push button that will configure the filter
+     */
+    void on_pushButtonConfigSearch_clicked();
+
+    /**
+     * @brief Called when the user change the text of the filter
+     */
+    void on_lineEditSearch_textChanged(const QString &text);
+
+    /**
+     * @brief Called by a QAction in the menu that show configuration of step name
+     */
     void setStepName(bool enable);
 
-    static bool staticStepsName(QString &name, const QModelIndex &index, void *context);
+    /**
+     * @brief Called by a QAction in the menu that show configuration of filter
+     */
+    void setSearchConfiguration(bool enable);
 
+    /**
+     * @brief Called when a use double click on a row in the tree view
+     */
     void indexDoubleClicked(const QModelIndex &index);
 
     /**
@@ -110,11 +169,25 @@ private slots:
      */
     void showTreeViewContextMenu(const QPoint &point);
 
+    /**
+     * @brief Called when the selection changed in the treeview
+     */
     void selectionChanged(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 
 signals:
+    /**
+     * @brief Emitted when a level is selected
+     */
     void levelSelected(CT_MenuLevel *level);
+
+    /**
+     * @brief Emitted when a step is selected
+     */
     void stepSelected(CT_VirtualAbstractStep *step);
+
+    /**
+     * @brief Emitted when a step is double clicked
+     */
     void stepDoubleClicked(CT_VirtualAbstractStep *step);
 };
 

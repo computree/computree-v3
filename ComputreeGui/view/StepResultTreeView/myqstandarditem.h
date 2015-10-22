@@ -57,14 +57,7 @@ public:
        ResultName,              // Nom du rsultat
        ResultProgress,          // Progression du dchargement du rsultat de la mmoire
        ResultVisibility,        // Visibilit du rsultat
-       ResultEmpty,             // Case vide pour un rsultat
-       ItemDrawableId,          // Id de l'itemdrawable
-       ItemDrawableName,        // Nom de l'itemdrawable
-       ItemDrawableVisibility,  // Visibilit de l'itemdrawable
-       ItemDrawableSelection,   // Slection de l'itemdrawable
-       ItemDrawableColor,       // Couleur de l'itemdrawable
-       ItemDrawableZCoodinate,  // Coordonne en Z de l'itemdrawable
-       ItemDrawableNotEditableData
+       ResultEmpty              // Case vide pour un rsultat
     };
 
     enum MyItemDataRole {
@@ -77,37 +70,28 @@ public:
                     MyQStandardItem::ColumnType type,
                     const QString &text);
 
-    MyQStandardItem(CT_AbstractItemDrawable *id,
-                    MyQStandardItem::ColumnType type,
-                    const QString &text);
-
     MyQStandardItem(CT_VirtualAbstractStep *step,
                     CT_AbstractResult *res,
-                    MyQStandardItem::ColumnType type,
-                    const QVariant &value);
-
-    MyQStandardItem(CT_AbstractItemDrawable *id,
                     MyQStandardItem::ColumnType type,
                     const QVariant &value);
 
     CT_VirtualAbstractStep* step() { return _step; }
     CT_AbstractResult* result() { return _result; }
     void removeResult() { _result = NULL; }
-    CT_AbstractItemDrawable* itemDrawable(){ return _itemDrawable; }
-    void removeItemDrawable() { _itemDrawable = NULL; }
 
     MyQStandardItem::ColumnType columnType() const { return _columnType; }
 
     void setData(const QVariant &value, int role);
     void setDataWithoutSignal(const QVariant &value, int role);
 
+    QStandardItem* parentItem() const { return QStandardItem::parent(); }
+
 private:
 
-    CT_VirtualAbstractStep            *_step;
-    CT_AbstractResult          *_result;
-    CT_AbstractItemDrawable    *_itemDrawable;
+    CT_VirtualAbstractStep          *_step;
+    CT_AbstractResult               *_result;
 
-    ColumnType      _columnType;
+    ColumnType                      _columnType;
 
 public slots:
 
@@ -127,14 +111,12 @@ public slots:
 private slots:
 
     void stepDestroyed();
-    void itemDrawableDestroyed();
     void resultDestroyed();
 
 signals:
 
     void dataChanged(QStandardItem *item);
     void checkStateChanged(bool checked);
-    void itemDrawableToBeDestroyed();
 };
 
 #endif // MYQSTANDARDITEM_H

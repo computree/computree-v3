@@ -988,85 +988,13 @@ void GOsgGraphicsView::leaveEvent(QEvent *event)
 
 void GOsgGraphicsView::keyPressEvent( QKeyEvent* event )
 {
-    /*if(event->key() == Qt::Key_A) {
-
-        osg::Program *program = new osg::Program;
-
-        osg::ref_ptr<osg::Shader> shader = new osg::Shader( osg::Shader::VERTEX,    "#version 120\n"
-                                                                                    "// selection color of points\n"
-                                                                                    "uniform vec4 selectionColor;\n"
-                                                                                    "// to check if it is selected\n"
-                                                                                    "uniform int checkSelected;\n"
-                                                                                    "// info of the point (is selected ?)\n"
-                                                                                    "attribute float info;\n"
-                                                                                    "void main(void)\n"
-                                                                                    "{\n"
-                                                                                    "    int infoInt = int(info);\n"
-                                                                                    "    if(infoInt == checkSelected)\n"
-                                                                                    "    {\n"
-                                                                                    "         gl_FrontColor = selectionColor;\n"
-                                                                                    "    }\n"
-                                                                                    "    else\n"
-                                                                                    "    {\n"
-                                                                                    "         gl_FrontColor = gl_Color;\n"
-                                                                                    "    }\n"
-                                                                                    "    gl_Position    = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
-                                                                                    "}\n");
-        program->addShader(shader);
-        program->addBindAttribLocation("info", 6);
-
-        osg::StateSet *ss = new osg::StateSet;
-        ss->setAttributeAndModes(program, osg::StateAttribute::ON);
-
-        QColor color = Qt::gray;
-
-        ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
-        ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
-
-
-        osg::Vec3Array *vArray = new osg::Vec3Array;
-        vArray->resize(3);
-        (*vArray)[0] = osg::Vec3(0, 0, 0);
-        (*vArray)[1] = osg::Vec3(0, 1, 0);
-        (*vArray)[2] = osg::Vec3(1, 0, 0);
-
-
-        osg::Vec4Array *cArray = new osg::Vec4Array;
-        cArray->resize(3);
-        (*cArray)[0] = osg::Vec4(0, 0, 1, 1);
-        (*cArray)[1] = osg::Vec4(1, 0, 0, 1);
-        (*cArray)[2] = osg::Vec4(0, 1, 0, 1);
-
-        osg::UByteArray *vaArray = new osg::UByteArray;
-        vaArray->resize(3);
-        (*vaArray)[0] = 1;
-        (*vaArray)[1] = 0;
-        (*vaArray)[2] = 1;
-
-        osg::DrawElementsUInt *pSet = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES);
-        pSet->push_back(0);
-        pSet->push_back(1);
-        pSet->push_back(2);
-
-        osg::Geometry *geo = new osg::Geometry;
-        geo->setStateSet(ss);
-        geo->setVertexArray(vArray);
-        geo->setColorArray(cArray);
-        geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-        geo->setVertexAttribArray(6, vaArray, osg::Array::BIND_PER_VERTEX);
-        geo->setVertexAttribNormalize(6, false);
-        geo->addPrimitiveSet(pSet);
-
-        osg::Geode *geode = new osg::Geode;
-        geode->setName("Triangle");
-        geode->addDrawable(geo);
-
-
-        m_scene->addChild(geode);
-    }*/
-
     if(actionsHandler()->keyPressEvent(event))
         return;
+
+    if(event->key() == Qt::Key_Delete) {
+        document()->removeAllSelectedItemDrawable();
+        return;
+    }
 
     QString keyString   = event->text();
     if(!keyString.isEmpty()) {

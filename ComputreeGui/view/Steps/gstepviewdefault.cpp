@@ -13,7 +13,7 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
 
     m_constructor = NULL;
     m_proxy = NULL;
-    m_nameConfig = DNC_Key;
+    m_nameConfig = DNC_StepKey;
 
     // To show custom context menu
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -65,6 +65,11 @@ void GStepViewDefault::setDisplayConfiguration(DisplayNameConfigs configs)
 {
     m_nameConfig = configs;
     m_proxy->invalidate();
+}
+
+GStepViewDefault::DisplayNameConfigs GStepViewDefault::displayConfiguration() const
+{
+    return m_nameConfig;
 }
 
 void GStepViewDefault::setContextMenuOnType(QMenu *contextMenu, DM_StepsFromPluginsModelConstructor::ItemType type)
@@ -148,15 +153,16 @@ bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelInde
                             || (step->getPlugin()->getKeyForStep(*step) == anyName)
                             || (step->getStepCustomName() == anyName)
                             || (step->getStepExtendedName() == anyName)
-                            || (step->getStepDisplayableName() == anyName)) {
+                            || (step->getStepDisplayableName() == anyName)
+                            || (step->getStepDescription() == anyName)) {
 
                         ui->treeView->expand(index.parent());
                         ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
                         ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
 
-                        if(step->getStepName() == anyName) {
-                            if(!(m_nameConfig & DNC_StepName)) {
-                                m_nameConfig |= DNC_StepName;
+                        if(step->getStepDescription() == anyName) {
+                            if(!(m_nameConfig & DNC_StepShortDescription)) {
+                                m_nameConfig |= DNC_StepShortDescription;
                                 m_proxy->invalidate();
                             }
                         } else if(step->getStepDisplayableName() == anyName) {
@@ -165,8 +171,8 @@ bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelInde
                                 m_proxy->invalidate();
                             }
                         } else if(step->getPlugin()->getKeyForStep(*step) == anyName) {
-                            if(!(m_nameConfig & DNC_Key)) {
-                                m_nameConfig |= DNC_Key;
+                            if(!(m_nameConfig & DNC_StepKey)) {
+                                m_nameConfig |= DNC_StepKey;
                                 m_proxy->invalidate();
                             }
                         }
@@ -187,15 +193,14 @@ void GStepViewDefault::resizeColumnsOfTreeView()
         int n = m_constructor->model()->columnCount();
 
         if(n > 0) {
-            int width = ui->treeView->width()-20;
-
-            int lastColumnsCount = n-1;
             int wForLastColumns = 0;
+            int lastColumnIndex = n-1;
+            QFontMetrics fm = ui->treeView->fontMetrics();
 
-            if(lastColumnsCount > 0)
-                wForLastColumns = ((width*(lastColumnsCount*10))/100)/lastColumnsCount;
+            if(lastColumnIndex > 0)
+                getMaxSizeOfColumnsRecursively(m_constructor->model()->invisibleRootItem(), "", fm, lastColumnIndex, wForLastColumns);
 
-            int wForFirstColumn = width-(wForLastColumns*lastColumnsCount);
+            int wForFirstColumn = (ui->treeView->width()-20)-wForLastColumns;
 
             ui->treeView->header()->setSectionResizeMode(0, QHeaderView::Fixed);
             ui->treeView->header()->resizeSection(0, wForFirstColumn);
@@ -206,6 +211,16 @@ void GStepViewDefault::resizeColumnsOfTreeView()
             }
         }
     }
+}
+
+void GStepViewDefault::getMaxSizeOfColumnsRecursively(QStandardItem *item, const QString &text, const QFontMetrics &fm, const int &columnIndex, int &maxSize)
+{
+    maxSize = qMax(maxSize, fm.width(text));
+
+    int m = item->rowCount();
+
+    for(int i=0; i<m; ++i)
+        getMaxSizeOfColumnsRecursively(item->child(i, 0), item->child(i, columnIndex)->text(), fm, columnIndex, maxSize);
 }
 
 QMenu *GStepViewDefault::contextMenuForType(DM_StepsFromPluginsModelConstructor::ItemType type)
@@ -237,33 +252,95 @@ void GStepViewDefault::resizeEvent(QResizeEvent *e)
 
 void GStepViewDefault::on_pushButtonConfigStepName_clicked()
 {
-    QMenu menu(this);
+    if(m_proxy != NULL) {
+        QMenu menu(this);
 
-    QAction *act = new QAction(tr("Clé de l'étape au sein du plugin ou d'un script"), &menu);
-    act->setCheckable(true);
-    act->setChecked(m_nameConfig.testFlag(DNC_Key));
-    act->setData((int)DNC_Key);
-    connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
+        QAction *act = new QAction(tr("Clé de l'étape au sein du plugin ou d'un script"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_nameConfig.testFlag(DNC_StepKey));
+        act->setData((int)DNC_StepKey);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
 
-    menu.addAction(act);
+        menu.addAction(act);
 
-    /*act = new QAction(tr("Nom de l'étape"), &menu);
-    act->setCheckable(true);
-    act->setChecked(m_nameConfig.testFlag(DNC_StepName));
-    act->setData((int)DNC_StepName);
-    connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
+        act = new QAction(tr("Nom de l'étape"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_nameConfig.testFlag(DNC_StepDisplayableName));
+        act->setData((int)DNC_StepDisplayableName);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
 
-    menu.addAction(act);*/
+        menu.addAction(act);
 
-    act = new QAction(tr("Nom de l'étape"), &menu);
-    act->setCheckable(true);
-    act->setChecked(m_nameConfig.testFlag(DNC_StepDisplayableName));
-    act->setData((int)DNC_StepDisplayableName);
-    connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
+        act = new QAction(tr("Description courte"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_nameConfig.testFlag(DNC_StepShortDescription));
+        act->setData((int)DNC_StepShortDescription);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setStepName(bool)), Qt::DirectConnection);
 
-    menu.addAction(act);
+        menu.addAction(act);
 
-    menu.exec(ui->pushButtonConfigStepName->mapToGlobal(ui->pushButtonConfigStepName->rect().center()));
+        menu.exec(ui->pushButtonConfigStepName->mapToGlobal(ui->pushButtonConfigStepName->rect().center()));
+    }
+}
+
+void GStepViewDefault::on_pushButtonConfigSearch_clicked()
+{
+    if(m_proxy != NULL) {
+        QMenu menu(this);
+
+        QAction *act = new QAction(tr("Clé de l'étape au sein du plugin ou d'un script"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_proxy->filterConfiguration().testFlag(DM_StepTreeViewDefaultProxyModel::FC_StepKey));
+        act->setData((int)DM_StepTreeViewDefaultProxyModel::FC_StepKey);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setSearchConfiguration(bool)), Qt::DirectConnection);
+
+        menu.addAction(act);
+
+        act = new QAction(tr("Nom de l'étape"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_proxy->filterConfiguration().testFlag(DM_StepTreeViewDefaultProxyModel::FC_StepDisplayableName));
+        act->setData((int)DM_StepTreeViewDefaultProxyModel::FC_StepDisplayableName);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setSearchConfiguration(bool)), Qt::DirectConnection);
+
+        menu.addAction(act);
+
+        act = new QAction(tr("Description courte"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_proxy->filterConfiguration().testFlag(DM_StepTreeViewDefaultProxyModel::FC_StepShortDescription));
+        act->setData((int)DM_StepTreeViewDefaultProxyModel::FC_StepShortDescription);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setSearchConfiguration(bool)), Qt::DirectConnection);
+
+        menu.addAction(act);
+
+        act = new QAction(tr("Description détaillée"), &menu);
+        act->setCheckable(true);
+        act->setChecked(m_proxy->filterConfiguration().testFlag(DM_StepTreeViewDefaultProxyModel::FC_StepFullDescription));
+        act->setData((int)DM_StepTreeViewDefaultProxyModel::FC_StepFullDescription);
+        connect(act, SIGNAL(triggered(bool)), this, SLOT(setSearchConfiguration(bool)), Qt::DirectConnection);
+
+        menu.addAction(act);
+
+        menu.exec(ui->pushButtonConfigSearch->mapToGlobal(ui->pushButtonConfigSearch->rect().center()));
+    }
+}
+
+void GStepViewDefault::on_lineEditSearch_textChanged(const QString &text)
+{
+    QString userText = text;
+    QRegExp regFromString(".*" + text + ".*", Qt::CaseInsensitive);
+    QRegExp userReg(userText.remove("r:").remove("i:"));
+
+    if(text.contains("i:"))
+        userReg.setCaseSensitivity(Qt::CaseInsensitive);
+
+    if(text.isEmpty())
+        m_proxy->setFilterRegExp(".*");
+    else if(text.startsWith("r:"))
+        m_proxy->setFilterRegExp(userReg);
+    else
+        m_proxy->setFilterRegExp(regFromString);
+
+    m_proxy->invalidate();
 }
 
 void GStepViewDefault::setStepName(bool enable)
@@ -278,9 +355,28 @@ void GStepViewDefault::setStepName(bool enable)
             m_nameConfig &= ~c;
 
         if(m_nameConfig == 0)
-            m_nameConfig = DNC_Key;
+            m_nameConfig = DNC_StepKey;
 
         m_proxy->invalidate();
+    }
+}
+
+void GStepViewDefault::setSearchConfiguration(bool enable)
+{
+    if(m_proxy != NULL) {
+        QAction *act = (QAction*)sender();
+        DM_StepTreeViewDefaultProxyModel::FilterConfig c = (DM_StepTreeViewDefaultProxyModel::FilterConfig)act->data().toInt();
+        DM_StepTreeViewDefaultProxyModel::FilterConfigs cs = m_proxy->filterConfiguration();
+
+        if(enable)
+            cs |= c;
+        else
+            cs &= ~c;
+
+        if(cs == 0)
+            cs = DM_StepTreeViewDefaultProxyModel::FC_StepDisplayableName;
+
+        m_proxy->setFilterConfiguration(cs);
     }
 }
 
@@ -295,21 +391,25 @@ bool GStepViewDefault::staticStepsName(QString &name, const QModelIndex &index, 
 
     name = "";
 
-    if(thisPtr->m_nameConfig.testFlag(DNC_Key))
-        name += " " + step->getPlugin()->getKeyForStep(*step) + " ";
+    QString shortDescription = " " + step->getStepDescription() + " ";
+    QString key = " " + step->getPlugin()->getKeyForStep(*step) + " ";
+    QString displayableName = " " + step->getStepDisplayableName()+ " ";
 
-    if(thisPtr->m_nameConfig.testFlag(DNC_StepName) && !name.contains(" " + step->getStepName() + " ")) {
+    if(thisPtr->m_nameConfig.testFlag(DNC_StepShortDescription) )
+        name += shortDescription;
+
+    if(thisPtr->m_nameConfig.testFlag(DNC_StepKey) && !name.contains(key)) {
         if(!name.isEmpty())
             name += "/";
 
-        name += " " + step->getStepName() + " ";
+        name += key;
     }
 
-    if(thisPtr->m_nameConfig.testFlag(DNC_StepDisplayableName) && !name.contains(" " + step->getStepDisplayableName()+ " ")) {
+    if(thisPtr->m_nameConfig.testFlag(DNC_StepDisplayableName) && !name.contains(displayableName)) {
         if(!name.isEmpty())
             name += "/";
 
-        name += " " + step->getStepDisplayableName() + " ";
+        name += displayableName;
     }
 
     return true;

@@ -90,10 +90,10 @@
 #include "step/pb_stepaddattributevalue.h"
 #include "step/pb_stepdetectverticalalignments.h"
 #include "step/pb_stepselectbboxbyfilename.h"
-#include "step/pb_stepfiltermaximabyclusterpositions.h"
 #include "step/pb_stepsegmentcrownsfromstemclusters.h"
 
 #ifdef USE_OPENCV
+#include "step/pb_stepfiltermaximabyclusterpositions.h"
 #include "step/pb_stepconvertfloatimagetoqint32.h"
 #include "step/pb_stepcomputeattributemapfromclusters.h"
 #endif
@@ -192,7 +192,6 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewPointsStep<PB_StepFilterPointsByBoolGrid>(CT_StepsMenu::LP_Filter);
     addNewVoxelsStep<PB_StepSelectCellsInGrid3DByBinaryPattern>(CT_StepsMenu::LP_Filter);
     addNewVoxelsStep<PB_StepCompare3DGridsContents>("");
-    addNewRastersStep<PB_StepFilterMaximaByClusterPositions>("");
 
     addNewGeometricalShapesStep<PB_StepSegmentCrowns>(CT_StepsMenu::LP_Crowns);
     addNewGeometricalShapesStep<PB_StepSegmentGaps>(CT_StepsMenu::LP_Crowns);
@@ -248,6 +247,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewLoadStep<PB_StepLoadMultiXYBFiles>("");
 
 #ifdef USE_OPENCV
+    addNewRastersStep<PB_StepFilterMaximaByClusterPositions>("");
     addNewRastersStep<PB_StepConvertFloatImageToqint32>(CT_StepsMenu::LP_Transform);
     addNewMetricsStep<PB_StepComputeAttributeMapFromClusters>("");
 #endif

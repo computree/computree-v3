@@ -85,7 +85,7 @@ void GTreeStepContextMenu::reload()
 
     action = new MyQAction(selectedStep(), tr("Config. résultats d'entrée"), this);
     action->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
-    action->setEnabled(true);
+    action->setEnabled(selectedStep()->needInputResults());
     connect(action, SIGNAL(triggered()), this, SLOT(configureInputResultOfStepRequired()));
     addAction(action);
 

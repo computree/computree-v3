@@ -1,5 +1,6 @@
 #include "pb_stepsegmentcrownsfromstemclusters.h"
 
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
 #include "ct_result/ct_resultgroup.h"
@@ -205,4 +206,4 @@ void PB_StepSegmentCrownsFromStemClusters::compute()
     setProgress(100);
 }
 
-
+#endif

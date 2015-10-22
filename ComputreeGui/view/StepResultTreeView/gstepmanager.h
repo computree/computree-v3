@@ -78,10 +78,10 @@ public:
 
 private:
     CDM_StepManager         *_stepManager;              /*!< le gestionnaire d'etape */
-    QTreeView               _view;                      /*!< La vue (un arbre) */
+    QTreeView               m_treeView;                      /*!< La vue (un arbre) */
     QStandardItemModel      _model;                     /*!< Le modle de la vue */
+    QStandardItem           *m_rootItem;
     GTreeStepContextMenu    *_contextMenuStep;          /*!< Un menu qui s'affiche lors d'un clique droit sur une tape */
-    QMenu                   *m_contextMenuGroupResult;  /*!< Context menu for the group of results */
     MyTreeDelegate          *_delegate;                 /*!< Un dlgu pour le style d'affichage des lments de la QTreeView */
 
     QMutex                  _mutexResList;
@@ -152,6 +152,16 @@ private:
     MyQStandardItem* getItemForResult(QStandardItem *stepItem, CT_AbstractResult *res);
     QList<MyQStandardItem *> getItemsForResult(QStandardItem *stepItem, CT_AbstractResult *res);
 
+    /**
+     * @brief Recursively go up in the tree to find a item that represent a step for the child passed in parameter
+     */
+    MyQStandardItem* recursiveFindItemThatRepresentAStepForChild(MyQStandardItem *child) const;
+
+    /**
+     * @brief Returns the root item that represent the workflow and where to add the root step
+     */
+    QStandardItem* getRootItem() const;
+
     /*!
      *  \brief Appel lorsque l'item (colonne n) correspondant  une tape
      *          t modifi. Apelle les mthodes adquates correspondant au changement
@@ -178,10 +188,26 @@ private:
      */
     bool checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep *step, bool debugMode);
 
-    bool configureStepAndAdd(CT_VirtualAbstractStep *newStep, CT_VirtualAbstractStep *parentStep = NULL);
+    /**
+     * @brief Verify if the stepToCopy can be added after the parentStep. If yes copy it and configure it to add on the workflow. If the
+     *        configuration was canceled or corrupted the step copied was deleted from memory and not added to the workflow.
+     */
+    bool configureStepAndAdd(CT_VirtualAbstractStep *stepToCopy, CT_VirtualAbstractStep *parentStep = NULL);
 
+    /**
+     * @brief Recursively expand or collapse (depend of the parameter "expand") all sub-tree that represent a "step"
+     */
     void recursiveExpandCollapseItemOfStep(MyQStandardItem *item, bool expand);
+
+    /**
+     * @brief Recursively expand or collapse (depend of the parameter "expand") all sub-tree that represent a "result"
+     */
     void recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *item, bool expand);
+
+    /**
+     * @brief Select the row where the step passed in parameter is in MyQStandardItem
+     */
+    void selectStep(CT_VirtualAbstractStep *step);
 
 public slots:
 
@@ -190,17 +216,6 @@ public slots:
      *        CT_AbstractStepCanBeAddedFirst or a CT_AbstractStepLoadFile
      */
     void addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep *stepToCopy);
-
-    /**
-     * @brief Add the step to child list of the parent step passed in parameter. If parent is NULL add step to the root level if it was a
-     *        CT_AbstractStepCanBeAddedFirst or a CT_AbstractStepLoadFile
-     */
-    void addStepToParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
-
-    /**
-     * @brief Insert the step to child list of the parent step passed in parameter. If parent is NULL step was not added.
-     */
-    void insertStepInParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy);
 
     void addOpenFileStep(QString filePath);
     bool executeStep(CT_VirtualAbstractStep *step = NULL);
@@ -243,6 +258,8 @@ private slots:
     void expandAllTypeOfSelected();
     void collapseSelected();
     void collapseAllTypeOfSelected();
+
+    void removeAllStepFromRoot();
 
     void showViewContextMenu(const QPoint &point);
 

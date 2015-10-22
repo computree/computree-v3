@@ -148,6 +148,7 @@ QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForStep(C
 
     QStandardItem *item = new QStandardItem(step->getPlugin()->getKeyForStep(*step));
     item->setEditable(false);
+    item->setToolTip(QObject::tr("<html><p>%1</p><p>%2</p></html>").arg(step->getStepDescription()).arg(step->getStepDetailledDescription()));
     item->setData(qVariantFromValue((void*)step), DR_Pointer);
     item->setData((int)stepType, DR_Type);
     item->setData((int)stepType, DR_SecondaryType);

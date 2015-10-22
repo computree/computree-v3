@@ -47,7 +47,6 @@ SOURCES += \
     $$PWD/Steps/dm_steptreeviewdefaultproxymodel.cpp \
     $$PWD/Steps/gstepstreeviewdefault.cpp \
     $$PWD/Steps/gstepviewdefault.cpp \
-    $$PWD/Steps/gstepsdockwidget.cpp \
     view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_2dcameramanipulator.cpp \
@@ -121,7 +120,6 @@ HEADERS += \
     $$PWD/Steps/dm_steptreeviewdefaultproxymodel.h \
     $$PWD/Steps/gstepstreeviewdefault.h \
     $$PWD/Steps/gstepviewdefault.h \
-    $$PWD/Steps/gstepsdockwidget.h \
     view/DocumentView/GraphicsViews/3D/gosggraphicsview.h \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h \
     $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_2dcameramanipulator.h \
@@ -164,7 +162,6 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/Tools/gcomboboxwithemptytitlewidget.ui \
     $$PWD/MainView/gineedhelpdialog.ui \
     $$PWD/Steps/gstepviewdefault.ui \
-    $$PWD/Steps/gstepsdockwidget.ui \
     $$PWD/MainView/gfavoritesmenudialog.ui \
     $$PWD/MainView/gstepchooserdialog.ui
 

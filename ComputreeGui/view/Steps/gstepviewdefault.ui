@@ -16,15 +16,38 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButtonConfigStepName">
+       <property name="text">
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Nom des étapes</string>
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLineEdit" name="lineEditSearch">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Taper du texte pour rechercher une étape. La recherche ne respecte pas la casse.&lt;/p&gt;&lt;p&gt;Vous pouvez si vous le souhaitez utiliser votre propre expression réguilère en tapant tout d'abord &lt;span style=&quot; font-weight:600;&quot;&gt;r:&lt;/span&gt; suivi de votre expression. Si vous ne souhaitez pas utiliser la casse tapez &lt;span style=&quot; font-weight:600;&quot;&gt;i:&lt;/span&gt; après &lt;span style=&quot; font-weight:600;&quot;&gt;r:&lt;/span&gt; puis votre expression régulière. &lt;/p&gt;&lt;p&gt;Exemple simple : &lt;span style=&quot; font-weight:600;&quot;&gt;grilles&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Exemple d'expression régulière : &lt;span style=&quot; font-weight:600;&quot;&gt;r:i:.*grilles.*&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Rechercher des étapes...</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
-      <widget class="QPushButton" name="pushButtonConfigStepName">
+      <widget class="QPushButton" name="pushButtonConfigSearch">
        <property name="text">
         <string>Configuration</string>
        </property>

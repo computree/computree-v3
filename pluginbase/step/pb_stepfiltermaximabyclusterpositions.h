@@ -1,6 +1,7 @@
 #ifndef PB_STEPFILTERMAXIMABYCLUSTERPOSITIONS_H
 #define PB_STEPFILTERMAXIMABYCLUSTERPOSITIONS_H
 
+#ifdef USE_OPENCV
 #include "ct_step/abstract/ct_abstractstep.h"
 
 // Inclusion of auto-indexation system
@@ -87,5 +88,6 @@ private:
 
     void readRadii(QString fileName, QMap<double, double> &radii);
 };
+#endif
 
 #endif // PB_STEPFILTERMAXIMABYCLUSTERPOSITIONS_H

@@ -1,11 +1,16 @@
 #include "dm_steptreeviewdefaultproxymodel.h"
 
+#include <QGuiApplication>
+
 DM_StepTreeViewDefaultProxyModel::DM_StepTreeViewDefaultProxyModel(QObject *parent) :
     QSortFilterProxyModel(parent)
 {
     setShowStepNotCompatible(true);
-    setParentStep(NULL);
+    m_parentStep = NULL;
     setPluginsFilterEnabled(true);
+
+    m_manualStepFont = QGuiApplication::font();
+    m_manualStepFont.setItalic(true);
 
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_RootLevel, Qt::BackgroundRole, QColor(64, 64, 64));
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_Step, Qt::BackgroundRole, QColor(175, 171, 171));
@@ -14,6 +19,8 @@ DM_StepTreeViewDefaultProxyModel::DM_StepTreeViewDefaultProxyModel(QObject *pare
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::ForegroundRole, QColor(255, 255, 255));
 
     //setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::TextAlignmentRole, Qt::AlignCenter);
+
+    setFilterConfiguration(FC_StepFullDescription & FC_StepDisplayableName);
 
     setStepsNameFunction(NULL, NULL);
 }
@@ -101,6 +108,11 @@ void DM_StepTreeViewDefaultProxyModel::setStepsNameFunction(functionGetStepName 
     m_stepsNameContext = context;
 }
 
+DM_StepTreeViewDefaultProxyModel::FilterConfigs DM_StepTreeViewDefaultProxyModel::filterConfiguration() const
+{
+    return m_filterConfig;
+}
+
 void DM_StepTreeViewDefaultProxyModel::setUseStepsOfPlugins(const QList<CT_AbstractStepPlugin *> &plugins)
 {
     m_plugins = plugins;
@@ -121,19 +133,48 @@ void DM_StepTreeViewDefaultProxyModel::setShowStepNotCompatible(bool enable)
     invalidate();
 }
 
+void DM_StepTreeViewDefaultProxyModel::setFilterConfiguration(FilterConfigs configs)
+{
+    m_filterConfig = configs;
+
+    invalidate();
+}
+
 void DM_StepTreeViewDefaultProxyModel::setParentStep(CT_VirtualAbstractStep *parent)
 {
+    if(m_parentStep != NULL)
+        disconnect(m_parentStep, NULL, this, NULL);
+
     m_parentStep = parent;
+
+    if(m_parentStep != NULL)
+        connect(m_parentStep, SIGNAL(destroyed()), this, SLOT(parentStepDestroyed()), Qt::DirectConnection);
 
     invalidate();
 }
 
 QVariant DM_StepTreeViewDefaultProxyModel::data(const QModelIndex &index, int role) const
 {
-    if(role < Qt::UserRole + 1) {
-        DM_StepsFromPluginsModelConstructor::ItemType type = (DM_StepsFromPluginsModelConstructor::ItemType)index.data(DM_StepsFromPluginsModelConstructor::DR_Type).toInt();
+    if(role == Qt::BackgroundRole) {
+        if(isIndexOfType(index, DM_StepsFromPluginsModelConstructor::IT_Step, DM_StepsFromPluginsModelConstructor::DR_SecondaryType)) {
 
-        if((m_stepsNameF != NULL) && (role == Qt::DisplayRole) && (type & DM_StepsFromPluginsModelConstructor::IT_Step)) {
+            if(!isStepCompatibleWithParent(index))
+                return QColor(240, 70, 79); // red color for step not compatible
+        }
+    }
+
+    if(role == Qt::FontRole) {
+        if(isIndexOfType(index, DM_StepsFromPluginsModelConstructor::IT_Step)) {
+
+            CT_VirtualAbstractStep *step = getStepFromIndex(index);
+
+            if(step->isManual())
+                return m_manualStepFont; // special font for manual step
+        }
+    }
+
+    if(role < Qt::UserRole + 1) {
+        if((m_stepsNameF != NULL) && (role == Qt::DisplayRole) && isIndexOfType(index, DM_StepsFromPluginsModelConstructor::IT_Step)) {
 
             QString str;
 
@@ -164,8 +205,7 @@ bool DM_StepTreeViewDefaultProxyModel::filterAcceptsRow(int source_row, const QM
 {
     if(sourceModel() != NULL) {
 
-        if(!recursiveAcceptRow(sourceModel()->index(source_row, 0, source_parent)))
-            return false;
+        return recursiveAcceptRow(sourceModel()->index(source_row, 0, source_parent));
     }
 
     return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
@@ -192,14 +232,12 @@ bool DM_StepTreeViewDefaultProxyModel::recursiveAcceptRow(const QModelIndex &ind
                 return false;
         }
 
-        DM_StepsFromPluginsModelConstructor::ItemType type = (DM_StepsFromPluginsModelConstructor::ItemType)index.data(DM_StepsFromPluginsModelConstructor::DR_SecondaryType).toInt();
-
-        if(!isTypeVisible(type))
+        if(!isTypeVisible(getTypeFromIndex(index, DM_StepsFromPluginsModelConstructor::DR_SecondaryType)))
             return false;
 
-        if(type & (int)DM_StepsFromPluginsModelConstructor::IT_Step)
+        if(isIndexOfType(index, DM_StepsFromPluginsModelConstructor::IT_Step, DM_StepsFromPluginsModelConstructor::DR_SecondaryType))
         {
-            if(!acceptStep(index))
+            if(!acceptStep(index, pluginsFilterEnabled()))
                 return false;
         }
 
@@ -209,26 +247,69 @@ bool DM_StepTreeViewDefaultProxyModel::recursiveAcceptRow(const QModelIndex &ind
     return false;
 }
 
-bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index) const
+bool DM_StepTreeViewDefaultProxyModel::isIndexOfType(const QModelIndex &index, DM_StepsFromPluginsModelConstructor::ItemType type, DM_StepsFromPluginsModelConstructor::DataRole dataRole) const
 {
-    CT_VirtualAbstractStep *step = (CT_VirtualAbstractStep*)index.data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>();
+    return (getTypeFromIndex(index, dataRole) & type);
+}
 
-    if(pluginsFilterEnabled()) {
-        if(!m_plugins.contains(step->getPlugin()))
+CT_VirtualAbstractStep *DM_StepTreeViewDefaultProxyModel::getStepFromIndex(const QModelIndex &index) const
+{
+    return (CT_VirtualAbstractStep*)index.model()->sibling(index.row(), 0, index).data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>();
+}
+
+DM_StepsFromPluginsModelConstructor::ItemType DM_StepTreeViewDefaultProxyModel::getTypeFromIndex(const QModelIndex &index, DM_StepsFromPluginsModelConstructor::DataRole dataRole) const
+{
+    return (DM_StepsFromPluginsModelConstructor::ItemType)index.data(dataRole).toInt();
+}
+
+bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index, bool usePluginFiltered) const
+{
+    if(usePluginFiltered && !existStepInPluginCollection(index))
+        return false;
+
+    if(filterRegExp().isValid()
+            && !filterRegExp().isEmpty()) {
+
+        bool accepted = false;
+        CT_VirtualAbstractStep *step = getStepFromIndex(index);
+
+        if(m_filterConfig.testFlag(FC_StepKey)
+                && filterRegExp().exactMatch(step->getPlugin()->getKeyForStep(*step)))
+            accepted = true;
+
+        if(!accepted
+                && m_filterConfig.testFlag(FC_StepDisplayableName)
+                && filterRegExp().exactMatch(step->getStepDisplayableName()))
+            accepted = true;
+
+        if(!accepted
+                && m_filterConfig.testFlag(FC_StepShortDescription)
+                && filterRegExp().exactMatch(step->getStepDescription()))
+            accepted = true;
+
+        if(!accepted
+                && m_filterConfig.testFlag(FC_StepFullDescription)
+                && filterRegExp().exactMatch(step->getStepDetailledDescription()))
+            accepted = true;
+
+        if(!accepted)
             return false;
     }
 
-    bool acceptAfterStep = true;
+    return isStepCompatibleWithParent(index) || m_showNotCompatible;
+}
 
-    if(m_parentStep == NULL) {
-        if(step->needInputResults())
-            acceptAfterStep = false;
-    } else {
-        acceptAfterStep = step->acceptAddAfterThisStep(m_parentStep);
-    }
+bool DM_StepTreeViewDefaultProxyModel::existStepInPluginCollection(const QModelIndex &index) const
+{
+    return m_plugins.contains(getStepFromIndex(index)->getPlugin());
+}
 
-    if(m_showNotCompatible && !acceptAfterStep)
-        return true;
+bool DM_StepTreeViewDefaultProxyModel::isStepCompatibleWithParent(const QModelIndex &index) const
+{
+    return getStepFromIndex(index)->acceptAddAfterThisStep(m_parentStep);
+}
 
-    return acceptAfterStep;
+void DM_StepTreeViewDefaultProxyModel::parentStepDestroyed()
+{
+    m_parentStep = NULL;
 }

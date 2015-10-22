@@ -1,6 +1,7 @@
 #ifndef PB_STEPSEGMENTCROWNSFROMSTEMCLUSTERS_H
 #define PB_STEPSEGMENTCROWNSFROMSTEMCLUSTERS_H
 
+#ifdef USE_OPENCV
 #include "ct_step/abstract/ct_abstractstep.h"
 
 #include "ct_itemdrawable/ct_standarditemgroup.h"
@@ -185,5 +186,6 @@ private:
     }
 
 };
+#endif
 
 #endif // PB_STEPSEGMENTCROWNSFROMSTEMCLUSTERS_H

@@ -1,5 +1,6 @@
 #include "pb_stepfiltermaximabyclusterpositions.h"
 
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_itemdrawable/ct_pointcluster.h"
 #include "ct_itemdrawable/ct_attributeslist.h"
@@ -402,3 +403,4 @@ double PB_StepFilterMaximaByClusterPositions::getRadius(double height, const QMa
 
     return radius;
 }
+#endif

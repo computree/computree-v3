@@ -133,22 +133,6 @@ void MyTreeDelegate::paint(QPainter *painter,
 
         return;
     }
-    // colonne de couleur
-    else if(columnType == MyQStandardItem::ItemDrawableColor)
-    {
-        QColor color = index.data(Qt::TextColorRole).value<QColor>();
-
-        QStyleOptionViewItemV4 opt = option;
-        initStyleOption(&opt, index);
-
-        opt.backgroundBrush = QBrush(color);
-
-        const QWidget *widget = opt.widget;
-        QStyle *style = widget ? widget->style() : QApplication::style();
-        style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
-
-        return;
-    }
 
     QStyledItemDelegate::paint(painter, option, index);
 }

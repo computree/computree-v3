@@ -415,6 +415,9 @@ CT_VirtualAbstractStep* CT_VirtualAbstractStep::rootStep() const
 
 bool CT_VirtualAbstractStep::acceptAddAfterThisStep(const CT_VirtualAbstractStep *step)
 {
+    if((step == NULL) && needInputResults())
+        return false;
+
     return _inManager->getResultModelManager()->isAllOutputModelFoundFromStep(step);
 }
 

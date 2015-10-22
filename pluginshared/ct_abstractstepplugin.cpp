@@ -136,37 +136,18 @@ QList<CT_AbstractMetric *> CT_AbstractStepPlugin::getMetricsAvailable() const
 
 QList<CT_AbstractStepLoadFile*> CT_AbstractStepPlugin::getOpenFileStep(const QString &filePath) const
 {
-    QList<CT_AbstractStepLoadFile*> l;
-    QList<CT_AbstractStepLoadFile*> lTmp;
+    QList<CT_AbstractStepLoadFile*> listOfStepThatAcceptThisFile;
+    QList<CT_AbstractStepLoadFile*> listOfStepThatAcceptAllFiles;
 
-    QListIterator<CT_StepLoadFileSeparator*> it(_stepOpenFileAvailable);
+    QList<CT_MenuLevel*> subLevels = menuOfSteps()->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
 
     while(it.hasNext())
-    {
-        QList<CT_AbstractStepLoadFile *> list = it.next()->getStepList();
-        QListIterator<CT_AbstractStepLoadFile*> itStep(list);
+        searchOpenFileStepInLevelRecursively(it.next(), filePath, listOfStepThatAcceptThisFile, listOfStepThatAcceptAllFiles);
 
-        while(itStep.hasNext())
-        {
-            CT_AbstractStepLoadFile *step = itStep.next();
+    listOfStepThatAcceptThisFile.append(listOfStepThatAcceptAllFiles);
 
-            bool acceptAll;
-            bool acceptfile = step->acceptFile(filePath, &acceptAll);
-            if(acceptfile)
-            {
-                if (acceptAll)
-                {
-                    lTmp.append(step);
-                } else {
-                    l.append(step);
-                }
-            }
-        }
-    }
-
-    l.append(lTmp);
-
-    return l;
+    return listOfStepThatAcceptThisFile;
 }
 
 QString CT_AbstractStepPlugin::getKeyForStep(const CT_VirtualAbstractStep &step) const
@@ -176,54 +157,6 @@ QString CT_AbstractStepPlugin::getKeyForStep(const CT_VirtualAbstractStep &step)
 
 CT_VirtualAbstractStep* CT_AbstractStepPlugin::getStepFromKey(QString key) const
 {
-    /*QListIterator<CT_StepLoadFileSeparator*> it(_stepOpenFileAvailable);
-
-    while(it.hasNext())
-    {
-        QList<CT_AbstractStepLoadFile *> list = it.next()->getStepList();
-        QListIterator<CT_AbstractStepLoadFile*> itStep(list);
-
-        while(itStep.hasNext())
-        {
-            CT_AbstractStepLoadFile *step = itStep.next();
-
-            if(step->getStepName() == key)
-                return step;
-        }
-    }
-
-    QListIterator<CT_StepSeparator*> itG(_stepAvailable);
-
-    while(itG.hasNext())
-    {
-        QList<CT_VirtualAbstractStep*> list = itG.next()->getStepList();
-        QListIterator<CT_VirtualAbstractStep*> itStep(list);
-
-        while(itStep.hasNext())
-        {
-            CT_VirtualAbstractStep *step = itStep.next();
-
-            if(step->getStepName() == key)
-                return step;
-        }
-    }
-
-    QListIterator<CT_StepCanBeAddedFirstSeparator*> itF(_stepCanBeAddedFirstAvailable);
-
-    while(itF.hasNext())
-    {
-        QList<CT_AbstractStepCanBeAddedFirst*> list = itF.next()->getStepList();
-        QListIterator<CT_AbstractStepCanBeAddedFirst*> itStep(list);
-
-        while(itStep.hasNext())
-        {
-            CT_VirtualAbstractStep *step = itStep.next();
-
-            if(step->getStepName() == key)
-                return step;
-        }
-    }*/
-
     return searchStepFromKeyOfThisPluginInMenuRecursively(menuOfSteps(), key);
 }
 
@@ -560,6 +493,38 @@ void CT_AbstractStepPlugin::initAllStepOfThisPluginInLevelsRecursively(CT_MenuLe
         if(step->getPlugin() == this)
             initStep(step);
     }
+}
+
+void CT_AbstractStepPlugin::searchOpenFileStepInLevelRecursively(CT_MenuLevel *level,
+                                                                 const QString &filepath,
+                                                                 QList<CT_AbstractStepLoadFile *> &listOfStepThatAcceptThisFile,
+                                                                 QList<CT_AbstractStepLoadFile *> &listOfStepThatAcceptAllFiles) const
+{
+    bool acceptAllFiles;
+
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        CT_VirtualAbstractStep *step = itS.next();
+
+        if(step->getPlugin() == this) {
+            CT_AbstractStepLoadFile *stepLF = dynamic_cast<CT_AbstractStepLoadFile*>(step);
+
+            if(stepLF != NULL && stepLF->acceptFile(filepath, &acceptAllFiles)) {
+                if(acceptAllFiles)
+                    listOfStepThatAcceptAllFiles.append(stepLF);
+                else
+                    listOfStepThatAcceptThisFile.append(stepLF);
+            }
+        }
+    }
+
+    QList<CT_MenuLevel*> subLevels = level->levels();
+    QListIterator<CT_MenuLevel*> it(subLevels);
+
+    while(it.hasNext())
+        searchOpenFileStepInLevelRecursively(it.next(), filepath, listOfStepThatAcceptThisFile, listOfStepThatAcceptAllFiles);
 }
 
 void CT_AbstractStepPlugin::setCoreInterface(const CoreInterface *core)

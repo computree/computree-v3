@@ -11,6 +11,7 @@ class GStepChooserDialog;
 }
 
 class GStepManager;
+class GStepViewDefault;
 
 class GStepChooserDialog : public QDialog
 {
@@ -24,6 +25,8 @@ public:
 
     void init();
 
+    GStepViewDefault* stepsChooserWidget() const;
+
 private:
     Ui::GStepChooserDialog *ui;
     GStepManager            *m_stepManager;
@@ -36,6 +39,7 @@ private:
     bool existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step);
 
 protected:
+    bool event(QEvent *e);
     void showEvent(QShowEvent *e);
     void closeEvent(QCloseEvent *e);
 
@@ -49,6 +53,7 @@ private slots:
 
 signals:
     void visibilityChanged(bool visible);
+    void maximizedChanged(bool maximized);
 };
 
 #endif // GSTEPCHOOSERDIALOG_H

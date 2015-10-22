@@ -64,6 +64,7 @@
 #include <QInputDialog>
 #include <QDialogButtonBox>
 #include <QToolTip>
+#include <QDesktopWidget>
 
 #include <QSpinBox>
 
@@ -572,7 +573,7 @@ void GMainWindow::initUI()
     connect(ui->dockWidgetGraphicsViewSynchronizedGroup, SIGNAL(visibilityChanged(bool)), actionShowGraphicsSyncManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetActionsManager, SIGNAL(visibilityChanged(bool)), actionShowActionsManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetLog, SIGNAL(visibilityChanged(bool)), actionShowLog, SLOT(setDisabled(bool)));
-    connect(m_stepChooserDialog, SIGNAL(visibilityChanged(bool)), actionShowStepChooserDialog, SLOT(setDisabled(bool)));
+    connect(m_stepChooserDialog, SIGNAL(maximizedChanged(bool)), actionShowStepChooserDialog, SLOT(setDisabled(bool)));
 
     fastForwardSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getFastJumpValueInDebugMode());
     jumpAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getNJumpInAutoDebugMode());
@@ -676,9 +677,7 @@ void GMainWindow::loadConfiguration()
         _defaultOpenDirPath = CONFIG_FILE->value("defaultOpenDirPath", "").toString();
         _defaultSaveDirPath = CONFIG_FILE->value("defaultSaveDirPath", "").toString();
 
-        restoreState(CONFIG_FILE->value("windowState").toByteArray());
-
-        if(!CONFIG_FILE->value("windowSize", QVariant()).isNull()) {
+        if(CONFIG_FILE->value("windowSize", QVariant()).isValid()) {
             QSize size = CONFIG_FILE->value("windowSize", QSize()).toSize();
             QPoint pos = CONFIG_FILE->value("windowPos", QPoint()).toPoint();
             bool isMaximized = CONFIG_FILE->value("windowIsMaximized", false).toBool();
@@ -691,6 +690,9 @@ void GMainWindow::loadConfiguration()
             } else {
                 showMaximized();
             }
+        } else {
+            setWindowState(Qt::WindowNoState);
+            showMaximized();
         }
 
         CONFIG_FILE->beginGroup("Document");
@@ -699,16 +701,6 @@ void GMainWindow::loadConfiguration()
         int nDoc = CONFIG_FILE->value("nDocument", 0).toInt(&ok);
 
         CONFIG_FILE->endGroup(); // Document
-
-        CONFIG_FILE->beginGroup("StepsChooser");
-
-        QSize size = CONFIG_FILE->value("Size", m_stepChooserDialog->size()).toSize();
-        QPoint pos = CONFIG_FILE->value("Pos", m_stepChooserDialog->pos()).toPoint();
-
-        m_stepChooserDialog->resize(size);
-        m_stepChooserDialog->move(pos);
-
-        CONFIG_FILE->endGroup(); // StepsChooser
 
     CONFIG_FILE->endGroup(); // MainWindow
 
@@ -770,10 +762,41 @@ void GMainWindow::loadConfiguration()
 
     m_inLoadConfiguration = false;
 
-    if(getDocumentManagerView()->nbDocumentView() == 0)
+    QApplication::processEvents();
+
+    if(getDocumentManagerView()->nbDocumentView() == 0) {
         newDocument();
 
+        DM_DocumentView *view = getDocumentManagerView()->getDocumentView(0);
+
+        if(view != NULL)
+            view->setMaximized(true);
+    }
+
     showMessageIfScriptBackupIsAvailable();
+
+    CONFIG_FILE->beginGroup("MainWindow");
+
+        restoreState(CONFIG_FILE->value("windowState").toByteArray());
+
+        CONFIG_FILE->beginGroup("StepsChooser");
+
+        QPoint defaultPos = ui->dockWidgetStepManager->pos();
+        defaultPos.setY(defaultPos.y() + 20);
+        defaultPos.setX(defaultPos.x() + ui->dockWidgetStepManager->width());
+        QRect rec = QApplication::desktop()->screenGeometry();
+
+        QSize size = CONFIG_FILE->value("Size", QSize(m_stepChooserDialog->width(), rec.height()-defaultPos.y()-100)).toSize();
+        QPoint pos = CONFIG_FILE->value("Pos", defaultPos).toPoint();
+
+        m_stepChooserDialog->resize(size);
+        m_stepChooserDialog->move(pos);
+
+        m_stepChooserDialog->stepsChooserWidget()->setDisplayConfiguration((GStepViewDefault::DisplayNameConfigs)CONFIG_FILE->value("StepNameConfig", (int)m_stepChooserDialog->stepsChooserWidget()->displayConfiguration()).toInt());
+        m_stepChooserDialog->stepsChooserWidget()->proxy()->setFilterConfiguration((DM_StepTreeViewDefaultProxyModel::FilterConfigs)CONFIG_FILE->value("FilterConfig", (int)m_stepChooserDialog->stepsChooserWidget()->proxy()->filterConfiguration()).toInt());
+
+        CONFIG_FILE->endGroup(); // StepsChooser
+    CONFIG_FILE->endGroup(); // MainWindow
 }
 
 void GMainWindow::writeConfiguration()
@@ -824,9 +847,11 @@ void GMainWindow::writeConfiguration()
 
     CONFIG_FILE->beginGroup("StepsChooser");
 
-    CONFIG_FILE->setValue("Geometry", m_stepChooserDialog->saveGeometry());
-    CONFIG_FILE->setValue("Size", m_stepChooserDialog->size());
-    CONFIG_FILE->setValue("Pos", m_stepChooserDialog->pos());
+        CONFIG_FILE->setValue("Geometry", m_stepChooserDialog->saveGeometry());
+        CONFIG_FILE->setValue("Size", m_stepChooserDialog->size());
+        CONFIG_FILE->setValue("Pos", m_stepChooserDialog->pos());
+        CONFIG_FILE->setValue("FilterConfig", (int)m_stepChooserDialog->stepsChooserWidget()->proxy()->filterConfiguration());
+        CONFIG_FILE->setValue("StepNameConfig", (int)m_stepChooserDialog->stepsChooserWidget()->displayConfiguration());
 
     CONFIG_FILE->endGroup(); // StepsChooser
 

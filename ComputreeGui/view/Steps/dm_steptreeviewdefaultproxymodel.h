@@ -15,6 +15,16 @@ class DM_StepTreeViewDefaultProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
+
+    enum FilterConfig {
+        FC_StepKey = 1,
+        FC_StepShortDescription = 2,
+        FC_StepFullDescription = 4,
+        FC_StepDisplayableName = 8
+    };
+
+    Q_DECLARE_FLAGS(FilterConfigs, FilterConfig)
+
     explicit DM_StepTreeViewDefaultProxyModel(QObject *parent = 0);
     ~DM_StepTreeViewDefaultProxyModel();
 
@@ -50,6 +60,11 @@ public:
      */
     void setStepsNameFunction(functionGetStepName f, void *context);
 
+    /**
+     * @brief Returns the configuration of the filter
+     */
+    FilterConfigs filterConfiguration() const;
+
 public slots:
     /**
      * @brief The list of plugins you set will be used to remove steps that was not in plugin list. If you call this
@@ -83,6 +98,11 @@ public slots:
     void setShowStepNotCompatible(bool enable);
 
     /**
+     * @brief Change the filter configuration
+     */
+    void setFilterConfiguration(FilterConfigs configs);
+
+    /**
      * @brief Set the parent step to use to check if a step can be added after this step or not. Can be NULL if you don't want to check
      *        and shows all steps.
      * @param parent : the step that will used to check if another step can be added after it
@@ -104,6 +124,8 @@ private:
     bool                                                                                        m_pluginsFilterEnable;
     functionGetStepName                                                                         m_stepsNameF;
     void*                                                                                       m_stepsNameContext;
+    FilterConfigs                                                                               m_filterConfig;
+    QFont                                                                                       m_manualStepFont;
 
     /**
      * @brief Check recursively if this row is accepted.
@@ -113,16 +135,50 @@ private:
     bool recursiveAcceptRow(const QModelIndex &index) const;
 
     /**
+     * @brief Returns true if the index is the type passed in parameter. The datarole can be specified if you want to use another.
+     */
+    bool isIndexOfType(const QModelIndex &index, DM_StepsFromPluginsModelConstructor::ItemType type, DM_StepsFromPluginsModelConstructor::DataRole dataRole = DM_StepsFromPluginsModelConstructor::DR_Type) const;
+
+    /**
+     * @brief Returns the step from the index passed in parameter.
+     * @warning This method don't test if the index was a DM_StepsFromPluginsModelConstructor::IT_Step !
+     */
+    CT_VirtualAbstractStep* getStepFromIndex(const QModelIndex &index) const;
+
+    /**
+     * @brief Returns the type of the index passed in parameter. The datarole can be specified if you want to use another.
+     */
+    DM_StepsFromPluginsModelConstructor::ItemType getTypeFromIndex(const QModelIndex &index, DM_StepsFromPluginsModelConstructor::DataRole dataRole = DM_StepsFromPluginsModelConstructor::DR_Type) const;
+
+    /**
      * @brief Check if the step is accepted
      * @param index : index that contains the step and other datas
      * @return true if the step is accepted (depending of parameters setShowXXXStep && setShowStepNotCompatible), false otherwise
      */
-    bool acceptStep(const QModelIndex &index) const;
+    bool acceptStep(const QModelIndex &index, bool usePluginFiltered) const;
+
+    /**
+     * @brief Return true if the index that represent a step exist in the plugin collection (m_pluginsFilterEnable)
+     * @warning This method don't test if the index was a DM_StepsFromPluginsModelConstructor::IT_Step !
+     */
+    bool existStepInPluginCollection(const QModelIndex &index) const;
+
+    /**
+     * @brief Return true if the index that represent a step is compatible with the parent step (m_parentStep)
+     * @warning This method don't test if the index was a DM_StepsFromPluginsModelConstructor::IT_Step !
+     */
+    bool isStepCompatibleWithParent(const QModelIndex &index) const;
+
+private slots:
+
+    void parentStepDestroyed();
 
 signals:
 
 public slots:
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(DM_StepTreeViewDefaultProxyModel::FilterConfigs)
 
 #endif // DM_STEPTREEVIEWDEFAULTPROXYMODEL_H

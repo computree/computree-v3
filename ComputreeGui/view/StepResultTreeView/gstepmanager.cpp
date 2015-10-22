@@ -53,10 +53,10 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 {
     _stepManager = &stepManager;
 
-    _delegate = new MyTreeDelegate(&_view);
+    _delegate = new MyTreeDelegate(&m_treeView);
 
-    _view.setModel(&_model);
-    _view.setItemDelegate(_delegate);
+    m_treeView.setModel(&_model);
+    m_treeView.setItemDelegate(_delegate);
 
     QStringList header;
     header << tr("Nom");
@@ -66,27 +66,29 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     _model.setHorizontalHeaderLabels(header);
 
+    m_rootItem = new MyQStandardItem(NULL, NULL, MyQStandardItem::StepName, tr("Flux d'étapes"));
+    m_rootItem->setEditable(false);
+    _model.invisibleRootItem()->appendRow(m_rootItem);
+
 #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-    _view.header()->setResizeMode(0, QHeaderView::ResizeToContents);
+    m_treeView.header()->setResizeMode(0, QHeaderView::ResizeToContents);
 #else
-    _view.header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    m_treeView.header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 #endif
+
+    m_treeView.setStyleSheet(QString("QTreeView::item:selected{"
+                                     "color: rgb(255, 255, 255);"
+                                     "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #F3C870, stop: 1 #BDA757);"
+                                 "}"));
 
     delete layout();
     setLayout(new QVBoxLayout());
 
-    layout()->addWidget(&_view);
+    layout()->addWidget(&m_treeView);
 
     _contextMenuStep = new GTreeStepContextMenu(*_stepManager, this);
-    m_contextMenuGroupResult = new QMenu(this);
-
-    m_contextMenuGroupResult->addAction(QIcon(":/Icones/Icones/expand.png"), tr("Déplier"), this, SLOT(expandSelected()));
-    m_contextMenuGroupResult->addAction(QIcon(":/Icones/Icones/expand.png"), tr("Déplier tous les résultats"), this, SLOT(expandAllTypeOfSelected()));
-    m_contextMenuGroupResult->addAction(QIcon(":/Icones/Icones/collapse.png"), tr("Replier"), this, SLOT(collapseSelected()));
-    m_contextMenuGroupResult->addAction(QIcon(":/Icones/Icones/collapse.png"), tr("Replier tous les résultats"), this, SLOT(collapseAllTypeOfSelected()));
-
-    _view.setContextMenuPolicy(Qt::CustomContextMenu);
-    //_view.setExpandsOnDoubleClick(true);
+    m_treeView.setContextMenuPolicy(Qt::CustomContextMenu);
+    //m_treeView.setExpandsOnDoubleClick(true);
 
     connect(_contextMenuStep, SIGNAL(executeSelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
     connect(_contextMenuStep, SIGNAL(executeModifySelectedStep(CT_VirtualAbstractStep*)), this, SLOT(executeModifyStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
@@ -105,18 +107,19 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     connect(_stepManager, SIGNAL(resultToBeSerialized(const CT_AbstractResult*)), this, SLOT(resultToBeSerialized(const CT_AbstractResult*)), Qt::DirectConnection);
 
-    connect(&_view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showViewContextMenu(QPoint)), Qt::QueuedConnection);
-    connect(&_view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)), Qt::QueuedConnection);
-    connect(_view.selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectionChanged(QItemSelection,QItemSelection)));
+    connect(&m_treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showViewContextMenu(QPoint)), Qt::QueuedConnection);
+    connect(&m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)), Qt::QueuedConnection);
+    connect(m_treeView.selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(selectionChanged(QItemSelection,QItemSelection)));
 
     connect(this, SIGNAL(addResult(QStandardItem*,CT_AbstractResult*)), this, SLOT(resultToAdd(QStandardItem*,CT_AbstractResult*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeResult(QStandardItem*,MyQStandardItem*)), this, SLOT(resultToRemove(QStandardItem*,MyQStandardItem*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeItem(QStandardItem*)), this, SLOT(itemToRemove(QStandardItem*)), Qt::QueuedConnection);
+
+    m_treeView.expand(_model.indexFromItem(getRootItem()));
 }
 
 GStepManager::~GStepManager()
 {
-    delete m_contextMenuGroupResult;
 }
 
 CDM_StepManager* GStepManager::getStepManager() const
@@ -267,7 +270,7 @@ MyQStandardItem* GStepManager::findItem(CT_AbstractResult *res)
 
 MyQStandardItem* GStepManager::getSelectedItem()
 {
-    QModelIndexList list = _view.selectionModel()->selectedRows();
+    QModelIndexList list = m_treeView.selectionModel()->selectedRows();
 
     if(!list.isEmpty())
     {
@@ -292,7 +295,7 @@ MyQStandardItem* GStepManager::recursiveFindItem(CT_VirtualAbstractStep *step)
     {
         // on recherche l'tape dans les enfants
         // de l'item root
-        parentItem = _model.invisibleRootItem();
+        parentItem = getRootItem();
     }
 
     if(parentItem != NULL)
@@ -369,6 +372,24 @@ QList<MyQStandardItem *> GStepManager::getItemsForResult(QStandardItem *stepItem
     }
 
     return list;
+}
+
+MyQStandardItem *GStepManager::recursiveFindItemThatRepresentAStepForChild(MyQStandardItem *child) const
+{
+    if(child->step() != NULL)
+        return child;
+
+    MyQStandardItem *parent = dynamic_cast<MyQStandardItem*>(child->parentItem());
+
+    if(parent == NULL)
+        return NULL;
+
+    return recursiveFindItemThatRepresentAStepForChild(parent);
+}
+
+QStandardItem *GStepManager::getRootItem() const
+{
+    return m_rootItem;
 }
 
 void GStepManager::stepDataChanged(MyQStandardItem *item)
@@ -523,35 +544,46 @@ bool GStepManager::checkExecuteStepAndShowWarningMessage(CT_VirtualAbstractStep 
     return continueExecution;
 }
 
-bool GStepManager::configureStepAndAdd(CT_VirtualAbstractStep *newStep, CT_VirtualAbstractStep *parentStep)
+bool GStepManager::configureStepAndAdd(CT_VirtualAbstractStep *stepToCopy, CT_VirtualAbstractStep *parentStep)
 {
-    if(newStep != NULL)
+    if((stepToCopy != NULL) && (stepToCopy->getPlugin() != NULL))
     {
-        if(newStep->showPreConfigurationDialog())
-        {
-            if(newStep->initInResultModelList())
+        if(!stepToCopy->acceptAddAfterThisStep(parentStep)) {
+            QString error = tr("Impossible d'ajouter l'étape %1").arg(staticGetStepName(*stepToCopy));
+
+            if(parentStep != NULL)
+                error += tr(" après l'étape %2 car elles ne sont pas compatible !").arg(staticGetStepName(*parentStep));
+            else
+                error += tr(" à la racine !");
+
+            GUI_LOG->addErrorMessage(LogInterface::gui, error);
+        }
+        else {
+            CT_VirtualAbstractStep *stepCopied = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
+
+            if(stepCopied->showPreConfigurationDialog())
             {
-                if(newStep->showInputResultConfigurationDialog())
+                if(stepCopied->initInResultModelList())
                 {
-                    if(newStep->showPostConfigurationDialog())
+                    if(stepCopied->showInputResultConfigurationDialog())
                     {
-                        if(newStep->initAfterConfiguration())
+                        if(stepCopied->showPostConfigurationDialog())
                         {
-                            _stepManager->addStep(newStep, parentStep);
+                            if(stepCopied->initAfterConfiguration())
+                            {
+                                _stepManager->addStep(stepCopied, parentStep);
 
-                            MyQStandardItem *item = findItem(newStep);
+                                selectStep(stepCopied);
 
-                            if(item != NULL)
-                                _view.selectionModel()->select(_model.indexFromItem(item), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-
-                            return true;
+                                return true;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        delete newStep;
+            delete stepCopied;
+        }
     }
 
     return false;
@@ -562,9 +594,9 @@ void GStepManager::recursiveExpandCollapseItemOfStep(MyQStandardItem *item, bool
     if(item->step() != NULL)
     {
         if(expand)
-            _view.expand(_model.indexFromItem(item));
+            m_treeView.expand(_model.indexFromItem(item));
         else
-            _view.collapse(_model.indexFromItem(item));
+            m_treeView.collapse(_model.indexFromItem(item));
     }
 
     int size = item->rowCount();
@@ -578,9 +610,9 @@ void GStepManager::recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *it
     if((item->step() == NULL) && (item->result() == NULL))
     {
         if(expand)
-            _view.expand(_model.indexFromItem(item));
+            m_treeView.expand(_model.indexFromItem(item));
         else
-            _view.collapse(_model.indexFromItem(item));
+            m_treeView.collapse(_model.indexFromItem(item));
     }
 
     int size = item->rowCount();
@@ -589,29 +621,19 @@ void GStepManager::recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *it
         recursiveExpandCollapseItemOfResultsGroup((MyQStandardItem*)item->child(i), expand);
 }
 
+void GStepManager::selectStep(CT_VirtualAbstractStep *step)
+{
+    MyQStandardItem *item = findItem(step);
+
+    if(item != NULL)
+        m_treeView.selectionModel()->select(_model.indexFromItem(item), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+}
+
 void GStepManager::addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep *stepToCopy)
 {
     MyQStandardItem *item = getSelectedItem();
 
-    if((item == NULL) || (item->step() == NULL)) {
-        CT_AbstractStepLoadFile *lfStep = dynamic_cast<CT_AbstractStepLoadFile*>(stepToCopy);
-
-        if(lfStep != NULL) {
-            addStepToParentAndConfigure(NULL, lfStep);
-            return;
-        }
-
-        CT_AbstractStepCanBeAddedFirst *cbafStep = dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(stepToCopy);
-
-        if(cbafStep != NULL) {
-            addStepToParentAndConfigure(NULL, cbafStep);
-            return;
-        }
-
-        GUI_LOG->addErrorMessage(LogInterface::gui, tr("Impossible d'ajouter l'étape %1 à la racine car elle n'est pas du type CT_AbstractStepLoadFile ou CT_AbstractStepCanBeAddedFirst").arg(staticGetStepName(*stepToCopy)));
-    } else if(item->step() != NULL) {
-        addStepToParentAndConfigure(item->step(), stepToCopy);
-    }
+    configureStepAndAdd(stepToCopy, (item == NULL) ? NULL : item->step());
 }
 
 ////////////// PUBLIC SLOTS //////////////
@@ -694,6 +716,8 @@ void GStepManager::addOpenFileStep(QString filePath)
                                 {
                                     _stepManager->addStep(newStepLF);
 
+                                    selectStep(newStepLF);
+
                                     return;
                                 }
                             }
@@ -704,30 +728,6 @@ void GStepManager::addOpenFileStep(QString filePath)
 
             delete newStep;
         }
-    }
-}
-
-void GStepManager::addStepToParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
-{
-    if(stepToCopy->getPlugin() != NULL)
-    {
-        if((parentStep == NULL) && stepToCopy->needInputResults())
-            return;
-
-        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
-
-        configureStepAndAdd(newStep, parentStep);
-    }
-}
-
-void GStepManager::insertStepInParentAndConfigure(CT_VirtualAbstractStep *parentStep, CT_VirtualAbstractStep *stepToCopy)
-{
-    if((parentStep != NULL)
-            && (stepToCopy->getPlugin() != NULL))
-    {
-        CT_VirtualAbstractStep *newStep = stepToCopy->getPlugin()->createNewInstanceOfStep(*stepToCopy, parentStep);
-
-        configureStepAndAdd(newStep, parentStep);
     }
 }
 
@@ -907,7 +907,7 @@ void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 
     if(parentStep == NULL)
     {
-        item = _model.invisibleRootItem();
+        item = getRootItem();
     }
     else
     {
@@ -925,7 +925,7 @@ void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 
         item->appendRow(newItems);
 
-        _view.expand(_model.indexFromItem(newItems.first()));
+        m_treeView.expand(_model.indexFromItem(newItems.first()));
     }
 }
 
@@ -936,7 +936,7 @@ void GStepManager::stepInserted(int row, CT_VirtualAbstractStep *step)
 
     if(parentStep == NULL)
     {
-        item = _model.invisibleRootItem();
+        item = getRootItem();
     }
     else
     {
@@ -971,7 +971,7 @@ void GStepManager::stepInserted(int row, CT_VirtualAbstractStep *step)
             item->insertRow(item->rowCount(), list);
         }
 
-        _view.expandAll();
+        m_treeView.expandAll();
     }
 }
 
@@ -1170,7 +1170,7 @@ void GStepManager::resultToAdd(QStandardItem *parentItem, CT_AbstractResult *res
 
         _resToBeAddedList.removeAt(index);
 
-        _view.expand(_model.indexFromItem(newItems.first()));
+        m_treeView.expand(_model.indexFromItem(newItems.first()));
     }
 
     _mutexResList.unlock();
@@ -1192,7 +1192,7 @@ void GStepManager::itemToRemove(QStandardItem *item)
     }
     else
     {
-        _model.invisibleRootItem()->removeRow(item->row());
+        getRootItem()->removeRow(item->row());
     }
 }
 
@@ -1200,18 +1200,28 @@ void GStepManager::selectionChanged(const QItemSelection &selected, const QItemS
 {
     MyQStandardItem *item = getSelectedItem();
 
+    // if the item represent a step
     if((item != NULL) && (item->step() != NULL))
         emit stepSelected(item->step());
-    else
+    else if(item != NULL){
+        // if not we get the first parent that represent a step and select it if we find it
+        MyQStandardItem *itemOfAStep = recursiveFindItemThatRepresentAStepForChild(item);
+
+        if(itemOfAStep == NULL)
+            emit stepSelected(NULL);
+        else
+            selectStep(itemOfAStep->step());
+    } else {
         emit stepSelected(NULL);
+    }
 }
 
 void GStepManager::expandSelected()
 {
-    QModelIndexList list = _view.selectionModel()->selectedRows();
+    QModelIndexList list = m_treeView.selectionModel()->selectedRows();
 
     if(!list.isEmpty())
-        _view.expand(list.first());
+        m_treeView.expand(list.first());
 }
 
 void GStepManager::expandAllTypeOfSelected()
@@ -1222,7 +1232,7 @@ void GStepManager::expandAllTypeOfSelected()
     {
         if(item->step() != NULL)
         {
-            QStandardItem *root = _model.invisibleRootItem();
+            QStandardItem *root = getRootItem();
             int size = root->rowCount();
 
             for(int i=0; i<size; ++i)
@@ -1230,7 +1240,7 @@ void GStepManager::expandAllTypeOfSelected()
         }
         else if(item->result() == NULL)
         {
-            QStandardItem *root = _model.invisibleRootItem();
+            QStandardItem *root = getRootItem();
             int size = root->rowCount();
 
             for(int i=0; i<size; ++i)
@@ -1241,10 +1251,10 @@ void GStepManager::expandAllTypeOfSelected()
 
 void GStepManager::collapseSelected()
 {
-    QModelIndexList list = _view.selectionModel()->selectedRows();
+    QModelIndexList list = m_treeView.selectionModel()->selectedRows();
 
     if(!list.isEmpty())
-        _view.collapse(list.first());
+        m_treeView.collapse(list.first());
 }
 
 void GStepManager::collapseAllTypeOfSelected()
@@ -1255,7 +1265,7 @@ void GStepManager::collapseAllTypeOfSelected()
     {
         if(item->step() != NULL)
         {
-            QStandardItem *root = _model.invisibleRootItem();
+            QStandardItem *root = getRootItem();
             int size = root->rowCount();
 
             for(int i=0; i<size; ++i)
@@ -1263,13 +1273,18 @@ void GStepManager::collapseAllTypeOfSelected()
         }
         else if(item->result() == NULL)
         {
-            QStandardItem *root = _model.invisibleRootItem();
+            QStandardItem *root = getRootItem();
             int size = root->rowCount();
 
             for(int i=0; i<size; ++i)
                 recursiveExpandCollapseItemOfResultsGroup((MyQStandardItem*)root->child(i), false);
         }
     }
+}
+
+void GStepManager::removeAllStepFromRoot()
+{
+    GUI_MANAGER->asyncRemoveAllStep(NULL);
 }
 
 void GStepManager::showViewContextMenu(const QPoint &point)
@@ -1281,11 +1296,17 @@ void GStepManager::showViewContextMenu(const QPoint &point)
         if(item->step() != NULL)
         {
             _contextMenuStep->setSelectedStep(item->step());
-            _contextMenuStep->exec(_view.viewport()->mapToGlobal(point));
+            _contextMenuStep->exec(m_treeView.viewport()->mapToGlobal(point));
         }
         else if(item->result() == NULL)
         {
-            m_contextMenuGroupResult->exec(_view.viewport()->mapToGlobal(point));
+            QMenu menu(this);
+
+            menu.addAction(QIcon(":/Icones/Icones/delete.png"), tr("Supprimer toutes les étapes"), this, SLOT(removeAllStepFromRoot()));
+            menu.addAction(QIcon(":/Icones/Icones/expand.png"), tr("Déplier"), this, SLOT(expandSelected()));
+            menu.addAction(QIcon(":/Icones/Icones/collapse.png"), tr("Replier"), this, SLOT(collapseSelected()));
+
+            menu.exec(m_treeView.viewport()->mapToGlobal(point));
         }
     }
 }

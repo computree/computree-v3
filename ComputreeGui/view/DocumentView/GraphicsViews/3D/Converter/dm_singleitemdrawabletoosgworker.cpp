@@ -15,7 +15,10 @@ void DM_SingleItemDrawableToOsgWorker::setItemDrawable(CT_AbstractItemDrawable *
 
 void DM_SingleItemDrawableToOsgWorker::setColor(const QColor &color)
 {
-    m_painter.setColor(color);
+    if(color.alpha() == KEEP_ALPHA_COLOR)
+        m_painter.setColor(QColor(color.red(), color.green(), color.blue()));
+    else
+        m_painter.setColor(color);
 }
 
 void DM_SingleItemDrawableToOsgWorker::setGeometriesConfiguration(const DM_GeometriesConfiguration &config)

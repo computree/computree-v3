@@ -47,6 +47,16 @@ void GStepChooserDialog::init()
     connect(ui->stepChooserWidget, SIGNAL(levelSelected(CT_MenuLevel*)), this, SLOT(refreshContextMenuOfLevel(CT_MenuLevel*)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepSelected(CT_VirtualAbstractStep*)), this, SLOT(refreshContextMenuOfStep(CT_VirtualAbstractStep*)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepDoubleClicked(CT_VirtualAbstractStep*)), m_stepManager, SLOT(addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep*)));
+
+    setWindowFlags(Qt::Dialog
+                   | Qt::WindowTitleHint
+                   | Qt::CustomizeWindowHint
+                   | Qt::WindowMinimizeButtonHint);
+}
+
+GStepViewDefault *GStepChooserDialog::stepsChooserWidget() const
+{
+    return ui->stepChooserWidget;
 }
 
 bool GStepChooserDialog::existInFavorites(CT_VirtualAbstractStep *step)
@@ -81,6 +91,19 @@ bool GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, CT_Virtual
     }
 
     return false;
+}
+
+bool GStepChooserDialog::event(QEvent *e)
+{
+    if(e->type() == QEvent::WindowStateChange) {
+
+        if(isMinimized())
+            emit maximizedChanged(false);
+        else
+            emit maximizedChanged(true);
+    }
+
+    return QDialog::event(e);
 }
 
 void GStepChooserDialog::showEvent(QShowEvent *e)
