@@ -12,6 +12,7 @@ public:
         First,
         Intermediate,
         Last,
+        LastAndOnly,
         Only,
         All,
         ReturnType_begin = First,

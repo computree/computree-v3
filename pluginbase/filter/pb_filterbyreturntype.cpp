@@ -171,6 +171,7 @@ QString PB_FilterByReturnType::getDetailledDescription() const
     return tr("Filter by return type. You can specify following types:\n"
               "- First: first returns\n"
               "- Last: last returns\n"
+              "- LastAndOnly: last and only returns\n"
               "- Intermediare: Returns which are not first neither last\n"
               "- Only: first returns if no other return for the ray\n"
               "- All : don't filter on return type\n"
@@ -202,7 +203,8 @@ void PB_FilterByReturnType::validatePoint(CT_PointIterator &pointIt, CT_LASData 
 {   
     // Test for the type of return
     if (_type == PB_FilterByReturnType::First && lasData._Return_Number != 1) {return;}
-    if (_type == PB_FilterByReturnType::Last && lasData._Return_Number != lasData._Number_of_Returns) {return;}
+    if (_type == PB_FilterByReturnType::Last && (lasData._Return_Number != lasData._Number_of_Returns || lasData._Return_Number == 1)) {return;}
+    if (_type == PB_FilterByReturnType::LastAndOnly && lasData._Return_Number != lasData._Number_of_Returns) {return;}
     if (_type == PB_FilterByReturnType::Intermediate && (lasData._Return_Number == 1 || lasData._Return_Number == lasData._Number_of_Returns)) {return;}
     if (_type == PB_FilterByReturnType::Only && (lasData._Return_Number != 1 || lasData._Number_of_Returns != 1)) {return;}
 
@@ -218,6 +220,7 @@ QString PB_FilterByReturnType::getStringForType(PB_FilterByReturnType::ReturnTyp
     {
         case PB_FilterByReturnType::First : return "first";
         case PB_FilterByReturnType::Last : return "last";
+        case PB_FilterByReturnType::LastAndOnly : return "lastAndOnly";
         case PB_FilterByReturnType::Intermediate : return "int";
         case PB_FilterByReturnType::Only : return "only";
     }
@@ -229,6 +232,7 @@ PB_FilterByReturnType::ReturnType PB_FilterByReturnType::getTypeForString(QStrin
 {
     if (returnTypeAsString == "first") {return PB_FilterByReturnType::First;}
     if (returnTypeAsString == "last") {return PB_FilterByReturnType::Last;}
+    if (returnTypeAsString == "lastAndOnly") {return PB_FilterByReturnType::LastAndOnly;}
     if (returnTypeAsString == "int") {return PB_FilterByReturnType::Intermediate;}
     if (returnTypeAsString == "only") {return PB_FilterByReturnType::Only;}
 
