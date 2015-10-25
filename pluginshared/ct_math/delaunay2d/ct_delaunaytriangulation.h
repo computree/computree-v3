@@ -80,21 +80,8 @@ public:
     // these 4 points are NOT in insertedVertex List
     inline const QVector<CT_DelaunayVertex*> &getCorners () {return _corners;}
 
-    // gives a list of destructed triangles during last vertex insertion
-    inline const QList<CT_DelaunayTriangle*> &getLastDestructedTriangles () {return _lastDestrLst;}
-
-    // gives a list of border triangles during last vertex insertion
-    // these triangles are destructed triangles neighbors
-    // new triangles created during insertion have 1 common side with them
-    inline const QList<CT_DelaunaySide*> &getLastBorderTriangles () {return _lastBorderLst;}
-
     // gives the triangle used to enter in triangulation to find "to insert" vertex triangle
     const CT_DelaunayTriangle* getRefTriangle () {return _refTriangle;}
-
-
-    // accessors for bools
-    inline void setSavingMode (bool t) {_savingMode = t;}
-    inline bool getSavingMode () {return _savingMode;}
 
     inline bool isInitialized () {return _initialized;}
 
@@ -168,12 +155,6 @@ private:
     bool _initialized; // check if bounds have been set
     bool _neighborsComputed; // check if neighbors are up to date
     bool _voronoiDiagramComputed; // check if voronoi diagram is up to date
-
-    bool _savingMode; // are destr and border lists keeped in lastDestrLst and lastBorderLst ?
-
-    QList<CT_DelaunayTriangle*> _lastDestrLst;   // contains insertion process informations
-    QList<CT_DelaunaySide*>     _lastBorderLst;  // about (only) LAST vertex insertion
-                                              // only if savingMode==true
 
 };
 

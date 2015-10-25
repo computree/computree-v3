@@ -36,6 +36,7 @@ CT_DelaunayVertex::CT_DelaunayVertex(Eigen::Vector3d *data, bool deleteData)
 CT_DelaunayVertex::CT_DelaunayVertex(double x, double y)
 {
     _data = new Eigen::Vector3d(x, y, 0);
+    _deleteData = true;
 }
 
 CT_DelaunayVertex::~CT_DelaunayVertex()

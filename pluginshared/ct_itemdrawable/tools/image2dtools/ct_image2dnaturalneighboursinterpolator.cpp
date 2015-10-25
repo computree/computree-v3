@@ -18,8 +18,8 @@ void CT_Image2DNaturalNeighboursInterpolator::interpolateForOneCell(const size_t
     if (_raster->indexToGrid(index, xi, yi))
     {
         // Triangulation des points non interpoles du MNT, autour de l'indice concerné
-        CT_DelaunayTriangulation delaunay;
-        delaunay.init((int)xi - _nCells - 2, (int)yi - _nCells - 2, (int)xi + _nCells + 2, (int)yi + _nCells + 2);
+        CT_DelaunayTriangulation *delaunay = new CT_DelaunayTriangulation();
+        delaunay->init((int)xi - _nCells - 2, (int)yi - _nCells - 2, (int)xi + _nCells + 2, (int)yi + _nCells + 2);
 
         int cpt = 0;
         for (int xx = (int)xi - _nCells ; xx <= (int)xi + _nCells ; xx++) {
@@ -36,7 +36,7 @@ void CT_Image2DNaturalNeighboursInterpolator::interpolateForOneCell(const size_t
                             (*pt)(0) = (double)xx;
                             (*pt)(1) = (double)yy;
                             (*pt)(2) = value;
-                            delaunay.addVertex(pt, true);
+                            delaunay->addVertex(pt, true);
 
                             cpt++;
                         }
@@ -53,9 +53,10 @@ void CT_Image2DNaturalNeighboursInterpolator::interpolateForOneCell(const size_t
             (*pt)(1) = (double)yi;
             (*pt)(2) = value;
 
-            CT_DelaunayVertex* vt = delaunay.addVertex(pt, true);
-            delaunay.doInsertion();
-            delaunay.getVerticesNeighbors();
+
+            CT_DelaunayVertex* vt = delaunay->addVertex(pt, true);
+            delaunay->doInsertion();
+            delaunay->getVerticesNeighbors();
 
             QList<CT_DelaunayVertex*> &voisins = vt->getNeighbors();
 
@@ -81,6 +82,7 @@ void CT_Image2DNaturalNeighboursInterpolator::interpolateForOneCell(const size_t
             }
         }
 
+        delete delaunay;
     }
 }
 
