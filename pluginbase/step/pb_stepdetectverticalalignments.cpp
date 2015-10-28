@@ -38,6 +38,7 @@ PB_StepDetectVerticalAlignments::PB_StepDetectVerticalAlignments(CT_StepInitiali
     _lengthThreshold = 1.0;
     _heightThreshold = 0.6;
     _ratioDist = 1.0;
+    _maxDiamRatio = 0.1;
 }
 
 // Step description (tooltip of contextual menu)
@@ -92,6 +93,7 @@ void PB_StepDetectVerticalAlignments::createOutResultModelListProtected()
     resCpy->addItemAttributeModel(_line_ModelName, _attQ75_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistQ75"));
     resCpy->addItemAttributeModel(_line_ModelName, _attMax_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMax"));
     resCpy->addItemAttributeModel(_line_ModelName, _attMean_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DistMean"));
+    resCpy->addItemAttributeModel(_line_ModelName, _attDiamEq_ModelName, new CT_StdItemAttributeT<double>(CT_AbstractCategory::DATA_VALUE), tr("DiamEq"));
 
     resCpy->addGroupModel(DEFin_grp, _grpDroppedCluster_ModelName, new CT_StandardItemGroup(), tr("Clusters éliminés"));
     resCpy->addItemModel(_grpDroppedCluster_ModelName, _droppedCluster_ModelName, new CT_PointCluster(), tr("Cluster éliminé"));
@@ -119,6 +121,7 @@ void PB_StepDetectVerticalAlignments::createPostConfigurationDialog()
     configDialog->addDouble(tr("Supprimer les clusters dont la longueur est inférieure à"), "m", 0, 1000, 2, _lengthThreshold);
     configDialog->addDouble(tr("Supprimer les clusters qui commence au dessus de "), "% de Hscene", 0, 100, 0, _heightThreshold, 100);
     configDialog->addDouble(tr("Valeur max. pour (DistMed - DistMoy) / DistMoy"), "%", 0, 100, 0, _ratioDist, 100);
+    configDialog->addDouble(tr("Ecart max Dmax n et n-1"), "%", 0, 100, 0, _maxDiamRatio, 100);
 }
 
 
@@ -474,6 +477,43 @@ void PB_StepDetectVerticalAlignments::AlignmentsDetectorForScene::detectAlignmen
                     poly = new CT_Polygon2D(_step->_convexProj_ModelName.completeName(), _res, polyData);
                     poly->setZValue(lineData->getP1()(2));
                 }
+
+                // Compute diameter of the stem (using max distance between two projected points;
+                QList<float> diamEqs;
+                for (int ii = 0 ; ii < projPts.size() ; ii++)
+                {
+                    const Eigen::Vector2d *pt1 = projPts.at(ii);
+                    for (int jj = ii + 1 ; jj < projPts.size() ; jj++)
+                    {
+                        const Eigen::Vector2d *pt2 = projPts.at(jj);
+                        float dist = sqrt(pow((*pt1)(0) - (*pt2)(0), 2) + pow((*pt1)(1) - (*pt2)(1), 2));
+                        diamEqs.append(dist);
+                    }
+                }
+                qSort(diamEqs);
+
+                double diamEq = 0;
+                if (diamEqs.size() > 0)
+                {
+                    diamEq = diamEqs.last();
+                    bool stop = false;
+                    int index = diamEqs.size() - 2;
+                    while (index >= 0 && !stop)
+                    {
+                        double previousDiam = diamEqs.at(index);
+                        double ratio = (diamEq - previousDiam) / previousDiam;
+                        if (ratio > _step->_maxDiamRatio)
+                        {
+                            diamEq = previousDiam;
+                            index--;
+                        } else {
+                            stop = true;
+                        }
+                    }
+                    diamEqs.clear();
+                }
+
+
                 qDeleteAll(projPts);
 
                 double critere = (distVal->_q50 - distVal->_mean) / distVal->_mean;
@@ -523,6 +563,11 @@ void PB_StepDetectVerticalAlignments::AlignmentsDetectorForScene::detectAlignmen
                                                                                CT_AbstractCategory::DATA_VALUE,
                                                                                _res,
                                                                                distVal->_mean));
+
+                    line->addItemAttribute(new CT_StdItemAttributeT<double>(_step->_attDiamEq_ModelName.completeName(),
+                                                                               CT_AbstractCategory::DATA_VALUE,
+                                                                               _res,
+                                                                               diamEq));
 
                 } else {
                     CT_StandardItemGroup* grpClDropped = new CT_StandardItemGroup(_step->_grpDroppedCluster_ModelName.completeName(), _res);

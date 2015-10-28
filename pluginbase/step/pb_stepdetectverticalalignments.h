@@ -164,6 +164,7 @@ private:
     CT_AutoRenameModels    _attQ75_ModelName;
     CT_AutoRenameModels    _attMax_ModelName;
     CT_AutoRenameModels    _attMean_ModelName;
+    CT_AutoRenameModels    _attDiamEq_ModelName;
 
     CT_AutoRenameModels    _grpDroppedCluster_ModelName;
     CT_AutoRenameModels    _droppedCluster_ModelName;
@@ -179,6 +180,7 @@ private:
     double    _lengthThreshold;
     double    _heightThreshold;
     double    _ratioDist;
+    double    _maxDiamRatio;
 
 };
 
