@@ -39,29 +39,13 @@
 #include "step/pb_stepgenericexporter.h"
 #include "step/pb_steploadmultixybfiles.h"
 #include "step/pb_stepuseritemselection.h"
-#include "step/pb_stepcomputehitgrid.h"
-#include "step/pb_stepselectcellsingrid3d.h"
-#include "step/pb_stepsegmentcrowns.h"
-#include "step/pb_stepsegmentgaps.h"
-#include "step/pb_stepfilterpointsbyboolgrid.h"
 #include "step/pb_steploadobjfile.h"
 #include "step/pb_steploadgrid3dfile.h"
 #include "step/pb_steploadpbmfile.h"
 #include "step/pb_steploadpgmfile.h"
 #include "step/pb_stepgenericloadfile.h"
-#include "step/pb_stepreducepointsdensity.h"
-#include "step/pb_stepaddaffiliationid.h"
-#include "step/pb_stepsetaffiliationidfromreference.h"
 #include "step/pb_stepuseritemcopy.h"
-#include "step/pb_stepslicepointcloud.h"
-#include "step/pb_stepmanualinventory.h"
-#include "step/pb_stepvalidateinventory.h"
-#include "step/pb_stepselectgroupsbyreferenceheight.h"
-#include "step/pb_stepmatchitemspositions.h"
-#include "step/pb_stepimportsegmafilesformatching.h"
 #include "step/pb_stepcreatedatasource.h"
-#include "step/pb_steptransformpointcloud.h"
-#include "step/pb_stepfilteritemsbyposition.h"
 #include "step/pb_stepcomputepointmetrics.h"
 #include "step/pb_stepcomputerastermetrics.h"
 
@@ -69,34 +53,7 @@
 #include "ct_step/ct_stependloop.h"
 #include "step/pb_stepbeginloopthroughgroups.h"
 #include "step/pb_stepbeginloopthroughdatasource.h"
-#include "step/pb_steploaddatafromitemposition.h"
-#include "step/pb_stepcreateplotmanagerfromfile.h"
-#include "step/pb_stepcreateplotmanagergrid.h"
-#include "step/pb_steploadpositionsformatching.h"
-#include "step/pb_steploadtreemap.h"
-#include "step/pb_stepcompare3dgridscontents.h"
-#include "step/pb_stepselectcellsingrid3dbybinarypattern.h"
-#include "step/pb_stepextractlogbuffer.h"
-#include "step/pb_stepfitcylinderoncluster.h"
-#include "step/pb_stepextractpositionsfromdensity.h"
-#include "step/pb_stepmergeclustersfrompositions.h"
-#include "step/pb_stepmergeclustersfrompositions02.h"
-#include "step/pb_stepmodifypositions2d.h"
-#include "step/pb_stepcomputecrownprojection.h"
 #include "step/pb_stepapplypointfilters.h"
-#include "step/pb_steploadplotareas.h"
-#include "step/pb_stepcorrectalsprofile.h"
-#include "step/pb_stepexportitemlist.h"
-#include "step/pb_stepaddattributevalue.h"
-#include "step/pb_stepdetectverticalalignments.h"
-#include "step/pb_stepselectbboxbyfilename.h"
-#include "step/pb_stepsegmentcrownsfromstemclusters.h"
-
-#ifdef USE_OPENCV
-#include "step/pb_stepfiltermaximabyclusterpositions.h"
-#include "step/pb_stepconvertfloatimagetoqint32.h"
-#include "step/pb_stepcomputeattributemapfromclusters.h"
-#endif
 
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
@@ -127,12 +84,6 @@
 #include "ct_reader/ct_reader_las.h"
 #include "ct_reader/ct_reader_gdal.h"
 #include "ct_reader/ct_reader_terrascanprj.h"
-
-#include "filter/pb_filterbyreturntype.h"
-#include "filter/pb_filterremoveupperoutliers.h"
-
-#include "metric/pb_metricquantiles.h"
-#include "metric/pb_metriccomputestats.h"
 
 
 #include "ct_step/ct_stepinitializedata.h"
@@ -180,52 +131,12 @@ QSettings* PB_StepPluginManager::initQSettings()
 
 bool PB_StepPluginManager::loadGenericsStep()
 {
-    addNewPointsStep<PB_StepReducePointsDensity>(CT_StepsMenu::LP_Filter);
-    addNewPointsStep<PB_StepSlicePointCloud>(CT_StepsMenu::LP_Extract);
-    addNewPointsStep<PB_StepTransformPointCloud>(CT_StepsMenu::LP_Transform);
-    addNewPointsStep<PB_StepExtractLogBuffer>(CT_StepsMenu::LP_Extract);
-
-
-    addNewVoxelsStep<PB_StepComputeHitGrid>(CT_StepsMenu::LP_Create);
-    addNewMetricsStep<PB_StepCorrectALSProfile>("");
-    addNewVoxelsStep<PB_StepSelectCellsInGrid3D>(CT_StepsMenu::LP_Filter);
-    addNewPointsStep<PB_StepFilterPointsByBoolGrid>(CT_StepsMenu::LP_Filter);
-    addNewVoxelsStep<PB_StepSelectCellsInGrid3DByBinaryPattern>(CT_StepsMenu::LP_Filter);
-    addNewVoxelsStep<PB_StepCompare3DGridsContents>("");
-
-    addNewGeometricalShapesStep<PB_StepSegmentCrowns>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepSegmentGaps>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepMergeClustersFromPositions02>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepComputeCrownProjection>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepSegmentCrownsFromStemClusters>(CT_StepsMenu::LP_Crowns);
-    addNewGeometricalShapesStep<PB_StepExtractPositionsFromDensity>("");
-
-    addNewWorkflowStep<PB_StepAddAffiliationID>("");
-    addNewWorkflowStep<PB_StepSetAffiliationIDFromReference>("");
     addNewWorkflowStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
     addNewWorkflowStep<PB_StepUserItemCopy>(CT_StepsMenu::LP_Filter);
-    addNewGeometricalShapesStep<PB_StepManualInventory>(CT_StepsMenu::LP_DBH);
-    addNewWorkflowStep<PB_StepSelectGroupsByReferenceHeight>(CT_StepsMenu::LP_Filter);
-    addNewGeometricalShapesStep<PB_StepValidateInventory>(CT_StepsMenu::LP_DBH);
-    addNewGeometricalShapesStep<PB_StepFitCylinderOnCluster>(CT_StepsMenu::LP_Fit);
-    addNewGeometricalShapesStep<PB_StepFilterItemsByPosition>(CT_StepsMenu::LP_Filter);
-    addNewGeometricalShapesStep<PB_StepMatchItemsPositions>("");
-    addNewGeometricalShapesStep<PB_StepModifyPositions2D>(CT_StepsMenu::LP_Transform);
-    addNewExportStep<PB_StepExportItemList>("");
-    addNewMetricsStep<PB_StepAddAttributeValue>("");
-    addNewGeometricalShapesStep<PB_StepDetectVerticalAlignments>(CT_StepsMenu::LP_Stems);
-
-    addNewLoadStep<PB_StepLoadDataFromItemPosition>("");
     addNewWorkflowStep<CT_StepBeginLoop>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughDataSource>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
-    addNewWorkflowStep<PB_StepCreatePlotManagerFromFile>("");
-    addNewWorkflowStep<PB_StepCreatePlotManagerGrid>("");
-    addNewWorkflowStep<PB_StepSelectBBoxByFileName>("");
-
-    addNewLoadStep<PB_StepLoadPlotAreas>("");
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
     addNewMetricsStep<PB_StepComputePointMetrics>("");
     addNewMetricsStep<PB_StepComputeRasterMetrics>("");
@@ -241,16 +152,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewLoadStep<PB_StepLoadGrid3dFile>("");
     addNewLoadStep<PB_StepLoadPbmFile>("");
     addNewLoadStep<PB_StepLoadPgmFile>("");
-    addNewLoadStep<PB_StepLoadPositionsForMatching>();
-    addNewLoadStep<PB_StepLoadTreeMap>("");
-    addNewLoadStep<PB_StepImportSegmaFilesForMatching>("");
     addNewLoadStep<PB_StepLoadMultiXYBFiles>("");
-
-#ifdef USE_OPENCV
-    addNewRastersStep<PB_StepFilterMaximaByClusterPositions>("");
-    addNewRastersStep<PB_StepConvertFloatImageToqint32>(CT_StepsMenu::LP_Transform);
-    addNewMetricsStep<PB_StepComputeAttributeMapFromClusters>("");
-#endif
 
     return true;
 }
@@ -320,15 +222,12 @@ bool PB_StepPluginManager::loadReaders()
 
 bool PB_StepPluginManager::loadFilters()
 {
-    addNewFilter(new PB_FilterByReturnType());
-    addNewFilter(new PB_FilterRemoveUpperOutliers());
     return true;
 }
 
 bool PB_StepPluginManager::loadMetrics()
 {
-    addNewMetric(new PB_MetricQuantiles());
-    addNewMetric(new PB_MetricComputeStats());return true;
+    return true;
 }
 
 #ifdef USE_GDAL
