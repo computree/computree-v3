@@ -67,7 +67,7 @@ PB_StepComputePointMetrics::~PB_StepComputePointMetrics()
 // Step description (tooltip of contextual menu)
 QString PB_StepComputePointMetrics::getStepDescription() const
 {
-    return tr("Calcule des métrics sur les points");
+    return tr("Métriques de points (XYZ)");
 }
 
 // Step detailled description

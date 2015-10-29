@@ -48,7 +48,7 @@ PB_StepLoadMultiXYBFiles::~PB_StepLoadMultiXYBFiles()
 // Step description (tooltip of contextual menu)
 QString PB_StepLoadMultiXYBFiles::getStepDescription() const
 {
-    return tr("Chargement d'une liste de fichiers xyb");
+    return tr("Fichiers multiples XYB");
 }
 
 // Step copy method

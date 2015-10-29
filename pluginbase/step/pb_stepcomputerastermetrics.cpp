@@ -62,7 +62,7 @@ PB_StepComputeRasterMetrics::~PB_StepComputeRasterMetrics()
 // Step description (tooltip of contextual menu)
 QString PB_StepComputeRasterMetrics::getStepDescription() const
 {
-    return tr("Calcule des métrics sur des rasters");
+    return tr("Métriques de rasters");
 }
 
 // Step detailled description

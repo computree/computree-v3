@@ -25,7 +25,6 @@ public:
         LO_GeometricalShapes,   // Steps that works with geometrical shapes
         LO_Voxels,              // Steps that works wih voxels
         LO_Rasters,             // Steps that works with rasters
-        LO_Metrics,             // Steps that works with metrics
         LO_Meshes,              // Steps that works with meshes
         LO_WorkFlow,            // Steps that can control the worklow of all other steps
         LO_Other,               // Steps that can not be ordered in one of other operation
@@ -42,6 +41,7 @@ public:
         LP_Detect,
         LP_Transform,
         LP_Classify,
+        LP_Analyze,
         LP_Fit,
         LP_Colorize,
         LP_Clusters,

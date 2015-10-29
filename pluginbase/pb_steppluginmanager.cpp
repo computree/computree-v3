@@ -138,15 +138,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
-    addNewMetricsStep<PB_StepComputePointMetrics>("");
-    addNewMetricsStep<PB_StepComputeRasterMetrics>("");
+    addNewPointsStep<PB_StepComputePointMetrics>(CT_StepsMenu::LP_Analyze);
+    addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
 
     addNewLoadStep<PB_StepCreateDataSource>("");
-    addNewLoadStep<PB_StepLoadAsciiFile02>("");
-    addNewLoadStep<PB_StepLoadObjFile>("");
-    addNewLoadStep<PB_StepLoadGrid3dFile>("");
-    addNewLoadStep<PB_StepLoadPbmFile>("");
-    addNewLoadStep<PB_StepLoadPgmFile>("");
     addNewLoadStep<PB_StepLoadAsciiFile02>("");
     addNewLoadStep<PB_StepLoadObjFile>("");
     addNewLoadStep<PB_StepLoadGrid3dFile>("");

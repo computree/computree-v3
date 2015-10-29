@@ -79,7 +79,7 @@ PB_StepCreateDataSource::~PB_StepCreateDataSource()
 // Step description (tooltip of contextual menu)
 QString PB_StepCreateDataSource::getStepDescription() const
 {
-    return tr("Créée une source de données");
+    return tr("Créer DataSource");
 }
 
 // Step detailled description
@@ -153,8 +153,8 @@ void PB_StepCreateDataSource::createPostConfigurationDialog()
         list_readersList.append(tr("ERREUR : aucun reader disponible"));
     }
 
-    CT_ComboBox* comboBox = configDialog->addStringChoice("Choix du type de fichier", "", list_readersList, _readersListValue);
-    _fileChoiceButton = configDialog->addFileChoice("Choisir les fichiers", CT_FileChoiceButton::OneOrMoreExistingFiles, list_readersList.first(), _filesList);
+    CT_ComboBox* comboBox = configDialog->addStringChoice(tr("Choix du type de fichier"), "", list_readersList, _readersListValue);
+    _fileChoiceButton = configDialog->addFileChoice(tr("Choisir les fichiers"), CT_FileChoiceButton::OneOrMoreExistingFiles, list_readersList.first(), _filesList);
 
     QObject::connect(comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(setFormat(QString)));
     if (_readersListValue != "") {setFormat(_readersListValue);}

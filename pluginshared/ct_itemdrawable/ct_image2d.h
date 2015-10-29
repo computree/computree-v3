@@ -114,7 +114,7 @@ public:
 
 
     /*!
-      * \brief CT_Grid2DXY factory with min and max (X,Y) coordinates
+      * \brief CT_Image2D factory with min and max (X,Y) coordinates
       *
       * \param model Item model for creation
       * \param result Result containing the item

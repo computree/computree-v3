@@ -45,7 +45,7 @@ PB_StepUserItemSelection::PB_StepUserItemSelection(CT_StepInitializeData &dataIn
 // Step description (tooltip of contextual menu)
 QString PB_StepUserItemSelection::getStepDescription() const
 {
-    return tr("Séléction d'un sous-ensemble d'items");
+    return tr("Séléction d'items");
 }
 
 // Step copy method
@@ -90,8 +90,8 @@ void PB_StepUserItemSelection::createPostConfigurationDialog()
     dialog->addText("Mode de séléction des items", "", "");
     CT_ButtonGroup &bg_mode = dialog->addButtonGroup(_mode);
 
-    dialog->addExcludeValue("", "", "Séléction classique", bg_mode, 0);
-    dialog->addExcludeValue("", "", "Par proximité des centres des items", bg_mode, 1);
+    dialog->addExcludeValue("", "", tr("Séléction classique"), bg_mode, 0);
+    dialog->addExcludeValue("", "", tr("Par proximité des centres des items"), bg_mode, 1);
 }
 
 void PB_StepUserItemSelection::compute()

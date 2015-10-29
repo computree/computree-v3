@@ -77,7 +77,7 @@ PB_StepExportItemList::~PB_StepExportItemList()
 // Step description (tooltip of contextual menu)
 QString PB_StepExportItemList::getStepDescription() const
 {
-    return tr("Export paramétré par une entête de fichier");
+    return tr("Export dans une boucle (nom de fichier adaptatif)");
 }
 
 // Step detailled description
@@ -141,7 +141,7 @@ void PB_StepExportItemList::createPostConfigurationDialog()
         list_exportersList.append(tr("ERREUR : aucun exporter disponible"));
     }
 
-    configDialog->addStringChoice("Choix du type de fichier", "", list_exportersList, _exportersListValue);
+    configDialog->addStringChoice(tr("Choix du type de fichier"), "", list_exportersList, _exportersListValue);
 
 }
 

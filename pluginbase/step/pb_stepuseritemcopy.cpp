@@ -40,7 +40,7 @@ PB_StepUserItemCopy::PB_StepUserItemCopy(CT_StepInitializeData &dataInit) : CT_A
 // Step description (tooltip of contextual menu)
 QString PB_StepUserItemCopy::getStepDescription() const
 {
-    return tr("Séléction d'un sous-ensemble d'items (copie les items)");
+    return tr("Séléction d'items (avec copie)");
 }
 
 // Step copy method
