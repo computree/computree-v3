@@ -141,7 +141,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewPointsStep<PB_StepComputePointMetrics>(CT_StepsMenu::LP_Analyze);
     addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
 
-    addNewLoadStep<PB_StepCreateDataSource>("");
+    addNewLoadStep<PB_StepCreateDataSource>(QObject::tr("DataSources"));
     addNewLoadStep<PB_StepLoadAsciiFile02>("");
     addNewLoadStep<PB_StepLoadObjFile>("");
     addNewLoadStep<PB_StepLoadGrid3dFile>("");
