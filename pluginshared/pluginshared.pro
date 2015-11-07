@@ -415,7 +415,8 @@ SOURCES += \
     ct_itemdrawable/tools/image2dtools/ct_image2dnaturalneighboursinterpolator.cpp \
     ct_step/tools/menu/ct_stepsmenu.cpp \
     ct_step/tools/menu/ct_menulevel.cpp \
-    ct_reader/ct_reader_terrascanprj.cpp
+    ct_reader/ct_reader_terrascanprj.cpp \
+    ct_math/ct_houghtransform.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -934,7 +935,8 @@ HEADERS += interfaces.h \
     ct_step/tools/menu/ct_stepsmenu.h \
     ct_step/tools/menu/ct_menulevel.h \
     ct_reader/ct_reader_terrascanprj.h \
-    ct_reader/ct_reader_terrascanprj_def_models.h
+    ct_reader/ct_reader_terrascanprj_def_models.h \
+    ct_math/ct_houghtransform.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
