@@ -42,6 +42,11 @@ public:
      * @brief Returns a const reference to the normal at index 'index'
      */
     virtual const CT_Normal& operator[](const size_t &index) const = 0;
+
+    /**
+     * @brief Replace a normal at index specified
+     */
+    virtual void replaceNormal(const size_t &index, CT_Normal &normal) = 0;
 };
 
 #endif // CT_ABSTRACTNORMALCLOUD_H

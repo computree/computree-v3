@@ -483,27 +483,80 @@ public:
         return index(levw, levx, levy, levz, returnedIndex);
     }
 
+    /*!
+     * \brief coordAtWXYZ Convert index for given (w, x, y, z) coordinate in cartesian system to grid coordinates
+     * \return true if the index is in the grid
+     */
+    inline bool coordAtWXYZ(const float w, const float x, const float y, const float z,
+                                size_t& outLevW, size_t& outLevX, size_t& outLevY, size_t& outLevZ) const
+    {
+        if ( !levW( w, outLevW ) )
+        {
+            return false;
+        }
+
+        if ( !levX( x, outLevX ) )
+        {
+            return false;
+        }
+
+        if ( !levY( y, outLevY ) )
+        {
+            return false;
+        }
+
+        if ( !levZ( z, outLevZ ) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    virtual QString valueAtIndexAsString(const size_t index) const = 0;
+
+    virtual QString NAAsString() const = 0;
+
+    Eigen::Vector4d boundingBoxBot() const { return _bot; }
+    void setBoundingBoxBot(const Eigen::Vector4d &bot) { _bot = bot; }
+
+    Eigen::Vector4d boundingBoxTop() const { return _top; }
+    void setBoundingBoxTop(const Eigen::Vector4d &top) { _top = top; }
+
+    Eigen::Vector4d res() const { return Eigen::Vector4d( _resw, _resx, _resy, _resz ); }
+    void setRes(const Eigen::Vector4d &res) { _resw = res.w();
+                                              _resx = res.x();
+                                              _resy = res.y();
+                                              _resz = res.z(); }
+
+    Eigen::Vector4i dim() const { return Eigen::Vector4i( _dimw, _dimx, _dimy, _dimz ); }
+    void setDim(const Eigen::Vector4i &dim) { _dimw = (size_t)dim.w();
+                                              _dimx = (size_t)dim.x();
+                                              _dimy = (size_t)dim.y();
+                                              _dimz = (size_t)dim.z();
+                                            }
+
 //**********************************************//
 //          CompuTree Core and GUI tools        //
 //**********************************************//
-        /*!
-         * \brief getType
-         * \return A string describing the hierarchy of computree types until this class
-         */
-        inline virtual QString getType() const { return staticGetType(); }
+    /*!
+     * \brief getType
+     * \return A string describing the hierarchy of computree types until this class
+     */
+    inline virtual QString getType() const { return staticGetType(); }
 
-        /*!
-         * \brief staticGetType
-         * Same as getType but static
-         * \return A string describing the hierarchy of computree types until this class
-         */
-        inline static QString staticGetType() { return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractGrid4D"; }
+    /*!
+     * \brief staticGetType
+     * Same as getType but static
+     * \return A string describing the hierarchy of computree types until this class
+     */
+    inline static QString staticGetType() { return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractGrid4D"; }
 
-        /*!
-         * \brief name
-         * \return The name of the object
-         */
-        virtual QString name() const = 0;
+    /*!
+     * \brief name
+     * \return The name of the object
+     */
+    virtual QString name() const = 0;
 
 protected:
 //**********************************************//

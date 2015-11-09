@@ -104,6 +104,46 @@ public:
               DataT na,
               DataT initValue);
 
+    /*!
+     * \brief Constructor with min and max (X,Y) coordinates
+     *
+     * \param model Item model for creation
+     * \param result Result containing the item
+     * \param xmin Minimum X coordinate (bottom left corner)
+     * \param ymin Minimum Y coordinate (bottom left corner)
+     * \param zmin Minimum Z coordinate (bottom left corner)
+     * \param xmax Maximum X coordinate (upper right corner)
+     * \param ymax Maximum Y coordinate (upper right corner)
+     * \param zmax Maximum Z coordinate (upper right corner)
+     * \param resolution Size of a cell
+     * \param na Value used to code NA
+     * \param initValue Initialisation value for grid cells
+     * \param coordConstructor Not used, only to ensure constructor different signatures
+     */
+    CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
+              const CT_AbstractResult *result,
+              double xmin,
+              double ymin,
+              double zmin,
+              double xmax,
+              double ymax,
+              double zmax,
+              double resolution,
+              DataT na,
+              DataT initValue);
+
+    CT_Grid3D(const QString& model,
+              const CT_AbstractResult *result,
+              double xmin,
+              double ymin,
+              double zmin,
+              double xmax,
+              double ymax,
+              double zmax,
+              double resolution,
+              DataT na,
+              DataT initValue);
+
 
     /*!
      * \brief Factory with min and max (X,Y,Z) coordinates

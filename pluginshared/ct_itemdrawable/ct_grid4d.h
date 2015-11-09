@@ -18,7 +18,7 @@ template< typename DataT > class CT_StandardGrid4DDrawManager;
  * It represents grid in 4D, with templated values in cells.
  */
 template< typename DataT>
-class CT_Grid4D  : public CT_AbstractGrid4D, public CT_ITemplatedData4DArray<DataT>
+class   CT_Grid4D  : public CT_AbstractGrid4D, public CT_ITemplatedData4DArray<DataT>
 {
     /*!
      *  \brief How to manage central cell when using neighboursValues method
@@ -92,6 +92,86 @@ public:
               size_t dimx,
               size_t dimy,
               size_t dimz,
+              double resw,
+              double resx,
+              double resy,
+              double resz,
+              DataT na,
+              DataT initValue);
+
+    /*!
+     * \brief Initialisation constructor
+     *
+     * Grid is created thanks to the bounding box (4D) of the grid
+     *
+     * \param model Item model for creation
+     * \param result Result containing the item
+     * \param wmin Minimum W coordinate (bottom left corner)
+     * \param xmin Minimum X coordinate (bottom left corner)
+     * \param ymin Minimum Y coordinate (bottom left corner)
+     * \param zmin Minimum Z coordinate (bottom left corner)
+     * \param wmax Maximum W coordinate (top right corner)
+     * \param xmax Maximum X coordinate (top right corner)
+     * \param ymax Maximum Y coordinate (top right corner)
+     * \param zmax Maximum Z coordinate (top right corner)
+     * \param resw Length of a cell on w
+     * \param resx Length of a cell on x
+     * \param resy Length of a cell on y
+     * \param resz Length of a cell on z
+     * \param na Value used to code NA
+     * \param initValue Initialisation value for grid cells
+     * \param coordConstructor Not used, only to ensure constructor different signatures
+     */
+    CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
+              const CT_AbstractResult *result,
+              double wmin,
+              double xmin,
+              double ymin,
+              double zmin,
+              double wmax,
+              double xmax,
+              double ymax,
+              double zmax,
+              double resw,
+              double resx,
+              double resy,
+              double resz,
+              DataT na,
+              DataT initValue);
+
+    /*!
+     * \brief Initialisation constructor
+     *
+     * Grid is created thanks to the bounding box (4D) of the grid
+     *
+     * \param modelName model name for creation
+     * \param result Result containing the item
+     * \param wmin Minimum W coordinate (bottom left corner)
+     * \param xmin Minimum X coordinate (bottom left corner)
+     * \param ymin Minimum Y coordinate (bottom left corner)
+     * \param zmin Minimum Z coordinate (bottom left corner)
+     * \param wmax Maximum W coordinate (top right corner)
+     * \param xmax Maximum X coordinate (top right corner)
+     * \param ymax Maximum Y coordinate (top right corner)
+     * \param zmax Maximum Z coordinate (top right corner)
+     * \param resw Length of a cell on w
+     * \param resx Length of a cell on x
+     * \param resy Length of a cell on y
+     * \param resz Length of a cell on z
+     * \param na Value used to code NA
+     * \param initValue Initialisation value for grid cells
+     * \param coordConstructor Not used, only to ensure constructor different signatures
+     */
+    CT_Grid4D(const QString& modelName,
+              const CT_AbstractResult *result,
+              double wmin,
+              double xmin,
+              double ymin,
+              double zmin,
+              double wmax,
+              double xmax,
+              double ymax,
+              double zmax,
               double resw,
               double resx,
               double resy,
@@ -295,6 +375,9 @@ public:
       */
     bool addValueAtWXYZ(const double w, const double x, const double y, const double z, const DataT value);
 
+
+    bool addValue( size_t levw, size_t levx, size_t levy, size_t levz, DataT value );
+
     /**
       * \brief Gives neighbours values
       * \param levw w level (first is 0)
@@ -315,6 +398,10 @@ public:
                           QList<DataT>& outNeighboursValues,
                           const bool keepNAs = false,
                           const CenterMode centermode = CT_Grid4D::CM_DropCenter) const;
+
+    QString valueAtIndexAsString(const size_t index) const;
+
+    QString NAAsString() const;
 
     //**********************************************//
     //                    Setters                   //

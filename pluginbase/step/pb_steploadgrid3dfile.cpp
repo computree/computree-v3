@@ -169,7 +169,7 @@ void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endia
                                                          _nZlev,
                                                          _cellSize,
                                                          _noDataVal,
-                                                         0);
+                                                         0.0);
 
     QTextStream fileStream(&f);
     float currentValue;

@@ -165,6 +165,177 @@ CT_Grid4D<DataT>::CT_Grid4D(const QString &modelName,
     setBaseDrawManager(&ABSGRID4D_DRAW_MANAGER);
 }
 
+template< typename DataT>
+CT_Grid4D<DataT>::CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
+                            const CT_AbstractResult *result,
+                            double wmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
+                            double wmax,
+                            double xmax,
+                            double ymax,
+                            double zmax,
+                            double resw,
+                            double resx,
+                            double resy,
+                            double resz,
+                            DataT na,
+                            DataT initValue) : CT_AbstractGrid4D(model, result)
+{
+    _minCoordinates(0) = (xmin);
+    _minCoordinates(1) = (ymin);
+    _minCoordinates(2) = (zmin);
+
+    _bot(0) = ( wmin );
+    _bot(1) = ( xmin );
+    _bot(2) = ( ymin );
+    _bot(3) = ( zmin );
+
+    _resw = resw;
+    _resx = resx;
+    _resy = resy;
+    _resz = resz;
+
+    _dimw = ceil((wmax - wmin)/_resw);
+    _dimx = ceil((xmax - xmin)/_resx);
+    _dimy = ceil((ymax - ymin)/_resy);
+    _dimz = ceil((zmax - zmin)/_resz);
+
+    _maxCoordinates(0) = (minX() + _resx * _dimx);
+    _maxCoordinates(1) = (minY() + _resy * _dimy);
+    _maxCoordinates(2) = (minZ() + _resz * _dimz);
+
+    _top(0) = ( wmin + resw * _dimw );
+    _top(1) = ( xmin + resx * _dimx );
+    _top(2) = ( ymin + resy * _dimy );
+    _top(3) = ( zmin + resz * _dimz );
+
+    _NAdata = na;
+
+    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+    while (wmax >= maxW())
+    {
+        _dimw++;
+        _top(0) = ( _top(0) + _resw);
+    }
+
+    while (xmax >= maxX())
+    {
+        _dimx++;
+        _maxCoordinates(0) = (maxX() + _resx);
+        _top(1) = ( _top(1) + _resx);
+    }
+
+    while (ymax >= maxY())
+    {
+        _dimy++;
+        _maxCoordinates(1) = (maxY() + _resy);
+        _top(2) = ( _top(2) + _resy);
+    }
+
+    while (zmax >= maxZ())
+    {
+        _dimz++;
+        _maxCoordinates(2) = (maxZ() + _resz);
+        _top(3) = ( _top(3) + _resz);
+    }
+
+    setCenterX (minX() + (maxX() - minX())/2.0);
+    setCenterY (minY() + (maxY() - minY())/2.0);
+    setCenterZ (minZ() + (maxZ() - minZ())/2.0);
+
+    _data.resize(nCells());
+    initGridWithValue(initValue);
+
+    setBaseDrawManager(&ABSGRID4D_DRAW_MANAGER);
+}
+
+template< typename DataT>
+CT_Grid4D<DataT>::CT_Grid4D(const QString& modelName,
+                            const CT_AbstractResult *result,
+                            double wmin,
+                            double xmin,
+                            double ymin,
+                            double zmin,
+                            double wmax,
+                            double xmax,
+                            double ymax,
+                            double zmax,
+                            double resw,
+                            double resx,
+                            double resy,
+                            double resz,
+                            DataT na,
+                            DataT initValue) : CT_AbstractGrid4D(modelName, result)
+{
+    _minCoordinates(0) = (xmin);
+    _minCoordinates(1) = (ymin);
+    _minCoordinates(2) = (zmin);
+
+    _bot(0) = ( wmin );
+    _bot(1) = ( xmin );
+    _bot(2) = ( ymin );
+    _bot(3) = ( zmin );
+
+    _resw = resw;
+    _resx = resx;
+    _resy = resy;
+    _resz = resz;
+
+    _dimw = ceil((wmax - wmin)/_resw);
+    _dimx = ceil((xmax - xmin)/_resx);
+    _dimy = ceil((ymax - ymin)/_resy);
+    _dimz = ceil((zmax - zmin)/_resz);
+
+    _maxCoordinates(0) = (minX() + _resx * _dimx);
+    _maxCoordinates(1) = (minY() + _resy * _dimy);
+    _maxCoordinates(2) = (minZ() + _resz * _dimz);
+
+    _top(0) = ( wmin + resw * _dimw );
+    _top(1) = ( xmin + resx * _dimx );
+    _top(2) = ( ymin + resy * _dimy );
+    _top(3) = ( zmin + resz * _dimz );
+
+    _NAdata = na;
+
+    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+    while (wmax >= maxW())
+    {
+        _dimw++;
+        _top(0) = ( _top(0) + _resw);
+    }
+
+    while (xmax >= maxX())
+    {
+        _dimx++;
+        _maxCoordinates(0) = (maxX() + _resx);
+        _top(1) = ( _top(1) + _resx);
+    }
+
+    while (ymax >= maxY())
+    {
+        _dimy++;
+        _maxCoordinates(1) = (maxY() + _resy);
+        _top(2) = ( _top(2) + _resy);
+    }
+
+    while (zmax >= maxZ())
+    {
+        _dimz++;
+        _maxCoordinates(2) = (maxZ() + _resz);
+        _top(3) = ( _top(3) + _resz);
+    }
+
+    setCenterX (minX() + (maxX() - minX())/2.0);
+    setCenterY (minY() + (maxY() - minY())/2.0);
+    setCenterZ (minZ() + (maxZ() - minZ())/2.0);
+
+    _data.resize(nCells());
+    initGridWithValue(initValue);
+
+    setBaseDrawManager(&ABSGRID4D_DRAW_MANAGER);
+}
 
 template< typename DataT>
 CT_Grid4D<DataT>* CT_Grid4D<DataT>::createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
@@ -354,6 +525,18 @@ bool CT_Grid4D<DataT>::addValueAtWXYZ(const double w, const double x, const doub
 }
 
 template< typename DataT>
+bool CT_Grid4D<DataT>::addValue( size_t levw, size_t levx, size_t levy, size_t levz, DataT value )
+{
+    size_t i;
+    if( index( levw, levx, levy, levz, i) )
+    {
+        setValueAtIndex(i, valueAtIndex(i) + value);
+        return true;
+    }
+    return false;
+}
+
+template< typename DataT>
 bool CT_Grid4D<DataT>::neighboursValues(const size_t levw,
                                         const size_t levx,
                                         const size_t levy,
@@ -429,6 +612,19 @@ bool CT_Grid4D<DataT>::neighboursValues(const size_t levw,
     }
 
     return true;
+}
+
+template< typename DataT>
+QString CT_Grid4D<DataT>::valueAtIndexAsString(const size_t index) const
+{
+    DataT value = valueAtIndex(index);
+    return QString::number(value);
+}
+
+template< typename DataT>
+QString CT_Grid4D<DataT>::NAAsString() const
+{
+    return QString::number(NA());
 }
 
 template< typename DataT>

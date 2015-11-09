@@ -39,6 +39,11 @@ const CT_Normal &CT_NormalCloudOsg::operator[](const size_t &index) const
     return pTAt(index);
 }
 
+void CT_NormalCloudOsg::replaceNormal(const size_t &index, CT_Normal &normal)
+{
+    (*this)[index].setNormal(normal);
+}
+
 CT_AbstractCloud *CT_NormalCloudOsg::copy() const
 {
     size_t s = size();

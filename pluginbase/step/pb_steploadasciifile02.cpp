@@ -658,6 +658,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                                                                                                         imin,
                                                                                                         imax);
 
+        pas->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+
         lAdd << pas;
     }
 
@@ -668,6 +670,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                                                                      pcir,
                                                                      colorCloud);
 
+        pac->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
+
         lAdd << pac;
     }
 
@@ -677,6 +681,8 @@ void PB_StepLoadAsciiFile02::readDataFile(QFile &f, int offset, bool little_endi
                                                                        out_res,
                                                                        pcir,
                                                                        normalCloud);
+
+        pan->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
 
         lAdd << pan;
     }

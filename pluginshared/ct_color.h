@@ -5,6 +5,7 @@
 #include "pluginShared_global.h"
 
 #include <osg/Array>
+#include <QColor>
 
 class PLUGINSHAREDSHARED_EXPORT CT_Color : public osg::Vec4ub
 {
@@ -14,6 +15,10 @@ public:
     }
 
     inline CT_Color(value_type r, value_type g, value_type b, value_type a) : osg::Vec4ub(r, g, b ,a)
+    {
+    }
+
+    inline CT_Color(const QColor &qtColor) : osg::Vec4ub(qtColor.red(), qtColor.green(), qtColor.blue(), qtColor.alpha())
     {
     }
 
@@ -31,6 +36,16 @@ public:
     inline void setColor(const CT_Color &color)
     {
         color.copy(*this);
+    }
+
+    inline CT_Color& operator =(const QColor &qtColor)
+    {
+        (*this)(0) = qtColor.red();
+        (*this)(1) = qtColor.green();
+        (*this)(2) = qtColor.blue();
+        (*this)(3) = qtColor.alpha();
+
+        return (*this);
     }
 };
 

@@ -181,6 +181,16 @@ public:
      */
     inline double maxZ() const {return _maxCoordinates(2);}
 
+    /**
+     * @brief Set a default color to this item. When it will added for the first time in a view it will have this color
+     */
+    void setDefaultColor(const QColor &color);
+
+    /**
+     * @brief Returns the default color of this item
+     */
+    QColor defaultColor() const;
+
 protected:
     Eigen::Vector3d   _minCoordinates;
     Eigen::Vector3d   _maxCoordinates;
@@ -198,6 +208,7 @@ protected:
 private:
 
     CT_ItemAttributeContainer   m_itemAttributes;
+    QColor                      m_defaultColor;
 
     // declare that we will add default item attributes in this class
     //  => We must add CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable) in top of cpp file

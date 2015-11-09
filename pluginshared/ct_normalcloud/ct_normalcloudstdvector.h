@@ -48,6 +48,11 @@ public:
     const CT_Normal& operator[](const size_t &index) const;
 
     /**
+     * @brief Replace a normal at index specified
+     */
+    void replaceNormal(const size_t &index, CT_Normal &normal);
+
+    /**
      * @brief Returns a copy of this cloud
      */
     CT_AbstractCloud* copy() const;

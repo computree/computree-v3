@@ -138,6 +138,123 @@ CT_Grid3D<DataT>::CT_Grid3D(const QString &modelName,
 }
 
 template< typename DataT>
+CT_Grid3D<DataT>::CT_Grid3D(const CT_OutAbstractSingularItemModel *model,
+                            const CT_AbstractResult *result,
+                            double xmin,
+                            double ymin,
+                            double zmin,
+                            double xmax,
+                            double ymax,
+                            double zmax,
+                            double resolution,
+                            DataT na,
+                            DataT initValue) : CT_AbstractGrid3D(model, result)
+{
+    _minCoordinates(0) = (xmin);
+    _minCoordinates(1) = (ymin);
+    _minCoordinates(2) = (zmin);
+
+    _res = resolution;
+
+    _dimx = ceil((xmax - xmin)/_res);
+    _dimy = ceil((ymax - ymin)/_res);
+    _dimz = ceil((zmax - zmin)/_res);
+
+    _maxCoordinates(0) = (minX() + _res * _dimx);
+    _maxCoordinates(1) = (minY() + _res * _dimy);
+    _maxCoordinates(2) = (minZ() + _res * _dimz);
+
+    _NAdata = na;
+
+    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+    while (xmax >= maxX())
+    {
+        _dimx++;
+        _maxCoordinates(0) = (maxX() + _res);
+    }
+
+    while (ymax >= maxY())
+    {
+        _dimy++;
+        _maxCoordinates(1) = (maxY() + _res);
+    }
+
+    while (zmax >= maxZ())
+    {
+        _dimz++;
+        _maxCoordinates(2) = (maxZ() + _res);
+    }
+
+    setCenterX (minX() + (maxX() - minX())/2.0);
+    setCenterY (minY() + (maxY() - minY())/2.0);
+    setCenterZ (minZ() + (maxZ() - minZ())/2.0);
+
+    _data.resize(nCells());
+    initGridWithValue(initValue);
+
+    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+}
+
+template< typename DataT>
+CT_Grid3D<DataT>::CT_Grid3D(const QString& model,
+                            const CT_AbstractResult *result,
+                            double xmin,
+                            double ymin,
+                            double zmin,
+                            double xmax,
+                            double ymax,
+                            double zmax,
+                            double resolution,
+                            DataT na,
+                            DataT initValue) : CT_AbstractGrid3D(model, result)
+{
+    _minCoordinates(0) = (xmin);
+    _minCoordinates(1) = (ymin);
+    _minCoordinates(2) = (zmin);
+
+    _res = resolution;
+
+    _dimx = ceil((xmax - xmin)/_res);
+    _dimy = ceil((ymax - ymin)/_res);
+    _dimz = ceil((zmax - zmin)/_res);
+
+    _maxCoordinates(0) = (minX() + _res * _dimx);
+    _maxCoordinates(1) = (minY() + _res * _dimy);
+    _maxCoordinates(2) = (minZ() + _res * _dimz);
+
+    _NAdata = na;
+
+    // to ensure a point exactly on a maximum limit of the grid will be included in the grid
+    while (xmax >= maxX())
+    {
+        _dimx++;
+        _maxCoordinates(0) = (maxX() + _res);
+    }
+
+    while (ymax >= maxY())
+    {
+        _dimy++;
+        _maxCoordinates(1) = (maxY() + _res);
+    }
+
+    while (zmax >= maxZ())
+    {
+        _dimz++;
+        _maxCoordinates(2) = (maxZ() + _res);
+    }
+
+    setCenterX (minX() + (maxX() - minX())/2.0);
+    setCenterY (minY() + (maxY() - minY())/2.0);
+    setCenterZ (minZ() + (maxZ() - minZ())/2.0);
+
+    _data.resize(nCells());
+    initGridWithValue(initValue);
+
+    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+}
+
+
+template< typename DataT>
 CT_Grid3D<DataT>* CT_Grid3D<DataT>::createGrid3DFromXYZCoords(const CT_OutAbstractSingularItemModel *model,
                                                               const CT_AbstractResult *result,
                                                               double xmin,

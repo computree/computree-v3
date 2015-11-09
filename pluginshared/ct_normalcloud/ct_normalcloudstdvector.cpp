@@ -39,6 +39,11 @@ const CT_Normal& CT_NormalCloudStdVector::operator[](const size_t &index) const
     return pTAt(index);
 }
 
+void CT_NormalCloudStdVector::replaceNormal(const size_t &index, CT_Normal &normal)
+{
+    replaceT(index, normal);
+}
+
 CT_AbstractCloud* CT_NormalCloudStdVector::copy() const
 {
     size_t s = size();

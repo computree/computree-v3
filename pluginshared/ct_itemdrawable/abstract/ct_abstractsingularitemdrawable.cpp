@@ -16,6 +16,8 @@ CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable() : CT_Abstract
     _maxCoordinates(0) = -std::numeric_limits<double>::max();
     _maxCoordinates(1) = -std::numeric_limits<double>::max();
     _maxCoordinates(2) = -std::numeric_limits<double>::max();
+
+    m_defaultColor = Qt::white;
 }
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const CT_OutAbstractSingularItemModel *model,
@@ -28,6 +30,8 @@ CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const CT_OutAbs
     _maxCoordinates(0) = -std::numeric_limits<double>::max();
     _maxCoordinates(1) = -std::numeric_limits<double>::max();
     _maxCoordinates(2) = -std::numeric_limits<double>::max();
+
+    m_defaultColor = Qt::white;
 }
 
 CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const QString &modelName,
@@ -40,6 +44,8 @@ CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const QString &
     _maxCoordinates(0) = -std::numeric_limits<double>::max();
     _maxCoordinates(1) = -std::numeric_limits<double>::max();
     _maxCoordinates(2) = -std::numeric_limits<double>::max();
+
+    m_defaultColor = Qt::white;
 }
 
 QString CT_AbstractSingularItemDrawable::staticGetType()
@@ -165,6 +171,16 @@ void CT_AbstractSingularItemDrawable::setBoundingBox(double minx, double miny, d
 void CT_AbstractSingularItemDrawable::updateCenterFromBoundingBox()
 {
     setCenterCoordinate((_maxCoordinates + _minCoordinates) / 2.0);
+}
+
+void CT_AbstractSingularItemDrawable::setDefaultColor(const QColor &color)
+{
+    m_defaultColor = color;
+}
+
+QColor CT_AbstractSingularItemDrawable::defaultColor() const
+{
+    return m_defaultColor;
 }
 
 QString CT_AbstractSingularItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const

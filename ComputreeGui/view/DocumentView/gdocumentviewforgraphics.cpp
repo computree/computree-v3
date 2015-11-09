@@ -990,9 +990,14 @@ void GDocumentViewForGraphics::unlockGraphics()
 
 DM_AbstractInfo* GDocumentViewForGraphics::createNewItemInformation(const CT_AbstractItemDrawable *item) const
 {
-    Q_UNUSED(item)
+    DM_ItemInfoForGraphics *info = new DM_ItemInfoForGraphics();
 
-    return new DM_ItemInfoForGraphics();
+    const CT_AbstractSingularItemDrawable *si = dynamic_cast<const CT_AbstractSingularItemDrawable*>(item);
+
+    if(si != NULL)
+        info->setColor(si->defaultColor());
+
+    return info;
 }
 
 void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,

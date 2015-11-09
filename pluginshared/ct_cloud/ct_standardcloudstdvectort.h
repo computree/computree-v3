@@ -31,6 +31,8 @@ public:
     void addT(const T &val);
     T& addT();
 
+    void replaceT(const size_t &index, T &newVal);
+
     /**
      * @brief Copy data of other source
      * @warning No verification is defined for the validity of size and destIndex

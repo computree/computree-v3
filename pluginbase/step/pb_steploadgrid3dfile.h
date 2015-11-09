@@ -26,14 +26,14 @@ protected:
     void readDataFile(QFile &f, int offset, bool little_endian = false);
 
 private :
-    int     _nCols;
-    int     _nRows;
-    int     _nZlev;
-    float   _minX;
-    float   _minY;
-    float   _minZ;
-    float   _cellSize;
-    float   _noDataVal;
+    size_t  _nCols;
+    size_t  _nRows;
+    size_t  _nZlev;
+    double   _minX;
+    double   _minY;
+    double   _minZ;
+    double   _cellSize;
+    double   _noDataVal;
 };
 
 #endif // PB_STEPLOADGRID3DFILE_H

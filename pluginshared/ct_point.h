@@ -98,6 +98,7 @@ public:
     inline void setX(const double &x) { (*this)(0) = x; }
     inline void setY(const double &y) { (*this)(1) = y; }
     inline void setZ(const double &z) { (*this)(2) = z; }
+    inline void setValues(const double &x, const double &y, const double &z) { setX(x); setY(y); setZ(z); }
 };
 
 /**
