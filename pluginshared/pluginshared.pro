@@ -30,11 +30,6 @@ CONFIG(debug, debug|release) {
     RCC_DIR = release/.rcc
 }
 
-# n'affiche plus les warnings lorsqu'un parametre de mthode n'est pas utilis
-win32-g++ {
-    QMAKE_CXXFLAGS += -Wno-unused-parameter
-}
-
 DEFINES += PLUGINSHARED_LIBRARY
 
 include(../include_all.pri)
