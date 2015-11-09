@@ -126,7 +126,8 @@ private:
     typedef QListIterator<CT_MenuLevel*>            LevelCollectionIt;
 
     StepCollection  m_steps;
-    LevelCollection m_levels;
+    LevelCollection m_levelsPredefined;
+    LevelCollection m_levelsCustom;
     QString         m_displayableName;
     CT_MenuLevel    *m_parent;
 

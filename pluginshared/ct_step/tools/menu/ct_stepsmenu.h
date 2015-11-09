@@ -4,13 +4,14 @@
 #include "pluginShared_global.h"
 
 #include <QMap>
+#include <QObject>
 
 class CT_MenuLevel;
 
 /**
  * @brief Class to construct a menu of steps
  */
-class PLUGINSHAREDSHARED_EXPORT CT_StepsMenu
+class PLUGINSHAREDSHARED_EXPORT CT_StepsMenu : public QObject
 {
 public:
 
@@ -30,6 +31,7 @@ public:
         LO_Other,               // Steps that can not be ordered in one of other operation
         LO_InternalUse
     };
+    Q_ENUMS(LevelOperationType)
 
     /**
      * @brief Other levels can use this predefined values to be sorted in the same level for all plugins
@@ -52,6 +54,7 @@ public:
         LP_DBH,
         LP_ItemAttributes
     };
+    Q_ENUMS(LevelPredefined)
 
     CT_StepsMenu();
     ~CT_StepsMenu();
@@ -87,6 +90,11 @@ public:
      * @brief Convert a predefined enum to displayable name
      */
     static QString staticPredefinedToString(LevelPredefined predefined);
+
+    /**
+     * @brief Returns true if the name is a predefined string for a level
+     */
+    static bool staticIsPredefinedLevelString(const QString &name);
 
 private:
     QMap<LevelOperationType, CT_MenuLevel*>     m_rootLevels;

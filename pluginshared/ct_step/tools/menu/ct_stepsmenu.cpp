@@ -2,6 +2,8 @@
 
 #include "ct_menulevel.h"
 
+#include <QMetaEnum>
+
 CT_StepsMenu::CT_StepsMenu()
 {
 }
@@ -106,4 +108,20 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
     }
 
     return QObject::tr("Inconnu (TODO)");
+}
+
+bool CT_StepsMenu::staticIsPredefinedLevelString(const QString &name)
+{
+    const QMetaObject &mo = CT_StepsMenu::staticMetaObject;
+    int index = mo.indexOfEnumerator("LevelPredefined");
+    QMetaEnum metaEnum = mo.enumerator(index);
+
+    int s = metaEnum.keyCount();
+
+    for(int i=0; i<s; ++i) {
+        if(name == staticPredefinedToString((CT_StepsMenu::LevelPredefined)metaEnum.value(i)))
+            return true;
+    }
+
+    return false;
 }

@@ -38,16 +38,30 @@ QList<CT_VirtualAbstractStep *> CT_MenuLevel::steps() const
     return m_steps;
 }
 
+bool sortLevels(const CT_MenuLevel *l1, const CT_MenuLevel *l2)
+{
+    return l1->displayableName().toLower() < l2->displayableName().toLower();
+}
+
 QList<CT_MenuLevel *> CT_MenuLevel::levels() const
 {
-    return m_levels;
+    QList<CT_MenuLevel *> l;
+    QList<CT_MenuLevel *> levelsPredefinedSorted = m_levelsPredefined;
+
+    qSort(levelsPredefinedSorted.begin(), levelsPredefinedSorted.end(), sortLevels);
+
+    l.append(levelsPredefinedSorted);
+    l.append(m_levelsCustom);
+
+    return l;
 }
 
 QList<CT_MenuLevel *> CT_MenuLevel::levelsWithSteps() const
 {
     QList<CT_MenuLevel*> ret;
 
-    LevelCollectionIt it(m_levels);
+    LevelCollection levs = levels();
+    LevelCollectionIt it(levs);
 
     while(it.hasNext()) {
         CT_MenuLevel *l = it.next();
@@ -85,7 +99,8 @@ CT_MenuLevel::~CT_MenuLevel()
         delete s;
     }
 
-    LevelCollectionIt it(m_levels);
+    LevelCollection levs = levels();
+    LevelCollectionIt it(levs);
 
     while(it.hasNext()) {
         CT_MenuLevel *l = it.next();
@@ -99,7 +114,8 @@ bool CT_MenuLevel::isStepsNotEmptyRecursively() const
     if(!m_steps.isEmpty())
         return true;
 
-    LevelCollectionIt it(m_levels);
+    LevelCollection levs = levels();
+    LevelCollectionIt it(levs);
 
     while(it.hasNext()) {
         CT_MenuLevel *l = it.next();
@@ -145,7 +161,11 @@ bool CT_MenuLevel::existStepInCollection(CT_VirtualAbstractStep *step)
 
 void CT_MenuLevel::addLevel(CT_MenuLevel *level)
 {
-    m_levels.append(level);
+    if(CT_StepsMenu::staticIsPredefinedLevelString(level->displayableName()))
+        m_levelsPredefined.append(level);
+    else
+        m_levelsCustom.append(level);
+
     level->setParentLevel(this);
 
     connect(level, SIGNAL(destroyed(QObject*)), this, SLOT(subLevelDeleted(QObject*)), Qt::DirectConnection);
@@ -158,7 +178,8 @@ void CT_MenuLevel::setParentLevel(CT_MenuLevel *parent)
 
 CT_MenuLevel *CT_MenuLevel::levelFromDisplayableName(const QString &name)
 {
-    LevelCollectionIt it(m_levels);
+    LevelCollection levs = levels();
+    LevelCollectionIt it(levs);
 
     while(it.hasNext()) {
         CT_MenuLevel *l = it.next();
@@ -187,7 +208,8 @@ bool CT_MenuLevel::isAFavoriteSubLevel() const
 
 void CT_MenuLevel::subLevelDeleted(QObject *level)
 {
-    m_levels.removeOne((CT_MenuLevel*)level);
+    if(!m_levelsCustom.removeOne((CT_MenuLevel*)level))
+        m_levelsPredefined.removeOne((CT_MenuLevel*)level);
 }
 
 void CT_MenuLevel::stepDeleted(QObject *step)
