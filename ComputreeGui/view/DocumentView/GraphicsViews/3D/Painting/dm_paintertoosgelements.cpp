@@ -1026,12 +1026,7 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
                 geo->setStateSet(ss);
 
             if(m_geometriesConfiguration->localVertexAttribArray() != NULL) {
-                #if OPENSCENEGRAPH_PATCH_VERSION > 1
                 geo->setVertexAttribArray(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), m_geometriesConfiguration->localVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
-                #else
-                geo->setVertexAttribArray(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), m_geometriesConfiguration->localVertexAttribArray());
-                #endif
-
                 geo->setVertexAttribNormalize(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), false);
             }
         }
@@ -1048,11 +1043,7 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
             if(m_geometriesConfiguration->globalVertexAttribArray() != NULL) {
-                #if OPENSCENEGRAPH_PATCH_VERSION > 1
                 geo->setVertexAttribArray(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), m_geometriesConfiguration->globalVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
-                #else
-                geo->setVertexAttribArray(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), m_geometriesConfiguration->globalVertexAttribArray());
-                #endif
                 geo->setVertexAttribNormalize(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), false);
             }
         }
@@ -1428,12 +1419,7 @@ void DM_PainterToOsgElements::adjustSizeOfLocalVertexAttribArray()
     if((m_localVertexArray != NULL)
             && (m_geometriesConfiguration != NULL)
             && (m_geometriesConfiguration->localVertexAttribArray() != NULL)) {
-        #if OPENSCENEGRAPH_PATCH_VERSION > 1
         m_geometriesConfiguration->localVertexAttribArray()->resizeArray(m_localVertexArray->size());
-        #else
-        // TODO : find another way to resize the array because we don't know really the type of the array !!
-        ((osg::ByteArray*)m_geometriesConfiguration->localVertexAttribArray())->resize(m_localVertexArray->size());
-        #endif
     }
 }
 

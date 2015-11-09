@@ -51,7 +51,7 @@ void GStepChooserDialog::init()
     setWindowFlags(Qt::Dialog
                    | Qt::WindowTitleHint
                    | Qt::CustomizeWindowHint
-                   | Qt::WindowMinimizeButtonHint);
+                   | Qt::WindowCloseButtonHint);
 }
 
 GStepViewDefault *GStepChooserDialog::stepsChooserWidget() const
@@ -113,13 +113,18 @@ void GStepChooserDialog::showEvent(QShowEvent *e)
     emit visibilityChanged(true);
 }
 
+void GStepChooserDialog::hideEvent(QHideEvent *e)
+{
+    QDialog::hideEvent(e);
+
+    emit visibilityChanged(false);
+}
+
 void GStepChooserDialog::closeEvent(QCloseEvent *e)
 {
     e->ignore();
 
     hide();
-
-    emit visibilityChanged(false);
 }
 
 void GStepChooserDialog::addStepFromStepChooserToFavoritesMenu()
@@ -184,4 +189,12 @@ void GStepChooserDialog::refreshContextMenuOfLevel(CT_MenuLevel *level)
             }
         }
     }
+}
+
+void GStepChooserDialog::toggleVisibility()
+{
+    if(isHidden())
+        showNormal();
+    else
+        hide();
 }

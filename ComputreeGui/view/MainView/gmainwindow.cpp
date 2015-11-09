@@ -363,7 +363,6 @@ void GMainWindow::initUI()
     QAction *actionShowStepChooserDialog = new QAction(m_stepChooserDialog->windowTitle(), this);
     actionShowStepChooserDialog->setIcon(QIcon(":/Icones/Icones/add.png"));
     actionShowStepChooserDialog->setToolTip(tr("Ajouter une étape (affiche la fenêtre de choix des étapes)"));
-    actionShowStepChooserDialog->setDisabled(true);
 
     QAction *actionArrangeDocksInTabs = new QAction(tr("Composants en onglets"), this);
     QAction *actionArrangeDocksInColumn = new QAction(tr("Composants en colonne"), this);
@@ -524,7 +523,7 @@ void GMainWindow::initUI()
     connect(actionShowGraphicsSyncManagerView, SIGNAL(triggered()), ui->dockWidgetGraphicsViewSynchronizedGroup, SLOT(showNormal()));
     connect(actionShowActionsManagerView, SIGNAL(triggered()), ui->dockWidgetActionsManager, SLOT(showNormal()));
     connect(actionShowLog, SIGNAL(triggered()), ui->dockWidgetLog, SLOT(showNormal()));
-    connect(actionShowStepChooserDialog, SIGNAL(triggered()), m_stepChooserDialog, SLOT(showNormal()));
+    connect(actionShowStepChooserDialog, SIGNAL(triggered()), m_stepChooserDialog, SLOT(toggleVisibility()));
     connect(actionArrangeDocksInTabs, SIGNAL(triggered()), this, SLOT(arrangeDocksInTabs()));
     connect(actionArrangeDocksInColumnWithLogAtBottom, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumnWithLogAtBottom()));
     connect(actionArrangeDocksInColumn, SIGNAL(triggered()), this, SLOT(arrangeDocksInColumn()));
@@ -573,7 +572,6 @@ void GMainWindow::initUI()
     connect(ui->dockWidgetGraphicsViewSynchronizedGroup, SIGNAL(visibilityChanged(bool)), actionShowGraphicsSyncManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetActionsManager, SIGNAL(visibilityChanged(bool)), actionShowActionsManagerView, SLOT(setDisabled(bool)));
     connect(ui->dockWidgetLog, SIGNAL(visibilityChanged(bool)), actionShowLog, SLOT(setDisabled(bool)));
-    connect(m_stepChooserDialog, SIGNAL(maximizedChanged(bool)), actionShowStepChooserDialog, SLOT(setDisabled(bool)));
 
     fastForwardSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getFastJumpValueInDebugMode());
     jumpAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getNJumpInAutoDebugMode());

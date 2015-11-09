@@ -41,6 +41,7 @@ private:
 protected:
     bool event(QEvent *e);
     void showEvent(QShowEvent *e);
+    void hideEvent(QHideEvent *e);
     void closeEvent(QCloseEvent *e);
 
 private slots:
@@ -50,6 +51,9 @@ private slots:
     void removeLevelFromFavoritesMenu();
     void refreshContextMenuOfStep(CT_VirtualAbstractStep *step);
     void refreshContextMenuOfLevel(CT_MenuLevel *level);
+
+public slots:
+    void toggleVisibility();
 
 signals:
     void visibilityChanged(bool visible);
