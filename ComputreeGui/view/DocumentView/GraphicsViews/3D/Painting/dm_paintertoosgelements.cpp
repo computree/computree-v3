@@ -1455,15 +1455,10 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
     {
         osg::Node *n = node->getChild(i);
         osg::Group *g = n->asGroup();
+        osg::Geode *geode = n->asGeode();
 
-        if((g != NULL) && staticRecursiveChangeColorOfFirstColorArrayInGroup(g, osgColor, colorArrayAlreadyModified))
+        if(geode != NULL)
         {
-            colorArrayAlreadyModified = true;
-        }
-        else if(n->asGeode() != NULL)
-        {
-            osg::Geode *geode = n->asGeode();
-
             int nD = geode->getNumDrawables();
 
             if(nD > 0) {
@@ -1496,6 +1491,10 @@ bool DM_PainterToOsgElements::staticRecursiveChangeColorOfFirstColorArrayInGroup
                 }
             }
         }
+        else if((g != NULL) && staticRecursiveChangeColorOfFirstColorArrayInGroup(g, osgColor, colorArrayAlreadyModified))
+        {
+            colorArrayAlreadyModified = true;
+        }
     }
 
     return colorArrayAlreadyModified;
@@ -1509,15 +1508,10 @@ bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(
     {
         osg::Node *n = node->getChild(i);
         osg::Group *g = n->asGroup();
+        osg::Geode *geode = n->asGeode();
 
-        if((g != NULL) && staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, osgColor, g, colorArrayAlreadyModified))
+        if(geode != NULL)
         {
-            colorArrayAlreadyModified = true;
-        }
-        else if(n->asGeode() != NULL)
-        {
-            osg::Geode *geode = n->asGeode();
-
             int nD = geode->getNumDrawables();
 
             if(nD > 0) {
@@ -1561,6 +1555,10 @@ bool DM_PainterToOsgElements::staticChangeColorOfCloudsOfFirstColorArrayInGroup(
                 }
             }
         }
+        else if((g != NULL) && staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, osgColor, g, colorArrayAlreadyModified))
+        {
+            colorArrayAlreadyModified = true;
+        }
     }
 
     return colorArrayAlreadyModified;
@@ -1574,18 +1572,17 @@ void DM_PainterToOsgElements::staticRecursiveDirtyDisplayListOfDrawableInGroup(o
     {
         osg::Node *n = node->getChild(i);
         osg::Group *g = n->asGroup();
+        osg::Geode *geode = n->asGeode();
 
-        if(g != NULL)
-            staticRecursiveDirtyDisplayListOfDrawableInGroup(g);
-        else if(n->asGeode() != NULL)
+        if(geode != NULL)
         {
-            osg::Geode *geode = n->asGeode();
-
             int nD = geode->getNumDrawables();
 
             for(int j=0; j<nD; ++j)
                 geode->getDrawable(j)->dirtyDisplayList();
         }
+        else if(g != NULL)
+            staticRecursiveDirtyDisplayListOfDrawableInGroup(g);
     }
 }
 
@@ -1596,17 +1593,12 @@ osg::Array* DM_PainterToOsgElements::staticRecursiveGetVertexAttribArray(osg::Gr
     for(uint i=0; i<n; ++i)
     {
         osg::Node *n = node->getChild(i);
+
+        osg::Geode *geode = n->asGeode();
         osg::Group *g = n->asGroup();
 
-        if(g != NULL) {
-            osg::Array *array = staticRecursiveGetVertexAttribArray(g, index);
-
-            if(array != NULL)
-                return array;
-        } else if(n->asGeode() != NULL)
+        if(geode != NULL)
         {
-            osg::Geode *geode = n->asGeode();
-
             uint nD = geode->getNumDrawables();
 
             for(uint j=0; j<nD; ++j) {
@@ -1620,6 +1612,11 @@ osg::Array* DM_PainterToOsgElements::staticRecursiveGetVertexAttribArray(osg::Gr
                         return array;
                 }
             }
+        } else if(g != NULL) {
+            osg::Array *array = staticRecursiveGetVertexAttribArray(g, index);
+
+            if(array != NULL)
+                return array;
         }
     }
 
