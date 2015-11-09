@@ -27,6 +27,33 @@
 
 #include "ct_grid3d.h"
 
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<bool>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<float>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<double>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<unsigned long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<qint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<quint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<qint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<quint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<qint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<quint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<qint64>)
+template<>
+CT_DEFAULT_IA_INIT(CT_Grid3D<quint64>)
+
 /////////////////////////////////////////////////////////////////////
 /// Specialisations for bool type ///////////////////////////////////
 /////////////////////////////////////////////////////////////////////

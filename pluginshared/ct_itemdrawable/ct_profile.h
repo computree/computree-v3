@@ -413,32 +413,6 @@ private:
 };
 
 // Spécialisations
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<bool>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<float>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<double>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<long>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<unsigned long>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<qint8>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<quint8>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<qint16>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<quint16>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<qint32>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<quint32>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<qint64>)
-template<>
-CT_DEFAULT_IA_INIT(CT_Profile<quint64>)
 
 template<>
 inline bool CT_Profile<bool>::NA() const {return false;}

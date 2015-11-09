@@ -13,7 +13,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_TypeInfo
 {
 public:
     template<typename TT>
-    static inline QString name() { }
+    static inline QString name() { return ""; }
 };
 
 CT_TYPEINFO_MACRO(bool, bool)

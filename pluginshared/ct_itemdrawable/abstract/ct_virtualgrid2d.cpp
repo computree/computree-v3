@@ -27,6 +27,33 @@
 
 #include "ct_virtualgrid2d.h"
 
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<bool>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<float>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<double>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<unsigned long>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<qint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<quint8>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<qint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<quint16>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<qint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<quint32>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<qint64>)
+template<>
+CT_DEFAULT_IA_INIT(CT_VirtualGrid2D<quint64>)
+
 /////////////////////////////////////////////////////////////////////
 /// Specialisations for bool type ///////////////////////////////////
 /////////////////////////////////////////////////////////////////////
