@@ -58,6 +58,16 @@
    <item>
     <widget class="GStepsTreeViewDefault" name="treeView"/>
    </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxShowAtLastPosition">
+     <property name="text">
+      <string>Replacer au démarrage à la dernière position connue</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

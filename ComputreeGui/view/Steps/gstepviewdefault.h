@@ -61,6 +61,22 @@ public:
     DisplayNameConfigs displayConfiguration() const;
 
     /**
+     * @brief Set if the checkbox is visible or not
+     */
+    void setShowAtLastPositionCheckboxVisible(bool e);
+
+    /**
+     * @brief Set if must show this widget at last position (don't do anything just check the checkbox or not)
+     * @warning You must manage the functionnality yourself
+     */
+    void setShowAtLastPosition(bool v);
+
+    /**
+     * @brief Returns true if the checkbox is checked
+     */
+    bool showAtLastPosition() const;
+
+    /**
      * @brief Set a context menu to a type defined in parameter
      */
     void setContextMenuOnType(QMenu *contextMenu, DM_StepsFromPluginsModelConstructor::ItemType type);

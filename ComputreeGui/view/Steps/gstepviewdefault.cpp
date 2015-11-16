@@ -18,6 +18,8 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
     // To show custom context menu
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    ui->checkBoxShowAtLastPosition->setVisible(false);
+
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)));
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTreeViewContextMenu(QPoint)), Qt::QueuedConnection);
 }
@@ -70,6 +72,21 @@ void GStepViewDefault::setDisplayConfiguration(DisplayNameConfigs configs)
 GStepViewDefault::DisplayNameConfigs GStepViewDefault::displayConfiguration() const
 {
     return m_nameConfig;
+}
+
+void GStepViewDefault::setShowAtLastPositionCheckboxVisible(bool e)
+{
+    ui->checkBoxShowAtLastPosition->setVisible(e);
+}
+
+void GStepViewDefault::setShowAtLastPosition(bool v)
+{
+    ui->checkBoxShowAtLastPosition->setChecked(v);
+}
+
+bool GStepViewDefault::showAtLastPosition() const
+{
+    return ui->checkBoxShowAtLastPosition->isChecked();
 }
 
 void GStepViewDefault::setContextMenuOnType(QMenu *contextMenu, DM_StepsFromPluginsModelConstructor::ItemType type)

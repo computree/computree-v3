@@ -577,7 +577,7 @@ void GMainWindow::initUI()
     jumpAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getNJumpInAutoDebugMode());
     timeAutoDebugSpinBox->setValue(_stepManagerView->getStepManager()->getOptions().getTimeToSleepInAutoDebugMode());  
 
-    m_stepChooserDialog->show();
+    showStepChooser();
 }
 
 void GMainWindow::loadPlugins(bool showMessageIfNoPluginsFounded)
@@ -783,15 +783,32 @@ void GMainWindow::loadConfiguration()
         defaultPos.setY(defaultPos.y() + 20);
         defaultPos.setX(defaultPos.x() + ui->dockWidgetStepManager->width());
         QRect rec = QApplication::desktop()->screenGeometry();
+        QSize defaultSize(m_stepChooserDialog->width(), rec.height()-defaultPos.y()-100);
+        bool defaultVisible = true;
 
-        QSize size = CONFIG_FILE->value("Size", QSize(m_stepChooserDialog->width(), rec.height()-defaultPos.y()-100)).toSize();
+        QSize size = CONFIG_FILE->value("Size", defaultSize).toSize();
         QPoint pos = CONFIG_FILE->value("Pos", defaultPos).toPoint();
+
+        m_stepChooserDialog->stepsChooserWidget()->setDisplayConfiguration((GStepViewDefault::DisplayNameConfigs)CONFIG_FILE->value("StepNameConfig", (int)m_stepChooserDialog->stepsChooserWidget()->displayConfiguration()).toInt());
+        m_stepChooserDialog->stepsChooserWidget()->proxy()->setFilterConfiguration((DM_StepTreeViewDefaultProxyModel::FilterConfigs)CONFIG_FILE->value("FilterConfig", (int)m_stepChooserDialog->stepsChooserWidget()->proxy()->filterConfiguration()).toInt());
+        m_stepChooserDialog->stepsChooserWidget()->setShowAtLastPositionCheckboxVisible(true);
+        m_stepChooserDialog->stepsChooserWidget()->setShowAtLastPosition(CONFIG_FILE->value("ShowAtLastPosition", m_stepChooserDialog->stepsChooserWidget()->showAtLastPosition()).toBool());
+        m_stepChooserDialog->stepsChooserWidget()->setShowAtLastPosition(CONFIG_FILE->value("ShowAtLastPosition", m_stepChooserDialog->stepsChooserWidget()->showAtLastPosition()).toBool());
+        defaultVisible = CONFIG_FILE->value("Visible", defaultVisible).toBool();
+
+        if(!m_stepChooserDialog->stepsChooserWidget()->showAtLastPosition()) {
+            pos = defaultPos;
+            size = defaultSize;
+            defaultVisible = true;
+        }
 
         m_stepChooserDialog->resize(size);
         m_stepChooserDialog->move(pos);
 
-        m_stepChooserDialog->stepsChooserWidget()->setDisplayConfiguration((GStepViewDefault::DisplayNameConfigs)CONFIG_FILE->value("StepNameConfig", (int)m_stepChooserDialog->stepsChooserWidget()->displayConfiguration()).toInt());
-        m_stepChooserDialog->stepsChooserWidget()->proxy()->setFilterConfiguration((DM_StepTreeViewDefaultProxyModel::FilterConfigs)CONFIG_FILE->value("FilterConfig", (int)m_stepChooserDialog->stepsChooserWidget()->proxy()->filterConfiguration()).toInt());
+        if(defaultVisible)
+            showStepChooser();
+        else
+            hideStepChooser();
 
         CONFIG_FILE->endGroup(); // StepsChooser
     CONFIG_FILE->endGroup(); // MainWindow
@@ -850,6 +867,8 @@ void GMainWindow::writeConfiguration()
         CONFIG_FILE->setValue("Pos", m_stepChooserDialog->pos());
         CONFIG_FILE->setValue("FilterConfig", (int)m_stepChooserDialog->stepsChooserWidget()->proxy()->filterConfiguration());
         CONFIG_FILE->setValue("StepNameConfig", (int)m_stepChooserDialog->stepsChooserWidget()->displayConfiguration());
+        CONFIG_FILE->setValue("ShowAtLastPosition", m_stepChooserDialog->stepsChooserWidget()->showAtLastPosition());
+        CONFIG_FILE->setValue("Visible", m_stepChooserDialog->isVisible());
 
     CONFIG_FILE->endGroup(); // StepsChooser
 
