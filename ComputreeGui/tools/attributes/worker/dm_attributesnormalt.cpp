@@ -13,27 +13,25 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
 
     size_t size = it.size();
 
-    // TODO
-    /*
-    QSharedPointer<CT_StandardNormalCloudRegistered> spn = doc->normalCloudRegistered<CT_AbstractPointsAttributes>();
+    osg::ref_ptr<GOsgGraphicsView::NormalArrayType> normalArray = doc->getOrCreateGlobalNormalArrayForPoints();
 
-    if(spn.data() != NULL)
+    if(normalArray.valid())
     {
-        CT_AbstractNormalCloud *nn = spn->abstractNormalCloud();
-
         size_t i = 0;
         while(it.hasNext() && !isCanceled())
         {
             size_t indexP = it.next().cIndex();
 
             const CT_Normal &nxnynz_pa = m_an->constNormalAt(i);
-            const CT_PointData &xyz = it.currentConstInternalPoint();
+            //const CT_PointData &xyz = it.currentConstInternalPoint();
 
             // set the normal of the point at this document
-            CT_Normal &nxnynz = nn->normalAt(indexP);
+            (*normalArray)[indexP] = nxnynz_pa;
+            /*CT_Normal &nxnynz = nn->normalAt(indexP);
             nxnynz.x() = xyz(0) + nxnynz_pa.x();
             nxnynz.y() = xyz(1) + nxnynz_pa.y();
-            nxnynz.z() = xyz(2) + nxnynz_pa.z();
+            nxnynz.z() = xyz(2) + nxnynz_pa.z();*/
+
 
             setProgress((i*100)/size);
             ++i;
@@ -42,7 +40,7 @@ bool DM_AttributesNormalT<CT_AbstractPointsAttributes>::process(GDocumentViewFor
         doc->redrawGraphics();
 
         return true;
-    }*/
+    }
 
     return false;
 }

@@ -21,6 +21,11 @@ public:
     void setGlobalColorArray(DM_PainterToOsgElements::ColorArrayType *colors);
 
     /**
+     * @brief Set the normals array that was sync with the global points cloud
+     */
+    void setGlobalNormalArray(DM_PainterToOsgElements::NormalArrayType *normals);
+
+    /**
      * @brief Set the state set to use with global geometries (points from global points cloud)
      */
     void setGlobalGeometriesStateSet(osg::StateSet *set);
@@ -53,6 +58,7 @@ public:
     void setLocalColorVertexAttribArrayLocationIndex(uint index);
 
     DM_PainterToOsgElements::ColorArrayType* globalColorArray() const;
+    DM_PainterToOsgElements::NormalArrayType* globalNormalArray() const;
 
     uint globalVertexAttribArrayLocationIndex() const;
     osg::Array* globalVertexAttribArray() const;
@@ -68,6 +74,7 @@ public:
 
 private:
     osg::ref_ptr< DM_PainterToOsgElements::ColorArrayType >                 m_globalColorArray;
+    osg::ref_ptr< DM_PainterToOsgElements::NormalArrayType >                m_globalNormalArray;
 
     osg::ref_ptr<osg::StateSet>                                             m_globalStateSet;
     QHash<osg::PrimitiveSet::Mode, osg::ref_ptr<osg::StateSet> >            m_globalStateSetByPrimitiveSetMode;

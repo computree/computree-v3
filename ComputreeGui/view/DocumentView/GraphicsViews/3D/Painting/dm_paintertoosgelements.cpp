@@ -1042,6 +1042,9 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
             geo->setColorArray(m_geometriesConfiguration->globalColorArray());
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
+            geo->setNormalArray(m_geometriesConfiguration->globalNormalArray());
+            geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
             if(m_geometriesConfiguration->globalVertexAttribArray() != NULL) {
                 geo->setVertexAttribArray(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), m_geometriesConfiguration->globalVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
                 geo->setVertexAttribNormalize(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), false);

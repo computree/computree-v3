@@ -16,6 +16,7 @@
 #include "ct_accessor/ct_edgeaccessor.h"
 
 #include "ct_colorcloud/ct_colorcloudosg.h"
+#include "ct_normalcloud/ct_normalcloudosg.h"
 
 #define KEEP_ALPHA_COLOR 0
 
@@ -74,6 +75,12 @@ public:
      * @brief Color array type used by this painter
      */
     typedef CT_ColorCloudOsg::AType ColorArrayType;
+
+
+    /**
+     * @brief Normal array type used by this painter
+     */
+    typedef CT_NormalCloudOsg::AType NormalArrayType;
 
 //#define COLOR_ARRAY_FLOAT
 #ifdef COLOR_ARRAY_FLOAT

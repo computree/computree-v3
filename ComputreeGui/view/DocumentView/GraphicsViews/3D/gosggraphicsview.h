@@ -78,6 +78,11 @@ public:
      */
     typedef DM_PainterToOsgElements::ColorArrayType     ColorArrayType;
 
+    /**
+     * @brief Type of normal array used by this view
+     */
+    typedef DM_PainterToOsgElements::NormalArrayType     NormalArrayType;
+
 
     explicit GOsgGraphicsView(QWidget *parent = 0);
     ~GOsgGraphicsView();

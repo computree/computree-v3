@@ -3,6 +3,7 @@
 DM_GeometriesConfiguration::DM_GeometriesConfiguration()
 {
     m_globalColorArray = NULL;
+    m_globalNormalArray = NULL;
     m_globalVertexAttribArray = NULL;
     m_localVertexAttribArray = NULL;
     m_shaderProgram = NULL;
@@ -13,6 +14,11 @@ DM_GeometriesConfiguration::DM_GeometriesConfiguration()
 void DM_GeometriesConfiguration::setGlobalColorArray(DM_PainterToOsgElements::ColorArrayType *colors)
 {
     m_globalColorArray = colors;
+}
+
+void DM_GeometriesConfiguration::setGlobalNormalArray(DM_PainterToOsgElements::NormalArrayType *normals)
+{
+    m_globalNormalArray = normals;
 }
 
 void DM_GeometriesConfiguration::setGlobalGeometriesStateSet(osg::StateSet *set)
@@ -60,6 +66,11 @@ void DM_GeometriesConfiguration::setLocalColorVertexAttribArrayLocationIndex(uin
 DM_PainterToOsgElements::ColorArrayType *DM_GeometriesConfiguration::globalColorArray() const
 {
     return m_globalColorArray.get();
+}
+
+DM_PainterToOsgElements::NormalArrayType *DM_GeometriesConfiguration::globalNormalArray() const
+{
+    return m_globalNormalArray.get();
 }
 
 uint DM_GeometriesConfiguration::globalVertexAttribArrayLocationIndex() const

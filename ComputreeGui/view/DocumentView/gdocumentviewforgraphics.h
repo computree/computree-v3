@@ -108,6 +108,12 @@ public:
     AttribCloudType::AType *getOrCreateGlobalAttribArrayForPoints();
 
     /**
+     * @brief Returns the global color array for points. If it don't exist it will be created before return it.
+     */
+    GOsgGraphicsView::NormalArrayType* getOrCreateGlobalNormalArrayForPoints();
+    CT_NCR getGlobalNormalArrayRegisteredForPoints() const;
+
+    /**
      * @brief Returns true if this document has the capacity of change the visibility of an itemdrawable
      */
     bool canChangeVisibility() const;
@@ -148,6 +154,7 @@ private:
 
     CT_CCR                                                          m_pointsColorCloudRegistered;
     QSharedPointer< AttribCloudRegisteredType >                     m_pointsAttribCloudRegistered;
+    CT_NCR                                                          m_pointsNormalCloudRegistered;
 
     QList<GGraphicsView*>       _listGraphics;
     bool                        _graphicsLocked;

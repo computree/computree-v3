@@ -11,6 +11,7 @@
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
 
 #include "ct_colorcloud/registered/ct_standardcolorcloudregistered.h"
+#include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
 
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 #include "ct_itemdrawable/tools/iterator/ct_itemiterator.h"
@@ -40,6 +41,7 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
 
     m_pointsColorCloudRegistered = CT_CCR(NULL);
     m_pointsAttribCloudRegistered = QSharedPointer< AttribCloudRegisteredType >(NULL);
+    m_pointsNormalCloudRegistered = CT_NCR(NULL);
 
     m_timerUpdateColors.setSingleShot(true);
     m_timerUpdateColors.setInterval(50);
@@ -411,6 +413,19 @@ GDocumentViewForGraphics::AttribCloudType::AType* GDocumentViewForGraphics::getO
         m_pointsAttribCloudRegistered = PS_REPOSITORY->createNewCloudT< AttribCloudRegisteredType, AttribCloudType >(CT_Repository::SyncWithPointCloud);
 
     return m_pointsAttribCloudRegistered->cloudT()->osgArray();
+}
+
+GOsgGraphicsView::NormalArrayType *GDocumentViewForGraphics::getOrCreateGlobalNormalArrayForPoints()
+{
+    if(m_pointsNormalCloudRegistered.isNull())
+        m_pointsNormalCloudRegistered = PS_REPOSITORY->createNewNormalCloud(CT_Repository::SyncWithPointCloud);
+
+    return m_pointsNormalCloudRegistered->cloudT()->osgArray();
+}
+
+CT_NCR GDocumentViewForGraphics::getGlobalNormalArrayRegisteredForPoints() const
+{
+    return m_pointsNormalCloudRegistered;
 }
 
 bool GDocumentViewForGraphics::canChangeVisibility() const

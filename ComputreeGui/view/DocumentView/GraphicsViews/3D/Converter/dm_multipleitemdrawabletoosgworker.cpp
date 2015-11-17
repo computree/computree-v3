@@ -10,7 +10,7 @@
 #define SHADER_INFO_LOCATION 6
 //#define SHADER_COLOR_LOCATION 7
 
-/*static const char *vertexShader = {
+/*static const char *vertexSource = {
     "#version 120\n"
     "// selection color of points\n"
     "uniform vec4 selectionColor;\n"
@@ -36,7 +36,7 @@
 };*/
 
 
-static const char *vertexShader = {
+static const char *vertexSource = {
     "#version 120\n"
     "// selection color of points\n"
     "uniform vec4 selectionColor;\n"
@@ -59,6 +59,26 @@ static const char *vertexShader = {
     "}\n"
 };
 
+static const char* fragSource = {
+"#version 120\n"
+"#extension GL_EXT_geometry_shader4 : enable\n"
+"varying vec4 v_color_out;\n"
+"void main(void)\n"
+"{\n"
+"    gl_FragColor = v_color_out;\n"
+"}\n"
+};
+
+static const char* geomSource = {
+"#version 120\n"
+"#extension GL_EXT_geometry_shader4 : enable\n"
+"void main(void)\n"
+"{\n"
+"    vec4 v = gl_PositionIn[0];\n"
+"    gl_Position = v;  EmitVertex();\n"
+"    EndPrimitive();\n"
+"}\n"
+};
 
 DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraphicsView &view) : m_view(view)
 {
@@ -75,6 +95,7 @@ DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraph
 
     if(m_view.getDocumentView() != NULL) {
         m_geometriesConfiguration.setGlobalColorArray(dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalColorArrayForPoints());
+        m_geometriesConfiguration.setGlobalNormalArray(dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalNormalArrayForPoints());
         m_geometriesConfiguration.setGlobalVertexAttribArray(SHADER_INFO_LOCATION, dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalAttribArrayForPoints());
     }
 
@@ -130,33 +151,57 @@ DM_GeometriesConfiguration DM_MultipleItemDrawableToOsgWorker::getGeometriesConf
 
 void DM_MultipleItemDrawableToOsgWorker::createGlobalShader()
 {
-    osg::ref_ptr<osg::Program> program = new osg::Program;
-    osg::ref_ptr<osg::Shader> shader = new osg::Shader( osg::Shader::VERTEX, vertexShader);
+    osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
 
-    if(program->addShader(shader)) {
-        program->addBindAttribLocation("info", SHADER_INFO_LOCATION);
+    QColor color = m_view.getOptions().getSelectedColor();
+
+    ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
+    ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
+
+    // Enable blending, select transparent bin.
+    ss->setMode( GL_BLEND, osg::StateAttribute::ON );
+    ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+
+    // Set blend function
+    osg::BlendFunc *bf = new osg::BlendFunc;
+    bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    ss->setAttributeAndModes(bf);
+
+    // Disable conflicting modes.
+    ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+
+    osg::ref_ptr<osg::Program> programGlobal = new osg::Program;
+    osg::ref_ptr<osg::Shader> vShader = new osg::Shader( osg::Shader::VERTEX, vertexSource);
+    osg::ref_ptr<osg::Shader> geoShader = new osg::Shader( osg::Shader::GEOMETRY, geomSource);
+
+    bool programGlobalOk = false;
+
+    if(programGlobal->addShader(vShader)) {
+        programGlobal->addBindAttribLocation("info", SHADER_INFO_LOCATION);
         //program->addBindAttribLocation("myColor", SHADER_COLOR_LOCATION);
 
-        osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
-        ss->setAttributeAndModes(program.get(), osg::StateAttribute::ON);
+        programGlobalOk = true;
+    }
 
-        QColor color = m_view.getOptions().getSelectedColor();
+    /*osg::ref_ptr<osg::Program> programForPoints = new osg::Program;
 
-        ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
-        ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
-        ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
+    if(programForPoints->addShader(vShader)
+            && programForPoints->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) )
+            && programForPoints->addShader(geoShader)) {
 
-        // Enable blending, select transparent bin.
-        ss->setMode( GL_BLEND, osg::StateAttribute::ON );
-        ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+        programForPoints->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
+        programForPoints->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
+        programForPoints->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
 
-        // Set blend function
-        osg::BlendFunc *bf = new osg::BlendFunc;
-        bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        ss->setAttributeAndModes(bf);
+        osg::StateSet *ssPoints = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
+        ssPoints->setAttributeAndModes(programForPoints.get(), osg::StateAttribute::ON);
 
-        // Disable conflicting modes.
-        ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+        m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::POINTS, ssPoints);
+    }*/
+
+    if(programGlobalOk) {
+        ss->setAttributeAndModes(programGlobal.get(), osg::StateAttribute::ON);
 
         osg::StateSet *ssQuads = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
         ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));

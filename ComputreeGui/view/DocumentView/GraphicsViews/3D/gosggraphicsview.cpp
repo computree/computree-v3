@@ -490,6 +490,9 @@ QSharedPointer<CT_StandardColorCloudRegistered> GOsgGraphicsView::colorCloudOf(G
 
 QSharedPointer<CT_StandardNormalCloudRegistered> GOsgGraphicsView::normalCloudOf(GraphicsViewInterface::NormalCloudType type) const
 {
+    if(type == GraphicsViewInterface::CPointCloud)
+        return dynamic_cast<GDocumentViewForGraphics*>(getDocumentView())->getGlobalNormalArrayRegisteredForPoints();
+
     // TODO : returns normal cloud of type passed in parameter
     return QSharedPointer<CT_StandardNormalCloudRegistered>();
 }
