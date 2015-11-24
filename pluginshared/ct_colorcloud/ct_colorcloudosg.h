@@ -46,6 +46,17 @@ public:
     const CT_Color& operator[](const size_t &index) const;
 
     virtual CT_AbstractCloud* copy() const;
+
+protected:
+    /**
+     * @brief delete all elements of the cloud between beginIndex and (beginIndex+size-1) included.
+     */
+    inline void erase(const size_t &beginIndex, const size_t &sizes) { CT_StandardCloudOsgT<CT_Color, osg::Array::Vec4ubArrayType, 4, GL_UNSIGNED_BYTE>::erase(beginIndex, sizes); }
+
+    /**
+     * @brief resize the collection (Called by CT_GlobalCloudManagerT and CT_AbstractCloudSyncToGlobalCloudManager)
+     */
+    inline void resize(const size_t &newSize)  { CT_StandardCloudOsgT<CT_Color, osg::Array::Vec4ubArrayType, 4, GL_UNSIGNED_BYTE>::resize(newSize); }
 };
 
 #endif // CT_COLORCLOUDOSG_H

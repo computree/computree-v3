@@ -65,11 +65,8 @@ private slots:
     void pointSize(double size);
     void drawAxis(bool e);
     void setDrawGrid(bool e);
-    void drawFastestMode(QAbstractButton* button);
     void useTransparency(bool e);
     void useLight(bool e);
-    void fastDrawTime(int t);
-    void setMinFPS(int fps);
     void setCameraInfoDisplayed();
     void setCameraInfoPosition(QAbstractButton* button);
     void setCameraType(QAbstractButton* button);
@@ -81,7 +78,6 @@ private slots:
 
 signals:
     void pointSizeChanged(double size);
-    void drawModeChanged(DM_GraphicsViewOptions::DrawFastestMode);
 };
 
 #endif // GGRAPHICSVIEWOPTIONS_H

@@ -32,7 +32,12 @@ GPointsAttributesManager::GPointsAttributesManager(QWidget *parent) :
     m_itemEdgeRootNormal = NULL;
     m_internalSetColor = false;
 
+    ui->pushButtonGradientColorPicker->setStandardColors();
     ui->pushButtonAddColor->setEnabled(false);
+
+    ui->pushButtonNormalsColorPicker->setStandardColors();
+    ui->pushButtonNormalsColorPicker->setCurrentColor(Qt::white);
+    ui->pushButtonApplyEditNormals->setEnabled(false);
 
     ui->treeView->setModel(&m_model);
     ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -465,9 +470,9 @@ void GPointsAttributesManager::editAttributesScalar(DM_AbstractAttributesScalar 
         ++i;
     }
 
-    ui->layoutEditGradient->setEnabled(true);
     ui->pushButtonAddColor->setEnabled(true);
     ui->pushButtonDeleteColor->setEnabled(ui->colorGradientView->nArrows() > 2);
+    ui->widgetEditGradient->setVisible(true);
 }
 
 void GPointsAttributesManager::clearEditGradient()
@@ -476,7 +481,6 @@ void GPointsAttributesManager::clearEditGradient()
     ui->pushButtonSave->setEnabled(false);
     ui->pushButtonDeleteColor->setEnabled(false);
     ui->pushButtonAddColor->setEnabled(false);
-    ui->layoutEditGradient->setEnabled(false);
 }
 
 void GPointsAttributesManager::saveCurrentGradientTo(DM_AbstractAttributesScalar *pas)
@@ -521,6 +525,32 @@ void GPointsAttributesManager::saveCurrentGradientTo(DM_AbstractAttributesScalar
     }
 
     ui->pushButtonSave->setEnabled(false);
+}
+
+void GPointsAttributesManager::editAttributesNormal(DM_AbstractAttributesNormal *pan)
+{
+    Q_UNUSED(pan)
+
+    GDocumentViewForGraphics::NormalsConfiguration c = m_doc->getNormalsConfiguration();
+
+    ui->pushButtonNormalsColorPicker->setCurrentColor(c.normalColor);
+    ui->doubleSpinBoxNormalsLength->setValue(c.normalLength);
+
+    ui->widgetEditNormals->setVisible(true);
+}
+
+void GPointsAttributesManager::clearEditNormal()
+{
+    ui->pushButtonApplyEditNormals->setEnabled(false);
+}
+
+void GPointsAttributesManager::applyAndSaveNormal()
+{
+    GDocumentViewForGraphics::NormalsConfiguration c;
+    c.normalColor = ui->pushButtonNormalsColorPicker->currentColor();
+    c.normalLength = ui->doubleSpinBoxNormalsLength->value();
+
+    m_doc->applyNormalsConfiguration(c);
 }
 
 DM_AbstractAttributes *GPointsAttributesManager::attributesSelected() const
@@ -629,7 +659,7 @@ void GPointsAttributesManager::itemChanged(QStandardItem *item)
     }
 }
 
-void GPointsAttributesManager::on_pushButtonColorPicker_colorChanged(const QColor &color)
+void GPointsAttributesManager::on_pushButtonGradientColorPicker_colorChanged(const QColor &color)
 {
     if(!m_internalSetColor)
     {
@@ -647,10 +677,10 @@ void GPointsAttributesManager::on_colorGradientView_newFocusColor(const QColor &
 {
     Q_UNUSED(arrowIndex)
 
-    if(ui->pushButtonColorPicker->currentColor() != color)
+    if(ui->pushButtonGradientColorPicker->currentColor() != color)
     {
         m_internalSetColor = true;
-        ui->pushButtonColorPicker->setCurrentColor(color);
+        ui->pushButtonGradientColorPicker->setCurrentColor(color);
     }
 }
 
@@ -665,7 +695,33 @@ void GPointsAttributesManager::on_colorGradientView_arrowMove(qreal lastPos, con
 void GPointsAttributesManager::on_checkBoxShowNormals_stateChanged(int state)
 {
     m_doc->setUseNormalCloud(state == Qt::Checked);
-    m_doc->redrawGraphics();
+}
+
+void GPointsAttributesManager::on_doubleSpinBoxNormalsLength_valueChanged(double v)
+{
+    if(m_doc != NULL) {
+        GDocumentViewForGraphics::NormalsConfiguration c = m_doc->getNormalsConfiguration();
+
+        if(v != c.normalLength)
+            ui->pushButtonApplyEditNormals->setEnabled(true);
+    }
+}
+
+void GPointsAttributesManager::on_pushButtonNormalsColorPicker_colorChanged(QColor c)
+{
+    if(m_doc != NULL) {
+        GDocumentViewForGraphics::NormalsConfiguration co = m_doc->getNormalsConfiguration();
+
+        if(c != co.normalColor)
+            ui->pushButtonApplyEditNormals->setEnabled(true);
+    }
+}
+
+void GPointsAttributesManager::on_pushButtonApplyEditNormals_clicked()
+{
+    ui->pushButtonApplyEditNormals->setEnabled(false);
+
+    applyAndSaveNormal();
 }
 
 void GPointsAttributesManager::treeView_currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
@@ -681,6 +737,8 @@ void GPointsAttributesManager::treeView_currentRowChanged(const QModelIndex &cur
     }
 
     clearEditGradient();
+    ui->widgetEditGradient->setVisible(false);
+    ui->widgetEditNormals->setVisible(false);
 
     QStandardItem *cItem = m_model.itemFromIndex(current);
 
@@ -692,6 +750,15 @@ void GPointsAttributesManager::treeView_currentRowChanged(const QModelIndex &cur
         if(pas != NULL)
         {
             editAttributesScalar(pas);
+            return;
+        }
+
+        DM_AbstractAttributesNormal *pan = dynamic_cast<DM_AbstractAttributesNormal*>((DM_AbstractAttributes*)cItem->data().value<void*>());
+
+        if(pan != NULL)
+        {
+            editAttributesNormal(pan);
+            return;
         }
     }
 }

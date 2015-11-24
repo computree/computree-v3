@@ -325,6 +325,8 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
 
 QList<CT_OutAbstractSingularItemModel *> PB_StepLoadAsciiFile02::createOtherOutResultListProtected(const QString &sceneModelName)
 {
+    Q_UNUSED(sceneModelName)
+
     QList<CT_OutAbstractSingularItemModel *> root;
 
     if (_columnI > 0)

@@ -152,8 +152,6 @@ bool GDocumentManagerView::addAllItemDrawableOfModelToDocument(CT_AbstractResult
 
             if(n > 1)
                 doc->endAddMultipleItemDrawable();
-
-            doc->redrawGraphics();
         }
 
         progress.setProgress(100);
@@ -197,8 +195,6 @@ bool GDocumentManagerView::addAllItemDrawableOfResultToDocument(CT_AbstractResul
 
             if(n > 1)
                 doc->endAddMultipleItemDrawable();
-
-            doc->redrawGraphics();
         }
 
         progress.setProgress(100);
@@ -244,8 +240,6 @@ bool GDocumentManagerView::addAllItemDrawableOfListToDocument(QList<CT_AbstractI
 
             if(n > 1)
                 doc->endAddMultipleItemDrawable();
-
-            doc->redrawGraphics();
         }
 
         progress.setProgress(100);
@@ -275,8 +269,6 @@ bool GDocumentManagerView::removeAllItemDrawableOfResultFromDocuments(CT_Abstrac
         progress.setProgress(((float)(i*100))/n);
     }
 
-    redrawAllDocument();
-
     progress.setProgress(100);
 
     return true;
@@ -301,8 +293,6 @@ bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocuments(CT_OutAbstr
         progress.setProgress(((float)(i*100))/n);
     }
 
-    redrawAllDocument();
-
     progress.setProgress(100);
 
     return true;
@@ -313,13 +303,7 @@ bool GDocumentManagerView::removeAllItemDrawableOfModelFromDocument(CT_OutAbstra
     progress.setProgress(0);
 
     if(doc != NULL)
-    {
         doc->removeAllItemDrawableOfModel(model);
-
-        m_mutex->lock();
-        doc->redrawGraphics();
-        m_mutex->unlock();
-    }
 
     progress.setProgress(100);
 
@@ -355,8 +339,6 @@ bool GDocumentManagerView::removeAllItemDrawableOfListFromDocuments(QList<CT_Abs
             ++i;
             progress.setProgress(((float)(i*100))/n);
         }
-
-        redrawAllDocument();
     }
 
     progress.setProgress(100);
@@ -433,9 +415,7 @@ void GDocumentManagerView::redrawAllDocument()
     QListIterator<QMdiSubWindow*> it(list);
 
     while(it.hasNext())
-    {
         ((MyQMdiSubWindow*)it.next())->getDocumentView()->redrawGraphics();
-    }
 
     m_mutex->unlock();
 }

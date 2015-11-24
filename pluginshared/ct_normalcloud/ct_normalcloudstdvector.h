@@ -57,6 +57,16 @@ public:
      */
     CT_AbstractCloud* copy() const;
 
+protected:
+    /**
+     * @brief delete all elements of the cloud between beginIndex and (beginIndex+size-1) included.
+     */
+    void erase(const size_t &beginIndex, const size_t &sizes);
+
+    /**
+     * @brief resize the collection
+     */
+    void resize(const size_t &newSize);
 };
 
 #endif // CT_NORMALCLOUDSTDVECTOR_H

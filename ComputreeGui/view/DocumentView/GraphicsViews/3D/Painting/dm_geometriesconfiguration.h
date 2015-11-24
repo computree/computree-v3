@@ -4,6 +4,7 @@
 #include <osg/StateSet>
 #include <osg/Program>
 #include <osg/Array>
+#include <osgFX/Effect>
 
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
 
@@ -13,6 +14,8 @@
 class DM_GeometriesConfiguration
 {
 public:
+    typedef osgFX::Effect* (*createNewEffectFunction)(osg::PrimitiveSet::Mode mode, void *context);
+
     DM_GeometriesConfiguration();
 
     /**
@@ -26,10 +29,30 @@ public:
     void setGlobalNormalArray(DM_PainterToOsgElements::NormalArrayType *normals);
 
     /**
+     * @brief Set a function to use to create a new osgFX::Effect when necessary for globals geometries
+     */
+    void setFunctionToCreateNewEffectForGlobal(createNewEffectFunction f, void *context);
+
+    /**
+     * @brief Set a function to use to create a new osgFX::Effect when necessary for globals geometries
+     */
+    void setFunctionToCreateNewEffectForLocal(createNewEffectFunction f, void *context);
+
+    /**
+     * @brief Create a Effect for a specific type of global geometries
+     */
+    osgFX::Effect* createGlobalEffect(osg::PrimitiveSet::Mode mode);
+
+    /**
+     * @brief Create a Effect for a specific type of local geometries
+     */
+    osgFX::Effect* createLocalEffect(osg::PrimitiveSet::Mode mode);
+
+    /**
      * @brief Set the state set to use with global geometries (points from global points cloud)
      */
-    void setGlobalGeometriesStateSet(osg::StateSet *set);
-    void setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set);
+    void setGlobalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> > set);
+    void setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList< osg::ref_ptr<osg::StateSet> > set);
 
     /**
      * @brief Set the vertex attributes array that will be used by the shader for vertex of the global points cloud
@@ -44,8 +67,11 @@ public:
     /**
      * @brief Set the state set to use with local geometries (points from circle, triangle, etc...)
      */
-    void setLocalGeometriesStateSet(osg::StateSet *set);
-    void setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set);
+    void setLocalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> > set);
+    void setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList< osg::ref_ptr<osg::StateSet> > set);
+
+    QList< osg::ref_ptr<osg::StateSet> > globalStateSet(osg::PrimitiveSet::Mode mode) const;
+    QList< osg::ref_ptr<osg::StateSet> > localStateSet(osg::PrimitiveSet::Mode mode) const;
 
     /**
      * @brief Set the vertex attributes array that will be used by the shader for local vertex
@@ -69,20 +95,20 @@ public:
     uint localColorVertexAttribArrayLocationIndex() const;
     uint globalColorVertexAttribArrayLocationIndex() const;
 
-    osg::StateSet* globalStateSet(osg::PrimitiveSet::Mode mode) const;
-    osg::StateSet* localStateSet(osg::PrimitiveSet::Mode mode) const;
-
 private:
     osg::ref_ptr< DM_PainterToOsgElements::ColorArrayType >                 m_globalColorArray;
     osg::ref_ptr< DM_PainterToOsgElements::NormalArrayType >                m_globalNormalArray;
 
-    osg::ref_ptr<osg::StateSet>                                             m_globalStateSet;
-    QHash<osg::PrimitiveSet::Mode, osg::ref_ptr<osg::StateSet> >            m_globalStateSetByPrimitiveSetMode;
+    QPair<createNewEffectFunction, void*>                                   m_effectFunctionGlobal;
+    QPair<createNewEffectFunction, void*>                                   m_effectFunctionLocal;
+
+    QList< osg::ref_ptr<osg::StateSet> >                                    m_globalStateSet;
+    QHash<osg::PrimitiveSet::Mode, QList< osg::ref_ptr<osg::StateSet> > >   m_globalStateSetByPrimitiveSetMode;
     uint                                                                    m_globalVertexAttribArrayLocationIndex;
     osg::ref_ptr<osg::Array>                                                m_globalVertexAttribArray;
 
-    osg::ref_ptr<osg::StateSet>                                             m_localStateSet;
-    QHash<osg::PrimitiveSet::Mode, osg::ref_ptr<osg::StateSet> >            m_localStateSetByPrimitiveSetMode;
+    QList< osg::ref_ptr<osg::StateSet> >                                    m_localStateSet;
+    QHash<osg::PrimitiveSet::Mode, QList< osg::ref_ptr<osg::StateSet> > >   m_localStateSetByPrimitiveSetMode;
     uint                                                                    m_localVertexAttribArrayLocationIndex;
     osg::ref_ptr<osg::Array>                                                m_localVertexAttribArray;
 

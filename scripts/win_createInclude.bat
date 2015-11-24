@@ -112,6 +112,7 @@ echo OSG_LIB_ADD += osgSim >> %OSGDESTFILE%
 echo OSG_LIB_ADD += osgText >> %OSGDESTFILE%
 echo OSG_LIB_ADD += osgUtil >> %OSGDESTFILE%
 echo OSG_LIB_ADD += osgDB >> %OSGDESTFILE%
+echo OSG_LIB_ADD += osgFX >> %OSGDESTFILE%
 
 echo; >> %OSGDESTFILE%
 echo ^^!exists($${OSG_INC_PATH}) { >> %OSGDESTFILE%

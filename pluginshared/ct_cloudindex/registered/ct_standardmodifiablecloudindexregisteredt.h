@@ -9,6 +9,9 @@
 template<typename T>
 class CT_StandardModifiableCloudIndexRegisteredT : public CT_AbstractModifiableCloudIndexRegisteredT<T>
 {
+public:
+    CT_AbstractCloudIndex* abstractCloudIndex() const { return CT_AbstractCloudIndexRegisteredT<T>::abstractCloudIndex(); }
+
 protected:
     template<typename U> friend class CT_AbstractCloudIndexRegistrationManagerT;
 

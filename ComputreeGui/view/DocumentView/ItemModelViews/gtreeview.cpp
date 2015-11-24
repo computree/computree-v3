@@ -421,10 +421,6 @@ void GTreeView::slotColorAuto()
 
             doc->setColor(it.next(), keepAlphaColor);
         }
-
-        doc->redrawGraphics();
-
-        //construct();
     }
 }
 
@@ -445,10 +441,6 @@ void GTreeView::slotColorSolid()
 
         while(it.hasNext())
             doc->setColor(it.next(), color);
-
-        doc->redrawGraphics();
-
-        //construct();
     }
 }
 

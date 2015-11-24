@@ -11,6 +11,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/Shape>
 #include <osgSim/SphereSegment>
+#include <osgFX/Effect>
 
 #include "ct_accessor/ct_faceaccessor.h"
 #include "ct_accessor/ct_edgeaccessor.h"
@@ -35,32 +36,43 @@ struct DM_PainterToOsgElementsResult
  *
  * osg::Group (Result)
  *  |
- *  |-- osg::Group (Elements that can't be draw with the global vertex array managed by the pluginShared)
- *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 0)
- *  |       |               |-- osg::Geode (A geode that will contains all drawables)
- *  |       |                   |-- osg::Drawable (Points per example)
- *  |       |                   |-- osg::Drawable (Lines per example)
- *  |       |                   |-- osg::Drawable (Triangles per example)
+ *  |-- osg::Group (Elements that will be draw with the LOCAL vertex array managed by this painter)
+ *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system)
+ *  |       |               |-- osgFX::Effect (A effect for use shaders on a specific type [lines per example])
+ *  |       |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [lines in this example])
+ *  |       |                       |-- osg::Geometry (Lines per example)
+ *  |       |               |-- osgFX::Effect (A effect for use shaders on a specific type [points per example])
+ *  |       |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [points in this example])
+ *  |       |                       |-- osg::Geometry (Points in this example)
  *  |       |
- *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 6)
- *  |                       |-- osg::Geode (A geode that will contains all drawables)
- *  |                           |-- osg::Drawable (Points per example)
- *  |                           |-- osg::Drawable (Lines per example)
- *  |                           |-- osg::Drawable (Triangles per example)
+ *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system)
+ *  |                       |-- osgFX::Effect (A effect for use shaders on a specific type [triangles per example])
+ *  |                           |-- osg::Geode (A geode that will contains all drawables with the type specified [triangles in this example])
+ *  |                               |-- osg::Geometry (Triangles per example)
+ *  |                       |-- osgFX::Effect (A effect for use shaders on a specific type [points per example])
+ *  |                           |-- osg::Geode (A geode that will contains all drawables with the type specified [points in this example])
+ *  |                               |-- osg::Geometry (Points in this example)
  *  |
- *  |-- osg::Group (Elements that can be draw with the global vertex array managed by the pluginShared)
- *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 0)
- *  |       |               |-- osg::Geode (A geode that will contains all drawables)
- *  |       |                   |-- osg::Drawable (Points per example)
- *  |       |                   |-- osg::Drawable (Lines per example)
- *  |       |                   |-- osg::Drawable (Triangles per example)
- *  |       |
- *  |       |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 6)
- *  |                       |-- osg::Geode (A geode that will contains all drawables)
- *  |                           |-- osg::Drawable (Points per example)
- *  |                           |-- osg::Drawable (Lines per example)
- *  |                           |-- osg::Drawable (Triangles per example)
  *  |
+ *  |
+ *  |-- osg::Group (Elements that will be draw with the GLOBAL vertex array managed by the pluginShared)
+ *          |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system, per example the coordinate system 0)
+ *          |               |-- osgFX::Effect (A effect for use shaders on a specific type [triangles per example])
+ *          |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [triangles in this example])
+ *          |                       |-- osg::Geometry (Triangles per example)
+ *          |               |-- osgFX::Effect (A effect for use shaders on a specific type [points per example])
+ *          |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [points in this example])
+ *          |                       |-- osg::Geometry (Points in this example)
+ *          |
+ *          |-- osg::Tranform (osg::PositionAttitudeTransform that represent a coordinate system)
+ *          |               |-- osgFX::Effect (A effect for use shaders on a specific type [lines per example])
+ *          |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [lines in this example])
+ *          |                       |-- osg::Geometry (Lines per example)
+ *          |               |-- osgFX::Effect (A effect for use shaders on a specific type [points per example])
+ *          |                   |-- osg::Geode (A geode that will contains all drawables with the type specified [points in this example])
+ *          |                       |-- osg::Geometry (Points in this example)
+ *          |
+ *
  *
  */
 class DM_PainterToOsgElements : public PainterInterface
@@ -487,8 +499,7 @@ public:
     virtual void restoreDefaultPen() {}
 
 private:
-    typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >            GeometryCollection;
-    typedef QHashIterator<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osg::Geometry*>* >    GeometryCollectionIterator;
+    typedef QHash<osg::PositionAttitudeTransform*, QHash<osg::PrimitiveSet::Mode, osgFX::Effect*>* >            EffectCollection;
     typedef QHash<uint, osg::PositionAttitudeTransform*>                                                        CoordinateSystemCollection;
     typedef osg::Vec3Array                                                                                      LocalVertexArray;
 
@@ -547,12 +558,12 @@ private:
     /**
      * @brief Collection of geometries classed by transform and type of primitive (used for elements that don't use the global vertex array)
      */
-    GeometryCollection                      m_localGeometries;
+    EffectCollection                        m_localEffects;
 
     /**
      * @brief Collection of geometries classed by transform and type of primitive (used for elements that use the global vertex array)
      */
-    GeometryCollection                      m_globalGeometries;
+    EffectCollection                        m_globalEffects;
 
     /**
      * @brief Used to access faces
@@ -642,7 +653,9 @@ private:
     /**
      * @brief Returns the geometry that must be used for the type and transform passed in parameter
      */
-    osg::Geometry* getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform, GeometryCollection *geoCollectionToUse);
+    osg::Geometry* getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform, EffectCollection *effectsCollectionToUse);
+
+    osgFX::Effect* getOrCreateEffectForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform, EffectCollection *effectsCollectionToUse);
 
     /**
      * @brief Add the vertex index passed in parameter to the primitive set of the geometry passed in parameter
@@ -665,7 +678,7 @@ private:
     /**
      * @brief Create the geometry and return it
      */
-    osg::Geometry* createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, GeometryCollection *geoCollectionToUse);
+    osg::Geometry* createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, EffectCollection *effectsCollectionToUse);
 
     /**
      * @brief Add a new point to the geometry that draw points from global points cloud

@@ -37,7 +37,6 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     _pofManager.loadDefault();
     m_useNormalCloud = true;
     _pixelSize = PX_1;
-    _drawMode = DM_GraphicsViewOptions::Normal;
 
     m_pointsColorCloudRegistered = CT_CCR(NULL);
     m_pointsAttribCloudRegistered = QSharedPointer< AttribCloudRegisteredType >(NULL);
@@ -49,11 +48,16 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     m_timerDirtyColorsOfPoints.setSingleShot(true);
     m_timerDirtyColorsOfPoints.setInterval(50);
 
+    m_timerDirtyNormalsOfPoints.setSingleShot(true);
+    m_timerDirtyNormalsOfPoints.setInterval(50);
+
     connect(&m_timerUpdateColors, SIGNAL(timeout()), this, SLOT(mustUpdateItemDrawablesThatColorWasModified()), Qt::QueuedConnection);
     connect(&m_timerDirtyColorsOfPoints, SIGNAL(timeout()), this, SLOT(mustDirtyColorsOfItemDrawablesWithPoints()), Qt::QueuedConnection);
+    connect(&m_timerDirtyNormalsOfPoints, SIGNAL(timeout()), this, SLOT(mustDirtyNormalsOfItemDrawablesWithPoints()), Qt::QueuedConnection);
 
     connect(this, SIGNAL(startUpdateColorsTimer()), &m_timerUpdateColors, SLOT(start()), Qt::QueuedConnection);
     connect(this, SIGNAL(startDirtyColorsOfPointTimer()), &m_timerDirtyColorsOfPoints, SLOT(start()), Qt::QueuedConnection);
+    connect(this, SIGNAL(startDirtyNormalsOfPointTimer()), &m_timerDirtyNormalsOfPoints, SLOT(start()), Qt::QueuedConnection);
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -218,6 +222,40 @@ void GDocumentViewForGraphics::updateItems(const QList<CT_AbstractItemDrawable *
 void GDocumentViewForGraphics::dirtyColorsOfPoints()
 {
     emit startDirtyColorsOfPointTimer();
+}
+
+void GDocumentViewForGraphics::dirtyNormalsOfPoints()
+{
+    emit startDirtyNormalsOfPointTimer();
+}
+
+void GDocumentViewForGraphics::applyNormalsConfiguration(GDocumentViewForGraphics::NormalsConfiguration c)
+{
+    if(!_listGraphics.isEmpty()) {
+
+        DM_GraphicsViewOptions opt;
+        opt.updateFromOtherOptions(_listGraphics.first()->constGetOptionsInternal());
+        opt.setNormalColor(c.normalColor);
+        opt.setNormalLength(c.normalLength);
+
+        QListIterator<GGraphicsView*> it(_listGraphics);
+
+        while(it.hasNext())
+            it.next()->setOptions(opt);
+    }
+}
+
+GDocumentViewForGraphics::NormalsConfiguration GDocumentViewForGraphics::getNormalsConfiguration() const
+{
+    GDocumentViewForGraphics::NormalsConfiguration c;
+
+    if(!_listGraphics.isEmpty()) {
+        const DM_GraphicsViewOptions &opt = _listGraphics.first()->constGetOptionsInternal();
+        c.normalColor = opt.normalColor();
+        c.normalLength = opt.normalLength();
+    }
+
+    return c;
 }
 
 void GDocumentViewForGraphics::lock()
@@ -606,8 +644,6 @@ void GDocumentViewForGraphics::changePixelSize()
         opt.setPointSize(1);
     }
 
-    opt.drawFastest(_drawMode);
-
     _graphicsOptionsView->setOptions(opt);
 
     validateOptions();
@@ -627,53 +663,6 @@ void GDocumentViewForGraphics::changePixelSize(double size)
     {
         _pixelSize = PX_3;
         _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_3.png"));
-    }
-}
-
-void GDocumentViewForGraphics::changeDrawMode()
-{
-    if (_drawMode == DM_GraphicsViewOptions::Normal)
-    {
-        _drawMode = DM_GraphicsViewOptions::Always;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_always.png"));
-
-    } else if (_drawMode == DM_GraphicsViewOptions::Always)
-    {
-        _drawMode = DM_GraphicsViewOptions::Never;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_never.png"));
-
-    } else if (_drawMode == DM_GraphicsViewOptions::Never)
-    {
-        _drawMode = DM_GraphicsViewOptions::Normal;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
-    }
-
-    DM_GraphicsViewOptions opt;
-    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
-    opt.drawFastest(_drawMode);
-
-    _graphicsOptionsView->setOptions(opt);
-
-    validateOptions();
-}
-
-void GDocumentViewForGraphics::changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode mode)
-{
-    _drawMode = mode;
-    if (_drawMode == DM_GraphicsViewOptions::Normal)
-    {
-        _drawMode = DM_GraphicsViewOptions::Normal;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
-
-    } else if (mode == DM_GraphicsViewOptions::Always)
-    {
-        _drawMode = DM_GraphicsViewOptions::Always;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_always.png"));
-
-    } else if (mode == DM_GraphicsViewOptions::Never)
-    {
-        _drawMode = DM_GraphicsViewOptions::Never;
-        _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_never.png"));
     }
 }
 
@@ -840,6 +829,12 @@ void GDocumentViewForGraphics::mustDirtyColorsOfItemDrawablesWithPoints()
         _listGraphics.first()->dirtyColorsOfItemDrawablesWithPoints();
 }
 
+void GDocumentViewForGraphics::mustDirtyNormalsOfItemDrawablesWithPoints()
+{
+    if(!_listGraphics.isEmpty())
+        _listGraphics.first()->dirtyNormalsOfItemDrawablesWithPoints();
+}
+
 void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
 {
     if(canClose())
@@ -907,13 +902,6 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_1.png"));
     _buttonPixelSize->setEnabled(true);
 
-    _buttonDrawMode = new QPushButton(widgetContainer);
-    _buttonDrawMode->setMaximumWidth(33);
-    _buttonDrawMode->setMinimumWidth(33);
-    _buttonDrawMode->setToolTip(tr("Changer le mode de dessin :\n- Simplifié lors des déplacements\n- Toujours Simplifié- Jamais Simplifié"));
-    _buttonDrawMode->setIcon(QIcon(":/Icones/Icones/fast_onmove.png"));
-    _buttonDrawMode->setEnabled(true);
-
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(pluginExporterManagerReloaded()));
 
     // fenetre de configuration des options
@@ -931,7 +919,6 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(_buttonExport);
     layout->addWidget(buttonShowOptions);
     layout->addWidget(buttonPointsAttributes);
-    layout->addWidget(_buttonDrawMode);
     layout->addWidget(_buttonPixelSize);
     layout->addWidget(_cameraOptionsView);
 
@@ -941,15 +928,12 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     connect(buttonShowOptions, SIGNAL(clicked()), this, SLOT(showOptions()));
     connect(buttonPointsAttributes, SIGNAL(clicked()), this, SLOT(showAttributesOptions()));
     connect(_buttonPixelSize, SIGNAL(clicked()), this, SLOT(changePixelSize()));
-    connect(_buttonDrawMode, SIGNAL(clicked()), this, SLOT(changeDrawMode()));
     connect(_pointOfViewMenu, SIGNAL(addActualPointOfView()), this, SLOT(addActualPointOfView()));
     connect(_pointOfViewMenu, SIGNAL(setPointOfView(DM_PointOfView*)), this, SLOT(setPointOfView(DM_PointOfView*)), Qt::DirectConnection);
 
     connect(_cameraOptionsView, SIGNAL(syncGraphics(bool)), this, SLOT(syncChanged(bool)));
 
     connect(_graphicsOptionsView, SIGNAL(pointSizeChanged(double)), this, SLOT(changePixelSize(double)));
-    connect(_graphicsOptionsView, SIGNAL(drawModeChanged(DM_GraphicsViewOptions::DrawFastestMode)), this, SLOT(changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode)));
-
 }
 
 void GDocumentViewForGraphics::createAndAddGraphicsWidgetContainer(QWidget *parent)

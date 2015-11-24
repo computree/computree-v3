@@ -75,6 +75,7 @@ public:
 
     virtual void updateItemDrawablesThatColorWasModified() = 0;
     virtual void dirtyColorsOfItemDrawablesWithPoints() = 0;
+    virtual void dirtyNormalsOfItemDrawablesWithPoints() = 0;
 
     virtual DM_GraphicsViewCamera* getCamera() const = 0;
 

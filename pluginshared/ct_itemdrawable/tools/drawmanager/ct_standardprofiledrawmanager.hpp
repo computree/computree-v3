@@ -5,7 +5,9 @@
 #include "ct_itemdrawable/ct_profile.h"
 #include <typeinfo>
 
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 
 #include "qdebug.h"

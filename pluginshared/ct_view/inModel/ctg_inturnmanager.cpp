@@ -128,6 +128,8 @@ void CTG_InTurnManager::constructTabs()
 
 QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
 {
+    Q_UNUSED(index)
+
     QWidget *wid = new QWidget(NULL);
     //wid->setWindowTitle(QString("Tour %1").arg(index));
     wid->setWindowTitle(tr("Modèles"));

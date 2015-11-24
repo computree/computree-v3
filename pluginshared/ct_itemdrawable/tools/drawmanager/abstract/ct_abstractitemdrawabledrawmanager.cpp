@@ -29,6 +29,8 @@ void CT_AbstractItemDrawableDrawManager::preDraw(GraphicsViewInterface &view,
                                                  const CT_AbstractItemDrawable &itemDrawable)
 {
     Q_UNUSED(view)
+    Q_UNUSED(painter)
+    Q_UNUSED(itemDrawable)
 }
 
 void CT_AbstractItemDrawableDrawManager::postDraw(GraphicsViewInterface &view,
@@ -36,6 +38,7 @@ void CT_AbstractItemDrawableDrawManager::postDraw(GraphicsViewInterface &view,
                                                   const CT_AbstractItemDrawable &itemDrawable)
 {
     Q_UNUSED(view)
+    Q_UNUSED(painter)
     Q_UNUSED(itemDrawable)
 }
 

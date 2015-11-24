@@ -57,8 +57,8 @@ DM_PainterToOsgElements::DM_PainterToOsgElements()
 
 DM_PainterToOsgElements::~DM_PainterToOsgElements()
 {
-    qDeleteAll(m_localGeometries.begin(), m_localGeometries.end());
-    qDeleteAll(m_globalGeometries.begin(), m_globalGeometries.end());
+    qDeleteAll(m_localEffects.begin(), m_localEffects.end());
+    qDeleteAll(m_globalEffects.begin(), m_globalEffects.end());
 }
 
 void DM_PainterToOsgElements::cancel()
@@ -638,7 +638,7 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
 {
     if(!isCanceled()) {
 
-        osg::Geometry *geo = createGeometry(NULL, osg::PrimitiveSet::LINE_STRIP, &m_localGeometries);
+        osg::Geometry *geo = createGeometry(NULL, osg::PrimitiveSet::LINE_STRIP, &m_localEffects);
 
         if(geo == NULL)
             return;
@@ -858,8 +858,6 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
         translation = new osg::PositionAttitudeTransform();
         m_localCoordinateSystems.insert(key, translation);
 
-        translation->addChild(new osg::Geode());
-
         getOrCreateGroup(DM_PainterToOsgElements::NAME_LOCAL_GEOMETRIES_GROUP)->addChild(translation);
 
         CT_AbstractCoordinateSystem *cs = PS_COORDINATES_SYS_MANAGER->createCoordinateSystemForCoordinates(x, y, z);
@@ -892,8 +890,6 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
         translation = new osg::PositionAttitudeTransform();
         m_globalCoordinateSystems.insert(key, translation);
 
-        translation->addChild(new osg::Geode());
-
         getOrCreateGroup(DM_PainterToOsgElements::NAME_GLOBAL_GEOMETRIES_GROUP)->addChild(translation);
 
         Eigen::Vector3d v;
@@ -910,30 +906,25 @@ osg::PositionAttitudeTransform* DM_PainterToOsgElements::getOrCreateTransformFor
 
 osg::Geometry *DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_Global(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform)
 {
-    return getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(type, transform, &m_globalGeometries);
+    return getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(type, transform, &m_globalEffects);
 }
 
 osg::Geometry *DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_Local(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform)
 {
-    return getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(type, transform, &m_localGeometries);
+    return getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(type, transform, &m_localEffects);
 }
 
 osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::Mode type,
                                                                                osg::PositionAttitudeTransform *transform,
-                                                                               GeometryCollection *geoCollectionToUse)
+                                                                               EffectCollection *effectsCollectionToUse)
 {
     osg::Geometry *geo = NULL;
+    osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal(type, transform, effectsCollectionToUse);
 
-    QHash<osg::PrimitiveSet::Mode, osg::Geometry*> *hash = geoCollectionToUse->value(transform, NULL);
 
-    if(hash == NULL) {
-        hash = new QHash<osg::PrimitiveSet::Mode, osg::Geometry*>();
-        geoCollectionToUse->insert(transform, hash);
-    }
-
-    if((geo = hash->value(type, NULL)) == NULL) {
-        if(geoCollectionToUse == &m_localGeometries)
-            geo = createGeometry(new osg::DrawElementsUInt(type), type, geoCollectionToUse);
+    if(effect->getChild(0)->asGeode()->getDrawableList().empty()) {
+        if(effectsCollectionToUse == &m_localEffects)
+            geo = createGeometry(new osg::DrawElementsUInt(type), type, effectsCollectionToUse);
         else {
             DM_DrawElementsUIntSynchronized *de = new DM_DrawElementsUIntSynchronized(type);
 
@@ -942,15 +933,42 @@ osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_L
 
             m_result.m_pointCloudIndexRegisteredCollection.append(mpcir);
 
-            geo = createGeometry(de, type, geoCollectionToUse);
+            geo = createGeometry(de, type, effectsCollectionToUse);
         }
 
-        hash->insert(type, geo);
-
-        transform->getChild(0)->asGeode()->addDrawable(geo);
+        effect->getChild(0)->asGeode()->addDrawable(geo);
+    } else {
+        osg::Geode *geode = effect->getChild(0)->asGeode();
+        geo = (osg::Geometry*)geode->getDrawable(geode->getDrawableList().size()-1);
     }
 
     return geo;
+}
+
+osgFX::Effect *DM_PainterToOsgElements::getOrCreateEffectForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::Mode type, osg::PositionAttitudeTransform *transform, DM_PainterToOsgElements::EffectCollection *effectsCollectionToUse)
+{
+    osgFX::Effect *effect = NULL;
+
+    QHash<osg::PrimitiveSet::Mode, osgFX::Effect*> *hash = effectsCollectionToUse->value(transform, NULL);
+
+    if(hash == NULL) {
+        hash = new QHash<osg::PrimitiveSet::Mode, osgFX::Effect*>();
+        effectsCollectionToUse->insert(transform, hash);
+    }
+
+    if((effect = hash->value(type, NULL)) == NULL) {
+        if(effectsCollectionToUse == &m_localEffects)
+            effect = m_geometriesConfiguration->createLocalEffect(type);
+        else
+            effect = m_geometriesConfiguration->createGlobalEffect(type);
+
+        effect->addChild(new osg::Geode());
+        transform->addChild(effect);
+
+        hash->insert(type, effect);
+    }
+
+    return effect;
 }
 
 void DM_PainterToOsgElements::addVertexIndexToGeometry_Global(const size_t &globalIndex, osg::Geometry *geo)
@@ -998,11 +1016,11 @@ DM_PainterToOsgElements::LocalColorArrayType* DM_PainterToOsgElements::getOrCrea
     return m_localGeometriesColorArray;
 }
 
-osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, GeometryCollection *geoCollectionToUse)
+osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primitiveSet, osg::PrimitiveSet::Mode primitiveSetMode, EffectCollection *effectsCollectionToUse)
 {
     osg::Geometry* geo = new osg::Geometry;
 
-    if(geoCollectionToUse == &m_globalGeometries)
+    if(effectsCollectionToUse == &m_globalEffects)
         geo->setVertexArray(m_globalVertexArray.get());
     else {
         size_t fIndex;
@@ -1014,17 +1032,11 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
 
     geo->setUseDisplayList(m_useDisplayList);
 
-    if(geoCollectionToUse == &m_localGeometries) {
+    if(effectsCollectionToUse == &m_localEffects) {
         geo->setColorArray(getOrCreateColorArray_Local());
         geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
         if(m_geometriesConfiguration != NULL) {
-
-            osg::StateSet *ss = m_geometriesConfiguration->localStateSet(primitiveSetMode);
-
-            if(ss != NULL)
-                geo->setStateSet(ss);
-
             if(m_geometriesConfiguration->localVertexAttribArray() != NULL) {
                 geo->setVertexAttribArray(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), m_geometriesConfiguration->localVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
                 geo->setVertexAttribNormalize(m_geometriesConfiguration->localVertexAttribArrayLocationIndex(), false);
@@ -1032,13 +1044,7 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
         }
 
     } else {
-        if(m_geometriesConfiguration != NULL)
-        {
-            osg::StateSet *ss = m_geometriesConfiguration->globalStateSet(primitiveSetMode);
-
-            if(ss != NULL)
-                geo->setStateSet(ss);
-
+        if(m_geometriesConfiguration != NULL){
             geo->setColorArray(m_geometriesConfiguration->globalColorArray());
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
@@ -1431,7 +1437,7 @@ osg::Geometry* DM_PainterToOsgElements::checkIfMustCreateANewDrawableForGlobalPo
     osg::Geometry *geo = lastGeometry;
 
     if(((DM_DrawElementsUIntSynchronized*)geo->getPrimitiveSet(0))->size() > 10000) {
-        QHash<osg::PrimitiveSet::Mode, osg::Geometry*> *hash = m_globalGeometries.value(t, NULL);
+        //QHash<osg::PrimitiveSet::Mode, osgFX::Effect*> *hash = m_globalEffects.value(t, NULL);
 
         DM_DrawElementsUIntSynchronized *de = new DM_DrawElementsUIntSynchronized(osg::PrimitiveSet::POINTS);
 
@@ -1440,11 +1446,14 @@ osg::Geometry* DM_PainterToOsgElements::checkIfMustCreateANewDrawableForGlobalPo
 
         m_result.m_pointCloudIndexRegisteredCollection.append(mpcir);
 
-        geo = createGeometry(de, osg::PrimitiveSet::POINTS, &m_globalGeometries);
+        geo = createGeometry(de, osg::PrimitiveSet::POINTS, &m_globalEffects);
 
-        hash->insertMulti(osg::PrimitiveSet::POINTS, geo);
+        /*hash->insertMulti(osg::PrimitiveSet::POINTS, geo);
 
-        t->getChild(0)->asGeode()->addDrawable(geo);
+        t->getChild(0)->asGeode()->addDrawable(geo);*/
+
+        osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal(osg::PrimitiveSet::POINTS, t, &m_globalEffects);
+        effect->getChild(0)->asGeode()->addDrawable(geo);
     }
 
     return geo;
@@ -1731,7 +1740,7 @@ osg::Geometry* DM_PainterToOsgElements::DM_OSGCylinder::draw(DM_PainterToOsgElem
     int s = m_v.size();
 
     if(s > 0) {
-        osg::Geometry *geometry = painter.createGeometry(NULL, osg::PrimitiveSet::TRIANGLES, &painter.m_localGeometries);
+        osg::Geometry *geometry = painter.createGeometry(NULL, osg::PrimitiveSet::TRIANGLES, &painter.m_localEffects);
 
         osg::Vec3Array *vertexArray = (osg::Vec3Array*)geometry->getVertexArray();
         LocalColorArrayType *colorArray = (LocalColorArrayType*)geometry->getColorArray();

@@ -65,7 +65,10 @@ SOURCES += \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.cpp \
     $$PWD/MainView/gfavoritesmenudialog.cpp \
-    $$PWD/MainView/gstepchooserdialog.cpp
+    $$PWD/MainView/gstepchooserdialog.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.cpp \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -138,7 +141,10 @@ HEADERS += \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h \
     $$PWD/DocumentView/GraphicsViews/3D/Camera/dm_orthographiccameramanipulator.h \
     $$PWD/MainView/gfavoritesmenudialog.h \
-    $$PWD/MainView/gstepchooserdialog.h
+    $$PWD/MainView/gstepchooserdialog.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.h \
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

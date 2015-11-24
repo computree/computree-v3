@@ -51,6 +51,17 @@ public:
     void replaceNormal(const size_t &index, CT_Normal &normal);
 
     virtual CT_AbstractCloud* copy() const;
+
+protected:
+    /**
+     * @brief delete all elements of the cloud between beginIndex and (beginIndex+size-1) included.
+     */
+    inline void erase(const size_t &beginIndex, const size_t &sizes) { CT_StandardCloudOsgT<CT_Normal, osg::Array::Vec4ArrayType, 4, GL_FLOAT>::erase(beginIndex, sizes); }
+
+    /**
+     * @brief resize the collection (Called by CT_GlobalCloudManagerT and CT_AbstractCloudSyncToGlobalCloudManager)
+     */
+    inline void resize(const size_t &newSize) { CT_StandardCloudOsgT<CT_Normal, osg::Array::Vec4ArrayType, 4, GL_FLOAT>::resize(newSize); }
 };
 
 #endif // CT_NORMALCLOUDOSG_H

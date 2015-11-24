@@ -155,6 +155,9 @@ int PB_StepLoadGrid3dFile::readHeaderFile(QFile &f)
 
 void PB_StepLoadGrid3dFile::readDataFile(QFile &f, int offset, bool little_endian)
 {
+    Q_UNUSED(offset)
+    Q_UNUSED(little_endian)
+
     // Get the output result
     CT_ResultGroup* out_res = getOutResultList().first();
 

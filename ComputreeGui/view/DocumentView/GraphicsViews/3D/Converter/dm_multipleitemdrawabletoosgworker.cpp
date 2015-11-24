@@ -1,6 +1,7 @@
 #include "dm_multipleitemdrawabletoosgworker.h"
 
 #include "view/DocumentView/GraphicsViews/3D/Picking/dm_osgpicker.h"
+#include "dm_osguniformwithslot.h"
 
 #include <osg/ShadeModel>
 #include <osg/PolygonMode>
@@ -59,25 +60,55 @@ static const char *vertexSource = {
     "}\n"
 };
 
-static const char* fragSource = {
-"#version 120\n"
-"#extension GL_EXT_geometry_shader4 : enable\n"
-"varying vec4 v_color_out;\n"
-"void main(void)\n"
-"{\n"
-"    gl_FragColor = v_color_out;\n"
-"}\n"
+static const char *vertexSourceSecondPass = {
+    "#version 120\n"
+    "#extension GL_EXT_geometry_shader4 : enable\n"
+    "// selection color of points\n"
+    "uniform vec4 selectionColor;\n"
+    "// to check if it is selected\n"
+    "uniform int checkSelected;\n"
+    "// info of the point (is selected ?)\n"
+    "attribute float info;\n"
+    "// length of normals\n"
+    "uniform float normalLength;\n"
+    "// color of normals\n"
+    "uniform vec4 normalColor;\n"
+    "// pass the normal converted to geometry shader\n"
+    "varying vec4 geoNormal;\n"
+    "// pass the normal color to geometry shader\n"
+    "varying vec4 geoNormalColor;\n"
+    "void main(void)\n"
+    "{\n"
+    "    int infoInt = int(info);\n"
+    "    if(infoInt == checkSelected)\n"
+    "    {\n"
+    "         gl_FrontColor = selectionColor;\n"
+    "    }\n"
+    "    else\n"
+    "    {\n"
+    "         gl_FrontColor = gl_Color;\n"
+    "    }\n"
+    "    geoNormal = gl_ModelViewProjectionMatrix * (gl_Vertex + (vec4(gl_Normal, 0.0) * normalLength));\n"
+    "    geoNormalColor = normalColor;\n"
+    "    gl_Position    = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+    "}\n"
 };
 
 static const char* geomSource = {
-"#version 120\n"
-"#extension GL_EXT_geometry_shader4 : enable\n"
-"void main(void)\n"
-"{\n"
-"    vec4 v = gl_PositionIn[0];\n"
-"    gl_Position = v;  EmitVertex();\n"
-"    EndPrimitive();\n"
-"}\n"
+    "#version 120\n"
+    "#extension GL_EXT_geometry_shader4 : enable\n"
+    "varying in vec4 geoNormal[];\n"
+    "varying in vec4 geoNormalColor[];\n"
+    "void main(void)\n"
+    "{\n"
+    "    gl_FrontColor = geoNormalColor[0];\n"
+    "    gl_Position = gl_PositionIn[0];\n"
+    "    EmitVertex();\n"
+    "    gl_FrontColor = geoNormalColor[0];\n"
+    "    gl_Position = geoNormal[0];\n"
+    "    EmitVertex();\n"
+    "    EndPrimitive();\n"
+    "}\n"
 };
 
 DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraphicsView &view) : m_view(view)
@@ -102,8 +133,10 @@ DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraph
     //m_geometriesConfiguration.setGlobalColorVertexAttribArrayLocationIndex(SHADER_COLOR_LOCATION);
     //m_geometriesConfiguration.setLocalColorVertexAttribArrayLocationIndex(SHADER_COLOR_LOCATION);
 
-    createGlobalShader();
-    createLocalShader();
+
+
+    initGeometriesConfigurationForGlobalElements();
+    initGeometriesConfigurationForLocalElements();
 }
 
 DM_MultipleItemDrawableToOsgWorker::~DM_MultipleItemDrawableToOsgWorker()
@@ -141,22 +174,9 @@ uint DM_MultipleItemDrawableToOsgWorker::staticLocalVertexAttribArrayLocationInd
     return SHADER_INFO_LOCATION;
 }
 
-DM_GeometriesConfiguration DM_MultipleItemDrawableToOsgWorker::getGeometriesConfiguration() const
+void initStateSet(osg::ref_ptr<osg::StateSet> ss, osg::ref_ptr<osg::Program> program, GOsgGraphicsView &view)
 {
-    DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
-    newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
-
-    return newConfig;
-}
-
-void DM_MultipleItemDrawableToOsgWorker::createGlobalShader()
-{
-    osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
-
-    QColor color = m_view.getOptions().getSelectedColor();
-
-    ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
-    ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
+    // enable depth test
     ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
 
     // Enable blending, select transparent bin.
@@ -168,91 +188,137 @@ void DM_MultipleItemDrawableToOsgWorker::createGlobalShader()
     bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     ss->setAttributeAndModes(bf);
 
+    // Conversely, disable writing to depth buffer so that
+    // a transparent polygon will allow polygons behind it to shine thru.
+    // OSG renders transparent polygons after opaque ones.
+    /*osg::Depth* depth = new osg::Depth;
+    depth->setWriteMask( false );
+    geo->getOrCreateStateSet()->setAttributeAndModes( depth, osg::StateAttribute::ON );*/
+
     // Disable conflicting modes.
     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
 
-    osg::ref_ptr<osg::Program> programGlobal = new osg::Program;
-    osg::ref_ptr<osg::Shader> vShader = new osg::Shader( osg::Shader::VERTEX, vertexSource);
-    osg::ref_ptr<osg::Shader> geoShader = new osg::Shader( osg::Shader::GEOMETRY, geomSource);
+    // set parameter for program on this state set
+    QColor color = view.getOptions().getSelectedColor();
 
-    bool programGlobalOk = false;
+    DM_OsgUniformWithSlot *sColorUniform = new DM_OsgUniformWithSlot("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF()));
+    QObject::connect((DM_GraphicsViewOptions*)&view.constGetOptionsInternal(), SIGNAL(selectionColorChanged(QColor)), sColorUniform, SLOT(setBySlot(QColor)));
 
-    if(programGlobal->addShader(vShader)) {
-        programGlobal->addBindAttribLocation("info", SHADER_INFO_LOCATION);
-        //program->addBindAttribLocation("myColor", SHADER_COLOR_LOCATION);
+    ss->addUniform(sColorUniform);
+    ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
 
-        programGlobalOk = true;
-    }
-
-    /*osg::ref_ptr<osg::Program> programForPoints = new osg::Program;
-
-    if(programForPoints->addShader(vShader)
-            && programForPoints->addShader( new osg::Shader( osg::Shader::FRAGMENT, fragSource ) )
-            && programForPoints->addShader(geoShader)) {
-
-        programForPoints->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 4 );
-        programForPoints->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
-        programForPoints->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_POINTS );
-
-        osg::StateSet *ssPoints = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
-        ssPoints->setAttributeAndModes(programForPoints.get(), osg::StateAttribute::ON);
-
-        m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::POINTS, ssPoints);
-    }*/
-
-    if(programGlobalOk) {
-        ss->setAttributeAndModes(programGlobal.get(), osg::StateAttribute::ON);
-
-        osg::StateSet *ssQuads = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
-        ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
-
-        m_geometriesConfiguration.setGlobalGeometriesStateSet(ss);
-        m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, ssQuads);
-    }
+    // set program to this state set
+    ss->setAttributeAndModes(program.get(), osg::StateAttribute::ON);
 }
 
-void DM_MultipleItemDrawableToOsgWorker::createLocalShader()
+osg::ref_ptr<osg::Program> DM_MultipleItemDrawableToOsgWorker::createFirstPassForGlobalPoints() const
 {
-    if(m_geometriesConfiguration.globalStateSet(osg::PrimitiveSet::POINTS) != NULL) {
+    osg::ref_ptr<osg::Program> program = new osg::Program;
 
-        osg::Program *program = (osg::Program*)m_geometriesConfiguration.globalStateSet(osg::PrimitiveSet::POINTS)->getAttribute(osg::StateAttribute::PROGRAM);
-
-        if(program != NULL) {
-            osg::StateSet *ss = new osg::StateSet;
-            ss->setAttributeAndModes(program, osg::StateAttribute::ON);
-
-            QColor color = m_view.getOptions().getSelectedColor();
-
-            ss->addUniform(new osg::Uniform("selectionColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF())));
-            ss->addUniform(new osg::Uniform("checkSelected", (GLbyte)1));
-            ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);
-
-            // Enable blending, select transparent bin.
-            ss->setMode( GL_BLEND, osg::StateAttribute::ON );
-            ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-
-            // Set blend function
-            osg::BlendFunc *bf = new osg::BlendFunc;
-            bf->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            ss->setAttributeAndModes(bf);
-
-            // Conversely, disable writing to depth buffer so that
-            // a transparent polygon will allow polygons behind it to shine thru.
-            // OSG renders transparent polygons after opaque ones.
-            /*osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask( false );
-            geo->getOrCreateStateSet()->setAttributeAndModes( depth, osg::StateAttribute::ON );*/
-
-            // Disable conflicting modes.
-            ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-
-            osg::StateSet *ssQuads = new osg::StateSet(*ss, osg::CopyOp::DEEP_COPY_ALL);
-            ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
-
-            m_geometriesConfiguration.setLocalGeometriesStateSet(ss);
-            m_geometriesConfiguration.setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, ssQuads);
-        }
+    if(program->addShader(new osg::Shader( osg::Shader::VERTEX, vertexSource))) {
+        program->addBindAttribLocation("info", SHADER_INFO_LOCATION);
     }
+
+    return program;
+}
+
+osg::ref_ptr<osg::Program> DM_MultipleItemDrawableToOsgWorker::createSecondPassForGlobalPoints() const
+{
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+
+    if(program->addShader(new osg::Shader( osg::Shader::VERTEX, vertexSourceSecondPass))
+            && program->addShader(new osg::Shader( osg::Shader::GEOMETRY, geomSource))) {
+        program->addBindAttribLocation("info", SHADER_INFO_LOCATION);
+
+        program->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 2 );
+        program->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_POINTS );
+        program->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_LINE_STRIP );
+    }
+
+    return program;
+}
+
+DM_GeometriesConfiguration DM_MultipleItemDrawableToOsgWorker::getGeometriesConfiguration() const
+{
+    DM_GeometriesConfiguration newConfig = m_geometriesConfiguration;
+    newConfig.setLocalVertexAttribArray(SHADER_INFO_LOCATION, new DM_OsgPicker::LocalVertexAttribArray(1));
+
+    return newConfig;
+}
+
+void DM_MultipleItemDrawableToOsgWorker::initGeometriesConfigurationForGlobalElements()
+{
+    // create the shader for first pass on elements that use global points
+    osg::ref_ptr<osg::Program > program = createFirstPassForGlobalPoints();
+
+    // create a state set for generic elements
+    osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
+
+    // init the state set and add the program to it
+    initStateSet(ss, program, m_view);
+
+    // add the state set to configuration so it will be used for all elements
+    m_geometriesConfiguration.setGlobalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> >() << ss);
+
+    // ------------
+
+    // create a state set for osg::PrimitiveSet::QUADS elements that was a copy of the previous state set
+    osg::StateSet *ssQuads = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
+    // add a specific attribute
+    ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
+
+    // add it to configuration so it will be used for all elements of type osg::PrimitiveSet::QUADS
+    m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, QList< osg::ref_ptr<osg::StateSet> >() << ssQuads);
+
+    // -----------
+
+    osg::ref_ptr<osg::Program > programSecondPass = createSecondPassForGlobalPoints();
+
+    // create a state set for generic elements
+    osg::ref_ptr<osg::StateSet> ssSecondPass = new osg::StateSet;
+
+    // init the state set and add the program to it
+    initStateSet(ssSecondPass, programSecondPass, m_view);
+
+    QColor color = m_view.constGetOptionsInternal().normalColor();
+
+    DM_OsgUniformWithSlot *nColorUniform = new DM_OsgUniformWithSlot("normalColor", osg::Vec4(color.redF(), color.greenF(), color.blueF(), color.alphaF()));
+    connect((DM_GraphicsViewOptions*)&m_view.constGetOptionsInternal(), SIGNAL(normalColorChanged(QColor)), nColorUniform, SLOT(setBySlot(QColor)));
+
+    ssSecondPass->addUniform(nColorUniform);
+
+    DM_OsgUniformWithSlot *nLengthUniform = new DM_OsgUniformWithSlot("normalLength", m_view.constGetOptionsInternal().normalLength());
+    connect((DM_GraphicsViewOptions*)&m_view.constGetOptionsInternal(), SIGNAL(normalLengthChanged(float)), nLengthUniform, SLOT(setBySlot(float)));
+
+    ssSecondPass->addUniform(nLengthUniform);
+
+    // add the state set to configuration so it will be used for all elements
+    m_geometriesConfiguration.setGlobalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> >() << ss << ssSecondPass);
+}
+
+void DM_MultipleItemDrawableToOsgWorker::initGeometriesConfigurationForLocalElements()
+{
+    // get the shader for on elements that use local points (it's the same that the shader for first pass on global points)
+    osg::ref_ptr<osg::Program > program = createFirstPassForGlobalPoints();
+
+    // create a state set for generic elements
+    osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
+
+    // init the state set and add the program to it
+    initStateSet(ss, program, m_view);
+
+    // add the state set to configuration so it will be used for all elements
+    m_geometriesConfiguration.setLocalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> >() << ss);
+
+    // ------------
+
+    // create a state set for osg::PrimitiveSet::QUADS elements that was a copy of the previous state set
+    osg::StateSet *ssQuads = new osg::StateSet(*ss.get(), osg::CopyOp::DEEP_COPY_ALL);
+
+    // add a specific attribute
+    ssQuads->setAttribute( new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL ));
+
+    m_geometriesConfiguration.setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::QUADS, QList< osg::ref_ptr<osg::StateSet> >() << ssQuads);
 }
 
 void DM_MultipleItemDrawableToOsgWorker::staticComputeQtConcurrent(DM_SingleItemDrawableToOsgWorker *worker)

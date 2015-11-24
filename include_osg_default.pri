@@ -18,6 +18,7 @@ OSG_LIB_ADD += osgSim
 OSG_LIB_ADD += osgText 
 OSG_LIB_ADD += osgUtil 
 OSG_LIB_ADD += osgDB
+OSG_LIB_ADD += osgFX
  
 !exists($${OSG_INC_PATH}) { 
     error( "OSG INCLUDE directory not found ! => " $${OSG_INC_PATH})

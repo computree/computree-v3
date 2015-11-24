@@ -58,9 +58,6 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->checkBoxDrawGrid, SIGNAL(clicked(bool)), this, SLOT(setDrawGrid(bool)));
     connect(ui->checkBoxUseTransparency, SIGNAL(clicked(bool)), this, SLOT(useTransparency(bool)));
     connect(ui->checkBoxUseLight, SIGNAL(clicked(bool)), this, SLOT(useLight(bool)));
-    connect(ui->spinBoxFastDrawTime, SIGNAL(valueChanged(int)), this, SLOT(fastDrawTime(int)));
-
-    connect(ui->buttonGroupFastest, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(drawFastestMode(QAbstractButton*)));
 
     connect(ui->checkBoxCameraPosition, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
     connect(ui->checkBoxCameraCenterCoordinates, SIGNAL(clicked(bool)), this, SLOT(setCameraInfoDisplayed()));
@@ -74,10 +71,7 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     connect(ui->groupBoxCameraCoordinates, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxColorAndSize, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxDrawing, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
-    connect(ui->groupBoxOptim, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
     connect(ui->groupBoxView, SIGNAL(toggled(bool)), this, SLOT(collapseOrExpandGroupBox(bool)));
-
-    connect(ui->spinBoxMinFPS, SIGNAL(valueChanged(int)), this, SLOT(setMinFPS(int)));
 
     QString style = QString("QGroupBox::indicator {"
                                 "width: 12px;"
@@ -93,11 +87,9 @@ GGraphicsViewOptions::GGraphicsViewOptions(QWidget *parent) :
     ui->groupBoxCameraCoordinates->setStyleSheet(style);
     ui->groupBoxColorAndSize->setStyleSheet(style);
     ui->groupBoxDrawing->setStyleSheet(style);
-    ui->groupBoxOptim->setStyleSheet(style);
     ui->groupBoxView->setStyleSheet(style);
 
     // disable visibility of this parameters because with OSG it will not be used
-    ui->groupBoxOptim->setVisible(false);
     ui->checkBoxUseLight->setVisible(false);
     ui->checkBoxUseTransparency->setVisible(false);
 }
@@ -142,22 +134,10 @@ void GGraphicsViewOptions::updateUiFromOptions()
     ui->checkBoxDrawGrid->setChecked(_options->drawGrid());
     ui->checkBoxUseTransparency->setChecked(_options->useTransparency());
     ui->checkBoxUseLight->setChecked(_options->useLight());
-    ui->spinBoxFastDrawTime->setValue(_options->getFastDrawTime());
     ui->checkBoxCameraPosition->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraPosition));
     ui->checkBoxCameraCenterCoordinates->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraSceneCenter));
     ui->checkBoxCameraViewDirection->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::CameraViewDirection));
     ui->checkBoxShowFPS->setChecked(_options->getCameraInformationDisplayed().testFlag(DM_GraphicsViewOptions::FpsInformation));
-
-    switch(_options->drawFastest())
-    {
-    case DM_GraphicsViewOptions::Always : ui->radioButtonFastestAlways->setChecked(true);
-        break;
-
-    case DM_GraphicsViewOptions::Normal : ui->radioButtonFastestNormal->setChecked(true);
-        break;
-
-    case DM_GraphicsViewOptions::Never : ui->radioButtonFastestNever->setChecked(true);
-    }
 
     switch(_options->getCameraInformationPosition())
     {
@@ -180,8 +160,6 @@ void GGraphicsViewOptions::updateUiFromOptions()
     case CameraInterface::ORTHOGRAPHIC : ui->radioButtonOrthographic->setChecked(true);
         break;
     }
-
-    ui->spinBoxMinFPS->setValue(_options->getMinFPS());
 }
 
 void GGraphicsViewOptions::backgroundColor(QColor color)
@@ -210,24 +188,6 @@ void GGraphicsViewOptions::setDrawGrid(bool e)
     _options->setDrawGrid(e);
 }
 
-void GGraphicsViewOptions::drawFastestMode(QAbstractButton* button)
-{
-    DM_GraphicsViewOptions::DrawFastestMode mode = DM_GraphicsViewOptions::Normal;
-
-    if(button == ui->radioButtonFastestAlways)
-    {
-        mode = DM_GraphicsViewOptions::Always;
-    }
-    else if(button == ui->radioButtonFastestNever)
-    {
-        mode = DM_GraphicsViewOptions::Never;
-    }
-
-    _options->drawFastest(mode);
-    emit drawModeChanged(mode);
-}
-
-
 void GGraphicsViewOptions::useTransparency(bool e)
 {
     _options->useTransparency(e);
@@ -236,16 +196,6 @@ void GGraphicsViewOptions::useTransparency(bool e)
 void GGraphicsViewOptions::useLight(bool e)
 {
     _options->useLight(e);
-}
-
-void GGraphicsViewOptions::fastDrawTime(int t)
-{
-    _options->setFastDrawTime(t);
-}
-
-void GGraphicsViewOptions::setMinFPS(int fps)
-{
-    _options->setMinFPS(fps);
 }
 
 void GGraphicsViewOptions::setCameraInfoDisplayed()

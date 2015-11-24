@@ -84,9 +84,12 @@ private:
     void createWidgetForItems(const QList<QStandardItem*> &items);
 
     void editAttributesScalar(DM_AbstractAttributesScalar *pas);
-
     void clearEditGradient();
     void saveCurrentGradientTo(DM_AbstractAttributesScalar *pas);
+
+    void editAttributesNormal(DM_AbstractAttributesNormal *pan);
+    void clearEditNormal();
+    void applyAndSaveNormal();
 
     DM_AbstractAttributes *attributesSelected() const;
 
@@ -94,10 +97,14 @@ private slots:
     void on_pushButtonAddColor_clicked();
     void on_pushButtonDeleteColor_clicked();
     void on_pushButtonSave_clicked();
-    void on_pushButtonColorPicker_colorChanged(const QColor &color);
+    void on_pushButtonGradientColorPicker_colorChanged(const QColor &color);
     void on_colorGradientView_newFocusColor(const QColor &color, int arrowIndex);
     void on_colorGradientView_arrowMove(qreal lastPos, const GradientArrow &arrow);
     void on_checkBoxShowNormals_stateChanged(int state);
+
+    void on_doubleSpinBoxNormalsLength_valueChanged(double v);
+    void on_pushButtonNormalsColorPicker_colorChanged(QColor c);
+    void on_pushButtonApplyEditNormals_clicked();
 
     void pushButtonApplyClicked();
     void pushButtonConfigureClicked();

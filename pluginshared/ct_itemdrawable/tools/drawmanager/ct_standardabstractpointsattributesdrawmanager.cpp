@@ -8,6 +8,8 @@ CT_StandardAbstractPointsAttributesDrawManager::CT_StandardAbstractPointsAttribu
 
 void CT_StandardAbstractPointsAttributesDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
+    Q_UNUSED(view)
+
     const CT_AbstractPointsAttributes &item = dynamic_cast<const CT_AbstractPointsAttributes&>(itemDrawable);
 
     painter.drawPointCloud(item.getPointCloudIndex());

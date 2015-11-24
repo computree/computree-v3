@@ -26,7 +26,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QFileDialog>
-#include <stdexcept>
+#include <QWaitCondition>
 
 uint GOsgGraphicsView::NUMBER_OF_VIEWS = 0;
 
@@ -462,6 +462,8 @@ void GOsgGraphicsView::setOptions(const DM_GraphicsViewOptions &newOptions)
     point->setSize(opt.getPointSize());
 
     setCameraType(opt.getCameraType());
+
+    repaint();
 }
 
 void GOsgGraphicsView::unlockPaint()
@@ -1151,7 +1153,10 @@ void GOsgGraphicsView::conversionBegin()
 void GOsgGraphicsView::conversionCompleted()
 {
     m_conversionInProgress = false;
+
     emit internalStopWaitingForConversionCompleted();
+
+    repaint();
 }
 
 void GOsgGraphicsView::redraw(RedrawOptions opt)
@@ -1195,6 +1200,12 @@ void GOsgGraphicsView::updateItemDrawablesThatColorWasModified()
 }
 
 void GOsgGraphicsView::dirtyColorsOfItemDrawablesWithPoints()
+{
+    m_sceneManager->dirtyDisplayListOfGlobalElementsOfItemDrawable();
+    update();
+}
+
+void GOsgGraphicsView::dirtyNormalsOfItemDrawablesWithPoints()
 {
     m_sceneManager->dirtyDisplayListOfGlobalElementsOfItemDrawable();
     update();

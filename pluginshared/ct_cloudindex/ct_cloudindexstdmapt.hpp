@@ -213,6 +213,7 @@ void CT_CloudIndexStdMapT<T, ValueT>::erase(const size_t &beginIndex, const size
 template<typename T, typename ValueT>
 void CT_CloudIndexStdMapT<T, ValueT>::resize(const size_t &newSize)
 {
+    Q_UNUSED(newSize)
     qFatal("CT_CloudIndexStdMapT<T, ValueT>::resize can not be used");
 }
 
@@ -224,6 +225,12 @@ void CT_CloudIndexStdMapT<T, ValueT>::removeIfOrShiftIf(typename CT_CloudIndexSt
                                                 const bool &negativeShift,
                                                 void *context)
 {
+    Q_UNUSED(findIf)
+    Q_UNUSED(removeIf)
+    Q_UNUSED(shiftIf)
+    Q_UNUSED(shiftValue)
+    Q_UNUSED(negativeShift)
+    Q_UNUSED(context)
     // used only for not sorted cloud index
     qFatal("CT_CloudIndexStdMapT<T, ValueT>::removeIfOrShiftIf can not be used");
 }

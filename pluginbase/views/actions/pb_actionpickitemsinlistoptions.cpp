@@ -46,6 +46,8 @@ void PB_ActionPickItemsInListOptions::on_pb_color_clicked()
 
 void PB_ActionPickItemsInListOptions::on_dsb_maxDist_valueChanged(double arg1)
 {
+    Q_UNUSED(arg1)
+
     emit parametersChanged();
 }
 

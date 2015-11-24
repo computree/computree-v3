@@ -176,6 +176,12 @@ public:
     virtual void dirtyColorsOfItemDrawablesWithPoints();
 
     /**
+     * @brief Call this method if you have changed normals of points in the document (normalArray) and you want that in view it will
+     *        be updated
+     */
+    virtual void dirtyNormalsOfItemDrawablesWithPoints();
+
+    /**
      * @brief Returns the bounding box of all item drawable present in the view
      */
     void getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const;

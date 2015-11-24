@@ -55,3 +55,13 @@ CT_AbstractCloud* CT_NormalCloudStdVector::copy() const
 
     return cloud;
 }
+
+void CT_NormalCloudStdVector::erase(const size_t &beginIndex, const size_t &sizes)
+{
+    CT_StandardCloudStdVectorT<CT_Normal>::erase(beginIndex, sizes);
+}
+
+void CT_NormalCloudStdVector::resize(const size_t &newSize)
+{
+    CT_StandardCloudStdVectorT<CT_Normal>::resize(newSize);
+}

@@ -42,6 +42,7 @@ public:
     CT_AbstractModifiableCloudIndexT<T>* operator->() const;
     CT_AbstractModifiableCloudIndexT<T>* abstractModifiableCloudIndexT() const;
     CT_AbstractModifiableCloudIndex* abstractModifiableCloudIndex() const;
+    CT_AbstractCloudIndex* abstractCloudIndex() const { return CT_AbstractCloudIndexRegisteredT<T>::abstractCloudIndex(); }
 
 protected:
     CT_AbstractModifiableCloudIndexRegisteredT(CT_AbstractModifiableCloudIndexT<T> *ci);

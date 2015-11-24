@@ -55,7 +55,7 @@ private:
 
     GDocumentManagerView            *m_docManagerView;
 
-    CT_AbstractResult                          *_result;
+    CT_AbstractResult               *_result;
     QStandardItemModel              _viewModel;
 
     QtColorPicker                   *_colorPicker;

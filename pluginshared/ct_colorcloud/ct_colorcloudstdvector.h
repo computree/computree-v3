@@ -11,7 +11,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_ColorCloudStdVector : public CT_StandardCloud
 {
 public:
     CT_ColorCloudStdVector();
-    CT_ColorCloudStdVector(size_t size, void *nullParam = NULL);
+    CT_ColorCloudStdVector(size_t size);
 
     /**
      * @brief Returns the number of colors
@@ -52,6 +52,17 @@ public:
      * @brief Returns a copy of this cloud
      */
     CT_AbstractCloud* copy() const;
+
+protected:
+    /**
+     * @brief delete all elements of the cloud between beginIndex and (beginIndex+size-1) included.
+     */
+    void erase(const size_t &beginIndex, const size_t &sizes);
+
+    /**
+     * @brief resize the collection
+     */
+    void resize(const size_t &newSize);
 };
 
 #endif // CT_COLORCLOUDSTDVECTOR_H

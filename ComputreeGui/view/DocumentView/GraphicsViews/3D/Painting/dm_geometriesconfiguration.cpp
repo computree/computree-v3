@@ -2,13 +2,13 @@
 
 DM_GeometriesConfiguration::DM_GeometriesConfiguration()
 {
+    m_effectFunctionGlobal.first = NULL;
+    m_effectFunctionLocal.first = NULL;
     m_globalColorArray = NULL;
     m_globalNormalArray = NULL;
     m_globalVertexAttribArray = NULL;
     m_localVertexAttribArray = NULL;
     m_shaderProgram = NULL;
-    m_globalStateSet = NULL;
-    m_localStateSet = NULL;
 }
 
 void DM_GeometriesConfiguration::setGlobalColorArray(DM_PainterToOsgElements::ColorArrayType *colors)
@@ -21,12 +21,42 @@ void DM_GeometriesConfiguration::setGlobalNormalArray(DM_PainterToOsgElements::N
     m_globalNormalArray = normals;
 }
 
-void DM_GeometriesConfiguration::setGlobalGeometriesStateSet(osg::StateSet *set)
+void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForGlobal(DM_GeometriesConfiguration::createNewEffectFunction f, void *context)
+{
+    m_effectFunctionGlobal.first = f;
+    m_effectFunctionGlobal.second = context;
+}
+
+void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForLocal(DM_GeometriesConfiguration::createNewEffectFunction f, void *context)
+{
+    m_effectFunctionLocal.first = f;
+    m_effectFunctionLocal.second = context;
+}
+
+osgFX::Effect* DM_GeometriesConfiguration::createGlobalEffect(osg::PrimitiveSet::Mode mode)
+{
+    if(m_effectFunctionGlobal.first != NULL) {
+        return (*m_effectFunctionGlobal.first)(mode, m_effectFunctionGlobal.second);
+    }
+
+    return NULL;
+}
+
+osgFX::Effect *DM_GeometriesConfiguration::createLocalEffect(osg::PrimitiveSet::Mode mode)
+{
+    if(m_effectFunctionLocal.first != NULL) {
+        return (*m_effectFunctionLocal.first)(mode, m_effectFunctionLocal.second);
+    }
+
+    return NULL;
+}
+
+void DM_GeometriesConfiguration::setGlobalGeometriesStateSet(QList<osg::ref_ptr<osg::StateSet> > set)
 {
     m_globalStateSet = set;
 }
 
-void DM_GeometriesConfiguration::setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set)
+void DM_GeometriesConfiguration::setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList<osg::ref_ptr<osg::StateSet> > set)
 {
     m_globalStateSetByPrimitiveSetMode.insert(mode, set);
 }
@@ -42,12 +72,12 @@ void DM_GeometriesConfiguration::setGlobalColorVertexAttribArrayLocationIndex(ui
     m_globalColorVertexAttribArrayLocationIndex = index;
 }
 
-void DM_GeometriesConfiguration::setLocalGeometriesStateSet(osg::StateSet *set)
+void DM_GeometriesConfiguration::setLocalGeometriesStateSet(QList<osg::ref_ptr<osg::StateSet> > set)
 {
     m_localStateSet = set;
 }
 
-void DM_GeometriesConfiguration::setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, osg::StateSet *set)
+void DM_GeometriesConfiguration::setLocalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList<osg::ref_ptr<osg::StateSet> > set)
 {
     m_localStateSetByPrimitiveSetMode.insert(mode, set);
 }
@@ -103,21 +133,21 @@ uint DM_GeometriesConfiguration::localVertexAttribArrayLocationIndex() const
     return m_localVertexAttribArrayLocationIndex;
 }
 
-osg::StateSet* DM_GeometriesConfiguration::globalStateSet(osg::PrimitiveSet::Mode mode) const
+QList< osg::ref_ptr<osg::StateSet> > DM_GeometriesConfiguration::globalStateSet(osg::PrimitiveSet::Mode mode) const
 {
-    osg::StateSet *set = m_globalStateSetByPrimitiveSetMode.value(mode, NULL);
+    QList< osg::ref_ptr<osg::StateSet> > set = m_globalStateSetByPrimitiveSetMode.value(mode);
 
-    if(set != NULL)
+    if(!set.isEmpty())
         return set;
 
     return m_globalStateSet;
 }
 
-osg::StateSet* DM_GeometriesConfiguration::localStateSet(osg::PrimitiveSet::Mode mode) const
+QList< osg::ref_ptr<osg::StateSet> > DM_GeometriesConfiguration::localStateSet(osg::PrimitiveSet::Mode mode) const
 {
-    osg::StateSet *set = m_localStateSetByPrimitiveSetMode.value(mode, NULL);
+    QList< osg::ref_ptr<osg::StateSet> > set = m_localStateSetByPrimitiveSetMode.value(mode);
 
-    if(set != NULL)
+    if(!set.isEmpty())
         return set;
 
     return m_localStateSet;

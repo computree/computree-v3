@@ -18,12 +18,12 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
     int     transparencyValue = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_TRANSPARENCY_VALUE).toInt();
     bool    showTrueOnly = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_SHOW_TRUES_ONLY).toBool();
 
-    int     nXinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XINF).toInt();
-    int     nXsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XSUP).toInt();
-    int     nYinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_YINF).toInt();
-    int     nYsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_YSUP).toInt();
-    int     nZinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZINF).toInt();
-    int     nZsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZSUP).toInt();
+    size_t     nXinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XINF).toUInt();
+    size_t     nXsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_XSUP).toUInt();
+    size_t     nYinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_YINF).toUInt();
+    size_t     nYsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_YSUP).toUInt();
+    size_t     nZinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZINF).toUInt();
+    size_t     nZsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZSUP).toUInt();
 
     if (nXinf < 0) {nXinf = 0;}
     if (nYinf < 0) {nYinf = 0;}
@@ -43,9 +43,9 @@ void CT_StandardGrid3DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
 
     QColor color = painter.getColor();
 
-    int xdim = item.xdim();
-    int ydim = item.ydim();
-    int zdim = item.zdim();
+    size_t xdim = item.xdim();
+    size_t ydim = item.ydim();
+    size_t zdim = item.zdim();
     double demiRes = reductionCoef*item.resolution() / 2.0;
 
     double xmin, ymin, zmin, xmax, ymax, zmax;

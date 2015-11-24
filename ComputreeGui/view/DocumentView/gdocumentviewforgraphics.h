@@ -34,6 +34,10 @@ public:
         PX_3
     };
 
+    struct NormalsConfiguration {
+        QColor normalColor;
+        float normalLength;
+    };
 
     GDocumentViewForGraphics(GDocumentManagerView &manager, QString title, QString type);
     virtual ~GDocumentViewForGraphics();
@@ -63,6 +67,10 @@ public:
     void updateItems(const QList<CT_AbstractItemDrawable*> &items);
 
     void dirtyColorsOfPoints();
+    void dirtyNormalsOfPoints();
+    void applyNormalsConfiguration(GDocumentViewForGraphics::NormalsConfiguration c);
+    GDocumentViewForGraphics::NormalsConfiguration getNormalsConfiguration() const;
+
     void lock();
     void unlock();
 
@@ -151,6 +159,7 @@ private:
 
     QTimer                                                          m_timerUpdateColors;
     QTimer                                                          m_timerDirtyColorsOfPoints;
+    QTimer                                                          m_timerDirtyNormalsOfPoints;
 
     CT_CCR                                                          m_pointsColorCloudRegistered;
     QSharedPointer< AttribCloudRegisteredType >                     m_pointsAttribCloudRegistered;
@@ -166,13 +175,11 @@ private:
 
     QPushButton                 *_buttonExport;
     QPushButton                 *_buttonPixelSize;
-    QPushButton                 *_buttonDrawMode;
 
     QString                     _type;
 
     QMutex                      *m_mutex;
 
-    DM_GraphicsViewOptions::DrawFastestMode     _drawMode;
     PixelSize                                   _pixelSize;
 
     void createAndAddCameraAndGraphicsOptions(QWidget *parent);
@@ -227,8 +234,6 @@ public slots:
 
     void changePixelSize();
     void changePixelSize(double size);
-    void changeDrawMode();
-    void changeDrawMode(DM_GraphicsViewOptions::DrawFastestMode mode);
     void setTransparencyActivated(bool activated);
     void setCameraType(bool orthographic);
 
@@ -243,6 +248,7 @@ private slots:
     void exporterActionTriggered();
     void mustUpdateItemDrawablesThatColorWasModified();
     void mustDirtyColorsOfItemDrawablesWithPoints();
+    void mustDirtyNormalsOfItemDrawablesWithPoints();
 
 signals:
 
@@ -250,7 +256,9 @@ signals:
     void syncDisabled(const GDocumentViewForGraphics *view);
 
     void startDirtyColorsOfPointTimer();
+    void startDirtyNormalsOfPointTimer();
     void startUpdateColorsTimer();
+    void startUpdateNormalsTimer();
 };
 
 #endif // GDOCUMENTVIEWFORGRAPHICS_H

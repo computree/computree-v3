@@ -32,7 +32,9 @@
 
 #include "ct_point.h"
 
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 #include <QMatrix4x4>
 

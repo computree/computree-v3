@@ -39,18 +39,13 @@ DM_GraphicsViewOptions::DM_GraphicsViewOptions()
     _drawAxis = true;
     m_drawGrid = false;
     _useColor = true;
-    _drawFastest = Normal;
     _useTransparency = false;
     _useLight = false;
-    _fastDrawTime = 1500;
     _cameraInfoDisplayed = DM_GraphicsViewOptions::CameraNone;
     _cameraInfoPosition = DM_GraphicsViewOptions::InfoInLowerRightCorner;
     _cameraType = CameraInterface::PERSPECTIVE;
-    m_octreeNumberOfCells = 32;
-    m_octreeSizeOfCells = 1;
-    m_octreeConstructionType = DM_GraphicsViewOptions::OctreeCellsByNumber;
-    m_showOctree = false;
-    m_minFPS = 7;
+    m_normalColor = Qt::yellow;
+    m_normalLength = 0.05;
 }
 
 DM_GraphicsViewOptions::~DM_GraphicsViewOptions()
@@ -82,11 +77,6 @@ void DM_GraphicsViewOptions::useLight(bool use)
     _useLight = use;
 }
 
-void DM_GraphicsViewOptions::drawFastest(DM_GraphicsViewOptions::DrawFastestMode mode)
-{
-    _drawFastest = mode;
-}
-
 void DM_GraphicsViewOptions::setSelectedColor(QColor &color)
 {
     _selectedColor = color;
@@ -100,17 +90,6 @@ void DM_GraphicsViewOptions::setBackgroudColor(QColor &color)
 void DM_GraphicsViewOptions::setPointSize(float size)
 {
     _pointSize = size;
-}
-
-void DM_GraphicsViewOptions::setFastDrawTime(int time)
-{
-    _fastDrawTime = time;
-}
-
-void DM_GraphicsViewOptions::setMinFPS(int fps)
-{
-    if(fps > 0)
-        m_minFPS = fps;
 }
 
 void DM_GraphicsViewOptions::setCameraInformationDisplayed(DM_GraphicsViewOptions::CameraInfoDisplayed info)
@@ -128,31 +107,14 @@ void DM_GraphicsViewOptions::setCameraType(CameraInterface::CameraType type)
     _cameraType = type;
 }
 
-void DM_GraphicsViewOptions::setShowOctree(bool val)
+void DM_GraphicsViewOptions::setNormalColor(const QColor &color)
 {
-    m_showOctree = val;
+    m_normalColor = color;
 }
 
-void DM_GraphicsViewOptions::setOctreeNumberOfCells(int n)
+void DM_GraphicsViewOptions::setNormalLength(float l)
 {
-    // must be a power of two
-    if(((n - 1) & n) != 0)
-        return;
-
-    m_octreeNumberOfCells = n;
-}
-
-void DM_GraphicsViewOptions::setOctreeSizeOfCells(double size)
-{
-    if(size == 0)
-        return;
-
-    m_octreeSizeOfCells = size;
-}
-
-void DM_GraphicsViewOptions::setOctreeConstructionType(DM_GraphicsViewOptions::OctreeCellsConstructionType t)
-{
-    m_octreeConstructionType = t;
+    m_normalLength = l;
 }
 
 void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions &options)
@@ -168,6 +130,9 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
     if(_selectedColor != options._selectedColor)
     {
         _selectedColor = options._selectedColor;
+
+        emit selectionColorChanged(_selectedColor);
+
         emitChanged = true;
     }
 
@@ -195,12 +160,6 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
-    if(_drawFastest != options._drawFastest)
-    {
-        _drawFastest = options._drawFastest;
-        emitChanged = true;
-    }
-
     if(_useTransparency != options._useTransparency)
     {
         _useTransparency = options._useTransparency;
@@ -210,12 +169,6 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
     if(_useLight != options._useLight)
     {
         _useLight = options._useLight;
-        emitChanged = true;
-    }
-
-    if(_fastDrawTime != options._fastDrawTime)
-    {
-        _fastDrawTime = options._fastDrawTime;
         emitChanged = true;
     }
 
@@ -237,33 +190,19 @@ void DM_GraphicsViewOptions::updateFromOtherOptions(const DM_GraphicsViewOptions
         emitChanged = true;
     }
 
-    if(m_showOctree != options.m_showOctree)
+    if(m_normalColor != options.m_normalColor)
     {
-        m_showOctree = options.m_showOctree;
+        m_normalColor = options.m_normalColor;
+        emit normalColorChanged(m_normalColor);
+
         emitChanged = true;
     }
 
-    if(m_octreeNumberOfCells != options.m_octreeNumberOfCells)
+    if(m_normalLength != options.m_normalLength)
     {
-        m_octreeNumberOfCells = options.m_octreeNumberOfCells;
-        emitChanged = true;
-    }
+        m_normalLength = options.m_normalLength;
+        emit normalLengthChanged(m_normalLength);
 
-    if(m_octreeSizeOfCells != options.m_octreeSizeOfCells)
-    {
-        m_octreeSizeOfCells = options.m_octreeSizeOfCells;
-        emitChanged = true;
-    }
-
-    if(m_octreeConstructionType != options.m_octreeConstructionType)
-    {
-        m_octreeConstructionType = options.m_octreeConstructionType;
-        emitChanged = true;
-    }
-
-    if(m_minFPS != options.m_minFPS)
-    {
-        m_minFPS = options.m_minFPS;
         emitChanged = true;
     }
 
@@ -281,18 +220,13 @@ bool DM_GraphicsViewOptions::load()
     _drawAxis = CONFIG_FILE->value("drawAxis", _drawAxis).toBool();
     m_drawGrid = CONFIG_FILE->value("drawGrid", drawGrid()).toBool();
     _useColor = CONFIG_FILE->value("useColor", _useColor).toBool();
-    _drawFastest = (DrawFastestMode)CONFIG_FILE->value("drawFastest", (int)_drawFastest).toInt();
     _useTransparency = CONFIG_FILE->value("useTransparency", _useTransparency).toBool();
     _useLight = CONFIG_FILE->value("useLight", _useLight).toBool();
-    _fastDrawTime = CONFIG_FILE->value("fastDrawTime", _fastDrawTime).toInt();
     _cameraInfoDisplayed = (CameraInfoDisplayed)CONFIG_FILE->value("cameraInfoDisplayed", _cameraInfoDisplayed.operator int()).toInt();
     _cameraInfoPosition = (CameraInfoPosition)CONFIG_FILE->value("cameraInfoPosition", (int)_cameraInfoPosition).toInt();
     _cameraType = (CameraInterface::CameraType)CONFIG_FILE->value("cameraType", (int)_cameraType).toInt();
-    m_showOctree = CONFIG_FILE->value("showOctree", m_showOctree).toBool();
-    setOctreeNumberOfCells(CONFIG_FILE->value("octreeNumberOfCells", m_octreeNumberOfCells).toInt());
-    setOctreeSizeOfCells(CONFIG_FILE->value("octreeSizeOfCells", m_octreeSizeOfCells).toDouble());
-    setOctreeConstructionType((OctreeCellsConstructionType)CONFIG_FILE->value("octreeCellsConstructionType", (int)m_octreeConstructionType).toInt());
-    setMinFPS(CONFIG_FILE->value("minFPS", m_minFPS).toInt());
+    setNormalColor(CONFIG_FILE->colorValue("normalColor", m_normalColor));
+    setNormalLength(CONFIG_FILE->value("normalLength", m_normalLength).toFloat());
 
     CONFIG_FILE->endGroup();
 
@@ -309,18 +243,13 @@ bool DM_GraphicsViewOptions::save()
     CONFIG_FILE->setValue("drawAxis", _drawAxis);
     CONFIG_FILE->setValue("drawGrid", m_drawGrid);
     CONFIG_FILE->setValue("useColor", _useColor);
-    CONFIG_FILE->setValue("drawFastest", (int)_drawFastest);
     CONFIG_FILE->setValue("useTransparency", _useTransparency);
     CONFIG_FILE->setValue("useLight", _useLight);
-    CONFIG_FILE->setValue("fastDrawTime", _fastDrawTime);
     CONFIG_FILE->setValue("cameraInfoDisplayed", _cameraInfoDisplayed.operator int());
     CONFIG_FILE->setValue("cameraInfoPosition", (int)_cameraInfoPosition);
     CONFIG_FILE->setValue("cameraType", (int)_cameraType);
-    CONFIG_FILE->setValue("showOctree", m_showOctree);
-    CONFIG_FILE->setValue("octreeNumberOfCells", m_octreeNumberOfCells);
-    CONFIG_FILE->setValue("octreeSizeOfCells", m_octreeSizeOfCells);
-    CONFIG_FILE->setValue("octreeCellsConstructionType", (int)m_octreeConstructionType);
-    CONFIG_FILE->setValue("minFPS", m_minFPS);
+    CONFIG_FILE->setColorValue("normalColor", m_normalColor);
+    CONFIG_FILE->setValue("normalLength", m_normalLength);
 
     CONFIG_FILE->endGroup();
 
@@ -343,18 +272,18 @@ bool DM_GraphicsViewOptions::loadFromXml(const QDomElement &el)
     _drawAxis = DM_DomUtils::boolFromDom(el, "drawAxis", _drawAxis);
     m_drawGrid = DM_DomUtils::boolFromDom(el, "drawGrid", m_drawGrid);
     _useColor = DM_DomUtils::boolFromDom(el, "useColor", _useColor);
-    _drawFastest = (DrawFastestMode)DM_DomUtils::intFromDom(el, "drawFastest", (int)_drawFastest);
     _useTransparency = DM_DomUtils::boolFromDom(el, "useTransparency", _useTransparency);
     _useLight = DM_DomUtils::boolFromDom(el, "useLight", _useLight);
-    _fastDrawTime = DM_DomUtils::intFromDom(el, "fastDrawTime", _fastDrawTime);
     _cameraInfoDisplayed = (CameraInfoDisplayed)DM_DomUtils::intFromDom(el, "cameraInfoDisplayed", (int)_cameraInfoDisplayed);
     _cameraInfoPosition = (CameraInfoPosition) DM_DomUtils::intFromDom(el, "cameraInfoPosition", (int)_cameraInfoPosition);
     _cameraType = (CameraInterface::CameraType) DM_DomUtils::intFromDom(el, "cameraType", (int)_cameraType);
-    m_showOctree = DM_DomUtils::boolFromDom(el, "showOctree", m_showOctree);
-    setOctreeNumberOfCells(DM_DomUtils::intFromDom(el, "octreeNumberOfCells", m_octreeNumberOfCells));
-    setOctreeSizeOfCells(DM_DomUtils::qrealFromDom(el,"octreeSizeOfCells", m_octreeSizeOfCells));
-    setOctreeConstructionType((OctreeCellsConstructionType)DM_DomUtils::intFromDom(el, "octreeCellsConstructionType", (int)m_octreeConstructionType));
-    setMinFPS(DM_DomUtils::intFromDom(el, "minFPS", m_minFPS));
+
+    l = el.elementsByTagName("normalColor");
+
+    if(!l.isEmpty())
+        setNormalColor(DM_DomUtils::QColorFromDom(l.at(0).toElement()));
+
+    setNormalLength(DM_DomUtils::qrealFromDom(el, "normalLength", m_normalLength));
 
     return true;
 }
@@ -367,18 +296,13 @@ bool DM_GraphicsViewOptions::saveToXml(QDomElement &main, QDomDocument &doc) con
     DM_DomUtils::setBoolAttribute(main, "drawAxis", _drawAxis);
     DM_DomUtils::setBoolAttribute(main, "drawGrid", m_drawGrid);
     DM_DomUtils::setBoolAttribute(main, "useColor", _useColor);
-    main.setAttribute("drawFastest", (int)_drawFastest);
     DM_DomUtils::setBoolAttribute(main, "useTransparency", _useTransparency);
     DM_DomUtils::setBoolAttribute(main, "useLight", _useLight);
-    main.setAttribute("fastDrawTime", _fastDrawTime);
     main.setAttribute("cameraInfoDisplayed", (int)_cameraInfoDisplayed);
     main.setAttribute("cameraInfoPosition", (int)_cameraInfoPosition);
     main.setAttribute("cameraType", (int)_cameraType);
-    DM_DomUtils::setBoolAttribute(main, "showOctree", m_showOctree);
-    main.setAttribute("octreeNumberOfCells", m_octreeNumberOfCells);
-    main.setAttribute("octreeSizeOfCells", m_octreeSizeOfCells);
-    main.setAttribute("octreeCellsConstructionType", (int)m_octreeConstructionType);
-    main.setAttribute("minFPS", m_minFPS);
+    main.appendChild(DM_DomUtils::QColorDomElement(m_normalColor, "normalColor", doc));
+    main.setAttribute("normalLength", m_normalLength);
 
     return true;
 }

@@ -44,6 +44,16 @@ public:
     static uint staticLocalVertexAttribArrayLocationIndex();
 
     /**
+     * @brief Returns a new new Shader(Program) initialized to draw points with selected colors, etc...
+     */
+    osg::ref_ptr<osg::Program> createFirstPassForGlobalPoints() const;
+
+    /**
+     * @brief Returns a new Shader(Program) initialized to draw normals of points
+     */
+    osg::ref_ptr<osg::Program> createSecondPassForGlobalPoints() const;
+
+    /**
      * @brief Get geometries configuration to set
      */
     DM_GeometriesConfiguration getGeometriesConfiguration() const;
@@ -65,8 +75,8 @@ private:
 
     QTimer                                                                  m_timerComputeQueue;
 
-    void createGlobalShader();
-    void createLocalShader();
+    void initGeometriesConfigurationForGlobalElements();
+    void initGeometriesConfigurationForLocalElements();
 
     static void staticComputeQtConcurrent(DM_SingleItemDrawableToOsgWorker *worker);
 

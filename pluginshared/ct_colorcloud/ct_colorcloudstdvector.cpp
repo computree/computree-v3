@@ -4,7 +4,7 @@ CT_ColorCloudStdVector::CT_ColorCloudStdVector() : CT_StandardCloudStdVectorT<CT
 {
 }
 
-CT_ColorCloudStdVector::CT_ColorCloudStdVector(size_t size, void *nullParam) : CT_StandardCloudStdVectorT<CT_Color>(size), CT_AbstractColorCloud()
+CT_ColorCloudStdVector::CT_ColorCloudStdVector(size_t size) : CT_StandardCloudStdVectorT<CT_Color>(size), CT_AbstractColorCloud()
 {
 }
 
@@ -53,4 +53,14 @@ CT_AbstractCloud* CT_ColorCloudStdVector::copy() const
         (*cloud)[i] = pTAt(i);
 
     return cloud;
+}
+
+void CT_ColorCloudStdVector::erase(const size_t &beginIndex, const size_t &sizes)
+{
+    CT_StandardCloudStdVectorT<CT_Color>::erase(beginIndex, sizes);
+}
+
+void CT_ColorCloudStdVector::resize(const size_t &newSize)
+{
+    CT_StandardCloudStdVectorT<CT_Color>::resize(newSize);
 }

@@ -84,5 +84,7 @@ void CT_AbstractItem::internalSetModel(const CT_OutAbstractModel *model)
 
 QString CT_AbstractItem::internalVerifyModel(const CT_OutAbstractModel *model) const
 {
+    Q_UNUSED(model)
+
     return QString();
 }

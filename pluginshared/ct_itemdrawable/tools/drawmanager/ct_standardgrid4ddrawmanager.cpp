@@ -79,12 +79,12 @@ void CT_StandardGrid4DDrawManager<bool>::draw(GraphicsViewInterface &view, Paint
                         bool data = item.valueAtIndex(index);
 
                         // Draw a cube if the value it contains is between the two thresholds
-                        if ( data >= lowThresh && data <= highThresh )
+                        if ( data )
                         {
 
                             if (drawAsMap && !itemDrawable.isSelected())
                             {
-                                double h = qRound((data*scaling) + offset);
+                                double h = qRound(scaling + offset);
                                 painter.setColor( QColor::fromHsv(h,255,255,transparencyValue) );
                             } else {
                                 painter.setColor(QColor(255,255,255));

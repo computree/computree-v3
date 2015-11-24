@@ -66,6 +66,7 @@ bool CT_AbstractStepSerializable::canBeDeserialized(const QString &dirPath) cons
 
     return true;
 #else
+    Q_UNUSED(dirPath)
     return false;
 #endif
 }
@@ -90,6 +91,7 @@ bool CT_AbstractStepSerializable::deserialize(const QString &dirPath)
 
     return ok;
 #else
+    Q_UNUSED(dirPath)
     return false;
 #endif
 }

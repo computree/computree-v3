@@ -60,6 +60,9 @@ private:
     GOsgGraphicsView                                    &m_view;
     DM_PainterToOsgElementsResult                       m_result;
 
+    static osgFX::Effect* staticCreateGlobalEffect(osg::PrimitiveSet::Mode mode, void *context);
+    static osgFX::Effect* staticCreateLocalEffect(osg::PrimitiveSet::Mode mode, void *context);
+
 signals:
 
     void finished(DM_SingleItemDrawableToOsgWorker *w);

@@ -102,10 +102,15 @@ void CT_StandardMeshModelDrawManager::drawFaces(GraphicsViewInterface &view, Pai
 
 void CT_StandardMeshModelDrawManager::beginDrawMultipleFace(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+    Q_UNUSED(painter)
+    Q_UNUSED(mesh)
 }
 
 void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+
     if((mesh == NULL) || (mesh->pFace() == NULL))
         return;
 
@@ -116,6 +121,9 @@ void CT_StandardMeshModelDrawManager::drawFaceAt(const size_t &index, GraphicsVi
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleFace(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+    Q_UNUSED(painter)
+    Q_UNUSED(mesh)
 }
 
 void CT_StandardMeshModelDrawManager::drawEdges(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
@@ -135,10 +143,15 @@ void CT_StandardMeshModelDrawManager::drawEdges(GraphicsViewInterface &view, Pai
 
 void CT_StandardMeshModelDrawManager::beginDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+    Q_UNUSED(painter)
+    Q_UNUSED(mesh)
 }
 
 void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+
     if((mesh == NULL) || (mesh->pHedge() == NULL))
         return;
 
@@ -149,6 +162,9 @@ void CT_StandardMeshModelDrawManager::drawEdgeAt(const size_t &index, GraphicsVi
 
 void CT_StandardMeshModelDrawManager::endDrawMultipleEdge(GraphicsViewInterface &view, PainterInterface &painter, const CT_Mesh *mesh)
 {
+    Q_UNUSED(view)
+    Q_UNUSED(painter)
+    Q_UNUSED(mesh)
 }
 
 CT_ItemDrawableConfiguration CT_StandardMeshModelDrawManager::createDrawConfiguration(QString drawConfigurationName) const

@@ -46,7 +46,6 @@ HEADERS += $${PLUGIN_SHARED_DIR}/interfaces.h \
     dm_iteminfoforgraphics.h \
     dm_iprogresslistener.h \
     dm_progresslistenermanager.h \
-    dm_fastestincrementoptimizer.h \
     dm_stepsfrompluginsmodelconstructor.h \
     dm_domutils.h \
     dm_itemdrawableconfigurationmanagerview.h \
@@ -77,7 +76,6 @@ SOURCES += main.cpp \
     dm_abstractinfo.cpp \
     dm_iteminfoforgraphics.cpp \
     dm_progresslistenermanager.cpp \
-    dm_fastestincrementoptimizer.cpp \
     dm_stepsfrompluginsmodelconstructor.cpp \
     dm_itemdrawableconfigurationmanagerview.cpp \
     dm_osgnotifyhandler.cpp

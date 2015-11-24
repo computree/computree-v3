@@ -20,6 +20,8 @@ CT_StandardAbstractItemDrawableWithPointCloudDrawManager::~CT_StandardAbstractIt
 
 void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
+    Q_UNUSED(view)
+
     const CT_AbstractItemDrawableWithPointCloud &item = dynamic_cast<const CT_AbstractItemDrawableWithPointCloud&>(itemDrawable);
 
     if(item.getPointCloudIndex() == NULL)

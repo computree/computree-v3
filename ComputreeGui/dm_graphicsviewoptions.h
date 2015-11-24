@@ -41,13 +41,6 @@ class DM_GraphicsViewOptions : public QObject, public GraphicsViewOptionsInterfa
 
 public:
 
-    enum DrawFastestMode
-    {
-        Always = 0,
-        Normal = 1,
-        Never = 2
-    };
-
     enum CameraInfoFlags
     {
         CameraNone = 0x0,
@@ -76,24 +69,22 @@ public:
     DM_GraphicsViewOptions();
     virtual ~DM_GraphicsViewOptions();
 
+    // TODO : to remove
+    int getFastDrawTime() const { return 0; }
+
     inline QColor getSelectedColor() const { return _selectedColor; }
     inline QColor getBackgroundColor() const { return _backgroundColor; }
     inline float getPointSize() const { return _pointSize; }
     inline bool drawAxis() const { return _drawAxis; }
     inline bool drawGrid() const { return m_drawGrid; }
     inline bool useColor() const { return _useColor; }
-    inline DM_GraphicsViewOptions::DrawFastestMode drawFastest() const { return _drawFastest; }
     inline bool useTransparency() const { return _useTransparency; }
     inline bool useLight() const { return _useLight; }
-    inline int getFastDrawTime() const { return _fastDrawTime; }
-    inline int getMinFPS() const { return m_minFPS; }
     inline DM_GraphicsViewOptions::CameraInfoDisplayed getCameraInformationDisplayed() const { return _cameraInfoDisplayed; }
     inline DM_GraphicsViewOptions::CameraInfoPosition getCameraInformationPosition() const { return _cameraInfoPosition; }
     inline CameraInterface::CameraType getCameraType() const { return _cameraType; }
-    inline bool showOctree() const { return m_showOctree; }
-    inline int octreeNumberOfCells() const { return m_octreeNumberOfCells; }
-    inline double octreeSizeOfCells() const { return m_octreeSizeOfCells; }
-    inline OctreeCellsConstructionType octreeCellsConstructionType() const { return m_octreeConstructionType; }
+    inline QColor normalColor() const { return m_normalColor; }
+    inline float normalLength() const { return m_normalLength; }
 
     void setSelectedColor(QColor &color);
     void setBackgroudColor(QColor &color);
@@ -103,16 +94,11 @@ public:
     void useColor(bool enable);
     void useTransparency(bool use);
     void useLight(bool use);
-    void drawFastest(DM_GraphicsViewOptions::DrawFastestMode mode);
-    void setFastDrawTime(int time);
-    void setMinFPS(int fps);
     void setCameraInformationDisplayed(DM_GraphicsViewOptions::CameraInfoDisplayed info);
     void setCameraInformationPosition(DM_GraphicsViewOptions::CameraInfoPosition pos);
     void setCameraType(CameraInterface::CameraType type);
-    void setShowOctree(bool val);
-    void setOctreeNumberOfCells(int n);
-    void setOctreeSizeOfCells(double size);
-    void setOctreeConstructionType(OctreeCellsConstructionType t);
+    void setNormalColor(const QColor &color);
+    void setNormalLength(float l);
     void updateFromOtherOptions(const DM_GraphicsViewOptions &options);
 
     bool load();
@@ -129,22 +115,20 @@ private:
     bool                        _drawAxis;
     bool                        m_drawGrid;
     bool                        _useColor;
-    DrawFastestMode             _drawFastest;
     bool                        _useTransparency;
     bool                        _useLight;
-    int                         _fastDrawTime;
     CameraInfoDisplayed         _cameraInfoDisplayed;
     CameraInfoPosition          _cameraInfoPosition;
     CameraInterface::CameraType _cameraType;
-    bool                        m_showOctree;
-    int                         m_octreeNumberOfCells;
-    double                      m_octreeSizeOfCells;
-    OctreeCellsConstructionType m_octreeConstructionType;
-    int                         m_minFPS;
+    QColor                      m_normalColor;
+    float                       m_normalLength;
 
 signals:
 
     void optionsChanged();
+    void selectionColorChanged(const QColor &c);
+    void normalColorChanged(const QColor &c);
+    void normalLengthChanged(float f);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DM_GraphicsViewOptions::CameraInfoDisplayed)

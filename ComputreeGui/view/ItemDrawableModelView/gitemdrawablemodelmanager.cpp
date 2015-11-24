@@ -505,8 +505,6 @@ void GItemDrawableModelManager::setUniqueColorForModelSelected()
 
                     while(it.hasNext())
                         doc->setColor((CT_AbstractItemDrawable*)it.next(), color);
-
-                    doc->redrawGraphics();
                 }
             }
         }
@@ -538,8 +536,6 @@ void GItemDrawableModelManager::setAutomaticColorForModelSelected()
 
                     doc->setColor((CT_AbstractItemDrawable*)it.next(), keepAlphaColor);
                 }
-
-                doc->redrawGraphics();
             }
         }
     }
@@ -602,8 +598,6 @@ void GItemDrawableModelManager::setColorByAttributeForModelSelected()
                     // get the intermediate color and set it to document
                     doc->setColor(item, interpolator.intermediateColor(key));
                 }
-
-                doc->redrawGraphics();
             }
         }
     }
