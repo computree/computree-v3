@@ -563,6 +563,8 @@ void GMainWindow::initUI()
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepNeedShowMessage(QString)), _permanentLabelForMessage, SLOT(setText(QString)));
 
+    connect(m_stepChooserDialog->stepsChooserWidget(), SIGNAL(displayNameConfigurationChanged(GStepViewDefault::DisplayNameConfigs)), _stepManagerView, SLOT(setStepNameConfiguration(GStepViewDefault::DisplayNameConfigs)));
+
     connect(_docManagerView, SIGNAL(documentToBeClosed(DM_DocumentView*)), this, SLOT(documentToBeClosed(DM_DocumentView*)), Qt::DirectConnection);
     connect(_docManagerView, SIGNAL(documentActivated(DM_DocumentView*)), _itemDrawableConfigurationView, SLOT(setDocument(DM_DocumentView*)), Qt::DirectConnection);
 

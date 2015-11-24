@@ -66,6 +66,8 @@ DM_StepsFromPluginsModelConstructor *GStepViewDefault::constructor() const
 void GStepViewDefault::setDisplayConfiguration(DisplayNameConfigs configs)
 {
     m_nameConfig = configs;
+
+    emit displayNameConfigurationChanged(m_nameConfig);
     m_proxy->invalidate();
 }
 
@@ -126,6 +128,39 @@ CT_MenuLevel *GStepViewDefault::currentLevelSelected() const
     return NULL;
 }
 
+GStepViewDefault::DisplayNameConfigs GStepViewDefault::stepNameConfiguration() const
+{
+    return m_nameConfig;
+}
+
+QString GStepViewDefault::staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const GStepViewDefault::DisplayNameConfigs &config)
+{
+    QString name;
+
+    QString shortDescription = " " + step->getStepDescription() + " ";
+    QString key = " " + step->getPlugin()->getKeyForStep(*step) + " ";
+    QString displayableName = " " + step->getStepDisplayableName()+ " ";
+
+    if(config.testFlag(DNC_StepShortDescription) )
+        name += shortDescription;
+
+    if(config.testFlag(DNC_StepKey) && !name.contains(key)) {
+        if(!name.isEmpty())
+            name += "/";
+
+        name += key;
+    }
+
+    if(config.testFlag(DNC_StepDisplayableName) && !name.contains(displayableName)) {
+        if(!name.isEmpty())
+            name += "/";
+
+        name += displayableName;
+    }
+
+    return name;
+}
+
 void GStepViewDefault::reconstruct()
 {
     if(m_constructor != NULL && m_proxy != NULL) {
@@ -180,16 +215,19 @@ bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelInde
                         if(step->getStepDescription() == anyName) {
                             if(!(m_nameConfig & DNC_StepShortDescription)) {
                                 m_nameConfig |= DNC_StepShortDescription;
+                                emit displayNameConfigurationChanged(m_nameConfig);
                                 m_proxy->invalidate();
                             }
                         } else if(step->getStepDisplayableName() == anyName) {
                             if(!(m_nameConfig & DNC_StepDisplayableName)) {
                                 m_nameConfig |= DNC_StepDisplayableName;
+                                emit displayNameConfigurationChanged(m_nameConfig);
                                 m_proxy->invalidate();
                             }
                         } else if(step->getPlugin()->getKeyForStep(*step) == anyName) {
                             if(!(m_nameConfig & DNC_StepKey)) {
                                 m_nameConfig |= DNC_StepKey;
+                                emit displayNameConfigurationChanged(m_nameConfig);
                                 m_proxy->invalidate();
                             }
                         }
@@ -375,6 +413,7 @@ void GStepViewDefault::setStepName(bool enable)
             m_nameConfig = DNC_StepKey;
 
         m_proxy->invalidate();
+        emit displayNameConfigurationChanged(m_nameConfig);
     }
 }
 
@@ -406,28 +445,7 @@ bool GStepViewDefault::staticStepsName(QString &name, const QModelIndex &index, 
     if(step == NULL)
         return false;
 
-    name = "";
-
-    QString shortDescription = " " + step->getStepDescription() + " ";
-    QString key = " " + step->getPlugin()->getKeyForStep(*step) + " ";
-    QString displayableName = " " + step->getStepDisplayableName()+ " ";
-
-    if(thisPtr->m_nameConfig.testFlag(DNC_StepShortDescription) )
-        name += shortDescription;
-
-    if(thisPtr->m_nameConfig.testFlag(DNC_StepKey) && !name.contains(key)) {
-        if(!name.isEmpty())
-            name += "/";
-
-        name += key;
-    }
-
-    if(thisPtr->m_nameConfig.testFlag(DNC_StepDisplayableName) && !name.contains(displayableName)) {
-        if(!name.isEmpty())
-            name += "/";
-
-        name += displayableName;
-    }
+    name = staticGetStepNameFromConfiguration(step, thisPtr->m_nameConfig);
 
     return true;
 }

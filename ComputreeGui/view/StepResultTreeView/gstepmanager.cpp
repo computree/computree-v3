@@ -55,7 +55,10 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     _delegate = new MyTreeDelegate(&m_treeView);
 
-    m_treeView.setModel(&_model);
+    m_proxy = new DM_StepManagerTreeViewProxy(this);
+    m_proxy->setSourceModel(&_model);
+
+    m_treeView.setModel(m_proxy);
     m_treeView.setItemDelegate(_delegate);
 
     QStringList header;
@@ -115,7 +118,7 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
     connect(this, SIGNAL(removeResult(QStandardItem*,MyQStandardItem*)), this, SLOT(resultToRemove(QStandardItem*,MyQStandardItem*)), Qt::QueuedConnection);
     connect(this, SIGNAL(removeItem(QStandardItem*)), this, SLOT(itemToRemove(QStandardItem*)), Qt::QueuedConnection);
 
-    m_treeView.expand(_model.indexFromItem(getRootItem()));
+    m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(getRootItem())));
 }
 
 GStepManager::~GStepManager()
@@ -134,12 +137,10 @@ QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &
     QList<QStandardItem *> list;
 
     // nom de l'tape
-    MyQStandardItem *item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepName, GStepManager::staticGetStepName(step));
+    MyQStandardItem *item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepName, QString());
 
     item->setToolTip(step.getToolTip());
-
-    // editable pour un nom customizé
-    item->setEditable(true);
+    item->setEditable(false);
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
     list.append(item);
 
@@ -273,9 +274,7 @@ MyQStandardItem* GStepManager::getSelectedItem()
     QModelIndexList list = m_treeView.selectionModel()->selectedRows();
 
     if(!list.isEmpty())
-    {
-        return (MyQStandardItem*)_model.itemFromIndex(list.first());
-    }
+        return dynamic_cast<MyQStandardItem*>(_model.itemFromIndex(m_proxy->mapToSource(list.first())));
 
     return NULL;
 }
@@ -414,22 +413,6 @@ void GStepManager::stepDataChanged(MyQStandardItem *item)
                                                 }
                                                 break;
                                             }
-
-        case MyQStandardItem::StepName : {
-                                            QString newName = item->data(Qt::DisplayRole).toString();
-                                            int index = newName.indexOf("*");
-
-                                            if(index != -1)
-                                                newName = newName.remove(0, index+1);
-
-                                            if(step->getStepCustomName() != newName)
-                                            {
-                                                step->setStepCustomName(newName);
-                                                item->setStringData(GStepManager::staticGetStepName(*step));
-                                            }
-
-                                            break;
-                                         }
         }
     }
 }
@@ -594,9 +577,9 @@ void GStepManager::recursiveExpandCollapseItemOfStep(MyQStandardItem *item, bool
     if(item->step() != NULL)
     {
         if(expand)
-            m_treeView.expand(_model.indexFromItem(item));
+            m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(item)));
         else
-            m_treeView.collapse(_model.indexFromItem(item));
+            m_treeView.collapse(m_proxy->mapFromSource(_model.indexFromItem(item)));
     }
 
     int size = item->rowCount();
@@ -610,9 +593,9 @@ void GStepManager::recursiveExpandCollapseItemOfResultsGroup(MyQStandardItem *it
     if((item->step() == NULL) && (item->result() == NULL))
     {
         if(expand)
-            m_treeView.expand(_model.indexFromItem(item));
+            m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(item)));
         else
-            m_treeView.collapse(_model.indexFromItem(item));
+            m_treeView.collapse(m_proxy->mapFromSource(_model.indexFromItem(item)));
     }
 
     int size = item->rowCount();
@@ -626,7 +609,7 @@ void GStepManager::selectStep(CT_VirtualAbstractStep *step)
     MyQStandardItem *item = findItem(step);
 
     if(item != NULL)
-        m_treeView.selectionModel()->select(_model.indexFromItem(item), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        m_treeView.selectionModel()->select(m_proxy->mapFromSource(_model.indexFromItem(item)), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 }
 
 void GStepManager::addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep *stepToCopy)
@@ -898,6 +881,11 @@ void GStepManager::showStepManagerOptions()
     }
 }
 
+void GStepManager::setStepNameConfiguration(GStepViewDefault::DisplayNameConfigs config)
+{
+    m_proxy->setStepNameConfig(config);
+}
+
 ////////////// PRIVATE SLOTS //////////////
 
 void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
@@ -925,7 +913,7 @@ void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 
         item->appendRow(newItems);
 
-        m_treeView.expand(_model.indexFromItem(newItems.first()));
+        m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(newItems.first())));
     }
 }
 
@@ -1136,7 +1124,7 @@ void GStepManager::itemDataChanged(QStandardItem *item)
 
 void GStepManager::indexDoubleClicked(QModelIndex index)
 {
-    MyQStandardItem *myItem = (MyQStandardItem*)_model.itemFromIndex(index);
+    MyQStandardItem *myItem = dynamic_cast<MyQStandardItem*>(_model.itemFromIndex(m_proxy->mapToSource(index)));
 
     if((myItem != NULL)
             && (myItem->result() != NULL))
@@ -1170,7 +1158,7 @@ void GStepManager::resultToAdd(QStandardItem *parentItem, CT_AbstractResult *res
 
         _resToBeAddedList.removeAt(index);
 
-        m_treeView.expand(_model.indexFromItem(newItems.first()));
+        m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(newItems.first())));
     }
 
     _mutexResList.unlock();

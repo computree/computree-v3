@@ -34,6 +34,7 @@
 #include "gtreestepcontextmenu.h"
 #include "myqstandarditem.h"
 #include "mytreedelegate.h"
+#include "dm_stepmanagertreeviewproxy.h"
 
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
 
@@ -77,17 +78,18 @@ public:
     static QString staticGetStepName(CT_VirtualAbstractStep &step);
 
 private:
-    CDM_StepManager         *_stepManager;              /*!< le gestionnaire d'etape */
-    QTreeView               m_treeView;                      /*!< La vue (un arbre) */
-    QStandardItemModel      _model;                     /*!< Le modle de la vue */
-    QStandardItem           *m_rootItem;
-    GTreeStepContextMenu    *_contextMenuStep;          /*!< Un menu qui s'affiche lors d'un clique droit sur une tape */
-    MyTreeDelegate          *_delegate;                 /*!< Un dlgu pour le style d'affichage des lments de la QTreeView */
+    CDM_StepManager             *_stepManager;              /*!< le gestionnaire d'etape */
+    QTreeView                   m_treeView;                      /*!< La vue (un arbre) */
+    DM_StepManagerTreeViewProxy *m_proxy;
+    QStandardItemModel          _model;                     /*!< Le modle de la vue */
+    QStandardItem               *m_rootItem;
+    GTreeStepContextMenu        *_contextMenuStep;          /*!< Un menu qui s'affiche lors d'un clique droit sur une tape */
+    MyTreeDelegate              *_delegate;                 /*!< Un dlgu pour le style d'affichage des lments de la QTreeView */
 
-    QMutex                  _mutexResList;
-    QList<CT_AbstractResult *>         _resToBeAddedList;          /*!< Une liste qui contient les rsultats qui doivent tre ajout (voir slot "resultToBeRemoved" et "resultToAdd") */
+    QMutex                      _mutexResList;
+    QList<CT_AbstractResult *>  _resToBeAddedList;          /*!< Une liste qui contient les rsultats qui doivent tre ajout (voir slot "resultToBeRemoved" et "resultToAdd") */
 
-    QMutex                  _mutexItemRes;
+    QMutex                      _mutexItemRes;
 
     /*!
      *  \brief Cre les items compatible avec le modle pour une tape
@@ -232,6 +234,8 @@ public slots:
     bool removeItemDrawableOfResult(CT_AbstractResult *res);
 
     void showStepManagerOptions();
+
+    void setStepNameConfiguration(GStepViewDefault::DisplayNameConfigs config);
 
 private slots:
 

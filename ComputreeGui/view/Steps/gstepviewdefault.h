@@ -91,6 +91,16 @@ public:
      */
     CT_MenuLevel* currentLevelSelected() const;
 
+    /**
+     * @brief Return the configuration used to display the name of steps
+     */
+    DisplayNameConfigs stepNameConfiguration() const;
+
+    /**
+     * @brief Return the name of the step by using the configuration passed in parameter
+     */
+    static QString staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const DisplayNameConfigs &config);
+
 public slots:
     /**
      * @brief Reconstruct the model of the tree view
@@ -205,6 +215,11 @@ signals:
      * @brief Emitted when a step is double clicked
      */
     void stepDoubleClicked(CT_VirtualAbstractStep *step);
+
+    /**
+     * @brief Emmited when the configuration of the display of name for step has changed
+     */
+    void displayNameConfigurationChanged(GStepViewDefault::DisplayNameConfigs c);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(GStepViewDefault::DisplayNameConfigs)

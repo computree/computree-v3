@@ -292,8 +292,8 @@ void DM_MultipleItemDrawableToOsgWorker::initGeometriesConfigurationForGlobalEle
 
     ssSecondPass->addUniform(nLengthUniform);
 
-    // add the state set to configuration so it will be used for all elements
-    m_geometriesConfiguration.setGlobalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> >() << ss << ssSecondPass);
+    // add the state set to configuration so it will be used for all elements of type osg::PrimitiveSet::POINTS
+    m_geometriesConfiguration.setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::POINTS, QList< osg::ref_ptr<osg::StateSet> >() << ss << ssSecondPass);
 }
 
 void DM_MultipleItemDrawableToOsgWorker::initGeometriesConfigurationForLocalElements()

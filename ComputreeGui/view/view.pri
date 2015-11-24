@@ -68,7 +68,8 @@ SOURCES += \
     $$PWD/MainView/gstepchooserdialog.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.cpp \
-    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.cpp
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.cpp \
+    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -144,7 +145,8 @@ HEADERS += \
     $$PWD/MainView/gstepchooserdialog.h \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.h \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.h \
-    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.h
+    $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.h \
+    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \

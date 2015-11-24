@@ -20,7 +20,7 @@ DM_StepTreeViewDefaultProxyModel::DM_StepTreeViewDefaultProxyModel(QObject *pare
 
     //setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::TextAlignmentRole, Qt::AlignCenter);
 
-    setFilterConfiguration(FC_StepFullDescription & FC_StepDisplayableName);
+    setFilterConfiguration(FC_StepFullDescription | FC_StepDisplayableName);
 
     setStepsNameFunction(NULL, NULL);
 }
