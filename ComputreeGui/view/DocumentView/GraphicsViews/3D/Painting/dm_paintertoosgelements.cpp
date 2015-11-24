@@ -921,8 +921,11 @@ osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_L
     osg::Geometry *geo = NULL;
     osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal(type, transform, effectsCollectionToUse);
 
+    osg::Geode *geode = effect->getChild(0)->asGeode();
 
-    if(effect->getChild(0)->asGeode()->getDrawableList().empty()) {
+    int nDrawables = geode->getNumDrawables();
+
+    if(nDrawables == 0) {
         if(effectsCollectionToUse == &m_localEffects)
             geo = createGeometry(new osg::DrawElementsUInt(type), type, effectsCollectionToUse);
         else {
@@ -936,10 +939,9 @@ osg::Geometry* DM_PainterToOsgElements::getOrCreateGeometryForTypeAndTransform_L
             geo = createGeometry(de, type, effectsCollectionToUse);
         }
 
-        effect->getChild(0)->asGeode()->addDrawable(geo);
+        geode->addDrawable(geo);
     } else {
-        osg::Geode *geode = effect->getChild(0)->asGeode();
-        geo = (osg::Geometry*)geode->getDrawable(geode->getDrawableList().size()-1);
+        geo = (osg::Geometry*)geode->getDrawable(nDrawables-1);
     }
 
     return geo;

@@ -3,6 +3,7 @@
 
 #include <osg/Uniform>
 #include <QColor>
+#include <QObject>
 
 class DM_OsgUniformWithSlot : public QObject, public osg::Uniform
 {
