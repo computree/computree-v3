@@ -37,12 +37,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inresultmodelconfiguration.cpp" line="59"/>
+        <location filename="../ct_view/inModel/ctg_inresultmodelconfiguration.cpp" line="62"/>
         <source>Avertissement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inresultmodelconfiguration.cpp" line="59"/>
+        <location filename="../ct_view/inModel/ctg_inresultmodelconfiguration.cpp" line="62"/>
         <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
 
 %1</source>
@@ -57,17 +57,23 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="85"/>
+        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="108"/>
         <source>Nom des résultats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="86"/>
-        <source>Description</source>
-        <translation></translation>
+        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="110"/>
+        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="247"/>
+        <source>Aide</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="87"/>
+        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="247"/>
+        <source>&lt;html&gt;Description du résultat d&apos;entrée : &lt;br/&gt;&lt;br/&gt;%1&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/inModel/ctg_inresultmodelpossibilities.cpp" line="109"/>
         <source>Etape</source>
         <translation></translation>
     </message>
@@ -97,6 +103,27 @@
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
+    <message>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="133"/>
+        <source>Modèles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <source>Avertissement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
+        <source>Impossible de créer un nouveau tour car le dernier n&apos;est pas valide. Veuillez sélectionner au moins un élément pour chaque résultat puis ré-essayez.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <source>Vous ne pouvez pas supprimer le tour car il en faut au moins un.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CT_AbstractExporter</name>
@@ -106,9 +133,17 @@
     </message>
 </context>
 <context>
+    <name>CT_AbstractFilter_LAS</name>
+    <message>
+        <location filename="../ct_filter/abstract/ct_abstractfilter_las.cpp" line="39"/>
+        <source>Pas d&apos;informations LAS pour le point %1 : point non conservé</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CT_AbstractItemDrawable</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp" line="98"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp" line="95"/>
         <source>Model passed in parameter is not a CT_OutAbstractItemModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un  CT_OutAbstractItemModel</translation>
     </message>
@@ -119,6 +154,19 @@
         <location filename="../ct_itemdrawable/abstract/ct_abstractitemgroup.cpp" line="255"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un CT_OutAbstractGroupModel</translation>
+    </message>
+</context>
+<context>
+    <name>CT_AbstractMetric</name>
+    <message>
+        <location filename="../ct_metric/abstract/ct_abstractmetric.cpp" line="116"/>
+        <source>Impossible de trouver l&apos;attribut %1 (métrique : %2) !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_metric/abstract/ct_abstractmetric.cpp" line="123"/>
+        <source>Mauvais type pour l&apos;attribut %1 !</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -136,7 +184,7 @@
 <context>
     <name>CT_AbstractSingularItemDrawable</name>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="173"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp" line="189"/>
         <source>Model passed in parameter is not a CT_OutAbstractGroupModel</source>
         <translation>Le modèle passé en paramètre n&apos;est pas un CT_OutAbstractGroupModel</translation>
     </message>
@@ -144,7 +192,7 @@
 <context>
     <name>CT_AbstractStepLoadFile</name>
     <message>
-        <location filename="../ct_step/abstract/ct_abstractsteploadfile.cpp" line="222"/>
+        <location filename="../ct_step/abstract/ct_abstractsteploadfile.cpp" line="234"/>
         <source>%1 compatible file (%2);;All Files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -175,6 +223,19 @@
     <message>
         <location filename="../ct_itemdrawable/ct_datasourcegeo.cpp" line="78"/>
         <source>Impossible d&apos;ajouter un reader sans BoundingBox à une CT_DataSourceGeo</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CT_ElementListDialog</name>
+    <message>
+        <location filename="../ct_view/tools/ct_elementlistdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_elementlistdialog.cpp" line="10"/>
+        <source>Choisissez un élément</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -257,6 +318,51 @@
     </message>
 </context>
 <context>
+    <name>CT_ManageConfigurableElementsDialog</name>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="35"/>
+        <source>Nouveau</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="42"/>
+        <source>Modifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="49"/>
+        <source>Supprimer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="120"/>
+        <source>Suffixe :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.ui" line="133"/>
+        <source>Métriques séléctionnées :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.cpp" line="104"/>
+        <source>Element %1 not available
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_view/tools/ct_manageconfigurableelementsdialog.cpp" line="108"/>
+        <source>Unknown Error for element : %1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CT_Reader_ASCRGB</name>
     <message>
         <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="66"/>
@@ -277,12 +383,12 @@
 <context>
     <name>CT_Reader_GDAL</name>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="152"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="162"/>
         <source>Layer %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="200"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="210"/>
         <source>Impossible de charger des éléments du type : </source>
         <translation type="unfinished"></translation>
     </message>
@@ -579,24 +685,47 @@
 <context>
     <name>CT_Reader_OPF</name>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="235"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="210"/>
         <source>No types found in %1</source>
         <translation>Pas de types trouvés dans %1</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="499"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="566"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation>AmapStudio files *.opf</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="509"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="576"/>
         <source>Topologie</source>
         <translation>Topology</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="529"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="593"/>
         <source>Mesh</source>
         <translation>Mesh</translation>
+    </message>
+</context>
+<context>
+    <name>CT_Reader_TerraScanPrj</name>
+    <message>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="49"/>
+        <source>Fichier TerraScan PRJ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="56"/>
+        <source>Dalle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="58"/>
+        <source>Fichier de la dalle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="59"/>
+        <source>Emprise de la dalle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -648,6 +777,14 @@
         <location filename="../ct_step/ct_stepbeginloop.cpp" line="119"/>
         <source>Début de boucle, tour %1 sur %2</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>CT_StepConfigurableDialog</name>
+    <message>
+        <location filename="../ct_view/ct_stepconfigurabledialog.cpp" line="577"/>
+        <source>Aide</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -732,7 +869,7 @@
     </message>
     <message>
         <location filename="../ct_view/tools/ct_textfileconfigurationdialog.ui" line="308"/>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="468"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="477"/>
         <source>Virgule</source>
         <translation></translation>
     </message>
@@ -767,22 +904,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="89"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="98"/>
         <source>Choix du fichier ascii</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="467"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="476"/>
         <source>Tabulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="469"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="478"/>
         <source>Point-Virgule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="470"/>
+        <location filename="../ct_view/tools/ct_textfileconfigurationdialog.cpp" line="479"/>
         <source>Espace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -790,42 +927,42 @@
 <context>
     <name>CT_VirtualAbstractStep</name>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="466"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="469"/>
         <source> quit manual mode</source>
         <translation>Quitter le mode manuel</translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="537"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="540"/>
         <source>Erreur %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="540"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="543"/>
         <source>Aucune erreur detecte</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="638"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="641"/>
         <source>No description for this step</source>
         <translation>Pas de description pour cette étape</translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="643"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="646"/>
         <source>No detailled description for this step</source>
         <translation>Pas de description détaillée pour cette étape</translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="858"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="861"/>
         <source> enter manual mode</source>
         <translation>Entrer en mode manuel</translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1561"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1564"/>
         <source> - Start computing</source>
         <translation>- Début de traitement</translation>
     </message>
     <message>
-        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1660"/>
+        <location filename="../ct_step/abstract/ct_virtualabstractstep.cpp" line="1663"/>
         <source> - Computing completed</source>
         <translation>- Traitement terminé</translation>
     </message>
@@ -834,92 +971,92 @@
     <name>QObject</name>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="283"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="404"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="498"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="375"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="444"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="585"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="374"/>
         <source>X dimension</source>
         <translation>Dimension X</translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="284"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="405"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="499"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="376"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="445"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="586"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="375"/>
         <source>Y dimension</source>
         <translation>Dimension Y</translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="285"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="407"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="502"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="377"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="447"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="589"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="376"/>
         <source>X min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="286"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="408"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="503"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="378"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="448"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="590"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="377"/>
         <source>Y min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="287"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="410"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="379"/>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="392"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="450"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="378"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="410"/>
         <source>Resolution</source>
         <translation>Résolution</translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/abstract/ct_virtualgrid2d.h" line="288"/>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="411"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="509"/>
-        <location filename="../ct_itemdrawable/ct_image2d.h" line="380"/>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="393"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="451"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="596"/>
+        <location filename="../ct_itemdrawable/ct_image2d.h" line="379"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="411"/>
         <source>NA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="406"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="500"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="446"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="587"/>
         <source>Z dimension</source>
         <translation>Dimension Z</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid3d.h" line="409"/>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="504"/>
+        <location filename="../ct_itemdrawable/ct_grid3d.h" line="449"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="591"/>
         <source>Z min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="497"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="584"/>
         <source>W dimension</source>
         <translation>Dimension W</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="501"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="588"/>
         <source>W min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="505"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="592"/>
         <source>Resolution W</source>
         <translation>Résolution W</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="506"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="593"/>
         <source>Resolution X</source>
         <translation>Résolution X</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="507"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="594"/>
         <source>Resolution Y</source>
         <translation>Résolution Y</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_grid4d.h" line="508"/>
+        <location filename="../ct_itemdrawable/ct_grid4d.h" line="595"/>
         <source>Resolution Z</source>
         <translation>Résolution Z</translation>
     </message>
@@ -928,27 +1065,27 @@
         <translation type="vanished">Valeur</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="388"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="406"/>
         <source>Dimension</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="389"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="407"/>
         <source>X origin</source>
         <translation>X origine</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="390"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="408"/>
         <source>Y origin</source>
         <translation>Y origine</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/ct_profile.h" line="391"/>
+        <location filename="../ct_itemdrawable/ct_profile.h" line="409"/>
         <source>Z origin</source>
         <translation>Z origine</translation>
     </message>
     <message>
-        <location filename="../ct_view/ct_stepconfigurabledialog.cpp" line="80"/>
+        <location filename="../ct_view/ct_stepconfigurabledialog.cpp" line="81"/>
         <source>Configuration</source>
         <translation></translation>
     </message>
@@ -968,27 +1105,27 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="205"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="216"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="206"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="217"/>
         <source>Nom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="207"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="218"/>
         <source>Centre X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="208"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="219"/>
         <source>Centre Y</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="209"/>
+        <location filename="../ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h" line="220"/>
         <source>Centre Z</source>
         <translation></translation>
     </message>
@@ -1187,19 +1324,16 @@
         <translation>Aire du polygone</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="67"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Bind error : %1</source>
-        <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de liaison (Bind error) : %1</translation>
+        <translation type="vanished">CT_StandardMeshModelOPFDrawManager =&gt; erreur de liaison (Bind error) : %1</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="176"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Vertex shader compilation error : %1</source>
-        <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de compilation des Vertex Shader : %1</translation>
+        <translation type="vanished">CT_StandardMeshModelOPFDrawManager =&gt; erreur de compilation des Vertex Shader : %1</translation>
     </message>
     <message>
-        <location filename="../ct_itemdrawable/tools/drawmanager/ct_standardmeshmodelopfdrawmanager.cpp" line="192"/>
         <source>CT_StandardMeshModelOPFDrawManager =&gt; Link error : %1</source>
-        <translation>CT_StandardMeshModelOPFDrawManager =&gt; erreur de linkage (Link error) : %1</translation>
+        <translation type="vanished">CT_StandardMeshModelOPFDrawManager =&gt; erreur de linkage (Link error) : %1</translation>
     </message>
     <message>
         <location filename="../ct_itemdrawable/ct_faceattributescolor.h" line="44"/>
@@ -1662,17 +1796,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="83"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="93"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="75"/>
         <source>Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="90"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="100"/>
         <source>Polygones</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="97"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="107"/>
         <source>Polylignes</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1900,6 +2035,141 @@
         <location filename="../ct_turn/inTurn/ct_inturn.cpp" line="182"/>
         <source>
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="73"/>
+        <source>Charger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="74"/>
+        <source>Exporter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="76"/>
+        <source>Formes géométriques</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="77"/>
+        <source>Voxels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="78"/>
+        <source>Rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="79"/>
+        <source>Maillages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="80"/>
+        <source>Flux</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="81"/>
+        <source>Autres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="82"/>
+        <source>Favoris</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="86"/>
+        <source>Inconnu TODO !</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="92"/>
+        <source>Filtrer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="93"/>
+        <source>Créer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="94"/>
+        <source>Extraire</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="95"/>
+        <source>Détecter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="96"/>
+        <source>Transformer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="97"/>
+        <source>Classifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="98"/>
+        <source>Analyser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="99"/>
+        <source>Ajuster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="100"/>
+        <source>Coloriser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="101"/>
+        <source>Clusters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="102"/>
+        <source>Boucles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="103"/>
+        <source>Houppiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="104"/>
+        <source>Modèles Num. d&apos;Elévation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="105"/>
+        <source>Tiges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="106"/>
+        <source>Diamètres à 1.30 m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="107"/>
+        <source>Attributs d&apos;items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="110"/>
+        <source>Inconnu (TODO)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
