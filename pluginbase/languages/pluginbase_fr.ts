@@ -45,12 +45,12 @@
     <message>
         <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="34"/>
         <source>Fichier asc</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="54"/>
         <source>Aucun ItemDrawable du type CT_AbstractItemDrawableWithPointCloud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -455,29 +455,29 @@
     <message>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="87"/>
         <source>Aucun ItemDrawable exportable</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun Item exportable</translation>
     </message>
     <message>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="92"/>
         <source>Vous ne pouvez pas exporter des rasters ET des éléments 2D dans un seul et même fichier, veuillez recommencer votre sélection.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="146"/>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="153"/>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="194"/>
         <source>Creation of output file failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>La création du fichier de sortie a échoué.</translation>
     </message>
     <message>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="203"/>
         <source>Layer creation failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>La création de Layer à échoué.</translation>
     </message>
     <message>
         <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="379"/>
         <source>Failed to create feature in shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>La création d&apos;entités dans le shapefile a échoué.</translation>
     </message>
 </context>
 <context>
@@ -490,7 +490,7 @@
     <message>
         <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="51"/>
         <source>Aucun ItemDrawable du type CT_AbstractImage2D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="62"/>
@@ -539,17 +539,17 @@
     <message>
         <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="28"/>
         <source>Fichiers hist Grid3D (ASCII)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="51"/>
         <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="62"/>
         <source>Erreur</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -570,22 +570,22 @@
     <message>
         <location filename="../exporters/las/pb_lasexporter.cpp" line="46"/>
         <source>Fichiers LAS .las</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/las/pb_lasexporter.cpp" line="64"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/las/pb_lasexporter.cpp" line="86"/>
         <source>- Aucun points à exporter</source>
-        <translation type="unfinished">- Aucun point à exporter</translation>
+        <translation>- Aucun point à exporter</translation>
     </message>
     <message>
         <location filename="../exporters/las/pb_lasexporter.cpp" line="245"/>
         <source>Problème lors de l&apos;écriture de l&apos;en-tête du fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -606,22 +606,22 @@
     <message>
         <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="40"/>
         <source>Fichiers .xyb (1 fichier/scène)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="58"/>
         <source>- Aucun ItemDrawable du type CT_Scene</source>
-        <translation type="unfinished"></translation>
+        <translation>- Aucun Item du type CT_Scene</translation>
     </message>
     <message>
         <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="120"/>
         <source>Fichier %1 créé</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="123"/>
         <source>Errreur : impossible de créer le fichier %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -693,7 +693,7 @@
     <message>
         <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="52"/>
         <source>Aucun ItemDrawable du type CT_Polygon2D</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun Item du type CT_Polygon2D</translation>
     </message>
     <message>
         <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="63"/>
@@ -735,37 +735,37 @@
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="66"/>
         <source>Filtres de points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="72"/>
         <source>No detailled description for this step</source>
-        <translation type="unfinished">Pas de description détaillé pour cette étape</translation>
+        <translation>Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="93"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="95"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="96"/>
         <source>Item contenant des points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="97"/>
         <source>Attributs LAS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepapplypointfilters.cpp" line="103"/>
         <source>Filtres séléctionnés</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -773,28 +773,28 @@
     <message>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="36"/>
         <source>Boucle sur les fichiers d&apos;un DataSource</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="41"/>
         <source>Nécessite une CT_StepEndLoop pour terminer la boucle</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="54"/>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="57"/>
         <source>Source de données</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="56"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughdatasource.cpp" line="126"/>
         <source>Données chargées</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -802,22 +802,22 @@
     <message>
         <location filename="../step/pb_stepbeginloopthroughgroups.cpp" line="25"/>
         <source>Boucle sur les groupes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughgroups.cpp" line="30"/>
         <source>Nécessite une CT_StepEndLoop pour terminer la boucle</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughgroups.cpp" line="43"/>
         <source>Résultat</source>
-        <translation type="unfinished">Résultat</translation>
+        <translation>Résultat</translation>
     </message>
     <message>
         <location filename="../step/pb_stepbeginloopthroughgroups.cpp" line="63"/>
         <source>Elément</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -914,42 +914,42 @@
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="70"/>
         <source>Métriques de points (XYZ)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="76"/>
         <source>No detailled description for this step</source>
-        <translation type="unfinished">Pas de description détaillé pour cette étape</translation>
+        <translation>Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="97"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="99"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="100"/>
         <source>Scène</source>
-        <translation type="unfinished">Scène</translation>
+        <translation>Scène</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="101"/>
         <source>Emprise de la placette</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="129"/>
         <source>Métriques séléctionnées</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputepointmetrics.cpp" line="153"/>
         <source>Métriques (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -968,42 +968,42 @@
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="65"/>
         <source>Métriques de rasters</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="71"/>
         <source>No detailled description for this step</source>
-        <translation type="unfinished">Pas de description détaillé pour cette étape</translation>
+        <translation>Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="92"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="94"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="95"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="96"/>
         <source>Emprise de la placette</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="102"/>
         <source>Métriques séléctionnées</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcomputerastermetrics.cpp" line="125"/>
         <source>Métriques calculées</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1011,69 +1011,69 @@
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="82"/>
         <source>Créer DataSource</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="88"/>
         <source>Une source de données est une liste de fichiers du même type.
 Seuls les headers des fichiers sont chargés à ce stade.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="124"/>
         <source>Aucun reader disponible (*.error)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="153"/>
         <source>ERREUR : aucun reader disponible</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="156"/>
         <source>Choix du type de fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="157"/>
         <source>Choisir les fichiers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="162"/>
         <source>Charger tous les fichiers</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="168"/>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="177"/>
         <source>Source de données</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="169"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="182"/>
         <source>Source de données géographique</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="218"/>
         <source>Fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="219"/>
         <source>Entête</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="256"/>
         <source>Données chargées</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1103,59 +1103,59 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="80"/>
         <source>Export dans une boucle (nom de fichier adaptatif)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="86"/>
         <source>No detailled description for this step</source>
-        <translation type="unfinished">Pas de description détaillé pour cette étape</translation>
+        <translation>Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="107"/>
         <location filename="../step/pb_stepexportitemlist.cpp" line="119"/>
         <source>Résultat</source>
-        <translation type="unfinished">Résultat</translation>
+        <translation>Résultat</translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="109"/>
         <location filename="../step/pb_stepexportitemlist.cpp" line="120"/>
         <source>Groupe</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="110"/>
         <source>Item contenant le nom du fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="111"/>
         <source>Nom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="112"/>
         <source>Item à exporter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="127"/>
         <source>Répertoire d&apos;export</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="128"/>
         <source>Suffixe de nom de fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="141"/>
         <source>ERREUR : aucun exporter disponible</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="144"/>
         <source>Choix du type de fichier</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1291,12 +1291,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadasciifile.cpp" line="120"/>
         <source>Fichier XYZI (sans entête)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadasciifile.cpp" line="131"/>
         <source>Ascii Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers ASCII</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadasciifile.cpp" line="316"/>
@@ -1313,12 +1313,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadasciifile02.cpp" line="184"/>
         <source>Fichier de points ASCII (paramétrable)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadasciifile02.cpp" line="195"/>
         <source>Ascii Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers ASCII</translation>
     </message>
 </context>
 <context>
@@ -1345,12 +1345,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
         <source>Fichier Grid3d</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Grid3D</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadgrid3dfile.cpp" line="42"/>
         <source>Grid 3D Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Grid3D</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadgrid3dfile.cpp" line="72"/>
@@ -1402,7 +1402,7 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadmultixybfiles.cpp" line="51"/>
         <source>Fichiers multiples XYB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
@@ -1450,12 +1450,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadobjfile.cpp" line="37"/>
         <source>Fichier OBJ (Mesh)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadobjfile.cpp" line="48"/>
         <source>Obj Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers OBJ</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadobjfile.cpp" line="56"/>
@@ -1482,12 +1482,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadpbmfile.cpp" line="35"/>
         <source>Fichier PBM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadpbmfile.cpp" line="46"/>
         <source>PBM Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PBM</translation>
     </message>
 </context>
 <context>
@@ -1499,12 +1499,12 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <message>
         <location filename="../step/pb_steploadpgmfile.cpp" line="36"/>
         <source>Fichier PGM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_steploadpgmfile.cpp" line="47"/>
         <source>PGM Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PGM</translation>
     </message>
 </context>
 <context>
@@ -2065,7 +2065,7 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
     <message>
         <location filename="../step/pb_stepuseritemcopy.cpp" line="43"/>
         <source>Séléction d&apos;items (avec copie)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepuseritemcopy.cpp" line="58"/>
@@ -2099,7 +2099,7 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="48"/>
         <source>Séléction d&apos;items</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="63"/>
@@ -2124,12 +2124,12 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="93"/>
         <source>Séléction classique</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="94"/>
         <source>Par proximité des centres des items</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepuseritemselection.cpp" line="204"/>
@@ -2190,12 +2190,12 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
     <message>
         <location filename="../pb_steppluginmanager.cpp" line="144"/>
         <source>DataSources</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../exporters/las/pb_lasexporter.cpp" line="143"/>
         <source>Attributs</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
