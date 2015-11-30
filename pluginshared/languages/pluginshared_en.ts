@@ -46,7 +46,13 @@
         <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
 
 %1</source>
-        <translation>Configuration no valid, please select input data.
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
+
+%1</source>
+        <translation type="obsolete">Configuration no valid, please select input data.
 
 %1</translation>
     </message>
@@ -110,23 +116,23 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="133"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="135"/>
         <source>Modèles</source>
         <translation>Models</translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="225"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="253"/>
         <source>Avertissement</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="225"/>
         <source>Impossible de créer un nouveau tour car le dernier n&apos;est pas valide. Veuillez sélectionner au moins un élément pour chaque résultat puis ré-essayez.</source>
         <translation>Impssible to create turn because it is invalide. Please select at least one element for each result before trying again. </translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="253"/>
         <source>Vous ne pouvez pas supprimer le tour car il en faut au moins un.</source>
         <translation>You can&apos;t remove the turn, because at least one is needed. </translation>
     </message>
@@ -275,7 +281,7 @@
         <location filename="../ct_model/inModel/abstract/ct_inabstractmodel.cpp" line="583"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1881,7 +1887,7 @@
         <location filename="../ct_turn/inTurn/ct_inturn.cpp" line="182"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="73"/>

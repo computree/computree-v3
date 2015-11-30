@@ -1266,7 +1266,8 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
 <context>
     <name>PB_StepGenericLoadFile</name>
     <message>
-        <location filename="../step/pb_stepgenericloadfile.cpp" line="74"/>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="66"/>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="81"/>
         <source>Charge un fichier du type</source>
         <translation>Charge un fichier du type</translation>
     </message>

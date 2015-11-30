@@ -93,7 +93,7 @@
 <context>
     <name>DM_MultipleItemDrawableToOsgWorker</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.cpp" line="315"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.cpp" line="381"/>
         <source>Veuillez patienter pendant la conversion des items.</source>
         <translation>Please wait during items conversion</translation>
     </message>
@@ -109,6 +109,14 @@
         <location filename="../tools/treeview/dm_sortfiltermathproxymodel.cpp" line="128"/>
         <source>Exception muParser : %1</source>
         <translation>MuParser Exception: %1</translation>
+    </message>
+</context>
+<context>
+    <name>DM_StepManagerTreeViewProxy</name>
+    <message>
+        <location filename="../view/StepResultTreeView/dm_stepmanagertreeviewproxy.cpp" line="36"/>
+        <source>( %1 )</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -469,17 +477,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GDocumentManagerView</name>
     <message>
-        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="445"/>
+        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="425"/>
         <source>Document %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="462"/>
+        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="442"/>
         <source>Document %1 (2D)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="480"/>
+        <location filename="../view/DocumentView/gdocumentmanagerview.cpp" line="460"/>
         <source>Document %1 (ItemModel)</source>
         <translation></translation>
     </message>
@@ -487,67 +495,66 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GDocumentViewForGraphics</name>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="335"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="373"/>
         <source>Impossible d&apos;affecter une couleur à un item dont le résultat est NULL</source>
         <translation>Impossible to set colorfor item with NULL result</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="391"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="429"/>
         <source>Impossible de récupérer une couleur d&apos;un item dont le résultat est NULL</source>
         <translation>Impossible to retrieve color for item with NULL result</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="474"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="512"/>
         <source>Veuillez patienter pendant le traitement...</source>
         <translation>Please wait while processing ...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="542"/>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="879"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="580"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="874"/>
         <source>Point de vue</source>
         <translation>Point of view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="542"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="580"/>
         <source>Veuillez entrer un nom pour le point de vue :</source>
         <translation>Please enter a name for the point of view:</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="799"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="788"/>
         <source>Exporter sous...</source>
         <translation>Export to...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="814"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="803"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="872"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="867"/>
         <source>Enregistrer une capture d&apos;écran</source>
         <translation>Save screen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="891"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="886"/>
         <source>Exporter les éléments sélectionnés</source>
         <translation>Export selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="900"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="895"/>
         <source>Configurer les couleurs des points</source>
         <translation>Configure colors of items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="906"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="901"/>
         <source>Changer la taille des pixels</source>
         <translation>Change pixels size</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="913"/>
         <source>Changer le mode de dessin :
 - Simplifié lors des déplacements
 - Toujours Simplifié- Jamais Simplifié</source>
-        <translation>Change the drawing mode: 
+        <translation type="vanished">Change the drawing mode: 
 - Simplified when traveling 
 - Always Simple 
 - Never Simplified</translation>
@@ -557,7 +564,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">(Re)create octree</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="926"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="914"/>
         <source>Configurer l&apos;affichage</source>
         <translation>Configuring the display</translation>
     </message>
@@ -644,111 +651,100 @@ p, li { white-space: pre-wrap; }
         <translation>Enable light</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="204"/>
         <source> Optimisation </source>
-        <translation> Optimization </translation>
+        <translation type="vanished"> Optimization </translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="216"/>
         <source>Toujours utiliser l&apos;optimisation</source>
-        <translation>Always use optimization</translation>
+        <translation type="vanished">Always use optimization</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="226"/>
         <source>Utiliser l&apos;optimisation seulement pendant les déplacements</source>
-        <translation>Use optimization only when traveling</translation>
+        <translation type="vanished">Use optimization only when traveling</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="236"/>
         <source>Ne jamais utiliser l&apos;optimisation</source>
-        <translation>Never use optimization</translation>
+        <translation type="vanished">Never use optimization</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="261"/>
         <source>Redessiner sans optimisation après :</source>
-        <translation>Redraw without optimization after:</translation>
+        <translation type="vanished">Redraw without optimization after:</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="306"/>
-        <source>ms</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="321"/>
         <source>Minimum d&apos;image par seconde (FPS) à obtenir</source>
-        <translation>Minimum frame per second (FPS) to obtain</translation>
+        <translation type="vanished">Minimum frame per second (FPS) to obtain</translation>
     </message>
     <message>
         <source> Coordonnées de la caméra </source>
         <translation type="vanished"> Coordinates of the camera </translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="362"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="198"/>
         <source>Informations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="376"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="212"/>
         <source> Caméra </source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="382"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="218"/>
         <source>Position</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="389"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="225"/>
         <source>Centre de la vue</source>
         <translation>Center of the view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="396"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="232"/>
         <source>Rotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="406"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="242"/>
         <source> Affichage </source>
         <translation>Display</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="412"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="248"/>
         <source>FPS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="439"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="275"/>
         <source>Coin haut gauche</source>
         <translation>Top left corner</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="449"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="285"/>
         <source>Coin haut droit</source>
         <translation>Top right corner</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="459"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="295"/>
         <source>Coin bas droit</source>
         <translation>Bottom right corner</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="469"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="305"/>
         <source>Coin bas gauche</source>
         <translation>Bottom left corner</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="490"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="326"/>
         <source> Vue </source>
         <translation> View </translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="502"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="338"/>
         <source>Perspective</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="512"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="348"/>
         <source>Orthographique</source>
         <translation>Orthographic</translation>
     </message>
@@ -769,7 +765,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Activate</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="541"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui" line="377"/>
         <source>Sauvegarder par défaut</source>
         <translation>Save by default</translation>
     </message>
@@ -778,22 +774,22 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Saved with success</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="320"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="270"/>
         <source>La sauvegarde de la configuration a réussi.</source>
         <translation>The configuration backup was successful.</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="320"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="270"/>
         <source>Sauvegarde réussie</source>
         <translation>Backup successfull</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="324"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="274"/>
         <source>Erreur lors de la sauvegarde</source>
         <translation>Error when saving</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="324"/>
+        <location filename="../view/DocumentView/GraphicsViews/ggraphicsviewoptions.cpp" line="274"/>
         <source>La sauvegarde de la configuration a échoué.</source>
         <translation>The configuration backup has failed.</translation>
     </message>
@@ -1307,14 +1303,14 @@ p, li { white-space: pre-wrap; }
         <translation>Save the tree steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="599"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="601"/>
         <source>Attention aucun plugin n&apos;a été trouvé dans :
 %1</source>
         <translation>Warning no plugin has been found in:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="600"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="602"/>
         <source>Voulez-vous spécifier dans quel dossier rechercher les plugins ?</source>
         <translation>Do you want to specify the folder where to search for plugins ?</translation>
     </message>
@@ -1368,94 +1364,94 @@ p, li { white-space: pre-wrap; }
         <translation>Please give the time in ms between two automatic updates</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="603"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="605"/>
         <source>Parcourir...</source>
         <translation>Browse...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="604"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="606"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="614"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="616"/>
         <source>Dossier contenant les plugins...</source>
         <translation>Folder containing the plugins ...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="632"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="634"/>
         <source>Attention il y a eu des erreurs lors du chargement des plugins du dossier :
 %1</source>
         <translation>Please note there were errors when loading plugins folder:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="639"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="641"/>
         <source>Succès</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="639"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="641"/>
         <source>Le plugin %1 a été chargé avec succès !</source>
         <translation>The plugin %1 was loaded with success!</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="653"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="655"/>
         <source>Récupération automatique</source>
         <translation>Automatic recovery</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="653"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="655"/>
         <source>&lt;html&gt;L&apos;application a semble-t-il rencontrée un problème lors de la dernière exécution des étapes. Un script a été sauvegardé automatiquement afin de rétablir votre dernière configuration.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Voulez-vous recharger votre dernière configuration connue ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;The application seems to have encounter some error since last execution of steps. A script has been saved automatically to recover last configuration.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Do you want to load you last known configuration?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="880"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="882"/>
         <source>Erreur de chargement du script</source>
         <translation>Error during script loading</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="881"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="883"/>
         <source>Une erreur est survenue lors de la lecture du script :&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%1&lt;/i&gt;</source>
         <translation>An error has occur during script reading:&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="907"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="909"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choisissez le plugin à utiliser ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choose plugin to use:&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="925"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="927"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choisissez une étape de remplacement :&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choose a replacement step:&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="976"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="978"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Voulez vous configurer l&apos;étape manuellement ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Do you want to configure step manually?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="987"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="989"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Que voulez vous faire ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;What do you want to do?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="987"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="989"/>
         <source>Ne pas charger le script</source>
         <translation>Not load the script</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="987"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="989"/>
         <source>Charger le script jusqu&apos;à cette erreur</source>
         <translation>Load the script until this error</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1001"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1003"/>
         <source>All Valid Files (</source>
         <translation>Tous les fichiers valides (</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1052"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1054"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
@@ -1465,12 +1461,12 @@ p, li { white-space: pre-wrap; }
         <translation>Fichiers scripts (*</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1127"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1129"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1127"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1129"/>
         <source>Voud devez redémarrer l&apos;application pour prendre en compte le changement de langue.</source>
         <translation>You must restart the application to reflect the language change.</translation>
     </message>
@@ -1522,27 +1518,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GOsgGraphicsView</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="291"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="292"/>
         <source>Save to file error : State file name (%1) references a directory instead of a file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="301"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="302"/>
         <source>Save to file error : Unable to create directory %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="323"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="324"/>
         <source>Save to file error : Unable to save to file %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="341"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="342"/>
         <source>Problem in state restoration : File %1 is not readable.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="367"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="368"/>
         <source>Open file error : Unable to open file %1</source>
         <translation></translation>
     </message>
@@ -1630,86 +1626,97 @@ p, li { white-space: pre-wrap; }
         <translation>Configure colors</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="71"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="81"/>
         <source>Ajouter une couleur</source>
         <translation>Add a color</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="81"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="91"/>
         <source>Supprimer la couleur</source>
         <translation>Delete the color</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="91"/>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="211"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="101"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="216"/>
         <source>Enregistrer</source>
         <translation>Save</translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="128"/>
+        <source>Taille des normales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="148"/>
+        <source>Couleur des normales</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Utiliser les couleurs définies par les attributs</source>
         <translation type="vanished">Use colors defined by attributes</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="107"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="183"/>
         <source>Utiliser les normales définies par les attributs</source>
         <translation>Use normals defined by attributes</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="90"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="95"/>
         <source>Point</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="95"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="100"/>
         <source>Face</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="100"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="105"/>
         <source>Edge</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="189"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="194"/>
         <source>Nom</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="190"/>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="229"/>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="272"/>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="301"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.ui" line="168"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="195"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="234"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="277"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="306"/>
         <source>Appliquer</source>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="192"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="197"/>
         <source>Utiliser gradient partagé ?</source>
         <translation>Use shared gradient?</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="193"/>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="253"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="198"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="258"/>
         <source>Configurer</source>
         <translation>Configure</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="211"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="216"/>
         <source>Vous n&apos;avez pas enregistré le gradient. Voulez vous le faire maintenant ?</source>
         <translation>You have not saved the gradient. Would you do it now?</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="341"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="346"/>
         <source>Gradients</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="376"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="381"/>
         <source>Couleurs</source>
         <translation>Colors</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="411"/>
+        <location filename="../view/DocumentView/GraphicsViews/PointsAttributes/gpointsattributesmanager.cpp" line="416"/>
         <source>Normales</source>
         <translation>Normals</translation>
     </message>
@@ -1832,53 +1839,53 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GStepManager</name>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="62"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="65"/>
         <source>Nom</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="63"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="66"/>
         <source>Progression</source>
         <translation>Progress</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="64"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="67"/>
         <source>Temps / Afficher</source>
         <translation>Time / Show</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="65"/>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="482"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="68"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="471"/>
         <source>Debug</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="69"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="72"/>
         <source>Flux d&apos;étapes</source>
         <translation>Steps workflow</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="552"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="541"/>
         <source>Impossible d&apos;ajouter l&apos;étape %1</source>
         <translation>Impossible to add step %1</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="555"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="544"/>
         <source> après l&apos;étape %2 car elles ne sont pas compatible !</source>
         <translation>after step %2 because they are not compatible</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="557"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="546"/>
         <source> à la racine !</source>
         <translation>at the root !</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1305"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1299"/>
         <source>Supprimer toutes les étapes</source>
         <translation>Remove all steps</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1306"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1300"/>
         <source>Déplier</source>
         <translation>Expand</translation>
     </message>
@@ -1887,7 +1894,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Expand all results</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1307"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="1301"/>
         <source>Replier</source>
         <translation>Collapse</translation>
     </message>
@@ -1896,7 +1903,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Collapse all results</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="482"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="471"/>
         <source>L&apos;étape ne semble pas être débogable.</source>
         <translation>The step seems to not be debuggable</translation>
     </message>
@@ -1905,21 +1912,21 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">The step does not seem to be debuggable.</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="495"/>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="514"/>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="530"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="484"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="503"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="519"/>
         <source>Attention</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="495"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="484"/>
         <source>La srialisation semble tre active, si vous executez l&apos;opration  partir de cette tape elle sera dsactive.</source>
         <translation>Serialization seems to be active, if you execute the operation from this step it will be deactivated.</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="498"/>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="517"/>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="533"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="487"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="506"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="522"/>
         <source>Voulez-vous quand même continuer ?</source>
         <translation>Do you want to continue anyway?</translation>
     </message>
@@ -1928,17 +1935,17 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Do you want to continue anyway?</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="514"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="503"/>
         <source>Une ou plusieurs étapes sont en mode debug or vous allez lancer les traitements en mode normal.</source>
         <translation>One or more steps are in debug mode but you want to start in normal mode.</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="530"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="519"/>
         <source>Aucune étape n&apos;est en mode debug or vous allez lancer les traitements dans ce mode.</source>
         <translation>No step is in debug mode, but you want to start in this mode.</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="875"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="864"/>
         <source>Configuration</source>
         <translation></translation>
     </message>
@@ -2019,25 +2026,25 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Plugins</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="275"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="308"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="313"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="346"/>
         <source>Clé de l&apos;étape au sein du plugin ou d&apos;un script</source>
         <translation>Key of the step in plugin or in script</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="283"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="316"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="321"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="354"/>
         <source>Nom de l&apos;étape</source>
         <translation>Step name</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="291"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="324"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="329"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="362"/>
         <source>Description courte</source>
         <translation>Short description</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="332"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="370"/>
         <source>Description détaillée</source>
         <translation>Detailled description</translation>
     </message>
@@ -2160,48 +2167,48 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Group</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="716"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="708"/>
         <source>Sel.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="787"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="779"/>
         <source>Question</source>
         <translation>Question</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="799"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="791"/>
         <source>Veuillez patienter pendant le chargement de la table...</source>
         <translation>Please wait during table loading...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="799"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="791"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="925"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="917"/>
         <source>Sélectionner</source>
         <translation>Select</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="929"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="921"/>
         <source>Dé-Sélectionner</source>
         <translation>DeSelect</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="933"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="925"/>
         <source>Inverser la sélection</source>
         <translation>Inverse the selection</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="951"/>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="964"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="943"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="956"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="956"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="948"/>
         <source>Couleur automatique</source>
         <translation>Automatic color</translation>
     </message>
@@ -2210,7 +2217,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Refresh</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="943"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="935"/>
         <source>Couleur unie</source>
         <translation>Plain color</translation>
     </message>
@@ -2228,7 +2235,7 @@ Attention cette opération peut être lente.</source>
         <translation>The model is not completely loaded, do you want to load it before use all elements in sorting ?\nWarning: this operation could be long.</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="982"/>
+        <location filename="../view/DocumentView/ItemModelViews/gtreeview.cpp" line="974"/>
         <source>Ajouter au </source>
         <translation>Add to </translation>
     </message>
@@ -2260,12 +2267,12 @@ Attention cette opération peut être lente.</source>
         <translation type="vanished">Please wait while octree creation</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1226"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1238"/>
         <source>Capture d&apos;écran</source>
         <translation>Sceen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1226"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1238"/>
         <source>Image JPEG (*.jpg)</source>
         <translation>JPEG image (*.jpg)</translation>
     </message>

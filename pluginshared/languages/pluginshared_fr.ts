@@ -46,7 +46,7 @@
         <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
 
 %1</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -104,23 +104,23 @@
         <translation>Formulaire</translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="133"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="135"/>
         <source>Modèles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="225"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="253"/>
         <source>Avertissement</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="223"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="225"/>
         <source>Impossible de créer un nouveau tour car le dernier n&apos;est pas valide. Veuillez sélectionner au moins un élément pour chaque résultat puis ré-essayez.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="251"/>
+        <location filename="../ct_view/inModel/ctg_inturnmanager.cpp" line="253"/>
         <source>Vous ne pouvez pas supprimer le tour car il en faut au moins un.</source>
         <translation></translation>
     </message>
@@ -273,7 +273,7 @@
         <location filename="../ct_model/inModel/abstract/ct_inabstractmodel.cpp" line="583"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2035,7 +2035,7 @@
         <location filename="../ct_turn/inTurn/ct_inturn.cpp" line="182"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="73"/>
