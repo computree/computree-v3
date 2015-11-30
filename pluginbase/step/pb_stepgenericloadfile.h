@@ -25,6 +25,7 @@ public:
     virtual QString getStepDisplayableName() const;
 
     QString getStepDescription() const;
+    QString getStepDetailledDescription() const;
 
     QList<FileFormat> getFileExtensionAccepted() const;
 
