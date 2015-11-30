@@ -61,6 +61,13 @@ QString PB_StepGenericLoadFile::getStepDisplayableName() const
 
 QString PB_StepGenericLoadFile::getStepDescription() const
 {
+    QString ext = createAcceptedExtensionString(" ");
+
+    return tr("Charge un fichier du type") + ext;
+}
+
+QString PB_StepGenericLoadFile::getStepDetailledDescription() const
+{
     if(m_reader != NULL)
     {
         QString t = m_reader->toolTip();

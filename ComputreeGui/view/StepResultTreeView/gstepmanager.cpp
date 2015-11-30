@@ -174,11 +174,13 @@ QList<QStandardItem *> GStepManager::createItemsForResult(CT_AbstractResult &res
     QList<QStandardItem *> list;
 
     // nom du rsultat
-    MyQStandardItem *item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultName, res.getName());
-
-    item->setToolTip(QString("%1 (%2)").arg(res.getName()).arg(res.getToolTip()));
-
+    MyQStandardItem *item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultVisibility, res.getName());
+    item->setCheckable(true);
     item->setEditable(false);
+    item->setEnabled(!res.isBusy());
+    connect(&res, SIGNAL(busyStateChanged(bool)), item, SLOT(slotSetDisabled(bool)));
+    connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
+    item->setToolTip(QString("%1 (%2)").arg(res.getName()).arg(res.getToolTip()));
     list.append(item);
 
     // déchargement de la mémoire ou sérialisation
@@ -188,13 +190,17 @@ QList<QStandardItem *> GStepManager::createItemsForResult(CT_AbstractResult &res
     list.append(item);
 
     // affichage ou non des modèles
-    item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultVisibility, QString(""));
+    /*item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultVisibility, QString(""));
     item->setCheckable(true);
     item->setEditable(false);
     connect(&res, SIGNAL(busyStateChanged(bool)), item, SLOT(slotSetDisabled(bool)));
     item->setEnabled(!res.isBusy());
     //connect(&res, SIGNAL(busyStateChanged(bool)), item, SLOT(setBoolDataToFalseWhenDataIsTrue(bool)));
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
+    list.append(item);*/
+
+    item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultEmpty, QString(""));
+    item->setEditable(false);
     list.append(item);
 
     item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultEmpty, QString(""));
@@ -1129,7 +1135,7 @@ void GStepManager::indexDoubleClicked(QModelIndex index)
     if((myItem != NULL)
             && (myItem->result() != NULL))
     {
-        QStandardItem *it = ((QStandardItem*)myItem)->parent()->child(myItem->row(), MyQStandardItem::ResultVisibility-MyQStandardItem::ResultName);
+        QStandardItem *it = ((QStandardItem*)myItem)->parent()->child(myItem->row(), MyQStandardItem::ResultVisibility-MyQStandardItem::BeginIndexForResult);
 
         if(it->isEnabled())
             it->setCheckState(it->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked);

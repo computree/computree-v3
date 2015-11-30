@@ -337,7 +337,7 @@ void DM_OsgSceneManager::converterResultAvailable()
         // if update
         if(previousResult.m_rootGroup.valid()) {
             m_itemRoot->setChild(currentIndex, result.m_rootGroup.get());
-            previousResult.m_rootGroup.release();
+            osg::ref_ptr<osg::Group> ptr = previousResult.m_rootGroup.release();
         } else {
             m_itemRoot->addChild(result.m_rootGroup.get());
             ++index;

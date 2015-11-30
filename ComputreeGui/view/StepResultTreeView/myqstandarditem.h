@@ -50,14 +50,15 @@ public:
       * Type de colonne que reprsente cette item
       */
     enum ColumnType {
-       StepName,                // Nom de l'tape
-       StepProgress,            // Progression de l'tape
-       StepElapsedTime,         // Temps coul de l'tape
-       StepDebug,               // Debug pour l'tape
-       ResultName,              // Nom du rsultat
-       ResultProgress,          // Progression du dchargement du rsultat de la mmoire
-       ResultVisibility,        // Visibilit du rsultat
-       ResultEmpty              // Case vide pour un rsultat
+       StepName,                // Nom de l'étape
+       StepProgress,            // Progression de l'étape
+       StepElapsedTime,         // Temps écoulé de l'étape
+       StepDebug,               // Debug pour l'étape
+       BeginIndexForResult,
+       ResultVisibility = BeginIndexForResult,        // Visibilité du résultat
+       ResultName,              // Nom du résultat
+       ResultProgress,          // Progression du déchargement du résultat de la mémoire
+       ResultEmpty              // Case vide pour un résultat
     };
 
     enum MyItemDataRole {

@@ -13,6 +13,8 @@ class CT_MenuLevel;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_StepsMenu : public QObject
 {
+    Q_OBJECT
+
 public:
 
     /**

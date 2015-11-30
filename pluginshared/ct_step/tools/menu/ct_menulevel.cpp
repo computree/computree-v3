@@ -47,11 +47,13 @@ QList<CT_MenuLevel *> CT_MenuLevel::levels() const
 {
     QList<CT_MenuLevel *> l;
     QList<CT_MenuLevel *> levelsPredefinedSorted = m_levelsPredefined;
+    QList<CT_MenuLevel *> levelsCustomSorted = m_levelsCustom;
 
     qSort(levelsPredefinedSorted.begin(), levelsPredefinedSorted.end(), sortLevels);
+    qSort(levelsCustomSorted.begin(), levelsCustomSorted.end(), sortLevels);
 
     l.append(levelsPredefinedSorted);
-    l.append(m_levelsCustom);
+    l.append(levelsCustomSorted);
 
     return l;
 }
