@@ -88,7 +88,7 @@ static const char *vertexSourceSecondPass = {
     "    {\n"
     "         gl_FrontColor = gl_Color;\n"
     "    }\n"
-    "    geoNormal = gl_ModelViewProjectionMatrix * (gl_Vertex + (vec4(gl_Normal, 0.0) * normalLength));\n"
+    "    geoNormal = gl_ModelViewProjectionMatrix * (gl_Vertex + (vec4(gl_SecondaryColor[0], gl_SecondaryColor[1], gl_SecondaryColor[2], 0.0) * normalLength));\n"
     "    geoNormalColor = normalColor;\n"
     "    gl_Position    = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
     "}\n"

@@ -1050,8 +1050,9 @@ osg::Geometry* DM_PainterToOsgElements::createGeometry(osg::PrimitiveSet *primit
             geo->setColorArray(m_geometriesConfiguration->globalColorArray());
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-            geo->setNormalArray(m_geometriesConfiguration->globalNormalArray());
-            geo->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            // normal array set to secondary color because gl_Normal in a shader is a vec3 or CT_Normal is a vec4 !
+            geo->setSecondaryColorArray(m_geometriesConfiguration->globalNormalArray());
+            geo->setSecondaryColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
             if(m_geometriesConfiguration->globalVertexAttribArray() != NULL) {
                 geo->setVertexAttribArray(m_geometriesConfiguration->globalVertexAttribArrayLocationIndex(), m_geometriesConfiguration->globalVertexAttribArray(), osg::Array::BIND_PER_VERTEX);
