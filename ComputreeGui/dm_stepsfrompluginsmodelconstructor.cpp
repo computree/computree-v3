@@ -7,7 +7,6 @@
 #include "ct_stepseparator.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
 #include "ct_step/abstract/ct_abstractstepcanbeaddedfirst.h"
-#include "ct_step/tools/menu/ct_menulevel.h"
 
 DM_StepsFromPluginsModelConstructor::DM_StepsFromPluginsModelConstructor(const CDM_PluginManager &manager) : m_pluginManager(manager)
 {
@@ -64,7 +63,8 @@ void DM_StepsFromPluginsModelConstructor::construct()
     QListIterator<CT_MenuLevel*> it(levels);
 
     while(it.hasNext()) {
-        QList<QStandardItem*> items = createItemsForLevelAndSubLevelRecursively(it.next());
+        CT_MenuLevel *level = it.next();
+        QList<QStandardItem*> items = createItemsForLevelAndSubLevelRecursively(level);
 
         if(!items.isEmpty())
             rootItem->appendRow(items);
@@ -134,7 +134,21 @@ QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForLevelA
             item->appendRow(items);
     }
 
-    if(item->rowCount() == 0) {
+    // steps not founded
+    QList<CT_MenuLevel::CT_NotFoundedStep> lnfs = level->stepsNotFounded();
+    QListIterator<CT_MenuLevel::CT_NotFoundedStep> itNFS(lnfs);
+
+    while(itNFS.hasNext()) {
+        CT_MenuLevel::CT_NotFoundedStep nfs = itNFS.next();
+        QList<QStandardItem*> items = createItemsForStep(nfs);
+
+        if(!items.isEmpty())
+            item->appendRow(items);
+    }
+
+    CT_MenuLevel *favoritesLevel = m_pluginManager.stepsMenu()->getOrCreateRootLevel(CT_StepsMenu::LO_Favorites);
+
+    if((item->rowCount() == 0) && (level != favoritesLevel)) {
         qDeleteAll(l.begin(), l.end());
         l.clear();
     }
@@ -164,6 +178,32 @@ QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForStep(C
     item->setData(qVariantFromValue((void*)step->getPlugin()), DR_Pointer);
     item->setData((int)IT_Plugin, DR_Type);
     item->setData((int)stepType, DR_SecondaryType);
+    l << item;
+
+    return l;
+}
+
+QList<QStandardItem *> DM_StepsFromPluginsModelConstructor::createItemsForStep(CT_MenuLevel::CT_NotFoundedStep nfs) const
+{
+    QList<QStandardItem*> l;
+
+    QStandardItem *item = new QStandardItem(nfs.stepKey);
+    item->setEditable(false);
+    item->setData(qVariantFromValue((void*)NULL), DR_Pointer);
+    item->setData((int)IT_StepNF, DR_Type);
+    item->setData((int)IT_StepNF, DR_SecondaryType);
+    l << item;
+
+    QString pluginName = nfs.pluginName;
+
+    if (pluginName.startsWith("plug_"))
+        pluginName.remove(0, 5);
+
+    item = new QStandardItem(pluginName);
+    item->setEditable(false);
+    item->setData(qVariantFromValue((void*)NULL), DR_Pointer);
+    item->setData((int)IT_Plugin, DR_Type);
+    item->setData((int)IT_StepNF, DR_SecondaryType);
     l << item;
 
     return l;

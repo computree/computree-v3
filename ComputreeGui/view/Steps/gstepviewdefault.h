@@ -204,7 +204,7 @@ signals:
     /**
      * @brief Emitted when a level is selected
      */
-    void levelSelected(CT_MenuLevel *level);
+    void levelSelected(CT_MenuLevel *level, int typeOfLevel);
 
     /**
      * @brief Emitted when a step is selected

@@ -488,7 +488,7 @@ void GStepViewDefault::selectionChanged(const QItemSelection &newSelection, cons
                 emit stepSelected((CT_VirtualAbstractStep*)newIndex.data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>());
                 return;
             } else if(type & DM_StepsFromPluginsModelConstructor::IT_Level) {
-                emit levelSelected((CT_MenuLevel*)newIndex.data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>());
+                emit levelSelected((CT_MenuLevel*)newIndex.data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>(), type);
                 return;
             }
         }

@@ -1,6 +1,7 @@
 #ifndef CDM_STEPSMENUMANAGER_H
 #define CDM_STEPSMENUMANAGER_H
 
+#include "computreeCore_global.h"
 #include "ct_step/tools/menu/ct_stepsmenu.h"
 
 class QXmlStreamWriter;
@@ -8,7 +9,7 @@ class QXmlStreamReader;
 class CT_VirtualAbstractStep;
 class CDM_PluginManager;
 
-class CDM_StepsMenuManager
+class COMPUTREECORESHARED_EXPORT CDM_StepsMenuManager
 {
 public:
     CDM_StepsMenuManager();
@@ -38,6 +39,11 @@ public:
      * @brief Save the favorites level to file
      */
     void saveFavoritesTo(const QString &filepath);
+
+    /**
+     * @brief Returns the default extension of favorites file
+     */
+    QString favoriteDefaultFileExtension() const;
 
 private:
     CT_StepsMenu        *m_menuOfSteps;

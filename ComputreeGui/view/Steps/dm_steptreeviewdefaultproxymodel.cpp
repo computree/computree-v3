@@ -15,6 +15,7 @@ DM_StepTreeViewDefaultProxyModel::DM_StepTreeViewDefaultProxyModel(QObject *pare
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_RootLevel, Qt::BackgroundRole, QColor(64, 64, 64));
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_Step, Qt::BackgroundRole, QColor(175, 171, 171));
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_SubLevel, Qt::BackgroundRole, QColor(91, 155, 213));
+    setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_StepNF, Qt::ForegroundRole, QColor(255, 255, 0));
 
     setValueForTypeAndRole(DM_StepsFromPluginsModelConstructor::IT_All, Qt::ForegroundRole, QColor(255, 255, 255));
 
@@ -168,7 +169,7 @@ QVariant DM_StepTreeViewDefaultProxyModel::data(const QModelIndex &index, int ro
 
             CT_VirtualAbstractStep *step = getStepFromIndex(index);
 
-            if(step->isManual())
+            if((step != NULL) && step->isManual())
                 return m_manualStepFont; // special font for manual step
         }
     }
@@ -273,24 +274,26 @@ bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index, bool
         bool accepted = false;
         CT_VirtualAbstractStep *step = getStepFromIndex(index);
 
-        if(m_filterConfig.testFlag(FC_StepKey)
-                && filterRegExp().exactMatch(step->getPlugin()->getKeyForStep(*step)))
-            accepted = true;
+        if(step != NULL) {
+            if(m_filterConfig.testFlag(FC_StepKey)
+                    && filterRegExp().exactMatch(step->getPlugin()->getKeyForStep(*step)))
+                accepted = true;
 
-        if(!accepted
-                && m_filterConfig.testFlag(FC_StepDisplayableName)
-                && filterRegExp().exactMatch(step->getStepDisplayableName()))
-            accepted = true;
+            if(!accepted
+                    && m_filterConfig.testFlag(FC_StepDisplayableName)
+                    && filterRegExp().exactMatch(step->getStepDisplayableName()))
+                accepted = true;
 
-        if(!accepted
-                && m_filterConfig.testFlag(FC_StepShortDescription)
-                && filterRegExp().exactMatch(step->getStepDescription()))
-            accepted = true;
+            if(!accepted
+                    && m_filterConfig.testFlag(FC_StepShortDescription)
+                    && filterRegExp().exactMatch(step->getStepDescription()))
+                accepted = true;
 
-        if(!accepted
-                && m_filterConfig.testFlag(FC_StepFullDescription)
-                && filterRegExp().exactMatch(step->getStepDetailledDescription()))
-            accepted = true;
+            if(!accepted
+                    && m_filterConfig.testFlag(FC_StepFullDescription)
+                    && filterRegExp().exactMatch(step->getStepDetailledDescription()))
+                accepted = true;
+        }
 
         if(!accepted)
             return false;
@@ -301,12 +304,22 @@ bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index, bool
 
 bool DM_StepTreeViewDefaultProxyModel::existStepInPluginCollection(const QModelIndex &index) const
 {
-    return m_plugins.contains(getStepFromIndex(index)->getPlugin());
+    CT_VirtualAbstractStep *step = getStepFromIndex(index);
+
+    if(step == NULL)
+        return false;
+
+    return m_plugins.contains(step->getPlugin());
 }
 
 bool DM_StepTreeViewDefaultProxyModel::isStepCompatibleWithParent(const QModelIndex &index) const
 {
-    return getStepFromIndex(index)->acceptAddAfterThisStep(m_parentStep);
+    CT_VirtualAbstractStep *step = getStepFromIndex(index);
+
+    if(step == NULL)
+        return false;
+
+    return step->acceptAddAfterThisStep(m_parentStep);
 }
 
 void DM_StepTreeViewDefaultProxyModel::parentStepDestroyed()

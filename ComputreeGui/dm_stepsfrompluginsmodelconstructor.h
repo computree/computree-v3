@@ -1,9 +1,11 @@
 #ifndef DM_STEPSFROMPLUGINSMODELCONSTRUCTOR_H
 #define DM_STEPSFROMPLUGINSMODELCONSTRUCTOR_H
 
-#include "ct_step/abstract/ct_virtualabstractstep.h"
-#include "cdm_pluginmanager.h"
 #include "ct_abstractstepplugin.h"
+#include "ct_step/abstract/ct_virtualabstractstep.h"
+#include "ct_step/tools/menu/ct_menulevel.h"
+
+#include "cdm_pluginmanager.h"
 
 #include <QStandardItemModel>
 /**
@@ -26,23 +28,22 @@ public:
             IT_StepG = 2,                       // call data(DR_Type) and check if return && IT_StepG to check if the pointer is "CT_VirtualAbstractStep*"
             IT_StepLF = 4,                      // call data(DR_Type) and check if return && IT_StepLF to check if the pointer is "CT_AbstractStepLoadFile*"
             IT_StepCBAF = 8,                    // call data(DR_Type) and check if return && IT_StepCBAF to check if the pointer is "CT_AbstractStepCanBeAddedFirst*"
+            IT_StepNF = 16,                     // call data(DR_Type) and check if return && IT_StepNF to check if it's a step that was not founded
 
-        IT_Step = 14,                           // call data(DR_Type) and check if return && IT_Step to check if the pointer is "CT_VirtualAbstractStep*"
+        IT_Step = 30,                           // call data(DR_Type) and check if return && IT_Step to check if the pointer is "CT_VirtualAbstractStep*"
 
-            IT_RootLevel = 16,                  // call data(DR_Type) and check if return && IT_RootLevel to check if the pointer is a "CT_MenuLevel" and it's a root level
-            IT_SubLevel = 32,                   // call data(DR_Type) and check if return && IT_SubLevel to check if the pointer is a "CT_MenuLevel" and it's a sub level
+            IT_RootLevel = 32,                  // call data(DR_Type) and check if return && IT_RootLevel to check if the pointer is a "CT_MenuLevel" and it's a root level
+            IT_SubLevel = 64,                   // call data(DR_Type) and check if return && IT_SubLevel to check if the pointer is a "CT_MenuLevel" and it's a sub level
 
-        IT_Level = 48,                          // call data(DR_Type) and check if return && IT_Level to check if the pointer is a "CT_MenuLevel"
+        IT_Level = 96,                          // call data(DR_Type) and check if return && IT_Level to check if the pointer is a "CT_MenuLevel"
 
-        IT_Text = 64,                           // no pointer available, just text
+        IT_Text = 128,                          // no pointer available, just text
 
-        IT_All =  127                            // all types
+        IT_All =  255                           // all types
     };
 
     DM_StepsFromPluginsModelConstructor(const CDM_PluginManager &manager);
     ~DM_StepsFromPluginsModelConstructor();
-
-    void setFavoritesVisible(bool enable);
 
     /**
      * @brief Set if the model must contains rows for type passed in parameter or not. if the type is not visible but it contains children, these latter
@@ -99,6 +100,11 @@ private:
      * @brief Create and return a list of QStandardItem that will be added to the tree for a step
      */
     QList<QStandardItem*> createItemsForStep(CT_VirtualAbstractStep *step, ItemType stepType) const;
+
+    /**
+     * @brief Create and return a list of QStandardItem that will be added to the tree for a not founded step
+     */
+    QList<QStandardItem*> createItemsForStep(CT_MenuLevel::CT_NotFoundedStep nfs) const;
 };
 
 #endif // DM_STEPSFROMPLUGINSMODELCONSTRUCTOR_H

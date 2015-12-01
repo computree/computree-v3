@@ -7,8 +7,8 @@
 #include <QDebug>
 #include <QApplication>
 
-#define FAVORITES_FILENAME "favorites.ctc"
-#define FAVORITES_FILEPATH QDir::toNativeSeparators(qApp->applicationDirPath() + "/" + FAVORITES_FILENAME)
+#define FAVORITES_FILENAME "favorites."
+#define FAVORITES_FILEPATH QDir::toNativeSeparators(qApp->applicationDirPath() + "/" + FAVORITES_FILENAME + stepsMenuManager()->favoriteDefaultFileExtension())
 
 CDM_PluginManager::CDM_PluginManager()
 {

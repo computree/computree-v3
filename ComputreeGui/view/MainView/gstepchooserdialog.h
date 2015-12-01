@@ -32,7 +32,7 @@ private:
     GStepManager            *m_stepManager;
     QAction                 *m_actionAddStepToFavorites;
     QAction                 *m_actionRemoveStepFromFavorites;
-    QAction                 *m_actionRemoveLevelFromFavorites;
+    QMenu                   *m_contextMenuRootLevel;
 
     bool existInFavorites(CT_VirtualAbstractStep *step);
 
@@ -45,12 +45,14 @@ protected:
     void closeEvent(QCloseEvent *e);
 
 private slots:
-    void addStepFromStepChooserToFavoritesMenu();
+    void editFavorites();
+    void loadFavorites();
+    void exportFavorites();
+
     void removeStepFromFavoritesMenu();
     void showSelectedStepInformation();
-    void removeLevelFromFavoritesMenu();
     void refreshContextMenuOfStep(CT_VirtualAbstractStep *step);
-    void refreshContextMenuOfLevel(CT_MenuLevel *level);
+    void refreshContextMenuOfLevel(CT_MenuLevel *level, int typeOfLevel);
 
 public slots:
     void toggleVisibility();

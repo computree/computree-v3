@@ -48,7 +48,7 @@ bool CT_StepsMenu::removeLevelFromFavorites(CT_MenuLevel *level)
 {
     CT_MenuLevel *favorites = levelFromOperation(LO_Favorites);
 
-    if(favorites != NULL) {
+    if((favorites != NULL) && (level != NULL)) {
         CT_MenuLevel *sLevel = level;
 
         while(sLevel->parentLevel() != NULL) {

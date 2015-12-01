@@ -67,5 +67,6 @@
         <file>Icones/play_movie.png</file>
         <file>Icones/screenshot.png</file>
         <file>Icones/favorite.png</file>
+        <file>Icones/download.png</file>
     </qresource>
 </RCC>

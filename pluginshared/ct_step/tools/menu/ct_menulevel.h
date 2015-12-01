@@ -17,6 +17,19 @@ class PLUGINSHAREDSHARED_EXPORT CT_MenuLevel : public QObject
 
 public:
 
+    struct CT_NotFoundedStep {
+        QString stepKey;
+        QString pluginName;
+
+        bool operator ==(const CT_NotFoundedStep &other) {
+            return (other.stepKey == stepKey) && (other.pluginName == pluginName);
+        }
+
+        bool operator !=(const CT_NotFoundedStep &other) {
+            return (other.stepKey != stepKey) || (other.pluginName != pluginName);
+        }
+    };
+
     /**
      * @brief Create a level with a custom displayable name and add it to
      *        the parent level passed in parameter. Parent Level must not be NULL
@@ -50,9 +63,19 @@ public:
     bool addStep(CT_VirtualAbstractStep *step);
 
     /**
+     * @brief Add a step that was not founded (use it for favorites levels)
+     */
+    bool addNotFoundedStep(CT_NotFoundedStep nfs);
+
+    /**
      * @brief Returns the list of steps contained in this level
      */
     QList<CT_VirtualAbstractStep*> steps() const;
+
+    /**
+     * @brief Returns the list of steps not founded contained in this level
+     */
+    QList<CT_NotFoundedStep> stepsNotFounded() const;
 
     /**
      * @brief Returns the list of levels contained in this level
@@ -122,14 +145,19 @@ private:
     typedef QList<CT_VirtualAbstractStep*>          StepCollection;
     typedef QListIterator<CT_VirtualAbstractStep*>  StepCollectionIt;
 
+
+    typedef QList<CT_NotFoundedStep>                StepNotFoundedCollection;
+    typedef QListIterator<CT_NotFoundedStep>        StepNotFoundedCollectionIt;
+
     typedef QList<CT_MenuLevel*>                    LevelCollection;
     typedef QListIterator<CT_MenuLevel*>            LevelCollectionIt;
 
-    StepCollection  m_steps;
-    LevelCollection m_levelsPredefined;
-    LevelCollection m_levelsCustom;
-    QString         m_displayableName;
-    CT_MenuLevel    *m_parent;
+    StepCollection              m_steps;
+    StepNotFoundedCollection    m_stepsNotFounded;
+    LevelCollection             m_levelsPredefined;
+    LevelCollection             m_levelsCustom;
+    QString                     m_displayableName;
+    CT_MenuLevel                *m_parent;
 
 private slots:
     void subLevelDeleted(QObject *level);

@@ -6,6 +6,9 @@
 #include "view/StepResultTreeView/gstepmanager.h"
 #include "view/MainView/gaboutstepdialog.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+
 GStepChooserDialog::GStepChooserDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GStepChooserDialog)
@@ -26,25 +29,27 @@ void GStepChooserDialog::setStepManager(GStepManager *stepManager)
 void GStepChooserDialog::init()
 {
     QMenu *contextMenuSteps = new QMenu(this);
-    m_actionAddStepToFavorites = contextMenuSteps->addAction(QIcon(":/Icones/Icones/favorite.png"), tr("Ajouter aux favoris"), this, SLOT(addStepFromStepChooserToFavoritesMenu()));
+    m_actionAddStepToFavorites = contextMenuSteps->addAction(QIcon(":/Icones/Icones/favorite.png"), tr("Ajouter aux favoris"), this, SLOT(editFavorites()));
     m_actionRemoveStepFromFavorites = contextMenuSteps->addAction(QIcon(":/Icones/Icones/delete.png"), tr("Supprimer des favoris"), this, SLOT(removeStepFromFavoritesMenu()));
     QAction *actionInfoStep = contextMenuSteps->addAction(QIcon(":/Icones/Icones/info.png"), tr("Documentation de l'étape"), this, SLOT(showSelectedStepInformation()));
     actionInfoStep->setShortcut(tr("F1"));
 
-    QMenu *contextMenuLevel = new QMenu(this);
-    m_actionRemoveLevelFromFavorites = contextMenuLevel->addAction(QIcon(":/Icones/Icones/delete.png"), tr("Supprimer le niveau des favoris"), this, SLOT(removeLevelFromFavoritesMenu()));
+    m_contextMenuRootLevel = new QMenu(this);
+    m_contextMenuRootLevel->addAction(QIcon(":/Icones/Icones/favorite.png"), tr("Editer"), this, SLOT(editFavorites()));
+    m_contextMenuRootLevel->addAction(QIcon(":/Icones/Icones/download.png"), tr("Charger"), this, SLOT(loadFavorites()));
+    m_contextMenuRootLevel->addAction(QIcon(":/Icones/Icones/upload.png"), tr("Exporter"), this, SLOT(exportFavorites()));
 
     ui->stepChooserWidget->init(*GUI_MANAGER->getPluginManager());
     ui->stepChooserWidget->proxy()->setPluginsFilterEnabled(false);  // don't filters steps that was not in the plugin list
     ui->stepChooserWidget->proxy()->setShowStepNotCompatible(true); // don't show step not compatible with the parent step
     ui->stepChooserWidget->setDisplayConfiguration(GStepViewDefault::DNC_StepDisplayableName);
     ui->stepChooserWidget->setContextMenuOnType(contextMenuSteps, DM_StepsFromPluginsModelConstructor::IT_Step);
-    ui->stepChooserWidget->setContextMenuOnType(contextMenuLevel, DM_StepsFromPluginsModelConstructor::IT_SubLevel);
+    ui->stepChooserWidget->setContextMenuOnType(m_contextMenuRootLevel, DM_StepsFromPluginsModelConstructor::IT_RootLevel);
 
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(beginLoading()), ui->stepChooserWidget, SLOT(reconstruct()), Qt::DirectConnection);
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), ui->stepChooserWidget, SLOT(reconstruct()), Qt::QueuedConnection);
     connect(m_stepManager, SIGNAL(stepSelected(CT_VirtualAbstractStep*)), ui->stepChooserWidget->proxy(), SLOT(setParentStep(CT_VirtualAbstractStep*)), Qt::QueuedConnection);
-    connect(ui->stepChooserWidget, SIGNAL(levelSelected(CT_MenuLevel*)), this, SLOT(refreshContextMenuOfLevel(CT_MenuLevel*)), Qt::DirectConnection);
+    connect(ui->stepChooserWidget, SIGNAL(levelSelected(CT_MenuLevel*,int)), this, SLOT(refreshContextMenuOfLevel(CT_MenuLevel*,int)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepSelected(CT_VirtualAbstractStep*)), this, SLOT(refreshContextMenuOfStep(CT_VirtualAbstractStep*)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepDoubleClicked(CT_VirtualAbstractStep*)), m_stepManager, SLOT(addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep*)));
 
@@ -127,14 +132,32 @@ void GStepChooserDialog::closeEvent(QCloseEvent *e)
     hide();
 }
 
-void GStepChooserDialog::addStepFromStepChooserToFavoritesMenu()
+void GStepChooserDialog::editFavorites()
 {
     GFavoritesMenuDialog dialog;
-    dialog.setStepToAdd(ui->stepChooserWidget->currentStepSelected());
+    dialog.setStepToAdd(ui->stepChooserWidget->currentStepSelected(), stepsChooserWidget()->displayConfiguration());
     dialog.init();
     if(dialog.exec() == QDialog::Accepted) {
         ui->stepChooserWidget->reconstruct();
     }
+}
+
+void GStepChooserDialog::loadFavorites()
+{
+    QString filepath = QFileDialog::getOpenFileName(this, tr("Ouvrir un fichier favoris"), "", tr("Fichier favoris (*.%1)").arg(GUI_MANAGER->getPluginManager()->stepsMenuManager()->favoriteDefaultFileExtension()));
+
+    if(!filepath.isEmpty()) {
+        GUI_MANAGER->getPluginManager()->stepsMenuManager()->loadFavoritesFrom(filepath);
+        ui->stepChooserWidget->reconstruct();
+    }
+}
+
+void GStepChooserDialog::exportFavorites()
+{
+    QString filepath = QFileDialog::getSaveFileName(this, tr("Sauvegarder les favoris"), "", tr("Fichier favoris (*.%1)").arg(GUI_MANAGER->getPluginManager()->stepsMenuManager()->favoriteDefaultFileExtension()));
+
+    if(!filepath.isEmpty())
+        GUI_MANAGER->getPluginManager()->stepsMenuManager()->saveFavoritesTo(filepath);
 }
 
 void GStepChooserDialog::removeStepFromFavoritesMenu()
@@ -145,14 +168,14 @@ void GStepChooserDialog::removeStepFromFavoritesMenu()
 
 void GStepChooserDialog::showSelectedStepInformation()
 {
-    GAboutStepDialog dialog(ui->stepChooserWidget->currentStepSelected());
-    dialog.exec();
-}
+    CT_VirtualAbstractStep *step = ui->stepChooserWidget->currentStepSelected();
 
-void GStepChooserDialog::removeLevelFromFavoritesMenu()
-{
-    GUI_MANAGER->getPluginManager()->stepsMenu()->removeLevelFromFavorites(ui->stepChooserWidget->currentLevelSelected());
-    ui->stepChooserWidget->reconstruct();
+    if(step != NULL) {
+        GAboutStepDialog dialog(step);
+        dialog.exec();
+    } else {
+        QMessageBox::critical(this, tr("Erreur"), tr("Impossible d'afficher les informations de cette étape. L'étape n'a pas été trouvée dans le plugin ou le plugin n'est pas présent."));
+    }
 }
 
 void GStepChooserDialog::refreshContextMenuOfStep(CT_VirtualAbstractStep *step)
@@ -168,26 +191,12 @@ void GStepChooserDialog::refreshContextMenuOfStep(CT_VirtualAbstractStep *step)
     }
 }
 
-void GStepChooserDialog::refreshContextMenuOfLevel(CT_MenuLevel *level)
+void GStepChooserDialog::refreshContextMenuOfLevel(CT_MenuLevel *level, int typeOfLevel)
 {
-    m_actionRemoveLevelFromFavorites->setEnabled(false);
-
-    if(level != NULL) {
+    if(typeOfLevel == DM_StepsFromPluginsModelConstructor::IT_RootLevel)
+    {
         CT_MenuLevel *favorites = GUI_MANAGER->getPluginManager()->stepsMenu()->levelFromOperation(CT_StepsMenu::LO_Favorites);
-
-        if(favorites != NULL) {
-            CT_MenuLevel *sLevel = level;
-
-            while(sLevel->parentLevel() != NULL) {
-
-                if(sLevel->parentLevel() == favorites) {
-                    m_actionRemoveLevelFromFavorites->setEnabled(true);
-                    return;
-                }
-
-                sLevel = sLevel->parentLevel();
-            }
-        }
+        m_contextMenuRootLevel->setEnabled(level == favorites);
     }
 }
 

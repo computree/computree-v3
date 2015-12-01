@@ -70,6 +70,21 @@ void CDM_StepsMenuManager::saveFavoritesTo(const QString &filepath)
     }
 }
 
+QString CDM_StepsMenuManager::favoriteDefaultFileExtension() const
+{
+    return "ctc";
+}
+
+void writeStepNotFoundedInformationToFavoritesFileRecursively(const CT_MenuLevel::CT_NotFoundedStep &nfs, QXmlStreamWriter &xmlWriter)
+{
+    xmlWriter.writeStartElement(XML_STEP_START_KEY);
+
+    xmlWriter.writeTextElement(XML_STEP_PLUGIN_NAME_KEY, nfs.pluginName);
+    xmlWriter.writeTextElement(XML_STEP_KEY_KEY, nfs.stepKey);
+
+    xmlWriter.writeEndElement();
+}
+
 void CDM_StepsMenuManager::writeLevelInformationToFavoritesFileRecursively(const CT_MenuLevel *level, QXmlStreamWriter &xmlWriter)
 {
     xmlWriter.writeStartElement(XML_LEVEL_START_KEY);
@@ -80,6 +95,13 @@ void CDM_StepsMenuManager::writeLevelInformationToFavoritesFileRecursively(const
 
     while(itS.hasNext()) {
         writeStepInformationToFavoritesFileRecursively(itS.next(), xmlWriter);
+    }
+
+    QList<CT_MenuLevel::CT_NotFoundedStep> lnfs = level->stepsNotFounded();
+    QListIterator<CT_MenuLevel::CT_NotFoundedStep> itNFS(lnfs);
+
+    while(itNFS.hasNext()) {
+        writeStepNotFoundedInformationToFavoritesFileRecursively(itNFS.next(), xmlWriter);
     }
 
     QList<CT_MenuLevel*> levels = level->levels();
@@ -170,6 +192,8 @@ void CDM_StepsMenuManager::readStepAndAddItToLevel(CT_MenuLevel *parentLevel, QX
             }
 
             if(!pluginName.isEmpty() && !stepKey.isEmpty()) {
+                bool added = false;
+
                 CT_AbstractStepPlugin *plugin = m_pluginManager->getPlugin(pluginName);
 
                 if(plugin != NULL) {
@@ -177,7 +201,16 @@ void CDM_StepsMenuManager::readStepAndAddItToLevel(CT_MenuLevel *parentLevel, QX
 
                     if(step != NULL) {
                         parentLevel->addStep(plugin->createNewInstanceOfStep(*step, NULL));
+                        added = true;
                     }
+                }
+
+                if(!added) {
+                    CT_MenuLevel::CT_NotFoundedStep nfs;
+                    nfs.pluginName = pluginName;
+                    nfs.stepKey = stepKey;
+
+                    parentLevel->addNotFoundedStep(nfs);
                 }
 
                 while(!xmlReader.atEnd()) {
