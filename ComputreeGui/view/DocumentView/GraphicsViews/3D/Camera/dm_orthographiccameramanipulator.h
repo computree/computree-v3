@@ -6,6 +6,7 @@
 class DM_OrthographicCameraManipulator
 {
 public:
+
     DM_OrthographicCameraManipulator();
 
     /**

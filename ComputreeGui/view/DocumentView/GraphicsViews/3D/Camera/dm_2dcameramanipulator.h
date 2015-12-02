@@ -17,6 +17,7 @@ protected:
     virtual bool performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy );
     virtual void zoomModel(const float dy, bool pushForwardIfNeeded);
 
+    void setDistance(double distance);
     double getDistance() const;
 };
 

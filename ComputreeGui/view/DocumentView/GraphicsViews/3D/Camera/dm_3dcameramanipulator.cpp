@@ -16,6 +16,7 @@ bool DM_3DCameraManipulator::performMovementLeftMouseButton( const double eventT
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
                          _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
                          2.0*getThrowScale( eventTimeDelta ) );
+
     return true;
 }
 
@@ -55,8 +56,13 @@ void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded
     }
 }
 
+void DM_3DCameraManipulator::setDistance(double distance)
+{
+    osgGA::TrackballManipulator::setDistance(distance);
+    updateCameraOrthographic();
+}
+
 double DM_3DCameraManipulator::getDistance() const
 {
     return _distance;
 }
-

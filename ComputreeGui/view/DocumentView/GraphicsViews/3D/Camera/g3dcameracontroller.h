@@ -9,6 +9,8 @@ class GOsgGraphicsView;
 
 class G3DCameraController : public DM_GraphicsViewCamera
 {
+    Q_OBJECT
+
 public:
     G3DCameraController();
 
@@ -44,30 +46,19 @@ public:
 
 private:
 
-
-    class DM_CameraControllerEventHandler : public osgGA::GUIEventHandler {
-    public:
-        DM_CameraControllerEventHandler(G3DCameraController *c) : m_c(c), m_buttonPressed(false) {}
-
-        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {
-
-            if((ea.getEventType() == osgGA::GUIEventAdapter::DRAG) || (ea.getEventType() == osgGA::GUIEventAdapter::SCROLL))
-                m_c->emitCoordinatesChanged();
-
-            return false;
-        }
-
-    private:
-        G3DCameraController *m_c;
-        bool m_buttonPressed;
+    struct CameraInfo {
+        osg::Vec3d center;
+        osg::Quat rotation;
+        double distance;
     };
 
     osg::ref_ptr<osgGA::OrbitManipulator>   m_camManipulator;
     GOsgGraphicsView                        *m_view;
 
-
     mutable osg::Matrixd                    m_tmpMatrix;
     osg::Vec3d                              m_lastItemSelectedCenter;
+
+    CameraInfo                              m_cameraInfoBackup;
 
     void emitCoordinatesChanged();
     void redrawTheView();
@@ -107,6 +98,9 @@ public slots:
     void fitCameraToVisibleItems();
     void fitToSpecifiedBox(const Eigen::Vector3d &bot, const Eigen::Vector3d &top);
 
+private slots:
+    void viewDrawBegin();
+    void viewDrawFinished();
 };
 
 #endif // G3DCAMERACONTROLLER_H

@@ -33,7 +33,9 @@ void G3DCameraController::setRealCameraManipulator(const osgGA::OrbitManipulator
 void G3DCameraController::setView(const GOsgGraphicsView *view)
 {
     m_view = (GOsgGraphicsView*)view;
-    m_view->getCompositeViewer()->getView(0)->addEventHandler(new G3DCameraController::DM_CameraControllerEventHandler(this));
+
+    connect(m_view->signalEmitter(), SIGNAL(drawingStarted()), this, SLOT(viewDrawBegin()), Qt::DirectConnection);
+    connect(m_view->signalEmitter(), SIGNAL(drawingFinished()), this, SLOT(viewDrawFinished()), Qt::DirectConnection);
 }
 
 void G3DCameraController::setLastItemSelectedCameraCenter(double x, double y, double z)
@@ -185,6 +187,7 @@ void G3DCameraController::setX(double x)
     eye.x() = x;
     m_camManipulator->setTransformation(eye, quat);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -196,6 +199,8 @@ void G3DCameraController::setY(double y)
     m_camManipulator->getTransformation(eye, quat);
     eye.y() = y;
     m_camManipulator->setTransformation(eye, quat);
+
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -207,6 +212,8 @@ void G3DCameraController::setZ(double z)
     m_camManipulator->getTransformation(eye, quat);
     eye.z() = z;
     m_camManipulator->setTransformation(eye, quat);
+
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -217,6 +224,7 @@ void G3DCameraController::setCX(double cx)
 
     m_camManipulator->setCenter(c);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -227,6 +235,7 @@ void G3DCameraController::setCY(double cy)
 
     m_camManipulator->setCenter(c);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -237,6 +246,7 @@ void G3DCameraController::setCZ(double cz)
 
     m_camManipulator->setCenter(c);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -246,6 +256,7 @@ void G3DCameraController::setRX(double xRot)
     quat.x() = xRot;
     m_camManipulator->setRotation(quat);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -255,6 +266,7 @@ void G3DCameraController::setRY(double yRot)
     quat.y() = yRot;
     m_camManipulator->setRotation(quat);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -264,6 +276,7 @@ void G3DCameraController::setRZ(double zRot)
     quat.z() = zRot;
     m_camManipulator->setRotation(quat);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -273,6 +286,7 @@ void G3DCameraController::setRW(double wRot)
     quat.w() = wRot;
     m_camManipulator->setRotation(quat);
 
+    emitCoordinatesChanged();
     redrawTheView();
 }
 
@@ -290,7 +304,7 @@ void G3DCameraController::setPointOfView(double cx, double cy, double cz, double
     if(redrawView)
         redrawTheView();
 
-    emit coordinatesChanged();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::setPosition(double x, double y, double z, bool redrawView)
@@ -305,6 +319,8 @@ void G3DCameraController::setPosition(double x, double y, double z, bool redrawV
 
     if(redrawView)
         redrawTheView();
+
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::setSceneCenter(double cx, double cy, double cz, bool redrawView)
@@ -313,6 +329,8 @@ void G3DCameraController::setSceneCenter(double cx, double cy, double cz, bool r
 
     if(redrawView)
         redrawTheView();
+
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::setViewDirection(double rx, double ry, double rz, bool redrawView)
@@ -332,6 +350,8 @@ void G3DCameraController::setOrientation(double q0, double q1, double q2, double
 
     if(redrawView)
         redrawTheView();
+
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::showEntireScene()
@@ -340,6 +360,7 @@ void G3DCameraController::showEntireScene()
     m_camManipulator->home(0);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::syncWithCamera(const DM_GraphicsViewCamera *cam)
@@ -356,11 +377,6 @@ void G3DCameraController::syncWithCamera(const DM_GraphicsViewCamera *cam)
         m_camManipulator->setRotation(rotation);
         m_camManipulator->setDistance(d);
 
-        /*osg::Vec3d eye;
-        osg::Quat quat;
-
-        controller->m_camManipulator->getTransformation(eye, quat);
-        m_camManipulator->setTransformation(eye, quat);*/
         redrawTheView();
     }
 }
@@ -382,6 +398,7 @@ void G3DCameraController::alignCameraToInvXAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::alignCameraToInvYAxis()
@@ -399,6 +416,7 @@ void G3DCameraController::alignCameraToInvYAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::alignCameraToInvZAxis()
@@ -415,6 +433,7 @@ void G3DCameraController::alignCameraToInvZAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::alignCameraToXAxis()
@@ -432,6 +451,7 @@ void G3DCameraController::alignCameraToXAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::alignCameraToYAxis()
@@ -449,6 +469,7 @@ void G3DCameraController::alignCameraToYAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::alignCameraToZAxis()
@@ -465,6 +486,7 @@ void G3DCameraController::alignCameraToZAxis()
     m_camManipulator->setDistance(distance);
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::initCameraCenter()
@@ -472,6 +494,7 @@ void G3DCameraController::initCameraCenter()
     m_camManipulator->setCenter(osg::Vec3d(0,0,0));
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::fixCameraCenterToItemsBarycenter()
@@ -485,6 +508,7 @@ void G3DCameraController::fixCameraCenterToItemsBarycenter()
                                            min[1]+((max[1]-min[1])/2.0),
                                            min[2]+((max[2]-min[2])/2.0)));
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
@@ -499,6 +523,7 @@ void G3DCameraController::fixCameraCenterToSelectedItemsBarycenter()
                                            min[2]+((max[2]-min[2])/2.0)));
 
     redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::fitCameraToVisibleItems()
@@ -567,7 +592,29 @@ void G3DCameraController::fitToSpecifiedBox(const Eigen::Vector3d &bot, const Ei
 
         m_camManipulator->setCenter(bb.center());
         m_camManipulator->setDistance(dist);
+
         redrawTheView();
+        emitCoordinatesChanged();
+    }
+}
+
+void G3DCameraController::viewDrawBegin()
+{
+    m_cameraInfoBackup.center = m_camManipulator->getCenter();
+    m_cameraInfoBackup.rotation = m_camManipulator->getRotation();
+    m_cameraInfoBackup.distance = m_camManipulator->getDistance();
+}
+
+void G3DCameraController::viewDrawFinished()
+{
+    const osg::Vec3d center = m_camManipulator->getCenter();
+    const osg::Quat rotation = m_camManipulator->getRotation();
+    const double distance = m_camManipulator->getDistance();
+
+    if((center != m_cameraInfoBackup.center)
+            || (rotation != m_cameraInfoBackup.rotation)
+            || (distance != m_cameraInfoBackup.distance)) {
+        emitCoordinatesChanged();
     }
 }
 
@@ -576,4 +623,3 @@ void G3DCameraController::redrawTheView()
     if(m_view != NULL)
         m_view->redraw();
 }
-

@@ -39,6 +39,12 @@ void DM_2DCameraManipulator::zoomModel(const float dy, bool pushForwardIfNeeded)
     updateCameraOrthographic();
 }
 
+void DM_2DCameraManipulator::setDistance(double distance)
+{
+    osgGA::OrbitManipulator::setDistance(distance);
+    updateCameraOrthographic();
+}
+
 double DM_2DCameraManipulator::getDistance() const
 {
     return _distance;
