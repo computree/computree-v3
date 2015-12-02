@@ -29,6 +29,9 @@ void GFavoritesMenuDialog::init()
 {
     ui->treeWidget->clear();
 
+    ui->pushButtonAddSubLevel->setEnabled(false);
+    ui->pushButtonRemoveLevel->setEnabled(false);
+
     CT_MenuLevel *favorites = GUI_MANAGER->getPluginManager()->stepsMenu()->getOrCreateRootLevel(CT_StepsMenu::LO_Favorites);
 
     QList<CT_MenuLevel*> levels = favorites->levels();
@@ -83,8 +86,14 @@ void GFavoritesMenuDialog::updateStepLabel()
 {
     QTreeWidgetItem *selected = ui->treeWidget->currentItem();
 
-    if(m_step != NULL)
-        ui->labelStepToAdd->setText(tr("Ajout de l'étape \"%1\" au niveau \"%2\"").arg(GStepViewDefault::staticGetStepNameFromConfiguration(m_step, m_nameConfig)).arg(selected == NULL ? "?" : selected->text(0)));
+    if(m_step != NULL) {
+        QString stepName = GStepViewDefault::staticGetStepNameFromConfiguration(m_step, m_nameConfig);
+
+        if((selected == NULL) || selected->isHidden())
+            ui->labelStepToAdd->setText(tr("Vous devez créer un niveau pour ajouter l'étape \"%1\"").arg(stepName));
+        else
+            ui->labelStepToAdd->setText(tr("Ajout de l'étape \"%1\" au niveau \"%2\"").arg(stepName).arg(selected->text(0)));
+    }
     else
         ui->labelStepToAdd->setText("");
 }
@@ -164,8 +173,11 @@ void GFavoritesMenuDialog::addRootLevel()
 
         if(!ok)
             QMessageBox::critical(this, tr("Erreur"), tr("Un niveau ayant ce nom existe déjà"));
-        else
-            ui->treeWidget->addTopLevelItem(new QTreeWidgetItem(QStringList() << text << "0"));
+        else {
+            QTreeWidgetItem *child = new QTreeWidgetItem(QStringList() << text << "0");
+            ui->treeWidget->addTopLevelItem(child);
+            ui->treeWidget->setCurrentItem(child);
+        }
     }
 }
 
@@ -190,8 +202,10 @@ void GFavoritesMenuDialog::addSubLevel()
         if(!ok)
             QMessageBox::critical(this, tr("Erreur"), tr("Un niveau ayant ce nom existe déjà"));
         else {
-            selected->addChild(new QTreeWidgetItem(QStringList() << text << "0"));
+            QTreeWidgetItem *child = new QTreeWidgetItem(QStringList() << text << "0");
+            selected->addChild(child);
             ui->treeWidget->expandItem(selected);
+            ui->treeWidget->setCurrentItem(child);
         }
     }
 }
@@ -200,14 +214,48 @@ void GFavoritesMenuDialog::removeLevel()
 {
     QTreeWidgetItem *selected = ui->treeWidget->currentItem();
 
-    if(QMessageBox::question(this, tr("Question"), tr("Voulez vous vraiment supprimer ce niveau ?")) == QMessageBox::Yes)
+    if(QMessageBox::question(this, tr("Question"), tr("Voulez vous vraiment supprimer ce niveau ?")) == QMessageBox::Yes) {
         selected->setHidden(true);
+        on_treeWidget_currentItemChanged(NULL, selected);
+    }
 }
 
 void GFavoritesMenuDialog::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
     Q_UNUSED(previous)
 
-    current->setSelected(true);
+    if((current == NULL) && (ui->treeWidget->topLevelItemCount() > 0)) {
+        for(int i=0; (i<ui->treeWidget->topLevelItemCount()) && (current == NULL); ++i) {
+            current = ui->treeWidget->topLevelItem(i);
+
+            if(current->isHidden())
+                current = NULL;
+        }
+
+        if(current != NULL)
+            ui->treeWidget->setCurrentItem(current);
+    }
+
+    if(current != NULL)
+        current->setSelected(true);
+
+    ui->pushButtonAddSubLevel->setEnabled(current != NULL);
+    ui->pushButtonRemoveLevel->setEnabled(current != NULL);
+
     updateStepLabel();
+}
+
+void GFavoritesMenuDialog::on_pushButtonAddRootLevel_clicked()
+{
+    addRootLevel();
+}
+
+void GFavoritesMenuDialog::on_pushButtonAddSubLevel_clicked()
+{
+    addSubLevel();
+}
+
+void GFavoritesMenuDialog::on_pushButtonRemoveLevel_clicked()
+{
+    removeLevel();
 }

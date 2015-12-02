@@ -73,6 +73,9 @@ private slots:
     void removeLevel();
 
     void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void on_pushButtonAddRootLevel_clicked();
+    void on_pushButtonAddSubLevel_clicked();
+    void on_pushButtonRemoveLevel_clicked();
 };
 
 #endif // GFAVORITESMENUDIALOG_H
