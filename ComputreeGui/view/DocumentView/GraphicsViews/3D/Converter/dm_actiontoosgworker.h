@@ -47,6 +47,9 @@ private:
     DM_PainterToOsgElements             m_painter;
     DM_GeometriesConfiguration          m_geoConfig;
 
+    static osgFX::Effect* staticCreateGlobalEffect(osg::PrimitiveSet::Mode mode, void *context);
+    static osgFX::Effect* staticCreateLocalEffect(osg::PrimitiveSet::Mode mode, void *context);
+
 private slots:
     void cancelEvent();
 };
