@@ -422,6 +422,8 @@ int DM_GuiManager::asyncRemoveAllStep(DM_Context *context)
             return 1;
         }
 
+        delete aop;
+
         return -1;
     }
 

@@ -110,6 +110,13 @@ void GTreeStepContextMenu::reload()
 
     addSeparator();
 
+    action = new MyQAction(selectedStep(), tr("Localiser dans le menu"), this);
+    action->setIcon(QIcon(":/Icones/Icones/maps.png"));
+    connect(action, SIGNAL(triggered()), this, SLOT(locateStepInMenu()));
+    addAction(action);
+
+    addSeparator();
+
     //    action = new MyQAction(selectedStep(), tr("Déplier"), this);
     //    action->setIcon(QIcon(":/Icones/Icones/expand.png"));
     //    connect(action, SIGNAL(triggered()), this, SIGNAL(expand()));
@@ -187,4 +194,10 @@ void GTreeStepContextMenu::loadResultRequired()
     {
         emit loadResultOfSelectedStep(dynamic_cast<CT_AbstractStepSerializable*>(selectedStep()));
     }
+}
+
+void GTreeStepContextMenu::locateStepInMenu()
+{
+    if(selectedStep() != NULL)
+        emit locateSelectedStepInMenu(selectedStep());
 }

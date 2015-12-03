@@ -64,7 +64,6 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     QStringList header;
     header << tr("Nom");
-    header << tr("Progression");
     header << tr("Temps");
     header << tr("Debug");
 
@@ -104,6 +103,7 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
     connect(_contextMenuStep, SIGNAL(expandAll()), this, SLOT(expandAllTypeOfSelected()));
     connect(_contextMenuStep, SIGNAL(collapse()), this, SLOT(collapseSelected()));
     connect(_contextMenuStep, SIGNAL(collapseAll()), this, SLOT(collapseAllTypeOfSelected()));
+    connect(_contextMenuStep, SIGNAL(locateSelectedStepInMenu(CT_VirtualAbstractStep*)), this, SIGNAL(locateStepInMenu(CT_VirtualAbstractStep*)));
 
     connect(_stepManager, SIGNAL(stepAdded(CT_VirtualAbstractStep*)), this, SLOT(stepAdded(CT_VirtualAbstractStep*)), Qt::DirectConnection);
     connect(_stepManager, SIGNAL(stepInserted(int,CT_VirtualAbstractStep*)), this, SLOT(stepInserted(int,CT_VirtualAbstractStep*)), Qt::DirectConnection);
@@ -146,12 +146,6 @@ QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &
     connect(&step, SIGNAL(inProgress(int)), item, SLOT(setIntDataInvisible(int)), Qt::QueuedConnection);
     list.append(item);
 
-    // progression
-    item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepProgress, step.getProgress());
-    item->setEditable(false);
-    connect(&step, SIGNAL(inProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
-    list.append(item);
-
     // temps coul
     item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepElapsedTime, step.getExecuteTime());
     item->setEditable(false);
@@ -184,22 +178,6 @@ QList<QStandardItem *> GStepManager::createItemsForResult(CT_AbstractResult &res
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
     item->setToolTip(QString("%1 (%2)").arg(res.getName()).arg(res.getToolTip()));
     list.append(item);
-
-    // déchargement de la mémoire ou sérialisation
-    item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultProgress, res.getClearFromMemoryProgress());
-    item->setEditable(false);
-    connect(&res, SIGNAL(clearFromMemoryInProgress(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
-    list.append(item);
-
-    // affichage ou non des modèles
-    /*item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultVisibility, QString(""));
-    item->setCheckable(true);
-    item->setEditable(false);
-    connect(&res, SIGNAL(busyStateChanged(bool)), item, SLOT(slotSetDisabled(bool)));
-    item->setEnabled(!res.isBusy());
-    //connect(&res, SIGNAL(busyStateChanged(bool)), item, SLOT(setBoolDataToFalseWhenDataIsTrue(bool)));
-    connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
-    list.append(item);*/
 
     item = new MyQStandardItem(NULL, &res, MyQStandardItem::ResultEmpty, QString(""));
     item->setEditable(false);

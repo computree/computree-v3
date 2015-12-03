@@ -563,6 +563,7 @@ void GMainWindow::initUI()
 
     connect(_stepManagerView->getStepManager(), SIGNAL(stepNeedShowMessage(QString)), _permanentLabelForMessage, SLOT(setText(QString)));
 
+    connect(_stepManagerView, SIGNAL(locateStepInMenu(CT_VirtualAbstractStep*)), m_stepChooserDialog->stepsChooserWidget(), SLOT(searchOriginalStepAndExpandParent(CT_VirtualAbstractStep*)));
     connect(m_stepChooserDialog->stepsChooserWidget(), SIGNAL(displayNameConfigurationChanged(GStepViewDefault::DisplayNameConfigs)), _stepManagerView, SLOT(setStepNameConfiguration(GStepViewDefault::DisplayNameConfigs)));
 
     connect(_docManagerView, SIGNAL(documentToBeClosed(DM_DocumentView*)), this, SLOT(documentToBeClosed(DM_DocumentView*)), Qt::DirectConnection);

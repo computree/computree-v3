@@ -69,6 +69,7 @@ signals:
     void configureSelectedStep(CT_VirtualAbstractStep *selectedStep);
     void deleteSelectedStep(CT_VirtualAbstractStep *selectedStep);
     void loadResultOfSelectedStep(CT_AbstractStepSerializable *selectedStep);
+    void locateSelectedStepInMenu(CT_VirtualAbstractStep *selectedStep);
     void expand();
     void expandAll();
     void collapse();
@@ -85,6 +86,7 @@ private slots:
     void showStepInformations();
     void deleteStepRequired();
     void loadResultRequired();
+    void locateStepInMenu();
 };
 
 #endif // TREESTEPCONTEXTMENU_H

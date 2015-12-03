@@ -273,6 +273,7 @@ signals:
     void removeResult(QStandardItem *parentItem, MyQStandardItem *resItem);
     void removeItem(QStandardItem *item);
     void stepSelected(CT_VirtualAbstractStep *step);
+    void locateStepInMenu(CT_VirtualAbstractStep *step);
 };
 
 #endif // GSTEPMANAGER_H

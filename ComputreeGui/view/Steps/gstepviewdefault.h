@@ -113,7 +113,14 @@ public slots:
      * @param anyName : the stepName per example the extended or the custom or the displable, etc...
      * @return true : if the step was found
      */
-    bool searchStepByNameAndExpandParent(const QString &anyName);
+    bool searchStepByNameAndExpandParent(const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed = true);
+
+    /**
+     * @brief Search the original step from a copy step : displayable or not, extended or custom, etc... and expand the parent to let the user
+     *        show immediately the step
+     * @return true : if the step was found
+     */
+    bool searchOriginalStepAndExpandParent(CT_VirtualAbstractStep *step);
 
 private:
     Ui::GStepViewDefault                                            *ui;
@@ -127,7 +134,7 @@ private:
      * @brief Search a step recursively by it's name : displayable or not, extended or custom, etc... and expand the parent to let the user
      *        show immediately the step
      */
-    bool recursiveSearchStepByNameAndExpandParent(const QModelIndex &index, const QString &anyName);
+    bool recursiveSearchStepByNameAndExpandParent(const QModelIndex &index, const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed);
 
     /**
      * @brief Resize column of tree view in function of the size of the treeview and the maximum size
