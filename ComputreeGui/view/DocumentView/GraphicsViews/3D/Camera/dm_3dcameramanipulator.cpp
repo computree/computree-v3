@@ -62,6 +62,11 @@ void DM_3DCameraManipulator::setDistance(double distance)
     updateCameraOrthographic();
 }
 
+void DM_3DCameraManipulator::setDistanceWithoutUpdate(double distance)
+{
+    osgGA::TrackballManipulator::setDistance(distance);
+}
+
 double DM_3DCameraManipulator::getDistance() const
 {
     return _distance;

@@ -117,6 +117,11 @@ void MyQStandardItem::setBoolDataInvisible(bool data)
     setDataWithoutSignal(data, InvisibleBoolTypeRole);
 }
 
+void MyQStandardItem::setIntDataInvisible(int data)
+{
+    setDataWithoutSignal(data, InvisibleIntTypeRole);
+}
+
 void MyQStandardItem::setColorData(QColor data, Qt::ItemDataRole role)
 {
     setData(data, role);

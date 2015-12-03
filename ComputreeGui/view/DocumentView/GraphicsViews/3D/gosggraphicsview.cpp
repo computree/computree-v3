@@ -200,6 +200,8 @@ GOsgGraphicsView::GOsgGraphicsView(QWidget *parent) : Q_GL_WIDGET( parent ), GGr
     m_view = createView(mainCamera, m_manSwitch.get(), m_scene.get());
     m_view->addEventHandler(m_captureScreenHandler);
 
+    //m_view->addEventHandler(new osgViewer::StatsHandler());
+
     m_hudCamera = createHUDCameraForEnablePaintingOverlayWithQPainter(m_graphicsWindow, 800, 600);
 
     m_compositeViewer = createCompositeViewer(m_view);
@@ -252,11 +254,20 @@ void GOsgGraphicsView::stopSpinning()
     osgGA::OrbitManipulator *manipulator = dynamic_cast<osgGA::OrbitManipulator*>(m_manSwitch->getCurrentMatrixManipulator());
 
     if(manipulator != NULL) {
+
+        DM_OrthographicCameraManipulator *orthoMan = dynamic_cast<DM_OrthographicCameraManipulator*>(manipulator);
+
         osg::Quat rot(manipulator->getRotation());
         osg::Vec3d ctr(manipulator->getCenter());
         double dist(manipulator->getDistance());
+
         manipulator->home(0);
-        manipulator->setDistance(dist);
+
+        if(orthoMan != NULL)
+            orthoMan->setDistanceWithoutUpdate(dist);
+        else
+            manipulator->setDistance(dist);
+
         manipulator->setCenter(ctr);
         manipulator->setRotation(rot); // fairly long winded
     }

@@ -50,10 +50,12 @@ public:
       * Type de colonne que reprsente cette item
       */
     enum ColumnType {
-       StepName,                // Nom de l'étape
-       StepProgress,            // Progression de l'étape
-       StepElapsedTime,         // Temps écoulé de l'étape
-       StepDebug,               // Debug pour l'étape
+       Text,
+       BeginIndexForStep,
+       StepName = BeginIndexForStep,// Nom de l'étape
+       StepProgress,                // Progression de l'étape
+       StepElapsedTime,             // Temps écoulé de l'étape
+       StepDebug,                   // Debug pour l'étape
        BeginIndexForResult,
        ResultVisibility = BeginIndexForResult,        // Visibilité du résultat
        ResultName,              // Nom du résultat
@@ -63,7 +65,8 @@ public:
 
     enum MyItemDataRole {
         ColumnTypeRole = Qt::UserRole + 1,
-        InvisibleBoolTypeRole = ColumnTypeRole + 1
+        InvisibleBoolTypeRole = ColumnTypeRole + 1,
+        InvisibleIntTypeRole = InvisibleBoolTypeRole + 1
     };
 
     MyQStandardItem(CT_VirtualAbstractStep *step,
@@ -104,6 +107,7 @@ public slots:
     void setFloatData(float data, Qt::ItemDataRole role = Qt::DisplayRole);
     void setBoolData(bool data, Qt::ItemDataRole role = Qt::CheckStateRole);
     void setBoolDataInvisible(bool data);
+    void setIntDataInvisible(int data);
     void setColorData(QColor data, Qt::ItemDataRole role = Qt::TextColorRole);
     void slotSetEnabled(bool enable);
     void slotSetDisabled(bool disable);

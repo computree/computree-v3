@@ -10,6 +10,8 @@ class DM_3DCameraManipulator : public osgGA::TrackballManipulator, public DM_Ort
 public:
     DM_3DCameraManipulator(CameraInterface *cameraController, osg::Camera *camera);
 
+    void setDistanceWithoutUpdate(double distance);
+
 protected:
     virtual ~DM_3DCameraManipulator() {}
 
@@ -19,6 +21,7 @@ protected:
     virtual void zoomModel(const float dy, bool pushForwardIfNeeded);
 
     void setDistance( double distance );
+
     double getDistance() const;
 
 private:

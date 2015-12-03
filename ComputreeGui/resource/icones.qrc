@@ -68,5 +68,7 @@
         <file>Icones/screenshot.png</file>
         <file>Icones/favorite.png</file>
         <file>Icones/download.png</file>
+        <file>Icones/valid.png</file>
+        <file>Icones/in_progress.png</file>
     </qresource>
 </RCC>

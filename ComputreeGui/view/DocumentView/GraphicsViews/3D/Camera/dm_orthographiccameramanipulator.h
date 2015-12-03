@@ -19,6 +19,11 @@ public:
      */
     void updateCameraOrthographic();
 
+    /**
+     * @brief Modify the distance without update the camera projection
+     */
+    virtual void setDistanceWithoutUpdate(double distance) = 0;
+
 private:
     osg::ref_ptr<osg::Camera>   m_camera;
 

@@ -45,6 +45,11 @@ void DM_2DCameraManipulator::setDistance(double distance)
     updateCameraOrthographic();
 }
 
+void DM_2DCameraManipulator::setDistanceWithoutUpdate(double distance)
+{
+    osgGA::OrbitManipulator::setDistance(distance);
+}
+
 double DM_2DCameraManipulator::getDistance() const
 {
     return _distance;

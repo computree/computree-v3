@@ -60,16 +60,17 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     m_treeView.setModel(m_proxy);
     m_treeView.setItemDelegate(_delegate);
+    m_treeView.setIndentation(12);
 
     QStringList header;
     header << tr("Nom");
     header << tr("Progression");
-    header << tr("Temps / Afficher");
+    header << tr("Temps");
     header << tr("Debug");
 
     _model.setHorizontalHeaderLabels(header);
 
-    m_rootItem = new MyQStandardItem(NULL, NULL, MyQStandardItem::StepName, tr("Flux d'étapes"));
+    m_rootItem = new MyQStandardItem(NULL, NULL, MyQStandardItem::Text, tr("Flux d'étapes"));
     m_rootItem->setEditable(false);
     _model.invisibleRootItem()->appendRow(m_rootItem);
 
@@ -82,7 +83,7 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
     m_treeView.setStyleSheet(QString("QTreeView::item:selected{"
                                      "color: rgb(255, 255, 255);"
                                      "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #F3C870, stop: 1 #BDA757);"
-                                 "}"));
+                                     "}"));
 
     delete layout();
     setLayout(new QVBoxLayout());
@@ -142,6 +143,7 @@ QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &
     item->setToolTip(step.getToolTip());
     item->setEditable(false);
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
+    connect(&step, SIGNAL(inProgress(int)), item, SLOT(setIntDataInvisible(int)), Qt::QueuedConnection);
     list.append(item);
 
     // progression

@@ -9,6 +9,8 @@ class DM_2DCameraManipulator : public osgGA::OrbitManipulator, public DM_Orthogr
 public:
     DM_2DCameraManipulator(osg::Camera *camera);
 
+    void setDistanceWithoutUpdate(double distance);
+
 protected:
     virtual ~DM_2DCameraManipulator() {}
 

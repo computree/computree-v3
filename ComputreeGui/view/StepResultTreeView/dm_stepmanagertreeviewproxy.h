@@ -2,6 +2,8 @@
 #define DM_STEPMANAGERTREEVIEWPROXY_H
 
 #include <QSortFilterProxyModel>
+#include <QPropertyAnimation>
+
 #include "view/Steps/gstepviewdefault.h"
 
 /**
@@ -10,7 +12,11 @@
  */
 class DM_StepManagerTreeViewProxy : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
 public:
+    Q_PROPERTY(int ProgressValue READ ProgressValue WRITE setProgressValue)
+
     DM_StepManagerTreeViewProxy(QObject *parent = 0);
 
     /**
@@ -18,8 +24,15 @@ public:
      */
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    int ProgressValue() const;
+
+public slots:
+    void setProgressValue(int p);
+
 private:
     GStepViewDefault::DisplayNameConfigs    m_stepNameConfig;
+    QPropertyAnimation                      m_progressAnimation;
+    int                                     m_progressValue;
 
 public slots:
     void setStepNameConfig(GStepViewDefault::DisplayNameConfigs config);
