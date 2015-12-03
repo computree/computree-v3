@@ -77,7 +77,7 @@ PB_StepExportItemList::~PB_StepExportItemList()
 // Step description (tooltip of contextual menu)
 QString PB_StepExportItemList::getStepDescription() const
 {
-    return tr("Export dans une boucle (nom de fichier adaptatif)");
+    return tr("Export avec nom de fichier adaptatif");
 }
 
 // Step detailled description
@@ -175,10 +175,8 @@ void PB_StepExportItemList::compute()
                 path.append(_dir.first());
                 path.append("/");
             }
-            if (QFileInfo(attributeValue).exists())
-            {
-                attributeValue = QFileInfo(attributeValue).baseName();
-            }
+
+            attributeValue = QFileInfo(attributeValue).baseName();
 
             path.append(attributeValue);
             path.append(_suffixFileName);
