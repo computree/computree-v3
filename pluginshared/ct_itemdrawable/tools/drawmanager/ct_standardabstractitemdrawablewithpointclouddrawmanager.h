@@ -15,12 +15,10 @@ protected:
 
     const static QString INDEX_CONFIG_POINTS_VISIBLE;
     const static QString INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE;
-    const static QString INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE;
     const static QString INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE;
 
     static QString staticInitConfigPointsVisible();
     static QString staticInitConfigBoundingShapeVisible();
-    static QString staticInitConfigBoundingShapePointSize();
     static QString staticInitConfigBoundingShapeCenterPointVisible();
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;

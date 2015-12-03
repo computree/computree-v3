@@ -298,78 +298,62 @@ void GAboutPluginsDialog::on_pb_redmineExport_clicked()
     {
         QTextStream stream(&exportFile);
 
-        stream << tr("StepName\tStepKey\tStepShortDescription\tStepDetailedDescription\tType\tPlugin\n");
+        stream << tr("StepName\tStepKey\tStepShortDescription\tMenu\tType\tPlugin\n");
 
-        for(int i = 0 ; i < _pManager->countPluginLoaded() ; ++i)
-        {
-            CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
-            QString pluginName = _pManager->getPluginName(i);
+        CT_StepsMenu *menu = _pManager->stepsMenu();
 
-            // Etape de chargement de fichiers
-            QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
-            QListIterator<CT_StepLoadFileSeparator*> it0(l0);
+        QList<CT_MenuLevel*> levels = menu->levels();
+        QListIterator<CT_MenuLevel*> it(levels);
 
-            while(it0.hasNext())
-            {
-                QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
-
-                while(!l00.isEmpty())
-                {
-                    CT_VirtualAbstractStep* step = l00.takeFirst();
-
-                    stream << step->getStepName() << "\t";
-                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
-                    stream << step->getStepDescription() << "\t";
-                    stream << step->getStepDetailledDescription() << "\t";
-                    stream << "LoadStep" << "\t";
-                    stream << pluginName << "\n";
-                }
-            }
-
-
-            // Etape pouvant être ajoutées en premier
-            QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
-            QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
-
-            while(it1.hasNext())
-            {
-                QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
-                while(!l11.isEmpty())
-                {
-                    CT_VirtualAbstractStep* step = l11.takeFirst();
-
-                    stream << step->getStepName() << "\t";
-                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
-                    stream << step->getStepDescription() << "\t";
-                    stream << step->getStepDetailledDescription() << "\t";
-                    stream << "CanBeAddedFirst" << "\t";
-                    stream << pluginName << "\n";
-                }
-            }
-
-
-            // Etape générique
-            QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
-            QListIterator<CT_StepSeparator*> it2(l2);
-
-            while(it2.hasNext())
-            {
-                QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
-                while(!l22.isEmpty())
-                {
-                    CT_VirtualAbstractStep* step = l22.takeFirst();
-
-                    stream << step->getStepName() << "\t";
-                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
-                    stream << step->getStepDescription() << "\t";
-                    stream << step->getStepDetailledDescription() << "\t";
-                    stream << "GenericStep" << "\t";
-                    stream << pluginName << "\n";}
-            }
+        while(it.hasNext()) {
+            CT_MenuLevel *level = it.next();
+            exportStepsForLevel(stream, level, level->displayableName());
         }
-        exportFile.close();
+
+    }
+    exportFile.close();
+}
+
+void GAboutPluginsDialog::exportStepsForLevel(QTextStream &stream, const CT_MenuLevel *level, QString levelName)
+{
+    // sub levels
+    QList<CT_MenuLevel*> levels = level->levels();
+    QListIterator<CT_MenuLevel*> it(levels);
+
+    while(it.hasNext()) {
+
+        CT_MenuLevel* subLevel = it.next();
+        QString name = levelName;
+        name.append("/");
+        name.append(subLevel->displayableName());
+        exportStepsForLevel(stream, subLevel, name);
+    }
+
+    // steps
+    QList<CT_VirtualAbstractStep*> steps = level->steps();
+    QListIterator<CT_VirtualAbstractStep*> itS(steps);
+
+    while(itS.hasNext()) {
+        CT_VirtualAbstractStep *step = itS.next();
+
+        QString type = "";
+        if(dynamic_cast<CT_AbstractStepLoadFile*>(step) != NULL) {
+            type = "LoadFile";
+        } else if(dynamic_cast<CT_AbstractStepCanBeAddedFirst*>(step) != NULL) {
+            type = "CanBeAddedFirst";
+        } else {
+            type = "Generic";
+        }
+
+        stream << step->getStepName() << "\t";
+        stream << step->getPlugin()->getKeyForStep(*step) << "\t";
+        stream << step->getStepDescription() << "\t";
+        stream << levelName << "\t";
+        stream << type << "\t";
+        stream << _pManager->getPluginName(_pManager->getPluginIndex(step->getPlugin())) << "\n";
     }
 }
+
 
 
 

@@ -6,7 +6,6 @@
 
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_POINTS_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible();
-const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapePointSize();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
 CT_StandardAbstractItemDrawableWithPointCloudDrawManager::CT_StandardAbstractItemDrawableWithPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_AbstractItemDrawableWithPointCloud" : drawConfigurationName)
@@ -32,7 +31,6 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE).toBool() && item.hasBoundingBox())
     {
-        painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
         painter.drawPoint(item.minX(), item.minY(), item.minZ());
         painter.drawPoint(item.maxX(), item.minY(), item.minZ());
         painter.drawPoint(item.minX(), item.maxY(), item.minZ());
@@ -41,7 +39,6 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
         painter.drawPoint(item.minX(), item.maxY(), item.maxZ());
         painter.drawPoint(item.maxX(), item.minY(), item.maxZ());
         painter.drawPoint(item.maxX(), item.maxY(), item.maxZ());
-        painter.restoreDefaultPointSize();
 
         // B
         painter.drawLine(item.minX(), item.minY(), item.minZ(), item.maxX(), item.minY(), item.minZ());
@@ -70,13 +67,9 @@ void CT_StandardAbstractItemDrawableWithPointCloudDrawManager::draw(GraphicsView
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE).toBool() && item.hasBoundingBox())
     {
-        painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE).toDouble());
-
         painter.drawPoint(item.getCenterX(),
                           item.getCenterY(),
                           item.getCenterZ());
-
-        painter.restoreDefaultPointSize();
     }
 }
 
@@ -88,7 +81,6 @@ CT_ItemDrawableConfiguration CT_StandardAbstractItemDrawableWithPointCloudDrawMa
     item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible(),"Points", CT_ItemDrawableConfiguration::Bool, true);
     item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible(),"Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
     item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible(), "Centre de la Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapePointSize(), "Taille des points (Bounding Shape)", CT_ItemDrawableConfiguration::Double, 10.0);
 
     return item;
 }
@@ -103,11 +95,6 @@ QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConf
 QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible()
 {
     return "WPC_BSV";
-}
-
-QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapePointSize()
-{
-    return "WPC_BSPS";
 }
 
 QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible()

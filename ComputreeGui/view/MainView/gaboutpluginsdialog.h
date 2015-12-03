@@ -51,6 +51,8 @@ private:
     void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const;
     void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_AbstractModel *rModel) const;
 
+    void exportStepsForLevel(QTextStream &stream, const CT_MenuLevel *level, QString levelName);
+
 private slots:
 
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
