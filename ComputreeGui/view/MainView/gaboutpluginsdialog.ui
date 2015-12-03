@@ -50,7 +50,7 @@
        <item>
         <widget class="QPushButton" name="pb_redmineExport">
          <property name="text">
-          <string>Export redmine</string>
+          <string>Exporter liste des étapes</string>
          </property>
         </widget>
        </item>

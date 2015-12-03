@@ -34,7 +34,6 @@ SOURCES += \
     view/ActionsView/gactionsmanager.cpp \
     view/DocumentView/GraphicsViews/PointsAttributes/gminmaxattributesscalarconfiguration.cpp \
     view/MainView/glogwidget.cpp \
-    view/MainView/gredmineparametersdialog.cpp \
     view/Tools/gcomboboxwithemptytitlewidget.cpp \
     view/DocumentView/ItemModelViews/gtreeview.cpp \
     view/DocumentView/ItemModelViews/gitemmodelview.cpp \
@@ -107,7 +106,6 @@ HEADERS += \
     view/DocumentView/GraphicsViews/PointsAttributes/gminmaxattributesscalarconfiguration.h \
     view/MainView/gaboutstepdialog.h \
     view/MainView/glogwidget.h \
-    view/MainView/gredmineparametersdialog.h \
     view/Tools/gcomboboxwithemptytitlewidget.h \
     view/DocumentView/ItemModelViews/gtreeview.h \
     view/DocumentView/ItemModelViews/gitemmodelview.h \
@@ -166,7 +164,6 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/GraphicsViews/PointsAttributes/gminmaxattributesscalarconfiguration.ui \
     view/MainView/gaboutstepdialog.ui \
     view/MainView/glogwidget.ui \
-    view/MainView/gredmineparametersdialog.ui \
     view/Tools/gcomboboxwithemptytitlewidget.ui \
     $$PWD/MainView/gineedhelpdialog.ui \
     $$PWD/Steps/gstepviewdefault.ui \

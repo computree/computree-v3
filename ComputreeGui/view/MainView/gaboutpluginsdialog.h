@@ -50,8 +50,6 @@ private:
     void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const;
     void recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_InAbstractResultModel *rModel) const;
     void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_AbstractModel *rModel) const;
-    void exportStepData(QTextStream &stream, CT_VirtualAbstractStep *step);
-    void convertHTMLtoTextile(QString &input);
 
 private slots:
 

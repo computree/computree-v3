@@ -2,7 +2,6 @@
 #include "ui_gaboutpluginsdialog.h"
 
 #include "view/MainView/gaboutstepdialog.h"
-#include "view/MainView/gredmineparametersdialog.h"
 
 #include "cdm_tools.h"
 #include "dm_guimanager.h"
@@ -32,7 +31,7 @@ GAboutPluginsDialog::GAboutPluginsDialog(const CDM_PluginManager &pManager,
 {
     ui->setupUi(this);
 
-    ui->pb_redmineExport->setVisible(false);
+    //ui->pb_redmineExport->setVisible(false);
 
     _pManager = (CDM_PluginManager*)&pManager;
     _mustReloadStep = false;
@@ -292,166 +291,87 @@ void GAboutPluginsDialog::on_pushButtonRecharger_clicked()
 
 void GAboutPluginsDialog::on_pb_redmineExport_clicked()
 {
-    GRedmineParametersDialog dialog;
-    dialog.exec();
+    QString filename = QFileDialog::getSaveFileName(this, tr("Choisir le fichier d'export"), "", tr("Fichier texte (*.txt)"));
 
-    QString s = dialog.getDirectory();
-
-    QString languageId = "Fr";
-
-    QString quote = "\"";
-    QString extension = "bat";
-    if (dialog.getSystemType() == GRedmineParametersDialog::Linux)
+    QFile exportFile(filename);
+    if (exportFile.open(QFile::WriteOnly | QFile::Text))
     {
-        quote = "'";
-        extension = "sh";
-    }
+        QTextStream stream(&exportFile);
 
-    if (QDir(s).exists())
-    {
-        int n = _pManager->countPluginLoaded();
+        stream << tr("StepName\tStepKey\tStepShortDescription\tStepDetailedDescription\tType\tPlugin\n");
 
-        QFile scriptFile(QString("%1/uploads_plugins_wikis.%2").arg(s).arg(extension));
-
-        if (scriptFile.open(QFile::WriteOnly))
+        for(int i = 0 ; i < _pManager->countPluginLoaded() ; ++i)
         {
-            QTextStream scriptStream(&scriptFile);
+            CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
+            QString pluginName = _pManager->getPluginName(i);
 
-            for(int i = 0 ; i < n ; ++i)
+            // Etape de chargement de fichiers
+            QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
+            QListIterator<CT_StepLoadFileSeparator*> it0(l0);
+
+            while(it0.hasNext())
             {
-                CT_AbstractStepPlugin *sPManager = _pManager->getPlugin(i);
+                QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
 
-                QString xmlFileName = QString("%1_Steps_%2.xml").arg(languageId).arg(_pManager->getPluginName(i));
-                QString xmlFilePath = QString("%1/%2").arg(s).arg(xmlFileName);
-
-                scriptStream << "curl -u " << quote << dialog.getId() << ":" << dialog.getPassword() << quote;
-                scriptStream << " -v -H \"Content-Type: application/xml\" -X PUT --data \"@" << xmlFilePath << "\" ";
-                scriptStream << sPManager->getPluginURL() << "/wiki/" << xmlFileName;
-                if (dialog.isProxyActivated())
+                while(!l00.isEmpty())
                 {
-                    scriptStream << " --proxy " << dialog.getProxyId() << ":" << dialog.getProxyPassword();
-                    scriptStream << "@" << dialog.getProxyAdress();
-                }
-                scriptStream << "\n";
+                    CT_VirtualAbstractStep* step = l00.takeFirst();
 
-                QFile file(xmlFilePath);
-                if(file.open(QFile::WriteOnly))
-                {
-                    QTextStream stream(&file);
-                    stream.setCodec("UTF-8");
-
-                    stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                    stream << "<wiki_page>\n";
-                    stream << "<text>\n";
-
-                    stream << tr("h1. Etapes du plugin ") << _pManager->getPluginName(i) << EOL << EOL;
-                    stream << "_Sommaire_" << EOL << EOL;
-                    stream << "{{toc}}" << EOL << EOL;
-
-                    // Etape de chargement de fichiers
-                    QList<CT_StepLoadFileSeparator*> l0 = sPManager->getOpenFileStepAvailable();
-                    QListIterator<CT_StepLoadFileSeparator*> it0(l0);
-
-                    if(it0.hasNext())
-                    {
-                        stream << tr("h1. Etapes de chargement") << EOL << EOL;
-
-                        while(it0.hasNext())
-                        {
-                            QList<CT_AbstractStepLoadFile*> l00 = it0.next()->getStepList();
-
-                            while(!l00.isEmpty())
-                            {
-                                CT_VirtualAbstractStep* step = l00.takeFirst();
-                                exportStepData(stream, step);
-                            }
-                        }
-                    }
-
-
-                    // Etape pouvant être ajoutées en premier
-                    QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
-                    QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
-
-                    if(it1.hasNext())
-                    {
-                        stream << EOL;
-                        stream << tr("h1. Etapes pouvant être ajoutées en premier") << EOL << EOL;
-
-                        while(it1.hasNext())
-                        {
-                            QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
-
-                            while(!l11.isEmpty())
-                            {
-                                CT_VirtualAbstractStep* step = l11.takeFirst();
-                                exportStepData(stream, step);
-                            }
-                        }
-                    }
-
-
-                    // Etape générique
-                    QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
-                    QListIterator<CT_StepSeparator*> it2(l2);
-
-                    if(it2.hasNext())
-                    {
-                        stream << EOL;
-                        stream << tr("h1. Etapes standard") << EOL << EOL;
-
-                        while(it2.hasNext())
-                        {
-                            QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
-
-                            while(!l22.isEmpty())
-                            {
-                                CT_VirtualAbstractStep* step = l22.takeFirst();
-                                exportStepData(stream, step);
-                            }
-                        }
-                    }
-
-                    stream << "</text>\n";
-                    stream << "</wiki_page>";
-
-                    file.close();
+                    stream << step->getStepName() << "\t";
+                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
+                    stream << step->getStepDescription() << "\t";
+                    stream << step->getStepDetailledDescription() << "\t";
+                    stream << "LoadStep" << "\t";
+                    stream << pluginName << "\n";
                 }
             }
-            scriptFile.close();
+
+
+            // Etape pouvant être ajoutées en premier
+            QList<CT_StepCanBeAddedFirstSeparator*> l1 = sPManager->getCanBeAddedFirstStepAvailable();
+            QListIterator<CT_StepCanBeAddedFirstSeparator*> it1(l1);
+
+            while(it1.hasNext())
+            {
+                QList<CT_AbstractStepCanBeAddedFirst*> l11 = it1.next()->getStepList();
+                while(!l11.isEmpty())
+                {
+                    CT_VirtualAbstractStep* step = l11.takeFirst();
+
+                    stream << step->getStepName() << "\t";
+                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
+                    stream << step->getStepDescription() << "\t";
+                    stream << step->getStepDetailledDescription() << "\t";
+                    stream << "CanBeAddedFirst" << "\t";
+                    stream << pluginName << "\n";
+                }
+            }
+
+
+            // Etape générique
+            QList<CT_StepSeparator*> l2 = sPManager->getGenericsStepAvailable();
+            QListIterator<CT_StepSeparator*> it2(l2);
+
+            while(it2.hasNext())
+            {
+                QList<CT_VirtualAbstractStep*> l22 = it2.next()->getStepList();
+                while(!l22.isEmpty())
+                {
+                    CT_VirtualAbstractStep* step = l22.takeFirst();
+
+                    stream << step->getStepName() << "\t";
+                    stream << step->getPlugin()->getKeyForStep(*step) << "\t";
+                    stream << step->getStepDescription() << "\t";
+                    stream << step->getStepDetailledDescription() << "\t";
+                    stream << "GenericStep" << "\t";
+                    stream << pluginName << "\n";}
+            }
         }
+        exportFile.close();
     }
 }
 
-void GAboutPluginsDialog::exportStepData(QTextStream &stream, CT_VirtualAbstractStep *step)
-{
-    QString htmlDescr = step->getStepDetailledDescription();
-    convertHTMLtoTextile(htmlDescr);
 
-    stream << "h2. " << step->getPlugin()->getKeyForStep(*step) << EOL << EOL;
-    stream << tr("*_Description courte_* : *") << step->getStepDescription() << "*" << EOL << EOL;
-    stream << tr("*_Description détaillée_* : ");
-    stream << htmlDescr;
-    stream << EOL << EOL;
-
-}
-
-void GAboutPluginsDialog::convertHTMLtoTextile(QString &input)
-{
-    input.replace("<br>", EOL);
-    input.replace("<ul>", EOL);
-    input.replace("</ul>", EOL);
-    input.replace("<li>", QString("%1* ").arg(EOL));
-    input.replace("</li>", EOL);
-    input.replace("<ol>", QString("%1# ").arg(EOL));
-    input.replace("</ol>", EOL);
-    input.replace("<b>", "*");
-    input.replace("</b>", "*");
-    input.replace("<i>", "_");
-    input.replace("</i>", "_");
-    input.replace("<em>", "_");
-    input.replace("</em>", "_");
-}
 
 void GAboutPluginsDialog::on_pb_stepInfo_clicked()
 {
