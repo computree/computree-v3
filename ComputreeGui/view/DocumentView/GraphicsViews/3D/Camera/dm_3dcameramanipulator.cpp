@@ -59,7 +59,9 @@ void DM_3DCameraManipulator::zoomModel( const float dy, bool pushForwardIfNeeded
 void DM_3DCameraManipulator::setDistance(double distance)
 {
     osgGA::TrackballManipulator::setDistance(distance);
-    updateCameraOrthographic();
+
+    if(m_camController->type() == CameraInterface::ORTHOGRAPHIC)
+        updateCameraOrthographic();
 }
 
 void DM_3DCameraManipulator::setDistanceWithoutUpdate(double distance)
