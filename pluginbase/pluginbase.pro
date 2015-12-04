@@ -45,7 +45,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_steploadasciifile.h \
     step/pb_steploadasciifile02.h \
     step/pb_steploadgrid3dfile.h \
-    step/pb_steploadmultixybfiles.h \
     step/pb_steploadobjfile.h \
     step/pb_steploadpbmfile.h \
     step/pb_steploadpgmfile.h \
@@ -94,7 +93,6 @@ SOURCES += \
     step/pb_steploadasciifile.cpp \
     step/pb_steploadasciifile02.cpp \
     step/pb_steploadgrid3dfile.cpp \
-    step/pb_steploadmultixybfiles.cpp \
     step/pb_steploadobjfile.cpp \
     step/pb_steploadpbmfile.cpp \
     step/pb_steploadpgmfile.cpp \

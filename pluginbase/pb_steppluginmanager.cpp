@@ -37,7 +37,6 @@
 #include "step/pb_steploadasciifile.h"
 #include "step/pb_steploadasciifile02.h"
 #include "step/pb_stepgenericexporter.h"
-#include "step/pb_steploadmultixybfiles.h"
 #include "step/pb_stepuseritemselection.h"
 #include "step/pb_steploadobjfile.h"
 #include "step/pb_steploadgrid3dfile.h"
@@ -145,8 +144,6 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewLoadStep<PB_StepLoadGrid3dFile>("");
     addNewLoadStep<PB_StepLoadPbmFile>("");
     addNewLoadStep<PB_StepLoadPgmFile>("");
-    addNewLoadStep<PB_StepLoadMultiXYBFiles>("");
-
 
     addNewExportStep<PB_StepExportItemList>("");
 

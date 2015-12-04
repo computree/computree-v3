@@ -51,19 +51,20 @@ QString PB_StepGenericLoadFile::getStepName() const
 
 QString PB_StepGenericLoadFile::getStepDisplayableName() const
 {
-    const QList<FileFormat> &list = m_reader->readableFormats();
-
-    if(list.isEmpty())
-        return CT_AbstractStepLoadFile::getStepDisplayableName();
-
-    return list.first().description();
+    return m_reader->GetReaderName();
 }
 
 QString PB_StepGenericLoadFile::getStepDescription() const
 {
-    QString ext = createAcceptedExtensionString(" ");
+    const QList<FileFormat>& formats = m_reader->readableFormats();
 
-    return tr("Charge un fichier du type") + ext;
+    if (formats.size() > 0)
+    {
+        return formats.first().description();
+    }
+
+    return m_reader->GetReaderName();
+
 }
 
 QString PB_StepGenericLoadFile::getStepDetailledDescription() const
