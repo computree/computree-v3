@@ -302,6 +302,8 @@ void GMainWindow::initUI()
     m_stepChooserDialog->setStepManager(_stepManagerView);
     m_stepChooserDialog->init();
 
+    connect(m_stepChooserDialog, SIGNAL(replaceToDefault()), this, SLOT(replaceStepChooserDialogToDefaults()));
+
     QAction *actionOpenFile = new QAction(tr("Ouvrir un fichier (CTRL+O)"), this);
     actionOpenFile->setIcon(QIcon(":/Icones/Icones/folder_add_32.png"));
     actionOpenFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
@@ -322,27 +324,31 @@ void GMainWindow::initUI()
     actionForwardOneStepDebug->setIcon(QIcon(":/Icones/Icones/play_debug.png"));
     actionForwardOneStepDebug->setShortcut(Qt::Key_F5);
 
-    QAction *actionForwardFastStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer de N pas (F10)"), this);
+    QAction *actionForwardFastStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer de N pas (F6)"), this);
     actionForwardFastStepDebug->setIcon(QIcon(":/Icones/Icones/play_debug_fast.png"));
-    actionForwardFastStepDebug->setShortcut(Qt::Key_F10);
+    actionForwardFastStepDebug->setShortcut(Qt::Key_F6);
 
     QAction *actionForwardOneStepAutoDebug = new QAction(tr("Avancer de N pas automatiquement jusqu'à la fin"), this);
     actionForwardOneStepAutoDebug->setIcon(QIcon(":/Icones/Icones/play_movie.png"));
 
-    QAction *actionNewDocument = new QAction(tr("Ajouter un nouveau document"), this);
+    QAction *actionNewDocument = new QAction(tr("Ajouter un nouveau document 3D (F7)"), this);
     actionNewDocument->setIcon(QIcon(QPixmap(":/Icones/Icones/new-document.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+    actionNewDocument->setShortcut(Qt::Key_F7);
 
-    QAction *actionNew2DDocument = new QAction(tr("Ajouter un nouveau document 2D"), this);
+    QAction *actionNew2DDocument = new QAction(tr("Ajouter un nouveau document 2D (F8)"), this);
     actionNew2DDocument->setIcon(QIcon(":/Icones/Icones/new-document-2d.png"));
+    actionNew2DDocument->setShortcut(Qt::Key_F8);
 
-    QAction *actionNewItemModelDocument = new QAction(tr("Ajouter un nouveau document de type tableur"), this);
+    QAction *actionNewItemModelDocument = new QAction(tr("Ajouter un nouveau document de type tableur (F9)"), this);
     actionNewItemModelDocument->setIcon(QIcon(":/Icones/Icones/new-document-treeview.png"));
+    actionNewItemModelDocument->setShortcut(Qt::Key_F9);
 
     QAction *actionStepManagerConfiguration = new QAction(tr("Configurer"), this);
     actionStepManagerConfiguration->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
 
-    QAction *actionCleanAllDocuments = new QAction(tr("Nettoyer toutes les vues"), this);
+    QAction *actionCleanAllDocuments = new QAction(tr("Nettoyer toutes les vues (F10)"), this);
     actionCleanAllDocuments->setIcon(QIcon(":/Icones/Icones/broom.png"));
+    actionCleanAllDocuments->setShortcut(Qt::Key_F10);
 
     QAction *actionINeedHelp = new QAction(tr("J'ai besoin d'aide !!! (F1)"), this);
     actionINeedHelp->setIcon(QIcon(":/Icones/Icones/help.png"));
@@ -786,11 +792,10 @@ void GMainWindow::loadConfiguration()
 
         CONFIG_FILE->beginGroup("StepsChooser");
 
-        QPoint defaultPos = ui->dockWidgetStepManager->pos();
-        defaultPos.setY(defaultPos.y() + 20);
-        defaultPos.setX(defaultPos.x() + ui->dockWidgetStepManager->width());
-        QRect rec = QApplication::desktop()->screenGeometry();
-        QSize defaultSize(m_stepChooserDialog->width(), rec.height()-defaultPos.y()-100);
+        QPoint defaultPos;
+        QSize defaultSize;
+        computeStepChooserDialogDefaults(defaultPos, defaultSize);
+
         bool defaultVisible = true;
 
         QSize size = CONFIG_FILE->value("Size", defaultSize).toSize();
@@ -819,6 +824,26 @@ void GMainWindow::loadConfiguration()
 
         CONFIG_FILE->endGroup(); // StepsChooser
     CONFIG_FILE->endGroup(); // MainWindow
+}
+
+void GMainWindow::computeStepChooserDialogDefaults(QPoint &defaultPos, QSize &defaultSize)
+{
+    defaultPos = ui->dockWidgetStepManager->pos();
+    defaultPos.setY(defaultPos.y() + 90);
+    defaultPos.setX(defaultPos.x() + ui->dockWidgetStepManager->width() + 10);
+    QRect rec = QApplication::desktop()->screenGeometry();
+    defaultSize.setWidth(m_stepChooserDialog->width());
+    defaultSize.setHeight(rec.height()-defaultPos.y()-100);
+}
+
+void GMainWindow::replaceStepChooserDialogToDefaults()
+{
+    QPoint defaultPos;
+    QSize defaultSize;
+    computeStepChooserDialogDefaults(defaultPos, defaultSize);
+
+    m_stepChooserDialog->resize(defaultSize);
+    m_stepChooserDialog->move(defaultPos);
 }
 
 void GMainWindow::writeConfiguration()

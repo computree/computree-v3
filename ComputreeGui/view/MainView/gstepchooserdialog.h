@@ -60,6 +60,7 @@ public slots:
 signals:
     void visibilityChanged(bool visible);
     void maximizedChanged(bool maximized);
+    void replaceToDefault();
 };
 
 #endif // GSTEPCHOOSERDIALOG_H

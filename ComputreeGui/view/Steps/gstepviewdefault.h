@@ -207,6 +207,8 @@ private slots:
      */
     void selectionChanged(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 
+    void on_pb_replaceDefualt_clicked();
+
 signals:
     /**
      * @brief Emitted when a level is selected
@@ -227,6 +229,11 @@ signals:
      * @brief Emmited when the configuration of the display of name for step has changed
      */
     void displayNameConfigurationChanged(GStepViewDefault::DisplayNameConfigs c);
+
+    /**
+     * @brief Emitted when PushButton Replace to Default positions clicked
+     */
+    void replaceToDefault();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(GStepViewDefault::DisplayNameConfigs)

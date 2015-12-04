@@ -514,3 +514,8 @@ void GStepViewDefault::selectionChanged(const QItemSelection &newSelection, cons
 
     emit stepSelected((CT_VirtualAbstractStep*)NULL);
 }
+
+void GStepViewDefault::on_pb_replaceDefualt_clicked()
+{
+    emit replaceToDefault();
+}

@@ -52,6 +52,7 @@ void GStepChooserDialog::init()
     connect(ui->stepChooserWidget, SIGNAL(levelSelected(CT_MenuLevel*,int)), this, SLOT(refreshContextMenuOfLevel(CT_MenuLevel*,int)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepSelected(CT_VirtualAbstractStep*)), this, SLOT(refreshContextMenuOfStep(CT_VirtualAbstractStep*)), Qt::DirectConnection);
     connect(ui->stepChooserWidget, SIGNAL(stepDoubleClicked(CT_VirtualAbstractStep*)), m_stepManager, SLOT(addStepToSelectedStepOrToRootAndConfigure(CT_VirtualAbstractStep*)));
+    connect(ui->stepChooserWidget, SIGNAL(replaceToDefault()), this, SIGNAL(replaceToDefault()));
 
     setWindowFlags(Qt::Dialog
                    | Qt::WindowTitleHint

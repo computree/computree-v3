@@ -130,6 +130,7 @@ private:
     void getFileExtensionAvailableInStepsOfLevelRecursively(CT_MenuLevel *level, QHash<QString, QStringList> &hash) const;
     QString createScriptManagerExtension(QString preString, QString postString) const;
 
+    void computeStepChooserDialogDefaults(QPoint &defaultPos, QSize &defaultSize);
 private slots:
 
     /**
@@ -141,6 +142,7 @@ private slots:
 
     void stepAdded(CT_VirtualAbstractStep *step);
     void stepToBeRemoved(CT_VirtualAbstractStep *step);
+    void replaceStepChooserDialogToDefaults();
 };
 
 #endif // GMAINWINDOW_H
