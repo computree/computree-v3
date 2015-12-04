@@ -72,7 +72,7 @@ void PB_ActionPickItemsInList::init()
 
 void PB_ActionPickItemsInList::redraw()
 {
-    document()->redrawGraphics();
+    setDrawing3DChanged();
 }
 
 void PB_ActionPickItemsInList::selectAll()

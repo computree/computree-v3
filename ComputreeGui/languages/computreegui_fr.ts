@@ -195,7 +195,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/MainView/gaboutpluginsdialog.ui" line="53"/>
         <source>Exporter liste des étapes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gaboutpluginsdialog.ui" line="79"/>
@@ -247,18 +247,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="294"/>
         <source>Choisir le fichier d&apos;export</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="294"/>
         <source>Fichier texte (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gaboutpluginsdialog.cpp" line="301"/>
         <source>StepName	StepKey	StepShortDescription	Menu	Type	Plugin
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -546,49 +546,49 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="27"/>
         <source>Arbre des niveaux :</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="35"/>
         <source>Nom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="40"/>
         <source>Nombre d&apos;étapes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="55"/>
         <source>Ajouter un niveau racine</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="62"/>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="152"/>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="186"/>
         <source>Ajouter un sous-niveau</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="69"/>
         <source>Supprimer le niveau</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.ui" line="103"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="93"/>
         <source>Vous devez créer un niveau pour ajouter l&apos;étape &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="95"/>
         <source>Ajout de l&apos;étape &quot;%1&quot; au niveau &quot;%2&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="150"/>
@@ -599,7 +599,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="153"/>
         <source>Supprimer</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="161"/>
@@ -610,28 +610,28 @@ p, li { white-space: pre-wrap; }
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="175"/>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="203"/>
         <source>Erreur</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="175"/>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="203"/>
         <source>Un niveau ayant ce nom existe déjà</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="186"/>
         <source>Nom du sous-niveau</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="217"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gfavoritesmenudialog.cpp" line="217"/>
         <source>Voulez vous vraiment supprimer ce niveau ?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1701,43 +1701,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="38"/>
         <source>Editer</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="39"/>
         <source>Charger</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="40"/>
         <source>Exporter</source>
-        <translation type="unfinished">Exportateur</translation>
+        <translation>Exportateur</translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="147"/>
         <source>Ouvrir un fichier favoris</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="147"/>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="157"/>
         <source>Fichier favoris (*.%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="157"/>
         <source>Sauvegarder les favoris</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="177"/>
         <source>Erreur</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/MainView/gstepchooserdialog.cpp" line="177"/>
         <source>Impossible d&apos;afficher les informations de cette étape. L&apos;étape n&apos;a pas été trouvée dans le plugin ou le plugin n&apos;est pas présent.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1750,7 +1750,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="67"/>
         <source>Temps</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="68"/>
@@ -1975,7 +1975,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="113"/>
         <source>Localiser dans le menu</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../view/StepResultTreeView/gtreestepcontextmenu.cpp" line="125"/>

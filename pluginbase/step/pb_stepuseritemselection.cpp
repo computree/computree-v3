@@ -83,27 +83,21 @@ void PB_StepUserItemSelection::createPostConfigurationDialog()
     // No parameter dialog for this step
     CT_StepConfigurableDialog *dialog = newStandardPostConfigurationDialog();
 
-    dialog->addBool("", "", tr("Supprimer les groupes ne contenant pas l'ItemDrawable recherché"), m_removeGroupsWithoutItemResearched);
-    dialog->addBool("", "", tr("Supprimer les groupes parents si l'ItemDrawable recherché n'existe plus dans la structure sous-jacente"), m_removeParents);
-
-    dialog->addEmpty();
     dialog->addText("Mode de séléction des items", "", "");
     CT_ButtonGroup &bg_mode = dialog->addButtonGroup(_mode);
 
-    dialog->addExcludeValue("", "", tr("Séléction classique"), bg_mode, 0);
     dialog->addExcludeValue("", "", tr("Par proximité des centres des items"), bg_mode, 1);
+    dialog->addExcludeValue("", "", tr("Séléction classique (picking)"), bg_mode, 0);
+
+    dialog->addEmpty();
+    dialog->addBool("", "", tr("Supprimer les groupes ne contenant pas l'ItemDrawable recherché"), m_removeGroupsWithoutItemResearched);
+    dialog->addBool("", "", tr("Supprimer les groupes parents si l'ItemDrawable recherché n'existe plus dans la structure sous-jacente"), m_removeParents);
 }
 
 void PB_StepUserItemSelection::compute()
 {
     m_doc = NULL;
     m_status = 0;
-
-    // DONT'T FORGET TO ADD THIS STEP TO THE STEPPLUGINMANAGER !!!!!
-
-
-    // --------------------------
-    // Gets IN results and models
 
     // ----------------------------------------------------------------------------
     // Get the group model corresponding to DEF_groupIn_G

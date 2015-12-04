@@ -49,7 +49,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_steploadobjfile.h \
     step/pb_steploadpbmfile.h \
     step/pb_steploadpgmfile.h \
-    step/pb_stepuseritemcopy.h \
     step/pb_stepuseritemselection.h \
     views/actions/pb_actionselectitemdrawablegvoptions.h \
     views/exporters/csv/pbg_csvconfigurationdialog.h \
@@ -99,7 +98,6 @@ SOURCES += \
     step/pb_steploadobjfile.cpp \
     step/pb_steploadpbmfile.cpp \
     step/pb_steploadpgmfile.cpp \
-    step/pb_stepuseritemcopy.cpp \
     step/pb_stepuseritemselection.cpp \
     views/actions/pb_actionselectitemdrawablegvoptions.cpp \
     views/exporters/csv/pbg_csvconfigurationdialog.cpp \

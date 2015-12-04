@@ -44,7 +44,6 @@
 #include "step/pb_steploadpbmfile.h"
 #include "step/pb_steploadpgmfile.h"
 #include "step/pb_stepgenericloadfile.h"
-#include "step/pb_stepuseritemcopy.h"
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_stepcomputepointmetrics.h"
 #include "step/pb_stepcomputerastermetrics.h"
@@ -131,14 +130,13 @@ QSettings* PB_StepPluginManager::initQSettings()
 
 bool PB_StepPluginManager::loadGenericsStep()
 {
-    addNewWorkflowStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
-    addNewWorkflowStep<PB_StepUserItemCopy>(CT_StepsMenu::LP_Filter);
     addNewWorkflowStep<CT_StepBeginLoop>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughDataSource>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<PB_StepComputePointMetrics>(CT_StepsMenu::LP_Analyze);
+    addNewGeometricalShapesStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
     addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
 
     addNewLoadStep<PB_StepCreateDataSource>(QObject::tr("DataSources"));

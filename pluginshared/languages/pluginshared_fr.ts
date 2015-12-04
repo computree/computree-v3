@@ -46,7 +46,7 @@
         <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -273,7 +273,7 @@
         <location filename="../ct_model/inModel/abstract/ct_inabstractmodel.cpp" line="583"/>
         <source>
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2035,7 +2035,7 @@
         <location filename="../ct_turn/inTurn/ct_inturn.cpp" line="182"/>
         <source>
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="73"/>
