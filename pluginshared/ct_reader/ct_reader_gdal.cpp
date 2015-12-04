@@ -26,6 +26,13 @@ CT_Reader_GDAL::~CT_Reader_GDAL()
 {
 }
 
+QString CT_Reader_GDAL::getTypeOfDriver() const
+{
+    if (m_driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) == NULL) {return "Raster";}
+    if (m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_RASTER) == NULL) {return "Vector";}
+    else return "Undefined";
+}
+
 bool CT_Reader_GDAL::setFilePath(const QString &filepath)
 {        
     m_filePath = filepath;
@@ -53,11 +60,11 @@ CT_AbstractReader* CT_Reader_GDAL::copy() const
 #endif
 }
 
-QString CT_Reader_GDAL::GetReaderName()
+QString CT_Reader_GDAL::GetReaderName() const
 {
     #ifdef USE_GDAL
     if(m_driver != NULL) {
-        return CT_GdalTools::staticGdalDriverName(m_driver);
+        return QString("%1 %2").arg(getTypeOfDriver()).arg(CT_GdalTools::staticGdalDriverName(m_driver));
     }
     #endif
     return metaObject()->className();

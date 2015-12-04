@@ -29,9 +29,10 @@ public:
 
     virtual CT_AbstractReader* copy() const;
 
-    virtual QString GetReaderName();
+    virtual QString GetReaderName() const;
 
 
+    QString getTypeOfDriver() const;
 protected:
 
     void protectedInit();

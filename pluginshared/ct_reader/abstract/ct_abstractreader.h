@@ -23,7 +23,7 @@ public:
      *
      *        By default call "metaObject()->className()"
      */
-    virtual QString GetReaderName();
+    virtual QString GetReaderName() const;
 
     /**
       * \brief Set the filepath of the file to read

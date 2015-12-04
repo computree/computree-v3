@@ -42,7 +42,7 @@ void CT_AbstractReader::init(bool initOutItemDrawableList)
         protectedCreateOutItemDrawableModelList();
 }
 
-QString CT_AbstractReader::GetReaderName()
+QString CT_AbstractReader::GetReaderName() const
 {
     return metaObject()->className();
 }

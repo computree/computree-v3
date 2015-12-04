@@ -34,7 +34,6 @@
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_reader/ct_standardreaderseparator.h"
 
-#include "step/pb_steploadasciifile.h"
 #include "step/pb_steploadasciifile02.h"
 #include "step/pb_stepgenericexporter.h"
 #include "step/pb_stepuseritemselection.h"
@@ -232,7 +231,7 @@ bool GDALExporterLessThan(const PB_GDALExporter *s1, const PB_GDALExporter *s2)
 
 bool GDALReaderLessThan(const CT_Reader_GDAL *s1, const CT_Reader_GDAL *s2)
 {
-    return CT_GdalTools::staticGdalDriverName(s1->getDriver()) < CT_GdalTools::staticGdalDriverName(s2->getDriver());
+    return s1->GetReaderName() < s2->GetReaderName();
 }
 #endif
 
@@ -283,7 +282,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
 
             while(itGD.hasNext()) {
                 CT_Reader_GDAL *reader = itGD.next();
-                sepR = addNewSeparator(new CT_StandardReaderSeparator(CT_GdalTools::staticGdalDriverName(reader->getDriver())));
+                sepR = addNewSeparator(new CT_StandardReaderSeparator(reader->GetReaderName()));
                 sepR->addReader(reader);
             }
         }
@@ -333,7 +332,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
                 QString subMenu = "Readers";
                 if (dynamic_cast<CT_Reader_GDAL*>(reader) != NULL)
                 {
-                    subMenu = "GDAL Readers";
+                    subMenu = "GDAL Readers (Raster/Vector)";
                 }
                 addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()), CT_StepsMenu::LO_Load, subMenu);
             }

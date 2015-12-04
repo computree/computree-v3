@@ -56,12 +56,12 @@ QString PB_StepGenericLoadFile::getStepDisplayableName() const
 
 QString PB_StepGenericLoadFile::getStepDescription() const
 {
-    const QList<FileFormat>& formats = m_reader->readableFormats();
+//    const QList<FileFormat>& formats = m_reader->readableFormats();
 
-    if (formats.size() > 0)
-    {
-        return formats.first().description();
-    }
+//    if (formats.size() > 0)
+//    {
+//        return formats.first().description();
+//    }
 
     return m_reader->GetReaderName();
 

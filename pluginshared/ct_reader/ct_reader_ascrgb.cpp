@@ -63,7 +63,7 @@ CT_AbstractReader* CT_Reader_ASCRGB::copy() const
 
 void CT_Reader_ASCRGB::protectedInit()
 {
-    addNewReadableFormat(FileFormat("asc", tr("Fichiers de points ASCII")));
+    addNewReadableFormat(FileFormat("asc", tr("Fichiers de points ASCII (XYZRGB, sans entête, RGB [0;1])")));
 }
 
 void CT_Reader_ASCRGB::protectedCreateOutItemDrawableModelList()

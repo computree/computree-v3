@@ -42,7 +42,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepexportitemlist.h \
     step/pb_stepgenericexporter.h \
     step/pb_stepgenericloadfile.h \
-    step/pb_steploadasciifile.h \
     step/pb_steploadasciifile02.h \
     step/pb_steploadgrid3dfile.h \
     step/pb_steploadobjfile.h \
@@ -90,7 +89,6 @@ SOURCES += \
     step/pb_stepexportitemlist.cpp \
     step/pb_stepgenericexporter.cpp \
     step/pb_stepgenericloadfile.cpp \
-    step/pb_steploadasciifile.cpp \
     step/pb_steploadasciifile02.cpp \
     step/pb_steploadgrid3dfile.cpp \
     step/pb_steploadobjfile.cpp \
