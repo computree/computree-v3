@@ -64,8 +64,8 @@ GStepManager::GStepManager(CDM_StepManager &stepManager,
 
     QStringList header;
     header << tr("Nom");
-    header << tr("Temps");
     header << tr("Debug");
+    header << tr("Temps");
 
     _model.setHorizontalHeaderLabels(header);
 
@@ -146,18 +146,18 @@ QList<QStandardItem *> GStepManager::createItemsForStep(CT_VirtualAbstractStep &
     connect(&step, SIGNAL(inProgress(int)), item, SLOT(setIntDataInvisible(int)), Qt::QueuedConnection);
     list.append(item);
 
-    // temps coul
-    item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepElapsedTime, step.getExecuteTime());
-    item->setEditable(false);
-    connect(&step, SIGNAL(elapsed(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
-    list.append(item);
-
     // debug
     item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepDebug, QString(""));
     item->setEditable(false);
     item->setCheckable(true);
     item->setBoolData(step.isDebugModeOn());
     connect(item, SIGNAL(dataChanged(QStandardItem*)), this, SLOT(itemDataChanged(QStandardItem*)));
+    list.append(item);
+
+    // temps coul
+    item = new MyQStandardItem(&step, NULL, MyQStandardItem::StepElapsedTime, step.getExecuteTime());
+    item->setEditable(false);
+    connect(&step, SIGNAL(elapsed(int)), item, SLOT(setIntData(int)), Qt::QueuedConnection);
     list.append(item);
 
     setStepItemBackgroundColor(step, list);

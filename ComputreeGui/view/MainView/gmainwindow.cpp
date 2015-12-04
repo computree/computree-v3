@@ -306,16 +306,17 @@ void GMainWindow::initUI()
     actionOpenFile->setIcon(QIcon(":/Icones/Icones/folder_add_32.png"));
     actionOpenFile->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
 
-    QAction *actionStart = new QAction(tr("Lancer les traitements (CTRL+R)"), this);
+    QAction *actionStart = new QAction(tr("Lancer les traitements (F3)"), this);
     actionStart->setIcon(QIcon(QPixmap(":/Icones/Icones/play.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
-    actionStart->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    actionStart->setShortcut(QKeySequence(Qt::Key_F3));
 
     QAction *actionStop = new QAction(tr("Stop"), this);
     actionStop->setIcon(QIcon(QPixmap(":/Icones/Icones/stop.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
 
-    QAction *actionAckManualMode = new QAction(tr("Valider le mode manuel et continuer les traitements automatiques"), this);
+    QAction *actionAckManualMode = new QAction(tr("Valider le mode manuel et continuer les traitements automatiques (F4)"), this);
     actionAckManualMode->setIcon(QIcon(QPixmap(":/Icones/Icones/hand.png").scaled(QSize(20,20), Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
     actionAckManualMode->setDisabled(true);
+    actionAckManualMode->setShortcut(QKeySequence(Qt::Key_F4));
 
     QAction *actionForwardOneStepDebug = new QAction(tr("Lancer les traitements en mode debug ou avancer d'un pas (F5)"), this);
     actionForwardOneStepDebug->setIcon(QIcon(":/Icones/Icones/play_debug.png"));
@@ -343,8 +344,9 @@ void GMainWindow::initUI()
     QAction *actionCleanAllDocuments = new QAction(tr("Nettoyer toutes les vues"), this);
     actionCleanAllDocuments->setIcon(QIcon(":/Icones/Icones/broom.png"));
 
-    QAction *actionINeedHelp = new QAction(tr("J'ai besoin d'aide !!!"), this);
+    QAction *actionINeedHelp = new QAction(tr("J'ai besoin d'aide !!! (F1)"), this);
     actionINeedHelp->setIcon(QIcon(":/Icones/Icones/help.png"));
+    actionINeedHelp->setShortcut(Qt::Key_F1);
 
     QAction *actionQuitter = new QAction(tr("Quitter"), this);
 
@@ -362,7 +364,8 @@ void GMainWindow::initUI()
     actionShowLog->setDisabled(true);
     QAction *actionShowStepChooserDialog = new QAction(m_stepChooserDialog->windowTitle(), this);
     actionShowStepChooserDialog->setIcon(QIcon(":/Icones/Icones/add.png"));
-    actionShowStepChooserDialog->setToolTip(tr("Ajouter une étape (affiche la fenêtre de choix des étapes)"));
+    actionShowStepChooserDialog->setToolTip(tr("Ajouter une étape (affiche la fenêtre de choix des étapes, F2)"));
+    actionShowStepChooserDialog->setShortcut(QKeySequence(Qt::Key_F2));
 
     QAction *actionArrangeDocksInTabs = new QAction(tr("Composants en onglets"), this);
     QAction *actionArrangeDocksInColumn = new QAction(tr("Composants en colonne"), this);
@@ -371,8 +374,9 @@ void GMainWindow::initUI()
     QAction *actionAPropos = new QAction(tr("A propos de Computree..."), this);
     actionAProposPlugin = new QAction(tr("A propos des plugins..."), this);
 
-    actionSaveScript = new QAction(tr("Sauvegarder l'arbre des etapes"), this);
+    actionSaveScript = new QAction(tr("Sauvegarder l'arbre des etapes (CTRL+S)"), this);
     actionSaveScript->setIcon(QIcon(":/Icones/Icones/media-floppy.png"));
+    actionSaveScript->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
 
     ui->toolBar->addAction(actionOpenFile);
     ui->toolBar->addAction(actionShowStepChooserDialog);
@@ -921,6 +925,7 @@ void GMainWindow::loadScriptError(CDM_ScriptProblem &problem)
         // solution is to choose a step
         QDialog dialog(this);
         dialog.setWindowTitle(title);
+
         QHBoxLayout *hLayout = new QHBoxLayout(&dialog);
         QVBoxLayout *vLayout = new QVBoxLayout();
 

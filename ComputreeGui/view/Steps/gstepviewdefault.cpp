@@ -11,6 +11,7 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     m_constructor = NULL;
     m_proxy = NULL;
     m_nameConfig = DNC_StepKey;

@@ -54,8 +54,8 @@ public:
        BeginIndexForStep,
        StepName = BeginIndexForStep,// Nom de l'étape
        StepProgress,                // Progression de l'étape
-       StepElapsedTime,             // Temps écoulé de l'étape
        StepDebug,                   // Debug pour l'étape
+       StepElapsedTime,             // Temps écoulé de l'étape
        BeginIndexForResult,
        ResultVisibility = BeginIndexForResult,        // Visibilité du résultat
        ResultName,              // Nom du résultat

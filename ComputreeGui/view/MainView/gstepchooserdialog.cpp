@@ -57,6 +57,11 @@ void GStepChooserDialog::init()
                    | Qt::WindowTitleHint
                    | Qt::CustomizeWindowHint
                    | Qt::WindowCloseButtonHint);
+
+    QAction *closeAction = new QAction(this);
+    closeAction->setShortcut(Qt::Key_F2);
+    connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
+    this->addAction(closeAction);
 }
 
 GStepViewDefault *GStepChooserDialog::stepsChooserWidget() const
