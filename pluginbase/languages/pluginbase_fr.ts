@@ -1102,7 +1102,7 @@ Seuls les headers des fichiers sont chargés à ce stade.</source>
     <name>PB_StepExportItemList</name>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="80"/>
-        <source>Export dans une boucle (nom de fichier adaptatif)</source>
+        <source>Export avec nom de fichier adaptatif</source>
         <translation></translation>
     </message>
     <message>

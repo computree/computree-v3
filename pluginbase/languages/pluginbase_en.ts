@@ -1648,9 +1648,13 @@ Only files headers are loaded at this stage. </translation>
 <context>
     <name>PB_StepExportItemList</name>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="80"/>
         <source>Export dans une boucle (nom de fichier adaptatif)</source>
-        <translation>Export in a loop (adaptative file name)</translation>
+        <translation type="vanished">Export in a loop (adaptative file name)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="80"/>
+        <source>Export avec nom de fichier adaptatif</source>
+        <translation>Export with adaptative file names</translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportitemlist.cpp" line="86"/>
