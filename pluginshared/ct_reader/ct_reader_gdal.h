@@ -31,6 +31,9 @@ public:
 
     virtual QString GetReaderName() const;
 
+    virtual QString GetReaderClassName() const;
+
+    virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     QString getTypeOfDriver() const;
 protected:

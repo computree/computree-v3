@@ -13,6 +13,16 @@ CT_Reader_TerraScanPrj::CT_Reader_TerraScanPrj() : CT_AbstractReader()
 {
 }
 
+QString CT_Reader_TerraScanPrj::GetReaderName() const
+{
+    return tr("Fichier TerraScan - PRJ");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_TerraScanPrj::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Vector;
+}
+
 bool CT_Reader_TerraScanPrj::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

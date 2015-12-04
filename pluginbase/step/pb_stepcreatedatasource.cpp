@@ -61,7 +61,7 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
                 {
                     const FileFormat& format = formats.at(n);
 
-                    QString key = QString("%2 - %1").arg(reader->GetReaderName()).arg(format.description());
+                    QString key = reader->GetReaderName();
                     _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
                 }
 

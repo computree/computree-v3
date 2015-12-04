@@ -16,6 +16,16 @@ CT_Reader_ASCRGB::CT_Reader_ASCRGB() : CT_AbstractReader()
     m_filterRadius = 0;
 }
 
+QString CT_Reader_ASCRGB::GetReaderName() const
+{
+    return tr("Points, fichier ASCII (XYZRGB, sans entête, RGB [0;1])");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_ASCRGB::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
 bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

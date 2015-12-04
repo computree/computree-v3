@@ -4,6 +4,7 @@
 #include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
 #include "ct_itemdrawable/ct_fileheader.h"
+#include "ct_step/tools/menu/ct_stepsmenu.h"
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractReader : public QObject
 {
@@ -24,6 +25,11 @@ public:
      *        By default call "metaObject()->className()"
      */
     virtual QString GetReaderName() const;
+
+
+    virtual QString GetReaderClassName() const;
+
+    virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     /**
       * \brief Set the filepath of the file to read

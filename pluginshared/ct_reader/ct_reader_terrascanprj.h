@@ -13,6 +13,9 @@ class PLUGINSHAREDSHARED_EXPORT CT_Reader_TerraScanPrj : public CT_AbstractReade
 public:
     CT_Reader_TerraScanPrj();
 
+    QString GetReaderName() const;
+    CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
+
     bool setFilePath(const QString &filepath);
 
     CT_AbstractReader* copy() const;

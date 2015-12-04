@@ -32,21 +32,7 @@ void PB_StepGenericLoadFile::init()
 
 QString PB_StepGenericLoadFile::getStepName() const
 {
-    const QList<FileFormat> &list = m_reader->readableFormats();
-
-    QString name = "Reader " + m_reader->GetReaderName() + "[";
-
-    foreach (const FileFormat &f, list) {
-
-        name += " ";
-
-        foreach (const QString &s, f.suffixes())
-            name += s;
-    }
-
-    name += "]";
-
-    return name;
+    return m_reader->GetReaderClassName();
 }
 
 QString PB_StepGenericLoadFile::getStepDisplayableName() const

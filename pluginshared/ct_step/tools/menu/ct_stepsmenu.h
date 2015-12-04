@@ -54,7 +54,13 @@ public:
         LP_DEM,
         LP_Stems,
         LP_DBH,
-        LP_ItemAttributes
+        LP_ItemAttributes,
+        LP_Points,
+        LP_Raster,
+        LP_Vector,
+        LP_Voxels,
+        LP_Meshes,
+        LP_Others
     };
     Q_ENUMS(LevelPredefined)
 

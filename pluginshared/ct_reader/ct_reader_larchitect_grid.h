@@ -14,11 +14,15 @@ class PLUGINSHAREDSHARED_EXPORT CT_Reader_LArchitect_Grid : public CT_AbstractRe
 public:
     CT_Reader_LArchitect_Grid();
 
+    QString GetReaderName() const;
+    CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
+
     bool setFilePath(const QString &filepath);
 
     inline int getOffset() {return _nbLinesToSkip;}
 
     CT_AbstractReader* copy() const;
+
 
 protected:
     void protectedInit();

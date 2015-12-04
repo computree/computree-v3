@@ -70,6 +70,19 @@ QString CT_Reader_GDAL::GetReaderName() const
     return metaObject()->className();
 }
 
+QString CT_Reader_GDAL::GetReaderClassName() const
+{
+    return GetReaderName();
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_GDAL::getReaderSubMenuName() const
+{
+    QString driverType = getTypeOfDriver();
+    if (driverType == "Raster") {return CT_StepsMenu::LP_Raster;}
+    if (driverType == "Vector") {return CT_StepsMenu::LP_Vector;}
+    return CT_StepsMenu::LP_Others;
+}
+
 void CT_Reader_GDAL::protectedInit()
 {
     #ifdef USE_GDAL

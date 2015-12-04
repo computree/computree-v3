@@ -14,6 +14,17 @@ CT_Reader_LArchitect_Grid::CT_Reader_LArchitect_Grid() : CT_AbstractReader()
     _nbLinesToSkip = 4;
 }
 
+
+QString CT_Reader_LArchitect_Grid::GetReaderName() const
+{
+    return tr("Fichier de grilles LArchitect");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_LArchitect_Grid::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Voxels;
+}
+
 bool CT_Reader_LArchitect_Grid::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

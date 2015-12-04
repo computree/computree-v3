@@ -22,6 +22,16 @@ CT_Reader_LAS::~CT_Reader_LAS()
 {
 }
 
+QString CT_Reader_LAS::GetReaderName() const
+{
+    return tr("Fichier LAS");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_LAS::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
 bool CT_Reader_LAS::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

@@ -14,6 +14,10 @@ class PLUGINSHAREDSHARED_EXPORT CT_Reader_ASCRGB : public CT_AbstractReader
 public:
     CT_Reader_ASCRGB();
 
+    virtual QString GetReaderName() const;
+
+    virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
+
     bool setFilePath(const QString &filepath);
     void setRadiusFilter(const double &radius);
 

@@ -137,12 +137,12 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewGeometricalShapesStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
     addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
 
-    addNewLoadStep<PB_StepCreateDataSource>(QObject::tr("DataSources"));
-    addNewLoadStep<PB_StepLoadAsciiFile02>("");
-    addNewLoadStep<PB_StepLoadObjFile>("");
-    addNewLoadStep<PB_StepLoadGrid3dFile>("");
-    addNewLoadStep<PB_StepLoadPbmFile>("");
-    addNewLoadStep<PB_StepLoadPgmFile>("");
+    addNewLoadStep<PB_StepCreateDataSource>("");
+    addNewLoadStep<PB_StepLoadAsciiFile02>(CT_StepsMenu::LP_Points);
+    addNewLoadStep<PB_StepLoadObjFile>(CT_StepsMenu::LP_Meshes);
+    addNewLoadStep<PB_StepLoadGrid3dFile>(CT_StepsMenu::LP_Voxels);
+    addNewLoadStep<PB_StepLoadPbmFile>(CT_StepsMenu::LP_Raster);
+    addNewLoadStep<PB_StepLoadPgmFile>(CT_StepsMenu::LP_Raster);
 
     addNewExportStep<PB_StepExportItemList>("");
 
@@ -329,15 +329,9 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             while(itE.hasNext())
             {
                 CT_AbstractReader *reader = itE.next();
-                QString subMenu = "Readers";
-                if (dynamic_cast<CT_Reader_GDAL*>(reader) != NULL)
-                {
-                    subMenu = "GDAL Readers (Raster/Vector)";
-                }
-                addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()), CT_StepsMenu::LO_Load, subMenu);
+                addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()), CT_StepsMenu::LO_Load, reader->getReaderSubMenuName());
             }
         }
-
     }
 
     return true;

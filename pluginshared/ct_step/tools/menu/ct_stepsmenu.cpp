@@ -104,7 +104,12 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
     case LP_DEM: return QObject::tr("Modèles Num. d'Elévation");
     case LP_Stems: return QObject::tr("Tiges");
     case LP_DBH: return QObject::tr("Diamètres à 1.30 m");
-    case LP_ItemAttributes: return QObject::tr("Attributs d'items");
+    case LP_Points: return QObject::tr("Points");
+    case LP_Raster: return QObject::tr("Raster");
+    case LP_Vector: return QObject::tr("Vector");
+    case LP_Voxels: return QObject::tr("Voxels");
+    case LP_Meshes: return QObject::tr("Maillages");
+    case LP_Others: return QObject::tr("Autres");
     }
 
     return QObject::tr("Inconnu (TODO)");

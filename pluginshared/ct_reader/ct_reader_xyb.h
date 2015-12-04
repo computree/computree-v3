@@ -14,6 +14,9 @@ class PLUGINSHAREDSHARED_EXPORT CT_Reader_XYB : public CT_AbstractReader
 public:
     CT_Reader_XYB();
 
+    QString GetReaderName() const;
+    CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
+
     bool setFilePath(const QString &filepath);
     void setRadiusFilter(const double &radius);
 

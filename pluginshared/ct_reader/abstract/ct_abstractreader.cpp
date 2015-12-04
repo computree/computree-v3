@@ -47,6 +47,16 @@ QString CT_AbstractReader::GetReaderName() const
     return metaObject()->className();
 }
 
+QString CT_AbstractReader::GetReaderClassName() const
+{
+    return metaObject()->className();
+}
+
+CT_StepsMenu::LevelPredefined CT_AbstractReader::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Others;
+}
+
 bool CT_AbstractReader::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;

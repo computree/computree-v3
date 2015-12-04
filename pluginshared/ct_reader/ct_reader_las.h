@@ -33,6 +33,9 @@ public:
     CT_Reader_LAS();
     virtual ~CT_Reader_LAS();
 
+    QString GetReaderName() const;
+    CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
+
     bool setFilePath(const QString &filepath);
 
     virtual bool hasBoundingBox() {return true;}

@@ -32,6 +32,17 @@ CT_Reader_OPF::~CT_Reader_OPF()
     clearShapes();
 }
 
+
+QString CT_Reader_OPF::GetReaderName() const
+{
+    return tr("Fichier AmapStudio - OPF");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_OPF::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Others;
+}
+
 void CT_Reader_OPF::recursiveReadTopologyForModel(rapidxml::xml_node<> *node,
                                                   int &totalNode,
                                                   QHash<QString, CT_OPF_Type> &types,

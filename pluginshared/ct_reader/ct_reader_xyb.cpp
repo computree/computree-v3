@@ -15,6 +15,18 @@ CT_Reader_XYB::CT_Reader_XYB() : CT_AbstractReader()
     _filterRadius = 0;
 }
 
+
+QString CT_Reader_XYB::GetReaderName() const
+{
+    return tr("Points, Fichier XYB");
+}
+
+CT_StepsMenu::LevelPredefined CT_Reader_XYB::getReaderSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
+
 bool CT_Reader_XYB::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;
