@@ -1144,10 +1144,10 @@ bool GOsgGraphicsView::event(QEvent *event)
         case QEvent::MouseButtonDblClick:
         case QEvent::MouseButtonPress:
         case QEvent::MouseButtonRelease:
-        case QEvent::Wheel: this->update();
+        case QEvent::Wheel: this->updateGL();
             break;
 
-        case QEvent::MouseMove: if(m_mouseButtonPressed) { this->update(); }
+        case QEvent::MouseMove: if(m_mouseButtonPressed) { this->updateGL(); }
             break;
 
         default:
@@ -1168,7 +1168,8 @@ void GOsgGraphicsView::conversionCompleted()
 
     emit internalStopWaitingForConversionCompleted();
 
-    repaint();
+    updateGL();
+    updateGL(); // it's not a bad copy/paste but it must be called twice to update osgFX::Effect !
 }
 
 void GOsgGraphicsView::redraw(RedrawOptions opt)
@@ -1182,7 +1183,7 @@ void GOsgGraphicsView::redraw(RedrawOptions opt)
         loop.exec(QEventLoop::ExcludeUserInputEvents);
     }
 
-    update();
+    updateGL();
 }
 
 DM_GraphicsViewCamera* GOsgGraphicsView::getCamera() const
@@ -1194,7 +1195,7 @@ void GOsgGraphicsView::takeAndSaveScreenshot()
 {
     this->getEventQueue()->keyPress(osgGA::GUIEventAdapter::KeySymbol(m_captureScreenHandler->getKeyEventTakeScreenShot()));
     this->getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KeySymbol(m_captureScreenHandler->getKeyEventTakeScreenShot()));
-    update();
+    updateGL();
 }
 
 void GOsgGraphicsView::updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable *> &list)
@@ -1208,19 +1209,19 @@ void GOsgGraphicsView::updateDrawing3DOfItemDrawables(const QList<CT_AbstractIte
 void GOsgGraphicsView::updateItemDrawablesThatColorWasModified()
 {
     m_sceneManager->updateItemDrawablesThatColorWasModified();
-    update();
+    updateGL();
 }
 
 void GOsgGraphicsView::dirtyColorsOfItemDrawablesWithPoints()
 {
     m_sceneManager->dirtyDisplayListOfGlobalElementsOfItemDrawable();
-    update();
+    updateGL();
 }
 
 void GOsgGraphicsView::dirtyNormalsOfItemDrawablesWithPoints()
 {
     m_sceneManager->dirtyDisplayListOfGlobalElementsOfItemDrawable();
-    update();
+    updateGL();
 }
 
 void GOsgGraphicsView::getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const
