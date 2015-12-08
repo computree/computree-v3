@@ -3,6 +3,7 @@
 #include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_abstractstepplugin.h"
 
 CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManager()
 {
@@ -170,4 +171,28 @@ CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::firstItemAttributeFrom
     }
 
     return NULL;
+}
+
+void CT_DefaultItemAttributeManager::clearDefaultAttributesFromPlugin(CT_AbstractStepPlugin *p)
+{
+    QList<CT_AbstractItemDrawable*> items = p->getItemDrawablesAvailable();
+
+    foreach (CT_AbstractItemDrawable *item, items) {
+
+        QStringList types = item->getType().split("/");
+
+        foreach (QString type, types) {
+
+            if(!type.startsWith("CT_") && (type != "ItemDrawable")) {
+                QList<CT_DefaultItemAttributeManagerContainer*> *l = m_collection.take(type);
+
+                if(l != NULL) {
+                    foreach (CT_DefaultItemAttributeManagerContainer *c, (*l))
+                        delete c;
+
+                    delete l;
+                }
+            }
+        }
+    }
 }

@@ -266,6 +266,11 @@ private:
      *        a CT_DefaultItemAttributeManagerContainer for value.
      */
     QHash<QString, QList<CT_DefaultItemAttributeManagerContainer*>* >    m_collection;
+
+protected:
+    friend class CT_AbstractStepPlugin;
+
+    void clearDefaultAttributesFromPlugin(CT_AbstractStepPlugin *p);
 };
 
 #endif // CT_DEFAULTITEMATTRIBUTEMANAGER_H

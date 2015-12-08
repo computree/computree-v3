@@ -96,24 +96,6 @@ public:
     virtual void unload();
 
     /**
-     * @brief Returns a list of step separator. A step separator group multiple step by a title. This
-     *        separator contain standard step (can be added only in the middle of the tree)
-     */
-    QList<CT_StepSeparator*> getGenericsStepAvailable() const;
-
-    /**
-     * @brief Returns a list of step separator. A step separator group multiple step by a title. This
-     *        separator contain step that load file (can be added only in the root of the tree)
-     */
-    QList<CT_StepLoadFileSeparator*> getOpenFileStepAvailable() const;
-
-    /**
-     * @brief Returns a list of step separator. A step separator group multiple step by a title. This
-     *        separator contain step that can be added first or not (can be added in the root of the tree or in the middle)
-     */
-    QList<CT_StepCanBeAddedFirstSeparator*> getCanBeAddedFirstStepAvailable() const;
-
-    /**
      * @brief Returns a list of action separator. A action separator group multiple action by a title. This
      *        separator contain standard action that can be installed on GraphicsViewInterface / TreeViewInterface / etc...
      */
@@ -132,14 +114,19 @@ public:
     QList<CT_StandardReaderSeparator *> getReadersAvailable() const;
 
     /**
-     * @brief Returns a list of filters separator. A filter separator group multiple filters by a title.
+     * @brief Returns a list of filters available in this plugin.
      */
     QList<CT_AbstractFilter *> getFiltersAvailable() const;
 
     /**
-     * @brief Returns a list of metrics separator. A metric separator group multiple metrics by a title.
+     * @brief Returns a list of metrics available in this plugin.
      */
     QList<CT_AbstractMetric *> getMetricsAvailable() const;
+
+    /**
+     * @brief Returns a list of itemdrawable available in this plugin.
+     */
+    QList<CT_AbstractItemDrawable *> getItemDrawablesAvailable() const;
 
     /**
      * @brief Returns a list of step that can read the file define by the filepath passed in parameter
@@ -255,6 +242,14 @@ protected:
     virtual bool loadMetrics();
 
     /**
+     * @brief Overload this method to register your itemdrawables. Use "addNewItemDrawable" method to register it.
+     * @return true if load is a success.
+     * @warning Method called in the "init" method. If you must wait that all plugins is loaded to create
+     *          your elements prefer overload the method "loadAfterAllPluginsLoaded"
+     */
+    virtual bool loadItemDrawables();
+
+    /**
      * @brief Inherit this method to add your step, actions, exporters, etc... after all plugins was loaded (if you must use elements from
      *        another plugin). Use "addNewSeparator" method to create a new separator and a elements to it.
      */
@@ -304,6 +299,11 @@ protected:
      * @brief Remove from memory all readers
      */
     void clearMetrics();
+
+    /**
+     * @brief Remove from memory all itemdrawables
+     */
+    void clearItemDrawables();
 
     /**
      * @brief Overload this method if you want to return a new QSettings that will be added to the CT_StepInitializeData. So you can
@@ -551,6 +551,14 @@ protected:
     CT_StepsMenu* menuOfSteps() const;
 
     /**
+     * @brief Register a itemdrawable that was created by your plugin
+     */
+    template<class ITEM>
+    void addNewItemDrawable() {
+        m_items.append(new ITEM());
+    }
+
+    /**
      * @brief Clear all steps / actions / readers / exporters / etc... from this plugins (call methods "clearXXX")
      */
     virtual void clearMemory();
@@ -566,6 +574,7 @@ private:
     QList<CT_StandardReaderSeparator*>          m_readers;
     QList<CT_AbstractFilter*>                   m_filters;
     QList<CT_AbstractMetric*>                   m_metrics;
+    QList<CT_AbstractItemDrawable*>             m_items;
 
     QSettings                                   *_pluginSettings;
 
@@ -576,11 +585,6 @@ private:
      * @param step : the step to init
      */
     void initStep(CT_VirtualAbstractStep *step) const;
-
-    /**
-     * @brief Convert all separators loaded to operation and level
-     */
-    void convertStepSeparatorToOperationAndLevel();
 
     /**
      * @brief Init all steps of this plugin in levels of the general menu
