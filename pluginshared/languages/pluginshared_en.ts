@@ -1996,7 +1996,7 @@
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="104"/>
         <source>Modèles Num. d&apos;Elévation</source>
-        <translation>Elevation numerical models</translation>
+        <translation type="unfinished">Digital elevation models</translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="105"/>
