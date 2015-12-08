@@ -20,7 +20,7 @@ PB_Grid2DExporter::~PB_Grid2DExporter()
 
 QString PB_Grid2DExporter::getExporterCustomName() const
 {
-    return "Grilles 2D, ACSII ESRI Grid";
+    return tr("Grilles 2D, ACSII ESRI Grid");
 }
 
 void PB_Grid2DExporter::init()

@@ -46,7 +46,13 @@
         <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
 
 %1</source>
-        <translation>Configuration no valid, please select input data.
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vous n&apos;avez pas correctement configuré un tour, veuillez sélectionner des données d&apos;entrée.
+
+%1</source>
+        <translation type="obsolete">Configuration no valid, please select input data.
 
 %1</translation>
     </message>
@@ -171,7 +177,7 @@
 <context>
     <name>CT_AbstractReader</name>
     <message>
-        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="526"/>
+        <location filename="../ct_reader/abstract/ct_abstractreader.cpp" line="536"/>
         <source>Header</source>
         <translation></translation>
     </message>
@@ -275,7 +281,7 @@
         <location filename="../ct_model/inModel/abstract/ct_inabstractmodel.cpp" line="583"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -367,17 +373,26 @@
 <context>
     <name>CT_Reader_ASCRGB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="66"/>
         <source>Fichiers de points ASCII</source>
-        <translation>ASCII points file</translation>
+        <translation type="vanished">ASCII points file</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="73"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="21"/>
+        <source>Points, fichier ASCII (XYZRGB, sans entête, RGB [0;1])</source>
+        <translation>Points, ASCII file (XYZRGB, without header, RGB [0;1])</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="76"/>
+        <source>Fichiers de points ASCII (XYZRGB, sans entête, RGB [0;1])</source>
+        <translation>ASCII points files (XYZRGB, without header, RGB [0;1])</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="83"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="74"/>
+        <location filename="../ct_reader/ct_reader_ascrgb.cpp" line="84"/>
         <source>Attribut de points (couleurs)</source>
         <translation>Points attributes (colors)</translation>
     </message>
@@ -385,12 +400,12 @@
 <context>
     <name>CT_Reader_GDAL</name>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="162"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="185"/>
         <source>Layer %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="210"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="233"/>
         <source>Impossible de charger des éléments du type : </source>
         <translation>Impossible to load elements of type:</translation>
     </message>
@@ -398,136 +413,141 @@
 <context>
     <name>CT_Reader_LAS</name>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="92"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="27"/>
+        <source>Fichier LAS</source>
+        <translation>Points, LAS file</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="102"/>
         <source>Fichiers LAS .las</source>
         <translation>LAS file *.las</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="97"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="107"/>
         <source>LAS Header</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="99"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="109"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="100"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="110"/>
         <source>All Attributs</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="105"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="112"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="115"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="122"/>
         <source>Return Number</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="106"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="113"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="116"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="123"/>
         <source>Number of Returns</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="107"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="116"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="117"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="126"/>
         <source>Scan Direction Flag</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="108"/>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="117"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="118"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="127"/>
         <source>Edge of Flight Line</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="114"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="124"/>
         <source>Classification Flags</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="115"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="125"/>
         <source>Scanner Channel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="121"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="131"/>
         <source>Intensité</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="122"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="132"/>
         <source>Classification</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="123"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="133"/>
         <source>User Data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="124"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="134"/>
         <source>Point Source ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="129"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="139"/>
         <source>Scan Angle Rank</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="131"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="141"/>
         <source>Scan Angle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="136"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="146"/>
         <source>GPS Time</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="146"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="156"/>
         <source>Color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="147"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="157"/>
         <source>Red</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="148"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="158"/>
         <source>Green</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="149"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="159"/>
         <source>Blue</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="158"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="168"/>
         <source>Wave Packet Descriptor Index</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="159"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="169"/>
         <source>Byte offset to waveform data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="160"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="170"/>
         <source>Waveform packet size in bytes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="161"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="171"/>
         <source>Return Point Waveform Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_las.cpp" line="167"/>
+        <location filename="../ct_reader/ct_reader_las.cpp" line="177"/>
         <source>NIR</source>
         <translation></translation>
     </message>
@@ -535,7 +555,12 @@
 <context>
     <name>CT_Reader_LArchitect_Grid</name>
     <message>
-        <location filename="../ct_reader/ct_reader_larchitect_grid.cpp" line="138"/>
+        <location filename="../ct_reader/ct_reader_larchitect_grid.cpp" line="20"/>
+        <source>Fichier de grilles LArchitect</source>
+        <translation>LArchitect grids file</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_larchitect_grid.cpp" line="149"/>
         <source>Fichiers de grilles 3D LArchitect</source>
         <translation>LArchitect 3D grid files</translation>
     </message>
@@ -543,22 +568,27 @@
 <context>
     <name>CT_Reader_OPF</name>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="210"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="38"/>
+        <source>Fichier AmapStudio - OPF</source>
+        <translation>AmapStudio file - OPF</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="221"/>
         <source>No types found in %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="566"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="577"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="576"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="587"/>
         <source>Topologie</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="593"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="604"/>
         <source>Mesh</source>
         <translation></translation>
     </message>
@@ -566,22 +596,27 @@
 <context>
     <name>CT_Reader_TerraScanPrj</name>
     <message>
-        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="49"/>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="18"/>
+        <source>Fichier TerraScan - PRJ</source>
+        <translation>TerraScan file - PRJ</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="59"/>
         <source>Fichier TerraScan PRJ</source>
         <translation>TerraScan file PRJ</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="56"/>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="66"/>
         <source>Dalle</source>
         <translation>Tile</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="58"/>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="68"/>
         <source>Fichier de la dalle</source>
         <translation>File for the tile</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="59"/>
+        <location filename="../ct_reader/ct_reader_terrascanprj.cpp" line="69"/>
         <source>Emprise de la dalle</source>
         <translation>XY area shape for the tile</translation>
     </message>
@@ -589,22 +624,27 @@
 <context>
     <name>CT_Reader_XYB</name>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="142"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="21"/>
+        <source>Points, Fichier XYB</source>
+        <translation>Points, XYB file</translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="154"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation>Points binary files *.xyb</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="149"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="161"/>
         <source>Scène</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="150"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="162"/>
         <source>Intensité</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_xyb.cpp" line="151"/>
+        <location filename="../ct_reader/ct_reader_xyb.cpp" line="163"/>
         <source>Scanner</source>
         <translation>Scanner</translation>
     </message>
@@ -1642,18 +1682,19 @@
         <translation>Transformation matrix</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="93"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="116"/>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="75"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="107"/>
         <source>Points</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="100"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="123"/>
         <source>Polygones</source>
         <translation>Polygons</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="107"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="130"/>
         <source>Polylignes</source>
         <translation>Polylines</translation>
     </message>
@@ -1881,7 +1922,7 @@
         <location filename="../ct_turn/inTurn/ct_inturn.cpp" line="182"/>
         <source>
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="73"/>
@@ -1900,6 +1941,7 @@
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="77"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="110"/>
         <source>Voxels</source>
         <translation></translation>
     </message>
@@ -1910,6 +1952,7 @@
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="79"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="111"/>
         <source>Maillages</source>
         <translation>Meshes</translation>
     </message>
@@ -1920,6 +1963,7 @@
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="81"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="112"/>
         <source>Autres</source>
         <translation>Others</translation>
     </message>
@@ -1996,7 +2040,7 @@
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="104"/>
         <source>Modèles Num. d&apos;Elévation</source>
-        <translation type="unfinished">Digital elevation models</translation>
+        <translation>Digital elevation models</translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="105"/>
@@ -2009,12 +2053,21 @@
         <translation>Diameter at 1.30 m (DBH)</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="107"/>
-        <source>Attributs d&apos;items</source>
-        <translation>Items attributes</translation>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="108"/>
+        <source>Raster</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="110"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="109"/>
+        <source>Vector</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Attributs d&apos;items</source>
+        <translation type="vanished">Items attributes</translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="115"/>
         <source>Inconnu (TODO)</source>
         <translation>Unknown (TODO)</translation>
     </message>

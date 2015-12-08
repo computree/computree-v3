@@ -18,7 +18,7 @@ PB_PbmExporter::~PB_PbmExporter()
 
 QString PB_PbmExporter::getExporterCustomName() const
 {
-    return "Grilles 2D, format PBM";
+    return tr("Grilles 2D, format PBM");
 }
 
 void PB_PbmExporter::init()

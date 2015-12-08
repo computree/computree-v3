@@ -61,12 +61,12 @@ QString PB_ActionShowItemDataGV::uniqueName() const
 
 QString PB_ActionShowItemDataGV::title() const
 {
-    return "Information ItemDrawable";
+    return tr("Information Item");
 }
 
 QString PB_ActionShowItemDataGV::description() const
 {
-    return "Une action qui affiche les données de l'ItemDrawable sélectionné.";
+    return tr("Action qui affiche les données de l'Item sélectionné.");
 }
 
 QIcon PB_ActionShowItemDataGV::icon() const

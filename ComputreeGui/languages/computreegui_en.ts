@@ -93,7 +93,7 @@
 <context>
     <name>DM_MultipleItemDrawableToOsgWorker</name>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.cpp" line="381"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.cpp" line="394"/>
         <source>Veuillez patienter pendant la conversion des items.</source>
         <translation>Please wait during items conversion</translation>
     </message>
@@ -509,58 +509,58 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GDocumentViewForGraphics</name>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="373"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="376"/>
         <source>Impossible d&apos;affecter une couleur à un item dont le résultat est NULL</source>
         <translation>Impossible to set colorfor item with NULL result</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="429"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="432"/>
         <source>Impossible de récupérer une couleur d&apos;un item dont le résultat est NULL</source>
         <translation>Impossible to retrieve color for item with NULL result</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="512"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="515"/>
         <source>Veuillez patienter pendant le traitement...</source>
         <translation>Please wait while processing ...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="580"/>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="874"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="583"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="877"/>
         <source>Point de vue</source>
         <translation>Point of view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="580"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="583"/>
         <source>Veuillez entrer un nom pour le point de vue :</source>
         <translation>Please enter a name for the point of view:</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="788"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="791"/>
         <source>Exporter sous...</source>
         <translation>Export to...</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="803"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="806"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="867"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="870"/>
         <source>Enregistrer une capture d&apos;écran</source>
         <translation>Save screen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="886"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="889"/>
         <source>Exporter les éléments sélectionnés</source>
         <translation>Export selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="895"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="898"/>
         <source>Configurer les couleurs des points</source>
         <translation>Configure colors of items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="901"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="904"/>
         <source>Changer la taille des pixels</source>
         <translation>Change pixels size</translation>
     </message>
@@ -578,7 +578,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">(Re)create octree</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="914"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="917"/>
         <source>Configurer l&apos;affichage</source>
         <translation>Configuring the display</translation>
     </message>
@@ -1254,23 +1254,23 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="111"/>
-        <location filename="../view/MainView/gmainwindow.cpp" line="113"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="108"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="110"/>
         <source>Attention</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="111"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="108"/>
         <source>Vous êtes dans le mode manuel, veuillez quitter ce mode avant de fermer l&apos;application.</source>
         <translation>You are in the manual mode, please exit this mode before close the application.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="113"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="110"/>
         <source>Une étape est en cours de traiements, veuillez terminer les traitements avant de fermer l&apos;application.</source>
         <translation>A step is under treatment, please complete the treatment before closing the application.</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="162"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="159"/>
         <source>Ouvrir un fichier</source>
         <translation>Open a file</translation>
     </message>
@@ -1287,7 +1287,7 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="184"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="181"/>
         <source>Sauvegarder l&apos;arbre des tapes sous...</source>
         <translation>Save the tree steps as ...</translation>
     </message>
@@ -1308,14 +1308,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Start processes</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="313"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="312"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="316"/>
         <source>Valider le mode manuel et continuer les traitements automatiques</source>
-        <translation>Enable manual mode and continue the automatic processes</translation>
+        <translation type="vanished">Enable manual mode and continue the automatic processes</translation>
     </message>
     <message>
         <source>Lancer les traitements en mode debug ou avancer d&apos;un pas</source>
@@ -1326,22 +1325,19 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Start processes in debug mode or go N step forward</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="331"/>
         <source>Ajouter un nouveau document</source>
-        <translation>Add a new 3D document</translation>
+        <translation type="vanished">Add a new 3D document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="334"/>
         <source>Ajouter un nouveau document 2D</source>
-        <translation>Add a new 2D document</translation>
+        <translation type="vanished">Add a new 2D document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="337"/>
         <source>Ajouter un nouveau document de type tableur</source>
-        <translation>Add a new table view document</translation>
+        <translation type="vanished">Add a new table view document</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="340"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="343"/>
         <source>Configurer</source>
         <translation>Configure</translation>
     </message>
@@ -1350,59 +1346,56 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Coordinate system</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="343"/>
         <source>Nettoyer toutes les vues</source>
-        <translation>Clean all views</translation>
+        <translation type="vanished">Clean all views</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="346"/>
         <source>J&apos;ai besoin d&apos;aide !!!</source>
-        <translation>I need help !!!</translation>
+        <translation type="vanished">I need help !!!</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="349"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="354"/>
         <source>Quitter</source>
         <translation>Quit</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="367"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="373"/>
         <source>Composants en onglets</source>
         <translation>Component in tabs</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="368"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="374"/>
         <source>Composants en colonne</source>
         <translation>Component in columns</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="369"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="375"/>
         <source>Composants en colonne (Log en bas)</source>
         <translation>Component in columns (Log at bottom)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="371"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="377"/>
         <source>A propos de Computree...</source>
         <translation>About CompuTree...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="372"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="378"/>
         <source>A propos des plugins...</source>
         <translation>About plugins...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="374"/>
         <source>Sauvegarder l&apos;arbre des etapes</source>
-        <translation>Save the tree steps</translation>
+        <translation type="vanished">Save the tree steps</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="602"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="609"/>
         <source>Attention aucun plugin n&apos;a été trouvé dans :
 %1</source>
         <translation>Warning no plugin has been found in:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="603"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="610"/>
         <source>Voulez-vous spécifier dans quel dossier rechercher les plugins ?</source>
         <translation>Do you want to specify the folder where to search for plugins ?</translation>
     </message>
@@ -1411,14 +1404,13 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Do you want to specify where you want to search for plugins?</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="305"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="304"/>
         <source>Ouvrir un fichier (CTRL+O)</source>
         <translation>Open file (CTRL+O)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="309"/>
         <source>Lancer les traitements (CTRL+R)</source>
-        <translation>Launch processings (CTRL+R)</translation>
+        <translation type="vanished">Launch processings (CTRL+R)</translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="320"/>
@@ -1426,9 +1418,8 @@ p, li { white-space: pre-wrap; }
         <translation>Launch processings in debug mode or run for one step (F5)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="324"/>
         <source>Lancer les traitements en mode debug ou avancer de N pas (F10)</source>
-        <translation>Launch processings in debug mode or run for N steps (F10)</translation>
+        <translation type="vanished">Launch processings in debug mode or run for N steps (F10)</translation>
     </message>
     <message>
         <location filename="../view/MainView/gmainwindow.cpp" line="328"/>
@@ -1436,129 +1427,178 @@ p, li { white-space: pre-wrap; }
         <translation>Run for N steps automatically towards end</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="365"/>
         <source>Ajouter une étape (affiche la fenêtre de choix des étapes)</source>
-        <translation>Add step (show steps choosing dialog)</translation>
+        <translation type="vanished">Add step (show steps choosing dialog)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="394"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="401"/>
         <source>Indiquez le nombre de pas à sauter avant le prochain arrêt de l&apos;étape</source>
         <translation>Please give the number of steps to jump before next stop</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="403"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="410"/>
         <source>Indiquez le nombre de pas à sauter avant la prochaine actualisation automatique</source>
         <translation>Please give the number of steps to jump before next automatic update</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="410"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="417"/>
         <source>Indiquez le temps en ms entre deux actualisation automatique</source>
         <translation>Please give the time in ms between two automatic updates</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="606"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="613"/>
         <source>Parcourir...</source>
         <translation>Browse...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="607"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="614"/>
         <source>Annuler</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="617"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="624"/>
         <source>Dossier contenant les plugins...</source>
         <translation>Folder containing the plugins ...</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="635"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="642"/>
         <source>Attention il y a eu des erreurs lors du chargement des plugins du dossier :
 %1</source>
         <translation>Please note there were errors when loading plugins folder:
 %1</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="642"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="649"/>
         <source>Succès</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="642"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="649"/>
         <source>Le plugin %1 a été chargé avec succès !</source>
         <translation>The plugin %1 was loaded with success!</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="656"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="663"/>
         <source>Récupération automatique</source>
         <translation>Automatic recovery</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="656"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="663"/>
         <source>&lt;html&gt;L&apos;application a semble-t-il rencontrée un problème lors de la dernière exécution des étapes. Un script a été sauvegardé automatiquement afin de rétablir votre dernière configuration.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Voulez-vous recharger votre dernière configuration connue ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;The application seems to have encounter some error since last execution of steps. A script has been saved automatically to recover last configuration.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Do you want to load you last known configuration?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="883"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="909"/>
         <source>Erreur de chargement du script</source>
         <translation>Error during script loading</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="884"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="910"/>
         <source>Une erreur est survenue lors de la lecture du script :&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%1&lt;/i&gt;</source>
         <translation>An error has occur during script reading:&lt;br/&gt;&lt;br/&gt;&lt;i&gt;%1&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="910"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="936"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choisissez le plugin à utiliser ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choose plugin to use:&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="928"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="955"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choisissez une étape de remplacement :&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Choose a replacement step:&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="979"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1006"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Voulez vous configurer l&apos;étape manuellement ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Do you want to configure step manually?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="990"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1017"/>
         <source>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Que voulez vous faire ?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;%1&lt;br/&gt;&lt;br/&gt;&lt;b&gt;What do you want to do?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="990"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1017"/>
         <source>Ne pas charger le script</source>
         <translation>Not load the script</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="990"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1017"/>
         <source>Charger le script jusqu&apos;à cette erreur</source>
         <translation>Load the script until this error</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1004"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1031"/>
         <source>All Valid Files (</source>
         <translation>Tous les fichiers valides (</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1055"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1082"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="184"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="181"/>
         <source>Script File (*</source>
         <translation>Fichiers scripts (*</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1130"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="308"/>
+        <source>Lancer les traitements (F3)</source>
+        <translation>Launch processings (F3)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="315"/>
+        <source>Valider le mode manuel et continuer les traitements automatiques (F4)</source>
+        <translation>Validate manual mode and continue automatical processings (F4)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="324"/>
+        <source>Lancer les traitements en mode debug ou avancer de N pas (F6)</source>
+        <translation>Launch processings in debug mode or run for N steps (F10) {6)?}</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="331"/>
+        <source>Ajouter un nouveau document 3D (F7)</source>
+        <translation>Add a new 3D document (F7)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="335"/>
+        <source>Ajouter un nouveau document 2D (F8)</source>
+        <translation>Add a new 2D document (F8)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="339"/>
+        <source>Ajouter un nouveau document de type tableur (F9)</source>
+        <translation>Add a new tabular document (F9)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="346"/>
+        <source>Nettoyer toutes les vues (F10)</source>
+        <translation>Clean all views (F10)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="350"/>
+        <source>J&apos;ai besoin d&apos;aide !!! (F1)</source>
+        <translation>I need help !!! (F1)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="370"/>
+        <source>Ajouter une étape (affiche la fenêtre de choix des étapes, F2)</source>
+        <translation>Add a step (show step choosing dialog, F2)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="380"/>
+        <source>Sauvegarder l&apos;arbre des etapes (CTRL+S)</source>
+        <translation>Save the steps tree (CTRL+S)</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1157"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1130"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1157"/>
         <source>Voud devez redémarrer l&apos;application pour prendre en compte le changement de langue.</source>
         <translation>You must restart the application to reflect the language change.</translation>
     </message>
@@ -1907,28 +1947,28 @@ p, li { white-space: pre-wrap; }
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="147"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="153"/>
         <source>Ouvrir un fichier favoris</source>
         <translation>Open a favorites file</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="147"/>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="157"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="153"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="163"/>
         <source>Fichier favoris (*.%1)</source>
         <translation>Favorites file (*.%1)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="157"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="163"/>
         <source>Sauvegarder les favoris</source>
         <translation>Save favorites</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="177"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="183"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gstepchooserdialog.cpp" line="177"/>
+        <location filename="../view/MainView/gstepchooserdialog.cpp" line="183"/>
         <source>Impossible d&apos;afficher les informations de cette étape. L&apos;étape n&apos;a pas été trouvée dans le plugin ou le plugin n&apos;est pas présent.</source>
         <translation>Impossible to show informations for this step. The step has not been found in the plugin or the plugin is absent. </translation>
     </message>
@@ -1953,12 +1993,12 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">Time / Show</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="67"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="68"/>
         <source>Temps</source>
         <translation>Elapsed time</translation>
     </message>
     <message>
-        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="68"/>
+        <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="67"/>
         <location filename="../view/StepResultTreeView/gstepmanager.cpp" line="451"/>
         <source>Debug</source>
         <translation></translation>
@@ -2110,7 +2150,12 @@ p, li { white-space: pre-wrap; }
         <translation>Search for steps...</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.ui" line="64"/>
+        <location filename="../view/Steps/gstepviewdefault.ui" line="95"/>
+        <source>Replacer à la position par défaut</source>
+        <translation>Replace to default position</translation>
+    </message>
+    <message>
+        <location filename="../view/Steps/gstepviewdefault.ui" line="102"/>
         <source>Replacer au démarrage à la dernière position connue</source>
         <translation>During Computree launch, place at last known position</translation>
     </message>
@@ -2130,25 +2175,25 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Plugins</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="330"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="363"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="331"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="364"/>
         <source>Clé de l&apos;étape au sein du plugin ou d&apos;un script</source>
         <translation>Key of the step in plugin or in script</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="338"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="371"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="339"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="372"/>
         <source>Nom de l&apos;étape</source>
         <translation>Step name</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="346"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="379"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="347"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="380"/>
         <source>Description courte</source>
         <translation>Short description</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="387"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="388"/>
         <source>Description détaillée</source>
         <translation>Detailled description</translation>
     </message>

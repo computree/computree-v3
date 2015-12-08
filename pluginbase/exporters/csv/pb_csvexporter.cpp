@@ -26,7 +26,7 @@ PB_CSVExporter::~PB_CSVExporter()
 
 QString PB_CSVExporter::getExporterCustomName() const
 {
-    return "Export d'attributs (csv)";
+    return tr("Export d'attributs (csv)");
 }
 
 void PB_CSVExporter::init()

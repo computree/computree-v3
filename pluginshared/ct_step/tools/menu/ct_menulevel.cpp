@@ -42,9 +42,20 @@ bool CT_MenuLevel::addNotFoundedStep(CT_MenuLevel::CT_NotFoundedStep nfs)
     return true;
 }
 
+
+bool sortSteps(const CT_VirtualAbstractStep *s1, const CT_VirtualAbstractStep *s2)
+{
+    return s1->getStepDescription().toLower() < s2->getStepDescription().toLower();
+}
+
 QList<CT_VirtualAbstractStep *> CT_MenuLevel::steps() const
 {
-    return m_steps;
+    QList<CT_VirtualAbstractStep *> s;
+    s.append(m_steps);
+
+    qSort(s.begin(), s.end(), sortSteps);
+
+    return s;
 }
 
 QList<CT_MenuLevel::CT_NotFoundedStep> CT_MenuLevel::stepsNotFounded() const

@@ -883,6 +883,19 @@ In 3D mode, the tool only works on selected cells</translation>
     </message>
 </context>
 <context>
+    <name>PB_ActionShowItemDataGV</name>
+    <message>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="64"/>
+        <source>Information Item</source>
+        <translation>Item information</translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="69"/>
+        <source>Action qui affiche les données de l&apos;Item sélectionné.</source>
+        <translation>Action showing data on selected item</translation>
+    </message>
+</context>
+<context>
     <name>PB_ActionSlicePointCloudOptions</name>
     <message>
         <source>Form</source>
@@ -934,6 +947,11 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_CSVExporter</name>
     <message>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="29"/>
+        <source>Export d&apos;attributs (csv)</source>
+        <translation>Attributes export (csv)</translation>
+    </message>
+    <message>
         <location filename="../exporters/csv/pb_csvexporter.cpp" line="34"/>
         <source>Fichiers csv</source>
         <translation>CSV Files</translation>
@@ -980,6 +998,11 @@ In 3D mode, the tool only works on selected cells</translation>
 </context>
 <context>
     <name>PB_Grid2DExporter</name>
+    <message>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="23"/>
+        <source>Grilles 2D, ACSII ESRI Grid</source>
+        <translation>2D grids, ASCII ESRI Grid</translation>
+    </message>
     <message>
         <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="28"/>
         <source>Fichiers Grid 2D (ASCII)</source>
@@ -1056,6 +1079,11 @@ In 3D mode, the tool only works on selected cells</translation>
 </context>
 <context>
     <name>PB_GroupDataExporter</name>
+    <message>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="32"/>
+        <source>Attributs/Items d&apos;un groupe</source>
+        <translation>Attributes/Items in groups</translation>
+    </message>
     <message>
         <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="37"/>
         <source>Fichier txt</source>
@@ -1142,6 +1170,11 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_PbmExporter</name>
     <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="21"/>
+        <source>Grilles 2D, format PBM</source>
+        <translation>2D grids, PBM format</translation>
+    </message>
+    <message>
         <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="26"/>
         <source>Fichiers Images 2D (pbm)</source>
         <translation>PBM Files (2D images)</translation>
@@ -1165,6 +1198,11 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_PgmExporter</name>
     <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="21"/>
+        <source>Grilles 2D, format PGM</source>
+        <translation>2D grids, PGM format</translation>
+    </message>
+    <message>
         <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="26"/>
         <source>Fichiers Images 2D (pgm)</source>
         <translation>PGM Files (2D images)</translation>
@@ -1187,6 +1225,11 @@ In 3D mode, the tool only works on selected cells</translation>
 </context>
 <context>
     <name>PB_Polygon2DExporter</name>
+    <message>
+        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="24"/>
+        <source>Polygones 2D, ACSII</source>
+        <translation>2D polygons, ASCII</translation>
+    </message>
     <message>
         <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="29"/>
         <source>Polygones 2D (ASCII)</source>
@@ -1817,8 +1860,7 @@ Only files headers are loaded at this stage. </translation>
 <context>
     <name>PB_StepGenericLoadFile</name>
     <message>
-        <location filename="../step/pb_stepgenericloadfile.cpp" line="66"/>
-        <location filename="../step/pb_stepgenericloadfile.cpp" line="81"/>
+        <location filename="../step/pb_stepgenericloadfile.cpp" line="68"/>
         <source>Charge un fichier du type</source>
         <translation>Load a file of type</translation>
     </message>
@@ -1845,19 +1887,16 @@ Only files headers are loaded at this stage. </translation>
         <translation type="vanished">Loading of ascii file</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadasciifile.cpp" line="120"/>
         <source>Fichier XYZI (sans entête)</source>
-        <translation>XYZI file (no header)</translation>
+        <translation type="vanished">XYZI file (no header)</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadasciifile.cpp" line="131"/>
         <source>Ascii Files</source>
-        <translation>ACSII Files</translation>
+        <translation type="vanished">ACSII Files</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadasciifile.cpp" line="316"/>
         <source>Colonne %1</source>
-        <translation>Column %1</translation>
+        <translation type="vanished">Column %1</translation>
     </message>
 </context>
 <context>
@@ -1871,9 +1910,13 @@ Only files headers are loaded at this stage. </translation>
         <translation type="vanished">Loading of ascii file</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadasciifile02.cpp" line="184"/>
         <source>Fichier de points ASCII (paramétrable)</source>
-        <translation>Points ASCII file (parametrizable)</translation>
+        <translation type="vanished">Points ASCII file (parametrizable)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="184"/>
+        <source>Points, Fichier ASCII (paramétrable)</source>
+        <translation>Points, ACSII file (parametrizable)</translation>
     </message>
     <message>
         <location filename="../step/pb_steploadasciifile02.cpp" line="195"/>
@@ -1964,45 +2007,36 @@ Only files headers are loaded at this stage. </translation>
         <translation type="vanished">Loading a list of xyb files</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="51"/>
         <source>Fichiers multiples XYB</source>
-        <translation>Multiple XYB files</translation>
+        <translation type="vanished">Multiple XYB files</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="71"/>
         <source>IndividualScenes</source>
-        <translation>Individual Scenes</translation>
+        <translation type="vanished">Individual Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="72"/>
         <source>g</source>
-        <translation>Group</translation>
+        <translation type="vanished">Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="73"/>
         <source>IndividualScene</source>
-        <translation>Individual Scene</translation>
+        <translation type="vanished">Individual Scene</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="74"/>
         <source>IndividualIntensity</source>
-        <translation>Individual Intensity</translation>
+        <translation type="vanished">Individual Intensity</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="75"/>
         <source>ScanPosition</source>
-        <translation>Scanner</translation>
+        <translation type="vanished">Scanner</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="77"/>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="79"/>
         <source>MergedScene</source>
-        <translation>Merged Scenes</translation>
+        <translation type="vanished">Merged Scenes</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadmultixybfiles.cpp" line="78"/>
         <source>gm</source>
-        <translation>Group</translation>
+        <translation type="vanished">Group</translation>
     </message>
 </context>
 <context>
@@ -2721,31 +2755,16 @@ Please select parameters for slicing.</translation>
         <translation type="vanished">Selection of a subset of items (copy of items)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="43"/>
         <source>Séléction d&apos;items (avec copie)</source>
-        <translation>Selection of items (with copy)</translation>
+        <translation type="vanished">Selection of items (with copy)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="58"/>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="71"/>
-        <source>Result</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="64"/>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="76"/>
-        <source>Cylinder</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="167"/>
         <source>Mode manuel</source>
-        <translation>Manual mode</translation>
+        <translation type="vanished">Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemcopy.cpp" line="167"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
-        <translation>Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
+        <translation type="vanished">Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
     </message>
 </context>
 <context>
@@ -2770,32 +2789,36 @@ Please select parameters for slicing.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="86"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="90"/>
+        <source>Séléction classique (picking)</source>
+        <translation>Classical selection (picking)</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="93"/>
         <source>Supprimer les groupes ne contenant pas l&apos;ItemDrawable recherché</source>
         <translation>Delete groups that do not contain the desired ItemDrawable</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="87"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="94"/>
         <source>Supprimer les groupes parents si l&apos;ItemDrawable recherché n&apos;existe plus dans la structure sous-jacente</source>
         <translation>Delete parents groups if desired ItemDrawable no longer exists in the underlying structure</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="93"/>
         <source>Séléction classique</source>
-        <translation>Classical selection</translation>
+        <translation type="vanished">Classical selection</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="94"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="89"/>
         <source>Par proximité des centres des items</source>
         <translation>Poximity selection (using item centers)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="204"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="198"/>
         <source>Mode manuel</source>
         <translation>Manual mode</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepuseritemselection.cpp" line="204"/>
+        <location filename="../step/pb_stepuseritemselection.cpp" line="198"/>
         <source>Bienvenue dans le mode manuel de cette étape de filtrage. Veuillez sélectionner les éléments dans la vue graphique puis valider en cliquant sur le pouce en haut de la fenêtre principale. Les éléments sélectionnés seront gardés dans le résultat de sortie.</source>
         <translation>Welcome to the manual mode of this filtering step. Please select the items in the graphical view and confirm by clicking on the thumb on top of the main window. Selected items will be kept in the output result.</translation>
     </message>
@@ -2841,13 +2864,8 @@ Please select parameters for slicing.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="120"/>
+        <location filename="../pb_steppluginmanager.cpp" line="117"/>
         <source>Plugin_Base initialized</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../pb_steppluginmanager.cpp" line="144"/>
-        <source>DataSources</source>
         <translation></translation>
     </message>
     <message>

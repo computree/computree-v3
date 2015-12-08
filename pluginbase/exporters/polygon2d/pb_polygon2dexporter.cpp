@@ -21,7 +21,7 @@ PB_Polygon2DExporter::~PB_Polygon2DExporter()
 
 QString PB_Polygon2DExporter::getExporterCustomName() const
 {
-    return "Polygones 2D, ACSII";
+    return tr("Polygones 2D, ACSII");
 }
 
 void PB_Polygon2DExporter::init()

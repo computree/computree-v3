@@ -29,7 +29,7 @@ PB_GroupDataExporter::~PB_GroupDataExporter()
 
 QString PB_GroupDataExporter::getExporterCustomName() const
 {
-    return "Attributs/Items d'un groupe";
+    return tr("Attributs/Items d'un groupe");
 }
 
 void PB_GroupDataExporter::init()
