@@ -1144,10 +1144,10 @@ bool GOsgGraphicsView::event(QEvent *event)
         case QEvent::MouseButtonDblClick:
         case QEvent::MouseButtonPress:
         case QEvent::MouseButtonRelease:
-        case QEvent::Wheel: this->updateGL();
+        case QEvent::Wheel: this->update();
             break;
 
-        case QEvent::MouseMove: if(m_mouseButtonPressed) { this->updateGL(); }
+        case QEvent::MouseMove: if(m_mouseButtonPressed) { this->update(); }
             break;
 
         default:
@@ -1183,7 +1183,7 @@ void GOsgGraphicsView::redraw(RedrawOptions opt)
         loop.exec(QEventLoop::ExcludeUserInputEvents);
     }
 
-    updateGL();
+    update();
 }
 
 DM_GraphicsViewCamera* GOsgGraphicsView::getCamera() const
@@ -1195,7 +1195,7 @@ void GOsgGraphicsView::takeAndSaveScreenshot()
 {
     this->getEventQueue()->keyPress(osgGA::GUIEventAdapter::KeySymbol(m_captureScreenHandler->getKeyEventTakeScreenShot()));
     this->getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KeySymbol(m_captureScreenHandler->getKeyEventTakeScreenShot()));
-    updateGL();
+    update();
 }
 
 void GOsgGraphicsView::updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable *> &list)
