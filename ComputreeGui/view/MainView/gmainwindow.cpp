@@ -98,12 +98,9 @@ void GMainWindow::init()
 
 void GMainWindow::closeEvent(QCloseEvent *ev)
 {
-    DM_Context *context = new DM_Context();
-    //connect(context, SIGNAL(actionFinished(DM_Context*)), this, SLOT(close()), Qt::QueuedConnection);
-
     int res;
 
-    if((res = GUI_MANAGER->asyncRemoveAllStep(context)) != -1)
+    if((res = GUI_MANAGER->asyncRemoveAllStep(NULL)) != -1)
     {
         if(res == 0)
         {

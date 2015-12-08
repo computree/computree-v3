@@ -42,7 +42,8 @@ MyTreeDelegate::MyTreeDelegate(QObject *parent) :
 
 MyTreeDelegate::~MyTreeDelegate()
 {
-
+    delete _imgDebugOn;
+    delete _imgDebugOff;
 }
 
 void MyTreeDelegate::paint(QPainter *painter,

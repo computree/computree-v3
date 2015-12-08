@@ -4,6 +4,12 @@
 #include "ct_cloudindex/tools/abstract/ct_abstractcloudindexregistrationmanagert.h"
 
 template<typename T>
+CT_AbstractCloudIndexRegistrationManagerT<T>::~CT_AbstractCloudIndexRegistrationManagerT()
+{
+    delete m_mutex;
+}
+
+template<typename T>
 bool CT_AbstractCloudIndexRegistrationManagerT<T>::registerIndex(typename CT_AbstractCloudIndexRegistrationManagerT<T>::CT_AbstractModifiableCIR cir)
 {
     m_cirArray.append(cir.data());

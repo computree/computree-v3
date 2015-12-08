@@ -27,6 +27,8 @@ CT_Context::~CT_Context()
     delete m_diam;
     delete m_categoryManager;
     delete m_tmpLog;
+    delete m_modelHelper;
+    delete m_csManager;
 }
 
 CT_RepositoryManager* CT_Context::repositoryManager() const

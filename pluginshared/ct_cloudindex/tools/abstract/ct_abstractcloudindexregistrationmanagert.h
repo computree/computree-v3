@@ -25,6 +25,7 @@ public:
     typedef QSharedPointer< CT_AbstractCloudIndexRegisteredT<T> >               CT_AbstractCIR;
 
     CT_AbstractCloudIndexRegistrationManagerT() : CT_AbstractCloudIndexRegistrationManager() { m_mutex = new QMutex(QMutex::Recursive); }
+    ~CT_AbstractCloudIndexRegistrationManagerT();
 
 protected:
 

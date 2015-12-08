@@ -30,6 +30,8 @@
 #include "cdm_scriptmanagerxml.h"
 #include "cdm_configfile.h"
 
+#include "ct_global/ct_context.h"
+
 DM_MainWindow::DM_MainWindow()
 {
     _pluginManager = new CDM_PluginManager();
@@ -55,6 +57,7 @@ DM_MainWindow::~DM_MainWindow()
     delete _pluginManager;
 
     delete CONFIG_FILE;
+    delete PS_CONTEXT;
 }
 
 CDM_PluginManager* DM_MainWindow::getPluginManager() const

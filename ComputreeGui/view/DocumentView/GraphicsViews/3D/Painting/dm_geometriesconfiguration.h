@@ -14,29 +14,43 @@
 class DM_GeometriesConfiguration
 {
 public:
-    typedef osgFX::Effect* (*createNewEffectFunction)(osg::PrimitiveSet::Mode mode, void *context);
+    typedef osgFX::Effect* (*CreateNewEffectFunction)(osg::PrimitiveSet::Mode mode, void *context);
+
+    typedef DM_PainterToOsgElements::ColorArrayType* (*GetOrCreateColorArrayFunction)(void *context);
+    typedef DM_PainterToOsgElements::NormalArrayType* (*GetOrCreateNormalArrayFunction)(void *context);
+    typedef osg::Array* (*GetOrCreateAttribArrayFunction)(void *context);
 
     DM_GeometriesConfiguration();
 
     /**
      * @brief Set the colors array that was sync with the global points cloud
      */
-    void setGlobalColorArray(DM_PainterToOsgElements::ColorArrayType *colors);
+    void setFunctionToGetOrCreateGlobalColorArray(GetOrCreateColorArrayFunction func, void *context);
 
     /**
      * @brief Set the normals array that was sync with the global points cloud
      */
-    void setGlobalNormalArray(DM_PainterToOsgElements::NormalArrayType *normals);
+    void setFunctionToGetOrCreateGlobalNormalArray(GetOrCreateNormalArrayFunction func, void *context);
+
+    /**
+     * @brief Set the vertex attributes array that will be used by the shader for vertex of the global points cloud
+     */
+    void setFunctionToGetOrCreateGlobalVertexAttribArray(uint index, GetOrCreateAttribArrayFunction func, void *context);
+
+    /**
+     * @brief Set the vertex attributes array that will be used by the shader for local vertex
+     */
+    void setLocalVertexAttribArray(uint index, osg::Array *vAttribArray);
 
     /**
      * @brief Set a function to use to create a new osgFX::Effect when necessary for globals geometries
      */
-    void setFunctionToCreateNewEffectForGlobal(createNewEffectFunction f, void *context);
+    void setFunctionToCreateNewEffectForGlobal(CreateNewEffectFunction f, void *context);
 
     /**
      * @brief Set a function to use to create a new osgFX::Effect when necessary for globals geometries
      */
-    void setFunctionToCreateNewEffectForLocal(createNewEffectFunction f, void *context);
+    void setFunctionToCreateNewEffectForLocal(CreateNewEffectFunction f, void *context);
 
     /**
      * @brief Create a Effect for a specific type of global geometries
@@ -55,16 +69,6 @@ public:
     void setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList< osg::ref_ptr<osg::StateSet> > set);
 
     /**
-     * @brief Set the vertex attributes array that will be used by the shader for vertex of the global points cloud
-     */
-    void setGlobalVertexAttribArray(uint index, osg::Array *vAttribArray);
-
-    /**
-     * @brief Set the location index of the global color array that will be pass like a vertex attribute array
-     */
-    void setGlobalColorVertexAttribArrayLocationIndex(uint index);
-
-    /**
      * @brief Set the state set to use with local geometries (points from circle, triangle, etc...)
      */
     void setLocalGeometriesStateSet(QList< osg::ref_ptr<osg::StateSet> > set);
@@ -72,16 +76,6 @@ public:
 
     QList< osg::ref_ptr<osg::StateSet> > globalStateSet(osg::PrimitiveSet::Mode mode) const;
     QList< osg::ref_ptr<osg::StateSet> > localStateSet(osg::PrimitiveSet::Mode mode) const;
-
-    /**
-     * @brief Set the vertex attributes array that will be used by the shader for local vertex
-     */
-    void setLocalVertexAttribArray(uint index, osg::Array *vAttribArray);
-
-    /**
-     * @brief Set the location index of the local color array that will be pass like a vertex attribute array
-     */
-    void setLocalColorVertexAttribArrayLocationIndex(uint index);
 
     DM_PainterToOsgElements::ColorArrayType* globalColorArray() const;
     DM_PainterToOsgElements::NormalArrayType* globalNormalArray() const;
@@ -92,28 +86,31 @@ public:
     uint localVertexAttribArrayLocationIndex() const;
     osg::Array* localVertexAttribArray() const;
 
-    uint localColorVertexAttribArrayLocationIndex() const;
-    uint globalColorVertexAttribArrayLocationIndex() const;
-
 private:
-    osg::ref_ptr< DM_PainterToOsgElements::ColorArrayType >                 m_globalColorArray;
-    osg::ref_ptr< DM_PainterToOsgElements::NormalArrayType >                m_globalNormalArray;
+    template<typename FUNC>
+    struct FunctionGetOrCreate
+    {
+        FunctionGetOrCreate() : function(NULL), context(NULL), location(0) {}
 
-    QPair<createNewEffectFunction, void*>                                   m_effectFunctionGlobal;
-    QPair<createNewEffectFunction, void*>                                   m_effectFunctionLocal;
+        FUNC function;
+        void *context;
+        uint location;
+    };
+
+    FunctionGetOrCreate<GetOrCreateColorArrayFunction>                      m_globalColorArray;
+    FunctionGetOrCreate<GetOrCreateNormalArrayFunction>                     m_globalNormalArray;
+    FunctionGetOrCreate<GetOrCreateAttribArrayFunction>                     m_globalVertexAttribArray;
+
+    FunctionGetOrCreate<CreateNewEffectFunction>                            m_effectFunctionGlobal;
+    FunctionGetOrCreate<CreateNewEffectFunction>                            m_effectFunctionLocal;
 
     QList< osg::ref_ptr<osg::StateSet> >                                    m_globalStateSet;
     QHash<osg::PrimitiveSet::Mode, QList< osg::ref_ptr<osg::StateSet> > >   m_globalStateSetByPrimitiveSetMode;
-    uint                                                                    m_globalVertexAttribArrayLocationIndex;
-    osg::ref_ptr<osg::Array>                                                m_globalVertexAttribArray;
 
     QList< osg::ref_ptr<osg::StateSet> >                                    m_localStateSet;
     QHash<osg::PrimitiveSet::Mode, QList< osg::ref_ptr<osg::StateSet> > >   m_localStateSetByPrimitiveSetMode;
     uint                                                                    m_localVertexAttribArrayLocationIndex;
     osg::ref_ptr<osg::Array>                                                m_localVertexAttribArray;
-
-    uint                                                                    m_globalColorVertexAttribArrayLocationIndex;
-    uint                                                                    m_localColorVertexAttribArrayLocationIndex;
 
     osg::ref_ptr< osg::Program >                                            m_shaderProgram;
 };

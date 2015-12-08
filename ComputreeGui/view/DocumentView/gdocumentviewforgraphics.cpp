@@ -62,6 +62,9 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
 {
+    if(_buttonExport != NULL)
+        delete _buttonExport->menu();
+
     delete _graphicsOptionsView;
     delete m_mutex;
 }

@@ -27,7 +27,7 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
                 pluginName.remove(0, 5);
             }
 
-            QMenu *plugMenu = new QMenu(pluginName);
+            QMenu *plugMenu = new QMenu(pluginName, menu);
 
             QListIterator<CT_StandardExporterSeparator*> itS(separators);
 
@@ -44,7 +44,7 @@ QMenu* CDM_Tools::createMenuForAllExporters(const QObject *receiver, const char 
                     QMenu *sepMenu = NULL;
 
                     if(eSize > 1)
-                        sepMenu = new QMenu(sep->title());
+                        sepMenu = new QMenu(sep->title(), plugMenu);
 
                     QListIterator<CT_AbstractExporter*> itE(sep->exporters());
 

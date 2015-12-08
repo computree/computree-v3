@@ -125,15 +125,10 @@ DM_MultipleItemDrawableToOsgWorker::DM_MultipleItemDrawableToOsgWorker(GOsgGraph
     m_stop = false;
 
     if(m_view.getDocumentView() != NULL) {
-        m_geometriesConfiguration.setGlobalColorArray(dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalColorArrayForPoints());
-        m_geometriesConfiguration.setGlobalNormalArray(dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalNormalArrayForPoints());
-        m_geometriesConfiguration.setGlobalVertexAttribArray(SHADER_INFO_LOCATION, dynamic_cast<GDocumentViewForGraphics*>(m_view.document())->getOrCreateGlobalAttribArrayForPoints());
+        m_geometriesConfiguration.setFunctionToGetOrCreateGlobalColorArray(&staticGetOrCreateColorArrayFunction, this);
+        m_geometriesConfiguration.setFunctionToGetOrCreateGlobalNormalArray(&staticGetOrCreateNormalArrayFunction, this);
+        m_geometriesConfiguration.setFunctionToGetOrCreateGlobalVertexAttribArray(SHADER_INFO_LOCATION, &staticGetOrCreateAttribArrayFunction, this);
     }
-
-    //m_geometriesConfiguration.setGlobalColorVertexAttribArrayLocationIndex(SHADER_COLOR_LOCATION);
-    //m_geometriesConfiguration.setLocalColorVertexAttribArrayLocationIndex(SHADER_COLOR_LOCATION);
-
-
 
     initGeometriesConfigurationForGlobalElements();
     initGeometriesConfigurationForLocalElements();
@@ -324,6 +319,24 @@ void DM_MultipleItemDrawableToOsgWorker::initGeometriesConfigurationForLocalElem
 void DM_MultipleItemDrawableToOsgWorker::staticComputeQtConcurrent(DM_SingleItemDrawableToOsgWorker *worker)
 {
     worker->compute();
+}
+
+DM_PainterToOsgElements::ColorArrayType *DM_MultipleItemDrawableToOsgWorker::staticGetOrCreateColorArrayFunction(void *context)
+{
+    DM_MultipleItemDrawableToOsgWorker *thisPointer = (DM_MultipleItemDrawableToOsgWorker*)context;
+    return dynamic_cast<GDocumentViewForGraphics*>(thisPointer->m_view.document())->getOrCreateGlobalColorArrayForPoints();
+}
+
+DM_PainterToOsgElements::NormalArrayType *DM_MultipleItemDrawableToOsgWorker::staticGetOrCreateNormalArrayFunction(void *context)
+{
+    DM_MultipleItemDrawableToOsgWorker *thisPointer = (DM_MultipleItemDrawableToOsgWorker*)context;
+    return dynamic_cast<GDocumentViewForGraphics*>(thisPointer->m_view.document())->getOrCreateGlobalNormalArrayForPoints();
+}
+
+osg::Array *DM_MultipleItemDrawableToOsgWorker::staticGetOrCreateAttribArrayFunction(void *context)
+{
+    DM_MultipleItemDrawableToOsgWorker *thisPointer = (DM_MultipleItemDrawableToOsgWorker*)context;
+    return dynamic_cast<GDocumentViewForGraphics*>(thisPointer->m_view.document())->getOrCreateGlobalAttribArrayForPoints();
 }
 
 void DM_MultipleItemDrawableToOsgWorker::addItemDrawable(CT_AbstractItemDrawable &item, const QColor &defaultColor)

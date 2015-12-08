@@ -78,7 +78,25 @@ private:
     void initGeometriesConfigurationForGlobalElements();
     void initGeometriesConfigurationForLocalElements();
 
+    /**
+     * @brief Static method called by QtConcurrent to execute the worker passed in parameter in a thread
+     */
     static void staticComputeQtConcurrent(DM_SingleItemDrawableToOsgWorker *worker);
+
+    /**
+     * @brief Static method to create the global color array (for points) only on demand. Pass this function to a DM_GeometriesConfiguration
+     */
+    static DM_PainterToOsgElements::ColorArrayType* staticGetOrCreateColorArrayFunction(void *context);
+
+    /**
+     * @brief Static method to create the global normal array (for points) only on demand. Pass this function to a DM_GeometriesConfiguration
+     */
+    static DM_PainterToOsgElements::NormalArrayType* staticGetOrCreateNormalArrayFunction(void *context);
+
+    /**
+     * @brief Static method to create the global attrib array (for points) only on demand. Pass this function to a DM_GeometriesConfiguration
+     */
+    static osg::Array* staticGetOrCreateAttribArrayFunction(void *context);
 
 protected:
     void run();

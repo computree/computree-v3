@@ -2,41 +2,45 @@
 
 DM_GeometriesConfiguration::DM_GeometriesConfiguration()
 {
-    m_effectFunctionGlobal.first = NULL;
-    m_effectFunctionLocal.first = NULL;
-    m_globalColorArray = NULL;
-    m_globalNormalArray = NULL;
-    m_globalVertexAttribArray = NULL;
     m_localVertexAttribArray = NULL;
     m_shaderProgram = NULL;
 }
 
-void DM_GeometriesConfiguration::setGlobalColorArray(DM_PainterToOsgElements::ColorArrayType *colors)
+void DM_GeometriesConfiguration::setFunctionToGetOrCreateGlobalColorArray(DM_GeometriesConfiguration::GetOrCreateColorArrayFunction func, void *context)
 {
-    m_globalColorArray = colors;
+    m_globalColorArray.function = func;
+    m_globalColorArray.context = context;
 }
 
-void DM_GeometriesConfiguration::setGlobalNormalArray(DM_PainterToOsgElements::NormalArrayType *normals)
+void DM_GeometriesConfiguration::setFunctionToGetOrCreateGlobalNormalArray(DM_GeometriesConfiguration::GetOrCreateNormalArrayFunction func, void *context)
 {
-    m_globalNormalArray = normals;
+    m_globalNormalArray.function = func;
+    m_globalNormalArray.context = context;
 }
 
-void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForGlobal(DM_GeometriesConfiguration::createNewEffectFunction f, void *context)
+void DM_GeometriesConfiguration::setFunctionToGetOrCreateGlobalVertexAttribArray(uint index, DM_GeometriesConfiguration::GetOrCreateAttribArrayFunction func, void *context)
 {
-    m_effectFunctionGlobal.first = f;
-    m_effectFunctionGlobal.second = context;
+    m_globalVertexAttribArray.location = index;
+    m_globalVertexAttribArray.function = func;
+    m_globalVertexAttribArray.context = context;
 }
 
-void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForLocal(DM_GeometriesConfiguration::createNewEffectFunction f, void *context)
+void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForGlobal(DM_GeometriesConfiguration::CreateNewEffectFunction f, void *context)
 {
-    m_effectFunctionLocal.first = f;
-    m_effectFunctionLocal.second = context;
+    m_effectFunctionGlobal.function = f;
+    m_effectFunctionGlobal.context = context;
+}
+
+void DM_GeometriesConfiguration::setFunctionToCreateNewEffectForLocal(DM_GeometriesConfiguration::CreateNewEffectFunction f, void *context)
+{
+    m_effectFunctionLocal.function = f;
+    m_effectFunctionLocal.context = context;
 }
 
 osgFX::Effect* DM_GeometriesConfiguration::createGlobalEffect(osg::PrimitiveSet::Mode mode)
 {
-    if(m_effectFunctionGlobal.first != NULL) {
-        return (*m_effectFunctionGlobal.first)(mode, m_effectFunctionGlobal.second);
+    if(m_effectFunctionGlobal.function != NULL) {
+        return (*m_effectFunctionGlobal.function)(mode, m_effectFunctionGlobal.context);
     }
 
     return NULL;
@@ -44,8 +48,8 @@ osgFX::Effect* DM_GeometriesConfiguration::createGlobalEffect(osg::PrimitiveSet:
 
 osgFX::Effect *DM_GeometriesConfiguration::createLocalEffect(osg::PrimitiveSet::Mode mode)
 {
-    if(m_effectFunctionLocal.first != NULL) {
-        return (*m_effectFunctionLocal.first)(mode, m_effectFunctionLocal.second);
+    if(m_effectFunctionLocal.function != NULL) {
+        return (*m_effectFunctionLocal.function)(mode, m_effectFunctionLocal.context);
     }
 
     return NULL;
@@ -59,17 +63,6 @@ void DM_GeometriesConfiguration::setGlobalGeometriesStateSet(QList<osg::ref_ptr<
 void DM_GeometriesConfiguration::setGlobalGeometriesStateSetByPrimitiveSetMode(osg::PrimitiveSet::Mode mode, QList<osg::ref_ptr<osg::StateSet> > set)
 {
     m_globalStateSetByPrimitiveSetMode.insert(mode, set);
-}
-
-void DM_GeometriesConfiguration::setGlobalVertexAttribArray(uint index, osg::Array *vAttribArray)
-{
-    m_globalVertexAttribArrayLocationIndex = index;
-    m_globalVertexAttribArray = vAttribArray;
-}
-
-void DM_GeometriesConfiguration::setGlobalColorVertexAttribArrayLocationIndex(uint index)
-{
-    m_globalColorVertexAttribArrayLocationIndex = index;
 }
 
 void DM_GeometriesConfiguration::setLocalGeometriesStateSet(QList<osg::ref_ptr<osg::StateSet> > set)
@@ -88,44 +81,38 @@ void DM_GeometriesConfiguration::setLocalVertexAttribArray(uint index, osg::Arra
     m_localVertexAttribArray = vAttribArray;
 }
 
-void DM_GeometriesConfiguration::setLocalColorVertexAttribArrayLocationIndex(uint index)
-{
-    m_localColorVertexAttribArrayLocationIndex = index;
-}
-
 DM_PainterToOsgElements::ColorArrayType *DM_GeometriesConfiguration::globalColorArray() const
 {
-    return m_globalColorArray.get();
+    if(m_globalColorArray.function != NULL)
+        return (*m_globalColorArray.function)(m_globalColorArray.context);
+
+    return NULL;
 }
 
 DM_PainterToOsgElements::NormalArrayType *DM_GeometriesConfiguration::globalNormalArray() const
 {
-    return m_globalNormalArray.get();
+    if(m_globalNormalArray.function != NULL)
+        return (*m_globalNormalArray.function)(m_globalNormalArray.context);
+
+    return NULL;
 }
 
 uint DM_GeometriesConfiguration::globalVertexAttribArrayLocationIndex() const
 {
-    return m_globalVertexAttribArrayLocationIndex;
+    return m_globalVertexAttribArray.location;
 }
 
 osg::Array *DM_GeometriesConfiguration::globalVertexAttribArray() const
 {
-    return m_globalVertexAttribArray.get();
+    if(m_globalVertexAttribArray.function != NULL)
+        return (*m_globalVertexAttribArray.function)(m_globalVertexAttribArray.context);
+
+    return NULL;
 }
 
 osg::Array *DM_GeometriesConfiguration::localVertexAttribArray() const
 {
     return m_localVertexAttribArray;
-}
-
-uint DM_GeometriesConfiguration::localColorVertexAttribArrayLocationIndex() const
-{
-    return m_localColorVertexAttribArrayLocationIndex;
-}
-
-uint DM_GeometriesConfiguration::globalColorVertexAttribArrayLocationIndex() const
-{
-    return m_globalColorVertexAttribArrayLocationIndex;
 }
 
 uint DM_GeometriesConfiguration::localVertexAttribArrayLocationIndex() const

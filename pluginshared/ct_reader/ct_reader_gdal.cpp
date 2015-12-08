@@ -28,9 +28,12 @@ CT_Reader_GDAL::~CT_Reader_GDAL()
 
 QString CT_Reader_GDAL::getTypeOfDriver() const
 {
+#ifdef USE_GDAL
     if (m_driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) == NULL) {return "Raster";}
     if (m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_RASTER) == NULL) {return "Vector";}
-    else return "Undefined";
+#endif
+
+    return "Undefined";
 }
 
 bool CT_Reader_GDAL::setFilePath(const QString &filepath)
