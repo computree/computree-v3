@@ -184,6 +184,24 @@ QString PB_StepLoadAsciiFile02::getStepDescription() const
     return tr("Points, Fichier ASCII (paramétrable)");
 }
 
+QString PB_StepLoadAsciiFile02::getStepDetailledDescription() const
+{
+    return tr("Chargement d'un fichier de points au format ASCII.<br>"
+              "L'import est configurable, le fichier devant contenir les champs suivants :<br>"
+              "- X      : Coordonnée X du points<br>"
+              "- Y      : Coordonnée Y du point<br>"
+              "- Z      : Coordonnée Y du point<br><br>"
+              "De plus les champs suivants peuvent être fournis mais sont optionnels :<br>"
+              "- Intensité      : Intensité du point<br>"
+              "- Rouge          : Composante rouge du point<br>"
+              "- Vert           : Composante verte du point<br>"
+              "- Bleu           : Composante bleue du point<br>"
+              "- Normale X      : Coordonnée Y de la normale au point<br>"
+              "- Normale Y      : Coordonnée Y de la normale au point<br>"
+              "- Normale Z      : Coordonnée Y de la normale au point<br>");
+}
+
+
 CT_VirtualAbstractStep* PB_StepLoadAsciiFile02::createNewInstance(CT_StepInitializeData &dataInit)
 {
     return new PB_StepLoadAsciiFile02(dataInit);
@@ -233,16 +251,16 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
 {
     // première boite de dialog
     QList<CT_TextFileConfigurationFields> fieldList;
-    fieldList.append(CT_TextFileConfigurationFields("X", QRegExp(".*[xX].*")));             // x
-    fieldList.append(CT_TextFileConfigurationFields("Y", QRegExp(".*[yY].*")));             // y
-    fieldList.append(CT_TextFileConfigurationFields("Z", QRegExp(".*[zZ].*")));             // z
-    fieldList.append(CT_TextFileConfigurationFields("Intensité", QRegExp("[iI].*")));       // intensité - intensity - intensidad - intensität - i
-    fieldList.append(CT_TextFileConfigurationFields("Rouge", QRegExp("[rR].*")));           // rouge - red - rojo - rot - r
-    fieldList.append(CT_TextFileConfigurationFields("Vert", QRegExp("[vVgG].*")));          // vert - green - verde - grün - v - g
-    fieldList.append(CT_TextFileConfigurationFields("Bleu", QRegExp("[bBaA].*")));          // bleu - blue - azul - blau - b - a
-    fieldList.append(CT_TextFileConfigurationFields("Normale X", QRegExp("[nN].*[xX]")));   // normale x - normal x - normali x - normalen x - nx
-    fieldList.append(CT_TextFileConfigurationFields("Normale Y", QRegExp("[nN].*[yY]")));   // normale y - normal y - normali y - normalen y - ny
-    fieldList.append(CT_TextFileConfigurationFields("Normale Z", QRegExp("[nN].*[zZ]")));   // normale z - normal z - normali z - normalen z - nz
+    fieldList.append(CT_TextFileConfigurationFields("X", QRegExp(".*[xX].*")));                 // x
+    fieldList.append(CT_TextFileConfigurationFields("Y", QRegExp(".*[yY].*")));                 // y
+    fieldList.append(CT_TextFileConfigurationFields("Z", QRegExp(".*[zZ].*")));                 // z
+    fieldList.append(CT_TextFileConfigurationFields(tr("Intensité"), QRegExp("[iI].*")));       // intensité - intensity - intensidad - intensität - i
+    fieldList.append(CT_TextFileConfigurationFields(tr("Rouge"), QRegExp("[rR].*")));           // rouge - red - rojo - rot - r
+    fieldList.append(CT_TextFileConfigurationFields(tr("Vert"), QRegExp("[vVgG].*")));          // vert - green - verde - grün - v - g
+    fieldList.append(CT_TextFileConfigurationFields(tr("Bleu"), QRegExp("[bBaA].*")));          // bleu - blue - azul - blau - b - a
+    fieldList.append(CT_TextFileConfigurationFields(tr("Normale X"), QRegExp("[nN].*[xX]")));   // normale x - normal x - normali x - normalen x - nx
+    fieldList.append(CT_TextFileConfigurationFields(tr("Normale Y"), QRegExp("[nN].*[yY]")));   // normale y - normal y - normali y - normalen y - ny
+    fieldList.append(CT_TextFileConfigurationFields(tr("Normale Z"), QRegExp("[nN].*[zZ]")));   // normale z - normal z - normali z - normalen z - nz
 
     CT_TextFileConfigurationDialog dialog(fieldList, NULL, getFilePath());
     dialog.setFileExtensionAccepted(getFileExtensionAccepted());
@@ -254,13 +272,13 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
         corresp.insert("X", _columnX);
         corresp.insert("Y", _columnY);
         corresp.insert("Z", _columnZ);
-        corresp.insert("Intensité", _columnI);
-        corresp.insert("Rouge", _columnR);
-        corresp.insert("Vert", _columnG);
-        corresp.insert("Bleu", _columnB);
-        corresp.insert("Normale X", _columnNX);
-        corresp.insert("Normale Y", _columnNY);
-        corresp.insert("Normale Z", _columnNZ);
+        corresp.insert(tr("Intensité"), _columnI);
+        corresp.insert(tr("Rouge"), _columnR);
+        corresp.insert(tr("Vert"), _columnG);
+        corresp.insert(tr("Bleu"), _columnB);
+        corresp.insert(tr("Normale X"), _columnNX);
+        corresp.insert(tr("Normale Y"), _columnNY);
+        corresp.insert(tr("Normale Z"), _columnNZ);
 
         dialog.setHeader(_header);
         dialog.setNLinesToSkip(_linesToSkip);
@@ -290,13 +308,13 @@ bool PB_StepLoadAsciiFile02::showColumnConfigurationDialog()
     if (corresp.contains("X")) {columnX = corresp.value("X");} else {ok = false;}
     if (corresp.contains("Y")) {columnY = corresp.value("Y");} else {ok = false;}
     if (corresp.contains("Z")) {columnZ = corresp.value("Z");} else {ok = false;}
-    columnI = corresp.value("Intensité", -1);
-    columnR = corresp.value("Rouge", -1);
-    columnG = corresp.value("Vert", -1);
-    columnB = corresp.value("Bleu", -1);
-    columnNX = corresp.value("Normale X", -1);
-    columnNY = corresp.value("Normale Y", -1);
-    columnNZ = corresp.value("Normale Z", -1);
+    columnI = corresp.value(tr("Intensité"), -1);
+    columnR = corresp.value(tr("Rouge"), -1);
+    columnG = corresp.value(tr("Vert"), -1);
+    columnB = corresp.value(tr("Bleu"), -1);
+    columnNX = corresp.value(tr("Normale X"), -1);
+    columnNY = corresp.value(tr("Normale Y"), -1);
+    columnNZ = corresp.value(tr("Normale Z"), -1);
 
     if (columnX<0 || columnY<0 ||columnZ<0) {ok = false;}
 

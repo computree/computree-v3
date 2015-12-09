@@ -83,7 +83,7 @@ void CT_TextFileConfigurationDialog::fileChoose_clicked()
             tmp += "*." + itS.next();
 
             if(itS.hasNext())
-                filter += " ";
+                tmp += " ";
         }
     }
 

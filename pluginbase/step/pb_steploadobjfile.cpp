@@ -37,6 +37,12 @@ QString PB_StepLoadObjFile::getStepDescription() const
     return tr("Fichier OBJ (Mesh)");
 }
 
+QString PB_StepLoadObjFile::getStepDetailledDescription() const
+{
+    return tr("Charge un maillage depuis un fichier au format OBJ (Objet 3D)");
+}
+
+
 CT_VirtualAbstractStep* PB_StepLoadObjFile::createNewInstance(CT_StepInitializeData &dataInit)
 {
     return new PB_StepLoadObjFile(dataInit);

@@ -22,6 +22,8 @@ const QVector<QString> CT_Reader_OPF::TOPOLOGY_NAMES = QVector<QString>() << "to
 
 CT_Reader_OPF::CT_Reader_OPF() : CT_AbstractReader()
 {
+
+    setToolTip(tr("Charge un fichier décrivant la topologie de végétaux au format OPF, créé par le logiciel AMAPStudio.<br>http://amapstudio.cirad.fr"));
 }
 
 CT_Reader_OPF::~CT_Reader_OPF()

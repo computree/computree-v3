@@ -56,7 +56,13 @@
     </layout>
    </item>
    <item>
-    <widget class="GStepsTreeViewDefault" name="treeView"/>
+    <widget class="GStepsTreeViewDefault" name="treeView">
+     <property name="font">
+      <font>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">

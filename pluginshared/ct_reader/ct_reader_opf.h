@@ -80,6 +80,7 @@ public:
     ~CT_Reader_OPF();
 
     QString GetReaderName() const;
+
     CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     bool setFilePath(const QString &filepath);
