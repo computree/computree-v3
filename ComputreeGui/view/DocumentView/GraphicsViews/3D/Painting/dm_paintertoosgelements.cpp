@@ -568,14 +568,14 @@ void DM_PainterToOsgElements::drawCylinder(const double &x, const double &y, con
 
         osg::Group *g = getOrCreateGroup(DM_PainterToOsgElements::NAME_LOCAL_GEOMETRIES_GROUP);
 
-        osg::Geode *geode = new osg::Geode;
-        geode->addDrawable(geo);
-
         osg::PositionAttitudeTransform *tr = new osg::PositionAttitudeTransform();
         tr->setPosition(osg::Vec3d(x, y, z));
         tr->setScale(osg::Vec3(radius, radius, height));
 
-        tr->addChild(geode);
+        osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal((osg::PrimitiveSet::Mode)geo->getPrimitiveSet(0)->getMode(), tr, &m_localEffects);
+        osg::Geode *geode = effect->getChild(0)->asGeode();
+        geode->addDrawable(geo);
+
         g->addChild(tr);
     }
 }
@@ -598,15 +598,15 @@ void DM_PainterToOsgElements::drawCylinder3D(const Eigen::Vector3d &center, cons
 
         osg::Group *g = getOrCreateGroup(DM_PainterToOsgElements::NAME_LOCAL_GEOMETRIES_GROUP);
 
-        osg::Geode *geode = new osg::Geode;
-        geode->addDrawable(geo);
-
         osg::PositionAttitudeTransform *tr = new osg::PositionAttitudeTransform();
         tr->setPosition(osg::Vec3d(center[0], center[1], center[2]));
         tr->setScale(osg::Vec3(radius, radius, height));
         tr->setAttitude(quat);
 
-        tr->addChild(geode);
+        osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal((osg::PrimitiveSet::Mode)geo->getPrimitiveSet(0)->getMode(), tr, &m_localEffects);
+        osg::Geode *geode = effect->getChild(0)->asGeode();
+        geode->addDrawable(geo);
+
         g->addChild(tr);
     }
 }
@@ -726,14 +726,14 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
 
         osg::Group *g = getOrCreateGroup(DM_PainterToOsgElements::NAME_LOCAL_GEOMETRIES_GROUP);
 
-        osg::Geode *geode = new osg::Geode;
-        geode->addDrawable(geo);
-
         osg::PositionAttitudeTransform *tr = new osg::PositionAttitudeTransform();
         tr->setPosition(osg::Vec3d(centerX, centerY, centerZ));
         tr->setScale(osg::Vec3(radius, radius, radius));
 
-        tr->addChild(geode);
+        osgFX::Effect *effect = getOrCreateEffectForTypeAndTransform_LocalAndGlobal((osg::PrimitiveSet::Mode)geo->getPrimitiveSet(0)->getMode(), tr, &m_localEffects);
+        osg::Geode *geode = effect->getChild(0)->asGeode();
+        geode->addDrawable(geo);
+
         g->addChild(tr);
     }
 }
