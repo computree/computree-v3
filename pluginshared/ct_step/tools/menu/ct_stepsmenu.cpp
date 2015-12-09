@@ -79,6 +79,7 @@ QString CT_StepsMenu::staticOperationToDisplayableName(CT_StepsMenu::LevelOperat
     case LO_Meshes : return QObject::tr("Maillages");
     case LO_WorkFlow : return QObject::tr("Flux");
     case LO_Other : return QObject::tr("Autres");
+    case LO_Beta : return QObject::tr("Travaux en cours (Beta)");
     case LO_Favorites : return QObject::tr("Favoris");
     case LO_InternalUse : return "Internal must not be use by programmers";
     }
@@ -102,8 +103,7 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
     case LP_Loops: return QObject::tr("Boucles");
     case LP_Crowns: return QObject::tr("Houppiers");
     case LP_DEM: return QObject::tr("Modèles Num. d'Elévation");
-    case LP_Stems: return QObject::tr("Tiges");
-    case LP_DBH: return QObject::tr("Diamètres à 1.30 m");
+    case LP_Stems: return QObject::tr("Détéction de tiges / DBH");
     case LP_Points: return QObject::tr("Points");
     case LP_Raster: return QObject::tr("Raster");
     case LP_Vector: return QObject::tr("Vector");

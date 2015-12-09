@@ -546,6 +546,22 @@ protected:
     }
 
     /**
+    * @brief Add a new "beta" step.
+    * @param subLevelDisplayableName : Can be empty if you want to add your step in the root level or can be customized to add it to a sub level with this name
+    * @info If you want to add a custom level under the operation prefer use the method "menuOfSteps" that returns the menu where you can customize
+    *       level it's name.
+    */
+   template<class STEP>
+   void addNewBetaStep(const QString &subLevelDisplayableName = "") {
+       addNewStep<STEP>(CT_StepsMenu::LO_Beta, subLevelDisplayableName);
+   }
+
+   template<class STEP>
+   void addNewBetaStep(CT_StepsMenu::LevelPredefined subLevelPredefined) {
+       addNewStep<STEP>(CT_StepsMenu::LO_Beta, subLevelPredefined);
+   }
+
+    /**
      * @brief Returns the menu for add level and steps
      */
     CT_StepsMenu* menuOfSteps() const;

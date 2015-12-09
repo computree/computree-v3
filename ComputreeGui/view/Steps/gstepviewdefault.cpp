@@ -14,7 +14,7 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
 
     m_constructor = NULL;
     m_proxy = NULL;
-    m_nameConfig = DNC_StepKey;
+    m_nameConfig = DNC_StepShortDescription;
 
     // To show custom context menu
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -23,6 +23,7 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
 
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)));
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTreeViewContextMenu(QPoint)), Qt::QueuedConnection);
+
 }
 
 GStepViewDefault::~GStepViewDefault()

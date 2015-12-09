@@ -359,7 +359,7 @@ void PB_StepCreateDataSource::compute()
 
                                 CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(itemModel->uniqueName(), resultOutLoad);
                                 CT_AbstractSingularItemDrawable *item = reader->takeFirstItemDrawableOfModel(itemModel->uniqueName(), resultOutLoad, modelCreation);
-                                grpLoad->addItemDrawable(item);
+                                if (item != NULL) {grpLoad->addItemDrawable(item);}
                             }
 
                             // Ajout des groupes

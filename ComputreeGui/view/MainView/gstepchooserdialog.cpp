@@ -42,7 +42,7 @@ void GStepChooserDialog::init()
     ui->stepChooserWidget->init(*GUI_MANAGER->getPluginManager());
     ui->stepChooserWidget->proxy()->setPluginsFilterEnabled(false);  // don't filters steps that was not in the plugin list
     ui->stepChooserWidget->proxy()->setShowStepNotCompatible(true); // don't show step not compatible with the parent step
-    ui->stepChooserWidget->setDisplayConfiguration(GStepViewDefault::DNC_StepDisplayableName);
+    ui->stepChooserWidget->setDisplayConfiguration(GStepViewDefault::DNC_StepShortDescription);
     ui->stepChooserWidget->setContextMenuOnType(contextMenuSteps, DM_StepsFromPluginsModelConstructor::IT_Step);
     ui->stepChooserWidget->setContextMenuOnType(m_contextMenuRootLevel, DM_StepsFromPluginsModelConstructor::IT_RootLevel);
 

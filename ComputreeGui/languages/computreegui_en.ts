@@ -2421,12 +2421,12 @@ Attention cette opération peut être lente.</source>
         <translation type="vanished">Please wait while octree creation</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1249"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1250"/>
         <source>Capture d&apos;écran</source>
         <translation>Sceen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1249"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1250"/>
         <source>Image JPEG (*.jpg)</source>
         <translation>JPEG image (*.jpg)</translation>
     </message>

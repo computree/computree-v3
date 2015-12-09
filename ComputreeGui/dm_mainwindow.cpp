@@ -57,7 +57,7 @@ DM_MainWindow::~DM_MainWindow()
     delete _pluginManager;
 
     delete CONFIG_FILE;
-    delete PS_CONTEXT;
+    //delete PS_CONTEXT;
 }
 
 CDM_PluginManager* DM_MainWindow::getPluginManager() const

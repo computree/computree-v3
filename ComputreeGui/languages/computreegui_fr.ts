@@ -2124,12 +2124,12 @@ Attention cette opération peut être lente.</source>
         <translation type="vanished">G3DPainter (points) =&gt; Erreur de liaison (Bind error) : %1</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1249"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1250"/>
         <source>Capture d&apos;écran</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1249"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1250"/>
         <source>Image JPEG (*.jpg)</source>
         <translation></translation>
     </message>

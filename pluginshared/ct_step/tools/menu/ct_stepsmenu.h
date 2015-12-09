@@ -31,6 +31,7 @@ public:
         LO_Meshes,              // Steps that works with meshes
         LO_WorkFlow,            // Steps that can control the worklow of all other steps
         LO_Other,               // Steps that can not be ordered in one of other operation
+        LO_Beta,                // Steps that are in Beta(work in progress
         LO_InternalUse
     };
     Q_ENUMS(LevelOperationType)
@@ -53,7 +54,6 @@ public:
         LP_Crowns,
         LP_DEM,
         LP_Stems,
-        LP_DBH,
         LP_ItemAttributes,
         LP_Points,
         LP_Raster,
