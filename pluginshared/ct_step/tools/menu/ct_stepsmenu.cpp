@@ -73,7 +73,7 @@ QString CT_StepsMenu::staticOperationToDisplayableName(CT_StepsMenu::LevelOperat
     case LO_Load : return QObject::tr("Charger");
     case LO_Export : return QObject::tr("Exporter");
     case LO_Points : return QObject::tr("Points");
-    case LO_GeometricalShapes : return QObject::tr("Formes géométriques");
+    case LO_GeometricalShapes : return QObject::tr("Items");
     case LO_Voxels : return QObject::tr("Voxels");
     case LO_Rasters : return QObject::tr("Rasters");
     case LO_Meshes : return QObject::tr("Maillages");
@@ -105,6 +105,7 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
     case LP_DEM: return QObject::tr("Modèles Num. d'Elévation");
     case LP_Stems: return QObject::tr("Détéction de tiges / DBH");
     case LP_Points: return QObject::tr("Points");
+    case LP_Items: return QObject::tr("Items");
     case LP_Raster: return QObject::tr("Raster");
     case LP_Vector: return QObject::tr("Vector");
     case LP_Voxels: return QObject::tr("Voxels");

@@ -35,6 +35,11 @@ QString PB_StepLoadPbmFile::getStepDescription() const
     return tr("Fichier PBM");
 }
 
+QString PB_StepLoadPbmFile::getStepDetailledDescription() const
+{
+    return tr("Portable BitMap : Format de fichier image noir et blanc (NetPBM)");
+}
+
 CT_VirtualAbstractStep* PB_StepLoadPbmFile::createNewInstance(CT_StepInitializeData &dataInit)
 {
     return new PB_StepLoadPbmFile(dataInit);

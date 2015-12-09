@@ -56,6 +56,7 @@ public:
         LP_Stems,
         LP_ItemAttributes,
         LP_Points,
+        LP_Items,
         LP_Raster,
         LP_Vector,
         LP_Voxels,

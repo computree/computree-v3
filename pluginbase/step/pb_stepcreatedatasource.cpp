@@ -59,8 +59,6 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
 
                 for (int n = 0 ; n < formats.size() ; n++)
                 {
-                    const FileFormat& format = formats.at(n);
-
                     QString key = reader->GetReaderName();
                     _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
                 }
@@ -85,7 +83,9 @@ QString PB_StepCreateDataSource::getStepDescription() const
 // Step detailled description
 QString PB_StepCreateDataSource::getStepDetailledDescription() const
 {
-    return tr("Une source de données est une liste de fichiers du même type.\nSeuls les headers des fichiers sont chargés à ce stade.");
+    return tr("Une source de données est une liste de fichiers du même type.<br>"
+              "Si la case <em>charger les données</em> est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.<br>"
+              "Si la case est cochée, tous les fichiers sont chargés intégralement.");
 }
 
 // Step URL

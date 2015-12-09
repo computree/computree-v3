@@ -24,6 +24,7 @@ public:
     ~PB_StepLoadPbmFile();
 
     QString getStepDescription() const;
+    QString getStepDetailledDescription() const;
 
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
     QList<FileFormat> getFileExtensionAccepted() const;

@@ -19,6 +19,7 @@ CT_Reader_GDAL::CT_Reader_GDAL()
 CT_Reader_GDAL::CT_Reader_GDAL(const GDALDriver *driver)
 {
     m_driver = (GDALDriver*)driver;
+
 }
 #endif
 
@@ -96,6 +97,33 @@ void CT_Reader_GDAL::protectedInit()
             ext.append("*");
 
         addNewReadableFormat(FileFormat(ext, CT_GdalTools::staticGdalDriverName(m_driver)));
+
+
+        QString driverType = getTypeOfDriver();
+
+        QString toolTip = tr("Reader GDAL de type : %1").arg(driverType.isEmpty()?tr("Inconnu"):driverType);
+        if (driverType == "Raster")
+        {
+            toolTip.append("<br>");
+            toolTip.append("<br>");
+            toolTip.append(tr("Pour plus de détails voir : http://www.gdal.org/formats_list.html"));
+        } else if (driverType == "Vector")
+        {
+            toolTip.append("<br>");
+            toolTip.append("<br>");
+            toolTip.append(tr("Pour plus de détails voir : http://www.gdal.org/ogr_formats.html"));
+        }
+        toolTip.append("<br>");
+        toolTip.append("<br>");
+        toolTip.append(tr("Extension : "));
+        for (int i = 0 ; i < ext.size() ; i++)
+        {
+            toolTip.append("*.");
+            toolTip.append(ext.at(i));
+            if ((i + 1) < ext.size()) {toolTip.append(" ");}
+        }
+        setToolTip(toolTip);
+
     }
     #endif
 }

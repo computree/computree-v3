@@ -36,6 +36,12 @@ QString PB_StepLoadPgmFile::getStepDescription() const
     return tr("Fichier PGM");
 }
 
+QString PB_StepLoadPgmFile::getStepDetailledDescription() const
+{
+    return tr("Portable GrayMap : Format de fichier image en niveaux de gris (NetPBM)");
+}
+
+
 CT_VirtualAbstractStep* PB_StepLoadPgmFile::createNewInstance(CT_StepInitializeData &dataInit)
 {
     return new PB_StepLoadPgmFile(dataInit);
