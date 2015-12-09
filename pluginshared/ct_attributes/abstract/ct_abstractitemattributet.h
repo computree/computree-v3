@@ -145,11 +145,36 @@ inline long double CT_AbstractItemAttributeT<int>::toLongDouble(const CT_Abstrac
 template<>
 inline quint64 CT_AbstractItemAttributeT<quint64>::toUInt64(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
 
+// UNSIGNED INTEGER 64bits -> FLOAT
+template<>
+inline float CT_AbstractItemAttributeT<quint64>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+
+// UNSIGNED INTEGER 64bits -> DOUBLE
+template<>
+inline double CT_AbstractItemAttributeT<quint64>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+
+// UNSIGNED INTEGER 64bits -> LONG DOUBLE
+template<>
+inline long double CT_AbstractItemAttributeT<quint64>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+
 
 // SIZE_T -> SIZE_T
 template<>
 inline size_t CT_AbstractItemAttributeT<size_t>::toSizeT(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
 
+#ifndef ENVIRONMENT64
+// SIZE_T -> FLOAT
+template<>
+inline float CT_AbstractItemAttributeT<size_t>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+
+// SIZE_T -> DOUBLE
+template<>
+inline double CT_AbstractItemAttributeT<size_t>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+
+// SIZE_T -> LONG DOUBLE
+template<>
+inline long double CT_AbstractItemAttributeT<size_t>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+#endif
 
 // QSTRING -> QSTRING
 template<>

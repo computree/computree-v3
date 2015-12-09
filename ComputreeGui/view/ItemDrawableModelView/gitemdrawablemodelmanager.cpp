@@ -567,36 +567,47 @@ void GItemDrawableModelManager::setColorByAttributeForModelSelected()
 
                 double minValue = std::numeric_limits<double>::max();
                 double maxValue = -minValue;
-                bool ok;
+                bool ok = true;
 
-                while(it.hasNext()) {
+                while(it.hasNext() && ok) {
 
                     CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
                     CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
-                    double value = att->toDouble(item, &ok);
+
+                    double value = 0;
+
+                    if(att->type() == CT_AbstractCategory::BOOLEAN)
+                        value = att->toBool(item, &ok);
+                    else
+                        value = att->toDouble(item, &ok);
+
+                    if(!ok)
+                        GUI_LOG->addErrorMessage(LogInterface::gui, tr("Impossible de convertir l'attribut %1 en valeur double ou booléenne").arg(att->displayableName()));
 
                     minValue = qMin(minValue, value);
                     maxValue = qMax(maxValue, value);
                 }
 
-                double range = maxValue-minValue;
+                if(ok) {
+                    double range = maxValue-minValue;
 
-                if(range == 0)
-                    range = 1;
+                    if(range == 0)
+                        range = 1;
 
-                CT_ResultIterator it2((CT_ResultGroup*)res, iModel);
+                    CT_ResultIterator it2((CT_ResultGroup*)res, iModel);
 
-                while(it2.hasNext()) {
+                    while(it2.hasNext()) {
 
-                    CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it2.next();
-                    CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
-                    double vv = att->toDouble(item, &ok);
+                        CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it2.next();
+                        CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
+                        double vv = att->toDouble(item, &ok);
 
-                    // convert the value to be between 0 and 1
-                    double key = (vv-minValue)/range;
+                        // convert the value to be between 0 and 1
+                        double key = (vv-minValue)/range;
 
-                    // get the intermediate color and set it to document
-                    doc->setColor(item, interpolator.intermediateColor(key));
+                        // get the intermediate color and set it to document
+                        doc->setColor(item, interpolator.intermediateColor(key));
+                    }
                 }
             }
         }
