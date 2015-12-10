@@ -38,13 +38,22 @@ PB_LASExporter::PB_LASExporter() : CT_AbstractExporterAttributesSelection()
 
 QString PB_LASExporter::getExporterCustomName() const
 {
-    return "Points, LAS";
+    return tr("Points, LAS");
 }
+
+CT_StepsMenu::LevelPredefined PB_LASExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
 
 void PB_LASExporter::init()
 {
     addNewExportFormat(FileFormat("las", tr("Fichiers LAS .las")));
+
+    setToolTip(tr("Exporte tous les points au format LAS, ASPRS<br>http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html"));
 }
+
 
 bool PB_LASExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {

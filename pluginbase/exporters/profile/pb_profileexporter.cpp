@@ -20,12 +20,27 @@ PB_ProfileExporter::~PB_ProfileExporter()
 
 QString PB_ProfileExporter::getExporterCustomName() const
 {
-    return "Profiles, ACSII";
+    return tr("Profils, ACSII");
+}
+
+CT_StepsMenu::LevelPredefined PB_ProfileExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Items;
 }
 
 void PB_ProfileExporter::init()
 {
     addNewExportFormat(FileFormat("hist", tr("Fichiers Profile (ASCII)")));
+
+    setToolTip(tr("Export de profils au format ASCII (1 fichier par profil).<br>"
+                  "Le fichier comporte d'abord une entête inspirée du format ASCII ESRI GRID pour les rasters, décrivant l'origine, la direction et la résolution du profil.<br>"
+                  "Ensuite, une table fournit les champs suivants :<br>"
+                  "- Level : Numéro de la cellule dans le profil<br>"
+                  "- Length : Longueur correspondant au centre de la cellule le long du profil<br>"
+                  "- Xc : Coordonnée X du centre de la cellule<br>"
+                  "- Yc : Coordonnée Y du centre de la cellule<br>"
+                  "- Zc : Coordonnée Z du centre de la cellule<br>"
+                  "- Value : Valeur de la cellule"));
 }
 
 bool PB_ProfileExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

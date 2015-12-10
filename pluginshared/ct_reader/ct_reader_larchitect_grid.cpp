@@ -12,12 +12,14 @@
 CT_Reader_LArchitect_Grid::CT_Reader_LArchitect_Grid() : CT_AbstractReader()
 {
     _nbLinesToSkip = 4;
+
+    setToolTip(tr("Charge des grilles 3D depuis un fichier au format LArchitect"));
 }
 
 
 QString CT_Reader_LArchitect_Grid::GetReaderName() const
 {
-    return tr("Fichier de grilles LArchitect");
+    return tr("Grilles 3D, format LArchitect");
 }
 
 CT_StepsMenu::LevelPredefined CT_Reader_LArchitect_Grid::getReaderSubMenuName() const

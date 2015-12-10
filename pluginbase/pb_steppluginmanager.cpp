@@ -72,7 +72,6 @@
 #include "exporters/las/pb_lasexporter.h"
 #include "exporters/gdal/pb_gdalexporter.h"
 #include "exporters/ascid/pb_ascidexporter.h"
-#include "exporters/grid3dhist/pb_grid3dhistexporter.h"
 
 #include "ct_reader/ct_reader_xyb.h"
 #include "ct_reader/ct_reader_ascrgb.h"
@@ -184,7 +183,6 @@ bool PB_StepPluginManager::loadExporters()
     sep->addExporter(new PB_ASCRGBExporter());
     sep->addExporter(new PB_ASCIDExporter());
     sep->addExporter(new PB_ProfileExporter());
-    sep->addExporter(new PB_Grid3DHistExporter());
     sep->addExporter(new PB_Grid2DExporter());
     sep->addExporter(new PB_Grid3DExporter());
     sep->addExporter(new PB_Grid3DAsTableExporter());
@@ -310,12 +308,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             while(itE.hasNext())
             {
                 CT_AbstractExporter *exporter = itE.next();
-                QString subMenu = "Exporters";
-                if (dynamic_cast<PB_GDALExporter*>(exporter) != NULL)
-                {
-                    subMenu = "GDAL Exporters";
-                }
-                addNewStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()), CT_StepsMenu::LO_Export, subMenu);
+                addNewStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()), CT_StepsMenu::LO_Export, exporter->getExporterSubMenuName());
             }
         }
 

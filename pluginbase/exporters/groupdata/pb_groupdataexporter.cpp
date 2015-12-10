@@ -32,9 +32,25 @@ QString PB_GroupDataExporter::getExporterCustomName() const
     return tr("Attributs/Items d'un groupe");
 }
 
+CT_StepsMenu::LevelPredefined PB_GroupDataExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Items;
+}
+
+
 void PB_GroupDataExporter::init()
 {
     addNewExportFormat(FileFormat("txt", tr("Fichier txt")));
+
+    setToolTip(tr("Exporte tous les attributs de TOUS LES ITEMS d'un niveau ou plusieurs niveaux de groupes.<br>"
+                  "Un fichier table ASCII est produit pour chaque niveau de groupe séléctionné.<br>"
+                  "Dans chaque table, il y a une ligne par instance de groupe.<br>"
+                  "Dans chaque table :<br>"
+                  "- une première ligne d'entête donne le nom des items contenus dans le groupe,<br>"
+                  "- une seconde  ligne d'entête donne le nom de l'attribut dans l'item.<br>"
+                  "De plus les deux premières colonnes de chaque table permettent de faire des jointures entre niveaux de groupes :<br>"
+                  "- GroupID  : identifiant Computree des groupes décris dans la table en cours,<br>"
+                  "- ParentID : identifiant Computree des groupes parents, contenant les groupes de la table."));
 }
 
 bool PB_GroupDataExporter::configureExport()

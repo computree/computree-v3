@@ -32,12 +32,20 @@ PB_MultiXYBExporter::~PB_MultiXYBExporter()
 
 QString PB_MultiXYBExporter::getExporterCustomName() const
 {
-    return "Points (1 file/scene), XYB (X,Y,Z,I)";
+    return tr("Points (1 file/scene), XYB (X,Y,Z,I)");
 }
+
+CT_StepsMenu::LevelPredefined PB_MultiXYBExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
 
 void PB_MultiXYBExporter::init()
 {
     addNewExportFormat(FileFormat("xyb", tr("Fichiers .xyb (1 fichier/scène)")));
+
+    setToolTip(tr("Export des points contenus dans plusieurs items au format binaire XYB (FARO) : 1 fichier par item"));
 }
 
 bool PB_MultiXYBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)

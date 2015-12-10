@@ -23,9 +23,17 @@ QString PB_Grid2DExporter::getExporterCustomName() const
     return tr("Grilles 2D, ACSII ESRI Grid");
 }
 
+CT_StepsMenu::LevelPredefined PB_Grid2DExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Raster;
+}
+
+
 void PB_Grid2DExporter::init()
 {
     addNewExportFormat(FileFormat("ASC", tr("Fichiers Grid 2D (ASCII)")));
+
+    setToolTip(tr("Export des rasters au format ASCII ESRI Grid  (1 fichier par raster)"));
 }
 
 bool PB_Grid2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

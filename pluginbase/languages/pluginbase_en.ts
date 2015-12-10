@@ -1598,16 +1598,20 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_StepCreateDataSource</name>
     <message>
-        <location filename="../step/pb_stepcreatedatasource.cpp" line="82"/>
+        <location filename="../step/pb_stepcreatedatasource.cpp" line="80"/>
         <source>Créer DataSource</source>
         <translation>Create DataSource</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcreatedatasource.cpp" line="88"/>
         <source>Une source de données est une liste de fichiers du même type.
 Seuls les headers des fichiers sont chargés à ce stade.</source>
-        <translation>A data source is a list of files of the same type.
+        <translation type="vanished">A data source is a list of files of the same type.
 Only files headers are loaded at this stage. </translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepcreatedatasource.cpp" line="86"/>
+        <source>Une source de données est une liste de fichiers du même type.&lt;br&gt;Si la case &lt;em&gt;charger les données&lt;/em&gt; est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.&lt;br&gt;Si la case est cochée, tous les fichiers sont chargés intégralement.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="124"/>
@@ -1919,9 +1923,63 @@ Only files headers are loaded at this stage. </translation>
         <translation>Points, ACSII file (parametrizable)</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadasciifile02.cpp" line="195"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="189"/>
+        <source>Chargement d&apos;un fichier de points au format ASCII.&lt;br&gt;L&apos;import est configurable, le fichier devant contenir les champs suivants :&lt;br&gt;- X      : Coordonnée X du points&lt;br&gt;- Y      : Coordonnée Y du point&lt;br&gt;- Z      : Coordonnée Y du point&lt;br&gt;&lt;br&gt;De plus les champs suivants peuvent être fournis mais sont optionnels :&lt;br&gt;- Intensité      : Intensité du point&lt;br&gt;- Rouge          : Composante rouge du point&lt;br&gt;- Vert           : Composante verte du point&lt;br&gt;- Bleu           : Composante bleue du point&lt;br&gt;- Normale X      : Coordonnée Y de la normale au point&lt;br&gt;- Normale Y      : Coordonnée Y de la normale au point&lt;br&gt;- Normale Z      : Coordonnée Y de la normale au point&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="213"/>
         <source>Ascii Files</source>
         <translation>ACSII Files</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="257"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="275"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="311"/>
+        <source>Intensité</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="258"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="276"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="312"/>
+        <source>Rouge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="259"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="277"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="313"/>
+        <source>Vert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="260"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="278"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="314"/>
+        <source>Bleu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="261"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="279"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="315"/>
+        <source>Normale X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="262"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="280"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="316"/>
+        <source>Normale Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="263"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="281"/>
+        <location filename="../step/pb_steploadasciifile02.cpp" line="317"/>
+        <source>Normale Z</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2055,22 +2113,27 @@ Only files headers are loaded at this stage. </translation>
         <translation>OBJ file (Mesh)</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadobjfile.cpp" line="48"/>
+        <location filename="../step/pb_steploadobjfile.cpp" line="42"/>
+        <source>Charge un maillage depuis un fichier au format OBJ (Objet 3D)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadobjfile.cpp" line="54"/>
         <source>Obj Files</source>
         <translation>OBJ Files</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadobjfile.cpp" line="56"/>
+        <location filename="../step/pb_steploadobjfile.cpp" line="62"/>
         <source>Rechercher les demis arêtes ? (accélère le chargement si non coché)</source>
         <translation>Search half edges ? (accelerate the process if not checked)</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadobjfile.cpp" line="69"/>
+        <location filename="../step/pb_steploadobjfile.cpp" line="75"/>
         <source>Mesh Document</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadobjfile.cpp" line="71"/>
+        <location filename="../step/pb_steploadobjfile.cpp" line="77"/>
         <source>Mesh Model</source>
         <translation></translation>
     </message>
@@ -2091,7 +2154,12 @@ Only files headers are loaded at this stage. </translation>
         <translation>PBM File</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpbmfile.cpp" line="46"/>
+        <location filename="../step/pb_steploadpbmfile.cpp" line="40"/>
+        <source>Portable BitMap : Format de fichier image noir et blanc (NetPBM)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpbmfile.cpp" line="51"/>
         <source>PBM Files</source>
         <translation>PBM Files</translation>
     </message>
@@ -2112,7 +2180,12 @@ Only files headers are loaded at this stage. </translation>
         <translation>PGM File</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadpgmfile.cpp" line="47"/>
+        <location filename="../step/pb_steploadpgmfile.cpp" line="41"/>
+        <source>Portable GrayMap : Format de fichier image en niveaux de gris (NetPBM)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadpgmfile.cpp" line="53"/>
         <source>PGM Files</source>
         <translation>PGM Files</translation>
     </message>

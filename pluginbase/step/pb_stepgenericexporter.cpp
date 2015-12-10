@@ -91,6 +91,37 @@ QString PB_StepGenericExporter::getStepDisplayableName() const
     return _exporter->getExporterName();
 }
 
+QString PB_StepGenericExporter::getStepDetailledDescription() const
+{
+    if(_exporter != NULL)
+    {
+        QString t = _exporter->toolTip();
+
+        if(!t.isEmpty())
+            return t;
+    }
+
+    QString tmp;
+
+    const QList<FileFormat> &ext = _exporter->exportFormats();
+    QListIterator<FileFormat> it(ext);
+
+    while(it.hasNext())
+    {
+        FileFormat ff = it.next();
+        QListIterator<QString> itS(ff.suffixes());
+        while(itS.hasNext())
+        {
+            tmp += "*." + itS.next();
+            if (itS.hasNext()) {tmp += " ";}
+        }
+    }
+
+    return tr("Exporte un(des) fichier(s) de type :") + tmp;
+}
+
+
+
 SettingsNodeGroup* PB_StepGenericExporter::getAllSettings() const
 {
     SettingsNodeGroup *root = CT_VirtualAbstractStep::getAllSettings();

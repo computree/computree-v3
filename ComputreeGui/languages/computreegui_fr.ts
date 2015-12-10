@@ -1033,6 +1033,11 @@ p, li { white-space: pre-wrap; }
         <source>Colorier par...</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="585"/>
+        <source>Impossible de convertir l&apos;attribut %1 en valeur double ou booléenne</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GItemModelViewSyncChooseDialog</name>
@@ -1901,12 +1906,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.ui" line="95"/>
+        <location filename="../view/Steps/gstepviewdefault.ui" line="101"/>
         <source>Replacer à la position par défaut</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.ui" line="102"/>
+        <location filename="../view/Steps/gstepviewdefault.ui" line="108"/>
         <source>Replacer au démarrage à la dernière position connue</source>
         <translation></translation>
     </message>
@@ -1922,25 +1927,25 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="331"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="364"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="332"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="365"/>
         <source>Clé de l&apos;étape au sein du plugin ou d&apos;un script</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="339"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="372"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="340"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="373"/>
         <source>Nom de l&apos;étape</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="347"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="380"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="348"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="381"/>
         <source>Description courte</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="388"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="389"/>
         <source>Description détaillée</source>
         <translation></translation>
     </message>

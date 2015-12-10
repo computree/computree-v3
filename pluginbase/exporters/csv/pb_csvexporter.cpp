@@ -29,9 +29,16 @@ QString PB_CSVExporter::getExporterCustomName() const
     return tr("Export d'attributs (csv)");
 }
 
+CT_StepsMenu::LevelPredefined PB_CSVExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Items;
+}
+
 void PB_CSVExporter::init()
 {
     addNewExportFormat(FileFormat("csv", tr("Fichiers csv")));
+
+    setToolTip(tr("Exporte tous les attributs d'un niveau d'items (une ligne pour chaque instance d'item)"));
 }
 
 bool PB_CSVExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

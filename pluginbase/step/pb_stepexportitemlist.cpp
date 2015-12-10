@@ -83,7 +83,9 @@ QString PB_StepExportItemList::getStepDescription() const
 // Step detailled description
 QString PB_StepExportItemList::getStepDetailledDescription() const
 {
-    return tr("No detailled description for this step");
+    return tr("Permet un export avec nom de fichier adaptatif.<br>"
+              "Cette étape peut utiliser n'importe quel exporter.<br>"
+              "Le nom du fichier de sorti, est déterminé à partir d'un nom de fichier d'entrée stocké dans un item de type entête (CT_Header).");
 }
 
 // Step URL

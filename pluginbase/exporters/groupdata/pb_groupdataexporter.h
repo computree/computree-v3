@@ -12,6 +12,8 @@ public:
 
     virtual QString getExporterCustomName() const;
 
+    CT_StepsMenu::LevelPredefined getExporterSubMenuName() const;
+
     void init();
 
     virtual bool configureExport();

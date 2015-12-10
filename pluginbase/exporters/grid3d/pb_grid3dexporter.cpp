@@ -20,12 +20,20 @@ PB_Grid3DExporter::~PB_Grid3DExporter()
 
 QString PB_Grid3DExporter::getExporterCustomName() const
 {
-    return "Grilles 3D, ACSII";
+    return tr("Grilles 3D, ACSII");
 }
+
+CT_StepsMenu::LevelPredefined PB_Grid3DExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Voxels;
+}
+
 
 void PB_Grid3DExporter::init()
 {
-    addNewExportFormat(FileFormat("GRD3D", tr("Fichiers Grid 3D (ASCII)")));
+    addNewExportFormat(FileFormat("GRD3D", tr("Fichiers Grilles 3D (ASCII)")));
+
+    setToolTip(tr("Export des Grilles 3D au format ASCII, inspiré du format ASCII ESRI GRID pour les rasters (1 fichier par grille)"));
 }
 
 bool PB_Grid3DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

@@ -21,7 +21,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     exporters/grid2d/pb_grid2dexporter.h \
     exporters/grid3d/pb_grid3dastableexporter.h \
     exporters/grid3d/pb_grid3dexporter.h \
-    exporters/grid3dhist/pb_grid3dhistexporter.h \
     exporters/groupdata/pb_groupdataexporter.h \
     exporters/las/pb_lasexporter.h \
     exporters/las/pb_laspointformat.h \
@@ -69,7 +68,6 @@ SOURCES += \
     exporters/grid2d/pb_grid2dexporter.cpp \
     exporters/grid3d/pb_grid3dastableexporter.cpp \
     exporters/grid3d/pb_grid3dexporter.cpp \
-    exporters/grid3dhist/pb_grid3dhistexporter.cpp \
     exporters/groupdata/pb_groupdataexporter.cpp \
     exporters/las/pb_lasexporter.cpp \
     exporters/mesh/pb_meshobjexporter.cpp \

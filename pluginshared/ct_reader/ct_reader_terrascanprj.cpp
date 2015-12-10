@@ -57,6 +57,8 @@ CT_AbstractReader* CT_Reader_TerraScanPrj::copy() const
 void CT_Reader_TerraScanPrj::protectedInit()
 {
     addNewReadableFormat(FileFormat("prj", tr("Fichier TerraScan PRJ")));
+
+    setToolTip(tr("Charge un fichier d'emprises de dalles (LIDAR), au format TerraScan PRJ"));
 }
 
 void CT_Reader_TerraScanPrj::protectedCreateOutItemDrawableModelList()

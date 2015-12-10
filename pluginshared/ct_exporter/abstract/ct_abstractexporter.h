@@ -5,6 +5,8 @@
 
 #include "interfaces.h"
 
+#include "ct_step/tools/menu/ct_stepsmenu.h"
+
 class CT_AbstractExporterPrivate;
 class CT_AbstractCloudIndex;
 
@@ -46,6 +48,15 @@ public:
       *        Use the method addNewExportFormat() in the init() method to add new format.
       */
     const QList<FileFormat> &exportFormats() const;
+
+
+    virtual CT_StepsMenu::LevelPredefined getExporterSubMenuName() const;
+
+    /**
+     * @brief Returns a tooltip to show in GUI. None by default.
+     */
+    QString toolTip() const;
+
 
     /**
      * @brief Inherit this method if you want to check something or filter the list of ItemDrawable
@@ -197,6 +208,11 @@ public:
 protected:
 
     /**
+     * @brief Set the tooltip to show in gui
+     */
+    void setToolTip(const QString &t);
+
+    /**
       * \brief Ajouter un nouveau format d'exportation.
       */
     void addNewExportFormat(const FileFormat &format);
@@ -245,6 +261,9 @@ protected:
     const QScopedPointer<CT_AbstractExporterPrivate>   d_ptr;
 
 private:
+
+    QString m_tooltip;
+
     Q_DECLARE_PRIVATE(CT_AbstractExporter)
 
 signals:

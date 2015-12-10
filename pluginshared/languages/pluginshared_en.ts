@@ -400,12 +400,37 @@
 <context>
     <name>CT_Reader_GDAL</name>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="185"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="104"/>
+        <source>Reader GDAL de type : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="104"/>
+        <source>Inconnu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="109"/>
+        <source>Pour plus de détails voir : http://www.gdal.org/formats_list.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="114"/>
+        <source>Pour plus de détails voir : http://www.gdal.org/ogr_formats.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="118"/>
+        <source>Extension : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="213"/>
         <source>Layer %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="233"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="261"/>
         <source>Impossible de charger des éléments du type : </source>
         <translation>Impossible to load elements of type:</translation>
     </message>
@@ -568,27 +593,32 @@
 <context>
     <name>CT_Reader_OPF</name>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="38"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="26"/>
+        <source>Charge un fichier décrivant l&apos;architecture de végétaux au format OPF, créé par le logiciel AMAPStudio.&lt;br&gt;http://amapstudio.cirad.fr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="40"/>
         <source>Fichier AmapStudio - OPF</source>
         <translation>AmapStudio file - OPF</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="221"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="223"/>
         <source>No types found in %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="577"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="579"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="587"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="589"/>
         <source>Topologie</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_opf.cpp" line="604"/>
+        <location filename="../ct_reader/ct_reader_opf.cpp" line="606"/>
         <source>Mesh</source>
         <translation></translation>
     </message>
@@ -1682,19 +1712,19 @@
         <translation>Transformation matrix</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="116"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="144"/>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="75"/>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="107"/>
         <source>Points</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="123"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="151"/>
         <source>Polygones</source>
         <translation>Polygons</translation>
     </message>
     <message>
-        <location filename="../ct_reader/ct_reader_gdal.cpp" line="130"/>
+        <location filename="../ct_reader/ct_reader_gdal.cpp" line="158"/>
         <source>Polylignes</source>
         <translation>Polylines</translation>
     </message>
@@ -1935,13 +1965,18 @@
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="76"/>
         <source>Formes géométriques</source>
-        <translation>Geometrical shapes</translation>
+        <translation type="vanished">Geometrical shapes</translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="76"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="108"/>
+        <source>Items</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="77"/>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="110"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="111"/>
         <source>Voxels</source>
         <translation></translation>
     </message>
@@ -1952,7 +1987,7 @@
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="79"/>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="111"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="112"/>
         <source>Maillages</source>
         <translation>Meshes</translation>
     </message>
@@ -1963,102 +1998,110 @@
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="81"/>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="112"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="113"/>
         <source>Autres</source>
         <translation>Others</translation>
     </message>
     <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="82"/>
+        <source>Travaux en cours (Beta)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="83"/>
         <source>Favoris</source>
         <translation>Favorites</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="86"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="87"/>
         <source>Inconnu TODO !</source>
         <translation>Unknown TODO !</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="92"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="93"/>
         <source>Filtrer</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="93"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="94"/>
         <source>Créer</source>
         <translation>Create</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="94"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="95"/>
         <source>Extraire</source>
         <translation>Extract</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="95"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="96"/>
         <source>Détecter</source>
         <translation>Detect</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="96"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="97"/>
         <source>Transformer</source>
         <translation>Transform</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="97"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="98"/>
         <source>Classifier</source>
         <translation>Classify</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="98"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="99"/>
         <source>Analyser</source>
         <translation>Analyze</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="99"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="100"/>
         <source>Ajuster</source>
         <translation>Ajust</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="100"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="101"/>
         <source>Coloriser</source>
         <translation>Colorize</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="101"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="102"/>
         <source>Clusters</source>
         <translation>Clusters</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="102"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="103"/>
         <source>Boucles</source>
         <translation>Loops</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="103"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="104"/>
         <source>Houppiers</source>
         <translation>Crowns</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="104"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="105"/>
         <source>Modèles Num. d&apos;Elévation</source>
         <translation>Digital elevation models</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="105"/>
-        <source>Tiges</source>
-        <translation>Stems</translation>
-    </message>
-    <message>
         <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="106"/>
-        <source>Diamètres à 1.30 m</source>
-        <translation>Diameter at 1.30 m (DBH)</translation>
+        <source>Détéction de tiges / DBH</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="108"/>
+        <source>Tiges</source>
+        <translation type="vanished">Stems</translation>
+    </message>
+    <message>
+        <source>Diamètres à 1.30 m</source>
+        <translation type="vanished">Diameter at 1.30 m (DBH)</translation>
+    </message>
+    <message>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="109"/>
         <source>Raster</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="109"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="110"/>
         <source>Vector</source>
         <translation></translation>
     </message>
@@ -2067,7 +2110,7 @@
         <translation type="vanished">Items attributes</translation>
     </message>
     <message>
-        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="115"/>
+        <location filename="../ct_step/tools/menu/ct_stepsmenu.cpp" line="116"/>
         <source>Inconnu (TODO)</source>
         <translation>Unknown (TODO)</translation>
     </message>

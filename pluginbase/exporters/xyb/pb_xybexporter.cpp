@@ -37,12 +37,20 @@ PB_XYBExporter::~PB_XYBExporter()
 
 QString PB_XYBExporter::getExporterCustomName() const
 {
-    return "Points, XYB (X,Y,Z,I)";
+    return tr("Points, XYB (X,Y,Z,I)");
 }
+
+CT_StepsMenu::LevelPredefined PB_XYBExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
+}
+
 
 void PB_XYBExporter::init()
 {
     addNewExportFormat(FileFormat("xyb", tr("Fichiers binaire de points .xyb")));
+
+    setToolTip(tr("Export des points dans un fichier format binaire XYB (FARO)"));
 }
 
 bool PB_XYBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)

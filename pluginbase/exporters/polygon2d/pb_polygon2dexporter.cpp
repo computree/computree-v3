@@ -24,10 +24,31 @@ QString PB_Polygon2DExporter::getExporterCustomName() const
     return tr("Polygones 2D, ACSII");
 }
 
+CT_StepsMenu::LevelPredefined PB_Polygon2DExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Items;
+}
+
+
 void PB_Polygon2DExporter::init()
 {
     addNewExportFormat(FileFormat("txt", tr("Polygones 2D (ASCII)")));
-}
+
+    setToolTip(tr("Exporte des Polygones 2D en format ASCII. Le fichier de sortie contient une ligne par polygones.<br>"
+                  "Pour chaque polygone, sont exportés :<br>"
+                  "- PolygonId : Identifiant Computree du polygone<br>"
+                  "- AreaOfPolygon : Aire du polygone<br>"
+                  "- Xcenter : Coordonnée X du centre de masse du polygone<br>"
+                  "- Ycenter : Coordonnée Y du centre de masse du polygone<br>"
+                  "- NumberOfVertice(N) : Nombre de sommets du polygone<br>"
+                  "- Xvertice1 : Coordonnée X du 1er sommet<br>"
+                  "- Yvertice1 : Coordonnée Y du 1er sommet<br>"
+                  "- Xvertice2 : Coordonnée X du 2ième sommet<br>"
+                  "- Yvertice2 : Coordonnée Y du 2ième sommet<br>"
+                  "..."
+                  "- XverticeN : Coordonnée X du Nième sommet<br>"
+                  "- YverticeN : Coordonnée Y du Nième sommet<br>"
+                  "N.B. : Le nombre de colonnes varie donc pour chaque ligne. "));}
 
 bool PB_Polygon2DExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {

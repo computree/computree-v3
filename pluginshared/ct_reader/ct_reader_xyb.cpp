@@ -152,6 +152,8 @@ CT_AbstractReader* CT_Reader_XYB::copy() const
 void CT_Reader_XYB::protectedInit()
 {
     addNewReadableFormat(FileFormat("xyb", tr("Fichiers binaire de points .xyb")));
+
+    setToolTip(tr("Chargement de points depuis un fichier format binaire XYB (FARO)"));
 }
 
 void CT_Reader_XYB::protectedCreateOutItemDrawableModelList()

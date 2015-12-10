@@ -18,12 +18,20 @@ PB_PgmExporter::~PB_PgmExporter()
 
 QString PB_PgmExporter::getExporterCustomName() const
 {
-    return tr("Grilles 2D, format PGM");
+    return tr("Images 2D, format PGM");
 }
+
+CT_StepsMenu::LevelPredefined PB_PgmExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Raster;
+}
+
 
 void PB_PgmExporter::init()
 {
     addNewExportFormat(FileFormat("pgm", tr("Fichiers Images 2D (pgm)")));
+
+    setToolTip(tr("Portable GrayMap : Format de fichier image en niveaux de gris (NetPBM)"));
 }
 
 bool PB_PgmExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

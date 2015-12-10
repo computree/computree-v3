@@ -18,12 +18,20 @@ PB_PbmExporter::~PB_PbmExporter()
 
 QString PB_PbmExporter::getExporterCustomName() const
 {
-    return tr("Grilles 2D, format PBM");
+    return tr("Images 2D, format PBM");
 }
+
+CT_StepsMenu::LevelPredefined PB_PbmExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Raster;
+}
+
 
 void PB_PbmExporter::init()
 {
     addNewExportFormat(FileFormat("pbm", tr("Fichiers Images 2D (pbm)")));
+
+    setToolTip(tr("Portable BitMap : Format de fichier image noir et blanc (NetPBM)"));
 }
 
 bool PB_PbmExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

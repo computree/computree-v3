@@ -31,6 +31,22 @@ const QList<FileFormat>& CT_AbstractExporter::exportFormats() const
     return d->_formats;
 }
 
+CT_StepsMenu::LevelPredefined CT_AbstractExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Others;
+}
+
+QString CT_AbstractExporter::toolTip() const
+{
+    return m_tooltip;
+}
+
+void CT_AbstractExporter::setToolTip(const QString &t)
+{
+    m_tooltip = t;
+}
+
+
 bool CT_AbstractExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     Q_D(CT_AbstractExporter);

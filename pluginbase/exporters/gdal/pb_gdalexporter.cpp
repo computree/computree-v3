@@ -35,6 +35,32 @@ void PB_GDALExporter::init()
             ext.append("gdal");
 
         addNewExportFormat(FileFormat(ext, CT_GdalTools::staticGdalDriverName((m_driver))));
+
+        QString driverType = getTypeOfDriver();
+
+        QString toolTip = tr("Exporter GDAL de type : %1").arg(driverType.isEmpty()?tr("Inconnu"):driverType);
+        if (driverType == "Raster")
+        {
+            toolTip.append("<br>");
+            toolTip.append("<br>");
+            toolTip.append(tr("Pour plus de détails voir : http://www.gdal.org/formats_list.html"));
+        } else if (driverType == "Vector")
+        {
+            toolTip.append("<br>");
+            toolTip.append("<br>");
+            toolTip.append(tr("Pour plus de détails voir : http://www.gdal.org/ogr_formats.html"));
+        }
+        toolTip.append("<br>");
+        toolTip.append("<br>");
+        toolTip.append(tr("Extension : "));
+        for (int i = 0 ; i < ext.size() ; i++)
+        {
+            toolTip.append("*.");
+            toolTip.append(ext.at(i));
+            if ((i + 1) < ext.size()) {toolTip.append(" ");}
+        }
+        setToolTip(toolTip);
+
     }
     #endif
 }
@@ -59,6 +85,25 @@ QString PB_GDALExporter::getExporterName() const
 #endif
     return CT_AbstractExporter::getExporterName();
 }
+
+CT_StepsMenu::LevelPredefined PB_GDALExporter::getExporterSubMenuName() const
+{
+    QString driverType = getTypeOfDriver();
+    if (driverType == "Raster") {return CT_StepsMenu::LP_Raster;}
+    if (driverType == "Vector") {return CT_StepsMenu::LP_Vector;}
+    return CT_StepsMenu::LP_Others;
+}
+
+QString PB_GDALExporter::getTypeOfDriver() const
+{
+#ifdef USE_GDAL
+    if (m_driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) == NULL) {return "Raster";}
+    if (m_driver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL && m_driver->GetMetadataItem(GDAL_DCAP_RASTER) == NULL) {return "Vector";}
+#endif
+
+    return "";
+}
+
 
 bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {

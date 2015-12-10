@@ -28,7 +28,12 @@ void PB_StepLoadGrid3dFile::init()
 
 QString PB_StepLoadGrid3dFile::getStepDescription() const
 {
-    return tr("Fichier Grid3d");
+    return tr("Fichier Grille 3D");
+}
+
+QString PB_StepLoadGrid3dFile::getStepDetailledDescription() const
+{
+    return tr("Chargement d'une grille 3D depuis un fichier ASCII (format insipré du format raster ESRI GRID).");
 }
 
 CT_VirtualAbstractStep* PB_StepLoadGrid3dFile::createNewInstance(CT_StepInitializeData &dataInit)

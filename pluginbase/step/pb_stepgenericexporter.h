@@ -36,6 +36,8 @@ public:
     // surcharger pour afficher le nom de l'exporter
     QString getStepDisplayableName() const;
 
+    QString getStepDetailledDescription() const;
+
     // CT_AbstractStep non obligatoire :
     SettingsNodeGroup* getAllSettings() const;
 

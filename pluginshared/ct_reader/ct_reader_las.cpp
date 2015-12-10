@@ -15,7 +15,7 @@
 #include <QDate>
 
 CT_Reader_LAS::CT_Reader_LAS() : CT_AbstractReader()
-{
+{    
 }
 
 CT_Reader_LAS::~CT_Reader_LAS()
@@ -24,7 +24,7 @@ CT_Reader_LAS::~CT_Reader_LAS()
 
 QString CT_Reader_LAS::GetReaderName() const
 {
-    return tr("Fichier LAS");
+    return tr("Points, format LAS");
 }
 
 CT_StepsMenu::LevelPredefined CT_Reader_LAS::getReaderSubMenuName() const
@@ -100,6 +100,8 @@ CT_AbstractReader* CT_Reader_LAS::copy() const
 void CT_Reader_LAS::protectedInit()
 {
     addNewReadableFormat(FileFormat("las", tr("Fichiers LAS .las")));
+
+    setToolTip(tr("Charge des points depuis un fichier au format LAS (ASPRS)<br>http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html"));
 }
 
 void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()

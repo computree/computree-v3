@@ -26,13 +26,25 @@ PB_ASCIDExporter::~PB_ASCIDExporter()
 
 QString PB_ASCIDExporter::getExporterCustomName() const
 {
-    return "Points + ID item, ASCII(X,Y,Z)";
+    return tr("Points + ID item, ASCII(X,Y,Z)");
+}
+
+CT_StepsMenu::LevelPredefined PB_ASCIDExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
 }
 
 void PB_ASCIDExporter::init()
 {
     addNewExportFormat(FileFormat("asc", tr("Fichier asc")));
+
+    setToolTip(tr("Exporte les points au format ASCII. Tous les items contenant des points sont exportés dans le même fichier, avec les champs suivants :<br>"
+                  "- ID : ID Computree de l'item contenant le point<br>"
+                  "- X  : Coordonnée X<br>"
+                  "- Y  : Coordonnée Y<br>"
+                  "- Z  : Coordonnée Z<br>"));
 }
+
 
 bool PB_ASCIDExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {

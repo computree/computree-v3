@@ -21,6 +21,8 @@ public:
 
     virtual QString getExporterCustomName() const;
 
+    CT_StepsMenu::LevelPredefined getExporterSubMenuName() const;
+
     void init();
 
     bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);

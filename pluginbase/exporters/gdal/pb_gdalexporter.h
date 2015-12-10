@@ -36,6 +36,10 @@ public:
 
     virtual QString getExporterName() const;
 
+    virtual CT_StepsMenu::LevelPredefined getExporterSubMenuName() const;
+
+    QString getTypeOfDriver() const;
+
     bool setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list);
 
     CT_AbstractExporter* copy() const;

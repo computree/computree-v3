@@ -74,6 +74,14 @@ CT_AbstractReader* CT_Reader_ASCRGB::copy() const
 void CT_Reader_ASCRGB::protectedInit()
 {
     addNewReadableFormat(FileFormat("asc", tr("Fichiers de points ASCII (XYZRGB, sans entête, RGB [0;1])")));
+
+    setToolTip(tr("Charge un fichier de points au format ASCII, sans entête, ordonné, avec les champs suivants :<br>"
+                  "- X  : Coordonnée X<br>"
+                  "- Y  : Coordonnée Y<br>"
+                  "- Z  : Coordonnée Z<br>"
+                  "- R  : Composante rouge, valeur entre 0 et 1<br>"
+                  "- V  : Composante verte, valeur entre 0 et 1<br>"
+                  "- B  : Composante Bleue, valeur entre 0 et 1<br>"));
 }
 
 void CT_Reader_ASCRGB::protectedCreateOutItemDrawableModelList()

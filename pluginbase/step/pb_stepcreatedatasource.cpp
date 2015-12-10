@@ -83,8 +83,8 @@ QString PB_StepCreateDataSource::getStepDescription() const
 // Step detailled description
 QString PB_StepCreateDataSource::getStepDetailledDescription() const
 {
-    return tr("Une source de données est une liste de fichiers du même type.<br>"
-              "Si la case <em>charger les données</em> est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.<br>"
+    return tr("Une source de données est une liste de fichiers du même type.<br><br>"
+              "Si la case <em>charger les données</em> est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.<br><br>"
               "Si la case est cochée, tous les fichiers sont chargés intégralement.");
 }
 

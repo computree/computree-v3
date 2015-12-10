@@ -30,12 +30,21 @@ PB_OPFExporter::~PB_OPFExporter()
 
 QString PB_OPFExporter::getExporterCustomName() const
 {
-    return "Topologie, format OPF";
+    return tr("Topologie, format OPF");
 }
+
+CT_StepsMenu::LevelPredefined PB_OPFExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Others;
+}
+
 
 void PB_OPFExporter::init()
 {
     addNewExportFormat(FileFormat("opf", tr("Fichiers AmapStudio .opf")));
+
+    setToolTip(tr("Exporte une topologie décrivant l'architecture de végétaux dans un fichier au format OPF, pour utilisation par le logiciel AMAPStudio.<br>"
+                  "http://amapstudio.cirad.fr"));
 }
 
 bool PB_OPFExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

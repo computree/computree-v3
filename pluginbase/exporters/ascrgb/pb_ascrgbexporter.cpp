@@ -26,13 +26,30 @@ PB_ASCRGBExporter::~PB_ASCRGBExporter()
 
 QString PB_ASCRGBExporter::getExporterCustomName() const
 {
-    return "Points, ASCII(X,Y,Z,R,G,B,NX,NY,NZ)";
+    return tr("Points, ASCII(X,Y,Z,R,G,B,NX,NY,NZ)");
+}
+
+CT_StepsMenu::LevelPredefined PB_ASCRGBExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Points;
 }
 
 void PB_ASCRGBExporter::init()
 {
     addNewExportFormat(FileFormat("asc", tr("Fichier asc")));
+
+    setToolTip(tr("Exporte les points au format ASCII, avec les champs suivants :<br>"
+                  "- X  : Coordonnée X<br>"
+                  "- Y  : Coordonnée Y<br>"
+                  "- Z  : Coordonnée Z<br>"
+                  "- R  : Composante rouge<br>"
+                  "- V  : Composante verte<br>"
+                  "- B  : Composante Bleue<br>"
+                  "- NX : Coordonnée X de la normale au point<br>"
+                  "- NY : Coordonnée X de la normale au point<br>"
+                  "- NZ : Coordonnée X de la normale au point<br><br>"));
 }
+
 
 bool PB_ASCRGBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)
 {

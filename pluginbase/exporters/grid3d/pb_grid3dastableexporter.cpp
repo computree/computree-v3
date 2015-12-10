@@ -20,12 +20,24 @@ PB_Grid3DAsTableExporter::~PB_Grid3DAsTableExporter()
 
 QString PB_Grid3DAsTableExporter::getExporterCustomName() const
 {
-    return "Grilles 3D, (X,Y,Z,Valeur)";
+    return tr("Grilles 3D, table (X,Y,Z,Valeur)");
 }
+
+CT_StepsMenu::LevelPredefined PB_Grid3DAsTableExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Voxels;
+}
+
 
 void PB_Grid3DAsTableExporter::init()
 {
     addNewExportFormat(FileFormat("txt", tr("Fichiers txt")));
+
+    setToolTip(tr("Exporte des grilles 3D au format table ASCII. Les champs suivants sont exportés :<br>"
+                  "- X  : Coordonnée X de la cellule dans la grille (ligne)<br>"
+                  "- Y  : Coordonnée Y de la cellule dans la grille (colonne)<br>"
+                  "- Z  : Coordonnée Z de la cellule dans la grille (niveau Z)<br>"
+                  "- Valeur  : Valeur dans la cellule<br>"));
 }
 
 bool PB_Grid3DAsTableExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable*> &list)

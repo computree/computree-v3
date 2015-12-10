@@ -16,13 +16,21 @@ PB_MeshObjExporter::PB_MeshObjExporter() : CT_AbstractExporter()
 
 QString PB_MeshObjExporter::getExporterCustomName() const
 {
-    return "Meshs, format OBJ";
+    return tr("Meshs, format OBJ");
+}
+
+CT_StepsMenu::LevelPredefined PB_MeshObjExporter::getExporterSubMenuName() const
+{
+    return CT_StepsMenu::LP_Meshes;
 }
 
 void PB_MeshObjExporter::init()
 {
     addNewExportFormat(FileFormat("obj", tr("Fichiers .obj")));
+
+    setToolTip(tr("Exporte un maillage dans un fichier au format OBJ (Objet 3D)"));
 }
+
 
 bool PB_MeshObjExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
