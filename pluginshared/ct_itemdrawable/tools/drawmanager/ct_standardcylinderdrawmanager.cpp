@@ -33,8 +33,10 @@ void CT_StandardCylinderDrawManager::draw(GraphicsViewInterface &view, PainterIn
         if (transparence < 0) {transparence = 0;}
         if (transparence > 255) {transparence = 255;}
 
+        Eigen::Vector3d bottom = center - (direction * item.getHeight()/2.0);
+
         painter.setColor(QColor(color.red(), color.green(), color.blue(), transparence));
-        painter.drawCylinder3D(center, direction, item.getRadius(), item.getHeight());
+        painter.drawCylinder3D(bottom, direction, item.getRadius(), item.getHeight());
 
         painter.setColor(color);
     }
