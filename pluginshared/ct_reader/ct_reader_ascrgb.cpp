@@ -125,7 +125,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                 line = stream.readLine();
                 QStringList values = line.split(" ", QString::SkipEmptyParts);
 
-                if (values.size() > 5)
+                if (values.size() > 2)
                 {
                     bool okX = false;
                     bool okY = false;
@@ -138,9 +138,16 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     double y = values.at(1).toDouble(&okY);
                     double z = values.at(2).toDouble(&okZ);
 
-                    double valueR = values.at(3).toDouble(&okR);
-                    double valueG = values.at(4).toDouble(&okG);
-                    double valueB = values.at(5).toDouble(&okB);
+                    double valueR = 1;
+                    double valueG = 1;
+                    double valueB = 1;
+
+                    if (values.size() > 3) {valueR = values.at(3).toDouble(&okR);}
+                    if (values.size() > 4) {valueG = values.at(4).toDouble(&okG);}
+                    if (values.size() > 5) {valueB = values.at(5).toDouble(&okB);}
+
+                    if (!okG) {valueG = valueR;}
+                    if (!okB) {valueB = valueR;}
 
                     if (valueR < 0) {valueR = 0;}
                     if (valueG < 0) {valueG = 0;}
@@ -154,7 +161,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     short g = 255*valueG;
                     short b = 255*valueB;
 
-                    if (okX && okY && okZ && okR && okG && okB)
+                    if (okX && okY && okZ)
                     {
                         double distance2D = sqrt(x*x + y*y);
 
