@@ -44,18 +44,26 @@ bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
             if (!line.isNull())
             {
                 QStringList values = line.split(" ");
-                if (values.size() >= 6)
+                if (values.size() >= 3)
                 {                    
                     m_header = new CT_FileHeader(NULL, NULL);
                     m_header->setFile(m_filePath);
 
                     f.close();
                     return true;
+                } else {
+                    PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 n'a pas le bon format (colonnes manquantes).")).arg(filepath));
                 }
+            } else {
+                PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 est vide.")).arg(filepath));
             }
 
             f.close();
+        } else {
+            PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 n'est pas accessible.")).arg(filepath));
         }
+    } else {
+        PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 n'existe pas.")).arg(filepath));
     }
 
     return false;
@@ -79,9 +87,9 @@ void CT_Reader_ASCRGB::protectedInit()
                   "- X  : Coordonnée X<br>"
                   "- Y  : Coordonnée Y<br>"
                   "- Z  : Coordonnée Z<br>"
-                  "- R  : Composante rouge, valeur entre 0 et 1<br>"
-                  "- V  : Composante verte, valeur entre 0 et 1<br>"
-                  "- B  : Composante Bleue, valeur entre 0 et 1<br>"));
+                  "- R  : Composante rouge, valeur entre 0 et 1 (optionnel)<br>"
+                  "- V  : Composante verte, valeur entre 0 et 1 (optionnel)<br>"
+                  "- B  : Composante Bleue, valeur entre 0 et 1 (optionnel)<br>"));
 }
 
 void CT_Reader_ASCRGB::protectedCreateOutItemDrawableModelList()
@@ -216,7 +224,11 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                 delete pointCloud;
                 delete colorCloud;
             }
+        } else {
+            PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 n'est pas accessible.")).arg(filepath()));
         }
+    } else {
+        PS_LOG->addMessage(LogInterface::error, LogInterface::reader, QString(tr("Le fichier %1 n'existe pas.")).arg(filepath()));
     }
 
     return false;
