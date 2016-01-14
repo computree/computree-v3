@@ -411,7 +411,8 @@ SOURCES += \
     ct_step/tools/menu/ct_stepsmenu.cpp \
     ct_step/tools/menu/ct_menulevel.cpp \
     ct_reader/ct_reader_terrascanprj.cpp \
-    ct_math/ct_houghtransform.cpp
+    ct_math/ct_houghtransform.cpp \
+    ct_itemdrawable/ct_readeritem.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -931,7 +932,8 @@ HEADERS += interfaces.h \
     ct_step/tools/menu/ct_menulevel.h \
     ct_reader/ct_reader_terrascanprj.h \
     ct_reader/ct_reader_terrascanprj_def_models.h \
-    ct_math/ct_houghtransform.h
+    ct_math/ct_houghtransform.h \
+    ct_itemdrawable/ct_readeritem.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

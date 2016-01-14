@@ -52,7 +52,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/exporters/csv/pbg_csvdatareflistwidget.h \
     views/exporters/csv/pbg_csvpreviewwidget.h \
     actions/pb_actionpickitemsinlist.h \
-    views/actions/pb_actionpickitemsinlistoptions.h
+    views/actions/pb_actionpickitemsinlistoptions.h \
+    step/pb_stepcreatereaderlist.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -98,7 +99,8 @@ SOURCES += \
     views/exporters/csv/pbg_csvdatareflistwidget.cpp \
     views/exporters/csv/pbg_csvpreviewwidget.cpp \
     actions/pb_actionpickitemsinlist.cpp \
-    views/actions/pb_actionpickitemsinlistoptions.cpp
+    views/actions/pb_actionpickitemsinlistoptions.cpp \
+    step/pb_stepcreatereaderlist.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions
