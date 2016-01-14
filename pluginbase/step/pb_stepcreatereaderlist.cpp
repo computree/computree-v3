@@ -90,29 +90,6 @@ CT_VirtualAbstractStep* PB_StepCreateReaderList::createNewInstance(CT_StepInitia
     return new PB_StepCreateReaderList(dataInit);
 }
 
-QString PB_StepCreateReaderList::getFormat(QString formatName)
-{
-    if (_readersMap.contains(formatName))
-    {
-        const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(formatName);
-        FileFormat fileFormat = pair.first->readableFormats().at(pair.second);
-
-        QString formatText = fileFormat.description();
-        formatText.append(" (");
-        const QList<QString> &suffixes = fileFormat.suffixes();
-        for (int i = 0 ; i < suffixes.size() ; i++)
-        {
-            if (i > 0) {formatText.append(" ");}
-            formatText.append("*.");
-            formatText.append(suffixes.at(i));
-        }
-        formatText.append(")");
-
-        return formatText;
-    } else {
-        return tr("Aucun reader disponible (*.error)");
-    }
-}
 
 //////////////////// PROTECTED METHODS //////////////////
 
@@ -172,8 +149,6 @@ void PB_StepCreateReaderList::createOutResultModelListProtected()
             {
                 firstHeader = (CT_FileHeader*) reader->getHeader();
                 found = true;
-            } else {
-                delete reader;
             }
         }
 
@@ -225,8 +200,33 @@ void PB_StepCreateReaderList::compute()
                 CT_ReaderItem* readerItem = new CT_ReaderItem(DEFout_reader, resultOut, reader);
                 grpHeader->addItemDrawable(readerItem);
             } else {
+                PS_LOG->addMessage(LogInterface::warning, LogInterface::step, tr("Fichier %1 inexistant ou non valide").arg(_filesList.at(i)));
                 delete reader;
             }
         }
+    }
+}
+
+QString PB_StepCreateReaderList::getFormat(QString formatName)
+{
+    if (_readersMap.contains(formatName))
+    {
+        const QPair<CT_AbstractReader*, int> &pair = _readersMap.value(formatName);
+        FileFormat fileFormat = pair.first->readableFormats().at(pair.second);
+
+        QString formatText = fileFormat.description();
+        formatText.append(" (");
+        const QList<QString> &suffixes = fileFormat.suffixes();
+        for (int i = 0 ; i < suffixes.size() ; i++)
+        {
+            if (i > 0) {formatText.append(" ");}
+            formatText.append("*.");
+            formatText.append(suffixes.at(i));
+        }
+        formatText.append(")");
+
+        return formatText;
+    } else {
+        return tr("Aucun reader disponible (*.error)");
     }
 }
