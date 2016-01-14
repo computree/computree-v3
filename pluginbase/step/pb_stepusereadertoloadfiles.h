@@ -66,10 +66,8 @@ protected:
 
 private:
 
-    // Step parameters
-
-
-
+//    QList<CT_OutStdSingularItemModel*>  _itemModels;
+//    QList<CT_OutStdGroupModel*>         _groupModels;
 
 };
 

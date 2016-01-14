@@ -3,6 +3,7 @@
 #include "ct_result/ct_resultgroup.h"
 #include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
+#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
 
 #include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
 
@@ -67,9 +68,51 @@ void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepUseReaderToLoadFiles::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
+//    // Récupération du prototype de ct_readeritem
+//    CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_res);
+
+//    CT_OutAbstractResultModel* resultInModelOut = NULL;
+//    CT_InAbstractSingularItemModel* readerItemModel = NULL;
+//    CT_ReaderItem* readerItemPrototype = NULL;
+
+//    // check if model have choice (can be empty if the step want to create a default out model list)
+//    if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
+//        resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
+
+//    if(resultInModelOut != NULL)
+//        readerItemModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEFin_reader, resultInModelOut, this);
+
+//    if((readerItemModel != NULL) && !readerItemModel->getPossibilitiesSavedSelected().isEmpty())
+//        readerItemPrototype = (CT_ReaderItem*) ((CT_OutAbstractSingularItemModel*) readerItemModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable();
+
+//    CT_AbstractReader* reader = readerItemPrototype->getReader();
 
 
+
+
+//    CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
+
+//    _itemModels.append(reader->outItemDrawableModels());
+//    _groupModels.append(reader->outGroupsModel());
+
+//    // Ajout du modèle de header
+//    res->addItem((CT_OutStdSingularItemModel*)reader->outHeaderModel()->copy());
+
+//    // Ajout des modèles d'items
+//    QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
+//    while (itIM.hasNext())
+//    {
+//        CT_OutStdSingularItemModel* itemModel = itIM.next();
+//        res->addItem((CT_OutStdSingularItemModel*)itemModel->copy());
+//    }
+
+//    // Ajout des modèles de groupes
+//    QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
+//    while (itGM.hasNext())
+//    {
+//        CT_OutStdGroupModel* groupModel = itGM.next();
+//        res->addGroup((CT_OutStdGroupModel*)groupModel->copy());
+//    }
 }
 
 
