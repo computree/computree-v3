@@ -53,7 +53,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     views/exporters/csv/pbg_csvpreviewwidget.h \
     actions/pb_actionpickitemsinlist.h \
     views/actions/pb_actionpickitemsinlistoptions.h \
-    step/pb_stepcreatereaderlist.h
+    step/pb_stepcreatereaderlist.h \
+    step/pb_stepusereadertoloadfiles.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -100,7 +101,8 @@ SOURCES += \
     views/exporters/csv/pbg_csvpreviewwidget.cpp \
     actions/pb_actionpickitemsinlist.cpp \
     views/actions/pb_actionpickitemsinlistoptions.cpp \
-    step/pb_stepcreatereaderlist.cpp
+    step/pb_stepcreatereaderlist.cpp \
+    step/pb_stepusereadertoloadfiles.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

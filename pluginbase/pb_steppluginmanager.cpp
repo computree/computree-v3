@@ -44,6 +44,7 @@
 #include "step/pb_stepgenericloadfile.h"
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_stepcreatereaderlist.h"
+#include "step/pb_stepusereadertoloadfiles.h"
 #include "step/pb_stepcomputepointmetrics.h"
 #include "step/pb_stepcomputerastermetrics.h"
 
@@ -139,6 +140,7 @@ bool PB_StepPluginManager::loadGenericsStep()
 
     addNewLoadStep<PB_StepCreateDataSource>("");
     addNewLoadStep<PB_StepCreateReaderList>("");
+    addNewLoadStep<PB_StepUseReaderToLoadFiles>("");
     addNewLoadStep<PB_StepLoadAsciiFile02>(CT_StepsMenu::LP_Points);
     addNewLoadStep<PB_StepLoadObjFile>(CT_StepsMenu::LP_Meshes);
     addNewLoadStep<PB_StepLoadGrid3dFile>(CT_StepsMenu::LP_Voxels);
