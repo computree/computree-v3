@@ -68,8 +68,8 @@ protected:
 
 private:
 
-    QMap<CT_OutStdSingularItemModel*, CT_AutoRenameModels*>  _itemModels;
-    CT_AutoRenameModels*                                     _headerModel;
+    QMap<QString, CT_AutoRenameModels*>   _itemModels;
+    CT_AutoRenameModels*                  _headerModel;
 
 };
 

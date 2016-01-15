@@ -110,7 +110,7 @@ void PB_StepUseReaderToLoadFiles::createOutResultModelListProtected()
                 CT_OutStdSingularItemModel* itemModel = itIM.next();
                 CT_AutoRenameModels* autoRename = new CT_AutoRenameModels();
 
-                _itemModels.insert(itemModel, autoRename);
+                _itemModels.insert(itemModel->uniqueName(), autoRename);
                 res->addItemModel(DEFin_group, *autoRename, (CT_AbstractSingularItemDrawable*) (itemModel->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList())), itemModel->displayableName());
             }
         }
@@ -139,13 +139,11 @@ void PB_StepUseReaderToLoadFiles::compute()
                 while(it.hasNext())
                 {
                     CT_OutStdSingularItemModel *model = it.next();
-                    CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model);
+                    CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model->uniqueName());
 
                     if (modelCreationAutoRename != NULL)
                     {
-                        CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(modelCreationAutoRename->completeName(), outRes);
-
-                        QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreation);
+                        QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreationAutoRename->completeName());
                         QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
 
                         while(itI.hasNext())
