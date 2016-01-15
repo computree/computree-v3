@@ -2,6 +2,8 @@
 #define PB_STEPUSEREADERTOLOADFILES_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
+#include "ct_tools/model/ct_autorenamemodels.h"
+#include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 
 class PB_StepUseReaderToLoadFiles: public CT_AbstractStep
 {
@@ -66,8 +68,8 @@ protected:
 
 private:
 
-//    QList<CT_OutStdSingularItemModel*>  _itemModels;
-//    QList<CT_OutStdGroupModel*>         _groupModels;
+    QMap<CT_OutStdSingularItemModel*, CT_AutoRenameModels*>  _itemModels;
+    CT_AutoRenameModels*                                     _headerModel;
 
 };
 

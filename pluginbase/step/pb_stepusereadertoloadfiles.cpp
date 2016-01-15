@@ -3,14 +3,16 @@
 #include "ct_result/ct_resultgroup.h"
 #include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
-#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
-
 #include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
+#include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
+#include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+
 
 #include "ct_global/ct_context.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
-
 #include "ct_itemdrawable/ct_readeritem.h"
+
+#include <QDebug>
 
 // Alias for indexing models
 #define DEFin_res "res"
@@ -21,7 +23,6 @@
 // Constructor : initialization of parameters
 PB_StepUseReaderToLoadFiles::PB_StepUseReaderToLoadFiles(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-
 }
 
 PB_StepUseReaderToLoadFiles::~PB_StepUseReaderToLoadFiles()
@@ -68,56 +69,96 @@ void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepUseReaderToLoadFiles::createOutResultModelListProtected()
 {
-//    // Récupération du prototype de ct_readeritem
-//    CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_res);
+    _itemModels.clear();
 
-//    CT_OutAbstractResultModel* resultInModelOut = NULL;
-//    CT_InAbstractSingularItemModel* readerItemModel = NULL;
-//    CT_ReaderItem* readerItemPrototype = NULL;
+    // Récupération du prototype de ct_readeritem
+    CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_res);
 
-//    // check if model have choice (can be empty if the step want to create a default out model list)
-//    if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
-//        resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
+    if (resultInModel != NULL)
+    {
+        CT_OutAbstractResultModel* resultInModelOut = NULL;
+        CT_InAbstractSingularItemModel* readerItemModel = NULL;
+        CT_ReaderItem* readerItemPrototype = NULL;
 
-//    if(resultInModelOut != NULL)
-//        readerItemModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEFin_reader, resultInModelOut, this);
+        // check if model have choice (can be empty if the step want to create a default out model list)
+        if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
+            resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
 
-//    if((readerItemModel != NULL) && !readerItemModel->getPossibilitiesSavedSelected().isEmpty())
-//        readerItemPrototype = (CT_ReaderItem*) ((CT_OutAbstractSingularItemModel*) readerItemModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable();
+        if(resultInModelOut != NULL)
+            readerItemModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEFin_reader, resultInModelOut, this);
 
-//    CT_AbstractReader* reader = readerItemPrototype->getReader();
+        if((readerItemModel != NULL) && !readerItemModel->getPossibilitiesSavedSelected().isEmpty())
+            readerItemPrototype = (CT_ReaderItem*) ((CT_OutAbstractSingularItemModel*) readerItemModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable();
 
+        if (readerItemPrototype != NULL)
+        {
 
+            CT_AbstractReader* reader = readerItemPrototype->getReader();
+            reader->init();
 
+            CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
+            QList<CT_OutStdSingularItemModel*> itemModels = reader->outItemDrawableModels();
 
-//    CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
+            // Ajout du modèle de header
+            _headerModel = new CT_AutoRenameModels();
+            res->addItemModel(DEFin_group, *_headerModel, new CT_FileHeader(), reader->getHeader()->displayableName());
 
-//    _itemModels.append(reader->outItemDrawableModels());
-//    _groupModels.append(reader->outGroupsModel());
+            // Ajout des modèles d'items
+            QListIterator<CT_OutStdSingularItemModel*> itIM(itemModels);
+            while (itIM.hasNext())
+            {
+                CT_OutStdSingularItemModel* itemModel = itIM.next();
+                CT_AutoRenameModels* autoRename = new CT_AutoRenameModels();
 
-//    // Ajout du modèle de header
-//    res->addItem((CT_OutStdSingularItemModel*)reader->outHeaderModel()->copy());
-
-//    // Ajout des modèles d'items
-//    QListIterator<CT_OutStdSingularItemModel*> itIM(_itemModels);
-//    while (itIM.hasNext())
-//    {
-//        CT_OutStdSingularItemModel* itemModel = itIM.next();
-//        res->addItem((CT_OutStdSingularItemModel*)itemModel->copy());
-//    }
-
-//    // Ajout des modèles de groupes
-//    QListIterator<CT_OutStdGroupModel*> itGM(_groupModels);
-//    while (itGM.hasNext())
-//    {
-//        CT_OutStdGroupModel* groupModel = itGM.next();
-//        res->addGroup((CT_OutStdGroupModel*)groupModel->copy());
-//    }
+                _itemModels.insert(itemModel, autoRename);
+                res->addItemModel(DEFin_group, *autoRename, (CT_AbstractSingularItemDrawable*) (itemModel->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList())), itemModel->displayableName());
+            }
+        }
+    }
 }
 
 
 void PB_StepUseReaderToLoadFiles::compute()
 {
 
+    CT_ResultGroup *outRes = getOutResultList().first();
 
+    CT_ResultGroupIterator it(outRes, this, DEFin_group);
+    while (it.hasNext() && (!isStopped()))
+    {
+        CT_StandardItemGroup *group = (CT_StandardItemGroup*) it.next();
+        CT_ReaderItem *readerItem = (CT_ReaderItem*)group->firstItemByINModelName(this, DEFin_reader);
+
+        if(readerItem != NULL)
+        {
+            CT_AbstractReader* reader = readerItem->getReader();
+            if (reader != NULL && reader->readFile())
+            {
+                QListIterator<CT_OutStdSingularItemModel*> it(reader->outItemDrawableModels());
+
+                while(it.hasNext())
+                {
+                    CT_OutStdSingularItemModel *model = it.next();
+                    CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model);
+
+                    if (modelCreationAutoRename != NULL)
+                    {
+                        CT_OutAbstractItemModel *modelCreation = (CT_OutAbstractItemModel*)PS_MODELS->searchModelForCreation(modelCreationAutoRename->completeName(), outRes);
+
+                        QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreation);
+                        QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
+
+                        while(itI.hasNext())
+                        {
+                            CT_AbstractSingularItemDrawable* item = itI.next();
+                            group->addItemDrawable(item);
+                        }
+                    }
+                }
+
+                CT_FileHeader* header = reader->takeHeaderCopy(outRes, _headerModel->completeName());
+                if (header != NULL) {group->addItemDrawable(header);}
+            }
+        }
+    }
 }
