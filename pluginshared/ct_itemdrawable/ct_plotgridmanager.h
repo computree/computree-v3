@@ -25,16 +25,12 @@
 
 *****************************************************************************/
 
-#ifndef CT_PLOTMANAGERITEM_H
-#define CT_PLOTMANAGERITEM_H
+#ifndef CT_PLOTGRIDMANAGER_H
+#define CT_PLOTGRIDMANAGER_H
 
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
-#include "ct_plotmanager/abstract/ct_abstractplotmanager.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"
 
-/**
-  * Représente une liste de readers au même format
-  */
-class PLUGINSHAREDSHARED_EXPORT CT_PlotManagerItem : public CT_AbstractSingularItemDrawable
+class PLUGINSHAREDSHARED_EXPORT CT_PlotGridManager : public CT_AbstractItemDrawableWithoutPointCloud
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
@@ -43,17 +39,17 @@ public:
     /**
       * \brief Contructeur vide
       */
-    CT_PlotManagerItem();
+    CT_PlotGridManager();
     /**
       * \brief Contructeur
       */
-    CT_PlotManagerItem(const CT_OutAbstractSingularItemModel *model,
-                     const CT_AbstractResult *result, CT_AbstractPlotManager* plotManager);
+    CT_PlotGridManager(const CT_OutAbstractSingularItemModel *model,
+                     const CT_AbstractResult *result);
 
-    CT_PlotManagerItem(const QString &modelName,
-                     const CT_AbstractResult *result, CT_AbstractPlotManager *plotManager);
+    CT_PlotGridManager(const QString &modelName,
+                     const CT_AbstractResult *result);
 
-    virtual ~CT_PlotManagerItem();
+    virtual ~CT_PlotGridManager();
 
     /**
       * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
@@ -63,20 +59,16 @@ public:
 
     virtual bool hasBoundingBox() const {return false;}
 
-    inline size_t getPlotNumber() const {return (_plotManager == NULL)?0:_plotManager->getPlotNumber();}
-    inline CT_AbstractPlotManager* getPlotManager() const {return _plotManager;}
-
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 
 protected:
-    CT_AbstractPlotManager*     _plotManager;
 
 private:
-    CT_DEFAULT_IA_BEGIN(CT_PlotManagerItem)
-    CT_DEFAULT_IA_V2(CT_PlotManagerItem, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotManagerItem::getPlotNumber, QObject::tr("Nombre de placettes"))
-    CT_DEFAULT_IA_END(CT_PlotManagerItem)
+    CT_DEFAULT_IA_BEGIN(CT_PlotGridManager)
+//    CT_DEFAULT_IA_V2(CT_PlotGridManager, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotGridManager::getPlotNumber, QObject::tr("Nombre de placettes"))
+    CT_DEFAULT_IA_END(CT_PlotGridManager)
 
 };
 
-#endif // CT_PLOTMANAGERITEM_H
+#endif // CT_PLOTGRIDMANAGER_H

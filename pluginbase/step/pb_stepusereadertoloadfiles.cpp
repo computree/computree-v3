@@ -6,6 +6,7 @@
 #include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
 #include "ct_result/model/outModel/tools/ct_outresultmodelgrouptocopypossibilities.h"
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
 
 
 #include "ct_global/ct_context.h"
@@ -18,11 +19,13 @@
 #define DEFin_res "res"
 #define DEFin_group "group"
 #define DEFin_reader "reader"
-
+#define DEFin_conditionnalItem "conditem"
+#define DEFin_conditionnalAttribute "condatt"
 
 // Constructor : initialization of parameters
 PB_StepUseReaderToLoadFiles::PB_StepUseReaderToLoadFiles(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
+    _conditionnal = false;
 }
 
 PB_StepUseReaderToLoadFiles::~PB_StepUseReaderToLoadFiles()
@@ -56,6 +59,13 @@ CT_VirtualAbstractStep* PB_StepUseReaderToLoadFiles::createNewInstance(CT_StepIn
 
 //////////////////// PROTECTED METHODS //////////////////
 
+void PB_StepUseReaderToLoadFiles::createPreConfigurationDialog()
+{
+    CT_StepConfigurableDialog *configDialog = newStandardPreConfigurationDialog();
+    configDialog->addBool(tr("Conditionner le chargement à un attribut booléen"), "", "", _conditionnal);
+}
+
+
 // Creation and affiliation of IN models
 void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
 {
@@ -63,6 +73,11 @@ void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
     res->setZeroOrMoreRootGroup();
     res->addGroupModel("", DEFin_group);
     res->addItemModel(DEFin_group, DEFin_reader, CT_ReaderItem::staticGetType(), tr("Reader"));
+    if (_conditionnal)
+    {
+        res->addItemModel(DEFin_group, DEFin_conditionnalItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item conditionnant le chargement"));
+        res->addItemAttributeModel(DEFin_conditionnalItem, DEFin_conditionnalAttribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::BOOLEAN, tr("Attribut conditionnel"));
+    }
 }
 
 
@@ -131,31 +146,47 @@ void PB_StepUseReaderToLoadFiles::compute()
 
         if(readerItem != NULL)
         {
-            CT_AbstractReader* reader = readerItem->getReader();
-            if (reader != NULL && reader->readFile())
+            bool load = true;
+            if (_conditionnal)
             {
-                QListIterator<CT_OutStdSingularItemModel*> it(reader->outItemDrawableModels());
-
-                while(it.hasNext())
+                CT_AbstractSingularItemDrawable *conditionnalItem = (CT_AbstractSingularItemDrawable*)group->firstItemByINModelName(this, DEFin_conditionnalItem);
+                if (conditionnalItem != NULL)
                 {
-                    CT_OutStdSingularItemModel *model = it.next();
-                    CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model->uniqueName());
+                    bool attributeValue = conditionnalItem->firstItemAttributeByINModelName(outRes, this, DEFin_conditionnalAttribute)->toBool(conditionnalItem, NULL);
+                    load = attributeValue;
+                } else {
+                    load = false;
+                }
+            }
 
-                    if (modelCreationAutoRename != NULL)
+            if (load)
+            {
+                CT_AbstractReader* reader = readerItem->getReader();
+                if (reader != NULL && reader->readFile())
+                {
+                    QListIterator<CT_OutStdSingularItemModel*> it(reader->outItemDrawableModels());
+
+                    while(it.hasNext())
                     {
-                        QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreationAutoRename->completeName());
-                        QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
+                        CT_OutStdSingularItemModel *model = it.next();
+                        CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model->uniqueName());
 
-                        while(itI.hasNext())
+                        if (modelCreationAutoRename != NULL)
                         {
-                            CT_AbstractSingularItemDrawable* item = itI.next();
-                            group->addItemDrawable(item);
+                            QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreationAutoRename->completeName());
+                            QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
+
+                            while(itI.hasNext())
+                            {
+                                CT_AbstractSingularItemDrawable* item = itI.next();
+                                group->addItemDrawable(item);
+                            }
                         }
                     }
-                }
 
-                CT_FileHeader* header = reader->takeHeaderCopy(outRes, _headerModel->completeName());
-                if (header != NULL) {group->addItemDrawable(header);}
+                    CT_FileHeader* header = reader->takeHeaderCopy(outRes, _headerModel->completeName());
+                    if (header != NULL) {group->addItemDrawable(header);}
+                }
             }
         }
     }

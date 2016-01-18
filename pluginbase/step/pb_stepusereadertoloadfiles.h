@@ -48,6 +48,8 @@ public:
 
 protected:
 
+    void createPreConfigurationDialog();
+
     /*! \brief Input results specification
      * 
      * Specification of input results models needed by the step (IN)
@@ -67,6 +69,8 @@ protected:
     void compute();
 
 private:
+
+    bool                                  _conditionnal;
 
     QMap<QString, CT_AutoRenameModels*>   _itemModels;
     CT_AutoRenameModels*                  _headerModel;

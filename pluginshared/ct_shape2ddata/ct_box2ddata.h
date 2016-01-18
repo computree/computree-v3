@@ -46,6 +46,7 @@ public:
     virtual double getArea() const;
 
     CT_Box2DData* clone() const;
+    CT_Shape2DData* copy() const {return this->clone();}
 
     CT_Box2DData& operator= (const CT_Box2DData& o);
 

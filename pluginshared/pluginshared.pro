@@ -376,10 +376,6 @@ SOURCES += \
     ct_filter/abstract/ct_abstractfilter.cpp \
     ct_filter/abstract/ct_abstractfilter_xyz.cpp \
     ct_filter/abstract/ct_abstractfilter_las.cpp \
-    ct_plotmanager/abstract/ct_abstractplotmanager.cpp \
-    ct_plotmanager/ct_plotmanager_grid.cpp \
-    ct_plotmanager/ct_plotmanager_plotslist.cpp \
-    ct_itemdrawable/ct_plotmanageritem.cpp \
     ct_view/ct_asciifilechoicebutton.cpp \
     ct_itemdrawable/ct_image2d.cpp \
     ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
@@ -412,7 +408,9 @@ SOURCES += \
     ct_step/tools/menu/ct_menulevel.cpp \
     ct_reader/ct_reader_terrascanprj.cpp \
     ct_math/ct_houghtransform.cpp \
-    ct_itemdrawable/ct_readeritem.cpp
+    ct_itemdrawable/ct_readeritem.cpp \
+    ct_itemdrawable/ct_plotlistingrid.cpp \
+    ct_itemdrawable/ct_plotgridmanager.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -877,9 +875,6 @@ HEADERS += interfaces.h \
     ct_filter/abstract/ct_abstractfilter.h \
     ct_filter/abstract/ct_abstractfilter_xyz.h \
     ct_filter/abstract/ct_abstractfilter_las.h \
-    ct_plotmanager/abstract/ct_abstractplotmanager.h \
-    ct_plotmanager/ct_plotmanager_grid.h \
-    ct_plotmanager/ct_plotmanager_plotslist.h \
     ct_iterator/ct_resultgroupiterator.h \
     ct_iterator/ct_resultitemiterator.h \
     ct_iterator/ct_resultiterator.h \
@@ -888,7 +883,6 @@ HEADERS += interfaces.h \
     ct_iterator/ct_containeriterator.h \
     ct_iterator/ct_mutablegroupiterator.h \
     ct_iterator/ct_mutableitemiterator.h \
-    ct_itemdrawable/ct_plotmanageritem.h \
     ct_view/ct_asciifilechoicebutton.h \
     ct_tools/ct_gdaltools.h \
     ct_iterator/ct_mutableindexiterator.h \
@@ -933,7 +927,9 @@ HEADERS += interfaces.h \
     ct_reader/ct_reader_terrascanprj.h \
     ct_reader/ct_reader_terrascanprj_def_models.h \
     ct_math/ct_houghtransform.h \
-    ct_itemdrawable/ct_readeritem.h
+    ct_itemdrawable/ct_readeritem.h \
+    ct_itemdrawable/ct_plotlistingrid.h \
+    ct_itemdrawable/ct_plotgridmanager.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

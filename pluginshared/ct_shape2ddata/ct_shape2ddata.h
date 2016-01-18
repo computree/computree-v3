@@ -48,6 +48,8 @@ public:
 
     virtual void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const = 0;
 
+    virtual CT_Shape2DData* copy() const = 0;
+
 protected:
 
     Eigen::Vector2d   _center;

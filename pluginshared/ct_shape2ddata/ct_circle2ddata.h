@@ -54,6 +54,7 @@ public:
     virtual double getArea() const;
 
     CT_Circle2DData* clone() const;
+    CT_Shape2DData* copy() const {return this->clone();}
 
     CT_Circle2DData& operator= (const CT_Circle2DData& o);
 

@@ -45,6 +45,7 @@ public:
 
     virtual bool contains(double x, double y) const = 0;
     virtual double getArea() const = 0;
+
 };
 
 #endif // CT_AREASHAPE2DDATA_H

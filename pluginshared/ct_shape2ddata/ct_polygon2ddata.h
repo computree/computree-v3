@@ -48,6 +48,7 @@ public:
     ~CT_Polygon2DData();
 
     CT_Polygon2DData* clone() const;
+    CT_Shape2DData* copy() const {return this->clone();}
 
     void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 

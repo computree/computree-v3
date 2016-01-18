@@ -43,6 +43,7 @@ public:
     void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
     CT_Point2DData* clone() const;
+    CT_Shape2DData* copy() const {return this->clone();}
 
 };
 

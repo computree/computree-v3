@@ -25,46 +25,44 @@
 
 *****************************************************************************/
 
-#include "ct_plotmanageritem.h"
+#include "ct_plotgridmanager.h"
 
-CT_DEFAULT_IA_INIT(CT_PlotManagerItem)
+CT_DEFAULT_IA_INIT(CT_PlotGridManager)
 
-CT_PlotManagerItem::CT_PlotManagerItem() : CT_AbstractSingularItemDrawable()
+CT_PlotGridManager::CT_PlotGridManager() : CT_AbstractItemDrawableWithoutPointCloud()
 {
 }
 
-CT_PlotManagerItem::CT_PlotManagerItem(const CT_OutAbstractSingularItemModel *model,
-                                   const CT_AbstractResult *result, CT_AbstractPlotManager *plotManager) : CT_AbstractSingularItemDrawable(model, result)
-{
-    _plotManager = plotManager;
-}
-
-CT_PlotManagerItem::CT_PlotManagerItem(const QString &modelName,
-                                   const CT_AbstractResult *result, CT_AbstractPlotManager *plotManager) : CT_AbstractSingularItemDrawable(modelName, result)
-{
-    _plotManager = plotManager;
-}
-
-CT_PlotManagerItem::~CT_PlotManagerItem()
+CT_PlotGridManager::CT_PlotGridManager(const CT_OutAbstractSingularItemModel *model,
+                                   const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
 }
 
-QString CT_PlotManagerItem::getType() const
+CT_PlotGridManager::CT_PlotGridManager(const QString &modelName,
+                                   const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+{
+}
+
+CT_PlotGridManager::~CT_PlotGridManager()
+{
+}
+
+QString CT_PlotGridManager::getType() const
 {
     return staticGetType();
 }
 
-QString CT_PlotManagerItem::staticGetType()
+QString CT_PlotGridManager::staticGetType()
 {
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_PlotManagerItem";
+    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_PlotGridManager";
 }
 
 
-CT_AbstractItemDrawable *CT_PlotManagerItem::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
+CT_AbstractItemDrawable *CT_PlotGridManager::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);
 
-    CT_PlotManagerItem *cpy = new CT_PlotManagerItem((const CT_OutAbstractSingularItemModel*)model, result, _plotManager);
+    CT_PlotGridManager *cpy = new CT_PlotGridManager((const CT_OutAbstractSingularItemModel*)model, result);
 
     return cpy;
 }
