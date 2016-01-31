@@ -55,16 +55,14 @@ public:
                       const CT_AreaShape2DData* areaShape2D,
                       const Eigen::Vector2d& refCoords,
                       double spacing,
-                      double size,
-                      CT_PlotListInGrid::Type type);
+                      double size);
 
     CT_PlotListInGrid(const QString &modelName,
-                     const CT_AbstractResult *result,
+                      const CT_AbstractResult *result,
                       const CT_AreaShape2DData* areaShape2D,
                       const Eigen::Vector2d& refCoords,
                       double spacing,
-                      double size,
-                      CT_PlotListInGrid::Type type);
+                      double size);
 
     virtual ~CT_PlotListInGrid();
 
@@ -74,9 +72,15 @@ public:
     virtual QString getType() const;
     static QString staticGetType();
 
-    virtual bool hasBoundingBox() const {return false;}
+    virtual bool hasBoundingBox() const {return true;}
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
+
+    void getBoundingBox2D(Eigen::Vector2d &min, Eigen::Vector2d &max) const;
+
+    void setIndices(size_t firstIndex, size_t indexJumpAtEOL);
+
+    QMap<CT_AreaShape2DData *, size_t> createPlots(CT_PlotListInGrid::Type type);
 
 
     static bool orderTopLeftToBottomRight(CT_PlotListInGrid *s1, CT_PlotListInGrid *s2)
@@ -86,6 +90,7 @@ public:
         return false;
     }
 
+
 protected:
 
     CT_AreaShape2DData*     _areaXY;
@@ -93,7 +98,8 @@ protected:
     Eigen::Vector2d         _max;
     double                  _spacing;
     double                  _size;
-    CT_PlotListInGrid::Type _type;
+    size_t                  _firstIndex;
+    size_t                  _indexJumpAtEOL;
 
 
 private:
@@ -110,7 +116,8 @@ private:
                       const Eigen::Vector2d& max,
                       double spacing,
                       double size,
-                      CT_PlotListInGrid::Type type);
+                      size_t firstIndex,
+                      size_t indexJumpAtEOL);
 
 };
 

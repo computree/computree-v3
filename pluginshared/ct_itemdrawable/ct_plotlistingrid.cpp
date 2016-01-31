@@ -26,12 +26,18 @@
 *****************************************************************************/
 
 #include "ct_plotlistingrid.h"
+#include "ct_shape2ddata/ct_circle2ddata.h"
+#include "ct_shape2ddata/ct_box2ddata.h"
 
 CT_DEFAULT_IA_INIT(CT_PlotListInGrid)
 
 CT_PlotListInGrid::CT_PlotListInGrid() : CT_AbstractItemDrawableWithoutPointCloud()
 {
     _areaXY = NULL;
+    _spacing = 1;
+    _size = 0;
+    _firstIndex = 0;
+    _indexJumpAtEOL = 0;
 }
 
 CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *model,
@@ -39,14 +45,14 @@ CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *mode
                                      const CT_AreaShape2DData *areaShape2D,
                                      const Eigen::Vector2d &refCoords,
                                      double spacing,
-                                     double size,
-                                     CT_PlotListInGrid::Type type) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                                     double size) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
     _spacing = spacing;
     _size = size;
-    _type = type;
     computeMinMax(refCoords);
+    _firstIndex = 0;
+    _indexJumpAtEOL = 0;
 }
 
 CT_PlotListInGrid::CT_PlotListInGrid(const QString &modelName,
@@ -54,22 +60,20 @@ CT_PlotListInGrid::CT_PlotListInGrid(const QString &modelName,
                                      const CT_AreaShape2DData *areaShape2D,
                                      const Eigen::Vector2d &refCoords,
                                      double spacing,
-                                     double size,
-                                     CT_PlotListInGrid::Type type) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+                                     double size) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
     _spacing = spacing;
     _size = size;
-    _type = type;
     computeMinMax(refCoords);
+    _firstIndex = 0;
+    _indexJumpAtEOL = 0;
 }
 
 void CT_PlotListInGrid::computeMinMax(const Eigen::Vector2d &refCoords)
 {
     Eigen::Vector3d minShape, maxShape;
     _areaXY->getBoundingBox(minShape, maxShape);
-
-    Eigen::Vector2d _min, _max;
 
     _min(0) = std::floor((minShape(0) - refCoords(0)) / _spacing) * _spacing + refCoords(0);
     _min(1) = std::floor((minShape(1) - refCoords(1)) / _spacing) * _spacing + refCoords(1);
@@ -86,6 +90,12 @@ void CT_PlotListInGrid::computeMinMax(const Eigen::Vector2d &refCoords)
     while (_max(0) < maxShape(0)) {ncol++; _max(0) += _spacing;}
     while (_max(1) < maxShape(1)) {nrow++; _max(1) += _spacing;}
 
+    _minCoordinates(0) = _min(0);
+    _minCoordinates(1) = _min(1);
+    _minCoordinates(2) = 0;
+    _maxCoordinates(0) = _max(0);
+    _maxCoordinates(1) = _max(1);
+    _maxCoordinates(2) = 0;
 }
 
 
@@ -108,9 +118,48 @@ CT_AbstractItemDrawable *CT_PlotListInGrid::copy(const CT_OutAbstractItemModel *
 {
     Q_UNUSED(copyModeList);
 
-    CT_PlotListInGrid *cpy = new CT_PlotListInGrid((const CT_OutAbstractSingularItemModel*)model, result, _areaXY, _min, _max, _spacing, _size, _type);
+    CT_PlotListInGrid *cpy = new CT_PlotListInGrid((const CT_OutAbstractSingularItemModel*)model, result, _areaXY, _min, _max, _spacing, _size, _firstIndex, _indexJumpAtEOL);
 
     return cpy;
+}
+
+void CT_PlotListInGrid::getBoundingBox2D(Eigen::Vector2d &min, Eigen::Vector2d &max) const
+{
+    min = _min;
+    max = _max;
+}
+
+void CT_PlotListInGrid::setIndices(size_t firstIndex, size_t indexJumpAtEOL)
+{
+    _firstIndex = firstIndex;
+    _indexJumpAtEOL = indexJumpAtEOL;
+}
+
+QMap<CT_AreaShape2DData*, size_t> CT_PlotListInGrid::createPlots(CT_PlotListInGrid::Type type)
+{
+    double size2 = 2.0*_size;
+    size_t index = _firstIndex;
+    size_t lastBeginningIndex = _firstIndex;
+
+    QMap<CT_AreaShape2DData*, size_t> plots;
+    for (double y = _max(1) ; y >= _min(1) ; y -= _spacing)
+    {
+        for (double x = _min(0) ; x <= _max(1) ; x += _spacing)
+        {
+            CT_AreaShape2DData* shape = NULL;
+
+            if (type == CT_PlotListInGrid::T_Circle)
+            {
+                shape = new CT_Circle2DData(Eigen::Vector2d(x, y), _size);
+            } else {
+                shape = new CT_Box2DData(Eigen::Vector2d(x, y), size2, size2);
+            }
+            plots.insert(shape, index++);
+        }
+        index = lastBeginningIndex + _indexJumpAtEOL;
+        lastBeginningIndex = index;
+    }
+    return plots;
 }
 
 CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *model,
@@ -120,13 +169,14 @@ CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *mode
                                      const Eigen::Vector2d &max,
                                      double spacing,
                                      double size,
-                                     CT_PlotListInGrid::Type type) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                                     size_t firstIndex,
+                                     size_t indexJumpAtEOL) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
     _spacing = spacing;
     _size = size;
-    _type = type;
     _min = min;
     _max = max;
-
+    _firstIndex = firstIndex;
+    _indexJumpAtEOL = indexJumpAtEOL;
 }
