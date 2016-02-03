@@ -47,7 +47,12 @@ CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *mode
                                      double spacing,
                                      double size) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    if (areaShape2D == NULL)
+    {
+        _areaXY = NULL;
+    } else {
+        _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    }
     _spacing = spacing;
     _size = size;
     computeMinMax(refCoords);
@@ -62,7 +67,12 @@ CT_PlotListInGrid::CT_PlotListInGrid(const QString &modelName,
                                      double spacing,
                                      double size) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
-    _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    if (areaShape2D == NULL)
+    {
+        _areaXY = NULL;
+    } else {
+        _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    }
     _spacing = spacing;
     _size = size;
     computeMinMax(refCoords);
@@ -72,30 +82,33 @@ CT_PlotListInGrid::CT_PlotListInGrid(const QString &modelName,
 
 void CT_PlotListInGrid::computeMinMax(const Eigen::Vector2d &refCoords)
 {
-    Eigen::Vector3d minShape, maxShape;
-    _areaXY->getBoundingBox(minShape, maxShape);
+    if (_areaXY != NULL)
+    {
+        Eigen::Vector3d minShape, maxShape;
+        _areaXY->getBoundingBox(minShape, maxShape);
 
-    _min(0) = std::floor((minShape(0) - refCoords(0)) / _spacing) * _spacing + refCoords(0);
-    _min(1) = std::floor((minShape(1) - refCoords(1)) / _spacing) * _spacing + refCoords(1);
+        _min(0) = std::floor((minShape(0) - refCoords(0)) / _spacing) * _spacing + refCoords(0);
+        _min(1) = std::floor((minShape(1) - refCoords(1)) / _spacing) * _spacing + refCoords(1);
 
-    while (_min(0) < minShape(0)) {_min(0) += _spacing;}
-    while (_min(1) < minShape(1)) {_min(1) += _spacing;}
+        while (_min(0) < minShape(0)) {_min(0) += _spacing;}
+        while (_min(1) < minShape(1)) {_min(1) += _spacing;}
 
-    _max(0) = _min(0);
-    _max(1) = _min(1);
+        _max(0) = _min(0);
+        _max(1) = _min(1);
 
-    size_t ncol = 0;
-    size_t nrow = 0;
+        size_t ncol = 0;
+        size_t nrow = 0;
 
-    while (_max(0) < maxShape(0)) {ncol++; _max(0) += _spacing;}
-    while (_max(1) < maxShape(1)) {nrow++; _max(1) += _spacing;}
+        while (_max(0) < maxShape(0)) {ncol++; _max(0) += _spacing;}
+        while (_max(1) < maxShape(1)) {nrow++; _max(1) += _spacing;}
 
-    _minCoordinates(0) = _min(0);
-    _minCoordinates(1) = _min(1);
-    _minCoordinates(2) = 0;
-    _maxCoordinates(0) = _max(0);
-    _maxCoordinates(1) = _max(1);
-    _maxCoordinates(2) = 0;
+        _minCoordinates(0) = _min(0);
+        _minCoordinates(1) = _min(1);
+        _minCoordinates(2) = 0;
+        _maxCoordinates(0) = _max(0);
+        _maxCoordinates(1) = _max(1);
+        _maxCoordinates(2) = 0;
+    }
 }
 
 
@@ -172,7 +185,12 @@ CT_PlotListInGrid::CT_PlotListInGrid(const CT_OutAbstractSingularItemModel *mode
                                      size_t firstIndex,
                                      size_t indexJumpAtEOL) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    if (areaShape2D == NULL)
+    {
+        _areaXY = NULL;
+    } else {
+        _areaXY = (CT_AreaShape2DData*) areaShape2D->copy();
+    }
     _spacing = spacing;
     _size = size;
     _min = min;
