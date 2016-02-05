@@ -119,7 +119,8 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
 {
     GraphicsViewInterface *view = graphicsView();
 
-    GraphicsViewInterface::SelectionMode mode = selectionModeToBasic(view->selectionMode());
+    GraphicsViewInterface::SelectionMode detailledMode = view->selectionMode();
+    GraphicsViewInterface::SelectionMode mode = selectionModeToBasic(detailledMode);
 
     if(e->button() == Qt::LeftButton)
         m_mousePressed = false;
@@ -138,10 +139,20 @@ bool PB_ActionSelectItemDrawableGV::mouseReleaseEvent(QMouseEvent *e)
                 || (mode == GraphicsViewInterface::REMOVE_ONE)
                 || (mode == GraphicsViewInterface::SELECT_ONE))
             {
+                if (e->modifiers() & Qt::ShiftModifier)
+                {
+                    if (detailledMode == GraphicsViewInterface::SELECT_ONE       || detailledMode == GraphicsViewInterface::REMOVE_ONE)       {view->setSelectionMode(GraphicsViewInterface::ADD_ONE);}
+                    if (detailledMode == GraphicsViewInterface::SELECT_ONE_POINT || detailledMode == GraphicsViewInterface::REMOVE_ONE_POINT) {view->setSelectionMode(GraphicsViewInterface::ADD_ONE_POINT);}
+                    if (detailledMode == GraphicsViewInterface::SELECT_ONE_FACE  || detailledMode == GraphicsViewInterface::REMOVE_ONE_FACE)  {view->setSelectionMode(GraphicsViewInterface::ADD_ONE_FACE);}
+                    if (detailledMode == GraphicsViewInterface::SELECT_ONE_EDGE  || detailledMode == GraphicsViewInterface::REMOVE_ONE_EDGE)  {view->setSelectionMode(GraphicsViewInterface::ADD_ONE_EDGE);}
+                }
+
                 view->setSelectRegionWidth(3);
                 view->setSelectRegionHeight(3);
 
                 view->select(e->pos());
+
+                if (e->modifiers() & Qt::ShiftModifier) {view->setSelectionMode(detailledMode);}
             }
             else
             {

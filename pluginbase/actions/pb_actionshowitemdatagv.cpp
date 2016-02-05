@@ -186,13 +186,33 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
         painter.save();
         painter.setPen(QColor(255,255,255,127));
-        painter.drawText(2, y, QString("Nombre de points sélectionnés = %1").arg(itp.size()));
+        painter.drawText(2, y, tr("Nombre de points sélectionnés = %1").arg(itp.size()));
         y += add;
         painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p(0)).arg(p(1)).arg(p(2)));
         y += add;
         painter.drawText(2, y, QString("..."));
         painter.restore();
         y += (add*2);
+    }
+
+    if (itp.size() == 2)
+    {
+        painter.save();
+        painter.setPen(QColor(255,255,255,127));
+
+        itp.toFront();
+
+        itp.next();
+        CT_Point p1 = itp.currentPoint();
+        itp.next();
+        CT_Point p2 = itp.currentPoint();
+        double dist3D = sqrt(pow(p1(0) - p2(0), 2) + pow(p1(1) - p2(1), 2) + pow(p1(2) - p2(2), 2));
+        double dist2D = sqrt(pow(p1(0) - p2(0), 2) + pow(p1(1) - p2(1), 2));
+        painter.drawText(2, y, tr("Distance 3D      = %1").arg(dist3D));
+        y += add;
+        painter.drawText(2, y, tr("Distance 2D (XY) = %1").arg(dist2D));
+        y += add;
+        painter.restore();
     }
 
     CT_SFCIR fcir = graphicsView()->getSelectedFaces();
@@ -212,7 +232,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
         painter.save();
         painter.setPen(QColor(255,255,255,127));
-        painter.drawText(2, y, QString("Nombre de faces sélectionnés = %1").arg(itf.size()));
+        painter.drawText(2, y, tr("Nombre de faces sélectionnés = %1").arg(itf.size()));
         y += add;
         painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
                          .arg(p2(0)).arg(p2(1)).arg(p2(2))
@@ -236,7 +256,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
         painter.save();
         painter.setPen(QColor(255,255,255,127));
-        painter.drawText(2, y, QString("Nombre d'arêtes sélectionnés = %1").arg(ite.size()));
+        painter.drawText(2, y, tr("Nombre d'arêtes sélectionnés = %1").arg(ite.size()));
         y += add;
         painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
                                                                               .arg(p2(0)).arg(p2(1)).arg(p2(2)));
