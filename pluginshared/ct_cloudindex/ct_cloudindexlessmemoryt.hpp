@@ -20,6 +20,12 @@ size_t CT_CloudIndexLessMemoryT<T>::size() const
 }
 
 template<typename T>
+size_t CT_CloudIndexLessMemoryT<T>::memoryUsed() const
+{
+    return 2*sizeof(size_t);
+}
+
+template<typename T>
 size_t CT_CloudIndexLessMemoryT<T>::indexAt(const size_t &i) const
 {
     return i+m_begin;

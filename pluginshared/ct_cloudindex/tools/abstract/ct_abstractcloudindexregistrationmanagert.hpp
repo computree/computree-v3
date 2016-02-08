@@ -71,4 +71,16 @@ CIR* CT_AbstractCloudIndexRegistrationManagerT<T>::createNewIndexRegistered(CI *
     return cir;
 }
 
+template<typename T>
+QList< CT_AbstractModifiableCloudIndexRegisteredT<T>* > CT_AbstractCloudIndexRegistrationManagerT<T>::modifiableCloudIndexRegistered() const
+{
+    return m_cirArray;
+}
+
+template<typename T>
+QList< CT_AbstractNotModifiableCloudIndexRegisteredT<T>* > CT_AbstractCloudIndexRegistrationManagerT<T>::notModifiableCloudIndexRegistered() const
+{
+    return m_cirMergedArray;
+}
+
 #endif // CT_ABSTRACTCLOUDINDEXREGISTRATIONMANAGERT_HPP

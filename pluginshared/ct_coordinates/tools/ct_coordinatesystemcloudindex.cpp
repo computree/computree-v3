@@ -44,6 +44,11 @@ size_t CT_CoordinateSystemCloudIndex::size() const
     return m_vector.size();
 }
 
+size_t CT_CoordinateSystemCloudIndex::memoryUsed() const
+{
+    return size() * sizeof(std::vector<GLuint>::value_type);
+}
+
 CT_AbstractCloud* CT_CoordinateSystemCloudIndex::copy() const
 {
     return new CT_CoordinateSystemCloudIndex();

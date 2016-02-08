@@ -51,13 +51,18 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     m_timerDirtyNormalsOfPoints.setSingleShot(true);
     m_timerDirtyNormalsOfPoints.setInterval(50);
 
+    m_timerCheckDirtyColorsAndNormalCloudOfPoints.setSingleShot(true);
+    m_timerCheckDirtyColorsAndNormalCloudOfPoints.setInterval(500);
+
     connect(&m_timerUpdateColors, SIGNAL(timeout()), this, SLOT(mustUpdateItemDrawablesThatColorWasModified()), Qt::QueuedConnection);
     connect(&m_timerDirtyColorsOfPoints, SIGNAL(timeout()), this, SLOT(mustDirtyColorsOfItemDrawablesWithPoints()), Qt::QueuedConnection);
     connect(&m_timerDirtyNormalsOfPoints, SIGNAL(timeout()), this, SLOT(mustDirtyNormalsOfItemDrawablesWithPoints()), Qt::QueuedConnection);
+    connect(&m_timerCheckDirtyColorsAndNormalCloudOfPoints, SIGNAL(timeout()), this, SLOT(mustCheckDirtyColorsAndNormalsCloudOfItemDrawablesWithPoints()), Qt::QueuedConnection);
 
     connect(this, SIGNAL(startUpdateColorsTimer()), &m_timerUpdateColors, SLOT(start()), Qt::QueuedConnection);
     connect(this, SIGNAL(startDirtyColorsOfPointTimer()), &m_timerDirtyColorsOfPoints, SLOT(start()), Qt::QueuedConnection);
     connect(this, SIGNAL(startDirtyNormalsOfPointTimer()), &m_timerDirtyNormalsOfPoints, SLOT(start()), Qt::QueuedConnection);
+    connect(this, SIGNAL(startCheckDirtyColorsAndNormalsCloudOfPointTimer()), &m_timerCheckDirtyColorsAndNormalCloudOfPoints, SLOT(start()), Qt::QueuedConnection);
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -135,11 +140,15 @@ void GDocumentViewForGraphics::removeItemDrawable(CT_AbstractItemDrawable &item)
 
     if(!locked)
         unlockGraphics();
+
+    emit startCheckDirtyColorsAndNormalsCloudOfPointTimer();
 }
 
 void GDocumentViewForGraphics::endRemoveMultipleItemDrawable()
 {
     unlockGraphics();
+
+    emit startCheckDirtyColorsAndNormalsCloudOfPointTimer();
 }
 
 void GDocumentViewForGraphics::removeAllItemDrawableOfResult(CT_AbstractResult &res)
@@ -821,8 +830,14 @@ void GDocumentViewForGraphics::mustUpdateItemDrawablesThatColorWasModified()
         it.next();
         QHashIterator<CT_AbstractItemDrawable *, DM_AbstractInfo *> it2(*it.value());
 
-        while(it2.hasNext())
-            static_cast<DM_ItemInfoForGraphics*>(it2.next().value())->setColorModified(false);
+        while(it2.hasNext()) {
+            it2.next();
+
+            if(static_cast<DM_ItemInfoForGraphics*>(it2.value())->isColorModified())
+                GUI_LOG->addErrorMessage(LogInterface::gui, it2.key()->displayableName() + " non modifié !");
+
+            static_cast<DM_ItemInfoForGraphics*>(it2.value())->setColorModified(false);
+        }
     }
 }
 
@@ -836,6 +851,18 @@ void GDocumentViewForGraphics::mustDirtyNormalsOfItemDrawablesWithPoints()
 {
     if(!_listGraphics.isEmpty())
         _listGraphics.first()->dirtyNormalsOfItemDrawablesWithPoints();
+}
+
+void GDocumentViewForGraphics::mustCheckDirtyColorsAndNormalsCloudOfItemDrawablesWithPoints()
+{
+    if(!_listGraphics.isEmpty()) {
+        size_t n = _listGraphics.first()->countPoints();
+
+        if(n == 0) {
+            m_pointsColorCloudRegistered = CT_CCR(NULL);
+            m_pointsNormalCloudRegistered = CT_NCR(NULL);
+        }
+    }
 }
 
 void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)

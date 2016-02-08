@@ -39,6 +39,12 @@ size_t CT_CloudIndexStdVectorT<T>::size() const
 }
 
 template<typename T>
+size_t CT_CloudIndexStdVectorT<T>::memoryUsed() const
+{
+    return size() * sizeof(ct_index_type);
+}
+
+template<typename T>
 size_t CT_CloudIndexStdVectorT<T>::indexAt(const size_t &i) const
 {
     return m_impl->indexAt(i);

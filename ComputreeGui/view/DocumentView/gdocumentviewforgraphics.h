@@ -160,6 +160,7 @@ private:
     QTimer                                                          m_timerUpdateColors;
     QTimer                                                          m_timerDirtyColorsOfPoints;
     QTimer                                                          m_timerDirtyNormalsOfPoints;
+    QTimer                                                          m_timerCheckDirtyColorsAndNormalCloudOfPoints;
 
     CT_CCR                                                          m_pointsColorCloudRegistered;
     QSharedPointer< AttribCloudRegisteredType >                     m_pointsAttribCloudRegistered;
@@ -249,6 +250,7 @@ private slots:
     void mustUpdateItemDrawablesThatColorWasModified();
     void mustDirtyColorsOfItemDrawablesWithPoints();
     void mustDirtyNormalsOfItemDrawablesWithPoints();
+    void mustCheckDirtyColorsAndNormalsCloudOfItemDrawablesWithPoints();
 
 signals:
 
@@ -257,6 +259,7 @@ signals:
 
     void startDirtyColorsOfPointTimer();
     void startDirtyNormalsOfPointTimer();
+    void startCheckDirtyColorsAndNormalsCloudOfPointTimer();
     void startUpdateColorsTimer();
     void startUpdateNormalsTimer();
 };

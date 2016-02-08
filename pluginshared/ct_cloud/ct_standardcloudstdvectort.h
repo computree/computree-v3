@@ -25,6 +25,8 @@ public:
 
     size_t size() const;
 
+    size_t memoryUsed() const;
+
     T& operator[](const size_t &index);
     const T& operator[](const size_t &index) const;
 

@@ -44,6 +44,8 @@ public:
      */
     size_t size() const;
 
+    size_t memoryUsed() const;
+
     /**
      * @brief return a copy
      */
@@ -71,6 +73,7 @@ protected:
 
     void resize(const size_t &newSize) {
         m_vector.resize(newSize, m_resizeNewValue);
+        m_vector.shrink_to_fit();
     }
 
 private:

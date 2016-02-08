@@ -33,6 +33,7 @@ public:
 
     // CT_AbstractCloudIndex
     size_t size() const;
+    size_t memoryUsed() const;
     size_t indexAt(const size_t &i) const;
     const ct_index_type& constIndexAt(const size_t &i) const;
     size_t operator[](const size_t &i) const;

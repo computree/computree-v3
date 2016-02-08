@@ -176,14 +176,16 @@ void PB_StepApplyPointFilters::createOutResultModelListProtected()
 {       
     CT_OutResultModelGroupToCopyPossibilities *resCpy_res = createNewOutResultModelToCopy(DEFin_res);
 
-    QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
-    while (it.hasNext())
-    {
-        CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) it.next();
-        CT_AutoRenameModels* modelName = new CT_AutoRenameModels();
-        _modelNames.insert(filter, modelName);
+    if(resCpy_res != NULL) {
+        QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
+        while (it.hasNext())
+        {
+            CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) it.next();
+            CT_AutoRenameModels* modelName = new CT_AutoRenameModels();
+            _modelNames.insert(filter, modelName);
 
-        resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getCompleteName());
+            resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getCompleteName());
+        }
     }
 }
 

@@ -1103,36 +1103,43 @@ CT_OutResultModelGroupToCopyPossibilities* CT_VirtualAbstractStep::createNewOutR
     QList<CT_OutResultModelGroupToCopyPossibility*> copyList = inModel->getOutResultModelGroupsSelectedToCopy();
     QListIterator<CT_OutResultModelGroupToCopyPossibility*> it(copyList);
 
-    // pour chaque possibilité à copier
-    while(it.hasNext())
-    {
-        CT_OutResultModelGroupToCopyPossibility *outResModelToCopy = it.next();
-
-        QString newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager());
-        QList<QString> generated;
-        generated.append(newResultModelName);
-
-        while(outResModelToCopy->outModelForModification()->existInTree(newResultModelName)) {
-            newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager(), generated);
-            generated.append(newResultModelName);
-        }
-
-        CT_OutResultModelGroupCopy *rModel = new CT_OutResultModelGroupCopy(newResultModelName,
-                                                                            outResModelToCopy);
-
-
-        // on crée un nouveau résultat de sortie contenant le résultat modèle modifié
-        if(!addOutResultModel(rModel))
+    if(it.hasNext()) {
+        // pour chaque possibilité à copier
+        while(it.hasNext())
         {
-            delete rModel;
+            CT_OutResultModelGroupToCopyPossibility *outResModelToCopy = it.next();
 
-            delete outModel;
-            return NULL;
+            QString newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager());
+            QList<QString> generated;
+            generated.append(newResultModelName);
+
+            while(outResModelToCopy->outModelForModification()->existInTree(newResultModelName)) {
+                newResultModelName = gen.getNewResultModelNameThatDontExistIn(*_outManager->getResultModelManager(), generated);
+                generated.append(newResultModelName);
+            }
+
+            CT_OutResultModelGroupCopy *rModel = new CT_OutResultModelGroupCopy(newResultModelName,
+                                                                                outResModelToCopy);
+
+
+            // on crée un nouveau résultat de sortie contenant le résultat modèle modifié
+            if(!addOutResultModel(rModel))
+            {
+                delete rModel;
+
+                delete outModel;
+                return NULL;
+            }
+
+            rModel->setInResultCopyModel(inModel);
+
+            outModel->addResulModel(rModel);
         }
-
-        rModel->setInResultCopyModel(inModel);
-
-        outModel->addResulModel(rModel);
+    }
+    else
+    {
+        delete outModel;
+        return NULL;
     }
 
     return outModel;

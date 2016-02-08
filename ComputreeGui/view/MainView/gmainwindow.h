@@ -91,6 +91,7 @@ public slots:
     void saveScript(QString &saveDirectory);
     void showAboutDialog();
     void showAboutPluginsDialog();
+    void showAboutMemory();
     void cleanItemDrawableOfAllDocuments();
     void showINeedHelpDialog();
 

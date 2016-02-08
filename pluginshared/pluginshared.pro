@@ -410,7 +410,8 @@ SOURCES += \
     ct_math/ct_houghtransform.cpp \
     ct_itemdrawable/ct_readeritem.cpp \
     ct_itemdrawable/ct_plotlistingrid.cpp \
-    ct_itemdrawable/ct_plotgridmanager.cpp
+    ct_itemdrawable/ct_plotgridmanager.cpp \
+    ct_tools/repository/ct_repositoryaccess.cpp
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -929,7 +930,8 @@ HEADERS += interfaces.h \
     ct_math/ct_houghtransform.h \
     ct_itemdrawable/ct_readeritem.h \
     ct_itemdrawable/ct_plotlistingrid.h \
-    ct_itemdrawable/ct_plotgridmanager.h
+    ct_itemdrawable/ct_plotgridmanager.h \
+    ct_tools/repository/ct_repositoryaccess.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

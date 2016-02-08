@@ -20,6 +20,11 @@ public:
      */
     CT_AbstractGlobalCloudManager* globalCloudManager() const;
 
+    /**
+     * @brief Returns the list of clouds registered
+     */
+    QList<CT_AbstractCloudRegistered*> cloudsRegistered() const;
+
 protected:
 
     friend class CT_AbstractCloudRegistered;

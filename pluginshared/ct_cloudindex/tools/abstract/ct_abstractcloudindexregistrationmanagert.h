@@ -27,6 +27,16 @@ public:
     CT_AbstractCloudIndexRegistrationManagerT() : CT_AbstractCloudIndexRegistrationManager() { m_mutex = new QMutex(QMutex::Recursive); }
     ~CT_AbstractCloudIndexRegistrationManagerT();
 
+    /**
+     * @brief Return the list of modifiable cloud index registered
+     */
+    QList< CT_AbstractModifiableCloudIndexRegisteredT<T>* > modifiableCloudIndexRegistered() const;
+
+    /**
+     * @brief Return the list of not modifiable cloud index registered (like CT_CloudIndexLessMemoryT)
+     */
+    QList< CT_AbstractNotModifiableCloudIndexRegisteredT<T>* > notModifiableCloudIndexRegistered() const;
+
 protected:
 
     /**

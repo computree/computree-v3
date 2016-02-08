@@ -22,6 +22,11 @@ size_t DM_DrawElementsUIntSynchronized::size() const
     return m_impl->size();
 }
 
+size_t DM_DrawElementsUIntSynchronized::memoryUsed() const
+{
+    return size() * sizeof(osg::DrawElementsUInt::value_type);
+}
+
 size_t DM_DrawElementsUIntSynchronized::indexAt(const size_t &i) const
 {
     return m_impl->indexAt(i);

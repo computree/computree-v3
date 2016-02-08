@@ -233,6 +233,7 @@ template<typename T>
 void CT_CloudIndexStdVectorTMethodImpl<T>::resize(const size_t &newSize)
 {
     _vector.resize(newSize, 0);
+    _vector.shrink_to_fit();
 }
 
 template<typename T>

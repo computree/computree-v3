@@ -2,6 +2,7 @@
 #define CT_STANDARDCLOUDOSGT_HPP
 
 #include "ct_cloud/ct_standardcloudosgt.h"
+#include <QDebug>
 
 template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
 CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::CT_StandardCloudOsgT(const size_t &initialSize) : CT_AbstractCloudT<T>()
@@ -37,6 +38,12 @@ template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
 size_t CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::size() const
 {
     return m_array->size();
+}
+
+template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
+size_t CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::memoryUsed() const
+{
+    return size() * sizeof(T);
 }
 
 template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
@@ -80,6 +87,7 @@ template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
 void CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::resize(const size_t &newSize)
 {
     m_array->resize(newSize);
+    m_array->asVector().shrink_to_fit();
 }
 
 template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>

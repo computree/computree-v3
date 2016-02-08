@@ -68,7 +68,8 @@ SOURCES += \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.cpp \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.cpp \
-    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.cpp
+    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.cpp \
+    $$PWD/MainView/gaboutmemory.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -144,7 +145,8 @@ HEADERS += \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurableeffect.h \
     $$PWD/DocumentView/GraphicsViews/3D/Painting/dm_configurabletechnique.h \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.h \
-    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.h
+    $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.h \
+    $$PWD/MainView/gaboutmemory.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
@@ -168,7 +170,8 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     $$PWD/MainView/gineedhelpdialog.ui \
     $$PWD/Steps/gstepviewdefault.ui \
     $$PWD/MainView/gfavoritesmenudialog.ui \
-    $$PWD/MainView/gstepchooserdialog.ui
+    $$PWD/MainView/gstepchooserdialog.ui \
+    $$PWD/MainView/gaboutmemory.ui
 
 INCLUDEPATH += view/DocumentView/GraphicsView
 INCLUDEPATH += view/DocumentView/GraphicsView/3D

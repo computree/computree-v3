@@ -18,6 +18,11 @@ public:
     virtual size_t size() const = 0;
 
     /**
+     * @brief return the memory used by this cloud
+     */
+    virtual size_t memoryUsed() const = 0;
+
+    /**
      * @brief return a copy
      */
     virtual CT_AbstractCloud* copy() const = 0;

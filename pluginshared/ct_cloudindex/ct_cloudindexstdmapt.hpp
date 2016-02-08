@@ -24,6 +24,13 @@ size_t CT_CloudIndexStdMapT<T, ValueT>::size() const
     return m_collection->size();
 }
 
+
+template<typename T, typename ValueT>
+size_t CT_CloudIndexStdMapT<T, ValueT>::memoryUsed() const
+{
+    return size() * (sizeof(T) + sizeof(ValueT));
+}
+
 template<typename T, typename ValueT>
 size_t CT_CloudIndexStdMapT<T, ValueT>::indexAt(const size_t &i) const
 {

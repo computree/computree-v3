@@ -20,6 +20,11 @@ CT_AbstractGlobalCloudManager* CT_AbstractCloudSyncToGlobalCloudManager::globalC
     return m_gcManager;
 }
 
+QList<CT_AbstractCloudRegistered*> CT_AbstractCloudSyncToGlobalCloudManager::cloudsRegistered() const
+{
+    return m_crArray;
+}
+
 void CT_AbstractCloudSyncToGlobalCloudManager::setSyncProgress(int progress)
 {
     if(progress != m_syncProgress)

@@ -41,6 +41,12 @@ size_t CT_StandardCloudStdVectorT<T>::size() const
 }
 
 template<typename T>
+size_t CT_StandardCloudStdVectorT<T>::memoryUsed() const
+{
+    return size() * sizeof(T);
+}
+
+template<typename T>
 T& CT_StandardCloudStdVectorT<T>::operator[](const size_t &index)
 {
     return pTAt(index);
@@ -75,6 +81,7 @@ template<typename T>
 void CT_StandardCloudStdVectorT<T>::resize(const size_t &newSize)
 {
     m_collection.resize(newSize);
+    m_collection.shrink_to_fit();
 }
 
 template<typename T>

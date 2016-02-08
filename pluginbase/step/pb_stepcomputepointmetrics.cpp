@@ -150,13 +150,16 @@ bool PB_StepComputePointMetrics::postConfigure()
 void PB_StepComputePointMetrics::createOutResultModelListProtected()
 {
     CT_OutResultModelGroupToCopyPossibilities *resCpy = createNewOutResultModelToCopy(DEFin_res);
-    resCpy->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques (%1)").arg(_inSceneDisplayableName));
 
-    QListIterator<CT_AbstractConfigurableElement *> it(_selectedMetrics);
-    while (it.hasNext())
-    {
-        CT_AbstractMetric_XYZ* metric = (CT_AbstractMetric_XYZ*) it.next();
-        metric->initAttributesModels(resCpy, _outMetrics_ModelName);
+    if(resCpy != NULL) {
+        resCpy->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques (%1)").arg(_inSceneDisplayableName));
+
+        QListIterator<CT_AbstractConfigurableElement *> it(_selectedMetrics);
+        while (it.hasNext())
+        {
+            CT_AbstractMetric_XYZ* metric = (CT_AbstractMetric_XYZ*) it.next();
+            metric->initAttributesModels(resCpy, _outMetrics_ModelName);
+        }
     }
 }
 

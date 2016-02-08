@@ -44,6 +44,7 @@
 #include "gaboutpluginsdialog.h"
 #include "gineedhelpdialog.h"
 #include "gfavoritesmenudialog.h"
+#include "gaboutmemory.h"
 
 #include "myqaction.h"
 #include "myqmenu.h"
@@ -219,6 +220,13 @@ void GMainWindow::showAboutPluginsDialog()
     }
 }
 
+void GMainWindow::showAboutMemory()
+{
+    GAboutMemory *gMem = new GAboutMemory(NULL);
+    gMem->setWindowModality(Qt::ApplicationModal);
+    gMem->show();
+}
+
 void GMainWindow::cleanItemDrawableOfAllDocuments()
 {
     GUI_MANAGER->cleanItemDrawableOfAllDocuments();
@@ -376,6 +384,7 @@ void GMainWindow::initUI()
 
     QAction *actionAPropos = new QAction(tr("A propos de Computree..."), this);
     actionAProposPlugin = new QAction(tr("A propos des plugins..."), this);
+    QAction *actionAboutMemory = new QAction(tr("A propos de la mémoire..."), this);
 
     actionSaveScript = new QAction(tr("Sauvegarder l'arbre des etapes (CTRL+S)"), this);
     actionSaveScript->setIcon(QIcon(":/Icones/Icones/media-floppy.png"));
@@ -459,6 +468,7 @@ void GMainWindow::initUI()
 
     ui->menuAide->addAction(actionAPropos);
     ui->menuAide->addAction(actionAProposPlugin);
+    ui->menuAide->addAction(actionAboutMemory);
     ui->menuAide->addAction(actionINeedHelp);
 
     ui->horizontalLayoutDocumentView->addWidget(_docManagerView);
@@ -540,6 +550,7 @@ void GMainWindow::initUI()
 
     connect(actionAPropos, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
     connect(actionAProposPlugin, SIGNAL(triggered()), this, SLOT(showAboutPluginsDialog()));
+    connect(actionAboutMemory, SIGNAL(triggered()), this, SLOT(showAboutMemory()));
 
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionStart, SLOT(setDisabled(bool)));
     connect(_stepManagerView->getStepManager(), SIGNAL(started(bool)), actionStop, SLOT(setEnabled(bool)));

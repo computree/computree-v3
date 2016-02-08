@@ -122,13 +122,15 @@ void PB_StepComputeRasterMetrics::createOutResultModelListProtected()
 {       
     CT_OutResultModelGroupToCopyPossibilities *resCpy_res = createNewOutResultModelToCopy(DEFin_res);
 
-    resCpy_res->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques calculées"));
+    if(resCpy_res != NULL) {
+        resCpy_res->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques calculées"));
 
-    QListIterator<CT_AbstractConfigurableElement *> it(_selectedMetrics);
-    while (it.hasNext())
-    {
-        CT_AbstractMetric_Raster* metric = (CT_AbstractMetric_Raster*) it.next();
-        metric->initAttributesModels(resCpy_res, _outMetrics_ModelName);
+        QListIterator<CT_AbstractConfigurableElement *> it(_selectedMetrics);
+        while (it.hasNext())
+        {
+            CT_AbstractMetric_Raster* metric = (CT_AbstractMetric_Raster*) it.next();
+            metric->initAttributesModels(resCpy_res, _outMetrics_ModelName);
+        }
     }
 }
 
