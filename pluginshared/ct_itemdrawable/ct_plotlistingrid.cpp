@@ -101,6 +101,8 @@ void CT_PlotListInGrid::computeMinMax(const Eigen::Vector2d &refCoords)
 
         while (_max(0) < maxShape(0)) {ncol++; _max(0) += _spacing;}
         while (_max(1) < maxShape(1)) {nrow++; _max(1) += _spacing;}
+        if (_max(0) > maxShape(0)) {_max(0) -= _spacing;}
+        if (_max(1) > maxShape(1)) {_max(1) -= _spacing;}
 
         _minCoordinates(0) = _min(0);
         _minCoordinates(1) = _min(1);
@@ -157,7 +159,7 @@ QMap<CT_AreaShape2DData*, size_t> CT_PlotListInGrid::createPlots(CT_PlotListInGr
     QMap<CT_AreaShape2DData*, size_t> plots;
     for (double y = _max(1) ; y >= _min(1) ; y -= _spacing)
     {
-        for (double x = _min(0) ; x <= _max(1) ; x += _spacing)
+        for (double x = _min(0) ; x <= _max(0) ; x += _spacing)
         {
             CT_AreaShape2DData* shape = NULL;
 

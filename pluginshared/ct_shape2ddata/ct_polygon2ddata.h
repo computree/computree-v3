@@ -78,11 +78,6 @@ public:
 private:
     QVector<Eigen::Vector2d*> _vertices;
 
-    double               _minX;
-    double               _maxX;
-    double               _minY;
-    double               _maxY;
-
     friend class CT_Polygon2D;
 
     static double cross(const Eigen::Vector2d* O, const Eigen::Vector2d* A, const Eigen::Vector2d* B);

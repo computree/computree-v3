@@ -43,6 +43,12 @@ CT_Polygon2DData::CT_Polygon2DData() : CT_AreaShape2DData()
 CT_Polygon2DData::CT_Polygon2DData(const QVector<Eigen::Vector2d *> &vertices, bool copy) : CT_AreaShape2DData()
 {
 
+    _min(0) = std::numeric_limits<double>::max();
+    _min(1) = std::numeric_limits<double>::max();
+    _max(0) = -std::numeric_limits<double>::max();
+    _max(1) = -std::numeric_limits<double>::max();
+
+
     int size = vertices.size();
     _vertices.resize(size);
     for (int i = 0 ; i < size ; i++)
@@ -69,10 +75,10 @@ void CT_Polygon2DData::computeCentroid()
     ptC(0) = 0;
     ptC(1) = 0;
 
-    _minX = std::numeric_limits<double>::max();
-    _minY = std::numeric_limits<double>::max();
-    _maxX = -std::numeric_limits<double>::max();
-    _maxY = -std::numeric_limits<double>::max();
+    _min(0) = std::numeric_limits<double>::max();
+    _min(1) = std::numeric_limits<double>::max();
+    _max(0) = -std::numeric_limits<double>::max();
+    _max(1) = -std::numeric_limits<double>::max();
 
     Eigen::Vector2d *pt1 = NULL;
     Eigen::Vector2d *pt2 = NULL;
@@ -83,10 +89,10 @@ void CT_Polygon2DData::computeCentroid()
     {
         pt2 = _vertices.at(i);
 
-        if ((*pt2)(0) < _minX) {_minX = (*pt2)(0);}
-        if ((*pt2)(0) > _maxX) {_maxX = (*pt2)(0);}
-        if ((*pt2)(1) < _minY) {_minY = (*pt2)(1);}
-        if ((*pt2)(1) > _maxY) {_maxY = (*pt2)(1);}
+        if ((*pt2)(0) < _min(0)) {_min(0) = (*pt2)(0);}
+        if ((*pt2)(0) > _max(0)) {_max(0) = (*pt2)(0);}
+        if ((*pt2)(1) < _min(1)) {_min(1) = (*pt2)(1);}
+        if ((*pt2)(1) > _max(1)) {_max(1) = (*pt2)(1);}
 
         a = (*pt1)(0)*(*pt2)(1) - (*pt2)(0)*(*pt1)(1);
         signedArea += a;
@@ -114,11 +120,11 @@ CT_Polygon2DData* CT_Polygon2DData::clone() const
 
 void CT_Polygon2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min(0) = _minX;
-    min(1) = _minY;
+    min(0) = _min(0);
+    min(1) = _min(1);
     min(2) = 0;
-    max(0) = _maxX;
-    max(1) = _maxY;
+    max(0) = _max(0);
+    max(1) = _max(1);
     max(2) = 0;
 }
 
@@ -170,10 +176,10 @@ double CT_Polygon2DData::getArea() const
 
 bool CT_Polygon2DData::contains(double x, double y) const
 {
-    if (x < _minX) {return false;}
-    if (x > _maxX) {return false;}
-    if (y < _minY) {return false;}
-    if (y > _maxY) {return false;}
+    if (x < _min(0)) {return false;}
+    if (x > _max(0)) {return false;}
+    if (y < _min(1)) {return false;}
+    if (y > _max(1)) {return false;}
 
     Eigen::Vector2d *pt1 = NULL;
     Eigen::Vector2d *pt2 = NULL;

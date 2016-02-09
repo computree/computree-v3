@@ -31,6 +31,7 @@
 #include "pluginShared_global.h"
 #include "ct_shape2ddata.h"
 
+
 /**
   * Reprsente les donnes d'une forme géomtrique 2D
   */
@@ -45,6 +46,10 @@ public:
 
     virtual bool contains(double x, double y) const = 0;
     virtual double getArea() const = 0;
+
+protected:
+    Eigen::Vector2d _min;
+    Eigen::Vector2d _max;
 
 };
 

@@ -35,10 +35,18 @@ CT_Box2DData::CT_Box2DData(const Eigen::Vector2d &center, double height, double 
 {
     _height = height;
     _width = width;
+
+    _min(0) = _center(0) - _width/2.0;
+    _min(1) = _center(1) - _height/2.0;
+    _max(0) = _center(0) + _width/2.0;
+    _max(1) = _center(1) + _height/2.0;
+
 }
 
 CT_Box2DData::CT_Box2DData(const Eigen::Vector2d &min, const Eigen::Vector2d &max) : CT_AreaShape2DData((max + min)/2.0)
 {
+    _min = min;
+    _max = max;
     _width  = fabs(max(0)- min(0));
     _height = fabs(max(1)- min(1));
 }
@@ -55,21 +63,21 @@ double CT_Box2DData::getWidth() const
 
 void CT_Box2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min(0) = _center(0) - _width/2.0;
-    min(1) = _center(1) - _height/2.0;
+    min(0) = _min(0);
+    min(1) = _min(1);
     min(2) = 0;
-    max(0) = _center(0) + _width/2.0;
-    max(1) = _center(1) + _height/2.0;
+    max(0) = _max(0);
+    max(1) = _max(1);
     max(2) = 0;
 }
 
 bool CT_Box2DData::contains(double x, double y) const
 {
-    if (x <= (_center(0) - _width/2.0)) {return false;}
-    if (x >= (_center(0) + _width/2.0)) {return false;}
+    if (x < _min(0)) {return false;}
+    if (x > _max(0)) {return false;}
 
-    if (y <= (_center(1) - _height/2.0)) {return false;}
-    if (y >= (_center(1) + _height/2.0)) {return false;}
+    if (y < _min(1)) {return false;}
+    if (y > _max(1)) {return false;}
 
     return true;
 }
@@ -86,9 +94,14 @@ CT_Box2DData* CT_Box2DData::clone() const
 
 CT_Box2DData& CT_Box2DData::operator= (const CT_Box2DData& o)
 {
+    setCenter(o.getCenter());
     _width = o.getWidth();
     _height = o.getHeight();
-    setCenter(o.getCenter());
+
+    _min(0) = _center(0) - _width/2.0;
+    _min(1) = _center(1) - _height/2.0;
+    _max(0) = _center(0) + _width/2.0;
+    _max(1) = _center(1) + _height/2.0;
 
     return *this;
 }

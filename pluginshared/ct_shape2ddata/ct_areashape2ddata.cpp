@@ -29,10 +29,14 @@
 
 CT_AreaShape2DData::CT_AreaShape2DData() : CT_Shape2DData()
 {
+    _min(0) = 0;
+    _min(1) = 0;
+    _max(0) = 0;
+    _max(1) = 0;
 }
 
 CT_AreaShape2DData::CT_AreaShape2DData(const Eigen::Vector2d &center) : CT_Shape2DData(center)
-{
+{   
 }
 
 CT_AreaShape2DData::~CT_AreaShape2DData() {}

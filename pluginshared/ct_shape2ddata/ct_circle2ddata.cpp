@@ -42,11 +42,21 @@ CT_Circle2DData::CT_Circle2DData() : CT_AreaShape2DData()
 CT_Circle2DData::CT_Circle2DData(const Eigen::Vector2d &center, double radius) : CT_AreaShape2DData(center)
 {
     _radius = radius;
+
+    _min(0) = center(0) - radius;
+    _min(1) = center(1) - radius;
+    _max(0) = center(0) + radius;
+    _max(1) = center(1) + radius;
 }
 
 void CT_Circle2DData::setRadius(double radius)
 {
     _radius = radius;
+
+    _min(0) = _center(0) - radius;
+    _min(1) = _center(1) - radius;
+    _max(0) = _center(0) + radius;
+    _max(1) = _center(1) + radius;
 }
 
 double CT_Circle2DData::getRadius() const
@@ -56,16 +66,21 @@ double CT_Circle2DData::getRadius() const
 
 void CT_Circle2DData::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const
 {
-    min(0) = _center(0) - _radius;
-    min(1) = _center(1) - _radius;
+    min(0) = _min(0);
+    min(1) = _min(1);
     min(2) = 0;
-    max(0) = _center(0) + _radius;
-    max(1) = _center(1) + _radius;
+    max(0) = _max(0);
+    max(1) = _max(1);
     max(2) = 0;
 }
 
 bool CT_Circle2DData::contains(double x, double y) const
 {
+    if (x < _min(0)) {return false;}
+    if (y < _min(1)) {return false;}
+    if (x > _max(0)) {return false;}
+    if (y > _max(1)) {return false;}
+
     double distance = sqrt(pow(_center(0) - x, 2) + pow(_center(1) - y, 2));
     return (distance <= _radius);
 }
@@ -82,8 +97,8 @@ CT_Circle2DData* CT_Circle2DData::clone() const
 
 CT_Circle2DData& CT_Circle2DData::operator= (const CT_Circle2DData& o)
 {
-    setRadius(o.getRadius());
     setCenter(o.getCenter());
+    setRadius(o.getRadius());
 
     return *this;
 }

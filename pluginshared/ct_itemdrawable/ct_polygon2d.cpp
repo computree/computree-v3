@@ -46,11 +46,11 @@ CT_Polygon2D::CT_Polygon2D(const CT_OutAbstractSingularItemModel *model,
 
     if (data != NULL)
     {
-        _minCoordinates(0) = data->_minX;
-        _minCoordinates(1) = data->_minY;
+        _minCoordinates(0) = data->_min(0);
+        _minCoordinates(1) = data->_min(1);
 
-        _maxCoordinates(0) = data->_maxX;
-        _maxCoordinates(1) = data->_maxY;
+        _maxCoordinates(0) = data->_max(0);
+        _maxCoordinates(1) = data->_max(1);
     } else {
         _minCoordinates(0) = 0;
         _minCoordinates(1) = 0;
@@ -70,11 +70,11 @@ CT_Polygon2D::CT_Polygon2D(const QString &modelName,
 
     if (data != NULL)
     {
-        _minCoordinates(0) = data->_minX;
-        _minCoordinates(1) = data->_minY;
+        _minCoordinates(0) = data->_min(0);
+        _minCoordinates(1) = data->_min(1);
 
-        _maxCoordinates(0) = data->_maxX;
-        _maxCoordinates(1) = data->_maxY;
+        _maxCoordinates(0) = data->_max(0);
+        _maxCoordinates(1) = data->_max(1);
     } else {
         _minCoordinates(0) = 0;
         _minCoordinates(1) = 0;
