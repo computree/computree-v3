@@ -1341,6 +1341,11 @@ signals:
     void paused();
 
     /**
+     * @brief Emitted when the step was stopped
+     */
+    void stopped();
+
+    /**
      * @brief Emitted when the process is complete
      */
     void isCompleted();

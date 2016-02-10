@@ -61,6 +61,8 @@ bool CT_AbstractReader::setFilePath(const QString &filepath)
 {
     m_filePath = filepath;
 
+    emit filePathModified();
+
     if (m_header != NULL) {delete m_header; m_header = NULL;}
 
     // Verify that the file exist and can be opened
@@ -90,7 +92,6 @@ bool CT_AbstractReader::isValid()
 {
     return (m_header != NULL);
 }
-
 
 CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
 {
@@ -141,6 +142,11 @@ const CT_OutStdSingularItemModel* CT_AbstractReader::outHeaderModel() const
 void CT_AbstractReader::setOutHeaderModel(CT_OutStdSingularItemModel* headerModel)
 {
     m_outHeaderModel = headerModel;
+}
+
+void CT_AbstractReader::setOutHeaderModel(const QString &modelName, CT_FileHeader *header, const QString &displayableName, const QString &description)
+{
+    m_outHeaderModel = new CT_OutStdSingularItemModel(modelName, header, displayableName, description);
 }
 
 const QList<FileFormat>& CT_AbstractReader::readableFormats() const
@@ -481,6 +487,11 @@ void CT_AbstractReader::setToolTip(const QString &t)
 void CT_AbstractReader::addOutItemDrawableModel(CT_OutStdSingularItemModel *item)
 {
     m_outItemsModel.append(item);
+}
+
+void CT_AbstractReader::addOutItemDrawableModel(const QString &modelName, CT_AbstractSingularItemDrawable *item, const QString &displayableName, const QString &description)
+{
+    m_outItemsModel.append(new CT_OutStdSingularItemModel(modelName, item, displayableName, description));
 }
 
 void CT_AbstractReader::addOutItemDrawable(const QString &modelName, CT_AbstractSingularItemDrawable *item)

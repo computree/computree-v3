@@ -70,7 +70,7 @@ public:
     inline QString getReaderFilePath() const {if (_reader == NULL) {return "";} else {return _reader->filepath();}}
     inline CT_AbstractReader* getReader() {return _reader;}
 
-    inline QString getReaderName() const {if (_reader == NULL) {return "";} else {return _reader->GetReaderName();;}}
+    inline QString getReaderName() const {if (_reader == NULL) {return "";} else {return _reader->GetReaderName();}}
 
 private:
 

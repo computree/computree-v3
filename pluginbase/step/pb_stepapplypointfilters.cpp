@@ -1,7 +1,6 @@
 #include "pb_stepapplypointfilters.h"
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithpointcloud.h"
-#include "ct_itemdrawable/ct_stdlaspointsattributescontainer.h"
 #include "ct_itemdrawable/ct_scene.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
@@ -12,7 +11,9 @@
 
 #include "ct_abstractstepplugin.h"
 #include "ct_filter/abstract/ct_abstractfilter_xyz.h"
-#include "ct_filter/abstract/ct_abstractfilter_las.h"
+
+#include "ctlibio/itemdrawable/las/ct_stdlaspointsattributescontainer.h"
+#include "ctlibio/filters/las/abstract/ct_abstractfilter_las.h"
 
 #include <QDebug>
 

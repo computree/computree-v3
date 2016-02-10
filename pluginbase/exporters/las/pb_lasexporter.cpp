@@ -1,4 +1,4 @@
-#include "pb_lasexporter.h"
+#include "ct_exporter_las.h"
 
 #include "ct_reader/ct_reader_las.h"
 #include "ct_reader/tools/las/ct_laspointformat0.h"
@@ -25,7 +25,7 @@
 #include <limits>
 #include <string.h>
 
-PB_LASExporter::PB_LASExporter() : CT_AbstractExporterAttributesSelection()
+CT_Exporter_LAS::CT_Exporter_LAS() : CT_AbstractExporterAttributesSelection()
 {
     setCanExportItems(true);
     setCanExportPoints(true);
@@ -36,18 +36,18 @@ PB_LASExporter::PB_LASExporter() : CT_AbstractExporterAttributesSelection()
     m_lasContainerModel = NULL;
 }
 
-QString PB_LASExporter::getExporterCustomName() const
+QString CT_Exporter_LAS::getExporterCustomName() const
 {
     return tr("Points, LAS");
 }
 
-CT_StepsMenu::LevelPredefined PB_LASExporter::getExporterSubMenuName() const
+CT_StepsMenu::LevelPredefined CT_Exporter_LAS::getExporterSubMenuName() const
 {
     return CT_StepsMenu::LP_Points;
 }
 
 
-void PB_LASExporter::init()
+void CT_Exporter_LAS::init()
 {
     addNewExportFormat(FileFormat("las", tr("Fichiers LAS .las")));
 
@@ -55,7 +55,7 @@ void PB_LASExporter::init()
 }
 
 
-bool PB_LASExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
+bool CT_Exporter_LAS::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     QList<CT_AbstractItemDrawable*> myList;
     QListIterator<CT_AbstractItemDrawable*> it(list);
@@ -77,7 +77,7 @@ bool PB_LASExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable
     return CT_AbstractExporter::setItemDrawableToExport(myList);
 }
 
-bool PB_LASExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list)
+bool CT_Exporter_LAS::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list)
 {
     QList<CT_AbstractCloudIndex*> myList;
     QListIterator<CT_AbstractCloudIndex*> it(list);
@@ -99,11 +99,11 @@ bool PB_LASExporter::setPointsToExport(const QList<CT_AbstractCloudIndex*> &list
     return CT_AbstractExporter::setPointsToExport(myList);
 }
 
-SettingsNodeGroup* PB_LASExporter::saveExportConfiguration() const
+SettingsNodeGroup* CT_Exporter_LAS::saveExportConfiguration() const
 {
     SettingsNodeGroup *root = CT_AbstractExporterAttributesSelection::saveExportConfiguration();
 
-    SettingsNodeGroup *myRoot = new SettingsNodeGroup("PB_LASExporter");
+    SettingsNodeGroup *myRoot = new SettingsNodeGroup("CT_Exporter_LAS");
 
     if(m_lasContainerModel != NULL) {
 
@@ -116,13 +116,13 @@ SettingsNodeGroup* PB_LASExporter::saveExportConfiguration() const
     return root;
 }
 
-bool PB_LASExporter::loadExportConfiguration(const SettingsNodeGroup *root)
+bool CT_Exporter_LAS::loadExportConfiguration(const SettingsNodeGroup *root)
 {
     clearWorker();
 
     if(CT_AbstractExporterAttributesSelection::loadExportConfiguration(root))
     {
-        QList<SettingsNodeGroup*> groups = root->groupsByTagName("PB_LASExporter");
+        QList<SettingsNodeGroup*> groups = root->groupsByTagName("CT_Exporter_LAS");
 
         if(groups.isEmpty())
             return true;
@@ -141,12 +141,12 @@ bool PB_LASExporter::loadExportConfiguration(const SettingsNodeGroup *root)
     return false;
 }
 
-CT_ItemDrawableHierarchyCollectionWidget::CloudType PB_LASExporter::cloudType() const
+CT_ItemDrawableHierarchyCollectionWidget::CloudType CT_Exporter_LAS::cloudType() const
 {
     return CT_ItemDrawableHierarchyCollectionWidget::POINTS;
 }
 
-QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > PB_LASExporter::getBuilders() const
+QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > CT_Exporter_LAS::getBuilders() const
 {
     QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > l;
     l << QPair<QString, CT_AbstractItemDrawableCollectionBuilder*>(QObject::tr("Attributs"), (CT_AbstractItemDrawableCollectionBuilder*)&m_lasAttributesContainerBuilder);
@@ -154,14 +154,14 @@ QList< QPair<QString, CT_AbstractItemDrawableCollectionBuilder*> > PB_LASExporte
     return l;
 }
 
-void PB_LASExporter::setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder *> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const
+void CT_Exporter_LAS::setExcludeConfiguration(const QPair<QString, CT_AbstractItemDrawableCollectionBuilder *> &pair, CT_ItemDrawableHierarchyCollectionSelectionModel *model) const
 {
     // attributes
     if((&m_lasAttributesContainerBuilder) == pair.second)
         model->addExcludeModel(0); // exclude me
 }
 
-bool PB_LASExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget)
+bool CT_Exporter_LAS::useSelection(const CT_ItemDrawableHierarchyCollectionWidget *selectorWidget)
 {
     clearWorker();
 
@@ -188,12 +188,12 @@ bool PB_LASExporter::useSelection(const CT_ItemDrawableHierarchyCollectionWidget
     return true;
 }
 
-CT_AbstractExporter* PB_LASExporter::copy() const
+CT_AbstractExporter* CT_Exporter_LAS::copy() const
 {
-    return new PB_LASExporter();
+    return new CT_Exporter_LAS();
 }
 
-bool PB_LASExporter::protectedExportToFile()
+bool CT_Exporter_LAS::protectedExportToFile()
 {
     QFileInfo exportPathInfo = QFileInfo(exportFilePath());
     QString path = exportPathInfo.path();
@@ -295,13 +295,13 @@ bool PB_LASExporter::protectedExportToFile()
     return false;
 }
 
-void PB_LASExporter::clearWorker()
+void CT_Exporter_LAS::clearWorker()
 {
     m_lasContainer = NULL;
     m_lasContainerModel = NULL;
 }
 
-CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
+CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
                                           const CT_AbstractPointAttributesScalar *rn,
                                           const QList<CT_AbstractPointCloudIndex *> &indexes,
                                           size_t &nPoints)
@@ -450,7 +450,7 @@ CT_LASHeader* PB_LASExporter::writeHeader(QDataStream &stream,
     return header;
 }
 
-int PB_LASExporter::getPointDataFormat() const
+int CT_Exporter_LAS::getPointDataFormat() const
 {
     if(m_lasContainer == NULL)
         return 6;
@@ -492,7 +492,7 @@ int PB_LASExporter::getPointDataFormat() const
     return 6;
 }
 
-size_t PB_LASExporter::getPointDataLength(const int &optFormat) const
+size_t CT_Exporter_LAS::getPointDataLength(const int &optFormat) const
 {
     int format = optFormat;
 
@@ -525,7 +525,7 @@ size_t PB_LASExporter::getPointDataLength(const int &optFormat) const
     return 0;
 }
 
-CT_AbstractLASPointFormat *PB_LASExporter::createPointDataFormat(const int &optFormat) const
+CT_AbstractLASPointFormat *CT_Exporter_LAS::createPointDataFormat(const int &optFormat) const
 {
     int format = optFormat;
 

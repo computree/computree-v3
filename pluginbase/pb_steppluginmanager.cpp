@@ -34,13 +34,8 @@
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_reader/ct_standardreaderseparator.h"
 
-#include "step/pb_steploadasciifile02.h"
 #include "step/pb_stepgenericexporter.h"
 #include "step/pb_stepuseritemselection.h"
-#include "step/pb_steploadobjfile.h"
-#include "step/pb_steploadgrid3dfile.h"
-#include "step/pb_steploadpbmfile.h"
-#include "step/pb_steploadpgmfile.h"
 #include "step/pb_stepgenericloadfile.h"
 #include "step/pb_stepcreatedatasource.h"
 #include "step/pb_stepcreatereaderlist.h"
@@ -71,18 +66,22 @@
 #include "exporters/pbm/pb_pbmexporter.h"
 #include "exporters/pgm/pb_pgmexporter.h"
 #include "exporters/polygon2d/pb_polygon2dexporter.h"
-#include "exporters/las/pb_lasexporter.h"
+#include "ctlibio/exporters/ct_exporter_las.h"
 #include "exporters/gdal/pb_gdalexporter.h"
 #include "exporters/ascid/pb_ascidexporter.h"
 
-#include "ct_reader/ct_reader_xyb.h"
-#include "ct_reader/ct_reader_ascrgb.h"
-#include "ct_reader/ct_reader_larchitect_grid.h"
-#include "ct_reader/ct_reader_opf.h"
-#include "ct_reader/ct_reader_las.h"
-#include "ct_reader/ct_reader_gdal.h"
-#include "ct_reader/ct_reader_terrascanprj.h"
-
+#include "ctlibio/readers/ct_reader_xyb.h"
+#include "ctlibio/readers/ct_reader_obj.h"
+#include "ctlibio/readers/ct_reader_ascrgb.h"
+#include "ctlibio/readers/ct_reader_larchitect_grid.h"
+#include "ctlibio/readers/ct_reader_opf.h"
+#include "ctlibio/readers/ct_reader_las.h"
+#include "ctlibio/readers/ct_reader_gdal.h"
+#include "ctlibio/readers/ct_reader_terrascanprj.h"
+#include "ctlibio/readers/ct_reader_asciigrid3d.h"
+#include "ctlibio/readers/ct_reader_pgm.h"
+#include "ctlibio/readers/ct_reader_pbm.h"
+#include "ctlibio/readers/ct_reader_points_ascii.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -141,11 +140,6 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewLoadStep<PB_StepCreateDataSource>("");
     addNewLoadStep<PB_StepCreateReaderList>("");
     addNewLoadStep<PB_StepUseReaderToLoadFiles>("");
-    addNewLoadStep<PB_StepLoadAsciiFile02>(CT_StepsMenu::LP_Points);
-    addNewLoadStep<PB_StepLoadObjFile>(CT_StepsMenu::LP_Meshes);
-    addNewLoadStep<PB_StepLoadGrid3dFile>(CT_StepsMenu::LP_Voxels);
-    addNewLoadStep<PB_StepLoadPbmFile>(CT_StepsMenu::LP_Raster);
-    addNewLoadStep<PB_StepLoadPgmFile>(CT_StepsMenu::LP_Raster);
 
     addNewExportStep<PB_StepExportItemList>("");
 
@@ -195,7 +189,7 @@ bool PB_StepPluginManager::loadExporters()
     sep->addExporter(new PB_OPFExporter());
     sep->addExporter(new PB_PbmExporter());
     sep->addExporter(new PB_PgmExporter());
-    sep->addExporter(new PB_LASExporter());
+    sep->addExporter(new CT_Exporter_LAS());
 
     return true;
 }
@@ -206,11 +200,16 @@ bool PB_StepPluginManager::loadReaders()
 
     CT_StandardReaderSeparator *sep = addNewSeparator(new CT_StandardReaderSeparator("Readers"));
     sep->addReader(new CT_Reader_XYB());
+    sep->addReader(new CT_Reader_OBJ());
     sep->addReader(new CT_Reader_LArchitect_Grid());
     sep->addReader(new CT_Reader_ASCRGB());
     sep->addReader(new CT_Reader_OPF());
     sep->addReader(new CT_Reader_LAS());
     sep->addReader(new CT_Reader_TerraScanPrj());
+    sep->addReader(new CT_Reader_AsciiGrid3D());
+    sep->addReader(new CT_Reader_PGM());
+    sep->addReader(new CT_Reader_PBM());
+    sep->addReader(new CT_Reader_Points_ASCII());
 
     return true;
 }

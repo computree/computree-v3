@@ -7,7 +7,6 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_reader/ct_standardreaderseparator.h"
 
-#include "ct_reader/ct_reader_xyb.h"
 #include "ct_view/ct_combobox.h"
 #include "ct_global/ct_context.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
@@ -59,7 +58,7 @@ PB_StepCreateDataSource::PB_StepCreateDataSource(CT_StepInitializeData &dataInit
 
                 for (int n = 0 ; n < formats.size() ; n++)
                 {
-                    QString key = reader->GetReaderName();
+                    QString key = reader->GetReaderClassName();
                     _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
                 }
 

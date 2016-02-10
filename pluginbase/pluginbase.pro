@@ -1,3 +1,5 @@
+COMPUTREE += LIB_IO
+
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 
@@ -22,8 +24,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     exporters/grid3d/pb_grid3dastableexporter.h \
     exporters/grid3d/pb_grid3dexporter.h \
     exporters/groupdata/pb_groupdataexporter.h \
-    exporters/las/pb_lasexporter.h \
-    exporters/las/pb_laspointformat.h \
     exporters/mesh/pb_meshobjexporter.h \
     exporters/pbm/pb_pbmexporter.h \
     exporters/pgm/pb_pgmexporter.h \
@@ -41,11 +41,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     step/pb_stepexportitemlist.h \
     step/pb_stepgenericexporter.h \
     step/pb_stepgenericloadfile.h \
-    step/pb_steploadasciifile02.h \
-    step/pb_steploadgrid3dfile.h \
-    step/pb_steploadobjfile.h \
-    step/pb_steploadpbmfile.h \
-    step/pb_steploadpgmfile.h \
     step/pb_stepuseritemselection.h \
     views/actions/pb_actionselectitemdrawablegvoptions.h \
     views/exporters/csv/pbg_csvconfigurationdialog.h \
@@ -71,7 +66,6 @@ SOURCES += \
     exporters/grid3d/pb_grid3dastableexporter.cpp \
     exporters/grid3d/pb_grid3dexporter.cpp \
     exporters/groupdata/pb_groupdataexporter.cpp \
-    exporters/las/pb_lasexporter.cpp \
     exporters/mesh/pb_meshobjexporter.cpp \
     exporters/pbm/pb_pbmexporter.cpp \
     exporters/pgm/pb_pgmexporter.cpp \
@@ -89,11 +83,6 @@ SOURCES += \
     step/pb_stepexportitemlist.cpp \
     step/pb_stepgenericexporter.cpp \
     step/pb_stepgenericloadfile.cpp \
-    step/pb_steploadasciifile02.cpp \
-    step/pb_steploadgrid3dfile.cpp \
-    step/pb_steploadobjfile.cpp \
-    step/pb_steploadpbmfile.cpp \
-    step/pb_steploadpgmfile.cpp \
     step/pb_stepuseritemselection.cpp \
     views/actions/pb_actionselectitemdrawablegvoptions.cpp \
     views/exporters/csv/pbg_csvconfigurationdialog.cpp \

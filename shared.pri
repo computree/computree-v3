@@ -32,6 +32,8 @@ COMPUTREE_CORE_DIR = $${CT_PREFIX}/ComputreeCore
 PLUGIN_SHARED_DIR = $${CT_PREFIX}/pluginshared
 PLUGIN_SHARED_INTERFACE_DIR = $${CT_PREFIX}/pluginshared
 
+LIBRARIES_DIR = $${CT_PREFIX}/library
+
 msvc:LIBS += $${PLUGINSHARED_DESTDIR}/pluginShared.lib
 win32-g++:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.a
 linux-g++:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.so*
@@ -42,3 +44,4 @@ mac:LIBS += $${PLUGINSHARED_DESTDIR}/libpluginShared.dylib
 msvc:DEFINES += _USE_MATH_DEFINES
 
 INCLUDEPATH += $${PLUGIN_SHARED_INTERFACE_DIR}
+INCLUDEPATH += $${LIBRARIES_DIR}

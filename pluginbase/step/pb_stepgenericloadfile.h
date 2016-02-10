@@ -29,6 +29,9 @@ public:
 
     QList<FileFormat> getFileExtensionAccepted() const;
 
+    virtual SettingsNodeGroup* getAllSettings() const;
+    virtual bool setAllSettings(const SettingsNodeGroup *settings);
+
     bool setFilePath(QString filePath);
 
     CT_VirtualAbstractStep* createNewInstance(CT_StepInitializeData &dataInit);
@@ -49,6 +52,7 @@ private:
 
 private slots:
     void readerProgressChanged(int progress);
+    void readerFilePathModified();
 };
 
 #endif // PB_STEPGENERICLOADFILE_H

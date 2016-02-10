@@ -132,9 +132,9 @@ void CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::addT(const T &val)
 template<typename T, osg::Array::Type ARRAYTYPE, int DataSize, int DataType>
 T& CT_StandardCloudOsgT<T, ARRAYTYPE, DataSize, DataType>::addT()
 {
-    size_t l = size();
-    resize(l+1);
-    return pTAt(l);
+    T tmp;
+    addT(tmp);
+    return *(m_array->end()-1);
 }
 
 #endif // CT_STANDARDCLOUDOSGT_HPP

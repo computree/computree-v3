@@ -462,6 +462,8 @@ bool CT_VirtualAbstractStep::mustRecheckTree() const
 void CT_VirtualAbstractStep::stop()
 {
     _stop = true;
+
+    emit stopped();
 }
 
 void CT_VirtualAbstractStep::quitManualMode()

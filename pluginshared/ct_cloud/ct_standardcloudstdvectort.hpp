@@ -126,9 +126,9 @@ void CT_StandardCloudStdVectorT<T>::addT(const T &val)
 template<typename T>
 T& CT_StandardCloudStdVectorT<T>::addT()
 {
-    size_t l = m_collection.size();
-    m_collection.resize(l+1);
-    return m_collection[l];
+    T tmp;
+    addT(tmp);
+    return *(m_collection.end()-1);
 }
 
 template<typename T>

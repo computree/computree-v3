@@ -60,6 +60,8 @@ CDM_StepManager::~CDM_StepManager()
     //qDeleteAll(_threadCreated.begin(), _threadCreated.end());
 
     _options.save();
+
+    QFile(CDM_SCRIPT_BACKUP_FILEPATH).remove();
 }
 
 void CDM_StepManager::setGuiContext(const GuiContextInterface *guiContext)
@@ -160,6 +162,8 @@ bool CDM_StepManager::clearStep()
 
     while(!_stepRootList.isEmpty())
         removeStep(_stepRootList.first());
+
+    return true;
 }
 
 void CDM_StepManager::setStepDebugModeOn(CT_VirtualAbstractStep *step, bool debugModeOn)
@@ -481,7 +485,7 @@ void CDM_StepManager::run()
         _debugMode = false;
 
         // remove the backup of the script
-        QFile(CDM_SCRIPT_BACKUP_FILEPATH).remove();
+        //QFile(CDM_SCRIPT_BACKUP_FILEPATH).remove();
     }
     else if(_action == LoadSerializeResult)
     {

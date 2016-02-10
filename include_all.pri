@@ -49,3 +49,8 @@ contains(DEFINES, USE_OPENCV_DEFAULT) {
         INCLUDEPATH += $${PLUGIN_SHARED_DIR}/eigen
     }
 }
+
+contains( COMPUTREE, LIB_IO) {
+    LIBS += -L$${PLUGINSHARED_DESTDIR}
+    LIBS += -lCTLibIO
+}

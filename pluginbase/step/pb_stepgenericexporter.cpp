@@ -45,6 +45,7 @@ PB_StepGenericExporter::PB_StepGenericExporter(CT_StepInitializeData &dataInit,
     setStepCustomName(_exporter->getExporterCustomName());
 
     connect(_exporter, SIGNAL(exportInProgress(int)), this, SLOT(exportProgressChanged(int)));
+    connect(this, SIGNAL(stopped()), _exporter, SLOT(cancel()), Qt::DirectConnection);
 }
 
 PB_StepGenericExporter::~PB_StepGenericExporter()

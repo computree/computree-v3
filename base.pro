@@ -1,5 +1,5 @@
 TEMPLATE      = subdirs
-SUBDIRS       = pluginshared pluginbase ComputreeCore ComputreeGui
+SUBDIRS       = pluginshared library/ctlibio pluginbase ComputreeCore ComputreeGui
 CONFIG       += console ordered
 
 win32-msvc2013 {

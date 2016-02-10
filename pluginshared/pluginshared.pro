@@ -167,7 +167,6 @@ SOURCES += \
     ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.cpp \
     ct_pointcloud/tools/ct_standardundefinedsizepointcloud.cpp \
     ct_reader/abstract/ct_abstractreader.cpp \
-    ct_reader/ct_reader_xyb.cpp \
     ct_itemdrawable/abstract/ct_abstractpointsattributes.cpp \
     ct_colorcloud/abstract/ct_abstractcolorcloud.cpp \
     ct_colorcloud/ct_colorcloudstdvector.cpp \
@@ -180,7 +179,6 @@ SOURCES += \
     ct_normalcloud/ct_normalcloudstdvector.cpp \
     ct_normalcloud/abstract/ct_abstractnormalcloud.cpp \
     ct_normal.cpp \
-    ct_reader/ct_reader_ascrgb.cpp \
     ct_actions/abstract/ct_abstractaction.cpp \
     ct_actions/abstract/ct_abstractactionforgraphicsview.cpp \
     ct_actions/abstract/ct_abstractactionfortreeview.cpp \
@@ -188,7 +186,6 @@ SOURCES += \
     ct_view/actions/abstract/ct_gabstractactionoptions.cpp \
     ct_itemdrawable/tools/pointclustertools/ct_polylinesalgorithms.cpp \
     ct_normalcloud/registered/ct_standardnormalcloudregistered.cpp \
-    ct_reader/ct_reader_larchitect_grid.cpp \
     ct_itemdrawable/abstract/ct_abstractgrid3d.cpp \
     ct_itemdrawable/abstract/ct_abstractgrid2d.cpp \
     ct_itemdrawable/ct_grid2dxy.cpp \
@@ -251,7 +248,6 @@ SOURCES += \
     ct_itemdrawable/ct_grid4d.cpp \
     ct_itemdrawable/abstract/ct_abstractgrid4d.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardgrid4ddrawmanager.cpp \
-    ct_reader/ct_reader_opf.cpp \
     ct_itemdrawable/ct_ttreegroup.cpp \
     ct_itemdrawable/ct_tnodegroup.cpp \
     ct_itemdrawable/abstract/ct_abstractstandarditemgroup.cpp \
@@ -307,7 +303,6 @@ SOURCES += \
     ct_itemdrawable/ct_attributeslist.cpp \
     ct_coordinates/ct_defaultcoordinatesystem.cpp \
     ct_coordinates/tools/ct_coordinatesystemmanager.cpp \
-    ct_reader/ct_reader_las.cpp \
     ct_itemdrawable/tools/ct_counter.cpp \
     ct_itemdrawable/ct_loopcounter.cpp \
     ct_step/ct_stepbeginloop.cpp \
@@ -316,24 +311,6 @@ SOURCES += \
     ct_cloud/tools/ct_cloudsynctoglobalcloudmanager.cpp \
     ct_itemdrawable/ct_stdpointsattributescontainer.cpp \
     ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.cpp \
-    ct_itemdrawable/ct_stdlaspointsattributescontainer.cpp \
-    ct_reader/tools/las/abstract/ct_abstractlaspointformat.cpp \
-    ct_reader/tools/las/ct_laspointformat0.cpp \
-    ct_reader/tools/las/ct_laspointinfo.cpp \
-    ct_reader/tools/las/ct_laspointformat1.cpp \
-    ct_reader/tools/las/ct_laspointformat2.cpp \
-    ct_reader/tools/las/ct_laspointformat3.cpp \
-    ct_reader/tools/las/ct_laspointformat4.cpp \
-    ct_reader/tools/las/ct_laspointformat5.cpp \
-    ct_reader/tools/las/ct_laspointformat6.cpp \
-    ct_reader/tools/las/ct_laspointformat7.cpp \
-    ct_reader/tools/las/ct_laspointformat8.cpp \
-    ct_reader/tools/las/ct_laswavepacket.cpp \
-    ct_reader/tools/las/ct_lascolorpacket.cpp \
-    ct_reader/tools/las/ct_lasnirpacket.cpp \
-    ct_reader/tools/las/ct_lasgpspacket.cpp \
-    ct_reader/tools/las/ct_laspointformat9.cpp \
-    ct_reader/tools/las/ct_laspointformat10.cpp \
     ct_shape2ddata/ct_box2ddata.cpp \
     ct_shape2ddata/ct_circle2ddata.cpp \
     ct_shape2ddata/ct_line2ddata.cpp \
@@ -359,8 +336,6 @@ SOURCES += \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.cpp \
     ct_attributes/ct_stditemattributet.cpp \
     ct_itemdrawable/ct_fileheader.cpp \
-    ct_reader/headers/ct_lasheader.cpp \
-    ct_reader/ct_reader_gdal.cpp \
     ct_itemdrawable/ct_transformationmatrix.cpp \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp \
     ct_itemdrawable/ct_datasource.cpp \
@@ -370,12 +345,10 @@ SOURCES += \
     ct_iterator/ct_mutablepointiterator.cpp \
     ct_accessor/ct_faceaccessor.cpp \
     ct_accessor/ct_edgeaccessor.cpp \
-    ct_reader/tools/las/ct_lasdata.cpp \
     ct_metric/abstract/ct_abstractmetric.cpp \
     ct_metric/abstract/ct_abstractmetric_xyz.cpp \
     ct_filter/abstract/ct_abstractfilter.cpp \
     ct_filter/abstract/ct_abstractfilter_xyz.cpp \
-    ct_filter/abstract/ct_abstractfilter_las.cpp \
     ct_view/ct_asciifilechoicebutton.cpp \
     ct_itemdrawable/ct_image2d.cpp \
     ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
@@ -406,7 +379,6 @@ SOURCES += \
     ct_itemdrawable/tools/image2dtools/ct_image2dnaturalneighboursinterpolator.cpp \
     ct_step/tools/menu/ct_stepsmenu.cpp \
     ct_step/tools/menu/ct_menulevel.cpp \
-    ct_reader/ct_reader_terrascanprj.cpp \
     ct_math/ct_houghtransform.cpp \
     ct_itemdrawable/ct_readeritem.cpp \
     ct_itemdrawable/ct_plotlistingrid.cpp \
@@ -552,7 +524,6 @@ HEADERS += interfaces.h \
     ct_pointcloud/tools/abstract/ct_abstractundefinedsizepointcloud.h \
     ct_pointcloud/tools/ct_standardundefinedsizepointcloud.h \
     ct_reader/abstract/ct_abstractreader.h \
-    ct_reader/ct_reader_xyb.h \
     ct_itemdrawable/abstract/ct_abstractpointsattributes.h \
     ct_itemdrawable/ct_pointsattributesscalartemplated.h \
     ct_itemdrawable/ct_pointsattributesscalartemplated.hpp \
@@ -568,7 +539,6 @@ HEADERS += interfaces.h \
     ct_normalcloud/abstract/ct_abstractnormalcloud.h \
     ct_normal.h \
     ct_color.h \
-    ct_reader/ct_reader_ascrgb.h \
     ct_actions/abstract/ct_abstractaction.h \
     ct_actions/abstract/ct_abstractactionforgraphicsview.h \
     ct_actions/abstract/ct_abstractactionfortreeview.h \
@@ -576,7 +546,6 @@ HEADERS += interfaces.h \
     ct_view/actions/abstract/ct_gabstractactionoptions.h \
     ct_itemdrawable/tools/pointclustertools/ct_polylinesalgorithms.h \
     ct_normalcloud/registered/ct_standardnormalcloudregistered.h \
-    ct_reader/ct_reader_larchitect_grid.h \
     ct_itemdrawable/abstract/ct_abstractgrid3d.h \
     ct_itemdrawable/abstract/ct_abstractgrid2d.h \
     ct_itemdrawable/ct_grid2dxy.hpp \
@@ -697,7 +666,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/drawmanager/ct_standardgrid4ddrawmanager.h \
     ct_itemdrawable/tools/drawmanager/ct_standardgrid4ddrawmanager.hpp \
     ct_itemdrawable/tools/ct_itemplateddata4darray.h \
-    ct_reader/ct_reader_opf.h \
     ct_itemdrawable/ct_ttreegroup.h \
     ct_itemdrawable/ct_tnodegroup.h \
     ct_itemdrawable/abstract/ct_abstractstandarditemgroup.h \
@@ -784,12 +752,6 @@ HEADERS += interfaces.h \
     ct_coordinates/abstract/ct_abstractcoordinatesystem.h \
     ct_coordinates/ct_defaultcoordinatesystem.h \
     ct_coordinates/tools/ct_coordinatesystemmanager.h \
-    ct_reader/ct_reader_las.h \
-    ct_reader/ct_reader_opf_def_models.h \
-    ct_reader/ct_reader_ascrgb_def_models.h \
-    ct_reader/ct_reader_xyb_def_models.h \
-    ct_reader/ct_reader_larchitect_grid_def_models.h \
-    ct_reader/ct_reader_las_def_models.h \
     ct_itemdrawable/tools/ct_counter.h \
     ct_itemdrawable/ct_loopcounter.h \
     ct_step/ct_stepbeginloop.h \
@@ -802,26 +764,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_pointsattributesscalarmaskt.hpp \
     ct_itemdrawable/ct_stdpointsattributescontainer.h \
     ct_itemdrawable/abstract/ct_abstractpointsattributescontainer.h \
-    ct_itemdrawable/ct_stdlaspointsattributescontainer.h \
-    ct_itemdrawable/ct_stdlaspointsattributescontainer.h \
-    ct_reader/tools/las/abstract/ct_abstractlaspointformat.h \
-    ct_reader/tools/las/ct_laspointformat0.h \
-    ct_reader/tools/las/ct_lasdefine.h \
-    ct_reader/tools/las/ct_laspointinfo.h \
-    ct_reader/tools/las/ct_laspointformat1.h \
-    ct_reader/tools/las/ct_laspointformat2.h \
-    ct_reader/tools/las/ct_laspointformat3.h \
-    ct_reader/tools/las/ct_laspointformat4.h \
-    ct_reader/tools/las/ct_laspointformat5.h \
-    ct_reader/tools/las/ct_laspointformat6.h \
-    ct_reader/tools/las/ct_laspointformat7.h \
-    ct_reader/tools/las/ct_laspointformat8.h \
-    ct_reader/tools/las/ct_laswavepacket.h \
-    ct_reader/tools/las/ct_lascolorpacket.h \
-    ct_reader/tools/las/ct_lasnirpacket.h \
-    ct_reader/tools/las/ct_lasgpspacket.h \
-    ct_reader/tools/las/ct_laspointformat9.h \
-    ct_reader/tools/las/ct_laspointformat10.h \
     ct_shape2ddata/ct_box2ddata.h \
     ct_shape2ddata/ct_circle2ddata.h \
     ct_shape2ddata/ct_line2ddata.h \
@@ -846,9 +788,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/drawmanager/ct_standardpoint2ddrawmanager.h \
     ct_tools/model/ct_outmodelcopyactionaddmodelitemattributeinitem.h \
     ct_itemdrawable/ct_fileheader.h \
-    ct_reader/headers/ct_lasheader.h \
-    ct_reader/ct_reader_gdal.h \
-    ct_reader/ct_reader_gdal_def_models.h \
     ct_itemdrawable/ct_transformationmatrix.h \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.h \
     ct_itemdrawable/ct_datasource.h \
@@ -870,12 +809,10 @@ HEADERS += interfaces.h \
     ct_iterator/ct_mutablefaceiterator.h \
     ct_iterator/ct_mutableedgeiterator.h \
     ct_mesh/tools/ct_meshallocator.h \
-    ct_reader/tools/las/ct_lasdata.h \
     ct_metric/abstract/ct_abstractmetric.h \
     ct_metric/abstract/ct_abstractmetric_xyz.h \
     ct_filter/abstract/ct_abstractfilter.h \
     ct_filter/abstract/ct_abstractfilter_xyz.h \
-    ct_filter/abstract/ct_abstractfilter_las.h \
     ct_iterator/ct_resultgroupiterator.h \
     ct_iterator/ct_resultitemiterator.h \
     ct_iterator/ct_resultiterator.h \
@@ -925,8 +862,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/image2dtools/ct_image2dnaturalneighboursinterpolator.h \
     ct_step/tools/menu/ct_stepsmenu.h \
     ct_step/tools/menu/ct_menulevel.h \
-    ct_reader/ct_reader_terrascanprj.h \
-    ct_reader/ct_reader_terrascanprj_def_models.h \
     ct_math/ct_houghtransform.h \
     ct_itemdrawable/ct_readeritem.h \
     ct_itemdrawable/ct_plotlistingrid.h \

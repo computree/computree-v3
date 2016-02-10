@@ -70,7 +70,7 @@ bool CT_DataSource::addReader(CT_AbstractReader *reader)
     {
         QSharedPointer<CT_AbstractReader> firstReader = _readers.first();
 
-        if (reader->GetReaderName() != firstReader->GetReaderName())
+        if (reader->GetReaderClassName() != firstReader->GetReaderClassName())
         {
             PS_LOG->addMessage(LogInterface::info, LogInterface::reader, tr("Impossible d'ajouter des readers de classe différente"));
             return false;

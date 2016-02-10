@@ -166,6 +166,11 @@ public:
     void clearErrorMessage();
 
     /**
+     * @brief Returns true if the process must be stopped or was stopped
+     */
+    bool isStopped() const;
+
+    /**
       * \brief Retourne la liste des ItemDrawable a exporter
       */
     const QList<CT_AbstractItemDrawable*>& itemDrawableToExport() const;
@@ -261,10 +266,14 @@ protected:
     const QScopedPointer<CT_AbstractExporterPrivate>   d_ptr;
 
 private:
-
-    QString m_tooltip;
-
     Q_DECLARE_PRIVATE(CT_AbstractExporter)
+
+public slots:
+
+    /**
+     * @brief Call to cancel the process
+     */
+    void cancel();
 
 signals:
 

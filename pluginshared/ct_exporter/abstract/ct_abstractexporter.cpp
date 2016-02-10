@@ -38,14 +38,17 @@ CT_StepsMenu::LevelPredefined CT_AbstractExporter::getExporterSubMenuName() cons
 
 QString CT_AbstractExporter::toolTip() const
 {
-    return m_tooltip;
+    Q_D(const CT_AbstractExporter);
+
+    return d->m_tooltip;
 }
 
 void CT_AbstractExporter::setToolTip(const QString &t)
 {
-    m_tooltip = t;
-}
+    Q_D(CT_AbstractExporter);
 
+    d->m_tooltip = t;
+}
 
 bool CT_AbstractExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
@@ -205,6 +208,7 @@ bool CT_AbstractExporter::exportToFile()
     Q_D(CT_AbstractExporter);
 
     d->_progress = 0;
+    d->m_stop = false;
 
     if(!protectedExportToFile())
         return false;
@@ -226,6 +230,13 @@ void CT_AbstractExporter::clearErrorMessage()
     Q_D(CT_AbstractExporter);
 
     d->_errMsg.clear();
+}
+
+bool CT_AbstractExporter::isStopped() const
+{
+    Q_D(const CT_AbstractExporter);
+
+    return d->m_stop;
 }
 
 const QList<CT_AbstractItemDrawable*>& CT_AbstractExporter::itemDrawableToExport() const
@@ -329,6 +340,13 @@ void CT_AbstractExporter::setExportOnlyGroup(bool e)
     Q_D(CT_AbstractExporter);
 
     d->_eOnlyGroup = e;
+}
+
+void CT_AbstractExporter::cancel()
+{
+    Q_D(CT_AbstractExporter);
+
+    d->m_stop = true;
 }
 
 void CT_AbstractExporter::setCanExportItems(bool e)

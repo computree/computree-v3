@@ -1,17 +1,17 @@
-#ifndef PB_LASEXPORTER_H
-#define PB_LASEXPORTER_H
+#ifndef CT_EXPORTER_LAS_H
+#define CT_EXPORTER_LAS_H
 
 #include "ct_exporter/abstract/ct_abstractexporterattributesselection.h"
 #include "ct_itemdrawable/ct_stdlaspointsattributescontainer.h"
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
 #include "ct_reader/tools/las/abstract/ct_abstractlaspointformat.h"
 
-class PB_LASExporter : public CT_AbstractExporterAttributesSelection
+class CT_Exporter_LAS : public CT_AbstractExporterAttributesSelection
 {
     Q_OBJECT
 
 public:
-    PB_LASExporter();
+    CT_Exporter_LAS();
 
     virtual QString getExporterCustomName() const;
 
@@ -71,4 +71,4 @@ private:
     CT_OutAbstractSingularItemModel                                         *m_lasContainerModel;
 };
 
-#endif // PB_LASEXPORTER_H
+#endif // CT_EXPORTER_LAS_H

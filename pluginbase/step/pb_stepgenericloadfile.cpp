@@ -16,6 +16,8 @@ PB_StepGenericLoadFile::PB_StepGenericLoadFile(CT_StepInitializeData &dataInit, 
     m_reader = reader;
 
     connect(m_reader, SIGNAL(progressChanged(int)), this, SLOT(readerProgressChanged(int)), Qt::DirectConnection);
+    connect(m_reader, SIGNAL(filePathModified()), this, SLOT(readerFilePathModified()), Qt::DirectConnection);
+    connect(this, SIGNAL(stopped()), m_reader, SLOT(cancel()), Qt::DirectConnection);
 }
 
 PB_StepGenericLoadFile::~PB_StepGenericLoadFile()
@@ -73,6 +75,37 @@ QList<FileFormat> PB_StepGenericLoadFile::getFileExtensionAccepted() const
     return m_reader->readableFormats();
 }
 
+bool PB_StepGenericLoadFile::setAllSettings(const SettingsNodeGroup *settings)
+{
+    if(!CT_AbstractStepLoadFile::setAllSettings(settings))
+        return false;
+
+    m_reader->setFilePath(getFilePath());
+
+    QList<SettingsNodeGroup*> listG = settings->groupsByTagName(m_reader->GetReaderClassName());
+
+    if(!listG.isEmpty())
+        return m_reader->setAllSettings(listG.first());
+
+    return false;
+}
+
+SettingsNodeGroup *PB_StepGenericLoadFile::getAllSettings() const
+{
+    SettingsNodeGroup *root = CT_AbstractStepLoadFile::getAllSettings();
+
+    SettingsNodeGroup *readerGroup = m_reader->getAllSettings();
+
+    SettingsNodeGroup *group = new SettingsNodeGroup(m_reader->GetReaderClassName());
+
+    if(readerGroup != NULL)
+        group->addGroup(readerGroup);
+
+    root->addGroup(group);
+
+    return root;
+}
+
 bool PB_StepGenericLoadFile::setFilePath(QString filePath)
 {
     QString fp = getFilePath();
@@ -102,7 +135,10 @@ bool PB_StepGenericLoadFile::preConfigure()
 {
     if(CT_AbstractStepLoadFile::preConfigure())
     {
-        return m_reader->configure();
+        if(m_reader->configure()) {
+            setSettingsModified(true);
+            return true;
+        }
     }
 
     return false;
@@ -112,7 +148,10 @@ bool PB_StepGenericLoadFile::postConfigure()
 {
     if(CT_AbstractStepLoadFile::postConfigure())
     {
-        return m_reader->configure();
+        if(m_reader->configure()) {
+            setSettingsModified(true);
+            return true;
+        }
     }
 
     return false;
@@ -213,4 +252,9 @@ void PB_StepGenericLoadFile::compute()
 void PB_StepGenericLoadFile::readerProgressChanged(int progress)
 {
     setProgress(progress);
+}
+
+void PB_StepGenericLoadFile::readerFilePathModified()
+{
+    CT_AbstractStepLoadFile::setFilePath(m_reader->filepath());
 }

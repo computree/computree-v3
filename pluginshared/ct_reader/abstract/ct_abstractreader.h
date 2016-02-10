@@ -20,14 +20,18 @@ public:
     void init(bool initOutItemDrawableList = true);
 
     /**
-     * \brief Inherit this method if you want to return your own name.
-     *
-     *        By default call "metaObject()->className()"
+     * @brief Returns a displayable name of the reader
      */
     virtual QString GetReaderName() const;
 
+    /**
+     * @brief Returns the class name (you can use it to compare readers because it was unique)
+     */
     virtual QString GetReaderClassName() const;
 
+    /**
+     * @brief Returns the sub menu level where we can store this reader (by default "Others")
+     */
     virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     /**
@@ -74,6 +78,20 @@ public:
       * \return false if the user as canceled the configuration
       */
     virtual bool configure() { return true; }
+
+    /**
+     * @brief Backup settings
+     * @return The SettingsNodeGroup to save or NULL if it was nothing to save
+     * @overload Overloaded from CT_AbstractStepSerializable
+     */
+    virtual SettingsNodeGroup* getAllSettings() const { return NULL; }
+
+    /**
+     * @brief Restore settings
+     * @return False if it was a problem in settings
+     * @overload Overloaded from CT_AbstractStepSerializable
+     */
+    virtual bool setAllSettings(const SettingsNodeGroup *settings) { Q_UNUSED(settings) return true; }
 
     /**
       * \brief Init out itemdrawable model of the reader (call this method after set the filepath)
@@ -289,12 +307,20 @@ protected:
       * \brief Set the out itemdrawable model for header
       */
     void setOutHeaderModel(CT_OutStdSingularItemModel *headerModel);
+    void setOutHeaderModel(const QString &modelName,
+                           CT_FileHeader *header,
+                           const QString &displayableName = "",
+                           const QString &description = "");
 
     /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the
      *        same ItemDrawable you must add multiple model with different name.
      */
     void addOutItemDrawableModel(CT_OutStdSingularItemModel *item);
+    void addOutItemDrawableModel(const QString &modelName,
+                                 CT_AbstractSingularItemDrawable *item,
+                                 const QString &displayableName = "",
+                                 const QString &description = "");
 
     /**
      * @brief Add a new out ItemDrawable you have created in the method "protectedReadFile" for the model name "modelName"
@@ -343,7 +369,6 @@ protected:
     virtual bool protectedReadFile() = 0;
 
     CT_FileHeader*                                          m_header;
-    QString                                                 m_filePath;
 
 private:
     QList<FileFormat>                                       m_formats;
@@ -357,6 +382,7 @@ private:
     int                                                     m_progress;
     bool                                                    m_error;
     bool                                                    m_stop;
+    QString                                                 m_filePath;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();
@@ -368,6 +394,8 @@ signals:
     void started();
     void progressChanged(int progress);
     void finished();
+
+    void filePathModified();
 };
 
 #endif // CT_ABSTRACTREADER_H

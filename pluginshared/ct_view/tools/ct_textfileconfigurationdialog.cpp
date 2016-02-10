@@ -236,6 +236,8 @@ void CT_TextFileConfigurationDialog::extractFieldsNames()
             combo->setCurrentIndex(matchIndex);
         else if((neededField.m_chooseNoDataIfNotMatch || (i >= _headersNames.count())) && !headerIsNumericValues)
             combo->setCurrentIndex(_headersNames.count()-1);
+        else if(i >= _headersNames.count())
+            combo->setCurrentIndex(_headersNames.count()-1);
         else
             combo->setCurrentIndex(i);
 

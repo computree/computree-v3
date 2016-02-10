@@ -57,6 +57,11 @@ public:
 private:
 
     int    _valueCount;
+    static QMap<QString, QString> mapEncodeEntities;
+    static QMap<QString, QString> mapDecodeEntities;
+
+    static QMap<QString, QString> staticInitMapEncodeEntities();
+    static QMap<QString, QString> staticInitMapDecodeEntities();
 
     QString recursiveLoadScript(QDomElement &e,
                                 CT_VirtualAbstractStep *parent,

@@ -51,7 +51,7 @@ PB_StepCreateReaderList::PB_StepCreateReaderList(CT_StepInitializeData &dataInit
 
                 for (int n = 0 ; n < formats.size() ; n++)
                 {
-                    QString key = reader->GetReaderName();
+                    QString key = reader->GetReaderClassName();
                     _readersMap.insert(key, QPair<CT_AbstractReader*, int>(readerCpy, n));
                 }
             }
