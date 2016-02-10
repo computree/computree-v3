@@ -114,19 +114,22 @@ void PB_StepUseReaderToLoadFiles::createOutResultModelListProtected()
             CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
             QList<CT_OutStdSingularItemModel*> itemModels = reader->outItemDrawableModels();
 
-            // Ajout du modèle de header
-            _headerModel = new CT_AutoRenameModels();
-            res->addItemModel(DEFin_group, *_headerModel, new CT_FileHeader(), reader->getHeader()->displayableName());
-
-            // Ajout des modèles d'items
-            QListIterator<CT_OutStdSingularItemModel*> itIM(itemModels);
-            while (itIM.hasNext())
+            if (res != NULL)
             {
-                CT_OutStdSingularItemModel* itemModel = itIM.next();
-                CT_AutoRenameModels* autoRename = new CT_AutoRenameModels();
+                // Ajout du modèle de header
+                _headerModel = new CT_AutoRenameModels();
+                res->addItemModel(DEFin_group, *_headerModel, new CT_FileHeader(), reader->getHeader()->displayableName());
 
-                _itemModels.insert(itemModel->uniqueName(), autoRename);
-                res->addItemModel(DEFin_group, *autoRename, (CT_AbstractSingularItemDrawable*) (itemModel->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList())), itemModel->displayableName());
+                // Ajout des modèles d'items
+                QListIterator<CT_OutStdSingularItemModel*> itIM(itemModels);
+                while (itIM.hasNext())
+                {
+                    CT_OutStdSingularItemModel* itemModel = itIM.next();
+                    CT_AutoRenameModels* autoRename = new CT_AutoRenameModels();
+
+                    _itemModels.insert(itemModel->uniqueName(), autoRename);
+                    res->addItemModel(DEFin_group, *autoRename, (CT_AbstractSingularItemDrawable*) (itemModel->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList())), itemModel->displayableName());
+                }
             }
         }
     }
