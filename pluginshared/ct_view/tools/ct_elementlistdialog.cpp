@@ -24,6 +24,9 @@ CT_ElementListDialog::CT_ElementListDialog(QList<CT_AbstractConfigurableElement 
 
         if (first) {newItem->setSelected(true); first = false;}
     }
+
+    connect(ui->listWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(accept()));
+
 }
 
 CT_ElementListDialog::~CT_ElementListDialog()
