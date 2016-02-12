@@ -204,8 +204,8 @@ CT_AbstractCloud* CT_CloudIndexStdVectorT<T>::copy() const
 template<typename T>
 typename std::vector<ct_index_type>::iterator CT_CloudIndexStdVectorT<T>::vectorFindIf(typename CT_CloudIndexStdVectorT<T>::FindIfFunction findIf, void *context) const
 {
-    typename std::vector<ct_index_type>::iterator first = _vector->begin();
-    typename std::vector<ct_index_type>::iterator last = _vector->end();
+    typename std::vector<ct_index_type>::iterator first = _vector.begin();
+    typename std::vector<ct_index_type>::iterator last = _vector.end();
 
     size_t tmp;
 

@@ -37,7 +37,6 @@
 #include "step/pb_stepgenericexporter.h"
 #include "step/pb_stepuseritemselection.h"
 #include "step/pb_stepgenericloadfile.h"
-#include "step/pb_stepcreatedatasource.h"
 #include "step/pb_stepcreatereaderlist.h"
 #include "step/pb_stepusereadertoloadfiles.h"
 #include "step/pb_stepcomputepointmetrics.h"
@@ -46,7 +45,6 @@
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
 #include "step/pb_stepbeginloopthroughgroups.h"
-#include "step/pb_stepbeginloopthroughdatasource.h"
 #include "step/pb_stepapplypointfilters.h"
 #include "step/pb_stepexportitemlist.h"
 #include "actions/pb_actionselectitemdrawablegv.h"
@@ -129,7 +127,6 @@ QSettings* PB_StepPluginManager::initQSettings()
 bool PB_StepPluginManager::loadGenericsStep()
 {
     addNewWorkflowStep<CT_StepBeginLoop>(CT_StepsMenu::LP_Loops);
-    addNewWorkflowStep<PB_StepBeginLoopThroughDataSource>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
@@ -137,12 +134,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewGeometricalShapesStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
     addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
 
-    addNewLoadStep<PB_StepCreateDataSource>("");
     addNewLoadStep<PB_StepCreateReaderList>("");
     addNewLoadStep<PB_StepUseReaderToLoadFiles>("");
 
     addNewExportStep<PB_StepExportItemList>("");
-
 
     return true;
 }

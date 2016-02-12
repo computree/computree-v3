@@ -11,7 +11,6 @@
 CT_AbstractReader::CT_AbstractReader()
 {
     m_header = NULL;
-    m_outHeaderModel = NULL;
     m_progress = 0;
     m_stop = false;
     m_filePath = "";
@@ -34,8 +33,6 @@ CT_AbstractReader::CT_AbstractReader(const CT_AbstractReader &other)
     while(itG.hasNext())
         m_outGroupsModel.append((CT_OutStdGroupModel*)itG.next()->copy());
 
-    // m_outHeaderModel not copied
-    m_outHeaderModel = NULL;
     // m_outItems not copied
     // m_outGroups not copied
 
@@ -58,9 +55,6 @@ CT_AbstractReader::~CT_AbstractReader()
 
     if (m_header!=NULL)
         delete m_header;
-
-    if (m_outHeaderModel != NULL)
-        delete m_outHeaderModel;
 }
 
 void CT_AbstractReader::init(bool initOutItemDrawableList)
@@ -203,21 +197,6 @@ const QList<CT_OutStdSingularItemModel*>& CT_AbstractReader::outItemDrawableMode
 const QList<CT_OutStdGroupModel*>& CT_AbstractReader::outGroupsModel() const
 {
     return m_outGroupsModel;
-}
-
-const CT_OutStdSingularItemModel* CT_AbstractReader::outHeaderModel() const
-{
-    return m_outHeaderModel;
-}
-
-void CT_AbstractReader::setOutHeaderModel(CT_OutStdSingularItemModel* headerModel)
-{
-    m_outHeaderModel = headerModel;
-}
-
-void CT_AbstractReader::setOutHeaderModel(const QString &modelName, CT_FileHeader *header, const QString &displayableName, const QString &description)
-{
-    m_outHeaderModel = new CT_OutStdSingularItemModel(modelName, header, displayableName, description);
 }
 
 const QList<FileFormat>& CT_AbstractReader::readableFormats() const
@@ -615,7 +594,6 @@ void CT_AbstractReader::setErrorMessage(const QString &err)
 
 void CT_AbstractReader::protectedCreateOutItemDrawableModelList()
 {
-    setOutHeaderModel(new CT_OutStdSingularItemModel(DEF_CT_header, new CT_FileHeader(), tr("Header")));
 }
 
 void CT_AbstractReader::clearOutItemDrawableModel()

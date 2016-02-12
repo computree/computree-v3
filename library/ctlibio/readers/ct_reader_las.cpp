@@ -108,8 +108,6 @@ void CT_Reader_LAS::protectedInit()
 
 void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
 {
-    setOutHeaderModel(DEF_CT_Reader_LAS_header, new CT_LASHeader(), tr("LAS Header"));
-
     addOutItemDrawableModel(DEF_CT_Reader_LAS_sceneOut, new CT_Scene(), tr("Scène"));
     addOutItemDrawableModel(DEF_CT_Reader_LAS_attributesOut, new CT_StdLASPointsAttributesContainer(), tr("All Attributs"));
 

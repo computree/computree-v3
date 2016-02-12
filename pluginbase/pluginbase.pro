@@ -34,11 +34,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     exporters/xyb/pb_multixybexporter.h \
     exporters/xyb/pb_xybexporter.h \
     step/pb_stepapplypointfilters.h \
-    step/pb_stepbeginloopthroughdatasource.h \
     step/pb_stepbeginloopthroughgroups.h \
     step/pb_stepcomputepointmetrics.h \
     step/pb_stepcomputerastermetrics.h \
-    step/pb_stepcreatedatasource.h \
     step/pb_stepexportitemlist.h \
     step/pb_stepgenericexporter.h \
     step/pb_stepgenericloadfile.h \
@@ -76,11 +74,9 @@ SOURCES += \
     exporters/xyb/pb_multixybexporter.cpp \
     exporters/xyb/pb_xybexporter.cpp \
     step/pb_stepapplypointfilters.cpp \
-    step/pb_stepbeginloopthroughdatasource.cpp \
     step/pb_stepbeginloopthroughgroups.cpp \
     step/pb_stepcomputepointmetrics.cpp \
     step/pb_stepcomputerastermetrics.cpp \
-    step/pb_stepcreatedatasource.cpp \
     step/pb_stepexportitemlist.cpp \
     step/pb_stepgenericexporter.cpp \
     step/pb_stepgenericloadfile.cpp \

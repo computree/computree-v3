@@ -123,11 +123,6 @@ public:
     const QList<CT_OutStdGroupModel*>& outGroupsModel() const;
 
     /**
-      * \brief Return the out itemdrawable model for header
-      */
-    const CT_OutStdSingularItemModel* outHeaderModel() const;
-
-    /**
       * \brief Return all readable formats
       */
     const QList<FileFormat> &readableFormats() const;
@@ -323,15 +318,6 @@ protected:
     void setToolTip(const QString &t);
 
     /**
-      * \brief Set the out itemdrawable model for header
-      */
-    void setOutHeaderModel(CT_OutStdSingularItemModel *headerModel);
-    void setOutHeaderModel(const QString &modelName,
-                           CT_FileHeader *header,
-                           const QString &displayableName = "",
-                           const QString &description = "");
-
-    /**
      * @brief Add the ItemDrawable you will create in result (it's a model). If you create multiple times the
      *        same ItemDrawable you must add multiple model with different name.
      */
@@ -395,7 +381,6 @@ private:
     QString                                                 m_errorMess;
     QList<CT_OutStdSingularItemModel*>                      m_outItemsModel;
     QList<CT_OutStdGroupModel*>                             m_outGroupsModel;
-    CT_OutStdSingularItemModel*                             m_outHeaderModel;
     QMultiMap<QString, CT_AbstractSingularItemDrawable*>    m_outItems;
     QMultiMap<QString, CT_AbstractItemGroup*>               m_outGroups;
     int                                                     m_progress;

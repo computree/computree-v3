@@ -293,7 +293,15 @@ QMap<QString, QString> CDM_ScriptManagerXML::staticInitMapEncodeEntities()
     mapEncode["ÿ"] = "&#255;";
     mapEncode["<"] = "&#60;";
     mapEncode[">"] = "&#62;";
+    mapEncode["!"] = "&#33;";
+    mapEncode["\""] = "&#34;";
+    mapEncode["#"] = "&#35;";
+    mapEncode["$"] = "&#36;";
+    mapEncode["%"] = "&#37;";
     mapEncode["&"] = "&#38;";
+    mapEncode["'"] = "&#39;";
+    mapEncode["("] = "&#40;";
+    mapEncode[")"] = "&#41;";
 
     return mapEncode;
 }

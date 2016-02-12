@@ -345,8 +345,6 @@ SOURCES += \
     ct_itemdrawable/ct_fileheader.cpp \
     ct_itemdrawable/ct_transformationmatrix.cpp \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.cpp \
-    ct_itemdrawable/ct_datasource.cpp \
-    ct_itemdrawable/ct_datasourcegeo.cpp \
     ct_iterator/ct_pointiterator.cpp \
     ct_accessor/ct_pointaccessor.cpp \
     ct_iterator/ct_mutablepointiterator.cpp \
@@ -799,8 +797,6 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_fileheader.h \
     ct_itemdrawable/ct_transformationmatrix.h \
     ct_coordinates/tools/ct_coordinatesystemcloudindex.h \
-    ct_itemdrawable/ct_datasource.h \
-    ct_itemdrawable/ct_datasourcegeo.h \
     ct_defines.h \
     ct_iterator/ct_pointiterator.h \
     ct_iterator/ct_faceiterator.h \
