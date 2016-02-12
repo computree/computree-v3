@@ -117,12 +117,12 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
 
             if (okx && oky && okz && okr && okc && offset > 0) {
                 if(CT_AbstractReader::setFilePath(filepath)) {
-                    _xc = xc;
-                    _yc = yc;
-                    _zc = zc;
-                    _rows = rows;
-                    _cols = cols;
-                    _offset = offset;
+                    m_new.m_center[0] = xc;
+                    m_new.m_center[1] = yc;
+                    m_new.m_center[2] = zc;
+                    m_new._rows = rows;
+                    m_new._cols = cols;
+                    m_new._offset = offset;
 
                     return true;
                 }
@@ -131,6 +131,12 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
     }
 
     return false;
+}
+
+bool CT_Reader_XYB::configure()
+{
+    m_current = m_new;
+    return true;
 }
 
 void CT_Reader_XYB::setFilterRadius(const double &radius)
@@ -145,24 +151,33 @@ double CT_Reader_XYB::filterRadius() const
 
 SettingsNodeGroup *CT_Reader_XYB::getAllSettings() const
 {
-    SettingsNodeGroup *root = new SettingsNodeGroup("Settings");
-    root->addValue(new SettingsNodeValue("filterRadius", filterRadius()));
+    SettingsNodeGroup *root = CT_AbstractReader::getAllSettings();
+
+    SettingsNodeGroup *group = new SettingsNodeGroup("CT_Reader_XYB_Settings");
+    group->addValue(new SettingsNodeValue("filterRadius", filterRadius()));
+
+    root->addGroup(group);
 
     return root;
 }
 
 bool CT_Reader_XYB::setAllSettings(const SettingsNodeGroup *settings)
 {
-    QList<SettingsNodeGroup*> listG = settings->groupsByTagName("Settings");
-
-    if(!listG.isEmpty())
+    if(CT_AbstractReader::setAllSettings(settings))
     {
+        QList<SettingsNodeGroup*> listG = settings->groupsByTagName("CT_Reader_XYB_Settings");
+
+        if(listG.isEmpty())
+            return false;
+
         QList<SettingsNodeValue*> listV = listG.first()->valuesByTagName("filterRadius");
 
         if(listV.isEmpty())
             return false;
 
         setFilterRadius(listV.first()->value().toDouble());
+
+        m_current = m_new;
 
         return true;
     }
@@ -203,13 +218,13 @@ bool CT_Reader_XYB::protectedReadFile()
         {
             QDataStream stream(&f);
             stream.setByteOrder(QDataStream::LittleEndian);
-            stream.skipRawData(_offset);
+            stream.skipRawData(m_current._offset);
 
             qint64 filesize = f.size();
             qint64 a = 0;
 
             // un tableau de n_points
-            qint64 n_points = (filesize - _offset) / 26;
+            qint64 n_points = (filesize - m_current._offset) / 26;
 
             CT_AbstractUndefinedSizePointCloud* mpcir;
             CT_NMPCIR pcir;
@@ -253,8 +268,8 @@ bool CT_Reader_XYB::protectedReadFile()
 
                 if (filter)
                 {
-                    double dx = x - _xc;
-                    double dy = y - _yc;
+                    double dx = x - m_current.m_center[0];
+                    double dy = y - m_current.m_center[1];
                     double distance2D = sqrt(dx*dx + dy*dy);
 
                     if (distance2D <= _filterRadius)
@@ -326,14 +341,14 @@ bool CT_Reader_XYB::protectedReadFile()
             // add attributes
             addOutItemDrawable(DEF_CT_Reader_XYB_intensityOut, pas);
 
-            if (_rows<=0 || _cols<=0)
+            if (m_current._rows<=0 || m_current._cols<=0)
                 return true;
 
-            double hres = 150.0 / ((double)_rows);
-            double vres = 360.0 / ((double)_cols);
+            double hres = 150.0 / ((double)m_current._rows);
+            double vres = 360.0 / ((double)m_current._cols);
 
             // add the scanner
-            addOutItemDrawable(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(NULL, NULL, 0, Eigen::Vector3d(_xc, _yc, _zc), Eigen::Vector3d(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
+            addOutItemDrawable(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(NULL, NULL, 0, m_current.m_center, Eigen::Vector3d(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
 
             return true;
         }

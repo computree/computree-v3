@@ -80,14 +80,17 @@ bool PB_StepGenericLoadFile::setAllSettings(const SettingsNodeGroup *settings)
     if(!CT_AbstractStepLoadFile::setAllSettings(settings))
         return false;
 
-    m_reader->setFilePath(getFilePath());
-
     QList<SettingsNodeGroup*> listG = settings->groupsByTagName(m_reader->GetReaderClassName());
 
-    if(!listG.isEmpty())
-        return m_reader->setAllSettings(listG.first());
+    if(listG.isEmpty())
+        return false;
 
-    return false;
+    listG = listG.first()->groups();
+
+    if(listG.isEmpty())
+        return false;
+
+    return m_reader->setAllSettings(listG.first());
 }
 
 SettingsNodeGroup *PB_StepGenericLoadFile::getAllSettings() const

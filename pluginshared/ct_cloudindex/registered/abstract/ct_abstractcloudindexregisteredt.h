@@ -77,12 +77,11 @@ public:
      */
     inline size_t upperBound(const size_t &value) const { return m_ci->upperBound(value); }
 
-#ifdef USE_PCL
     /**
-     * @brief return the PCL cloud index. Changing it does not necessarily affect the cloud index (depends on whether the cloud is modifiable or not)
+     * @brief Return a special shared pointer to a std::vector<int> that contains all indexes of this cloud. The vector
+     *        can be created (because the cloud use another type of container) or it can be shared.
      */
-    inline boost::shared_ptr< std::vector<int> > getPCLIndices() const { return m_ci->getPCLIndices(); }
-#endif
+    inline CT_SharedPointer< std::vector<int> > toStdVectorInt() const { return m_ci->toStdVectorInt(); }
 
 protected:
     CT_AbstractCloudIndexRegisteredT(CT_AbstractCloudIndexT<T> *ci);

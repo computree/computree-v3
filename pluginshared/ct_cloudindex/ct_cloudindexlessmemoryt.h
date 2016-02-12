@@ -29,9 +29,7 @@ public:
     bool cut(const size_t &begin, const size_t &end);
     void clear();
 
-#ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> > getPCLIndices() const;
-#endif
+    CT_SharedPointer< std::vector<int> > toStdVectorInt() const;
 
     CT_AbstractCloud* copy() const;
 

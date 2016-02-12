@@ -27,12 +27,6 @@ public:
     CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     /**
-     * @brief Set the filepath to the reader. The file will be opened to search faces, if no face was found
-     *        the reader will load a PointCloud otherwise it will load a Mesh.
-     */
-    bool setFilePath(const QString &filepath);
-
-    /**
      * @brief Set if we must load the file like a PointCloud (true) or like a Mesh (false)
      */
     void setLoadAsPointCloud(bool enable);
@@ -61,6 +55,7 @@ public:
     bool setAllSettings(const SettingsNodeGroup *settings);
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_OBJ)
 
 private:
     bool    m_searchHEdges;

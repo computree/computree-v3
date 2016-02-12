@@ -12,6 +12,8 @@
 #include <QHash>
 #include <QMutex>
 
+class CT_AbstractReader;
+
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractStandardItemGroup : public CT_AbstractItemGroup
 {
 public:
@@ -104,7 +106,6 @@ private:
     QHash<QString, CT_GroupItemDrawableContainer*>          _itemsBackup;   /*!< Une map ayant comme clé le nom du modèle et comme valeur un container d'ItemDrawable qu'il ne faut pas supprimer de la mémoire
                                                                          mais juste effacer puisque lors d'une copie d'un groupe les ItemDrawable de la liste "itemsNew"
                                                                          sont déplacés dans cette liste. */
-
 protected:
 
     QMutex                                                  *_mutexAccessGroup;

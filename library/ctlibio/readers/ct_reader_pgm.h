@@ -39,6 +39,7 @@ public:
     bool setFilePath(const QString &filepath);
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_PGM)
 
 private:
 

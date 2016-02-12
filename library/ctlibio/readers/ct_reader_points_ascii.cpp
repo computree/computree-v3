@@ -74,6 +74,7 @@ bool CT_Reader_Points_ASCII::configure()
     // a configurable dialog that help the user to select the right column and auto-detect some columns
     CT_TextFileConfigurationDialog dialog(fieldList, NULL, filepath());
     dialog.setFileExtensionAccepted(readableFormats());
+    dialog.setFilePathCanBeModified(filePathCanBeModified());
 
     // table that link a sought column to a column in the ascii file
     QMap<QString, int> corresp;
@@ -144,12 +145,17 @@ bool CT_Reader_Points_ASCII::configure()
     m_separator = dialog.getSeparator();
     m_localeName = dialog.getQLocaleName();
 
+    if(!filePathCanBeModified() && !filepath().isEmpty())
+        return true;
+
     return setFilePath(dialog.getFileNameWithPath());
 }
 
 SettingsNodeGroup *CT_Reader_Points_ASCII::getAllSettings() const
 {
-    SettingsNodeGroup *group = new SettingsNodeGroup("Settings");
+    SettingsNodeGroup *root = CT_AbstractReader::getAllSettings();
+
+    SettingsNodeGroup *group = new SettingsNodeGroup("CT_Reader_Points_ASCII_Settings");
     group->addValue(new SettingsNodeValue("Version", "1"));
     group->addValue(new SettingsNodeValue("HasHeader", m_hasHeader));
     group->addValue(new SettingsNodeValue("NLinesToSkip", m_nLinesToSkip));
@@ -167,79 +173,86 @@ SettingsNodeGroup *CT_Reader_Points_ASCII::getAllSettings() const
     group->addValue(new SettingsNodeValue("ColumnNzIndex", m_columnNzIndex));
     group->addValue(new SettingsNodeValue("ColumnNCurvatureIndex", m_columnNCurvatureIndex));
 
-    return group;
+    root->addGroup(group);
+
+    return root;
 }
 
 bool CT_Reader_Points_ASCII::setAllSettings(const SettingsNodeGroup *settings)
 {
-    QList<SettingsNodeGroup*> groups = settings->groupsByTagName("Settings");
+    if(CT_AbstractReader::setAllSettings(settings))
+    {
+        QList<SettingsNodeGroup*> groups = settings->groupsByTagName("CT_Reader_Points_ASCII_Settings");
 
-    if(groups.isEmpty())
-        return false;
+        if(groups.isEmpty())
+            return false;
 
-    QList<SettingsNodeValue*> values = groups.first()->valuesByTagName("HasHeader");
-    if(values.isEmpty()) {return false;}
-    m_hasHeader = values.first()->value().toBool();
+        QList<SettingsNodeValue*> values = groups.first()->valuesByTagName("HasHeader");
+        if(values.isEmpty()) {return false;}
+        m_hasHeader = values.first()->value().toBool();
 
-    values = groups.first()->valuesByTagName("NLinesToSkip");
-    if(values.isEmpty()) {return false;}
-    m_nLinesToSkip = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("NLinesToSkip");
+        if(values.isEmpty()) {return false;}
+        m_nLinesToSkip = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("Separator");
-    if(values.isEmpty()) {return false;}
-    m_separator = values.first()->value().toString();
+        values = groups.first()->valuesByTagName("Separator");
+        if(values.isEmpty()) {return false;}
+        m_separator = values.first()->value().toString();
 
-    values = groups.first()->valuesByTagName("LocaleName");
-    if(values.isEmpty()) {return false;}
-    m_localeName = values.first()->value().toString();
+        values = groups.first()->valuesByTagName("LocaleName");
+        if(values.isEmpty()) {return false;}
+        m_localeName = values.first()->value().toString();
 
-    values = groups.first()->valuesByTagName("ColumnXIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnXIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnXIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnXIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnYIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnYIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnYIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnYIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnZIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnZIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnZIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnZIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnIntensityIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnIntensityIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnIntensityIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnIntensityIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnRedIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnRedIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnRedIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnRedIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnGreenIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnGreenIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnGreenIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnGreenIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnBlueIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnBlueIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnBlueIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnBlueIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnNxIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnNxIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnNxIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnNxIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnNyIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnNyIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnNyIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnNyIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnNzIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnNzIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnNzIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnNzIndex = values.first()->value().toInt();
 
-    values = groups.first()->valuesByTagName("ColumnNCurvatureIndex");
-    if(values.isEmpty()) {return false;}
-    m_columnNCurvatureIndex = values.first()->value().toInt();
+        values = groups.first()->valuesByTagName("ColumnNCurvatureIndex");
+        if(values.isEmpty()) {return false;}
+        m_columnNCurvatureIndex = values.first()->value().toInt();
 
-    m_firstConfiguration = false;
+        m_firstConfiguration = false;
 
-    return true;
+        return true;
+    }
+
+    return false;
 }
 
 void CT_Reader_Points_ASCII::setXColumnIndex(int index)

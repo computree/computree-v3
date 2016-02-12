@@ -4,6 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_tools/model/ct_autorenamemodels.h"
 #include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
+#include "ct_reader/tools/ct_readerresultaddingtools.h"
 
 class PB_StepUseReaderToLoadFiles: public CT_AbstractStep
 {
@@ -70,11 +71,14 @@ protected:
 
 private:
 
-    bool                                  _conditionnal;
+    bool                                    _conditionnal;
+    CT_ReaderResultAddingTools              m_readerAddingTools;
+    int                                     m_readerAutoIndex;
+    int                                     m_totalReaderProgress;
+    float                                   m_currentReaderProgress;
 
-    QMap<QString, CT_AutoRenameModels*>   _itemModels;
-    CT_AutoRenameModels*                  _headerModel;
-
+private slots:
+    void readerProgressChanged(int p);
 };
 
 #endif // PB_STEPUSEREADERTOLOADFILES_H

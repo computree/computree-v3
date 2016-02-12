@@ -37,20 +37,6 @@
 #include "eigen/Eigen/Core"
 #include <osg/Vec3f>
 
-#ifdef USE_PCL
-    #ifndef Q_MOC_RUN
-        #define PCL_NO_PRECOMPILE
-        #include <pcl/point_types.h>
-        #include <pcl/point_cloud.h>
-        #include <pcl/octree/octree_search.h>
-        #include <pcl/octree/impl/octree_search.hpp>
-        #include <pcl/filters/voxel_grid.h>
-        #include <pcl/filters/impl/voxel_grid.hpp>
-        #include <pcl/filters/statistical_outlier_removal.h>
-        #include <pcl/filters/impl/statistical_outlier_removal.hpp>
-    #endif
-#endif
-
 class CT_Point;
 class CT_PointData;
 
@@ -154,13 +140,6 @@ inline CT_PointData createCtPointData(const float &x = 0, const float &y = 0, co
     result(0) = x; result(1) = y; result(2) = z;
     return result;
 }
-
-#ifdef USE_PCL
-inline CT_PCLPoint convertCtPointData(const CT_PointData &data)
-{
-    return CT_PCLPoint(data[0], data[1], data[2]);
-}
-#endif
 
 inline void copyCtPointData( CT_PointData &dest, const CT_PointData &src)
 {

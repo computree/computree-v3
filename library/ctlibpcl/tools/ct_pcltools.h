@@ -5,12 +5,14 @@
 #include "ct_point.h"
 #include "ct_itemdrawable/accessibility/ct_iaccesspointcloud.h"
 
-class PLUGINSHAREDSHARED_EXPORT CT_PCLTools
+#include "ctlibpcl/ctlibpcl_global.h"
+#include "ctlibpcl/ct_pcldefines.h"
+
+class CTLIBPCL_EXPORT CT_PCLTools
 {
 public:
     CT_PCLTools();
 
-#ifdef USE_PCL
     /**
      * @brief Convert a cloud index to a pcl point cloud
      */
@@ -18,6 +20,12 @@ public:
     static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_IAccessPointCloud *item);
     static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_AbstractPointCloudIndex *pci);
     static boost::shared_ptr< CT_PCLCloud > staticConvertToPCLCloud(const CT_AbstractCloudT<CT_PointData> *ipc);
+
+    /**
+     * @brief Convert a cloud index to a pcl cloud index
+     */
+    static boost::shared_ptr< CT_PCLCloudIndex > staticConvertToPCLCloudIndex(CT_PCIR pcir);
+    static boost::shared_ptr< CT_PCLCloudIndex > staticConvertToPCLCloudIndex(const CT_AbstractPointCloudIndex *pci);
 
     /**
      * @brief Convert a index from a pcl cloud to a global index for Computree
@@ -28,7 +36,21 @@ public:
     static ct_index_type staticPCLIndexToGlobalIndex(CT_PCIR pcir, const ct_index_type &index);
     static ct_index_type staticPCLIndexToGlobalIndex(const CT_IAccessPointCloud *item, const ct_index_type &index);
     static ct_index_type staticPCLIndexToGlobalIndex(const CT_AbstractPointCloudIndex *pci, const ct_index_type &index);
-#endif
+
+    /**
+     * @brief Convert an internal point to a PCL point
+     */
+    static CT_PCLPoint convertCTPointDataToPCL(const CT_PointData &data);
+
+private:
+
+    template<typename T>
+    static void staticNoDelete(T *d)
+    {
+        Q_UNUSED(d)
+
+        // do nothing because we dont want to delete it
+    }
 };
 
 #endif // CT_PCLTOOLS_H

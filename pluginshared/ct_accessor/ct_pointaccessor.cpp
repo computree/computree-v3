@@ -4,8 +4,6 @@
 #include "ct_pointcloud/abstract/ct_abstractpointcloud.h"
 #include "ct_coordinates/tools/ct_coordinatesystemmanager.h"
 
-#include "ct_tools/pcl/ct_pcltools.h"
-
 CT_PointAccessor::CT_PointAccessor()
 {
     m_pCloud = PS_REPOSITORY->globalPointCloud();
@@ -69,12 +67,10 @@ void CT_PointAccessor::replaceInternalPointAt(const size_t &globalIndex, const C
     pData = p;
 }
 
-#ifdef USE_PCL
-boost::shared_ptr<CT_PCLCloud> CT_PointAccessor::getPCLCloud() const
+CT_AbstractPointCloud* CT_PointAccessor::cloud() const
 {
-    return CT_PCLTools::staticConvertToPCLCloud(m_pCloud);
+    return m_pCloud;
 }
-#endif
 
 size_t CT_PointAccessor::size() const
 {

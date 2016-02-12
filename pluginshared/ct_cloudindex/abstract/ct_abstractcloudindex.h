@@ -2,15 +2,19 @@
 #define CT_ABSTRACTCLOUDINDEX_H
 
 #include "ct_cloud/abstract/ct_abstractcloud.h"
+#include "ct_tools/ct_sharedpointer.h"
+#include <vector>
 
-#ifdef USE_PCL
-#include "pcl/point_cloud.h"
+// index of cloud index can be only int for two reason ;
+//  - the maximum points (if a cloud index link to points) with a "int" type can take 24Go in memory. I think it wil be sufficient.
+//  - we can shared the vector to pcl easily and without create a new
 typedef int                 ct_index_type;
-#else
-typedef size_t              ct_index_type;
-#endif
+
+// if we really want to use a size_t we can by uncomment this line and comment the other.
+//typedef size_t              ct_index_type;
+
 /**
- * A cloud of index (size_t)
+ * A cloud of index of type ct_index_type
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractCloudIndex : public CT_AbstractCloud
 {
@@ -95,12 +99,11 @@ public:
      */
     virtual size_t upperBound(const size_t &value) const = 0;
 
-#ifdef USE_PCL
     /**
-     * @brief return the PCL cloud index. Changing it does not necessarily affect the cloud index (depends on whether the cloud is modifiable or not)
+     * @brief Return a special shared pointer to a std::vector<int> that contains all indexes of this cloud. The vector
+     *        can be created (because the cloud use another type of container) or it can be shared.
      */
-    virtual boost::shared_ptr< std::vector<int> > getPCLIndices() const = 0;
-#endif
+    virtual CT_SharedPointer< std::vector<int> > toStdVectorInt() const = 0;
 
     /**
      * @brief Returns true if it must be unregistered when it was empty (true by default)

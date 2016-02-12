@@ -49,7 +49,7 @@ bool CT_Reader_AsciiGrid3D::setFilePath(const QString &filepath)
     return false;
 }
 
-CT_AbstractReader *CT_Reader_AsciiGrid3D::copy() const
+CT_AbstractReader* CT_Reader_AsciiGrid3D::copy() const
 {
     return new CT_Reader_AsciiGrid3D();
 }
@@ -112,12 +112,8 @@ bool CT_Reader_AsciiGrid3D::protectedReadFile()
                     }
                 }
 
-                if(!isStopped()) {
-                    loadedGrid->computeMinMax();
-                    addOutItemDrawable(DEF_CT_Reader_ASCIIGRD3D_grid3DOut, loadedGrid);
-                } else {
-                    delete loadedGrid;
-                }
+                loadedGrid->computeMinMax();
+                addOutItemDrawable(DEF_CT_Reader_ASCIIGRD3D_grid3DOut, loadedGrid);
 
                 f.close();
 

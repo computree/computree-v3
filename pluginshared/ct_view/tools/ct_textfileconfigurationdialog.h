@@ -95,6 +95,7 @@ public:
     QMap<QString, int> setFieldColumnsSelectedFromString(QString mapAsString);
     QString getFieldColumnsSelectedAsString(const QMap<QString, int> &map);
 
+    void setFilePathCanBeModified(bool enable);
     void setFileNameWithPath(const QString &path);
     void setNLinesToSkip(const int &n);
     void setFieldColumnsSelected(const QMap<QString, int> &map);

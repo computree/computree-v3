@@ -10,13 +10,8 @@ CT_CloudIndexStdVectorT<T>::CT_CloudIndexStdVectorT(const size_t &size) : CT_Abs
 {
     this->internalSetSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
 
-#ifdef USE_PCL
-    _vector = boost::shared_ptr< std::vector<int> >(new std::vector<int>(size));
-    m_impl = new CT_CloudIndexStdVectorTMethodImpl<int>(*this, *internalData());
-#else
-    _vector = QSharedPointer< std::vector<ct_index_type> >(new std::vector<ct_index_type>(size));
-    m_impl = new CT_CloudIndexStdVectorTMethodImpl<ct_index_type>(*this, *internalData());
-#endif
+    _vector.resize(size);
+    m_impl = new CT_CloudIndexStdVectorTMethodImpl<ct_index_type>(*this, _vector);
 }
 
 template<typename T>
@@ -188,13 +183,12 @@ void CT_CloudIndexStdVectorT<T>::eraseBetweenAndShiftRest(const size_t &eraseBeg
     m_impl->eraseBetweenAndShiftRest(eraseBeginPos, eraseSize, offset, negativeOffset);
 }
 
-#ifdef USE_PCL
 template<typename T>
-boost::shared_ptr< std::vector<int> > CT_CloudIndexStdVectorT<T>::getPCLIndices() const
+CT_SharedPointer< std::vector<int> > CT_CloudIndexStdVectorT<T>::toStdVectorInt() const
 {
-    return _vector;
+    // create a shared pointer that will not delete this vector (second parameter = false)
+    return CT_SharedPointer< std::vector<int> >(&const_cast<std::vector<int>&>(_vector), false);
 }
-#endif
 
 template<typename T>
 CT_AbstractCloud* CT_CloudIndexStdVectorT<T>::copy() const
@@ -231,11 +225,7 @@ typename std::vector<ct_index_type>::iterator CT_CloudIndexStdVectorT<T>::vector
 template<typename T>
 std::vector< ct_index_type >* CT_CloudIndexStdVectorT<T>::internalData() const
 {
-#ifdef USE_PCL
-    return _vector.get();
-#else
-    return _vector.data();
-#endif
+    return &const_cast< std::vector<ct_index_type>& >(_vector);
 }
 
 template<typename T>

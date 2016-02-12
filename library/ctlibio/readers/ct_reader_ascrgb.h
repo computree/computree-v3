@@ -23,6 +23,7 @@ public:
     void setRadiusFilter(const double &radius);
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_ASCRGB)
 
 private:
     double   m_filterRadius;

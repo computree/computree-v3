@@ -23,44 +23,6 @@ CT_StepsMenu::LevelPredefined CT_Reader_OBJ::getReaderSubMenuName() const
     return CT_StepsMenu::LP_Meshes;
 }
 
-bool CT_Reader_OBJ::setFilePath(const QString &filepath)
-{
-    // Test File validity
-    if(QFile::exists(filepath))
-    {
-        QFile f(filepath);
-
-        if(f.open(QIODevice::ReadOnly))
-        {
-            bool loadAsPointCloud = true;
-
-            QTextStream stream(&f);
-            QString buf;
-
-            while(!stream.atEnd()
-                  && loadAsPointCloud)
-            {
-                buf = f.readLine();
-
-                if(checkIsAFace(buf))
-                {
-                    if(checkHasInfoOfFace(buf))
-                        loadAsPointCloud = false;
-                }
-            }
-
-            f.close();
-
-            if(CT_AbstractReader::setFilePath(filepath)) {
-                m_loadAsPointCloud = loadAsPointCloud;
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 void CT_Reader_OBJ::setLoadAsPointCloud(bool enable)
 {
     m_loadAsPointCloud = enable;
@@ -94,34 +56,41 @@ bool CT_Reader_OBJ::configure()
 
 SettingsNodeGroup* CT_Reader_OBJ::getAllSettings() const
 {
-    SettingsNodeGroup *root = new SettingsNodeGroup("Settings");
-    root->addValue(new SettingsNodeValue("searchHEdges", m_searchHEdges));
-    root->addValue(new SettingsNodeValue("loadAsPointCloud", m_loadAsPointCloud));
+    SettingsNodeGroup *root = CT_AbstractReader::getAllSettings();
+
+    SettingsNodeGroup *group = new SettingsNodeGroup("CT_Reader_OBJ_Settings");
+    group->addValue(new SettingsNodeValue("searchHEdges", m_searchHEdges));
+    group->addValue(new SettingsNodeValue("loadAsPointCloud", m_loadAsPointCloud));
+
+    root->addGroup(group);
 
     return root;
 }
 
 bool CT_Reader_OBJ::setAllSettings(const SettingsNodeGroup *settings)
 {
-    QList<SettingsNodeGroup*> listG = settings->groupsByTagName("Settings");
-
-    if(!listG.isEmpty())
+    if(CT_AbstractReader::setAllSettings(settings))
     {
-        QList<SettingsNodeValue*> listV = listG.first()->valuesByTagName("searchHEdges");
+        QList<SettingsNodeGroup*> listG = settings->groupsByTagName("CT_Reader_OBJ_Settings");
 
-        if(listV.isEmpty())
-            return false;
+        if(!listG.isEmpty())
+        {
+            QList<SettingsNodeValue*> listV = listG.first()->valuesByTagName("searchHEdges");
 
-        setSearchHalfEdges(listV.first()->value().toBool());
+            if(listV.isEmpty())
+                return false;
 
-        listV = listG.first()->valuesByTagName("loadAsPointCloud");
+            setSearchHalfEdges(listV.first()->value().toBool());
 
-        if(listV.isEmpty())
-            return false;
+            listV = listG.first()->valuesByTagName("loadAsPointCloud");
 
-        setLoadAsPointCloud(listV.first()->value().toBool());
+            if(listV.isEmpty())
+                return false;
 
-        return true;
+            setLoadAsPointCloud(listV.first()->value().toBool());
+
+            return true;
+        }
     }
 
     return false;

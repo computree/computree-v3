@@ -9,7 +9,6 @@ CT_PCLTools::CT_PCLTools()
 {
 }
 
-#ifdef USE_PCL
 boost::shared_ptr< CT_PCLCloud > CT_PCLTools::staticConvertToPCLCloud(CT_PCIR pcir)
 {
     return staticConvertToPCLCloud(pcir.data() == NULL ? NULL : pcir.data()->abstractCloudIndexT());
@@ -39,7 +38,7 @@ boost::shared_ptr< CT_PCLCloud > CT_PCLTools::staticConvertToPCLCloud(const CT_A
 
         while(it.hasNext()) {
             const CT_PointData &internalPoint = it.next().currentConstInternalPoint();;
-            collection->points[i] = convertCtPointData(internalPoint);
+            collection->points[i] = convertCTPointDataToPCL(internalPoint);
             ++i;
         }
     }
@@ -65,12 +64,29 @@ boost::shared_ptr<CT_PCLCloud> CT_PCLTools::staticConvertToPCLCloud(const CT_Abs
 
         while(i < size) {
             const CT_PointData &internalPoint = ipc->constTAt(i);
-            collection->points[i] = convertCtPointData(internalPoint);
+            collection->points[i] = convertCTPointDataToPCL(internalPoint);
             ++i;
         }
     }
 
     return collection;
+}
+
+boost::shared_ptr<CT_PCLCloudIndex> CT_PCLTools::staticConvertToPCLCloudIndex(CT_PCIR pcir)
+{
+    return staticConvertToPCLCloudIndex(pcir.data() == NULL ? NULL : pcir.data()->abstractCloudIndexT());
+}
+
+boost::shared_ptr<CT_PCLCloudIndex> CT_PCLTools::staticConvertToPCLCloudIndex(const CT_AbstractPointCloudIndex *pci)
+{
+    CT_SharedPointer< std::vector<int> > ptr = pci->toStdVectorInt();
+
+    // if the shared pointer must delete the vector
+    if(ptr.autoDelete())
+        return boost::shared_ptr<CT_PCLCloudIndex>(ptr.take()); // we will take it and pass it to the boost shared pointer
+
+    // otherwise we will pass it to the boost shared pointer and set a custom deleter that will not delete it
+    return boost::shared_ptr<CT_PCLCloudIndex>(ptr.take(), &staticNoDelete< std::vector<int> >);
 }
 
 ct_index_type CT_PCLTools::staticPCLIndexToGlobalIndex(CT_PCIR pcir, const ct_index_type &index)
@@ -90,4 +106,8 @@ ct_index_type CT_PCLTools::staticPCLIndexToGlobalIndex(const CT_AbstractPointClo
 
     return pci->first()+index;
 }
-#endif
+
+CT_PCLPoint CT_PCLTools::convertCTPointDataToPCL(const CT_PointData &data)
+{
+    return CT_PCLPoint(data[0], data[1], data[2]);
+}

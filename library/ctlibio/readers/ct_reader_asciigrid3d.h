@@ -11,6 +11,8 @@
  */
 class CTLIBIO_EXPORT CT_Reader_AsciiGrid3D : public CT_AbstractReader
 {
+    Q_OBJECT
+
 public:
     CT_Reader_AsciiGrid3D();
 
@@ -31,6 +33,7 @@ public:
     bool setFilePath(const QString &filepath);
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_AsciiGrid3D)
 
 private:
 

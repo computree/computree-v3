@@ -65,7 +65,6 @@ void PB_StepUseReaderToLoadFiles::createPreConfigurationDialog()
     configDialog->addBool(tr("Conditionner le chargement à un attribut booléen"), "", "", _conditionnal);
 }
 
-
 // Creation and affiliation of IN models
 void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
 {
@@ -80,117 +79,67 @@ void PB_StepUseReaderToLoadFiles::createInResultModelListProtected()
     }
 }
 
-
 // Creation and affiliation of OUT models
 void PB_StepUseReaderToLoadFiles::createOutResultModelListProtected()
 {
-    _itemModels.clear();
+    m_readerAddingTools.clear();
 
-    // Récupération du prototype de ct_readeritem
-    CT_InAbstractResultModel *resultInModel = getInResultModel(DEFin_res);
+    CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
 
-    if (resultInModel != NULL)
-    {
-        CT_OutAbstractResultModel* resultInModelOut = NULL;
-        CT_InAbstractSingularItemModel* readerItemModel = NULL;
-        CT_ReaderItem* readerItemPrototype = NULL;
+    m_readerAddingTools.addReaderResults(DEFin_group, DEFin_reader, res, m_readerAutoIndex);
+}
 
-        // check if model have choice (can be empty if the step want to create a default out model list)
-        if(!resultInModel->getPossibilitiesSavedSelected().isEmpty())
-            resultInModelOut = (CT_OutAbstractResultModel*)resultInModel->getPossibilitiesSavedSelected().first()->outModel();
+void PB_StepUseReaderToLoadFiles::compute()
+{
+    CT_ResultGroup *outRes = getOutResultList().first();
 
-        if(resultInModelOut != NULL)
-            readerItemModel = (CT_InAbstractSingularItemModel*)PS_MODELS->searchModel(DEFin_reader, resultInModelOut, this);
+    CT_ResultIterator it(outRes, this, DEFin_group);
+    m_totalReaderProgress = it.size();
+    m_currentReaderProgress = 0;
 
-        if((readerItemModel != NULL) && !readerItemModel->getPossibilitiesSavedSelected().isEmpty())
-            readerItemPrototype = (CT_ReaderItem*) ((CT_OutAbstractSingularItemModel*) readerItemModel->getPossibilitiesSavedSelected().first()->outModel())->itemDrawable();
+    if(m_totalReaderProgress > 0) {
+        float readerStepProgress = 100.0/m_totalReaderProgress;
 
-        if (readerItemPrototype != NULL)
+        while (it.hasNext() && (!isStopped()))
         {
+            CT_StandardItemGroup *group = (CT_StandardItemGroup*) it.next();
+            CT_ReaderItem *readerItem = (CT_ReaderItem*)group->firstItemByINModelName(this, DEFin_reader);
 
-            CT_AbstractReader* reader = readerItemPrototype->getReader();
-            reader->init();
-
-            CT_OutResultModelGroupToCopyPossibilities *res = createNewOutResultModelToCopy(DEFin_res);
-            QList<CT_OutStdSingularItemModel*> itemModels = reader->outItemDrawableModels();
-
-            if (res != NULL)
+            if(readerItem != NULL)
             {
-                // Ajout du modèle de header
-                _headerModel = new CT_AutoRenameModels();
-                res->addItemModel(DEFin_group, *_headerModel, new CT_FileHeader(), reader->getHeader()->displayableName());
-
-                // Ajout des modèles d'items
-                QListIterator<CT_OutStdSingularItemModel*> itIM(itemModels);
-                while (itIM.hasNext())
+                bool load = true;
+                if (_conditionnal)
                 {
-                    CT_OutStdSingularItemModel* itemModel = itIM.next();
-                    CT_AutoRenameModels* autoRename = new CT_AutoRenameModels();
+                    CT_AbstractSingularItemDrawable *conditionnalItem = (CT_AbstractSingularItemDrawable*)group->firstItemByINModelName(this, DEFin_conditionnalItem);
+                    if (conditionnalItem != NULL)
+                    {
+                        bool attributeValue = conditionnalItem->firstItemAttributeByINModelName(outRes, this, DEFin_conditionnalAttribute)->toBool(conditionnalItem, NULL);
+                        load = attributeValue;
+                    } else {
+                        load = false;
+                    }
+                }
 
-                    _itemModels.insert(itemModel->uniqueName(), autoRename);
-                    res->addItemModel(DEFin_group, *autoRename, (CT_AbstractSingularItemDrawable*) (itemModel->itemDrawable()->copy(NULL, NULL, CT_ResultCopyModeList())), itemModel->displayableName());
+                if (load)
+                {
+                    CT_AbstractReader* reader = readerItem->getReader();
+
+                    connect(this, SIGNAL(stopped()), reader, SLOT(cancel()), Qt::DirectConnection);
+                    connect(reader, SIGNAL(progressChanged(int)), this, SLOT(readerProgressChanged(int)), Qt::DirectConnection);
+
+                    if (reader != NULL && reader->readFile())
+                        m_readerAddingTools.addReaderResults(outRes, group, reader, m_readerAutoIndex);
+
+                    disconnect(this, NULL, reader, NULL);
                 }
             }
+
+            m_currentReaderProgress += readerStepProgress;
         }
     }
 }
 
-
-void PB_StepUseReaderToLoadFiles::compute()
+void PB_StepUseReaderToLoadFiles::readerProgressChanged(int p)
 {
-
-    CT_ResultGroup *outRes = getOutResultList().first();
-
-    CT_ResultGroupIterator it(outRes, this, DEFin_group);
-    while (it.hasNext() && (!isStopped()))
-    {
-        CT_StandardItemGroup *group = (CT_StandardItemGroup*) it.next();
-        CT_ReaderItem *readerItem = (CT_ReaderItem*)group->firstItemByINModelName(this, DEFin_reader);
-
-        if(readerItem != NULL)
-        {
-            bool load = true;
-            if (_conditionnal)
-            {
-                CT_AbstractSingularItemDrawable *conditionnalItem = (CT_AbstractSingularItemDrawable*)group->firstItemByINModelName(this, DEFin_conditionnalItem);
-                if (conditionnalItem != NULL)
-                {
-                    bool attributeValue = conditionnalItem->firstItemAttributeByINModelName(outRes, this, DEFin_conditionnalAttribute)->toBool(conditionnalItem, NULL);
-                    load = attributeValue;
-                } else {
-                    load = false;
-                }
-            }
-
-            if (load)
-            {
-                CT_AbstractReader* reader = readerItem->getReader();
-                if (reader != NULL && reader->readFile())
-                {
-                    QListIterator<CT_OutStdSingularItemModel*> it(reader->outItemDrawableModels());
-
-                    while(it.hasNext())
-                    {
-                        CT_OutStdSingularItemModel *model = it.next();
-                        CT_AutoRenameModels *modelCreationAutoRename = _itemModels.value(model->uniqueName());
-
-                        if (modelCreationAutoRename != NULL)
-                        {
-                            QList<CT_AbstractSingularItemDrawable*> items = reader->takeItemDrawableOfModel(model->uniqueName(), outRes, modelCreationAutoRename->completeName());
-                            QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
-
-                            while(itI.hasNext())
-                            {
-                                CT_AbstractSingularItemDrawable* item = itI.next();
-                                group->addItemDrawable(item);
-                            }
-                        }
-                    }
-
-                    CT_FileHeader* header = reader->takeHeaderCopy(outRes, _headerModel->completeName());
-                    if (header != NULL) {group->addItemDrawable(header);}
-                }
-            }
-        }
-    }
+    setProgress(m_currentReaderProgress + (p/m_totalReaderProgress));
 }

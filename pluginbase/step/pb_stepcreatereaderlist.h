@@ -55,11 +55,7 @@ protected:
 
     void createPreConfigurationDialog();
 
-    /*! \brief Parameters DialogBox
-     * 
-     * DialogBox asking for step parameters
-     */
-    void createPostConfigurationDialog();
+    bool postConfigure();
 
     /*! \brief Output results specification
      * 
@@ -73,18 +69,22 @@ protected:
      */
     void compute();
 
+    SettingsNodeGroup* getAllSettings() const;
+    bool setAllSettings(const SettingsNodeGroup *settings);
+
 private:
 
     // Step parameters
     QString                                         _readersListValue;
     QStringList                                     _filesList;
 
-    QMap<QString, QPair<CT_AbstractReader*, int> >  _readersMap;
     QList<CT_AbstractReader*>                       _readersInstancesList;
 
+    void initListOfAvailableReaders();
+    void clear();
 
-    QString getFormat(QString formatName);
-
+    QString getFormat(QString readerClassName) const;
+    CT_AbstractReader* getReader(QString readerClassName) const;
 
 };
 

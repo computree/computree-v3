@@ -44,6 +44,8 @@ bool CT_Reader_GDAL::setFilePath(const QString &filepath)
         if(canBeOpened(filepath))
             return CT_AbstractReader::setFilePath(filepath);
     }
+    #else
+    Q_UNUSED(filepath)
     #endif
 
     return false;

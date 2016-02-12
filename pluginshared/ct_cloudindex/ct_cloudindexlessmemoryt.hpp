@@ -124,11 +124,10 @@ void CT_CloudIndexLessMemoryT<T>::clear()
     internalClear();
 }
 
-#ifdef USE_PCL
 template<typename T>
-boost::shared_ptr< std::vector<int> > CT_CloudIndexLessMemoryT<T>::getPCLIndices() const
+CT_SharedPointer< std::vector<int> > CT_CloudIndexLessMemoryT<T>::toStdVectorInt() const
 {
-    boost::shared_ptr< std::vector<int> > indices = boost::shared_ptr< std::vector<int> >(new std::vector<int>(m_size));
+    CT_SharedPointer< std::vector<int> > indices(new std::vector<int>(m_size));
 
     size_t a = m_begin;
 
@@ -140,7 +139,6 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexLessMemoryT<T>::getPCLIndices
 
     return indices;
 }
-#endif
 
 template<typename T>
 CT_AbstractCloud* CT_CloudIndexLessMemoryT<T>::copy() const

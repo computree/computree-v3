@@ -12,7 +12,7 @@ set DESTDIR=%~dp0..
 set OSGDESTFILE=%DESTDIR%\include_osg.pri
 set GDALDESTFILE=%DESTDIR%\include_gdal.pri
 set OPENCVDESTFILE=%DESTDIR%\include_opencv.pri
-set PCLDESTFILE=%DESTDIR%\include_pcl.pri
+set PCLDESTFILE=%DESTDIR%\pcl_user_path.pri
 
 IF EXIST %SEARCHDIR%\use_osg.ini (
 	set /a index=0
@@ -277,7 +277,7 @@ set PCL_VALUES[6]=%PCL_VALUES[6]:"=%
 set PCL_VALUES[7]=%PCL_VALUES[7]:"=%
 
 echo;
-echo -------- include_pcl.pri will now be generated... --------
+echo -------- pcl_user_path.pri will now be generated... --------
 
 echo;
 echo Set PCL version : %PCL_VALUES[0]%
@@ -302,86 +302,4 @@ echo 	QHULL_INC_PATH = "%PCL_VALUES[4]%" >> %PCLDESTFILE%
 echo 	FLANN_INC_PATH = "%PCL_VALUES[5]%" >> %PCLDESTFILE%
 echo 	BOOST_LIBS_PATH = "%PCL_VALUES[6]%" >> %PCLDESTFILE%
 echo 	BOOST_INC_PATH = "%PCL_VALUES[7]%" >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${PCL_INC_PATH}) { >> %PCLDESTFILE%
-echo 		error( "PCL INCLUDE directory not found ^! => " $${PCL_INC_PATH}) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${PCL_LIBS_PATH}) { >> %PCLDESTFILE%
-echo 		error( "PCL LIBS directory not found ^! => " $${PCL_LIBS_PATH}) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${EIGEN_INC_PATH}) { >> %PCLDESTFILE%
-echo 		error( "EIGEN INCLUDE directory not found ^! =>" $${EIGEN_INC_PATH} ) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${QHULL_INC_PATH}) { >> %PCLDESTFILE%
-echo 		error( "QHULL INCLUDE directory not found ^! =>" $${QHULL_INC_PATH} ) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${FLANN_INC_PATH}) { >> %PCLDESTFILE%
-echo 		error( "FLANN INCLUDE directory not found ^! =>" $${FLANN_INC_PATH} ) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${BOOST_INC_PATH}) { >> %PCLDESTFILE%
-echo 		error( "BOOST INCLUDE directory not found ^! =>" $${BOOST_INC_PATH} ) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	^^!exists($${BOOST_LIBS_PATH}) { >> %PCLDESTFILE%
-echo 		error( "BOOST LIBS directory not found ^! =>" $${BOOST_LIBS_PATH} ) >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	DEFINES += USE_PCL >> %PCLDESTFILE%
-echo 	DEFINES += USE_BOOST >> %PCLDESTFILE%
-
-set SEARCHIN=%PCL_VALUES[1]:/=\%
-set SEARCHIN=%SEARCHIN%\*release.lib
-
-echo; >> %PCLDESTFILE%
-echo 	PCL_LIB_ADD =  >> %PCLDESTFILE%
-
-FOR %%i IN ("%SEARCHIN%") DO (
-	set z=%%~ni
-	set z=!z:_release=!
-	echo 	PCL_LIB_ADD += !z! >> %PCLDESTFILE%
-)
-
-echo; >> %PCLDESTFILE%
-echo 	INCLUDEPATH += $$PCL_INC_PATH >> %PCLDESTFILE%
-echo 	INCLUDEPATH += $$EIGEN_INC_PATH >> %PCLDESTFILE%
-echo 	INCLUDEPATH += $$QHULL_INC_PATH >> %PCLDESTFILE%
-echo 	INCLUDEPATH += $$FLANN_INC_PATH >> %PCLDESTFILE%
-echo 	INCLUDEPATH += $$BOOST_INC_PATH >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	LIBS += -L$$PCL_LIBS_PATH >> %PCLDESTFILE%
-echo 	LIBS += -L$$BOOST_LIBS_PATH >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	for(a, PCL_LIB_ADD) { >> %PCLDESTFILE%
-echo 		CONFIG(debug, debug^|release^) { >> %PCLDESTFILE%
-echo 			LIBS += -l$${a}_debug >> %PCLDESTFILE%
-echo 		} else { >> %PCLDESTFILE%
-echo 			LIBS += -l$${a}_release >> %PCLDESTFILE%
-echo 		} >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	greaterThan(QT_MAJOR_VERSION, 4^) { >> %PCLDESTFILE%
-echo 		load(moc^) >> %PCLDESTFILE%
-echo 		QMAKE_MOC += -DBOOST_INCLUDE_GUARD_GOES_HERE >> %PCLDESTFILE%
-echo 	} >> %PCLDESTFILE%
-
-echo; >> %PCLDESTFILE%
-echo 	message(You want to use PCL : ok^) >> %PCLDESTFILE%
-echo } else { >> %PCLDESTFILE%
-echo 	message(PCL will not be used ^) >> %PCLDESTFILE%
 echo } >> %PCLDESTFILE%

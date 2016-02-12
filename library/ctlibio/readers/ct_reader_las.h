@@ -38,6 +38,7 @@ public:
     CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     bool setFilePath(const QString &filepath);
+    bool configure();
 
     virtual bool hasBoundingBox() {return true;}
 
@@ -45,9 +46,10 @@ public:
      * @brief Read the header and return it if it was no error. Otherwise return NULL.
      *        You are responsible to delete the header returned by this method.
      */
-    CT_LASHeader* readHeader(QString &error) const;
+    CT_LASHeader* readHeader(const QString &filepath, QString &error) const;
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_LAS)
 
 protected:
 

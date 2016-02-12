@@ -7,6 +7,8 @@
 
 #include <QList>
 
+class CT_ReaderItem;
+
 /**
  * @brief Class used to add/remove elements to possibilities selected
  *        by the user of a INPUT model that represent a copy of a result.

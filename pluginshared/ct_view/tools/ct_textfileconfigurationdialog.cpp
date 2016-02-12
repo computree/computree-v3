@@ -355,6 +355,10 @@ QString CT_TextFileConfigurationDialog::getFieldColumnsSelectedAsString(const QM
     return result;
 }
 
+void CT_TextFileConfigurationDialog::setFilePathCanBeModified(bool enable)
+{
+    ui->fileChoose->setEnabled(enable);
+}
 
 void CT_TextFileConfigurationDialog::setSeparator(const QString &separator)
 {

@@ -6,12 +6,15 @@
 #include "ct_itemdrawable/ct_fileheader.h"
 #include "ct_step/tools/menu/ct_stepsmenu.h"
 
+#define READER_COPY_FULL_IMP(argClass) virtual CT_AbstractReader *copyFull() const { return new argClass(*this); }
+
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractReader : public QObject
 {
     Q_OBJECT
 
 public:
     CT_AbstractReader();
+    CT_AbstractReader(const CT_AbstractReader &other);
     virtual ~CT_AbstractReader();
 
     /**
@@ -35,21 +38,32 @@ public:
     virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     /**
-      * \brief Set the filepath of the file to read
+      * @brief Set the filepath of the file to read.
+      * @warning You must NOT change parameter of your class in this method, just check if the file is valid ! Change your parameter in method
+      *          "configure()" if you want.
       */
     virtual bool setFilePath(const QString &filepath);
 
     /**
-      * \brief Return the filepath of the file
+      * @brief Return the filepath of the file
       */
     QString filepath() const;
+
+    /**
+     * @brief Enable/Disable the modification of the filepath
+     */
+    void setFilePathCanBeModified(bool enable);
+
+    /**
+     * @brief Return true if the filepath can be modified
+     */
+    bool filePathCanBeModified() const;
 
     /** \brief Check the validity of the file
      *
      * \return A file is valid if a header has been read (=> after setFilePath)
      */
     bool isValid();
-
 
     // By default CT_AbstractReader don't have a Bounding Box : redefine in children class of geographical files
     virtual bool hasBoundingBox() {return false;}
@@ -84,14 +98,14 @@ public:
      * @return The SettingsNodeGroup to save or NULL if it was nothing to save
      * @overload Overloaded from CT_AbstractStepSerializable
      */
-    virtual SettingsNodeGroup* getAllSettings() const { return NULL; }
+    virtual SettingsNodeGroup* getAllSettings() const;
 
     /**
      * @brief Restore settings
      * @return False if it was a problem in settings
      * @overload Overloaded from CT_AbstractStepSerializable
      */
-    virtual bool setAllSettings(const SettingsNodeGroup *settings) { Q_UNUSED(settings) return true; }
+    virtual bool setAllSettings(const SettingsNodeGroup *settings);
 
     /**
       * \brief Init out itemdrawable model of the reader (call this method after set the filepath)
@@ -278,6 +292,11 @@ public:
      */
     virtual CT_AbstractReader *copy() const = 0;
 
+    /**
+     * @brief Returns a copy with all parameters set
+     */
+    virtual CT_AbstractReader *copyFull() const = 0;
+
 public slots:
 
     /**
@@ -383,6 +402,7 @@ private:
     bool                                                    m_error;
     bool                                                    m_stop;
     QString                                                 m_filePath;
+    bool                                                    m_filepathCanBeModified;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();

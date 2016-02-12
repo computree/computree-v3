@@ -11,11 +11,7 @@ CT_CloudIndexStdListT<T>::CT_CloudIndexStdListT(const size_t &size) : CT_Abstrac
     this->internalSetSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
     this->internalSetUnregisteredWhenIsEmpty(false);
 
-#ifdef USE_PCL
-    m_collection = boost::shared_ptr< std::list<int> >(new std::list<int>(size));
-#else
-    m_collection = QSharedPointer< std::list<size_t> >(new std::list<size_t>(size));
-#endif
+    m_collection = QSharedPointer< std::list<ct_index_type> >(new std::list<ct_index_type>(size));
 }
 
 template<typename T>
@@ -355,14 +351,13 @@ void CT_CloudIndexStdListT<T>::eraseBetweenAndShiftRest(const size_t &eraseBegin
     }
 }
 
-#ifdef USE_PCL
 template<typename T>
-boost::shared_ptr< std::vector<int> > CT_CloudIndexStdListT<T>::getPCLIndices() const
+CT_SharedPointer< std::vector<int> > CT_CloudIndexStdListT<T>::toStdVectorInt() const
 {
-    boost::shared_ptr< std::vector<int> > indices = boost::shared_ptr< std::vector<int> >(new std::vector<int>(size()));
+    CT_SharedPointer< std::vector<int> > indices(new std::vector<int>(size()));
 
-    typename std::list<int>::iterator f = m_collection->begin();
-    typename std::list<int>::iterator l = m_collection->end();
+    typename std::list<ct_index_type>::iterator f = m_collection->begin();
+    typename std::list<ct_index_type>::iterator l = m_collection->end();
 
     size_t i = 0;
 
@@ -375,7 +370,6 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexStdListT<T>::getPCLIndices() 
 
     return indices;
 }
-#endif
 
 template<typename T>
 CT_AbstractCloud* CT_CloudIndexStdListT<T>::copy() const
@@ -414,11 +408,7 @@ typename std::list<S>::iterator CT_CloudIndexStdListT<T>::listFindIf(typename CT
 template<typename T>
 std::list< ct_index_type >* CT_CloudIndexStdListT<T>::internalData() const
 {
-#ifdef USE_PCL
-    return m_collection.get();
-#else
     return m_collection.data();
-#endif
 }
 
 template<typename T>

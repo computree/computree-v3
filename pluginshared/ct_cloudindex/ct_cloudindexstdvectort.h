@@ -3,12 +3,6 @@
 
 #include "ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.h"
 
-#ifndef USE_PCL
-#include <QSharedPointer>
-#include <vector>
-#endif
-
-
 /**
  * A cloud of index (size_t) for T (point, face, etc...) that can be modifiabled and use a std::vector.
  */
@@ -72,20 +66,13 @@ public:
     void eraseBetweenAndShiftRest(const size_t &eraseBeginPos, const size_t &eraseSize,
                                   const size_t &offset, const bool &negativeOffset);
 
-#ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> > getPCLIndices() const;
-#endif
+    CT_SharedPointer< std::vector<int> > toStdVectorInt() const;
 
     CT_AbstractCloud* copy() const;
 
 private:
-#ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> >               _vector;
-    CT_CloudIndexStdVectorTMethodImpl<int>              *m_impl;
-#else
-    QSharedPointer< std::vector<ct_index_type> >        _vector;
+    std::vector<ct_index_type>                          _vector;
     CT_CloudIndexStdVectorTMethodImpl<ct_index_type>    *m_impl;
-#endif
 
     typename std::vector<ct_index_type>::iterator vectorFindIf(FindIfFunction findIf, void *context) const;
 

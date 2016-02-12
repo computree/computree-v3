@@ -154,9 +154,7 @@ void DM_DrawElementsUIntSynchronized::internalClear()
     m_impl->internalClear();
 }
 
-#ifdef USE_PCL
-boost::shared_ptr< std::vector<int> > DM_DrawElementsUIntSynchronized::getPCLIndices() const
+CT_SharedPointer< std::vector<int> > DM_DrawElementsUIntSynchronized::toStdVectorInt() const
 {
-    return boost::shared_ptr< std::vector<int> >(NULL);
+    return CT_SharedPointer< std::vector<int> >(NULL);
 }
-#endif

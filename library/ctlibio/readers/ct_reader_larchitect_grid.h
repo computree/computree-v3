@@ -20,32 +20,21 @@ public:
 
     bool setFilePath(const QString &filepath);
 
-    inline int getOffset() {return _nbLinesToSkip;}
-
     CT_AbstractReader* copy() const;
-
+    READER_COPY_FULL_IMP(CT_Reader_LArchitect_Grid)
 
 protected:
+    typedef Eigen::Matrix<size_t, 3, 1> EigenVector3ui64;
+
+
     void protectedInit();
     void protectedCreateOutItemDrawableModelList();
     bool protectedReadFile();
 
+    bool readHeader(QTextStream &stream, Eigen::Vector3d &min, Eigen::Vector3d &max, Eigen::Vector3d &res, EigenVector3ui64 &dim, int &nMat, QMap<QString, int>  &matNames) const;
+    CT_Grid3D<float>* createGrid(Eigen::Vector3d &min, Eigen::Vector3d &res, EigenVector3ui64 &dim) const;
+
 private:
-    double               _xmin;
-    double               _ymin;
-    double               _zmin;
-    double               _xmax;
-    double               _ymax;
-    double               _zmax;
-    double               _resx;
-    double               _resy;
-    double               _resz;
-    int                 _nmat;
-    QMap<QString, int>  _matNames;
-    size_t                 _dimx;
-    size_t                 _dimy;
-    size_t                 _dimz;
-    int                 _nbLinesToSkip;
 
 
 };

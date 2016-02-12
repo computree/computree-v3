@@ -55,7 +55,6 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     filters/las/abstract/ct_abstractfilter_las.h \
     readers/ct_reader_asciigrid3d.h \
     readers/ct_reader_asciigrid3d_def_models.h \
-    tools/las/ct_laspointformat.h \
     exporters/ct_exporter_las.h \
     readers/ct_reader_pgm.h \
     readers/ct_reader_pgm_def_models.h \

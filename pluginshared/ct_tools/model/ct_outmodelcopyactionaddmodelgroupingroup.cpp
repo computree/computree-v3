@@ -64,14 +64,14 @@ bool CT_OutModelCopyActionAddModelGroupInGroup::execute(const CT_VirtualAbstract
 
         if(it.recursiveBeginIterateGroups(inGroupModel))
         {
-            DEF_CT_AbstractGroupModelOut *outModel;
+            DEF_CT_AbstractGroupModelOut *outGroupModel;
 
-            while((outModel = it.recursiveNextGroup()) != NULL)
+            while((outGroupModel = it.recursiveNextGroup()) != NULL)
             {
                 // on passe un objet permettant de renommer le groupe au cas où le nom
                 // du modèle existe déjà (obligatoire dans ce cas puisqu'on ne connait pas les noms
                 // des modèles du résultat que l'on copie et il risque d'y avoir conflit)
-                if(!outModel->addGroup(_groupModelToAdd->copyGroup(), *_autoRenameGroupModelToAdd))
+                if(!outGroupModel->addGroup(_groupModelToAdd->copyGroup(), *_autoRenameGroupModelToAdd))
                     return false;
             }
         }

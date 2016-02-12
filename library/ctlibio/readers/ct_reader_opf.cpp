@@ -207,9 +207,9 @@ bool CT_Reader_OPF::setFilePath(const QString &filepath)
 
     if(!types.isEmpty())
     {
-        m_types = types;
-        m_attributes = attributes;
-        m_totalNode = totalNode;
+        m_typesNew = types;
+        m_attributesNew = attributes;
+        m_totalNodeNew = totalNode;
 
         return CT_AbstractReader::setFilePath(filepath);
     }
@@ -218,6 +218,15 @@ bool CT_Reader_OPF::setFilePath(const QString &filepath)
     }
 
     return false;
+}
+
+bool CT_Reader_OPF::configure()
+{
+    m_types = m_typesNew;
+    m_attributes = m_attributesNew;
+    m_totalNode = m_totalNodeNew;
+
+    return true;
 }
 
 CT_AbstractReader* CT_Reader_OPF::copy() const

@@ -2,7 +2,6 @@
 #define CT_STANDARDCLOUDSTDVECTORT_H
 
 #include "ct_cloud/abstract/ct_abstractcloudt.h"
-#include "ct_tools/pcl/ct_pcltools.h"
 #include <vector>
 
 /**

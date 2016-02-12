@@ -3,7 +3,6 @@
 #include "ct_global/ct_context.h"
 
 #include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h"
-#include "ct_tools/pcl/ct_pcltools.h"
 
 CT_StandardAbstractPointsAttributesDrawManager CT_AbstractPointsAttributes::APA_DRAW_MANAGER;
 
@@ -49,13 +48,6 @@ const CT_AbstractPointCloudIndex* CT_AbstractPointsAttributes::getPointCloudInde
 {
     return m_apci;
 }
-
-#ifdef USE_PCL
-boost::shared_ptr< CT_PCLCloud > CT_AbstractPointsAttributes::getPCLCloud() const
-{
-    return CT_PCLTools::staticConvertToPCLCloud(this);
-}
-#endif
 
 CT_PCIR CT_AbstractPointsAttributes::getPointCloudIndexRegistered() const
 {

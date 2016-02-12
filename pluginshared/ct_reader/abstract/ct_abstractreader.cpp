@@ -12,7 +12,40 @@ CT_AbstractReader::CT_AbstractReader()
 {
     m_header = NULL;
     m_outHeaderModel = NULL;
+    m_progress = 0;
+    m_stop = false;
     m_filePath = "";
+    m_filepathCanBeModified = true;
+}
+
+CT_AbstractReader::CT_AbstractReader(const CT_AbstractReader &other)
+{
+    m_formats = other.m_formats;
+    m_tooltip = other.m_tooltip;
+    m_errorMess = other.m_errorMess;
+
+    // copy models of items
+    QListIterator<CT_OutStdSingularItemModel*> it(other.m_outItemsModel);
+    while(it.hasNext())
+        m_outItemsModel.append((CT_OutStdSingularItemModel*)it.next()->copy());
+
+    // copy models of groups
+    QListIterator<CT_OutStdGroupModel*> itG(other.m_outGroupsModel);
+    while(itG.hasNext())
+        m_outGroupsModel.append((CT_OutStdGroupModel*)itG.next()->copy());
+
+    // m_outHeaderModel not copied
+    m_outHeaderModel = NULL;
+    // m_outItems not copied
+    // m_outGroups not copied
+
+    m_progress = other.m_progress;
+    m_error = other.m_error;
+    m_stop = other.m_stop;
+    m_filePath = other.m_filePath;
+    m_filepathCanBeModified = other.m_filepathCanBeModified;
+
+    m_header = (other.m_header != NULL ? ((CT_FileHeader*)((CT_FileHeader*)other.m_header)->copy(NULL, NULL, CT_ResultCopyModeList())) : NULL);
 }
 
 CT_AbstractReader::~CT_AbstractReader()
@@ -24,22 +57,22 @@ CT_AbstractReader::~CT_AbstractReader()
     clearOutGroups();
 
     if (m_header!=NULL)
-    {
         delete m_header;
-    }
 
     if (m_outHeaderModel != NULL)
-    {
         delete m_outHeaderModel;
-    }
 }
 
 void CT_AbstractReader::init(bool initOutItemDrawableList)
 {
+    m_formats.clear();
     protectedInit();
 
-    if(initOutItemDrawableList)
+    if(initOutItemDrawableList) {
+        clearOutItemDrawableModel();
+        clearOutGroupsModel();
         protectedCreateOutItemDrawableModelList();
+    }
 }
 
 QString CT_AbstractReader::GetReaderName() const
@@ -59,23 +92,28 @@ CT_StepsMenu::LevelPredefined CT_AbstractReader::getReaderSubMenuName() const
 
 bool CT_AbstractReader::setFilePath(const QString &filepath)
 {
-    m_filePath = filepath;
-
-    emit filePathModified();
-
-    if (m_header != NULL) {delete m_header; m_header = NULL;}
+    if(!filePathCanBeModified())
+        return false;
 
     // Verify that the file exist and can be opened
-    if (QFile::exists(m_filePath))
+    if (QFile::exists(filepath))
     {
-        QFile file(m_filePath);
+        QFile file(filepath);
+
         if (file.open(QIODevice::ReadOnly))
         {
             file.close();
 
+            m_filePath = filepath;
+
+            emit filePathModified();
+
             // By default : create a standard FileHeader with the fileName
-            m_header = new CT_FileHeader(NULL, NULL);
-            m_header->setFile(m_filePath);
+            if(m_header == NULL)
+                m_header = new CT_FileHeader(NULL, NULL);
+            else
+                m_header->setFile(m_filePath);
+
             return true;
         }
     }
@@ -86,6 +124,16 @@ bool CT_AbstractReader::setFilePath(const QString &filepath)
 QString CT_AbstractReader::filepath() const
 {
     return m_filePath;
+}
+
+void CT_AbstractReader::setFilePathCanBeModified(bool enable)
+{
+    m_filepathCanBeModified = enable;
+}
+
+bool CT_AbstractReader::filePathCanBeModified() const
+{
+    return m_filepathCanBeModified;
 }
 
 bool CT_AbstractReader::isValid()
@@ -115,6 +163,29 @@ CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result
 const CT_FileHeader *CT_AbstractReader::getHeader()
 {
     return m_header;
+}
+
+SettingsNodeGroup *CT_AbstractReader::getAllSettings() const
+{
+    SettingsNodeGroup *root = new SettingsNodeGroup("CT_AbstractReader_Settings");
+    root->addValue(new SettingsNodeValue("Filepath", filepath()));
+
+    return root;
+}
+
+bool CT_AbstractReader::setAllSettings(const SettingsNodeGroup *settings)
+{
+    if(settings->name() != "CT_AbstractReader_Settings")
+        return false;
+
+    QList<SettingsNodeValue*> values = settings->valuesByTagName("Filepath");
+
+    if(values.isEmpty())
+        return false;
+
+    setFilePath(values.first()->value().toString());
+
+    return true;
 }
 
 void CT_AbstractReader::createOutItemDrawableModelList()

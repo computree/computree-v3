@@ -1,7 +1,8 @@
-COMPUTREE += LIB_IO
+COMPUTREE += ctlibio
 
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
+include(../include_ct_library.pri)
 
 DEFINES += _CRT_SECURE_NO_WARNINGS
 

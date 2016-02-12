@@ -34,6 +34,11 @@ public:
     bool setFilePath(const QString &filepath);
 
     /**
+     * @brief Configure the reader
+     */
+    bool configure();
+
+    /**
      * @brief Set the radius if you want to filter points
      */
     void setFilterRadius(const double &radius);
@@ -47,14 +52,18 @@ public:
     bool setAllSettings(const SettingsNodeGroup *settings);
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_XYB)
 
 private:
-    int      _offset;
-    double   _xc;
-    double   _yc;
-    double   _zc;
-    int      _rows;
-    int      _cols;
+    struct Params {
+        int                 _offset;
+        Eigen::Vector3d     m_center;
+        int                 _rows;
+        int                 _cols;
+    };
+
+    Params  m_current;
+    Params  m_new;
     float   _filterRadius;
 
 protected:

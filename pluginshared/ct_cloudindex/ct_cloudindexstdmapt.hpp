@@ -11,11 +11,7 @@ CT_CloudIndexStdMapT<T, ValueT>::CT_CloudIndexStdMapT() : CT_AbstractModifiableC
     this->internalSetSortType(CT_AbstractCloudIndex::SortedInAscendingOrder);
     this->internalSetUnregisteredWhenIsEmpty(false);
 
-#ifdef USE_PCL
-    m_collection = boost::shared_ptr< std::map<int,ValueT > >(new std::map<int,ValueT >());
-#else
-    m_collection = QSharedPointer< std::map<size_t,ValueT > >(new std::map<size_t,ValueT >());
-#endif
+    m_collection = QSharedPointer< std::map<ct_index_type,ValueT > >(new std::map<ct_index_type,ValueT >());
 }
 
 template<typename T, typename ValueT>
@@ -279,14 +275,13 @@ void CT_CloudIndexStdMapT<T, ValueT>::eraseBetweenAndShiftRest(const size_t &era
     m_collection->insert(tmp.begin(), tmp.end());
 }
 
-#ifdef USE_PCL
 template<typename T, typename ValueT>
-boost::shared_ptr< std::vector<int> > CT_CloudIndexStdMapT<T, ValueT>::getPCLIndices() const
+CT_SharedPointer< std::vector<int> > CT_CloudIndexStdMapT<T, ValueT>::toStdVectorInt() const
 {
-    boost::shared_ptr< std::vector<int> > indices = boost::shared_ptr< std::vector<int> >(new std::vector<int>(size()));
+    CT_SharedPointer< std::vector<int> > indices(new std::vector<int>(size()));
 
-    typename std::map<int,ValueT >::iterator f = m_collection->begin();
-    typename std::map<int,ValueT >::iterator l = m_collection->end();
+    typename std::map<ct_index_type,ValueT >::iterator f = m_collection->begin();
+    typename std::map<ct_index_type,ValueT >::iterator l = m_collection->end();
 
     size_t i = 0;
 
@@ -299,7 +294,6 @@ boost::shared_ptr< std::vector<int> > CT_CloudIndexStdMapT<T, ValueT>::getPCLInd
 
     return indices;
 }
-#endif
 
 template<typename T, typename ValueT>
 CT_AbstractCloud* CT_CloudIndexStdMapT<T, ValueT>::copy() const
@@ -336,11 +330,7 @@ typename std::map<S, ValueT>::iterator CT_CloudIndexStdMapT<T, ValueT>::mapFindI
 template<typename T, typename ValueT>
 std::map< ct_index_type, ValueT >* CT_CloudIndexStdMapT<T, ValueT>::internalData() const
 {
-#ifdef USE_PCL
-    return m_collection.get();
-#else
     return m_collection.data();
-#endif
 }
 
 template<typename T, typename ValueT>

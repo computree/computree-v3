@@ -26,9 +26,7 @@ public:
     size_t lowerBound(const size_t &value) const;
     size_t upperBound(const size_t &value) const;
 
-#ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> > getPCLIndices() const;
-#endif
+    CT_SharedPointer< std::vector<int> > toStdVectorInt() const;
 
     // CT_AbstractModifiablePointCloudIndex //
     void addIndex(const size_t &newIndex);

@@ -110,15 +110,6 @@ public:
       */
     const CT_AbstractPointCloudIndex* getPointCloudIndex() const;
 
-    #ifdef USE_PCL
-    /**
-     * @brief Convert the point cloud index to a pcl cloud.
-     * @warning Please re-use the shared_ptr returned because
-     *          a new collection is created at each call.
-     */
-    boost::shared_ptr< CT_PCLCloud > getPCLCloud() const;
-    #endif
-
     /**
      * @brief PointCloudIndexRegistered getter
      * @return retourne le nuage de points enregistré

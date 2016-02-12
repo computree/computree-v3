@@ -833,9 +833,9 @@ void GDocumentViewForGraphics::mustUpdateItemDrawablesThatColorWasModified()
         while(it2.hasNext()) {
             it2.next();
 
-            if(static_cast<DM_ItemInfoForGraphics*>(it2.value())->isColorModified())
+            /*if(static_cast<DM_ItemInfoForGraphics*>(it2.value())->isColorModified())
                 GUI_LOG->addErrorMessage(LogInterface::gui, it2.key()->displayableName() + " non modifié !");
-
+*/
             static_cast<DM_ItemInfoForGraphics*>(it2.value())->setColorModified(false);
         }
     }

@@ -85,8 +85,10 @@ public:
     CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     bool setFilePath(const QString &filepath);
+    bool configure();
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_OPF)
 
     static CT_AbstractItemAttribute* staticCreateAttributeForType(const QString &type, const QString &value = "");
 
@@ -100,6 +102,11 @@ private:
     QList<CT_AbstractItemDrawableDrawManager*>          m_drawManager;
 
     int                                                 m_totalNode;
+
+
+    QHash<QString, CT_OPF_Type>                         m_typesNew;
+    QHash<QString, CT_OPF_Attribute>                    m_attributesNew;
+    int                                                 m_totalNodeNew;
 
     CT_OPF_Mesh                                         m_cylinderMesh;
 

@@ -75,6 +75,7 @@ public:
     bool canLoadNormals() const;
 
     CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_Points_ASCII)
 
 private:
     bool    m_firstConfiguration;

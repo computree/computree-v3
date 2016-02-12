@@ -1,10 +1,6 @@
 #ifndef CT_ABSTRACTNORMALCLOUD_H
 #define CT_ABSTRACTNORMALCLOUD_H
 
-#ifdef USE_PCL
-#include "pcl/point_cloud.h"
-#endif
-
 #include "ct_cloud/abstract/ct_abstractcloud.h"
 #include "interfaces.h"
 #include "ct_normal.h"

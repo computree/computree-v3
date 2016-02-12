@@ -6,10 +6,6 @@
 #include "interfaces.h"
 #include "ct_color.h"
 
-#ifdef USE_PCL
-#include "pcl/point_cloud.h"
-#endif
-
 /**
  * A color cloud
  */

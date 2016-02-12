@@ -72,18 +72,13 @@ public:
     void eraseBetweenAndShiftRest(const size_t &eraseBeginPos, const size_t &eraseSize,
                                   const size_t &offset, const bool &negativeOffset);
 
-#ifdef USE_PCL
-    boost::shared_ptr< std::vector<int> > getPCLIndices() const;
-#endif
+
+    CT_SharedPointer< std::vector<int> > toStdVectorInt() const;
 
     CT_AbstractCloud* copy() const;
 
 private:
-#ifdef USE_PCL
-    boost::shared_ptr< std::map<int,ValueT > > m_collection;
-#else
-    QSharedPointer< std::map<size_t,ValueT > >    m_collection;
-#endif
+    QSharedPointer< std::map<ct_index_type,ValueT > >    m_collection;
 
     template<typename S>
     typename std::map<S,ValueT >::iterator mapFindIf(FindIfFunction findIf, void *context) const;

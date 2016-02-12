@@ -15,15 +15,6 @@ public:
      * @brief Returns the point cloud index
      */
     virtual const CT_AbstractPointCloudIndex* getPointCloudIndex() const = 0;
-
-    #ifdef USE_PCL
-    /**
-     * @brief Convert the point cloud index to a pcl cloud.
-     * @warning Please re-use the shared_ptr returned because
-     *          a new collection is created at each call.
-     */
-    virtual boost::shared_ptr< CT_PCLCloud > getPCLCloud() const = 0;
-    #endif
 };
 
 #endif // CT_IACCESSPOINTCLOUD_H

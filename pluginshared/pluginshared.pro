@@ -5,6 +5,13 @@ TARGET = pluginShared
 QT += xml
 QT += opengl
 
+# c++11
+greaterThan(QT_MAJOR_VERSION, 4) {
+    CONFIG += c++11
+} else {
+    QMAKE_CXXFLAGS += -std=c++11
+}
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
 isEmpty(TEST_FEATURES) {
@@ -353,15 +360,14 @@ SOURCES += \
     ct_itemdrawable/ct_image2d.cpp \
     ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
     ct_iterator/ct_mutableindexiterator.cpp \
-    ct_tools/pcl/ct_pcltools.cpp \
     ct_itemdrawable/tools/ct_itemsearchhelper.cpp \
     ct_model/tools/ct_modelsaverestorehelper.cpp \
     ct_itemdrawable/ct_sphere.cpp \
     ct_shapedata/ct_spheredata.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardspheredrawmanager.cpp \
     ct_itemdrawable/tools/drawmanager/ct_standardimage2ddrawmanager.cpp \
-	ct_pointcloud/ct_internalpointcloud.cpp \
-	ct_colorcloud/ct_colorcloudosg.cpp \
+    ct_pointcloud/ct_internalpointcloud.cpp \
+    ct_colorcloud/ct_colorcloudosg.cpp \
     ct_normalcloud/ct_normalcloudosg.cpp \
     ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.cpp \
     ct_itemdrawable/ct_opfmeshmodel.cpp \
@@ -383,7 +389,10 @@ SOURCES += \
     ct_itemdrawable/ct_readeritem.cpp \
     ct_itemdrawable/ct_plotlistingrid.cpp \
     ct_itemdrawable/ct_plotgridmanager.cpp \
-    ct_tools/repository/ct_repositoryaccess.cpp
+    ct_tools/repository/ct_repositoryaccess.cpp \
+    ct_tools/model/ct_outmodelcopyactionaddreaderresultmodelingroup.cpp \
+    ct_reader/tools/ct_readerresultaddingtools.cpp
+
 HEADERS += interfaces.h \
     pluginShared_global.h \
     ct_abstractstepplugin.h \
@@ -827,7 +836,6 @@ HEADERS += interfaces.h \
     ct_iterator/ct_mutablepointindexiterator.h \
     ct_iterator/ct_mutablefaceindexiterator.h \
     ct_iterator/ct_mutableedgeindexiterator.h \
-    ct_tools/pcl/ct_pcltools.h \
     ct_itemdrawable/tools/ct_itemsearchhelper.h \
     ct_itemdrawable/ct_image2d.h \
     ct_itemdrawable/ct_image2d.hpp \
@@ -866,7 +874,10 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_readeritem.h \
     ct_itemdrawable/ct_plotlistingrid.h \
     ct_itemdrawable/ct_plotgridmanager.h \
-    ct_tools/repository/ct_repositoryaccess.h
+    ct_tools/repository/ct_repositoryaccess.h \
+    ct_tools/model/ct_outmodelcopyactionaddreaderresultmodelingroup.h \
+    ct_reader/tools/ct_readerresultaddingtools.h \
+    ct_tools/ct_sharedpointer.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

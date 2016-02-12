@@ -29,7 +29,6 @@ public:
 
     virtual bool setFilePath(const QString &filepath);
 
-    virtual CT_AbstractReader* copy() const;
 
     virtual QString GetReaderName() const;
 
@@ -38,6 +37,10 @@ public:
     virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     QString getTypeOfDriver() const;
+
+    virtual CT_AbstractReader* copy() const;
+    READER_COPY_FULL_IMP(CT_Reader_GDAL)
+
 protected:
 
     void protectedInit();
