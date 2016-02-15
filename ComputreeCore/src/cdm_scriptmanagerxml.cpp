@@ -653,7 +653,7 @@ SettingsNodeGroup* CDM_ScriptManagerXML::recursiveReadSettingsGroup(QDomElement 
         }
         else
         {
-            QString value = node.attribute("value");
+            QString value = encodeDecodeEntities(mapDecodeEntities, node.attribute("value"));
             SettingsNodeValue *val = new SettingsNodeValue(node.tagName(), value);
             root->addValue(val);
         }
