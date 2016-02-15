@@ -9,7 +9,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
 QT += xml
 
 DESTDIR = $${PLUGINSHARED_DESTDIR}
-TARGET = CTLibIO
+TARGET = ctlibio
 
 DEFINES += CTLIBIO_LIBRARY
 
