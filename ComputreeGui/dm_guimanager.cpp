@@ -216,7 +216,7 @@ bool DM_GuiManager::asyncAddAllItemDrawableOfListOnView(QList<CT_AbstractItemDra
                                                                  ".",
                                                                  getDocumentManagerView(),
                                                                  &_asyncProgress);
-            infoActionID.m_docView = view;
+            infoActionID.setDocumentView(view);
 
             initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant l'ajout des CT_AbstractItemDrawable au document actif."));
 
@@ -320,28 +320,33 @@ bool DM_GuiManager::asyncRemoveAllItemDrawableOfModelFromView(CT_OutAbstractItem
     return false;
 }
 
-bool DM_GuiManager::asyncRemoveAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_Context *context)
+bool DM_GuiManager::asyncRemoveAllItemDrawableOfListFromView(QList<CT_AbstractItemDrawable *> &itemList, DM_DocumentView *view, DM_Context *context)
 {
-    DM_AsyncOperation *aop = requestExclusiveAsyncOperation();
-
-    if(aop != NULL)
+    if((!getStepManager()->isRunning()
+            || !getStepManager()->getOptions().isAutoClearResultFromMemoryEnable()))
     {
-        if(context != NULL)
-            connect(aop, SIGNAL(destroyed()), context, SLOT(setActionFinished()), Qt::DirectConnection);
+        DM_AsyncOperation *aop = requestExclusiveAsyncOperation();
 
-        ActionItemDrawable infoActionID = ActionItemDrawable(aop,
-                                                             NULL,
-                                                             &itemList,
-                                                             ".",
-                                                             getDocumentManagerView(),
-                                                             &_asyncProgress);
+        if(aop != NULL)
+        {
+            if(context != NULL)
+                connect(aop, SIGNAL(destroyed()), context, SLOT(setActionFinished()), Qt::DirectConnection);
 
-        initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des CT_AbstractItemDrawable du(des) document(s)."));
+            ActionItemDrawable infoActionID = ActionItemDrawable(aop,
+                                                                 NULL,
+                                                                 &itemList,
+                                                                 ".",
+                                                                 getDocumentManagerView(),
+                                                                 &_asyncProgress);
+            infoActionID.setDocumentView(view);
 
-        _future = QtConcurrent::run(staticRemoveAllItemDrawableOfListFromView, infoActionID);
-        _futureWatcher.setFuture(_future);
+            initProgressDialog(aop->progressDialog(), tr("Veuillez patienter pendant la suppression des CT_AbstractItemDrawable du document actif."));
 
-        return true;
+            _future = QtConcurrent::run(staticRemoveAllItemDrawableOfListFromView, infoActionID);
+            _futureWatcher.setFuture(_future);
+
+            return true;
+        }
     }
 
     return false;
@@ -745,7 +750,10 @@ void DM_GuiManager::staticRemoveAllItemDrawableOfModelFromView(ActionItemDrawabl
 
 void DM_GuiManager::staticRemoveAllItemDrawableOfListFromView(ActionItemDrawable info)
 {
-    info._view->removeAllItemDrawableOfListFromDocuments(info._itemList, *(info._progress));
+    if(info.m_docView == NULL)
+        info._view->removeAllItemDrawableOfListFromDocuments(info._itemList, *(info._progress));
+    else
+        info._view->removeAllItemDrawableOfListFromDocument(info._itemList, info.m_docView, *(info._progress));
 
     delete info._aop;
 }

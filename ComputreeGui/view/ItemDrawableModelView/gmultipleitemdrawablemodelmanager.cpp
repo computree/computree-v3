@@ -18,6 +18,9 @@ GMultipleItemDrawableModelManager::GMultipleItemDrawableModelManager(QWidget *pa
 
     ui->widgetModelManager->setColorOptions(_options);
 
+    connect(ui->gradientManagerView, SIGNAL(newGradientSelected(QLinearGradient)), ui->widgetModelManager->contextMenuColouristAdder(), SLOT(setLinearGradientToUseForColorization(QLinearGradient)));
+    ui->widgetModelManager->contextMenuColouristAdder()->setGradientToUseForColorization(ui->gradientManagerView->gradientSelected());
+
     setEmptyComboBoxText();
 }
 

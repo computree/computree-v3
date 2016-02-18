@@ -11,6 +11,8 @@
 #include <QHeaderView>
 #include <QProgressDialog>
 #include <QApplication>
+#include <QToolButton>
+#include <QWidgetAction>
 
 #include "qtcolorpicker/qtcolorpicker.h"
 
@@ -20,7 +22,7 @@
 #include "tools/treeview/dm_sortfiltermathproxymodel.h"
 
 #include "view/ItemDrawableView/gitemdrawablemanageroptionscolor.h"
-#include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
+#include "tools/graphicsview/dm_pointscolourist.h"
 
 #include "ct_global/ct_context.h"
 #include "ct_itemdrawable/model/outModel/abstract/ct_outabstractsingularitemmodel.h"
@@ -32,6 +34,9 @@ int GTreeView::COLUMN_FIRST_DATA_VALUE = 1;
 GTreeView::GTreeView(QWidget *parent) : QWidget(parent), GItemModelView()
 {
     m_actionsHandler = new DM_ActionsHandlerForTreeView(*GUI_MANAGER->getActionsManager());
+    m_contextMenuColorAdder = new DM_ContextMenuColouristAdder(*this);
+    m_contextMenuColorAdder->setAutomaticColorProducer(&m_options);
+    m_contextMenuColorAdder->setDocumentManager(GUI_MANAGER->getDocumentManagerView());
 }
 
 GTreeView::~GTreeView()
@@ -39,6 +44,7 @@ GTreeView::~GTreeView()
     delete m_actionsHandler;
     delete m_treeView->model();
     delete m_model;
+    delete m_contextMenuColorAdder;
 }
 
 void GTreeView::init()
@@ -97,6 +103,12 @@ void GTreeView::init()
     QPushButton *buttonShowColors = new QPushButton(this);
     buttonShowColors->setIcon(QIcon(":/Icones/Icones/triple-color-icon.png"));
     hLayout->addWidget(buttonShowColors);
+
+    m_gradientManagerView = new GGradientManager(this);
+    hLayout->addWidget(m_gradientManagerView);
+
+    connect(m_gradientManagerView, SIGNAL(newGradientSelected(QLinearGradient)), m_contextMenuColorAdder, SLOT(setLinearGradientToUseForColorization(QLinearGradient)));
+    m_contextMenuColorAdder->setGradientToUseForColorization(m_gradientManagerView->gradientSelected());
 
     vLayout->addLayout(hLayout);
 
@@ -404,45 +416,6 @@ void GTreeView::slotInverseSelection()
     GUI_MANAGER->getDocumentManagerView()->redrawAllDocument();
 }
 
-void GTreeView::slotColorAuto()
-{
-    int docIndex = ((QAction*)sender())->data().toInt();
-    DM_DocumentView *doc = (DM_DocumentView*)GUI_MANAGER->getDocumentManagerView()->documentAt(docIndex);
-
-    QList<CT_AbstractItemDrawable *> l = itemDrawableFromRowSelected();
-
-    if(!l.isEmpty())
-    {
-        QListIterator<CT_AbstractItemDrawable*> it(l);
-
-        while(it.hasNext()) {
-            QColor keepAlphaColor = m_options.getNextColor();
-            keepAlphaColor.setAlpha(KEEP_ALPHA_COLOR);
-
-            doc->setColor(it.next(), keepAlphaColor);
-        }
-    }
-}
-
-void GTreeView::slotColorSolid()
-{
-    int docIndex = ((QAction*)sender())->data().toInt();
-    DM_DocumentView *doc = (DM_DocumentView*)GUI_MANAGER->getDocumentManagerView()->documentAt(docIndex);
-
-    QtColorPicker colorPicker(0, -1, true, false);
-    colorPicker.showColorDialog();
-
-    if(!colorPicker.isDialogCanceled())
-    {
-        QColor color = colorPicker.currentColor();
-
-        QList<CT_AbstractItemDrawable *> l = itemDrawableFromRowSelected();
-        QListIterator<CT_AbstractItemDrawable*> it(l);
-
-        while(it.hasNext())
-            doc->setColor(it.next(), color);
-    }
-}
 
 void GTreeView::slotAddSelectedToDocument()
 {
@@ -461,6 +434,29 @@ void GTreeView::slotAddSelectedToDocument()
             QList<CT_AbstractItemDrawable *> items = itemDrawableFromRowSelected();
 
             GUI_MANAGER->asyncAddAllItemDrawableOfListOnView(items, doc, NULL);
+
+            return;
+        }
+    }
+}
+
+void GTreeView::slotRemoveSelectedFromDocument()
+{
+    QAction *act = (QAction*)sender();
+    int number = act->data().toInt();
+
+    QList<DocumentInterface*> documents = GUI_MANAGER->getDocumentManagerView()->documents();
+    QListIterator<DocumentInterface*> it(documents);
+
+    while(it.hasNext())
+    {
+        DM_DocumentView *doc = (DM_DocumentView*)it.next();
+
+        if(doc->getNumber() == number)
+        {
+            QList<CT_AbstractItemDrawable *> items = itemDrawableFromRowSelected();
+
+            GUI_MANAGER->asyncRemoveAllItemDrawableOfListFromView(items, doc, NULL);
 
             return;
         }
@@ -890,6 +886,25 @@ bool GTreeView::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
+QList<CT_AbstractModel *> GTreeView::getSelectedModelsToUseInColorizerMenu() const
+{
+    QList<CT_AbstractModel *> models;
+
+    QList<CT_AbstractItemDrawable*> l = itemDrawableFromRowSelected();
+    QListIterator<CT_AbstractItemDrawable*> it(l);
+
+    while(it.hasNext()) {
+        models.append(it.next()->model());
+    }
+
+    return models;
+}
+
+QList<CT_AbstractItemDrawable *> GTreeView::getItemDrawableToColorize() const
+{
+    return itemDrawableFromRowSelected();
+}
+
 CG_CustomTreeItem *GTreeView::recursiveItemFromItemDrawable(CG_CustomTreeItem *parent, const CT_AbstractItemDrawable *item) const
 {
     int size = parent->rowCount();
@@ -927,39 +942,11 @@ void GTreeView::initContextMenu()
     connect(action, SIGNAL(triggered()), this, SLOT(slotInverseSelection()));
 
     m_contextMenu->addSeparator();
+    m_contextMenuColorAdder->initContextMenu(m_contextMenu);
+    m_contextMenu->addSeparator();
 
-    int s = documentView()->getManager()->nDocuments();
-
-    if(s > 1)
-    {
-        QMenu *menu = m_contextMenu->addMenu(tr("Couleur unie"));
-
-        for(int i=0; i<s; ++i)
-        {
-            DocumentInterface *doc = GUI_MANAGER->getDocumentManagerView()->documentAt(i);
-
-            if(doc != documentView())
-            {
-                QAction *action = menu->addAction(tr("%1").arg(((DM_DocumentView*)doc)->getNumber()), this, SLOT(slotColorSolid()));
-                action->setData(i);
-            }
-        }
-
-        menu = m_contextMenu->addMenu(tr("Couleur automatique"));
-
-        for(int i=0; i<s; ++i)
-        {
-            DocumentInterface *doc = GUI_MANAGER->getDocumentManagerView()->documentAt(i);
-
-            if(doc != documentView())
-            {
-                QAction *action = menu->addAction(tr("%1").arg(((DM_DocumentView*)doc)->getNumber()), this, SLOT(slotColorAuto()));
-                action->setData(i);
-            }
-        }
-
-        m_contextMenu->addSeparator();
-    }
+    QMenu *addTo = m_contextMenu->addMenu(tr("Ajouter au document"));
+    QMenu *removeFrom = m_contextMenu->addMenu(tr("Supprimer du document"));
 
     QList<DocumentInterface*> documents = GUI_MANAGER->getDocumentManagerView()->documents();
     QListIterator<DocumentInterface*> it(documents);
@@ -971,9 +958,13 @@ void GTreeView::initContextMenu()
         if(doc->isVisible()
                 && (doc->getNumber() != documentView()->getNumber()))
         {
-            action = m_contextMenu->addAction(tr("Ajouter au ") + doc->getTitle());
+            action = addTo->addAction(QString("%1").arg(doc->getNumber()));
             action->setData(doc->getNumber());
             connect(action, SIGNAL(triggered()), this, SLOT(slotAddSelectedToDocument()));
+
+            action = removeFrom->addAction(QString("%1").arg(doc->getNumber()));
+            action->setData(doc->getNumber());
+            connect(action, SIGNAL(triggered()), this, SLOT(slotRemoveSelectedFromDocument()));
         }
     }
 

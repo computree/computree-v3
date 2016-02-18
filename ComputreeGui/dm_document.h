@@ -234,6 +234,16 @@ public:
     QList<CT_AbstractItemDrawable*> getSelectedItemDrawable() const;
 
     /**
+     * @brief Returns true if the itemdrawable is contained in this document
+     */
+    bool containsItemDrawable(const CT_AbstractItemDrawable *item) const;
+
+    /**
+     * @brief Returns true if the itemdrawable or at least one children is contained in this document
+     */
+    bool containsItemDrawableOrAtLeastOneChildren(const CT_AbstractItemDrawable *item) const;
+
+    /**
      * @brief Returns true if this document use item color. By default return false.
      */
     virtual bool useItemColor() const;
@@ -355,6 +365,11 @@ protected:
     void recursiveAddChildrensToInformationsCollection(const CT_AbstractItemGroup *group,
                                                        QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash,
                                                        const bool &searchInHashIfItemExist = true);
+
+    /**
+     * @brief returns true if this model or one children is contained in this document
+     */
+    bool recursiveContainsItemDrawableModelOrAtLeastOneChildren(const CT_OutAbstractModel *model) const;
 
 private:
     DM_IDocumentCloseFilter         *m_closeFilter;

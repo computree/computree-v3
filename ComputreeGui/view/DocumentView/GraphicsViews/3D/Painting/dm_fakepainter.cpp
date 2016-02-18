@@ -8,13 +8,23 @@ DM_FakePainter::DM_FakePainter()
     m_nPoints = 0;
     m_nEdges = 0;
     m_nFaces = 0;
-
-    m_pCloudIndexBackup.append(&m_pIndexBackup);
+    m_pIndexBackup = NULL;
 }
 
 void DM_FakePainter::setComputingMode(ComputingModes modes)
 {
     m_mode = modes;
+}
+
+void DM_FakePainter::setForGlobalPointDrawOneByOneTheBackupCloudIndex(CT_PointCloudIndexVector *backup)
+{
+    if(m_pIndexBackup != NULL)
+        m_pCloudIndexBackup.removeOne(m_pIndexBackup);
+
+    m_pIndexBackup = backup;
+
+    if(m_pIndexBackup != NULL)
+        m_pCloudIndexBackup.append(m_pIndexBackup);
 }
 
 size_t DM_FakePainter::nPoints() const
@@ -47,13 +57,21 @@ const QList<CT_AbstractCloudIndex *> &DM_FakePainter::faceCloudIndexBackup() con
     return m_fCloudIndexBackup;
 }
 
+void DM_FakePainter::clear()
+{
+    m_nPoints = 0;
+    m_nEdges = 0;
+    m_nFaces = 0;
+    m_pCloudIndexBackup.clear();
+}
+
 void DM_FakePainter::drawPoint(const size_t &globalIndex)
 {
     if(m_mode.testFlag(CountPoints))
         ++m_nPoints;
 
     if(m_mode.testFlag(BackupPointCloudIndex))
-        m_pIndexBackup.addIndex(globalIndex);
+        m_pIndexBackup->addIndex(globalIndex);
 }
 
 void DM_FakePainter::drawPoints(const CT_AbstractMeshModel *mesh)

@@ -32,6 +32,8 @@
 GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager, QString title, QString type) : GDocumentView(manager, title)
 {
     m_mutex = new QMutex(QMutex::Recursive);
+    m_mutexGetOrCreateCloud = new QMutex(QMutex::Recursive);
+    m_graphics = NULL;
     _graphicsLocked = false;
     _type = type;
     _pofManager.loadDefault();
@@ -72,6 +74,7 @@ GDocumentViewForGraphics::~GDocumentViewForGraphics()
 
     delete _graphicsOptionsView;
     delete m_mutex;
+    delete m_mutexGetOrCreateCloud;
 }
 
 void GDocumentViewForGraphics::init()
@@ -87,18 +90,27 @@ void GDocumentViewForGraphics::init()
 
 void GDocumentViewForGraphics::addGraphics(GGraphicsView *graphics)
 {
+    if(m_graphics != NULL) {
+        delete graphics;
+        return;
+    }
+
     graphics->setDocumentView(this);
     graphics->setAttributesManager(&m_attributesManager);
+    m_graphics = graphics;
 
-    _listGraphics.append(graphics);
-    _layoutGraphics->addWidget(graphics->getViewWidget());
-
-    _cameraOptionsView->setCamera(graphics->getCamera());
+    _layoutGraphics->addWidget(m_graphics->getViewWidget());
+    _cameraOptionsView->setCamera(m_graphics->getCamera());
 }
 
-const QList<GGraphicsView*>& GDocumentViewForGraphics::getGraphicsList() const
+QList<GGraphicsView *> GDocumentViewForGraphics::getGraphicsList() const
 {
-    return _listGraphics;
+    QList<GGraphicsView *> l;
+
+    if(m_graphics != NULL)
+        l << m_graphics;
+
+    return l;
 }
 
 void GDocumentViewForGraphics::beginAddMultipleItemDrawable()
@@ -191,10 +203,8 @@ void GDocumentViewForGraphics::updateDrawing3DOfItemDrawablesInGraphicsView(cons
 {
     lockGraphics();
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->updateDrawing3DOfItemDrawables(items);
+    if(m_graphics != NULL)
+        m_graphics->updateDrawing3DOfItemDrawables(items);
 
     unlockGraphics();
 }
@@ -203,10 +213,8 @@ QList<InDocumentViewInterface *> GDocumentViewForGraphics::views() const
 {
     QList<InDocumentViewInterface *> l;
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        l.append(it.next());
+    if(m_graphics != NULL)
+        l.append(m_graphics);
 
     return l;
 }
@@ -215,13 +223,8 @@ void GDocumentViewForGraphics::redrawGraphics(DocumentInterface::RedrawOptions o
 {
     m_mutex->lock();
 
-    if(!_graphicsLocked)
-    {
-        QListIterator<GGraphicsView*> it(_listGraphics);
-
-        while(it.hasNext())
-            it.next()->redraw(opt.testFlag(DocumentInterface::RO_WaitForConversionCompleted) ? DM_GraphicsView::RO_WaitForConversionCompleted : DM_GraphicsView::RO_NoOptions);
-    }
+    if(!_graphicsLocked && (m_graphics != NULL))
+        m_graphics->redraw(opt.testFlag(DocumentInterface::RO_WaitForConversionCompleted) ? DM_GraphicsView::RO_WaitForConversionCompleted : DM_GraphicsView::RO_NoOptions);
 
     m_mutex->unlock();
 }
@@ -243,17 +246,14 @@ void GDocumentViewForGraphics::dirtyNormalsOfPoints()
 
 void GDocumentViewForGraphics::applyNormalsConfiguration(GDocumentViewForGraphics::NormalsConfiguration c)
 {
-    if(!_listGraphics.isEmpty()) {
+    if(m_graphics != NULL) {
 
         DM_GraphicsViewOptions opt;
-        opt.updateFromOtherOptions(_listGraphics.first()->constGetOptionsInternal());
+        opt.updateFromOtherOptions(m_graphics->constGetOptionsInternal());
         opt.setNormalColor(c.normalColor);
         opt.setNormalLength(c.normalLength);
 
-        QListIterator<GGraphicsView*> it(_listGraphics);
-
-        while(it.hasNext())
-            it.next()->setOptions(opt);
+        m_graphics->setOptions(opt);
     }
 }
 
@@ -261,8 +261,8 @@ GDocumentViewForGraphics::NormalsConfiguration GDocumentViewForGraphics::getNorm
 {
     GDocumentViewForGraphics::NormalsConfiguration c;
 
-    if(!_listGraphics.isEmpty()) {
-        const DM_GraphicsViewOptions &opt = _listGraphics.first()->constGetOptionsInternal();
+    if(m_graphics != NULL) {
+        const DM_GraphicsViewOptions &opt = m_graphics->constGetOptionsInternal();
         c.normalColor = opt.normalColor();
         c.normalLength = opt.normalLength();
     }
@@ -287,6 +287,14 @@ bool GDocumentViewForGraphics::acceptAction(const CT_AbstractAction *action) con
 
 bool GDocumentViewForGraphics::setCurrentAction(CT_AbstractAction *action, bool deleteAction)
 {
+    if(m_graphics == NULL) {
+
+        if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
+            delete action;
+
+        return false;
+    }
+
     if(!acceptAction(action))
     {
         if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
@@ -297,15 +305,10 @@ bool GDocumentViewForGraphics::setCurrentAction(CT_AbstractAction *action, bool 
 
     emit currentActionChanged(action);
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-    {
-        if(action == NULL)
-            it.next()->setCurrentAction(NULL);
-        else
-            it.next()->setCurrentAction((CT_AbstractActionForGraphicsView*)action->copy());
-    }
+    if(action == NULL)
+        m_graphics->setCurrentAction(NULL);
+    else
+        m_graphics->setCurrentAction((CT_AbstractActionForGraphicsView*)action->copy());
 
     redrawGraphics();
 
@@ -317,6 +320,14 @@ bool GDocumentViewForGraphics::setCurrentAction(CT_AbstractAction *action, bool 
 
 bool GDocumentViewForGraphics::setDefaultAction(CT_AbstractAction *action, bool deleteAction)
 {
+    if(m_graphics == NULL) {
+
+        if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
+            delete action;
+
+        return false;
+    }
+
     if(!acceptAction(action))
     {
         if(deleteAction && !GUI_MANAGER->getActionsManager()->existActionCompareAddress(action))
@@ -327,15 +338,10 @@ bool GDocumentViewForGraphics::setDefaultAction(CT_AbstractAction *action, bool 
 
     emit defaultActionChanged(action);
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-    {
-        if(action == NULL)
-            it.next()->setDefaultAction(NULL);
-        else
-            it.next()->setDefaultAction((CT_AbstractActionForGraphicsView*)action->copy());
-    }
+    if(action == NULL)
+        m_graphics->setDefaultAction(NULL);
+    else
+        m_graphics->setDefaultAction((CT_AbstractActionForGraphicsView*)action->copy());
 
     redrawGraphics();
 
@@ -347,26 +353,26 @@ bool GDocumentViewForGraphics::setDefaultAction(CT_AbstractAction *action, bool 
 
 CT_AbstractAction* GDocumentViewForGraphics::currentAction() const
 {
-    if(_listGraphics.isEmpty())
+    if(m_graphics == NULL)
         return NULL;
 
-    return _listGraphics.first()->actionsHandler()->currentAction();
+    return m_graphics->actionsHandler()->currentAction();
 }
 
 CT_AbstractAction *GDocumentViewForGraphics::defaultAction() const
 {
-    if(_listGraphics.isEmpty())
+    if(m_graphics == NULL)
         return NULL;
 
-    return _listGraphics.first()->actionsHandler()->defaultAction();
+    return m_graphics->actionsHandler()->defaultAction();
 }
 
 void GDocumentViewForGraphics::removeActions(const QString &uniqueName) const
 {
-    QListIterator<GGraphicsView*> it(_listGraphics);
+    if(m_graphics == NULL)
+        return;
 
-    while(it.hasNext())
-        it.next()->actionsHandler()->removeActions(uniqueName);
+    m_graphics->actionsHandler()->removeActions(uniqueName);
 }
 
 QString GDocumentViewForGraphics::getType() const
@@ -401,11 +407,7 @@ void GDocumentViewForGraphics::setColor(const CT_AbstractItemDrawable *item, con
     }
 
     info->setColor(color);
-
-    CT_AbstractItemGroup *group = dynamic_cast<CT_AbstractItemGroup*>((CT_AbstractItemDrawable*)item);
-
-    if(group != NULL)
-        recursiveSetColor(group, color);
+    recursiveSetColor(dynamic_cast<CT_AbstractItemGroup*>((CT_AbstractItemDrawable*)item), color);
 
     emit startUpdateColorsTimer();
 }
@@ -446,6 +448,8 @@ QColor GDocumentViewForGraphics::getColor(const CT_AbstractItemDrawable *item)
 
 GOsgGraphicsView::ColorArrayType *GDocumentViewForGraphics::getOrCreateGlobalColorArrayForPoints()
 {
+    QMutexLocker locker(m_mutexGetOrCreateCloud);
+
     if(m_pointsColorCloudRegistered.isNull())
         m_pointsColorCloudRegistered = PS_REPOSITORY->createNewColorCloud(CT_Repository::SyncWithPointCloud);
 
@@ -459,6 +463,8 @@ CT_CCR GDocumentViewForGraphics::getGlobalColorArrayRegisteredForPoints() const
 
 GDocumentViewForGraphics::AttribCloudType::AType* GDocumentViewForGraphics::getOrCreateGlobalAttribArrayForPoints()
 {
+    QMutexLocker locker(m_mutexGetOrCreateCloud);
+
     if(m_pointsAttribCloudRegistered.isNull())
         m_pointsAttribCloudRegistered = PS_REPOSITORY->createNewCloudT< AttribCloudRegisteredType, AttribCloudType >(CT_Repository::SyncWithPointCloud);
 
@@ -467,6 +473,8 @@ GDocumentViewForGraphics::AttribCloudType::AType* GDocumentViewForGraphics::getO
 
 GOsgGraphicsView::NormalArrayType *GDocumentViewForGraphics::getOrCreateGlobalNormalArrayForPoints()
 {
+    QMutexLocker locker(m_mutexGetOrCreateCloud);
+
     if(m_pointsNormalCloudRegistered.isNull())
         m_pointsNormalCloudRegistered = PS_REPOSITORY->createNewNormalCloud(CT_Repository::SyncWithPointCloud);
 
@@ -487,10 +495,8 @@ void GDocumentViewForGraphics::setVisible(const CT_AbstractItemDrawable *item, b
 {
     lockGraphics();
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setVisible(item, visible);
+    if(m_graphics != NULL)
+        m_graphics->setVisible(item, visible);
 
     unlockGraphics();
 }
@@ -499,10 +505,8 @@ bool GDocumentViewForGraphics::isVisible(const CT_AbstractItemDrawable *item) co
 {
     bool isVisible = false;
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext()) {
-        if(it.next()->isVisible(item))
+    if(m_graphics != NULL) {
+        if(m_graphics->isVisible(item))
             isVisible = true;
     }
 
@@ -550,10 +554,10 @@ void GDocumentViewForGraphics::applyAttributes(DM_AbstractAttributes *dpa)
 
 void GDocumentViewForGraphics::showOptions()
 {
-    if(_listGraphics.size() > 0)
+    if(m_graphics != NULL)
     {
         DM_GraphicsViewOptions opt;
-        opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+        opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
 
         _graphicsOptionsView->setOptions(opt);
 
@@ -569,16 +573,14 @@ void GDocumentViewForGraphics::validateOptions()
 {
     const DM_GraphicsViewOptions &options = _graphicsOptionsView->getOptions();
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-        it.next()->setOptions(options);
+    if(m_graphics != NULL)
+        m_graphics->setOptions(options);
 }
 
 void GDocumentViewForGraphics::takeAndSaveScreenshot()
 {
-    if(!_listGraphics.isEmpty())
-        _listGraphics.at(0)->takeAndSaveScreenshot();
+    if(m_graphics != NULL)
+        m_graphics->takeAndSaveScreenshot();
 }
 
 void GDocumentViewForGraphics::addActualPointOfView()
@@ -636,8 +638,11 @@ void GDocumentViewForGraphics::showAttributesOptions()
 
 void GDocumentViewForGraphics::changePixelSize()
 {
+    if(m_graphics == NULL)
+        return;
+
     DM_GraphicsViewOptions opt;
-    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
 
     if (_pixelSize == PX_1)
     {
@@ -680,8 +685,11 @@ void GDocumentViewForGraphics::changePixelSize(double size)
 
 void GDocumentViewForGraphics::setTransparencyActivated(bool activated)
 {
+    if(m_graphics == NULL)
+        return;
+
     DM_GraphicsViewOptions opt;
-    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
     opt.useTransparency(activated);
 
     _graphicsOptionsView->setOptions(opt);
@@ -691,8 +699,11 @@ void GDocumentViewForGraphics::setTransparencyActivated(bool activated)
 
 void GDocumentViewForGraphics::setCameraType(bool orthographic)
 {
+    if(m_graphics == NULL)
+        return;
+
     DM_GraphicsViewOptions opt;
-    opt.updateFromOtherOptions(((const GGraphicsView*)_listGraphics.at(0))->constGetOptionsInternal());
+    opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
     if (orthographic)
     {
         opt.setCameraType(CameraInterface::ORTHOGRAPHIC);
@@ -731,6 +742,9 @@ void GDocumentViewForGraphics::pluginExporterManagerReloaded()
 
 void GDocumentViewForGraphics::exporterActionTriggered()
 {
+    if(m_graphics == NULL)
+        return;
+
     CDM_Tools tools(GUI_MANAGER->getPluginManager());
 
     CT_AbstractExporter *exporter = dynamic_cast<CT_AbstractExporter*>(sender()->parent());
@@ -745,16 +759,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     {
         QList<CT_AbstractCloudIndex*> points;
 
-        QListIterator<GGraphicsView*> it(_listGraphics);
+        CT_SPCIR selec = m_graphics->getSelectedPoints();
 
-        while(it.hasNext())
-        {
-            CT_SPCIR selec = it.next()->getSelectedPoints();
-
-            if(!selec.isNull()
-                    && (selec->abstractCloudIndex() != NULL))
-                points.append(selec->abstractCloudIndex());
-        }
+        if(!selec.isNull()
+                && (selec->abstractCloudIndex() != NULL))
+            points.append(selec->abstractCloudIndex());
 
         exCopy->setPointsToExport(points);
     }
@@ -763,16 +772,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     {
         QList<CT_AbstractCloudIndex*> faces;
 
-        QListIterator<GGraphicsView*> it(_listGraphics);
+        CT_SFCIR selec = m_graphics->getSelectedFaces();
 
-        while(it.hasNext())
-        {
-            CT_SFCIR selec = it.next()->getSelectedFaces();
-
-            if(!selec.isNull()
-                    && (selec->abstractCloudIndex() != NULL))
-                faces.append(selec->abstractCloudIndex());
-        }
+        if(!selec.isNull()
+                && (selec->abstractCloudIndex() != NULL))
+            faces.append(selec->abstractCloudIndex());
 
         exCopy->setFacesToExport(faces);
     }
@@ -781,16 +785,11 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     {
         QList<CT_AbstractCloudIndex*> edges;
 
-        QListIterator<GGraphicsView*> it(_listGraphics);
+        CT_SECIR selec = m_graphics->getSelectedEdges();
 
-        while(it.hasNext())
-        {
-            CT_SECIR selec = it.next()->getSelectedEdges();
-
-            if(!selec.isNull()
-                    && (selec->abstractCloudIndex() != NULL))
-                edges.append(selec->abstractCloudIndex());
-        }
+        if(!selec.isNull()
+                && (selec->abstractCloudIndex() != NULL))
+            edges.append(selec->abstractCloudIndex());
 
         exCopy->setEdgesToExport(edges);
     }
@@ -820,8 +819,10 @@ void GDocumentViewForGraphics::exporterActionTriggered()
 
 void GDocumentViewForGraphics::mustUpdateItemDrawablesThatColorWasModified()
 {
-    if(!_listGraphics.isEmpty())
-        _listGraphics.first()->updateItemDrawablesThatColorWasModified();
+    if(m_graphics == NULL)
+        return;
+
+    m_graphics->updateItemDrawablesThatColorWasModified();
 
     QHashIterator<CT_AbstractResult *, QHash<CT_AbstractItemDrawable *, DM_AbstractInfo *> *> it = getItemsInformations();
 
@@ -833,30 +834,40 @@ void GDocumentViewForGraphics::mustUpdateItemDrawablesThatColorWasModified()
         while(it2.hasNext()) {
             it2.next();
 
-            /*if(static_cast<DM_ItemInfoForGraphics*>(it2.value())->isColorModified())
-                GUI_LOG->addErrorMessage(LogInterface::gui, it2.key()->displayableName() + " non modifié !");
-*/
+            // if the color of this item was modified
+            if(static_cast<DM_ItemInfoForGraphics*>(it2.value())->isColorModified()) {
+
+                // if it is not a group and this item was not in this document (the user want to update colors of points from another itemdrawable per example)
+                if((dynamic_cast<CT_AbstractItemGroup*>(it2.key()) == NULL) && !containsItemDrawable(it2.key())) {
+
+                    // we update the colors of points
+                    m_graphics->updateColorOfPointsOfItemDrawable(it2.key(), static_cast<DM_ItemInfoForGraphics*>(it2.value())->color());
+                }
+            }
+
             static_cast<DM_ItemInfoForGraphics*>(it2.value())->setColorModified(false);
         }
     }
+
+    m_graphics->dirtyColorsOfItemDrawablesWithPoints();
 }
 
 void GDocumentViewForGraphics::mustDirtyColorsOfItemDrawablesWithPoints()
 {
-    if(!_listGraphics.isEmpty())
-        _listGraphics.first()->dirtyColorsOfItemDrawablesWithPoints();
+    if(m_graphics != NULL)
+        m_graphics->dirtyColorsOfItemDrawablesWithPoints();
 }
 
 void GDocumentViewForGraphics::mustDirtyNormalsOfItemDrawablesWithPoints()
 {
-    if(!_listGraphics.isEmpty())
-        _listGraphics.first()->dirtyNormalsOfItemDrawablesWithPoints();
+    if(m_graphics != NULL)
+        m_graphics->dirtyNormalsOfItemDrawablesWithPoints();
 }
 
 void GDocumentViewForGraphics::mustCheckDirtyColorsAndNormalsCloudOfItemDrawablesWithPoints()
 {
-    if(!_listGraphics.isEmpty()) {
-        size_t n = _listGraphics.first()->countPoints();
+    if(m_graphics != NULL) {
+        size_t n = m_graphics->countPoints();
 
         if(n == 0) {
             m_pointsColorCloudRegistered = CT_CCR(NULL);
@@ -870,8 +881,8 @@ void GDocumentViewForGraphics::closeEvent(QCloseEvent *closeEvent)
     if(canClose())
     {
         m_mutex->lock();
-        qDeleteAll(_listGraphics.begin(), _listGraphics.end());
-        _listGraphics.clear();
+        delete m_graphics;
+        m_graphics = NULL;
         m_mutex->unlock();
     }
 
@@ -991,12 +1002,8 @@ void GDocumentViewForGraphics::lockGraphics()
 
     _graphicsLocked = true;
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-    {
-        it.next()->lockPaint();
-    }
+    if(m_graphics != NULL)
+        m_graphics->lockPaint();
 
     m_mutex->unlock();
 }
@@ -1005,12 +1012,8 @@ void GDocumentViewForGraphics::unlockGraphics()
 {
     m_mutex->lock();
 
-    QListIterator<GGraphicsView*> it(_listGraphics);
-
-    while(it.hasNext())
-    {
-        it.next()->unlockPaint();
-    }
+    if(m_graphics != NULL)
+        m_graphics->unlockPaint();
 
     _graphicsLocked = false;
 
@@ -1032,6 +1035,9 @@ DM_AbstractInfo* GDocumentViewForGraphics::createNewItemInformation(const CT_Abs
 void GDocumentViewForGraphics::recursiveSetColor(CT_AbstractItemGroup *group,
                                                  const QColor &color)
 {
+    if(group == NULL)
+        return;
+
     CT_AbstractResult *lastResult = NULL;
     QHash<CT_AbstractItemDrawable*, DM_AbstractInfo*> *hash = NULL;
 

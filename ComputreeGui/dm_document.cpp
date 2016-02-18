@@ -264,6 +264,16 @@ QList<CT_AbstractItemDrawable*> DM_Document::getSelectedItemDrawable() const
     return list;
 }
 
+bool DM_Document::containsItemDrawable(const CT_AbstractItemDrawable *item) const
+{
+    return item->document().contains(const_cast<DM_Document*>(this));
+}
+
+bool DM_Document::containsItemDrawableOrAtLeastOneChildren(const CT_AbstractItemDrawable *item) const
+{
+    return recursiveContainsItemDrawableModelOrAtLeastOneChildren(item->model());
+}
+
 bool DM_Document::useItemColor() const
 {
     return false;
@@ -474,6 +484,22 @@ void DM_Document::recursiveAddChildrensToInformationsCollection(const CT_Abstrac
                 hash->insert((CT_AbstractSingularItemDrawable*)child, childInfo);
         }
     }
+}
+
+bool DM_Document::recursiveContainsItemDrawableModelOrAtLeastOneChildren(const CT_OutAbstractModel *model) const
+{
+    if(model->isVisibleInDocument(this))
+        return true;
+
+    QList<CT_OutAbstractModel*> models = model->childrensStaticCast<CT_OutAbstractModel>();
+    QListIterator<CT_OutAbstractModel*> it(models);
+
+    while(it.hasNext()) {
+        if(recursiveContainsItemDrawableModelOrAtLeastOneChildren(it.next()))
+            return true;
+    }
+
+    return false;
 }
 
 void DM_Document::slotItemDrawableAdded(CT_AbstractItemDrawable &item)

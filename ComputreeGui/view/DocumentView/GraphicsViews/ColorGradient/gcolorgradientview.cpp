@@ -44,13 +44,19 @@ GColorGradientView::GColorGradientView(QWidget *parent)
    arrowMoving(false),
    backgroundVerSpace(5),
    backgroundHorSpace(5),
-   background(NULL)
+   background(NULL),
+   arrowsVisible(true)
 {
    qRegisterMetaType<GradientArrow>("GradientArrow");
    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
    setFocusPolicy(Qt::StrongFocus);
    viewRect = QRect(QPoint(0,0), QPoint(0,0));
-   setMinimumSize(parent->width() - 10, 100);
+   if(parent != NULL)
+       setMinimumSize(parent->width() - 10, 100);
+   else {
+       setMinimumSize(100, 30);
+   }
+
    setMouseTracking(true);
    update();
 }
@@ -185,6 +191,55 @@ QList<GradientArrow> GColorGradientView::orderedArrows() const
     return map.values();
 }
 
+QLinearGradient GColorGradientView::toLinearGradient() const
+{
+    QLinearGradient gradient;
+    QList<GradientArrow> arrows = orderedArrows();
+
+    if(arrows.size() > 1)
+    {
+        QGradientStops stops;
+
+        QListIterator<GradientArrow> it(arrows);
+
+        while(it.hasNext())
+        {
+            const GradientArrow &gr = it.next();
+
+            stops.append(QGradientStop(gr.position(), gr.color()));
+        }
+
+        gradient.setStops(stops);
+    }
+
+    return gradient;
+}
+
+void GColorGradientView::fromLinearGradient(const QLinearGradient &gradient)
+{
+    clearArrows();
+
+    QGradientStops stops = gradient.stops();
+
+    QVectorIterator<QGradientStop> it(stops);
+
+    int i = 0;
+
+    while(it.hasNext())
+    {
+        QGradientStop stop = it.next();
+
+        GradientArrow arrow;
+        arrow.setHasFocus(i == 0);
+        arrow.setColor(stop.second);
+        arrow.setPosition(stop.first);
+        arrow.setIndex(i);
+
+        changeArrow(arrow);
+        ++i;
+    }
+}
+
 int GColorGradientView::indexUnused() const
 {
     int index = -1;
@@ -216,6 +271,19 @@ qreal GColorGradientView::positionUnused() const
     }
 
     return 0;
+}
+
+void GColorGradientView::setArrowsVisible(bool v)
+{
+    arrowsVisible = v;
+}
+
+GradientArrow GColorGradientView::arrowByIndex(int index)
+{
+    GradientArrow arrInvalid;
+    arrInvalid.setIndex(-1);
+
+    return m_arrows.value(index, arrInvalid);
 }
 
 //f+//////////////////////////////////////////////////////////////////////////
@@ -361,16 +429,28 @@ void GColorGradientView::setFocusColor(const QColor &col)
 //f-//////////////////////////////////////////////////////////////////////////
 void GColorGradientView::paintEvent(QPaintEvent *)
 {
-   QRect newViewRect = QRect(QPoint(0,0), QPoint(this->width() - 10, this->height()/3*2 - 10));
-   newViewRect.translate(5,5);
+    int translateX = 5;
+    int translateY = 5;
+
+    int hToUse;
+    int wToUse = this->width() - (translateY*2);
+
+    if(m_arrows.isEmpty() || !arrowsVisible) {
+        hToUse = this->height() - (translateY*2);
+    } else {
+        hToUse = ((this->height()/3)*2) - (translateY*2);
+    }
+
+   QRect newViewRect = QRect(QPoint(0,0), QPoint(wToUse, hToUse));
+   newViewRect.translate(translateX,translateY);
 
    if(viewRect.size().isNull()  ||
       viewRect.size().isEmpty() ||
       (viewRect.topLeft() == viewRect.bottomRight()) ||
       (viewRect != newViewRect))
    {
-      viewRect = QRect(QPoint(0,0), QPoint(this->width() - 10, this->height()/3*2 - 10));
-      viewRect.translate(5,5);
+      viewRect = QRect(QPoint(0,0), QPoint(wToUse, hToUse));
+      viewRect.translate(translateX,translateY);
       createBackground();
    }
    QPainter painter(this);
@@ -393,31 +473,34 @@ void GColorGradientView::paintEvent(QPaintEvent *)
       it.next();
       GradientArrow m_arrow = it.value();
       grad.setColorAt(m_arrow.position(), m_arrow.color());
-      QPolygon arrowPolygon = m_arrow.area();
-      arrowPolygon.translate(m_arrow.position() * (this->width() - 10), this->height()/3*2);
-      QPainterPath paintPath;
-      paintPath.addPolygon(arrowPolygon);
-      painter.setBrush(QBrush(m_arrow.color()));
-      painter.drawPath(paintPath);
-      painter.setBrush(QBrush(Qt::NoBrush));
 
-      if(m_arrow.hasFocus())
-      {
-         QPen boldPen;
-         boldPen.setWidth(2);
-         boldPen.setColor(Qt::red);
-         painter.setPen(boldPen);
-         painter.drawPolygon(arrowPolygon);
-         painter.setPen(lastPen);
-      }
-      else
-      {
-         QPen boldPen;
-         boldPen.setWidth(2);
-         painter.setPen(boldPen);
-         painter.drawPolygon(arrowPolygon);
-         painter.setPen(lastPen);
-      }
+      if(arrowsVisible) {
+          QPolygon arrowPolygon = m_arrow.area();
+          arrowPolygon.translate(m_arrow.position() * (wToUse), hToUse + (translateY*2));
+          QPainterPath paintPath;
+          paintPath.addPolygon(arrowPolygon);
+          painter.setBrush(QBrush(m_arrow.color()));
+          painter.drawPath(paintPath);
+          painter.setBrush(QBrush(Qt::NoBrush));
+
+          if(m_arrow.hasFocus())
+          {
+             QPen boldPen;
+             boldPen.setWidth(2);
+             boldPen.setColor(Qt::red);
+             painter.setPen(boldPen);
+             painter.drawPolygon(arrowPolygon);
+             painter.setPen(lastPen);
+          }
+          else
+          {
+             QPen boldPen;
+             boldPen.setWidth(2);
+             painter.setPen(boldPen);
+             painter.drawPolygon(arrowPolygon);
+             painter.setPen(lastPen);
+          }
+       }
    }
 
    QBrush brush(grad);

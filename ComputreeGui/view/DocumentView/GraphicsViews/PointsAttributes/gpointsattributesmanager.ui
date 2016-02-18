@@ -60,6 +60,35 @@
            </widget>
           </item>
           <item>
+           <widget class="GGradientManager" name="gradientManagerView" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="doubleSpinBoxGradientArrowValue">
+            <property name="decimals">
+             <number>4</number>
+            </property>
+            <property name="minimum">
+             <double>-999999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -80,6 +109,9 @@
             <property name="text">
              <string>Ajouter une couleur</string>
             </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -90,6 +122,9 @@
             <property name="text">
              <string>Supprimer la couleur</string>
             </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -99,6 +134,9 @@
             </property>
             <property name="text">
              <string>Enregistrer</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -194,6 +232,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>GGradientManager</class>
+   <extends>QWidget</extends>
+   <header>view/Tools/gradient/ggradientmanager.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>GColorGradientView</class>
    <extends>QWidget</extends>

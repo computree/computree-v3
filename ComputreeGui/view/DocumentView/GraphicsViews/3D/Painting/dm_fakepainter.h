@@ -33,6 +33,12 @@ public:
     void setComputingMode(ComputingModes modes);
 
     /**
+     * @brief Use this method if you set in computing mode BackupPointCloudIndex and/or BackupPointCloudIndexIfFace and/or BackupPointCloudIndexIfEdge. You
+     *        must set a cloud index that will use to add global index of point that was draw one by one by method "drawPoint"
+     */
+    void setForGlobalPointDrawOneByOneTheBackupCloudIndex(CT_PointCloudIndexVector *backup);
+
+    /**
      * @brief Returns number of points drawed if DrawModes == CountPoints
      */
     size_t nPoints() const;
@@ -61,6 +67,11 @@ public:
      * @brief Returns the list of face cloud index that was drawed if DrawModes == BackupFaceCloudIndex
      */
     const QList<CT_AbstractCloudIndex*> &faceCloudIndexBackup() const;
+
+    /**
+     * @brief Clear all backup and count
+     */
+    void clear();
 
     // PainterInterface
 
@@ -237,7 +248,7 @@ private:
     size_t                                          m_nPoints;
     size_t                                          m_nEdges;
     size_t                                          m_nFaces;
-    CT_PointCloudIndexVector                        m_pIndexBackup;
+    CT_PointCloudIndexVector                        *m_pIndexBackup;
     QList<CT_AbstractCloudIndex*>                   m_pCloudIndexBackup;
     QList<CT_AbstractCloudIndex*>                   m_fCloudIndexBackup;
     QList<CT_AbstractCloudIndex*>                   m_eCloudIndexBackup;

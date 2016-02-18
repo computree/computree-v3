@@ -73,6 +73,7 @@ public:
 
     virtual void updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable*> &list) = 0;
 
+    virtual void updateColorOfPointsOfItemDrawable(CT_AbstractItemDrawable *item, const QColor &color) = 0;
     virtual void updateItemDrawablesThatColorWasModified() = 0;
     virtual void dirtyColorsOfItemDrawablesWithPoints() = 0;
     virtual void dirtyNormalsOfItemDrawablesWithPoints() = 0;

@@ -45,7 +45,7 @@ public:
     void init();
 
     void addGraphics(GGraphicsView *graphics);
-    const QList<GGraphicsView*>& getGraphicsList() const;
+    QList<GGraphicsView*> getGraphicsList() const;
 
     void beginAddMultipleItemDrawable();
     void addItemDrawable(CT_AbstractItemDrawable &item);
@@ -154,7 +154,6 @@ private:
 
     DM_AttributesManager                                            m_attributesManager;
 
-    bool                                                            m_useColorCloud;
     bool                                                            m_useNormalCloud;
 
     QTimer                                                          m_timerUpdateColors;
@@ -166,7 +165,7 @@ private:
     QSharedPointer< AttribCloudRegisteredType >                     m_pointsAttribCloudRegistered;
     CT_NCR                                                          m_pointsNormalCloudRegistered;
 
-    QList<GGraphicsView*>       _listGraphics;
+    GGraphicsView*              m_graphics;
     bool                        _graphicsLocked;
     QHBoxLayout                 *_layoutGraphics;
 
@@ -180,6 +179,7 @@ private:
     QString                     _type;
 
     QMutex                      *m_mutex;
+    QMutex                      *m_mutexGetOrCreateCloud;
 
     PixelSize                                   _pixelSize;
 

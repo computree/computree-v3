@@ -4,6 +4,39 @@ DM_ColorLinearInterpolator::DM_ColorLinearInterpolator()
 {
 }
 
+void DM_ColorLinearInterpolator::constructFromQGradient(const QGradient &gradient)
+{
+    m_gradients.clear();
+
+    QGradientStops stops = gradient.stops();
+
+    if(!stops.isEmpty())
+    {
+        QGradientStop lastStop;
+        lastStop.first = -1;
+
+        QGradientStop firstStop;
+        firstStop.first = 2;
+
+        QVectorIterator< QGradientStop > it(stops);
+
+        while(it.hasNext())
+        {
+            const QGradientStop &stop = it.next();
+
+            setKeyValueAt(stop.first, stop.second);
+
+            if(stop.first > lastStop.first)
+                lastStop = stop;
+
+            if(stop.first < firstStop.first)
+                firstStop = stop;
+        }
+    }
+
+    finalize();
+}
+
 void DM_ColorLinearInterpolator::setKeyValueAt(double key, const QColor &value)
 {
     m_gradients.insert(key, value);

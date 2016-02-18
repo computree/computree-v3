@@ -51,8 +51,9 @@ public:
 
     virtual bool removeAllItemDrawableOfResultFromDocuments(CT_AbstractResult &res, DM_AsynchroneProgress &progress) = 0;
     virtual bool removeAllItemDrawableOfModelFromDocuments(CT_OutAbstractItemModel &model, DM_AsynchroneProgress &progress) = 0;
-    virtual bool removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
     virtual bool removeAllItemDrawableOfListFromDocuments(QList<CT_AbstractItemDrawable*> &itemList, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
+    virtual bool removeAllItemDrawableOfListFromDocument(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress) = 0;
 
     virtual DM_DocumentView* getActiveDocumentView() = 0;
     virtual DM_DocumentView* getDocumentView(int index) const = 0;

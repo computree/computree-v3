@@ -8,10 +8,8 @@ DM_ItemInfoForGraphics::DM_ItemInfoForGraphics()
 
 void DM_ItemInfoForGraphics::setColor(const QColor &color)
 {
-    if(m_color != color) {
-        m_color = color;
-        m_colorModified = true;
-    }
+    m_color = color;
+    m_colorModified = true;
 }
 
 void DM_ItemInfoForGraphics::setColorModified(bool e)

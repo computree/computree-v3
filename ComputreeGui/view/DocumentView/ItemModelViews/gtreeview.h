@@ -20,8 +20,11 @@
 
 #include "ct_attributes/abstract/ct_abstractitemattribute.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+#include "tools/itemdrawable/dm_contextmenucolouristadder.h"
 
-class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilderT<CG_CustomTreeItem>, public DM_ITreeViewManagerT<CG_CustomTreeItem>
+#include "view/Tools/gradient/ggradientmanager.h"
+
+class GTreeView : public QWidget, public GItemModelView, public DM_IItemDrawableStandardItemBuilderT<CG_CustomTreeItem>, public DM_ITreeViewManagerT<CG_CustomTreeItem>, public IColouristContextMenuAccess
 {
     Q_OBJECT
 
@@ -78,6 +81,8 @@ private:
     DM_ActionsHandlerForTreeView                                                    *m_actionsHandler;
 
     QMenu                                                                           *m_contextMenu;
+    DM_ContextMenuColouristAdder                                                    *m_contextMenuColorAdder;
+    GGradientManager                                                                *m_gradientManagerView;
 
     QTreeView                                                                       *m_treeView;
     CG_CustomTreeItemModel                                                          *m_model;
@@ -93,7 +98,12 @@ private:
 
     DM_ItemDrawableManagerOptions                                                   m_options;
 
+
     static int                                                                      COLUMN_FIRST_DATA_VALUE;
+
+    // IColouristContextMenuAccess
+    QList<CT_AbstractItemDrawable*> getItemDrawableToColorize() const;
+    QList<CT_AbstractModel*> getSelectedModelsToUseInColorizerMenu() const;
 
     /**
      * @brief Search recursively the item corresponding to the ItemDrawable
@@ -233,19 +243,14 @@ private slots:
     void slotInverseSelection();
 
     /**
-     * @brief Called when we must set automatic color of CT_AbstractItemDrawable selected
-     */
-    void slotColorAuto();
-
-    /**
-     * @brief Called when we must set unique color of CT_AbstractItemDrawable selected
-     */
-    void slotColorSolid();
-
-    /**
      * @brief Called from a QAction to add selected item to the document (data in QAction)
      */
     void slotAddSelectedToDocument();
+
+    /**
+     * @brief Called from a QAction to remove selected item from a document (data in QAction)
+     */
+    void slotRemoveSelectedFromDocument();
 
     /**
      * @brief Called from a QAction to refresh the selected item

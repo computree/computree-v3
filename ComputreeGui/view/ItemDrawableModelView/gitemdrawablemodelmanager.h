@@ -6,10 +6,9 @@
 
 #include "dm_itemdrawablemodelmanager.h"
 #include "dm_itemdrawablemanageroptions.h"
+#include "tools/itemdrawable/dm_contextmenucolouristadder.h"
 
 #include <QMenu>
-
-class QtColorPicker;
 
 class CT_AbstractModel;
 class CT_OutAbstractModel;
@@ -31,7 +30,7 @@ struct GActionSetColorByInfo {
     int                                 m_docIndex;
 };
 
-class GItemDrawableModelManager : public QWidget, public DM_ItemDrawableModelManager
+class GItemDrawableModelManager : public QWidget, public DM_ItemDrawableModelManager, public IColouristContextMenuAccess
 {
     Q_OBJECT
     
@@ -43,6 +42,8 @@ public:
 
     void setResult(const CT_AbstractResult *res);
     void setColorOptions(const DM_ItemDrawableManagerOptions &options);
+
+    DM_ContextMenuColouristAdder* contextMenuColouristAdder() const;
 
     CT_AbstractResult* result() const;
 
@@ -58,14 +59,15 @@ private:
     CT_AbstractResult               *_result;
     QStandardItemModel              _viewModel;
 
-    QtColorPicker                   *_colorPicker;
-
     DM_ItemDrawableManagerOptions   _colorOptions;
+
+    QMenu                           *m_contextMenu;
+    DM_ContextMenuColouristAdder    *m_contextMenuColorAdder;
 
     void clearModel();
     void constructModel();
     void constructHeader();
-    QMenu* constructContextMenu();
+    void reConstructContextMenu();
 
     QList<QStandardItem*> recursiveCreateItemsForModel(const CT_OutAbstractModel *model);
 
@@ -77,6 +79,10 @@ private:
     QStandardItem* recursiveGetStandardItemForModel(QStandardItem *pItem, CT_OutAbstractModel *model, const DocumentInterface *doc) const;
 
     void recursiveSetCheckBoxEnable(QStandardItem *parent, bool enable);
+
+    // IColouristContextMenuAccess
+    QList<CT_AbstractItemDrawable*> getItemDrawableToColorize() const;
+    QList<CT_AbstractModel*> getSelectedModelsToUseInColorizerMenu() const;
 
 private slots:
 
@@ -91,10 +97,6 @@ private slots:
     void resultDestroyedDirect();
 
     void showContextMenu(const QPoint &point);
-
-    void setUniqueColorForModelSelected();
-    void setAutomaticColorForModelSelected();
-    void setColorByAttributeForModelSelected();
 };
 
 Q_DECLARE_METATYPE(GActionSetColorByInfo)

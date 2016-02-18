@@ -34,7 +34,10 @@ HEADERS += \
     tools/treeview/dm_itemdrawabletreeviewmodelbuildert.hpp \
     tools/treeview/dm_itemdrawabletreeviewmodelresearchert.hpp \
     tools/graphicsview/dm_elementinfomanager.h \
-    tools/graphicsview/dm_colorlinearinterpolator.h
+    tools/graphicsview/dm_colorlinearinterpolator.h \
+    $$PWD/graphicsview/dm_pointscolourist.h \
+    $$PWD/graphicsview/dm_pointsrecoverer.h \
+    $$PWD/itemdrawable/dm_contextmenucolouristadder.h
 
 SOURCES += \
     tools/worker/dm_abstractworker.cpp \
@@ -56,5 +59,8 @@ SOURCES += \
     tools/treeview/dm_actionshandlerfortreeview.cpp \
     tools/treeview/dm_abstractitemtreeviewcontroller.cpp \
     tools/graphicsview/dm_elementinfomanager.cpp \
-    tools/graphicsview/dm_colorlinearinterpolator.cpp
+    tools/graphicsview/dm_colorlinearinterpolator.cpp \
+    $$PWD/graphicsview/dm_pointscolourist.cpp \
+    $$PWD/graphicsview/dm_pointsrecoverer.cpp \
+    $$PWD/itemdrawable/dm_contextmenucolouristadder.cpp
 

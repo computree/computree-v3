@@ -19,7 +19,7 @@
 #include "ct_colorcloud/ct_colorcloudosg.h"
 #include "ct_normalcloud/ct_normalcloudosg.h"
 
-#define KEEP_ALPHA_COLOR 0
+#include "tools/graphicsview/dm_pointscolourist.h"
 
 class DM_GeometriesConfiguration;
 

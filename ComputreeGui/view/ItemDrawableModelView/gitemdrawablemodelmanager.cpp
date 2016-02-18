@@ -10,6 +10,7 @@
 #include "dm_documentview.h"
 #include "qtcolorpicker.h"
 
+#include "ct_point.h"
 #include "ct_result/tools/iterator/ct_resultiterator.h"
 #include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_result/model/outModel/abstract/ct_outabstractresultmodel.h"
@@ -19,7 +20,8 @@
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "tools/graphicsview/dm_colorlinearinterpolator.h"
-#include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
+#include "tools/graphicsview/dm_pointscolourist.h"
+#include "tools/graphicsview/dm_pointsrecoverer.h"
 
 GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
     QWidget(parent),
@@ -29,7 +31,11 @@ GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
 
     m_docManagerView = NULL;
     _result = NULL;
-    _colorPicker = new QtColorPicker(NULL, -1, true, false);
+
+    m_contextMenu = new QMenu(this);
+
+    m_contextMenuColorAdder = new DM_ContextMenuColouristAdder(*this, this);
+    m_contextMenuColorAdder->setAutomaticColorProducer(&_colorOptions);
 
     ui->treeView->setModel(&_viewModel);
     ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -44,7 +50,6 @@ GItemDrawableModelManager::GItemDrawableModelManager(QWidget *parent) :
 GItemDrawableModelManager::~GItemDrawableModelManager()
 {
     delete ui;
-    delete _colorPicker;
 }
 
 void GItemDrawableModelManager::setDocumentManagerView(const GDocumentManagerView *docManagerView)
@@ -55,6 +60,7 @@ void GItemDrawableModelManager::setDocumentManagerView(const GDocumentManagerVie
     }
 
     m_docManagerView = (GDocumentManagerView*)docManagerView;
+    m_contextMenuColorAdder->setDocumentManager(m_docManagerView);
 
     if(m_docManagerView != NULL)
     {
@@ -84,6 +90,11 @@ void GItemDrawableModelManager::setResult(const CT_AbstractResult *res)
 void GItemDrawableModelManager::setColorOptions(const DM_ItemDrawableManagerOptions &options)
 {
     _colorOptions = options;
+}
+
+DM_ContextMenuColouristAdder *GItemDrawableModelManager::contextMenuColouristAdder() const
+{
+    return m_contextMenuColorAdder;
 }
 
 CT_AbstractResult* GItemDrawableModelManager::result() const
@@ -164,64 +175,10 @@ void GItemDrawableModelManager::constructHeader()
 #endif
 }
 
-QMenu* GItemDrawableModelManager::constructContextMenu()
+void GItemDrawableModelManager::reConstructContextMenu()
 {
-    QMenu *contextMenu = new QMenu(this);
-
-    QMenu *menu = contextMenu->addMenu(tr("Couleur uni"));
-
-    if(m_docManagerView != NULL)
-    {
-        int s = m_docManagerView->nbDocumentView();
-
-        for(int i=0; i<s; ++i)
-        {
-            QAction *action = menu->addAction(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()), this, SLOT(setUniqueColorForModelSelected()));
-            action->setData(i);
-        }
-    }
-
-    menu = contextMenu->addMenu(tr("Couleur automatique"));
-
-    if(m_docManagerView != NULL)
-    {
-        int s = m_docManagerView->nbDocumentView();
-
-        for(int i=0; i<s; ++i)
-        {
-            QAction *action = menu->addAction(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()), this, SLOT(setAutomaticColorForModelSelected()));
-            action->setData(i);
-        }
-    }
-
-    QList<const CT_AbstractModel*> list = getSelectedIModels();
-
-    if(!list.isEmpty())
-    {
-        const CT_OutAbstractSingularItemModel *model = dynamic_cast<const CT_OutAbstractSingularItemModel*>(list.first());
-
-        if((model != NULL) && !model->itemAttributes().isEmpty())
-        {
-            menu = contextMenu->addMenu(tr("Colorier par..."));
-
-            if(m_docManagerView != NULL)
-            {
-                int s = m_docManagerView->nbDocumentView();
-
-                for(int i=0; i<s; ++i)
-                {
-                    QMenu *subMenu = menu->addMenu(tr("%1").arg(m_docManagerView->getDocumentView(i)->getNumber()));
-
-                    foreach (CT_OutAbstractItemAttributeModel *attModel, model->itemAttributes()) {
-                        QAction *action = subMenu->addAction(attModel->displayableName(), this, SLOT(setColorByAttributeForModelSelected()));
-                        action->setData(qVariantFromValue(GActionSetColorByInfo(attModel, i)));
-                    }
-                }
-            }
-        }
-    }
-
-    return contextMenu;
+    m_contextMenu->clear();
+    m_contextMenuColorAdder->initContextMenu(m_contextMenu);
 }
 
 QList<QStandardItem*> GItemDrawableModelManager::recursiveCreateItemsForModel(const CT_OutAbstractModel *model)
@@ -373,6 +330,45 @@ void GItemDrawableModelManager::recursiveSetCheckBoxEnable(QStandardItem *parent
     }
 }
 
+QList<CT_AbstractItemDrawable *> GItemDrawableModelManager::getItemDrawableToColorize() const
+{
+    QList<CT_AbstractItemDrawable *> items;
+
+    CT_AbstractResult *res = result();
+
+    if(res != NULL)
+    {
+        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
+
+        if(!sModel.isEmpty())
+        {
+            const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
+
+            if(iModel != NULL)
+            {
+                CT_ResultIterator it((CT_ResultGroup*)res, iModel);
+
+                while(it.hasNext())
+                    items.append((CT_AbstractItemDrawable*)it.next());
+            }
+        }
+    }
+
+    return items;
+}
+
+QList<CT_AbstractModel *> GItemDrawableModelManager::getSelectedModelsToUseInColorizerMenu() const
+{
+    QList<const CT_AbstractModel*> list = getSelectedIModels();
+    QList<CT_AbstractModel*> listRet;
+
+    foreach (const CT_AbstractModel* m, list) {
+        listRet.append((CT_AbstractModel*)m);
+    }
+
+    return listRet;
+}
+
 void GItemDrawableModelManager::documentAdded(DM_DocumentView *view)
 {
     Q_UNUSED(view)
@@ -472,144 +468,8 @@ void GItemDrawableModelManager::showContextMenu(const QPoint &point)
 
         if(iModel != NULL)
         {
-            QMenu *menu = constructContextMenu();
-            menu->exec(ui->treeView->viewport()->mapToGlobal(point));
-            delete menu;
-        }
-    }
-}
-
-void GItemDrawableModelManager::setUniqueColorForModelSelected()
-{
-    int docIndex = ((QAction*)sender())->data().toInt();
-
-    CT_AbstractResult *res = result();
-
-    if(res != NULL)
-    {
-        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
-
-        if(!sModel.isEmpty())
-        {
-            DM_DocumentView *doc = m_docManagerView->getDocumentView(docIndex);
-            _colorPicker->showColorDialog();
-
-            if(!_colorPicker->isDialogCanceled())
-            {
-                const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
-
-                if(iModel != NULL)
-                {
-                    QColor color = _colorPicker->currentColor();
-                    CT_ResultIterator it((CT_ResultGroup*)res, iModel);
-
-                    while(it.hasNext())
-                        doc->setColor((CT_AbstractItemDrawable*)it.next(), color);
-                }
-            }
-        }
-    }
-}
-
-void GItemDrawableModelManager::setAutomaticColorForModelSelected()
-{
-    int docIndex = ((QAction*)sender())->data().toInt();
-
-    CT_AbstractResult *res = result();
-
-    if(res != NULL)
-    {
-        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
-
-        if(!sModel.isEmpty())
-        {
-            const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
-
-            if(iModel != NULL)
-            {
-                DM_DocumentView *doc = m_docManagerView->getDocumentView(docIndex);
-                CT_ResultIterator it((CT_ResultGroup*)res, iModel);
-
-                while(it.hasNext()) {
-                    QColor keepAlphaColor = _colorOptions.getNextColor();
-                    keepAlphaColor.setAlpha(KEEP_ALPHA_COLOR);
-
-                    doc->setColor((CT_AbstractItemDrawable*)it.next(), keepAlphaColor);
-                }
-            }
-        }
-    }
-}
-
-void GItemDrawableModelManager::setColorByAttributeForModelSelected()
-{
-    GActionSetColorByInfo actInfo = ((QAction*)sender())->data().value<GActionSetColorByInfo>();
-
-    CT_AbstractResult *res = result();
-
-    if(res != NULL)
-    {
-        QList<const CT_AbstractModel*> sModel = getSelectedIModels();
-
-        if(!sModel.isEmpty())
-        {
-            const CT_OutAbstractItemModel *iModel = dynamic_cast<const CT_OutAbstractItemModel*>(sModel.first());
-
-            if(iModel != NULL)
-            {
-                DM_ColorLinearInterpolator interpolator;
-                interpolator.setKeyValueAt(0, Qt::black);
-                interpolator.setKeyValueAt(1, Qt::white);
-                interpolator.finalize();
-
-                DM_DocumentView *doc = m_docManagerView->getDocumentView(actInfo.m_docIndex);
-                CT_ResultIterator it((CT_ResultGroup*)res, iModel);
-
-                double minValue = std::numeric_limits<double>::max();
-                double maxValue = -minValue;
-                bool ok = true;
-
-                while(it.hasNext() && ok) {
-
-                    CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it.next();
-                    CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
-
-                    double value = 0;
-
-                    if(att->type() == CT_AbstractCategory::BOOLEAN)
-                        value = att->toBool(item, &ok);
-                    else
-                        value = att->toDouble(item, &ok);
-
-                    if(!ok)
-                        GUI_LOG->addErrorMessage(LogInterface::gui, tr("Impossible de convertir l'attribut %1 en valeur double ou booléenne").arg(att->displayableName()));
-
-                    minValue = qMin(minValue, value);
-                    maxValue = qMax(maxValue, value);
-                }
-
-                if(ok) {
-                    double range = maxValue-minValue;
-
-                    if(range == 0)
-                        range = 1;
-
-                    CT_ResultIterator it2((CT_ResultGroup*)res, iModel);
-
-                    while(it2.hasNext()) {
-
-                        CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)it2.next();
-                        CT_AbstractItemAttribute *att = item->itemAttribute(actInfo.m_model);
-                        double vv = att->toDouble(item, &ok);
-
-                        // convert the value to be between 0 and 1
-                        double key = (vv-minValue)/range;
-
-                        // get the intermediate color and set it to document
-                        doc->setColor(item, interpolator.intermediateColor(key));
-                    }
-                }
-            }
+            reConstructContextMenu();
+            m_contextMenu->exec(ui->treeView->viewport()->mapToGlobal(point));
         }
     }
 }

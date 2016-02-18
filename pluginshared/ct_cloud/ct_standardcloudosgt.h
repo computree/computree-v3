@@ -69,12 +69,12 @@ protected:
 
     inline const T& pTAt(const size_t &index) const
     {
-        return m_array->at(index);
+        return (*m_array.get())[index];
     }
 
     inline T& pTAt(const size_t &index)
     {
-        return m_array->at(index);
+        return (*m_array.get())[index];
     }
 };
 

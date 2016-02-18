@@ -44,6 +44,9 @@ GPointsAttributesManager::GPointsAttributesManager(QWidget *parent) :
 
     connect(ui->treeView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)), this, SLOT(treeView_currentRowChanged(QModelIndex,QModelIndex)));
     connect(&m_model, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)));
+
+    connect(ui->gradientManagerView, SIGNAL(newGradientSelected(QLinearGradient)), ui->colorGradientView, SLOT(fromLinearGradient(QLinearGradient)));
+    connect(ui->colorGradientView, SIGNAL(arrowMove(qreal,GradientArrow)), this, SLOT(updateArrowValue(qreal,GradientArrow)));
 }
 
 GPointsAttributesManager::~GPointsAttributesManager()
@@ -473,6 +476,9 @@ void GPointsAttributesManager::editAttributesScalar(DM_AbstractAttributesScalar 
     ui->pushButtonAddColor->setEnabled(true);
     ui->pushButtonDeleteColor->setEnabled(ui->colorGradientView->nArrows() > 2);
     ui->widgetEditGradient->setVisible(true);
+
+    ui->doubleSpinBoxGradientArrowValue->setMinimum(pas->min());
+    ui->doubleSpinBoxGradientArrowValue->setMaximum(pas->max());
 }
 
 void GPointsAttributesManager::clearEditGradient()
@@ -485,23 +491,10 @@ void GPointsAttributesManager::clearEditGradient()
 
 void GPointsAttributesManager::saveCurrentGradientTo(DM_AbstractAttributesScalar *pas)
 {
-    QList<GradientArrow> arrows = ui->colorGradientView->orderedArrows();
+    QLinearGradient gradient = ui->colorGradientView->toLinearGradient();
 
-    if(arrows.size() > 1)
+    if(gradient.stops().size() > 1)
     {
-        QLinearGradient gradient;
-        QGradientStops stops;
-
-        QListIterator<GradientArrow> it(arrows);
-
-        while(it.hasNext())
-        {
-            const GradientArrow &gr = it.next();
-
-            stops.append(QGradientStop(gr.position(), gr.color()));
-        }
-
-        gradient.setStops(stops);
         pas->setGradient(gradient);
 
         // si il utilise un gradient partagé
@@ -682,6 +675,10 @@ void GPointsAttributesManager::on_colorGradientView_newFocusColor(const QColor &
         m_internalSetColor = true;
         ui->pushButtonGradientColorPicker->setCurrentColor(color);
     }
+
+    GradientArrow arr = ui->colorGradientView->arrowByIndex(arrowIndex);
+
+    updateArrowValue(arr.position(), arr);
 }
 
 void GPointsAttributesManager::on_colorGradientView_arrowMove(qreal lastPos, const GradientArrow &arrow)
@@ -724,6 +721,30 @@ void GPointsAttributesManager::on_pushButtonApplyEditNormals_clicked()
     applyAndSaveNormal();
 }
 
+void GPointsAttributesManager::on_doubleSpinBoxGradientArrowValue_editingFinished()
+{
+    GradientArrow arr = ui->colorGradientView->currentArrow();
+    DM_AbstractAttributesScalar *pas = dynamic_cast<DM_AbstractAttributesScalar*>(attributesSelected());
+
+    if((pas != NULL) && (arr.index() != -1)) {
+
+        double range = pas->max() - pas->min();
+
+        if(range != 0)  {
+            double pos = (ui->doubleSpinBoxGradientArrowValue->value()-pas->min())/range;
+
+            if(pos < 0)
+                pos = 0;
+
+            if(pos > 1)
+                pos = 1;
+
+            arr.setPosition(pos);
+            ui->colorGradientView->changeArrow(arr);
+        }
+    }
+}
+
 void GPointsAttributesManager::treeView_currentRowChanged(const QModelIndex &current, const QModelIndex &previous)
 {
     QStandardItem *pItem = m_model.itemFromIndex(previous);
@@ -761,4 +782,26 @@ void GPointsAttributesManager::treeView_currentRowChanged(const QModelIndex &cur
             return;
         }
     }
+}
+
+void GPointsAttributesManager::updateArrowValue(qreal val, GradientArrow arr)
+{
+    Q_UNUSED(val)
+
+    bool ok = false;
+
+    DM_AbstractAttributesScalar *pas = dynamic_cast<DM_AbstractAttributesScalar*>(attributesSelected());
+
+    if((pas != NULL) && (arr.index() != -1)) {
+
+        double range = pas->max() - pas->min();
+
+        ok = range != 0;
+
+        if(ok)
+            ui->doubleSpinBoxGradientArrowValue->setValue((arr.position()*range)+pas->min());
+    }
+
+    if(!ok)
+        ui->doubleSpinBoxGradientArrowValue->setValue(0);
 }

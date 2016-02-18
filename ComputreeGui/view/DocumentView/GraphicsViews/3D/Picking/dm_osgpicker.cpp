@@ -6,10 +6,10 @@
 #include "ct_accessor/ct_pointaccessor.h"
 
 #include "view/DocumentView/GraphicsViews/3D/dm_osgscenemanager.h"
-#include "view/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_paintertoosgelements.h"
 #include "view/DocumentView/GraphicsViews/3D/Picking/dm_itemdrawablepolytopeintersector.h"
 #include "view/DocumentView/GraphicsViews/3D/Converter/dm_multipleitemdrawabletoosgworker.h"
+#include "tools/graphicsview/dm_pointsrecoverer.h"
 
 #include <QDebug>
 
@@ -406,14 +406,13 @@ osg::Polytope* DM_OsgPicker::getPolytopeToUse() const
 
 void DM_OsgPicker::setGlobalCloudPointsOfItemDrawableSelected(CT_AbstractItemDrawable *item, bool selected)
 {
-    DM_FakePainter painter;
-    painter.setComputingMode(DM_FakePainter::BackupPointCloudIndex | DM_FakePainter::BackupPointCloudIndexIfEdge | DM_FakePainter::BackupPointCloudIndexIfFace);
-    item->draw(*m_view, painter);
+    DM_PointsRecoverer recover;
+    QList<CT_AbstractCloudIndex*> indexes = recover.recoverDrawnGlobalPointsInItemDrawable(QList<CT_AbstractItemDrawable*>() << item, *m_view);
 
     if(selected)
-        addCloudPointsIdToSelection(painter.pointCloudIndexBackup());
+        addCloudPointsIdToSelection(indexes);
     else
-        removeCloudPointsIdFromSelection(painter.pointCloudIndexBackup());
+        removeCloudPointsIdFromSelection(indexes);
 }
 
 void DM_OsgPicker::setVertexAttribArrayOfItemDrawableSelected(CT_AbstractItemDrawable *item, bool selected)

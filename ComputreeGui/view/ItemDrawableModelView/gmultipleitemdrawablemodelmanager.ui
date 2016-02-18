@@ -36,6 +36,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="GGradientManager" name="gradientManagerView" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>40</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -48,6 +58,12 @@
    <class>GItemDrawableModelManager</class>
    <extends>QWidget</extends>
    <header>gitemdrawablemodelmanager.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGradientManager</class>
+   <extends>QWidget</extends>
+   <header>view/Tools/gradient/ggradientmanager.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -51,8 +51,11 @@ public:
     QPixmap *getBackGround();
     GradientArrow currentArrow() const;
     QList<GradientArrow> orderedArrows() const;
+    QLinearGradient toLinearGradient() const;
     int indexUnused() const;
     qreal positionUnused() const;
+    void setArrowsVisible(bool v);
+    GradientArrow arrowByIndex(int index);
 
  protected:
     void paintEvent       (QPaintEvent *);
@@ -61,6 +64,7 @@ public:
     void mouseReleaseEvent(QMouseEvent *);
 
  public slots:
+    void fromLinearGradient(const QLinearGradient &gradient);
     void changeArrow(const GradientArrow &arrow);
     void updateView();
 
@@ -70,6 +74,7 @@ public:
 
  private:
     bool arrowMoving;
+    bool arrowsVisible;
     int backgroundVerSpace;
     int backgroundHorSpace;
     QRect viewRect;

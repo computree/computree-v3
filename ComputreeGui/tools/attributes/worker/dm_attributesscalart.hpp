@@ -128,7 +128,7 @@ bool DM_AttributesScalarT<Type>::process(GDocumentViewForGraphics *doc)
         range = 1;
 
     DM_ColorLinearInterpolator interpolator;
-    constructColorInterpolator(interpolator);
+    interpolator.constructFromQGradient(m_gradient);
 
     const CT_AbstractCloudIndex *index = abstractTypeAttributes()->abstractCloudIndex();
     size_t size = index->size();
@@ -202,38 +202,6 @@ void DM_AttributesScalarT<Type>::autoAdjustMinMax()
 {
     m_manualMin = m_as->dMin();
     m_manualMax = m_as->dMax();
-}
-
-template<typename Type>
-void DM_AttributesScalarT<Type>::constructColorInterpolator(DM_ColorLinearInterpolator &interpolator) const
-{
-    QGradientStops stops = m_gradient.stops();
-
-    if(!stops.isEmpty())
-    {
-        QGradientStop lastStop;
-        lastStop.first = -1;
-
-        QGradientStop firstStop;
-        firstStop.first = 2;
-
-        QVectorIterator< QGradientStop > it(stops);
-
-        while(it.hasNext())
-        {
-            const QGradientStop &stop = it.next();
-
-            interpolator.setKeyValueAt(stop.first, stop.second);
-
-            if(stop.first > lastStop.first)
-                lastStop = stop;
-
-            if(stop.first < firstStop.first)
-                firstStop = stop;
-        }
-    }
-
-    interpolator.finalize();
 }
 
 #endif // DM_ATTRIBUTESSCALART_HPP

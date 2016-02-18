@@ -15,7 +15,8 @@
 
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_geometriesconfiguration.h"
 #include "view/DocumentView/GraphicsViews/3D/Painting/dm_drawelementsuintsynchronized.h"
-#include "view/DocumentView/GraphicsViews/3D/Painting/dm_fakepainter.h"
+#include "tools/graphicsview/dm_pointsrecoverer.h"
+#include "tools/graphicsview/dm_pointscolourist.h"
 
 #define MIN_DOUBLE_VALUE_IN_METERS 0.0001
 
@@ -112,13 +113,9 @@ void DM_PainterToOsgElements::staticChangeColorOfItemDrawableInResult(CT_Abstrac
                 if((g->getName() == NAME_LOCAL_GEOMETRIES_GROUP) && !localOK) {
                     staticRecursiveChangeColorOfFirstColorArrayInGroup(g, osgColor);
                 } else if((g->getName() == NAME_GLOBAL_GEOMETRIES_GROUP) && !globalOK) {
-                    DM_FakePainter p;
-                    p.setComputingMode(DM_FakePainter::BackupPointCloudIndex
-                                       | DM_FakePainter::BackupPointCloudIndexIfEdge
-                                       | DM_FakePainter::BackupPointCloudIndexIfFace);
-                    item->draw(*gv, p);
-
-                    staticChangeColorOfCloudsOfFirstColorArrayInGroup(p.pointCloudIndexBackup(), osgColor, g);
+                    DM_PointsRecoverer recover;
+                    QList<CT_AbstractCloudIndex*> indexes = recover.recoverDrawnGlobalPointsInItemDrawable(QList<CT_AbstractItemDrawable*>() << item, *gv);
+                    staticChangeColorOfCloudsOfFirstColorArrayInGroup(indexes, osgColor, g);
                 }
 
                 if(localOK && globalOK)

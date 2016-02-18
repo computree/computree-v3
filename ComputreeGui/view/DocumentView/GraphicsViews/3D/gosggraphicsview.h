@@ -170,6 +170,11 @@ public:
     virtual void updateItemDrawablesThatColorWasModified();
 
     /**
+     * @brief Call this method if you want to change the color of points draw by the item passed in parameter
+     */
+    virtual void updateColorOfPointsOfItemDrawable(CT_AbstractItemDrawable *item, const QColor &color);
+
+    /**
      * @brief Call this method if you have changed colors of points in the document (colorArray) and you want that in view it will
      *        be updated
      */

@@ -1034,6 +1034,11 @@ public:
     virtual QString getTitle() const = 0;
 
     /**
+     * @brief The number of the document (unique)
+     */
+    virtual int getNumber() const = 0;
+
+    /**
      * @brief Lock the document to disable the access of ItemDrawable (exemple : lock the draw of ItemDrawable, lock the loading of ItemDrawable, etc...)
      */
     virtual void lock() = 0;
@@ -1112,6 +1117,16 @@ public:
       * \brief Returns all ItemDrawable selected
       */
     virtual QList<CT_AbstractItemDrawable*> getSelectedItemDrawable() const = 0;
+
+    /**
+     * @brief Returns true if the itemdrawable is contained in this document
+     */
+    virtual bool containsItemDrawable(const CT_AbstractItemDrawable *item) const = 0;
+
+    /**
+     * @brief Returns true if the itemdrawable or at least one children is contained in this document
+     */
+    virtual bool containsItemDrawableOrAtLeastOneChildren(const CT_AbstractItemDrawable *item) const = 0;
 
     /**
      * @brief Returns true if this document use item color.

@@ -346,6 +346,34 @@ bool GDocumentManagerView::removeAllItemDrawableOfListFromDocuments(QList<CT_Abs
     return true;
 }
 
+bool GDocumentManagerView::removeAllItemDrawableOfListFromDocument(QList<CT_AbstractItemDrawable *> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress)
+{
+    progress.setProgress(0);
+
+    if(!itemList.isEmpty())
+    {
+        int i = 0;
+        int n = itemList.size();
+
+        QListIterator<CT_AbstractItemDrawable*> itItem(itemList);
+
+        while(itItem.hasNext())
+        {
+            CT_AbstractItemDrawable *item = itItem.next();
+
+            if(item->isDisplayed() && item->document().contains(doc))
+                doc->removeItemDrawable(*item);
+
+            ++i;
+            progress.setProgress(((float)(i*100))/n);
+        }
+    }
+
+    progress.setProgress(100);
+
+    return true;
+}
+
 DM_DocumentView* GDocumentManagerView::getActiveDocumentView()
 {
     if(activeSubWindow() == NULL)

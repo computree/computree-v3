@@ -131,7 +131,6 @@ private:
     QFutureWatcher<void>            m_watcher;
 
     void autoAdjustMinMax();
-    void constructColorInterpolator(DM_ColorLinearInterpolator &interpolator) const;
 
     static void staticApply(ConcurrentMapInfo *info) { Q_UNUSED(info) }
 };

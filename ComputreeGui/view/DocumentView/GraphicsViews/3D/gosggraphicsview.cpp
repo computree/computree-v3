@@ -19,6 +19,9 @@
 
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 
+#include "tools/graphicsview/dm_pointscolourist.h"
+#include "tools/graphicsview/dm_pointsrecoverer.h"
+
 #include <QApplication>
 #include <QEvent>
 #include <QResizeEvent>
@@ -1210,6 +1213,18 @@ void GOsgGraphicsView::updateItemDrawablesThatColorWasModified()
 {
     m_sceneManager->updateItemDrawablesThatColorWasModified();
     updateGL();
+}
+
+void GOsgGraphicsView::updateColorOfPointsOfItemDrawable(CT_AbstractItemDrawable *item, const QColor &color)
+{
+    CT_CCR ccr = dynamic_cast<GDocumentViewForGraphics*>(document())->getGlobalColorArrayRegisteredForPoints();
+
+    if(!ccr.isNull() && (ccr.data()->abstractColorCloud() != NULL)) {
+        DM_PointsRecoverer recover;
+        QList<CT_AbstractCloudIndex*> indexes = recover.recoverDrawnGlobalPointsInItemDrawable(QList<CT_AbstractItemDrawable*>() << item, *this);
+
+        DM_PointsColourist::colorGlobalPointsWithUniqueColor(ccr.data()->abstractColorCloud(), indexes, color);
+    }
 }
 
 void GOsgGraphicsView::dirtyColorsOfItemDrawablesWithPoints()

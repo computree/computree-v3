@@ -106,10 +106,13 @@ private slots:
     void on_pushButtonNormalsColorPicker_colorChanged(QColor c);
     void on_pushButtonApplyEditNormals_clicked();
 
+    void on_doubleSpinBoxGradientArrowValue_editingFinished();
+
     void pushButtonApplyClicked();
     void pushButtonConfigureClicked();
     void itemChanged(QStandardItem *item);
     void treeView_currentRowChanged(const QModelIndex & current, const QModelIndex & previous);
+    void updateArrowValue(qreal val, GradientArrow arr);
 };
 
 template<>

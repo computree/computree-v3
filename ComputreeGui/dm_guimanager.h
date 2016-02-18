@@ -261,14 +261,14 @@ public:
     virtual bool asyncRemoveAllItemDrawableOfModelFromView(CT_OutAbstractItemModel &model, DM_DocumentView &view, DM_Context *context);
 
     /**
-      * \brief Gre la suppression de la liste des ItemDrawables pass en paramtres des diffrentes
-      *  vues. (Asynchrone)
+      * \brief Gère la suppression de la liste des ItemDrawables passé en paramètres du document passé en paramètre (Asynchrone)
       *
       * \param itemList : la liste des itemsDrawable
-      * \param context : le context a renvoyer lorsque l'action est termin (voir signal correspondant)
-      * \return false si une demande a dj t formul et n'est pas termine
+      * \param view : le document duquel il faut supprimer les éléments. NULL si vous voulez ajouter au document actif
+      * \param context : le context a renvoyer lorsque l'action est terminé (voir signal correspondant)
+      * \return false si une demande a déjà été formul et n'est pas terminé
       */
-    virtual bool asyncRemoveAllItemDrawableOfListOnView(QList<CT_AbstractItemDrawable*> &itemList, DM_Context *context);
+    virtual bool asyncRemoveAllItemDrawableOfListFromView(QList<CT_AbstractItemDrawable*> &itemList, DM_DocumentView *view, DM_Context *context);
 
     /**
       * \brief Gre la suppression d'une tape (suppression des rsultats de la mmoire,

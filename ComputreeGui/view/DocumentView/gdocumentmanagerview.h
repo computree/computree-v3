@@ -59,6 +59,7 @@ public:
     bool removeAllItemDrawableOfModelFromDocuments(CT_OutAbstractItemModel &model, DM_AsynchroneProgress &progress);
     bool removeAllItemDrawableOfModelFromDocument(CT_OutAbstractItemModel &model, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
     bool removeAllItemDrawableOfListFromDocuments(QList<CT_AbstractItemDrawable *> &itemList, DM_AsynchroneProgress &progress);
+    bool removeAllItemDrawableOfListFromDocument(QList<CT_AbstractItemDrawable *> &itemList, DM_DocumentView *doc, DM_AsynchroneProgress &progress);
 
     DM_DocumentView* getActiveDocumentView();
     DM_DocumentView* getDocumentView(int index) const;
