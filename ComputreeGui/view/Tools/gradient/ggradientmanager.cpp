@@ -102,6 +102,14 @@ GGradientManager::GGradientManager(QWidget *parent) :
 
     addGradient(gr);
 
+    // FOREST
+    gr = QLinearGradient(0, 0, 1, 0);
+    special.setRgb(139, 69, 19);
+    gr.setColorAt(0, special);
+    gr.setColorAt(1, Qt::green);
+
+    addGradient(gr);
+
     setGradientSelected(0);
 }
 

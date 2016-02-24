@@ -254,7 +254,8 @@ bool CT_ReaderResultAddingTools::addReaderResults(CT_ResultGroup *outRes,
         QListIterator<CT_AbstractItemGroup*> itG(groups);
 
         while(itG.hasNext()) {
-            Q_ASSERT_X(addGroupToParentAndChangeModelOfChildrens(itG.next(), group, links), "CT_ReaderResultAddingTools addReaderResults", "Problem to add a group or children of a reader !");
+            CT_AbstractItemGroup *nGroup = itG.next();
+            Q_ASSERT_X(addGroupToParentAndChangeModelOfChildrens(nGroup, group, links), "CT_ReaderResultAddingTools addReaderResults", "Problem to add a group or children of a reader !");
         }
     }
 
@@ -277,7 +278,8 @@ bool CT_ReaderResultAddingTools::addReaderResults(CT_ResultGroup *outRes,
         QListIterator<CT_AbstractSingularItemDrawable*> itI(items);
 
         while(itI.hasNext()) {
-            Q_ASSERT_X(group->addItemDrawable(itI.next()), "CT_ReaderResultAddingTools addReaderResults", "Problem to add a item of a reader !");
+            CT_AbstractSingularItemDrawable *nItem = itI.next();
+            Q_ASSERT_X(group->addItemDrawable(nItem), "CT_ReaderResultAddingTools addReaderResults", "Problem to add a item of a reader !");
         }
     }
 
