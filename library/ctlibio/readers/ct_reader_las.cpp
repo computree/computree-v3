@@ -94,6 +94,25 @@ CT_LASHeader* CT_Reader_LAS::readHeader(const QString &filepath, QString &error)
     return header;
 }
 
+bool CT_Reader_LAS::setAllSettings(const SettingsNodeGroup *settings)
+{
+    if(CT_AbstractReader::setAllSettings(settings))
+    {
+        QString error;
+
+        CT_LASHeader *header = readHeader(filepath(), error);
+
+        if(header == NULL)
+            return false;
+
+        m_header = header;
+
+        return true;
+    }
+
+    return false;
+}
+
 CT_AbstractReader* CT_Reader_LAS::copy() const
 {
     return new CT_Reader_LAS();

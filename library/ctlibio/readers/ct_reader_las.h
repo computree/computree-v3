@@ -48,6 +48,8 @@ public:
      */
     CT_LASHeader* readHeader(const QString &filepath, QString &error) const;
 
+    bool setAllSettings(const SettingsNodeGroup *settings);
+
     CT_AbstractReader* copy() const;
     READER_COPY_FULL_IMP(CT_Reader_LAS)
 
