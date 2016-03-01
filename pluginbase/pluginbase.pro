@@ -48,7 +48,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     actions/pb_actionpickitemsinlist.h \
     views/actions/pb_actionpickitemsinlistoptions.h \
     step/pb_stepcreatereaderlist.h \
-    step/pb_stepusereadertoloadfiles.h
+    step/pb_stepusereadertoloadfiles.h \
+    step/pb_stepexportattributesinloop.h
 
 SOURCES += \
     pb_pluginentry.cpp \
@@ -88,7 +89,8 @@ SOURCES += \
     actions/pb_actionpickitemsinlist.cpp \
     views/actions/pb_actionpickitemsinlistoptions.cpp \
     step/pb_stepcreatereaderlist.cpp \
-    step/pb_stepusereadertoloadfiles.cpp
+    step/pb_stepusereadertoloadfiles.cpp \
+    step/pb_stepexportattributesinloop.cpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./actions

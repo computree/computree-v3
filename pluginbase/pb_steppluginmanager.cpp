@@ -47,6 +47,7 @@
 #include "step/pb_stepbeginloopthroughgroups.h"
 #include "step/pb_stepapplypointfilters.h"
 #include "step/pb_stepexportitemlist.h"
+#include "step/pb_stepexportattributesinloop.h"
 #include "actions/pb_actionselectitemdrawablegv.h"
 #include "actions/pb_actionshowitemdatagv.h"
 
@@ -138,6 +139,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewLoadStep<PB_StepUseReaderToLoadFiles>("");
 
     addNewExportStep<PB_StepExportItemList>("");
+    addNewExportStep<PB_StepExportAttributesInLoop>("");
 
     return true;
 }
