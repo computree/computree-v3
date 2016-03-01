@@ -16,6 +16,8 @@
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+#include <QFile>
+#include <QTextStream>
 
 // Alias for indexing models
 #define DEFin_res "res"
@@ -89,6 +91,10 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 void PB_StepExportAttributesInLoop::compute()
 {
 
+    QFile f("./testExport.txt");
+    f.open(QFile::WriteOnly);
+    QTextStream stream (&f);
+
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn = inResultList.at(0);
 
@@ -105,6 +111,8 @@ void PB_StepExportAttributesInLoop::compute()
         {
             CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) itItem.next();
 
+            stream << item->displayableName() << ";";
+
             if (item != NULL)
             {
                 QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes((CT_InAbstractItemAttributeModel*) PS_MODELS->searchModel(DEFin_attribute, resIn, this));
@@ -112,17 +120,14 @@ void PB_StepExportAttributesInLoop::compute()
                 for (int i = 0 ; i < attributes.size() ; i++)
                 {
                     CT_AbstractItemAttribute* attribute = attributes.at(i);
+                    stream << attribute->displayableName() << ";";
                 }
             }
+
+            stream << "\r\n";
         }
     }
-    
 
-    QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* res_res = outResultList.at(0);
-
-    // OUT results creation
-    CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_res);
-    res_res->addGroup(grp_grp);  
+    f.close();
 
 }

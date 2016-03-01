@@ -45,7 +45,9 @@ CT_InAbstractModel* CT_InStdItemAttributeModel::copy(bool withPossibilities) con
                                                                      categoriesType(),
                                                                      valueType(),
                                                                      description(),
-                                                                     displayableName());
+                                                                     displayableName(),
+                                                                     choiceMode(),
+                                                                     finderMode());
 
     if(withPossibilities)
         CT_InAbstractModel::staticCopyPossibilitiesToModel(this, cpy);

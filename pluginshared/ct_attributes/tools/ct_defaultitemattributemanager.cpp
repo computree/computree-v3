@@ -107,7 +107,7 @@ QList<CT_AbstractItemAttribute*> CT_DefaultItemAttributeManager::itemAttributesF
 {
     QStringList types = itemType.split("/");
 
-    QList<CT_AbstractItemAttribute*> l;
+    QSet<CT_AbstractItemAttribute*> l;
 
     QList<CT_InStdModelPossibility*> p = inModel->getPossibilitiesSavedSelected();
     QListIterator<CT_InStdModelPossibility*> itP(p);
@@ -129,14 +129,14 @@ QList<CT_AbstractItemAttribute*> CT_DefaultItemAttributeManager::itemAttributesF
                 {
                     foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
                         if(c->m_model == orModel)
-                            l.append(c->m_model->itemAttribute());
+                            l.insert(c->m_model->itemAttribute());
                     }
                 }
             }
         }
     }
 
-    return l;
+    return l.toList();
 }
 
 CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const
