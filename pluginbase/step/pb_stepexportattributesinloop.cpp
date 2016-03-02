@@ -18,6 +18,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 
 // Alias for indexing models
 #define DEFin_res "res"
@@ -98,38 +99,71 @@ void PB_StepExportAttributesInLoop::compute()
 
     CT_ModelSearchHelper::SplitHash hash = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
 
+    QList<QString> modelsKeys;
+    QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> itModels(hash);
+    while (itModels.hasNext())
+    {
+        itModels.next();
+
+        CT_OutAbstractSingularItemModel  *itemModel = itModels.key();
+        CT_OutAbstractItemAttributeModel *attrModel = itModels.value();
+
+        QString itemDN = itemModel->displayableName();
+        QString itemUN = itemModel->uniqueName();
+
+        QString attrDN = attrModel->displayableName();
+        QString attrUN = attrModel->uniqueName();
+
+        if (attrModel->isADefaultItemAttributeModel()) {attrUN = attrDN;}
+
+        QString key = QString("ITEM_%1_ATTR_%2").arg(itemUN).arg(attrUN);
+        modelsKeys.append(key);
+    }
+    qSort(modelsKeys.begin(), modelsKeys.end());
+
     // IN results browsing
     CT_ResultGroupIterator itIn_grp(resIn, this, DEFin_grp);
     while (itIn_grp.hasNext() && !isStopped())
     {
         const CT_AbstractItemGroup* grp = (CT_AbstractItemGroup*) itIn_grp.next();
 
-        CT_ItemIterator itItem(grp, this, DEFin_itemWithAttribute);
+        QMap<QString, CT_AbstractItemAttribute *> indexedAttributes;
 
+        CT_ItemIterator itItem(grp, this, DEFin_itemWithAttribute);
         while (itItem.hasNext())
         {
             CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) itItem.next();
 
-            stream << item->displayableName() << ";";
-
             if (item != NULL)
             {
-                //QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes((CT_InAbstractItemAttributeModel*) PS_MODELS->searchModel(DEFin_attribute, resIn, this));
-
-
-                QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values((CT_OutAbstractSingularItemModel*)item->model());
-
+                CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*)item->model();
+                QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values(itemModel);
                 QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes(attributesModel);
 
                 for (int i = 0 ; i < attributes.size() ; i++)
                 {
                     CT_AbstractItemAttribute* attribute = attributes.at(i);
-                    stream << attribute->displayableName() << ";";
+                    CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
+
+                    QString attrUN = attrModel->uniqueName();
+                    if (attrModel->isADefaultItemAttributeModel()) {attrUN = attrModel->displayableName();}
+
+                    indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), attribute);
                 }
             }
-
-            stream << "\r\n";
         }
+
+        for (int i = 0 ; i < modelsKeys.size() ; i++)
+        {
+            CT_AbstractItemAttribute* attribute = indexedAttributes.value(modelsKeys.at(i), NULL);
+            if (attribute != NULL)
+            {
+                stream << attribute->displayableName() << " " << attribute->type() << " " << attribute->typeToString() << "\n";
+            } else {
+                stream << QString("Modèle ATTR manquant\n");
+            }
+        }
+
     }
 
     f.close();
