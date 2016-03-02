@@ -112,6 +112,65 @@ CT_AbstractModel *CT_ModelSearchHelper::searchModel(const QString &inOrOutModelU
     return model;
 }
 
+CT_ModelSearchHelper::SplitHash CT_ModelSearchHelper::splitSelectedAttributesModelBySelectedSingularItemModel(const QString &inAttributeModelUniqueName,
+                                                                                                              const QString &inSingularItemModelUniqueName,
+                                                                                                              const CT_OutAbstractResultModel *inResultModel,
+                                                                                                              const CT_VirtualAbstractStep *yourStep)
+{
+    //getInSplitCach(inResultModel, inAttributeModelUniqueName, inSingularItemModelUniqueName, inResultModel);
+
+    SplitHash ret;
+
+    // get the attribute model
+    CT_InAbstractItemAttributeModel *attModel = dynamic_cast<CT_InAbstractItemAttributeModel*>(searchModel(inAttributeModelUniqueName,
+                                                                                                           inResultModel,
+                                                                                                           yourStep));
+
+    if(attModel == NULL)
+        qFatal("You search a item attribute with a model name but it was not a item attribute model");
+
+    // get the singular item model
+    CT_InAbstractSingularItemModel *itemModel = dynamic_cast<CT_InAbstractSingularItemModel*>(searchModel(inSingularItemModelUniqueName,
+                                                                                                          inResultModel,
+                                                                                                          yourStep));
+
+    if(itemModel == NULL)
+        qFatal("You search a singular item with a model name but it was not a singular item model");
+
+    // get possibilities of the IN item model (a list of out model selected by the user)
+    QList<CT_InStdModelPossibility *> itemPossibilities = itemModel->getPossibilitiesSavedSelected();
+    QListIterator<CT_InStdModelPossibility*> it(itemPossibilities);
+
+    // get possibilities of the IN attribute model (a list of out model selected by the user)
+    QList<CT_InStdModelPossibility *> attPossibilities = attModel->getPossibilitiesSavedSelected();
+
+    // for all possibility of item selected by the user
+    while(it.hasNext()) {
+        // get the real item model (OUT model)
+        CT_OutAbstractSingularItemModel *itemPossibilityOutModel = (CT_OutAbstractSingularItemModel*)it.next()->outModel();
+
+        // get list of his attributes
+        const QList<CT_OutAbstractItemAttributeModel*> &itemAttributes = itemPossibilityOutModel->itemAttributes();
+
+        QMutableListIterator<CT_InStdModelPossibility*> itA(attPossibilities);
+
+        // for all possibility of attribute selected by the user
+        while(itA.hasNext()) {
+
+            CT_InStdModelPossibility *attPossibility = itA.next();
+
+            // if list of attributes of the selected item contains a attribute selected by the user
+            if(itemAttributes.contains((CT_OutAbstractItemAttributeModel*)attPossibility->outModel())) {
+                // add it to the result map (multimap)
+                ret.insert(itemPossibilityOutModel, (CT_OutAbstractItemAttributeModel*)attPossibility->outModel());
+                itA.remove();
+            }
+        }
+    }
+
+    return ret;
+}
+
 void CT_ModelSearchHelper::removeCacheForResult(const CT_AbstractResult *res)
 {
     removeCacheForResultModel(res->model());

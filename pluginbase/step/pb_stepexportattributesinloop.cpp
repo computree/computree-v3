@@ -79,8 +79,6 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepExportAttributesInLoop::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_res = createNewOutResultModel(DEFout_res, tr("Résultat vide"));
-    res_res->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe vide"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -98,6 +96,7 @@ void PB_StepExportAttributesInLoop::compute()
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn = inResultList.at(0);
 
+    CT_ModelSearchHelper::SplitHash hash = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
 
     // IN results browsing
     CT_ResultGroupIterator itIn_grp(resIn, this, DEFin_grp);
@@ -115,7 +114,12 @@ void PB_StepExportAttributesInLoop::compute()
 
             if (item != NULL)
             {
-                QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes((CT_InAbstractItemAttributeModel*) PS_MODELS->searchModel(DEFin_attribute, resIn, this));
+                //QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes((CT_InAbstractItemAttributeModel*) PS_MODELS->searchModel(DEFin_attribute, resIn, this));
+
+
+                QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values((CT_OutAbstractSingularItemModel*)item->model());
+
+                QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes(attributesModel);
 
                 for (int i = 0 ; i < attributes.size() ; i++)
                 {

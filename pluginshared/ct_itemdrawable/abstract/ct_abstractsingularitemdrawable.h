@@ -72,9 +72,13 @@ public:
 
     /**
      * @brief Returns a list of item attributes corresponding to the possibility selected of the INPUT model passed in parameter
-     * @return NULL if item attribute don't exist in this singular item
      */
     QList<CT_AbstractItemAttribute*> itemAttributes(const CT_InAbstractItemAttributeModel *inModel) const;
+
+    /**
+     * @brief Returns a list of item attributes corresponding to the list of out models passed in parameter
+     */
+    QList<CT_AbstractItemAttribute*> itemAttributes(const QList<CT_OutAbstractItemAttributeModel *> &outModelList) const;
 
     /**
      * @brief Return all item attributes of this item drawable

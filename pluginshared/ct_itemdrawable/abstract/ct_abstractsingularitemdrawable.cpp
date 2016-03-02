@@ -106,6 +106,27 @@ QList<CT_AbstractItemAttribute*> CT_AbstractSingularItemDrawable::itemAttributes
     return l;
 }
 
+QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttributes(const QList<CT_OutAbstractItemAttributeModel *> &outModelList) const
+{
+    QList<CT_AbstractItemAttribute *> l;
+
+    QString myType = getType();
+
+    QListIterator<CT_OutAbstractItemAttributeModel*> it(outModelList);
+
+    while(it.hasNext()) {
+        CT_OutAbstractItemAttributeModel *model = it.next();
+        CT_AbstractItemAttribute *att = m_itemAttributes.itemAttributeFromModel(model);
+
+        if(att == NULL)
+            att = PS_DIAM->itemAttributeFromModel(model, myType);
+
+        l.append(att);
+    }
+
+    return l;
+}
+
 QList<CT_AbstractItemAttribute *> CT_AbstractSingularItemDrawable::itemAttributes() const
 {
     QList<CT_AbstractItemAttribute *> l;
