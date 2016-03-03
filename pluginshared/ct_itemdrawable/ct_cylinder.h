@@ -44,8 +44,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Cylinder : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Cylinder, CT_AbstractShape)
 
 public:
     CT_Cylinder();
@@ -58,13 +58,6 @@ public:
     CT_Cylinder(const QString &modelName,
                      const CT_AbstractResult *result,
                      CT_CylinderData *data);
-
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     double getRadius() const;
     double getHeight() const;
@@ -92,13 +85,13 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Cylinder)
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataXDirection(), &CT_Cylinder::getDirectionX, QObject::tr("Direction X"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataYDirection(), &CT_Cylinder::getDirectionY, QObject::tr("Direction Y"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataZDirection(), &CT_Cylinder::getDirectionZ, QObject::tr("Direction Z"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataRadius(), &CT_Cylinder::getRadius, QObject::tr("Rayon"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataLength(), &CT_Cylinder::getHeight, QObject::tr("Longueur"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataR2(), &CT_Cylinder::getCircleError, QObject::tr("Erreur d'ajustement du cercle"))
-    CT_DEFAULT_IA_V2(CT_Cylinder, CT_AbstractCategory::staticInitDataR2(), &CT_Cylinder::getLineError, QObject::tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataXDirection(), &CT_Cylinder::getDirectionX, QObject::tr("Direction X"), "dx")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataYDirection(), &CT_Cylinder::getDirectionY, QObject::tr("Direction Y"), "dy")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataZDirection(), &CT_Cylinder::getDirectionZ, QObject::tr("Direction Z"), "dz")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataRadius(), &CT_Cylinder::getRadius, QObject::tr("Rayon"), "ray")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataLength(), &CT_Cylinder::getHeight, QObject::tr("Longueur"), "lon")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataR2(), &CT_Cylinder::getCircleError, QObject::tr("Erreur d'ajustement du cercle"), "eadc")
+    CT_DEFAULT_IA_V3(CT_Cylinder, CT_AbstractCategory::staticInitDataR2(), &CT_Cylinder::getLineError, QObject::tr("Erreur d'ajustement de la ligne"), "eadl")
     CT_DEFAULT_IA_END(CT_Cylinder)
 
     const static CT_StandardCylinderDrawManager CYLINDER_DRAW_MANAGER;

@@ -120,6 +120,7 @@ private:
 class PLUGINSHAREDSHARED_EXPORT CT_PointCluster : public CT_AbstractItemDrawableWithPointCloud
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_PointCluster, CT_AbstractItemDrawableWithPointCloud)
 
 public:
 
@@ -132,12 +133,6 @@ public:
                     const CT_AbstractResult *result);
 
     virtual ~CT_PointCluster();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
       * \brief Ajoute un point au groupe  partir de son index dans le nuage de point (PointCloud)

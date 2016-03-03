@@ -19,16 +19,6 @@ CT_StdLASPointsAttributesContainer::CT_StdLASPointsAttributesContainer(const QSt
 
 }
 
-QString CT_StdLASPointsAttributesContainer::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_StdLASPointsAttributesContainer::staticGetType()
-{
-    return CT_AbstractPointsAttributesContainer::staticGetType() + "/CT_StdLASPointsAttributesContainer";
-}
-
 void CT_StdLASPointsAttributesContainer::insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att)
 {
     if(att != NULL)

@@ -37,8 +37,8 @@
   */
 class PLUGINSHAREDSHARED_EXPORT CT_ReaderItem : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_ReaderItem, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
     /**
@@ -56,12 +56,6 @@ public:
 
     virtual ~CT_ReaderItem();
 
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
-
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     // By default CT_ReaderItem don't have a Bounding Box : redefine in children class of geographical files
@@ -77,8 +71,8 @@ private:
     CT_AbstractReader*  _reader;
 
     CT_DEFAULT_IA_BEGIN(CT_ReaderItem)
-    CT_DEFAULT_IA_V2(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderFilePath, QObject::tr("FilePath"))
-    CT_DEFAULT_IA_V2(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderName, QObject::tr("ReaderName"))
+    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderFilePath, QObject::tr("FilePath"), "fi")
+    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderName, QObject::tr("ReaderName"), "rn")
     CT_DEFAULT_IA_END(CT_ReaderItem)
 
 };

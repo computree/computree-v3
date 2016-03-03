@@ -6,6 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributesScalar : public CT_AbstractEdgeAttributes
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributesScalar, CT_AbstractEdgeAttributes)
 
 public:
     CT_AbstractEdgeAttributesScalar();
@@ -16,12 +17,6 @@ public:
     CT_AbstractEdgeAttributesScalar(const QString &modelName,
                                     CT_AbstractResult *result,
                                     CT_ECIR cir);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     virtual double dMin() const = 0;
     virtual double dMax() const = 0;

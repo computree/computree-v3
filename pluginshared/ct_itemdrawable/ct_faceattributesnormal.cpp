@@ -41,17 +41,6 @@ CT_FaceAttributesNormal::CT_FaceAttributesNormal(const QString &modelName,
 {
 }
 
-
-QString CT_FaceAttributesNormal::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_FaceAttributesNormal::staticGetType()
-{
-    return CT_AbstractFaceAttributes::staticGetType() + "/CT_FaceAttributesNormal";
-}
-
 CT_AbstractItemDrawable* CT_FaceAttributesNormal::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_AbstractNormalCloud* normalCloud = getNormalCloud();

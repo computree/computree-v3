@@ -91,16 +91,6 @@ const QVector<Eigen::Vector2d*>& CT_Polyline2D::getVertices() const
     return ((const CT_Polyline2DData&)getData()).getVertices();
 }
 
-QString CT_Polyline2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Polyline2D::staticGetType()
-{
-    return CT_AbstractShape2D::staticGetType() + "/CT_Polyline2D";
-}
-
 CT_AbstractItemDrawable* CT_Polyline2D::copy(const CT_OutAbstractItemModel *model,
                                            const CT_AbstractResult *result,
                                            CT_ResultCopyModeList copyModeList)

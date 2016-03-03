@@ -20,6 +20,9 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractGrid4D : public CT_AbstractItemDrawableWithoutPointCloud
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractGrid4D, CT_AbstractItemDrawableWithoutPointCloud)
+
 public:
 //**********************************************//
 //           Constructors/Destructors           //
@@ -535,22 +538,6 @@ public:
                                               _dimy = (size_t)dim.y();
                                               _dimz = (size_t)dim.z();
                                             }
-
-//**********************************************//
-//          CompuTree Core and GUI tools        //
-//**********************************************//
-    /*!
-     * \brief getType
-     * \return A string describing the hierarchy of computree types until this class
-     */
-    inline virtual QString getType() const { return staticGetType(); }
-
-    /*!
-     * \brief staticGetType
-     * Same as getType but static
-     * \return A string describing the hierarchy of computree types until this class
-     */
-    inline static QString staticGetType() { return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractGrid4D"; }
 
     /*!
      * \brief name

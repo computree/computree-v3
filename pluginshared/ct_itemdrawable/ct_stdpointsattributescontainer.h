@@ -8,6 +8,9 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_StdPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_StdPointsAttributesContainer, CT_AbstractPointsAttributesContainer)
+
 public:
     CT_StdPointsAttributesContainer();
 
@@ -16,12 +19,6 @@ public:
 
     CT_StdPointsAttributesContainer(const QString &modelName,
                                     const CT_AbstractResult *result);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Insert the CT_AbstractPointsAttributes at key 'key'. If an attribute already exist it will be replaced.

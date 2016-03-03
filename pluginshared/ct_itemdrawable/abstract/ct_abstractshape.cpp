@@ -52,16 +52,6 @@ CT_AbstractShape::~CT_AbstractShape()
     delete _data;
 }
 
-QString CT_AbstractShape::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractShape::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractShape";
-}
-
 void CT_AbstractShape::setCenterX(double x)
 {
     getDataNotConst()->_center(0) = x;

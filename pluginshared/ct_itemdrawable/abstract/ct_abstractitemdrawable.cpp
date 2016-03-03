@@ -200,6 +200,7 @@ QString CT_AbstractItemDrawable::displayableName() const
 QString CT_AbstractItemDrawable::staticGetType()
 {
     return "ItemDrawable/CT_AbstractItemDrawable";
+
 }
 
 void CT_AbstractItemDrawable::setAutoDelete(bool autoDelete)

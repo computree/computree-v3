@@ -8,8 +8,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_ItemAttributeList : public CT_AbstractSingularItemDrawable
 {
-    // IMPORTANT to have the name of the ItemDrawable in the view
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_ItemAttributeList, CT_AbstractSingularItemDrawable)
 
 public:
     CT_ItemAttributeList();
@@ -19,12 +19,6 @@ public:
 
     CT_ItemAttributeList(const QString &modelName,
                          const CT_AbstractResult *result);
-
-    /**
-      * WARNING : don't forget to redefined this methods if you inherit this class
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Returns a copy of this item

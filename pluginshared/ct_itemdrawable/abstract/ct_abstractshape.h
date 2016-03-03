@@ -37,8 +37,8 @@
   */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractShape : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractShape, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
     /**
@@ -57,12 +57,6 @@ public:
                      CT_ShapeData *data);
 
     virtual ~CT_AbstractShape();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     void setCenterX(double x);
     void setCenterY(double y);

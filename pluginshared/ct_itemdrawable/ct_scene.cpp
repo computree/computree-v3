@@ -59,16 +59,6 @@ CT_Scene::~CT_Scene()
 {
 }
 
-QString CT_Scene::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Scene::staticGetType()
-{
-    return CT_AbstractItemDrawableWithPointCloud::staticGetType() + "/CT_Scene";
-}
-
 int CT_Scene::getFastestIncrement() const
 {
     return ((getPointCloudIndex() == NULL) || (getPointCloudIndex()->size() < 5000000)) ? 16 : 64;

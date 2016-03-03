@@ -48,11 +48,6 @@ CT_AbstractSingularItemDrawable::CT_AbstractSingularItemDrawable(const QString &
     m_defaultColor = Qt::white;
 }
 
-QString CT_AbstractSingularItemDrawable::staticGetType()
-{
-    return CT_AbstractItemDrawable::staticGetType() + "/CT_AbstractSingularItemDrawable";
-}
-
 void CT_AbstractSingularItemDrawable::changeResult(const CT_AbstractResult *newRes)
 {
     QList<CT_AbstractItemAttribute*> l = m_itemAttributes.itemAttributesFromResult(result());

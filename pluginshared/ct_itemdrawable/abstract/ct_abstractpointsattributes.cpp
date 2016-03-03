@@ -34,16 +34,6 @@ CT_AbstractPointsAttributes::CT_AbstractPointsAttributes(const QString &modelNam
     setBaseDrawManager(&APA_DRAW_MANAGER);
 }
 
-QString CT_AbstractPointsAttributes::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractPointsAttributes::staticGetType()
-{
-    return CT_AbstractAttributes::staticGetType() + "/CT_AbstractPointsAttributes";
-}
-
 const CT_AbstractPointCloudIndex* CT_AbstractPointsAttributes::getPointCloudIndex() const
 {
     return m_apci;

@@ -47,16 +47,6 @@ CT_MeshModel::~CT_MeshModel()
     clearMesh();
 }
 
-QString CT_MeshModel::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_MeshModel::staticGetType()
-{
-    return CT_AbstractMeshModel::staticGetType() + "/CT_MeshModel";
-}
-
 void CT_MeshModel::setAutoDeleteMesh(bool enable)
 {
     m_autoDeleteMesh = enable;

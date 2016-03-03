@@ -11,6 +11,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractSingularItemDrawable : public CT_AbstractItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable, CT_AbstractItemDrawable)
 
 public:
     CT_AbstractSingularItemDrawable();
@@ -32,12 +33,6 @@ public:
      */
     CT_AbstractSingularItemDrawable(const QString &modelName,
                                     const CT_AbstractResult *result);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    virtual QString getType() const = 0;
-    static QString staticGetType();
 
     /**
      * @brief Change the result that contains this item.
@@ -217,11 +212,11 @@ private:
     // declare that we will add default item attributes in this class
     //  => We must add CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable) in top of cpp file
     CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataId(), &CT_AbstractSingularItemDrawable::id, QObject::tr("ID"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Nom"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Centre X"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Centre Y"))
-    CT_DEFAULT_IA_V2(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Z"))
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataId(), &CT_AbstractSingularItemDrawable::id, QObject::tr("ID"), "id")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Nom"), "name")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Centre X"), "cx")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Centre Y"), "cy")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Z"), "cz")
     CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)

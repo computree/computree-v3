@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Line : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Line, CT_AbstractShape)
 
 public:
 
@@ -59,12 +59,6 @@ public:
     CT_Line(const QString &modelName,
             const CT_AbstractResult *result,
             CT_LineData *data);
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     inline const Eigen::Vector3d& getP1() const {return ((const CT_LineData&)getData()).getP1();}
     inline const Eigen::Vector3d& getP2() const {return ((const CT_LineData&)getData()).getP2();}
@@ -94,16 +88,16 @@ private:
     const static CT_StandardLineDrawManager   LINE_DRAW_MANAGER;
 
     CT_DEFAULT_IA_BEGIN(CT_Line)
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP1_X, QObject::tr("X1"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP1_Y, QObject::tr("Y1"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP1_Z, QObject::tr("Z1"))
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP1_X, QObject::tr("X1"), "x1")
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP1_Y, QObject::tr("Y1"), "y1")
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP1_Z, QObject::tr("Z1"), "z1")
 
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP2_X, QObject::tr("X2"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP2_Y, QObject::tr("Y2"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP2_Z, QObject::tr("Z2"))
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataX(), &CT_Line::getP2_X, QObject::tr("X2"), "x2")
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataY(), &CT_Line::getP2_Y, QObject::tr("Y2"), "y2")
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataZ(), &CT_Line::getP2_Z, QObject::tr("Z2"), "z2")
 
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataLength(), &CT_Line::getLength, QObject::tr("Longueur"))
-    CT_DEFAULT_IA_V2(CT_Line, CT_AbstractCategory::staticInitDataR2(), &CT_Line::getError, QObject::tr("Erreur d'ajustement de la ligne"))
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataLength(), &CT_Line::getLength, QObject::tr("Longueur"), "ln")
+    CT_DEFAULT_IA_V3(CT_Line, CT_AbstractCategory::staticInitDataR2(), &CT_Line::getError, QObject::tr("Erreur d'ajustement de la ligne"), "eadl")
     CT_DEFAULT_IA_END(CT_Line)
 
 #ifdef USE_BOOST_OLD

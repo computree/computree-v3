@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Box2D : public CT_AbstractAreaShape2D
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Box2D, CT_AbstractAreaShape2D)
 
 public:
 
@@ -61,13 +61,6 @@ public:
               const CT_AbstractResult *result,
               CT_Box2DData *data);
 
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
-
     double getWidth() const;
     double getHeight() const;
 
@@ -76,8 +69,8 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Box2D)
-    CT_DEFAULT_IA_V2(CT_Box2D, CT_AbstractCategory::staticInitDataLength(), &CT_Box2D::getWidth, QObject::tr("Largeur_X"))
-    CT_DEFAULT_IA_V2(CT_Box2D, CT_AbstractCategory::staticInitDataLength(), &CT_Box2D::getHeight, QObject::tr("Hauteur_Y"))
+    CT_DEFAULT_IA_V3(CT_Box2D, CT_AbstractCategory::staticInitDataLength(), &CT_Box2D::getWidth, QObject::tr("Largeur X"), "lx")
+    CT_DEFAULT_IA_V3(CT_Box2D, CT_AbstractCategory::staticInitDataLength(), &CT_Box2D::getHeight, QObject::tr("Hauteur Y"), "hy")
     CT_DEFAULT_IA_END(CT_Box2D)
 
     const static CT_StandardBox2DDrawManager   BOX2D_DRAW_MANAGER;

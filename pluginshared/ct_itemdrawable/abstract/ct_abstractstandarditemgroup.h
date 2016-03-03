@@ -16,6 +16,9 @@ class CT_AbstractReader;
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractStandardItemGroup : public CT_AbstractItemGroup
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractStandardItemGroup, CT_AbstractItemGroup)
+
 public:
     CT_AbstractStandardItemGroup();
 
@@ -38,9 +41,6 @@ public:
                                  const CT_AbstractResult *result);
 
     ~CT_AbstractStandardItemGroup();
-
-    QString getType() const;
-    static QString staticGetType();
 
     bool isEmpty() const;
 

@@ -37,8 +37,8 @@
   */
 class PLUGINSHAREDSHARED_EXPORT CT_FileHeader : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_FileHeader, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
     /**
@@ -55,12 +55,6 @@ public:
                      const CT_AbstractResult *result);
 
     virtual ~CT_FileHeader();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
@@ -82,8 +76,8 @@ protected:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_FileHeader)
-    CT_DEFAULT_IA_V2(CT_FileHeader, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_FileHeader::getFileName, QObject::tr("FileName"))
-    CT_DEFAULT_IA_V2(CT_FileHeader, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_FileHeader::getDirectory, QObject::tr("Directory"))
+    CT_DEFAULT_IA_V3(CT_FileHeader, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_FileHeader::getFileName, QObject::tr("FileName"), "fn")
+    CT_DEFAULT_IA_V3(CT_FileHeader, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_FileHeader::getDirectory, QObject::tr("Directory"), "dir")
     CT_DEFAULT_IA_END(CT_FileHeader)
 
 };

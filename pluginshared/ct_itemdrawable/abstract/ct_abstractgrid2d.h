@@ -45,6 +45,9 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractGrid2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractGrid2D, CT_AbstractItemDrawableWithoutPointCloud)
+
 public:
 
     /**
@@ -55,10 +58,6 @@ public:
     CT_AbstractGrid2D(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractGrid2D();
-
-
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual QString name() const = 0;
 

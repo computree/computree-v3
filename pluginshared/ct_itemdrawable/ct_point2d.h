@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Point2D : public CT_AbstractShape2D
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Point2D, CT_AbstractShape2D)
 
 public:
 
@@ -60,12 +60,6 @@ public:
     CT_Point2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Point2DData *data);
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     double x() const;
     double y() const;

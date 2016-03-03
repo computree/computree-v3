@@ -42,6 +42,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithPointCloud : public CT_AbstractSingularItemDrawable, public CT_IAccessPointCloud
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithPointCloud, CT_AbstractSingularItemDrawable)
 
 public:
 
@@ -94,12 +95,6 @@ public:
     virtual ~CT_AbstractItemDrawableWithPointCloud();
 
     /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const = 0;
-    static QString staticGetType();
-
-    /**
      * @brief Update the bounding box. If this item has a valid point cloud index all
      *        points are covered to calculate the bounding box.
      */
@@ -137,7 +132,7 @@ private:
 
     // default attributes
     CT_DEFAULT_IA_BEGIN(CT_AbstractItemDrawableWithPointCloud)
-    CT_DEFAULT_IA_V2(CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::staticInitDataNumber(), &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, QObject::tr("Nombre de points"))
+    CT_DEFAULT_IA_V3(CT_AbstractItemDrawableWithPointCloud, CT_AbstractCategory::staticInitDataNumber(), &CT_AbstractItemDrawableWithPointCloud::getPointCloudIndexSize, QObject::tr("Nombre de points"), "ndp")
     CT_DEFAULT_IA_END(CT_AbstractItemDrawableWithPointCloud)
 protected:
 

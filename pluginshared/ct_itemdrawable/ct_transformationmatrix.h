@@ -10,8 +10,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_TransformationMatrix : public CT_AbstractSingularItemDrawable
 {
-    // IMPORTANT to have the name of the ItemDrawable in the view
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_TransformationMatrix, CT_AbstractSingularItemDrawable)
 
 public:
     CT_TransformationMatrix();
@@ -21,12 +21,6 @@ public:
 
     CT_TransformationMatrix(const QString &modelName,
                          const CT_AbstractResult *result, const Eigen::Matrix4d &trMat);
-
-    /**
-      * WARNING : don't forget to redefined this methods if you inherit this class
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     inline const Eigen::Matrix4d& getTransformationMatrix() const {return _transformationMatrix;}
     QString getTransformationMatrixAsString() const;
@@ -46,7 +40,7 @@ protected:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_TransformationMatrix)
-    CT_DEFAULT_IA_V2(CT_TransformationMatrix, CT_AbstractCategory::staticInitDataValue(), &CT_TransformationMatrix::getTransformationMatrixAsString, QObject::tr("Matrice de transformation"))
+    CT_DEFAULT_IA_V3(CT_TransformationMatrix, CT_AbstractCategory::staticInitDataValue(), &CT_TransformationMatrix::getTransformationMatrixAsString, QObject::tr("Matrice de transformation"), "mdf")
     CT_DEFAULT_IA_END(CT_TransformationMatrix)
 
 };

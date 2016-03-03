@@ -49,16 +49,6 @@ CT_Ellipse::CT_Ellipse(const QString &modelName,
     setBaseDrawManager(&ELLIPSE_DRAW_MANAGER);
 }
 
-QString CT_Ellipse::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Ellipse::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_Ellipse";
-}
-
 const CT_LineData& CT_Ellipse::getAxisA() const
 {
     return ((const CT_EllipseData&)getData()).getAxisA();

@@ -16,16 +16,6 @@ CT_TOPFNodeGroup::CT_TOPFNodeGroup(const QString &modelName,
 {
 }
 
-QString CT_TOPFNodeGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_TOPFNodeGroup::staticGetType()
-{
-    return CT_TNodeGroup::staticGetType() + "/CT_TOPFNodeGroup";
-}
-
 CT_AbstractItemDrawable* CT_TOPFNodeGroup::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     const CT_OutOPFNodeGroupModel *newModel = dynamic_cast< const CT_OutOPFNodeGroupModel* >(model);

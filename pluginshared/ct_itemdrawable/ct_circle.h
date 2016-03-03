@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Circle : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Circle, CT_AbstractShape)
 
 public:
 
@@ -60,13 +60,6 @@ public:
     CT_Circle(const QString &modelName,
               const CT_AbstractResult *result,
               CT_CircleData *data);
-
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     double getRadius() const;
     double getError() const;
@@ -88,8 +81,8 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Circle)
-    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle::getRadius, QObject::tr("Rayon du cercle"))
-    CT_DEFAULT_IA_V2(CT_Circle, CT_AbstractCategory::staticInitDataR2(), &CT_Circle::getError, QObject::tr("Erreur d'ajustement du cercle"))
+    CT_DEFAULT_IA_V3(CT_Circle, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle::getRadius, QObject::tr("Rayon du cercle"), "rdc")
+    CT_DEFAULT_IA_V3(CT_Circle, CT_AbstractCategory::staticInitDataR2(), &CT_Circle::getError, QObject::tr("Erreur d'ajustement du cercle"), "eadc")
     CT_DEFAULT_IA_END(CT_Circle)
 
     const static CT_StandardCircleDrawManager   CIRCLE_DRAW_MANAGER;

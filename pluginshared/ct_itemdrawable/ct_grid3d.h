@@ -441,14 +441,14 @@ protected:
     QColor              _defaultColor;
 
     CT_DEFAULT_IA_BEGIN(CT_Grid3D<DataT>)
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataXDimension(), &CT_Grid3D<DataT>::xdim, QObject::tr("X dimension"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataYDimension(), &CT_Grid3D<DataT>::ydim, QObject::tr("Y dimension"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataZDimension(), &CT_Grid3D<DataT>::zdim, QObject::tr("Z dimension"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataX(), &CT_Grid3D<DataT>::minX, QObject::tr("X min"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Grid3D<DataT>::minY, QObject::tr("Y min"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Grid3D<DataT>::minZ, QObject::tr("Z min"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Grid3D<DataT>::resolution, QObject::tr("Resolution"))
-    CT_DEFAULT_IA_V2(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid3D<DataT>::NA, QObject::tr("NA"))
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataXDimension(), &CT_Grid3D<DataT>::xdim, QObject::tr("X dimension"), "xd")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataYDimension(), &CT_Grid3D<DataT>::ydim, QObject::tr("Y dimension"), "yd")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataZDimension(), &CT_Grid3D<DataT>::zdim, QObject::tr("Z dimension"), "zd")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataX(), &CT_Grid3D<DataT>::minX, QObject::tr("X min"), "xmin")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Grid3D<DataT>::minY, QObject::tr("Y min"), "ymin")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Grid3D<DataT>::minZ, QObject::tr("Z min"), "zmin")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Grid3D<DataT>::resolution, QObject::tr("Resolution"), "res")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid3D<DataT>::NA, QObject::tr("NA"), "na")
     CT_DEFAULT_IA_END(CT_Grid3D<DataT>)
 
     const static CT_StandardGrid3DDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;

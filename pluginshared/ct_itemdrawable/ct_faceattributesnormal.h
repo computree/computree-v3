@@ -7,6 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesNormal : public CT_AbstractFaceAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_FaceAttributesNormal, CT_AbstractFaceAttributes)
 
 public:
     CT_FaceAttributesNormal();
@@ -28,12 +29,6 @@ public:
                               const CT_AbstractResult *result,
                               CT_FCIR pcir,
                               CT_AbstractNormalCloud *nc);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     size_t attributesSize() const { return CT_AttributesNormal::attributesSize(); }
 

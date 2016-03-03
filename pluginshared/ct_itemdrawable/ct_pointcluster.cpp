@@ -75,16 +75,6 @@ CT_PointCluster::~CT_PointCluster()
 {
 }
 
-QString CT_PointCluster::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_PointCluster::staticGetType()
-{
-    return CT_AbstractItemDrawableWithPointCloud::staticGetType() + "/CT_PointCluster";
-}
-
 bool CT_PointCluster::addPoint(size_t index, bool verifyIfExist, bool firstPosition)
 {
     if(verifyIfExist && m_pIndex->contains(index))

@@ -49,16 +49,6 @@ CT_FileHeader::~CT_FileHeader()
 {
 }
 
-QString CT_FileHeader::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_FileHeader::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_FileHeader";
-}
-
 CT_AbstractItemDrawable *CT_FileHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

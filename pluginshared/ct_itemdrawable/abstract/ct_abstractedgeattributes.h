@@ -13,6 +13,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributes : public CT_AbstractAttributes
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributes, CT_AbstractAttributes)
 
 public:
     CT_AbstractEdgeAttributes();
@@ -23,12 +24,6 @@ public:
     CT_AbstractEdgeAttributes(const QString &modelName,
                               const CT_AbstractResult *result,
                               CT_ECIR cir);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     inline const CT_AbstractEdgeCloudIndex* abstractCloudIndex() const { return getEdgeCloudIndex(); }
 

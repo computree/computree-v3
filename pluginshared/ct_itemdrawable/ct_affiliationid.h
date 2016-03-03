@@ -40,6 +40,8 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AffiliationID : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AffiliationID, CT_AbstractItemDrawableWithoutPointCloud)
+
 public:
     /**
       * \brief Empty Contructor vide
@@ -84,9 +86,6 @@ public:
                       const size_t &value);
 
     virtual ~CT_AffiliationID();
-    
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual QString name() const;
 
@@ -113,7 +112,7 @@ private:
     static size_t                               LASTID;
 
     CT_DEFAULT_IA_BEGIN(CT_AffiliationID)
-    CT_DEFAULT_IA_V2(CT_AffiliationID, CT_AbstractCategory::staticInitDataId(), &CT_AffiliationID::getValue, QObject::tr("Affiliation_ID"))
+    CT_DEFAULT_IA_V3(CT_AffiliationID, CT_AbstractCategory::staticInitDataId(), &CT_AffiliationID::getValue, QObject::tr("Affiliation_ID"), "aid")
     CT_DEFAULT_IA_END(CT_AffiliationID)
 };
 

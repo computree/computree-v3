@@ -6,6 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointAttributesScalar : public CT_AbstractPointsAttributes
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointAttributesScalar, CT_AbstractPointsAttributes)
 
 public:
     CT_AbstractPointAttributesScalar();
@@ -16,12 +17,6 @@ public:
     CT_AbstractPointAttributesScalar(const QString &modelName,
                                      const CT_AbstractResult *result,
                                      CT_PCIR pcir);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     virtual double dMin() const = 0;
     virtual double dMax() const = 0;

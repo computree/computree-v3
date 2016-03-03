@@ -47,17 +47,6 @@ CT_PlotGridManager::~CT_PlotGridManager()
 {
 }
 
-QString CT_PlotGridManager::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_PlotGridManager::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_PlotGridManager";
-}
-
-
 CT_AbstractItemDrawable *CT_PlotGridManager::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

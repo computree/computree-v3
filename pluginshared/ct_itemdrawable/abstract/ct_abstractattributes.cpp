@@ -13,13 +13,3 @@ CT_AbstractAttributes::CT_AbstractAttributes(const QString &modelName,
                                              const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName , result)
 {
 }
-
-QString CT_AbstractAttributes::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractAttributes::staticGetType()
-{
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractAttributes";
-}

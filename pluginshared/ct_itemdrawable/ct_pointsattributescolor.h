@@ -8,6 +8,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PointsAttributesColor : public CT_AbstractPointsAttributes, public CT_AttributesColor
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_PointsAttributesColor, CT_AbstractPointsAttributes)
 
 public:
     CT_PointsAttributesColor();
@@ -29,13 +30,6 @@ public:
                              const CT_AbstractResult *result,
                              CT_PCIR pcir,
                              CT_AbstractColorCloud *cc);
-
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     size_t attributesSize() const { return CT_AttributesColor::attributesSize(); }
 

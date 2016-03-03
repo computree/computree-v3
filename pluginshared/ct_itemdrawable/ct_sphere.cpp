@@ -23,16 +23,6 @@ CT_Sphere::CT_Sphere(const QString &modelName,
     setBaseDrawManager(&SPHERE_DRAW_MANAGER);
 }
 
-QString CT_Sphere::getType() const
-{
-    return CT_Sphere::staticGetType();
-}
-
-QString CT_Sphere::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_Sphere";
-}
-
 double CT_Sphere::getRadius() const
 {
     return ((const CT_SphereData&)getData()).getRadius();

@@ -46,8 +46,8 @@
 */
 class PLUGINSHAREDSHARED_EXPORT CT_Beam : public CT_AbstractItemDrawableWithoutPointCloud
 {
-private :
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Beam, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
 //********************************************//
@@ -202,28 +202,9 @@ public:
      */
     bool updateIntervals(const double &bottomCorner,const double &upperCorner,const double &origin,const double &direction,double &t0,double &t1) const;
 
-    //***********************************************************************************//
+//***********************************************************************************//
 //      Virtual/redefined methods from CT_AbstractItemDrawableWithoutPointCloud      //
 //***********************************************************************************//
-    /*!
-    *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined
-    *  Useful for the computree results/itemDrawable management/drawing/printing
-    *
-    *  \warning This method MUST be redefined in each class that inherits from this one
-    *  \return Returns a string representing the type of object
-    */
-    virtual QString getType() const;
-
-    /*!
-    *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined
-    *  Useful for the computree results/itemDrawable management/drawing/printing
-    *  Method similar to "QString getType()" but declared as static
-    *
-    *  \warning This method MUST be redefined in each class that inherits from this one
-    *  \return Returns a string representing the type of object
-    */
-    static QString staticGetType();
-
     /*!
     *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined (pure virtual)
     *  \return Returns a copy of the itemDrawable with a different id and a different result

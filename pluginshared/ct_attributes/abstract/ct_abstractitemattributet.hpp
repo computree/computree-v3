@@ -29,12 +29,6 @@ CT_AbstractItemAttributeT<VType>::CT_AbstractItemAttributeT(const QString &categ
 }
 
 template <typename VType>
-bool CT_AbstractItemAttributeT<VType>::canUseCoordinateSystem() const
-{
-    return false;
-}
-
-template <typename VType>
 bool CT_AbstractItemAttributeT<VType>::toBool(const CT_AbstractItemDrawable *item, bool *ok) const
 {
     Q_UNUSED(item)
@@ -117,9 +111,6 @@ QString CT_AbstractItemAttributeT<VType>::toString(const CT_AbstractItemDrawable
     if(ok != NULL)
         *ok = true;
 
-    if(this->useCoordinateSystem())
-        return CT_NumericToStringConversionT<VType>::toString(dataConverted(item));
-
     return CT_NumericToStringConversionT<VType>::toString(data(item));
 }
 
@@ -133,21 +124,6 @@ template <typename VType>
 QString CT_AbstractItemAttributeT<VType>::typeToString() const
 {
     return CT_AbstractCategory::staticValueTypeToCategoryTypeString<VType>();
-}
-
-template <typename VType>
-VType CT_AbstractItemAttributeT<VType>::dataAutoConverted(const CT_AbstractItemDrawable *item) const
-{
-    if(this->useCoordinateSystem())
-        return dataConverted(item);
-
-    return data(item);
-}
-
-template <typename VType>
-CT_AbstractCoordinateSystem::realEx CT_AbstractItemAttributeT<VType>::dataConverted(const CT_AbstractItemDrawable *item) const
-{
-    return data(item);
 }
 
 #endif // CT_ABSTRACTITEMATTRIBUTET_HPP

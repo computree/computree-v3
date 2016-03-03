@@ -23,16 +23,6 @@ CT_AbstractFaceAttributes::CT_AbstractFaceAttributes(const QString &modelName,
     m_aci =(m_cir.data() == NULL ? NULL : cir->abstractCloudIndexT());
 }
 
-QString CT_AbstractFaceAttributes::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractFaceAttributes::staticGetType()
-{
-    return CT_AbstractAttributes::staticGetType() + "/CT_AbstractFaceAttributes";
-}
-
 const CT_AbstractFaceCloudIndex* CT_AbstractFaceAttributes::getFaceCloudIndex() const
 {
     return m_aci;

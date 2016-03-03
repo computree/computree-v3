@@ -23,16 +23,6 @@ CT_TNodeGroup::~CT_TNodeGroup()
 {
 }
 
-QString CT_TNodeGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_TNodeGroup::staticGetType()
-{
-    return CT_StandardItemGroup::staticGetType() + "/CT_TNodeGroup";
-}
-
 QList<CT_AbstractItem *> CT_TNodeGroup::childrensForGui() const
 {
     QList<CT_AbstractItem *> r;

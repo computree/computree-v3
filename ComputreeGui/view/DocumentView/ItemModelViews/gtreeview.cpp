@@ -612,12 +612,7 @@ QList<CG_CustomTreeItem *> GTreeView::createItems(const CT_AbstractItemDrawable 
             if(index != -1)
             {
                 CG_CustomTreeItem *ii = l.at(index + GTreeView::COLUMN_FIRST_DATA_VALUE);
-
-                bool e = att->useCoordinateSystem();
-
-                att->setUseCoordinateSystem(true);
                 ii->setText(att->toString((const CT_AbstractSingularItemDrawable*)&item, NULL));
-                att->setUseCoordinateSystem(e);
             }
         }
     }
@@ -653,11 +648,7 @@ QList<CG_CustomTreeItem *> GTreeView::createItems(const CT_AbstractItemDrawable 
                             if(!ii->text().isEmpty())
                                 ii->setText(ii->text() + " / ");
 
-                            bool e = att->useCoordinateSystem();
-
-                            att->setUseCoordinateSystem(true);
                             ii->setText(ii->text() + att->toString(sI, NULL));
-                            att->setUseCoordinateSystem(e);
                         }
                     }
                 }

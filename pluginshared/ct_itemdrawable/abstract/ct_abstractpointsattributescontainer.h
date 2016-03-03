@@ -7,6 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointsAttributesContainer : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointsAttributesContainer, CT_AbstractSingularItemDrawable)
 
 public:
     CT_AbstractPointsAttributesContainer();
@@ -16,12 +17,6 @@ public:
 
     CT_AbstractPointsAttributesContainer(const QString &modelName,
                                          const CT_AbstractResult *result);
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const = 0;
-    static QString staticGetType();
 
     /**
      * @brief Returns the CT_AbstractPointAttributesScalar at key defined in parameter

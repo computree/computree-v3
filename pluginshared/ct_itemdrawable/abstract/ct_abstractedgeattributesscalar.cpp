@@ -19,13 +19,3 @@ CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const QString &
                                                                                                                                                                      cir)
 {
 }
-
-QString CT_AbstractEdgeAttributesScalar::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractEdgeAttributesScalar::staticGetType()
-{
-    return CT_AbstractEdgeAttributes::staticGetType() + "/CT_AbstractEdgeAttributesScalar";
-}

@@ -16,6 +16,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointsAttributes : public CT_AbstractAttributes, public CT_IAccessPointCloud
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointsAttributes, CT_AbstractAttributes)
 
 public:
     CT_AbstractPointsAttributes();
@@ -26,12 +27,6 @@ public:
     CT_AbstractPointsAttributes(const QString &modelName,
                                 const CT_AbstractResult *result,
                                 CT_PCIR pcir);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     inline const CT_AbstractPointCloudIndex* abstractCloudIndex() const { return getPointCloudIndex(); }
 

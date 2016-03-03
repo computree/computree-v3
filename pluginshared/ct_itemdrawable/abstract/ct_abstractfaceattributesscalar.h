@@ -6,6 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributesScalar : public CT_AbstractFaceAttributes
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributesScalar, CT_AbstractFaceAttributes)
 
 public:
     CT_AbstractFaceAttributesScalar();
@@ -16,13 +17,6 @@ public:
     CT_AbstractFaceAttributesScalar(const QString &modelName,
                                     CT_AbstractResult *result,
                                     CT_FCIR cir);
-
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     virtual double dMin() const = 0;
     virtual double dMax() const = 0;

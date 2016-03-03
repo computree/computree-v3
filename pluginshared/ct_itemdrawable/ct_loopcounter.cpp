@@ -52,16 +52,6 @@ CT_LoopCounter::~CT_LoopCounter()
     _counter.clear();
 }
 
-QString CT_LoopCounter::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_LoopCounter::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_LoopCounter";
-}
-
 QString CT_LoopCounter::name() const
 {
     return QString("CT_LoopCounter");

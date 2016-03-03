@@ -11,8 +11,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_MeshModel : public CT_AbstractMeshModel
 {
-    // IMPORTANT to have the name of the ItemDrawable in the view
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_MeshModel, CT_AbstractMeshModel)
 
 public:
     CT_MeshModel();
@@ -29,12 +29,6 @@ public:
                  CT_Mesh *mesh);
 
     ~CT_MeshModel();
-
-    /**
-      * WARNING : don't forget to redefined this methods if you inherit this class
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Define if the mesh must be automatically deleted from memory. (true by default)

@@ -15,16 +15,6 @@ CT_StandardItemGroup::CT_StandardItemGroup(const QString &modelName,
 {
 }
 
-QString CT_StandardItemGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_StandardItemGroup::staticGetType()
-{
-    return CT_AbstractStandardItemGroup::staticGetType() + "/CT_StandardItemGroup";
-}
-
 bool CT_StandardItemGroup::addGroup(CT_AbstractItemGroup *group)
 {
     return protectedAddGroup(group);

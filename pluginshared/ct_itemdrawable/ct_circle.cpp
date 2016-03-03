@@ -52,16 +52,6 @@ CT_Circle::CT_Circle(const QString &modelName,
 //    if (data!=NULL) {computeBoundingBox();}
 }
 
-QString CT_Circle::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Circle::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_Circle";
-}
-
 double CT_Circle::getRadius() const
 {
     return ((const CT_CircleData&)getData()).getRadius();

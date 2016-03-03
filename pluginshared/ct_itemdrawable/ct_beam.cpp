@@ -171,16 +171,6 @@ bool CT_Beam::updateIntervals(const double &bot, const double &top, const double
     return true;
 }
 
-QString CT_Beam::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Beam::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_Beam";
-}
-
 CT_Beam* CT_Beam::copy(const CT_OutAbstractItemModel *model,
                      const CT_AbstractResult *result,
                      CT_ResultCopyModeList copyModeList)

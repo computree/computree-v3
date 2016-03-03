@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Line2D : public CT_AbstractShape2D
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Line2D, CT_AbstractShape2D)
 
 public:
 
@@ -60,12 +60,6 @@ public:
     CT_Line2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Line2DData *data);
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     const Eigen::Vector2d &getP1() const;
     const Eigen::Vector2d &getP2() const;
@@ -84,11 +78,11 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Line2D)
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataLength(), &CT_Line2D::length, QObject::tr("Longueur de la ligne"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x1, QObject::tr("X1"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y1, QObject::tr("Y1"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x2, QObject::tr("X2"))
-    CT_DEFAULT_IA_V2(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y2, QObject::tr("Y2"))
+    CT_DEFAULT_IA_V3(CT_Line2D, CT_AbstractCategory::staticInitDataLength(), &CT_Line2D::length, QObject::tr("Longueur de la ligne"), "ldl")
+    CT_DEFAULT_IA_V3(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x1, QObject::tr("X1"), "x1")
+    CT_DEFAULT_IA_V3(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y1, QObject::tr("Y1"), "y1")
+    CT_DEFAULT_IA_V3(CT_Line2D, CT_AbstractCategory::staticInitDataX(), &CT_Line2D::x2, QObject::tr("X2"), "x2")
+    CT_DEFAULT_IA_V3(CT_Line2D, CT_AbstractCategory::staticInitDataY(), &CT_Line2D::y2, QObject::tr("Y2"), "y2")
     CT_DEFAULT_IA_END(CT_Line2D)
 
     const static CT_StandardLine2DDrawManager  LINE2D_DRAW_MANAGER;

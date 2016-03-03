@@ -47,16 +47,6 @@ CT_AbstractStandardItemGroup::~CT_AbstractStandardItemGroup()
     qDeleteAll(_itemsBackup.begin(), _itemsBackup.end());
 }
 
-QString CT_AbstractStandardItemGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractStandardItemGroup::staticGetType()
-{
-    return CT_AbstractItemGroup::staticGetType() + "/CT_AbstractStandardItemGroup";
-}
-
 bool CT_AbstractStandardItemGroup::containsItemDrawable(const CT_InAbstractSingularItemModel *model) const
 {
     assert(model != NULL);

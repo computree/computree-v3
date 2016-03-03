@@ -43,8 +43,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Circle2D : public CT_AbstractAreaShape2D
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Circle2D, CT_AbstractAreaShape2D)
 
 public:
 
@@ -61,13 +61,6 @@ public:
               const CT_AbstractResult *result,
               CT_Circle2DData *data);
 
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
-
     double getRadius() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
@@ -75,7 +68,7 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Circle2D)
-    CT_DEFAULT_IA_V2(CT_Circle2D, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle2D::getRadius, QObject::tr("Rayon du cercle"))
+    CT_DEFAULT_IA_V3(CT_Circle2D, CT_AbstractCategory::staticInitDataRadius(), &CT_Circle2D::getRadius, QObject::tr("Rayon du cercle"), "rdc")
     CT_DEFAULT_IA_END(CT_Circle2D)
 
     const static CT_StandardCircle2DDrawManager   CIRCLE2D_DRAW_MANAGER;

@@ -42,6 +42,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Container : public CT_AbstractItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Container, CT_AbstractItemDrawable)
 
 public:
     CT_Container();
@@ -50,12 +51,6 @@ public:
                  const QString &defaultItemDrawableType);
 
     virtual ~CT_Container();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Add a Item to this container (to the list)

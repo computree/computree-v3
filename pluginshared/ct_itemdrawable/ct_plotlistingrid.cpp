@@ -118,17 +118,6 @@ CT_PlotListInGrid::~CT_PlotListInGrid()
 {
 }
 
-QString CT_PlotListInGrid::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_PlotListInGrid::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_PlotListInGrid";
-}
-
-
 CT_AbstractItemDrawable *CT_PlotListInGrid::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

@@ -22,13 +22,3 @@ CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const QString &
 
 }
 
-QString CT_AbstractFaceAttributesScalar::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractFaceAttributesScalar::staticGetType()
-{
-    return CT_AbstractFaceAttributes::staticGetType() + "/CT_AbstractFaceAttributesScalar";
-}
-

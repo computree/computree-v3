@@ -48,16 +48,6 @@ CT_AbstractItemGroup::~CT_AbstractItemGroup()
 {
 }
 
-QString CT_AbstractItemGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractItemGroup::staticGetType()
-{
-    return CT_AbstractItemDrawable::staticGetType() + "/CT_AbstractItemGroup";
-}
-
 void CT_AbstractItemGroup::changeResult(const CT_AbstractResult *newRes)
 {
     CT_GroupIterator itG(this);

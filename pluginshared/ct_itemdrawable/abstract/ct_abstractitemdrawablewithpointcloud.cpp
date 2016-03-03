@@ -79,11 +79,6 @@ CT_AbstractItemDrawableWithPointCloud::~CT_AbstractItemDrawableWithPointCloud()
     clearFromMemory();
 }
 
-QString CT_AbstractItemDrawableWithPointCloud::staticGetType()
-{
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractItemDrawableWithPointCloud";
-}
-
 void CT_AbstractItemDrawableWithPointCloud::updateBoundingBox()
 {
     _minCoordinates(0) = std::numeric_limits<double>::max();

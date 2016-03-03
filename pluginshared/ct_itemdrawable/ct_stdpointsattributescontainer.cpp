@@ -16,16 +16,6 @@ CT_StdPointsAttributesContainer::CT_StdPointsAttributesContainer(const QString &
 {
 }
 
-QString CT_StdPointsAttributesContainer::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_StdPointsAttributesContainer::staticGetType()
-{
-    return CT_AbstractPointsAttributesContainer::staticGetType() + "/CT_StdPointsAttributesContainer";
-}
-
 void CT_StdPointsAttributesContainer::insertPointsAttributesAt(const int &key, const CT_AbstractPointsAttributes *att)
 {
     internalInsertAttributes(key, att);

@@ -39,6 +39,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractAreaShape2D : public CT_AbstractShape
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractAreaShape2D, CT_AbstractShape2D)
 
 public:
     /**
@@ -57,12 +58,6 @@ public:
                      CT_AreaShape2DData *data);
 
     virtual ~CT_AbstractAreaShape2D();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual bool contains(double x, double y) const;
     virtual double getArea() const;

@@ -16,11 +16,6 @@ CT_AbstractPointsAttributesContainer::CT_AbstractPointsAttributesContainer(const
 {
 }
 
-QString CT_AbstractPointsAttributesContainer::staticGetType()
-{
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractPointsAttributesContainer";
-}
-
 CT_AbstractPointsAttributes* CT_AbstractPointsAttributesContainer::pointsAttributesAt(const int &key) const
 {
     return m_att.value(key, NULL);

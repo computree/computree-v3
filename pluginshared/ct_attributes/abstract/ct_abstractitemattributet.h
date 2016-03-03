@@ -17,11 +17,6 @@ public:
     CT_AbstractItemAttributeT(const QString &categoryName);
 
     /**
-     * @brief Returns true if this item attribute can use the coordinate system. By default return false.
-     */
-    virtual bool canUseCoordinateSystem() const;
-
-    /**
      * @brief ok = false if the specialization does not exist
      */
     bool toBool(const CT_AbstractItemDrawable *item, bool *ok) const;
@@ -61,6 +56,11 @@ public:
      */
     virtual QString toString(const CT_AbstractItemDrawable *item, bool *ok) const;
 
+    template<typename T>
+    T toTypeT(const CT_AbstractItemDrawable *item) const {
+        return static_cast<T>(data(item));
+    }
+
     /**
       * @brief Type of value
       */
@@ -74,20 +74,9 @@ public:
 protected:
 
     /**
-     * @brief If "useCoordinateSystem()" returns true this method call "dataExported" otherwise this method call "data"
-     */
-    virtual VType dataAutoConverted(const CT_AbstractItemDrawable *item) const;
-
-    /**
      * @brief Returns the data (not converted with the coordinate system)
      */
     virtual VType data(const CT_AbstractItemDrawable *item) const = 0;
-
-    /**
-     * @brief Return the data converted by the coordinate system. By default return "data"
-     */
-    virtual CT_AbstractCoordinateSystem::realEx dataConverted(const CT_AbstractItemDrawable *item) const;
-
 };
 
 //specialization to convert a type to another on compilation
@@ -99,81 +88,81 @@ inline bool CT_AbstractItemAttributeT<bool>::toBool(const CT_AbstractItemDrawabl
 
 // LONG DOUBLE -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<long double>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<long double>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // DOUBLE -> DOUBLE
 template<>
-inline double CT_AbstractItemAttributeT<double>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline double CT_AbstractItemAttributeT<double>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // DOUBLE -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<double>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<double>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // FLOAT -> FLOAT
 template<>
-inline float CT_AbstractItemAttributeT<float>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline float CT_AbstractItemAttributeT<float>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // FLOAT -> DOUBLE
 template<>
-inline double CT_AbstractItemAttributeT<float>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline double CT_AbstractItemAttributeT<float>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // FLOAT -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<float>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<float>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // SIGNED INTEGER -> SIGNED INTEGER
 template<>
-inline int CT_AbstractItemAttributeT<int>::toInt(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline int CT_AbstractItemAttributeT<int>::toInt(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // SIGNED INTEGER -> FLOAT
 template<>
-inline float CT_AbstractItemAttributeT<int>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline float CT_AbstractItemAttributeT<int>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // SIGNED INTEGER -> DOUBLE
 template<>
-inline double CT_AbstractItemAttributeT<int>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline double CT_AbstractItemAttributeT<int>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // SIGNED INTEGER -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<int>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<int>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // UNSIGNED INTEGER 64bits -> UNSIGNED INTEGER 64bits
 template<>
-inline quint64 CT_AbstractItemAttributeT<quint64>::toUInt64(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline quint64 CT_AbstractItemAttributeT<quint64>::toUInt64(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // UNSIGNED INTEGER 64bits -> FLOAT
 template<>
-inline float CT_AbstractItemAttributeT<quint64>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline float CT_AbstractItemAttributeT<quint64>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // UNSIGNED INTEGER 64bits -> DOUBLE
 template<>
-inline double CT_AbstractItemAttributeT<quint64>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline double CT_AbstractItemAttributeT<quint64>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // UNSIGNED INTEGER 64bits -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<quint64>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<quint64>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 
 // SIZE_T -> SIZE_T
 template<>
-inline size_t CT_AbstractItemAttributeT<size_t>::toSizeT(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline size_t CT_AbstractItemAttributeT<size_t>::toSizeT(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 #ifndef ENVIRONMENT64
 // SIZE_T -> FLOAT
 template<>
-inline float CT_AbstractItemAttributeT<size_t>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline float CT_AbstractItemAttributeT<size_t>::toFloat(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // SIZE_T -> DOUBLE
 template<>
-inline double CT_AbstractItemAttributeT<size_t>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline double CT_AbstractItemAttributeT<size_t>::toDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
 // SIZE_T -> LONG DOUBLE
 template<>
-inline long double CT_AbstractItemAttributeT<size_t>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return dataAutoConverted(item); }
+inline long double CT_AbstractItemAttributeT<size_t>::toLongDouble(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 #endif
 
 // QSTRING -> QSTRING
@@ -185,10 +174,7 @@ inline QString CT_AbstractItemAttributeT<QString>::toString(const CT_AbstractIte
 
 // STRING
 template<>
-inline QString CT_AbstractItemAttributeT<QString>::dataAutoConverted(const CT_AbstractItemDrawable *item) const { return data(item); }
-
-template<>
-inline CT_AbstractCoordinateSystem::realEx CT_AbstractItemAttributeT<QString>::dataConverted(const CT_AbstractItemDrawable *item) const { Q_UNUSED(item) return CT_AbstractCoordinateSystem::realEx(0); }
+inline QString CT_AbstractItemAttributeT<QString>::data(const CT_AbstractItemDrawable *item) const { return data(item); }
 
 #include "ct_attributes/abstract/ct_abstractitemattributet.hpp"
 

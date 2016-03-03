@@ -33,16 +33,6 @@ CT_Triangulation2D::~CT_Triangulation2D()
     delete _delaunay;
 }
 
-QString CT_Triangulation2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Triangulation2D::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_Triangulation2D";
-}
-
 CT_DelaunayT* CT_Triangulation2D::getDelaunayT() const
 {
     return _delaunay;

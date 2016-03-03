@@ -38,8 +38,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Sphere : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Sphere, CT_AbstractShape)
 
 public:
     CT_Sphere();
@@ -51,11 +51,6 @@ public:
     CT_Sphere(const QString &modelName,
               const CT_AbstractResult *result,
               CT_SphereData *data);
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Returns the radius of the sphere
@@ -72,7 +67,7 @@ public:
 private:
 
     CT_DEFAULT_IA_BEGIN(CT_Sphere)
-    CT_DEFAULT_IA_V2(CT_Sphere, CT_AbstractCategory::staticInitDataRadius(), &CT_Sphere::getRadius, QObject::tr("Rayon de la sphere"))
+    CT_DEFAULT_IA_V3(CT_Sphere, CT_AbstractCategory::staticInitDataRadius(), &CT_Sphere::getRadius, QObject::tr("Rayon de la sphere"), "ns")
     CT_DEFAULT_IA_END(CT_Sphere)
 
     const static CT_StandardSphereDrawManager   SPHERE_DRAW_MANAGER;

@@ -21,13 +21,3 @@ CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const QString
 {
 
 }
-
-QString CT_AbstractPointAttributesScalar::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractPointAttributesScalar::staticGetType()
-{
-    return CT_AbstractPointsAttributes::staticGetType() + "/CT_AbstractPointAttributesScalar";
-}

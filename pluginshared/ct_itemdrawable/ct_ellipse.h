@@ -45,8 +45,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_Ellipse : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Ellipse, CT_AbstractShape)
 
 public:
 
@@ -61,12 +61,6 @@ public:
     CT_Ellipse(const QString &modelName,
                const CT_AbstractResult *result,
                CT_EllipseData *data);
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     const CT_LineData& getAxisA() const;
     const CT_LineData& getAxisB() const;
@@ -111,29 +105,29 @@ private:
     const static CT_StandardEllipseDrawManager  ELLIPSE_DRAW_MANAGER;
 
     CT_DEFAULT_IA_BEGIN(CT_Ellipse)
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP1X, QObject::tr("X1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP1Y, QObject::tr("Y1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP1Z, QObject::tr("Z1 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP2X, QObject::tr("X2 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP2Y, QObject::tr("Y2 axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP2Z, QObject::tr("Z2 axe mineur"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP1X, QObject::tr("X1 axe mineur"), "x1ami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP1Y, QObject::tr("Y1 axe mineur"), "y1ami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP1Z, QObject::tr("Z1 axe mineur"), "z1ami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisAP2X, QObject::tr("X2 axe mineur"), "x2ami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisAP2Y, QObject::tr("Y2 axe mineur"), "y2ami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisAP2Z, QObject::tr("Z2 axe mineur"), "z2ami")
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP1X, QObject::tr("X1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP1Y, QObject::tr("Y1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP1Z, QObject::tr("Z1 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP2X, QObject::tr("X2 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP2Y, QObject::tr("Y2 axe majeur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP2Z, QObject::tr("Z2 axe majeur"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP1X, QObject::tr("X1 axe majeur"), "x1ama")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP1Y, QObject::tr("Y1 axe majeur"), "y1ama")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP1Z, QObject::tr("Z1 axe majeur"), "z1ama")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataX(), &CT_Ellipse::getAxisBP2X, QObject::tr("X2 axe majeur"), "x2ama")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataY(), &CT_Ellipse::getAxisBP2Y, QObject::tr("Y2 axe majeur"), "y2ama")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataZ(), &CT_Ellipse::getAxisBP2Z, QObject::tr("Z2 axe majeur"), "z2ama")
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisALength, QObject::tr("Longueur axe mineur"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisBLength, QObject::tr("Longueur axe majeur"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisALength, QObject::tr("Longueur axe mineur"), "lami")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataLength(), &CT_Ellipse::getAxisBLength, QObject::tr("Longueur axe majeur"), "lama")
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataR2(), &CT_Ellipse::getError, QObject::tr("Erreur d'ajustement de l'ellipse"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataR2(), &CT_Ellipse::getError, QObject::tr("Erreur d'ajustement de l'ellipse"), "eade")
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataRatio(), &CT_Ellipse::getAxisRatio, QObject::tr("Ratio des axes"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataRatio(), &CT_Ellipse::getAxisRatio, QObject::tr("Ratio des axes"), "rda")
 
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), 0.0, QObject::tr("Angle de début"))
-    CT_DEFAULT_IA_V2(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), (2.0*M_PI), QObject::tr("Angle de fin"))
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), 0.0, QObject::tr("Angle de début"), "add")
+    CT_DEFAULT_IA_V3(CT_Ellipse, CT_AbstractCategory::staticInitDataAngle(), (2.0*M_PI), QObject::tr("Angle de fin"), "adf")
 
     CT_DEFAULT_IA_END(CT_Ellipse)
 

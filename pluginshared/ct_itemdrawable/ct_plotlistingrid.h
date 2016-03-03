@@ -33,8 +33,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_PlotListInGrid : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_PlotListInGrid, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
 
@@ -65,12 +65,6 @@ public:
                       double size);
 
     virtual ~CT_PlotListInGrid();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual bool hasBoundingBox() const {return true;}
 
@@ -104,7 +98,7 @@ protected:
 
 private:
     CT_DEFAULT_IA_BEGIN(CT_PlotListInGrid)
-//    CT_DEFAULT_IA_V2(CT_PlotListInGrid, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotListInGrid::getPlotNumber, QObject::tr("Nombre de placettes"))
+//    CT_DEFAULT_IA_V3(CT_PlotListInGrid, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotListInGrid::getPlotNumber, QObject::tr("Nombre de placettes"), "ndp")
     CT_DEFAULT_IA_END(CT_PlotListInGrid)
 
     void computeMinMax(const Eigen::Vector2d &refCoords);

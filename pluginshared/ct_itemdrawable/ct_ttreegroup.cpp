@@ -21,16 +21,6 @@ CT_TTreeGroup::~CT_TTreeGroup()
 {
 }
 
-QString CT_TTreeGroup::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_TTreeGroup::staticGetType()
-{
-    return CT_AbstractStandardItemGroup::staticGetType() + "/CT_TTreeGroup";
-}
-
 QList<CT_AbstractItem *> CT_TTreeGroup::childrensForGui() const
 {
     QList<CT_AbstractItem *> r;

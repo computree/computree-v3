@@ -50,6 +50,7 @@ private:
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemGroup : public CT_AbstractItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemGroup, CT_AbstractItemDrawable)
 
 public:
 
@@ -94,12 +95,6 @@ public:
                          const CT_AbstractResult *result);
 
     ~CT_AbstractItemGroup();
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Change the result that contains this item.

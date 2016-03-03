@@ -32,8 +32,8 @@
 
 class PLUGINSHAREDSHARED_EXPORT CT_PlotGridManager : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_PlotGridManager, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
     /**
@@ -51,12 +51,6 @@ public:
 
     virtual ~CT_PlotGridManager();
 
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
-
     virtual bool hasBoundingBox() const {return false;}
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
@@ -66,7 +60,7 @@ protected:
 
 private:
     CT_DEFAULT_IA_BEGIN(CT_PlotGridManager)
-//    CT_DEFAULT_IA_V2(CT_PlotGridManager, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotGridManager::getPlotNumber, QObject::tr("Nombre de placettes"))
+//    CT_DEFAULT_IA_V3(CT_PlotGridManager, CT_AbstractCategory::staticInitDataNumber(), &CT_PlotGridManager::getPlotNumber, QObject::tr("Nombre de placettes"), "ndp")
     CT_DEFAULT_IA_END(CT_PlotGridManager)
 
 };

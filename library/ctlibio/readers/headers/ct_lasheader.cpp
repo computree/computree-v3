@@ -158,17 +158,6 @@ CT_LASHeader::CT_LASHeader(const QString &modelName, const CT_AbstractResult *re
         m_numberOfPointsByReturn[i] = 0;
 }
 
-QString CT_LASHeader::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_LASHeader::staticGetType()
-{
-    return CT_FileHeader::staticGetType() + "/CT_LASHeader";
-}
-
-
 CT_AbstractItemDrawable *CT_LASHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

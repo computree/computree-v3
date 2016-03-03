@@ -63,8 +63,8 @@
 */
 class PLUGINSHAREDSHARED_EXPORT CT_Scanner : public CT_AbstractItemDrawableWithoutPointCloud
 {
-private :
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Scanner, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
 //********************************************//
@@ -287,24 +287,6 @@ public:
 //***********************************************************************************//
 //      Virtual/redefined methods from CT_AbstractItemDrawableWithoutPointCloud      //
 //***********************************************************************************//
-    /*!
-    *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined
-    *  Useful for the computree results/itemDrawable management/drawing/printing
-    *
-    *  \warning This method MUST be redefined in each class that inherits from this one
-    *  \return Returns a string representing the type of object
-    */
-    virtual QString getType() const;
-
-    /*!
-    *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined
-    *  Useful for the computree results/itemDrawable management/drawing/printing
-    *  Method similar to "QString getType()" but declared as static
-    *
-    *  \warning This method MUST be redefined in each class that inherits from this one
-    *  \return Returns a string representing the type of object
-    */
-    static QString staticGetType();
 
     /*!
     *  \brief Method inherited from CT_AbstractItemDrawableWithoutPointCloud that needs to be redefined (pure virtual)
@@ -354,22 +336,22 @@ private :
     bool            _clockWise;     /*!< Whether the scan has been done in clockwise or not*/
 
     CT_DEFAULT_IA_BEGIN(CT_Scanner)
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getHFov, QObject::tr("HFov"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getVFov, QObject::tr("VFov"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getHRes, QObject::tr("HRes"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getVRes, QObject::tr("VRes"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitTheta, QObject::tr("InitTheta"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitPhi, QObject::tr("InitPhi"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNHRays, QObject::tr("NHRays"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNVRays, QObject::tr("NVRays"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataValue(), &CT_Scanner::getClockWise, QObject::tr("ClockWise"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataX(), &CT_Scanner::getPositionX, QObject::tr("PositionX"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataY(), &CT_Scanner::getPositionY, QObject::tr("PositionY"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataZ(), &CT_Scanner::getPositionZ, QObject::tr("PositionZ"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataXDirection(), &CT_Scanner::getZVectorX, QObject::tr("ZVectorX"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataYDirection(), &CT_Scanner::getZVectorY, QObject::tr("ZVectorY"))
-    CT_DEFAULT_IA_V2(CT_Scanner, CT_AbstractCategory::staticInitDataZDirection(), &CT_Scanner::getZVectorZ, QObject::tr("ZVectorZ"))
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"), "sid")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getHFov, QObject::tr("HFov"), "hfov")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getVFov, QObject::tr("VFov"), "vfov")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getHRes, QObject::tr("HRes"), "hres")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getVRes, QObject::tr("VRes"), "vres")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitTheta, QObject::tr("InitTheta"), "it")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitPhi, QObject::tr("InitPhi"), "ip")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNHRays, QObject::tr("NHRays"), "nhr")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNVRays, QObject::tr("NVRays"), "nvr")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataValue(), &CT_Scanner::getClockWise, QObject::tr("ClockWise"), "cw")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataX(), &CT_Scanner::getPositionX, QObject::tr("PositionX"), "px")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataY(), &CT_Scanner::getPositionY, QObject::tr("PositionY"), "py")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataZ(), &CT_Scanner::getPositionZ, QObject::tr("PositionZ"), "pz")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataXDirection(), &CT_Scanner::getZVectorX, QObject::tr("ZVectorX"), "zvx")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataYDirection(), &CT_Scanner::getZVectorY, QObject::tr("ZVectorY"), "zvy")
+    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataZDirection(), &CT_Scanner::getZVectorZ, QObject::tr("ZVectorZ"), "zvz")
     CT_DEFAULT_IA_END(CT_Scanner)
 
 

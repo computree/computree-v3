@@ -48,17 +48,6 @@ CT_Point2D::CT_Point2D(const QString &modelName,
     setBaseDrawManager(&POINT2D_DRAW_MANAGER);
 }
 
-QString CT_Point2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Point2D::staticGetType()
-{
-    return CT_AbstractShape2D::staticGetType() + "/CT_Point2D";
-}
-
-
 double CT_Point2D::x() const
 {
     return ((const CT_Point2DData&)getData()).x();

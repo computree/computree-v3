@@ -50,16 +50,6 @@ CT_Circle2D::CT_Circle2D(const QString &modelName,
     setBaseDrawManager(&CIRCLE2D_DRAW_MANAGER);
 }
 
-QString CT_Circle2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Circle2D::staticGetType()
-{
-    return CT_AbstractAreaShape2D::staticGetType() + "/CT_Circle2D";
-}
-
 double CT_Circle2D::getRadius() const
 {
     return ((const CT_Circle2DData&)getData()).getRadius();

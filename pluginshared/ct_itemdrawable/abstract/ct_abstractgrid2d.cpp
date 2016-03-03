@@ -42,15 +42,4 @@ CT_AbstractGrid2D::CT_AbstractGrid2D(const QString &modelName, const CT_Abstract
 
 CT_AbstractGrid2D::~CT_AbstractGrid2D()
 {
-
-}
-
-QString CT_AbstractGrid2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractGrid2D::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractGrid2D";
 }

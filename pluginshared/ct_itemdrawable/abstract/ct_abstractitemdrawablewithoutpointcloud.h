@@ -40,6 +40,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithoutPointCloud : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithoutPointCloud, CT_AbstractSingularItemDrawable)
 
 public:
     CT_AbstractItemDrawableWithoutPointCloud();
@@ -56,12 +57,6 @@ public:
                                              const CT_AbstractResult *result);
 
     virtual ~CT_AbstractItemDrawableWithoutPointCloud() {}
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const = 0;
-    static QString staticGetType();
 
 private:
 

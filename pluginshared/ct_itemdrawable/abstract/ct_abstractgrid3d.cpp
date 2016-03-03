@@ -43,13 +43,3 @@ CT_AbstractGrid3D::CT_AbstractGrid3D(const QString &modelName, const CT_Abstract
 CT_AbstractGrid3D::~CT_AbstractGrid3D()
 {
 }
-
-QString CT_AbstractGrid3D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractGrid3D::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractGrid3D";
-}

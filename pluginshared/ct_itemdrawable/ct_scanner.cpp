@@ -289,16 +289,6 @@ void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
     beam.setDirection(direction);
 }
 
-QString CT_Scanner::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Scanner::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_Scanner";
-}
-
 CT_Scanner* CT_Scanner::copy(const CT_OutAbstractItemModel *model,
                              const CT_AbstractResult *result,
                              CT_ResultCopyModeList copyModeList)

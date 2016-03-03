@@ -36,8 +36,8 @@
   */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractShape2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractShape2D, CT_AbstractItemDrawableWithoutPointCloud)
 
 public:
     /**
@@ -56,12 +56,6 @@ public:
                      CT_Shape2DData *data);
 
     virtual ~CT_AbstractShape2D();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     void setCenterX(double x);
     void setCenterY(double y);
@@ -91,7 +85,7 @@ protected:
     CT_Shape2DData* getDataNotConst() const;
 
     CT_DEFAULT_IA_BEGIN(CT_AbstractShape2D)
-    CT_DEFAULT_IA_V2(CT_AbstractShape2D, CT_AbstractCategory::staticInitDataZ(), &CT_AbstractShape2D::getZValue, QObject::tr("Z"))
+    CT_DEFAULT_IA_V3(CT_AbstractShape2D, CT_AbstractCategory::staticInitDataZ(), &CT_AbstractShape2D::getZValue, QObject::tr("Z"), "z")
     CT_DEFAULT_IA_END(CT_AbstractShape2D)
 
 };

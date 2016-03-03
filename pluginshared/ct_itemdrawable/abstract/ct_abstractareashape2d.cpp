@@ -48,16 +48,6 @@ CT_AbstractAreaShape2D::~CT_AbstractAreaShape2D()
 {
 }
 
-QString CT_AbstractAreaShape2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractAreaShape2D::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractAreaShape2D";
-}
-
 bool CT_AbstractAreaShape2D::contains(double x, double y) const
 {
     return getAreaData().contains(x, y);

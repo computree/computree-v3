@@ -127,16 +127,6 @@ CT_ReferencePoint::CT_ReferencePoint(const QString &modelName,
     setBaseDrawManager(&REFERENCEPOINT_DRAW_MANAGER);
 }
 
-QString CT_ReferencePoint::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_ReferencePoint::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_ReferencePoint";
-}
-
 void CT_ReferencePoint::setXYBuffer(double buffer)
 {
     _xyBuffer = buffer;

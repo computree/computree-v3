@@ -195,9 +195,8 @@ void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetIte
 
 void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_InAbstractItemAttributeModel *iaModel) const
 {
-    const CT_AbstractCategory* category = CT_Context::staticInstance()->categoryManager()->findByUniqueName(CT_AbstractCategory::DATA_VALUE);
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iaModel->displayableName() + " (" + category->valueTypeToString(iaModel->valueType()) + ")");
+    item->setText(0, iaModel->displayableName() + " (" + CT_AbstractCategory::valueTypeToString(iaModel->valueType()) + ")");
 
     createForChildrens(item, iaModel);
 }

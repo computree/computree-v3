@@ -49,16 +49,6 @@ CT_PointsAttributesNormal::CT_PointsAttributesNormal(const QString &modelName,
     setBaseDrawManager(&PAN_DRAW_MANAGER);
 }
 
-QString CT_PointsAttributesNormal::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_PointsAttributesNormal::staticGetType()
-{
-    return CT_AbstractPointsAttributes::staticGetType() + "/CT_PointsAttributesNormal";
-}
-
 CT_AbstractItemDrawable* CT_PointsAttributesNormal::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_AbstractNormalCloud* normalCloud = getNormalCloud();

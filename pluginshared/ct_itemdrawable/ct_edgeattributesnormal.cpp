@@ -41,16 +41,6 @@ CT_EdgeAttributesNormal::CT_EdgeAttributesNormal(const QString &modelName,
 {
 }
 
-QString CT_EdgeAttributesNormal::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_EdgeAttributesNormal::staticGetType()
-{
-    return CT_AbstractEdgeAttributes::staticGetType() + "/CT_EdgeAttributesNormal";
-}
-
 CT_AbstractItemDrawable* CT_EdgeAttributesNormal::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_AbstractNormalCloud* normalCloud = getNormalCloud();

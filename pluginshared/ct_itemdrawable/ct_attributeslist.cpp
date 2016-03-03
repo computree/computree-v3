@@ -44,16 +44,6 @@ CT_AttributesList::CT_AttributesList(const QString &modelName,
 
 }
 
-QString CT_AttributesList::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AttributesList::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AttributesList";
-}
-
 CT_AbstractItemDrawable* CT_AttributesList::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     CT_AttributesList *ref = new CT_AttributesList((const CT_OutAbstractSingularItemModel *)model, result);

@@ -31,16 +31,6 @@ CT_OPFMeshModel::CT_OPFMeshModel(const QString &modelName,
     defaultOpfMeshModelConstructorInitialization();
 }
 
-QString CT_OPFMeshModel::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_OPFMeshModel::staticGetType()
-{
-    return CT_MeshModel::staticGetType() + "/CT_OpfMeshModel";
-}
-
 void CT_OPFMeshModel::setDUp(double dUp)
 {
     m_dUp = dUp;

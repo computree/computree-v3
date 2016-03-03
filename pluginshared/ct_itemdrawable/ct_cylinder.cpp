@@ -51,16 +51,6 @@ CT_Cylinder::CT_Cylinder(const QString &modelName,
     setBaseDrawManager(&CYLINDER_DRAW_MANAGER);
 }
 
-QString CT_Cylinder::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Cylinder::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_Cylinder";
-}
-
 double CT_Cylinder::getRadius() const
 {
     return ((const CT_CylinderData&)getData()).getRadius();

@@ -403,12 +403,12 @@ protected:
 
 private:
     CT_DEFAULT_IA_BEGIN(CT_Profile<DataT>)
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataSize(), &CT_Profile<DataT>::nCells, QObject::tr("Dimension"))
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataX(), &CT_Profile<DataT>::minX, QObject::tr("X origin"))
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Profile<DataT>::minY, QObject::tr("Y origin"))
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Profile<DataT>::minZ, QObject::tr("Z origin"))
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Profile<DataT>::resolution, QObject::tr("Resolution"))
-    CT_DEFAULT_IA_V2(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Profile<DataT>::NA, QObject::tr("NA"))
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataSize(), &CT_Profile<DataT>::nCells, QObject::tr("Dimension"), "dim")
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataX(), &CT_Profile<DataT>::minX, QObject::tr("X origin"), "xo")
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Profile<DataT>::minY, QObject::tr("Y origin"), "yo")
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Profile<DataT>::minZ, QObject::tr("Z origin"), "zo")
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Profile<DataT>::resolution, QObject::tr("Resolution"), "res")
+    CT_DEFAULT_IA_V3(CT_Profile<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Profile<DataT>::NA, QObject::tr("NA"), "na")
     CT_DEFAULT_IA_END(CT_Profile<DataT>)
 };
 

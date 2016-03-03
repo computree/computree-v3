@@ -41,6 +41,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Scene : public CT_AbstractItemDrawableWithPointCloud
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_Scene, CT_AbstractItemDrawableWithPointCloud)
 
 public:
     CT_Scene();
@@ -90,12 +91,6 @@ public:
              CT_PCIR pcir);
 
     virtual ~CT_Scene();
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux mthodes si vous hrit de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     virtual int getFastestIncrement() const;
 

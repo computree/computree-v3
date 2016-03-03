@@ -42,8 +42,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_PlanarBSpline : public CT_AbstractShape
 {
-    // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_PlanarBSpline, CT_AbstractShape)
 
 public:
 
@@ -60,13 +60,6 @@ public:
               const CT_AbstractResult *result,
               CT_PlanarBSplineData *data);
 
-
-    /**
-      * ATTENTION : ne pas oublier de redfinir ces deux méthodes si vous héritez de cette classe.
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
-
     int getDegree() const;
     int getNCP() const;
 
@@ -80,8 +73,8 @@ private:
     QList<Eigen::Vector3d>    _polyline;
 
     CT_DEFAULT_IA_BEGIN(CT_PlanarBSpline)
-    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getDegree, QObject::tr("Degré de polynome"))
-    CT_DEFAULT_IA_V2(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getNCP, QObject::tr("Nombre de points de contrôle"))
+    CT_DEFAULT_IA_V3(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getDegree, QObject::tr("Degré de polynome"), "dp")
+    CT_DEFAULT_IA_V3(CT_PlanarBSpline, CT_AbstractCategory::staticInitDataNumber(), &CT_PlanarBSpline::getNCP, QObject::tr("Nombre de points de contrôle"), "npc")
     CT_DEFAULT_IA_END(CT_PlanarBSpline)
 
     const static CT_StandardPlanarBSplineDrawManager   PLANARBSPLINE_DRAW_MANAGER;

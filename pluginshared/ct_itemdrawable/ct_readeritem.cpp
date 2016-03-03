@@ -50,16 +50,6 @@ CT_ReaderItem::~CT_ReaderItem()
 {
 }
 
-QString CT_ReaderItem::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_ReaderItem::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_ReaderItem";
-}
-
 CT_AbstractItemDrawable *CT_ReaderItem::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

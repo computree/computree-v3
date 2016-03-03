@@ -11,8 +11,8 @@
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractMeshModel : public CT_AbstractSingularItemDrawable, public CT_IAccessPointCloud, public CT_IAccessFaceCloud, public CT_IAccessEdgeCloud
 {
-    // IMPORTANT to have the name of the ItemDrawable in the view
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractMeshModel, CT_AbstractSingularItemDrawable)
 
 public:
     CT_AbstractMeshModel();
@@ -22,13 +22,6 @@ public:
 
     CT_AbstractMeshModel(const QString &modelName,
                          const CT_AbstractResult *result);
-
-
-    /**
-      * WARNING : don't forget to redefined this methods if you inherit this class
-      */
-    virtual QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Draw only faces

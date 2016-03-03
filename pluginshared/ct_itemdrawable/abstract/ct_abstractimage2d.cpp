@@ -44,13 +44,3 @@ CT_AbstractImage2D::~CT_AbstractImage2D()
 {
 
 }
-
-QString CT_AbstractImage2D::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractImage2D::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AbstractImage2D";
-}

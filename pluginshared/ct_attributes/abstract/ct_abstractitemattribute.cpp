@@ -10,7 +10,6 @@
 CT_AbstractItemAttribute::CT_AbstractItemAttribute() : CT_AbstractItem()
 {
     m_category = NULL;
-    m_useCoordinateSystem = false;
 }
 
 CT_AbstractItemAttribute::CT_AbstractItemAttribute(const CT_OutAbstractItemAttributeModel *model,
@@ -19,7 +18,6 @@ CT_AbstractItemAttribute::CT_AbstractItemAttribute(const CT_OutAbstractItemAttri
 {
     Q_ASSERT_X(category != NULL, "CT_AbstractItemAttribute constructor", "When you create a ItemAttribute the category must not be null !");
     m_category = (CT_AbstractCategory*)category;
-    m_useCoordinateSystem = false;
 }
 
 CT_AbstractItemAttribute::CT_AbstractItemAttribute(const QString &modelName,
@@ -28,14 +26,12 @@ CT_AbstractItemAttribute::CT_AbstractItemAttribute(const QString &modelName,
 {
     m_category = (CT_AbstractCategory*)PS_CATEGORY_MANAGER->findByUniqueName(categoryName);
     Q_ASSERT_X(m_category != NULL, "CT_AbstractItemAttribute constructor", "You created a ItemAttribute with a categoryName but the category was not found");
-    m_useCoordinateSystem = false;
 }
 
 CT_AbstractItemAttribute::CT_AbstractItemAttribute(const QString &categoryName) : CT_AbstractItem(NULL, NULL)
 {
     m_category = (CT_AbstractCategory*)PS_CATEGORY_MANAGER->findByUniqueName(categoryName);
     Q_ASSERT_X(m_category != NULL, "CT_AbstractItemAttribute constructor", "You created a ItemAttribute with a categoryName but the category was not found");
-    m_useCoordinateSystem = false;
 }
 
 CT_AbstractItemAttribute::~CT_AbstractItemAttribute()
@@ -45,22 +41,6 @@ CT_AbstractItemAttribute::~CT_AbstractItemAttribute()
 bool CT_AbstractItemAttribute::isValid() const
 {
     return type() != CT_AbstractCategory::UNKNOWN;
-}
-
-void CT_AbstractItemAttribute::setUseCoordinateSystem(bool enable)
-{
-    if(canUseCoordinateSystem())
-        m_useCoordinateSystem = enable;
-}
-
-bool CT_AbstractItemAttribute::useCoordinateSystem() const
-{
-    return m_useCoordinateSystem;
-}
-
-bool CT_AbstractItemAttribute::canUseCoordinateSystem() const
-{
-    return false;
 }
 
 QString CT_AbstractItemAttribute::displayableName() const

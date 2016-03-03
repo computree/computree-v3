@@ -88,11 +88,19 @@ QString CT_AbstractCategory::uniqueName() const
     return m_uName;
 }
 
-QString CT_AbstractCategory::valueTypeToString(CT_AbstractCategory::ValueType v) const
+QString CT_AbstractCategory::valueTypeToString(CT_AbstractCategory::ValueType v)
 {
-    int index = metaObject()->indexOfEnumerator("ValueType");
-    QMetaEnum metaEnum = metaObject()->enumerator(index);
+    int index = CT_AbstractCategory::staticMetaObject.indexOfEnumerator("ValueType");
+    QMetaEnum metaEnum = CT_AbstractCategory::staticMetaObject.enumerator(index);
     return metaEnum.valueToKey(v);
+}
+
+CT_AbstractCategory::ValueType CT_AbstractCategory::stringToValueType(const QString &s, bool *ok)
+{
+    int index = CT_AbstractCategory::staticMetaObject.indexOfEnumerator("ValueType");
+    QMetaEnum metaEnum = CT_AbstractCategory::staticMetaObject.enumerator(index);
+    std::string d = s.toStdString();
+    return (CT_AbstractCategory::ValueType)metaEnum.keyToValue(d.data(), ok);
 }
 
 QString CT_AbstractCategory::displayableName() const

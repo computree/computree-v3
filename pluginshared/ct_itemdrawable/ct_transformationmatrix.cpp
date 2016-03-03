@@ -17,16 +17,6 @@ CT_TransformationMatrix::CT_TransformationMatrix(const QString &modelName, const
     _transformationMatrix = trMat;
 }
 
-QString CT_TransformationMatrix::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_TransformationMatrix::staticGetType()
-{
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_TransformationMatrix";
-}
-
 QString CT_TransformationMatrix::getTransformationMatrixAsString() const
 {
     return QString("%1\t%2\t%3\t%4\n%5\t%6\t%7\t%8\n%9\t%10\t%11\t%12\n%13\t%14\t%15\t%16\n")

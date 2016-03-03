@@ -14,6 +14,9 @@ class CT_OutOPFNodeGroupModel;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_TOPFNodeGroup : public CT_TNodeGroup
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_TOPFNodeGroup, CT_TNodeGroup)
+
 public:
     CT_TOPFNodeGroup();
 
@@ -34,12 +37,6 @@ public:
      */
     CT_TOPFNodeGroup(const QString &modelName,
                      const CT_AbstractResult *result);
-
-    /**
-      * WARNING : don't forget to copy and inherit this methods if you create a subclass
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 

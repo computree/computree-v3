@@ -21,16 +21,6 @@ CT_AbstractEdgeAttributes::CT_AbstractEdgeAttributes(const QString &modelName,
     m_aci =(m_cir.data() == NULL ? NULL : cir->abstractCloudIndexT());
 }
 
-QString CT_AbstractEdgeAttributes::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AbstractEdgeAttributes::staticGetType()
-{
-    return CT_AbstractAttributes::staticGetType() + "/CT_AbstractEdgeAttributes";
-}
-
 const CT_AbstractEdgeCloudIndex* CT_AbstractEdgeAttributes::getEdgeCloudIndex() const
 {
     return m_aci;

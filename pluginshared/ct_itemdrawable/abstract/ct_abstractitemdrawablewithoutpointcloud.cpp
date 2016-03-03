@@ -49,11 +49,6 @@ CT_AbstractItemDrawableWithoutPointCloud::CT_AbstractItemDrawableWithoutPointClo
     setBaseDrawManager(&IDWITHOUTPC_DRAW_MANAGER);
 }
 
-QString CT_AbstractItemDrawableWithoutPointCloud::staticGetType()
-{
-    return CT_AbstractSingularItemDrawable::staticGetType() + "/CT_AbstractItemDrawableWithoutPointCloud";
-}
-
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_AbstractItemDrawableWithoutPointCloud)
 #endif

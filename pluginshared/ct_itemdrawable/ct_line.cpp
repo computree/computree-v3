@@ -73,16 +73,6 @@ CT_Line::CT_Line(const QString &modelName,
     }
 }
 
-QString CT_Line::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Line::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_Line";
-}
-
 CT_AbstractItemDrawable* CT_Line::copy(const CT_OutAbstractItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_ResultCopyModeList copyModeList)

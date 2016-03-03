@@ -13,6 +13,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributes : public CT_AbstractAttributes
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributes, CT_AbstractAttributes)
 
 public:
     CT_AbstractFaceAttributes();
@@ -23,12 +24,6 @@ public:
     CT_AbstractFaceAttributes(const QString &modelName,
                               const CT_AbstractResult *result,
                               CT_FCIR cir);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    QString getType() const;
-    static QString staticGetType();
 
     inline const CT_AbstractFaceCloudIndex* abstractCloudIndex() const { return getFaceCloudIndex(); }
 

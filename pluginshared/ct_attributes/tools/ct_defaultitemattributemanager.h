@@ -128,11 +128,13 @@ public:
 
         Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addItemAttribute", qPrintable(QString("You created a default item attribute but the category with name \"") + categoryUniqueName + "\" was not found"));
 
+        size_t nCreated = m_numberOfAttributesCreatedByClass.value(className, 0);
+
         // create an empty item attribute with a model and a result NULL. This attribute will only be used in model.
         CT_AbstractItemAttribute *attModel = CT_IACreator::create<ItemClass, VType>(NULL, cat, NULL, getter);
 
         // create the model
-        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
+        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel(uniqueKey.isEmpty() ? QString("%1_%2").arg(className).arg(nCreated) : uniqueKey, attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
         model->setAsDefaultItemAttributeModel();
 
         QStringList classNameSplit = className.split("/");
@@ -154,6 +156,8 @@ public:
         c->m_userKey = uniqueKey;
 
         newL->append(c);
+
+        m_numberOfAttributesCreatedByClass.insert(className, nCreated + 1);
 
         return true;
     }
@@ -179,11 +183,13 @@ public:
 
         Q_ASSERT_X(cat != NULL, "CT_DefaultItemAttributeManager::addItemAttribute", qPrintable(QString("You created a default item attribute but the category with name \"") + categoryUniqueName + "\" was not found"));
 
+        size_t nCreated = m_numberOfAttributesCreatedByClass.value(className, 0);
+
         // create an empty item attribute with a model and a result NULL. This attribute will only be used in model.
         CT_AbstractItemAttribute *attModel = CT_IACreator::create<VType>(NULL, cat, NULL, data);
 
         // create the model
-        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel("", attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
+        CT_OutStdItemAttributeModel *model = new CT_OutStdItemAttributeModel(uniqueKey.isEmpty() ? QString("%1_%2").arg(className).arg(nCreated) : uniqueKey, attModel, displayableName.isEmpty() ? cat->displayableName() : displayableName, cat->description());
         model->setAsDefaultItemAttributeModel();
 
         QStringList classNameSplit = className.split("/");
@@ -206,6 +212,8 @@ public:
         c->m_userKey = uniqueKey;
 
         newL->append(c);
+
+        m_numberOfAttributesCreatedByClass.insert(className, nCreated + 1);
 
         return true;
     }
@@ -266,6 +274,11 @@ private:
      *        a CT_DefaultItemAttributeManagerContainer for value.
      */
     QHash<QString, QList<CT_DefaultItemAttributeManagerContainer*>* >    m_collection;
+
+    /**
+     * @brief Save the number of created attributes by class
+     */
+    QHash<QString, size_t>  m_numberOfAttributesCreatedByClass;
 
 protected:
     friend class CT_AbstractStepPlugin;

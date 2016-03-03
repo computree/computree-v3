@@ -48,16 +48,6 @@ CT_Container::~CT_Container()
         qDeleteAll(_list.begin(), _list.end());
 }
 
-QString CT_Container::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_Container::staticGetType()
-{
-    return CT_AbstractItemDrawable::staticGetType() + "/CT_Container";
-}
-
 bool CT_Container::addItemDrawable(CT_AbstractItemDrawable *id)
 {
     /*if(id->getType() != m_defaultItemDrawableType)

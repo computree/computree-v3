@@ -38,6 +38,22 @@ class CT_OutAbstractItemModel;
 class CT_AbstractResult;
 
 /**
+  * @brief Use this define in your class to add type information
+  * @example class MyItemDrawable : public CT_AbstractSingularItemDrawable
+  *          {
+  *             Q_OBJECT
+  *             CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable)
+  *
+  *          public:
+  *             MyItemDrawable();
+  *             ....
+  *          };
+  */
+#define CT_TYPE_IMPL_MACRO(ThisClassName, SuperClassName) public: \
+                                                          QString getType() const { return staticGetType(); } \
+                                                          static QString staticGetType() { return SuperClassName::staticGetType() + "/" + #ThisClassName; }
+
+/**
  * @brief Represent a item that can be added in a result or in another item
  */
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawable : public CT_AbstractItem
@@ -69,14 +85,14 @@ public:
     /**
       * @warning DON'T FORGET TO REDEFINE THIS METHOD IN YOUR ITEM !!!
       *
-      * @brief Redefine this method like this : QString MyItem::getType() { return MyItem::staticGetType(); }
+      * @brief Redefine this method by using CT_TYPE_IMPL_MACRO (show example on top of this file)
       */
     virtual QString getType() const = 0;
 
     /**
       * @warning DON'T FORGET TO DEFINE THIS METHOD IN YOUR ITEM !!!
       *
-      * @brief Redefine this method like this : QString MyItem::staticGetType() { return MySuperClassItem::staticGetType() + "/" + "MyItem"; }
+      * @brief Redefine this method by using CT_TYPE_IMPL_MACRO (show example on top of this file)
       */
     static QString staticGetType();
 

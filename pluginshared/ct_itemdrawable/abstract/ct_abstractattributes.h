@@ -10,6 +10,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractAttributes : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_AbstractAttributes, CT_AbstractSingularItemDrawable)
 
 public:
     CT_AbstractAttributes();
@@ -18,12 +19,6 @@ public:
 
     CT_AbstractAttributes(const QString &modelName,
                           const CT_AbstractResult *result);
-
-    /**
-      * ATTENTION : ne pas oublier de redéfinir ces deux méthodes si vous hérité de cette classe.
-      */
-    virtual QString getType() const = 0;
-    static QString staticGetType();
 
     /**
      * @brief Returns the size of the cloud of attributes

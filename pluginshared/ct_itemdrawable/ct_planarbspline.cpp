@@ -49,16 +49,6 @@ CT_PlanarBSpline::CT_PlanarBSpline(const QString &modelName,
     setBaseDrawManager(&PLANARBSPLINE_DRAW_MANAGER);
 }
 
-QString CT_PlanarBSpline::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_PlanarBSpline::staticGetType()
-{
-    return CT_AbstractShape::staticGetType() + "/CT_PlanarBSpline";
-}
-
 int CT_PlanarBSpline::getDegree() const
 {
     return ((const CT_PlanarBSplineData&)getData()).degree();

@@ -67,16 +67,6 @@ CT_AffiliationID::~CT_AffiliationID()
 
 }
 
-QString CT_AffiliationID::getType() const
-{
-    return staticGetType();
-}
-
-QString CT_AffiliationID::staticGetType()
-{
-    return CT_AbstractItemDrawableWithoutPointCloud::staticGetType() + "/CT_AffiliationID";
-}
-
 QString CT_AffiliationID::name() const
 {
     return QString("CT_AffiliationID");

@@ -11,6 +11,9 @@ class CT_TTreeGroup;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_TNodeGroup : public CT_StandardItemGroup
 {
+    Q_OBJECT
+    CT_TYPE_IMPL_MACRO(CT_TNodeGroup, CT_StandardItemGroup)
+
 public:
     CT_TNodeGroup();
 
@@ -32,9 +35,6 @@ public:
     CT_TNodeGroup(const QString &modelName,
                   const CT_AbstractResult *result);
     ~CT_TNodeGroup();
-
-    QString getType() const;
-    static QString staticGetType();
 
     /**
      * @brief Returns childrens of this group for the GUI
