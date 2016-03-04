@@ -73,8 +73,14 @@ protected:
 
 private:
 
-    // Step parameters
+    QList<QString>          _modelsKeys;
+    QMap<QString, QString>  _names;
 
+    // Step parameters
+    QStringList _outFolder;
+    bool        _asciiExport;
+    QString     _fileNameBase;
+    bool        _binaryExport;
 
 
 };
