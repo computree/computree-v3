@@ -97,6 +97,8 @@ void CT_StepBeginLoop::compute()
 
     }
 
+    _counter->setTurnName(QString("Turn%1").arg(_counter->getCurrentTurn()));
+
     CT_LoopCounter* loopCounter = new CT_LoopCounter(DEF_outCounter, outRes, _counter);
     group->addItemDrawable(loopCounter);
 
