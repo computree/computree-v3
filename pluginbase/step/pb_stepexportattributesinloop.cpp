@@ -25,6 +25,8 @@
 #define DEFin_grp "grp"
 #define DEFin_itemWithAttribute "itemWithAttribute"
 #define DEFin_attribute "attribute"
+#define DEFin_Xattribute "Xattribute"
+#define DEFin_Yattribute "Yattribute"
 
 #define DEFout_res "res"
 #define DEFout_grp "grp"
@@ -32,10 +34,13 @@
 
 // Constructor : initialization of parameters
 PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
-{
-    _fileNameBase = "export";
+{   
     _asciiExport = true;
-    _binaryExport = true;
+    _vectorExport = true;
+    _rasterExport = true;
+
+    _vectorPrefix = "";
+    _rasterPrefix = "";
 }
 
 PB_StepExportAttributesInLoop::~PB_StepExportAttributesInLoop()
@@ -77,12 +82,15 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
     resIn->setZeroOrMoreRootGroup();
     resIn->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple);
+    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Xattribute, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("X"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
+    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Yattribute, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Y"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
     resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Attribut"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple);
 }
 
 // Creation and affiliation of OUT models
 void PB_StepExportAttributesInLoop::createOutResultModelListProtected()
 {
+    //createNewOutResultModel(DEFout_res, tr("Resultat vide"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -90,12 +98,18 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outFolder);
-    configDialog->addString(tr("Nom de base pour le(s) fichier(s) d'export"), "", _fileNameBase);
+    configDialog->addBool(tr("1- Export ASCII tabulaire (1 fichier en tout)"), "", tr("Activer"), _asciiExport);
+    configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, "", _outASCIIFileName);
+
     configDialog->addEmpty();
-    configDialog->addBool(tr("Export ASCII (1 seul fichier)"), "", "", _asciiExport);
+    configDialog->addBool(tr("2- Export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
+    configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _vectorPrefix);
+    configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outVectorFolder);
+
     configDialog->addEmpty();
-    configDialog->addBool(tr("Export binaire (1 fichier par tour de boucle)"), "", "", _binaryExport);
+    configDialog->addBool(tr("3- Export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
+    configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
+    configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
 
 }
 
@@ -105,16 +119,33 @@ void PB_StepExportAttributesInLoop::compute()
     _modelsKeys.clear();
     _names.clear();
 
-    if (_fileNameBase.isEmpty()) {_fileNameBase = "export";}
-
-    QFile* file = NULL;
-    QTextStream* stream = NULL;
+    QFile* fileASCII = NULL;
+    QTextStream* streamASCII = NULL;
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn = inResultList.at(0);
 
     CT_ModelSearchHelper::SplitHash hash = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
 
+    CT_ModelSearchHelper::SplitHash hashX = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Xattribute, DEFin_itemWithAttribute, resIn->model(), this);
+    QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ithX(hashX);
+    while (ithX.hasNext())
+    {
+        ithX.next();
+        hash.insert(ithX.key(), ithX.value());
+    }
+
+    CT_ModelSearchHelper::SplitHash hashY = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Yattribute, DEFin_itemWithAttribute, resIn->model(), this);
+    QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ithY(hashY);
+    while (ithY.hasNext())
+    {
+        ithY.next();
+        hash.insert(ithY.key(), ithY.value());
+    }
+
+
+    QString xKey = "";
+    QString yKey = "";
     if (firstTurn)
     {
         QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> itModels(hash);
@@ -137,34 +168,30 @@ void PB_StepExportAttributesInLoop::compute()
             _modelsKeys.append(key);
 
             _names.insert(key, QString("%1_%2").arg(itemDN).arg(attrDN));
+
+            if (hashX.contains(itemModel, attrModel)) {xKey = key;}
+            if (hashY.contains(itemModel, attrModel)) {yKey = key;}
+
         }
         qSort(_modelsKeys.begin(), _modelsKeys.end());
 
 
-        if (_asciiExport && _outFolder.size() > 0)
+        if (_asciiExport && _outASCIIFileName.size() > 0)
         {
-            QFileInfo fileInfo(QString("%1/%2.txt").arg(_outFolder.first()).arg(_fileNameBase));
-            if (fileInfo.exists())
-            {
-                PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Fichier d'export ASCII spécifié déjà existant. Arrêt des traitements."));
-                stop();
-                return;
-            }
+            fileASCII = new QFile(_outASCIIFileName.first());
+            streamASCII = new QTextStream(fileASCII);
 
-            file = new QFile(fileInfo.filePath());
-            stream = new QTextStream(file);
-
-            if (file->open(QIODevice::WriteOnly | QIODevice::Text))
+            if (fileASCII->open(QIODevice::WriteOnly | QIODevice::Text))
             {
                 for (int i = 0 ; i < _modelsKeys.size() ; i++)
                 {
-                    (*stream) << _names.value(_modelsKeys.at(i));
-                    if (i < _modelsKeys.size() - 1) {(*stream) << "\t";} else {(*stream) << "\n";}
+                    (*streamASCII) << _names.value(_modelsKeys.at(i));
+                    if (i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
                 }
 
             } else {
-                delete stream; stream = NULL;
-                delete file; file = NULL;
+                delete streamASCII; streamASCII = NULL;
+                delete fileASCII; fileASCII = NULL;
                 PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Impossible de créer le fichier d'export ASCII. Arrêt des traitements."));
                 stop();
                 return;
@@ -194,10 +221,13 @@ void PB_StepExportAttributesInLoop::compute()
                 for (int i = 0 ; i < attributes.size() ; i++)
                 {
                     CT_AbstractItemAttribute* attribute = attributes.at(i);
-                    CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
+                    if (attribute != NULL)
+                    {
+                        CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
 
-                    QString attrUN = attrModel->uniqueName();
-                    indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(item, attribute));
+                        QString attrUN = attrModel->uniqueName();
+                        indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(item, attribute));
+                    }
                 }
             }
         }
@@ -208,20 +238,20 @@ void PB_StepExportAttributesInLoop::compute()
             const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pair = indexedAttributes.value(_modelsKeys.at(i));
             if (pair.first != NULL && pair.second != NULL)
             {
-                if (_asciiExport && stream != NULL)
+                if (_asciiExport && streamASCII != NULL)
                 {
-                    (*stream) << pair.second->toString(pair.first, NULL);
+                    (*streamASCII) << pair.second->toString(pair.first, NULL);
                 }
             }
 
-            if (_asciiExport && stream != NULL)
+            if (_asciiExport && streamASCII != NULL)
             {
-                if(i < _modelsKeys.size() - 1) {(*stream) << "\t";} else {(*stream) << "\n";}
+                if(i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
             }
         }
     }
 
-    if (file != NULL) {file->close(); delete file;}
-    if (stream != NULL) {delete stream;}
+    if (fileASCII != NULL) {fileASCII->close(); delete fileASCII;}
+    if (streamASCII != NULL) {delete streamASCII;}
 
 }

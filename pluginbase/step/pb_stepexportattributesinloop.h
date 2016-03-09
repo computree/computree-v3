@@ -77,10 +77,17 @@ private:
     QMap<QString, QString>  _names;
 
     // Step parameters
-    QStringList _outFolder;
     bool        _asciiExport;
-    QString     _fileNameBase;
-    bool        _binaryExport;
+    bool        _vectorExport;
+    bool        _rasterExport;
+
+    QString     _vectorPrefix;
+    QString     _rasterPrefix;
+
+    QStringList _outASCIIFileName;
+    QStringList _outVectorFolder;
+    QStringList _outRasterFolder;
+
 
 
 };

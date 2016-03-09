@@ -75,11 +75,14 @@ public:
 
     inline size_t getNTurns() const {return _counter->getNTurns();}
     inline size_t getCurrentTurn() const {return _counter->getCurrentTurn();}
+    inline QString getTurnName() const {return _counter->getTurnName();}
     inline bool hasNextTurn() {return _counter->hasNextTurn();}
 
     inline void beginNextTurn() {_counter->beginNextTurn();}
 
     inline void setCurrentTurn(size_t n) {_counter->setcurrentTurn(n);}
+
+    inline void setTurnName(QString name) {_counter->setTurnName(name);}
 
 
     /*!
@@ -95,6 +98,15 @@ public:
 
 protected:
     QSharedPointer<CT_Counter>     _counter;
+
+private:
+
+    CT_DEFAULT_IA_BEGIN(CT_LoopCounter)
+    CT_DEFAULT_IA_V3(CT_LoopCounter, CT_AbstractCategory::staticInitDataValue(), &CT_LoopCounter::getTurnName, QObject::tr("TurnName"), "turnName")
+    CT_DEFAULT_IA_V3(CT_LoopCounter, CT_AbstractCategory::staticInitDataNumber(), &CT_LoopCounter::getCurrentTurn, QObject::tr("CurrentTurn"), "currentTurn")
+    CT_DEFAULT_IA_V3(CT_LoopCounter, CT_AbstractCategory::staticInitDataNumber(), &CT_LoopCounter::getNTurns, QObject::tr("NTurn"), "NTurn")
+    CT_DEFAULT_IA_END(CT_LoopCounter)
+
 
 };
 

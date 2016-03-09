@@ -27,6 +27,7 @@
 
 #include "ct_itemdrawable/ct_loopcounter.h"
 
+CT_DEFAULT_IA_INIT(CT_LoopCounter)
 
 CT_LoopCounter::CT_LoopCounter() : CT_AbstractItemDrawableWithoutPointCloud()
 {
