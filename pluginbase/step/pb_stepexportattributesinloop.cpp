@@ -6,9 +6,13 @@
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/inModel/ct_inresultmodelgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
+#include "ct_iterator/ct_groupiterator.h"
 
 #include "ct_abstractstepplugin.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
+#include "ct_itemdrawable/ct_plotlistingrid.h"
+#include "ct_itemdrawable/ct_image2d.h"
+
 
 #include "ct_itemdrawable/ct_profile.h"
 #include "exporters/profile/pb_profileexporter.h"
@@ -22,6 +26,8 @@
 
 // Alias for indexing models
 #define DEFin_res "res"
+#define DEFin_grpMain "grpMain"
+#define DEFin_plotListInGrid "plotListInGrid"
 #define DEFin_grp "grp"
 #define DEFin_itemWithAttribute "itemWithAttribute"
 #define DEFin_attribute "attribute"
@@ -41,6 +47,26 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
 
     _vectorPrefix = "";
     _rasterPrefix = "";
+
+
+#ifdef USE_GDAL
+    _rasterDriverName = "GDAL Arc/Info ASCII Grid";
+
+    GDALAllRegister();
+    GDALDriverManager *driverManager = GetGDALDriverManager();
+
+    int count = driverManager->GetDriverCount();
+
+    for(int i = 0 ; i < count ; ++i)
+    {
+        GDALDriver *driver = driverManager->GetDriver(i);
+        QString name = CT_GdalTools::staticGdalDriverName(driver);
+
+        if(!name.isEmpty() && driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL) {
+            _gdalRasterDrivers.insert(name, driver);
+        }
+    }
+#endif
 }
 
 PB_StepExportAttributesInLoop::~PB_StepExportAttributesInLoop()
@@ -80,7 +106,11 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
 {
     CT_InResultModelGroup *resIn = createNewInResultModel(DEFin_res, tr("Résultat"));
     resIn->setZeroOrMoreRootGroup();
-    resIn->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+
+    resIn->addGroupModel("", DEFin_grpMain, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+    resIn->addItemModel(DEFin_grpMain, DEFin_plotListInGrid, CT_PlotListInGrid::staticGetType(), tr("Grille de placettes"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsOptional);
+
+    resIn->addGroupModel(DEFin_grpMain, DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple);
     resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Xattribute, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("X"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
     resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Yattribute, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Y"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
@@ -106,11 +136,17 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
     configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _vectorPrefix);
     configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outVectorFolder);
 
+#ifdef USE_GDAL
+    QStringList drivers;
+    drivers.append(_gdalRasterDrivers.keys());
+
+
     configDialog->addEmpty();
     configDialog->addBool(tr("3- Export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
     configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
+    configDialog->addStringChoice(tr("Choix du format d'export"), "", drivers, _rasterDriverName);
     configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
-
+#endif
 }
 
 void PB_StepExportAttributesInLoop::compute()
@@ -199,57 +235,143 @@ void PB_StepExportAttributesInLoop::compute()
         }
     }
 
-    // IN results browsing
-    CT_ResultGroupIterator itIn_grp(resIn, this, DEFin_grp);
-    while (itIn_grp.hasNext() && !isStopped())
+    // IN results browsing    
+    CT_ResultGroupIterator itIn_grpMain(resIn, this, DEFin_grpMain);
+    while (itIn_grpMain.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup* grp = (CT_AbstractItemGroup*) itIn_grp.next();
+        const CT_AbstractItemGroup* grpMain = (CT_AbstractItemGroup*) itIn_grpMain.next();
 
-        QMap<QString, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> > indexedAttributes;
-
-        CT_ItemIterator itItem(grp, this, DEFin_itemWithAttribute);
-        while (itItem.hasNext())
+        QMap<QString, CT_Image2D<double>*> rasters;
+        if (_rasterExport)
         {
-            CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) itItem.next();
+            CT_PlotListInGrid* plotListInGrid = (CT_PlotListInGrid*) grpMain->firstItemByINModelName(this, DEFin_plotListInGrid);
 
-            if (item != NULL)
+            Eigen::Vector2d min, max;
+            plotListInGrid->getBoundingBox2D(min, max);
+            double resolution = plotListInGrid->getSpacing();
+
+            if (plotListInGrid != NULL)
             {
-                CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*)item->model();
-                QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values(itemModel);
-                QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes(attributesModel);
-
-                for (int i = 0 ; i < attributes.size() ; i++)
+                for (int i = 0 ; i < _modelsKeys.size() ; i++)
                 {
-                    CT_AbstractItemAttribute* attribute = attributes.at(i);
-                    if (attribute != NULL)
-                    {
-                        CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
+                    QString key = _modelsKeys.at(i);
 
-                        QString attrUN = attrModel->uniqueName();
-                        indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(item, attribute));
+                    if (key != xKey && key != yKey)
+                    {
+                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, NAN, NAN));
                     }
                 }
             }
         }
 
-        for (int i = 0 ; i < _modelsKeys.size() ; i++)
-        {
 
-            const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pair = indexedAttributes.value(_modelsKeys.at(i));
-            if (pair.first != NULL && pair.second != NULL)
+        CT_GroupIterator itIn_grp(grpMain, this, DEFin_grp);
+        while (itIn_grp.hasNext() && !isStopped())
+        {
+            const CT_AbstractItemGroup* grp = (CT_AbstractItemGroup*) itIn_grp.next();
+
+            QMap<QString, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> > indexedAttributes;
+
+            CT_ItemIterator itItem(grp, this, DEFin_itemWithAttribute);
+            while (itItem.hasNext())
             {
-                if (_asciiExport && streamASCII != NULL)
+                CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) itItem.next();
+
+                if (item != NULL)
                 {
-                    (*streamASCII) << pair.second->toString(pair.first, NULL);
+                    CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*)item->model();
+                    QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values(itemModel);
+                    QList<CT_AbstractItemAttribute *> attributes = item->itemAttributes(attributesModel);
+
+                    for (int i = 0 ; i < attributes.size() ; i++)
+                    {
+                        CT_AbstractItemAttribute* attribute = attributes.at(i);
+                        if (attribute != NULL)
+                        {
+                            CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
+
+                            QString attrUN = attrModel->uniqueName();
+                            indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(item, attribute));
+                        }
+                    }
                 }
             }
 
-            if (_asciiExport && streamASCII != NULL)
+            const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pairX = indexedAttributes.value(xKey);
+            const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pairY = indexedAttributes.value(yKey);
+
+            double x = std::numeric_limits<double>::max();
+            double y = std::numeric_limits<double>::max();
+
+            if (pairX.first != NULL && pairX.second != NULL)
             {
-                if(i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
+                x = pairX.second->toDouble(pairX.first, NULL);
+            }
+
+            if (pairY.first != NULL && pairY.second != NULL)
+            {
+                y = pairY.second->toDouble(pairY.first, NULL);
+            }
+
+            for (int i = 0 ; i < _modelsKeys.size() ; i++)
+            {
+                QString key = _modelsKeys.at(i);
+
+                const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pair = indexedAttributes.value(key);
+                CT_Image2D<double>* raster = rasters.value(key, NULL);
+
+                if (pair.first != NULL && pair.second != NULL)
+                {
+                    if (_asciiExport && streamASCII != NULL)
+                    {
+                        (*streamASCII) << pair.second->toString(pair.first, NULL);
+                    }
+
+                    if (_rasterExport && raster != NULL)
+                    {
+                        raster->setValueAtCoords(x, y, pair.second->toDouble(pair.first, NULL));
+                    }
+                }
+
+                if (_asciiExport && streamASCII != NULL)
+                {
+                    if(i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
+                }
+
             }
         }
+
+#ifdef USE_GDAL
+        QMapIterator<QString, CT_Image2D<double>*> itRaster(rasters);
+        while (itRaster.hasNext())
+        {
+            itRaster.next();
+            QString key = itRaster.key();
+            QList<CT_AbstractItemDrawable* > rasterList;
+            rasterList.append(itRaster.value());
+
+            QString metricName = _names.value(key);
+            QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg("");
+
+            GDALDriver* driver = _gdalRasterDrivers.value(_rasterDriverName, NULL);
+
+            if (driver != NULL)
+            {
+                PB_GDALExporter exporter(driver);
+                exporter.init();
+
+                if (exporter.setExportFilePath(fileName))
+                {
+                    exporter.setItemDrawableToExport(rasterList);
+                    exporter.exportToFile();
+                }
+
+            }
+        }
+
     }
+#endif
+
 
     if (fileASCII != NULL) {fileASCII->close(); delete fileASCII;}
     if (streamASCII != NULL) {delete streamASCII;}

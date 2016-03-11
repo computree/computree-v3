@@ -72,6 +72,9 @@ public:
 
     void getBoundingBox2D(Eigen::Vector2d &min, Eigen::Vector2d &max) const;
 
+    inline double getSpacing() const {return _spacing;}
+    inline double getSize() const {return _size;}
+
     void setIndices(size_t firstIndex, size_t indexJumpAtEOL);
 
     QMap<CT_AreaShape2DData *, size_t> createPlots(CT_PlotListInGrid::Type type);

@@ -4,6 +4,12 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 #include "ct_exporter/abstract/ct_abstractexporter.h"
 
+#ifdef USE_GDAL
+#include "exporters/gdal/pb_gdalexporter.h"
+#include "gdal_priv.h"
+#include "ct_tools/ct_gdaltools.h"
+#endif
+
 
 class PB_StepExportAttributesInLoop: public CT_AbstractStep
 {
@@ -72,6 +78,11 @@ protected:
     void compute();
 
 private:
+
+#ifdef USE_GDAL
+    QMap<QString, GDALDriver*> _gdalRasterDrivers;
+    QString                    _rasterDriverName;
+#endif
 
     QList<QString>          _modelsKeys;
     QMap<QString, QString>  _names;
