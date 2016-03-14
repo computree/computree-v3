@@ -12,6 +12,7 @@
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_itemdrawable/ct_plotlistingrid.h"
 #include "ct_itemdrawable/ct_image2d.h"
+#include "exporters/grid2d/pb_grid2dexporter.h"
 
 
 #include "ct_itemdrawable/ct_profile.h"
@@ -24,15 +25,21 @@
 #include <QTextStream>
 #include <QDebug>
 
+#define DEF_ESRI_ASCII_Grid "ESRI ASCII Grid"
+
 // Alias for indexing models
 #define DEFin_res "res"
 #define DEFin_grpMain "grpMain"
 #define DEFin_plotListInGrid "plotListInGrid"
 #define DEFin_grp "grp"
+
 #define DEFin_itemWithAttribute "itemWithAttribute"
 #define DEFin_attribute "attribute"
+
+#define DEFin_itemWithXY "itemWithXY"
 #define DEFin_Xattribute "Xattribute"
 #define DEFin_Yattribute "Yattribute"
+#define DEFin_attributeInItemXY "attributeInItemXY"
 
 #define DEFout_res "res"
 #define DEFout_grp "grp"
@@ -40,19 +47,19 @@
 
 // Constructor : initialization of parameters
 PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
-{   
+{
     _asciiExport = true;
-    _vectorExport = true;
-    _rasterExport = true;
+    _vectorExport = false;
+    _rasterExport = false;
 
     _vectorPrefix = "";
     _rasterPrefix = "";
 
+    _rasterDriverName = DEF_ESRI_ASCII_Grid;
+
 
 #ifdef USE_GDAL
-    _rasterDriverName = "GDAL Arc/Info ASCII Grid";
-
-    GDALAllRegister();
+    //GDALAllRegister();
     GDALDriverManager *driverManager = GetGDALDriverManager();
 
     int count = driverManager->GetDriverCount();
@@ -62,7 +69,7 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
         GDALDriver *driver = driverManager->GetDriver(i);
         QString name = CT_GdalTools::staticGdalDriverName(driver);
 
-        if(!name.isEmpty() && driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL) {
+        if(!name.isEmpty() && driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL && driver->GetMetadataItem(GDAL_DCAP_CREATE) != NULL) {
             _gdalRasterDrivers.insert(name, driver);
         }
     }
@@ -106,16 +113,23 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
 {
     CT_InResultModelGroup *resIn = createNewInResultModel(DEFin_res, tr("Résultat"));
     resIn->setZeroOrMoreRootGroup();
-
     resIn->addGroupModel("", DEFin_grpMain, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn->addItemModel(DEFin_grpMain, DEFin_plotListInGrid, CT_PlotListInGrid::staticGetType(), tr("Grille de placettes"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsOptional);
+
+    if (_rasterExport)
+    {
+        resIn->addItemModel(DEFin_grpMain, DEFin_plotListInGrid, CT_PlotListInGrid::staticGetType(), tr("Grille de placettes"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsObligatory);
+    }
 
     resIn->addGroupModel(DEFin_grpMain, DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple);
-    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Xattribute, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("X"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
-    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_Yattribute, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Y"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
-    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Attribut"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple);
+    resIn->addItemModel(DEFin_grp, DEFin_itemWithXY, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item (avec XY)"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
+    resIn->addItemAttributeModel(DEFin_itemWithXY, DEFin_Xattribute, QList<QString>() << CT_AbstractCategory::DATA_X, CT_AbstractCategory::DOUBLE, tr("X"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
+    resIn->addItemAttributeModel(DEFin_itemWithXY, DEFin_Yattribute, QList<QString>() << CT_AbstractCategory::DATA_Y, CT_AbstractCategory::DOUBLE, tr("Y"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
+    resIn->addItemAttributeModel(DEFin_itemWithXY, DEFin_attributeInItemXY, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Attribut"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple, CT_InAbstractModel::F_IsOptional);
+
+    resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple, CT_InAbstractModel::F_IsOptional);
+    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Attribut"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple, CT_InAbstractModel::F_IsOptional);
 }
+
 
 // Creation and affiliation of OUT models
 void PB_StepExportAttributesInLoop::createOutResultModelListProtected()
@@ -123,29 +137,50 @@ void PB_StepExportAttributesInLoop::createOutResultModelListProtected()
     //createNewOutResultModel(DEFout_res, tr("Resultat vide"));
 }
 
+void PB_StepExportAttributesInLoop::createPreConfigurationDialog()
+{
+    CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
+    configDialog->addBool(tr("Activer export ASCII tabulaire (1 fichier en tout)"), "", tr("Activer"), _asciiExport);
+    configDialog->addBool(tr("Activer export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
+#ifdef USE_GDAL
+    configDialog->addBool(tr("Activer export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
+#endif
+
+}
+
 // Semi-automatic creation of step parameters DialogBox
 void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addBool(tr("1- Export ASCII tabulaire (1 fichier en tout)"), "", tr("Activer"), _asciiExport);
-    configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, "", _outASCIIFileName);
+    configDialog->addTitle(tr("Export ASCII tabulaire (1 fichier en tout)"));
+    configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _outASCIIFileName);
 
-    configDialog->addEmpty();
-    configDialog->addBool(tr("2- Export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
-    configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _vectorPrefix);
-    configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outVectorFolder);
+
+    if (_rasterExport)
+    {
+        QStringList drivers;
+        drivers.append(DEF_ESRI_ASCII_Grid);
 
 #ifdef USE_GDAL
-    QStringList drivers;
-    drivers.append(_gdalRasterDrivers.keys());
+        drivers.append(_gdalRasterDrivers.keys());
+#endif
 
+        configDialog->addEmpty();
+        configDialog->addTitle(tr("Export raster (1 fichier / tour / métrique)"));
+        configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
+        configDialog->addStringChoice(tr("Choix du format d'export"), "", drivers, _rasterDriverName);
+        configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
+    }
 
-    configDialog->addEmpty();
-    configDialog->addBool(tr("3- Export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
-    configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
-    configDialog->addStringChoice(tr("Choix du format d'export"), "", drivers, _rasterDriverName);
-    configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
+#ifdef USE_GDAL
+    if (_vectorExport)
+    {
+        configDialog->addEmpty();
+        configDialog->addTitle(tr("Export vectoriel (1 fichier / tour)"));
+        configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _vectorPrefix);
+        configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outVectorFolder);
+    }
 #endif
 }
 
@@ -163,22 +198,34 @@ void PB_StepExportAttributesInLoop::compute()
 
     CT_ModelSearchHelper::SplitHash hash = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
 
-    CT_ModelSearchHelper::SplitHash hashX = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Xattribute, DEFin_itemWithAttribute, resIn->model(), this);
+    CT_ModelSearchHelper::SplitHash hash2 = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attributeInItemXY, DEFin_itemWithXY, resIn->model(), this);
+    QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ith2(hash2);
+    while (ith2.hasNext())
+    {
+        ith2.next();
+        hash.insert(ith2.key(), ith2.value());
+        qDebug() << "ith2.key()=" << ith2.key();
+        qDebug() << "ith2.value()=" << ith2.value();
+    }
+
+    CT_ModelSearchHelper::SplitHash hashX = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Xattribute, DEFin_itemWithXY, resIn->model(), this);
     QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ithX(hashX);
     while (ithX.hasNext())
     {
         ithX.next();
         hash.insert(ithX.key(), ithX.value());
+        qDebug() << "ithX.key()=" << ithX.key();
+        qDebug() << "ithX.value()=" << ithX.value();
     }
 
-    CT_ModelSearchHelper::SplitHash hashY = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Yattribute, DEFin_itemWithAttribute, resIn->model(), this);
+    CT_ModelSearchHelper::SplitHash hashY = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Yattribute, DEFin_itemWithXY, resIn->model(), this);
     QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ithY(hashY);
     while (ithY.hasNext())
     {
         ithY.next();
         hash.insert(ithY.key(), ithY.value());
-    }
-
+        qDebug() << "ithY.key()=" << ithY.key();
+        qDebug() << "ithY.value()=" << ithY.value();}
 
     QString xKey = "";
     QString yKey = "";
@@ -258,7 +305,7 @@ void PB_StepExportAttributesInLoop::compute()
 
                     if (key != xKey && key != yKey)
                     {
-                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, NAN, NAN));
+                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, -std::numeric_limits<double>::max(), -std::numeric_limits<double>::max()));
                     }
                 }
             }
@@ -271,6 +318,39 @@ void PB_StepExportAttributesInLoop::compute()
             const CT_AbstractItemGroup* grp = (CT_AbstractItemGroup*) itIn_grp.next();
 
             QMap<QString, QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> > indexedAttributes;
+
+            double x = std::numeric_limits<double>::max();
+            double y = std::numeric_limits<double>::max();
+
+            CT_AbstractSingularItemDrawable* itemXY = (CT_AbstractSingularItemDrawable*) grp->firstItemByINModelName(this, DEFin_itemWithXY);
+            if (itemXY != NULL)
+            {
+                CT_AbstractItemAttribute* attX = itemXY->firstItemAttributeByINModelName(resIn, this, DEFin_Xattribute);
+                CT_AbstractItemAttribute* attY = itemXY->firstItemAttributeByINModelName(resIn, this, DEFin_Yattribute);
+
+                if (attX != NULL) {x = attX->toDouble(itemXY, NULL);}
+                if (attY != NULL) {y = attY->toDouble(itemXY, NULL);}
+
+                CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*)itemXY->model();
+                qDebug() << "itemModel=" << itemModel;
+
+
+                QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values(itemModel);
+                QList<CT_AbstractItemAttribute *> attributes = itemXY->itemAttributes(attributesModel);
+
+                for (int i = 0 ; i < attributes.size() ; i++)
+                {
+                    CT_AbstractItemAttribute* attribute = attributes.at(i);
+                    if (attribute != NULL)
+                    {
+                        CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
+
+                        QString attrUN = attrModel->uniqueName();
+
+                        indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(itemXY, attribute));
+                    }
+                }
+            }
 
             CT_ItemIterator itItem(grp, this, DEFin_itemWithAttribute);
             while (itItem.hasNext())
@@ -291,28 +371,14 @@ void PB_StepExportAttributesInLoop::compute()
                             CT_OutAbstractItemAttributeModel* attrModel = (CT_OutAbstractItemAttributeModel*) attribute->model();
 
                             QString attrUN = attrModel->uniqueName();
+
                             indexedAttributes.insert(QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrUN), QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*>(item, attribute));
                         }
                     }
                 }
             }
 
-            const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pairX = indexedAttributes.value(xKey);
-            const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pairY = indexedAttributes.value(yKey);
-
-            double x = std::numeric_limits<double>::max();
-            double y = std::numeric_limits<double>::max();
-
-            if (pairX.first != NULL && pairX.second != NULL)
-            {
-                x = pairX.second->toDouble(pairX.first, NULL);
-            }
-
-            if (pairY.first != NULL && pairY.second != NULL)
-            {
-                y = pairY.second->toDouble(pairY.first, NULL);
-            }
-
+            bool hasMetricsToExport = !(indexedAttributes.isEmpty());
             for (int i = 0 ; i < _modelsKeys.size() ; i++)
             {
                 QString key = _modelsKeys.at(i);
@@ -322,18 +388,20 @@ void PB_StepExportAttributesInLoop::compute()
 
                 if (pair.first != NULL && pair.second != NULL)
                 {
-                    if (_asciiExport && streamASCII != NULL)
+                    if (hasMetricsToExport && _asciiExport && streamASCII != NULL)
                     {
                         (*streamASCII) << pair.second->toString(pair.first, NULL);
                     }
 
                     if (_rasterExport && raster != NULL)
                     {
-                        raster->setValueAtCoords(x, y, pair.second->toDouble(pair.first, NULL));
+                        double val = pair.second->toDouble(pair.first, NULL);
+                        if (val == NAN) {val = -std::numeric_limits<double>::max();}
+                        raster->setValueAtCoords(x, y, val);
                     }
                 }
 
-                if (_asciiExport && streamASCII != NULL)
+                if (hasMetricsToExport && _asciiExport && streamASCII != NULL)
                 {
                     if(i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
                 }
@@ -341,36 +409,52 @@ void PB_StepExportAttributesInLoop::compute()
             }
         }
 
-#ifdef USE_GDAL
-        QMapIterator<QString, CT_Image2D<double>*> itRaster(rasters);
-        while (itRaster.hasNext())
+        if (_rasterExport)
         {
-            itRaster.next();
-            QString key = itRaster.key();
-            QList<CT_AbstractItemDrawable* > rasterList;
-            rasterList.append(itRaster.value());
-
-            QString metricName = _names.value(key);
-            QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg("");
-
-            GDALDriver* driver = _gdalRasterDrivers.value(_rasterDriverName, NULL);
-
-            if (driver != NULL)
+            QMapIterator<QString, CT_Image2D<double>*> itRaster(rasters);
+            while (itRaster.hasNext())
             {
-                PB_GDALExporter exporter(driver);
-                exporter.init();
+                itRaster.next();
+                QString key = itRaster.key();
+                QList<CT_AbstractItemDrawable* > rasterList;
+                rasterList.append(itRaster.value());
 
-                if (exporter.setExportFilePath(fileName))
+                QString metricName = _names.value(key);
+                QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg("");
+
+                if (_rasterDriverName == DEF_ESRI_ASCII_Grid)
                 {
-                    exporter.setItemDrawableToExport(rasterList);
-                    exporter.exportToFile();
-                }
+                    PB_Grid2DExporter exporter;
+                    exporter.init();
 
+                    if (exporter.setExportFilePath(fileName))
+                    {
+                        exporter.setItemDrawableToExport(rasterList);
+                        exporter.exportToFile();
+                    }
+
+                } else {
+#ifdef USE_GDAL
+                    GDALDriver* driver = _gdalRasterDrivers.value(_rasterDriverName, NULL);
+
+                    if (driver != NULL)
+                    {
+                        PB_GDALExporter exporter(driver);
+                        exporter.init();
+
+                        if (exporter.setExportFilePath(fileName))
+                        {
+                            exporter.setItemDrawableToExport(rasterList);
+                            exporter.exportToFile();
+                        }
+                    }
+#endif
+
+                }
             }
         }
 
     }
-#endif
 
 
     if (fileASCII != NULL) {fileASCII->close(); delete fileASCII;}

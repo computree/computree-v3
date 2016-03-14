@@ -63,6 +63,7 @@ protected:
      * 
      * DialogBox asking for step parameters
      */
+    void createPreConfigurationDialog();
     void createPostConfigurationDialog();
 
     /*! \brief Output results specification
@@ -81,7 +82,6 @@ private:
 
 #ifdef USE_GDAL
     QMap<QString, GDALDriver*> _gdalRasterDrivers;
-    QString                    _rasterDriverName;
 #endif
 
     QList<QString>          _modelsKeys;
@@ -92,6 +92,7 @@ private:
     bool        _vectorExport;
     bool        _rasterExport;
 
+    QString      _rasterDriverName;
     QString     _vectorPrefix;
     QString     _rasterPrefix;
 

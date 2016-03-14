@@ -254,9 +254,14 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             GDALDriver *driver = driverManager->GetDriver(i);
             QString name = CT_GdalTools::staticGdalDriverName(driver);
 
-            if(!name.isEmpty()) {
+            if(!name.isEmpty())
+            {
                 gdalReaderC.append(new CT_Reader_GDAL(driver));
-                gdalExpoC.append(new PB_GDALExporter(driver));
+
+                if (driver->GetMetadataItem(GDAL_DCAP_CREATE) != NULL)
+                {
+                    gdalExpoC.append(new PB_GDALExporter(driver));
+                }
             }
         }
 

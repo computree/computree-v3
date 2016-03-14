@@ -152,7 +152,7 @@ void PB_StepComputePointMetrics::createOutResultModelListProtected()
     CT_OutResultModelGroupToCopyPossibilities *resCpy = createNewOutResultModelToCopy(DEFin_res);
 
     if(resCpy != NULL) {
-        resCpy->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques (%1)").arg(_inSceneDisplayableName));
+        resCpy->addItemModel(DEFin_grp, _outMetrics_ModelName, new CT_AttributesList(), tr("Métriques_%1").arg(_inSceneDisplayableName));
 
         QListIterator<CT_AbstractConfigurableElement *> it(_selectedMetrics);
         while (it.hasNext())
