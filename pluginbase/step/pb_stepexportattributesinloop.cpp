@@ -11,15 +11,15 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_itemdrawable/ct_plotlistingrid.h"
-#include "ct_itemdrawable/ct_image2d.h"
-#include "exporters/grid2d/pb_grid2dexporter.h"
 
-
-#include "ct_itemdrawable/ct_profile.h"
-#include "exporters/profile/pb_profileexporter.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
+
+#ifdef USE_OPENCV
+#include "ct_itemdrawable/ct_image2d.h"
+#include "exporters/grid2d/pb_grid2dexporter.h"
+#endif
 
 #include <QFile>
 #include <QTextStream>
@@ -115,10 +115,12 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
     resIn->setZeroOrMoreRootGroup();
     resIn->addGroupModel("", DEFin_grpMain, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
 
+#ifdef USE_OPENCV
     if (_rasterExport)
     {
         resIn->addItemModel(DEFin_grpMain, DEFin_plotListInGrid, CT_PlotListInGrid::staticGetType(), tr("Grille de placettes"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsObligatory);
     }
+#endif
 
     resIn->addGroupModel(DEFin_grpMain, DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn->addItemModel(DEFin_grp, DEFin_itemWithXY, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item (avec XY)"), "", CT_InAbstractModel::C_ChooseOneIfMultiple);
@@ -141,7 +143,11 @@ void PB_StepExportAttributesInLoop::createPreConfigurationDialog()
 {
     CT_StepConfigurableDialog* configDialog = newStandardPreConfigurationDialog();
     configDialog->addBool(tr("Activer export ASCII tabulaire (1 fichier en tout)"), "", tr("Activer"), _asciiExport);
+
+#ifdef USE_OPENCV
     configDialog->addBool(tr("Activer export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
+#endif
+
 #ifdef USE_GDAL
     configDialog->addBool(tr("Activer export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
 #endif
@@ -156,7 +162,7 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
     configDialog->addTitle(tr("Export ASCII tabulaire (1 fichier en tout)"));
     configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _outASCIIFileName);
 
-
+#ifdef USE_OPENCV
     if (_rasterExport)
     {
         QStringList drivers;
@@ -172,6 +178,7 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
         configDialog->addStringChoice(tr("Choix du format d'export"), "", drivers, _rasterDriverName);
         configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
     }
+#endif
 
 #ifdef USE_GDAL
     if (_vectorExport)
@@ -196,16 +203,25 @@ void PB_StepExportAttributesInLoop::compute()
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn = inResultList.at(0);
 
-    CT_ModelSearchHelper::SplitHash hash = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
+    CT_ModelSearchHelper::SplitHash hash;
+    QString xKey = "";
+    QString yKey = "";
+
+    CT_ModelSearchHelper::SplitHash hash1 = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attribute, DEFin_itemWithAttribute, resIn->model(), this);
+    QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ith1(hash1);
+    while (ith1.hasNext())
+    {
+        ith1.next();
+        hash.insert((CT_OutAbstractSingularItemModel*) (ith1.key()->originalModel()), ith1.value());
+    }
+
 
     CT_ModelSearchHelper::SplitHash hash2 = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_attributeInItemXY, DEFin_itemWithXY, resIn->model(), this);
     QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> ith2(hash2);
     while (ith2.hasNext())
     {
         ith2.next();
-        hash.insert(ith2.key(), ith2.value());
-        qDebug() << "ith2.key()=" << ith2.key();
-        qDebug() << "ith2.value()=" << ith2.value();
+        hash.insert((CT_OutAbstractSingularItemModel*) (ith2.key()->originalModel()), ith2.value());
     }
 
     CT_ModelSearchHelper::SplitHash hashX = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Xattribute, DEFin_itemWithXY, resIn->model(), this);
@@ -213,9 +229,12 @@ void PB_StepExportAttributesInLoop::compute()
     while (ithX.hasNext())
     {
         ithX.next();
-        hash.insert(ithX.key(), ithX.value());
-        qDebug() << "ithX.key()=" << ithX.key();
-        qDebug() << "ithX.value()=" << ithX.value();
+        hash.insert((CT_OutAbstractSingularItemModel*) (ithX.key()->originalModel()), ithX.value());
+
+        CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*) (ithX.key()->originalModel());
+        CT_OutAbstractItemAttributeModel *attrModel = ithX.value();
+        if (attrModel->isADefaultItemAttributeModel() && attrModel->originalModel() != NULL) {attrModel = (CT_OutAbstractItemAttributeModel*) (attrModel->originalModel());}
+        xKey = QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrModel->uniqueName());
     }
 
     CT_ModelSearchHelper::SplitHash hashY = PS_MODELS->splitSelectedAttributesModelBySelectedSingularItemModel(DEFin_Yattribute, DEFin_itemWithXY, resIn->model(), this);
@@ -223,12 +242,14 @@ void PB_StepExportAttributesInLoop::compute()
     while (ithY.hasNext())
     {
         ithY.next();
-        hash.insert(ithY.key(), ithY.value());
-        qDebug() << "ithY.key()=" << ithY.key();
-        qDebug() << "ithY.value()=" << ithY.value();}
+        hash.insert((CT_OutAbstractSingularItemModel*) (ithY.key()->originalModel()), ithY.value());
 
-    QString xKey = "";
-    QString yKey = "";
+        CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*) (ithY.key()->originalModel());
+        CT_OutAbstractItemAttributeModel *attrModel = ithY.value();
+        if (attrModel->isADefaultItemAttributeModel() && attrModel->originalModel() != NULL) {attrModel = (CT_OutAbstractItemAttributeModel*) (attrModel->originalModel());}
+        yKey = QString("ITEM_%1_ATTR_%2").arg(itemModel->uniqueName()).arg(attrModel->uniqueName());
+    }
+
     if (firstTurn)
     {
         QHashIterator<CT_OutAbstractSingularItemModel *, CT_OutAbstractItemAttributeModel *> itModels(hash);
@@ -251,10 +272,6 @@ void PB_StepExportAttributesInLoop::compute()
             _modelsKeys.append(key);
 
             _names.insert(key, QString("%1_%2").arg(itemDN).arg(attrDN));
-
-            if (hashX.contains(itemModel, attrModel)) {xKey = key;}
-            if (hashY.contains(itemModel, attrModel)) {yKey = key;}
-
         }
         qSort(_modelsKeys.begin(), _modelsKeys.end());
 
@@ -288,6 +305,7 @@ void PB_StepExportAttributesInLoop::compute()
     {
         const CT_AbstractItemGroup* grpMain = (CT_AbstractItemGroup*) itIn_grpMain.next();
 
+#ifdef USE_OPENCV
         QMap<QString, CT_Image2D<double>*> rasters;
         if (_rasterExport)
         {
@@ -310,7 +328,7 @@ void PB_StepExportAttributesInLoop::compute()
                 }
             }
         }
-
+#endif
 
         CT_GroupIterator itIn_grp(grpMain, this, DEFin_grp);
         while (itIn_grp.hasNext() && !isStopped())
@@ -332,7 +350,6 @@ void PB_StepExportAttributesInLoop::compute()
                 if (attY != NULL) {y = attY->toDouble(itemXY, NULL);}
 
                 CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*)itemXY->model();
-                qDebug() << "itemModel=" << itemModel;
 
 
                 QList<CT_OutAbstractItemAttributeModel *> attributesModel = hash.values(itemModel);
@@ -384,7 +401,10 @@ void PB_StepExportAttributesInLoop::compute()
                 QString key = _modelsKeys.at(i);
 
                 const QPair<CT_AbstractSingularItemDrawable*, CT_AbstractItemAttribute*> &pair = indexedAttributes.value(key);
+
+#ifdef USE_OPENCV
                 CT_Image2D<double>* raster = rasters.value(key, NULL);
+#endif
 
                 if (pair.first != NULL && pair.second != NULL)
                 {
@@ -393,12 +413,14 @@ void PB_StepExportAttributesInLoop::compute()
                         (*streamASCII) << pair.second->toString(pair.first, NULL);
                     }
 
+#ifdef USE_OPENCV
                     if (_rasterExport && raster != NULL)
                     {
                         double val = pair.second->toDouble(pair.first, NULL);
                         if (val == NAN) {val = -std::numeric_limits<double>::max();}
                         raster->setValueAtCoords(x, y, val);
                     }
+#endif
                 }
 
                 if (hasMetricsToExport && _asciiExport && streamASCII != NULL)
@@ -409,6 +431,7 @@ void PB_StepExportAttributesInLoop::compute()
             }
         }
 
+#ifdef USE_OPENCV
         if (_rasterExport)
         {
             QMapIterator<QString, CT_Image2D<double>*> itRaster(rasters);
@@ -453,6 +476,7 @@ void PB_StepExportAttributesInLoop::compute()
                 }
             }
         }
+#endif
 
     }
 
