@@ -511,6 +511,12 @@ QString CT_Image2D<DataT>::NAAsString() const
 }
 
 template< typename DataT>
+double CT_Image2D<DataT>::NAAsDouble() const
+{
+    return NA();
+}
+
+template< typename DataT>
 bool CT_Image2D<DataT>::addValueAtCoords(const double x, const double y, const DataT value)
 {
     size_t indice;

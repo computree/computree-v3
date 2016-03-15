@@ -90,6 +90,12 @@ public:
     virtual QString NAAsString() const = 0;
 
     /*!
+     * \brief return na value as a double
+     *
+     */
+    virtual double NAAsDouble() const = 0;
+
+    /*!
      * \brief Compute index for given column, row
      * \param col Column
      * \param lin Row

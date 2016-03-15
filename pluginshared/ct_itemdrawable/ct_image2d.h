@@ -301,6 +301,13 @@ public:
      */
     virtual QString NAAsString() const;
 
+
+    /*!
+     * \brief return na value as a double
+     *
+     */
+    virtual double NAAsDouble() const;
+
     /**
       * \brief Gives neighbours values
       * \param col column, first one is 0

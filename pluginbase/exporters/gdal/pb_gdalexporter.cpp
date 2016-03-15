@@ -8,6 +8,7 @@
 #include "ct_tools/ct_gdaltools.h"
 
 #include <QFileInfo>
+#include <QDebug>
 
 // TODO : choose raster type (what is R, G or B, etc...) and export it in multiple bands
 // TODO : Group raster by dimension and resolution
@@ -184,7 +185,7 @@ bool PB_GDALExporter::exportRaster(const QString &filepath)
     size_t nXSize = grid->colDim();
     size_t nYSize = grid->linDim();
 
-    GDALDataset *dataset = m_driver->Create(filepath.toLatin1(), nXSize, nYSize, 1, GDT_Float64, NULL);
+    GDALDataset *dataset = m_driver->Create(filepath.toLatin1(), nXSize, nYSize, 1, GDT_Float32, NULL);
 
     if( dataset == NULL )
     {
@@ -205,25 +206,35 @@ bool PB_GDALExporter::exportRaster(const QString &filepath)
 
     padfTransform[0] = grid->minX();
     padfTransform[1] = grid->resolution();
+    padfTransform[5] = -grid->resolution();
     padfTransform[3] = grid->minY() + nYSize*padfTransform[1];
 
-    dataset->SetGeoTransform( padfTransform );
+    dataset->SetGeoTransform( padfTransform );   
 
-    double *pafScanline = (double *) CPLMalloc(sizeof(double)*nXSize);
+    poBand->SetNoDataValue(grid->NAAsDouble());
+
+
+    float *pafScanline = (float *) CPLMalloc(sizeof(float)*nXSize);
 
     size_t index = 0;
 
-    for(int y=0; y<nYSize; ++y) {
-
-        for(int x=0; x<nXSize; ++x) {
+    for(int y = 0 ;  y < nYSize ; ++y)
+    {
+        for(int x = 0 ; x < nXSize ; ++x)
+        {
             grid->index(x, y, index);
             pafScanline[x] = grid->valueAtIndexAsDouble(index);
         }
-
-        poBand->RasterIO( GF_Write, 0, y, nXSize, 1, pafScanline, nXSize, 1, GDT_Float64, 0, 0 );
+        poBand->RasterIO( GF_Write, 0, y, nXSize, 1, pafScanline, nXSize, 1, GDT_Float32, 0, 0);
     }
 
     CPLFree(pafScanline);
+
+    double min, max, mean, stdDev;
+    poBand->FlushCache();
+    poBand->ComputeStatistics(0, &min, &max, &mean, &stdDev, NULL, NULL);
+    poBand->SetStatistics(min, max, mean, stdDev);
+    poBand->FlushCache();
 
     GDALClose(dataset);
 

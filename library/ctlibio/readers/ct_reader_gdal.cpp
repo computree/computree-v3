@@ -340,7 +340,6 @@ bool CT_Reader_GDAL::protectedReadFile()
             double xMin = padfTransform[0];
             double yMin = padfTransform[3] - nYSize*padfTransform[1];
 
-
             double na = poBand->GetNoDataValue();
 
             CT_Image2D<float> *grid = new CT_Image2D<float>(NULL,

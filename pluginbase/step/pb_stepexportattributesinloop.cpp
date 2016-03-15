@@ -26,6 +26,7 @@
 #include <QDebug>
 
 #define DEF_ESRI_ASCII_Grid "ESRI ASCII Grid"
+#define DEF_NA -9999999
 
 // Alias for indexing models
 #define DEFin_res "res"
@@ -159,8 +160,11 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog* configDialog = newStandardPostConfigurationDialog();
 
-    configDialog->addTitle(tr("Export ASCII tabulaire (1 fichier en tout)"));
-    configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _outASCIIFileName);
+    if (_asciiExport)
+    {
+        configDialog->addTitle(tr("Export ASCII tabulaire (1 fichier en tout)"));
+        configDialog->addFileChoice(tr("Choix du fichier"), CT_FileChoiceButton::OneNewFile, tr("Fichier texte (*.txt)"), _outASCIIFileName);
+    }
 
 #ifdef USE_OPENCV
     if (_rasterExport)
@@ -323,7 +327,7 @@ void PB_StepExportAttributesInLoop::compute()
 
                     if (key != xKey && key != yKey)
                     {
-                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, -std::numeric_limits<double>::max(), -std::numeric_limits<double>::max()));
+                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, DEF_NA, DEF_NA));
                     }
                 }
             }
@@ -417,7 +421,7 @@ void PB_StepExportAttributesInLoop::compute()
                     if (_rasterExport && raster != NULL)
                     {
                         double val = pair.second->toDouble(pair.first, NULL);
-                        if (val == NAN) {val = -std::numeric_limits<double>::max();}
+                        if (val == NAN) {val = DEF_NA;}
                         raster->setValueAtCoords(x, y, val);
                     }
 #endif
