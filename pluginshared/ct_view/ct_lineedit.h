@@ -27,8 +27,8 @@
 
 
 
-#ifndef CT_LineEdit_H
-#define CT_LineEdit_H
+#ifndef CT_LINEEDIT_H
+#define CT_LINEEDIT_H
 
 #include "ct_widgetwithvaluereferenceinterface.h"
 
@@ -48,7 +48,6 @@ private:
 public:
     CT_LineEdit(QString &value, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 
@@ -69,4 +68,4 @@ protected:
     QString         _description;
 };
 
-#endif // CT_LineEdit_H
+#endif // CT_LINEEDIT_H

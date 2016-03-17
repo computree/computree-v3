@@ -1,4 +1,4 @@
-COMPUTREE += ctlibio
+COMPUTREE += ctlibio ctlibmetrics ctlibfilters ctliblas
 
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)

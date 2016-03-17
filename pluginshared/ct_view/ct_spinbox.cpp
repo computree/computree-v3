@@ -39,11 +39,6 @@ CT_SpinBox::CT_SpinBox(int min, int max, int &value, QString description)
     _spinBoxCreated = NULL;
 }
 
-QString CT_SpinBox::type() const
-{
-    return "CT_SpinBox";
-}
-
 QList<SettingsNodeGroup*> CT_SpinBox::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

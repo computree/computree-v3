@@ -113,11 +113,6 @@ CT_AsciiFileChoiceButton::~CT_AsciiFileChoiceButton()
     delete _dialog;
 }
 
-QString CT_AsciiFileChoiceButton::type() const
-{
-    return "CT_AsciiFileChoiceButton";
-}
-
 QList<SettingsNodeGroup*> CT_AsciiFileChoiceButton::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

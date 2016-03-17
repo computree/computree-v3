@@ -12,8 +12,10 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_abstractstepplugin.h"
-#include "ct_metric/abstract/ct_abstractmetric_raster.h"
-#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
+
+#include "ctlibmetrics/ct_metric/abstract/ct_abstractmetric_raster.h"
+
+#include "ct_view/elements/ctg_configurableelementsselector.h"
 
 #include <QDebug>
 
@@ -96,24 +98,20 @@ void PB_StepComputeRasterMetrics::createInResultModelListProtected()
     resIn_res->addItemModel(DEFin_grp, DEFin_areaShape, CT_AbstractAreaShape2D::staticGetType(), tr("Emprise de la placette"));
 }
 
-// Semi-automatic creation of step parameters DialogBox
-void PB_StepComputeRasterMetrics::createPostConfigurationDialog()
-{
-    _configDialog = new CT_ManageConfigurableElementsDialog(tr("Métriques séléctionnées"), _availableMetrics, &_selectedMetrics);
-}
-
 bool PB_StepComputeRasterMetrics::postConfigure()
-{
-    if(_configDialog != NULL)
+{    
+    CTG_ConfigurableElementsSelector cd(NULL, !getStepChildList().isEmpty());
+    cd.setWindowTitle("Métriques séléctionnées");
+    cd.setElementsAvailable(_availableMetrics);
+    cd.setElementsSelected(&_selectedMetrics);
+
+    if(cd.exec() == QDialog::Accepted)
     {
-        if(_configDialog->exec() == 1)
-        {
-            setSettingsModified(true);
-            return true;
-        }
-        return false;
+        setSettingsModified(true);
+        return true;
     }
-    return true;
+
+    return false;
 }
 
 
@@ -160,7 +158,7 @@ void PB_StepComputeRasterMetrics::compute()
 
                 if (metric != NULL)
                 {
-                    metric->initResultAndData(outRes, raster, plotArea->getAreaData());
+                    metric->initDatas(raster, plotArea->getAreaData());
                     metric->computeMetric(outAttributes);
                 }
             }

@@ -26,17 +26,12 @@ public:
 protected:
     typedef Eigen::Matrix<size_t, 3, 1> EigenVector3ui64;
 
-
     void protectedInit();
     void protectedCreateOutItemDrawableModelList();
     bool protectedReadFile();
 
     bool readHeader(QTextStream &stream, Eigen::Vector3d &min, Eigen::Vector3d &max, Eigen::Vector3d &res, EigenVector3ui64 &dim, int &nMat, QMap<QString, int>  &matNames) const;
     CT_Grid3D<float>* createGrid(Eigen::Vector3d &min, Eigen::Vector3d &res, EigenVector3ui64 &dim) const;
-
-private:
-
-
 };
 
 #endif // CT_READER_LARCHITECT_GRID_H

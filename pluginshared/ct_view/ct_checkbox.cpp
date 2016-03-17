@@ -38,11 +38,6 @@ CT_CheckBox::CT_CheckBox(QString text, bool &value, QString description)
     _checkBoxCreated = NULL;
 }
 
-QString CT_CheckBox::type() const
-{
-    return "CT_CheckBox";
-}
-
 QList<SettingsNodeGroup*> CT_CheckBox::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

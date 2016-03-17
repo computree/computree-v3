@@ -50,7 +50,6 @@ private:
 public:
     CT_SpinBox(int min, int max, int &value, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

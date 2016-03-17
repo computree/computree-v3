@@ -10,7 +10,6 @@
 
 CT_AbstractReader::CT_AbstractReader()
 {
-    m_header = NULL;
     m_progress = 0;
     m_stop = false;
     m_filePath = "";
@@ -41,8 +40,6 @@ CT_AbstractReader::CT_AbstractReader(const CT_AbstractReader &other)
     m_stop = other.m_stop;
     m_filePath = other.m_filePath;
     m_filepathCanBeModified = other.m_filepathCanBeModified;
-
-    m_header = (other.m_header != NULL ? ((CT_FileHeader*)((CT_FileHeader*)other.m_header)->copy(NULL, NULL, CT_ResultCopyModeList())) : NULL);
 }
 
 CT_AbstractReader::~CT_AbstractReader()
@@ -52,9 +49,6 @@ CT_AbstractReader::~CT_AbstractReader()
 
     clearOutGroupsModel();
     clearOutGroups();
-
-    if (m_header!=NULL)
-        delete m_header;
 }
 
 void CT_AbstractReader::init(bool initOutItemDrawableList)
@@ -71,7 +65,7 @@ void CT_AbstractReader::init(bool initOutItemDrawableList)
 
 QString CT_AbstractReader::GetReaderName() const
 {
-    return metaObject()->className();
+    return GetReaderClassName();
 }
 
 QString CT_AbstractReader::GetReaderClassName() const
@@ -102,12 +96,6 @@ bool CT_AbstractReader::setFilePath(const QString &filepath)
 
             emit filePathModified();
 
-            // By default : create a standard FileHeader with the fileName
-            if(m_header == NULL)
-                m_header = new CT_FileHeader(NULL, NULL);
-            else
-                m_header->setFile(m_filePath);
-
             return true;
         }
     }
@@ -130,33 +118,9 @@ bool CT_AbstractReader::filePathCanBeModified() const
     return m_filepathCanBeModified;
 }
 
-bool CT_AbstractReader::isValid()
+CT_FileHeader* CT_AbstractReader::createHeaderPrototype() const
 {
-    return (m_header != NULL);
-}
-
-CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result, CT_OutAbstractItemModel *model)
-{
-    if (m_header!=NULL)
-    {
-        CT_FileHeader* cpy = (CT_FileHeader*) m_header->copy(model, result, CT_ResultCopyModeList());
-        return cpy;
-    }
-    return NULL;
-}
-
-CT_FileHeader *CT_AbstractReader::takeHeaderCopy(const CT_AbstractResult *result, const QString &outModelName)
-{
-    CT_OutAbstractItemModel *model = dynamic_cast<CT_OutAbstractItemModel*>(PS_MODELS->searchModelForCreation(outModelName, result));
-
-    Q_ASSERT_X(model != NULL, "CT_AbstractReader::takeHeader", "You want to take header and set it a new model searched by modelName but this model was not found or is not a itemdrawable model");
-
-    return takeHeaderCopy(result, model);
-}
-
-const CT_FileHeader *CT_AbstractReader::getHeader()
-{
-    return m_header;
+    return new CT_FileHeader(NULL, NULL);
 }
 
 SettingsNodeGroup *CT_AbstractReader::getAllSettings() const
@@ -524,6 +488,18 @@ QList<CT_AbstractItemGroup *> CT_AbstractReader::groupOfModel(const QString &mod
     return l;
 }
 
+CT_FileHeader *CT_AbstractReader::readHeader()
+{
+    QString error;
+
+    CT_FileHeader *header = protectedReadHeader(filepath(), error);
+
+    if((header == NULL) && !error.isEmpty())
+        setErrorMessage(error);
+
+    return header;
+}
+
 void CT_AbstractReader::addNewReadableFormat(const FileFormat &format)
 {
     m_formats.append(format);
@@ -594,6 +570,16 @@ void CT_AbstractReader::setErrorMessage(const QString &err)
 
 void CT_AbstractReader::protectedCreateOutItemDrawableModelList()
 {
+}
+
+CT_FileHeader* CT_AbstractReader::protectedReadHeader(const QString &filepath, QString &error) const
+{
+    Q_UNUSED(error)
+
+    CT_FileHeader *f = new CT_FileHeader(NULL, NULL);
+    f->setFile(filepath);
+
+    return f;
 }
 
 void CT_AbstractReader::clearOutItemDrawableModel()

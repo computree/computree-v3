@@ -2,9 +2,9 @@
 #define PB_STEPAPPLYPOINTFILTERS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_filter/abstract/ct_abstractconfigurableelement.h"
+#include "ct_element/abstract/ct_abstractconfigurableelement.h"
 #include "ct_filter/abstract/ct_abstractfilter.h"
-#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
+#include "ct_view/elements/ctg_configurableelementsselector.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
@@ -62,12 +62,6 @@ protected:
      */
     void createInResultModelListProtected();
 
-    /*! \brief Parameters DialogBox
-     * 
-     * DialogBox asking for step parameters
-     */
-    void createPostConfigurationDialog();
-
     bool postConfigure();
 
 
@@ -87,8 +81,6 @@ private:
 
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outPoints_ModelName;
-
-    CT_ManageConfigurableElementsDialog *_configDialog;
 
     QMap<CT_AbstractConfigurableElement*, CT_AutoRenameModels*>    _modelNames;
 

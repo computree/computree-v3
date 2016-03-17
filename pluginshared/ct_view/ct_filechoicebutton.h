@@ -66,7 +66,6 @@ public:
 
     CT_FileChoiceButton(QString btlab, CT_FileChoiceButton::NeededFileType filetype, QString fileFilter, QStringList &value, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

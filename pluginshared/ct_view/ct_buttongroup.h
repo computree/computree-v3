@@ -48,7 +48,6 @@ public:
     CT_ButtonGroup(QWidget &parent, int &value);
     virtual ~CT_ButtonGroup();
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

@@ -64,6 +64,8 @@
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+#include "ct_view/tools/ct_configurablewidgettodialog.h"
+
 #include <QMutex>
 #include <QWaitCondition>
 #include <QDialog>
@@ -1271,7 +1273,7 @@ bool CT_VirtualAbstractStep::preConfigure()
 {
     if(_preConfigDialog != NULL)
     {
-        if(_preConfigDialog->exec() == 1)
+        if(CT_ConfigurableWidgetToDialog::exec(_preConfigDialog) == QDialog::Accepted)
         {
             setSettingsModified(_preConfigDialog->isSettingsModified());
 
@@ -1347,7 +1349,7 @@ bool CT_VirtualAbstractStep::postConfigure()
 {
     if(_postConfigDialog != NULL)
     {
-        if(_postConfigDialog->exec() == 1)
+        if(CT_ConfigurableWidgetToDialog::exec(_postConfigDialog) == QDialog::Accepted)
         {
             setSettingsModified(_postConfigDialog->isSettingsModified());
 

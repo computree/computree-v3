@@ -56,10 +56,10 @@ public:
      */
     virtual QString toString(const CT_AbstractItemDrawable *item, bool *ok) const;
 
-    template<typename T>
-    T toTypeT(const CT_AbstractItemDrawable *item) const {
-        return static_cast<T>(data(item));
-    }
+    /**
+     * @brief Returns the data
+     */
+    virtual VType data(const CT_AbstractItemDrawable *item) const = 0;
 
     /**
       * @brief Type of value
@@ -70,13 +70,6 @@ public:
       * @brief Type of value to String
       */
     QString typeToString() const;
-
-protected:
-
-    /**
-     * @brief Returns the data (not converted with the coordinate system)
-     */
-    virtual VType data(const CT_AbstractItemDrawable *item) const = 0;
 };
 
 //specialization to convert a type to another on compilation

@@ -30,8 +30,6 @@
 
 #include "interfaces.h"
 #include "pluginShared_global.h"
-#include "ct_filter/abstract/ct_abstractfilter.h"
-#include "ct_metric/abstract/ct_abstractmetric.h"
 #include "ct_stepseparator.h"
 #include "ct_step/tools/menu/ct_stepsmenu.h"
 
@@ -45,6 +43,9 @@ class CT_StandardReaderSeparator;
 
 class CT_VirtualAbstractStep;
 class CT_AbstractStepLoadFile;
+
+class CT_AbstractFilter;
+class CT_AbstractMetric;
 
 class QSettings;
 

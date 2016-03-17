@@ -41,11 +41,6 @@ CT_ButtonGroup::~CT_ButtonGroup()
     qDeleteAll(_data._rbList.begin(), _data._rbList.end());
 }
 
-QString CT_ButtonGroup::type() const
-{
-    return "CT_ButtonGroup";
-}
-
 QList<SettingsNodeGroup*> CT_ButtonGroup::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

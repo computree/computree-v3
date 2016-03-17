@@ -10,10 +10,10 @@
 #include "ct_view/ct_stepconfigurabledialog.h"
 
 #include "ct_abstractstepplugin.h"
-#include "ct_filter/abstract/ct_abstractfilter_xyz.h"
+#include "ctlibfilters/filters/abstract/ct_abstractfilter_xyz.h"
 
-#include "ctlibio/itemdrawable/las/ct_stdlaspointsattributescontainer.h"
-#include "ctlibio/filters/las/abstract/ct_abstractfilter_las.h"
+#include "ctliblas/itemdrawable/las/ct_stdlaspointsattributescontainer.h"
+#include "ctliblas/filters/abstract/ct_abstractfilter_las.h"
 
 #include <QDebug>
 
@@ -95,27 +95,23 @@ void PB_StepApplyPointFilters::createInResultModelListProtected()
     resIn_res->setZeroOrMoreRootGroup();
     resIn_res->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_res->addItemModel(DEFin_grp, DEFin_points, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Item contenant des points"));
-    resIn_res->addItemModel(DEFin_grp, DEFin_lasAtt, CT_StdLASPointsAttributesContainer::staticGetType(), tr("Attributs LAS"));
-}
-
-// Semi-automatic creation of step parameters DialogBox
-void PB_StepApplyPointFilters::createPostConfigurationDialog()
-{
-    _configDialog = new CT_ManageConfigurableElementsDialog(tr("Filtres séléctionnés"), _availableFilters, &_selectedFilters);
+    resIn_res->addItemModel(DEFin_grp, DEFin_lasAtt, CT_StdLASPointsAttributesContainer::staticGetType(), tr("Attributs LAS"), "", CT_InAbstractItemModel::C_ChooseOneIfMultiple, CT_InAbstractItemModel::F_IsOptional);
 }
 
 bool PB_StepApplyPointFilters::postConfigure()
 {
-    if(_configDialog != NULL)
+    CTG_ConfigurableElementsSelector cd(NULL, !getStepChildList().isEmpty());
+    cd.setWindowTitle("Filtres séléctionnées");
+    cd.setElementsAvailable(_availableFilters);
+    cd.setElementsSelected(&_selectedFilters);
+
+    if(cd.exec() == QDialog::Accepted)
     {
-        if(_configDialog->exec() == 1)
-        {
-            setSettingsModified(true);
-            return true;
-        }
-        return false;
+        setSettingsModified(true);
+        return true;
     }
-    return true;
+
+    return false;
 }
 
 SettingsNodeGroup* PB_StepApplyPointFilters::getAllSettings() const
@@ -124,47 +120,83 @@ SettingsNodeGroup* PB_StepApplyPointFilters::getAllSettings() const
     SettingsNodeGroup *group = new SettingsNodeGroup("PB_StepApplyPointFilters");
     group->addValue(new SettingsNodeValue("Version", "1"));
 
-    if(_configDialog != NULL)
-    {
-        SettingsNodeGroup *postC = new SettingsNodeGroup("ConfigDialog");
-        postC->addValue(new SettingsNodeValue("Config", _configDialog->getConfig()));
-        group->addGroup(postC);
+    QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
+
+    while(it.hasNext()) {
+        SettingsNodeGroup *groupM = new SettingsNodeGroup("Filter");
+
+        CT_AbstractConfigurableElement *filter = it.next();
+
+        groupM->addValue(new SettingsNodeValue("className", filter->getUniqueName()));
+
+        SettingsNodeGroup *childM = filter->getAllSettings();
+
+        if(childM != NULL)
+            groupM->addGroup(childM);
+
+        group->addGroup(groupM);
     }
 
     root->addGroup(group);
+
     return root;
 }
 
 bool PB_StepApplyPointFilters::setAllSettings(const SettingsNodeGroup *settings)
 {
+    qDeleteAll(_selectedFilters);
+    _selectedFilters.clear();
+
     bool ok = CT_VirtualAbstractStep::setAllSettings(settings);
 
-    if(ok && _configDialog != NULL)
+    if(ok)
     {
-        QString config = "";
+        SettingsNodeGroup* group = settings->firstGroupByTagName("PB_StepApplyPointFilters");
 
-        QList<SettingsNodeGroup*> groups = settings->groupsByTagName("PB_StepApplyPointFilters");
-        if(groups.isEmpty()) {return false;}
+        if(group == NULL)
+            return false;
 
-        SettingsNodeGroup *rootStep = groups.first();
+        QList<SettingsNodeGroup*> groups = group->groupsByTagName("Filter");
 
-        QList<SettingsNodeGroup*> groups2 = rootStep->groupsByTagName("ConfigDialog");
-        if(groups2.isEmpty()) {return false;}
+        QListIterator<SettingsNodeGroup*> it(groups);
 
-        SettingsNodeGroup *rootConfig = groups2.first();
+        while(it.hasNext()) {
+            SettingsNodeGroup *groupM = it.next();
 
-        QList<SettingsNodeValue*> values = rootConfig->valuesByTagName("Config");
+            SettingsNodeValue* value = groupM->firstValueByTagName("className");
 
-        if(!values.isEmpty())
-        {
-            config = values.first()->value().toString();
-        }
+            if(value == NULL)
+                return false;
 
-        QString errors = _configDialog->setConfig(config);
+            QString filterUniqueName = value->value().toString();
 
-        if (!errors.isEmpty())
-        {
-            PS_LOG->addMessage(LogInterface::error, LogInterface::action, errors);
+            CT_AbstractConfigurableElement *filterFound = NULL;
+
+            QListIterator<CT_AbstractConfigurableElement*> itM(_availableFilters);
+
+            while(itM.hasNext() && (filterFound == NULL)) {
+                CT_AbstractConfigurableElement *filter = itM.next();
+
+                if(filter->getUniqueName() == filterUniqueName)
+                    filterFound = filter;
+            }
+
+            if(filterFound == NULL)
+                return false;
+
+            CT_AbstractConfigurableElement *filterCpy = filterFound->copy();
+
+            SettingsNodeGroup *groupS = NULL;
+
+            if(!groupM->groups().isEmpty())
+                groupS = groupM->groups().first();
+
+            if(!filterCpy->setAllSettings(groupS)) {
+                delete filterCpy;
+                return false;
+            }
+
+            _selectedFilters.append(filterCpy);
         }
     }
 
@@ -182,10 +214,12 @@ void PB_StepApplyPointFilters::createOutResultModelListProtected()
         while (it.hasNext())
         {
             CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) it.next();
+            filter->postConfigure();
+
             CT_AutoRenameModels* modelName = new CT_AutoRenameModels();
             _modelNames.insert(filter, modelName);
 
-            resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getCompleteName());
+            resCpy_res->addItemModel(DEFin_grp, *modelName, new CT_Scene(), filter->getDetailledDisplayableName());
         }
     }
 }
@@ -203,7 +237,7 @@ void PB_StepApplyPointFilters::compute()
         
         const CT_AbstractItemDrawableWithPointCloud* points = (CT_AbstractItemDrawableWithPointCloud*)grp->firstItemByINModelName(this, DEFin_points);
         const CT_StdLASPointsAttributesContainer* lasAtt = (CT_StdLASPointsAttributesContainer*)grp->firstItemByINModelName(this, DEFin_lasAtt);
-        if (points != NULL && lasAtt != NULL)
+        if (points != NULL)
         {
             QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);
             while (it.hasNext())
@@ -215,27 +249,27 @@ void PB_StepApplyPointFilters::compute()
 
                 if (filter != NULL && modelName != NULL && points->getPointCloudIndex() != NULL)
                 {
-                    filter->setPointCloudIndex(points);
+                    filter->setPointCloud(points);
 
                     if (filterLAS != NULL)
-                    {
                         ((CT_AbstractFilter_LAS*) filter)->setLASAttributesContainer(lasAtt);
+
+                    if(filter->filterPointCloudIndex()) {
+                        CT_PointCloudIndexVector* outCloud = filter->takeOuputCloudIndex();
+
+                        if (outCloud->size() > 0)
+                        {
+                            CT_Scene* outScene = new CT_Scene(modelName->completeName(), _res);
+                            outScene->updateBoundingBox();
+                            grp->addItemDrawable(outScene);
+
+                            // The PCI must be registered to the point repository :
+                            outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(outCloud));
+
+                        } else {delete outCloud;}
+
+                        delete filter;
                     }
-
-                    CT_PointCloudIndexVector* outCloud = filter->filterPointCloudIndex();
-
-                    if (outCloud->size() > 0)
-                    {
-                        CT_Scene* outScene = new CT_Scene(modelName->completeName(), _res);
-                        outScene->updateBoundingBox();
-                        grp->addItemDrawable(outScene);
-
-                        // The PCI must be registered to the point repository :
-                        outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(outCloud));
-
-                    } else {delete outCloud;}
-
-                    delete filter;
                 }
             }
         }

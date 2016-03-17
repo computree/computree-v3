@@ -39,11 +39,6 @@ CT_RadioButton::CT_RadioButton(QString text, int &value, int excludeValue, QStri
     _rdCreated = NULL;
 }
 
-QString CT_RadioButton::type() const
-{
-    return "CT_RadioButton";
-}
-
 QList<SettingsNodeGroup*> CT_RadioButton::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

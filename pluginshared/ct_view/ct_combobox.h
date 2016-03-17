@@ -20,7 +20,6 @@ private:
 public:
     CT_ComboBox(QStringList valuesList, QString &value, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

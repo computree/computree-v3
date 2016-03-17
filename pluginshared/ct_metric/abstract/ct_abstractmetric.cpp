@@ -3,46 +3,43 @@
 
 CT_AbstractMetric::CT_AbstractMetric() : CT_AbstractConfigurableElement()
 {
-    _result = NULL;
+    m_result = NULL;
 }
 
-CT_AbstractMetric::CT_AbstractMetric(const CT_AbstractMetric *other)
+CT_AbstractMetric::CT_AbstractMetric(const CT_AbstractMetric &other)
 {
-    _attributes = other->_attributes;
-    _result = other->_result;
+    m_result = other.m_result;
+
+    AttributesContainerIterator it(m_attributes);
+
+    while(it.hasNext()) {
+        it.next();
+        m_attributes.insert(it.key(), it.value()->copy());
+    }
 }
 
 CT_AbstractMetric::~CT_AbstractMetric()
 {
-    QMutableMapIterator<QString, AttributeObject*> it(_attributes);
-    while (it.hasNext())
-    {
-        AttributeObject* attributeObject = it.next().value();
-
-        if (attributeObject != NULL)
-        {
-            if (attributeObject->_instance != NULL)
-            {
-                delete attributeObject->_instance;
-            }
-            delete attributeObject;
-        }
-    }
-    _attributes.clear();
+    clearAttributes();
 }
 
-QString CT_AbstractMetric::getCompleteName()
+QString CT_AbstractMetric::getDetailledDisplayableName() const
 {
-    QString result = getName();
-    if (_attributes.size() > 0)
+    QString result = getShortDisplayableName();
+
+    if (m_attributes.size() > 0)
     {
-        result.append(": ");
-        QMutableMapIterator<QString, AttributeObject*> it(_attributes);
-        while (it.hasNext())
+        result += tr(" : ");
+
+        AttributesContainerIterator it(m_attributes);
+
+        while(it.hasNext())
         {
-            AttributeObject *attributeObject = it.next().value();
-            result.append(attributeObject->_name);
-            if (it.hasNext()) {result.append(", ");}
+            AbstractAttributeObject *attributeObject = it.next().value();
+            result.append(attributeObject->_displayableName);
+
+            if(it.hasNext())
+                result += ", ";
         }
     }
     return result;
@@ -50,152 +47,104 @@ QString CT_AbstractMetric::getCompleteName()
 
 void CT_AbstractMetric::initAttributesModels(CT_OutResultModelGroupToCopyPossibilities* resPoss, const CT_AutoRenameModels &parentModel)
 {
-    QMutableMapIterator<QString, AttributeObject*> it(_attributes);
-    while (it.hasNext())
+    AttributesContainerIterator it(m_attributes);
+
+    while(it.hasNext())
     {
-        AttributeObject *attributeObject = it.next().value();
+        AbstractAttributeObject *attributeObject = it.next().value();
 
-        CT_AbstractItemAttribute *attributePrototype = NULL;
-
-        switch (attributeObject->_type)
-        {
-            case AT_bool:    attributePrototype = new CT_StdItemAttributeT<bool>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            case AT_double:  attributePrototype = new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            case AT_float:   attributePrototype = new CT_StdItemAttributeT<float>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            case AT_int:     attributePrototype = new CT_StdItemAttributeT<int>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            case AT_size_t:  attributePrototype = new CT_StdItemAttributeT<size_t>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            case AT_QString: attributePrototype = new CT_StdItemAttributeT<QString>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-            default :        attributePrototype = new CT_StdItemAttributeT<double>(NULL, PS_CATEGORY_MANAGER->findByUniqueName(attributeObject->_category), NULL, 0); break;
-        }
+        CT_AbstractItemAttribute *attributePrototype = attributeObject->createPrototypeAttribute();
 
         resPoss->addItemAttributeModel(parentModel,
                                        *(attributeObject->_autoRenameModel),
                                        attributePrototype,
-                                       QString("%1%2").arg(attributeObject->_name).arg(_suffix));
+                                       attributeObject->_displayableName);
     }
 }
 
 void CT_AbstractMetric::computeMetric(CT_AbstractSingularItemDrawable *item)
 {
+    if((item == NULL) || (item->result() == NULL))
+        return;
+
+    m_result = dynamic_cast<CT_ResultGroup*>(item->result());
+
     computeMetric();
 
-    QMutableMapIterator<QString, AttributeObject*> it(_attributes);
+    AttributesContainerIterator it(m_attributes);
+
     while (it.hasNext())
     {
-        AttributeObject* attributeObject = it.next().value();
+        AbstractAttributeObject* attributeObject = it.next().value();
 
-        if (attributeObject->_instance != NULL)
+        if (attributeObject->_attributeInstance != NULL)
         {
-            item->addItemAttribute(attributeObject->_instance);
-            attributeObject->_instance = NULL;
+            item->addItemAttribute(attributeObject->_attributeInstance);
+            attributeObject->_attributeInstance = NULL;
         }
     }
 }
 
+void CT_AbstractMetric::clearAttributes()
+{
+    qDeleteAll(m_attributes.begin(), m_attributes.end());
+    m_attributes.clear();
+}
+
 void CT_AbstractMetric::postConfigure()
 {
+    clearAttributes();
     createAttributes();
 }
 
-void CT_AbstractMetric::setSuffix(QString suffix)
+CT_AbstractMetric::AbstractAttributeObject* CT_AbstractMetric::getAttributeObject(void* classMember, CT_AbstractCategory::ValueType type)
 {
-    _suffix = suffix;
-}
+    CT_AbstractMetric::AbstractAttributeObject *attributeObject = m_attributes.value(classMember, NULL);
 
-
-void CT_AbstractMetric::addAttribute(QString name, CT_AbstractMetric::AttributeType type, QString category)
-{
-    _attributes.insert(name, new AttributeObject(name, type, category, new CT_AutoRenameModels()));
-}
-
-
-CT_AbstractMetric::AttributeObject *CT_AbstractMetric::getAttributeObject(QString attributeName, CT_AbstractMetric::AttributeType type)
-{
-    if (!_attributes.contains(attributeName))
+    if(attributeObject == NULL)
     {
-        qDebug() << tr("Impossible de trouver l'attribut %1 (métrique : %2) !").arg(attributeName).arg(getName());
-        return NULL;
-    }
-    CT_AbstractMetric::AttributeObject *attributeObject = (CT_AbstractMetric::AttributeObject*) _attributes.value(attributeName);
-
-    if (attributeObject->_type != type)
-    {
-        qDebug() << tr("Mauvais type pour l'attribut %1 !").arg(attributeName);
+        PS_LOG->addErrorMessage(LogInterface::metric, tr("Impossible de trouver l'attribut recherché (métrique : %2) !").arg(getShortDisplayableName()));
         return NULL;
     }
 
-    if (attributeObject->_instance != NULL) {delete attributeObject->_instance; attributeObject->_instance = NULL;}
+    if(attributeObject->valueType() != type)
+    {
+        PS_LOG->addErrorMessage(LogInterface::metric, tr("Mauvais type pour l'attribut recherché (%1 au lieu de %2) !").arg(CT_AbstractCategory::valueTypeToString(type)).arg(attributeObject->valueType()));
+        return NULL;
+    }
+
     return attributeObject;
 }
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, bool &value)
+const CT_AbstractMetric::AttributesContainer &CT_AbstractMetric::attributes() const
 {
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_bool);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<bool>(attributeObject->_autoRenameModel->completeName(),
-                                                                    attributeObject->_category,
-                                                                    _result,
-                                                                    value);
-    }
+    return m_attributes;
 }
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, double &value)
+bool CT_AbstractMetric::internalInsertAttributeObject(void *key, CT_AbstractMetric::AbstractAttributeObject *obj)
 {
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_double);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<double>(attributeObject->_autoRenameModel->completeName(),
-                                                                      attributeObject->_category,
-                                                                      _result,
-                                                                      value);
-    }
+    if(m_attributes.contains(key))
+        return false;
+
+    m_attributes.insert(key, obj);
+    return true;
 }
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, float &value)
+bool CT_AbstractMetric::removeAttribute(void *key)
 {
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_float);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<float>(attributeObject->_autoRenameModel->completeName(),
-                                                                     attributeObject->_category,
-                                                                     _result,
-                                                                     value);
-    }
-}
+    AttributesContainerMutableIterator it(m_attributes);
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, int &value)
-{
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_int);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<int>(attributeObject->_autoRenameModel->completeName(),
-                                                                   attributeObject->_category,
-                                                                   _result,
-                                                                   value);
-    }
-}
+    while(it.hasNext()) {
+        it.next();
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, size_t &value)
-{
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_size_t);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<size_t>(attributeObject->_autoRenameModel->completeName(),
-                                                                      attributeObject->_category,
-                                                                      _result,
-                                                                      value);
-    }
-}
+        if(it.key() == key)
+        {
+            delete it.value();
+            it.remove();
 
-void CT_AbstractMetric::setAttributeValue(QString attributeName, QString &value)
-{
-    AttributeObject *attributeObject = getAttributeObject(attributeName, AT_QString);
-    if (attributeObject != NULL)
-    {
-        attributeObject->_instance = new CT_StdItemAttributeT<QString>(attributeObject->_autoRenameModel->completeName(),
-                                                                       attributeObject->_category,
-                                                                       _result,
-                                                                       value);
+            return true;
+        }
     }
+
+    return false;
 }

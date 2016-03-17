@@ -45,11 +45,6 @@ CT_FileChoiceButton::CT_FileChoiceButton(QString btlab, CT_FileChoiceButton::Nee
     _labelCreated = NULL;
 }
 
-QString CT_FileChoiceButton::type() const
-{
-    return "CT_FileChoiceButton";
-}
-
 QList<SettingsNodeGroup*> CT_FileChoiceButton::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

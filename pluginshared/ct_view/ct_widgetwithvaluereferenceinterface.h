@@ -43,7 +43,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_WidgetWithValueReferenceInterface : public QO
 public:    
 
     virtual ~CT_WidgetWithValueReferenceInterface() {}
-    virtual QString type() const = 0;
+    virtual QString type() const { return metaObject()->className(); }
     virtual QList<SettingsNodeGroup*> getAllValues() const = 0;
     virtual bool setAllValues(const QList<SettingsNodeGroup*> &list) = 0;
 

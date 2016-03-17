@@ -2,9 +2,8 @@
 #define PB_STEPCOMPUTEPOINTMETRICS_H
 
 #include "ct_step/abstract/ct_abstractstep.h"
-#include "ct_filter/abstract/ct_abstractconfigurableelement.h"
+#include "ct_element/abstract/ct_abstractconfigurableelement.h"
 #include "ct_filter/abstract/ct_abstractfilter.h"
-#include "ct_view/tools/ct_manageconfigurableelementsdialog.h"
 
 // Inclusion of auto-indexation system
 #include "ct_tools/model/ct_autorenamemodels.h"
@@ -41,6 +40,9 @@ public:
      * Return a URL of a wiki for this step
      */
     QString getStepURL() const;
+
+    SettingsNodeGroup* getAllSettings() const;
+    bool setAllSettings(const SettingsNodeGroup *settings);
 
     /*! \brief Step copy
      * 
@@ -81,8 +83,6 @@ private:
     // Declaration of autoRenames Variables (groups or items added to In models copies)
     CT_AutoRenameModels    _outMetrics_ModelName;
     QString                _inSceneDisplayableName;
-
-    CT_ManageConfigurableElementsDialog *_configDialog;
 
     QList<CT_AbstractConfigurableElement *> _availableMetrics;
     QList<CT_AbstractConfigurableElement *> _selectedMetrics;

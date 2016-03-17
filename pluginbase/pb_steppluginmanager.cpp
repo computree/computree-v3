@@ -65,7 +65,7 @@
 #include "exporters/pbm/pb_pbmexporter.h"
 #include "exporters/pgm/pb_pgmexporter.h"
 #include "exporters/polygon2d/pb_polygon2dexporter.h"
-#include "ctlibio/exporters/ct_exporter_las.h"
+#include "ctliblas/exporters/ct_exporter_las.h"
 #include "exporters/gdal/pb_gdalexporter.h"
 #include "exporters/ascid/pb_ascidexporter.h"
 
@@ -74,13 +74,15 @@
 #include "ctlibio/readers/ct_reader_ascrgb.h"
 #include "ctlibio/readers/ct_reader_larchitect_grid.h"
 #include "ctlibio/readers/ct_reader_opf.h"
-#include "ctlibio/readers/ct_reader_las.h"
+#include "ctliblas/readers/ct_reader_las.h"
 #include "ctlibio/readers/ct_reader_gdal.h"
 #include "ctlibio/readers/ct_reader_terrascanprj.h"
 #include "ctlibio/readers/ct_reader_asciigrid3d.h"
 #include "ctlibio/readers/ct_reader_pgm.h"
 #include "ctlibio/readers/ct_reader_pbm.h"
 #include "ctlibio/readers/ct_reader_points_ascii.h"
+
+#include "ctlibmetrics/ct_metric/points/ct_cloudmetrics.h"
 
 #include "ct_step/ct_stepinitializedata.h"
 
@@ -218,6 +220,7 @@ bool PB_StepPluginManager::loadFilters()
 
 bool PB_StepPluginManager::loadMetrics()
 {
+    addNewMetric(new CT_CloudMetrics());
     return true;
 }
 

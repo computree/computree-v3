@@ -51,7 +51,6 @@ public:
 
     ~CT_AsciiFileChoiceButton();
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

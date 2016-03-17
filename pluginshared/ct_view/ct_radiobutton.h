@@ -49,7 +49,6 @@ private:
 public:
     CT_RadioButton(QString text, int &value, int excludeValue, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

@@ -2,7 +2,7 @@
 
 #include "ct_result/ct_resultgroup.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroup.h"
-#include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_view/ct_genericconfigurablewidget.h"
 #include "ct_abstractstepplugin.h"
 #include "ct_reader/ct_standardreaderseparator.h"
 
@@ -10,7 +10,8 @@
 #include "ct_global/ct_context.h"
 #include "ct_model/tools/ct_modelsearchhelper.h"
 #include "ct_itemdrawable/ct_readeritem.h"
-
+#include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_view/tools/ct_configurablewidgettodialog.h"
 
 // Alias for indexing models
 #define DEFout_res "res"
@@ -90,10 +91,10 @@ bool PB_StepCreateReaderList::postConfigure()
 
     QStringList fileList = _filesList;
 
-    CT_StepConfigurableDialog configDialog;
+    CT_GenericConfigurableWidget configDialog;
     configDialog.addFileChoice(tr("Choisir les fichiers"), CT_FileChoiceButton::OneOrMoreExistingFiles, fileFilter, fileList);
 
-    if(configDialog.exec() == QDialog::Accepted) {
+    if(CT_ConfigurableWidgetToDialog::exec(&configDialog) == QDialog::Accepted) {
 
         if(fileList.isEmpty())
             return false;
@@ -133,14 +134,14 @@ void PB_StepCreateReaderList::createOutResultModelListProtected()
     if (reader != NULL && _filesList.size() > 0)
     {
         // get the header
-        CT_FileHeader *rHeader = (CT_FileHeader*)reader->getHeader();
+        CT_FileHeader *rHeader = reader->createHeaderPrototype();
 
         if(rHeader != NULL) {
             // copy the reader (copyFull = with configuration and models)
             CT_AbstractReader* readerCpy = reader->copyFull();
 
             outRes->addGroupModel(DEFout_grp, DEFout_grpHeader, new CT_StandardItemGroup(), tr("Fichier"));
-            outRes->addItemModel(DEFout_grpHeader, DEFout_header, (CT_FileHeader*)rHeader->copy(NULL, NULL, CT_ResultCopyModeList()), tr("Entête"));
+            outRes->addItemModel(DEFout_grpHeader, DEFout_header, rHeader, tr("Entête"));
             outRes->addItemModel(DEFout_grpHeader, DEFout_reader, new CT_ReaderItem(NULL, NULL, readerCpy), tr("Reader"));
         }
     }
@@ -179,8 +180,12 @@ void PB_StepCreateReaderList::compute()
                 // create the group that will contains header and reader (represent a File)
                 CT_StandardItemGroup* grpHeader = new CT_StandardItemGroup(DEFout_grpHeader, resultOut);
 
+                CT_FileHeader *header = readerCpy->readHeader();
+                header->changeResult(resultOut);
+                header->setModel(headerModel);
+
                 // add the header
-                grpHeader->addItemDrawable((CT_FileHeader*)((CT_FileHeader*)readerCpy->getHeader())->copy(headerModel, resultOut, CT_ResultCopyModeList()));
+                grpHeader->addItemDrawable(header);
 
                 // add the reader
                 grpHeader->addItemDrawable(new CT_ReaderItem(DEFout_reader, resultOut, readerCpy));

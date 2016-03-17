@@ -51,11 +51,6 @@ CT_DoubleSpinBox::CT_DoubleSpinBox(double min,
     _doubleSpinBoxCreated = NULL;
 }
 
-QString CT_DoubleSpinBox::type() const
-{
-    return "CT_DoubleSpinBox";
-}
-
 QList<SettingsNodeGroup*> CT_DoubleSpinBox::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

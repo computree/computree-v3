@@ -121,6 +121,26 @@ public:
     }
 
     /**
+     * @brief Returns the first group with the name passed in parameter. NULL if it was not found.
+     * @param name : the name of the group to search
+     * @return  NULL if it was not found
+     */
+    SettingsNodeGroup* firstGroupByTagName(QString name) const
+    {
+        QListIterator<SettingsNodeGroup*> it(_groups);
+
+        while(it.hasNext())
+        {
+            SettingsNodeGroup *group = it.next();
+
+            if(group->name() == name)
+                return group;
+        }
+
+        return NULL;
+    }
+
+    /**
       * \brief Retourne toutes les valeurs dont le nom est égual à celui passé en paramètre
       */
     QList<SettingsNodeValue*> valuesByTagName(QString name) const
@@ -138,6 +158,26 @@ public:
         }
 
         return list;
+    }
+
+    /**
+     * @brief Returns the first value with the name passed in parameter. NULL if it was not found.
+     * @param name : the name of the value to search
+     * @return  NULL if it was not found
+     */
+    SettingsNodeValue* firstValueByTagName(QString name) const
+    {
+        QListIterator<SettingsNodeValue*> it(_values);
+
+        while(it.hasNext())
+        {
+            SettingsNodeValue *value = it.next();
+
+            if(value->name() == name)
+                return value;
+        }
+
+        return NULL;
     }
 
 private:

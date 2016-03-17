@@ -3,6 +3,7 @@
 #include "ct_attributes/model/outModel/abstract/ct_outabstractitemattributemodel.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_abstractstepplugin.h"
 
 CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManager()

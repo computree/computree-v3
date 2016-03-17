@@ -48,7 +48,6 @@ private:
 public:
     CT_CheckBox(QString text, bool &value, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

@@ -18,7 +18,7 @@ public:
     virtual ~CT_AbstractReader();
 
     /**
-      * \brief Init the reader (add readable formats, add out itemdrawable model, etc...)
+      * @brief Init the reader (add readable formats, add out itemdrawable model, etc...)
       */
     void init(bool initOutItemDrawableList = true);
 
@@ -59,39 +59,21 @@ public:
      */
     bool filePathCanBeModified() const;
 
-    /** \brief Check the validity of the file
-     *
-     * \return A file is valid if a header has been read (=> after setFilePath)
-     */
-    bool isValid();
-
     // By default CT_AbstractReader don't have a Bounding Box : redefine in children class of geographical files
     virtual bool hasBoundingBox() {return false;}
 
     /**
-      * \brief Return the header object
-      *
-      * The returned header has to be deleted by the object taking it
-      *
-      */
-    CT_FileHeader *takeHeaderCopy(const CT_AbstractResult *result, CT_OutAbstractItemModel *model);
-    CT_FileHeader *takeHeaderCopy(const CT_AbstractResult *result, const QString &outModelName);
-
-    /**
-      * \brief Return the header object (read only)
-      *
-      */
-    const CT_FileHeader* getHeader();
-
-
-    /**
-      * \brief Configure the reader.
-      *
-      *        Called after the method "setFilePath" and before the method "protectedCreateOutItemDrawableModelList"
-      *
-      * \return false if the user as canceled the configuration
-      */
+     * @brief Configure the reader.
+     *        Call it after the method "setFilePath" and before the method "protectedCreateOutItemDrawableModelList"
+     * @return false if the user as canceled the configuration
+     */
     virtual bool configure() { return true; }
+
+    /**
+     * @brief Inherit from this method if you have a special header
+     * @return A file header empty
+     */
+    virtual CT_FileHeader* createHeaderPrototype() const;
 
     /**
      * @brief Backup settings
@@ -108,22 +90,22 @@ public:
     virtual bool setAllSettings(const SettingsNodeGroup *settings);
 
     /**
-      * \brief Init out itemdrawable model of the reader (call this method after set the filepath)
+      * @brief Init out itemdrawable model of the reader (call this method after set the filepath)
       */
     void createOutItemDrawableModelList();
 
     /**
-      * \brief Return the list of out itemdrawable model
+      * @brief Return the list of out itemdrawable model
       */
     const QList<CT_OutStdSingularItemModel*>& outItemDrawableModels() const;
 
     /**
-      * \brief Return the list of out group model
+      * @brief Return the list of out group model
       */
     const QList<CT_OutStdGroupModel*>& outGroupsModel() const;
 
     /**
-      * \brief Return all readable formats
+      * @brief Return all readable formats
       */
     const QList<FileFormat> &readableFormats() const;
 
@@ -295,13 +277,19 @@ public:
 public slots:
 
     /**
-     * @brief Read the file
-     * @return Return false if it was a problem when read the file or you can check later with the method isReadError()
+     * @brief Read the header of the file and return it
+     * @return NULL if it was no header or if it can not be readed. Check isReadError() to know if it was an error and get it with method errorMessage()
+     */
+    CT_FileHeader* readHeader();
+
+    /**
+     * @brief Read the file and the header
+     * @return Return false if it was a problem when read the file, check the error with method isReadError() and get it with method errorMessage()
      */
     bool readFile();
 
     /**
-     * @brief Cancel the reading
+     * @brief Cancel the read
      */
     void cancel();
 
@@ -373,7 +361,13 @@ protected:
      */
     virtual bool protectedReadFile() = 0;
 
-    CT_FileHeader*                                          m_header;
+    /**
+     * @brief Inherit this method to read and get header of the filepath passed in parameter
+     * @param filepath : the path to the file
+     * @param error : output error
+     * @return NULL if it was an error
+     */
+    virtual CT_FileHeader* protectedReadHeader(const QString &filepath, QString &error) const;
 
 private:
     QList<FileFormat>                                       m_formats;

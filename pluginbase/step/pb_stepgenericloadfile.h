@@ -48,7 +48,8 @@ protected:
     void compute();
 
 private:
-    CT_AbstractReader *m_reader;
+    CT_AbstractReader       *m_reader;
+    CT_AutoRenameModels     m_autoRenameFileHeader;
 
 private slots:
     void readerProgressChanged(int progress);

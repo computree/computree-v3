@@ -56,7 +56,6 @@ public:
                      double &value,
                      double multValue = 1, QString description = "");
 
-    QString type() const;
     QList<SettingsNodeGroup*> getAllValues() const;
     bool setAllValues(const QList<SettingsNodeGroup*> &list);
 

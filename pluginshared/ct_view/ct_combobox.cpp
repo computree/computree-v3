@@ -38,11 +38,6 @@ CT_ComboBox::CT_ComboBox(QStringList valuesList, QString &value, QString descrip
     _comboBoxCreated = NULL;
 }
 
-QString CT_ComboBox::type() const
-{
-    return "CT_ComboBox";
-}
-
 QList<SettingsNodeGroup*> CT_ComboBox::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;

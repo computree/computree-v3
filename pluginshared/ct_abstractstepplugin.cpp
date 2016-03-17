@@ -47,6 +47,9 @@
 
 #include "ct_step/tools/menu/ct_menulevel.h"
 
+#include "ct_metric/abstract/ct_abstractmetric.h"
+#include "ct_filter/abstract/ct_abstractfilter.h"
+
 #include <QSettings>
 
 CT_AbstractStepPlugin::CT_AbstractStepPlugin()

@@ -195,12 +195,19 @@ void PB_StepGenericLoadFile::createOutResultModelListProtected()
         root->addGroup((CT_OutStdGroupModel*)model->copy());
     }
 
+    CT_FileHeader *header = m_reader->createHeaderPrototype();
+
+    if(header != NULL)
+        root->addItem(new CT_OutStdSingularItemModel("", header, tr("Entête de fichier")), m_autoRenameFileHeader);
+
     addOutResultModel(new CT_OutResultModelGroup(DEF_SearchResult, root, "Result"));
 }
 
 void PB_StepGenericLoadFile::compute()
 {
-    if(m_reader->readFile())
+    CT_FileHeader *header = NULL;
+
+    if(((header = m_reader->readHeader()) != NULL) && m_reader->readFile())
     {
         CT_ResultGroup *out_res = getOutResultList().first();
         CT_StandardItemGroup *group = new CT_StandardItemGroup(DEF_SearchGroup, out_res);
@@ -233,8 +240,17 @@ void PB_StepGenericLoadFile::compute()
                 group->addGroup(itI.next());
         }
 
+        header->changeResult(out_res);
+        header->setModel(m_autoRenameFileHeader.completeName());
+
+        group->addItemDrawable(header);
+
         out_res->addGroup(group);
+
+        return;
     }
+
+    delete header;
 }
 
 void PB_StepGenericLoadFile::readerProgressChanged(int progress)

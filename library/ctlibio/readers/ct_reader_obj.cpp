@@ -5,7 +5,8 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 #include "ct_mesh/tools/ct_meshallocator.h"
-#include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_view/ct_genericconfigurablewidget.h"
+#include "ct_view/tools/ct_configurablewidgettodialog.h"
 
 CT_Reader_OBJ::CT_Reader_OBJ() : CT_AbstractReader()
 {
@@ -45,13 +46,11 @@ bool CT_Reader_OBJ::searchHalfEdges() const
 
 bool CT_Reader_OBJ::configure()
 {
-    CT_StepConfigurableDialog dialog;
+    CT_GenericConfigurableWidget dialog;
     dialog.addBool("", "", tr("Rechercher les demis arêtes ? (accélère le chargement si non coché)"), m_searchHEdges);
     dialog.addBool("", "", tr("Forcer le chargement en tant que nuage de points"), m_loadAsPointCloud);
 
-    return (dialog.exec() == QDialog::Accepted);
-
-    return true;
+    return (CT_ConfigurableWidgetToDialog::exec(&dialog) == QDialog::Accepted);
 }
 
 SettingsNodeGroup* CT_Reader_OBJ::getAllSettings() const

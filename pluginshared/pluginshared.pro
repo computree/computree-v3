@@ -59,7 +59,6 @@ SOURCES += \
     ct_itemdrawable/abstract/ct_abstractitemdrawable.cpp \
     ct_itemdrawable/ct_scene.cpp \
     ct_itemdrawable/ct_itemdrawableconfiguration.cpp \
-    ct_view/ct_stepconfigurabledialog.cpp \
     ct_view/ct_doublespinbox.cpp \
     ct_view/ct_checkbox.cpp \
     ct_view/ct_spinbox.cpp \
@@ -135,7 +134,6 @@ SOURCES += \
     ct_itemdrawable/tools/ct_standardcontext.cpp \
     ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.cpp \
     ct_itemdrawable/ct_referencepoint.cpp \
-    ct_view/tools/ct_textfileconfigurationdialog.cpp \
     ct_math/ct_math2dlines.cpp \
     ct_math/ct_sphericalline3d.cpp \
     ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.cpp \
@@ -350,10 +348,7 @@ SOURCES += \
     ct_iterator/ct_mutablepointiterator.cpp \
     ct_accessor/ct_faceaccessor.cpp \
     ct_accessor/ct_edgeaccessor.cpp \
-    ct_metric/abstract/ct_abstractmetric.cpp \
-    ct_metric/abstract/ct_abstractmetric_xyz.cpp \
     ct_filter/abstract/ct_abstractfilter.cpp \
-    ct_filter/abstract/ct_abstractfilter_xyz.cpp \
     ct_view/ct_asciifilechoicebutton.cpp \
     ct_itemdrawable/ct_image2d.cpp \
     ct_itemdrawable/abstract/ct_abstractimage2d.cpp \
@@ -369,10 +364,7 @@ SOURCES += \
     ct_normalcloud/ct_normalcloudosg.cpp \
     ct_view/actions/abstract/ct_gabstractactionforgraphicsviewoptions.cpp \
     ct_itemdrawable/ct_opfmeshmodel.cpp \
-    ct_filter/abstract/ct_abstractconfigurableelement.cpp \
-    ct_view/tools/ct_manageconfigurableelementsdialog.cpp \
-    ct_view/tools/ct_elementlistdialog.cpp \
-    ct_metric/abstract/ct_abstractmetric_raster.cpp \
+    ct_element/abstract/ct_abstractconfigurableelement.cpp \
     ct_math/ct_mathstatistics.cpp \
     ct_math/delaunay2d/ct_delaunayoutline.cpp \
     ct_math/delaunay2d/ct_delaunayside.cpp \
@@ -389,7 +381,13 @@ SOURCES += \
     ct_itemdrawable/ct_plotgridmanager.cpp \
     ct_tools/repository/ct_repositoryaccess.cpp \
     ct_tools/model/ct_outmodelcopyactionaddreaderresultmodelingroup.cpp \
-    ct_reader/tools/ct_readerresultaddingtools.cpp
+    ct_reader/tools/ct_readerresultaddingtools.cpp \
+    ct_metric/abstract/ct_abstractmetric.cpp \
+    ct_view/ct_genericconfigurablewidget.cpp \
+    ct_view/tools/ct_configurablewidgettodialog.cpp \
+    ct_view/elements/ctg_configurableelementsselector.cpp \
+    ct_view/ct_multilineedit.cpp \
+    ct_view/tools/ct_textfileconfigurationdialog.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -814,10 +812,7 @@ HEADERS += interfaces.h \
     ct_iterator/ct_mutablefaceiterator.h \
     ct_iterator/ct_mutableedgeiterator.h \
     ct_mesh/tools/ct_meshallocator.h \
-    ct_metric/abstract/ct_abstractmetric.h \
-    ct_metric/abstract/ct_abstractmetric_xyz.h \
     ct_filter/abstract/ct_abstractfilter.h \
-    ct_filter/abstract/ct_abstractfilter_xyz.h \
     ct_iterator/ct_resultgroupiterator.h \
     ct_iterator/ct_resultitemiterator.h \
     ct_iterator/ct_resultiterator.h \
@@ -852,10 +847,7 @@ HEADERS += interfaces.h \
     ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.h \
     ct_cloudindex/tools/ct_cloudindexstdvectortmethodimpl.hpp \
     ct_itemdrawable/ct_opfmeshmodel.h \
-    ct_filter/abstract/ct_abstractconfigurableelement.h \
-    ct_view/tools/ct_manageconfigurableelementsdialog.h \
-    ct_view/tools/ct_elementlistdialog.h \
-    ct_metric/abstract/ct_abstractmetric_raster.h \
+    ct_element/abstract/ct_abstractconfigurableelement.h \
     ct_math/ct_mathstatistics.h \
     ct_math/delaunay2d/ct_delaunayoutline.h \
     ct_math/delaunay2d/ct_delaunayside.h \
@@ -873,7 +865,14 @@ HEADERS += interfaces.h \
     ct_tools/repository/ct_repositoryaccess.h \
     ct_tools/model/ct_outmodelcopyactionaddreaderresultmodelingroup.h \
     ct_reader/tools/ct_readerresultaddingtools.h \
-    ct_tools/ct_sharedpointer.h
+    ct_tools/ct_sharedpointer.h \
+    ct_metric/abstract/ct_abstractmetric.h \
+    ct_view/ct_abstractconfigurablewidget.h \
+    ct_view/ct_genericconfigurablewidget.h \
+    ct_view/tools/ct_configurablewidgettodialog.h \
+    ct_tools/ct_stringtonumericconversiont.h \
+    ct_view/elements/ctg_configurableelementsselector.h \
+    ct_view/ct_multilineedit.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
@@ -932,8 +931,7 @@ FORMS += \
     ct_view/inModel/ctg_inmodelpossibilitieschoice.ui \
     ct_view/tools/ct_textfileconfigurationdialog.ui \
     ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.ui \
-    ct_view/tools/ct_manageconfigurableelementsdialog.ui \
-    ct_view/tools/ct_elementlistdialog.ui
+    ct_view/elements/ctg_configurableelementsselector.ui
 
 TRANSLATIONS += languages/pluginshared_fr.ts \
                 languages/pluginshared_en.ts

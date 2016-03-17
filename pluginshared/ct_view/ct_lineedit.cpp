@@ -37,11 +37,6 @@ CT_LineEdit::CT_LineEdit(QString &value, QString description)
     _lineEditCreated = NULL;
 }
 
-QString CT_LineEdit::type() const
-{
-    return "CT_LineEdit";
-}
-
 QList<SettingsNodeGroup*> CT_LineEdit::getAllValues() const
 {
     QList<SettingsNodeGroup*> retList;
