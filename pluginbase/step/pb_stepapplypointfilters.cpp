@@ -23,7 +23,6 @@
 #define DEFin_points "points"
 #define DEFin_lasAtt "lasAtt"
 
-
 // Constructor : initialization of parameters
 PB_StepApplyPointFilters::PB_StepApplyPointFilters(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
@@ -237,6 +236,7 @@ void PB_StepApplyPointFilters::compute()
         
         const CT_AbstractItemDrawableWithPointCloud* points = (CT_AbstractItemDrawableWithPointCloud*)grp->firstItemByINModelName(this, DEFin_points);
         const CT_StdLASPointsAttributesContainer* lasAtt = (CT_StdLASPointsAttributesContainer*)grp->firstItemByINModelName(this, DEFin_lasAtt);
+
         if (points != NULL)
         {
             QListIterator<CT_AbstractConfigurableElement *> it(_selectedFilters);

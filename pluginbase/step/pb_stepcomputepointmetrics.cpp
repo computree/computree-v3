@@ -17,6 +17,7 @@
 
 #include "ct_abstractstepplugin.h"
 #include "ctlibmetrics/ct_metric/abstract/ct_abstractmetric_xyz.h"
+#include "ctliblas/metrics/abstract/ct_abstractmetric_las.h"
 
 #include "ct_view/elements/ctg_configurableelementsselector.h"
 
@@ -27,7 +28,7 @@
 #define DEFin_grp "grp"
 #define DEFin_points "points"
 #define DEFin_areaShape "shapeArea"
-
+#define DEFin_lasAtt "lasAtt"
 
 // Constructor : initialization of parameters
 PB_StepComputePointMetrics::PB_StepComputePointMetrics(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -185,6 +186,7 @@ void PB_StepComputePointMetrics::createInResultModelListProtected()
     resIn_res->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     resIn_res->addItemModel(DEFin_grp, DEFin_points, CT_AbstractItemDrawableWithPointCloud::staticGetType(), tr("Scène"));
     resIn_res->addItemModel(DEFin_grp, DEFin_areaShape, CT_AbstractAreaShape2D::staticGetType(), tr("Emprise de la placette"), "", CT_InAbstractModel::C_ChooseOneIfMultiple, CT_InAbstractModel::F_IsOptional);
+    resIn_res->addItemModel(DEFin_grp, DEFin_lasAtt, CT_StdLASPointsAttributesContainer::staticGetType(), tr("Attributs LAS"), "", CT_InAbstractItemModel::C_ChooseOneIfMultiple, CT_InAbstractItemModel::F_IsOptional);
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -260,6 +262,7 @@ void PB_StepComputePointMetrics::compute()
         
         const CT_AbstractItemDrawableWithPointCloud* points = (CT_AbstractItemDrawableWithPointCloud*)grp->firstItemByINModelName(this, DEFin_points);
         const CT_AbstractAreaShape2D* plotArea = (CT_AbstractAreaShape2D*)grp->firstItemByINModelName(this, DEFin_areaShape);
+        const CT_StdLASPointsAttributesContainer* lasAtt = (CT_StdLASPointsAttributesContainer*)grp->firstItemByINModelName(this, DEFin_lasAtt);
 
         if (points != NULL)
         {
@@ -275,12 +278,14 @@ void PB_StepComputePointMetrics::compute()
             while (it.hasNext())
             {
                 CT_AbstractMetric_XYZ* metric = (CT_AbstractMetric_XYZ*) it.next();
+                CT_AbstractMetric_LAS* lasMetric = dynamic_cast<CT_AbstractMetric_LAS*>(metric);
 
-                if (metric != NULL)
-                {
+                if(lasMetric != NULL)
+                    lasMetric->initLasDatas(points->getPointCloudIndex(), area, lasAtt);
+                else
                     metric->initDatas(points->getPointCloudIndex(), area);
-                    metric->computeMetric(outAttributes);
-                }
+
+                metric->computeMetric(outAttributes);
             }
         }
     }    
