@@ -218,12 +218,12 @@ CT_AbstractItemDrawable* CT_TNodeGroup::copy(const CT_OutAbstractItemModel *mode
 {
     const CT_OutAbstractGroupModel *newModel = dynamic_cast< const CT_OutAbstractGroupModel* >(model);
 
-    if(newModel == NULL)
-        return NULL;
-
     CT_TNodeGroup *itemGroup = new CT_TNodeGroup(newModel, result);
     itemGroup->setId(id());
     itemGroup->setAlternativeDrawManager(getAlternativeDrawManager());
+
+    if(newModel == NULL)
+        return itemGroup;
 
     // we can not copy successor, etc... because we don't know the model
 	// it's not important because if the tree is copied it will inform all node

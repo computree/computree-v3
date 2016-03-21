@@ -74,12 +74,12 @@ CT_AbstractItemDrawable* CT_TTreeGroup::copy(const CT_OutAbstractItemModel *mode
 {
     const CT_OutAbstractGroupModel *newModel = dynamic_cast< const CT_OutAbstractGroupModel* >(model);
 
-    if(newModel == NULL)
-        return NULL;
-
     CT_TTreeGroup *itemGroup = new CT_TTreeGroup(newModel, result);
     itemGroup->setId(id());
     itemGroup->setAlternativeDrawManager(getAlternativeDrawManager());
+
+    if(newModel == NULL)
+        return itemGroup;
 
     // create the hash map of new models [old model, new model]
     if(m_rootNode != NULL)
