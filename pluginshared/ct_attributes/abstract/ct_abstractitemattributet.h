@@ -162,13 +162,6 @@ inline long double CT_AbstractItemAttributeT<size_t>::toLongDouble(const CT_Abst
 template<>
 inline QString CT_AbstractItemAttributeT<QString>::toString(const CT_AbstractItemDrawable *item, bool *ok) const { if(ok != NULL) { *ok = true; } return data(item); }
 
-
-//specialization to avoid compilation error
-
-// STRING
-template<>
-inline QString CT_AbstractItemAttributeT<QString>::data(const CT_AbstractItemDrawable *item) const { return data(item); }
-
 #include "ct_attributes/abstract/ct_abstractitemattributet.hpp"
 
 #endif // CT_ABSTRACTITEMATTRIBUTET_H
