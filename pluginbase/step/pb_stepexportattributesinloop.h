@@ -7,6 +7,9 @@
 #ifdef USE_GDAL
 #include "exporters/gdal/pb_gdalexporter.h"
 #include "gdal_priv.h"
+#include "ogr_core.h"
+#include "ogrsf_frmts.h"
+
 #include "ct_tools/ct_gdaltools.h"
 #endif
 
@@ -82,6 +85,8 @@ private:
 
 #ifdef USE_GDAL
     QMap<QString, GDALDriver*> _gdalRasterDrivers;
+    QMap<QString, GDALDriver*> _gdalVectorDrivers;
+    QMap<QString, OGRFieldType>  _ogrTypes;
 #endif
 
     QList<QString>          _modelsKeys;
@@ -93,6 +98,7 @@ private:
     bool        _rasterExport;
 
     QString      _rasterDriverName;
+    QString      _vectorDriverName;
     QString     _vectorPrefix;
     QString     _rasterPrefix;
 

@@ -26,6 +26,7 @@
 #include <QDebug>
 
 #define DEF_ESRI_ASCII_Grid "ESRI ASCII Grid"
+#define DEF_ESRI_SHP "GDAL ESRI Shapefile"
 #define DEF_NA -9999999
 
 // Alias for indexing models
@@ -57,6 +58,7 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
     _rasterPrefix = "";
 
     _rasterDriverName = DEF_ESRI_ASCII_Grid;
+    _vectorDriverName = DEF_ESRI_SHP;
 
 
 #ifdef USE_GDAL
@@ -72,6 +74,10 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
 
         if(!name.isEmpty() && driver->GetMetadataItem(GDAL_DCAP_RASTER) != NULL && driver->GetMetadataItem(GDAL_DCAP_CREATE) != NULL) {
             _gdalRasterDrivers.insert(name, driver);
+        }
+
+        if(!name.isEmpty() && driver->GetMetadataItem(GDAL_DCAP_VECTOR) != NULL && driver->GetMetadataItem(GDAL_DCAP_CREATE) != NULL) {
+            _gdalVectorDrivers.insert(name, driver);
         }
     }
 #endif
@@ -169,17 +175,17 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 #ifdef USE_OPENCV
     if (_rasterExport)
     {
-        QStringList drivers;
-        drivers.append(DEF_ESRI_ASCII_Grid);
+        QStringList driversR;
+        driversR.append(DEF_ESRI_ASCII_Grid);
 
 #ifdef USE_GDAL
-        drivers.append(_gdalRasterDrivers.keys());
+        driversR.append(_gdalRasterDrivers.keys());
 #endif
 
         configDialog->addEmpty();
         configDialog->addTitle(tr("Export raster (1 fichier / tour / métrique)"));
         configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
-        configDialog->addStringChoice(tr("Choix du format d'export"), "", drivers, _rasterDriverName);
+        configDialog->addStringChoice(tr("Choix du format d'export"), "", driversR, _rasterDriverName);
         configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
     }
 #endif
@@ -187,9 +193,13 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
 #ifdef USE_GDAL
     if (_vectorExport)
     {
+        QStringList driversV;
+        driversV.append(_gdalVectorDrivers.keys());
+
         configDialog->addEmpty();
         configDialog->addTitle(tr("Export vectoriel (1 fichier / tour)"));
         configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _vectorPrefix);
+        configDialog->addStringChoice(tr("Choix du format d'export"), "", driversV, _vectorDriverName);
         configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outVectorFolder);
     }
 #endif
@@ -276,6 +286,27 @@ void PB_StepExportAttributesInLoop::compute()
             _modelsKeys.append(key);
 
             _names.insert(key, QString("%1_%2").arg(itemDN).arg(attrDN));
+
+#ifdef USE_GDAL
+            if (_vectorExport && _outVectorFolder.size() > 0)
+            {
+                CT_AbstractCategory::ValueType type = attrModel->itemAttribute()->type();
+
+                if      (type == CT_AbstractCategory::BOOLEAN) {_ogrTypes.insert(key, OFTInteger);}
+                else if (type == CT_AbstractCategory::STRING)  {_ogrTypes.insert(key, OFTString);}
+                else if (type == CT_AbstractCategory::STRING)  {_ogrTypes.insert(key, OFTString);}
+                else if (type == CT_AbstractCategory::INT8)    {_ogrTypes.insert(key, OFTInteger);}
+                else if (type == CT_AbstractCategory::UINT8)   {_ogrTypes.insert(key, OFTInteger);}
+                else if (type == CT_AbstractCategory::INT16)   {_ogrTypes.insert(key, OFTInteger);}
+                else if (type == CT_AbstractCategory::UINT16)  {_ogrTypes.insert(key, OFTInteger);}
+                else if (type == CT_AbstractCategory::INT32)   {_ogrTypes.insert(key, OFTInteger);}
+                //                else if (type == CT_AbstractCategory::UINT32)  {_ogrTypes.insert(key, OFTInteger64);}
+                //                else if (type == CT_AbstractCategory::INT64)   {_ogrTypes.insert(key, OFTInteger64);}
+                //                else if (type == CT_AbstractCategory::INT32)   {_ogrTypes.insert(key, OFTInteger64);}
+                else                                           {_ogrTypes.insert(key, OFTReal);}
+
+            }
+#endif
         }
         qSort(_modelsKeys.begin(), _modelsKeys.end());
 
@@ -303,7 +334,39 @@ void PB_StepExportAttributesInLoop::compute()
         }
     }
 
-    // IN results browsing    
+#ifdef USE_GDAL
+        GDALDataset *vectorDataSet;
+        OGRLayer *vectorLayer;
+
+        GDALDriver* driverVector = _gdalVectorDrivers.value(_vectorDriverName, NULL);
+
+        if (_vectorExport && driverVector != NULL && _outVectorFolder.size() > 0)
+        {
+            vectorDataSet = driverVector->Create((QString("%1/point_out.shp").arg(_outVectorFolder.first())).toLatin1(), 0, 0, 0, GDT_Unknown, NULL );
+
+            if (vectorDataSet != NULL)
+            {
+                vectorLayer = vectorDataSet->CreateLayer( "point_out", NULL, wkbPoint, NULL );
+            }
+
+            for (int i = 0 ; vectorLayer != NULL && i < _modelsKeys.size() ; i++)
+            {
+                QString key = _modelsKeys.at(i);
+                if (_ogrTypes.contains(key))
+                {
+                    OGRFieldType ogrType = _ogrTypes.value(key);
+                    OGRFieldDefn oField(_names.value(key).toLatin1(), ogrType );
+                    oField.SetWidth(32);
+                    if (vectorLayer->CreateField( &oField ) != OGRERR_NONE)
+                    {
+                        //  erreur
+                    }
+                }
+            }
+        }
+#endif
+
+    // IN results browsing
     CT_ResultGroupIterator itIn_grpMain(resIn, this, DEFin_grpMain);
     while (itIn_grpMain.hasNext() && !isStopped())
     {
@@ -400,6 +463,15 @@ void PB_StepExportAttributesInLoop::compute()
             }
 
             bool hasMetricsToExport = !(indexedAttributes.isEmpty());
+
+#ifdef USE_GDAL
+            OGRFeature *vectorFeature = NULL;
+            if (_vectorExport && hasMetricsToExport && vectorLayer != NULL)
+            {
+                vectorFeature = OGRFeature::CreateFeature(vectorLayer->GetLayerDefn());
+            }
+#endif
+
             for (int i = 0 ; i < _modelsKeys.size() ; i++)
             {
                 QString key = _modelsKeys.at(i);
@@ -416,6 +488,24 @@ void PB_StepExportAttributesInLoop::compute()
                     {
                         (*streamASCII) << pair.second->toString(pair.first, NULL);
                     }
+#ifdef USE_GDAL
+                    if (_vectorExport)
+                    {
+                        const char* fieldName = _names.value(key).toLatin1();
+                        if      (_ogrTypes.value(key) == OFTBinary)    {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
+                        else if (_ogrTypes.value(key) == OFTString)    {vectorFeature->SetField(fieldName, pair.second->toString(pair.first, NULL).toLatin1().constData());}
+                        else if (_ogrTypes.value(key) == OFTInteger)   {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
+//                        else if (_ogrTypes.value(key) == OFTInteger64) {vectorFeature->SetField()fieldName, pair.second->toInt(pair.first, NULL));}
+                        else                                           {vectorFeature->SetField(fieldName, pair.second->toDouble(pair.first, NULL));}
+                        OGRPoint pt;
+
+                        pt.setX(x);
+                        pt.setY(y);
+
+                        vectorFeature->SetGeometry(&pt);
+                    }
+#endif
+
 
 #ifdef USE_OPENCV
                     if (_rasterExport && raster != NULL)
@@ -433,6 +523,17 @@ void PB_StepExportAttributesInLoop::compute()
                 }
 
             }
+
+#ifdef USE_GDAL
+            if (_vectorExport && vectorLayer != NULL)
+            {
+                if (vectorLayer->CreateFeature(vectorFeature) != OGRERR_NONE)
+                {
+                    OGRFeature::DestroyFeature(vectorFeature);
+                }
+            }
+#endif
+
         }
 
 #ifdef USE_OPENCV
@@ -476,7 +577,6 @@ void PB_StepExportAttributesInLoop::compute()
                         }
                     }
 #endif
-
                 }
             }
         }
@@ -487,5 +587,11 @@ void PB_StepExportAttributesInLoop::compute()
 
     if (fileASCII != NULL) {fileASCII->close(); delete fileASCII;}
     if (streamASCII != NULL) {delete streamASCII;}
+#ifdef USE_GDAL
+    if (_vectorExport && vectorDataSet != NULL)
+    {
+        GDALClose(vectorDataSet);
+    }
+#endif
 
 }
