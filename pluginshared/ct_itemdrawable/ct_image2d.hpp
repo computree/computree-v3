@@ -501,13 +501,13 @@ template< typename DataT>
 QString CT_Image2D<DataT>::valueAtIndexAsString(const size_t index) const
 {
     DataT value = valueAtIndex(index);
-    return QString::number(value);
+    return QString::number(value, 'f');
 }
 
 template< typename DataT>
 QString CT_Image2D<DataT>::NAAsString() const
 {
-    return QString::number(NA());
+    return QString::number(NA(), 'f');
 }
 
 template< typename DataT>

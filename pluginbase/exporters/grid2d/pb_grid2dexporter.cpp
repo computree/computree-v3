@@ -110,13 +110,13 @@ bool PB_Grid2DExporter::protectedExportToFile()
                 size_t xdim = item->colDim();
                 size_t ydim = item->linDim();
 
-                stream << "ncols\t" << xdim << "\n";
-                stream << "nrows\t" << ydim << "\n";
+                stream << "ncols\t" << QString::number(xdim, 'g', 50) << "\n";
+                stream << "nrows\t" << QString::number(ydim, 'g', 50) << "\n";
 
-                stream << "xllcorner\t" << item->minX() << "\n";
-                stream << "yllcorner\t" << item->minY() << "\n";
+                stream << "xllcorner\t" << QString::number(item->minX(), 'f') << "\n";
+                stream << "yllcorner\t" << QString::number(item->minY(), 'f') << "\n";
 
-                stream << "cellsize\t" << item->resolution() << "\n";
+                stream << "cellsize\t" << QString::number(item->resolution(), 'f') << "\n";
                 stream << "NODATA_value\t" << item->NAAsString() << "\n";
 
                 // write data
