@@ -23,6 +23,7 @@
 #include <QInputDialog>
 #include <limits>
 #include <string.h>
+#include <QDebug>
 
 CT_Exporter_LAS::CT_Exporter_LAS() : CT_AbstractExporterAttributesSelection()
 {
@@ -310,6 +311,7 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
 
     int format = getPointDataFormat();
 
+
     if(format >= 0 && format < 11)
     {
         header = new CT_LASHeader();
@@ -396,8 +398,8 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
         header->m_projectIDGuidData2 = 0;
         header->m_projectIDGuidData3 = 0;
         header->m_projectIDGuidData4 = 0;
-        header->m_versionMajor = 1;  // format 1.4
-        header->m_versionMinor = 4;
+        header->m_versionMajor = 1;  // format 1.2
+        header->m_versionMinor = 2;
         #ifdef _MSC_VER
         strcpy_s(header->m_systemID, "EXPORT");
         strcpy_s(header->m_sofwareID, "Computree 3.0");
@@ -452,7 +454,7 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
 int CT_Exporter_LAS::getPointDataFormat() const
 {
     if(m_lasContainer == NULL)
-        return 6;
+        return 1;
 
     QList<CT_LasDefine::LASPointAttributesType> list = m_lasContainer->lasPointAttributesTypes();
 
@@ -488,7 +490,7 @@ int CT_Exporter_LAS::getPointDataFormat() const
     if(colors)
         return 7;
 
-    return 6;
+    return 1;
 }
 
 size_t CT_Exporter_LAS::getPointDataLength(const int &optFormat) const
