@@ -460,13 +460,13 @@ template< typename DataT>
 QString CT_Grid3D<DataT>::valueAtIndexAsString(const size_t index) const
 {
     DataT value = valueAtIndex(index);
-    return QString::number(value, 'f');
+    return QVariant(value).toString();
 }
 
 template< typename DataT>
 QString CT_Grid3D<DataT>::NAAsString() const
 {
-    return QString::number(NA(), 'f');
+    return QVariant(NA()).toString();
 }
 
 template< typename DataT>

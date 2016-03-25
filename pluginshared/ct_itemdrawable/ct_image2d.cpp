@@ -117,4 +117,18 @@ QString CT_Image2D<bool>::valueAtIndexAsString(const size_t index) const
     if (valueAtIndex(index)) {return "T";}
     return "F";
 }
+
+template<>
+QString CT_Image2D<unsigned long>::valueAtIndexAsString(const size_t index) const
+{
+    return QString::number(valueAtIndex(index), 'g', 50);
+}
+
+template<>
+QString CT_Image2D<unsigned long>::NAAsString() const
+{
+    return QString::number(NA(), 'g', 50);
+}
+
+
 #endif
