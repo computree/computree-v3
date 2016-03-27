@@ -91,6 +91,7 @@ private:
 
     QList<QString>          _modelsKeys;
     QMap<QString, QString>  _names;
+    QMap<QString, QString> _shortNames;
 
     // Step parameters
     bool        _asciiExport;
@@ -105,6 +106,9 @@ private:
     QStringList _outASCIIFileName;
     QStringList _outVectorFolder;
     QStringList _outRasterFolder;
+
+    void replaceBadCharacters(QMap<QString, QString> &names) const;
+    QMap<QString, QString> computeShortNames(const QMap<QString, QString> &names) const;
 
 
 

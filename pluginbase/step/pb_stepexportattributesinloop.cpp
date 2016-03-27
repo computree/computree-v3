@@ -285,7 +285,7 @@ void PB_StepExportAttributesInLoop::compute()
             QString key = QString("ITEM_%1_ATTR_%2").arg(itemUN).arg(attrUN);
             _modelsKeys.append(key);
 
-            _names.insert(key, QString("%1_%2").arg(itemDN).arg(attrDN));
+            _names.insert(key, QString("%2_%1").arg(itemDN).arg(attrDN));
 
 #ifdef USE_GDAL
             if (_vectorExport && _outVectorFolder.size() > 0)
@@ -308,8 +308,30 @@ void PB_StepExportAttributesInLoop::compute()
             }
 #endif
         }
+        replaceBadCharacters(_names);
         qSort(_modelsKeys.begin(), _modelsKeys.end());
 
+        if (_vectorExport && _outVectorFolder.size() > 0)
+        {
+            _shortNames = computeShortNames(_names);
+
+            QFile ffields(QString("%1/fields_names.txt").arg(_outVectorFolder.first()));
+            QTextStream fstream(&ffields);
+            if (ffields.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                QMapIterator<QString, QString> itF(_shortNames);
+                while (itF.hasNext())
+                {
+                    itF.next();
+                    QString key = itF.key();
+                    QString shortName = itF.value();
+                    QString longName = _names.value(key);
+                    fstream << shortName << "\t";
+                    fstream << longName << "\n";
+                }
+                ffields.close();
+            }
+        }
 
         if (_asciiExport && _outASCIIFileName.size() > 0)
         {
@@ -355,8 +377,13 @@ void PB_StepExportAttributesInLoop::compute()
                 if (_ogrTypes.contains(key))
                 {
                     OGRFieldType ogrType = _ogrTypes.value(key);
-                    OGRFieldDefn oField(_names.value(key).toLatin1(), ogrType );
-                    oField.SetWidth(32);
+                    OGRFieldDefn oField(_shortNames.value(key).toLatin1(), ogrType );
+
+                    if      (ogrType == OFTInteger)   {oField.SetWidth(11);}
+                    //else if (ogrType == OFTInteger64) {oField.SetWidth(20);}
+                    else if (ogrType == OFTString)    {oField.SetWidth(255);}
+                    else if (ogrType == OFTReal)      {oField.SetWidth(20); oField.SetPrecision(6);}
+
                     if (vectorLayer->CreateField( &oField ) != OGRERR_NONE)
                     {
                         //  erreur
@@ -469,6 +496,10 @@ void PB_StepExportAttributesInLoop::compute()
             if (_vectorExport && hasMetricsToExport && vectorLayer != NULL)
             {
                 vectorFeature = OGRFeature::CreateFeature(vectorLayer->GetLayerDefn());
+                OGRPoint pt;
+                pt.setX(x);
+                pt.setY(y);
+                vectorFeature->SetGeometry(&pt);
             }
 #endif
 
@@ -491,18 +522,12 @@ void PB_StepExportAttributesInLoop::compute()
 #ifdef USE_GDAL
                     if (_vectorExport)
                     {
-                        const char* fieldName = _names.value(key).toLatin1();
+                        const char* fieldName = _shortNames.value(key).toLatin1();
                         if      (_ogrTypes.value(key) == OFTBinary)    {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
                         else if (_ogrTypes.value(key) == OFTString)    {vectorFeature->SetField(fieldName, pair.second->toString(pair.first, NULL).toLatin1().constData());}
                         else if (_ogrTypes.value(key) == OFTInteger)   {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
 //                        else if (_ogrTypes.value(key) == OFTInteger64) {vectorFeature->SetField()fieldName, pair.second->toInt(pair.first, NULL));}
                         else                                           {vectorFeature->SetField(fieldName, pair.second->toDouble(pair.first, NULL));}
-                        OGRPoint pt;
-
-                        pt.setX(x);
-                        pt.setY(y);
-
-                        vectorFeature->SetGeometry(&pt);
                     }
 #endif
 
@@ -594,4 +619,62 @@ void PB_StepExportAttributesInLoop::compute()
     }
 #endif
 
+}
+
+void PB_StepExportAttributesInLoop::replaceBadCharacters(QMap<QString, QString> &names) const
+{
+    QMutableMapIterator<QString, QString> it(names);
+    while (it.hasNext())
+    {
+        it.next();
+        QString value = it.value();
+        value.replace(QRegExp("[àáâãäå]"), "a");
+        value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
+        value.replace(QRegExp("[éèëê]"), "e");
+        value.replace(QRegExp("[ÈÉÊË]"), "E");
+        value.replace(QRegExp("[ìíîï]"), "i");
+        value.replace(QRegExp("[ÌÍÎÏ]"), "I");
+        value.replace(QRegExp("[òóôõöø]"), "o");
+        value.replace(QRegExp("[ÒÓÔÕÖØ]"), "O");
+        value.replace(QRegExp("[ùúûü]"), "u");
+        value.replace(QRegExp("[ÙÚÛÜ]"), "U");
+        value.replace(QRegExp("[ñ]"), "n");
+        value.replace(QRegExp("[Ñ]"), "N");
+        value.replace(QRegExp("[ç]"), "c");
+        value.replace(QRegExp("[Ç]"), "C");
+        value.replace(QRegExp("[\\W]"), "_");
+        it.setValue(value);
+    }
+}
+
+QMap<QString, QString> PB_StepExportAttributesInLoop::computeShortNames(const QMap<QString, QString> &names) const
+{
+   QMap<QString, QString> shortNames;
+   QList<QString> existing;
+
+   QMapIterator<QString, QString> it(names);
+   while (it.hasNext())
+   {
+       it.next();
+       QString key = it.key();
+       QString value = it.value();
+
+       if (value.size() <= 10)
+       {
+           shortNames.insert(key, value);
+           existing.append(value);
+       } else {
+           QString newValue = value.left(10);
+           int cpt = 2;
+           while (existing.contains(newValue))
+           {
+               QString number = QVariant(cpt++).toString();
+               newValue = QString("%1%2").arg(value.left(10 - number.length())).arg(number);
+           }
+           shortNames.insert(key, newValue);
+           existing.append(newValue);
+       }
+   }
+
+   return shortNames;
 }
