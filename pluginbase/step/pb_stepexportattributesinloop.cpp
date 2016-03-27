@@ -152,10 +152,13 @@ void PB_StepExportAttributesInLoop::createPreConfigurationDialog()
     configDialog->addBool(tr("Activer export ASCII tabulaire (1 fichier en tout)"), "", tr("Activer"), _asciiExport);
 
 #ifdef USE_OPENCV
+    configDialog->addEmpty();
     configDialog->addBool(tr("Activer export raster (1 fichier / tour / métrique)"), "", tr("Activer"), _rasterExport);
+    configDialog->addTitle(tr("L'export raster nécessite une grille de placettes (désactiver si pas de résultat valide)"));
 #endif
 
 #ifdef USE_GDAL
+    configDialog->addEmpty();
     configDialog->addBool(tr("Activer export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
 #endif
 
@@ -377,12 +380,11 @@ void PB_StepExportAttributesInLoop::compute()
                 if (_ogrTypes.contains(key))
                 {
                     OGRFieldType ogrType = _ogrTypes.value(key);
-                    OGRFieldDefn oField(_shortNames.value(key).toLatin1(), ogrType );
 
-                    if      (ogrType == OFTInteger)   {oField.SetWidth(11);}
-                    //else if (ogrType == OFTInteger64) {oField.SetWidth(20);}
-                    else if (ogrType == OFTString)    {oField.SetWidth(255);}
-                    else if (ogrType == OFTReal)      {oField.SetWidth(20); oField.SetPrecision(6);}
+                    QByteArray fieldNameBA = _shortNames.value(key).toLatin1();
+                    const char* fieldName = fieldNameBA;
+
+                    OGRFieldDefn oField(fieldName, ogrType );
 
                     if (vectorLayer->CreateField( &oField ) != OGRERR_NONE)
                     {
@@ -522,12 +524,30 @@ void PB_StepExportAttributesInLoop::compute()
 #ifdef USE_GDAL
                     if (_vectorExport)
                     {
-                        const char* fieldName = _shortNames.value(key).toLatin1();
-                        if      (_ogrTypes.value(key) == OFTBinary)    {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
-                        else if (_ogrTypes.value(key) == OFTString)    {vectorFeature->SetField(fieldName, pair.second->toString(pair.first, NULL).toLatin1().constData());}
-                        else if (_ogrTypes.value(key) == OFTInteger)   {vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));}
-//                        else if (_ogrTypes.value(key) == OFTInteger64) {vectorFeature->SetField()fieldName, pair.second->toInt(pair.first, NULL));}
-                        else                                           {vectorFeature->SetField(fieldName, pair.second->toDouble(pair.first, NULL));}
+
+                        QByteArray fieldNameBA = _shortNames.value(key).toLatin1();
+                        const char* fieldName = fieldNameBA;
+
+                        if      (_ogrTypes.value(key) == OFTBinary)
+                        {
+                            vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));
+                        } else if (_ogrTypes.value(key) == OFTString)
+                        {
+                            QString text = replaceBadCharacters(pair.second->toString(pair.first, NULL));
+                            QByteArray textBA = text.toLatin1();
+                            const char* textChar = textBA;
+                            vectorFeature->SetField(fieldName, textChar);
+                        } else if (_ogrTypes.value(key) == OFTInteger)
+                        {
+                            vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));
+//                        } else if (_ogrTypes.value(key) == OFTInteger64)
+//                        {
+//                            vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));
+                        } else
+                        {
+                            vectorFeature->SetField(fieldName, pair.second->toDouble(pair.first, NULL));
+                        }
+
                     }
 #endif
 
@@ -627,7 +647,13 @@ void PB_StepExportAttributesInLoop::replaceBadCharacters(QMap<QString, QString> 
     while (it.hasNext())
     {
         it.next();
-        QString value = it.value();
+        it.setValue(replaceBadCharacters(it.value()));
+    }
+}
+
+QString PB_StepExportAttributesInLoop::replaceBadCharacters(const QString &name) const
+{
+        QString value = name;
         value.replace(QRegExp("[àáâãäå]"), "a");
         value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
         value.replace(QRegExp("[éèëê]"), "e");
@@ -643,8 +669,7 @@ void PB_StepExportAttributesInLoop::replaceBadCharacters(QMap<QString, QString> 
         value.replace(QRegExp("[ç]"), "c");
         value.replace(QRegExp("[Ç]"), "C");
         value.replace(QRegExp("[\\W]"), "_");
-        it.setValue(value);
-    }
+        return value;
 }
 
 QMap<QString, QString> PB_StepExportAttributesInLoop::computeShortNames(const QMap<QString, QString> &names) const
