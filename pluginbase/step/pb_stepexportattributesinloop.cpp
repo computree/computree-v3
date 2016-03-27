@@ -65,6 +65,8 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
     //GDALAllRegister();
     GDALDriverManager *driverManager = GetGDALDriverManager();
 
+    //CPLSetConfigOption("GDAL_DATA", "C:/xDONNEES/Programmation/computree64/computreeDependencies/gdal_bin/data");
+
     int count = driverManager->GetDriverCount();
 
     for(int i = 0 ; i < count ; ++i)
@@ -360,18 +362,28 @@ void PB_StepExportAttributesInLoop::compute()
     }
 
 #ifdef USE_GDAL
-        GDALDataset *vectorDataSet;
-        OGRLayer *vectorLayer;
+        GDALDataset *vectorDataSet = NULL;
+        OGRLayer *vectorLayer = NULL;
 
         GDALDriver* driverVector = _gdalVectorDrivers.value(_vectorDriverName, NULL);
 
         if (_vectorExport && driverVector != NULL && _outVectorFolder.size() > 0)
         {
-            vectorDataSet = driverVector->Create((QString("%1/point_out.shp").arg(_outVectorFolder.first())).toLatin1(), 0, 0, 0, GDT_Unknown, NULL );
+            QString outFileName = (QString("%1/%2").arg(_outVectorFolder.first()).arg("point_out"));
+            QStringList ext = CT_GdalTools::staticGdalDriverExtension(driverVector);
+            if (ext.size() > 0)
+            {
+                outFileName.append(".");
+                outFileName.append(ext.first());
+            }
+
+            vectorDataSet = driverVector->Create(outFileName.toLatin1(), 0, 0, 0, GDT_Unknown, NULL );
 
             if (vectorDataSet != NULL)
             {
-                vectorLayer = vectorDataSet->CreateLayer( "point_out", NULL, wkbPoint, NULL );
+                vectorLayer = vectorDataSet->CreateLayer( "point", NULL, wkbPoint, NULL );
+            } else {
+                PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Impossible d'utiliser le format d'export Vectoriel choisi."));
             }
 
             for (int i = 0 ; vectorLayer != NULL && i < _modelsKeys.size() ; i++)
@@ -522,7 +534,7 @@ void PB_StepExportAttributesInLoop::compute()
                         (*streamASCII) << pair.second->toString(pair.first, NULL);
                     }
 #ifdef USE_GDAL
-                    if (_vectorExport)
+                    if (_vectorExport && vectorLayer != NULL)
                     {
 
                         QByteArray fieldNameBA = _shortNames.value(key).toLatin1();

@@ -9,6 +9,7 @@
 #include "gdal_priv.h"
 #include "ogr_core.h"
 #include "ogrsf_frmts.h"
+#include "cpl_conv.h"
 
 #include "ct_tools/ct_gdaltools.h"
 #endif
