@@ -192,9 +192,9 @@ QString CT_AbstractItemDrawable::displayableName() const
         return _name;
 
     if(abstractModel() != NULL)
-        return abstractModel()->displayableName();
+        return QString("%1_%2").arg(abstractModel()->displayableName()).arg(QVariant(id()).toString());
 
-    return name();
+    return QString("%1_%2").arg(name()).arg(QVariant(id()).toString());
 }
 
 QString CT_AbstractItemDrawable::staticGetType()
