@@ -81,6 +81,7 @@
 #include "ctlibio/readers/ct_reader_pgm.h"
 #include "ctlibio/readers/ct_reader_pbm.h"
 #include "ctlibio/readers/ct_reader_points_ascii.h"
+#include "ctlibio/readers/ct_reader_idxyz.h"
 
 #include "ctlibmetrics/ct_metric/points/ct_cloudmetrics.h"
 
@@ -209,6 +210,7 @@ bool PB_StepPluginManager::loadReaders()
     sep->addReader(new CT_Reader_PGM());
     sep->addReader(new CT_Reader_PBM());
     sep->addReader(new CT_Reader_Points_ASCII());
+    sep->addReader(new CT_Reader_IDXYZ());
 
     return true;
 }

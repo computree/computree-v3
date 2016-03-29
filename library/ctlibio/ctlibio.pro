@@ -36,7 +36,9 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     readers/ct_reader_pbm.h \
     readers/ct_reader_pbm_def_models.h \
     readers/ct_reader_points_ascii.h \
-    readers/ct_reader_points_ascii_def_models.h
+    readers/ct_reader_points_ascii_def_models.h \
+    readers/ct_reader_idxyz.h \
+    readers/ct_reader_idxyz_def_models.h
 
 SOURCES += \ 
     readers/ct_reader_ascrgb.cpp \
@@ -49,4 +51,5 @@ SOURCES += \
     readers/ct_reader_asciigrid3d.cpp \
     readers/ct_reader_pgm.cpp \
     readers/ct_reader_pbm.cpp \
-    readers/ct_reader_points_ascii.cpp
+    readers/ct_reader_points_ascii.cpp \
+    readers/ct_reader_idxyz.cpp
