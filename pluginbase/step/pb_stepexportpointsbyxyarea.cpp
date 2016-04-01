@@ -206,6 +206,8 @@ void PB_StepExportPointsByXYArea::compute()
                     if (area != NULL)
                     {
                         CT_AbstractExporter* exporterCpy = exporter->copy();
+                        exporterCpy->init();
+
                         if (exporterCpy != NULL)
                         {
                             QString path = "";
@@ -218,8 +220,6 @@ void PB_StepExportPointsByXYArea::compute()
                             path.append(area->displayableName());
                             path.append(_suffixFileName);
 
-
-                            exporterCpy->init();
                             CT_AbstractPointExporter* exporterAsPointExporter = (CT_AbstractPointExporter*) exporterCpy;
 
                             if (exporterCpy->setExportFilePath(path) && exporterAsPointExporter->createExportFile())
