@@ -484,6 +484,12 @@ PLUGINSHAREDSHARED_EXPORT bool CT_Grid3D<bool>::addValueAtIndex(const size_t ind
 template<>
 PLUGINSHAREDSHARED_EXPORT QList<bool> CT_Grid3D<bool>::neighboursValues(const size_t colx, const size_t liny, const size_t levz, const size_t distance, const bool keepNAs, const CenterMode centermode) const;
 
+template<>
+PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<unsigned long>::valueAtIndexAsString(const size_t index) const;
+
+template<>
+PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<unsigned long>::NAAsString() const;
+
 
 // fin des spécialisations
 

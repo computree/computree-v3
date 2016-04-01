@@ -2,13 +2,16 @@
 #define PB_XYBEXPORTER_H
 
 #include "ct_exporter/abstract/ct_abstractexporterpointattributesselection.h"
+#include "ct_exporter/abstract/ct_abstractpointexporter.h"
 #include "ct_itemdrawable/ct_scanner.h"
 #include "ct_view/itemdrawable/ct_itemdrawablehierarchycollectionwidget.h"
 #include "ct_tools/attributes/ct_attributestocloudworkert.h"
 #include "ct_tools/itemdrawable/ct_itemdrawablecollectionbuildert.h"
 #include "ct_itemdrawable/abstract/ct_abstractpointsattributes.h"
 
-class PB_XYBExporter : public CT_AbstractExporterPointAttributesSelection
+#include <QFile>
+
+class PB_XYBExporter : public CT_AbstractExporterPointAttributesSelection, public CT_AbstractPointExporter
 {
     Q_OBJECT
 public:
@@ -33,12 +36,20 @@ public:
 
     virtual CT_AbstractExporter* copy() const;
 
+    bool createExportFile();
+    bool exportPointsToFile(CT_AbstractPointCloudIndex *indexVector);
+    void finalizeExportFile();
+
+
 protected:
 
     bool protectedExportToFile();
     void clearWorker();
 
 private:
+
+    QFile* _file;
+
     CT_ItemDrawableCollectionBuilderT<CT_Scanner>                       m_scannerBuilder;
     mutable int                                                         m_scannerBuilderIndex;
     CT_Scanner                                                          *m_scanner;

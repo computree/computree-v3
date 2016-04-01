@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <QMessageBox>
-#include <QFile>
 #include <QTextStream>
 #include <QEventLoop>
 #include <QApplication>
@@ -29,6 +28,7 @@ PB_XYBExporter::PB_XYBExporter() : CT_AbstractExporterPointAttributesSelection()
 
     m_scanner = NULL;
     m_scannerModel = NULL;
+    _file = NULL;
 }
 
 PB_XYBExporter::~PB_XYBExporter()
@@ -199,7 +199,7 @@ CT_AbstractExporter* PB_XYBExporter::copy() const
     return new PB_XYBExporter();
 }
 
-bool PB_XYBExporter::protectedExportToFile()
+bool PB_XYBExporter::createExportFile()
 {
     QFileInfo exportPathInfo = QFileInfo(exportFilePath());
     QString path = exportPathInfo.path();
@@ -217,11 +217,12 @@ bool PB_XYBExporter::protectedExportToFile()
         if(it.hasNext())
             m_scanner = dynamic_cast<CT_Scanner*>((CT_AbstractSingularItemDrawable*)it.next());
     }
-    QFile file(filePath);
 
-    if(file.open(QFile::WriteOnly | QFile::Text))
+    _file = new QFile(filePath);
+
+    if(_file->open(QFile::WriteOnly | QFile::Text))
     {
-        QTextStream txtStream(&file);
+        QTextStream txtStream(_file);
 
         txtStream << "# SCENE XYZ binary format v1.0\n";
 
@@ -242,14 +243,14 @@ bool PB_XYBExporter::protectedExportToFile()
             txtStream << "Cols 0\n";
         }
 
-        file.close();
+        _file->close();
+    } else {
+        return false;
     }
 
-    if(file.open(QFile::Append))
+    if(_file->open(QFile::Append))
     {
-        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
-
-        QDataStream stream(&file);
+        QDataStream stream(_file);
         stream.setByteOrder(QDataStream::LittleEndian);
 
         char d_data[8];
@@ -261,6 +262,51 @@ bool PB_XYBExporter::protectedExportToFile()
         d_data[3] = 0;
 
         stream.writeRawData(d_data, 4);
+
+        _file->close();
+        return true;
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+bool PB_XYBExporter::exportPointsToFile(CT_AbstractPointCloudIndex *indexVector)
+{
+    if(_file->open(QFile::Append))
+    {
+        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
+
+        QDataStream stream(_file);
+        stream.setByteOrder(QDataStream::LittleEndian);
+
+        int totalToExport = 1;
+        int nExported = 0;
+
+        exportPoints(stream, indexVector, cc, nExported,  totalToExport);
+
+        _file->close();
+        return true;
+    }
+    return false;
+}
+
+void PB_XYBExporter::finalizeExportFile()
+{
+    // Nothing to do in this case
+}
+
+bool PB_XYBExporter::protectedExportToFile()
+{
+    if (!createExportFile()) {return false;}
+
+    if(_file->open(QFile::Append))
+    {
+        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
+
+        QDataStream stream(_file);
+        stream.setByteOrder(QDataStream::LittleEndian);
 
         int totalToExport = itemDrawableToExport().size();
 
@@ -298,7 +344,7 @@ bool PB_XYBExporter::protectedExportToFile()
             nExported += 100;
         }
 
-        file.close();
+        _file->close();
         return true;
     }
 

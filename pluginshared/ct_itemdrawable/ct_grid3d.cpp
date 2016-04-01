@@ -150,3 +150,15 @@ QString CT_Grid3D<bool>::valueAtIndexAsString(const size_t index) const
     return "F";
 }
 
+template<>
+QString CT_Grid3D<unsigned long>::valueAtIndexAsString(const size_t index) const
+{
+    return QString::number(valueAtIndex(index), 'g', 50);
+}
+
+template<>
+QString CT_Grid3D<unsigned long>::NAAsString() const
+{
+    return QString::number(NA(), 'g', 50);
+}
+
