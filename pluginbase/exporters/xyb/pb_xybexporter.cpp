@@ -199,7 +199,12 @@ CT_AbstractExporter* PB_XYBExporter::copy() const
     return new PB_XYBExporter();
 }
 
-bool PB_XYBExporter::createExportFile()
+bool PB_XYBExporter::canExportPieceByPiece()
+{
+    return true;
+}
+
+bool PB_XYBExporter::createExportFileForPieceByPieceExport()
 {
     QFileInfo exportPathInfo = QFileInfo(exportFilePath());
     QString path = exportPathInfo.path();
@@ -272,35 +277,8 @@ bool PB_XYBExporter::createExportFile()
     return true;
 }
 
-bool PB_XYBExporter::exportPointsToFile(CT_AbstractPointCloudIndex *indexVector)
+bool PB_XYBExporter::exportOnePieceOfDataToFile()
 {
-    if(_file->open(QFile::Append))
-    {
-        CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
-
-        QDataStream stream(_file);
-        stream.setByteOrder(QDataStream::LittleEndian);
-
-        int totalToExport = 1;
-        int nExported = 0;
-
-        exportPoints(stream, indexVector, cc, nExported,  totalToExport);
-
-        _file->close();
-        return true;
-    }
-    return false;
-}
-
-void PB_XYBExporter::finalizeExportFile()
-{
-    // Nothing to do in this case
-}
-
-bool PB_XYBExporter::protectedExportToFile()
-{
-    if (!createExportFile()) {return false;}
-
     if(_file->open(QFile::Append))
     {
         CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
@@ -349,6 +327,20 @@ bool PB_XYBExporter::protectedExportToFile()
     }
 
     return false;
+}
+
+
+bool PB_XYBExporter::finalizePieceByPieceExport()
+{
+    // Nothing to do in this case
+    return true;
+}
+
+bool PB_XYBExporter::protectedExportToFile()
+{
+    if (!createExportFileForPieceByPieceExport()) {return false;}
+
+    return exportOnePieceOfDataToFile();
 }
 
 void PB_XYBExporter::clearWorker()

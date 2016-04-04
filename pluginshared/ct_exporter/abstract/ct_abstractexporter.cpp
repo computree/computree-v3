@@ -288,6 +288,26 @@ CT_VirtualAbstractStep* CT_AbstractExporter::myStep() const
     return d->m_myStep;
 }
 
+bool CT_AbstractExporter::canExportPieceByPiece()
+{
+    return false;
+}
+
+bool CT_AbstractExporter::createExportFileForPieceByPieceExport()
+{
+    return false;
+}
+
+bool CT_AbstractExporter::exportOnePieceOfDataToFile()
+{
+    return false;
+}
+
+bool CT_AbstractExporter::finalizePieceByPieceExport()
+{
+    return false;
+}
+
 void CT_AbstractExporter::addNewExportFormat(const FileFormat &format)
 {
     Q_D(CT_AbstractExporter);

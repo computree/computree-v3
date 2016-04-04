@@ -4,7 +4,6 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 
 #include "ct_exporter/abstract/ct_abstractexporter.h"
-#include "ct_exporter/abstract/ct_abstractpointexporter.h"
 #include "ct_itemdrawable/ct_box2d.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
@@ -86,7 +85,7 @@ private:
     QString                                         _exportersListValue;
 
     QList<CT_Box2DData*>                _areas;
-    QList<CT_AbstractPointExporter*>    _areasExporters;
+    QList<CT_AbstractExporter*>         _areasExporters;
     QList<CT_PointCloudIndexVector*>    _areasClouds;
 
 };

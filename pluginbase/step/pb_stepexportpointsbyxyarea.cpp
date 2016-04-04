@@ -62,9 +62,7 @@ PB_StepExportPointsByXYArea::PB_StepExportPointsByXYArea(CT_StepInitializeData &
             {
                 CT_AbstractExporter *exporter = itE.next();
 
-                CT_AbstractPointExporter* pointExporter = dynamic_cast<CT_AbstractPointExporter*>(exporter);
-
-                if (pointExporter != NULL)
+                if (exporter != NULL && exporter->canExportPoints() && exporter->canExportPieceByPiece())
                 {
                     CT_AbstractExporter *exporterCpy = exporter->copy();
                     exporterCpy->init();
@@ -143,8 +141,8 @@ void PB_StepExportPointsByXYArea::createInResultModelListProtected()
 // Creation and affiliation of OUT models
 void PB_StepExportPointsByXYArea::createOutResultModelListProtected()
 {
-    CT_OutResultModelGroup *res_res = createNewOutResultModel(DEFout_res, tr("Résultat"));
-    res_res->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
+    CT_OutResultModelGroup *res = createNewOutResultModel(DEFout_res, tr("Résultat"));
+    res->setRootGroup(DEFout_grp, new CT_StandardItemGroup(), tr("Groupe"));
 }
 
 // Semi-automatic creation of step parameters DialogBox
@@ -220,13 +218,11 @@ void PB_StepExportPointsByXYArea::compute()
                             path.append(area->displayableName());
                             path.append(_suffixFileName);
 
-                            CT_AbstractPointExporter* exporterAsPointExporter = (CT_AbstractPointExporter*) exporterCpy;
-
-                            if (exporterCpy->setExportFilePath(path) && exporterAsPointExporter->createExportFile())
+                            if (exporterCpy->setExportFilePath(path) && exporterCpy->createExportFileForPieceByPieceExport())
                             {
                                 CT_Box2DData* areaData = (CT_Box2DData*) (area->getPointerData()->copy());
                                 _areas.append(areaData);
-                                _areasExporters.append(exporterAsPointExporter);
+                                _areasExporters.append(exporterCpy);
                                 _areasClouds.append(new CT_PointCloudIndexVector());
                             }
                         }
@@ -276,9 +272,13 @@ void PB_StepExportPointsByXYArea::compute()
     for (int i = 0 ; i < _areasClouds.size() ; i++)
     {
         CT_PointCloudIndexVector* outCloudIndex = _areasClouds.at(i);
-        CT_AbstractPointExporter* exporter = _areasExporters.at(i);
+        CT_AbstractExporter* exporter = _areasExporters.at(i);
 
-        exporter->exportPointsToFile(outCloudIndex);
+        QList<CT_AbstractCloudIndex *> list;
+        list.append(outCloudIndex);
+
+        exporter->setPointsToExport(list);
+        exporter->exportOnePieceOfDataToFile();
     }
 
     setProgress(90);
@@ -288,16 +288,15 @@ void PB_StepExportPointsByXYArea::compute()
     {
         for (int i = 0 ; i < _areasExporters.size() ; i++)
         {
-            CT_AbstractPointExporter* exporter = _areasExporters.at(i);
-            exporter->finalizeExportFile();
+            CT_AbstractExporter* exporter = _areasExporters.at(i);
+            exporter->finalizePieceByPieceExport();
         }
     }
 
-
     // OUT results creation
     QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* res_res = outResultList.at(0);
-    CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_res);
-    res_res->addGroup(grp_grp);  
+    CT_ResultGroup* resOut = outResultList.at(0);
+    CT_StandardItemGroup* grpOut= new CT_StandardItemGroup(DEFout_grp, resOut);
+    resOut->addGroup(grpOut);
 
 }

@@ -205,6 +205,43 @@ public:
      */
     CT_VirtualAbstractStep* myStep() const;
 
+
+    /**
+     * @brief return true if the exporter can export data piece by piece
+     *
+     * If it is :
+     * 1) First method createExportFileForPieceByPieceExport() is called to create an empty file
+     * 2) exportOnePieceOfDataToFile() method is called multiple times (for example in a loop)
+     * 3) A the end, finalizePieceByPieceExport() method is called to correctly finish the export (for example by updating the header)
+     *
+     * Return false by default
+     */
+    virtual bool canExportPieceByPiece();
+
+    /**
+     * @brief Create the file, prepared for piece by piece export
+     *
+     * @return true is creation was a success
+     */
+    virtual bool createExportFileForPieceByPieceExport();
+
+    /**
+     * @brief Export one piece of data to the file
+     *
+     * @return true is the export was a success
+     */
+    virtual bool exportOnePieceOfDataToFile();
+
+    /**
+     * @brief Finalize the piece by piece export
+     *
+     * This method is called to correctly finish the export (for example by updating the header)
+     *
+     * @return true is the finalization process was a success
+     */
+    virtual bool finalizePieceByPieceExport();
+
+
     /**
      * @brief Return a copy of the exporter.
      */
