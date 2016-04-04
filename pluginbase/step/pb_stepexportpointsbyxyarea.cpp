@@ -270,6 +270,7 @@ void PB_StepExportPointsByXYArea::compute()
         }
     }
 
+
     setProgress(80);
 
 
