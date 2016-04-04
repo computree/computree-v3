@@ -75,6 +75,42 @@ protected:
 
 private:
 
+    struct AreaData
+    {
+        AreaData(CT_Box2DData* area, CT_AbstractExporter* exporter)
+        {
+            _area = area;
+            _exporter = exporter;
+            _cloudIndex = NULL;
+        }
+
+        ~AreaData()
+        {
+            delete _area;
+            delete _exporter;
+        }
+
+        void setPointCloudIndex(CT_PointCloudIndexVector* cloudIndex)
+        {
+            if (_cloudIndex != NULL)
+            {
+                delete _cloudIndex;
+            }
+            _cloudIndex = cloudIndex;
+        }
+
+
+        void deletePointCloudIndex()
+        {
+            delete _cloudIndex;
+            _cloudIndex = NULL;
+        }
+
+        CT_Box2DData* _area;
+        CT_AbstractExporter* _exporter;
+        CT_PointCloudIndexVector* _cloudIndex;
+    };
+
     // Step parameters
     QStringList _dir;
     QString _suffixFileName;
@@ -84,9 +120,7 @@ private:
 
     QString                                         _exportersListValue;
 
-    QList<CT_Box2DData*>                _areas;
-    QList<CT_AbstractExporter*>         _areasExporters;
-    QList<CT_PointCloudIndexVector*>    _areasClouds;
+    QList<AreaData*>                _areas;
 
 };
 

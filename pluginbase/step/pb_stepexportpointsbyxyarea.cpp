@@ -87,8 +87,6 @@ PB_StepExportPointsByXYArea::~PB_StepExportPointsByXYArea()
 {
     qDeleteAll(_exportersInstancesList);
     qDeleteAll(_areas);
-    qDeleteAll(_areasClouds);
-    qDeleteAll(_areasExporters);
 }
 
 
@@ -220,16 +218,21 @@ void PB_StepExportPointsByXYArea::compute()
 
                             if (exporterCpy->setExportFilePath(path) && exporterCpy->createExportFileForPieceByPieceExport())
                             {
-                                CT_Box2DData* areaData = (CT_Box2DData*) (area->getPointerData()->copy());
+                                CT_Box2DData* areaBox2D = (CT_Box2DData*) (area->getPointerData()->copy());
+                                AreaData* areaData = new AreaData(areaBox2D, exporterCpy);
                                 _areas.append(areaData);
-                                _areasExporters.append(exporterCpy);
-                                _areasClouds.append(new CT_PointCloudIndexVector());
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    for (int i = 0 ; i < _areas.size() ; i++)
+    {
+        AreaData* areaData = _areas.at(i);
+        areaData->setPointCloudIndex(new CT_PointCloudIndexVector());
     }
 
     setProgress(10);
@@ -254,11 +257,12 @@ void PB_StepExportPointsByXYArea::compute()
 
                 for (int i = 0 ; i < _areas.size() ; i++)
                 {
-                    CT_Box2DData* area = _areas.at(i);
+                    AreaData* areaData = _areas.at(i);
+                    CT_Box2DData* area = areaData->_area;
 
                     if (area->contains(point(0), point(1)))
                     {
-                        CT_PointCloudIndexVector* outCloudIndex = _areasClouds.at(i);
+                        CT_PointCloudIndexVector* outCloudIndex = areaData->_cloudIndex;
                         outCloudIndex->addIndex(index);
                     }
                 }
@@ -269,16 +273,20 @@ void PB_StepExportPointsByXYArea::compute()
     setProgress(80);
 
 
-    for (int i = 0 ; i < _areasClouds.size() ; i++)
+    for (int i = 0 ; i < _areas.size() ; i++)
     {
-        CT_PointCloudIndexVector* outCloudIndex = _areasClouds.at(i);
-        CT_AbstractExporter* exporter = _areasExporters.at(i);
+        AreaData* areaData = _areas.at(i);
+
+        CT_PointCloudIndexVector* outCloudIndex = areaData->_cloudIndex;
+        CT_AbstractExporter* exporter = areaData->_exporter;
 
         QList<CT_AbstractCloudIndex *> list;
         list.append(outCloudIndex);
 
         exporter->setPointsToExport(list);
         exporter->exportOnePieceOfDataToFile();
+
+        areaData->deletePointCloudIndex();
     }
 
     setProgress(90);
@@ -286,9 +294,9 @@ void PB_StepExportPointsByXYArea::compute()
     // Last turn : finalize export files
     if (counter != NULL && counter->getCurrentTurn() == counter->getNTurns())
     {
-        for (int i = 0 ; i < _areasExporters.size() ; i++)
+        for (int i = 0 ; i < _areas.size() ; i++)
         {
-            CT_AbstractExporter* exporter = _areasExporters.at(i);
+            CT_AbstractExporter* exporter = _areas.at(i)->_exporter;
             exporter->finalizePieceByPieceExport();
         }
     }
