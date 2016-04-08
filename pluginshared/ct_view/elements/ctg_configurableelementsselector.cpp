@@ -108,16 +108,8 @@ void CTG_ConfigurableElementsSelector::addAvailableElementsToUI(const QList<CT_A
 {
     QListIterator<CT_AbstractConfigurableElement*> it(elements);
 
-    while(it.hasNext()) {
-        CT_AbstractConfigurableElement *el = it.next()->copy();
-
-        QListWidgetItem *item = new QListWidgetItem(el->getShortDisplayableName());
-        item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        setConfigurableElementToItem(el, item);
-        setConfigurableWidgetToItem(el->createConfigurationWidget(), item);
-
-        ui->listWidgetAvailable->addItem(item);
-    }
+    while(it.hasNext())
+        ui->listWidgetAvailable->addItem(createItem(it.next()));
 }
 
 bool CTG_ConfigurableElementsSelector::addSelectedElementsToUI(const QList<CT_AbstractConfigurableElement *> &elements, QList<QListWidgetItem*> &transfered)
@@ -133,19 +125,21 @@ bool CTG_ConfigurableElementsSelector::addSelectedElementsToUI(const QList<CT_Ab
         if(item == NULL)
             return false;
 
+        QListWidgetItem *cpy = copyItem(item);
+
         // we delete previous element and previous widget
-        delete configurableElementFromItem(item);
-        delete configurableWidgetFromItem(item);
+        delete configurableElementFromItem(cpy);
+        delete configurableWidgetFromItem(cpy);
 
         // set the element to this item
-        setConfigurableElementToItem(el, item);
-        setConfigurableWidgetToItem(el->createConfigurationWidget(), item); // and a new configuration widget
+        setConfigurableElementToItem(el, cpy);
+        setConfigurableWidgetToItem(el->createConfigurationWidget(), cpy); // and a new configuration widget
 
-        // finally transfer from available to selected
-        transferFromAvailableToSelected(item);
+        // finally add it to selected
+        ui->listWidgetSelected->addItem(cpy);
 
         // add it to list that contains transfered items
-        transfered.append(item);
+        transfered.append(cpy);
     }
 
     return true;
@@ -172,6 +166,30 @@ void CTG_ConfigurableElementsSelector::setConfigurableWidgetToItem(CT_AbstractCo
 
     if(cw != NULL)
         cw->setDisabled(readOnly());
+}
+
+QListWidgetItem *CTG_ConfigurableElementsSelector::createItem(CT_AbstractConfigurableElement *ce) const
+{
+    CT_AbstractConfigurableElement *el = ce->copy();
+
+    QListWidgetItem *item = new QListWidgetItem(el->getShortDisplayableName());
+    item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    setConfigurableElementToItem(el, item);
+    setConfigurableWidgetToItem(el->createConfigurationWidget(), item);
+
+    return item;
+}
+
+QListWidgetItem *CTG_ConfigurableElementsSelector::copyItem(QListWidgetItem *item) const
+{
+    CT_AbstractConfigurableElement *el = configurableElementFromItem(item)->copy();
+
+    QListWidgetItem *copy = new QListWidgetItem(el->getShortDisplayableName());
+    copy->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    setConfigurableElementToItem(el, copy);
+    setConfigurableWidgetToItem(el->createConfigurationWidget(), copy);
+
+    return copy;
 }
 
 bool CTG_ConfigurableElementsSelector::saveConfigurationOfAllElementsSelected()
@@ -266,19 +284,23 @@ void CTG_ConfigurableElementsSelector::cleanItem(QListWidgetItem *item)
     }
 }
 
+void CTG_ConfigurableElementsSelector::clearItem(QListWidgetItem *item)
+{
+    if(!selectedContainerIsSetAndContains(configurableElementFromItem(item))) {
+        delete configurableElementFromItem(item);
+        setConfigurableElementToItem(NULL, item);
+    }
+
+    delete configurableWidgetFromItem(item);
+    setConfigurableWidgetToItem(NULL, item);
+}
+
 void CTG_ConfigurableElementsSelector::clearAvailable()
 {
     int count = ui->listWidgetAvailable->count();
 
-    for(int i=0; i<count; ++i) {
-        QListWidgetItem *item = ui->listWidgetAvailable->item(i);
-        CT_AbstractConfigurableElement *el = configurableElementFromItem(item);
-
-        if(!selectedContainerIsSetAndContains(el))
-            delete el;
-
-        delete configurableWidgetFromItem(item);
-    }
+    for(int i=0; i<count; ++i)
+        clearItem(ui->listWidgetAvailable->item(i));
 
     ui->listWidgetAvailable->clear();
 }
@@ -288,8 +310,9 @@ void CTG_ConfigurableElementsSelector::transferFromAvailableToSelected(QListWidg
     if(item == NULL)
         return;
 
-    ui->listWidgetAvailable->takeItem(ui->listWidgetAvailable->row(item));
-    ui->listWidgetSelected->addItem(item);
+    QListWidgetItem *cpy = copyItem(item);
+    ui->listWidgetSelected->addItem(cpy);
+    ui->listWidgetSelected->setCurrentItem(cpy);
 }
 
 void CTG_ConfigurableElementsSelector::transferFromSelectedToAvailable(QListWidgetItem *item)
@@ -297,8 +320,8 @@ void CTG_ConfigurableElementsSelector::transferFromSelectedToAvailable(QListWidg
     if(item == NULL)
         return;
 
-    ui->listWidgetSelected->takeItem(ui->listWidgetSelected->row(item));
-    ui->listWidgetAvailable->addItem(item);
+    clearItem(item);
+    delete item;
 }
 
 void CTG_ConfigurableElementsSelector::on_pushButtonAddAll_clicked()

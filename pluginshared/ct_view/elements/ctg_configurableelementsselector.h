@@ -80,6 +80,16 @@ private:
     void setConfigurableWidgetToItem(CT_AbstractConfigurableWidget *cw, QListWidgetItem *item) const;
 
     /**
+     * @brief Create item
+     */
+    QListWidgetItem* createItem(CT_AbstractConfigurableElement *ce) const;
+
+    /**
+     * @brief Copy the item passed in parameter (copy the element and the configuration widget)
+     */
+    QListWidgetItem* copyItem(QListWidgetItem *item) const;
+
+    /**
      * @brief Save configuration of all elements selected
      * @return false if it was error when save one element
      */
@@ -103,6 +113,7 @@ private:
     void clearSelectedListWithoutSave();
     void cleanAvailableListOfElementsFromContainerToModify();
     void cleanItem(QListWidgetItem *item);
+    void clearItem(QListWidgetItem *item);
     void clearAvailable();
 
 private slots:
