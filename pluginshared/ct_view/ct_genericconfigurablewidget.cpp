@@ -199,7 +199,7 @@ CT_ComboBox* CT_GenericConfigurableWidget::addStringChoice(const QString &before
             comboBox->setWidgetValue(valueToUpdate);
     }
 
-    return NULL;
+    return comboBox;
 }
 
 CT_ButtonGroup& CT_GenericConfigurableWidget::addButtonGroup(int &valueToUpdate)

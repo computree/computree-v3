@@ -4,7 +4,7 @@
 #include "ct_step/abstract/ct_abstractstep.h"
 
 #include "ct_exporter/abstract/ct_abstractexporter.h"
-#include "ct_itemdrawable/ct_box2d.h"
+#include "ct_itemdrawable/abstract/ct_abstractareashape2d.h"
 #include "ct_pointcloudindex/ct_pointcloudindexvector.h"
 
 class PB_StepExportPointsByXYArea: public CT_AbstractStep
@@ -77,7 +77,7 @@ private:
 
     struct AreaData
     {
-        AreaData(CT_Box2DData* area, CT_AbstractExporter* exporter)
+        AreaData(CT_AreaShape2DData* area, CT_AbstractExporter* exporter)
         {
             _area = area;
             _exporter = exporter;
@@ -106,7 +106,7 @@ private:
             _cloudIndex = NULL;
         }
 
-        CT_Box2DData* _area;
+        CT_AreaShape2DData* _area;
         CT_AbstractExporter* _exporter;
         CT_PointCloudIndexVector* _cloudIndex;
     };

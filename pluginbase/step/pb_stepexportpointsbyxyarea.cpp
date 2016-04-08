@@ -133,7 +133,7 @@ void PB_StepExportPointsByXYArea::createInResultModelListProtected()
     CT_InResultModelGroup *resXYAreas = createNewInResultModel(DEFin_resAreas, tr("Emprise"), "", true);
     resXYAreas->setZeroOrMoreRootGroup();
     resXYAreas->addGroupModel("", DEFin_grpAreas, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resXYAreas->addItemModel(DEFin_grpAreas, DEFin_itemAreas, CT_Box2D::staticGetType(), tr("Emprise"));
+    resXYAreas->addItemModel(DEFin_grpAreas, DEFin_itemAreas, CT_AbstractAreaShape2D::staticGetType(), tr("Emprise"));
 }
 
 // Creation and affiliation of OUT models
@@ -197,7 +197,7 @@ void PB_StepExportPointsByXYArea::compute()
                 {
                     const CT_AbstractItemGroup* group = (CT_AbstractItemGroup*) itIn_grpAreas.next();
 
-                    CT_Box2D* area = (CT_Box2D*)group->firstItemByINModelName(this, DEFin_itemAreas);
+                    CT_AbstractAreaShape2D* area = (CT_AbstractAreaShape2D*)group->firstItemByINModelName(this, DEFin_itemAreas);
 
                     if (area != NULL)
                     {
@@ -218,7 +218,7 @@ void PB_StepExportPointsByXYArea::compute()
 
                             if (exporterCpy->setExportFilePath(path) && exporterCpy->createExportFileForPieceByPieceExport())
                             {
-                                CT_Box2DData* areaBox2D = (CT_Box2DData*) (area->getPointerData()->copy());
+                                CT_AreaShape2DData* areaBox2D = (CT_AreaShape2DData*) (area->getPointerData()->copy());
                                 AreaData* areaData = new AreaData(areaBox2D, exporterCpy);
                                 _areas.append(areaData);
                             }
@@ -258,7 +258,7 @@ void PB_StepExportPointsByXYArea::compute()
                 for (int i = 0 ; i < _areas.size() ; i++)
                 {
                     AreaData* areaData = _areas.at(i);
-                    CT_Box2DData* area = areaData->_area;
+                    CT_AreaShape2DData* area = areaData->_area;
 
                     if (area->contains(point(0), point(1)))
                     {
