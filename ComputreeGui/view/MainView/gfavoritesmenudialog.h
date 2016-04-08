@@ -71,11 +71,15 @@ private slots:
     void addRootLevel();
     void addSubLevel();
     void removeLevel();
+    void renameLevel();
 
     void on_treeWidget_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
     void on_pushButtonAddRootLevel_clicked();
     void on_pushButtonAddSubLevel_clicked();
     void on_pushButtonRemoveLevel_clicked();
+
+    bool addSubLevel(const QString &name);
+    bool removeLevel(const QString &name);
 };
 
 #endif // GFAVORITESMENUDIALOG_H

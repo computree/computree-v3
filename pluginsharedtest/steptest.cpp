@@ -14,7 +14,9 @@ StepTest::StepTest()
 
 void StepTest::testStep()
 {
-    TextPluginManager pManager;
+    TestCore core;
+    TestPluginManager pManager;
+    pManager.setCoreInterface(&core);
 
     StepTestModelInit1 *stepTInit = new StepTestModelInit1(*(new CT_StepInitializeData(NULL, pManager, NULL)));
     StepTestModel1 *stepT = new StepTestModel1(*(new CT_StepInitializeData(stepTInit, pManager, NULL)));

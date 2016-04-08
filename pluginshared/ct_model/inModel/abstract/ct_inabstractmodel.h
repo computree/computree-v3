@@ -118,51 +118,6 @@ public:
     virtual bool recursiveIsAtLeastOnePossibilitySelectedIfItDoes() const;
 
     /**
-     * @brief Returns true if we can select possibilities of this model by default. If the user must choose among possibilities the
-     *        method return false.
-     */
-    virtual bool canSelectPossibilitiesByDefault() const;
-
-    /**
-     * @brief If you want to select possibilities and know if you select them if the model can pass the "default select test" you
-     *        can call this method and pass the list of index of possibilities you want to select. By default returns false
-     *          - if the number of possibilities passed in parameter is greather than the number of possibilities of this model
-     *          - if the number of possibilities passed in parameter is greather than 1 and the choiceMode() is C_ChooseOneIfMultiple
-     *          - if an index passed in parameter is not valid
-     *
-     * @param possibilitiesIndex : the list of index of possibilities that you want to select
-     * @param selectChildrensTooRecursively : true if you want to check if childrens (recursively) can be selected by default
-     * @return true if the test pass
-     */
-    virtual bool canSelectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively) const;
-
-    /**
-     * @brief Returns true if we can select possibilities for all models (recursively) by default. If the user must choose among possibilities the
-     *        method return false.
-     */
-    bool recursiveCanSelectPossibilitiesByDefault() const;
-
-    /**
-     * @brief Select all possibilities of this models if its possible by default. By default select the first possibility if exist.
-     * @return false if select possibilities by default is impossible (used the method "canSelectPossibilitiesByDefault")
-     */
-    virtual bool selectAllPossibilitiesByDefault();
-
-    /**
-     * @brief Select all possibilities of all models (recursively) if its possible by default.
-     * @return false if select possibilities by default is impossible (used the method "recursiveCanSelectPossibilitiesByDefault")
-     */
-    bool recursiveSelectAllPossibilitiesByDefault();
-
-    /**
-     * @brief Select possibilities of this model by default
-     * @param possibilitiesIndex : the list of index of possibilities that you want to select
-     * @param selectChildrensTooRecursively : true if you want to select childrens (recursively) too
-     * @return true if the test "canSelectPossibilitiesByDefault" pass
-     */
-    virtual bool selectPossibilitiesByDefault(const QList<int> &possibilitiesIndex, bool selectChildrensTooRecursively);
-
-    /**
      * @brief Returns the number of possibilities saved by this model
      */
     int nPossibilitiesSaved() const;

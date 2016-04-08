@@ -200,28 +200,28 @@ void CloudTest::testCloudIndexSyncRemoveMiddle()
     cir->abstractModifiableCloudIndex()->addIndex(45); // pcir3
 
     QCOMPARE(cir->abstractModifiableCloudIndex()->size(), (size_t)7);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)4);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (size_t)5);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(2), (size_t)11);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(3), (size_t)14);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(4), (size_t)37);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(5), (size_t)45);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(6), (size_t)50);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)4);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (ct_index_type)5);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(2), (ct_index_type)11);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(3), (ct_index_type)14);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(4), (ct_index_type)37);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(5), (ct_index_type)45);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(6), (ct_index_type)50);
 
     pcir2.clear();
 
     QCOMPARE(cir->abstractModifiableCloudIndex()->size(), (size_t)5);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)4);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (size_t)5);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(2), (size_t)11);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(3), (size_t)19);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(4), (size_t)24);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)4);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (ct_index_type)5);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(2), (ct_index_type)11);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(3), (ct_index_type)19);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(4), (ct_index_type)24);
 
     pcir3.clear();
 
     QCOMPARE(cir->abstractModifiableCloudIndex()->size(), (size_t)2);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)4);
-    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (size_t)5);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)4);
+    QCOMPARE(cir->abstractModifiableCloudIndex()->constIndexAt(1), (ct_index_type)5);
 
     pcir.clear();
 
@@ -239,10 +239,10 @@ void CloudTest::testColorCloudSyncRemoveMiddle()
     for(size_t i=0; i<104; ++i)
     {
         CT_Color &col = ccr->abstractColorCloud()->colorAt(i);
-        col.r = i;
-        col.g = i;
-        col.b = i;
-        col.a = i;
+        col(0) = i;
+        col(1) = i;
+        col(2) = i;
+        col(3) = i;
     }
 
     pcir2.clear();
@@ -252,19 +252,19 @@ void CloudTest::testColorCloudSyncRemoveMiddle()
     for(size_t i=0; i<14; ++i)
     {
         CT_Color &col = ccr->abstractColorCloud()->colorAt(i);
-        QCOMPARE(col.r, (quint8)i);
-        QCOMPARE(col.g, (quint8)i);
-        QCOMPARE(col.b, (quint8)i);
-        QCOMPARE(col.a, (quint8)i);
+        QCOMPARE(col(0), (CT_Color::value_type)i);
+        QCOMPARE(col(1), (CT_Color::value_type)i);
+        QCOMPARE(col(2), (CT_Color::value_type)i);
+        QCOMPARE(col(3), (CT_Color::value_type)i);
     }
 
     for(size_t i=14; i<24; ++i)
     {
         CT_Color &col = ccr->abstractColorCloud()->colorAt(i);
-        QCOMPARE(col.r, (quint8)(i+80));
-        QCOMPARE(col.g, (quint8)(i+80));
-        QCOMPARE(col.b, (quint8)(i+80));
-        QCOMPARE(col.a, (quint8)(i+80));
+        QCOMPARE(col(0), (CT_Color::value_type)(i+80));
+        QCOMPARE(col(1), (CT_Color::value_type)(i+80));
+        QCOMPARE(col(2), (CT_Color::value_type)(i+80));
+        QCOMPARE(col(3), (CT_Color::value_type)(i+80));
     }
 }
 
@@ -287,23 +287,23 @@ void CloudTest::testMapColorCloudSyncRemoveMiddle()
     map->insertIndexAndColor(3, col);
 
     QCOMPARE(mccr->abstractModifiableCloudIndex()->size(), (size_t)5);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)0);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(1), (size_t)3);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(2), (size_t)14);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(3), (size_t)22);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(4), (size_t)35);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)0);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(1), (ct_index_type)3);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(2), (ct_index_type)14);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(3), (ct_index_type)22);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(4), (ct_index_type)35);
 
     pcir2.clear();
 
     QCOMPARE(mccr->abstractModifiableCloudIndex()->size(), (size_t)3);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)0);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(1), (size_t)3);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(2), (size_t)15);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)0);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(1), (ct_index_type)3);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(2), (ct_index_type)15);
 
     pcir.clear();
 
     QCOMPARE(mccr->abstractModifiableCloudIndex()->size(), (size_t)1);
-    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (size_t)5);
+    QCOMPARE(mccr->abstractModifiableCloudIndex()->constIndexAt(0), (ct_index_type)5);
 }
 
 void CloudTest::benchmarkCloudIndexLoop()

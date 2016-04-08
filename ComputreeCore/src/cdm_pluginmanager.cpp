@@ -91,8 +91,6 @@ bool CDM_PluginManager::load()
 
         QDir dir(_defaultPluginDirPath);
 
-        //qDebug() << "Recherche des plugins dans : " << dir.absolutePath();
-
         QStringList nameFilters;
 
         #if defined(_WIN32) || defined(_WIN64)

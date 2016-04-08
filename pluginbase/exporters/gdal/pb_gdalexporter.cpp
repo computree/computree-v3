@@ -8,7 +8,6 @@
 #include "ct_tools/ct_gdaltools.h"
 
 #include <QFileInfo>
-#include <QDebug>
 
 // TODO : choose raster type (what is R, G or B, etc...) and export it in multiple bands
 // TODO : Group raster by dimension and resolution

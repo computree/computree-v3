@@ -4,8 +4,8 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
 
 CT_InZeroOrMoreGroupModel::CT_InZeroOrMoreGroupModel() : CT_InAbstractGroupModel("*",
-                                                                                 "Aucun ou un groupe",
-                                                                                 "*")
+                                                                                 tr("Aucun ou un groupe"),
+                                                                                 tr("*"))
 {
     setGroupType(CT_AbstractItemGroup::staticGetType());
     internalSetChoiceMode(CT_InAbstractModel::C_DontChoose);
@@ -22,11 +22,6 @@ bool CT_InZeroOrMoreGroupModel::isAtLeastOnePossibilitySelectedIfItDoes() const
     // if this model not need possiblities
     if(!needOutputModel())
         return true;
-
-    /*if((nPossibilitiesSaved() > 0) && getPossibilitiesSavedSelected().isEmpty()) {
-        addToError(tr("Le modèle %1 (%2) a %3 possibilité(s) sauvegardée(s) cependant aucune n'est sélectionnée").arg(displayableName()).arg(uniqueName()).arg(nPossibilitiesSaved()));
-        return false;
-    }*/
 
     QList<CT_AbstractModel*> l = childrensOfPossibilities();
     QListIterator<CT_AbstractModel*> it(l);
@@ -46,24 +41,6 @@ bool CT_InZeroOrMoreGroupModel::isAtLeastOnePossibilitySelectedIfItDoes() const
 
     // all it's ok because this model is obligatory but it can not add a possibility if
     // childrens (recursively) is ok
-    return true;
-}
-
-bool CT_InZeroOrMoreGroupModel::canSelectPossibilitiesByDefault() const
-{
-    if(nPossibilitiesSaved() > 1)
-        return false;
-
-    QList<CT_AbstractModel*> l = childrensOfPossibilities();
-    QListIterator<CT_AbstractModel*> it(l);
-
-    while(it.hasNext())
-    {
-        // if children (recursively) cannot select possibilities by default : we return false
-        if(!((CT_InAbstractModel*)it.next())->recursiveCanSelectPossibilitiesByDefault())
-            return false;
-    }
-
     return true;
 }
 

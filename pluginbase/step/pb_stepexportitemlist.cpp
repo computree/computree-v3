@@ -186,10 +186,9 @@ void PB_StepExportItemList::compute()
             CT_AbstractExporter* exporter = _exportersMap.value(_exportersListValue);
 
             exporter->setExportFilePath(path);
+
             if (exporter->setItemDrawableToExport(list))
-            {
                 exporter->exportToFile();
-            }
         }
 
     }

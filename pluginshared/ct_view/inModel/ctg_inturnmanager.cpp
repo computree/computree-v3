@@ -146,6 +146,7 @@ QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
     pChoice->setReadOnly(m_readOnly);
     layout->addWidget(pChoice);
 
+    layout->setMargin(0);
     wid->setLayout(layout);
 
     connect(turnChoice, SIGNAL(selectedPossibilityChanged(const CT_InStdResultModelPossibility*)), pChoice, SLOT(setInResultModelPossibility(const CT_InStdResultModelPossibility*)));

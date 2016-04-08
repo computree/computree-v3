@@ -11,6 +11,22 @@
 
 CT_Reader_TerraScanPrj::CT_Reader_TerraScanPrj() : CT_AbstractReader()
 {
+    _headerModel = NULL;
+    _boxModel = NULL;
+}
+
+CT_Reader_TerraScanPrj::CT_Reader_TerraScanPrj(const CT_Reader_TerraScanPrj &other) : CT_AbstractReader(other)
+{
+    _headerModel = NULL;
+    _boxModel = NULL;
+
+    const QList<CT_OutStdGroupModel*> &models = outGroupsModel();
+
+    if(!models.isEmpty()) {
+        CT_OutStdGroupModel *grp = models.first();
+        _headerModel = (CT_OutStdSingularItemModel*)grp->findModelInTree(DEF_CT_Reader_TERRASCANPRJ_headerOut);
+        _boxModel = (CT_OutStdSingularItemModel*)grp->findModelInTree(DEF_CT_Reader_TERRASCANPRJ_boxOut);
+    }
 }
 
 QString CT_Reader_TerraScanPrj::GetReaderName() const

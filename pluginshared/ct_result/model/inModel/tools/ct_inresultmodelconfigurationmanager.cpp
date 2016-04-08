@@ -6,6 +6,7 @@
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 
 #include "ct_model/inModel/tools/ct_instdmodelpossibility.h"
+#include "ct_model/tools/ct_modelselectionhelper.h"
 
 #include "interfaces.h"
 
@@ -33,6 +34,7 @@ CT_InResultModelConfigurationManager::CreateDialogReturn CT_InResultModelConfigu
         _configDialog = new CTG_InResultModelConfiguration(NULL);
         _configDialog->setWindowTitle(_configDialog->windowTitle() + QString(" (%1)").arg(_inManager->step()->getStepCustomName() == _inManager->step()->getStepDisplayableName() ? _inManager->step()->getStepExtendedDisplayableName() : _inManager->step()->getStepCustomName()));
         _configDialog->setInManager(_inManager);
+        _configDialog->setWindowFlags(_configDialog->windowFlags() | Qt::WindowMaximizeButtonHint);
     }
 
     return returnVal;
@@ -60,25 +62,13 @@ CT_InResultModelConfigurationManager::ConfigureReturn CT_InResultModelConfigurat
     {
         CT_InAbstractResultModel *model = it.next();
 
-        if(!model->recursiveSelectAllPossibilitiesByDefault()
-                && (model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() > 0))
-            return CT_InResultModelConfigurationManager::ConfigureError;
+        CT_ModelSelectionHelper selectionHelper(model);
 
-        QList<CT_InStdModelPossibility*> pList = model->getPossibilitiesSaved();
-        QListIterator<CT_InStdModelPossibility*> itP(pList);
+        bool ok = selectionHelper.selectAllPossibilitiesByDefault();
 
-        if(itP.hasNext())
-        {
-            CT_InStdModelPossibility *p = itP.next();
-            p->setSelected(true);
+        Q_ASSERT(ok);
 
-            while(itP.hasNext())
-            {
-                itP.next()->setSelected(true);
-            }
-        }
-        else if(model->needOutputModel()
-                && (model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() > 0))
+        if(!ok)
             return CT_InResultModelConfigurationManager::ConfigureError;
     }
 
@@ -169,30 +159,18 @@ bool CT_InResultModelConfigurationManager::setAllValues(const QList<SettingsNode
 
 bool CT_InResultModelConfigurationManager::checkIfMustCreateOrShowConfigurationDialog() const
 {
-    // pour chaque modèle d'entrée on va vérifier si on peut les cocher par défaut
+    // for each inResultModel
     QListIterator<CT_InAbstractResultModel*> it(_inManager->getResultModelManager()->models());
 
     while(it.hasNext())
     {
         CT_InAbstractResultModel *model = it.next();
 
-        // si il y a plus de possibilité que ce qu'on peut sélectionner en un tour
-        // il faut que l'utilisateur fasse un choix
-        if(model->nPossibilitiesSaved() > model->maximumNumberOfPossibilityThatCanBeSelectedForOneTurn())
-            return true;
+        CT_ModelSelectionHelper selectionHelper(model);
 
-        // si un résultat est optionnel pour ce modèle mais qu'il a trouvé des possibilités
-        // il faudra aussi afficher la fenêtre
-        if((model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() == 0)
-                && (model->maximumNumberOfPossibilityThatCanBeSelectedForOneTurn() >= 1)
-                && (model->getPossibilitiesSaved().size() > 0))
-            return true;
-
-        // si les modèles ont plusieurs possibilités il faudra laisser le choix
-        // à l'utilisateur en créant une fenêtre de configuration
-        if(!model->recursiveCanSelectPossibilitiesByDefault()
-                && (model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() > 0))
-            return true;
+        // we check if it can select all possibilities by default
+        if(!selectionHelper.canSelectAllPossibilitiesByDefault())
+            return true; // if not we return true to inform that the dialog must be created or displayed
     }
 
     return false;

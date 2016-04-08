@@ -57,13 +57,13 @@ bool PB_MultiXYBExporter::setItemDrawableToExport(const QList<CT_AbstractItemDra
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(dynamic_cast<CT_Scene*>(item) != NULL)
+        if(dynamic_cast<CT_IAccessPointCloud*>(item) != NULL)
             myList.append(item);
     }
 
     if(myList.isEmpty())
     {
-        setErrorMessage(errorMessage() + "\r\n" + tr("- Aucun ItemDrawable du type CT_Scene"));
+        setErrorMessage(errorMessage() + "\r\n" + tr("- Aucun ItemDrawable du type CT_IAccessPointCloud"));
         return false;
     }
 
@@ -121,7 +121,7 @@ bool PB_MultiXYBExporter::protectedExportToFile()
             stream.writeRawData(d_data, 4);
 
             // write data
-            exportPoints(stream, dynamic_cast<CT_Scene*>(item)->getPointCloudIndex(), cc);
+            exportPoints(stream, dynamic_cast<CT_IAccessPointCloud*>(item)->getPointCloudIndex(), cc);
 
             file.close();
 

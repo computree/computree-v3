@@ -78,6 +78,7 @@ class CTLIBIO_EXPORT CT_Reader_OPF : public CT_AbstractReader
 
 public:
     CT_Reader_OPF();
+    CT_Reader_OPF(const CT_Reader_OPF &other);
     ~CT_Reader_OPF();
 
     QString GetReaderName() const;
@@ -95,7 +96,7 @@ public:
 private:
     QHash<QString, CT_OPF_Type>                         m_types;
     QHash<QString, CT_OPF_Attribute>                    m_attributes;
-    QHash<QString, CT_OutAbstractItemAttributeModel*>   m_attributesOriginalModels;
+    //QHash<QString, CT_OutAbstractItemAttributeModel*>   m_attributesOriginalModels;
     QHash<QString, CT_OutAbstractModel*>                m_models;
     QHash<int, CT_OPF_Mesh*>                            m_meshes;
     QHash<int, CT_OPF_Mesh*>                            m_shapes;

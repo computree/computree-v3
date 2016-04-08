@@ -899,7 +899,9 @@ void GStepManager::stepAdded(CT_VirtualAbstractStep *step)
 
         item->appendRow(newItems);
 
-        m_treeView.expand(m_proxy->mapFromSource(_model.indexFromItem(newItems.first())));
+        QModelIndex index = m_proxy->mapFromSource(_model.indexFromItem(newItems.first()));
+        m_treeView.expand(index);
+        m_treeView.selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::ClearAndSelect);
     }
 }
 

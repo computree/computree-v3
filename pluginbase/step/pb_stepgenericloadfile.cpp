@@ -80,9 +80,17 @@ bool PB_StepGenericLoadFile::setAllSettings(const SettingsNodeGroup *settings)
     if(!CT_AbstractStepLoadFile::setAllSettings(settings))
         return false;
 
-    QList<SettingsNodeGroup*> listG = settings->groupsByTagName(m_reader->GetReaderClassName());
+    QList<SettingsNodeGroup*> listG = settings->groupsByTagName("ReaderSettings");
 
     if(listG.isEmpty())
+        return false;
+
+    SettingsNodeValue *value = listG.first()->firstValueByTagName("ReaderClassName");
+
+    if(value == NULL)
+        return false;
+
+    if(value->value().toString() != m_reader->GetReaderClassName())
         return false;
 
     listG = listG.first()->groups();
@@ -99,7 +107,8 @@ SettingsNodeGroup *PB_StepGenericLoadFile::getAllSettings() const
 
     SettingsNodeGroup *readerGroup = m_reader->getAllSettings();
 
-    SettingsNodeGroup *group = new SettingsNodeGroup(m_reader->GetReaderClassName());
+    SettingsNodeGroup *group = new SettingsNodeGroup("ReaderSettings");
+    group->addValue(new SettingsNodeValue("ReaderClassName", m_reader->GetReaderClassName()));
 
     if(readerGroup != NULL)
         group->addGroup(readerGroup);
@@ -138,7 +147,7 @@ bool PB_StepGenericLoadFile::preConfigure()
 {
     if(CT_AbstractStepLoadFile::preConfigure())
     {
-        if(m_reader->configure()) {
+        if(m_reader->filepath().isEmpty() || m_reader->configure()) {
             setSettingsModified(true);
             return true;
         }

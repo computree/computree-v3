@@ -300,6 +300,7 @@ void PB_StepGenericExporter::compute()
     // une fois la liste constituée
     if(!itemsToExport.isEmpty())
     {
+        _exporter->clearErrorMessage();
         _exporter->setExportFilePath(_exportFilename);
 
         // on la donne à l'exportateur
@@ -381,6 +382,8 @@ void PB_StepGenericExporter::configureExporterFromModel()
         // on récupère l'ItemDrawable choisi
         eItems.append(((CT_OutAbstractItemModel*)possibility->outModel())->itemDrawable());
     }
+
+    _exporter->clearErrorMessage();
 
     // on les donne à l'exporter
     _exporter->setItemDrawableToExport(eItems);

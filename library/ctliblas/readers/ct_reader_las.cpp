@@ -17,12 +17,20 @@
 
 CT_Reader_LAS::CT_Reader_LAS() : CT_AbstractReader()
 {    
-    m_header = NULL;
+    m_headerFromConfiguration = NULL;
+}
+
+CT_Reader_LAS::CT_Reader_LAS(const CT_Reader_LAS &other) : CT_AbstractReader(other)
+{
+    m_headerFromConfiguration = NULL;
+
+    if(other.m_headerFromConfiguration != NULL)
+        m_headerFromConfiguration = (CT_LASHeader*)other.m_headerFromConfiguration->copy(NULL, NULL, CT_ResultCopyModeList());
 }
 
 CT_Reader_LAS::~CT_Reader_LAS()
 {
-    delete m_header;
+    delete m_headerFromConfiguration;
 }
 
 QString CT_Reader_LAS::GetReaderName() const
@@ -60,8 +68,8 @@ bool CT_Reader_LAS::configure()
     CT_LASHeader *header = (CT_LASHeader*)protectedReadHeader(filepath(), err);
 
     if(header != NULL) {
-        delete m_header;
-        m_header = header;
+        delete m_headerFromConfiguration;
+        m_headerFromConfiguration = header;
         return true;
     }
 
@@ -85,7 +93,7 @@ bool CT_Reader_LAS::setAllSettings(const SettingsNodeGroup *settings)
         if(header == NULL)
             return false;
 
-        m_header = header;
+        m_headerFromConfiguration = header;
 
         return true;
     }
@@ -111,7 +119,7 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
     addOutItemDrawableModel(DEF_CT_Reader_LAS_attributesOut, new CT_StdLASPointsAttributesContainer(), tr("All Attributs"));
 
     // CORE of file format from 0 to 5
-    if(m_header->m_pointDataRecordFormat < 6)
+    if(m_headerFromConfiguration->m_pointDataRecordFormat < 6)
     {
         addOutItemDrawableModel(DEF_CT_Reader_LAS_returnNumberOut, new CT_PointsAttributesScalarMaskT<PointCore0_5>(), tr("Return Number"));
         addOutItemDrawableModel(DEF_CT_Reader_LAS_numberOfReturnsOut, new CT_PointsAttributesScalarMaskT<PointCore0_5>(), tr("Number of Returns"));
@@ -136,23 +144,23 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
 
     // Other options (depend on file format)
 
-    if(m_header->m_pointDataRecordFormat < 6)
+    if(m_headerFromConfiguration->m_pointDataRecordFormat < 6)
         addOutItemDrawableModel(DEF_CT_Reader_LAS_scanAngleRankOut, new CT_PointsAttributesScalarTemplated<qint8>(), tr("Scan Angle Rank"));
     else
         addOutItemDrawableModel(DEF_CT_Reader_LAS_scanAngleRankOut, new CT_PointsAttributesScalarTemplated<qint16>(), tr("Scan Angle"));
 
     // GPS Time
-    if((m_header->m_pointDataRecordFormat == 1)
-            || (m_header->m_pointDataRecordFormat > 2))
+    if((m_headerFromConfiguration->m_pointDataRecordFormat == 1)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat > 2))
         addOutItemDrawableModel(DEF_CT_Reader_LAS_gpsTimeOut, new CT_PointsAttributesScalarTemplated<double>(), tr("GPS Time"));
 
     // Color
-    if((m_header->m_pointDataRecordFormat == 2)
-            || (m_header->m_pointDataRecordFormat == 3)
-            || (m_header->m_pointDataRecordFormat == 5)
-            || (m_header->m_pointDataRecordFormat == 7)
-            || (m_header->m_pointDataRecordFormat == 8)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((m_headerFromConfiguration->m_pointDataRecordFormat == 2)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 3)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 5)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 7)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 8)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 10))
     {
         addOutItemDrawableModel(DEF_CT_Reader_LAS_colorOut, new CT_PointsAttributesColor(), tr("Color"));
         addOutItemDrawableModel(DEF_CT_Reader_LAS_colorROut, new CT_PointsAttributesScalarTemplated<quint16>(), tr("Red"));
@@ -161,10 +169,10 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
     }
 
     // Wave Packets
-    if((m_header->m_pointDataRecordFormat == 4)
-            || (m_header->m_pointDataRecordFormat == 5)
-            || (m_header->m_pointDataRecordFormat == 9)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((m_headerFromConfiguration->m_pointDataRecordFormat == 4)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 5)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 9)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 10))
     {
         addOutItemDrawableModel(DEF_CT_Reader_LAS_wavePacketOut, new CT_PointsAttributesScalarTemplated<quint8>(), tr("Wave Packet Descriptor Index"));
         addOutItemDrawableModel(DEF_CT_Reader_LAS_byteOffsetWaveformOut, new CT_PointsAttributesScalarTemplated<quint64>(), tr("Byte offset to waveform data"));
@@ -173,8 +181,8 @@ void CT_Reader_LAS::protectedCreateOutItemDrawableModelList()
     }
 
     // NIR
-    if((m_header->m_pointDataRecordFormat == 8)
-            || (m_header->m_pointDataRecordFormat == 10))
+    if((m_headerFromConfiguration->m_pointDataRecordFormat == 8)
+            || (m_headerFromConfiguration->m_pointDataRecordFormat == 10))
         addOutItemDrawableModel(DEF_CT_Reader_LAS_nirOut, new CT_PointsAttributesScalarTemplated<quint16>(), tr("NIR"));
 }
 
@@ -190,20 +198,19 @@ bool CT_Reader_LAS::protectedReadFile()
         return false;
     }
 
-    if(header->m_pointDataRecordFormat != m_header->m_pointDataRecordFormat) {
+    if(header->m_pointDataRecordFormat != m_headerFromConfiguration->m_pointDataRecordFormat) {
         PS_LOG->addErrorMessage(LogInterface::reader, tr("Le format (%1) du fichier %2 ne correspond pas au format (%3) du fichier lu lors de la configuration").arg(header->m_pointDataRecordFormat)
                                 .arg(filepath())
-                                .arg(m_header->m_pointDataRecordFormat));
+                                .arg(m_headerFromConfiguration->m_pointDataRecordFormat));
+        delete header;
         return false;
     }
-
-    delete m_header;
-    m_header = header;
 
     size_t nPoints = header->getPointsRecordCount();
 
     if(nPoints == 0) {
         PS_LOG->addWarningMessage(LogInterface::reader, tr("Aucun points contenu dans le fichier %1").arg(filepath()));
+        delete header;
         return true;
     }
 
@@ -502,6 +509,8 @@ bool CT_Reader_LAS::protectedReadFile()
     }
 
     f.close();
+
+    delete header;
 
     return ok;
 }

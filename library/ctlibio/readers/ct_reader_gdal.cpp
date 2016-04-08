@@ -11,15 +11,41 @@
 #include "ct_itemdrawable/ct_polyline2d.h"
 #include "ct_tools/ct_gdaltools.h"
 
-CT_Reader_GDAL::CT_Reader_GDAL()
+CT_Reader_GDAL::CT_Reader_GDAL() : CT_AbstractReader()
 {
+}
+
+CT_Reader_GDAL::CT_Reader_GDAL(const CT_Reader_GDAL &other) : CT_AbstractReader(other)
+{
+#ifdef USE_GDAL
+    m_driver = other.m_driver;
+
+    const QList<CT_OutStdGroupModel*> &layersModel = outGroupsModel();
+    QListIterator<CT_OutStdGroupModel*> itL(layersModel);
+
+    QHashIterator<QString, CT_OutStdSingularItemModel*> it(other.m_models);
+
+    while(it.hasNext()) {
+        it.next();
+
+        CT_OutStdSingularItemModel *model = NULL;
+
+        itL.toFront();
+
+        while(itL.hasNext() && (model == NULL))
+            model = (CT_OutStdSingularItemModel*)itL.next()->findModelInTree(it.key());
+
+        Q_ASSERT(model != NULL);
+
+        m_models.insert(it.key(), model);
+    }
+#endif
 }
 
 #ifdef USE_GDAL
 CT_Reader_GDAL::CT_Reader_GDAL(const GDALDriver *driver)
 {
     m_driver = (GDALDriver*)driver;
-
 }
 #endif
 

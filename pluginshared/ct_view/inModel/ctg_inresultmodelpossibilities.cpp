@@ -66,6 +66,9 @@ void CTG_InResultModelPossibilities::setInResultModelManager(const CT_InResultMo
     constructModel();
 
     ui->treeView->expandAll();
+
+    setMinimumWidth(ui->treeView->header()->length());
+    setMaximumWidth(ui->treeView->header()->length());
 }
 
 void CTG_InResultModelPossibilities::setInTurnManager(const CTG_InTurnManager *manager)

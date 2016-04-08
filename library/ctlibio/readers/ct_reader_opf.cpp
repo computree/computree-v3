@@ -24,6 +24,42 @@ CT_Reader_OPF::CT_Reader_OPF() : CT_AbstractReader()
 {
 }
 
+CT_Reader_OPF::CT_Reader_OPF(const CT_Reader_OPF &other) : CT_AbstractReader(other)
+{
+    m_typesNew = other.m_typesNew;
+    m_attributesNew = other.m_attributesNew;
+    m_totalNodeNew = other.m_totalNodeNew;
+
+    m_types = other.m_types;
+    m_attributes = other.m_attributes;
+    m_totalNode = other.m_totalNode;
+
+    const QList<CT_OutStdGroupModel*> &topology = outGroupsModel();
+
+    CT_OutStdGroupModel *topologyModel = NULL;
+
+    if(!topology.isEmpty())
+        topologyModel = topology.first();
+
+    if(topologyModel != NULL) {
+        QHashIterator<QString, CT_OutAbstractModel*> it(other.m_models);
+
+        while(it.hasNext()) {
+            it.next();
+
+            if(it.key() == topologyModel->uniqueName())
+                m_models.insert(it.key(), topologyModel);
+            else {
+                CT_OutAbstractModel *model = (CT_OutAbstractModel*)topologyModel->findModelInTree(it.key());
+
+                Q_ASSERT(model != NULL);
+
+                m_models.insert(it.key(), model);
+            }
+        }
+    }
+}
+
 CT_Reader_OPF::~CT_Reader_OPF()
 {
     clearDrawManagers();
@@ -31,7 +67,6 @@ CT_Reader_OPF::~CT_Reader_OPF()
     clearMeshes();
     clearShapes();
 }
-
 
 QString CT_Reader_OPF::GetReaderName() const
 {
@@ -268,8 +303,8 @@ CT_AbstractItemAttribute* CT_Reader_OPF::staticCreateAttributeForType(const QStr
 
 void CT_Reader_OPF::clearOtherModels()
 {
-    qDeleteAll(m_attributesOriginalModels.begin(), m_attributesOriginalModels.end());
-    m_attributesOriginalModels.clear();
+    /*qDeleteAll(m_attributesOriginalModels.begin(), m_attributesOriginalModels.end());
+    m_attributesOriginalModels.clear();*/
 
     m_models.clear();
 }
@@ -587,6 +622,7 @@ void CT_Reader_OPF::protectedInit()
 void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
 {
     clearOtherModels();
+    QHash<QString, CT_OutAbstractItemAttributeModel*>   attributesOriginalModels;
 
     CT_AbstractReader::protectedCreateOutItemDrawableModelList();
 
@@ -628,13 +664,13 @@ void CT_Reader_OPF::protectedCreateOutItemDrawableModelList()
 
             if(att != NULL)
             {
-                CT_OutAbstractItemAttributeModel *oAttModel = m_attributesOriginalModels.value(attribute.m_name, NULL);
+                CT_OutAbstractItemAttributeModel *oAttModel = attributesOriginalModels.value(attribute.m_name, NULL);
 
                 if(oAttModel == NULL)
                 {
                     // Attribute
                     oAttModel = new CT_OutStdItemAttributeModel(attribute.m_name, att, attribute.m_name);
-                    m_attributesOriginalModels.insert(oAttModel->uniqueName(), oAttModel);
+                    attributesOriginalModels.insert(oAttModel->uniqueName(), oAttModel);
                 }
 
                 oAttModel = (CT_OutAbstractItemAttributeModel*)oAttModel->copy();

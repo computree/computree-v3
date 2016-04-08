@@ -36,7 +36,7 @@ CT_MenuLevel *CT_StepsMenu::levelFromOperation(CT_StepsMenu::LevelOperationType 
     if(operation == LO_InternalUse)
         return NULL;
 
-    return m_rootLevels.value(operation, NULL);;
+    return m_rootLevels.value(operation, NULL);
 }
 
 QList<CT_MenuLevel *> CT_StepsMenu::levels() const

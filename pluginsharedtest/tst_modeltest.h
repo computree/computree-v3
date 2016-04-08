@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testCaseTreeSearchOne();
     void testCaseTreeSearchVeryComplex();
     void testCaseTreeSearchSimple1Optional();
+    void testCaseTreeSearchSimple2Optional();
     void testCaseTreeSearchComplexOptional();
     //void cleanupTestCase();
 };

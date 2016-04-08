@@ -65,12 +65,6 @@ public:
      */
     virtual bool isAtLeastOnePossibilitySelectedIfItDoes() const;
 
-    /**
-     * @brief Returns true if we can select possibilities of this model by default. If the user must choose among possibilities the
-     *        method return false.
-     */
-    virtual bool canSelectPossibilitiesByDefault() const;
-
     // OVERLOADED FROM CT_AbstractItemModel //
     virtual bool canSetUniqueName(QString modelName) const { Q_UNUSED(modelName) return false; }
 

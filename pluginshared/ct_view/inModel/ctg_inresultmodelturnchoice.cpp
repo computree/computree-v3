@@ -6,6 +6,7 @@
 #include "ct_virtualabstractstep.h"
 
 #include "ct_result/model/inModel/tools/ct_instdresultmodelpossibility.h"
+#include "ct_model/tools/ct_modelselectionhelper.h"
 
 #include <QDragEnterEvent>
 #include <QMenu>
@@ -330,18 +331,22 @@ void CTG_InResultModelTurnChoice::enableResultPossibility(const QString &mimeDat
 
         if(m_possibilityToSelect != NULL)
         {
-            // on coche la possibilité
-            m_possibilityToSelect->setSelected(true);
+            if(!m_possibilityToSelect->isSelected()) {
+                // on coche la possibilité
+                m_possibilityToSelect->setSelected(true);
 
-            // on coche par défaut cette possibilité si c'est possible ainsi que ses enfants
-            if(model->canSelectPossibilitiesByDefault(QList<int>() << possibilityIndex, true))
-                model->selectPossibilitiesByDefault(QList<int>() << possibilityIndex, true);
+                CT_ModelSelectionHelper selectionHelper(model);
+                //selectionHelper.debugPrintGraphs();
+
+                if(selectionHelper.canSelectOneGraphForPossibilityOfRootModel(m_possibilityToSelect))
+                    selectionHelper.selectOneGraphForPossibilityOfRootModel(m_possibilityToSelect);
+            }
         }
     }
 
-    // on reconstruit le modèle
     m_itemToSelect = NULL;
 
+    // on reconstruit le modèle
     constructModel();
 }
 

@@ -7,6 +7,7 @@ CT_InResultModelNotNeedInputResult::CT_InResultModelNotNeedInputResult() : CT_In
                                                                                                     "",
                                                                                                     false)
 {
+    setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
 }
 
 QString CT_InResultModelNotNeedInputResult::modelTypeDisplayable() const

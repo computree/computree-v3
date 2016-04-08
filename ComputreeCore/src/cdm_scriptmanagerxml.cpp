@@ -147,7 +147,7 @@ QString CDM_ScriptManagerXML::loadScript(const QString &filePath,
                 QFileInfo info = QFileInfo(filePath);
                 QString fileDirectory = info.absoluteDir().path() + "/" + info.completeBaseName();
 
-                error = recursiveLoadScript(root, NULL, fileDirectory, &stepManager, getPluginManager());
+                recursiveLoadScript(root, NULL, fileDirectory, &stepManager, getPluginManager());
             }
             else
             {
@@ -170,6 +170,11 @@ QString CDM_ScriptManagerXML::loadScript(const QString &filePath,
     else
     {
         error = QCoreApplication::translate("verifyScript", "Le chemin vers le fichier script est incorrect.");
+    }
+
+    if(!error.isEmpty() && (scriptLoadCallBack() != NULL)) {
+        CDM_ScriptProblem problem(*getPluginManager(), CDM_ScriptProblem::TOP_NoSolution, error, NULL, NULL, -1);
+        scriptLoadCallBack()->loadScriptError(problem);
     }
 
     return error;

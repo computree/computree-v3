@@ -387,7 +387,8 @@ SOURCES += \
     ct_view/tools/ct_configurablewidgettodialog.cpp \
     ct_view/elements/ctg_configurableelementsselector.cpp \
     ct_view/ct_multilineedit.cpp \
-    ct_view/tools/ct_textfileconfigurationdialog.cpp
+    ct_view/tools/ct_textfileconfigurationdialog.cpp \
+    ct_model/tools/ct_modelselectionhelper.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -872,7 +873,8 @@ HEADERS += interfaces.h \
     ct_view/tools/ct_configurablewidgettodialog.h \
     ct_tools/ct_stringtonumericconversiont.h \
     ct_view/elements/ctg_configurableelementsselector.h \
-    ct_view/ct_multilineedit.h
+    ct_view/ct_multilineedit.h \
+    ct_model/tools/ct_modelselectionhelper.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

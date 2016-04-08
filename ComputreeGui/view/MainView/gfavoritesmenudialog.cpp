@@ -151,6 +151,8 @@ void GFavoritesMenuDialog::displayContextMenu(QPoint p)
     } else {
         contextMenu->addAction(QIcon(":/Icones/Icones/add.png"), tr("Ajouter un sous-niveau"), this, SLOT(addSubLevel()));
         contextMenu->addAction(QIcon(":/Icones/Icones/delete.png"), tr("Supprimer"), this, SLOT(removeLevel()));
+        /*contextMenu->addSeparator();
+        contextMenu->addAction(tr("Renommer"), this, SLOT(renameLevel()));*/
     }
 
     contextMenu->exec(ui->treeWidget->viewport()->mapToGlobal(p));
@@ -185,29 +187,8 @@ void GFavoritesMenuDialog::addSubLevel()
 {
     QString text = QInputDialog::getText(this, tr("Ajouter un sous-niveau"), tr("Nom du sous-niveau"));
 
-    if(!text.isEmpty()) {
-
-        bool ok = true;
-
-        QTreeWidgetItem *selected = ui->treeWidget->currentItem();
-
-        QList<QTreeWidgetItem*> l = ui->treeWidget->findItems(text, Qt::MatchFixedString|Qt::MatchRecursive);
-        QListIterator<QTreeWidgetItem*> it(l);
-
-        while(it.hasNext() && ok) {
-            QTreeWidgetItem *item = it.next();
-            ok = item->isHidden() || (item->parent() != selected);
-        }
-
-        if(!ok)
-            QMessageBox::critical(this, tr("Erreur"), tr("Un niveau ayant ce nom existe déjà"));
-        else {
-            QTreeWidgetItem *child = new QTreeWidgetItem(QStringList() << text << "0");
-            selected->addChild(child);
-            ui->treeWidget->expandItem(selected);
-            ui->treeWidget->setCurrentItem(child);
-        }
-    }
+    if(!text.isEmpty())
+        addSubLevel(text);
 }
 
 void GFavoritesMenuDialog::removeLevel()
@@ -218,6 +199,19 @@ void GFavoritesMenuDialog::removeLevel()
         selected->setHidden(true);
         on_treeWidget_currentItemChanged(NULL, selected);
     }
+}
+
+void GFavoritesMenuDialog::renameLevel()
+{
+    /*QTreeWidgetItem *selected = ui->treeWidget->currentItem();
+
+    QString name = selected->text(0);
+
+    bool ok;
+    QString newName = QInputDialog::getText(this, tr("Renommer"), tr("Nom"), QLineEdit::Normal, name, &ok);
+
+    if(ok && newName != name) {
+    }*/
 }
 
 void GFavoritesMenuDialog::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
@@ -258,4 +252,44 @@ void GFavoritesMenuDialog::on_pushButtonAddSubLevel_clicked()
 void GFavoritesMenuDialog::on_pushButtonRemoveLevel_clicked()
 {
     removeLevel();
+}
+
+bool GFavoritesMenuDialog::addSubLevel(const QString &name)
+{
+    bool ok = true;
+
+    QTreeWidgetItem *selected = ui->treeWidget->currentItem();
+
+    QList<QTreeWidgetItem*> l = ui->treeWidget->findItems(name, Qt::MatchFixedString|Qt::MatchRecursive);
+    QListIterator<QTreeWidgetItem*> it(l);
+
+    while(it.hasNext() && ok) {
+        QTreeWidgetItem *item = it.next();
+        ok = item->isHidden() || (item->parent() != selected);
+    }
+
+    if(!ok)
+        QMessageBox::critical(this, tr("Erreur"), tr("Un niveau ayant ce nom existe déjà"));
+    else {
+        QTreeWidgetItem *child = new QTreeWidgetItem(QStringList() << name << "0");
+        selected->addChild(child);
+        ui->treeWidget->expandItem(selected);
+        ui->treeWidget->setCurrentItem(child);
+    }
+
+    return ok;
+}
+
+bool GFavoritesMenuDialog::removeLevel(const QString &name)
+{
+    QList<QTreeWidgetItem*> l = ui->treeWidget->findItems(name, Qt::MatchFixedString|Qt::MatchRecursive);
+
+    if(l.isEmpty())
+        return false;
+
+    QTreeWidgetItem *item = l.first();
+
+    item->setHidden(true);
+
+    return true;
 }

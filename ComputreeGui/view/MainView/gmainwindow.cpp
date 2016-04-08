@@ -179,7 +179,7 @@ void GMainWindow::saveScript()
 
 void GMainWindow::saveScript(QString &saveDirectory)
 {
-    QString s = QFileDialog::getSaveFileName(this, tr("Sauvegarder l'arbre des tapes sous..."), saveDirectory, createScriptManagerExtension(tr("Script File (*"), ");;"));
+    QString s = QFileDialog::getSaveFileName(this, tr("Sauvegarder l'arbre des étapes sous..."), saveDirectory, createScriptManagerExtension(tr("Script File ("), ");;"));
 
     if(!s.isEmpty())
     {

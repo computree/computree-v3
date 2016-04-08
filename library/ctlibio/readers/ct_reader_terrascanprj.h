@@ -13,6 +13,7 @@ class CTLIBIO_EXPORT CT_Reader_TerraScanPrj : public CT_AbstractReader
 
 public:
     CT_Reader_TerraScanPrj();
+    CT_Reader_TerraScanPrj(const CT_Reader_TerraScanPrj &other);
 
     QString GetReaderName() const;
     CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;

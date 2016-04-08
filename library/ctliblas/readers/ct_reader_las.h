@@ -32,6 +32,7 @@ public:
     };
 
     CT_Reader_LAS();
+    CT_Reader_LAS(const CT_Reader_LAS &other);
     virtual ~CT_Reader_LAS();
 
     QString GetReaderName() const;
@@ -56,7 +57,7 @@ protected:
     CT_FileHeader* protectedReadHeader(const QString &filepath, QString &error) const;
 
 private:
-    CT_LASHeader *m_header;
+    CT_LASHeader *m_headerFromConfiguration;
 };
 
 CT_TYPEINFO_MACRO(CT_Reader_LAS::PointCore0_5, CT_Reader_LAS::PointCore0_5)
