@@ -224,6 +224,11 @@ public:
        */
       void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
+      /**
+       * @brief Draw a combobox if it was multiple possibilities otherwise draw default
+       */
+      void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const;
+
 private slots:
       void comboBoxIndexChanged();
 };
@@ -327,12 +332,8 @@ private:
     static QStandardItem* staticToFirstColumn(QStandardItem *itemToConvert);
     static CTG_InModelCheckBox* staticToCheckBox(QStandardItem *itemToConvert);
     static CTG_InModelComboBox *staticToComboBox(QStandardItem *itemToConvert);
-
-    /*void recursiveSetCheckedParent(QStandardItem *parent, const bool &checked);
-    void recursiveSetCheckedParentWhileModelHasNoPossibilityChecked(QStandardItem *parent);
-    void recursiveSetCheckedChildren(QStandardItem *parent, const bool &checked);
-
-    void setCheckedParent(QStandardItem *parent, const bool &checked);*/
+    static bool staticIsRecursiveCurrentInModelNULL(CTG_InModelComboBox *parentToTest);
+    static bool staticIsRecursiveInModelAlreadyPresentOnCurrentInModel(CTG_InModelComboBox *parentToTest, const CT_InAbstractModel *inModelToSearch);
 
 private slots:
     /**

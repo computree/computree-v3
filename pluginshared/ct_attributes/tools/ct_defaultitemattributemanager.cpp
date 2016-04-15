@@ -6,26 +6,15 @@
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 #include "ct_abstractstepplugin.h"
 
+#include <QDebug>
+
 CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManager()
 {
 }
 
 CT_DefaultItemAttributeManager::~CT_DefaultItemAttributeManager()
 {
-    QHashIterator<QString, QList<CT_DefaultItemAttributeManagerContainer*>* > it(m_collection);
-
-    while(it.hasNext())
-    {
-        it.next();
-
-        QList<CT_DefaultItemAttributeManagerContainer*> *l = it.value();
-
-        foreach (CT_DefaultItemAttributeManagerContainer *c, (*l)) {
-            delete c;
-        }
-
-        delete l;
-    }
+    qDeleteAll(m_collection.begin(), m_collection.end());
 }
 
 QList<CT_AbstractItemAttribute *> CT_DefaultItemAttributeManager::itemAttributes(const QString &itemType) const
@@ -41,13 +30,14 @@ QList<CT_AbstractItemAttribute *> CT_DefaultItemAttributeManager::itemAttributes
         {
             ok = true;
 
-            QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(t);
+            CT_DefaultItemAttributeManagerContainerList *container = m_collection.value(t, NULL);
 
             if(container != NULL)
             {
-                foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
-                    l.append(c->m_model->itemAttribute());
-                }
+                QListIterator<CT_DefaultItemAttributeManagerContainer*> itC(container->list());
+
+                while(itC.hasNext())
+                    l.append(itC.next()->m_model->itemAttribute());
             }
         }
     }
@@ -59,13 +49,16 @@ CT_AbstractItemAttribute *CT_DefaultItemAttributeManager::itemAttributeFromUniqu
 {
     QStringList types = itemType.split("/");
 
-    QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(types.last());
+    CT_DefaultItemAttributeManagerContainerList *container = m_collection.value(types.last());
 
     if(container != NULL)
     {
-        foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
-            if(c->m_userKey == uniqueKey)
-                return c->m_model->itemAttribute();
+        QListIterator<CT_DefaultItemAttributeManagerContainer*> itC(container->list());
+
+        while(itC.hasNext()) {
+            CT_DefaultItemAttributeManagerContainer *cc = itC.next();
+            if(cc->m_userKey == uniqueKey)
+                return cc->m_model->itemAttribute();
         }
     }
 
@@ -89,13 +82,16 @@ CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::itemAttributeFromModel
         {
             ok = true;
 
-            QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(t);
+            CT_DefaultItemAttributeManagerContainerList *container = m_collection.value(t);
 
             if(container != NULL)
             {
-                foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
-                    if(c->m_model == orModel)
-                        return c->m_model->itemAttribute();
+                QListIterator<CT_DefaultItemAttributeManagerContainer*> itC(container->list());
+
+                while(itC.hasNext()) {
+                    CT_DefaultItemAttributeManagerContainer *cc = itC.next();
+                    if(cc->m_model == orModel)
+                        return cc->m_model->itemAttribute();
                 }
             }
         }
@@ -124,13 +120,16 @@ QList<CT_AbstractItemAttribute*> CT_DefaultItemAttributeManager::itemAttributesF
             {
                 ok = true;
 
-                QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(t);
+                CT_DefaultItemAttributeManagerContainerList *container = m_collection.value(t);
 
                 if(container != NULL)
                 {
-                    foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
-                        if(c->m_model == orModel)
-                            l.insert(c->m_model->itemAttribute());
+                    QListIterator<CT_DefaultItemAttributeManagerContainer*> itC(container->list());
+
+                    while(itC.hasNext()) {
+                        CT_DefaultItemAttributeManagerContainer *cc = itC.next();
+                        if(cc->m_model == orModel)
+                            l.insert(cc->m_model->itemAttribute());
                     }
                 }
             }
@@ -158,13 +157,16 @@ CT_AbstractItemAttribute* CT_DefaultItemAttributeManager::firstItemAttributeFrom
             {
                 ok = true;
 
-                QList<CT_DefaultItemAttributeManagerContainer*> *container = m_collection.value(t);
+                CT_DefaultItemAttributeManagerContainerList *container = m_collection.value(t);
 
                 if(container != NULL)
                 {
-                    foreach (CT_DefaultItemAttributeManagerContainer *c, (*container)) {
-                        if(c->m_model == orModel)
-                            return c->m_model->itemAttribute();
+                    QListIterator<CT_DefaultItemAttributeManagerContainer*> itC(container->list());
+
+                    while(itC.hasNext()) {
+                        CT_DefaultItemAttributeManagerContainer *cc = itC.next();
+                        if(cc->m_model == orModel)
+                            return cc->m_model->itemAttribute();
                     }
                 }
             }
@@ -185,15 +187,39 @@ void CT_DefaultItemAttributeManager::clearDefaultAttributesFromPlugin(CT_Abstrac
         foreach (QString type, types) {
 
             if(!type.startsWith("CT_") && (type != "ItemDrawable")) {
-                QList<CT_DefaultItemAttributeManagerContainer*> *l = m_collection.take(type);
-
-                if(l != NULL) {
-                    foreach (CT_DefaultItemAttributeManagerContainer *c, (*l))
-                        delete c;
-
-                    delete l;
-                }
+                delete m_collection.take(type);
             }
         }
     }
+}
+
+CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainerList::CT_DefaultItemAttributeManagerContainerList()
+{
+}
+
+CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainerList::~CT_DefaultItemAttributeManagerContainerList()
+{
+    qDeleteAll(m_list.begin(), m_list.end());
+}
+
+void CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainerList::add(const QString &className, CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainer *c)
+{
+    Q_UNUSED(className)
+
+    m_list.append(c);
+}
+
+const QList<CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainer *> &CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainerList::list() const
+{
+    return m_list;
+}
+
+CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainer::CT_DefaultItemAttributeManagerContainer()
+{
+    m_model = NULL;
+}
+
+CT_DefaultItemAttributeManager::CT_DefaultItemAttributeManagerContainer::~CT_DefaultItemAttributeManagerContainer()
+{
+    delete m_model;
 }

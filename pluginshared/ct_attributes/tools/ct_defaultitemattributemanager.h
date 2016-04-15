@@ -8,7 +8,7 @@
 #include "ct_global/ct_context.h"
 #include "ct_categories/tools/ct_categorymanager.h"
 
-#include <QMultiHash>
+#include <QHash>
 
 /**
  * @brief Call CT_DEFAULT_IA_BEGIN in the private section of your singular item class BEFORE the use of method "CT_DEFAULT_IA_Vxxx"
@@ -32,9 +32,9 @@
  *            CT_USE_DEFAULT_IA(CT_MetricT<T>)
  *            CT_DEFAULT_IA_V2(CT_MetricT<T>, CT_AbstractCategory::staticInitDataValue(), &CT_MetricT<T>::getValue, QObject::tr("Value"))
  *
- *            hpp file:
+ *            cpp file:
  *
- *            template<typename T> CT_DEFAULT_IA_INIT(CT_MetricT<T>)
+ *            template<> CT_DEFAULT_IA_INIT(CT_MetricT<double>)
  */
 #define CT_DEFAULT_IA_BEGIN(ClassNameSI) \
     friend class CT_StaticInitDefaultIAInvoker< ClassNameSI >; \
@@ -76,8 +76,11 @@
     PS_DIAM->addItemAttribute(ClassNameSI::staticGetType(), CategoryUniqueName, GetterMethod_OR_Value, DisplayableName, UniqueKey);
 
 /**
- * @brief Call CT_DEFAULT_IA_INIT in the top of your source file (.cpp or .hpp) and pass the name of your singular item class
- *        between parenthesys
+ * @brief Call CT_DEFAULT_IA_INIT in the top of your source file (.cpp) and pass the name of your singular item class
+ *        between parenthesys. In case of your class is templated call it in the .CPP file (not in .h file !!) like this :
+ *
+ *          template<>
+ *          CT_DEFAULT_IA_INIT(MyClass<MySpecialization>)
  *
  * @example : CT_DEFAULT_IA_INIT(CT_Cylinder)
  */
@@ -143,11 +146,11 @@ public:
         if(classNameSplit.size() > 1)
             useClassName = classNameSplit.last();
 
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(useClassName);
+        CT_DefaultItemAttributeManagerContainerList *newL = m_collection.value(useClassName);
 
         if(newL == NULL)
         {
-            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
+            newL = new CT_DefaultItemAttributeManagerContainerList();
             m_collection.insert(useClassName, newL);
         }
 
@@ -155,7 +158,7 @@ public:
         c->m_model = model;
         c->m_userKey = uniqueKey;
 
-        newL->append(c);
+        newL->add(className, c);
 
         m_numberOfAttributesCreatedByClass.insert(className, nCreated + 1);
 
@@ -199,11 +202,11 @@ public:
             useClassName = classNameSplit.last();
 
         // add element to the collection
-        QList<CT_DefaultItemAttributeManagerContainer*> *newL = m_collection.value(useClassName);
+        CT_DefaultItemAttributeManagerContainerList *newL = m_collection.value(useClassName);
 
         if(newL == NULL)
         {
-            newL = new QList<CT_DefaultItemAttributeManagerContainer*>();
+            newL = new CT_DefaultItemAttributeManagerContainerList();
             m_collection.insert(useClassName, newL);
         }
 
@@ -211,10 +214,9 @@ public:
         c->m_model = model;
         c->m_userKey = uniqueKey;
 
-        newL->append(c);
+        newL->add(className, c);
 
         m_numberOfAttributesCreatedByClass.insert(className, nCreated + 1);
-
         return true;
     }
 
@@ -251,29 +253,35 @@ public:
     CT_AbstractItemAttribute* firstItemAttributeFromModel(const CT_InAbstractItemAttributeModel *inModel, const QString &itemType) const;
 
 private:
-    class CT_DefaultItemAttributeManagerContainer
+    class PLUGINSHAREDSHARED_EXPORT CT_DefaultItemAttributeManagerContainer
     {
     public:
 
-        CT_DefaultItemAttributeManagerContainer()
-        {
-            m_model = NULL;
-        }
-
-        ~CT_DefaultItemAttributeManagerContainer()
-        {
-            delete m_model;
-        }
+        CT_DefaultItemAttributeManagerContainer();
+        ~CT_DefaultItemAttributeManagerContainer();
 
         CT_OutAbstractItemAttributeModel    *m_model;
         QString                             m_userKey;
     };
 
+    class PLUGINSHAREDSHARED_EXPORT CT_DefaultItemAttributeManagerContainerList
+    {
+    public:
+        CT_DefaultItemAttributeManagerContainerList();
+        ~CT_DefaultItemAttributeManagerContainerList();
+
+        void add(const QString &className, CT_DefaultItemAttributeManagerContainer *c);
+        const QList<CT_DefaultItemAttributeManagerContainer*>& list() const;
+
+    private:
+        QList<CT_DefaultItemAttributeManagerContainer*> m_list;
+    };
+
     /**
-     * @brief A QMultiHash with a QString for key (name of the class of the item) and
+     * @brief A QHash with a QString for key (name of the class of the item) and
      *        a CT_DefaultItemAttributeManagerContainer for value.
      */
-    QHash<QString, QList<CT_DefaultItemAttributeManagerContainer*>* >    m_collection;
+    QHash<QString, CT_DefaultItemAttributeManagerContainerList* >    m_collection;
 
     /**
      * @brief Save the number of created attributes by class

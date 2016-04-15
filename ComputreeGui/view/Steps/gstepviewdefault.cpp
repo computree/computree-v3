@@ -218,12 +218,13 @@ bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelInde
 
                     CT_VirtualAbstractStep *step = ((CT_VirtualAbstractStep*)item->data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>());
 
-                    if((step->getStepName() == anyName)
+                    if((step != NULL)
+                            && ((step->getStepName() == anyName)
                             || (step->getPlugin()->getKeyForStep(*step) == anyName)
                             || (step->getStepCustomName() == anyName)
                             || (step->getStepExtendedName() == anyName)
                             || (step->getStepDisplayableName() == anyName)
-                            || (step->getStepDescription() == anyName)) {
+                            || (step->getStepDescription() == anyName))) {
 
                         ui->treeView->expand(index.parent());
                         ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);

@@ -44,6 +44,7 @@ bool CTG_InModelCheckBox::addInModel(const CT_InAbstractModel *model)
         CT_InStdModelPossibility *p = staticSearchPossibilityForModel(model, _outModel);
 
         if(p != NULL) {
+            //qDebug() << "add " << model->displayableName() << " to out " << _outModel->displayableName();
             connect(p, SIGNAL(selectStateChange(bool)), this, SLOT(setChecked(bool)), Qt::DirectConnection);
             insertModel(model, p);
         }
@@ -291,7 +292,7 @@ void CTG_InModelComboBox::setCurrentInModel(CT_InAbstractModel *model)
 void CTG_InModelComboBox::updateDisplayData()
 {
     if(_inModelSelected != NULL)
-        setData(_inModelSelected->displayableName() + (isEditable() ? "*" : ""), Qt::DisplayRole);
+        setData(_inModelSelected->displayableName(), Qt::DisplayRole);
     else
         setData("", Qt::DisplayRole);
 }
@@ -379,6 +380,28 @@ void CTG_InModelPossibilitiesChoiceComboBoxDelegate::updateEditorGeometry(QWidge
     editor->setGeometry(option.rect);
 }
 
+void CTG_InModelPossibilitiesChoiceComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    const QStandardItemModel* model = (const QStandardItemModel*)index.model();
+
+    CTG_InModelComboBox *comboBoxItem = dynamic_cast<CTG_InModelComboBox*>(model->itemFromIndex(index));
+
+    if((comboBoxItem != NULL) && (comboBoxItem->isEditable())) {
+        QStyleOptionComboBox box;
+        box.palette = option.palette;
+        box.rect = option.rect;
+        box.state = QStyle::State_Active;
+        box.currentText = index.data().toString();
+        painter->save();
+        QApplication::style()->drawComplexControl(QStyle::CC_ComboBox,&box, painter);
+        QApplication::style()->drawControl(QStyle::CE_ComboBoxLabel,&box, painter);
+        painter->restore();
+        return;
+    }
+
+    QItemDelegate::paint(painter, option, index);
+}
+
 void CTG_InModelPossibilitiesChoiceComboBoxDelegate::comboBoxIndexChanged()
 {
     emit commitData((QWidget*)sender());
@@ -395,6 +418,7 @@ CTG_InModelPossibilitiesChoice::CTG_InModelPossibilitiesChoice(QWidget *parent) 
     ui->treeView->setModel(&_viewModel);
     ui->treeView->setSelectionMode(QAbstractItemView::NoSelection);
     ui->treeView->setItemDelegateForColumn(COLUMN_COMBO, new CTG_InModelPossibilitiesChoiceComboBoxDelegate(ui->treeView));
+    ui->treeView->setEditTriggers(QAbstractItemView::AllEditTriggers);
 
     connect(&_viewModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(itemChanged(QStandardItem*)), Qt::DirectConnection);
 
@@ -640,14 +664,7 @@ void CTG_InModelPossibilitiesChoice::constructCheckBox()
             Q_ASSERT(checkableItem != NULL);
             Q_ASSERT(comboItem != NULL);
 
-            bool hasInModels = checkableItem->hasAtLeastOneInModel();
-
-            // must have models !
-            Q_ASSERT(hasInModels);
-
             CT_InAbstractModel *model = checkableItem->checkedOrFirstInModelActiveOrFirstDontChooseInModel();
-
-            Q_ASSERT(model != NULL);
 
             // set it the selected or first model
             comboItem->setCurrentInModel(model);
@@ -680,6 +697,11 @@ void CTG_InModelPossibilitiesChoice::recursiveSearchModelThatMatchWithItemAndSet
                                                                                    QStandardItem *parentOfItemToTest,
                                                                                    QStandardItem *itemToTest)
 {
+    /*qDebug() << inModel->displayableName() << " possibilities : ";
+    QList<CT_InStdModelPossibility*> pp = inModel->getPossibilitiesSaved();
+    foreach (CT_InStdModelPossibility *p, pp) {
+        qDebug() << p->outModel()->displayableName();
+    }*/
     // get the checkable item if exist in this row
     CTG_InModelCheckBox *checkableItem = staticToCheckBox(itemToTest);
 
@@ -738,7 +760,7 @@ void CTG_InModelPossibilitiesChoice::recursiveUpdateCheckBoxAndComboBox(QStandar
         while(it.hasNext()) {
             CT_InAbstractModel *model = it.next();
 
-            bool active = (parentSelectedModel == NULL) || (parentSelectedModel == model->parentModel());
+            bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem) || (parentSelectedModel == model->parentModel());
 
             // set the model "active" (displayed and selectable by the user) only if it has no selected parent model or if the parent model is its parent
             // otherwise we set it not active
@@ -849,6 +871,24 @@ CTG_InModelComboBox *CTG_InModelPossibilitiesChoice::staticToComboBox(QStandardI
     return static_cast<CTG_InModelComboBox*>(parent->child(itemToConvert->row(), COLUMN_COMBO));
 }
 
+bool CTG_InModelPossibilitiesChoice::staticIsRecursiveCurrentInModelNULL(CTG_InModelComboBox *parentToTest)
+{
+    if(parentToTest == NULL)
+        return true;
+
+    if(parentToTest != NULL) {
+        if(parentToTest->currentInModel() != NULL)
+            return false;
+    }
+
+    QStandardItem *first = staticToFirstColumn(parentToTest);
+
+    if((first->parent() != NULL) && (first->parent() != parentToTest->model()->invisibleRootItem()))
+        return staticIsRecursiveCurrentInModelNULL(staticToComboBox(first->parent()));
+
+    return true;
+}
+
 void CTG_InModelPossibilitiesChoice::itemChanged(QStandardItem *item)
 {
     if(_itemChangedSlotIsEnabled)
@@ -869,7 +909,7 @@ void CTG_InModelPossibilitiesChoice::itemChanged(QStandardItem *item)
                 // if we check it
                 if(checked)
                 {
-                    // we check is parent too
+                    // we check as its parent
                     checkableItem = staticToCheckBox(item->parent());
 
                     if(checkableItem != NULL)
