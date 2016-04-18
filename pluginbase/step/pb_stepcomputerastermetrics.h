@@ -23,6 +23,8 @@ public:
     PB_StepComputeRasterMetrics(CT_StepInitializeData &dataInit);
     ~PB_StepComputeRasterMetrics();
 
+    void init();
+
     /*! \brief Step description
      * 
      * Return a description of the step function

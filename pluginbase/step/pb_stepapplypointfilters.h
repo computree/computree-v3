@@ -25,6 +25,8 @@ public:
     PB_StepApplyPointFilters(CT_StepInitializeData &dataInit);
     ~PB_StepApplyPointFilters();
 
+    void init();
+
     /*! \brief Step description
      * 
      * Return a description of the step function

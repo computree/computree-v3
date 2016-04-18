@@ -29,6 +29,19 @@
 // Constructor : initialization of parameters
 PB_StepComputeRasterMetrics::PB_StepComputeRasterMetrics(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
+}
+
+PB_StepComputeRasterMetrics::~PB_StepComputeRasterMetrics()
+{
+    qDeleteAll(_selectedMetrics);
+    _selectedMetrics.clear();
+}
+
+void PB_StepComputeRasterMetrics::init()
+{
+    CT_AbstractStep::init();
+
+    _availableMetrics.clear();
 
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
 
@@ -44,21 +57,12 @@ PB_StepComputeRasterMetrics::PB_StepComputeRasterMetrics(CT_StepInitializeData &
         {
             CT_AbstractMetric* metric = it.next();
 
-            CT_AbstractMetric_Raster* rasterMetric = dynamic_cast<CT_AbstractMetric_Raster*>(metric);
+            CT_AbstractMetric_Raster* pointMetric = dynamic_cast<CT_AbstractMetric_Raster*>(metric);
 
-            if (rasterMetric != NULL)
-            {
-                _availableMetrics.append(rasterMetric);
-            }
+            if (pointMetric != NULL)
+                _availableMetrics.append(pointMetric);
         }
     }
-
-}
-
-PB_StepComputeRasterMetrics::~PB_StepComputeRasterMetrics()
-{
-    qDeleteAll(_selectedMetrics);
-    _selectedMetrics.clear();
 }
 
 // Step description (tooltip of contextual menu)
@@ -70,6 +74,22 @@ QString PB_StepComputeRasterMetrics::getStepDescription() const
 // Step detailled description
 QString PB_StepComputeRasterMetrics::getStepDetailledDescription() const
 {
+    QString ret;
+
+    QListIterator<CT_AbstractConfigurableElement*> it(_availableMetrics);
+
+    while(it.hasNext()) {
+        CT_AbstractConfigurableElement *ce = it.next();
+
+        ret += tr("<b>%1</b><br/><br/><i>%2</i>").arg(ce->getShortDisplayableName()).arg(ce->getShortDescription());
+
+        if(it.hasNext())
+            ret += "<br/><br/>";
+    }
+
+    if(!ret.isEmpty())
+        return ret;
+
     return tr("No detailled description for this step");
 }
 

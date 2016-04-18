@@ -23,6 +23,8 @@ public:
     PB_StepComputePointMetrics(CT_StepInitializeData &dataInit);
     ~PB_StepComputePointMetrics();
 
+    void init();
+
     /*! \brief Step description
      * 
      * Return a description of the step function

@@ -29,7 +29,7 @@ void CT_CloudMetrics::setMetricConfiguration(const CT_CloudMetrics::Config &conf
 
 QString CT_CloudMetrics::getShortDescription() const
 {
-    return tr("Calcul des indicateurs statistiques standard (FUSION)");
+    return tr("Calcul des indicateurs statistiques standards (FUSION)");
 }
 
 void CT_CloudMetrics::computeMetric()

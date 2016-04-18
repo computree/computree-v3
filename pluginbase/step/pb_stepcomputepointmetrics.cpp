@@ -34,6 +34,19 @@
 PB_StepComputePointMetrics::PB_StepComputePointMetrics(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     _inSceneDisplayableName = "";
+}
+
+PB_StepComputePointMetrics::~PB_StepComputePointMetrics()
+{
+    qDeleteAll(_selectedMetrics);
+    _selectedMetrics.clear();
+}
+
+void PB_StepComputePointMetrics::init()
+{
+    CT_AbstractStep::init();
+
+    _availableMetrics.clear();
 
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
 
@@ -57,12 +70,6 @@ PB_StepComputePointMetrics::PB_StepComputePointMetrics(CT_StepInitializeData &da
     }
 }
 
-PB_StepComputePointMetrics::~PB_StepComputePointMetrics()
-{
-    qDeleteAll(_selectedMetrics);
-    _selectedMetrics.clear();
-}
-
 // Step description (tooltip of contextual menu)
 QString PB_StepComputePointMetrics::getStepDescription() const
 {
@@ -72,6 +79,22 @@ QString PB_StepComputePointMetrics::getStepDescription() const
 // Step detailled description
 QString PB_StepComputePointMetrics::getStepDetailledDescription() const
 {
+    QString ret;
+
+    QListIterator<CT_AbstractConfigurableElement*> it(_availableMetrics);
+
+    while(it.hasNext()) {
+        CT_AbstractConfigurableElement *ce = it.next();
+
+        ret += tr("<b>%1</b><br/><br/><i>%2</i>").arg(ce->getShortDisplayableName()).arg(ce->getShortDescription());
+
+        if(it.hasNext())
+            ret += "<br/><br/>";
+    }
+
+    if(!ret.isEmpty())
+        return ret;
+
     return tr("No detailled description for this step");
 }
 

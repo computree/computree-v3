@@ -415,6 +415,11 @@ void GStepViewDefault::on_lineEditSearch_textChanged(const QString &text)
     else
         m_proxy->setFilterRegExp(regFromString);
 
+    if(!text.isEmpty())
+        ui->treeView->expandAll();
+    else
+        ui->treeView->collapseAll();
+
     m_proxy->invalidate();
 }
 

@@ -26,6 +26,22 @@
 // Constructor : initialization of parameters
 PB_StepApplyPointFilters::PB_StepApplyPointFilters(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
+}
+
+PB_StepApplyPointFilters::~PB_StepApplyPointFilters()
+{
+    qDeleteAll(_modelNames.values());
+    _modelNames.clear();
+
+    qDeleteAll(_selectedFilters);
+    _selectedFilters.clear();
+}
+
+void PB_StepApplyPointFilters::init()
+{
+    CT_AbstractStep::init();
+
+    _availableFilters.clear();
 
     PluginManagerInterface *pm = PS_CONTEXT->pluginManager();
 
@@ -51,15 +67,6 @@ PB_StepApplyPointFilters::PB_StepApplyPointFilters(CT_StepInitializeData &dataIn
     }
 }
 
-PB_StepApplyPointFilters::~PB_StepApplyPointFilters()
-{
-    qDeleteAll(_modelNames.values());
-    _modelNames.clear();
-
-    qDeleteAll(_selectedFilters);
-    _selectedFilters.clear();
-}
-
 // Step description (tooltip of contextual menu)
 QString PB_StepApplyPointFilters::getStepDescription() const
 {
@@ -69,6 +76,22 @@ QString PB_StepApplyPointFilters::getStepDescription() const
 // Step detailled description
 QString PB_StepApplyPointFilters::getStepDetailledDescription() const
 {
+    QString ret;
+
+    QListIterator<CT_AbstractConfigurableElement*> it(_availableFilters);
+
+    while(it.hasNext()) {
+        CT_AbstractConfigurableElement *ce = it.next();
+
+        ret += tr("<b>%1</b><br/><br/><i>%2</i>").arg(ce->getShortDisplayableName()).arg(ce->getShortDescription());
+
+        if(it.hasNext())
+            ret += "<br/><br/>";
+    }
+
+    if(!ret.isEmpty())
+        return ret;
+
     return tr("No detailled description for this step");
 }
 
