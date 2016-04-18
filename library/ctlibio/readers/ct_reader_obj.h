@@ -72,7 +72,7 @@ protected:
 
     bool checkIsAFace(const QString &buf) const;
     bool checkHasInfoOfFace(const QString &buf) const;
-    bool loadFace(const QString &buf, const size_t &beginVertexIndex, CT_Mesh *mesh, CT_MutableFaceIterator &itFaces) const;
+    bool loadFace(const QString &buf, const size_t &beginVertexIndex, CT_Mesh *mesh, CT_MutableFaceIterator &itFaces, CT_MutableEdgeIterator &itEdges) const;
 
     CT_Edge *findHEdgeTwin(const CT_Mesh *mesh, const size_t &p0, const size_t &p1) const;
 

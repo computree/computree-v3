@@ -203,7 +203,7 @@ bool CT_Reader_OBJ::checkHasInfoOfFace(const QString &buf) const
     return((buf[1] == ' ') || (buf[1] == '\t'));
 }
 
-bool CT_Reader_OBJ::loadFace(const QString &buf, const size_t &beginVertexIndex, CT_Mesh *mesh, CT_MutableFaceIterator &itFaces) const
+bool CT_Reader_OBJ::loadFace(const QString &buf, const size_t &beginVertexIndex, CT_Mesh *mesh, CT_MutableFaceIterator &itFaces, CT_MutableEdgeIterator &itEdges) const
 {
     QStringList sl = buf.split(" ", QString::SkipEmptyParts);
 
@@ -218,8 +218,6 @@ bool CT_Reader_OBJ::loadFace(const QString &buf, const size_t &beginVertexIndex,
         CT_Face &face = itFaces.next().cT();
         size_t faceIndex = itFaces.cIndex();
 
-        CT_MutableEdgeIterator beginHe = CT_MeshAllocator::AddHEdges(mesh, 3);
-
         CT_Edge *twinE1 = NULL;
         CT_Edge *twinE2 = NULL;
         CT_Edge *twinE3 = NULL;
@@ -231,28 +229,28 @@ bool CT_Reader_OBJ::loadFace(const QString &buf, const size_t &beginVertexIndex,
             twinE3 = findHEdgeTwin(mesh, p2, p0);
         }
 
-        size_t e1Index = beginHe.next().cIndex();
+        size_t e1Index = itEdges.next().cIndex();
         size_t e2Index;
         size_t e3Index;
 
         face.setEdge(e1Index);
 
-        CT_Edge &e1 = beginHe.cT();
+        CT_Edge &e1 = itEdges.cT();
         e1.setPoint0(p0);
         e1.setPoint1(p1);
         e1.setFace(faceIndex);
 
-        CT_Edge &e2 = beginHe.next().cT();
+        CT_Edge &e2 = itEdges.next().cT();
         e2.setPoint0(p1);
         e2.setPoint1(p2);
         e2.setFace(faceIndex);
-        e2Index = beginHe.cIndex();
+        e2Index = itEdges.cIndex();
 
-        CT_Edge &e3 = beginHe.next().cT();
+        CT_Edge &e3 = itEdges.next().cT();
         e3.setPoint0(p2);
         e3.setPoint1(p0);
         e3.setFace(faceIndex);
-        e3Index = beginHe.cIndex();
+        e3Index = itEdges.cIndex();
 
         e1.setNext(e2Index);
         e1.setPrevious(e3Index);
@@ -342,6 +340,8 @@ CT_Mesh* CT_Reader_OBJ::loadFileAsMesh(QTextStream &stream, Eigen::Vector3d &bbo
         }
     }
 
+    PS_LOG->addInfoMessage(LogInterface::reader, tr("%1 vertex et %2 face(s) à charger pour le fichier %3").arg(nv).arg(nf).arg(filepath()));
+
     if(!isStopped()
             && (nv > 0)
             && (nf > 0))
@@ -350,11 +350,13 @@ CT_Mesh* CT_Reader_OBJ::loadFileAsMesh(QTextStream &stream, Eigen::Vector3d &bbo
 
         CT_MutablePointIterator beginV = CT_MeshAllocator::AddVertices(mesh, nv);
         CT_MutableFaceIterator beginF = CT_MeshAllocator::AddFaces(mesh, nf);
+        CT_MutableEdgeIterator beginH = CT_MeshAllocator::AddHEdges(mesh, nf*3);
 
         size_t beginVertexIndex = beginV.next().cIndex();
         beginV.toFront();
 
         size_t nfLoaded = 0;
+        size_t nvLoaded = 0;
         CT_Point point;
         QString buf;
 
@@ -372,6 +374,8 @@ CT_Mesh* CT_Reader_OBJ::loadFileAsMesh(QTextStream &stream, Eigen::Vector3d &bbo
                     if(loadVertex(buf, point)) {
                         beginV.next().replaceCurrentPoint(point);
                         updateMinMax(point, bboxMin, bboxMax);
+                        ++nvLoaded;
+                        setProgress((nvLoaded*50)/nv);
                     }
                 }
             }
@@ -379,9 +383,9 @@ CT_Mesh* CT_Reader_OBJ::loadFileAsMesh(QTextStream &stream, Eigen::Vector3d &bbo
             {
                 if(checkHasInfoOfFace(buf))
                 {
-                    if(loadFace(buf, beginVertexIndex, mesh, beginF)) {
+                    if(loadFace(buf, beginVertexIndex, mesh, beginF, beginH)) {
                         ++nfLoaded;
-                        setProgress((nfLoaded*100)/nf);
+                        setProgress(50+((nfLoaded*50)/nf));
                     }
                 }
             }
