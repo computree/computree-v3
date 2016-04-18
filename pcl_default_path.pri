@@ -4,7 +4,7 @@ unix {
     EIGEN_INC_PATH = "/usr/include/eigen3"
     QHULL_INC_PATH = "/usr/include"
     FLANN_INC_PATH = "/usr/include"
-    BOOST_LIBS_PATH = "/usr/lib"
+    BOOST_LIBS_PATH = "/usr/lib/x86_64-linux-gnu"
     BOOST_INC_PATH = "/usr/include"
 }
 

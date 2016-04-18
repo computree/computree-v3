@@ -1,6 +1,3 @@
-DEFINES += USE_PCL
-DEFINES += USE_BOOST
-
 PCL_LIB_ADD =
 PCL_LIB_ADD += pcl_common
 PCL_LIB_ADD += pcl_features
@@ -21,6 +18,10 @@ PCL_LIB_ADD += pcl_surface
 PCL_LIB_ADD += pcl_tracking
 PCL_LIB_ADD += pcl_visualization
 
+#BOOST_LIB_ADD =
+#BOOST_LIB_ADD += boost_system
+#BOOST_LIB_ADD += boost_thread
+
 INCLUDEPATH += $$PCL_INC_PATH
 INCLUDEPATH += $$EIGEN_INC_PATH
 INCLUDEPATH += $$QHULL_INC_PATH
@@ -33,19 +34,35 @@ LIBS += -L$$BOOST_LIBS_PATH
 unix {
     for(a, PCL_LIB_ADD) {
         CONFIG(debug, debug|release) {
-            !exists($$PCL_LIBS_PATH/$${a}d*) {
-                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}d was not found"
+            !exists($$PCL_LIBS_PATH/lib$${a}_debug*) {
+                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a}_debug was not found"
             } else {
                 LIBS += -l$${a}_debug
             }
         } else {
-            !exists($$PCL_LIBS_PATH/$${a}*) {
-                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a} was not found"
+            !exists($$PCL_LIBS_PATH/lib$${a}*) {
+                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a} was not found"
             } else {
-                LIBS += -l$${a}_release
+                LIBS += -l$${a}
             }
         }
     }
+
+#    for(a, BOOST_LIB_ADD) {
+#        CONFIG(debug, debug|release) {
+#            !exists($$BOOST_LIBS_PATH/lib$${a}d*) {
+#                USE_PCL_ERROR_MSG += "Library $$BOOST_LIBS_PATH/lib$${a}d was not found"
+#            } else {
+#                LIBS += -l$${a}d
+#            }
+#        } else {
+#            !exists($$PCL_LIBS_PATH/lib$${a}*) {
+#                USE_PCL_ERROR_MSG += "Library $$BOOST_LIBS_PATH/lib$${a} was not found"
+#            } else {
+#                LIBS += -l$${a}
+#            }
+#        }
+#    }
 }
 
 windows {
@@ -74,5 +91,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 isEmpty(USE_PCL_ERROR_MSG) {
     DEFINES += USE_PCL
+    DEFINES += USE_BOOST
 }
 
