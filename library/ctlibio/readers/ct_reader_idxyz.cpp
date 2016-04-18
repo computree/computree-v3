@@ -186,7 +186,7 @@ bool CT_Reader_IDXYZ::protectedReadFile()
                         {
                             CT_Scene *sceneId = new CT_Scene(_clusterSceneModel, NULL, PS_REPOSITORY->registerPointCloudIndex(indexVector));
                             sceneId->updateBoundingBox();
-                            sceneId->setDisplayableName(QString("Scene_%1").arg(QVariant(index).toString()));
+                            sceneId->setDisplayableName(QString("Scene_%1").arg(QVariant::fromValue(index).toString()));
 
                             CT_StandardItemGroup* group = new CT_StandardItemGroup(NULL, NULL);
                             group->addItemDrawable(sceneId);

@@ -111,9 +111,9 @@ bool PB_Grid3DExporter::protectedExportToFile()
                 size_t ydim = item->ydim();
                 size_t zdim = item->zdim();
 
-                stream << "ncols\t" << QVariant(xdim).toString() << "\n";
-                stream << "nrows\t" << QVariant(ydim).toString() << "\n";
-                stream << "nzlev\t" << QVariant(zdim).toString() << "\n";
+                stream << "ncols\t" << QVariant::fromValue(xdim).toString() << "\n";
+                stream << "nrows\t" << QVariant::fromValue(ydim).toString() << "\n";
+                stream << "nzlev\t" << QVariant::fromValue(zdim).toString() << "\n";
 
                 stream << "xllcorner\t" << QVariant(item->minX()).toString() << "\n";
                 stream << "yllcorner\t" << QVariant(item->minY()).toString() << "\n";

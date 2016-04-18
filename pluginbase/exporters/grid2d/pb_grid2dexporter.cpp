@@ -110,8 +110,8 @@ bool PB_Grid2DExporter::protectedExportToFile()
                 size_t xdim = item->colDim();
                 size_t ydim = item->linDim();
 
-                stream << "ncols\t" << QVariant(xdim).toString() << "\n";
-                stream << "nrows\t" << QVariant(ydim).toString() << "\n";
+                stream << "ncols\t" << QVariant::fromValue(xdim).toString() << "\n";
+                stream << "nrows\t" << QVariant::fromValue(ydim).toString() << "\n";
 
                 stream << "xllcorner\t" << QVariant(item->minX()).toString() << "\n";
                 stream << "yllcorner\t" << QVariant(item->minY()).toString() << "\n";
