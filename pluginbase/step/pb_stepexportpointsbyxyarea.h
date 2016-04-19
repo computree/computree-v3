@@ -55,6 +55,10 @@ protected:
      */
     void createInResultModelListProtected();
 
+    bool postConfigure();
+    bool configureExporter();
+    void clearExporterConfiguration();
+
     /*! \brief Parameters DialogBox
      * 
      * DialogBox asking for step parameters
@@ -119,6 +123,8 @@ private:
     QList<CT_AbstractExporter*>                      _exportersInstancesList;
 
     QString                                         _exportersListValue;
+    SettingsNodeGroup*                              _exporterConfiguration;
+
 
     QList<AreaData*>                _areas;
 

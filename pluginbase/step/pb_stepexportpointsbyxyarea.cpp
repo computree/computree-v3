@@ -15,6 +15,7 @@
 
 #include "exporters/profile/pb_profileexporter.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_exporter/abstract/ct_abstractexporterattributesselection.h"
 
 #include <QDebug>
 
@@ -40,6 +41,7 @@
 PB_StepExportPointsByXYArea::PB_StepExportPointsByXYArea(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
     _suffixFileName = "";
+    _exporterConfiguration = NULL;
 
 
     // Create the available exporter map
@@ -87,6 +89,7 @@ PB_StepExportPointsByXYArea::~PB_StepExportPointsByXYArea()
 {
     qDeleteAll(_exportersInstancesList);
     qDeleteAll(_areas);
+    clearExporterConfiguration();
 }
 
 
@@ -136,6 +139,7 @@ void PB_StepExportPointsByXYArea::createInResultModelListProtected()
     resXYAreas->addItemModel(DEFin_grpAreas, DEFin_itemAreas, CT_AbstractAreaShape2D::staticGetType(), tr("Emprise"));
 }
 
+
 // Creation and affiliation of OUT models
 void PB_StepExportPointsByXYArea::createOutResultModelListProtected()
 {
@@ -166,6 +170,48 @@ void PB_StepExportPointsByXYArea::createPostConfigurationDialog()
 
     configDialog->addStringChoice(tr("Choix du type de fichier"), "", list_exportersList, _exportersListValue);
 
+}
+
+bool PB_StepExportPointsByXYArea::postConfigure()
+{
+    if(CT_VirtualAbstractStep::postConfigure())
+        return configureExporter();
+
+
+    return true;
+}
+
+bool PB_StepExportPointsByXYArea::configureExporter()
+{
+    CT_AbstractExporter* exporter = (CT_AbstractExporter*) _exportersMap.value(_exportersListValue);
+    exporter->setMyStep(this);
+
+    CT_AbstractExporterAttributesSelection* exp = dynamic_cast<CT_AbstractExporterAttributesSelection*>(exporter);
+    if (exp != NULL)
+    {
+        exp->setSearchOnlyModels(true);
+    }
+
+    if(_exporterConfiguration != NULL)
+        exporter->loadExportConfiguration(_exporterConfiguration);
+
+    if(exporter->configureExport())
+    {
+        clearExporterConfiguration();
+        _exporterConfiguration = exporter->saveExportConfiguration();
+
+        setSettingsModified(true);
+
+        return true;
+    }
+
+    return false;
+}
+
+void PB_StepExportPointsByXYArea::clearExporterConfiguration()
+{
+    delete _exporterConfiguration;
+    _exporterConfiguration = NULL;
 }
 
 void PB_StepExportPointsByXYArea::compute()
@@ -203,6 +249,15 @@ void PB_StepExportPointsByXYArea::compute()
                     {
                         CT_AbstractExporter* exporterCpy = exporter->copy();
                         exporterCpy->init();
+
+                        exporterCpy->setMyStep(this);
+
+                        CT_AbstractExporterAttributesSelection* exp = dynamic_cast<CT_AbstractExporterAttributesSelection*>(exporterCpy);
+                        if (exp != NULL)
+                        {
+                            exp->setSearchOnlyModels(true);
+                        }
+
 
                         if (exporterCpy != NULL)
                         {
@@ -284,6 +339,7 @@ void PB_StepExportPointsByXYArea::compute()
         QList<CT_AbstractCloudIndex *> list;
         list.append(outCloudIndex);
 
+        exporter->loadExportConfiguration(_exporterConfiguration);
         exporter->setPointsToExport(list);
         exporter->exportOnePieceOfDataToFile();
 
