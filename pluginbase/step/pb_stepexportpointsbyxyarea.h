@@ -41,6 +41,9 @@ public:
      */
     QString getStepURL() const;
 
+    SettingsNodeGroup* getAllSettings() const;
+    bool setAllSettings(const SettingsNodeGroup *settings);
+
     /*! \brief Step copy
      * 
      * Step copy, used when a step is added by step contextual menu

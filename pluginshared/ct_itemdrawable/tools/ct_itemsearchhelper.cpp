@@ -2,6 +2,7 @@
 
 #include "ct_outabstractresultmodelgroup.h"
 #include "ct_step/abstract/ct_virtualabstractstep.h"
+#include "ct_result/ct_resultgroup.h"
 
 CT_ItemSearchHelper::CT_ItemSearchHelper()
 {
@@ -15,21 +16,21 @@ CT_ResultItemIterator CT_ItemSearchHelper::searchSingularItemsForModel(const CT_
 
         if(stepOfModel != NULL) {
 
-            // search the model of the result
-            CT_AbstractModel *m = model->parentModel();
-            CT_OutAbstractResultModelGroup *mg = NULL;
+            // search the result that contains this item (model)
+            CT_ResultGroup *theResult = NULL;
 
-            while((m != NULL) && ((mg = dynamic_cast<CT_OutAbstractResultModelGroup*>(m)) == NULL))
-                m = m->parentModel();
+            QList<CT_ResultGroup *> results = stepOfModel->getOutResultList();
+            QListIterator<CT_ResultGroup*> itR(results);
 
-            if(mg != NULL) {
+            while(itR.hasNext() && (theResult == NULL)) {
+                CT_ResultGroup *res = itR.next();
 
-                // get the result corresponding to his model
-                CT_ResultGroup *result = stepOfModel->getOutputResultForModel(mg);
-
-                if(result != NULL)
-                    return CT_ResultItemIterator(result, model);
+                if(res->model()->findModelInTree(model->uniqueNamePlusTurn()))
+                    theResult = res;
             }
+
+            if(theResult != NULL)
+                return CT_ResultItemIterator(theResult, model);
         }
     }
 

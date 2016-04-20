@@ -19,12 +19,22 @@ SettingsNodeGroup* CT_ModelSaveRestoreHelper::saveToSearchOutModel(const CT_OutA
             || originalModel->uniqueNamePlusTurn().isEmpty())
         return NULL;
 
-    // search the model of the result
-    CT_AbstractModel *m = (CT_AbstractModel*)originalModel;
+    // search the result (model) that contains this item (model)
     CT_OutAbstractResultModelGroup *mg = NULL;
 
-    while((m != NULL) && ((mg = dynamic_cast<CT_OutAbstractResultModelGroup*>(m)) == NULL))
-        m = m->parentModel();
+    QList< QList<CT_OutAbstractResultModelGroup*> > resultsByTurn = originalModel->step()->getAllOutResultModels();
+    QListIterator< QList<CT_OutAbstractResultModelGroup*> > itT(resultsByTurn);
+
+    while(itT.hasNext() && (mg == NULL)) {
+        QListIterator<CT_OutAbstractResultModelGroup*> itR(itT.next());
+
+        while(itR.hasNext() && (mg == NULL)) {
+            CT_OutAbstractResultModelGroup *modelG = itR.next();
+
+            if(modelG->findModelInTree(originalModel->uniqueNamePlusTurn()))
+                mg = modelG;
+        }
+    }
 
     if((mg == NULL) || mg->uniqueNamePlusTurn().isEmpty())
         return NULL;

@@ -4,6 +4,7 @@
 #include "dm_guimanager.h"
 
 #include "ct_abstractstepplugin.h"
+#include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
 #include "ct_global/ct_context.h"
@@ -156,7 +157,7 @@ void GAboutStepDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, con
 void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, "Result : " + rModel->resultName());
+    item->setText(0, QString("Result") + " / " + rModel->uniqueName() + " / " + rModel->modelTypeDisplayable() + " : " + rModel->resultName());
 
     createForChildrens(item, rModel);
 }

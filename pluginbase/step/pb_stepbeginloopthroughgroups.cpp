@@ -120,10 +120,10 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
             }
         }
 
-        if (_counter->getCurrentTurn() == 1) {
+        if (_counter->getCurrentTurn() == 1)
             _counter->setNTurns(cpt);
-            NTurnsSelected();
-        }
+
+        NTurnsSelected();
     }
 
     setProgress( 100 );

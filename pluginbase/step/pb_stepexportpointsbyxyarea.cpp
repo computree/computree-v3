@@ -113,6 +113,74 @@ QString PB_StepExportPointsByXYArea::getStepURL() const
     return CT_AbstractStep::getStepURL(); //by default URL of the plugin
 }
 
+bool PB_StepExportPointsByXYArea::setAllSettings(const SettingsNodeGroup *settings)
+{
+    if(!CT_AbstractStep::setAllSettings(settings))
+        return false;
+
+    QList<SettingsNodeGroup*> groups = settings->groupsByTagName("PB_StepExportPointsByXYArea");
+
+    if(groups.isEmpty())
+        return false;
+
+    groups = groups.first()->groupsByTagName("ExporterConfiguration");
+
+    if(groups.isEmpty())
+        return false;
+
+    if(groups.first()->groups().isEmpty())
+        return !groups.first()->valuesByTagName("NOTHING").isEmpty();
+
+    CT_AbstractExporter* exporter = (CT_AbstractExporter*) _exportersMap.value(_exportersListValue);
+    exporter->setMyStep(this);
+
+    CT_AbstractExporterAttributesSelection* exp = dynamic_cast<CT_AbstractExporterAttributesSelection*>(exporter);
+
+    if (exp != NULL)
+        exp->setSearchOnlyModels(true);
+
+    SettingsNodeGroup *exporterConfiguration = groups.first()->groups().first();
+
+    if(exporter->loadExportConfiguration(exporterConfiguration))
+    {
+        clearExporterConfiguration();
+        _exporterConfiguration = exporter->saveExportConfiguration();
+
+        return true;
+    }
+
+    return false;
+}
+
+SettingsNodeGroup *PB_StepExportPointsByXYArea::getAllSettings() const
+{
+    CT_AbstractExporter* exporter = (CT_AbstractExporter*) _exportersMap.value(_exportersListValue);
+
+    SettingsNodeGroup *root = CT_AbstractStep::getAllSettings();
+    SettingsNodeGroup *group = new SettingsNodeGroup("PB_StepExportPointsByXYArea");
+    group->addValue(new SettingsNodeValue("Version", "1"));
+
+    SettingsNodeGroup *confGroup = new SettingsNodeGroup("ExporterConfiguration");
+
+    if(_exporterConfiguration != NULL)
+    {
+        // do a copy
+        exporter->loadExportConfiguration(_exporterConfiguration);
+
+        SettingsNodeGroup *exporterConfiguration = exporter->saveExportConfiguration();
+
+        if(exporterConfiguration != NULL)
+            confGroup->addGroup(exporterConfiguration);
+        else
+            confGroup->addValue(new SettingsNodeValue("NOTHING"));
+    }
+
+    group->addGroup(confGroup);
+    root->addGroup(group);
+
+    return root;
+}
+
 // Step copy method
 CT_VirtualAbstractStep* PB_StepExportPointsByXYArea::createNewInstance(CT_StepInitializeData &dataInit)
 {

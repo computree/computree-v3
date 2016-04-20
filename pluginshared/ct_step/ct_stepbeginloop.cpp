@@ -52,7 +52,6 @@ void CT_StepBeginLoop::createInResultModelListProtected()
     setNotNeedInputResult();
 }
 
-
 // Redefine in children steps to remplace ConfigurationDialog
 void CT_StepBeginLoop::createPostConfigurationDialog()
 {
@@ -66,7 +65,6 @@ void CT_StepBeginLoop::createPostConfigurationDialog(int &nTurns)
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addInt(tr("Nombre d'itérations"), "", 1, std::numeric_limits<int>::max(), nTurns);
 }
-
 
 void CT_StepBeginLoop::createOutResultModelListProtected()
 {
@@ -83,7 +81,6 @@ void CT_StepBeginLoop::createOutResultModelListProtected(CT_OutResultModelGroup 
     Q_UNUSED(firstResultModel);
 }
 
-
 void CT_StepBeginLoop::compute()
 {
     // on récupère le résultat copié
@@ -92,10 +89,7 @@ void CT_StepBeginLoop::compute()
     outRes->addGroup(group);
 
     if (_counter.isNull())
-    {
         _counter = QSharedPointer<CT_Counter>(new CT_Counter(_nTurns));
-
-    }
 
     _counter->setTurnName(QString("Turn%1").arg(_counter->getCurrentTurn()));
 
