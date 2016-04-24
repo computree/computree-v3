@@ -12,6 +12,7 @@
 #define DEF_inAttName   "inAtt"
 
 #define DEF_outResult_g "outResult_g"
+#define DEF_outRootGroup "rootGroup"
 
 PB_StepBeginLoopThroughGroups::PB_StepBeginLoopThroughGroups(CT_StepInitializeData &dataInit) : CT_StepBeginLoop(dataInit)
 {
@@ -64,6 +65,7 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
     CT_InAbstractGroupModel* groupModel = NULL;
 
     CT_OutResultModelGroup *resultModel = createNewOutResultModel(DEF_outResult_g, tr("Elément"));
+    resultModel->setRootGroup(DEF_outRootGroup);
 
     // check if model have choice (can be empty if the step want to create a default out model list)
     if(resultInModel!=NULL && !resultInModel->getPossibilitiesSavedSelected().isEmpty())
@@ -79,7 +81,7 @@ void PB_StepBeginLoopThroughGroups::createOutResultModelListProtected(CT_OutResu
     if((groupModel != NULL) && !groupModel->getPossibilitiesSavedSelected().isEmpty())
     {
         _outModel = (DEF_CT_AbstractGroupModelOut*)groupModel->getPossibilitiesSavedSelected().first()->outModel()->copy();
-        resultModel->setRootGroup(_outModel);
+        resultModel->addGroupModel(DEF_outRootGroup, _outModel);
     }
 
 }
@@ -95,6 +97,8 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
 
     if (outResult_g != NULL)
     {
+        CT_StandardItemGroup* rootGroup = new CT_StandardItemGroup(DEF_outRootGroup, outResult_g);
+        outResult_g->addGroup(rootGroup);
         int cpt = 1;
 
         CT_ResultGroupIterator it(inResult, this, DEF_inGroup);
@@ -104,7 +108,7 @@ void PB_StepBeginLoopThroughGroups::compute(CT_ResultGroup *outRes, CT_StandardI
 
             if (cpt++ == _counter->getCurrentTurn())
             {
-                outResult_g->addGroup((CT_AbstractItemGroup*)group->copy((CT_OutAbstractItemModel*)PS_MODELS->searchModel(_outModel->uniqueName(),outResult_g, this), outResult_g, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference));
+                rootGroup->addGroup((CT_AbstractItemGroup*)group->copy((CT_OutAbstractItemModel*)PS_MODELS->searchModel(_outModel->uniqueName(),outResult_g, this), outResult_g, CT_ResultCopyModeList() << CT_ResultCopyModeList::CopyItemDrawableReference));
 
                 QString turnName = QString("Turn%1").arg(cpt - 1);
                 CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) group->firstItemByINModelName(this, DEF_inItem);

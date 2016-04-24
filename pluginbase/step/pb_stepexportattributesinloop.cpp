@@ -11,6 +11,7 @@
 #include "ct_abstractstepplugin.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
 #include "ct_itemdrawable/ct_plotlistingrid.h"
+#include "ct_itemdrawable/ct_loopcounter.h"
 
 #include "ct_view/ct_stepconfigurabledialog.h"
 
@@ -43,6 +44,10 @@
 #define DEFin_Yattribute "Yattribute"
 #define DEFin_attributeInItemXY "attributeInItemXY"
 
+#define DEF_inResultCounter "resCounter"
+#define DEF_inGroupCounter "counterGrp"
+#define DEF_inCounter "counter"
+
 #define DEFout_res "res"
 #define DEFout_grp "grp"
 
@@ -53,6 +58,7 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
     _asciiExport = true;
     _vectorExport = false;
     _rasterExport = false;
+    _exportInLoop = true;
 
     _vectorPrefix = "";
     _rasterPrefix = "";
@@ -139,6 +145,14 @@ void PB_StepExportAttributesInLoop::createInResultModelListProtected()
 
     resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple, CT_InAbstractModel::F_IsOptional);
     resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Attribut B"), "", CT_InAbstractModel::C_ChooseMultipleIfMultiple, CT_InAbstractModel::F_IsOptional);
+
+    if (_exportInLoop)
+    {
+        CT_InResultModelGroup* res_counter = createNewInResultModel(DEF_inResultCounter, tr("Résultat compteur"), "", true);
+        res_counter->setRootGroup(DEF_inGroupCounter);
+        res_counter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
+        res_counter->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
+    }
 }
 
 
@@ -163,6 +177,10 @@ void PB_StepExportAttributesInLoop::createPreConfigurationDialog()
     configDialog->addEmpty();
     configDialog->addBool(tr("Activer export vectoriel (1 fichier / tour)"), "", tr("Activer"), _vectorExport);
 #endif
+
+    configDialog->addEmpty();
+    configDialog->addBool(tr("Export dans une boucle (cas normal)"), "", tr("Activer"), _exportInLoop);
+
 
 }
 
@@ -218,9 +236,30 @@ void PB_StepExportAttributesInLoop::compute()
 
     QFile* fileASCII = NULL;
     QTextStream* streamASCII = NULL;
+    bool first = true;
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn = inResultList.at(0);
+
+    QString exportBaseName = "noName";
+    if (_exportInLoop && inResultList.size() > 1)
+    {
+        CT_ResultGroup* resCounter = inResultList.at(1);
+        CT_ResultItemIterator itCounter(resCounter, this, DEF_inCounter);
+        if (itCounter.hasNext())
+        {
+            const CT_LoopCounter* counter = (const CT_LoopCounter*) itCounter.next();
+
+            if (counter != NULL)
+            {
+                exportBaseName = QFileInfo(counter->getTurnName()).baseName();
+                if (counter->getCurrentTurn() > 1)
+                {
+                    first = false;
+                }
+            }
+        }
+    }
 
     CT_ModelSearchHelper::SplitHash hash;
     QString xKey = "";
@@ -343,20 +382,32 @@ void PB_StepExportAttributesInLoop::compute()
             fileASCII = new QFile(_outASCIIFileName.first());
             streamASCII = new QTextStream(fileASCII);
 
-            if (fileASCII->open(QIODevice::WriteOnly | QIODevice::Text))
+            if (first)
             {
-                for (int i = 0 ; i < _modelsKeys.size() ; i++)
+                if (fileASCII->open(QIODevice::WriteOnly | QIODevice::Text))
                 {
-                    (*streamASCII) << _names.value(_modelsKeys.at(i));
-                    if (i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
-                }
+                    for (int i = 0 ; i < _modelsKeys.size() ; i++)
+                    {
+                        (*streamASCII) << _names.value(_modelsKeys.at(i));
+                        if (i < _modelsKeys.size() - 1) {(*streamASCII) << "\t";} else {(*streamASCII) << "\n";}
+                    }
 
+                } else {
+                    delete streamASCII; streamASCII = NULL;
+                    delete fileASCII; fileASCII = NULL;
+                    PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Impossible de créer le fichier d'export ASCII. Arrêt des traitements."));
+                    stop();
+                    return;
+                }
             } else {
-                delete streamASCII; streamASCII = NULL;
-                delete fileASCII; fileASCII = NULL;
-                PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Impossible de créer le fichier d'export ASCII. Arrêt des traitements."));
-                stop();
-                return;
+                if (!fileASCII->open(QIODevice::Append | QIODevice::Text))
+                {
+                    delete streamASCII; streamASCII = NULL;
+                    delete fileASCII; fileASCII = NULL;
+                    PS_LOG->addMessage(LogInterface::error, LogInterface::step, getStepCustomName() + tr("Impossible d'ouvrir le fichier d'export ASCII. Arrêt des traitements."));
+                    stop();
+                    return;
+                }
             }
         }
     }
@@ -369,7 +420,7 @@ void PB_StepExportAttributesInLoop::compute()
 
         if (_vectorExport && driverVector != NULL && _outVectorFolder.size() > 0)
         {
-            QString outFileName = (QString("%1/%2").arg(_outVectorFolder.first()).arg("point_out"));
+            QString outFileName = (QString("%1/%2").arg(_outVectorFolder.first()).arg(exportBaseName));
             QStringList ext = CT_GdalTools::staticGdalDriverExtension(driverVector);
             if (ext.size() > 0)
             {
@@ -605,7 +656,7 @@ void PB_StepExportAttributesInLoop::compute()
                 rasterList.append(itRaster.value());
 
                 QString metricName = _names.value(key);
-                QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg("");
+                QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg(exportBaseName);
 
                 if (_rasterDriverName == DEF_ESRI_ASCII_Grid)
                 {

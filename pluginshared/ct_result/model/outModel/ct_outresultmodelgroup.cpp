@@ -50,6 +50,7 @@ void CT_OutResultModelGroup::setRootGroup(const QString &uniqueName,
     setRootGroup(model);
 }
 
+
 bool CT_OutResultModelGroup::addGroupModel(const QString &parentGroupUniquelName,
                                            const QString &uniqueName,
                                            CT_AbstractItemGroup *group,
@@ -57,6 +58,20 @@ bool CT_OutResultModelGroup::addGroupModel(const QString &parentGroupUniquelName
                                            const QString &description)
 {
     return addGroupModelT<CT_OutStdGroupModel>(parentGroupUniquelName, uniqueName, group, displayableName, description);
+}
+
+bool CT_OutResultModelGroup::addGroupModel(const QString &parentGroupUniqueName,
+                                           DEF_CT_AbstractGroupModelOut *groupModel)
+{
+    DEF_CT_AbstractGroupModelOut *rootModel = dynamic_cast<DEF_CT_AbstractGroupModelOut*>(this->findModelInTree(parentGroupUniqueName));
+
+    if(rootModel == NULL || groupModel == NULL)
+        return false;
+
+    if(rootModel->addGroup(groupModel))
+        return true;
+
+    return false;
 }
 
 bool CT_OutResultModelGroup::addItemModel(const QString &parentGroupUniqueName,

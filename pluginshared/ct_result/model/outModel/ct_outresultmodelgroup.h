@@ -73,6 +73,10 @@ public:
                        const QString &displayableName = "",
                        const QString &description = "");
 
+    virtual bool addGroupModel(const QString &parentGroupUniqueName,
+                               DEF_CT_AbstractGroupModelOut *groupModel);
+
+
     /**
      * @brief Add a group model to another group model in the result. SPECIFY the type of model to use with a template
      *

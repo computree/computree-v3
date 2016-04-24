@@ -98,6 +98,7 @@ private:
     bool        _asciiExport;
     bool        _vectorExport;
     bool        _rasterExport;
+    bool        _exportInLoop;
 
     QString      _rasterDriverName;
     QString      _vectorDriverName;
