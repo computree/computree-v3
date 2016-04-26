@@ -65,7 +65,7 @@ void PB_StepBeginLoopThroughGroups02::compute(CT_ResultGroup *outRes, CT_Standar
     Q_UNUSED(outRes);
     Q_UNUSED(group);
 
-    CT_ResultGroup *outResult = getOutResultList().first();
+    CT_ResultGroup *outResult = getOutputResultForModel(DEF_inResult_g);
 
     if (outResult != NULL)
     {
