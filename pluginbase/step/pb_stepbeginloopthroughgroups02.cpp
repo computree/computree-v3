@@ -21,7 +21,7 @@ PB_StepBeginLoopThroughGroups02::~PB_StepBeginLoopThroughGroups02()
 
 QString PB_StepBeginLoopThroughGroups02::getStepDescription() const
 {
-    return tr("Boucle sur les groupes (v2)");
+    return tr("Boucle sur les groupes");
 }
 
 QString PB_StepBeginLoopThroughGroups02::getStepDetailledDescription() const

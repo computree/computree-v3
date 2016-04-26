@@ -44,7 +44,7 @@
 
 #include "ct_step/ct_stepbeginloop.h"
 #include "ct_step/ct_stependloop.h"
-#include "step/pb_stepbeginloopthroughgroups.h"
+//#include "step/pb_stepbeginloopthroughgroups.h"
 #include "step/pb_stepbeginloopthroughgroups02.h"
 #include "step/pb_stepapplypointfilters.h"
 #include "step/pb_stepexportitemlist.h"
@@ -133,7 +133,7 @@ QSettings* PB_StepPluginManager::initQSettings()
 bool PB_StepPluginManager::loadGenericsStep()
 {
     addNewWorkflowStep<CT_StepBeginLoop>(CT_StepsMenu::LP_Loops);
-    addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
+//    addNewWorkflowStep<PB_StepBeginLoopThroughGroups>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups02>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
