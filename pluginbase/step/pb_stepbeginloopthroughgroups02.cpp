@@ -93,7 +93,9 @@ void PB_StepBeginLoopThroughGroups02::compute(CT_ResultGroup *outRes, CT_Standar
         while (it2.hasNext() && (!isStopped()))
         {
             CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it2.next();
-            if (group->id() == currentTurn)
+
+            size_t currentId = _ids.at(currentTurn);
+            if (group->id() == currentId)
             {
                 QString turnName = QString("Turn%1").arg(currentTurn);
                 CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) group->firstItemByINModelName(this, DEF_inItem);
