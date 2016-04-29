@@ -42,6 +42,7 @@ public:
      * @brief Set the radius if you want to filter points
      */
     void setFilterRadius(const double &radius);
+    void setFilterRadius(const double &radius, const double &zmin, const double &zmax);
 
     /**
      * @brief Returns the filter radius
@@ -65,6 +66,8 @@ private:
     Params  m_current;
     Params  m_new;
     float   _filterRadius;
+    double   _zminFilter;
+    double   _zmaxFilter;
 
 protected:
     void protectedInit();

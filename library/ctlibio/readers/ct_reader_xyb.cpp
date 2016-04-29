@@ -13,6 +13,8 @@
 CT_Reader_XYB::CT_Reader_XYB() : CT_AbstractReader()
 {
     _filterRadius = 0;
+    _zminFilter = -std::numeric_limits<double>::max();
+    _zmaxFilter = std::numeric_limits<double>::max();
 }
 
 QString CT_Reader_XYB::GetReaderName() const
@@ -144,6 +146,13 @@ void CT_Reader_XYB::setFilterRadius(const double &radius)
     _filterRadius = radius;
 }
 
+void CT_Reader_XYB::setFilterRadius(const double &radius, const double &zmin, const double &zmax)
+{
+    _filterRadius = radius;
+    _zminFilter = zmin;
+    _zmaxFilter = zmax;
+}
+
 double CT_Reader_XYB::filterRadius() const
 {
     return _filterRadius;
@@ -272,7 +281,7 @@ bool CT_Reader_XYB::protectedReadFile()
                     double dy = y - m_current.m_center[1];
                     double distance2D = sqrt(dx*dx + dy*dy);
 
-                    if (distance2D <= _filterRadius)
+                    if (distance2D <= _filterRadius && z >= _zminFilter && z <= _zmaxFilter)
                     {
                         pReaded(CT_Point::X) = x;
                         pReaded(CT_Point::Y) = y;

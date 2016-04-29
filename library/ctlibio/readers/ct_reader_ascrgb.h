@@ -20,13 +20,17 @@ public:
     virtual CT_StepsMenu::LevelPredefined getReaderSubMenuName() const;
 
     bool setFilePath(const QString &filepath);
+
     void setRadiusFilter(const double &radius);
+    void setRadiusFilter(const double &radius, const double &zmin, const double &zmax);
 
     CT_AbstractReader* copy() const;
     READER_COPY_FULL_IMP(CT_Reader_ASCRGB)
 
 private:
     double   m_filterRadius;
+    double   _zminFilter;
+    double   _zmaxFilter;
 
 protected:
     void protectedInit();

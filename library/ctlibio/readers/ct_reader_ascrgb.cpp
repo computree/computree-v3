@@ -14,6 +14,8 @@
 CT_Reader_ASCRGB::CT_Reader_ASCRGB() : CT_AbstractReader()
 {
     m_filterRadius = 0;
+    _zminFilter = -std::numeric_limits<double>::max();
+    _zmaxFilter = std::numeric_limits<double>::max();
 }
 
 QString CT_Reader_ASCRGB::GetReaderName() const
@@ -66,6 +68,13 @@ bool CT_Reader_ASCRGB::setFilePath(const QString &filepath)
 void CT_Reader_ASCRGB::setRadiusFilter(const double &radius)
 {
     m_filterRadius = radius;
+}
+
+void CT_Reader_ASCRGB::setRadiusFilter(const double &radius, const double &zmin, const double &zmax)
+{
+    m_filterRadius = radius;
+    _zminFilter = zmin;
+    _zmaxFilter = zmax;
 }
 
 CT_AbstractReader* CT_Reader_ASCRGB::copy() const
@@ -172,7 +181,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     {
                         double distance2D = sqrt(x*x + y*y);
 
-                        if (!filter || (distance2D <= m_filterRadius))
+                        if (!filter || (distance2D <= m_filterRadius && z >= _zminFilter && z <= _zmaxFilter))
                         {
                             if (x<xmin) {xmin = x;}
                             if (x>xmax) {xmax = x;}
