@@ -36,6 +36,8 @@ public:
         VaB<double>    canopyReliefRatio;
         VaB<double>    elevationQuadraticMean;
         VaB<double>    elevationCubicMean;
+
+        double         minZ;
     };
 
     CT_CloudMetrics();
@@ -51,9 +53,16 @@ public:
      */
     void setMetricConfiguration(const CT_CloudMetrics::Config &conf);
 
+
+
     // inherited from CT_AbstractConfigurableElement
+    SettingsNodeGroup *getAllSettings() const;
+    bool setAllSettings(const SettingsNodeGroup *settings);
+
     QString getShortDescription() const;
     CT_AbstractConfigurableElement* copy() const;
+
+    CT_AbstractConfigurableWidget *createConfigurationWidget();
 
 protected:
     void declareAttributes();

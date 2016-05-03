@@ -57,6 +57,14 @@ public:
      */
     virtual CT_AbstractConfigurableWidget* createConfigurationWidget();
 
+    /**
+     * @brief Add a checkBox for each VaB to the given widget
+     *
+     * Used by createConfigurationWidget();
+     */
+    void addAllVaBToWidget(CT_GenericConfigurableWidget *wid) const;
+
+
 private:
     QList<CT_AbstractVaB*>  m_vab;
     AttributesContainer     m_attributesVaB;

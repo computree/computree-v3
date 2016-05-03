@@ -9,6 +9,7 @@ int CT_CloudMetrics::PERCENTILE_COEFF[CT_CloudMetrics::PERCENTILE_ARRAY_SIZE] = 
 CT_CloudMetrics::CT_CloudMetrics() : CT_AbstractMetric_XYZ()
 {
     declareAttributes();
+    m_configAndResults.minZ = -1;
 }
 
 CT_CloudMetrics::CT_CloudMetrics(const CT_CloudMetrics &other)  : CT_AbstractMetric_XYZ(other)
@@ -25,6 +26,37 @@ CT_CloudMetrics::Config CT_CloudMetrics::metricConfiguration() const
 void CT_CloudMetrics::setMetricConfiguration(const CT_CloudMetrics::Config &conf)
 {
     m_configAndResults = conf;
+}
+
+SettingsNodeGroup *CT_CloudMetrics::getAllSettings() const
+{
+    SettingsNodeGroup *root = CT_AbstractMetricGeneric::getAllSettings();
+
+    SettingsNodeGroup *v = new SettingsNodeGroup("MinZ");
+    v->addValue(new SettingsNodeValue("value", m_configAndResults.minZ));
+    root->addGroup(v);
+
+    return root;
+}
+
+bool CT_CloudMetrics::setAllSettings(const SettingsNodeGroup *settings)
+{
+    if(settings == NULL)
+        return false;
+
+    if(settings->name() == "CT_AbstractMetricGeneric")
+    {
+        QList<SettingsNodeGroup*> groups = settings->groupsByTagName("MinZ");
+        SettingsNodeGroup *v = groups.first();
+
+        SettingsNodeValue *usedV = v->firstValueByTagName("value");
+        if(usedV == NULL) {return false;}
+        m_configAndResults.minZ = usedV->value().toDouble();
+
+        return CT_AbstractMetricGeneric::setAllSettings(settings);
+    }
+
+    return false;
 }
 
 QString CT_CloudMetrics::getShortDescription() const
@@ -51,7 +83,7 @@ void CT_CloudMetrics::computeMetric()
     {
         const CT_Point& point = it.next().currentPoint();
 
-        if((area == NULL) || area->contains(point(CT_Point::X), point(CT_Point::Y)))
+        if(((area == NULL) || area->contains(point(CT_Point::X), point(CT_Point::Y))) && (point(CT_Point::Z) >= m_configAndResults.minZ))
         {
             zValue = point(CT_Point::Z);
 
@@ -344,6 +376,19 @@ CT_AbstractConfigurableElement *CT_CloudMetrics::copy() const
 {
     return new CT_CloudMetrics(*this);
 }
+
+CT_AbstractConfigurableWidget* CT_CloudMetrics::createConfigurationWidget()
+{
+    CT_GenericConfigurableWidget *wid = new CT_GenericConfigurableWidget();
+
+    wid->addDouble(tr("Ne conserver que les points avec Z > "), "m", -1e+10, 1e+10, 4, m_configAndResults.minZ);
+    wid->addEmpty();
+
+    addAllVaBToWidget(wid);
+
+    return wid;
+}
+
 
 void CT_CloudMetrics::declareAttributes()
 {

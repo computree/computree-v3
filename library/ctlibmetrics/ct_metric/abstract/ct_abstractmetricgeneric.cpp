@@ -62,15 +62,19 @@ CT_AbstractConfigurableWidget* CT_AbstractMetricGeneric::createConfigurationWidg
         return NULL;
 
     CT_GenericConfigurableWidget *wid = new CT_GenericConfigurableWidget();
+    addAllVaBToWidget(wid);
 
+    return wid;
+}
+
+void CT_AbstractMetricGeneric::addAllVaBToWidget(CT_GenericConfigurableWidget* wid) const
+{
     QListIterator<CT_AbstractVaB*> it(m_vab);
 
     while(it.hasNext()) {
         CT_AbstractVaB *vab = it.next();
         wid->addBool("", "", m_attributesVaB.value(vab, NULL)->_displayableName, vab->used);
     }
-
-    return wid;
 }
 
 void CT_AbstractMetricGeneric::createAttributes()
