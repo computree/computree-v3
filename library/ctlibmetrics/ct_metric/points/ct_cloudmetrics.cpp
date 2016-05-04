@@ -381,7 +381,7 @@ CT_AbstractConfigurableWidget* CT_CloudMetrics::createConfigurationWidget()
 {
     CT_GenericConfigurableWidget *wid = new CT_GenericConfigurableWidget();
 
-    wid->addDouble(tr("Ne conserver que les points avec Z > "), "m", -1e+10, 1e+10, 4, m_configAndResults.minZ);
+    wid->addDouble(tr("Ne conserver que les points avec Z >= "), "m", -1e+10, 1e+10, 4, m_configAndResults.minZ);
     wid->addEmpty();
 
     addAllVaBToWidget(wid);
