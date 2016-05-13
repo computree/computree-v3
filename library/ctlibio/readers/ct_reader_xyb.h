@@ -7,6 +7,7 @@
 
 #include "ctlibio/ctlibio_global.h"
 #include "ct_reader_xyb_def_models.h"
+#include "headers/ct_xybheader.h"
 
 /**
  * @brief Reader that can load a xyb file (*.xyb) that represent a PointCloud
@@ -37,6 +38,8 @@ public:
      * @brief Configure the reader
      */
     bool configure();
+
+    CT_FileHeader* createHeaderPrototype() const;
 
     /**
      * @brief Set the radius if you want to filter points
@@ -73,6 +76,8 @@ protected:
     void protectedInit();
     void protectedCreateOutItemDrawableModelList();
     bool protectedReadFile();
+    CT_FileHeader* protectedReadHeader(const QString &filepath, QString &error) const;
+
 };
 
 #endif // CT_READER_XYB_H

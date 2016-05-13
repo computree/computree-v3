@@ -38,7 +38,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     readers/ct_reader_points_ascii.h \
     readers/ct_reader_points_ascii_def_models.h \
     readers/ct_reader_idxyz.h \
-    readers/ct_reader_idxyz_def_models.h
+    readers/ct_reader_idxyz_def_models.h \
+    readers/headers/ct_xybheader.h
 
 SOURCES += \ 
     readers/ct_reader_ascrgb.cpp \
@@ -52,4 +53,5 @@ SOURCES += \
     readers/ct_reader_pgm.cpp \
     readers/ct_reader_pbm.cpp \
     readers/ct_reader_points_ascii.cpp \
-    readers/ct_reader_idxyz.cpp
+    readers/ct_reader_idxyz.cpp \
+    readers/headers/ct_xybheader.cpp

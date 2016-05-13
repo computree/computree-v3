@@ -366,3 +366,116 @@ bool CT_Reader_XYB::protectedReadFile()
     return false;
 }
 
+CT_FileHeader* CT_Reader_XYB::createHeaderPrototype() const
+{
+    return new CT_XYBHeader(NULL, NULL);
+}
+
+
+CT_FileHeader *CT_Reader_XYB::protectedReadHeader(const QString &filepath, QString &error) const
+{
+    Q_UNUSED(error)
+
+    CT_XYBHeader *header = new CT_XYBHeader(NULL, NULL);
+    header->setFile(filepath);
+
+    if(QFile::exists(filepath))
+    {
+        QFile f(filepath);
+
+        if(f.open(QIODevice::ReadOnly))
+        {
+            int      offset = 0;
+            double   xc = 0;
+            double   yc = 0;
+            double   zc = 0;
+            int      rows = 0;
+            int      cols = 0;
+
+            char d_data[8];
+            int nb_0 = 0;
+
+            while((offset<150) && (nb_0 != 4))
+            {
+                if (!f.atEnd())
+                {
+                    f.read(d_data, 1);
+
+                    if(d_data[0] == 0)
+                    {
+                        ++nb_0;
+                    }
+                    else
+                    {
+                        nb_0 = 0;
+                    }
+
+                    ++offset;
+                }
+            }
+
+            if(nb_0 != 4)
+                offset = -1;
+
+            f.close();
+
+            // Read scan position
+            bool okx = true;
+            bool oky = true;
+            bool okz = true;
+            bool okr = true;
+            bool okc = true;
+
+            if (f.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                QTextStream stream(&f);
+
+                stream.readLine();
+                QString line = stream.readLine();
+                if (!line.isNull())
+                {
+                    QStringList values = line.split(" ");
+                    if (values.size() >= 4 && values.at(0)=="ScanPosition")
+                    {
+                        xc = values.at(1).toDouble(&okx);
+                        yc = values.at(2).toDouble(&oky);
+                        zc = values.at(3).toDouble(&okz);
+                    }
+                }
+
+                line = stream.readLine();
+                if (!line.isNull())
+                {
+                    QStringList values = line.split(" ");
+                    if (values.size() >= 2 && values.at(0)=="Rows")
+                    {
+                        rows = values.at(1).toDouble(&okr);
+                    }
+                }
+
+                line = stream.readLine();
+                if (!line.isNull())
+                {
+                    QStringList values = line.split(" ");
+                    if (values.size() >= 2 && values.at(0)=="Cols")
+                    {
+                        cols = values.at(1).toDouble(&okc);
+                    }
+                }
+
+                f.close();
+            }
+
+            if (okx && oky && okz && okr && okc && offset > 0) {
+                header->m_scanCenterX = xc;
+                header->m_scanCenterY = yc;
+                header->m_scanCenterZ = zc;
+                header->m_nrows = rows;
+                header->m_ncols = cols;
+            }
+        }
+    }
+
+    return header;
+}
+
