@@ -268,7 +268,7 @@ bool CT_Reader_XYB::protectedReadFile()
             quint16 reflectance;
 
             while(!stream.atEnd()
-                    && !isStopped())
+                  && !isStopped())
             {
                 stream >> x;
                 stream >> y;
@@ -321,9 +321,7 @@ bool CT_Reader_XYB::protectedReadFile()
 
                     (*collection)[a] = reflectance;
                 }
-
                 ++a;
-
                 setProgress(a*100/n_points);
             }
 
