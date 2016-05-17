@@ -53,13 +53,21 @@ bool CT_AbstractFilter_XYZ::filterPointCloudIndex()
 
     _outCloud->clear();
 
+    size_t nPoints = 0, nPointsKeept = 0;
+
     CT_PointIterator itP(_inCloud);
 
     while(itP.hasNext())
     {
-        if(validatePoint(itP.next()))
+        if(validatePoint(itP.next())) {
             _outCloud->addIndex(itP.currentGlobalIndex());
+            ++nPointsKeept;
+        }
+
+        ++nPoints;
     }
+
+    PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points filtrés sur %2 points").arg(nPoints-nPointsKeept).arg(nPoints));
 
     return true;
 }

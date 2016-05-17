@@ -27,6 +27,8 @@ bool CT_AbstractFilter_LAS::filterPointCloudIndex()
 
     size_t size = inputPointCloudIndex()->size();
 
+    size_t nPointsKeept = 0;
+
     CT_PointIterator itP(inputPointCloudIndex());
 
     while(itP.hasNext())
@@ -38,13 +40,16 @@ bool CT_AbstractFilter_LAS::filterPointCloudIndex()
         {
             _lasAttributes->getLASDataAt(lasIndex, lasData);
 
-            if(validatePoint(itP, lasData))
+            if(validatePoint(itP, lasData)) {
                 outputPointCloudIndex()->addIndex(globalIndex);
-
+                ++nPointsKeept;
+            }
         } else {
             PS_LOG->addMessage(LogInterface::info, LogInterface::filter, tr("Pas d'informations LAS pour le point %1 : point non conservé").arg(globalIndex));
         }
     }
+
+    PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points filtrés sur %2 points").arg(size-nPointsKeept).arg(size));
 
     return true;
 }
