@@ -170,7 +170,7 @@ bool CT_OutModelCopyActionAddReaderResultModelInGroup::execute(const CT_VirtualA
     }
 
     // et on lui demande de créer ses éléments de sortie (ATTENTION son filepath et ses paramètres doivent ête configuré pour que ça fonctionne !)
-    if(reader->outItemDrawableModels().isEmpty() && reader->outGroupsModel().isEmpty())
+    //if(reader->outItemDrawableModels().isEmpty() && reader->outGroupsModel().isEmpty())
         reader->createOutItemDrawableModelList();
 
     if(_inAutoRenameGroupModel == NULL) {

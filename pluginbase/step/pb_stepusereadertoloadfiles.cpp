@@ -124,11 +124,9 @@ void PB_StepUseReaderToLoadFiles::compute()
                 {
                     CT_AbstractReader* reader = readerItem->getReader();
 
-
                     connect(this, SIGNAL(stopped()), reader, SLOT(cancel()), Qt::DirectConnection);
                     connect(reader, SIGNAL(progressChanged(int)), this, SLOT(readerProgressChanged(int)), Qt::DirectConnection);
 
-                    //if (reader != NULL && reader->configure() && reader->readFile())
                     if (reader != NULL && reader->readFile())
                         m_readerAddingTools.addReaderResults(outRes, group, reader, m_readerAutoIndex);
 
