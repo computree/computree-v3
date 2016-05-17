@@ -973,7 +973,7 @@ void GMainWindow::loadScriptError(CDM_ScriptProblem &problem)
         view->proxy()->setUseStepsOfPlugins(QList<CT_AbstractStepPlugin*>() << getPluginManager()->getPlugin(problem.getSolutionPluginToUse()));
 
         // set if must show StepLoadFile, StepCanBeAddedFirst and StepGeneric
-        view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepCBAF, problem.getParentStep() == NULL);
+        view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepCBAF, true);
         view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepLF, problem.getParentStep() == NULL);
         view->proxy()->setTypeVisible(DM_StepsFromPluginsModelConstructor::IT_StepG, problem.getParentStep() != NULL);
 
