@@ -6,6 +6,8 @@
 
 #include "ct_model/tools/ct_modelsearchhelper.h"
 
+#include <QDebug>
+
 #define DEF_inResult_g "inResult"
 #define DEF_inGroup  "inGroup"
 #define DEF_inItem   "inItem"
@@ -55,7 +57,7 @@ void PB_StepBeginLoopThroughGroups02::createPostConfigurationDialog(int &nTurns)
 // Redefine in children steps to complete out Models
 void PB_StepBeginLoopThroughGroups02::createOutResultModelListProtected(CT_OutResultModelGroup *firstResultModel)
 {
-    Q_UNUSED(firstResultModel);    
+    Q_UNUSED(firstResultModel);
     createNewOutResultModelToCopy(DEF_inResult_g);
 }
 
@@ -65,59 +67,56 @@ void PB_StepBeginLoopThroughGroups02::compute(CT_ResultGroup *outRes, CT_Standar
     Q_UNUSED(outRes);
     Q_UNUSED(group);
 
-    CT_ResultGroup *outResult = getOutputResultForModel(DEF_inResult_g);
+    CT_ResultGroup *outResult = getOutResultList().at(1);
 
-    if (outResult != NULL)
+    int currentTurn = (int) _counter->getCurrentTurn();
+
+    if (currentTurn == 1)
     {
-        int currentTurn = _counter->getCurrentTurn();
-
-        if (currentTurn == 1)
+        _ids.clear();
+        CT_ResultGroupIterator it(outResult, this, DEF_inGroup);
+        while (it.hasNext())
         {
-            _ids.clear();
-            CT_ResultGroupIterator it(outResult, this, DEF_inGroup);
-            while (it.hasNext())
+            CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
+
+            if (group != NULL)
             {
-                CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it.next();
-
-                if (group != NULL)
-                {
-                    _ids.append(group->id());
-                }
-            }
-            _counter->setNTurns(_ids.size());
-            NTurnsSelected();
-        }
-
-        QList<CT_AbstractItemGroup*> groupsToBeRemoved;
-        CT_ResultGroupIterator it2(outResult, this, DEF_inGroup);
-        while (it2.hasNext() && (!isStopped()))
-        {
-            CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it2.next();
-
-            size_t currentId = _ids.at(currentTurn);
-            if (group->id() == currentId)
-            {
-                QString turnName = QString("Turn%1").arg(currentTurn);
-                CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) group->firstItemByINModelName(this, DEF_inItem);
-                if (item != NULL)
-                {
-                    CT_AbstractItemAttribute* att = item->firstItemAttributeByINModelName(outResult, this, DEF_inAttName);
-                    if (att !=  NULL)
-                    {
-                        turnName = att->toString(item, NULL);
-                    }
-                }
-                _counter->setTurnName(turnName);
-            } else {
-                groupsToBeRemoved.append(group);
+                _ids.append(group->id());
             }
         }
+        _counter->setNTurns(_ids.size());
+        NTurnsSelected();
+    }
 
-        while (!groupsToBeRemoved.isEmpty())
+    QList<CT_AbstractItemGroup*> groupsToBeRemoved;
+    CT_ResultGroupIterator it2(outResult, this, DEF_inGroup);
+    while (it2.hasNext() && (!isStopped()))
+    {
+        CT_AbstractItemGroup *group = (CT_AbstractItemGroup*) it2.next();
+
+        size_t currentId = _ids.at(currentTurn - 1);
+        if (group->id() == currentId)
         {
-            CT_AbstractItemGroup *group = groupsToBeRemoved.takeLast();
-            recursiveRemoveGroupIfEmpty(group->parentGroup(), group);
+            QString turnName = QString("Turn%1").arg(currentTurn);
+            CT_AbstractSingularItemDrawable* item = (CT_AbstractSingularItemDrawable*) group->firstItemByINModelName(this, DEF_inItem);
+            if (item != NULL)
+            {
+                CT_AbstractItemAttribute* att = item->firstItemAttributeByINModelName(outResult, this, DEF_inAttName);
+                if (att !=  NULL)
+                {
+                    turnName = att->toString(item, NULL);
+                }
+            }
+            _counter->setTurnName(turnName);
+        } else {
+            groupsToBeRemoved.append(group);
         }
+    }
+
+    while (!groupsToBeRemoved.isEmpty())
+    {
+        CT_AbstractItemGroup *group = groupsToBeRemoved.takeLast();
+        recursiveRemoveGroupIfEmpty(group->parentGroup(), group);
     }
 
     setProgress( 100 );
