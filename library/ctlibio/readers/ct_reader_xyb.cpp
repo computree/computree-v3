@@ -119,12 +119,12 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
 
             if (okx && oky && okz && okr && okc && offset > 0) {
                 if(CT_AbstractReader::setFilePath(filepath)) {
-                    m_new.m_center[0] = xc;
-                    m_new.m_center[1] = yc;
-                    m_new.m_center[2] = zc;
-                    m_new._rows = rows;
-                    m_new._cols = cols;
-                    m_new._offset = offset;
+                    m_current.m_center[0] = xc;
+                    m_current.m_center[1] = yc;
+                    m_current.m_center[2] = zc;
+                    m_current._rows = rows;
+                    m_current._cols = cols;
+                    m_current._offset = offset;
 
                     return true;
                 }
@@ -137,7 +137,6 @@ bool CT_Reader_XYB::setFilePath(const QString &filepath)
 
 bool CT_Reader_XYB::configure()
 {
-    m_current = m_new;
     return true;
 }
 
@@ -185,8 +184,6 @@ bool CT_Reader_XYB::setAllSettings(const SettingsNodeGroup *settings)
             return false;
 
         setFilterRadius(listV.first()->value().toDouble());
-
-        m_current = m_new;
 
         return true;
     }

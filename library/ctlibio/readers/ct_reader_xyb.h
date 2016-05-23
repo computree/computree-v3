@@ -67,7 +67,6 @@ private:
     };
 
     Params  m_current;
-    Params  m_new;
     float   _filterRadius;
     double   _zminFilter;
     double   _zmaxFilter;
