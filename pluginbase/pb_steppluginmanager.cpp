@@ -47,6 +47,7 @@
 //#include "step/pb_stepbeginloopthroughgroups.h"
 #include "step/pb_stepbeginloopthroughgroups02.h"
 #include "step/pb_stepapplypointfilters.h"
+#include "step/pb_stepapplypointfiltersingrid.h"
 #include "step/pb_stepexportitemlist.h"
 #include "step/pb_stepexportpointsbyxyarea.h"
 #include "step/pb_stepexportattributesinloop.h"
@@ -137,6 +138,7 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups02>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
+    addNewPointsStep<PB_StepApplyPointFiltersInGrid>(CT_StepsMenu::LP_Filter);
     addNewPointsStep<PB_StepComputePointMetrics>(CT_StepsMenu::LP_Analyze);
     addNewGeometricalShapesStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
     addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
