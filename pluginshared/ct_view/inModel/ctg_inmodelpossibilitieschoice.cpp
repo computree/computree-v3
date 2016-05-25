@@ -760,10 +760,12 @@ void CTG_InModelPossibilitiesChoice::recursiveUpdateCheckBoxAndComboBox(QStandar
         while(it.hasNext()) {
             CT_InAbstractModel *model = it.next();
 
-            bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem);
+//            bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem);
 
-            if((parentSelectedModel != NULL) && active)
-                active = (parentSelectedModel == model->parentModel());
+//            if((parentSelectedModel != NULL) && active)
+//                active = (parentSelectedModel == model->parentModel());
+
+              bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem) || (parentSelectedModel == model->parentModel());
 
             // set the model "active" (displayed and selectable by the user) only if it has no selected parent model or if the parent model is its parent
             // otherwise we set it not active
