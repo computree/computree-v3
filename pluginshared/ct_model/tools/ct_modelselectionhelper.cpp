@@ -106,6 +106,7 @@ bool CT_ModelSelectionHelper::canSelectAtLeastOnePossibility() const
 {
     bool isOptionnal = (m_rootInResultModel->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() == 0);
 
+    qDebug() << isOptionnal;
     return !m_validGraphsByRootPossibility.isEmpty() || isOptionnal;
 }
 

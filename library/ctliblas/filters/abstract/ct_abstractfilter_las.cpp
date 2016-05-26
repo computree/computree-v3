@@ -31,12 +31,14 @@ bool CT_AbstractFilter_LAS::filterPointCloudIndex()
 
     CT_PointIterator itP(inputPointCloudIndex());
 
+    size_t cptErrors = 0;
+    size_t maxAttSize = _lasAttributes->pointsAttributesAt(CT_LasDefine::Return_Number)->getPointCloudIndex()->size();
     while(itP.hasNext())
     {
         size_t globalIndex = itP.next().currentGlobalIndex();
         size_t lasIndex = m_lasPointCloudIndex->indexOf(globalIndex);
 
-        if (lasIndex < size)
+        if (lasIndex < maxAttSize)
         {
             _lasAttributes->getLASDataAt(lasIndex, lasData);
 
@@ -45,11 +47,15 @@ bool CT_AbstractFilter_LAS::filterPointCloudIndex()
                 ++nPointsKeept;
             }
         } else {
-            PS_LOG->addMessage(LogInterface::info, LogInterface::filter, tr("Pas d'informations LAS pour le point %1 : point non conservé").arg(globalIndex));
+            ++cptErrors;
         }
     }
 
-    PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points filtrés sur %2 points").arg(size-nPointsKeept).arg(size));
+    PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points conservés sur %2 points").arg(nPointsKeept).arg(size));
+    if (cptErrors > 0)
+    {
+        PS_LOG->addMessage(LogInterface::info, LogInterface::filter, tr("Pas d'informations LAS pour %1 points : points non conservés").arg(cptErrors));
+    }
 
     return true;
 }

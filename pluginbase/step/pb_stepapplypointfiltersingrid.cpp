@@ -251,10 +251,10 @@ void PB_StepApplyPointFiltersInGrid::createOutResultModelListProtected()
 void PB_StepApplyPointFiltersInGrid::compute()
 {
     QList<CT_ResultGroup*> outResultList = getOutResultList();
-    CT_ResultGroup* _res = outResultList.at(0);
+    CT_ResultGroup* outRes = outResultList.at(0);
 
     // COPIED results browsing
-    CT_ResultGroupIterator itCpy_grpRoot(_res, this, DEFin_grpRoot);
+    CT_ResultGroupIterator itCpy_grpRoot(outRes, this, DEFin_grpRoot);
     while (itCpy_grpRoot.hasNext() && !isStopped())
     {
         CT_StandardItemGroup* grpRoot = (CT_StandardItemGroup*) itCpy_grpRoot.next();
@@ -277,6 +277,7 @@ void PB_StepApplyPointFiltersInGrid::compute()
                     CT_AbstractFilter_XYZ* filter = (CT_AbstractFilter_XYZ*) element->copy();
                     CT_AbstractFilter_LAS* filterLAS = dynamic_cast<CT_AbstractFilter_LAS*>(filter);
 
+
                     if (filter != NULL && modelName != NULL && points->getPointCloudIndex() != NULL)
                     {
                         filter->setPointCloud(points);
@@ -289,12 +290,10 @@ void PB_StepApplyPointFiltersInGrid::compute()
 
                             if (outCloud->size() > 0)
                             {
-                                CT_Scene* outScene = new CT_Scene(modelName->completeName(), _res);
+                                // The PCI must be registered to the point repository :
+                                CT_Scene* outScene = new CT_Scene(modelName->completeName(), outRes, PS_REPOSITORY->registerPointCloudIndex(outCloud));
                                 outScene->updateBoundingBox();
                                 grp->addItemDrawable(outScene);
-
-                                // The PCI must be registered to the point repository :
-                                outScene->setPointCloudIndexRegistered(PS_REPOSITORY->registerPointCloudIndex(outCloud));
 
                             } else {delete outCloud;}
 
@@ -305,4 +304,5 @@ void PB_StepApplyPointFiltersInGrid::compute()
             }
         }
     }
+    setProgress(100);
 }
