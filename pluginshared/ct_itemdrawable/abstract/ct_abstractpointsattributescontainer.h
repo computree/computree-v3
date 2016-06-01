@@ -21,7 +21,7 @@ public:
     /**
      * @brief Returns the CT_AbstractPointAttributesScalar at key defined in parameter
      */
-    CT_AbstractPointsAttributes* pointsAttributesAt(const int &key) const;
+    virtual CT_AbstractPointsAttributes* pointsAttributesAt(const int &key) const;
 
 private:
     QHash<int, CT_AbstractPointsAttributes*>   m_att;

@@ -44,7 +44,8 @@ HEADERS += $${PLUGIN_SHARED_INTERFACE_DIR}/interfaces.h \
     itemdrawable/las/ct_stdlaspointsattributescontainer.h \
     exporters/ct_exporter_las.h \
     filters/abstract/ct_abstractfilter_las.h \
-    metrics/abstract/ct_abstractmetric_las.h
+    metrics/abstract/ct_abstractmetric_las.h \
+    itemdrawable/las/ct_stdlaspointsattributescontainershortcut.h
 
 SOURCES += \ 
     readers/ct_reader_las.cpp \
@@ -70,4 +71,8 @@ SOURCES += \
     itemdrawable/las/ct_stdlaspointsattributescontainer.cpp \
     exporters/ct_exporter_las.cpp \
     filters/abstract/ct_abstractfilter_las.cpp \
-    metrics/abstract/ct_abstractmetric_las.cpp
+    metrics/abstract/ct_abstractmetric_las.cpp \
+    itemdrawable/las/ct_stdlaspointsattributescontainershortcut.cpp
+
+INCLUDEPATH += .
+

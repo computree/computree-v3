@@ -30,19 +30,19 @@ public:
      * @brief Insert the CT_AbstractPointsAttributes at key 'key'. If an attribute already exist it will be replaced.
      *        The attribute is not deleted from memory, you are the owner.
      */
-    void insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att);
+    virtual void insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att);
 
     /**
      * @brief Return the list of type of attributes present in this container
      */
-    QList<CT_LasDefine::LASPointAttributesType> lasPointAttributesTypes() const;
+    virtual QList<CT_LasDefine::LASPointAttributesType> lasPointAttributesTypes() const;
 
-    void getLASDataAt(const size_t i, CT_LASData &data) const;
+    virtual void getLASDataAt(const size_t i, CT_LASData &data) const;
 
     /**
      * @brief Return the hash map of attributes
      */
-    QHash<CT_LasDefine::LASPointAttributesType, CT_AbstractPointAttributesScalar*> lasPointsAttributes() const;
+    virtual QHash<CT_LasDefine::LASPointAttributesType, CT_AbstractPointAttributesScalar*> lasPointsAttributes() const;
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 };
