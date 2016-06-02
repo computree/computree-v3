@@ -323,12 +323,12 @@ double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size
     if(arraySize == 1)
             return array[0];
 
-    double step = (array[arraySize-1] - array[0]) / 63.0;
+    double step = (array[arraySize-1] - array[0]) / 64.0;
 
-    std::vector<double> classes(64);
+    std::vector<double> classes(65);
     classes[0] = array[0];
 
-    for(size_t i=1; i<64; ++i)
+    for(size_t i=1; i<65; ++i)
         classes[i] = classes[i-1]+step;
 
     std::vector<size_t> res(64, 0);
@@ -337,9 +337,9 @@ double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size
 
     for(size_t i=0; i<arraySize; ++i)
     {
-        // if there was rounding problem we can have j > 63
+        // if there was rounding problem we can have j > 64
         // or if step == 0
-        while((array[i] > classes[j]) && (j<63))
+        while((array[i] > classes[j]) && (j<64))
             ++j;
 
         res[j] += 1;
@@ -355,21 +355,23 @@ double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size
         }
     }
 
-    if(maxOccurenceIndex > 0) {
-        std::vector<double>::const_iterator it = std::upper_bound(array.begin(), array.end(), classes[maxOccurenceIndex-1]);
+    return (classes[maxOccurenceIndex] + classes[maxOccurenceIndex + 1]) / 2.0;
 
-        if(it == array.end())
-            return array[arraySize-1];
+//    if(maxOccurenceIndex > 0) {
+//        std::vector<double>::const_iterator it = std::upper_bound(array.begin(), array.end(), classes[maxOccurenceIndex-1]);
 
-        return (*it);
-    }
+//        if(it == array.end())
+//            return array[arraySize-1];
 
-    std::vector<double>::const_iterator it = std::lower_bound(array.begin(), array.end(), classes[maxOccurenceIndex]);
+//        return (*it);
+//    }
 
-    if(it == array.end())
-        return array[arraySize-1];
+//    std::vector<double>::const_iterator it = std::lower_bound(array.begin(), array.end(), classes[maxOccurenceIndex]);
 
-    return (*it);
+//    if(it == array.end())
+//        return array[arraySize-1];
+
+//    return (*it);
 }
 
 CT_AbstractConfigurableElement *CT_CloudMetrics::copy() const
