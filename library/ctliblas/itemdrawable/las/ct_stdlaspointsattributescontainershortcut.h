@@ -1,7 +1,7 @@
 #ifndef CT_STDLASPOINTSATTRIBUTESCONTAINERSHORTCUT_H
 #define CT_STDLASPOINTSATTRIBUTESCONTAINERSHORTCUT_H
 
-#include "itemdrawable/las/ct_stdlaspointsattributescontainer.h"
+#include "ctliblas/itemdrawable/las/ct_stdlaspointsattributescontainer.h"
 
 /**
  *  This class is a shortcut class for an existing standard container for LAS points attributes
