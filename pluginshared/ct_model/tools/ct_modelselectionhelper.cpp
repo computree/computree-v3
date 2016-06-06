@@ -42,7 +42,7 @@ CT_ModelSelectionHelper::CT_ModelSelectionHelper(const CT_InAbstractResultModel 
         qDeleteAll(validGraphs.begin(), validGraphs.end());
     }
 
-    Q_ASSERT(isValid());
+    //Q_ASSERT(isValid());
 }
 
 CT_ModelSelectionHelper::~CT_ModelSelectionHelper()
@@ -53,8 +53,7 @@ CT_ModelSelectionHelper::~CT_ModelSelectionHelper()
 bool CT_ModelSelectionHelper::isValid() const
 {
     // if the number of possibilities for the result is less than the minimum that must be selected
-    if((m_validGraphsByRootPossibility.uniqueKeys().size() < m_rootInResultModel->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn())
-            && (m_rootInResultModel->choiceMode() != CT_InAbstractModel::C_DontChoose))
+    if(m_validGraphsByRootPossibility.uniqueKeys().size() < m_rootInResultModel->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn())
         return false; // not valid !!
 
     return true;

@@ -96,7 +96,7 @@
        </spacer>
       </item>
       <item row="1" column="0">
-       <widget class="QPushButton" name="pb_replaceDefualt">
+       <widget class="QPushButton" name="pb_replaceDefault">
         <property name="text">
          <string>Replacer à la position par défaut</string>
         </property>

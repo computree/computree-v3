@@ -2,6 +2,7 @@
 
 #include "ct_virtualabstractstep.h"
 #include "ct_result/model/outModel/abstract/ct_outabstractresultmodelgroup.h"
+#include "ct_model/tools/ct_modelselectionhelper.h"
 
 #include <QDebug>
 #include "ct_inresultmodelgroup.h"
@@ -35,7 +36,31 @@ void CT_InResultModelManager::clearAllResultModels()
 
 bool CT_InResultModelManager::isAllOutputModelFoundFromStep(const CT_VirtualAbstractStep *step)
 {
-    return searchOneOrSearchMultipleAndSaveAllOutputModelFromStep(step, false, true);
+    // for each inResultModel
+    QListIterator<CT_InAbstractResultModel*> it(models());
+
+    while(it.hasNext())
+    {
+        CT_InAbstractResultModel *cpyModel = (CT_InAbstractResultModel*)it.next()->copy(false);
+
+        bool valid = staticSearchOneOrSearchMultipleAndSaveAllOutputModelFromStep(cpyModel,
+                                                                                  step,
+                                                                                  true,
+                                                                                  true);
+
+        if(valid) {
+            CT_ModelSelectionHelper selectionHelper(cpyModel);
+
+            valid = selectionHelper.isValid();
+        }
+
+        delete cpyModel;
+
+        if(!valid)
+            return false;
+    }
+
+    return true;
 }
 
 bool CT_InResultModelManager::findAllOutputModelFromStepAndSavePossibilities(const CT_VirtualAbstractStep *step)
@@ -106,34 +131,21 @@ bool CT_InResultModelManager::searchOneOrSearchMultipleAndSaveAllOutputModelFrom
     while(inIt.hasNext()
           && found)
     {
-        CT_InAbstractResultModel *model = inIt.next();
-
-        if(model->needOutputModel())
-        {
-            if(model->isRecursive())
-                found = recursiveFindOutputModelFromStepForModel(step, model, searchAndSave, searchAndSave);
-            else
-                found = findOutputModelFromStepForModel(step, model, searchAndSave, searchAndSave);
-
-            // si on a pas trouvé de possibilité
-            // et qu'on veut quand même renvoyer true
-            // si le modèle est optionnel
-            if(!found
-                    && returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero
-                    && (model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() == 0))
-                found = true;
-        }
+        found = staticSearchOneOrSearchMultipleAndSaveAllOutputModelFromStep(inIt.next(),
+                                                                             step,
+                                                                             searchAndSave,
+                                                                             returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero);
     }
 
     return found;
 }
 
-bool CT_InResultModelManager::recursiveFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
+bool CT_InResultModelManager::staticRecursiveFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
                                                                        CT_InAbstractResultModel *inModel,
                                                                        const bool &savePossibilities,
                                                                        const bool &multiple)
 {
-    bool found = findOutputModelFromStepForModel(step,
+    bool found = staticFindOutputModelFromStepForModel(step,
                                                  inModel,
                                                  savePossibilities,
                                                  multiple);
@@ -145,7 +157,7 @@ bool CT_InResultModelManager::recursiveFindOutputModelFromStepForModel(const CT_
 
         if(parent != NULL)
         {
-            if(recursiveFindOutputModelFromStepForModel(parent,
+            if(staticRecursiveFindOutputModelFromStepForModel(parent,
                                                         inModel,
                                                         savePossibilities,
                                                         multiple))
@@ -156,7 +168,7 @@ bool CT_InResultModelManager::recursiveFindOutputModelFromStepForModel(const CT_
     return found;
 }
 
-bool CT_InResultModelManager::findOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
+bool CT_InResultModelManager::staticFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
                                                               CT_InAbstractResultModel *inModel,
                                                               const bool &savePossibilities,
                                                               const bool &multiple)
@@ -192,6 +204,32 @@ bool CT_InResultModelManager::findOutputModelFromStepForModel(const CT_VirtualAb
                     found = true;
             }
         }
+    }
+
+    return found;
+}
+
+bool CT_InResultModelManager::staticSearchOneOrSearchMultipleAndSaveAllOutputModelFromStep(CT_InAbstractResultModel *model,
+                                                                                           const CT_VirtualAbstractStep *step,
+                                                                                           const bool &searchAndSave,
+                                                                                           const bool &returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero)
+{
+    bool found = true;
+
+    if(model->needOutputModel())
+    {
+        if(model->isRecursive())
+            found = staticRecursiveFindOutputModelFromStepForModel(step, model, searchAndSave, searchAndSave);
+        else
+            found = staticFindOutputModelFromStepForModel(step, model, searchAndSave, searchAndSave);
+
+        // si on a pas trouvé de possibilité
+        // et qu'on veut quand même renvoyer true
+        // si le modèle est optionnel
+        if(!found
+                && returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero
+                && (model->minimumNumberOfPossibilityThatMustBeSelectedForOneTurn() == 0))
+            found = true;
     }
 
     return found;

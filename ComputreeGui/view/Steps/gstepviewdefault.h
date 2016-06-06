@@ -129,6 +129,7 @@ private:
     DM_StepTreeViewDefaultProxyModel                                *m_proxy;
     DisplayNameConfigs                                              m_nameConfig;
     QMap<DM_StepsFromPluginsModelConstructor::ItemType, QMenu*>     m_contextMenus; // must be sorted in ascending order !
+    QTimer                                                          m_timerInvalidateProxy;
 
     /**
      * @brief Search a step recursively by it's name : displayable or not, extended or custom, etc... and expand the parent to let the user
@@ -207,7 +208,12 @@ private slots:
      */
     void selectionChanged(const QItemSelection & newSelection, const QItemSelection & oldSelection);
 
-    void on_pb_replaceDefualt_clicked();
+    void on_pb_replaceDefault_clicked();
+
+    /**
+     * @brief Called by a timer to filter steps
+     */
+    void filterStep();
 
 signals:
     /**

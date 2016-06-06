@@ -21,9 +21,13 @@ GStepViewDefault::GStepViewDefault(QWidget *parent) :
 
     ui->checkBoxShowAtLastPosition->setVisible(false);
 
+    m_timerInvalidateProxy.setInterval(1000);
+    m_timerInvalidateProxy.setSingleShot(true);
+
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(indexDoubleClicked(QModelIndex)));
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTreeViewContextMenu(QPoint)), Qt::QueuedConnection);
 
+    connect(&m_timerInvalidateProxy, SIGNAL(timeout()), this, SLOT(filterStep()));
 }
 
 GStepViewDefault::~GStepViewDefault()
@@ -401,26 +405,9 @@ void GStepViewDefault::on_pushButtonConfigSearch_clicked()
 
 void GStepViewDefault::on_lineEditSearch_textChanged(const QString &text)
 {
-    QString userText = text;
-    QRegExp regFromString(".*" + text + ".*", Qt::CaseInsensitive);
-    QRegExp userReg(userText.remove("r:").remove("i:"));
+    Q_UNUSED(text)
 
-    if(text.contains("i:"))
-        userReg.setCaseSensitivity(Qt::CaseInsensitive);
-
-    if(text.isEmpty())
-        m_proxy->setFilterRegExp(".*");
-    else if(text.startsWith("r:"))
-        m_proxy->setFilterRegExp(userReg);
-    else
-        m_proxy->setFilterRegExp(regFromString);
-
-    if(!text.isEmpty())
-        ui->treeView->expandAll();
-    else
-        ui->treeView->collapseAll();
-
-    m_proxy->invalidate();
+    m_timerInvalidateProxy.start();
 }
 
 void GStepViewDefault::setStepName(bool enable)
@@ -522,7 +509,32 @@ void GStepViewDefault::selectionChanged(const QItemSelection &newSelection, cons
     emit stepSelected((CT_VirtualAbstractStep*)NULL);
 }
 
-void GStepViewDefault::on_pb_replaceDefualt_clicked()
+void GStepViewDefault::on_pb_replaceDefault_clicked()
 {
     emit replaceToDefault();
+}
+
+void GStepViewDefault::filterStep()
+{
+    QString text = ui->lineEditSearch->text();
+    QString userText = text;
+    QRegExp regFromString(".*" + text + ".*", Qt::CaseInsensitive);
+    QRegExp userReg(userText.remove("r:").remove("i:"));
+
+    if(text.contains("i:"))
+        userReg.setCaseSensitivity(Qt::CaseInsensitive);
+
+    if(text.isEmpty())
+        m_proxy->setFilterRegExp(".*");
+    else if(text.startsWith("r:"))
+        m_proxy->setFilterRegExp(userReg);
+    else
+        m_proxy->setFilterRegExp(regFromString);
+
+    if(!text.isEmpty())
+        ui->treeView->expandAll();
+    else
+        ui->treeView->collapseAll();
+
+    m_proxy->invalidate();
 }

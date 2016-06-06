@@ -547,7 +547,7 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
 
             bool atLeastOneChildrenIsObligatory = false;
 
-            while(itI.hasNext())
+            while(itI.hasNext() && !atLeastOneChildrenIsObligatory)
             {
                 CT_InAbstractModel *iam = (CT_InAbstractModel*)itI.next();
 

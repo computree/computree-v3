@@ -90,7 +90,7 @@ private:
      *
      *  \return false si aucun modèle de sortie ne correspond au modèle d'entrée.
      */
-    bool recursiveFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
+    static bool staticRecursiveFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
                                                   CT_InAbstractResultModel *inModel,
                                                   const bool &savePossibilities,
                                                   const bool &multiple);
@@ -104,10 +104,26 @@ private:
      *
      *  \return false si aucun modèle de sortie ne correspond au modèle d'entrée.
      */
-    bool findOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
+    static bool staticFindOutputModelFromStepForModel(const CT_VirtualAbstractStep *step,
                                          CT_InAbstractResultModel *inModel,
                                          const bool &savePossibilities,
                                          const bool &multiple);
+
+    /*!
+     *  \brief Recherche simplement sans sauvegardé ou en sauvegardant les modèles de sortie à partir de l'étape passé en paramètre pour le modèle passé en paramètre.
+     *
+     *  \param model : le modele pour lequel rechercher les possibilités
+     *  \param step : l'étape à partir de laquelle chercher les modèles de sortie
+     *  \param searchMultipleAndSave : à true si il faut rechercher toutes les possibilités et les sauvegarder
+     *  \param returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero : à true si on veut que la méthode renvoie true même si les résultats
+     *                                                                 qui sont optionnel n'on pas trouvé de possibilités
+     *
+     *  \return true si tout a été trouvé.
+     */
+    static bool staticSearchOneOrSearchMultipleAndSaveAllOutputModelFromStep(CT_InAbstractResultModel *model,
+                                                                             const CT_VirtualAbstractStep *step,
+                                                                             const bool &searchAndSave,
+                                                                             const bool &returnTrueIfNotFoundAndMinimumPossibilitiesEqualsZero);
 };
 
 #endif // CT_INRESULTMODELMANAGER_H
