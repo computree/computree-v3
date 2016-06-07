@@ -43,12 +43,22 @@
 <context>
     <name>PB_ASCIDExporter</name>
     <message>
-        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="34"/>
+        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="29"/>
+        <source>Points + ID item, ASCII(X,Y,Z)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="39"/>
         <source>Fichier asc</source>
         <translation>Ascii file</translation>
     </message>
     <message>
-        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="54"/>
+        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="41"/>
+        <source>Exporte les points au format ASCII. Tous les items contenant des points sont exportés dans le même fichier, avec les champs suivants :&lt;br&gt;- ID : ID Computree de l&apos;item contenant le point&lt;br&gt;- X  : Coordonnée X&lt;br&gt;- Y  : Coordonnée Y&lt;br&gt;- Z  : Coordonnée Z&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/ascid/pb_ascidexporter.cpp" line="66"/>
         <source>Aucun ItemDrawable du type CT_AbstractItemDrawableWithPointCloud</source>
         <translation>No ItemDrawable of type CT_AbstractItemDrawableWithPointCloud</translation>
     </message>
@@ -56,12 +66,22 @@
 <context>
     <name>PB_ASCRGBExporter</name>
     <message>
-        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="34"/>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="29"/>
+        <source>Points, ASCII(X,Y,Z,R,G,B,NX,NY,NZ)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="39"/>
         <source>Fichier asc</source>
         <translation>Ascii file</translation>
     </message>
     <message>
-        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="54"/>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="41"/>
+        <source>Exporte les points au format ASCII, avec les champs suivants :&lt;br&gt;- X  : Coordonnée X&lt;br&gt;- Y  : Coordonnée Y&lt;br&gt;- Z  : Coordonnée Z&lt;br&gt;- R  : Composante rouge&lt;br&gt;- V  : Composante verte&lt;br&gt;- B  : Composante Bleue&lt;br&gt;- NX : Coordonnée X de la normale au point&lt;br&gt;- NY : Coordonnée X de la normale au point&lt;br&gt;- NZ : Coordonnée X de la normale au point&lt;br&gt;&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/ascrgb/pb_ascrgbexporter.cpp" line="71"/>
         <source>Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation>No item of type CT_IAccessPointCloud</translation>
     </message>
@@ -952,12 +972,17 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation>Attributes export (csv)</translation>
     </message>
     <message>
-        <location filename="../exporters/csv/pb_csvexporter.cpp" line="34"/>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="39"/>
         <source>Fichiers csv</source>
         <translation>CSV Files</translation>
     </message>
     <message>
-        <location filename="../exporters/csv/pb_csvexporter.cpp" line="54"/>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="41"/>
+        <source>Exporte tous les attributs d&apos;un niveau d&apos;items (une ligne pour chaque instance d&apos;item)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/csv/pb_csvexporter.cpp" line="61"/>
         <source>Aucun Singular Item</source>
         <translation>No singular item</translation>
     </message>
@@ -969,29 +994,54 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_GDALExporter</name>
     <message>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="87"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="41"/>
+        <source>Exporter GDAL de type : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="41"/>
+        <source>Inconnu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="46"/>
+        <source>Pour plus de détails voir : http://www.gdal.org/formats_list.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="51"/>
+        <source>Pour plus de détails voir : http://www.gdal.org/ogr_formats.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="55"/>
+        <source>Extension : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="132"/>
         <source>Aucun ItemDrawable exportable</source>
         <translation>No exportable item</translation>
     </message>
     <message>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="92"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="137"/>
         <source>Vous ne pouvez pas exporter des rasters ET des éléments 2D dans un seul et même fichier, veuillez recommencer votre sélection.</source>
         <translation>You cannot export both rasters and 2D shapes in the same file. Please redo your selection.</translation>
     </message>
     <message>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="146"/>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="153"/>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="194"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="191"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="198"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="239"/>
         <source>Creation of output file failed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="203"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="248"/>
         <source>Layer creation failed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="379"/>
+        <location filename="../exporters/gdal/pb_gdalexporter.cpp" line="424"/>
         <source>Failed to create feature in shapefile.</source>
         <translation></translation>
     </message>
@@ -1004,12 +1054,17 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation>2D grids, ASCII ESRI Grid</translation>
     </message>
     <message>
-        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="28"/>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="34"/>
         <source>Fichiers Grid 2D (ASCII)</source>
         <translation>Grid 2D Files (ASCII)</translation>
     </message>
     <message>
-        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="51"/>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="36"/>
+        <source>Export des rasters au format ASCII ESRI Grid  (1 fichier par raster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="59"/>
         <source>Aucun ItemDrawable du type CT_AbstractImage2D</source>
         <translation>No item of type CT_AbstractImage2D</translation>
     </message>
@@ -1018,7 +1073,7 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation type="vanished">No ItemDrawable of type CT_AbstractGrid2D</translation>
     </message>
     <message>
-        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="62"/>
+        <location filename="../exporters/grid2d/pb_grid2dexporter.cpp" line="70"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
@@ -1026,17 +1081,27 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_Grid3DAsTableExporter</name>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="28"/>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="23"/>
+        <source>Grilles 3D, table (X,Y,Z,Valeur)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="34"/>
         <source>Fichiers txt</source>
         <translation>TXT Files</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="47"/>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="36"/>
+        <source>Exporte des grilles 3D au format table ASCII. Les champs suivants sont exportés :&lt;br&gt;- X  : Coordonnée X de la cellule dans la grille (ligne)&lt;br&gt;- Y  : Coordonnée Y de la cellule dans la grille (colonne)&lt;br&gt;- Z  : Coordonnée Z de la cellule dans la grille (niveau Z)&lt;br&gt;- Valeur  : Valeur dans la cellule&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="59"/>
         <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
         <translation>No ItemDrawable of type CT_AbstractGrid3D</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="58"/>
+        <location filename="../exporters/grid3d/pb_grid3dastableexporter.cpp" line="70"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
@@ -1044,17 +1109,31 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_Grid3DExporter</name>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="28"/>
         <source>Fichiers Grid 3D (ASCII)</source>
-        <translation>Grid 3D Files (ASCII)</translation>
+        <translation type="vanished">Grid 3D Files (ASCII)</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="51"/>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="23"/>
+        <source>Grilles 3D, ACSII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="34"/>
+        <source>Fichiers Grilles 3D (ASCII)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="36"/>
+        <source>Export des Grilles 3D au format ASCII, inspiré du format ASCII ESRI GRID pour les rasters (1 fichier par grille)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="59"/>
         <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
         <translation>No ItemDrawable of type CT_AbstractGrid3D</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="62"/>
+        <location filename="../exporters/grid3d/pb_grid3dexporter.cpp" line="70"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
@@ -1062,19 +1141,16 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_Grid3DHistExporter</name>
     <message>
-        <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="28"/>
         <source>Fichiers hist Grid3D (ASCII)</source>
-        <translation>Gird3D hist files (ASCII)</translation>
+        <translation type="vanished">Gird3D hist files (ASCII)</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="51"/>
         <source>Aucun ItemDrawable du type CT_AbstractGrid3D</source>
-        <translation>No Item of type CT_AbstractGrid3D</translation>
+        <translation type="vanished">No Item of type CT_AbstractGrid3D</translation>
     </message>
     <message>
-        <location filename="../exporters/grid3dhist/pb_grid3dhistexporter.cpp" line="62"/>
         <source>Erreur</source>
-        <translation>Error</translation>
+        <translation type="vanished">Error</translation>
     </message>
 </context>
 <context>
@@ -1085,12 +1161,17 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation>Attributes/Items in groups</translation>
     </message>
     <message>
-        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="37"/>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="43"/>
         <source>Fichier txt</source>
         <translation>TXT Files</translation>
     </message>
     <message>
-        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="62"/>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="45"/>
+        <source>Exporte tous les attributs de TOUS LES ITEMS d&apos;un niveau ou plusieurs niveaux de groupes.&lt;br&gt;Un fichier table ASCII est produit pour chaque niveau de groupe séléctionné.&lt;br&gt;Dans chaque table, il y a une ligne par instance de groupe.&lt;br&gt;Dans chaque table :&lt;br&gt;- une première ligne d&apos;entête donne le nom des items contenus dans le groupe,&lt;br&gt;- une seconde  ligne d&apos;entête donne le nom de l&apos;attribut dans l&apos;item.&lt;br&gt;De plus les deux premières colonnes de chaque table permettent de faire des jointures entre niveaux de groupes :&lt;br&gt;- GroupID  : identifiant Computree des groupes décris dans la table en cours,&lt;br&gt;- ParentID : identifiant Computree des groupes parents, contenant les groupes de la table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/groupdata/pb_groupdataexporter.cpp" line="78"/>
         <source>Aucun Groupe</source>
         <translation>No group</translation>
     </message>
@@ -1098,22 +1179,32 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_LASExporter</name>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="46"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="41"/>
+        <source>Points, LAS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="52"/>
         <source>Fichiers LAS .las</source>
         <translation>LAS file .las</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="64"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="54"/>
+        <source>Exporte tous les points au format LAS, ASPRS&lt;br&gt;http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="73"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation>- No item of type CT_IAccessPointCloud</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="86"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="95"/>
         <source>- Aucun points à exporter</source>
         <translation>- No point to export</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="245"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="254"/>
         <source>Problème lors de l&apos;écriture de l&apos;en-tête du fichier</source>
         <translation>Problem during writing file header</translation>
     </message>
@@ -1121,12 +1212,22 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_MeshObjExporter</name>
     <message>
-        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="24"/>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="19"/>
+        <source>Meshs, format OBJ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="29"/>
         <source>Fichiers .obj</source>
         <translation>OBJ Files</translation>
     </message>
     <message>
-        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="44"/>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="31"/>
+        <source>Exporte un maillage dans un fichier au format OBJ (Objet 3D)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/mesh/pb_meshobjexporter.cpp" line="52"/>
         <source>Aucun ItemDrawable du type CT_MeshModel</source>
         <translation>No ItemDrawable of type CT_MeshModel</translation>
     </message>
@@ -1134,22 +1235,32 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_MultiXYBExporter</name>
     <message>
-        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="40"/>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="35"/>
+        <source>Points (1 file/scene), XYB (X,Y,Z,I)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="46"/>
         <source>Fichiers .xyb (1 fichier/scène)</source>
         <translation>XYB file (1 file/scene)</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="58"/>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="48"/>
+        <source>Export des points contenus dans plusieurs items au format binaire XYB (FARO) : 1 fichier par item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="66"/>
         <source>- Aucun ItemDrawable du type CT_Scene</source>
         <translation>- No item of type CT_Scene</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="120"/>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="128"/>
         <source>Fichier %1 créé</source>
         <translation>File %1 created</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="123"/>
+        <location filename="../exporters/xyb/pb_multixybexporter.cpp" line="131"/>
         <source>Errreur : impossible de créer le fichier %1</source>
         <translation>Error: impossible to create file %1</translation>
     </message>
@@ -1157,12 +1268,22 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_OPFExporter</name>
     <message>
-        <location filename="../exporters/topology/pb_opfexporter.cpp" line="38"/>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="33"/>
+        <source>Topologie, format OPF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="44"/>
         <source>Fichiers AmapStudio .opf</source>
         <translation>OPF Files (AmapStudio)</translation>
     </message>
     <message>
-        <location filename="../exporters/topology/pb_opfexporter.cpp" line="59"/>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="46"/>
+        <source>Exporte une topologie décrivant l&apos;architecture de végétaux dans un fichier au format OPF, pour utilisation par le logiciel AMAPStudio.&lt;br&gt;http://amapstudio.cirad.fr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/topology/pb_opfexporter.cpp" line="68"/>
         <source>Aucun ItemDrawable du type CT_TTreeGroup</source>
         <translation>No ItemDrawable of type CT_TTreeGroup</translation>
     </message>
@@ -1170,27 +1291,36 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_PbmExporter</name>
     <message>
-        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="21"/>
         <source>Grilles 2D, format PBM</source>
-        <translation>2D grids, PBM format</translation>
+        <translation type="vanished">2D grids, PBM format</translation>
     </message>
     <message>
-        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="26"/>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="21"/>
+        <source>Images 2D, format PBM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="32"/>
         <source>Fichiers Images 2D (pbm)</source>
         <translation>PBM Files (2D images)</translation>
     </message>
     <message>
-        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="47"/>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="34"/>
+        <source>Portable BitMap : Format de fichier image noir et blanc (NetPBM)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="55"/>
         <source>Aucun ItemDrawable du type CT_ITemplatedData2DArray&lt;int&gt;</source>
         <translation>No item of type  CT_ITemplatedData2DArray&lt;int&gt;</translation>
     </message>
     <message>
-        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="58"/>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="66"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="84"/>
+        <location filename="../exporters/pbm/pb_pbmexporter.cpp" line="92"/>
         <source>Impossible d&apos;enregistrer plusieurs images dans le meme fichier</source>
         <translation>Unable to save multiple images in the same file</translation>
     </message>
@@ -1198,27 +1328,36 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_PgmExporter</name>
     <message>
-        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="21"/>
         <source>Grilles 2D, format PGM</source>
-        <translation>2D grids, PGM format</translation>
+        <translation type="vanished">2D grids, PGM format</translation>
     </message>
     <message>
-        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="26"/>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="21"/>
+        <source>Images 2D, format PGM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="32"/>
         <source>Fichiers Images 2D (pgm)</source>
         <translation>PGM Files (2D images)</translation>
     </message>
     <message>
-        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="47"/>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="34"/>
+        <source>Portable GrayMap : Format de fichier image en niveaux de gris (NetPBM)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="55"/>
         <source>Aucun ItemDrawable du type CT_VirtualGrid2D&lt;int&gt;</source>
         <translation>No ItemDrawable of type CT_VirtualGrid2D&lt;int&gt;</translation>
     </message>
     <message>
-        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="58"/>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="66"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="84"/>
+        <location filename="../exporters/pgm/pb_pgmexporter.cpp" line="92"/>
         <source>Impossible d&apos;enregistrer plusieurs images dans le meme fichier</source>
         <translation>Unable to save multiple images in the same file</translation>
     </message>
@@ -1231,12 +1370,17 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation>2D polygons, ASCII</translation>
     </message>
     <message>
-        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="29"/>
+        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="35"/>
         <source>Polygones 2D (ASCII)</source>
         <translation>Polygons 2D (ASCII)</translation>
     </message>
     <message>
-        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="52"/>
+        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="37"/>
+        <source>Exporte des Polygones 2D en format ASCII. Le fichier de sortie contient une ligne par polygones.&lt;br&gt;Pour chaque polygone, sont exportés :&lt;br&gt;- PolygonId : Identifiant Computree du polygone&lt;br&gt;- AreaOfPolygon : Aire du polygone&lt;br&gt;- Xcenter : Coordonnée X du centre de masse du polygone&lt;br&gt;- Ycenter : Coordonnée Y du centre de masse du polygone&lt;br&gt;- NumberOfVertice(N) : Nombre de sommets du polygone&lt;br&gt;- Xvertice1 : Coordonnée X du 1er sommet&lt;br&gt;- Yvertice1 : Coordonnée Y du 1er sommet&lt;br&gt;- Xvertice2 : Coordonnée X du 2ième sommet&lt;br&gt;- Yvertice2 : Coordonnée Y du 2ième sommet&lt;br&gt;...- XverticeN : Coordonnée X du Nième sommet&lt;br&gt;- YverticeN : Coordonnée Y du Nième sommet&lt;br&gt;N.B. : Le nombre de colonnes varie donc pour chaque ligne. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="73"/>
         <source>Aucun ItemDrawable du type CT_Polygon2D</source>
         <translation>No item of type CT_Polygon2D</translation>
     </message>
@@ -1245,7 +1389,7 @@ In 3D mode, the tool only works on selected cells</translation>
         <translation type="vanished">No ItemDrawable of type CT_Polygon2D_Old</translation>
     </message>
     <message>
-        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="63"/>
+        <location filename="../exporters/polygon2d/pb_polygon2dexporter.cpp" line="84"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
@@ -1253,17 +1397,27 @@ In 3D mode, the tool only works on selected cells</translation>
 <context>
     <name>PB_ProfileExporter</name>
     <message>
-        <location filename="../exporters/profile/pb_profileexporter.cpp" line="28"/>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="23"/>
+        <source>Profils, ACSII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="33"/>
         <source>Fichiers Profile (ASCII)</source>
         <translation>Profile Files (ASCII)</translation>
     </message>
     <message>
-        <location filename="../exporters/profile/pb_profileexporter.cpp" line="51"/>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="35"/>
+        <source>Export de profils au format ASCII (1 fichier par profil).&lt;br&gt;Le fichier comporte d&apos;abord une entête inspirée du format ASCII ESRI GRID pour les rasters, décrivant l&apos;origine, la direction et la résolution du profil.&lt;br&gt;Ensuite, une table fournit les champs suivants :&lt;br&gt;- Level : Numéro de la cellule dans le profil&lt;br&gt;- Length : Longueur correspondant au centre de la cellule le long du profil&lt;br&gt;- Xc : Coordonnée X du centre de la cellule&lt;br&gt;- Yc : Coordonnée Y du centre de la cellule&lt;br&gt;- Zc : Coordonnée Z du centre de la cellule&lt;br&gt;- Value : Valeur de la cellule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="66"/>
         <source>Aucun ItemDrawable du type CT_AbstractProfile</source>
         <translation>No ItemDrawable of type CT_AbstractProfile</translation>
     </message>
     <message>
-        <location filename="../exporters/profile/pb_profileexporter.cpp" line="62"/>
+        <location filename="../exporters/profile/pb_profileexporter.cpp" line="77"/>
         <source>Erreur</source>
         <translation>Error</translation>
     </message>
@@ -1610,7 +1764,7 @@ Only files headers are loaded at this stage. </translation>
     </message>
     <message>
         <location filename="../step/pb_stepcreatedatasource.cpp" line="86"/>
-        <source>Une source de données est une liste de fichiers du même type.&lt;br&gt;Si la case &lt;em&gt;charger les données&lt;/em&gt; est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.&lt;br&gt;Si la case est cochée, tous les fichiers sont chargés intégralement.</source>
+        <source>Une source de données est une liste de fichiers du même type.&lt;br&gt;&lt;br&gt;Si la case &lt;em&gt;charger les données&lt;/em&gt; est décochée, seuls les entêtes des fichiers sont chargées. Les données pourront être chargées dans la suite du script, par exemple dans une boucle.&lt;br&gt;&lt;br&gt;Si la case est cochée, tous les fichiers sont chargés intégralement.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1704,54 +1858,58 @@ Only files headers are loaded at this stage. </translation>
         <translation>Export with adaptative file names</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="86"/>
         <source>No detailled description for this step</source>
-        <translation>No detailled description for this step</translation>
+        <translation type="vanished">No detailled description for this step</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="107"/>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="119"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="86"/>
+        <source>Permet un export avec nom de fichier adaptatif.&lt;br&gt;Cette étape peut utiliser n&apos;importe quel exporter.&lt;br&gt;Le nom du fichier de sorti, est déterminé à partir d&apos;un nom de fichier d&apos;entrée stocké dans un item de type entête (CT_Header).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="109"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="121"/>
         <source>Résultat</source>
         <translation>Result</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="109"/>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="120"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="111"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="122"/>
         <source>Groupe</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="110"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="112"/>
         <source>Item contenant le nom du fichier</source>
         <translation>Item containing file name</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="111"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="113"/>
         <source>Nom</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="112"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="114"/>
         <source>Item à exporter</source>
         <translation>Item to export</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="127"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="129"/>
         <source>Répertoire d&apos;export</source>
         <translation>Export directory</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="128"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="130"/>
         <source>Suffixe de nom de fichier</source>
         <translation>Suffix for file name</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="141"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="143"/>
         <source>ERREUR : aucun exporter disponible</source>
         <translation>ERROR: no exporter available</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="144"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="146"/>
         <source>Choix du type de fichier</source>
         <translation>Choose file type</translation>
     </message>
@@ -1846,17 +2004,22 @@ Only files headers are loaded at this stage. </translation>
 <context>
     <name>PB_StepGenericExporter</name>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="178"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="120"/>
+        <source>Exporte un(des) fichier(s) de type :</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="209"/>
         <source>Résultat</source>
         <translation>Result</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="184"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="215"/>
         <source>Item</source>
         <translation>Item</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepgenericexporter.cpp" line="222"/>
+        <location filename="../step/pb_stepgenericexporter.cpp" line="253"/>
         <source>Exporter sous...</source>
         <translation>Export as...</translation>
     </message>
@@ -2008,52 +2171,61 @@ Only files headers are loaded at this stage. </translation>
         <translation type="vanished">Loading of grid3D file</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
         <source>Fichier Grid3d</source>
-        <translation>Grid3D file</translation>
+        <translation type="vanished">Grid3D file</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="42"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="31"/>
+        <source>Fichier Grille 3D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="36"/>
+        <source>Chargement d&apos;une grille 3D depuis un fichier ASCII (format insipré du format raster ESRI GRID).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="47"/>
         <source>Grid 3D Files</source>
         <translation>Grid3D file</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="72"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="77"/>
         <source>Unable to convert the ascii format to a integer at line 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="83"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="88"/>
         <source>Unable to convert the ascii format to a integer at line 2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="94"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="99"/>
         <source>Unable to convert the ascii format to a integer at line 3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="105"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="110"/>
         <source>Unable to convert the ascii format to a floatting point at line 4</source>
         <translation>Unable to convert the ascii format to a floatting point at line 4</translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="116"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="121"/>
         <source>Unable to convert the ascii format to a floatting point at line 5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="127"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="132"/>
         <source>Unable to convert the ascii format to a floatting point at line 6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="138"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="143"/>
         <source>Unable to convert the ascii format to a floatting point at line 7</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_steploadgrid3dfile.cpp" line="149"/>
+        <location filename="../step/pb_steploadgrid3dfile.cpp" line="154"/>
         <source>Unable to convert the ascii format to a floatting point at line 8</source>
         <translation></translation>
     </message>
@@ -2914,22 +3086,32 @@ Please select parameters for slicing.</translation>
 <context>
     <name>PB_XYBExporter</name>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="45"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="40"/>
+        <source>Points, XYB (X,Y,Z,I)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="51"/>
         <source>Fichiers binaire de points .xyb</source>
         <translation>XYB Files (Points binary encoded)</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="63"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="53"/>
+        <source>Export des points dans un fichier format binaire XYB (FARO)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="71"/>
         <source>- Aucun ItemDrawable du type CT_IAccessPointCloud</source>
         <translation>- No item of type CT_IAccessPointCloud</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="85"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="93"/>
         <source>- Aucun points à exporter</source>
         <translation>- No point to export</translation>
     </message>
     <message>
-        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="139"/>
+        <location filename="../exporters/xyb/pb_xybexporter.cpp" line="147"/>
         <source>Scanners</source>
         <translation></translation>
     </message>
@@ -2937,7 +3119,7 @@ Please select parameters for slicing.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="117"/>
+        <location filename="../pb_steppluginmanager.cpp" line="116"/>
         <source>Plugin_Base initialized</source>
         <translation></translation>
     </message>
@@ -2962,7 +3144,7 @@ Please select parameters for slicing.</translation>
         <translation type="vanished">Script loops</translation>
     </message>
     <message>
-        <location filename="../exporters/las/pb_lasexporter.cpp" line="143"/>
+        <location filename="../exporters/las/pb_lasexporter.cpp" line="152"/>
         <source>Attributs</source>
         <translation>Attributes</translation>
     </message>
