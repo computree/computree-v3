@@ -252,7 +252,14 @@ void PB_StepExportAttributesInLoop::compute()
 
             if (counter != NULL)
             {
-                exportBaseName = QFileInfo(counter->getTurnName()).baseName();
+                QFileInfo fileinfo(counter->getTurnName());
+                if (fileinfo.exists())
+                {
+                    exportBaseName = fileinfo.baseName();
+                } else {
+                    exportBaseName = counter->getTurnName();
+                }
+
                 if (counter->getCurrentTurn() > 1)
                 {
                     first = false;
@@ -400,7 +407,7 @@ void PB_StepExportAttributesInLoop::compute()
                     return;
                 }
             } else {
-                if (!fileASCII->open(QIODevice::Append | QIODevice::Text))
+                if (!fileASCII->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
                 {
                     delete streamASCII; streamASCII = NULL;
                     delete fileASCII; fileASCII = NULL;
@@ -750,17 +757,17 @@ QMap<QString, QString> PB_StepExportAttributesInLoop::computeShortNames(const QM
        if (value.size() <= 10)
        {
            shortNames.insert(key, value);
-           existing.append(value);
+           existing.append(value.toLower());
        } else {
            QString newValue = value.left(10);
            int cpt = 2;
-           while (existing.contains(newValue))
+           while (existing.contains(newValue.toLower()))
            {
                QString number = QVariant(cpt++).toString();
                newValue = QString("%1%2").arg(value.left(10 - number.length())).arg(number);
            }
            shortNames.insert(key, newValue);
-           existing.append(newValue);
+           existing.append(newValue.toLower());
        }
    }
 
