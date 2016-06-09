@@ -320,30 +320,32 @@ double CT_CloudMetrics::computePercentile(const std::vector<double> &array, cons
 
 double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size_t &arraySize)
 {
+    int numberOfClasses = 63;
+
     if(arraySize == 1)
     {
             return array[0];
     }
 
-    double step = (array[arraySize-1] - array[0]) / 64.0;
+    double step = (array[arraySize-1] - array[0]) / (float)numberOfClasses;
 
-    std::vector<double> classes(65);
+    std::vector<double> classes(numberOfClasses + 1);
     classes[0] = array[0];
 
-    for(size_t i=1; i<65; ++i)
+    for(size_t i=1; i < (numberOfClasses + 1); ++i)
     {
-        classes[i] = classes[i-1]+step;
+        classes[i] = classes[i-1] + step;
     }
 
-    std::vector<size_t> res(64, 0);
+    std::vector<size_t> res(numberOfClasses, 0);
 
     size_t j = 1;
 
-    for(size_t i=0; i<arraySize; ++i)
+    for(size_t i = 0; i < arraySize; ++i)
     {
-        // if there was rounding problem we can have j > 65
+        // if there was rounding problem we can have j > numberOfClasses + 1
         // or if step == 0
-        while((array[i] >= classes[j]) && (j<65))
+        while((array[i] >= classes[j]) && (j < (numberOfClasses + 1)))
         {
             ++j;
         }
@@ -354,7 +356,7 @@ double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size
     size_t maxOccurence = res[0];
     size_t maxOccurenceIndex = 0;
 
-    for(size_t i=1; i<64; ++i)
+    for(size_t i = 1; i < numberOfClasses; ++i)
     {
         if(res[i] > maxOccurence)
         {
