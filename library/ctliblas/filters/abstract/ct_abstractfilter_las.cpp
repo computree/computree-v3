@@ -51,7 +51,7 @@ bool CT_AbstractFilter_LAS::filterPointCloudIndex()
         }
     }
 
-    PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points conservés sur %2 points").arg(nPointsKeept).arg(size));
+    //PS_LOG->addInfoMessage(LogInterface::filter, tr("%1 points conservés sur %2 points").arg(nPointsKeept).arg(size));
     if (cptErrors > 0)
     {
         PS_LOG->addMessage(LogInterface::info, LogInterface::filter, tr("Pas d'informations LAS pour %1 points : points non conservés").arg(cptErrors));

@@ -129,7 +129,10 @@ void PB_StepUseReaderToLoadFiles::compute()
                     connect(reader, SIGNAL(progressChanged(int)), this, SLOT(readerProgressChanged(int)), Qt::DirectConnection);
 
                     if (reader != NULL && reader->readFile())
+                    {
+                        PS_LOG->addInfoMessage(LogInterface::step, tr("Chargement du fichier %1").arg(reader->filepath()));
                         m_readerAddingTools.addReaderResults(outRes, group, reader, m_readerAutoIndex);
+                    }
 
                     disconnect(this, NULL, reader, NULL);
                 }
