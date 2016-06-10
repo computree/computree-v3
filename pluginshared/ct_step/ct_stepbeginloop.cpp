@@ -112,6 +112,6 @@ void CT_StepBeginLoop::compute(CT_ResultGroup *outRes, CT_StandardItemGroup* gro
 
 void CT_StepBeginLoop::NTurnsSelected()
 {
-    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Début de boucle, tour %1 sur %2")).arg(_counter->getCurrentTurn()).arg(_counter->getNTurns()));
+    PS_LOG->addMessage(LogInterface::info, LogInterface::step, QString(tr("Début de boucle, tour %1 sur %2 (%3)")).arg(_counter->getCurrentTurn()).arg(_counter->getNTurns()).arg(_counter->getTurnName()));
 }
 
