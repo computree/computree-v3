@@ -2,8 +2,10 @@
 #define CT_LASDATA_H
 
 #include <QtGlobal>
+#include "ctliblas/ctliblas_global.h"
 
-class CT_LASData
+
+class CTLIBLAS_EXPORT CT_LASData
 {
 public:
     CT_LASData();
