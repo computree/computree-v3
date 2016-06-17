@@ -343,9 +343,9 @@ double CT_CloudMetrics::computeMode(const std::vector<double> &array, const size
 
     for(size_t i = 0; i < arraySize; ++i)
     {
-        // if there was rounding problem we can have j > numberOfClasses + 1
+        // if there was rounding problem we can have j > numberOfClasses
         // or if step == 0
-        while((array[i] >= classes[j]) && (j < (numberOfClasses + 1)))
+        while((array[i] >= classes[j]) && (j < numberOfClasses))
         {
             ++j;
         }
