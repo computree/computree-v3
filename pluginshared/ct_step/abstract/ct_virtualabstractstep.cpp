@@ -1572,7 +1572,7 @@ void CT_VirtualAbstractStep::setLaunchTime(QDateTime launchTime)
 
 void CT_VirtualAbstractStep::runProcessing(bool modificationMode)
 {
-    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Start computing"));
+    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Start computing at \t%1").arg(QTime::currentTime().toString("hh:mm:ss")));
 
     _running = true;
     _stop = false;
@@ -1671,7 +1671,17 @@ void CT_VirtualAbstractStep::runProcessing(bool modificationMode)
     _turnIndexManager->resetTurnIndex();
     _running = false;
 
-    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Computing completed"));
+
+    int elaps = _execute_time.elapsed();
+    int hour = elaps/3600000;
+    elaps -= hour*3600000;
+    int min = elaps/60000;
+    elaps -= min*60000;
+    int sec = elaps/1000;
+    elaps -= sec*1000;
+    int ms = elaps;
+
+    PS_LOG->addMessage(LogInterface::trace, LogInterface::step,  getStepCustomName() + tr(" - Computing completed, elapsed time:\t\t%1h:%2m:%3s:%4ms").arg(hour).arg(min).arg(sec).arg(ms));
 
     emit isCompleted();
 }
