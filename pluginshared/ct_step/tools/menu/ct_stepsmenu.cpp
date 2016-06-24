@@ -72,12 +72,14 @@ QString CT_StepsMenu::staticOperationToDisplayableName(CT_StepsMenu::LevelOperat
     switch(operation) {
     case LO_Load : return QObject::tr("Charger");
     case LO_Export : return QObject::tr("Exporter");
-    case LO_Points : return QObject::tr("Points");
-    case LO_GeometricalShapes : return QObject::tr("Items");
-    case LO_Voxels : return QObject::tr("Voxels");
-    case LO_Rasters : return QObject::tr("Rasters");
-    case LO_Meshes : return QObject::tr("Maillages");
     case LO_WorkFlow : return QObject::tr("Flux");
+    case LO_Points : return QObject::tr("Points");
+    case LO_GeometricalShapes : return QObject::tr("Géométrie 3D");
+    case LO_Voxels : return QObject::tr("Voxels");
+    case LO_Shapes2D : return QObject::tr("Géométrie 2D");
+    case LO_Rasters : return QObject::tr("Rasters / Images");
+    case LO_Meshes : return QObject::tr("Maillages");
+    case LO_Metrics : return QObject::tr("Métriques");
     case LO_Other : return QObject::tr("Autres");
     case LO_Beta : return QObject::tr("Travaux en cours (Beta)");
     case LO_Favorites : return QObject::tr("Favoris");
@@ -99,17 +101,20 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
     case LP_Analyze: return QObject::tr("Analyser");
     case LP_Fit: return QObject::tr("Ajuster");
     case LP_Colorize: return QObject::tr("Coloriser");
-    case LP_Clusters: return QObject::tr("Clusters");
+    case LP_Clusters: return QObject::tr("Clusteriser");
     case LP_Loops: return QObject::tr("Boucles");
-    case LP_Crowns: return QObject::tr("Houppiers");
+    case LP_Plots: return QObject::tr("Placettes");
+    case LP_Footprints: return QObject::tr("Emprises");
     case LP_DEM: return QObject::tr("Modèles Num. d'Elévation");
-    case LP_Stems: return QObject::tr("Détéction de tiges / DBH");
+    case LP_Crowns: return QObject::tr("Détécter (houppiers)");
+    case LP_Stems: return QObject::tr("Détécter (tiges)");
     case LP_Points: return QObject::tr("Points");
-    case LP_Items: return QObject::tr("Items");
-    case LP_Raster: return QObject::tr("Raster");
-    case LP_Vector: return QObject::tr("Vector");
+    case LP_Items: return QObject::tr("Géométrie 3D");
+    case LP_Raster: return QObject::tr("Rasters / Images");
+    case LP_Vector: return QObject::tr("Géométrie 2D");
     case LP_Voxels: return QObject::tr("Voxels");
     case LP_Meshes: return QObject::tr("Maillages");
+    case LP_ItemAttributes: return QObject::tr("Attributs");
     case LP_Others: return QObject::tr("Autres");
     }
 

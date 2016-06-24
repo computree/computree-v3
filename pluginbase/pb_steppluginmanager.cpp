@@ -138,10 +138,10 @@ bool PB_StepPluginManager::loadGenericsStep()
     addNewWorkflowStep<PB_StepBeginLoopThroughGroups02>(CT_StepsMenu::LP_Loops);
     addNewWorkflowStep<CT_StepEndLoop>(CT_StepsMenu::LP_Loops);
     addNewPointsStep<PB_StepApplyPointFilters>(CT_StepsMenu::LP_Filter);
-    addNewPointsStep<PB_StepApplyPointFiltersInGrid>(CT_StepsMenu::LP_Filter);
-    addNewPointsStep<PB_StepComputePointMetrics>(CT_StepsMenu::LP_Analyze);
+//    addNewPointsStep<PB_StepApplyPointFiltersInGrid>(CT_StepsMenu::LP_Filter);
     addNewGeometricalShapesStep<PB_StepUserItemSelection>(CT_StepsMenu::LP_Filter);
-    addNewRastersStep<PB_StepComputeRasterMetrics>(CT_StepsMenu::LP_Analyze);
+    addNewMetricStep<PB_StepComputePointMetrics>("");
+    addNewMetricStep<PB_StepComputeRasterMetrics>("");
 
     addNewLoadStep<PB_StepCreateReaderList>("");
     addNewLoadStep<PB_StepUseReaderToLoadFiles>("");

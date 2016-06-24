@@ -24,14 +24,16 @@ public:
         LO_Favorites,       // Favorites Step. Must not be used by plugins ! Only by gui or core
         LO_Load,                // Steps that load/import files
         LO_Export,              // Steps that exports files
-        LO_Points,              // Steps that works with points
-        LO_GeometricalShapes,   // Steps that works with geometrical shapes
-        LO_Voxels,              // Steps that works wih voxels
-        LO_Rasters,             // Steps that works with rasters
-        LO_Meshes,              // Steps that works with meshes
         LO_WorkFlow,            // Steps that can control the worklow of all other steps
+        LO_Points,              // Steps that produce points clouds / clusters
+        LO_GeometricalShapes,   // Steps that produce 3D geometrical shapes
+        LO_Voxels,              // Steps that produce voxels
+        LO_Shapes2D,            // Steps that produce 2D geometrical shapes
+        LO_Rasters,             // Steps that produce rasters
+        LO_Meshes,              // Steps that produce meshes
+        LO_Metrics,             // Steps that produce metrics
         LO_Other,               // Steps that can not be ordered in one of other operation
-        LO_Beta,                // Steps that are in Beta(work in progress
+        LO_Beta,                // Steps that are in Beta(work in progress)
         LO_InternalUse
     };
     Q_ENUMS(LevelOperationType)
@@ -51,16 +53,18 @@ public:
         LP_Colorize,
         LP_Clusters,
         LP_Loops,
-        LP_Crowns,
+        LP_Plots,
+        LP_Footprints,
         LP_DEM,
+        LP_Crowns,
         LP_Stems,
-        LP_ItemAttributes,
         LP_Points,
         LP_Items,
         LP_Raster,
         LP_Vector,
         LP_Voxels,
         LP_Meshes,
+        LP_ItemAttributes,
         LP_Others
     };
     Q_ENUMS(LevelPredefined)
