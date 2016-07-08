@@ -712,23 +712,23 @@ bool CT_Reader_Points_ASCII::readAndAddNormal(const QStringList &wordsOfLine, co
 
     bool ok;
     CT_Normal normal;
-    normal.x() = locale.toInt(wordsOfLine.at(m_columnNxIndex), &ok);
+    normal.x() = locale.toFloat(wordsOfLine.at(m_columnNxIndex), &ok);
 
     if(!ok)
         return false;
 
-    normal.y() = locale.toInt(wordsOfLine.at(m_columnNyIndex), &ok);
+    normal.y() = locale.toFloat(wordsOfLine.at(m_columnNyIndex), &ok);
 
     if(!ok)
         return false;
 
-    normal.z() = locale.toInt(wordsOfLine.at(m_columnNzIndex), &ok);
+    normal.z() = locale.toFloat(wordsOfLine.at(m_columnNzIndex), &ok);
 
     if(!ok)
         return false;
 
     if(m_columnNCurvatureIndex >= 0) {
-        normal.w() = locale.toInt(wordsOfLine.at(m_columnNCurvatureIndex), &ok);
+        normal.w() = locale.toFloat(wordsOfLine.at(m_columnNCurvatureIndex), &ok);
 
         if(!ok)
             return false;

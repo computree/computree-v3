@@ -63,7 +63,6 @@ public:
      * \param resy Length of a cell on y
      * \param resz Length of a cell on z
      * \param na Value used to code NA
-     * \param initValue Initialisation value for grid cells
      */
     CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
               const CT_AbstractResult *result,
@@ -79,8 +78,7 @@ public:
               double resx,
               double resy,
               double resz,
-              DataT na,
-              DataT initValue);
+              DataT na);
 
     CT_Grid4D(const QString &modelName,
               const CT_AbstractResult *result,
@@ -96,8 +94,7 @@ public:
               double resx,
               double resy,
               double resz,
-              DataT na,
-              DataT initValue);
+              DataT na);
 
     /*!
      * \brief Initialisation constructor
@@ -119,7 +116,6 @@ public:
      * \param resy Length of a cell on y
      * \param resz Length of a cell on z
      * \param na Value used to code NA
-     * \param initValue Initialisation value for grid cells
      * \param coordConstructor Not used, only to ensure constructor different signatures
      */
     CT_Grid4D(const CT_OutAbstractSingularItemModel *model,
@@ -136,8 +132,7 @@ public:
               double resx,
               double resy,
               double resz,
-              DataT na,
-              DataT initValue);
+              DataT na);
 
     /*!
      * \brief Initialisation constructor
@@ -159,7 +154,6 @@ public:
      * \param resy Length of a cell on y
      * \param resz Length of a cell on z
      * \param na Value used to code NA
-     * \param initValue Initialisation value for grid cells
      * \param coordConstructor Not used, only to ensure constructor different signatures
      */
     CT_Grid4D(const QString& modelName,
@@ -176,83 +170,14 @@ public:
               double resx,
               double resy,
               double resz,
-              DataT na,
-              DataT initValue);
+              DataT na);
 
-
-    /*!
-     * \brief Factory
-     *
-     * Grid is created thanks to the bounding box (4D) of the grid
-     *
-     * \param model Item model for creation
-     * \param result Result containing the item
-     * \param wmin Minimum W coordinate (bottom left corner)
-     * \param xmin Minimum X coordinate (bottom left corner)
-     * \param ymin Minimum Y coordinate (bottom left corner)
-     * \param zmin Minimum Z coordinate (bottom left corner)
-     * \param wmax Maximum W coordinate (top right corner)
-     * \param xmax Maximum X coordinate (top right corner)
-     * \param ymax Maximum Y coordinate (top right corner)
-     * \param zmax Maximum Z coordinate (top right corner)
-     * \param resw Length of a cell on w
-     * \param resx Length of a cell on x
-     * \param resy Length of a cell on y
-     * \param resz Length of a cell on z
-     * \param na Value used to code NA
-     * \param initValue Initialisation value for grid cells
-     * \param coordConstructor Not used, only to ensure constructor different signatures
-     */
-    static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const CT_OutAbstractSingularItemModel *model,
-                                                        const CT_AbstractResult *result,
-                                                        double wmin,
-                                                        double xmin,
-                                                        double ymin,
-                                                        double zmin,
-                                                        double wmax,
-                                                        double xmax,
-                                                        double ymax,
-                                                        double zmax,
-                                                        double resw,
-                                                        double resx,
-                                                        double resy,
-                                                        double resz,
-                                                        DataT na,
-                                                        DataT initValue);
-
-    static CT_Grid4D<DataT>* createGrid4DFromWXYZCoords(const QString &modelName,
-                                                        const CT_AbstractResult *result,
-                                                        double wmin,
-                                                        double xmin,
-                                                        double ymin,
-                                                        double zmin,
-                                                        double wmax,
-                                                        double xmax,
-                                                        double ymax,
-                                                        double zmax,
-                                                        double resw,
-                                                        double resx,
-                                                        double resy,
-                                                        double resz,
-                                                        DataT na,
-                                                        DataT initValue);
 
     /*!
      * \brief Destructor
      */
     virtual ~CT_Grid4D();
 
-    //**********************************************//
-    //              Constructor Tools               //
-    //**********************************************//
-    /*!
-     * \brief Initialize all grid cells values with val
-     *
-     * Used by Constructors.
-     *
-     * \param val
-     */
-    void initGridWithValue(const DataT val);
 
     //**********************************************//
     //                    Getters                   //
@@ -283,15 +208,8 @@ public:
      * \param index Index
      * \return Value
      */
-    inline DataT valueAtIndex(const size_t index) const
-    {
-        if ( index >= nCells() )
-        {
-            return NA();
-        }
+    virtual DataT valueAtIndex(const size_t index) const = 0;
 
-        return _data[index];
-    }
 
     /*!
      * \brief Generic [0;1]  (or -1 for NA) value accessor for use as CT_AbstractGrid4D
@@ -423,17 +341,7 @@ public:
      * \param value Value
      * \return True if the value has actually been set
      */
-    inline bool setValueAtIndex(const size_t index, const DataT value)
-    {
-        if ( index >= nCells() )
-        {
-            return false;
-        }
-
-        _data[index] = value;
-
-        return true;
-    }
+    virtual bool setValueAtIndex(const size_t index, const DataT value) = 0;
 
     /*!
      * \brief setValue
@@ -548,24 +456,13 @@ public:
      */
     inline virtual QString name() const { return QString("CT_Grid4D<") + CT_TypeInfo::name<DataT>() + QString(">"); }
 
-    /*!
-     * \brief Copy method
-     *
-     * \param model Item model for the copy
-     * \param result Result containing the copy
-     * \param copyModeList Copy mode
-     * \return Item copy
-     */
-    virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
-    virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
-
     inline const CT_ITemplatedData4DArray<DataT>* iTemplatedData4DArray()
     const { return this; }
 
     /*!
      * \brief Compute min and max values
      */
-    void computeMinMax();
+    virtual void computeMinMax();
 
 protected:
 
@@ -577,7 +474,6 @@ protected:
     DataT       _NAdata;            /*!< Valeur codant NA */
     DataT       _dataMax;           /*!< valeur maximale du grid*/
     DataT       _dataMin;           /*!< valeur minimale du grid*/
-    std::vector<DataT> _data;       /*!< Tableau contenant les donnees pour chaque case de la grille*/
 
 private:
     CT_DEFAULT_IA_BEGIN(CT_Grid4D<DataT>)

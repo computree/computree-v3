@@ -388,7 +388,9 @@ SOURCES += \
     ct_view/elements/ctg_configurableelementsselector.cpp \
     ct_view/ct_multilineedit.cpp \
     ct_view/tools/ct_textfileconfigurationdialog.cpp \
-    ct_model/tools/ct_modelselectionhelper.cpp
+    ct_model/tools/ct_modelselectionhelper.cpp \
+    ct_itemdrawable/ct_grid4d_dense.cpp \
+    ct_itemdrawable/ct_grid4d_sparse.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -874,7 +876,11 @@ HEADERS += interfaces.h \
     ct_tools/ct_stringtonumericconversiont.h \
     ct_view/elements/ctg_configurableelementsselector.h \
     ct_view/ct_multilineedit.h \
-    ct_model/tools/ct_modelselectionhelper.h
+    ct_model/tools/ct_modelselectionhelper.h \
+    ct_itemdrawable/ct_grid4d_dense.h \
+    ct_itemdrawable/ct_grid4d_dense.hpp \
+    ct_itemdrawable/ct_grid4d_sparse.h \
+    ct_itemdrawable/ct_grid4d_sparse.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions
@@ -924,6 +930,8 @@ INCLUDEPATH += ./ct_shapedata
 INCLUDEPATH += ./ct_shapedata2d
 INCLUDEPATH += ./ct_tools
 INCLUDEPATH += ./ct_tools/model
+
+DEPENDPATH *= ${INCLUDEPATH}
 
 FORMS += \
     ct_view/inModel/ctg_inresultmodelpossibilities.ui \
