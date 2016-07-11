@@ -307,6 +307,9 @@ QMap<QString, QString> CDM_ScriptManagerXML::staticInitMapEncodeEntities()
     mapEncode["'"] = "&#39;";
     mapEncode["("] = "&#40;";
     mapEncode[")"] = "&#41;";
+    mapEncode["<"] = "&#60;";
+    mapEncode[">"] = "&#62;";
+    mapEncode["/"] = "&#47;";
 
     return mapEncode;
 }
@@ -709,7 +712,7 @@ void CDM_ScriptManagerXML::writeSettingsValue(QTextStream &stream,
         if (value->name()!="Version")
         {
             additionnalFields = QString(" id=\"%1\"").arg(_valueCount++);
-            additionnalFields += QString(" description=\"%1\"").arg(value->description());
+            additionnalFields += QString(" description=\"%1\"").arg(encodeDecodeEntities(mapEncodeEntities, value->description()));
         }
 
         stream << tab << "<" << value->name() << " value=\"" << encodeDecodeEntities(mapEncodeEntities, value->value().toString()) << "\"" << additionnalFields << "></" << value->name() << ">\r\n";
