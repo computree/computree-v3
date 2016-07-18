@@ -84,7 +84,7 @@ private:
 
     // Step parameters
     QStringList _dir;
-    QString _suffixFileName;
+    QString _prefixFileName;
 
     QMap<QString, CT_AbstractExporter*>             _exportersMap;
     QList<CT_AbstractExporter*>                      _exportersInstancesList;

@@ -12,22 +12,27 @@
 #include "ct_itemdrawable/ct_profile.h"
 #include "exporters/profile/pb_profileexporter.h"
 #include "ct_view/ct_stepconfigurabledialog.h"
+#include "ct_itemdrawable/ct_loopcounter.h"
 
 // Alias for indexing models
 #define DEFin_res "res"
 #define DEFin_grp "grp"
-#define DEFin_itemWithAttribute "itemWithAttribute"
-#define DEFin_attribute "attribute"
 #define DEFin_item "item"
+
+#define DEFin_resCounter "resCounter"
+#define DEF_inGroupCounter "GroupCounter"
+#define DEF_inCounter "counter"
 
 #define DEFout_res "res"
 #define DEFout_grp "grp"
 
 
+
+
 // Constructor : initialization of parameters
 PB_StepExportItemList::PB_StepExportItemList(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
 {
-    _suffixFileName = "";
+    _prefixFileName = "";
 
 
     // Create the available exporter map
@@ -85,7 +90,7 @@ QString PB_StepExportItemList::getStepDetailledDescription() const
 {
     return tr("Permet un export avec nom de fichier adaptatif.<br>"
               "Cette étape peut utiliser n'importe quel exporter.<br>"
-              "Le nom du fichier de sorti, est déterminé à partir d'un nom de fichier d'entrée stocké dans un item de type entête (CT_Header).");
+              "Le nom du fichier de sorti, est déterminé à partir du compteur de boucle spécifié.");
 }
 
 // Step URL
@@ -109,9 +114,11 @@ void PB_StepExportItemList::createInResultModelListProtected()
     CT_InResultModelGroup *resIn = createNewInResultModel(DEFin_res, tr("Résultat"));
     resIn->setZeroOrMoreRootGroup();
     resIn->addGroupModel("", DEFin_grp, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
-    resIn->addItemModel(DEFin_grp, DEFin_itemWithAttribute, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item contenant le nom du fichier"));
-    resIn->addItemAttributeModel(DEFin_itemWithAttribute, DEFin_attribute, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Nom"));
     resIn->addItemModel(DEFin_grp, DEFin_item, CT_AbstractItemDrawable::staticGetType(), tr("Item à exporter"));
+
+    CT_InResultModelGroup* resCounter = createNewInResultModel(DEFin_resCounter, tr("Résultat compteur"), "", true);
+    resCounter->setRootGroup(DEF_inGroupCounter);
+    resCounter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
 
 }
 
@@ -127,7 +134,7 @@ void PB_StepExportItemList::createPostConfigurationDialog()
 {
     CT_StepConfigurableDialog *configDialog = newStandardPostConfigurationDialog();
     configDialog->addFileChoice(tr("Répertoire d'export"), CT_FileChoiceButton::OneExistingFolder, "", _dir);
-    configDialog->addString(tr("Suffixe de nom de fichier"), "", _suffixFileName);
+    configDialog->addString(tr("Préfixe de nom de fichier"), "", _prefixFileName);
 
     QStringList list_exportersList;
 
@@ -151,23 +158,30 @@ void PB_StepExportItemList::compute()
 {
 
     QList<CT_ResultGroup*> inResultList = getInputResults();
-    CT_ResultGroup* resIn_res = inResultList.at(0);
+    CT_ResultGroup* resIn_Item = inResultList.at(0);
+    CT_ResultGroup* resIn_Counter = inResultList.at(1);
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_res = outResultList.at(0);
 
+    QString baseName = "";
+    CT_ResultItemIterator it(resIn_Counter, this, DEF_inCounter);
+    if (it.hasNext())
+    {
+        CT_LoopCounter* counter = (CT_LoopCounter*) it.next();
+        baseName = counter->getTurnName();
+        baseName = QFileInfo(baseName).baseName();
+    }
+
     // IN results browsing
-    CT_ResultGroupIterator itIn_grp(resIn_res, this, DEFin_grp);
+    CT_ResultGroupIterator itIn_grp(resIn_Item, this, DEFin_grp);
     while (itIn_grp.hasNext() && !isStopped())
     {
-        const CT_AbstractItemGroup* grpIn_grp = (CT_AbstractItemGroup*) itIn_grp.next();
-        
-        const CT_AbstractSingularItemDrawable* itemWithAttribute = (CT_AbstractSingularItemDrawable*)grpIn_grp->firstItemByINModelName(this, DEFin_itemWithAttribute);
-        CT_AbstractItemDrawable* item = (CT_AbstractItemDrawable*)grpIn_grp->firstItemByINModelName(this, DEFin_item);
+        const CT_AbstractItemGroup* grpIn = (CT_AbstractItemGroup*) itIn_grp.next();
+        CT_AbstractItemDrawable* item = (CT_AbstractItemDrawable*)grpIn->firstItemByINModelName(this, DEFin_item);
 
-        if (itemWithAttribute != NULL && item != NULL)
+        if (item != NULL)
         {
-            QString attributeValue = itemWithAttribute->firstItemAttributeByINModelName(resIn_res, this, DEFin_attribute)->toString(itemWithAttribute, NULL);
             QList<CT_AbstractItemDrawable*> list;
             list.append(item);
 
@@ -176,12 +190,11 @@ void PB_StepExportItemList::compute()
             {
                 path.append(_dir.first());
                 path.append("/");
+                path.append(_prefixFileName);
             }
 
-            attributeValue = QFileInfo(attributeValue).baseName();
 
-            path.append(attributeValue);
-            path.append(_suffixFileName);
+            path.append(baseName);
 
             CT_AbstractExporter* exporter = _exportersMap.value(_exportersListValue);
 
@@ -195,7 +208,7 @@ void PB_StepExportItemList::compute()
     
 
     // OUT results creation
-    CT_StandardItemGroup* grp_grp= new CT_StandardItemGroup(DEFout_grp, res_res);
-    res_res->addGroup(grp_grp);  
+    CT_StandardItemGroup* grpOut= new CT_StandardItemGroup(DEFout_grp, res_res);
+    res_res->addGroup(grpOut);
 
 }
