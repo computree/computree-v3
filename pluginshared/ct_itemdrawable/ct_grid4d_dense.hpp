@@ -1,6 +1,8 @@
 #ifndef CT_GRID4D_DENSE_HPP
 #define CT_GRID4D_DENSE_HPP
 
+#ifdef USE_OPENCV
+
 #include "ct_itemdrawable/ct_grid4d_dense.h"
 
 #include <math.h>
@@ -326,5 +328,6 @@ CT_AbstractItemDrawable* CT_Grid4D_Dense<DataT>::copy(const QString &modelName, 
     return cpy;
 }
 
+#endif
 
 #endif // CT_GRID4D_DENSE_HPP

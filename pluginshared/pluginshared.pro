@@ -390,7 +390,8 @@ SOURCES += \
     ct_view/tools/ct_textfileconfigurationdialog.cpp \
     ct_model/tools/ct_modelselectionhelper.cpp \
     ct_itemdrawable/ct_grid4d_dense.cpp \
-    ct_itemdrawable/ct_grid4d_sparse.cpp
+    ct_itemdrawable/ct_grid4d_sparse.cpp \
+    ct_itemdrawable/ct_grid3d_sparse.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -880,7 +881,9 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_grid4d_dense.h \
     ct_itemdrawable/ct_grid4d_dense.hpp \
     ct_itemdrawable/ct_grid4d_sparse.h \
-    ct_itemdrawable/ct_grid4d_sparse.hpp
+    ct_itemdrawable/ct_grid4d_sparse.hpp \
+    ct_itemdrawable/ct_grid3d_sparse.h \
+    ct_itemdrawable/ct_grid3d_sparse.hpp
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

@@ -13,7 +13,7 @@ QString CT_Reader_AsciiGrid3D::GetReaderName() const
 
 CT_StepsMenu::LevelPredefined CT_Reader_AsciiGrid3D::getReaderSubMenuName() const
 {
-    return CT_StepsMenu::LP_Raster;
+    return CT_StepsMenu::LP_Voxels;
 }
 
 bool CT_Reader_AsciiGrid3D::setFilePath(const QString &filepath)
@@ -74,7 +74,7 @@ bool CT_Reader_AsciiGrid3D::protectedReadFile()
     {
         QFile f(filepath());
 
-        if(f.open(QIODevice::ReadOnly))
+        if(f.open(QIODevice::Text | QIODevice::ReadOnly))
         {
             QTextStream stream(&f);
 
@@ -102,14 +102,26 @@ bool CT_Reader_AsciiGrid3D::protectedReadFile()
                 float currentValue;
                 for ( size_t i = 0 ; (i < nZLev) && !isStopped() ; ++i )
                 {
-                    for ( size_t j = nRows - 1 ; (j >= 0) && !isStopped(); --j )
+                    for ( size_t j = 0; (j < nRows) && !isStopped(); ++j )
                     {
+                        QString currentValueStr = stream.readLine();
+                        QStringList values = currentValueStr.split("\t");
+
                         for ( size_t k = 0 ; (k < nCols) && !isStopped() ; ++k )
                         {
-                            stream >> currentValue;
-                            loadedGrid->setValue( k, j, i, currentValue );
+                            currentValue = noDataValue;
+                            if (values.size() > k)
+                            {
+                                bool ok;
+                                QString val = values.at(k);
+                                currentValue = val.toFloat(&ok);
+                                if (!ok) {currentValue = noDataValue;}
+                            }
+
+                            loadedGrid->setValue( k, nRows - j - 1, i, currentValue );
                         }
                     }
+                    stream.readLine();
                 }
 
                 loadedGrid->computeMinMax();

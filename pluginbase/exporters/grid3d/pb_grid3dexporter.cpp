@@ -102,7 +102,7 @@ bool PB_Grid3DExporter::protectedExportToFile()
 
             QFile file(filePath);
 
-            if(file.open(QFile::WriteOnly))
+            if(file.open(QFile::Text | QFile::WriteOnly))
             {
                 QTextStream stream(&file);
 

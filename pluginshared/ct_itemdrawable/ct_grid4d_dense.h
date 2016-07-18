@@ -1,6 +1,8 @@
 #ifndef CT_GRID4D_DENSE_H
 #define CT_GRID4D_DENSE_H
 
+#ifdef USE_OPENCV
+
 #include "ct_itemdrawable/ct_grid4d.h"
 #include <typeinfo>
 
@@ -323,5 +325,7 @@ protected:
 
 // Includes the template implementations
 #include "ct_itemdrawable/ct_grid4d_dense.hpp"
+
+#endif
 
 #endif // CT_GRID4D_DENSE_H

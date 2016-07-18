@@ -1,6 +1,8 @@
 #ifndef CT_GRID4D_SPARSE_H
 #define CT_GRID4D_SPARSE_H
 
+#ifdef USE_OPENCV
+
 #include "ct_itemdrawable/ct_grid4d.h"
 #include <typeinfo>
 
@@ -315,5 +317,6 @@ protected:
 // Includes the template implementations
 #include "ct_itemdrawable/ct_grid4d_sparse.hpp"
 
+#endif
 
 #endif // CT_GRID4D_SPARSE_H
