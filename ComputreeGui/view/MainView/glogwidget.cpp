@@ -33,12 +33,15 @@ void GLogWidget::addMessage(const int &severity, const int &type, const QString 
     Q_UNUSED(type)
     Q_UNUSED(filter)
 
-    m_mutex.lockForWrite();
-    m_messages.append(qMakePair(severity, s));
-    m_mutex.unlock();
+    if (!ui->cb_disable->isChecked())
+    {
+        m_mutex.lockForWrite();
+        m_messages.append(qMakePair(severity, s));
+        m_mutex.unlock();
 
-    if(isVisible())
-        emit newMessageReceived();
+        if(isVisible())
+            emit newMessageReceived();
+    }
 }
 
 void GLogWidget::on_pushButtonClear_clicked()
