@@ -131,6 +131,11 @@ void CT_PlotListInGrid::getBoundingBox2D(Eigen::Vector2d &min, Eigen::Vector2d &
 {
     min = _min;
     max = _max;
+
+    min(0)-= _size;
+    min(1)-= _size;
+    max(0)+= _size;
+    max(1)+= _size;
 }
 
 void CT_PlotListInGrid::setIndices(size_t firstIndex, size_t indexJumpAtEOL)

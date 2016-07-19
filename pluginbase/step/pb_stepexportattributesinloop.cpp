@@ -51,6 +51,8 @@
 #define DEFout_res "res"
 #define DEFout_grp "grp"
 
+#define EPSILON_LIMITS 0.0000001
+
 
 // Constructor : initialization of parameters
 PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeData &dataInit) : CT_AbstractStep(dataInit)
@@ -489,7 +491,7 @@ void PB_StepExportAttributesInLoop::compute()
 
                     if (key != xKey && key != yKey)
                     {
-                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0), max(1), resolution, 0, DEF_NA, DEF_NA));
+                        rasters.insert(key, CT_Image2D<double>::createImage2DFromXYCoords(NULL, NULL, min(0), min(1), max(0) - EPSILON_LIMITS, max(1) - EPSILON_LIMITS, resolution, 0, DEF_NA, DEF_NA));
                     }
                 }
             }
