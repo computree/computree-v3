@@ -414,7 +414,7 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
         header->m_numberOfVariableLengthRecords = 0; // TODO : write the good value
         header->m_pointDataRecordFormat = format;
         header->m_pointDataRecordLength = getPointDataLength(format);
-        header->m_legacyNumberOfPointRecord = 0; // deprecated in 1.4
+        header->m_legacyNumberOfPointRecord = nPoints; // deprecated in 1.4
 
         for(int i=0; i<5; ++i)
             header->m_legacyNumberOfPointsByReturn[i] = 0; // deprecated in 1.4
