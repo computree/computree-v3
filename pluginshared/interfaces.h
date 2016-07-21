@@ -72,6 +72,9 @@ class CT_StandardColorCloudRegistered;
 class CT_StandardNormalCloudRegistered;
 class CT_StepsMenu;
 
+class CT_Color;
+class CT_Normal;
+
 typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SPCIR;
 typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SFCIR;
 typedef QSharedPointer<CT_AbstractCloudIndexRegistered> CT_SECIR;
@@ -720,6 +723,60 @@ public:
      * @brief Return the normal cloud for the type passed in parameter. Can be NULL if it was not created.
      */
     virtual QSharedPointer<CT_StandardNormalCloudRegistered> normalCloudOf(NormalCloudType type) const = 0;
+
+    /**
+     * @brief Change the color of the point. You must call dirtyColorsOfItemDrawablesWithPoints() if you want that change was visible.
+     * @param globalIndexOfPoint : the global index of the point ot change his color
+     * @param color : the new color
+     */
+    virtual void setColorOfPoint(const size_t &globalIndexOfPoint, const CT_Color &color) = 0;
+
+    /**
+     * @brief Returns the color of the point.
+     * @warning if you change the value of the color you must call dirtyColorsOfItemDrawablesWithPoints() to update it.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the color of the point
+     */
+    virtual CT_Color& colorOfPoint(const size_t &globalIndexOfPoint) = 0;
+
+    /**
+     * @brief Returns the color of the point.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the color of the point
+     */
+    virtual const CT_Color& constColorOfPoint(const size_t &globalIndexOfPoint) const = 0;
+
+    /**
+     * @brief Change the normal of the point. You must call dirtyNormalsOfItemDrawablesWithPoints() if you want that change was visible.
+     * @param globalIndexOfPoint : the global index of the point ot change his normal
+     * @param normal : the new normal
+     */
+    virtual void setNormalOfPoint(const size_t &globalIndexOfPoint, const CT_Normal &normal) = 0;
+
+    /**
+     * @brief Returns the normal of the point.
+     * @warning if you change the value of the normal you must call dirtyNormalsOfItemDrawablesWithPoints() to update it.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the normal of the point
+     */
+    virtual CT_Normal& normalOfPoint(const size_t &globalIndexOfPoint) = 0;
+
+    /**
+     * @brief Returns the normal of the point.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the normal of the point
+     */
+    virtual const CT_Normal& constNormalOfPoint(const size_t &globalIndexOfPoint) const = 0;
+
+    /**
+     * @brief Update colors of all elements in the graphics view that use global points
+     */
+    virtual void dirtyColorsOfItemDrawablesWithPoints() = 0;
+
+    /**
+     * @brief Update normals of all elements in the graphics view that use global points
+     */
+    virtual void dirtyNormalsOfItemDrawablesWithPoints() = 0;
 
     /**
      * @brief Return the camera of the view

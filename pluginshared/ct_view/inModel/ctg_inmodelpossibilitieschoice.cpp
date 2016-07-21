@@ -761,11 +761,6 @@ void CTG_InModelPossibilitiesChoice::recursiveUpdateCheckBoxAndComboBox(QStandar
         while(it.hasNext()) {
             CT_InAbstractModel *model = it.next();
 
-            /*bool active = (parentSelectedModel != NULL) || (dynamic_cast<CT_InAbstractGroupModel*>(model) != NULL);
-
-            if((parentSelectedModel != NULL) && active)
-                active = (parentSelectedModel == model->parentModel()) || (dynamic_cast<CT_InZeroOrMoreGroupModel*>(model->parentModel()) != NULL);
-*/
             bool active = (parentSelectedModel == model->parentModel());
 
             if(!active)
@@ -918,11 +913,13 @@ void CTG_InModelPossibilitiesChoice::itemChanged(QStandardItem *item)
                 // if we check it
                 if(checked)
                 {
-                    // we check as its parent
-                    checkableItem = staticToCheckBox(item->parent());
+                    if((comboItem->currentInModel() == NULL) || (dynamic_cast<CT_InZeroOrMoreGroupModel*>(comboItem->currentInModel()->parentModel()) == NULL)) {
+                        // we check as its parent
+                        checkableItem = staticToCheckBox(item->parent());
 
-                    if(checkableItem != NULL)
-                        checkableItem->setChecked(true);
+                        if(checkableItem != NULL)
+                            checkableItem->setChecked(true);
+                    }
                 }
                 else
                 {

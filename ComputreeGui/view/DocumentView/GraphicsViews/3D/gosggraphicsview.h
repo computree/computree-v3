@@ -122,69 +122,113 @@ public:
     /**
      * @brief Returns the widget that represents this graphics to attach it to a layout per example
      */
-    virtual QWidget* getViewWidget() const;
+    QWidget* getViewWidget() const;
 
     /**
      * @brief Returns true if this graphics view is 2D
      */
-    virtual bool is2DView() const;
+    bool is2DView() const;
 
     // -------- DM_GraphicsView ---------- //
 
-    virtual void setOptions(const DM_GraphicsViewOptions &newOptions);
+    void setOptions(const DM_GraphicsViewOptions &newOptions);
 
     /**
      * @brief Lock the paint (if you add or remove items in a thread...)
      */
-    virtual void lockPaint();
+    void lockPaint();
 
     /**
      * @brief Unlock the paint after locked it please...
      */
-    virtual void unlockPaint();
+    void unlockPaint();
 
     /**
      * @brief Called when we must redraw
      */
-    virtual void redraw(DM_GraphicsView::RedrawOptions opt = DM_GraphicsView::RO_NoOptions);
+    void redraw(DM_GraphicsView::RedrawOptions opt = DM_GraphicsView::RO_NoOptions);
 
     /**
      * @brief Returns the camera used by this graphics view
      */
-    virtual DM_GraphicsViewCamera* getCamera() const;
+    DM_GraphicsViewCamera* getCamera() const;
 
     /**
      * @brief Call this method to take and screenshot and show a messagebox at user to save it
      */
-    virtual void takeAndSaveScreenshot();
+    void takeAndSaveScreenshot();
 
     /**
      * @brief Call this method to update the 3d drawing of itemdrawables passed in parameter, per example if you change a parameter in it's draw configuration
      */
-    virtual void updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable*> &list);
+    void updateDrawing3DOfItemDrawables(const QList<CT_AbstractItemDrawable*> &list);
 
     /**
      * @brief Call this method if you have changed colors of items in the document and you want that in view it will be
      *        updated
      */
-    virtual void updateItemDrawablesThatColorWasModified();
+    void updateItemDrawablesThatColorWasModified();
 
     /**
      * @brief Call this method if you want to change the color of points draw by the item passed in parameter
      */
-    virtual void updateColorOfPointsOfItemDrawable(CT_AbstractItemDrawable *item, const QColor &color);
+    void updateColorOfPointsOfItemDrawable(CT_AbstractItemDrawable *item, const QColor &color);
 
     /**
      * @brief Call this method if you have changed colors of points in the document (colorArray) and you want that in view it will
      *        be updated
      */
-    virtual void dirtyColorsOfItemDrawablesWithPoints();
+    void dirtyColorsOfItemDrawablesWithPoints();
 
     /**
      * @brief Call this method if you have changed normals of points in the document (normalArray) and you want that in view it will
      *        be updated
      */
-    virtual void dirtyNormalsOfItemDrawablesWithPoints();
+    void dirtyNormalsOfItemDrawablesWithPoints();
+
+    /**
+     * @brief Change the color of the point. You must call dirtyColorsOfItemDrawablesWithPoints() if you want that change was visible.
+     * @param globalIndexOfPoint : the global index of the point ot change his color
+     * @param color : the new color
+     */
+    void setColorOfPoint(const size_t &globalIndexOfPoint, const CT_Color &color);
+
+    /**
+     * @brief Returns the color of the point.
+     * @warning if you change the value of the color you must call dirtyColorsOfItemDrawablesWithPoints() to update it.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the color of the point
+     */
+    CT_Color& colorOfPoint(const size_t &globalIndexOfPoint);
+
+    /**
+     * @brief Returns the color of the point.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the color of the point
+     */
+    const CT_Color& constColorOfPoint(const size_t &globalIndexOfPoint) const;
+
+    /**
+     * @brief Change the normal of the point. You must call dirtyNormalsOfItemDrawablesWithPoints() if you want that change was visible.
+     * @param globalIndexOfPoint : the global index of the point ot change his normal
+     * @param normal : the new normal
+     */
+    void setNormalOfPoint(const size_t &globalIndexOfPoint, const CT_Normal &normal);
+
+    /**
+     * @brief Returns the normal of the point.
+     * @warning if you change the value of the normal you must call dirtyNormalsOfItemDrawablesWithPoints() to update it.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the normal of the point
+     */
+    CT_Normal& normalOfPoint(const size_t &globalIndexOfPoint);
+
+    /**
+     * @brief Returns the normal of the point.
+     * @param globalIndexOfPoint : the global index of the point
+     * @return the normal of the point
+     */
+    const CT_Normal& constNormalOfPoint(const size_t &globalIndexOfPoint) const;
 
     /**
      * @brief Returns the bounding box of all item drawable present in the view

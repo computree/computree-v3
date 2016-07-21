@@ -22,6 +22,8 @@
 #include "tools/graphicsview/dm_pointscolourist.h"
 #include "tools/graphicsview/dm_pointsrecoverer.h"
 
+#include "ct_normalcloud/registered/ct_standardnormalcloudregistered.h"
+
 #include <QApplication>
 #include <QEvent>
 #include <QResizeEvent>
@@ -1237,6 +1239,36 @@ void GOsgGraphicsView::dirtyNormalsOfItemDrawablesWithPoints()
 {
     m_sceneManager->dirtyDisplayListOfGlobalElementsOfItemDrawable();
     updateGL();
+}
+
+void GOsgGraphicsView::setColorOfPoint(const size_t &globalIndexOfPoint, const CT_Color &color)
+{
+    colorOfPoint(globalIndexOfPoint).setColor(color);
+}
+
+CT_Color& GOsgGraphicsView::colorOfPoint(const size_t &globalIndexOfPoint)
+{
+    return colorCloudOf(CPointCloud)->abstractColorCloud()->colorAt(globalIndexOfPoint);
+}
+
+const CT_Color& GOsgGraphicsView::constColorOfPoint(const size_t &globalIndexOfPoint) const
+{
+    return colorCloudOf(CPointCloud)->abstractColorCloud()->constColorAt(globalIndexOfPoint);
+}
+
+void GOsgGraphicsView::setNormalOfPoint(const size_t &globalIndexOfPoint, const CT_Normal &normal)
+{
+    normalOfPoint(globalIndexOfPoint).setNormal(normal);
+}
+
+CT_Normal& GOsgGraphicsView::normalOfPoint(const size_t &globalIndexOfPoint)
+{
+    return normalCloudOf(NPointCloud)->abstractNormalCloud()->normalAt(globalIndexOfPoint);
+}
+
+const CT_Normal& GOsgGraphicsView::constNormalOfPoint(const size_t &globalIndexOfPoint) const
+{
+    return normalCloudOf(NPointCloud)->abstractNormalCloud()->constNormalAt(globalIndexOfPoint);
 }
 
 void GOsgGraphicsView::getBoundingBoxOfAllItemDrawablePresentInView(Eigen::Vector3d &min, Eigen::Vector3d &max) const
