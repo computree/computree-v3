@@ -16,6 +16,7 @@ class CT_InStdModelPossibilityGroup;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_InAbstractModel : public CT_AbstractModel
 {
+    Q_OBJECT
 public:
     enum FinderMode
     {

@@ -23,6 +23,8 @@ class CT_ComboBox;
  */
 class PLUGINSHAREDSHARED_EXPORT CT_GenericConfigurableWidget : public CT_AbstractConfigurableWidget
 {
+    Q_OBJECT
+
 public:
     CT_GenericConfigurableWidget(QWidget *parent = NULL);
     ~CT_GenericConfigurableWidget();

@@ -43,7 +43,7 @@ void PB_StepBeginLoopThroughGroups02::createInResultModelListProtected()
 {
     CT_InResultModelGroupToCopy *resultModel = createNewInResultModelForCopy(DEF_inResult_g, tr("Résultat"));
     resultModel->setZeroOrMoreRootGroup();
-    resultModel->addGroupModel("", DEF_inGroup);
+    resultModel->addGroupModel("", DEF_inGroup, CT_AbstractItemGroup::staticGetType(), tr("Groupe"), "", CT_InAbstractGroupModel::CG_ChooseOneIfMultiple);
     resultModel->addItemModel(DEF_inGroup, DEF_inItem, CT_AbstractSingularItemDrawable::staticGetType(), tr("Item"));
     resultModel->addItemAttributeModel(DEF_inItem, DEF_inAttName, QList<QString>() << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Nom"));
 }
