@@ -5,6 +5,31 @@
 #include "ct_model/outModel/abstract/ct_outabstractmodel.h"
 #include <QDebug>
 
+//#define DEBUG_MODELS 2
+
+#ifdef DEBUG_MODELS
+
+QString DEBUG_STR_FOR_MODELS;
+
+#define DEBUG_APPEND QString("\t")
+#define BEGIN_RECURSIVE_DEBUG DEBUG_STR_FOR_MODELS += DEBUG_APPEND;
+#define END_RECURSIVE_DEBUG DEBUG_STR_FOR_MODELS.remove(DEBUG_STR_FOR_MODELS.size()-DEBUG_APPEND.size(), DEBUG_APPEND.size());
+
+#define DEBUG_MODEL_SEARCH(strToPrint) if(savePossibilities) { qDebug() << DEBUG_STR_FOR_MODELS << uniqueName() << " => " << strToPrint; }
+
+    #if DEBUG_MODELS > 1
+        #define DEBUG_MODEL_SEARCH_PRECISE_1(strToPrint) DEBUG_MODEL_SEARCH(strToPrint);
+    #else
+        #define DEBUG_MODEL_SEARCH_PRECISE_1(strToPrint) ;
+    #endif
+
+#else
+    #define BEGIN_RECURSIVE_DEBUG ;
+    #define END_RECURSIVE_DEBUG ;
+    #define DEBUG_MODEL_SEARCH(strToPrint) ;
+    #define DEBUG_MODEL_SEARCH_PRECISE_1(strToPrint) ;
+#endif
+
 CT_InAbstractModel::CT_InAbstractModel(const QString &uniqueName,
                                        const QString &description,
                                        const QString &displayableName) : CT_AbstractModel(uniqueName,
@@ -59,6 +84,7 @@ bool CT_InAbstractModel::recursiveFindOnePossibilityInModel(const CT_OutAbstract
 {
     m_nPossibilitiesWithoutSaving = 0;
 
+    DEBUG_MODEL_SEARCH("---------- recursiveFindOnePossibilityInModel ------------");
     return recursiveFindPossibilitiesInModel(model, savePossibilities, false) != 0;
 }
 
@@ -67,6 +93,7 @@ bool CT_InAbstractModel::recursiveFindAllPossibilitiesInModel(const CT_OutAbstra
 {
     m_nPossibilitiesWithoutSaving = 0;
 
+    DEBUG_MODEL_SEARCH("---------- recursiveFindAllPossibilitiesInModel ------------");
     return recursiveFindPossibilitiesInModel(model, savePossibilities, true) != 0;
 }
 
@@ -383,7 +410,7 @@ bool CT_InAbstractModel::deleteLastSaveCycle()
 
 void CT_InAbstractModel::addToPossibility(const CT_OutAbstractModel &model)
 {
-    //qDebug() << uniqueName() << " => " << "p : " << model.uniqueName() << " for " << uniqueName();
+    //DEBUG_MODEL_SEARCH("p : " << model.uniqueName() << " for " << uniqueName());
 
     ++m_nPossibilitiesWithoutSaving;
 
@@ -486,24 +513,28 @@ void CT_InAbstractModel::setError(const QString &err) const
 
 int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractModel &model, bool savePossibilities, bool searchMultiple)
 {
-    if(!needOutputModel())
+    BEGIN_RECURSIVE_DEBUG
+
+    if(!needOutputModel()) {
+        END_RECURSIVE_DEBUG
         return 1;
+    }
 
     int ok = 0;
 
-    //qDebug() << uniqueName() << " => " << "model : " << uniqueName() << " / canBeComparedWith(" << model.uniqueName() << ") ?";
+    DEBUG_MODEL_SEARCH("canBeComparedWith(" << model.uniqueName() << ") ?");
 
     // if this model can be compared with the out model
     if(canBeComparedWith(model))
     {
-        //qDebug() << uniqueName() << " => " << "yes";
+        DEBUG_MODEL_SEARCH("YES");
 
         bool recursiveOk = false;
 
         // we select if we can go down in childrens of the out model and must compare them with this INPUT model
         if(mustCompareThisWithChildrenOfOutModel())
         {
-            //qDebug() << uniqueName() << " => " << "recursive down";
+            DEBUG_MODEL_SEARCH("Go recursively down in childrens of " << model.uniqueName());
 
             bool continueLoop = true;
 
@@ -527,20 +558,19 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                 }
             }
 
-            if(!continueLoop && (m_nPossibilitiesWithoutSaving > 0))
+            if(!continueLoop && (m_nPossibilitiesWithoutSaving > 0)) {
+                DEBUG_MODEL_SEARCH_PRECISE_1("Error return 2");
+                END_RECURSIVE_DEBUG
                 return 2;
+            }
 
             if(recursiveOk)
                 ok = 2;
         }
 
-        //qDebug() << uniqueName() << " => " << " canAddPossibilityForThisModel(" << model.uniqueName() << ") ?";
-
         // we select if this model can be a possibility for this model
         if(canAddPossibilityForThisModel(model))
         {
-            //qDebug() << uniqueName() << " => " << "yes";
-
             // get children of this model
             QList<CT_AbstractModel*> iChild = childrensToFindPossibilities(savePossibilities);
             QListIterator<CT_AbstractModel*> itI(iChild);
@@ -557,24 +587,23 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                     atLeastOneChildrenIsObligatory = true;
             }
 
-            //qDebug() << uniqueName() << " => " << "mustCompareOutModelWithChildrenOfThisModel ?";
+            DEBUG_MODEL_SEARCH_PRECISE_1("mustCompareChildrenWithThisModel ?");
 
             // if we must compare the current ouput model with childrens of this model
             if(mustCompareOutModelWithChildrenOfThisModel())
             {
-                //qDebug() << uniqueName() << " => " << "yes";
+                DEBUG_MODEL_SEARCH_PRECISE_1("YES");
 
-                bool continueLoop = true;
+                bool atLeastOneNotFounded = false;
                 QList<bool> deleteLastSaveCycleList;
 
                 itI.toFront();
 
                 // we compare all children model of this model with the current output model
-                while(itI.hasNext()
-                       && continueLoop)
+                while(itI.hasNext())
                 {
                     CT_InAbstractModel *iam = (CT_InAbstractModel*)itI.next();
-                    bool tmpOk = false;
+                    bool isOk = false;
 
                     inModelToBeCompared(iam, savePossibilities);
 
@@ -585,24 +614,21 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
 
                     // if output model match criteria for the children and recursively
                     if(iam->recursiveFindPossibilitiesInModel(model, savePossibilities, searchMultiple) != 0)
-                        tmpOk = true;
+                        isOk = true;
                     else if(iam->finderMode() == CT_InAbstractModel::F_IsObligatory)
-                        continueLoop = false;
+                        atLeastOneNotFounded = true;
 
-                    deleteLastSaveCycleList.append(tmpOk);
+                    deleteLastSaveCycleList.append(isOk);
 
                     inModelCompared(iam, &model, savePossibilities);
 
                     // finish the save cycle
                     iam->finishSaveCycle();
 
-                    if(!tmpOk)
-                        iam->deleteLastSaveCycle();
-
-                    inModelComparisonResult(iam, tmpOk, savePossibilities);
+                    inModelComparisonResult(iam, isOk, savePossibilities);
                 }
 
-                if(!continueLoop)
+                if(atLeastOneNotFounded)
                 {
                     itI.toFront();
 
@@ -614,20 +640,24 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                             ((CT_InAbstractModel*)itI.next())->deleteLastSaveCycle();
                     }
 
-                    //qDebug() << uniqueName() << " => " << "one children is not ok but continue";
+                    DEBUG_MODEL_SEARCH_PRECISE_1("one children is not ok but continue");
                 }
                 else
                 {
                     ok = 1;
                 }
             }
+            else
+            {
+                DEBUG_MODEL_SEARCH_PRECISE_1("NO");
+            }
 
-            //qDebug() << uniqueName() << " => " << "mustCompareChildrenWithChildrenOfOutModel ?";
+            DEBUG_MODEL_SEARCH_PRECISE_1("mustCompareChildrenWithChildrenOfThisModel ?");
 
             // we select if we must compare children of this model with children of the output model
             if(mustCompareChildrenWithChildrenOfOutModel())
             {
-                //qDebug() << uniqueName() << " => " << "yes";
+                DEBUG_MODEL_SEARCH_PRECISE_1("YES");
 
                 bool allOk = true;
                 QList<bool> deleteLastSaveCycleList;
@@ -665,8 +695,10 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                         {
                             tmpOk = true;
 
-                            if(!searchMultiple)
+                            if(!searchMultiple) {
+                                DEBUG_MODEL_SEARCH("Don't continue loop");
                                 continueLoop = false;
+                            }
                         }
 
                         inModelCompared(iam, oam, savePossibilities);
@@ -704,21 +736,24 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                             ((CT_InAbstractModel*)itI.next())->deleteLastSaveCycle();
                     }
 
-                    //qDebug() << uniqueName() << " => " << "one children is not ok";
-                    //qDebug() << uniqueName() << " => " << "return nPossibilitiesSaved() > 0 : " << m_nPossibilitiesWithoutSaving << " > 0";
+                    DEBUG_MODEL_SEARCH_PRECISE_1("one children is not ok");
+                    DEBUG_MODEL_SEARCH_PRECISE_1("return nPossibilitiesSaved() > 0 : " << m_nPossibilitiesWithoutSaving << " > 0");
                     possibilityNotCreated();
 
+                    END_RECURSIVE_DEBUG
                     return ok;
                     //return (m_nPossibilitiesWithoutSaving > 0) || ok;
                 }
+            }
+            else
+            {
+                DEBUG_MODEL_SEARCH_PRECISE_1("NO");
             }
 
             // if this model have no children or if always are optionnal we consider that is ok
             if(!atLeastOneChildrenIsObligatory)
                 ok = 1;
         }
-
-        //qDebug() << uniqueName() << " => " << "ok == " << ok;
 
         // if all criteria are met
         if(ok == 1)
@@ -728,10 +763,11 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
                 // if this model already exist in possibilities
                 if(existModelInPossibilities(model))
                     possibilityNotCreated();
-                else if(savePossibilities) // if we must save possibilities, we add this model to possibilities
+                else if(savePossibilities) { // if we must save possibilities, we add this model to possibilities
+                    DEBUG_MODEL_SEARCH("addToPossibility( " << model.uniqueName() << " )");
                     addToPossibility(model);
-                else if(!savePossibilities)
-                {
+                }
+                else if(!savePossibilities) {
                     possibilityNotCreated();
                     ++m_nPossibilitiesWithoutSaving;
                 }
@@ -740,6 +776,10 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
             {
                 possibilityNotCreated();
             }
+        }
+        else
+        {
+            DEBUG_MODEL_SEARCH(model.uniqueName() << " not added");
         }
 
         // if this model is optionnal we consider that is ok but
@@ -750,8 +790,14 @@ int CT_InAbstractModel::recursiveFindPossibilitiesInModel(const CT_OutAbstractMo
         if(recursiveOk)
             ok = 2;
     }
+    else
+    {
+        DEBUG_MODEL_SEARCH("NO");
+    }
 
-    //qDebug() << uniqueName() << " => " << "return " << ok;
+    DEBUG_MODEL_SEARCH("return " << ok);
+
+    END_RECURSIVE_DEBUG
 
     return ok;
 }

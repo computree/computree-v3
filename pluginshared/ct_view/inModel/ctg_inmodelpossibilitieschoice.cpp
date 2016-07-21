@@ -7,6 +7,7 @@
 
 #include "ct_virtualabstractstep.h"
 #include "ct_inabstractgroupmodel.h"
+#include "ct_itemdrawable/model/inModel/ct_inzeroormoregroupmodel.h"
 
 #include <QComboBox>
 #include <QElapsedTimer>
@@ -760,12 +761,15 @@ void CTG_InModelPossibilitiesChoice::recursiveUpdateCheckBoxAndComboBox(QStandar
         while(it.hasNext()) {
             CT_InAbstractModel *model = it.next();
 
-//            bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem);
+            /*bool active = (parentSelectedModel != NULL) || (dynamic_cast<CT_InAbstractGroupModel*>(model) != NULL);
 
-//            if((parentSelectedModel != NULL) && active)
-//                active = (parentSelectedModel == model->parentModel());
+            if((parentSelectedModel != NULL) && active)
+                active = (parentSelectedModel == model->parentModel()) || (dynamic_cast<CT_InZeroOrMoreGroupModel*>(model->parentModel()) != NULL);
+*/
+            bool active = (parentSelectedModel == model->parentModel());
 
-              bool active = (parentSelectedModel == NULL) || !staticIsRecursiveCurrentInModelNULL(parentComboBoxItem) || (parentSelectedModel == model->parentModel());
+            if(!active)
+                active = (dynamic_cast<CT_InAbstractGroupModel*>(model) != NULL) && (dynamic_cast<CT_InZeroOrMoreGroupModel*>(model->parentModel()) != NULL);
 
             // set the model "active" (displayed and selectable by the user) only if it has no selected parent model or if the parent model is its parent
             // otherwise we set it not active
@@ -927,8 +931,10 @@ void CTG_InModelPossibilitiesChoice::itemChanged(QStandardItem *item)
 
                     int size = itemFirstColumn->rowCount();
 
-                    for(int i=0; i<size; ++i)
-                        static_cast<CTG_InModelCheckBox*>(itemFirstColumn->child(i, COLUMN_CHECK))->setChecked(false);
+                    for(int i=0; i<size; ++i) {
+                        if((comboItem->currentInModel() == NULL) || (dynamic_cast<CT_InZeroOrMoreGroupModel*>(comboItem->currentInModel()->parentModel()) == NULL))
+                            static_cast<CTG_InModelCheckBox*>(itemFirstColumn->child(i, COLUMN_CHECK))->setChecked(false);
+                    }
                 }
             }
         } else if(item->column() == COLUMN_COMBO) {
