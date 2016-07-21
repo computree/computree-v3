@@ -76,7 +76,7 @@ windows {
         } else {
 
             !exists($$PCL_LIBS_PATH/$${a}_release*) {
-                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_debug was not found"
+                USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_release was not found"
             } else {
                 LIBS += -l$${a}_release
             }

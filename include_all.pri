@@ -6,6 +6,65 @@
     include(include_gdal.pri)
 }
 
+##### GSL ####
+
+#if we must check if we can use gsl
+!isEmpty(CHECK_CAN_USE_GSL) {
+    # we check if GSL can be used
+    CHECK_GSL = 1
+}
+
+#if we want absolutely use gsl library
+contains( COMPUTREE, ctlibgsl ) {
+    # we set that the GSL check test must pass
+    MUST_USE_GSL = 1
+}
+
+#if we want absolutely use gsl (the GSL check test must pass)
+!isEmpty(MUST_USE_GSL) {
+    # we check if GSL can be used
+    CHECK_GSL = 1
+}
+
+#if we must check if gsl can be used
+!isEmpty(CHECK_GSL) {
+    include(gsl_default_path.pri)
+
+    exists(gsl_user_path.pri) {
+        include(gsl_user_path.pri)
+    }
+
+    include(gsl_check.pri)
+
+    #if GSL can be used
+    isEmpty(USE_GSL_ERROR_MSG) {
+        include(include_gsl_necessary.pri)
+        warning("GSL found and it will be used in this plugin")
+    }
+}
+
+#if we must absolutely use GSL
+!isEmpty(MUST_USE_GSL) {
+    !contains(DEFINES, USE_GSL) {
+        for(a, USE_GSL_ERROR_MSG) {
+            warning("Error when search GSL : $${a}")
+        }
+        error("GSL not found, see warning above for more information")
+    }
+} else {
+    !isEmpty(CHECK_CAN_USE_GSL) {
+        !contains(DEFINES, USE_GSL) {
+            warning(This plugin can use GSL but it was not found. The plugin will be compiled in a reduced mode.)
+
+            !isEmpty(USE_GSL_ERROR_MSG) {
+                for(a, USE_GSL_ERROR_MSG) {
+                    warning("Error when search GSL : $${a}")
+                }
+            }
+        }
+    }
+}
+
 ##### PCL ####
 
 #if we must check if we can use pcl
