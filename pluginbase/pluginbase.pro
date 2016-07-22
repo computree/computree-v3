@@ -1,5 +1,8 @@
 COMPUTREE += ctlibio ctlibmetrics ctlibfilters ctliblas
 
+CHECK_CAN_USE_GDAL = 1
+CHECK_CAN_USE_OPENCV = 1
+
 include(../shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)
 include(../include_ct_library.pri)

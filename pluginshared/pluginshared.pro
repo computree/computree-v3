@@ -39,6 +39,10 @@ CONFIG(debug, debug|release) {
 
 DEFINES += PLUGINSHARED_LIBRARY
 
+CHECK_CAN_USE_PCL = 1
+CHECK_CAN_USE_GDAL = 1
+CHECK_CAN_USE_OPENCV = 1
+
 include(../include_all.pri)
 
 !isEmpty(TEST_FEATURES) {
