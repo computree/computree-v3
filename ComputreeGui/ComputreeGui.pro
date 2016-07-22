@@ -1,13 +1,27 @@
 include(../shared.pri)
 
-!exists(../include_osg.pri) {
-    !exists(../include_osg_default.pri) {
-        error("File include_osg.pri not found ! Run script \"convertInclude.bat\" to create this file automatically")
-    } else {
-        include(../include_osg_default.pri)
+include(../osg_default_path.pri)
+
+exists(../osg_user_path.pri) {
+    include(../osg_user_path.pri)
+}
+
+include(../osg_check.pri)
+
+#if OSG can be used
+isEmpty(USE_OSG_ERROR_MSG) {
+    include(../include_osg_necessary.pri)
+
+    isEmpty(USE_OSG_ERROR_MSG) {
+        warning("OSG found and it will be used in this plugin")
     }
-} else {
-    include(../include_osg.pri)
+}
+
+!contains(DEFINES, USE_OSG) {
+    for(a, USE_OSG_ERROR_MSG) {
+        warning("Error when search OSG : $${a}")
+    }
+    error("OSG not found, see warning above for more information")
 }
 
 CONFIG -= plugin

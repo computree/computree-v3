@@ -1,9 +1,63 @@
 ##### GDAL ####
 
-!exists(include_gdal.pri) {
-    message("GDAL will not be used")
+#if we must check if we can use gdal
+!isEmpty(CHECK_CAN_USE_GDAL) {
+    # we check if GDAL can be used
+    CHECK_GDAL = 1
+}
+
+#if we want absolutely use gdal library
+contains( COMPUTREE, ctlibgdal ) {
+    # we set that the GDAL check test must pass
+    MUST_USE_GDAL = 1
+}
+
+#if we want absolutely use gdal (the GDAL check test must pass)
+!isEmpty(MUST_USE_GDAL) {
+    # we check if GDAL can be used
+    CHECK_GDAL = 1
+}
+
+#if we must check if gdal can be used
+!isEmpty(CHECK_GDAL) {
+    include(gdal_default_path.pri)
+
+    exists(gdal_user_path.pri) {
+        include(gdal_user_path.pri)
+    }
+
+    include(gdal_check.pri)
+
+    #if GDAL can be used
+    isEmpty(USE_GDAL_ERROR_MSG) {
+        include(include_gdal_necessary.pri)
+
+        isEmpty(USE_GDAL_ERROR_MSG) {
+            warning("GDAL found and it will be used in this plugin")
+        }
+    }
+}
+
+#if we must absolutely use GDAL
+!isEmpty(MUST_USE_GDAL) {
+    !contains(DEFINES, USE_GDAL) {
+        for(a, USE_GDAL_ERROR_MSG) {
+            warning("Error when search GDAL : $${a}")
+        }
+        error("GDAL not found, see warning above for more information")
+    }
 } else {
-    include(include_gdal.pri)
+    !isEmpty(CHECK_CAN_USE_GDAL) {
+        !contains(DEFINES, USE_GDAL) {
+            warning(This plugin can use GDAL but it was not found. The plugin will be compiled in a reduced mode.)
+
+            !isEmpty(USE_GDAL_ERROR_MSG) {
+                for(a, USE_GDAL_ERROR_MSG) {
+                    warning("Error when search GDAL : $${a}")
+                }
+            }
+        }
+    }
 }
 
 ##### GSL ####
@@ -39,7 +93,10 @@ contains( COMPUTREE, ctlibgsl ) {
     #if GSL can be used
     isEmpty(USE_GSL_ERROR_MSG) {
         include(include_gsl_necessary.pri)
-        warning("GSL found and it will be used in this plugin")
+
+        isEmpty(USE_GSL_ERROR_MSG) {
+            warning("GSL found and it will be used in this plugin")
+        }
     }
 }
 
@@ -98,7 +155,10 @@ contains( COMPUTREE, ctlibpcl ) {
     #if PCL can be used
     isEmpty(USE_PCL_ERROR_MSG) {
         include(include_pcl_necessary.pri)
-        warning("PCL found and it will be used in this plugin")
+
+        isEmpty(USE_PCL_ERROR_MSG) {
+            warning("PCL found and it will be used in this plugin")
+        }
     }
 }
 
@@ -126,29 +186,67 @@ contains( COMPUTREE, ctlibpcl ) {
 
 ##### OPENCV ####
 
-contains(DEFINES, USE_OPENCV_DEFAULT) {
-    !exists(include_opencv_default.pri) {
-        message("OPENCV will not be used")
-    } else {
-        include(include_opencv_default.pri)
+#if we must check if we can use opencv
+!isEmpty(CHECK_CAN_USE_OPENCV) {
+    # we check if OPENCV can be used
+    CHECK_OPENCV = 1
+}
+
+#if we want absolutely use opencv library
+contains( COMPUTREE, ctlibopencv ) {
+    # we set that the OPENCV check test must pass
+    MUST_USE_OPENCV = 1
+}
+
+#if we want absolutely use opencv (the OPENCV check test must pass)
+!isEmpty(MUST_USE_OPENCV) {
+    # we check if OPENCV can be used
+    CHECK_OPENCV = 1
+}
+
+#if we must check if opencv can be used
+!isEmpty(CHECK_OPENCV) {
+    include(opencv_default_path.pri)
+
+    exists(opencv_user_path.pri) {
+        include(opencv_user_path.pri)
     }
-} else {
-    !exists(include_opencv.pri) {
-        message("OPENCV will not be used")
-    } else {
-        include(include_opencv.pri)
+
+    include(opencv_check.pri)
+
+    #if OPENCV can be used
+    isEmpty(USE_OPENCV_ERROR_MSG) {
+        include(include_opencv_necessary.pri)
+
+        isEmpty(USE_OPENCV_ERROR_MSG) {
+            warning("OPENCV found and it will be used in this plugin")
+        }
     }
 }
 
-!exists(include_osg.pri) {
-    !exists(include_osg_default.pri) {
-        error("File include_osg.pri not found ! Run script \"convertInclude.bat\" to create this file automatically")
-    } else {
-        include(include_osg_default.pri)
+#if we must absolutely use OPENCV
+!isEmpty(MUST_USE_OPENCV) {
+    !contains(DEFINES, USE_OPENCV) {
+        for(a, USE_OPENCV_ERROR_MSG) {
+            warning("Error when search OPENCV : $${a}")
+        }
+        error("OPENCV not found, see warning above for more information")
     }
 } else {
-    include(include_osg.pri)
+    !isEmpty(CHECK_CAN_USE_OPENCV) {
+        !contains(DEFINES, USE_OPENCV) {
+            warning(This plugin can use OPENCV but it was not found. The plugin will be compiled in a reduced mode.)
+
+            !isEmpty(USE_OPENCV_ERROR_MSG) {
+                for(a, USE_OPENCV_ERROR_MSG) {
+                    warning("Error when search OPENCV : $${a}")
+                }
+            }
+        }
+    }
 }
+
+##### EIGEN IF PCL ######
 
 !contains( DEFINES, USE_PCL ) {
     isEmpty(PLUGIN_SHARED_DIR) {

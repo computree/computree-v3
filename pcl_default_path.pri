@@ -1,19 +1,24 @@
 unix {
-    PCL_LIBS_PATH = "/usr/lib"
-    PCL_INC_PATH = "/usr/include/pcl-1.7"
-    EIGEN_INC_PATH = "/usr/include/eigen3"
-    QHULL_INC_PATH = "/usr/include"
-    FLANN_INC_PATH = "/usr/include"
-    BOOST_LIBS_PATH = "/usr/lib/x86_64-linux-gnu"
-    BOOST_INC_PATH = "/usr/include"
+    PCL_BASE_PATH = "/usr/"
+
+    PCL_LIBS_PATH = "$${PCL_BASE_PATH}lib"
+    PCL_INC_PATH = "$${PCL_BASE_PATH}include/pcl-1.7"
+    EIGEN_INC_PATH = "$${PCL_BASE_PATH}include/eigen3"
+    QHULL_INC_PATH = "$${PCL_BASE_PATH}include"
+    FLANN_INC_PATH = "$${PCL_BASE_PATH}include"
+    BOOST_LIBS_PATH = "$${PCL_BASE_PATH}lib/x86_64-linux-gnu"
+    BOOST_INC_PATH = "$${PCL_BASE_PATH}include"
 }
 
 windows {
-    PCL_LIBS_PATH = "C:/Program Files/PCL 1.7.2/lib"
-    PCL_INC_PATH = "C:/Program Files/PCL 1.7.2/include/pcl-1.7"
-    EIGEN_INC_PATH = "C:/Program Files/PCL 1.7.2/3rdParty/Eigen/eigen3"
-    QHULL_INC_PATH = "C:/Program Files/PCL 1.7.2/3rdParty/Qhull/include"
-    FLANN_INC_PATH = "C:/Program Files/PCL 1.7.2/3rdParty/FLANN/include"
-    BOOST_LIBS_PATH = "C:/Program Files/PCL 1.7.2/3rdParty/Boost/lib"
-    BOOST_INC_PATH = "C:/Program Files/PCL 1.7.2/3rdParty/Boost/include/boost-1_57"
+    PCL_BASE_PATH = "C:/Program Files/PCL 1.7.2/"
+    PCL_3RDPARTY_PATH = "$${PCL_BASE_PATH}3rdParty/"
+
+    PCL_LIBS_PATH = "$${PCL_BASE_PATH}lib"
+    PCL_INC_PATH = "$${PCL_BASE_PATH}include/pcl-1.7"
+    EIGEN_INC_PATH = "$${PCL_3RDPARTY_PATH}Eigen/eigen3"
+    QHULL_INC_PATH = "$${PCL_3RDPARTY_PATH}Qhull/include"
+    FLANN_INC_PATH = "$${PCL_3RDPARTY_PATH}FLANN/include"
+    BOOST_LIBS_PATH = "$${PCL_3RDPARTY_PATH}Boost/lib"
+    BOOST_INC_PATH = "$${PCL_3RDPARTY_PATH}Boost/include/boost-1_57"
 }

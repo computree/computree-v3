@@ -1,7 +1,7 @@
 @ECHO OFF
 
 call win_updateLanguage.bat
-call win_createInclude.bat
+REM call win_createInclude.bat
 
 PAUSE
 
