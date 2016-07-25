@@ -12,13 +12,13 @@ unix {
             !exists($$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}d*) {
                 USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}d was not found"
             } else {
-                LIBS += -l$${a}d
+                LIBS += -l$${a}$${OPENCV_VERSION}d
             }
         } else {
             !exists($$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}*) {
                 USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION} was not found"
             } else {
-                LIBS += -l$${a}
+                LIBS += -l$${a}$${OPENCV_VERSION}
             }
         }
     }
@@ -30,13 +30,13 @@ windows {
             !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d*) {
                 USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d was not found"
             } else {
-                LIBS += -l$${a}d
+                LIBS += -l$${a}$${OPENCV_VERSION}d
             }
         } else {
             !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}*) {
                 USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION} was not found"
             } else {
-                LIBS += -l$${a}
+                LIBS += -l$${a}$${OPENCV_VERSION}
             }
         }
     }

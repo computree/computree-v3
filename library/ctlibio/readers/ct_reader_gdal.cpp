@@ -5,7 +5,10 @@
 #include "ogrsf_frmts.h"
 #endif
 
+#ifdef USE_OPENCV
 #include "ct_itemdrawable/ct_image2d.h"
+#endif
+
 #include "ct_itemdrawable/ct_point2d.h"
 #include "ct_itemdrawable/ct_polygon2d.h"
 #include "ct_itemdrawable/ct_polyline2d.h"
@@ -223,10 +226,13 @@ void CT_Reader_GDAL::protectedCreateOutItemDrawableModelList()
         int n = data->GetRasterCount();
 
         if(n != 0) {
+#ifdef USE_OPENCV
+
             for(int i=0; i<n; ++i) {
                 QString name = GDALGetColorInterpretationName(data->GetRasterBand(i+1)->GetColorInterpretation());
                 addOutItemDrawableModel(QString(DEF_CT_Reader_GDAL_rasterOut).arg(i), new CT_Image2D<float>(), (name.isEmpty() || (name == "Undefined")) ? QString("Raster %1").arg(i) : name);
             }
+#endif
         } else {
             n = data->GetLayerCount();
 
@@ -353,6 +359,8 @@ bool CT_Reader_GDAL::protectedReadFile()
     int count = data->GetRasterCount();
 
     if(count > 0) {
+#ifdef USE_OPENCV
+
         for(int i=0; i<count; ++i) {
 
             GDALRasterBand *poBand = data->GetRasterBand(i+1);
@@ -398,6 +406,7 @@ bool CT_Reader_GDAL::protectedReadFile()
 
             addOutItemDrawable(QString(DEF_CT_Reader_GDAL_rasterOut).arg(i), grid);
         }
+#endif
     } else {
         count = data->GetLayerCount();
 

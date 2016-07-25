@@ -2,6 +2,7 @@ CT_PREFIX = ../..
 CT_PREFIX_INSTALL = ../../..
 
 CHECK_CAN_USE_GDAL = 1
+CHECK_CAN_USE_OPENCV = 1
 
 include($${CT_PREFIX}/shared.pri)
 include($${PLUGIN_SHARED_DIR}/include.pri)

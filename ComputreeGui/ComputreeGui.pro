@@ -1,5 +1,3 @@
-include(../shared.pri)
-
 include(../osg_default_path.pri)
 
 exists(../osg_user_path.pri) {
@@ -23,6 +21,9 @@ isEmpty(USE_OSG_ERROR_MSG) {
     }
     error("OSG not found, see warning above for more information")
 }
+
+include(../shared.pri)
+
 
 CONFIG -= plugin
 

@@ -1,3 +1,30 @@
+##### OSG ####
+
+include(osg_default_path.pri)
+
+exists(osg_user_path.pri) {
+    include(osg_user_path.pri)
+}
+
+include(osg_check.pri)
+
+#if OSG can be used
+isEmpty(USE_OSG_ERROR_MSG) {
+    include(include_osg_necessary.pri)
+
+    isEmpty(USE_OSG_ERROR_MSG) {
+        warning("OSG found and it will be used in this plugin")
+    }
+}
+
+!contains(DEFINES, USE_OSG) {
+    for(a, USE_OSG_ERROR_MSG) {
+        warning("Error when search OSG : $${a}")
+    }
+    error("OSG not found, see warning above for more information")
+}
+
+
 ##### GDAL ####
 
 #if we must check if we can use gdal
