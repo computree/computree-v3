@@ -82,9 +82,13 @@ bool PB_MeshObjExporter::protectedExportToFile()
         // write data
         QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
 
+        int lastPointCount = 0;
+        int ptNb = 0;
         while(it.hasNext())
         {
             CT_AbstractItemDrawable *item = it.next();
+
+            stream << "o " << item->id() << endl << endl;
 
             CT_Mesh *mesh = dynamic_cast<CT_MeshModel*>(item)->mesh();
 
@@ -105,7 +109,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
 
                     stream << "v " << ((double)point(0)) << " " << ((double)point(1)) << " " << ((double)point(2)) << endl;
 
-                    ++i;
+                    ++i;++ptNb;
 
                     setExportProgress((((i*50)/totalSize)+nExported)/totalToExport);
                 }
@@ -119,7 +123,7 @@ bool PB_MeshObjExporter::protectedExportToFile()
                 {
                     const CT_Face &face = itF.next().cT();
 
-                    stream << "f " << hashTablePoint.value(face.iPointAt(0)) << " " << hashTablePoint.value(face.iPointAt(1)) << " " << hashTablePoint.value(face.iPointAt(2)) << endl;
+                    stream << "f " << (hashTablePoint.value(face.iPointAt(0)) + lastPointCount) << " " << (hashTablePoint.value(face.iPointAt(1)) + lastPointCount) << " " << (hashTablePoint.value(face.iPointAt(2)) + lastPointCount) << endl;
 
                     ++i;
 
@@ -128,6 +132,9 @@ bool PB_MeshObjExporter::protectedExportToFile()
             }
 
             nExported += 100;
+            stream << endl;
+            lastPointCount = ptNb;
+
         }
 
         file.close();
