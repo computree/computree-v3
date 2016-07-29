@@ -8,6 +8,7 @@
 
 #include "ct_abstractstepplugin.h"
 #include "ct_exporter/ct_standardexporterseparator.h"
+#include "ct_turn/inTurn/tools/ct_inturnmanager.h"
 
 #include "ct_itemdrawable/ct_profile.h"
 #include "exporters/profile/pb_profileexporter.h"
@@ -121,6 +122,76 @@ void PB_StepExportItemList::createInResultModelListProtected()
     resCounter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
 
 }
+
+//bool PB_StepExportItemList::configureInputResult()
+//{
+//    if(CT_VirtualAbstractStep::configureInputResult())
+//        return configureExporter();
+
+//    return false;
+//}
+
+//bool PB_StepExportItemList::configureExporter()
+//{
+//    configureExporterFromModel();
+
+//    if(_exporterConfiguration != NULL)
+//        _exporter->loadExportConfiguration(_exporterConfiguration);
+
+//    if(_exporter->configureExport())
+//    {
+//        clearExporterConfiguration();
+//        _exporterConfiguration = _exporter->saveExportConfiguration();
+
+//        setSettingsModified(true);
+
+//        return true;
+//    }
+
+//    return false;
+//}
+
+//void PB_StepExportItemList::configureExporterFromModel()
+//{
+//    // on se place au premier tour (il n'y en a qu'un de toute façon)
+//    getInTurnManager()->getTurnIndexManager()->resetTurnIndex();
+
+//    // on demande au gestionnaire de tour de créer la liste des modèles d'entrée pour le premier tour
+//    getInTurnManager()->createSearchModelListForCurrentTurn();
+
+//    // on récupère le modèle d'entrée qu'on avait défini
+//    CT_InResultModelGroup *resModel = (CT_InResultModelGroup*)getInResultModel(DEFin_res);
+
+//    // on récupère les possibilités pour ce résultat (il n'y en a qu'une puisque un résultat d'entrée = un résultat de sortie)
+//    QList<CT_InStdModelPossibility*> possibilities = resModel->getPossibilitiesSavedSelected();
+
+//    QListIterator<CT_InStdModelPossibility*> it(possibilities);
+
+//    QList<CT_AbstractItemDrawable*> eItems;
+
+//    while(it.hasNext())
+//    {
+//        // on récupère le modèle d'entrée qu'on avait défini (celui à exporter)
+//        CT_InAbstractItemModel *inItemModelToExport = NULL;
+
+//        if(_exporter->exportOnlyGroup())
+//            inItemModelToExport = (CT_InAbstractItemModel*)PS_MODELS->searchModel(DEFin_grp, (CT_OutAbstractResultModel*)it.next()->outModel(), this);
+//        else
+//            inItemModelToExport = (CT_InAbstractItemModel*)PS_MODELS->searchModel(DEFin_item, (CT_OutAbstractResultModel*)it.next()->outModel(), this);
+
+//        // on récupère sa possibilité (il n'y en a qu'une puisqu'on a mis CT_InStandardItemDrawableModel::C_ChooseOneIfMultiple)
+//        CT_InStdModelPossibility *possibility = inItemModelToExport->getPossibilitiesSavedSelected().first();
+
+//        // on récupère l'ItemDrawable choisi
+//        eItems.append(((CT_OutAbstractItemModel*)possibility->outModel())->itemDrawable());
+//    }
+
+//    _exporter->clearErrorMessage();
+
+//    // on les donne à l'exporter
+//    _exporter->setItemDrawableToExport(eItems);
+//}
+
 
 // Creation and affiliation of OUT models
 void PB_StepExportItemList::createOutResultModelListProtected()

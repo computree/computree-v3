@@ -62,6 +62,12 @@ protected:
      */
     void createInResultModelListProtected();
 
+    // CT_AbstractStep non obligatoire :
+//    bool configureInputResult();
+//    bool configureExporter();
+//    void configureExporterFromModel();
+
+
     /*! \brief Parameters DialogBox
      * 
      * DialogBox asking for step parameters
