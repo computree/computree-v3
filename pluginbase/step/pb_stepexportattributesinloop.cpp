@@ -628,7 +628,7 @@ void PB_StepExportAttributesInLoop::compute()
                     if (_rasterExport && raster != NULL)
                     {
                         double val = pair.second->toDouble(pair.first, NULL);
-                        if (val == NAN) {val = DEF_NA;}
+                        if (isnan(val)) {val = DEF_NA;}
                         raster->setValueAtCoords(x, y, val);
                     }
 #endif
