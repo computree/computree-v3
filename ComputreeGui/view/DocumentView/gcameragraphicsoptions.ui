@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>37</height>
+    <width>273</width>
+    <height>26</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>624</width>
-    <height>27</height>
-   </size>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -33,8 +33,8 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0">
-     <item row="0" column="8">
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0,0,0,0,0,0">
+     <item row="0" column="9">
       <widget class="QPushButton" name="pushButtonSync">
        <property name="minimumSize">
         <size>
@@ -76,7 +76,7 @@ QPushButton:checked
        </property>
       </widget>
      </item>
-     <item row="0" column="7">
+     <item row="0" column="8">
       <widget class="QPushButton" name="pushButtonInitCenter">
        <property name="toolTip">
         <string>Centrer la vue sur l'origine</string>
@@ -90,64 +90,7 @@ QPushButton:checked
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QComboBox" name="comboBoxPointOfView">
-       <property name="maximumSize">
-        <size>
-         <width>40</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Déplacer la caméra</string>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="19">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="6">
-      <widget class="QPushButton" name="pushButtonFixBarycenter">
-       <property name="toolTip">
-        <string>Centrer la vue sur le barycentre des éléments présents dans la vue</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../resource/icones.qrc">
-         <normaloff>:/Icones/Icones/center_on_scene.png</normaloff>:/Icones/Icones/center_on_scene.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="pushButtonFixBarycenterSelected">
-       <property name="toolTip">
-        <string>Centrer la vue sur le barycentre des éléments sélectionnés</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../resource/icones.qrc">
-         <normaloff>:/Icones/Icones/center_on_cell.png</normaloff>:/Icones/Icones/center_on_cell.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="9">
+     <item row="0" column="10">
       <widget class="QToolButton" name="toolButtonCameraCoordinate">
        <property name="minimumSize">
         <size>
@@ -186,6 +129,72 @@ QPushButton:checked
          <normaloff>:/Icones/Icones/fitBB.png</normaloff>:/Icones/Icones/fitBB.png</iconset>
        </property>
       </widget>
+     </item>
+     <item row="0" column="7">
+      <widget class="QPushButton" name="pushButtonFixBarycenter">
+       <property name="toolTip">
+        <string>Centrer la vue sur le barycentre des éléments présents dans la vue</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/center_on_scene.png</normaloff>:/Icones/Icones/center_on_scene.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QPushButton" name="pushButtonFixBarycenterSelected">
+       <property name="toolTip">
+        <string>Centrer la vue sur le barycentre des éléments sélectionnés</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resource/icones.qrc">
+         <normaloff>:/Icones/Icones/center_on_cell.png</normaloff>:/Icones/Icones/center_on_cell.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QComboBox" name="comboBoxPointOfView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>40</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Déplacer la caméra</string>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

@@ -912,6 +912,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     _pointOfViewButton= new QToolButton(widgetContainer);
     _pointOfViewButton->setMaximumWidth(38);
     _pointOfViewButton->setMinimumWidth(38);
+    _pointOfViewButton->setMinimumHeight(24);
     _pointOfViewButton->setToolTip(tr("Point de vue"));
     _pointOfViewButton->setIcon(QIcon(":/Icones/Icones/eye.png"));
     _pointOfViewButton->setPopupMode(QToolButton::InstantPopup);
@@ -955,13 +956,15 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     buttonShowOptions->setToolTip(tr("Configurer l'affichage"));
     buttonShowOptions->setIcon(QIcon(":/Icones/Icones/preferences-system.png"));
 
-    layout->addWidget(screenshotButton);
+
+    layout->addWidget(_cameraOptionsView);
     layout->addWidget(_pointOfViewButton);
-    layout->addWidget(_buttonExport);
+    layout->addWidget(screenshotButton);
+    layout->addWidget(_buttonPixelSize);
     layout->addWidget(buttonShowOptions);
     layout->addWidget(buttonPointsAttributes);
-    layout->addWidget(_buttonPixelSize);
-    layout->addWidget(_cameraOptionsView);
+    layout->addWidget(_buttonExport);
+    layout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Expanding));
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
 

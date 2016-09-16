@@ -207,7 +207,7 @@ CT_VirtualAbstractStep* PB_StepGenericExporter::createNewInstance(CT_StepInitial
 
 void PB_StepGenericExporter::createInResultModelListProtected()
 {
-    CT_InResultModelGroup *resultModel = createNewInResultModel(DEF_SearchInResultToExport, tr("Résultat"));
+    CT_InResultModelGroup *resultModel = createNewInResultModel(DEF_SearchInResultToExport, tr("Résultat"), "", true);
 
     resultModel->setZeroOrMoreRootGroup();
     resultModel->addGroupModel("", DEF_SearchInGroup);
