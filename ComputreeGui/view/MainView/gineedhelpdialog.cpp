@@ -12,20 +12,12 @@ GINeedHelpDialog::GINeedHelpDialog(QWidget *parent) :
     ui->content->append(tr("-> <a href=\"http://rdinnovation.onf.fr/projects/computree/wiki\">Sommaire de la Wiki Computree</a>"));
     ui->content->append("<br>");
 
-    ui->content->append(tr("Pour de l'aide sur <b>l'utilisation de l'interface graphique</b> :"));
-    ui->content->append(tr("-> <a href=\"http://rdinnovation.onf.fr/projects/computree/wiki/Fr_computreeGUI\">Wiki sur l'interface utilisateur</a>"));
-    ui->content->append("<br>");
-
     ui->content->append(tr("Pour de l'aide sur <b>une étape insérée</b> :"));
-    ui->content->append(tr("-> Faire un clic droit sur l'étape insérée, puis <i>Informations sur l'étape</i>"));
+    ui->content->append(tr("-> Faire un clic droit sur l'étape insérée, puis <i>Documentation de l'étape</i>"));
     ui->content->append("<br>");
 
-    ui->content->append(tr("Pour de l'aide sur <b>une étape dans un plugin (pas encore insérée)</b> :"));
-    ui->content->append(tr("-> Dans le sous-menu d'insertion d'étape du plugin, sur l'étape, faire F1"));
-    ui->content->append("<br>");
-
-    ui->content->append(tr("Pour de l'aide sur <b>comment réaliser une tâche précise à l'aide des étapes disponibles</b> :"));
-    ui->content->append(tr("-> Consulter les tutoriels disponibles ici : <a href=\"http://rdinnovation.onf.fr/projects/computree/wiki/Fr_tutorials\">Tutoriels thématiques (How To's)</a>"));
+    ui->content->append(tr("Pour de l'aide sur <b>une étape du menu (pas encore insérée)</b> :"));
+    ui->content->append(tr("-> Faire un clic droit sur l'étape dans le menu, puis <i>Documentation de l'étape</i>"));
     ui->content->append("<br>");
 
     ui->content->append(tr("Pour <b>signaler un bug</b> ou <b>suggérer une amélioration</b> :"));
