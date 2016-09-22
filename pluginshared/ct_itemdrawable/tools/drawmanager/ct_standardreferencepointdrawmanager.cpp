@@ -21,9 +21,11 @@ void CT_StandardReferencePointDrawManager::draw(GraphicsViewInterface &view, Pai
 
     const CT_ReferencePoint &item = dynamic_cast<const CT_ReferencePoint&>(itemDrawable);
 
+    double sizeCube = (double) (getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINT_SIZE).toInt()) / 100.0;
 
     painter.setPointSize(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_POINT_SIZE).toInt());
-    painter.drawPoint(item.getCenterX(), item.getCenterY(), item.getCenterZ());
+    //painter.drawPoint(item.getCenterX(), item.getCenterY(), item.getCenterZ());
+    painter.drawCube(item.getCenterX() - sizeCube, item.getCenterY() - sizeCube, item.getCenterZ() - sizeCube,item.getCenterX() + sizeCube, item.getCenterY() + sizeCube, item.getCenterZ() + sizeCube, GL_FRONT_AND_BACK, GL_FILL);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_BUFFER_VISIBLE).toBool())
     {
