@@ -9,6 +9,7 @@
 const QString CT_AbstractCategory::DATA_VALUE                   = CT_AbstractCategory::staticInitDataValue();
 const QString CT_AbstractCategory::DATA_ID                      = CT_AbstractCategory::staticInitDataId();
 const QString CT_AbstractCategory::DATA_DISPLAYABLE_NAME        = CT_AbstractCategory::staticInitDataDisplayableName();
+const QString CT_AbstractCategory::DATA_FILE_NAME               = CT_AbstractCategory::staticInitDataFileName();
 const QString CT_AbstractCategory::DATA_COORDINATE              = CT_AbstractCategory::staticInitDataCoordinate();
 const QString CT_AbstractCategory::DATA_X                       = CT_AbstractCategory::staticInitDataX();
 const QString CT_AbstractCategory::DATA_Y                       = CT_AbstractCategory::staticInitDataY();

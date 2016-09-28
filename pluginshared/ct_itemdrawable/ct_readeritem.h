@@ -71,8 +71,8 @@ private:
     CT_AbstractReader*  _reader;
 
     CT_DEFAULT_IA_BEGIN(CT_ReaderItem)
-    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderFilePath, QObject::tr("FilePath"), "fi")
-    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderName, QObject::tr("ReaderName"), "rn")
+    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_ReaderItem::getReaderName, QObject::tr("ReaderType"), "rn")
+    CT_DEFAULT_IA_V3(CT_ReaderItem, CT_AbstractCategory::staticInitDataFileName(), &CT_ReaderItem::getReaderFilePath, QObject::tr("FilePath"), "fi")
     CT_DEFAULT_IA_END(CT_ReaderItem)
 
 };

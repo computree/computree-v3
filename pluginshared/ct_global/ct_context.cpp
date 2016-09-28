@@ -53,6 +53,7 @@ void CT_Context::init()
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataId(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataDisplayableName(), CT_AbstractCategory::staticInitDataValue()));
+    m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataFileName(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataCoordinate(), CT_AbstractCategory::staticInitDataValue()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataX(), CT_AbstractCategory::staticInitDataCoordinate()));
     m_categoryManager->registerCategory(new CT_StdCategory(CT_AbstractCategory::staticInitDataY(), CT_AbstractCategory::staticInitDataCoordinate()));

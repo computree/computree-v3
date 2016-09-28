@@ -141,8 +141,8 @@ void PB_StepCreateReaderList::createOutResultModelListProtected()
             CT_AbstractReader* readerCpy = reader->copyFull();
 
             outRes->addGroupModel(DEFout_grp, DEFout_grpHeader, new CT_StandardItemGroup(), tr("Fichier"));
-            outRes->addItemModel(DEFout_grpHeader, DEFout_header, rHeader, tr("Entête"));
             outRes->addItemModel(DEFout_grpHeader, DEFout_reader, new CT_ReaderItem(NULL, NULL, readerCpy), tr("Reader"));
+            outRes->addItemModel(DEFout_grpHeader, DEFout_header, rHeader, tr("Entête"));
         }
     }
 }

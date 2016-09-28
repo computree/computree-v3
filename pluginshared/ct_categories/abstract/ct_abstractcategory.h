@@ -71,6 +71,7 @@ public:
     static const QString DATA_VALUE;                // generic value
     static const QString DATA_ID;                   // unique id (equivalent to "DATA_VALUE")
     static const QString DATA_DISPLAYABLE_NAME;     // displayable name (equivalent to "DATA_VALUE")
+    static const QString DATA_FILE_NAME;            // File name (equivalent to "DATA_VALUE")
     static const QString DATA_COORDINATE;           // generic coordinate (equivalent to "DATA_VALUE")
     static const QString DATA_X;                    // x coordinate (equivalent to "DATA_COORDINATE")
     static const QString DATA_Y;                    // y coordinate (equivalent to "DATA_COORDINATE")
@@ -195,6 +196,7 @@ public:
     static QString staticInitDataValue() { return "CT_VALUE"; }
     static QString staticInitDataId() { return "CT_ID"; }
     static QString staticInitDataDisplayableName() { return "CT_DISPLAYABLE_NAME"; }
+    static QString staticInitDataFileName() { return "CT_FILE_NAME"; }
     static QString staticInitDataCoordinate() { return "CT_COORDINATE"; }
     static QString staticInitDataX() { return "CT_X"; }
     static QString staticInitDataY() { return "CT_Y"; }
