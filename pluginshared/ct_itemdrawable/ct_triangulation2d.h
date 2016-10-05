@@ -34,7 +34,7 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardtriangulation2ddrawmanager.h"
 
-#include "ct_triangulation/ct_delaunayt.h"
+#include "ct_math/delaunay2d/ct_delaunaytriangulation.h"
 
 /*!
  * \class CT_Triangulation2D
@@ -50,14 +50,14 @@ class PLUGINSHAREDSHARED_EXPORT CT_Triangulation2D : public CT_AbstractItemDrawa
 public:
     CT_Triangulation2D();
     CT_Triangulation2D(const CT_OutAbstractSingularItemModel *model,
-                const CT_AbstractResult *result, CT_DelaunayT *delaunay);
+                const CT_AbstractResult *result, CT_DelaunayTriangulation *delaunay);
 
     CT_Triangulation2D(const QString &modelName,
-                const CT_AbstractResult *result, CT_DelaunayT *delaunay);
+                const CT_AbstractResult *result, CT_DelaunayTriangulation *delaunay);
 
     ~CT_Triangulation2D();
 
-    CT_DelaunayT *getDelaunayT() const;
+    CT_DelaunayTriangulation *getDelaunayT() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
@@ -67,7 +67,7 @@ private:
 
 protected:
 
-    CT_DelaunayT   *_delaunay;
+    CT_DelaunayTriangulation   *_delaunay;
 };
 
 #endif // CT_TRIANGULATION2D_H

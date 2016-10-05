@@ -205,6 +205,30 @@ const QList<CT_DelaunayOutline*> &CT_DelaunayTriangulation::getOutlines()
     }
 }
 
+QMultiMap<CT_DelaunayVertex *, CT_DelaunayVertex *> CT_DelaunayTriangulation::getEdges()
+{
+    QMultiMap<CT_DelaunayVertex *, CT_DelaunayVertex *> map;
+
+    computeVerticesNeighbors();
+
+    for (int i = 0 ; i < _insertedVertices.size() ; i++)
+    {
+        CT_DelaunayVertex *baseVertex = _insertedVertices.at(i);
+        QList<CT_DelaunayVertex*> &neighbours = baseVertex->getNeighbors();
+
+        for (int j = 0 ; j < neighbours.size() ; j++)
+        {
+            CT_DelaunayVertex *neighbour = neighbours.at(j);
+
+            if (!map.contains(baseVertex, neighbour) && !map.contains(neighbour, baseVertex))
+            {
+                map.insert(baseVertex, neighbour);
+            }
+        }
+    }
+    return map;
+}
+
 void CT_DelaunayTriangulation::computeTriangles()
 {
 
@@ -667,4 +691,50 @@ bool CT_DelaunayTriangulation::doInsertion()
         }
     }
     return true;
+}
+
+const CT_DelaunayTriangle* CT_DelaunayTriangulation::findTriangleContainingPoint(double x, double y, CT_DelaunayTriangle* refTriangle)
+{
+    if (refTriangle == NULL)
+    {
+        refTriangle = _refTriangle;
+    }
+
+    CT_DelaunayTriangle* t1 = refTriangle;
+    CT_DelaunayTriangle* t1old = NULL; // to avoid infinite loops
+
+    while ((!t1->contains(x, y)) && t1old != t1)
+    {
+        t1old = t1;
+        t1 = t1->getNextTriangleTo(x, y);
+    }
+
+    return t1;
+}
+
+const CT_DelaunayTriangle *CT_DelaunayTriangulation::getZCoordForXY(double x, double y, double outZ, CT_DelaunayTriangle* refTriangle)
+{
+    const CT_DelaunayTriangle* triangle = findTriangleContainingPoint(x, y, refTriangle);
+
+    outZ = 0;
+
+    return triangle;
+}
+
+CT_DelaunayTriangulation *CT_DelaunayTriangulation::copy()
+{
+    CT_DelaunayTriangulation *cpy = new CT_DelaunayTriangulation();
+
+    cpy->init(_minx, _miny, _maxx, _maxy);
+
+    for (int i = 0 ; i < _insertedVertices.size() ; i++)
+    {
+        CT_DelaunayVertex* vertex = _insertedVertices.at(i);
+        Eigen::Vector3d* v = new Eigen::Vector3d(*(vertex->getData()));
+        cpy->addVertex(v, true);
+    }
+
+    cpy->doInsertion();
+
+    return cpy;
 }

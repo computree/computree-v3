@@ -1,9 +1,5 @@
 #include "ct_triangulation2d.h"
 
-#include "ct_triangulation/ct_trianglet.h"
-#include "ct_triangulation/ct_edget.h"
-#include "ct_triangulation/ct_nodet.h"
-
 const CT_StandardTriangulation2DDrawManager CT_Triangulation2D::TRIANGULATION2D_DRAW_MANAGER;
 
 CT_Triangulation2D::CT_Triangulation2D() : CT_AbstractItemDrawableWithoutPointCloud()
@@ -14,7 +10,7 @@ CT_Triangulation2D::CT_Triangulation2D() : CT_AbstractItemDrawableWithoutPointCl
 
 CT_Triangulation2D::CT_Triangulation2D(const CT_OutAbstractSingularItemModel *model,
                                        const CT_AbstractResult *result,
-                                       CT_DelaunayT *delaunay) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                                       CT_DelaunayTriangulation *delaunay) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _delaunay = delaunay;
     setBaseDrawManager(&TRIANGULATION2D_DRAW_MANAGER);
@@ -22,7 +18,7 @@ CT_Triangulation2D::CT_Triangulation2D(const CT_OutAbstractSingularItemModel *mo
 
 CT_Triangulation2D::CT_Triangulation2D(const QString &modelName,
                                        const CT_AbstractResult *result,
-                                       CT_DelaunayT *delaunay) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+                                       CT_DelaunayTriangulation *delaunay) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     _delaunay = delaunay;
     setBaseDrawManager(&TRIANGULATION2D_DRAW_MANAGER);
@@ -33,7 +29,7 @@ CT_Triangulation2D::~CT_Triangulation2D()
     delete _delaunay;
 }
 
-CT_DelaunayT* CT_Triangulation2D::getDelaunayT() const
+CT_DelaunayTriangulation *CT_Triangulation2D::getDelaunayT() const
 {
     return _delaunay;
 }

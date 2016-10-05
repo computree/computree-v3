@@ -95,16 +95,12 @@ bool PB_ProfileExporter::protectedExportToFile()
     QString baseName = exportPathInfo.baseName();
     QString suffix = "hist";
 
-    QString indice = "";
-    if (itemDrawableToExport().size() > 1) {indice = "_0";}
-    int cpt = 0;
-
     QListIterator<CT_AbstractItemDrawable*> it(itemDrawableToExport());
     while (it.hasNext())
     {
         CT_AbstractProfile* item = dynamic_cast<CT_AbstractProfile*>(it.next());
 
-        QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(indice).arg(suffix);
+        QString filePath = QString("%1/%2%3.%4").arg(path).arg(baseName).arg(item->displayableName()).arg(suffix);
 
         QFile file(filePath);
 
@@ -115,6 +111,7 @@ bool PB_ProfileExporter::protectedExportToFile()
             // write header
             size_t dim = item->nCells();
 
+            stream << "ItemName\t" << item->displayableName() << "\n";
             stream << "Nlevels\t" << dim << "\n";
 
             stream << "Xorigin\t" << item->minX() << "\n";
@@ -148,7 +145,6 @@ bool PB_ProfileExporter::protectedExportToFile()
 
             file.close();
         } else {ok = false;}
-        indice = QString("_%1").arg(++cpt);
     }
 
     return ok;

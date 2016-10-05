@@ -106,6 +106,8 @@ public:
     // gives the outline defined by the triangulation (corners excluded)
     const QList<CT_DelaunayOutline *> &getOutlines();
 
+    QMultiMap<CT_DelaunayVertex*, CT_DelaunayVertex*> getEdges();
+
 
     // adds all triangles of the triangulation to an ArrayList
     void computeTriangles ();
@@ -130,6 +132,12 @@ public:
 
     // add all vertices present in toInsert list to the triangulation
     bool doInsertion ();
+
+    CT_DelaunayTriangulation *copy();
+
+    const CT_DelaunayTriangle *findTriangleContainingPoint(double x, double y, CT_DelaunayTriangle *refTriangle = NULL);
+
+    const CT_DelaunayTriangle* getZCoordForXY(double x, double y, double outZ, CT_DelaunayTriangle *refTriangle = NULL);
 
 private:
     QList<CT_DelaunayVertex*> _toInsert; // working list of to be inserted vertex

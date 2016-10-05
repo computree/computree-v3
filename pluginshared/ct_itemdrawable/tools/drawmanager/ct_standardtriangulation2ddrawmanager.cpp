@@ -1,9 +1,6 @@
 #include "ct_standardtriangulation2ddrawmanager.h"
 
 #include "ct_triangulation2d.h"
-#include "ct_nodet.h"
-#include "ct_edget.h"
-#include "ct_trianglet.h"
 
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_NODES_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigNodesVisible();
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_EDGES_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigEdgesVisible();
@@ -28,11 +25,12 @@ void CT_StandardTriangulation2DDrawManager::draw(GraphicsViewInterface &view, Pa
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_NODES_VISIBLE).toBool())
         drawNodes(view, painter, item);
 
-    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HULL_VISIBLE).toBool())
-        drawHull(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_EDGES_VISIBLE).toBool())
         drawEdges(view, painter, item);
+
+    if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HULL_VISIBLE).toBool())
+        drawHull(view, painter, item);
 
     if(getDrawConfiguration()->getVariableValue(INDEX_CONFIG_VORONOI_VISIBLE).toBool())
         drawVoronoi(view, painter, item);
@@ -78,17 +76,19 @@ void CT_StandardTriangulation2DDrawManager::drawNodes(GraphicsViewInterface &vie
     Q_UNUSED(view)
 
     painter.setPointSize(10.0);
-
     painter.setColor(Qt::white);
 
-    QListIterator< QSharedPointer<CT_NodeT> > it(item.getDelaunayT()->getNodeList());
+    CT_DelaunayTriangulation* delaunayT = item.getDelaunayT();
+    const QList<CT_DelaunayVertex*> &vertices = delaunayT->getInsertedVertices();
 
-    while(it.hasNext())
+    for (int i = 0 ; i < vertices.size() ; i++)
     {
-        Eigen::Vector3d *p = it.next().data()->getPoint();
+        CT_DelaunayVertex* vertex = vertices.at(i);
+        Eigen::Vector3d *p = vertex->getData();
 
         painter.drawPoint((*p)(0), (*p)(1), (*p)(2));
     }
+
 
     painter.restoreDefaultPointSize();
 }
@@ -99,14 +99,19 @@ void CT_StandardTriangulation2DDrawManager::drawEdges(GraphicsViewInterface &vie
 
     painter.setColor(Qt::white);
 
-    QListIterator< QSharedPointer<CT_EdgeT> > it(item.getDelaunayT()->getEdgeList());
+    CT_DelaunayTriangulation* delaunayT = item.getDelaunayT();
 
+    QMultiMap<CT_DelaunayVertex *, CT_DelaunayVertex *> edges = delaunayT->getEdges();
+
+    QMapIterator<CT_DelaunayVertex *, CT_DelaunayVertex *> it(edges);
     while(it.hasNext())
     {
-        QSharedPointer<CT_EdgeT> ed = it.next();
+        it.next();
+        CT_DelaunayVertex *v1 = it.key();
+        CT_DelaunayVertex *v2 = it.value();
 
-        Eigen::Vector3d *p1 = ed.data()->getN1().data()->getPoint();
-        Eigen::Vector3d *p2 = ed.data()->getN2().data()->getPoint();
+        Eigen::Vector3d *p1 = v1->getData();
+        Eigen::Vector3d *p2 = v2->getData();
 
         painter.drawLine((*p1)(0), (*p1)(1), (*p1)(2), (*p2)(0), (*p2)(1), (*p2)(2));
     }
@@ -118,22 +123,30 @@ void CT_StandardTriangulation2DDrawManager::drawHull(GraphicsViewInterface &view
 
     painter.setColor(Qt::red);
 
-    QSharedPointer<CT_EdgeT> hull_start = item.getDelaunayT()->getHullEdgeStart();
+    CT_DelaunayTriangulation* delaunayT = item.getDelaunayT();
 
-    if(!hull_start.isNull())
+    const QList<CT_DelaunayOutline*> &outlines = delaunayT->getOutlines();
+
+    for (int i = 0 ; i < outlines.size() ; i++)
     {
-        QSharedPointer<CT_EdgeT> next_edge = hull_start;
+        CT_DelaunayOutline* outline = outlines.at(i);
 
-        do
+        const QList<CT_DelaunayVertex*> &vertices = outline->getVertices();
+
+        for (int j = 0 ; j < vertices.size() ; j++)
         {
-            Eigen::Vector3d *p1 = next_edge.data()->getN1().data()->getPoint();
-            Eigen::Vector3d *p2 = next_edge.data()->getN2().data()->getPoint();
+            Eigen::Vector3d *p1 = vertices.at(j)->getData();
+            Eigen::Vector3d *p2 = NULL;
+
+            if (j < vertices.size() - 1)
+            {
+                p2 = vertices.at(j+1)->getData();
+            } else {
+                p2 = vertices.at(0)->getData();
+            }
 
             painter.drawLine((*p1)(0), (*p1)(1), (*p1)(2), (*p2)(0), (*p2)(1), (*p2)(2));
-
-            next_edge = next_edge.data()->getHullEdge();
-
-        }while(hull_start != next_edge);
+        }
     }
 }
 
@@ -143,21 +156,14 @@ void CT_StandardTriangulation2DDrawManager::drawVoronoi(GraphicsViewInterface &v
 
     painter.setColor(255, 0, 255);
 
-    QListIterator< QSharedPointer<CT_EdgeT> > it(item.getDelaunayT()->getEdgeList());
+    CT_DelaunayTriangulation* delaunayT = item.getDelaunayT();
+    const QList<CT_DelaunayVertex*> &voronoi = delaunayT->getCleanVoronoiDiagram();
 
-    while(it.hasNext())
+    for (int i = 0 ; i < voronoi.size() ; i++)
     {
-        QSharedPointer<CT_EdgeT> ed = it.next();
-        QSharedPointer<CT_EdgeT> ed_inv = ed.data()->getInversedEdge();
+        CT_DelaunayVertex* vertex = voronoi.at(i);
 
-        if((!ed_inv.isNull())
-            && (!ed_inv.data()->getTriangle().isNull()))
-        {
-            QSharedPointer<CT_TriangleT> ed_tri = ed.data()->getTriangle();
-            QSharedPointer<CT_TriangleT> ed_inv_tri = ed_inv.data()->getTriangle();
-
-            painter.drawLine(ed_tri.data()->getCx(), ed_tri.data()->getCy(), ed_tri.data()->getCz(),
-                             ed_inv_tri.data()->getCx(), ed_inv_tri.data()->getCy(), ed_inv_tri.data()->getCz());
-        }
+        CT_Polygon2DData* poly = vertex->getVoroShape();
+        poly->draw(painter, false, true, 0);
     }
 }

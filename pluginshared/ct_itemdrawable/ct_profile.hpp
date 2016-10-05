@@ -320,6 +320,18 @@ DataT CT_Profile<DataT>::valueAtIndex(const size_t &index) const
 }
 
 template< typename DataT>
+DataT CT_Profile<DataT>::valueAtLength(const double &l) const
+{
+    size_t index;
+    if (indexForLength(l, index))
+    {
+        return valueAtIndex(index);
+    }
+    return NA();
+}
+
+
+template< typename DataT>
 double CT_Profile<DataT>::ratioValueAtIndex(const size_t &index) const
 {
     if (_dataMax <= _dataMin) {return 1;}
