@@ -14,6 +14,18 @@ CT_Triangulation2D::CT_Triangulation2D(const CT_OutAbstractSingularItemModel *mo
 {
     _delaunay = delaunay;
     setBaseDrawManager(&TRIANGULATION2D_DRAW_MANAGER);
+
+    if (_delaunay != NULL)
+    {
+        _minCoordinates(0) =  delaunay->getMinX();
+        _minCoordinates(1) =  delaunay->getMinY();
+        _minCoordinates(2) =  0;
+
+        _maxCoordinates(0) =  delaunay->getMaxX();
+        _maxCoordinates(1) =  delaunay->getMaxY();
+        _maxCoordinates(2) =  0;
+    }
+
 }
 
 CT_Triangulation2D::CT_Triangulation2D(const QString &modelName,
@@ -22,6 +34,17 @@ CT_Triangulation2D::CT_Triangulation2D(const QString &modelName,
 {
     _delaunay = delaunay;
     setBaseDrawManager(&TRIANGULATION2D_DRAW_MANAGER);
+
+    if (_delaunay != NULL)
+    {
+        _minCoordinates(0) =  delaunay->getMinX();
+        _minCoordinates(1) =  delaunay->getMinY();
+        _minCoordinates(2) =  0;
+
+        _maxCoordinates(0) =  delaunay->getMaxX();
+        _maxCoordinates(1) =  delaunay->getMaxY();
+        _maxCoordinates(2) =  0;
+    }
 }
 
 CT_Triangulation2D::~CT_Triangulation2D()

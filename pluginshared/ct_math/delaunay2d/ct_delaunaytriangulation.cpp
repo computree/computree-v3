@@ -712,11 +712,20 @@ const CT_DelaunayTriangle* CT_DelaunayTriangulation::findTriangleContainingPoint
     return t1;
 }
 
-const CT_DelaunayTriangle *CT_DelaunayTriangulation::getZCoordForXY(double x, double y, double outZ, CT_DelaunayTriangle* refTriangle)
+const CT_DelaunayTriangle *CT_DelaunayTriangulation::getZCoordForXY(double x, double y, double &outZ, CT_DelaunayTriangle* refTriangle)
 {
     const CT_DelaunayTriangle* triangle = findTriangleContainingPoint(x, y, refTriangle);
 
-    outZ = 0;
+    if (!triangle->contains(x, y)) {outZ = NAN; return NULL;}
+
+    Eigen::Vector3d vt1 = *(triangle->getVertex1()->getDataConst());
+    Eigen::Vector3d vt2 = *(triangle->getVertex2()->getDataConst());
+    Eigen::Vector3d vt3 = *(triangle->getVertex3()->getDataConst());
+
+    Eigen::Vector3d u = vt2 - vt1;
+    Eigen::Vector3d v = vt3 - vt1;
+
+    outZ = vt1(2) + ( (y - vt1(1)) * (u(0)*v(2) - v(0)*u(2)) + (x - vt1(0)) * (v(1)*u(2) - u(1)*v(2)) ) / (u(0)*v(1) - u(1) * v(0));
 
     return triangle;
 }

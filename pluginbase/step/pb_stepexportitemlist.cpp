@@ -24,6 +24,12 @@
 #define DEF_inGroupCounter "GroupCounter"
 #define DEF_inCounter "counter"
 
+#define DEF_inresName "resName"
+#define DEF_inGroupName "GroupName"
+#define DEF_inName "Name"
+#define DEF_inNameAtt "NameAtt"
+
+
 #define DEFout_res "res"
 #define DEFout_grp "grp"
 
@@ -121,6 +127,12 @@ void PB_StepExportItemList::createInResultModelListProtected()
     resCounter->setRootGroup(DEF_inGroupCounter);
     resCounter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
 
+    CT_InResultModelGroup* baseNameRes = createNewInResultModel(DEF_inresName, tr("Nom de base"), "", true);
+    baseNameRes->setZeroOrMoreRootGroup();
+    baseNameRes->addGroupModel("", DEF_inGroupName, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+    baseNameRes->addItemModel(DEF_inGroupName, DEF_inName, CT_AbstractSingularItemDrawable::staticGetType(), tr("Base Name"));
+    baseNameRes->addItemAttributeModel(DEF_inName, DEF_inNameAtt, QList<QString>() << CT_AbstractCategory::DATA_FILE_NAME << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Name"));
+    baseNameRes->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
 }
 
 //bool PB_StepExportItemList::configureInputResult()
@@ -231,6 +243,23 @@ void PB_StepExportItemList::compute()
     QList<CT_ResultGroup*> inResultList = getInputResults();
     CT_ResultGroup* resIn_Item = inResultList.at(0);
     CT_ResultGroup* resIn_Counter = inResultList.at(1);
+    CT_ResultGroup* resIn_BaseName = NULL;
+
+    QString rootBaseName = "";
+    if (inResultList.size() > 1)
+    {
+        resIn_BaseName = inResultList.at(2);
+
+        CT_ResultItemIterator it0(resIn_BaseName, this, DEF_inName);
+        if (it0.hasNext())
+        {
+            const CT_AbstractSingularItemDrawable* item = it0.next();
+            CT_AbstractItemAttribute* att = item->firstItemAttributeByINModelName(resIn_BaseName, this, DEF_inNameAtt);
+            QString tmp = att->toString(item, NULL);
+            rootBaseName = QFileInfo(tmp).baseName();
+        }
+    }
+
 
     QList<CT_ResultGroup*> outResultList = getOutResultList();
     CT_ResultGroup* res_res = outResultList.at(0);
@@ -261,9 +290,9 @@ void PB_StepExportItemList::compute()
             {
                 path.append(_dir.first());
                 path.append("/");
+                path.append(rootBaseName);
                 path.append(_prefixFileName);
             }
-
 
             path.append(baseName);
 

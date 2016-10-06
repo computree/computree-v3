@@ -80,10 +80,11 @@ public:
     // returns a drawable shape (a general path) of the Voronoi Polygon
     CT_Polygon2DData* getVoroShape ();
 
-    inline double x() {return (*_data)(0);}
-    inline double y() {return (*_data)(1);}
+    inline double x() const {return (*_data)(0);}
+    inline double y() const {return (*_data)(1);}
 
-    inline Eigen::Vector3d* getData() {return _data;}
+    inline Eigen::Vector3d* getData() const {return _data;}
+    inline const Eigen::Vector3d* getDataConst() const {return _data;}
 
 
 private:

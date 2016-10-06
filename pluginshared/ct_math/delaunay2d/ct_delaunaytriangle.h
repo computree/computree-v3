@@ -59,7 +59,7 @@ public:
     // test if the point (xt, yt) is in the triangle
     // for this purpose we cut the triangle in two part, by an horizontal (y=constant) line
     // and we test if the point is in each part (more easy because of coordinates simplfication)
-    bool contains (double xt, double yt);
+    bool contains (double xt, double yt) const;
 
     // get the  gravity center of the triangle X coordinate
     double getBaryX ();
@@ -67,9 +67,9 @@ public:
    // get the  gravity center of the triangle Y coordinate
     double getBaryY ();
 
-    inline const CT_DelaunayVertex* getVertex1() {return _v1;}
-    inline const CT_DelaunayVertex* getVertex2() {return _v2;}
-    inline const CT_DelaunayVertex* getVertex3() {return _v3;}
+    inline const CT_DelaunayVertex* getVertex1() const {return _v1;}
+    inline const CT_DelaunayVertex* getVertex2() const {return _v2;}
+    inline const CT_DelaunayVertex* getVertex3() const {return _v3;}
 
     // two vertices are given, get the third
     CT_DelaunayVertex* getThirdVertex (CT_DelaunayVertex* vt1, CT_DelaunayVertex* vt2);

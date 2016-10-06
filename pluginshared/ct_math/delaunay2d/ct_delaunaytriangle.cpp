@@ -124,7 +124,7 @@ bool CT_DelaunayTriangle::circleContains(double xt, double yt)
     return ( _r >= (sqrt (pow(_ccX - xt,2) + pow(_ccY - yt,2))) );
 }
 
-bool CT_DelaunayTriangle::contains(double xt, double yt)
+bool CT_DelaunayTriangle::contains(double xt, double yt) const
 {
     CT_DelaunayVertex* max;
     CT_DelaunayVertex* med;

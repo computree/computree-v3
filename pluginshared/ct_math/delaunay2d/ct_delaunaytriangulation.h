@@ -137,7 +137,13 @@ public:
 
     const CT_DelaunayTriangle *findTriangleContainingPoint(double x, double y, CT_DelaunayTriangle *refTriangle = NULL);
 
-    const CT_DelaunayTriangle* getZCoordForXY(double x, double y, double outZ, CT_DelaunayTriangle *refTriangle = NULL);
+    const CT_DelaunayTriangle* getZCoordForXY(double x, double y, double &outZ, CT_DelaunayTriangle *refTriangle = NULL);
+
+
+    inline double getMinX() const {return _minx;}
+    inline double getMinY() const {return _miny;}
+    inline double getMaxX() const {return _maxx;}
+    inline double getMaxY() const {return _maxy;}
 
 private:
     QList<CT_DelaunayVertex*> _toInsert; // working list of to be inserted vertex
