@@ -71,10 +71,22 @@ bool CT_Reader_Points_ASCII::configure()
     fieldList.append(CT_TextFileConfigurationFields(NZ_COLUMN, QRegExp("[nN].*[zZ]")));         // normale z - normal z - normali z - normalen z - nz
     fieldList.append(CT_TextFileConfigurationFields(NW_COLUMN, QRegExp("[nN].*[wW]")));         // normale w - normal w - normali w - normalen w - nw
 
+
     // a configurable dialog that help the user to select the right column and auto-detect some columns
     CT_TextFileConfigurationDialog dialog(fieldList, NULL, filepath());
     dialog.setFileExtensionAccepted(readableFormats());
     dialog.setFilePathCanBeModified(filePathCanBeModified());
+
+    if (QFileInfo(filepath()).suffix() == "ptx")
+    {
+        m_hasHeader = false;
+        m_nLinesToSkip = 6;
+        m_separator = " ";
+
+        dialog.setHeader(m_hasHeader);
+        dialog.setNLinesToSkip(m_nLinesToSkip);
+        dialog.setSeparator(m_separator);
+    }
 
     // table that link a sought column to a column in the ascii file
     QMap<QString, int> corresp;
@@ -101,7 +113,7 @@ bool CT_Reader_Points_ASCII::configure()
         dialog.setSeparator(m_separator);
         dialog.setQLocale(m_localeName);
         dialog.setFieldColumnsSelected(corresp);
-    }
+    }              
 
     if(dialog.exec() != QDialog::Accepted)
         return false;
@@ -397,7 +409,7 @@ CT_AbstractReader* CT_Reader_Points_ASCII::copy() const
 
 void CT_Reader_Points_ASCII::protectedInit()
 {
-    addNewReadableFormat(FileFormat(QStringList() << "xyz" << "asc" << "txt" << "csv", tr("Fichiers ascii")));
+    addNewReadableFormat(FileFormat(QStringList() << "xyz" << "asc" << "txt" << "csv" << "ptx", tr("Fichiers ascii")));
 
     setToolTip(tr("Chargement d'un fichier de points au format ASCII.<br>"
                   "L'import est configurable, le fichier devant contenir les champs suivants :<br>"
