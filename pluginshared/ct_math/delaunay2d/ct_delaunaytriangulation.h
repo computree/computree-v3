@@ -129,7 +129,6 @@ public:
     // add a DelaunayVertex to the toInsert list
     CT_DelaunayVertex* addVertex (Eigen::Vector3d *data, bool deleteData);
 
-
     // add all vertices present in toInsert list to the triangulation
     bool doInsertion ();
 
@@ -169,6 +168,7 @@ private:
     bool _initialized; // check if bounds have been set
     bool _neighborsComputed; // check if neighbors are up to date
     bool _voronoiDiagramComputed; // check if voronoi diagram is up to date
+
 
 };
 

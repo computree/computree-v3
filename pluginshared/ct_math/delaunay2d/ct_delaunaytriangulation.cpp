@@ -28,7 +28,7 @@
 
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
-
+#include <QTime>
 
 CT_DelaunayTriangulation::CT_DelaunayTriangulation()
 {
@@ -464,32 +464,35 @@ CT_DelaunayVertex *CT_DelaunayTriangulation::addVertex(Eigen::Vector3d *data, bo
 {
     CT_DelaunayVertex *vt  = new CT_DelaunayVertex(data, deleteData);
 
-    for (int i = 0 ; i < _insertedVertices.size() ; i++)
-    {
-        if (vt->equals(_insertedVertices.at(i)))
-        {
-            _duplicatePositions.insert(vt, _insertedVertices.at(i));
-            return vt;
-        }
-    }
+// Duplicates checks have been moved to doInsertion, for process time reasons
+//    for (int i = 0 ; i < _insertedVertices.size() ; i++)
+//    {
+//        if (vt->equals(_insertedVertices.at(i)))
+//        {
+//            _duplicatePositions.insert(vt, _insertedVertices.at(i));
+//            return vt;
+//        }
+//    }
 
 
-    for (int i = 0 ; i < _toInsert.size () ; i++)
-    {
-        if (vt->equals(_toInsert.at(i)))
-        {
-            _duplicatePositions.insert(vt, _toInsert.at(i));
-            return vt;
-        }
-    }
+//    for (int i = 0 ; i < _toInsert.size () ; i++)
+//    {
+//        if (vt->equals(_toInsert.at(i)))
+//        {
+//            _duplicatePositions.insert(vt, _toInsert.at(i));
+//            return vt;
+//        }
+//    }
     _toInsert.append(vt);
 
     return vt;
 }
 
+
 bool CT_DelaunayTriangulation::doInsertion()
 {
     if (!_initialized) {return false;} // we need 4 corners to continue
+
 
     CT_DelaunayTriangle* t1;
     CT_DelaunayTriangle* t1old;
@@ -512,11 +515,18 @@ bool CT_DelaunayTriangulation::doInsertion()
     t1 = _refTriangle;
     t2 = NULL;
 
+    QTime time;
+
+    ///int time1 = 0;
+    ///int time2 = 0;
+
+    time.start();
 
     // descending order to avoid multiples Time consuming ArrayList compression
     // so we always remove the last element
     while (!_toInsert.isEmpty())
     {
+        ///if (_toInsert.size() % 1000 == 0) {qDebug() << _toInsert.size() << "time1=" << time1 << " tpsOther=" << time2;}
         vt = _toInsert.takeLast();
 
         // is the point in the triangulation, else add to outOfBoundsVertices list
@@ -527,7 +537,6 @@ bool CT_DelaunayTriangulation::doInsertion()
 
             // we have to insert the point in the triangulation
         } else {
-            _insertedVertices.append(vt);
             xt = vt->x();
             yt = vt->y();
 
@@ -551,143 +560,150 @@ bool CT_DelaunayTriangulation::doInsertion()
                 t1 = t1->getNextTriangleTo(xt, yt);
             }
 
-            // very slower way : look all triangles of the triangulation
-            // no nore in use (use for process time comparision if needed)
-            /*				ArrayList tris = (ArrayList) getTriangles ();
 
-                for (j = 0; j < tris.size () ; j++) {
-
-                    t1 = tris.at(j);
-                    if (t1.contains (xt, yt)) {break;}
-                }
-*/
-
-
-            // 2) create two lists :
-            // - destrLst : contains triangle "to destroy"
-            // - borderLst : contains the sides of the polygon formed by "to destroy" triangles
-            // a side is composed of two vertices, and one bording triangle (or NULL if don't exist)
-
-            destrLst.append(t1);
-            _triangles.removeOne(t1);
-
-            for (j = 0 ; j < destrLst.size() ; j++)
+            if (xt == t1->_v1->x() && yt == t1->_v1->y())
             {
-                t2 = destrLst.at(j);
-
-                // for n12 neighbor triangle
-                n1 = t2->_n12;
-
-                if (!destrLst.contains (n1))
-                {
-                    if ((n1 != NULL) && (n1->circleContains(xt,yt)))
-                    {
-                        destrLst.append(n1);
-                        _triangles.removeOne(n1);
-                    } else {
-                        borderLst.append(new CT_DelaunaySide (n1, t2->_v1, t2->_v2));
-                    }
-                }
-
-                // for n23 neighbor triangle
-                n1 = t2->_n23;
-
-                if (!destrLst.contains (n1)) {
-                    if ((n1 != NULL) && (n1->circleContains (xt,yt)))
-                    {
-                        destrLst.append(n1);
-                        _triangles.removeOne(n1);
-                    } else {
-                        borderLst.append(new CT_DelaunaySide (n1, t2->_v2, t2->_v3));
-                    }
-                }
-
-                // for n31 neighbor triangle
-                n1 = t2->_n31;
-
-                if (!destrLst.contains (n1)) {
-                    if ((n1 != NULL) && (n1->circleContains (xt,yt))) {
-                        destrLst.append(n1);
-                        _triangles.removeOne(n1);
-                    } else {
-                        borderLst.append(new CT_DelaunaySide (n1, t2->_v3, t2->_v1));
-                    }
-                }
-            }
-
-
-            // 3) Construct new triangles
-            // each is composed by:
-            // - the point (xt, yt)
-            // - a borderLst triangle side referenced in borderLst
-            // after each triangle, we create the next, which has a vertex in common with it
-            // (thanks to borderLst side list)
-            // so each triangle is the neighbor of the next,
-            // and the first is the second neighbor of the last
-            // for third neighbor we use the side's border triangle
-
-
-            // First triangle construction
-            side = borderLst.at(0);
-
-            vFirst = side->_v1;
-            vNext = side->_v2;
-            borderLst.removeOne(side);            
-
-            t1 = new CT_DelaunayTriangle (vFirst, vNext, vt);
-            _triangles.append(t1);
-
-            n1 = side->_tri;
-            t1->_n12 = n1;
-            if (n1 != NULL) {n1->setNeighbor(vFirst, vNext, t1);}
-
-            delete side;
-
-            _refTriangle = t1;
-            // NB: so the refTriangle is set to be the first triangle created this step
-            // to keep first triangle, see below: first and last triangles linking,
-            // (and to have a refTriangle to begin next loop)
-
-
-            // Others triangles construction
-            while (vNext != vFirst)
+                _duplicatePositions.insert(vt, _insertedVertices.at(_insertedVertices.indexOf(t1->_v1)));
+            } else if (xt == t1->_v2->x() && yt == t1->_v2->y())
             {
-                vBase = vNext;
+                _duplicatePositions.insert(vt, _insertedVertices.at(_insertedVertices.indexOf(t1->_v2)));
+            } else if (xt == t1->_v3->x() && yt == t1->_v3->y())
+            {
+                _duplicatePositions.insert(vt, _insertedVertices.at(_insertedVertices.indexOf(t1->_v3)));
+            } else {
+                _insertedVertices.append(vt);
 
-                // search the next side to link
-                for (j = 0 ; j < borderLst.size() ; j++)
+                // 2) create two lists :
+                // - destrLst : contains triangle "to destroy"
+                // - borderLst : contains the sides of the polygon formed by "to destroy" triangles
+                // a side is composed of two vertices, and one bording triangle (or NULL if don't exist)
+
+                destrLst.append(t1);
+                _triangles.removeOne(t1);
+
+                ///time2 += time.restart();
+                for (j = 0 ; j < destrLst.size() ; j++)
                 {
-                    side = borderLst.at(j);
+                    t2 = destrLst.at(j);
 
-                    if ((side->_v1 == vBase) || (side->_v2 == vBase)) {break;}
+                    // for n12 neighbor triangle
+                    n1 = t2->_n12;
+
+                    if (!destrLst.contains (n1))
+                    {
+                        if ((n1 != NULL) && (n1->circleContains(xt,yt)))
+                        {
+                            destrLst.append(n1);
+                            _triangles.removeOne(n1);
+                        } else {
+                            borderLst.append(new CT_DelaunaySide (n1, t2->_v1, t2->_v2));
+                        }
+                    }
+
+                    // for n23 neighbor triangle
+                    n1 = t2->_n23;
+
+                    if (!destrLst.contains (n1)) {
+                        if ((n1 != NULL) && (n1->circleContains (xt,yt)))
+                        {
+                            destrLst.append(n1);
+                            _triangles.removeOne(n1);
+                        } else {
+                            borderLst.append(new CT_DelaunaySide (n1, t2->_v2, t2->_v3));
+                        }
+                    }
+
+                    // for n31 neighbor triangle
+                    n1 = t2->_n31;
+
+                    if (!destrLst.contains (n1)) {
+                        if ((n1 != NULL) && (n1->circleContains (xt,yt))) {
+                            destrLst.append(n1);
+                            _triangles.removeOne(n1);
+                        } else {
+                            borderLst.append(new CT_DelaunaySide (n1, t2->_v3, t2->_v1));
+                        }
+                    }
                 }
+                ///time1 += time.restart();
 
-                vNext = side->next (vBase);
+
+                // 3) Construct new triangles
+                // each is composed by:
+                // - the point (xt, yt)
+                // - a borderLst triangle side referenced in borderLst
+                // after each triangle, we create the next, which has a vertex in common with it
+                // (thanks to borderLst side list)
+                // so each triangle is the neighbor of the next,
+                // and the first is the second neighbor of the last
+                // for third neighbor we use the side's border triangle
+
+
+                // First triangle construction
+                side = borderLst.at(0);
+
+                vFirst = side->_v1;
+                vNext = side->_v2;
                 borderLst.removeOne(side);
 
-                t2 = new CT_DelaunayTriangle (vBase, vNext, vt);
-                _triangles.append(t2);
+                t1 = new CT_DelaunayTriangle (vFirst, vNext, vt);
+                _triangles.append(t1);
 
                 n1 = side->_tri;
-                t2->_n12 = n1;
-                if (n1 != NULL) {n1->setNeighbor (vBase, vNext, t2);}
-                t2->_n31 = t1;
-                t1->_n23 = t2;
+                t1->_n12 = n1;
+                if (n1 != NULL) {n1->setNeighbor(vFirst, vNext, t1);}
 
-                t1 = t2;
                 delete side;
+
+                _refTriangle = t1;
+                // NB: so the refTriangle is set to be the first triangle created this step
+                // to keep first triangle, see below: first and last triangles linking,
+                // (and to have a refTriangle to begin next loop)
+
+
+                // Others triangles construction
+                while (vNext != vFirst)
+                {
+                    vBase = vNext;
+
+                    // search the next side to link
+                    for (j = 0 ; j < borderLst.size() ; j++)
+                    {
+                        side = borderLst.at(j);
+
+                        if ((side->_v1 == vBase) || (side->_v2 == vBase)) {break;}
+                    }
+
+                    vNext = side->next (vBase);
+                    borderLst.removeOne(side);
+
+                    t2 = new CT_DelaunayTriangle (vBase, vNext, vt);
+                    _triangles.append(t2);
+
+                    n1 = side->_tri;
+                    t2->_n12 = n1;
+                    if (n1 != NULL) {n1->setNeighbor (vBase, vNext, t2);}
+                    t2->_n31 = t1;
+                    t1->_n23 = t2;
+
+                    t1 = t2;
+                    delete side;
+                }
+
+
+                // linking first triangle to last one
+                t2->_n23 = _refTriangle;
+                _refTriangle->_n31 = t2;
+
+
+                // clearing the lists and tables for next loop
+                qDeleteAll(destrLst);
+                destrLst.clear();
+
+                qDeleteAll(borderLst);
+                borderLst.clear();
+
             }
-
-            // linking first triangle to last one
-            t2->_n23 = _refTriangle;
-            _refTriangle->_n31 = t2;
-
-            // clearing the lists and tables for next loop
-            qDeleteAll(destrLst);
-            destrLst.clear();
-
-            qDeleteAll(borderLst);
-            borderLst.clear();
         }
     }
     return true;
