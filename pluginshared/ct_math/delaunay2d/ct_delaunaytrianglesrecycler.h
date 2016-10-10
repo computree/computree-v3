@@ -24,42 +24,42 @@
 
 *****************************************************************************/
 
-#ifndef CT_DELAUNAYSIDE_H
-#define CT_DELAUNAYSIDE_H
+#ifndef CT_DELAUNAYTRIANGLESRECYCLER_H
+#define CT_DELAUNAYTRIANGLESRECYCLER_H
 
 
 #include "pluginShared_global.h"
-#include "ct_delaunayvertex.h"
 #include "ct_delaunaytriangle.h"
+#include "ct_delaunayvertex.h"
 
 
 /**
  * DelaunaySide - side of the Delaunay triangulation.
  *
- * @author A. Piboule - february 2004
+ * @author A. Piboule - february 2004 / modified october 2016
  */
-class PLUGINSHAREDSHARED_EXPORT CT_DelaunaySide
+class PLUGINSHAREDSHARED_EXPORT CT_DelaunayTriangleRecycler
 {
 
 public:
-    CT_DelaunaySide (CT_DelaunayTriangle* trit, CT_DelaunayVertex* v1t, CT_DelaunayVertex* v2t);
+    CT_DelaunayTriangleRecycler ();
 
-    ~CT_DelaunaySide();
+    ~CT_DelaunayTriangleRecycler();
 
-    // give the other vertex of the side
-    CT_DelaunayVertex *next(CT_DelaunayVertex* vt);
+    void addTriangle(CT_DelaunayTriangle* triangle);
+    void addTriangles(QList<CT_DelaunayTriangle*> &triangles);
 
-    bool equals (CT_DelaunaySide* sd);
+    void clearAndDelete();
+    void clear();
 
+    CT_DelaunayTriangle *getTriangle(CT_DelaunayVertex *v1t, CT_DelaunayVertex *v2t, CT_DelaunayVertex *v3t, bool &isnew);
 private:
     friend class CT_DelaunayTriangulation;
 
-    CT_DelaunayVertex*     _v1;
-    CT_DelaunayVertex*     _v2;
-    CT_DelaunayTriangle*   _tri;
+    QList<CT_DelaunayTriangle*>   _tri;
 
 };
 
 
 
-#endif // CT_DELAUNAYSIDE_H
+#endif // CT_DELAUNAYTRIANGLESRECYCLER_H

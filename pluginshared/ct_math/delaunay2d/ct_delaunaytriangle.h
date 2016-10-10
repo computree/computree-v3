@@ -47,6 +47,9 @@ public:
 
     ~CT_DelaunayTriangle();
 
+    void init (CT_DelaunayVertex* v1t, CT_DelaunayVertex* v2t, CT_DelaunayVertex* v3t);
+
+
     // set the good neighbor, in function of the two vertices given
     void setNeighbor (CT_DelaunayVertex* vt1, CT_DelaunayVertex* vt2, CT_DelaunayTriangle* ngb);
 
@@ -83,6 +86,9 @@ public:
     // returns a drawable shape (a general path) of the triangle
     CT_Polygon2DData* getShape ();
 
+    inline void setToRemoveFlag(bool flag) {_toRemove = flag;}
+    inline bool getToRemoveFlag() const {return _toRemove;}
+
 private:
 
     friend class CT_DelaunayTriangulation;
@@ -99,6 +105,8 @@ private:
     double _ccX; // triangle defined circle center X coordinates
     double _ccY; // triangle defined circle center Y coordinates
     double _r;   // triangle defined circle radius (from orthocenter)
+
+    bool _toRemove;
 };
 
 

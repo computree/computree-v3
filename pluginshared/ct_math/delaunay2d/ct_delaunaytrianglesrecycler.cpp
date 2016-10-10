@@ -24,30 +24,50 @@
 
 *****************************************************************************/
 
-#include "ct_delaunayside.h"
+#include "ct_delaunaytrianglesrecycler.h"
 
 
-CT_DelaunaySide::CT_DelaunaySide(CT_DelaunayTriangle *trit, CT_DelaunayVertex *v1t, CT_DelaunayVertex *v2t)
+CT_DelaunayTriangleRecycler::CT_DelaunayTriangleRecycler()
 {
-    _tri = trit;
-    _v1 = v1t;
-    _v2 = v2t;
 }
 
-CT_DelaunaySide::~CT_DelaunaySide()
+CT_DelaunayTriangleRecycler::~CT_DelaunayTriangleRecycler()
 {
-    _tri = NULL;
-    _v1 = NULL;
-    _v2 = NULL;
+    clear();
 }
 
-CT_DelaunayVertex* CT_DelaunaySide::next(CT_DelaunayVertex *vt)
+void CT_DelaunayTriangleRecycler::addTriangle(CT_DelaunayTriangle *triangle)
 {
-    if      (vt == _v1) {return _v2;}
-    else if (vt == _v2) {return _v1;}
-    else                {return NULL;}
+    _tri.append(triangle);
 }
 
-bool CT_DelaunaySide::equals(CT_DelaunaySide *sd) {
-    return(((sd->_v1 == _v1) && (sd->_v2 == _v2)) || ((sd->_v2 == _v1) && (sd->_v1 == _v2)));
+void CT_DelaunayTriangleRecycler::addTriangles(QList<CT_DelaunayTriangle *> &triangles)
+{
+    _tri.append(triangles);
 }
+
+void CT_DelaunayTriangleRecycler::clearAndDelete()
+{
+    qDeleteAll(_tri);
+    _tri.clear();
+}
+
+void CT_DelaunayTriangleRecycler::clear()
+{
+    _tri.clear();
+}
+
+CT_DelaunayTriangle* CT_DelaunayTriangleRecycler::getTriangle(CT_DelaunayVertex* v1t, CT_DelaunayVertex* v2t, CT_DelaunayVertex* v3t, bool &isnew)
+{
+    if (_tri.size() > 0)
+    {
+        isnew = false;
+        CT_DelaunayTriangle* triangle = _tri.takeLast();
+        triangle->init(v1t, v2t, v3t);
+        return triangle;
+    }
+
+    isnew = true;
+    return new CT_DelaunayTriangle(v1t, v2t, v3t);
+}
+

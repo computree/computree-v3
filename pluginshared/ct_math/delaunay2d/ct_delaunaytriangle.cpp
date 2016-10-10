@@ -38,6 +38,8 @@ CT_DelaunayTriangle::CT_DelaunayTriangle(CT_DelaunayVertex *v1t, CT_DelaunayVert
     _n23 = NULL;
     _n31 = NULL;
 
+    _toRemove = false;
+
     calculateCircle();
 }
 
@@ -49,6 +51,21 @@ CT_DelaunayTriangle::~CT_DelaunayTriangle()
     _n12 = NULL;
     _n23 = NULL;
     _n31 = NULL;
+}
+
+void CT_DelaunayTriangle::init(CT_DelaunayVertex *v1t, CT_DelaunayVertex *v2t, CT_DelaunayVertex *v3t)
+{
+    _v1 = v1t;
+    _v2 = v2t;
+    _v3 = v3t;
+
+    _n12 = NULL;
+    _n23 = NULL;
+    _n31 = NULL;
+
+    _toRemove = false;
+
+    calculateCircle();
 }
 
 void CT_DelaunayTriangle::setNeighbor(CT_DelaunayVertex *vt1, CT_DelaunayVertex *vt2, CT_DelaunayTriangle *ngb)

@@ -371,7 +371,6 @@ SOURCES += \
     ct_element/abstract/ct_abstractconfigurableelement.cpp \
     ct_math/ct_mathstatistics.cpp \
     ct_math/delaunay2d/ct_delaunayoutline.cpp \
-    ct_math/delaunay2d/ct_delaunayside.cpp \
     ct_math/delaunay2d/ct_delaunaytriangle.cpp \
     ct_math/delaunay2d/ct_delaunaytriangulation.cpp \
     ct_math/delaunay2d/ct_delaunayvertex.cpp \
@@ -395,7 +394,9 @@ SOURCES += \
     ct_model/tools/ct_modelselectionhelper.cpp \
     ct_itemdrawable/ct_grid4d_dense.cpp \
     ct_itemdrawable/ct_grid4d_sparse.cpp \
-    ct_itemdrawable/ct_grid3d_sparse.cpp
+    ct_itemdrawable/ct_grid3d_sparse.cpp \
+    ct_math/delaunay2d/ct_delaunaysidelist.cpp \
+    ct_math/delaunay2d/ct_delaunaytrianglesrecycler.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -858,7 +859,6 @@ HEADERS += interfaces.h \
     ct_element/abstract/ct_abstractconfigurableelement.h \
     ct_math/ct_mathstatistics.h \
     ct_math/delaunay2d/ct_delaunayoutline.h \
-    ct_math/delaunay2d/ct_delaunayside.h \
     ct_math/delaunay2d/ct_delaunaytriangle.h \
     ct_math/delaunay2d/ct_delaunaytriangulation.h \
     ct_math/delaunay2d/ct_delaunayvertex.h \
@@ -887,7 +887,9 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_grid4d_sparse.h \
     ct_itemdrawable/ct_grid4d_sparse.hpp \
     ct_itemdrawable/ct_grid3d_sparse.h \
-    ct_itemdrawable/ct_grid3d_sparse.hpp
+    ct_itemdrawable/ct_grid3d_sparse.hpp \
+    ct_math/delaunay2d/ct_delaunaysidelist.h \
+    ct_math/delaunay2d/ct_delaunaytrianglesrecycler.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

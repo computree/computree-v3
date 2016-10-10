@@ -31,7 +31,6 @@
 
 #include "ct_delaunayvertex.h"
 #include "ct_delaunaytriangle.h"
-#include "ct_delaunayside.h"
 #include "ct_delaunayoutline.h"
 #include "ct_delaunayvorovertex.h"
 

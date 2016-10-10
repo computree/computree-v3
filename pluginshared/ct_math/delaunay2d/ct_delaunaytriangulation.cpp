@@ -26,6 +26,10 @@
 
 #include "ct_delaunaytriangulation.h"
 
+#include "ct_delaunaysidelist.h"
+#include "ct_delaunaytrianglesrecycler.h"
+
+
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <QTime>
@@ -378,7 +382,7 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
     _outlines.clear();
 
     const QList<CT_DelaunayTriangle *> &lst = getTriangles();
-    QList<CT_DelaunaySide*> sides;
+    CT_DelaunaySideList sides;
     CT_DelaunayTriangle* tri;
     bool okV1, okV2, okV3;
     CT_DelaunayOutline* outline;
@@ -398,26 +402,21 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
             if (tri->_v3 == _corners[j]) {okV3 = false;}
         }
 
-        if (okV1 && okV2 && !okV3) {sides.append(new CT_DelaunaySide (tri, tri->_v1, tri->_v2));}
-        if (okV2 && okV3 && !okV1) {sides.append(new CT_DelaunaySide (tri, tri->_v2, tri->_v3));}
-        if (okV3 && okV1 && !okV2) {sides.append(new CT_DelaunaySide (tri, tri->_v3, tri->_v1));}
+        if (okV1 && okV2 && !okV3) {sides.appendSide(tri, tri->_v1, tri->_v2);}
+        if (okV2 && okV3 && !okV1) {sides.appendSide(tri, tri->_v2, tri->_v3);}
+        if (okV3 && okV1 && !okV2) {sides.appendSide(tri, tri->_v3, tri->_v1);}
     }
 
     if (_insertedVertices.size () > 2)
     {
         for (int i = 0 ; i < sides.size() ; i++)
         {
-            for (int j = 0 ; j < sides.size() ; j++)
+            for (int j = i + 1 ; j < sides.size() ; j++)
             {
-                if ((i != j) && (sides.at(i)->equals(sides.at(j))))
+                if (sides.sidesEquals(i, j))
                 {
-                    if (i < j) {
-                        delete sides.takeAt(j);
-                        delete sides.takeAt(i);
-                    } else {
-                        delete sides.takeAt(i);
-                        delete sides.takeAt(j);
-                    }
+                    sides.removeSide(j);
+                    sides.removeSide(i);
                     break;
                 }
             }
@@ -427,25 +426,30 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
         {
             outline = new CT_DelaunayOutline ();
 
-            CT_DelaunaySide* sd = sides.takeAt(0);
+            int sdIndex = 0;
+            sides.removeSide(sdIndex, true);
 
-            CT_DelaunayVertex* first = sd->_v1;
-            CT_DelaunayVertex* next = sd->next (first);
-            delete sd;
+            CT_DelaunayVertex* sd_v1 = sides.getRemovedV1();
+            CT_DelaunayVertex* sd_v2 = sides.getRemovedV2();
+
+            CT_DelaunayVertex* first = sd_v1;
+            CT_DelaunayVertex* next = sd_v2;
 
             while (next != first)
             {
                 for (int j = 0 ; j < sides.size() ; j++)
                 {
-                    sd = sides.at(j);
-                    if ((sd->_v1 == next) || (sd->_v2 == next)) {break;}
+                    sdIndex = j;
+                    sd_v1 = sides.getV1(sdIndex);
+                    sd_v2 = sides.getV2(sdIndex);
+
+                    if ((sd_v1 == next) || (sd_v2 == next)) {break;}
                 }
 
                 outline->addVertex(next);
-                sides.removeOne(sd);
+                sides.removeSide(sdIndex);
 
-                next = sd->next(next);
-                delete sd;
+                next = sides.swap(sdIndex, next);
             }
 
             outline->addVertex (next);
@@ -453,7 +457,6 @@ const QList<CT_DelaunayOutline *> &CT_DelaunayTriangulation::computeOutlines()
 
         }
 
-        qDeleteAll(sides);
         sides.clear();
     }
 
@@ -502,14 +505,15 @@ bool CT_DelaunayTriangulation::doInsertion()
     CT_DelaunayVertex* vBase;
     CT_DelaunayVertex* vNext;
     CT_DelaunayVertex* vFirst;
-    CT_DelaunaySide* side;
+
     double xt;
     double yt;
     int j;
 
     // we use arrayList and not vector for performance reasons
     QList<CT_DelaunayTriangle*> destrLst;
-    QList<CT_DelaunaySide*> borderLst;
+    CT_DelaunaySideList borderLst;
+    CT_DelaunayTriangleRecycler tRecycler;
 
     // initialisations
     t1 = _refTriangle;
@@ -517,8 +521,6 @@ bool CT_DelaunayTriangulation::doInsertion()
 
     QTime time;
 
-    ///int time1 = 0;
-    ///int time2 = 0;
 
     time.start();
 
@@ -526,7 +528,6 @@ bool CT_DelaunayTriangulation::doInsertion()
     // so we always remove the last element
     while (!_toInsert.isEmpty())
     {
-        ///if (_toInsert.size() % 1000 == 0) {qDebug() << _toInsert.size() << "time1=" << time1 << " tpsOther=" << time2;}
         vt = _toInsert.takeLast();
 
         // is the point in the triangulation, else add to outOfBoundsVertices list
@@ -579,9 +580,8 @@ bool CT_DelaunayTriangulation::doInsertion()
                 // a side is composed of two vertices, and one bording triangle (or NULL if don't exist)
 
                 destrLst.append(t1);
-                _triangles.removeOne(t1);
+                t1->setToRemoveFlag(true);
 
-                ///time2 += time.restart();
                 for (j = 0 ; j < destrLst.size() ; j++)
                 {
                     t2 = destrLst.at(j);
@@ -589,43 +589,45 @@ bool CT_DelaunayTriangulation::doInsertion()
                     // for n12 neighbor triangle
                     n1 = t2->_n12;
 
-                    if (!destrLst.contains (n1))
+                    if ((n1 == NULL) || !n1->getToRemoveFlag())
                     {
-                        if ((n1 != NULL) && (n1->circleContains(xt,yt)))
+                        if ((n1 != NULL) && n1->circleContains(xt,yt))
                         {
                             destrLst.append(n1);
-                            _triangles.removeOne(n1);
+                            n1->setToRemoveFlag(true);
                         } else {
-                            borderLst.append(new CT_DelaunaySide (n1, t2->_v1, t2->_v2));
+                            borderLst.appendSide(n1, t2->_v1, t2->_v2);
                         }
                     }
 
                     // for n23 neighbor triangle
                     n1 = t2->_n23;
 
-                    if (!destrLst.contains (n1)) {
-                        if ((n1 != NULL) && (n1->circleContains (xt,yt)))
+                    if ((n1 == NULL) || !n1->getToRemoveFlag()) {
+                        if ((n1 != NULL) && n1->circleContains (xt,yt))
                         {
                             destrLst.append(n1);
-                            _triangles.removeOne(n1);
+                            n1->setToRemoveFlag(true);
                         } else {
-                            borderLst.append(new CT_DelaunaySide (n1, t2->_v2, t2->_v3));
+                            borderLst.appendSide(n1, t2->_v2, t2->_v3);
                         }
                     }
 
                     // for n31 neighbor triangle
                     n1 = t2->_n31;
 
-                    if (!destrLst.contains (n1)) {
-                        if ((n1 != NULL) && (n1->circleContains (xt,yt))) {
+                    if ((n1 == NULL) || !n1->getToRemoveFlag()) {
+                        if ((n1 != NULL) && n1->circleContains (xt,yt)) {
                             destrLst.append(n1);
-                            _triangles.removeOne(n1);
+                            n1->setToRemoveFlag(true);
                         } else {
-                            borderLst.append(new CT_DelaunaySide (n1, t2->_v3, t2->_v1));
+                            borderLst.appendSide(n1, t2->_v3, t2->_v1);
                         }
                     }
                 }
-                ///time1 += time.restart();
+
+                tRecycler.addTriangles(destrLst);
+                destrLst.clear();
 
 
                 // 3) Construct new triangles
@@ -640,20 +642,23 @@ bool CT_DelaunayTriangulation::doInsertion()
 
 
                 // First triangle construction
-                side = borderLst.at(0);
+                int sdIndex = 0;
+                borderLst.removeSide(sdIndex, true);
 
-                vFirst = side->_v1;
-                vNext = side->_v2;
-                borderLst.removeOne(side);
+                CT_DelaunayVertex* sd_v1 = borderLst.getRemovedV1();
+                CT_DelaunayVertex* sd_v2 = borderLst.getRemovedV2();
+                CT_DelaunayTriangle* sd_tri = borderLst.getRemovedTri();
+                bool triangleCreated;
 
-                t1 = new CT_DelaunayTriangle (vFirst, vNext, vt);
-                _triangles.append(t1);
+                vFirst = sd_v1;
+                vNext = sd_v2;
 
-                n1 = side->_tri;
+                t1 = tRecycler.getTriangle(vFirst, vNext, vt, triangleCreated);
+                if (triangleCreated) {_triangles.append(t1);}
+
+                n1 = sd_tri;
                 t1->_n12 = n1;
                 if (n1 != NULL) {n1->setNeighbor(vFirst, vNext, t1);}
-
-                delete side;
 
                 _refTriangle = t1;
                 // NB: so the refTriangle is set to be the first triangle created this step
@@ -669,25 +674,27 @@ bool CT_DelaunayTriangulation::doInsertion()
                     // search the next side to link
                     for (j = 0 ; j < borderLst.size() ; j++)
                     {
-                        side = borderLst.at(j);
+                        sdIndex = j;
+                        sd_v1 = borderLst.getV1(sdIndex);
+                        sd_v2 = borderLst.getV2(sdIndex);
+                        sd_tri = borderLst.getTri(sdIndex);
 
-                        if ((side->_v1 == vBase) || (side->_v2 == vBase)) {break;}
+                        if ((sd_v1 == vBase) || (sd_v2 == vBase)) {break;}
                     }
 
-                    vNext = side->next (vBase);
-                    borderLst.removeOne(side);
+                    vNext = borderLst.swap(sdIndex, vBase);
+                    borderLst.removeSide(sdIndex);
 
-                    t2 = new CT_DelaunayTriangle (vBase, vNext, vt);
-                    _triangles.append(t2);
+                    t2 = tRecycler.getTriangle(vBase, vNext, vt, triangleCreated);
+                    if (triangleCreated) {_triangles.append(t2);}
 
-                    n1 = side->_tri;
+                    n1 = sd_tri;
                     t2->_n12 = n1;
                     if (n1 != NULL) {n1->setNeighbor (vBase, vNext, t2);}
                     t2->_n31 = t1;
                     t1->_n23 = t2;
 
                     t1 = t2;
-                    delete side;
                 }
 
 
@@ -697,15 +704,16 @@ bool CT_DelaunayTriangulation::doInsertion()
 
 
                 // clearing the lists and tables for next loop
-                qDeleteAll(destrLst);
-                destrLst.clear();
-
-                qDeleteAll(borderLst);
                 borderLst.clear();
-
             }
         }
     }
+
+    for (int i = _triangles.size() - 1; i >= 0 ; i--)
+    {
+        if (_triangles.at(i)->getToRemoveFlag()) {delete _triangles.takeAt(i);}
+    }
+
     return true;
 }
 
