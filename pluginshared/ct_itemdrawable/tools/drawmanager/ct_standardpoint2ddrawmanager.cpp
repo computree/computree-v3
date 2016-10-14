@@ -3,11 +3,13 @@
 
 #include "ct_global/ct_context.h"
 
+#include <QObject>
+
 
 const QString CT_StandardPoint2DDrawManager::INDEX_CONFIG_DRAW_POINT = CT_StandardPoint2DDrawManager::staticInitConfigDrawPoint();
 const QString CT_StandardPoint2DDrawManager::INDEX_CONFIG_POINT_SIZE = CT_StandardPoint2DDrawManager::staticInitConfigPointSize();
 
-CT_StandardPoint2DDrawManager::CT_StandardPoint2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Point2D" : drawConfigurationName)
+CT_StandardPoint2DDrawManager::CT_StandardPoint2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D point") : drawConfigurationName)
 {
     
 }

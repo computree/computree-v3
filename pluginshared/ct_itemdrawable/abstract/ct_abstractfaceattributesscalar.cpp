@@ -22,3 +22,8 @@ CT_AbstractFaceAttributesScalar::CT_AbstractFaceAttributesScalar(const QString &
 
 }
 
+QString CT_AbstractFaceAttributesScalar::name() const
+{
+    return tr("Scalar face attributes");
+}
+

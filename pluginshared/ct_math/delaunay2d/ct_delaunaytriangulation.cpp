@@ -108,10 +108,10 @@ void CT_DelaunayTriangulation::init(double x1, double y1, double x2, double y2)
     }
 
     // add the 4 corners
-    _corners[0] = new CT_DelaunayVertex (x1, y1);
-    _corners[1] = new CT_DelaunayVertex (x2, y1);
-    _corners[2] = new CT_DelaunayVertex (x1, y2);
-    _corners[3] = new CT_DelaunayVertex (x2, y2);
+    _corners[0] = new CT_DelaunayVertex (new Eigen::Vector3d(x1, y1, 0), true);
+    _corners[1] = new CT_DelaunayVertex (new Eigen::Vector3d(x2, y1, 0), true);
+    _corners[2] = new CT_DelaunayVertex (new Eigen::Vector3d(x1, y2, 0), true);
+    _corners[3] = new CT_DelaunayVertex (new Eigen::Vector3d(x2, y2, 0), true);
 
     CT_DelaunayTriangle* t1 = new CT_DelaunayTriangle (_corners[0], _corners[2], _corners[3]);
     _triangles.append(t1);
@@ -715,6 +715,33 @@ bool CT_DelaunayTriangulation::doInsertion()
     }
 
     return true;
+}
+
+void CT_DelaunayTriangulation::updateCornersZValues()
+{
+    computeVerticesNeighbors();
+    for (int i = 0 ; i < _corners.size() ; i++)
+    {
+         CT_DelaunayVertex* corner  = _corners[i];
+
+         double zmean = 0;
+         int cpt = 0;
+
+         QList<CT_DelaunayVertex*> &neighbours = corner->getNeighbors();
+         for (int j =0 ; j < neighbours.size() ; j++)
+         {
+             CT_DelaunayVertex* neighbour  = neighbours.at(j);
+             if (!_corners.contains(neighbour))
+             {
+                 Eigen::Vector3d* data = neighbour->getData();
+                 if (data != NULL) {zmean += (*data)(2); cpt++;}
+             }
+         }
+
+         Eigen::Vector3d* dataCorner = corner->getData();
+
+         if (dataCorner!= NULL && cpt > 0) {(*dataCorner)(2) = zmean / (double)cpt;}
+    }
 }
 
 const CT_DelaunayTriangle* CT_DelaunayTriangulation::findTriangleContainingPoint(double x, double y, CT_DelaunayTriangle* refTriangle)

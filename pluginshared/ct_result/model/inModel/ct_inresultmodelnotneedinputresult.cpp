@@ -3,8 +3,8 @@
 #include "interfaces.h"
 
 CT_InResultModelNotNeedInputResult::CT_InResultModelNotNeedInputResult() : CT_InAbstractResultModel("CT_InResultModelNotNeedInputResult",
-                                                                                                    tr("Not need input result"),
-                                                                                                    "",
+                                                                                                    tr("Not input result"),
+                                                                                                    "No input result",
                                                                                                     false)
 {
     setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);

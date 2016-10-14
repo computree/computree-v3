@@ -52,6 +52,9 @@ public:
               const CT_AbstractResult *result,
               CT_SphereData *data);
 
+    virtual QString name() const;
+
+
     /**
      * @brief Returns the radius of the sphere
      */

@@ -2,10 +2,13 @@
 
 #include "ct_abstractstandarditemgroup.h"
 
+#include <QObject>
+
+
 const QString CT_StandardStandardItemGroupDrawManager::INDEX_CONFIG_ITEMS_BACKUP_VISIBLE = "IBV";
 const QString CT_StandardStandardItemGroupDrawManager::INDEX_CONFIG_ITEMS_NEW_VISIBLE = "INV";
 
-CT_StandardStandardItemGroupDrawManager::CT_StandardStandardItemGroupDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_StandardItemGroup" : drawConfigurationName)
+CT_StandardStandardItemGroupDrawManager::CT_StandardStandardItemGroupDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Standard item group") : drawConfigurationName)
 {
     
 }

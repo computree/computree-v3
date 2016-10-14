@@ -38,6 +38,9 @@ public:
      */
     CT_FCIR getFaceCloudIndexRegistered() const;
 
+    virtual QString name() const;
+
+
 private:
     // TODO
     //static CT_StandardAbstractFaceAttributesDrawManager AEA_DRAW_MANAGER;

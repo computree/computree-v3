@@ -73,6 +73,11 @@ CT_Line::CT_Line(const QString &modelName,
     }
 }
 
+QString CT_Line::name() const
+{
+    return tr("3D line");
+}
+
 CT_AbstractItemDrawable* CT_Line::copy(const CT_OutAbstractItemModel *model,
                                        const CT_AbstractResult *result,
                                        CT_ResultCopyModeList copyModeList)

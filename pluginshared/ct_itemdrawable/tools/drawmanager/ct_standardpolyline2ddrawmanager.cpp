@@ -3,11 +3,14 @@
 
 #include "ct_global/ct_context.h"
 
+#include <QObject>
+
+
 
 const QString CT_StandardPolyline2DDrawManager::INDEX_CONFIG_DRAW_POINTS = CT_StandardPolyline2DDrawManager::staticInitConfigDrawPoints();
 const QString CT_StandardPolyline2DDrawManager::INDEX_CONFIG_DRAW_LINES = CT_StandardPolyline2DDrawManager::staticInitConfigDrawLines();
 
-CT_StandardPolyline2DDrawManager::CT_StandardPolyline2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Polyline2D" : drawConfigurationName)
+CT_StandardPolyline2DDrawManager::CT_StandardPolyline2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D polyline") : drawConfigurationName)
 {
     
 }

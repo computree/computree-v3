@@ -61,6 +61,9 @@ public:
               const CT_AbstractResult *result,
               CT_Line2DData *data);
 
+    virtual QString name() const;
+
+
     const Eigen::Vector2d &getP1() const;
     const Eigen::Vector2d &getP2() const;
 

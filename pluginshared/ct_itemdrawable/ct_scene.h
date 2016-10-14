@@ -92,6 +92,9 @@ public:
 
     virtual ~CT_Scene();
 
+    virtual QString name() const;
+
+
     virtual int getFastestIncrement() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

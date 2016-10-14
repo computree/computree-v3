@@ -23,6 +23,9 @@ public:
     CT_AbstractMeshModel(const QString &modelName,
                          const CT_AbstractResult *result);
 
+    virtual QString name() const;
+
+
     /**
      * @brief Draw only faces
      */

@@ -77,8 +77,13 @@ int CT_VirtualAbstractStep::CURRENT_ID = 1;
 
 CT_VirtualAbstractStep::CT_VirtualAbstractStep(CT_StepInitializeData &dataInit)
 {
-    _uniqueId = CURRENT_ID;
-    ++CURRENT_ID;
+    if (dataInit.getMenuStepFlag())
+    {
+        _uniqueId = 0;
+    } else {
+        _uniqueId = CURRENT_ID;
+        ++CURRENT_ID;
+    }
 
     m_guiContext = NULL;
     _preConfigDialog = NULL;

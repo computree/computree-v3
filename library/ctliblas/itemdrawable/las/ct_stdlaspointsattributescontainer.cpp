@@ -19,6 +19,11 @@ CT_StdLASPointsAttributesContainer::CT_StdLASPointsAttributesContainer(const QSt
 
 }
 
+QString CT_StdLASPointsAttributesContainer::name() const
+{
+    return tr("LAS point attributes");
+}
+
 void CT_StdLASPointsAttributesContainer::insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att)
 {
     if(att != NULL)

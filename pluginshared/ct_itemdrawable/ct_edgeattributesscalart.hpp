@@ -89,7 +89,7 @@ QString CT_EdgeAttributesScalarT<SCALAR>::staticGetType()
 template<typename SCALAR>
 QString CT_EdgeAttributesScalarT<SCALAR>::name() const
 {
-    return "CT_EdgeAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    return tr("Scalar(%1) edge attributes").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 template<typename SCALAR>

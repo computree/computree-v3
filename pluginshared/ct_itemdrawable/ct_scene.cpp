@@ -59,6 +59,11 @@ CT_Scene::~CT_Scene()
 {
 }
 
+QString CT_Scene::name() const
+{
+    return tr("Point scene");
+}
+
 int CT_Scene::getFastestIncrement() const
 {
     return ((getPointCloudIndex() == NULL) || (getPointCloudIndex()->size() < 5000000)) ? 16 : 64;

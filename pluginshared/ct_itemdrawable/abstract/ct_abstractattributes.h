@@ -24,6 +24,9 @@ public:
      * @brief Returns the size of the cloud of attributes
      */
     virtual size_t attributesSize() const = 0;
+
+    virtual QString name() const;
+
 };
 
 #endif // CT_ABSTRACTATTRIBUTES_H

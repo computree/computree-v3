@@ -291,7 +291,7 @@ QString CT_Image2D<DataT>::staticGetType()
 template< typename DataT>
 QString CT_Image2D<DataT>::name() const
 {
-    return "CT_Image2D<" + CT_TypeInfo::name<DataT>() + ">";
+    return tr("Raster (%1)").arg(CT_TypeInfo::name<DataT>());
 }
 
 template< typename DataT>

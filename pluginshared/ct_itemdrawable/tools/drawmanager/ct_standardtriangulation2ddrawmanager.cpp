@@ -2,12 +2,15 @@
 
 #include "ct_triangulation2d.h"
 
+#include <QObject>
+
+
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_NODES_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigNodesVisible();
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_EDGES_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigEdgesVisible();
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_HULL_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigHullVisible();
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_VORONOI_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigVoronoiVisible();
 
-CT_StandardTriangulation2DDrawManager::CT_StandardTriangulation2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? "CT_Triangulation2D" : drawConfigurationName)
+CT_StandardTriangulation2DDrawManager::CT_StandardTriangulation2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D triangulation") : drawConfigurationName)
 {
     
 }

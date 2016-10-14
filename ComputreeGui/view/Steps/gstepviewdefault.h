@@ -99,7 +99,7 @@ public:
     /**
      * @brief Return the name of the step by using the configuration passed in parameter
      */
-    static QString staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const DisplayNameConfigs &config);
+    static QString staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const DisplayNameConfigs &config, bool showExtended = false);
 
 public slots:
     /**

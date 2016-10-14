@@ -324,7 +324,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             while(itE.hasNext())
             {
                 CT_AbstractExporter *exporter = itE.next();
-                addNewStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL), pluginName, exporter->copy()), CT_StepsMenu::LO_Export, exporter->getExporterSubMenuName());
+                addNewStep(new PB_StepGenericExporter(*createNewStepInitializeData(NULL, true), pluginName, exporter->copy()), CT_StepsMenu::LO_Export, exporter->getExporterSubMenuName());
             }
         }
 
@@ -338,7 +338,7 @@ bool PB_StepPluginManager::loadAfterAllPluginsLoaded()
             while(itE.hasNext())
             {
                 CT_AbstractReader *reader = itE.next();
-                addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL), reader->copy()), CT_StepsMenu::LO_Load, reader->getReaderSubMenuName());
+                addNewStep(new PB_StepGenericLoadFile(*createNewStepInitializeData(NULL, true), reader->copy()), CT_StepsMenu::LO_Load, reader->getReaderSubMenuName());
             }
         }
     }

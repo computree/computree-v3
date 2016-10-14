@@ -58,6 +58,9 @@ public:
 
     virtual ~CT_AbstractItemDrawableWithoutPointCloud() {}
 
+    virtual QString name() const;
+
+
 private:
 
     const static CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager IDWITHOUTPC_DRAW_MANAGER;

@@ -50,6 +50,11 @@ CT_ReaderItem::~CT_ReaderItem()
 {
 }
 
+QString CT_ReaderItem::name() const
+{
+    return tr("Reader item");
+}
+
 CT_AbstractItemDrawable *CT_ReaderItem::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

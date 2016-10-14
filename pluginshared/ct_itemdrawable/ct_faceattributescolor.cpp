@@ -41,6 +41,11 @@ CT_FaceAttributesColor::CT_FaceAttributesColor(const QString &modelName,
 {
 }
 
+QString CT_FaceAttributesColor::name() const
+{
+    return tr("Color face attributes");
+}
+
 CT_AbstractItemDrawable* CT_FaceAttributesColor::copy(const CT_OutAbstractItemModel *model,
                                                       const CT_AbstractResult *result,
                                                       CT_ResultCopyModeList copyModeList)

@@ -61,6 +61,9 @@ public:
               const CT_AbstractResult *result,
               CT_Box2DData *data);
 
+    virtual QString name() const;
+
+
     double getWidth() const;
     double getHeight() const;
 

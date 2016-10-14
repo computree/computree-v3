@@ -74,6 +74,9 @@ public:
 
     void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
 
+    virtual QString name() const;
+
+
 private:
 
     CT_Shape2DData   *_data;

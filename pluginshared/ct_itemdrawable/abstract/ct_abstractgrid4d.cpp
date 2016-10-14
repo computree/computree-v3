@@ -15,3 +15,8 @@ CT_AbstractGrid4D::CT_AbstractGrid4D(const QString &modelName, const CT_Abstract
 CT_AbstractGrid4D::~CT_AbstractGrid4D()
 {
 }
+
+QString CT_AbstractGrid4D::name() const
+{
+    return tr("4D grid");
+}

@@ -22,6 +22,9 @@ public:
     CT_TransformationMatrix(const QString &modelName,
                          const CT_AbstractResult *result, const Eigen::Matrix4d &trMat);
 
+    virtual QString name() const;
+
+
     inline const Eigen::Matrix4d& getTransformationMatrix() const {return _transformationMatrix;}
     QString getTransformationMatrixAsString() const;
 

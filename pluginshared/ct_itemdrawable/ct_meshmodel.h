@@ -30,6 +30,9 @@ public:
 
     ~CT_MeshModel();
 
+    virtual QString name() const;
+
+
     /**
      * @brief Define if the mesh must be automatically deleted from memory. (true by default)
      */

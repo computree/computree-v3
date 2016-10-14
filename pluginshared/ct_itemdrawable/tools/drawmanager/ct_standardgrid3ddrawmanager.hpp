@@ -4,6 +4,7 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardgrid3ddrawmanager.h"
 #include "ct_itemdrawable/ct_grid3d.h"
 #include <typeinfo>
+#include <QObject>
 
 #include "qdebug.h"
 
@@ -25,7 +26,7 @@ template< typename DataT > const QString CT_StandardGrid3DDrawManager<DataT>::IN
 
 template< typename DataT >
 CT_StandardGrid3DDrawManager<DataT>::CT_StandardGrid3DDrawManager(QString drawConfigurationName)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Grid3D<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("3D Grid (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
 {
     
 }

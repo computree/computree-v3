@@ -60,6 +60,9 @@ public:
                             const CT_AbstractResult *result,
                             double x, double y, double z, double buffer);
 
+    virtual QString name() const;
+
+
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

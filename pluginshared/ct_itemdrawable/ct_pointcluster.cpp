@@ -75,6 +75,11 @@ CT_PointCluster::~CT_PointCluster()
 {
 }
 
+QString CT_PointCluster::name() const
+{
+    return tr("Point cluster");
+}
+
 bool CT_PointCluster::addPoint(size_t index, bool verifyIfExist, bool firstPosition)
 {
     if(verifyIfExist && m_pIndex->contains(index))

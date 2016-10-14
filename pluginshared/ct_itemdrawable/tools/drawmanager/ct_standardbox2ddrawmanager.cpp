@@ -3,10 +3,13 @@
 
 #include "ct_global/ct_context.h"
 
+#include <QObject>
+
+
 
 const QString CT_StandardBox2DDrawManager::INDEX_CONFIG_DRAW_BOX = CT_StandardBox2DDrawManager::staticInitConfigDrawBox();
 
-CT_StandardBox2DDrawManager::CT_StandardBox2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Box2D" : drawConfigurationName)
+CT_StandardBox2DDrawManager::CT_StandardBox2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D box") : drawConfigurationName)
 {
     
 }

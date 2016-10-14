@@ -319,7 +319,7 @@ protected:
      * @brief Create a new standard initialization data for your step.
      * @param parent : the future parent of your new step
      */
-    virtual CT_StepInitializeData* createNewStepInitializeData(CT_VirtualAbstractStep *parent) const;
+    virtual CT_StepInitializeData* createNewStepInitializeData(CT_VirtualAbstractStep *parent, bool menuStepFlag = false) const;
 
     /**
      * @brief Search the steps (of this plugin) with key passed in parameter in level and sub level of the menu recursively and return it
@@ -395,12 +395,12 @@ protected:
      */
     template<class STEP>
     void addNewStep(CT_StepsMenu::LevelOperationType levelOperation, const QString &subLevelDisplayableName = "") {
-        addNewStep(new STEP(*createNewStepInitializeData(NULL)), levelOperation, subLevelDisplayableName);
+        addNewStep(new STEP(*createNewStepInitializeData(NULL, true)), levelOperation, subLevelDisplayableName);
     }
 
     template<class STEP>
     void addNewStep(CT_StepsMenu::LevelOperationType levelOperation, CT_StepsMenu::LevelPredefined subLevelPredefined) {
-        addNewStep(new STEP(*createNewStepInitializeData(NULL)), levelOperation, subLevelPredefined);
+        addNewStep(new STEP(*createNewStepInitializeData(NULL, true)), levelOperation, subLevelPredefined);
     }
 
     /**

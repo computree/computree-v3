@@ -2,11 +2,14 @@
 
 #include "ct_referencepoint.h"
 
+#include <QObject>
+
+
 const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_BUFFER_VISIBLE = CT_StandardReferencePointDrawManager::staticInitConfigBufferVisible();
 const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_FACTOR = CT_StandardReferencePointDrawManager::staticInitConfigFactor();
 const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_POINT_SIZE = CT_StandardReferencePointDrawManager::staticInitConfigPointSize();
 
-CT_StandardReferencePointDrawManager::CT_StandardReferencePointDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? "CT_ReferencePoint" : drawConfigurationName)
+CT_StandardReferencePointDrawManager::CT_StandardReferencePointDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Reference point") : drawConfigurationName)
 {
     
 }

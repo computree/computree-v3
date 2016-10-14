@@ -50,6 +50,11 @@ CT_Line2D::CT_Line2D(const QString &modelName,
     setBaseDrawManager(&LINE2D_DRAW_MANAGER);
 }
 
+QString CT_Line2D::name() const
+{
+    return tr("3D line");
+}
+
 const Eigen::Vector2d &CT_Line2D::getP1() const
 {
     return ((const CT_Line2DData&)getData()).getP1();

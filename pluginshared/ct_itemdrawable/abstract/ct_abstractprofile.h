@@ -59,7 +59,7 @@ public:
 
     virtual ~CT_AbstractProfile();
 
-    virtual QString name() const = 0;
+    virtual QString name() const;
 
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)

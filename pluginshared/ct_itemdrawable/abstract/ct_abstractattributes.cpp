@@ -13,3 +13,8 @@ CT_AbstractAttributes::CT_AbstractAttributes(const QString &modelName,
                                              const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName , result)
 {
 }
+
+QString CT_AbstractAttributes::name() const
+{
+    return tr("Point/Face/Edge attributes");
+}

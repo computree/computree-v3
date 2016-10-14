@@ -3,12 +3,14 @@
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardabstractitemdrawablewithoutpointclouddrawmanager.h"
 
+#include <QObject>
+
 class CT_Scanner;
 
 class PLUGINSHAREDSHARED_EXPORT CT_StandardScannerDrawManager : public CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager
 {
 public:
-    CT_StandardScannerDrawManager(QString drawConfigurationName = "CT_Scanner");
+    CT_StandardScannerDrawManager(QString drawConfigurationName = QObject::tr("Scan position"));
     virtual ~CT_StandardScannerDrawManager();
 
     virtual void draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const;

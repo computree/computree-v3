@@ -2,11 +2,13 @@
 
 #include "ct_planarbspline.h"
 
+#include <QObject>
+
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_DRAW_CONTROL_POINTS= CT_StandardPlanarBSplineDrawManager::staticInitConfigDrawControlPoints();
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_CONTROL_POINTS_SIZE = CT_StandardPlanarBSplineDrawManager::staticInitConfigControlPointsSize();
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_DRAW_POLYLINE = CT_StandardPlanarBSplineDrawManager::staticInitConfigDrawPolyline();
 
-CT_StandardPlanarBSplineDrawManager::CT_StandardPlanarBSplineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? "CT_Circle" : drawConfigurationName)
+CT_StandardPlanarBSplineDrawManager::CT_StandardPlanarBSplineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Planar B-spline") : drawConfigurationName)
 {
 }
 

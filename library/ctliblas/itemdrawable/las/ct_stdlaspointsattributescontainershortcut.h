@@ -23,6 +23,8 @@ public:
                                                const CT_AbstractResult *result,
                                                CT_StdLASPointsAttributesContainer *container);
 
+    virtual QString name() const;
+
 
     void insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att);
 

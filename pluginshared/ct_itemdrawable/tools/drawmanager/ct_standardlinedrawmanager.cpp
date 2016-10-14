@@ -2,10 +2,13 @@
 
 #include "ct_line.h"
 
+#include <QObject>
+
+
 const QString CT_StandardLineDrawManager::INDEX_CONFIG_LINE_SIZE = CT_StandardLineDrawManager::staticInitConfigLineSize();
 const QString CT_StandardLineDrawManager::INDEX_CONFIG_LINE_STYLE = CT_StandardLineDrawManager::staticInitConfigLineStyle();
 
-CT_StandardLineDrawManager::CT_StandardLineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? "CT_Line" : drawConfigurationName)
+CT_StandardLineDrawManager::CT_StandardLineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("3D line") : drawConfigurationName)
 {
     _forcedStyle = false;
 }

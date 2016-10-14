@@ -55,6 +55,9 @@ public:
                   const CT_AbstractResult *result);
     ~CT_TTreeGroup();
 
+    virtual QString name() const;
+
+
     /**
      * @brief Returns childrens of this group for the GUI
      */

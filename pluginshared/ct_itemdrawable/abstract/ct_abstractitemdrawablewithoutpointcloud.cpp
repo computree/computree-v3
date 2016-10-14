@@ -49,6 +49,11 @@ CT_AbstractItemDrawableWithoutPointCloud::CT_AbstractItemDrawableWithoutPointClo
     setBaseDrawManager(&IDWITHOUTPC_DRAW_MANAGER);
 }
 
+QString CT_AbstractItemDrawableWithoutPointCloud::name() const
+{
+    return tr("Item (without points)");
+}
+
 #ifdef USE_BOOST_OLD
 BOOST_CLASS_EXPORT_IMPLEMENT(CT_AbstractItemDrawableWithoutPointCloud)
 #endif

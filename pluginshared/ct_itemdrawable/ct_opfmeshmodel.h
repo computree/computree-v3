@@ -22,6 +22,8 @@ public:
                     const CT_AbstractResult *result,
                     CT_Mesh *mesh);
 
+    virtual QString name() const;
+
     void setDUp(double dUp);
     void setDDown(double dDown);
 

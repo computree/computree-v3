@@ -586,6 +586,11 @@ void CTG_InModelPossibilitiesChoice::recursiveCreateItemsForGroupModel(QStandard
 
         // le nom du modèle de sortie
         QStandardItem *itemItem = new QStandardItem(item->displayableName());
+        if (item->itemDrawable() != NULL)
+        {
+            itemItem->setToolTip(item->itemDrawable()->name());
+        }
+
         itemItem->setEditable(false);
         list2.append(itemItem);
 

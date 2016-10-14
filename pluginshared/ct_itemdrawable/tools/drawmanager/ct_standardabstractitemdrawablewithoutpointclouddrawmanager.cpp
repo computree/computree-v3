@@ -2,11 +2,14 @@
 
 #include "ct_abstractitemdrawablewithoutpointcloud.h"
 
+#include <QObject>
+
+
 const QString CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::staticInitConfigBoundingShapeVisible();
 const QString CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE = CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::staticInitConfigBoundingShapePointSize();
 const QString CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
-CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_AbstractItemDrawableWithoutPointCloud" : drawConfigurationName)
+CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Item (without points)") : drawConfigurationName)
 {
 }
 

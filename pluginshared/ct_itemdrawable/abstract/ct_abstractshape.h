@@ -78,6 +78,9 @@ public:
     double getDirectionY() const;
     double getDirectionZ() const;
 
+    virtual QString name() const;
+
+
 private:
 
     CT_ShapeData   *_data;

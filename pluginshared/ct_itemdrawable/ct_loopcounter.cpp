@@ -55,7 +55,7 @@ CT_LoopCounter::~CT_LoopCounter()
 
 QString CT_LoopCounter::name() const
 {
-    return QString("CT_LoopCounter");
+    return tr("Loop counter");
 }
 
 CT_AbstractItemDrawable* CT_LoopCounter::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

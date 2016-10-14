@@ -65,6 +65,8 @@ public:
     const CT_AreaShape2DData* getPointerAreaData() const;
     const CT_AreaShape2DData& getAreaData() const;
 
+    virtual QString name() const;
+
 
 protected:
 

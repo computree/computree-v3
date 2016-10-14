@@ -21,6 +21,11 @@ CT_AbstractPointsAttributes* CT_AbstractPointsAttributesContainer::pointsAttribu
     return m_att.value(key, NULL);
 }
 
+QString CT_AbstractPointsAttributesContainer::name() const
+{
+    return tr("Point attributes list");
+}
+
 void CT_AbstractPointsAttributesContainer::internalInsertAttributes(const int &key, const CT_AbstractPointsAttributes *att)
 {
     m_att.insert(key, (CT_AbstractPointsAttributes*)att);

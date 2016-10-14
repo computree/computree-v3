@@ -26,6 +26,9 @@ public:
     CT_StdLASPointsAttributesContainer(const QString &modelName,
                                        const CT_AbstractResult *result);
 
+    virtual QString name() const;
+
+
     /**
      * @brief Insert the CT_AbstractPointsAttributes at key 'key'. If an attribute already exist it will be replaced.
      *        The attribute is not deleted from memory, you are the owner.

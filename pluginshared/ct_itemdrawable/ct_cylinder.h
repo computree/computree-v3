@@ -59,6 +59,9 @@ public:
                      const CT_AbstractResult *result,
                      CT_CylinderData *data);
 
+    virtual QString name() const;
+
+
     double getRadius() const;
     double getHeight() const;
     double getLineError() const;

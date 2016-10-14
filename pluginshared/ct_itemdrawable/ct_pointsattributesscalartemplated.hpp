@@ -87,7 +87,7 @@ QString CT_PointsAttributesScalarTemplated<SCALAR>::staticGetType()
 template<typename SCALAR>
 QString CT_PointsAttributesScalarTemplated<SCALAR>::name() const
 {
-    return "CT_PointsAttributesScalarTemplated<" + CT_TypeInfo::name<SCALAR>() + ">";
+    return tr("Scalar(%1) point attributes").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 template<typename SCALAR>

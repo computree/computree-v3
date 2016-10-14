@@ -69,7 +69,7 @@ CT_AffiliationID::~CT_AffiliationID()
 
 QString CT_AffiliationID::name() const
 {
-    return QString("CT_AffiliationID");
+    return tr("Affiliation ID");
 }
 
 CT_AbstractItemDrawable* CT_AffiliationID::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

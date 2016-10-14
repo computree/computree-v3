@@ -86,6 +86,11 @@ CT_Polygon2D::CT_Polygon2D(const QString &modelName,
     _maxCoordinates(2) = 0;
 }
 
+QString CT_Polygon2D::name() const
+{
+    return tr("2D polygon");
+}
+
 const QVector<Eigen::Vector2d*>& CT_Polygon2D::getVertices() const
 {
     return ((const CT_Polygon2DData&)getData()).getVertices();

@@ -12,6 +12,8 @@
 
 #include <ctime>
 
+#include <QObject>
+
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeEnabled();
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_LINK_POINTS_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeLinkPointsEnabled();
 template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::INDEX_CONFIG_3D_MODE_HEIGHT_MAP_ENABLED = CT_StandardImage2DDrawManager<DataT>::staticInitConfig3DModeHeightMapEnabled();
@@ -26,7 +28,7 @@ template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::I
 
 template< typename DataT >
 CT_StandardImage2DDrawManager<DataT>::CT_StandardImage2DDrawManager(QString drawConfigurationName, bool mapMode, bool scale)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Image2D<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Raster (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
 {
     _defaultMapMode = mapMode;
     _defaultScaleState = scale;

@@ -29,11 +29,12 @@
 
 #include "ct_stepinitializedata.h"
 
-CT_StepInitializeData::CT_StepInitializeData(const CT_VirtualAbstractStep *parent, const CT_AbstractStepPlugin &pluginManager, QSettings *settings)
+CT_StepInitializeData::CT_StepInitializeData(const CT_VirtualAbstractStep *parent, const CT_AbstractStepPlugin &pluginManager, QSettings *settings, bool menuStepFlag)
 {
     _parentStep = (CT_VirtualAbstractStep*)parent;
     _pluginManager = (CT_AbstractStepPlugin*)&pluginManager;
     _settings = settings;
+    _menuStepFlag = menuStepFlag;
 }
 
 CT_StepInitializeData::CT_StepInitializeData(const CT_StepInitializeData &data)
@@ -41,6 +42,7 @@ CT_StepInitializeData::CT_StepInitializeData(const CT_StepInitializeData &data)
     _parentStep = data._parentStep;
     _pluginManager = data._pluginManager;
     _settings = data._settings;
+    _menuStepFlag = false;
 }
 
 CT_StepInitializeData::~CT_StepInitializeData()

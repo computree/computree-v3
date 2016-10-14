@@ -131,6 +131,8 @@ public:
     // add all vertices present in toInsert list to the triangulation
     bool doInsertion ();
 
+    void updateCornersZValues();
+
     CT_DelaunayTriangulation *copy();
 
     const CT_DelaunayTriangle *findTriangleContainingPoint(double x, double y, CT_DelaunayTriangle *refTriangle = NULL);

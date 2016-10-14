@@ -43,3 +43,8 @@ CT_AbstractProfile::CT_AbstractProfile(const QString &modelName, const CT_Abstra
 CT_AbstractProfile::~CT_AbstractProfile()
 {
 }
+
+QString CT_AbstractProfile::name() const
+{
+    return tr("Profile");
+}

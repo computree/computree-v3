@@ -16,6 +16,11 @@ CT_TOPFNodeGroup::CT_TOPFNodeGroup(const QString &modelName,
 {
 }
 
+QString CT_TOPFNodeGroup::name() const
+{
+    return tr("OPF node group");
+}
+
 CT_AbstractItemDrawable* CT_TOPFNodeGroup::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     const CT_OutOPFNodeGroupModel *newModel = dynamic_cast< const CT_OutOPFNodeGroupModel* >(model);

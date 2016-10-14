@@ -118,6 +118,11 @@ CT_PlotListInGrid::~CT_PlotListInGrid()
 {
 }
 
+QString CT_PlotListInGrid::name() const
+{
+    return tr("Plot list (grid)");
+}
+
 CT_AbstractItemDrawable *CT_PlotListInGrid::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

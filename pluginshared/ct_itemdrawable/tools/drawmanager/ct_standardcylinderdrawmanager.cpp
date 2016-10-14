@@ -2,12 +2,15 @@
 
 #include "ct_cylinder.h"
 
+#include <QObject>
+
+
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_CYLINDER = CT_StandardCylinderDrawManager::staticInitConfigDrawCylinder();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_AXE = CT_StandardCylinderDrawManager::staticInitConfigDrawAxe();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_MEDIAN_CIRCLE = CT_StandardCylinderDrawManager::staticInitConfigDrawMedianCircle();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_TRANSPARENCY_LEVEL = CT_StandardCylinderDrawManager::staticInitConfigTransparencyLevel();
 
-CT_StandardCylinderDrawManager::CT_StandardCylinderDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? "CT_Cylinder" : drawConfigurationName)
+CT_StandardCylinderDrawManager::CT_StandardCylinderDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Cylinder") : drawConfigurationName)
 {
     
 }

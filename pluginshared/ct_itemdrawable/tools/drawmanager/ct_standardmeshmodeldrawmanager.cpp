@@ -5,6 +5,8 @@
 #include "ct_mesh/ct_face.h"
 #include "ct_mesh/ct_edge.h"
 
+#include <QObject>
+
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_FACES = CT_StandardMeshModelDrawManager::staticInitConfigShowFaces();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_EDGES = CT_StandardMeshModelDrawManager::staticInitConfigShowEdges();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_SHOW_POINTS = CT_StandardMeshModelDrawManager::staticInitConfigShowPoints();
@@ -12,7 +14,7 @@ const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIB
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_POINT_SIZE = CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapePointSize();
 const QString CT_StandardMeshModelDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardMeshModelDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
-CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_MeshModel" : drawConfigurationName)
+CT_StandardMeshModelDrawManager::CT_StandardMeshModelDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Mesh model") : drawConfigurationName)
 {
 }
 

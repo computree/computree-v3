@@ -35,6 +35,9 @@ public:
         return ct;
     }
 
+    virtual QString name() const;
+
+
 private:
     CT_AbstractSingularItemDrawable *m_item;
     bool                            m_willBeRemovedLater;

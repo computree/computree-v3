@@ -61,6 +61,9 @@ public:
               const CT_AbstractResult *result,
               CT_Circle2DData *data);
 
+    virtual QString name() const;
+
+
     double getRadius() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

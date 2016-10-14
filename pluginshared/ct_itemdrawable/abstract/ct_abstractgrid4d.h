@@ -543,7 +543,7 @@ public:
      * \brief name
      * \return The name of the object
      */
-    virtual QString name() const = 0;
+    virtual QString name() const;
 
 protected:
 //**********************************************//

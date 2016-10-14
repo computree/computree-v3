@@ -57,6 +57,9 @@ public:
 
     ~CT_Triangulation2D();
 
+    virtual QString name() const;
+
+
     CT_DelaunayTriangulation *getDelaunayT() const;
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

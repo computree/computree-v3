@@ -38,6 +38,9 @@ public:
     CT_TOPFNodeGroup(const QString &modelName,
                      const CT_AbstractResult *result);
 
+    virtual QString name() const;
+
+
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     /**

@@ -45,6 +45,9 @@ public:
     CT_StandardItemGroup(const QString &modelName,
                          const CT_AbstractResult *result);
 
+    virtual QString name() const;
+
+
     /*!
      *  \brief Ajoute un groupe (protégé par un Mutex)
      *

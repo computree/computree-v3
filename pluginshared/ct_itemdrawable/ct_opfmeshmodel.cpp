@@ -31,6 +31,11 @@ CT_OPFMeshModel::CT_OPFMeshModel(const QString &modelName,
     defaultOpfMeshModelConstructorInitialization();
 }
 
+QString CT_OPFMeshModel::name() const
+{
+    return tr("OPF mesh model");
+}
+
 void CT_OPFMeshModel::setDUp(double dUp)
 {
     m_dUp = dUp;

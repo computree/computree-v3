@@ -60,6 +60,9 @@ public:
               const CT_AbstractResult *result,
               CT_PlanarBSplineData *data);
 
+    virtual QString name() const;
+
+
     int getDegree() const;
     int getNCP() const;
 

@@ -123,6 +123,11 @@ CT_Beam::~CT_Beam()
     // The destructor does not do anything. The destructor from the CT_AbstractItemDrawableWithoutPointCloud class will also be called
 }
 
+QString CT_Beam::name() const
+{
+    return tr("Beam");
+}
+
 bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top, Eigen::Vector3d &nearP, Eigen::Vector3d &farP) const
 {
     double t0 = 0;

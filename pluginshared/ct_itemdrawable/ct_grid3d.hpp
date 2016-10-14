@@ -397,7 +397,7 @@ QString CT_Grid3D<DataT>::staticGetType()
 template< typename DataT>
 QString CT_Grid3D<DataT>::name() const
 {
-    return QString("CT_Grid3D<") + CT_TypeInfo::name<DataT>() + QString(">");
+    return tr("3D grid (%1)").arg(CT_TypeInfo::name<DataT>());
 }
 
 template< typename DataT>

@@ -36,6 +36,9 @@ public:
                   const CT_AbstractResult *result);
     ~CT_TNodeGroup();
 
+    virtual QString name() const;
+
+
     /**
      * @brief Returns childrens of this group for the GUI
      */

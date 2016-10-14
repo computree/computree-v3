@@ -60,6 +60,9 @@ public:
                 const CT_AbstractResult *result,
                 CT_Polygon2DData *data);
 
+    virtual QString name() const;
+
+
     const QVector<Eigen::Vector2d*>& getVertices() const;
 
     inline int getNumberOfVertices() const {return getVertices().size();}

@@ -3,10 +3,12 @@
 
 #include "ct_global/ct_context.h"
 
+#include <QObject>
+
 
 const QString CT_StandardCircle2DDrawManager::INDEX_CONFIG_DRAW_CIRCLE = CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle();
 
-CT_StandardCircle2DDrawManager::CT_StandardCircle2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Circle2D" : drawConfigurationName)
+CT_StandardCircle2DDrawManager::CT_StandardCircle2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D circle") : drawConfigurationName)
 {
     
 }

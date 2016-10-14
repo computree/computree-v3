@@ -190,6 +190,9 @@ public:
      */
     QColor defaultColor() const;
 
+    virtual QString name() const;
+
+
 protected:
     Eigen::Vector3d   _minCoordinates;
     Eigen::Vector3d   _maxCoordinates;

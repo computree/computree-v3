@@ -34,7 +34,7 @@ QVariant DM_StepManagerTreeViewProxy::data(const QModelIndex &index, int role) c
             MyQStandardItem *it = getStepFromIndex(index, sourceModel(), this);
 
             if((it != NULL) && (it->step() != NULL)) {
-                QString name = GStepViewDefault::staticGetStepNameFromConfiguration(it->step(), m_stepNameConfig);
+                QString name = GStepViewDefault::staticGetStepNameFromConfiguration(it->step(), m_stepNameConfig, true);
 
                 int progress = it->step()->getProgress();
 

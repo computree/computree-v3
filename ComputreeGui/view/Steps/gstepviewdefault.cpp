@@ -139,13 +139,19 @@ GStepViewDefault::DisplayNameConfigs GStepViewDefault::stepNameConfiguration() c
     return m_nameConfig;
 }
 
-QString GStepViewDefault::staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const GStepViewDefault::DisplayNameConfigs &config)
+QString GStepViewDefault::staticGetStepNameFromConfiguration(CT_VirtualAbstractStep *step, const GStepViewDefault::DisplayNameConfigs &config, bool showStepID)
 {
-    QString name;
+    QString name = "";
+
+    if (showStepID)
+    {
+        name = QString(" %1 -").arg(step->uniqueID());
+    }
 
     QString shortDescription = " " + step->getStepDescription() + " ";
     QString key = " " + step->getPlugin()->getKeyForStep(*step) + " ";
     QString displayableName = " " + step->getStepDisplayableName()+ " ";
+
 
     if(config.testFlag(DNC_StepShortDescription) )
         name += shortDescription;

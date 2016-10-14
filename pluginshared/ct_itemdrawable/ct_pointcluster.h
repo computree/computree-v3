@@ -134,6 +134,9 @@ public:
 
     virtual ~CT_PointCluster();
 
+    virtual QString name() const;
+
+
     /**
       * \brief Ajoute un point au groupe  partir de son index dans le nuage de point (PointCloud)
       *

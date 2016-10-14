@@ -23,6 +23,9 @@ public:
      */
     virtual CT_AbstractPointsAttributes* pointsAttributesAt(const int &key) const;
 
+    virtual QString name() const;
+
+
 private:
     QHash<int, CT_AbstractPointsAttributes*>   m_att;
 

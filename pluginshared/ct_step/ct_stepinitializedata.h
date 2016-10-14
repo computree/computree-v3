@@ -41,7 +41,7 @@ class CT_AbstractStepPlugin;
 class PLUGINSHAREDSHARED_EXPORT CT_StepInitializeData
 {
 public:
-    CT_StepInitializeData(const CT_VirtualAbstractStep *parent, const CT_AbstractStepPlugin &pluginManager, QSettings *settings);
+    CT_StepInitializeData(const CT_VirtualAbstractStep *parent, const CT_AbstractStepPlugin &pluginManager, QSettings *settings, bool menuStepFlag = false);
     CT_StepInitializeData(const CT_StepInitializeData &data);
     virtual ~CT_StepInitializeData();
 
@@ -50,6 +50,8 @@ public:
     inline QSettings* getSettingsFile() const { return _settings; }
 
     void setParentStep(const CT_VirtualAbstractStep *parent);
+
+    inline bool getMenuStepFlag() const {return _menuStepFlag;}
 
 private:
 
@@ -60,6 +62,7 @@ private:
     CT_VirtualAbstractStep  *_parentStep;
     CT_AbstractStepPlugin   *_pluginManager;
     QSettings               *_settings;
+    bool                     _menuStepFlag;
 };
 
 #endif // CT_STEPINITIALIZEDATA_H

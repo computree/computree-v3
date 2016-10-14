@@ -59,6 +59,8 @@ public:
 
     virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
+    virtual QString name() const;
+
 };
 
 #endif // CT_ATTRIBUTESLIST_H

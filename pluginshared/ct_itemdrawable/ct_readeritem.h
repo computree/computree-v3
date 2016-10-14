@@ -56,6 +56,9 @@ public:
 
     virtual ~CT_ReaderItem();
 
+    virtual QString name() const;
+
+
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     // By default CT_ReaderItem don't have a Bounding Box : redefine in children class of geographical files

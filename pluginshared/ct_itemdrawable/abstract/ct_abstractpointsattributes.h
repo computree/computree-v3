@@ -46,6 +46,9 @@ public:
       */
     virtual int getFastestIncrement() const;
 
+    virtual QString name() const;
+
+
 private:
     static CT_StandardAbstractPointsAttributesDrawManager APA_DRAW_MANAGER;
 

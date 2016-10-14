@@ -4,11 +4,14 @@
 
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 
+#include <QObject>
+
+
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_POINTS_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
-CT_StandardAbstractItemDrawableWithPointCloudDrawManager::CT_StandardAbstractItemDrawableWithPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_AbstractItemDrawableWithPointCloud" : drawConfigurationName)
+CT_StandardAbstractItemDrawableWithPointCloudDrawManager::CT_StandardAbstractItemDrawableWithPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Point cloud") : drawConfigurationName)
 {
     
 }

@@ -50,6 +50,11 @@ CT_Box2D::CT_Box2D(const QString &modelName,
     setBaseDrawManager(&BOX2D_DRAW_MANAGER);
 }
 
+QString CT_Box2D::name() const
+{
+    return tr("2D box");
+}
+
 double CT_Box2D::getWidth() const
 {
     return ((const CT_Box2DData&)getData()).getWidth();

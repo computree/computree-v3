@@ -18,6 +18,8 @@
 
 #include "ct_itemdrawable/tools/iterator/ct_groupiterator.h"
 
+#include <QObject>
+
 CT_AbstractItemGroup::CT_AbstractItemGroup() : CT_AbstractItemDrawable()
 {
     _parentGroup = NULL;
@@ -245,4 +247,9 @@ QString CT_AbstractItemGroup::internalVerifyModel(const CT_OutAbstractModel *mod
         return tr("Model passed in parameter is not a CT_OutAbstractGroupModel");
 
     return QString();
+}
+
+QString CT_GroupItemDrawableContainer::name() const
+{
+    return QObject::tr("Group");
 }

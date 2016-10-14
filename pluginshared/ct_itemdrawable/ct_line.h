@@ -60,6 +60,9 @@ public:
             const CT_AbstractResult *result,
             CT_LineData *data);
 
+    virtual QString name() const;
+
+
     inline const Eigen::Vector3d& getP1() const {return ((const CT_LineData&)getData()).getP1();}
     inline const Eigen::Vector3d& getP2() const {return ((const CT_LineData&)getData()).getP2();}
 

@@ -38,6 +38,9 @@ public:
      */
     CT_ECIR getEdgeCloudIndexRegistered() const;
 
+    virtual QString name() const;
+
+
 private:
     // TODO
     //static CT_StandardAbstractEdgeAttributesDrawManager AEA_DRAW_MANAGER;

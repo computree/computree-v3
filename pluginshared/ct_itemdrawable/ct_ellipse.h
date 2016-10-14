@@ -62,6 +62,9 @@ public:
                const CT_AbstractResult *result,
                CT_EllipseData *data);
 
+    virtual QString name() const;
+
+
     const CT_LineData& getAxisA() const;
     const CT_LineData& getAxisB() const;
     double getError() const;

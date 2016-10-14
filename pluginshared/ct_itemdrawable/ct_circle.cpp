@@ -49,7 +49,12 @@ CT_Circle::CT_Circle(const QString &modelName,
                      const CT_AbstractResult *result, CT_CircleData *data) : CT_AbstractShape(modelName, result, data)
 {
     setBaseDrawManager(&CIRCLE_DRAW_MANAGER);
-//    if (data!=NULL) {computeBoundingBox();}
+    //    if (data!=NULL) {computeBoundingBox();}
+}
+
+QString CT_Circle::name() const
+{
+    return tr("3D circle");
 }
 
 double CT_Circle::getRadius() const

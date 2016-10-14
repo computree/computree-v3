@@ -3,11 +3,14 @@
 
 #include "ct_global/ct_context.h"
 
+#include <QObject>
+
+
 
 const QString CT_StandardLine2DDrawManager::INDEX_CONFIG_DRAW_POINTS = CT_StandardLine2DDrawManager::staticInitConfigDrawPoints();
 const QString CT_StandardLine2DDrawManager::INDEX_CONFIG_DRAW_LINE = CT_StandardLine2DDrawManager::staticInitConfigDrawLine();
 
-CT_StandardLine2DDrawManager::CT_StandardLine2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? "CT_Line2D" : drawConfigurationName)
+CT_StandardLine2DDrawManager::CT_StandardLine2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D line") : drawConfigurationName)
 {
     
 }

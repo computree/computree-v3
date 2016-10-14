@@ -30,3 +30,8 @@ CT_ECIR CT_AbstractEdgeAttributes::getEdgeCloudIndexRegistered() const
 {
     return m_cir;
 }
+
+QString CT_AbstractEdgeAttributes::name() const
+{
+    return tr("Edge attributes");
+}

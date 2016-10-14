@@ -56,6 +56,9 @@ public:
 
     virtual ~CT_FileHeader();
 
+    virtual QString name() const;
+
+
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     void setFile(const QString &filename);

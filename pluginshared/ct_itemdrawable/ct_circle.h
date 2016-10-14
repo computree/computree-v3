@@ -61,6 +61,9 @@ public:
               const CT_AbstractResult *result,
               CT_CircleData *data);
 
+    virtual QString name() const;
+
+
     double getRadius() const;
     double getError() const;
 

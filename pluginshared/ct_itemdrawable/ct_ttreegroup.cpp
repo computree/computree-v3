@@ -21,6 +21,11 @@ CT_TTreeGroup::~CT_TTreeGroup()
 {
 }
 
+QString CT_TTreeGroup::name() const
+{
+    return tr("Tree group");
+}
+
 QList<CT_AbstractItem *> CT_TTreeGroup::childrensForGui() const
 {
     QList<CT_AbstractItem *> r;

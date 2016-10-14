@@ -48,3 +48,8 @@ int CT_AbstractPointsAttributes::getFastestIncrement() const
 {
     return 16;
 }
+
+QString CT_AbstractPointsAttributes::name() const
+{
+    return tr("Point attributes");
+}

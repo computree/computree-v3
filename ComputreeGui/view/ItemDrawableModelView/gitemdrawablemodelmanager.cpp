@@ -235,6 +235,12 @@ QList<QStandardItem *> GItemDrawableModelManager::createItemsForItemModel(const 
 
     QStandardItem *item = new QStandardItem(model->displayableName());
     item->setEditable(false);
+
+    if (model->itemDrawable() != NULL)
+    {
+        item->setToolTip(model->itemDrawable()->name());
+    }
+
     retList.append(item);
 
     if(m_docManagerView != NULL)

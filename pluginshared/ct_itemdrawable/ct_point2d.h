@@ -61,6 +61,9 @@ public:
               const CT_AbstractResult *result,
               CT_Point2DData *data);
 
+    virtual QString name() const;
+
+
     double x() const;
     double y() const;
 

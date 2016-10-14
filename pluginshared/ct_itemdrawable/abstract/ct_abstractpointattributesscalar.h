@@ -24,6 +24,9 @@ public:
     virtual double dValueAt(const size_t &index) const = 0;
 
     virtual size_t attributesSize() const = 0;
+
+    virtual QString name() const;
+
 };
 
 #endif // CT_ABSTRACTPOINTATTRIBUTESSCALAR_H

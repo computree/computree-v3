@@ -93,6 +93,9 @@ public:
      */
     void recursiveSetComplete();
 
+    virtual QString name() const;
+
+
 private:
 
     const static CT_StandardStandardItemGroupDrawManager SIG_DRAW_MANAGER;

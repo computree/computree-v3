@@ -4,6 +4,7 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardprofiledrawmanager.h"
 #include "ct_itemdrawable/ct_profile.h"
 #include <typeinfo>
+#include <QObject>
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -26,7 +27,7 @@ template< typename DataT > const QString CT_StandardProfileDrawManager<DataT>::I
 
 template< typename DataT >
 CT_StandardProfileDrawManager<DataT>::CT_StandardProfileDrawManager(QString drawConfigurationName)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Profil<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Profile (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
 {
     
 }

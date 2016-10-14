@@ -241,9 +241,9 @@ void CT_AbstractStepPlugin::clearItemDrawables()
     m_items.clear();
 }
 
-CT_StepInitializeData* CT_AbstractStepPlugin::createNewStepInitializeData(CT_VirtualAbstractStep *parent) const
+CT_StepInitializeData* CT_AbstractStepPlugin::createNewStepInitializeData(CT_VirtualAbstractStep *parent, bool menuStepFlag) const
 {
-    return new CT_StepInitializeData(parent, *this, _pluginSettings);
+    return new CT_StepInitializeData(parent, *this, _pluginSettings, menuStepFlag);
 }
 
 CT_VirtualAbstractStep* CT_AbstractStepPlugin::searchStepFromKeyOfThisPluginInMenuRecursively(CT_StepsMenu *menu, const QString &key) const

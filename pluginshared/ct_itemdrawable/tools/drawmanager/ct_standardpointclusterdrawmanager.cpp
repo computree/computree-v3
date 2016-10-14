@@ -4,10 +4,13 @@
 #include "ct_pointcloudindex/abstract/ct_abstractpointcloudindex.h"
 #include "ct_accessor/ct_pointaccessor.h"
 
+#include <QObject>
+
+
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_BARYCENTER_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigBarycenterVisible();
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_LINES_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigLinesVisible();
 
-CT_StandardPointClusterDrawManager::CT_StandardPointClusterDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithPointCloudDrawManager(drawConfigurationName.isEmpty() ? "CT_PointCluster" : drawConfigurationName)
+CT_StandardPointClusterDrawManager::CT_StandardPointClusterDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Point cluster") : drawConfigurationName)
 {
 }
 

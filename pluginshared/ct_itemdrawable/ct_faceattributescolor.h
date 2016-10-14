@@ -30,6 +30,9 @@ public:
                            CT_FCIR pcir,
                            CT_AbstractColorCloud *cc);
 
+    virtual QString name() const;
+
+
     size_t attributesSize() const { return CT_AttributesColor::attributesSize(); }
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

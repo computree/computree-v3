@@ -399,7 +399,7 @@ QString CT_Grid3D_Sparse<DataT>::staticGetType()
 template< typename DataT>
 QString CT_Grid3D_Sparse<DataT>::name() const
 {
-    return QString("CT_Grid3D_Sparse<") + CT_TypeInfo::name<DataT>() + QString(">");
+    return tr("3D grid (%1, sparse)").arg(CT_TypeInfo::name<DataT>());
 }
 
 template< typename DataT>

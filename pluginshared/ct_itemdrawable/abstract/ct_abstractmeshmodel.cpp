@@ -13,3 +13,8 @@ CT_AbstractMeshModel::CT_AbstractMeshModel(const QString &modelName,
                                            const CT_AbstractResult *result) : CT_AbstractSingularItemDrawable(modelName, result)
 {
 }
+
+QString CT_AbstractMeshModel::name() const
+{
+    return tr("Mesh model");
+}

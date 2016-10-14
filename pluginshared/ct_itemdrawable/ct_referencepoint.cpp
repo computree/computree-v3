@@ -127,6 +127,11 @@ CT_ReferencePoint::CT_ReferencePoint(const QString &modelName,
     setBaseDrawManager(&REFERENCEPOINT_DRAW_MANAGER);
 }
 
+QString CT_ReferencePoint::name() const
+{
+    return tr("Reference point");
+}
+
 void CT_ReferencePoint::setXYBuffer(double buffer)
 {
     _xyBuffer = buffer;

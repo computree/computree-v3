@@ -157,7 +157,8 @@ void GAboutStepDialog::recursiveCreateItemsForModel(QTreeWidgetItem *parent, con
 void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *parent, const CT_OutAbstractResultModel *rModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, QString("Result") + " / " + rModel->uniqueName() + " / " + rModel->modelTypeDisplayable() + " : " + rModel->resultName());
+    //item->setText(0, QString("Result") + " / " + rModel->uniqueName() + " / " + rModel->modelTypeDisplayable() + " : " + rModel->resultName());
+    item->setText(0, QString("Result") + " / " + rModel->uniqueName());
 
     createForChildrens(item, rModel);
 }
@@ -173,7 +174,8 @@ void GAboutStepDialog::recursiveCreateItemsForResultModel(QTreeWidgetItem *paren
 void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_OutAbstractItemModel *iModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" + " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???") + " / " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable());
+    //item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" + " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???") + " / " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable());
+    item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" + " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???"));
 
     createForChildrens(item, iModel);
 }
@@ -189,7 +191,8 @@ void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent,
 void GAboutStepDialog::recursiveCreateItemsForItemAttributesModel(QTreeWidgetItem *parent, const CT_OutAbstractItemAttributeModel *iaModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->itemAttribute()->typeToString() + ")" + " / " + (iaModel->lastOriginalModelWithAStep() != NULL ? iaModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???") + " / " + iaModel->uniqueName() + " / " + iaModel->modelTypeDisplayable());
+    //item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->itemAttribute()->typeToString() + ")" + " / " + (iaModel->lastOriginalModelWithAStep() != NULL ? iaModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???") + " / " + iaModel->uniqueName() + " / " + iaModel->modelTypeDisplayable());
+    item->setText(0, iaModel->itemAttribute()->displayableName() + " (" + iaModel->itemAttribute()->typeToString() + ")" + " / " + (iaModel->lastOriginalModelWithAStep() != NULL ? iaModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???"));
 
     createForChildrens(item, iaModel);
 }

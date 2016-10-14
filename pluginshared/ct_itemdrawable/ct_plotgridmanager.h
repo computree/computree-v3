@@ -51,6 +51,8 @@ public:
 
     virtual ~CT_PlotGridManager();
 
+    virtual QString name() const;
+
     virtual bool hasBoundingBox() const {return false;}
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

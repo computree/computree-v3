@@ -208,6 +208,11 @@ CT_Scanner::~CT_Scanner()
     // Nothing to do
 }
 
+QString CT_Scanner::name() const
+{
+    return tr("Scan position");
+}
+
 CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
 {
     assert ( i >= 0 && j >= 0 );
