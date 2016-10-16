@@ -35,9 +35,6 @@ public:
         return ct;
     }
 
-    virtual QString name() const;
-
-
 private:
     CT_AbstractSingularItemDrawable *m_item;
     bool                            m_willBeRemovedLater;
@@ -53,7 +50,7 @@ private:
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemGroup : public CT_AbstractItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractItemGroup, CT_AbstractItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemGroup, CT_AbstractItemDrawable, Group)
 
 public:
 

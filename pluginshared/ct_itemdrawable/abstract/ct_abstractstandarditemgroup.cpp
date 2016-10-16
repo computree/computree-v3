@@ -665,11 +665,6 @@ void CT_AbstractStandardItemGroup::recursiveSetComplete()
     }
 }
 
-QString CT_AbstractStandardItemGroup::name() const
-{
-    return tr("Standard group");
-}
-
 void CT_AbstractStandardItemGroup::internalSetWillBeRemovedFromResult(const CT_AbstractResult *result)
 {
     QHashIterator<QString, CT_Container*> it(_groupsNew);

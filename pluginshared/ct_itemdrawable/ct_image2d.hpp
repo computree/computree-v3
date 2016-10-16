@@ -285,11 +285,19 @@ QString CT_Image2D<DataT>::getType() const
 template< typename DataT>
 QString CT_Image2D<DataT>::staticGetType()
 {
-    return CT_AbstractImage2D::staticGetType() + "/CT_Image2D<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractImage2D::staticGetType() + "/CT_Image2D<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template< typename DataT>
 QString CT_Image2D<DataT>::name() const
+{
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Image2D<DataT>::staticName()
 {
     return tr("Raster (%1)").arg(CT_TypeInfo::name<DataT>());
 }

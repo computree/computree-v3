@@ -154,11 +154,6 @@ void CT_AbstractShape2D::getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &m
     max(2) = zplane;
 }
 
-QString CT_AbstractShape2D::name() const
-{
-    return tr("2D shape");
-}
-
 CT_Shape2DData* CT_AbstractShape2D::getDataNotConst() const
 {
     return _data;

@@ -10,7 +10,7 @@
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_BARYCENTER_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigBarycenterVisible();
 const QString CT_StandardPointClusterDrawManager::INDEX_CONFIG_LINES_VISIBLE = CT_StandardPointClusterDrawManager::staticInitConfigLinesVisible();
 
-CT_StandardPointClusterDrawManager::CT_StandardPointClusterDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Point cluster") : drawConfigurationName)
+CT_StandardPointClusterDrawManager::CT_StandardPointClusterDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_PointCluster::staticName() : drawConfigurationName)
 {
 }
 
@@ -52,8 +52,8 @@ CT_ItemDrawableConfiguration CT_StandardPointClusterDrawManager::createDrawConfi
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardPointClusterDrawManager::staticInitConfigBarycenterVisible(),"Barycentre", CT_ItemDrawableConfiguration::Bool, false );
-    item.addNewConfiguration(CT_StandardPointClusterDrawManager::staticInitConfigLinesVisible(),"Polyligne", CT_ItemDrawableConfiguration::Bool, false );
+    item.addNewConfiguration(CT_StandardPointClusterDrawManager::staticInitConfigBarycenterVisible(), QObject::tr("Barycentre"), CT_ItemDrawableConfiguration::Bool, false );
+    item.addNewConfiguration(CT_StandardPointClusterDrawManager::staticInitConfigLinesVisible(),QObject::tr("Polyligne"), CT_ItemDrawableConfiguration::Bool, false );
 
     return item;
 }

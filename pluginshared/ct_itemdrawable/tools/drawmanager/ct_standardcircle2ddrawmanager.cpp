@@ -5,10 +5,9 @@
 
 #include <QObject>
 
-
 const QString CT_StandardCircle2DDrawManager::INDEX_CONFIG_DRAW_CIRCLE = CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle();
 
-CT_StandardCircle2DDrawManager::CT_StandardCircle2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D circle") : drawConfigurationName)
+CT_StandardCircle2DDrawManager::CT_StandardCircle2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Circle2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -46,7 +45,7 @@ CT_ItemDrawableConfiguration CT_StandardCircle2DDrawManager::createDrawConfigura
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle() ,"Dessiner le cercle", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardCircle2DDrawManager::staticInitConfigDrawCircle() ,QObject::tr("Dessiner le cercle"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }

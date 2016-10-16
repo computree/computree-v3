@@ -38,7 +38,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_FileHeader : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_FileHeader, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_FileHeader, CT_AbstractItemDrawableWithoutPointCloud, File header)
 
 public:
     /**
@@ -55,9 +55,6 @@ public:
                      const CT_AbstractResult *result);
 
     virtual ~CT_FileHeader();
-
-    virtual QString name() const;
-
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 

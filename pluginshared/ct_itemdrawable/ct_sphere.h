@@ -39,7 +39,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Sphere : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Sphere, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_Sphere, CT_AbstractShape, Sphere)
 
 public:
     CT_Sphere();
@@ -51,9 +51,6 @@ public:
     CT_Sphere(const QString &modelName,
               const CT_AbstractResult *result,
               CT_SphereData *data);
-
-    virtual QString name() const;
-
 
     /**
      * @brief Returns the radius of the sphere

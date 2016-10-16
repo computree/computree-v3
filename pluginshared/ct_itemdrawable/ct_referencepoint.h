@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_ReferencePoint : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_ReferencePoint, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_ReferencePoint, CT_AbstractItemDrawableWithoutPointCloud, Reference point)
 
 public:
     CT_ReferencePoint();
@@ -59,9 +59,6 @@ public:
     CT_ReferencePoint(const QString &modelName,
                             const CT_AbstractResult *result,
                             double x, double y, double z, double buffer);
-
-    virtual QString name() const;
-
 
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 

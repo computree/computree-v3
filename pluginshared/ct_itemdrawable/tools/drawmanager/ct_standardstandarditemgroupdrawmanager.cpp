@@ -8,7 +8,7 @@
 const QString CT_StandardStandardItemGroupDrawManager::INDEX_CONFIG_ITEMS_BACKUP_VISIBLE = "IBV";
 const QString CT_StandardStandardItemGroupDrawManager::INDEX_CONFIG_ITEMS_NEW_VISIBLE = "INV";
 
-CT_StandardStandardItemGroupDrawManager::CT_StandardStandardItemGroupDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Standard item group") : drawConfigurationName)
+CT_StandardStandardItemGroupDrawManager::CT_StandardStandardItemGroupDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? CT_AbstractStandardItemGroup::staticName() : drawConfigurationName)
 {
     
 }
@@ -40,8 +40,8 @@ CT_ItemDrawableConfiguration CT_StandardStandardItemGroupDrawManager::createDraw
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_AbstractItemDrawableDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(INDEX_CONFIG_ITEMS_BACKUP_VISIBLE,"Anciens Items", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(INDEX_CONFIG_ITEMS_NEW_VISIBLE,"Nouveaux Items", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(INDEX_CONFIG_ITEMS_BACKUP_VISIBLE,QObject::tr("Anciens Items"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(INDEX_CONFIG_ITEMS_NEW_VISIBLE,QObject::tr("Nouveaux Items"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }

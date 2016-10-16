@@ -2,10 +2,7 @@
 
 #include "ct_circle.h"
 
-#include <QObject>
-
-
-CT_StandardCircleDrawManager::CT_StandardCircleDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("3D circle") : drawConfigurationName)
+CT_StandardCircleDrawManager::CT_StandardCircleDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? CT_Circle::staticName() : drawConfigurationName)
 {
 }
 

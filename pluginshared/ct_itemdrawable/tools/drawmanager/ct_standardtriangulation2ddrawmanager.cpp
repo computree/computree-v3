@@ -10,7 +10,7 @@ const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_EDGES_VISIBLE 
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_HULL_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigHullVisible();
 const QString CT_StandardTriangulation2DDrawManager::INDEX_CONFIG_VORONOI_VISIBLE = CT_StandardTriangulation2DDrawManager::staticInitConfigVoronoiVisible();
 
-CT_StandardTriangulation2DDrawManager::CT_StandardTriangulation2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D triangulation") : drawConfigurationName)
+CT_StandardTriangulation2DDrawManager::CT_StandardTriangulation2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Triangulation2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -44,10 +44,10 @@ CT_ItemDrawableConfiguration CT_StandardTriangulation2DDrawManager::createDrawCo
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigNodesVisible(), "Points", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigEdgesVisible(), "Aretes", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigHullVisible(), "Enveloppe convexe", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigVoronoiVisible(), "Voronoï", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigNodesVisible(), QObject::tr("Points"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigEdgesVisible(), QObject::tr("Aretes"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigHullVisible(), QObject::tr("Enveloppe convexe"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardTriangulation2DDrawManager::staticInitConfigVoronoiVisible(), QObject::tr("Voronoï"), CT_ItemDrawableConfiguration::Bool, false);
 
     return item;
 }

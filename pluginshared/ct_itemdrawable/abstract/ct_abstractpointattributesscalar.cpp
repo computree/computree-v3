@@ -22,7 +22,3 @@ CT_AbstractPointAttributesScalar::CT_AbstractPointAttributesScalar(const QString
 
 }
 
-QString CT_AbstractPointAttributesScalar::name() const
-{
-    return tr("Scalar point attributes");
-}

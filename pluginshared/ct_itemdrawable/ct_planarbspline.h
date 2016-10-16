@@ -43,7 +43,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PlanarBSpline : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PlanarBSpline, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_PlanarBSpline, CT_AbstractShape, Planar B-spline)
 
 public:
 
@@ -59,8 +59,6 @@ public:
     CT_PlanarBSpline(const QString &modelName,
               const CT_AbstractResult *result,
               CT_PlanarBSplineData *data);
-
-    virtual QString name() const;
 
 
     int getDegree() const;

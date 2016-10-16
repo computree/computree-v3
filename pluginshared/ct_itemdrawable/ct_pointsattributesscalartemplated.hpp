@@ -81,13 +81,21 @@ QString CT_PointsAttributesScalarTemplated<SCALAR>::getType() const
 template<typename SCALAR>
 QString CT_PointsAttributesScalarTemplated<SCALAR>::staticGetType()
 {
-    return CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarTemplated<" + CT_TypeInfo::name<SCALAR>() + ">";
+    QString type = CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarTemplated<" + CT_TypeInfo::name<SCALAR>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template<typename SCALAR>
 QString CT_PointsAttributesScalarTemplated<SCALAR>::name() const
 {
-    return tr("Scalar(%1) point attributes").arg(CT_TypeInfo::name<SCALAR>());
+    return staticName();
+}
+
+template<typename SCALAR>
+QString CT_PointsAttributesScalarTemplated<SCALAR>::staticName()
+{
+    return tr("Scalar point attributes (%1)").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 template<typename SCALAR>

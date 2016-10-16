@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Point2D : public CT_AbstractShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Point2D, CT_AbstractShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Point2D, CT_AbstractShape2D, 2D point)
 
 public:
 
@@ -60,9 +60,6 @@ public:
     CT_Point2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Point2DData *data);
-
-    virtual QString name() const;
-
 
     double x() const;
     double y() const;

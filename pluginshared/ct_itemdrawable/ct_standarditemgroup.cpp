@@ -15,11 +15,6 @@ CT_StandardItemGroup::CT_StandardItemGroup(const QString &modelName,
 {
 }
 
-QString CT_StandardItemGroup::name() const
-{
-    return tr("Standard group");
-}
-
 bool CT_StandardItemGroup::addGroup(CT_AbstractItemGroup *group)
 {
     return protectedAddGroup(group);

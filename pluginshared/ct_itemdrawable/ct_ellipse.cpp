@@ -49,10 +49,6 @@ CT_Ellipse::CT_Ellipse(const QString &modelName,
     setBaseDrawManager(&ELLIPSE_DRAW_MANAGER);
 }
 
-QString CT_Ellipse::name() const
-{
-    return tr("3D ellipse");
-}
 
 const CT_LineData& CT_Ellipse::getAxisA() const
 {

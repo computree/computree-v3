@@ -1,13 +1,13 @@
 #include "ct_standardabstractshape2ddrawmanager.h"
+#include "ct_itemdrawable/abstract/ct_abstractshape2d.h"
+
 #include <QObject>
-
-
 
 const QString CT_StandardAbstractShape2DDrawManager::INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE = CT_StandardAbstractShape2DDrawManager::staticInitConfigUseAlternativeZValue();
 const QString CT_StandardAbstractShape2DDrawManager::INDEX_CONFIG_Z_VALUE = CT_StandardAbstractShape2DDrawManager::staticInitConfigZValue();
 
 
-CT_StandardAbstractShape2DDrawManager::CT_StandardAbstractShape2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D shape") : drawConfigurationName)
+CT_StandardAbstractShape2DDrawManager::CT_StandardAbstractShape2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_AbstractShape2D::staticName() : drawConfigurationName)
 {
 }
 

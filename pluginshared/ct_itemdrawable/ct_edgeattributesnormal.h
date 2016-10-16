@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesNormal : public CT_AbstractEdgeAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesNormal, CT_AbstractEdgeAttributes)
+    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesNormal, CT_AbstractEdgeAttributes, Normal edge attributes)
 
 public:
     CT_EdgeAttributesNormal();
@@ -30,9 +30,6 @@ public:
                             const CT_AbstractResult *result,
                             CT_ECIR pcir,
                             CT_AbstractNormalCloud *nc);
-
-    virtual QString name() const;
-
 
     size_t attributesSize() const { return CT_AttributesNormal::attributesSize(); }
 

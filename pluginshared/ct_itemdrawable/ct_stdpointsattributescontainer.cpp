@@ -16,11 +16,6 @@ CT_StdPointsAttributesContainer::CT_StdPointsAttributesContainer(const QString &
 {
 }
 
-QString CT_StdPointsAttributesContainer::name() const
-{
-    return tr("Standard point attributes list");
-}
-
 void CT_StdPointsAttributesContainer::insertPointsAttributesAt(const int &key, const CT_AbstractPointsAttributes *att)
 {
     internalInsertAttributes(key, att);

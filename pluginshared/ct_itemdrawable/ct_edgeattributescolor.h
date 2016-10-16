@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesColor : public CT_AbstractEdgeAttributes, public CT_AttributesColor
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesColor, CT_AbstractEdgeAttributes)
+    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesColor, CT_AbstractEdgeAttributes, Color edge attributes)
 
 public:
     CT_EdgeAttributesColor();
@@ -30,8 +30,6 @@ public:
                      const CT_AbstractResult *result,
                      CT_ECIR pcir,
                      CT_AbstractColorCloud *cc);
-
-    virtual QString name() const;
 
 
     size_t attributesSize() const { return CT_AttributesColor::attributesSize(); }

@@ -49,10 +49,6 @@ CT_FileHeader::~CT_FileHeader()
 {
 }
 
-QString CT_FileHeader::name() const
-{
-    return tr("File header");
-}
 
 CT_AbstractItemDrawable *CT_FileHeader::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {

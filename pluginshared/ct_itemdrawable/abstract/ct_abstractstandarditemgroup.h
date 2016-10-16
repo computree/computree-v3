@@ -17,7 +17,7 @@ class CT_AbstractReader;
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractStandardItemGroup : public CT_AbstractItemGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractStandardItemGroup, CT_AbstractItemGroup)
+    CT_TYPE_IMPL_MACRO(CT_AbstractStandardItemGroup, CT_AbstractItemGroup, Standard group)
 
 public:
     CT_AbstractStandardItemGroup();
@@ -92,8 +92,6 @@ public:
      * @warning Not intended for direct use by plugin developper
      */
     void recursiveSetComplete();
-
-    virtual QString name() const;
 
 
 private:

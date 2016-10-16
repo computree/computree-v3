@@ -8,7 +8,7 @@
 class CTLIBIO_EXPORT CT_XYBHeader : public CT_FileHeader
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_XYBHeader, CT_FileHeader)
+    CT_TYPE_IMPL_MACRO(CT_XYBHeader, CT_FileHeader, XYB Header)
 
 public:
     CT_XYBHeader();

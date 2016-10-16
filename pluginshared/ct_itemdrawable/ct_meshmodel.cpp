@@ -47,11 +47,6 @@ CT_MeshModel::~CT_MeshModel()
     clearMesh();
 }
 
-QString CT_MeshModel::name() const
-{
-    return tr("Standard mesh model");
-}
-
 void CT_MeshModel::setAutoDeleteMesh(bool enable)
 {
     m_autoDeleteMesh = enable;

@@ -20,7 +20,3 @@ CT_AbstractEdgeAttributesScalar::CT_AbstractEdgeAttributesScalar(const QString &
 {
 }
 
-QString CT_AbstractEdgeAttributesScalar::name() const
-{
-    return tr("Scalar edge attributes");
-}

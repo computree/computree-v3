@@ -12,7 +12,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractMeshModel : public CT_AbstractSingularItemDrawable, public CT_IAccessPointCloud, public CT_IAccessFaceCloud, public CT_IAccessEdgeCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractMeshModel, CT_AbstractSingularItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_AbstractMeshModel, CT_AbstractSingularItemDrawable, Mesh model)
 
 public:
     CT_AbstractMeshModel();
@@ -22,8 +22,6 @@ public:
 
     CT_AbstractMeshModel(const QString &modelName,
                          const CT_AbstractResult *result);
-
-    virtual QString name() const;
 
 
     /**

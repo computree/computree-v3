@@ -10,7 +10,7 @@
 class CTLIBLAS_EXPORT CT_LASHeader : public CT_FileHeader
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_LASHeader, CT_FileHeader)
+    CT_TYPE_IMPL_MACRO(CT_LASHeader, CT_FileHeader, LAS Header)
 
 public:
     CT_LASHeader();

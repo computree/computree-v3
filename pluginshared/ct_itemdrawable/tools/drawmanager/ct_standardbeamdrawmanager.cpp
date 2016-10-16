@@ -4,10 +4,9 @@
 
 #include <QObject>
 
-
 const QString CT_StandardBeamDrawManager::INDEX_CONFIG_LENGTH_OF_BEAM = CT_StandardBeamDrawManager::staticInitConfigLengthOfRay();
 
-CT_StandardBeamDrawManager::CT_StandardBeamDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Beam") : drawConfigurationName)
+CT_StandardBeamDrawManager::CT_StandardBeamDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Beam::staticName() : drawConfigurationName)
 {
     
 }
@@ -36,7 +35,7 @@ CT_ItemDrawableConfiguration CT_StandardBeamDrawManager::createDrawConfiguration
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardBeamDrawManager::staticInitConfigLengthOfRay(), "Length of the ray", CT_ItemDrawableConfiguration::Double, 1.0);
+    item.addNewConfiguration(CT_StandardBeamDrawManager::staticInitConfigLengthOfRay(), QObject::tr("Length of the ray"), CT_ItemDrawableConfiguration::Double, 1.0);
 
     return item;
 }

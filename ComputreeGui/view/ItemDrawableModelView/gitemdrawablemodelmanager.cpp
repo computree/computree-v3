@@ -163,6 +163,9 @@ void GItemDrawableModelManager::constructHeader()
             header << QString().setNum(m_docManagerView->getDocumentView(i)->getNumber());
     }
 
+    header << tr("Type");
+
+
     _viewModel.setHorizontalHeaderLabels(header);
     _viewModel.setColumnCount(header.size());
 
@@ -236,11 +239,6 @@ QList<QStandardItem *> GItemDrawableModelManager::createItemsForItemModel(const 
     QStandardItem *item = new QStandardItem(model->displayableName());
     item->setEditable(false);
 
-    if (model->itemDrawable() != NULL)
-    {
-        item->setToolTip(model->itemDrawable()->name());
-    }
-
     retList.append(item);
 
     if(m_docManagerView != NULL)
@@ -260,6 +258,11 @@ QList<QStandardItem *> GItemDrawableModelManager::createItemsForItemModel(const 
             retList.append(mItem);
         }
     }
+
+    QStandardItem *item2 = new QStandardItem(model->itemDrawable()->name());
+    item2->setEditable(false);
+    retList.append(item2);
+
 
     connect(model, SIGNAL(visibilityInDocumentChanged(const DocumentInterface*,bool)), this, SLOT(modelVisibilityInDocumentChanged(const DocumentInterface*,bool)), Qt::QueuedConnection);
 

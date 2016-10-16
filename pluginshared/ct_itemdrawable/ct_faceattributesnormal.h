@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesNormal : public CT_AbstractFaceAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_FaceAttributesNormal, CT_AbstractFaceAttributes)
+    CT_TYPE_IMPL_MACRO(CT_FaceAttributesNormal, CT_AbstractFaceAttributes, Normal face attributes)
 
 public:
     CT_FaceAttributesNormal();
@@ -29,9 +29,6 @@ public:
                               const CT_AbstractResult *result,
                               CT_FCIR pcir,
                               CT_AbstractNormalCloud *nc);
-
-    virtual QString name() const;
-
 
     size_t attributesSize() const { return CT_AttributesNormal::attributesSize(); }
 

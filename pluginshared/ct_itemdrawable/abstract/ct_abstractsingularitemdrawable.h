@@ -11,7 +11,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractSingularItemDrawable : public CT_AbstractItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable, CT_AbstractItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable, CT_AbstractItemDrawable, Item)
 
 public:
     CT_AbstractSingularItemDrawable();
@@ -189,8 +189,6 @@ public:
      * @brief Returns the default color of this item
      */
     QColor defaultColor() const;
-
-    virtual QString name() const;
 
 
 protected:

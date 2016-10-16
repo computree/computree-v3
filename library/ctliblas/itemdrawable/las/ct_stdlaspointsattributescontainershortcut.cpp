@@ -22,11 +22,6 @@ CT_StdLASPointsAttributesContainerShortcut::CT_StdLASPointsAttributesContainerSh
     _container = container;
 }
 
-QString CT_StdLASPointsAttributesContainerShortcut::name() const
-{
-    return tr("LAS point attributes shortcut");
-}
-
 void CT_StdLASPointsAttributesContainerShortcut::insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att)
 {
     Q_UNUSED(key);

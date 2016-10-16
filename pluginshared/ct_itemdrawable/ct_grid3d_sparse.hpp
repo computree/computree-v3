@@ -393,11 +393,19 @@ QString CT_Grid3D_Sparse<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid3D_Sparse<DataT>::staticGetType()
 {
-    return CT_AbstractGrid3D::staticGetType() + "/CT_Grid3D_Sparse<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractGrid3D::staticGetType() + "/CT_Grid3D_Sparse<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template< typename DataT>
 QString CT_Grid3D_Sparse<DataT>::name() const
+{
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Grid3D_Sparse<DataT>::staticName()
 {
     return tr("3D grid (%1, sparse)").arg(CT_TypeInfo::name<DataT>());
 }

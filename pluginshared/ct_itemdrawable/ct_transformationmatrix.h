@@ -11,7 +11,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_TransformationMatrix : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_TransformationMatrix, CT_AbstractSingularItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_TransformationMatrix, CT_AbstractSingularItemDrawable, Transformation matrix)
 
 public:
     CT_TransformationMatrix();
@@ -21,9 +21,6 @@ public:
 
     CT_TransformationMatrix(const QString &modelName,
                          const CT_AbstractResult *result, const Eigen::Matrix4d &trMat);
-
-    virtual QString name() const;
-
 
     inline const Eigen::Matrix4d& getTransformationMatrix() const {return _transformationMatrix;}
     QString getTransformationMatrixAsString() const;

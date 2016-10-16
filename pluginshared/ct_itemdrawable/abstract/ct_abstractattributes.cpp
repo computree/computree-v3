@@ -14,7 +14,3 @@ CT_AbstractAttributes::CT_AbstractAttributes(const QString &modelName,
 {
 }
 
-QString CT_AbstractAttributes::name() const
-{
-    return tr("Point/Face/Edge attributes");
-}

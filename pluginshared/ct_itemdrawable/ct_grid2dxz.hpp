@@ -199,15 +199,22 @@ QString CT_Grid2DXZ<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid2DXZ<DataT>::staticGetType()
 {
-    return CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DXZ<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DXZ<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template< typename DataT>
 QString CT_Grid2DXZ<DataT>::name() const
 {
-    return QString("CT_Grid2DXZ<") + CT_TypeInfo::name<DataT>() + QString(">");
+    return staticName();
 }
 
+template< typename DataT>
+QString CT_Grid2DXZ<DataT>::staticName()
+{
+    return QString("CT_Grid2DXZ<") + CT_TypeInfo::name<DataT>() + QString(">");
+}
 template< typename DataT>
 CT_AbstractItemDrawable* CT_Grid2DXZ<DataT>::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {

@@ -11,7 +11,7 @@ const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CO
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible();
 const QString CT_StandardAbstractItemDrawableWithPointCloudDrawManager::INDEX_CONFIG_BOUNDING_SHAPE_CENTER_POINT_VISIBLE = CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible();
 
-CT_StandardAbstractItemDrawableWithPointCloudDrawManager::CT_StandardAbstractItemDrawableWithPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Point cloud") : drawConfigurationName)
+CT_StandardAbstractItemDrawableWithPointCloudDrawManager::CT_StandardAbstractItemDrawableWithPointCloudDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? CT_AbstractItemDrawableWithPointCloud::staticName() : drawConfigurationName)
 {
     
 }
@@ -81,9 +81,9 @@ CT_ItemDrawableConfiguration CT_StandardAbstractItemDrawableWithPointCloudDrawMa
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_AbstractItemDrawableDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible(),"Points", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible(),"Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible(), "Centre de la Bounding Shape", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigPointsVisible(),QObject::tr("Points"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeVisible(),QObject::tr("Bounding Shape"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardAbstractItemDrawableWithPointCloudDrawManager::staticInitConfigBoundingShapeCenterPointVisible(), QObject::tr("Centre de la Bounding Shape"), CT_ItemDrawableConfiguration::Bool, false);
 
     return item;
 }

@@ -9,7 +9,7 @@
 class CTLIBLAS_EXPORT CT_StdLASPointsAttributesContainerShortcut : public CT_StdLASPointsAttributesContainer
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StdLASPointsAttributesContainerShortcut, CT_StdLASPointsAttributesContainer)
+    CT_TYPE_IMPL_MACRO(CT_StdLASPointsAttributesContainerShortcut, CT_StdLASPointsAttributesContainer, LAS Point attributes shortcut)
 
 public:     
 
@@ -22,9 +22,6 @@ public:
     CT_StdLASPointsAttributesContainerShortcut(const QString &modelName,
                                                const CT_AbstractResult *result,
                                                CT_StdLASPointsAttributesContainer *container);
-
-    virtual QString name() const;
-
 
     void insertPointsAttributesAt(CT_LasDefine::LASPointAttributesType key, const CT_AbstractPointAttributesScalar *att);
 

@@ -42,7 +42,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithPointCloud : public CT_AbstractSingularItemDrawable, public CT_IAccessPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithPointCloud, CT_AbstractSingularItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithPointCloud, CT_AbstractSingularItemDrawable, Point cloud)
 
 public:
 
@@ -125,8 +125,6 @@ public:
       * \brief Retourne le nombre de point  sauter lorsqu'il faut dessiner rapidement (par dfaut 16).
       */
     virtual int getFastestIncrement() const;
-
-    virtual QString name() const;
 
 
 private:

@@ -339,6 +339,34 @@ void CT_Grid4D_Sparse<DataT>::computeMinMax()
     }
 }
 
+template< typename DataT>
+QString CT_Grid4D_Sparse<DataT>::getType() const
+{
+    return staticGetType();
+}
+
+template< typename DataT>
+QString CT_Grid4D_Sparse<DataT>::staticGetType()
+{
+    QString type = CT_AbstractGrid3D::staticGetType() + "/CT_Grid4D_Sparse<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
+}
+
+template< typename DataT>
+QString CT_Grid4D_Sparse<DataT>::name() const
+{
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Grid4D_Sparse<DataT>::staticName()
+{
+    return tr("4D grid (%1, sparse)").arg(CT_TypeInfo::name<DataT>());
+}
+
+
+
 #endif
 
 #endif // CT_GRID4D_SPARSE_HPP

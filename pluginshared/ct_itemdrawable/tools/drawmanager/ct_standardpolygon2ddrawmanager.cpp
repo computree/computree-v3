@@ -10,7 +10,7 @@
 const QString CT_StandardPolygon2DDrawManager::INDEX_CONFIG_DRAW_POINTS = CT_StandardPolygon2DDrawManager::staticInitConfigDrawPoints();
 const QString CT_StandardPolygon2DDrawManager::INDEX_CONFIG_DRAW_LINES = CT_StandardPolygon2DDrawManager::staticInitConfigDrawLines();
 
-CT_StandardPolygon2DDrawManager::CT_StandardPolygon2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D polygon") : drawConfigurationName)
+CT_StandardPolygon2DDrawManager::CT_StandardPolygon2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Polygon2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -50,8 +50,8 @@ CT_ItemDrawableConfiguration CT_StandardPolygon2DDrawManager::createDrawConfigur
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardPolygon2DDrawManager::staticInitConfigDrawPoints() ,"Dessiner les sommets", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardPolygon2DDrawManager::staticInitConfigDrawLines() ,"Dessiner les côtés", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardPolygon2DDrawManager::staticInitConfigDrawPoints() , QObject::tr("Dessiner les sommets"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardPolygon2DDrawManager::staticInitConfigDrawLines() , QObject::tr("Dessiner les côtés"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }

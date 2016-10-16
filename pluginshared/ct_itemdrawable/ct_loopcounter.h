@@ -41,7 +41,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_LoopCounter : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_LoopCounter, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_LoopCounter, CT_AbstractItemDrawableWithoutPointCloud, Loop counter)
 
 public:
 
@@ -69,9 +69,6 @@ public:
      CT_LoopCounter(const QString &modelName, const CT_AbstractResult *result, QSharedPointer<CT_Counter> counter);
 
     ~CT_LoopCounter();
-
-    virtual QString name() const;
-
 
     inline size_t getNTurns() const {return _counter->getNTurns();}
     inline size_t getCurrentTurn() const {return _counter->getCurrentTurn();}

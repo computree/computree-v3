@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Box2D : public CT_AbstractAreaShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Box2D, CT_AbstractAreaShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Box2D, CT_AbstractAreaShape2D, 2D box)
 
 public:
 
@@ -60,9 +60,6 @@ public:
     CT_Box2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Box2DData *data);
-
-    virtual QString name() const;
-
 
     double getWidth() const;
     double getHeight() const;

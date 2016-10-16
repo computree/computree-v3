@@ -9,7 +9,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_StdPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StdPointsAttributesContainer, CT_AbstractPointsAttributesContainer)
+    CT_TYPE_IMPL_MACRO(CT_StdPointsAttributesContainer, CT_AbstractPointsAttributesContainer, Standard point attributes list)
 
 public:
     CT_StdPointsAttributesContainer();
@@ -19,9 +19,6 @@ public:
 
     CT_StdPointsAttributesContainer(const QString &modelName,
                                     const CT_AbstractResult *result);
-
-    virtual QString name() const;
-
 
     /**
      * @brief Insert the CT_AbstractPointsAttributes at key 'key'. If an attribute already exist it will be replaced.

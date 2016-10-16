@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Line : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Line, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_Line, CT_AbstractShape, 3D line)
 
 public:
 
@@ -59,8 +59,6 @@ public:
     CT_Line(const QString &modelName,
             const CT_AbstractResult *result,
             CT_LineData *data);
-
-    virtual QString name() const;
 
 
     inline const Eigen::Vector3d& getP1() const {return ((const CT_LineData&)getData()).getP1();}

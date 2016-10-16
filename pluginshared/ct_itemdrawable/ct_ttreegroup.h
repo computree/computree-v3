@@ -31,7 +31,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_TTreeGroup : public CT_AbstractStandardItemGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_TTreeGroup, CT_AbstractStandardItemGroup)
+    CT_TYPE_IMPL_MACRO(CT_TTreeGroup, CT_AbstractStandardItemGroup, Tree group)
 
 public:
     CT_TTreeGroup();
@@ -54,9 +54,6 @@ public:
     CT_TTreeGroup(const QString &modelName,
                   const CT_AbstractResult *result);
     ~CT_TTreeGroup();
-
-    virtual QString name() const;
-
 
     /**
      * @brief Returns childrens of this group for the GUI

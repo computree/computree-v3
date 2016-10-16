@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributesScalar : public CT_AbstractFaceAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributesScalar, CT_AbstractFaceAttributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributesScalar, CT_AbstractFaceAttributes, Scalar face attributes)
 
 public:
     CT_AbstractFaceAttributesScalar();
@@ -24,8 +24,6 @@ public:
     virtual double dValueAt(const size_t &index) const = 0;
 
     virtual size_t attributesSize() const = 0;
-
-    virtual QString name() const;
 
 };
 

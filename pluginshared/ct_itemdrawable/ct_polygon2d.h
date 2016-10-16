@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Polygon2D : public CT_AbstractAreaShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Polygon2D, CT_AbstractAreaShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Polygon2D, CT_AbstractAreaShape2D, 2D polygon)
 
 public:    
 
@@ -59,9 +59,6 @@ public:
     CT_Polygon2D(const QString &modelName,
                 const CT_AbstractResult *result,
                 CT_Polygon2DData *data);
-
-    virtual QString name() const;
-
 
     const QVector<Eigen::Vector2d*>& getVertices() const;
 

@@ -45,7 +45,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractProfile : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractProfile, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractProfile, CT_AbstractItemDrawableWithoutPointCloud, Profile)
 
 public:
 
@@ -58,8 +58,6 @@ public:
     CT_AbstractProfile(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractProfile();
-
-    virtual QString name() const;
 
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)

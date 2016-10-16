@@ -16,7 +16,3 @@ CT_AbstractGrid4D::~CT_AbstractGrid4D()
 {
 }
 
-QString CT_AbstractGrid4D::name() const
-{
-    return tr("4D grid");
-}

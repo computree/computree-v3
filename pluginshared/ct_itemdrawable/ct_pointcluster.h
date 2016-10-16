@@ -120,7 +120,7 @@ private:
 class PLUGINSHAREDSHARED_EXPORT CT_PointCluster : public CT_AbstractItemDrawableWithPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PointCluster, CT_AbstractItemDrawableWithPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_PointCluster, CT_AbstractItemDrawableWithPointCloud, Point cluster)
 
 public:
 
@@ -133,8 +133,6 @@ public:
                     const CT_AbstractResult *result);
 
     virtual ~CT_PointCluster();
-
-    virtual QString name() const;
 
 
     /**

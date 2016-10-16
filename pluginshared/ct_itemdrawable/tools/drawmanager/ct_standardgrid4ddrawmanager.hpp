@@ -26,7 +26,7 @@ template< typename DataT > const QString CT_StandardGrid4DDrawManager<DataT>::IN
 
 template< typename DataT >
 CT_StandardGrid4DDrawManager<DataT>::CT_StandardGrid4DDrawManager(QString drawConfigurationName)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager( drawConfigurationName.isEmpty() ? tr("4D Grid (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName )
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager( drawConfigurationName.isEmpty() ? CT_Grid4D<DataT>::staticName() : drawConfigurationName )
 {
 
 }
@@ -149,21 +149,21 @@ CT_ItemDrawableConfiguration CT_StandardGrid4DDrawManager<DataT>::createDrawConf
 {
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
-    item.addNewConfiguration(staticInitConfigWDisplayValue(), "W fixe", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigWireModeEnabled(), "Mode filaire", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigLowThresholdsEnabled(), "Forcer limite basse", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigLowThresholdValue(), "Limite basse (forcée)", CT_ItemDrawableConfiguration::Double, 1 );
-    item.addNewConfiguration(staticInitConfigHighThresholdsEnabled(), "Forcer limite haute", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigHighThresholdValue(), "Limite haute (forcée)", CT_ItemDrawableConfiguration::Double, 100 );
-    item.addNewConfiguration(staticInitConfigReductionCoef(), "Coef. de reduction", CT_ItemDrawableConfiguration::Double, 1);
-    item.addNewConfiguration(staticInitConfigEnableTransparency(), "Activer transparence", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigTransparencyValue(), "Valeur de transparence", CT_ItemDrawableConfiguration::Int, 100);
-    item.addNewConfiguration(staticInitConfigXinf(), "Nb. Plans masqués X-", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigXsup(), "Nb. Plans masqués X+", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigYinf(), "Nb. Plans masqués Y-", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigYsup(), "Nb. Plans masqués Y+", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigZinf(), "Nb. Plans masqués Z-", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigZsup(), "Nb. Plans masqués Z+", CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigWDisplayValue(), QObject::tr("W fixe"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigWireModeEnabled(), QObject::tr("Mode filaire"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigLowThresholdsEnabled(), QObject::tr("Forcer limite basse"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigLowThresholdValue(), QObject::tr("Limite basse (forcée)"), CT_ItemDrawableConfiguration::Double, 1 );
+    item.addNewConfiguration(staticInitConfigHighThresholdsEnabled(), QObject::tr("Forcer limite haute"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigHighThresholdValue(), QObject::tr("Limite haute (forcée)"), CT_ItemDrawableConfiguration::Double, 100 );
+    item.addNewConfiguration(staticInitConfigReductionCoef(), QObject::tr("Coef. de reduction"), CT_ItemDrawableConfiguration::Double, 1);
+    item.addNewConfiguration(staticInitConfigEnableTransparency(), QObject::tr("Activer transparence"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigTransparencyValue(), QObject::tr("Valeur de transparence"), CT_ItemDrawableConfiguration::Int, 100);
+    item.addNewConfiguration(staticInitConfigXinf(), QObject::tr("Nb. Plans masqués X-"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigXsup(), QObject::tr("Nb. Plans masqués X+"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigYinf(), QObject::tr("Nb. Plans masqués Y-"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigYsup(), QObject::tr("Nb. Plans masqués Y+"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigZinf(), QObject::tr("Nb. Plans masqués Z-"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigZsup(), QObject::tr("Nb. Plans masqués Z+"), CT_ItemDrawableConfiguration::Int, 0);
 
     return item;
 }

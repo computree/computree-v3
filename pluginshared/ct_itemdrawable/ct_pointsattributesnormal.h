@@ -8,7 +8,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PointsAttributesNormal : public CT_AbstractPointsAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PointsAttributesNormal, CT_AbstractPointsAttributes)
+    CT_TYPE_IMPL_MACRO(CT_PointsAttributesNormal, CT_AbstractPointsAttributes, Normal point attributes)
 
 public:
     CT_PointsAttributesNormal();
@@ -30,9 +30,6 @@ public:
                               const CT_AbstractResult *result,
                               CT_PCIR pcir,
                               CT_AbstractNormalCloud *nc);
-
-    virtual QString name() const;
-
 
     size_t attributesSize() const { return CT_AttributesNormal::attributesSize(); }
 

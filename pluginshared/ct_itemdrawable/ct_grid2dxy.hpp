@@ -206,14 +206,23 @@ QString CT_Grid2DXY<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid2DXY<DataT>::staticGetType()
 {
-    return CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DXY<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractGrid2D::staticGetType() + "/CT_Grid2DXY<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template< typename DataT>
 QString CT_Grid2DXY<DataT>::name() const
 {
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Grid2DXY<DataT>::staticName()
+{
     return "CT_Grid2DXY<" + CT_TypeInfo::name<DataT>() + ">";
 }
+
 
 template< typename DataT>
 CT_AbstractItemDrawable* CT_Grid2DXY<DataT>::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

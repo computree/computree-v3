@@ -33,7 +33,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PlotGridManager : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PlotGridManager, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_PlotGridManager, CT_AbstractItemDrawableWithoutPointCloud, Plot grid manager)
 
 public:
     /**
@@ -50,8 +50,6 @@ public:
                      const CT_AbstractResult *result);
 
     virtual ~CT_PlotGridManager();
-
-    virtual QString name() const;
 
     virtual bool hasBoundingBox() const {return false;}
 

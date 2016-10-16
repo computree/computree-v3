@@ -2,10 +2,7 @@
 
 #include "ct_ellipse.h"
 
-#include <QObject>
-
-
-CT_StandardEllipseDrawManager::CT_StandardEllipseDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("3D ellipse") : drawConfigurationName)
+CT_StandardEllipseDrawManager::CT_StandardEllipseDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? CT_Ellipse::staticName() : drawConfigurationName)
 {
 }
 

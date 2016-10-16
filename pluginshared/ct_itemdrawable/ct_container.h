@@ -42,7 +42,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Container : public CT_AbstractItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Container, CT_AbstractItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_Container, CT_AbstractItemDrawable, Container)
 
 public:
     CT_Container();

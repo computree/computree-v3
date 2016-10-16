@@ -35,6 +35,8 @@
 #include <math.h>
 
 quint64 CT_AbstractItemDrawable::NEXTID = 1;
+QMap<QString, QString> CT_AbstractItemDrawable::NAMEMAP;
+
 
 CT_AbstractItemDrawable::CT_AbstractItemDrawable() : CT_AbstractItem()
 {
@@ -186,6 +188,11 @@ QString CT_AbstractItemDrawable::name() const
     return metaObject()->className();
 }
 
+QString CT_AbstractItemDrawable::staticName()
+{
+    return staticMetaObject.className();
+}
+
 QString CT_AbstractItemDrawable::displayableName() const
 {
     if(!_name.isEmpty())
@@ -335,6 +342,16 @@ CT_ItemDrawableConfiguration* CT_AbstractItemDrawable::getViewConfiguration()
 QList<CT_ItemDrawableConfiguration*> CT_AbstractItemDrawable::getDependantViewConfigurations()
 {
     return QList<CT_ItemDrawableConfiguration*>();
+}
+
+void CT_AbstractItemDrawable::addNameTypeCorresp(QString type, QString name)
+{
+    NAMEMAP.insert(type, name);
+}
+
+QString CT_AbstractItemDrawable::getNameFromType(QString type)
+{
+    return NAMEMAP.value(type);
 }
 
 bool CT_AbstractItemDrawable::isAutoDelete() const

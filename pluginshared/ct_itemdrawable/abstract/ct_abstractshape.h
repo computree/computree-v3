@@ -38,7 +38,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractShape : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractShape, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractShape, CT_AbstractItemDrawableWithoutPointCloud, 3D shape)
 
 public:
     /**
@@ -77,9 +77,6 @@ public:
     double getDirectionX() const;
     double getDirectionY() const;
     double getDirectionZ() const;
-
-    virtual QString name() const;
-
 
 private:
 

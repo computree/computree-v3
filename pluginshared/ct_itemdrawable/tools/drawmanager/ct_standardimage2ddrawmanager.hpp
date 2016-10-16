@@ -28,7 +28,7 @@ template< typename DataT > const QString CT_StandardImage2DDrawManager<DataT>::I
 
 template< typename DataT >
 CT_StandardImage2DDrawManager<DataT>::CT_StandardImage2DDrawManager(QString drawConfigurationName, bool mapMode, bool scale)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Raster (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Image2D<DataT>::staticName() : drawConfigurationName)
 {
     _defaultMapMode = mapMode;
     _defaultScaleState = scale;
@@ -305,18 +305,18 @@ CT_ItemDrawableConfiguration CT_StandardImage2DDrawManager<DataT>::createDrawCon
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
 
     // Adding lines to this config dialog box
-    item.addNewConfiguration(staticInitConfigMapModeEnabled(), "Mode Raster", CT_ItemDrawableConfiguration::Bool, _defaultMapMode);
-    item.addNewConfiguration(staticInitConfigMapModeZLevelEnabled(), "Mode Raster : Fixer le niveau Z", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigMapModeZLevelValue(), "Mode Raster : Niveau Z (m)", CT_ItemDrawableConfiguration::Double, 0);
-    item.addNewConfiguration(staticInitConfigMapModeShowGrid(), "Mode Raster : Afficher grille", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigMapModeEnabled(), QObject::tr("Mode Raster"), CT_ItemDrawableConfiguration::Bool, _defaultMapMode);
+    item.addNewConfiguration(staticInitConfigMapModeZLevelEnabled(), QObject::tr("Mode Raster : Fixer le niveau Z"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigMapModeZLevelValue(), QObject::tr("Mode Raster : Niveau Z (m)"), CT_ItemDrawableConfiguration::Double, 0);
+    item.addNewConfiguration(staticInitConfigMapModeShowGrid(), QObject::tr("Mode Raster : Afficher grille"), CT_ItemDrawableConfiguration::Bool, false);
 
-    item.addNewConfiguration(staticInitConfig3DModeEnabled(), "Mode 3D", CT_ItemDrawableConfiguration::Bool, !_defaultMapMode);
-    item.addNewConfiguration(staticInitConfig3DModeLinkPointsEnabled(), "Mode 3D    : Relier les centres de cases", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), "Mode 3D    : Visualiser le relief", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), "Mode 3D    : Mettre à l'échelle", CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
-    item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), "Mode 3D    : Z min de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 0);
-    item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), "Mode 3D    : Z max de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 5);
-    item.addNewConfiguration(staticInitConfigMapModeClusterMode(), "Colorisation par valeurs uniques", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfig3DModeEnabled(), QObject::tr("Mode 3D"), CT_ItemDrawableConfiguration::Bool, !_defaultMapMode);
+    item.addNewConfiguration(staticInitConfig3DModeLinkPointsEnabled(), QObject::tr("Mode 3D    : Relier les centres de cases"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), QObject::tr("Mode 3D    : Visualiser le relief"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), QObject::tr("Mode 3D    : Mettre à l'échelle"), CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
+    item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), QObject::tr("Mode 3D    : Z min de l'échelle (m)"), CT_ItemDrawableConfiguration::Double, 0);
+    item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), QObject::tr("Mode 3D    : Z max de l'échelle (m)"), CT_ItemDrawableConfiguration::Double, 5);
+    item.addNewConfiguration(staticInitConfigMapModeClusterMode(), QObject::tr("Colorisation par valeurs uniques"), CT_ItemDrawableConfiguration::Bool, false);
 
     return item;
 }

@@ -49,11 +49,6 @@ CT_PlanarBSpline::CT_PlanarBSpline(const QString &modelName,
     setBaseDrawManager(&PLANARBSPLINE_DRAW_MANAGER);
 }
 
-QString CT_PlanarBSpline::name() const
-{
-    return tr("Planar B-spline");
-}
-
 int CT_PlanarBSpline::getDegree() const
 {
     return ((const CT_PlanarBSplineData&)getData()).degree();

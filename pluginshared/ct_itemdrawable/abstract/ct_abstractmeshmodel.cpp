@@ -14,7 +14,4 @@ CT_AbstractMeshModel::CT_AbstractMeshModel(const QString &modelName,
 {
 }
 
-QString CT_AbstractMeshModel::name() const
-{
-    return tr("Mesh model");
-}
+

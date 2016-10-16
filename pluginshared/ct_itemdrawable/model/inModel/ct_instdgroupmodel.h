@@ -23,7 +23,7 @@ public:
      */
     CT_InStdGroupModel(const QString &uniqueName,
                        const QString &groupType = CT_AbstractItemGroup::staticGetType(),
-                       const QString &displayableName = "Groupe",
+                       const QString &displayableName = "Group",
                        const QString &description = "",
                        CT_InAbstractGroupModel::GroupChoiceMode choiceMode = CT_InAbstractGroupModel::CG_ChooseMultipleIfMultiple,
                        CT_InAbstractGroupModel::GroupFinderMode finderMode = CT_InAbstractGroupModel::FG_IsObligatory);

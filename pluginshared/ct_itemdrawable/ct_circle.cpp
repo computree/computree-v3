@@ -52,11 +52,6 @@ CT_Circle::CT_Circle(const QString &modelName,
     //    if (data!=NULL) {computeBoundingBox();}
 }
 
-QString CT_Circle::name() const
-{
-    return tr("3D circle");
-}
-
 double CT_Circle::getRadius() const
 {
     return ((const CT_CircleData&)getData()).getRadius();

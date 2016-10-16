@@ -6,10 +6,9 @@
 #include <QObject>
 
 
-
 const QString CT_StandardBox2DDrawManager::INDEX_CONFIG_DRAW_BOX = CT_StandardBox2DDrawManager::staticInitConfigDrawBox();
 
-CT_StandardBox2DDrawManager::CT_StandardBox2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D box") : drawConfigurationName)
+CT_StandardBox2DDrawManager::CT_StandardBox2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Box2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -50,7 +49,7 @@ CT_ItemDrawableConfiguration CT_StandardBox2DDrawManager::createDrawConfiguratio
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardBox2DDrawManager::staticInitConfigDrawBox() ,"Dessiner le rectangle", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardBox2DDrawManager::staticInitConfigDrawBox() ,QObject::tr("Dessiner le rectangle"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }

@@ -23,11 +23,6 @@ CT_TNodeGroup::~CT_TNodeGroup()
 {
 }
 
-QString CT_TNodeGroup::name() const
-{
-    return tr("Node group");
-}
-
 QList<CT_AbstractItem *> CT_TNodeGroup::childrensForGui() const
 {
     QList<CT_AbstractItem *> r;

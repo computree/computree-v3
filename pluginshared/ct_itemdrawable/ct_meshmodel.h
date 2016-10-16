@@ -12,7 +12,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_MeshModel : public CT_AbstractMeshModel
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_MeshModel, CT_AbstractMeshModel)
+    CT_TYPE_IMPL_MACRO(CT_MeshModel, CT_AbstractMeshModel, Standard mesh model)
 
 public:
     CT_MeshModel();
@@ -29,8 +29,6 @@ public:
                  CT_Mesh *mesh);
 
     ~CT_MeshModel();
-
-    virtual QString name() const;
 
 
     /**

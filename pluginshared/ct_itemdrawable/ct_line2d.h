@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Line2D : public CT_AbstractShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Line2D, CT_AbstractShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Line2D, CT_AbstractShape2D, 3D line)
 
 public:
 
@@ -60,9 +60,6 @@ public:
     CT_Line2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Line2DData *data);
-
-    virtual QString name() const;
-
 
     const Eigen::Vector2d &getP1() const;
     const Eigen::Vector2d &getP2() const;

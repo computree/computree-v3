@@ -129,7 +129,9 @@ QString CT_PointsAttributesScalarMaskT<StructType>::getType() const
 template<typename StructType>
 QString CT_PointsAttributesScalarMaskT<StructType>::staticGetType()
 {
-    return CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarMaskT<" + CT_TypeInfo::name<StructType>() + ">";
+    QString type = CT_AbstractPointAttributesScalar::staticGetType() + "/CT_PointsAttributesScalarMaskT<" + CT_TypeInfo::name<StructType>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template<typename StructType>

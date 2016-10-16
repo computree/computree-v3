@@ -9,7 +9,7 @@ const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_BUFFER_VISIBLE 
 const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_FACTOR = CT_StandardReferencePointDrawManager::staticInitConfigFactor();
 const QString CT_StandardReferencePointDrawManager::INDEX_CONFIG_POINT_SIZE = CT_StandardReferencePointDrawManager::staticInitConfigPointSize();
 
-CT_StandardReferencePointDrawManager::CT_StandardReferencePointDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Reference point") : drawConfigurationName)
+CT_StandardReferencePointDrawManager::CT_StandardReferencePointDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_ReferencePoint::staticName() : drawConfigurationName)
 {
     
 }
@@ -42,9 +42,9 @@ CT_ItemDrawableConfiguration CT_StandardReferencePointDrawManager::createDrawCon
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     //item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigBufferVisible(), "Buffer", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigFactor(), "Facteur multiplicatif", CT_ItemDrawableConfiguration::Double, 1.0);
-    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigPointSize(), "Taille de point", CT_ItemDrawableConfiguration::Int, 10);
+    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigBufferVisible(), QObject::tr("Buffer"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigFactor(), QObject::tr("Facteur multiplicatif"), CT_ItemDrawableConfiguration::Double, 1.0);
+    item.addNewConfiguration(CT_StandardReferencePointDrawManager::staticInitConfigPointSize(), QObject::tr("Taille de point"), CT_ItemDrawableConfiguration::Int, 10);
 
     return item;
 }

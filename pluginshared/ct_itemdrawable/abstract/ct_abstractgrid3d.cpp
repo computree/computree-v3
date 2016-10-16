@@ -43,8 +43,3 @@ CT_AbstractGrid3D::CT_AbstractGrid3D(const QString &modelName, const CT_Abstract
 CT_AbstractGrid3D::~CT_AbstractGrid3D()
 {
 }
-
-QString CT_AbstractGrid3D::name() const
-{
-    return tr("3D grid");
-}

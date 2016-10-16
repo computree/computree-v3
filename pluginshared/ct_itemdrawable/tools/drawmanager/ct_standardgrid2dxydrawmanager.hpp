@@ -4,6 +4,7 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardgrid2dxydrawmanager.h"
 #include "ct_itemdrawable/ct_grid2dxy.h"
 #include <typeinfo>
+#include <QObject>
 
 template< typename DataT > const QString CT_StandardGrid2DXYDrawManager<DataT>::INDEX_CONFIG_3D_MODE_ENABLED = CT_StandardGrid2DXYDrawManager<DataT>::staticInitConfig3DModeEnabled();
 template< typename DataT > const QString CT_StandardGrid2DXYDrawManager<DataT>::INDEX_CONFIG_3D_MODE_LINK_POINTS_ENABLED = CT_StandardGrid2DXYDrawManager<DataT>::staticInitConfig3DModeLinkPointsEnabled();
@@ -18,7 +19,7 @@ template< typename DataT > const QString CT_StandardGrid2DXYDrawManager<DataT>::
 
 template< typename DataT >
 CT_StandardGrid2DXYDrawManager<DataT>::CT_StandardGrid2DXYDrawManager(QString drawConfigurationName, bool mapMode, bool scale)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QString("CT_Grid2DXY<%1>").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Grid2DXY<DataT>::staticName() : drawConfigurationName)
 {
     _defaultMapMode = mapMode;
     _defaultScaleState = scale;
@@ -259,17 +260,17 @@ CT_ItemDrawableConfiguration CT_StandardGrid2DXYDrawManager<DataT>::createDrawCo
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
 
     // Adding lines to this config dialog box
-    item.addNewConfiguration(staticInitConfigMapModeEnabled(), "Mode Raster", CT_ItemDrawableConfiguration::Bool, _defaultMapMode);
-    item.addNewConfiguration(staticInitConfigMapModeZLevelEnabled(), "Mode Raster : Fixer le niveau Z", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigMapModeZLevelValue(), "Mode Raster : Niveau Z (m)", CT_ItemDrawableConfiguration::Double, 0);
-    item.addNewConfiguration(staticInitConfigMapModeShowGrid(), "Mode Raster : Afficher grille", CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigMapModeEnabled(), QObject::tr("Mode Raster"), CT_ItemDrawableConfiguration::Bool, _defaultMapMode);
+    item.addNewConfiguration(staticInitConfigMapModeZLevelEnabled(), QObject::tr("Mode Raster : Fixer le niveau Z"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigMapModeZLevelValue(), QObject::tr("Mode Raster : Niveau Z (m)"), CT_ItemDrawableConfiguration::Double, 0);
+    item.addNewConfiguration(staticInitConfigMapModeShowGrid(), QObject::tr("Mode Raster : Afficher grille"), CT_ItemDrawableConfiguration::Bool, false);
 
-    item.addNewConfiguration(staticInitConfig3DModeEnabled(), "Mode 3D", CT_ItemDrawableConfiguration::Bool, !_defaultMapMode);
-    item.addNewConfiguration(staticInitConfig3DModeLinkPointsEnabled(), "Mode 3D    : Relier les centres de cases", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), "Mode 3D    : Visualiser le relief", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), "Mode 3D    : Mettre à l'échelle", CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
-    item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), "Mode 3D    : Z min de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 0);
-    item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), "Mode 3D    : Z max de l'échelle (m)", CT_ItemDrawableConfiguration::Double, 5);
+    item.addNewConfiguration(staticInitConfig3DModeEnabled(), QObject::tr("Mode 3D"), CT_ItemDrawableConfiguration::Bool, !_defaultMapMode);
+    item.addNewConfiguration(staticInitConfig3DModeLinkPointsEnabled(), QObject::tr("Mode 3D    : Relier les centres de cases"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfig3DModeHeightMapEnabled(), QObject::tr("Mode 3D    : Visualiser le relief"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfig3DModeScalingEnabled(), QObject::tr("Mode 3D    : Mettre à l'échelle"), CT_ItemDrawableConfiguration::Bool, _defaultScaleState);
+    item.addNewConfiguration(staticInitConfig3DModeZMinScaleValue(), QObject::tr("Mode 3D    : Z min de l'échelle (m)"), CT_ItemDrawableConfiguration::Double, 0);
+    item.addNewConfiguration(staticInitConfig3DModeZMaxScaleValue(), QObject::tr("Mode 3D    : Z max de l'échelle (m)"), CT_ItemDrawableConfiguration::Double, 5);
 
     return item;
 }

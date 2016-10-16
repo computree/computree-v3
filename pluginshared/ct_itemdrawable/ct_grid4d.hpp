@@ -545,4 +545,31 @@ void CT_Grid4D<DataT>::computeMinMax()
     }
 }
 
+template< typename DataT>
+QString CT_Grid4D<DataT>::getType() const
+{
+    return staticGetType();
+}
+
+template< typename DataT>
+QString CT_Grid4D<DataT>::staticGetType()
+{
+    QString type = CT_AbstractGrid4D::staticGetType() + "/CT_Grid4D<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
+}
+
+template< typename DataT>
+QString CT_Grid4D<DataT>::name() const
+{
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Grid4D<DataT>::staticName()
+{
+    return tr("4D grid (%1)").arg(CT_TypeInfo::name<DataT>());
+}
+
+
 #endif // CT_GRID4D_HPP

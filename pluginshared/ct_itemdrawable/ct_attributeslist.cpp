@@ -59,8 +59,3 @@ CT_AbstractItemDrawable *CT_AttributesList::copy(const QString &modelName, const
 
     return ref;
 }
-
-QString CT_AttributesList::name() const
-{
-    return tr("Attribute list");
-}

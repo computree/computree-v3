@@ -83,13 +83,21 @@ QString CT_EdgeAttributesScalarT<SCALAR>::getType() const
 template<typename SCALAR>
 QString CT_EdgeAttributesScalarT<SCALAR>::staticGetType()
 {
-    return CT_AbstractEdgeAttributesScalar::staticGetType() + "/CT_EdgeAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    QString type = CT_AbstractEdgeAttributesScalar::staticGetType() + "/CT_EdgeAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template<typename SCALAR>
 QString CT_EdgeAttributesScalarT<SCALAR>::name() const
 {
-    return tr("Scalar(%1) edge attributes").arg(CT_TypeInfo::name<SCALAR>());
+    return staticName();
+}
+
+template<typename SCALAR>
+QString CT_EdgeAttributesScalarT<SCALAR>::staticName()
+{
+    return tr("Scalar edge attributes (%1)").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 template<typename SCALAR>

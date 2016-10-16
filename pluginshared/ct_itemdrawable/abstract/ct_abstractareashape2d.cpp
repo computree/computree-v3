@@ -68,11 +68,6 @@ const CT_AreaShape2DData& CT_AbstractAreaShape2D::getAreaData() const
     return (CT_AreaShape2DData&) CT_AbstractShape2D::getData();
 }
 
-QString CT_AbstractAreaShape2D::name() const
-{
-    return tr("Shape 2D with area");
-}
-
 CT_AreaShape2DData* CT_AbstractAreaShape2D::getAreaDataNotConst() const
 {
     return (CT_AreaShape2DData*) CT_AbstractShape2D::getDataNotConst();

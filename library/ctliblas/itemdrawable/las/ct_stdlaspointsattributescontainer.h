@@ -14,7 +14,7 @@
 class CTLIBLAS_EXPORT CT_StdLASPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StdLASPointsAttributesContainer, CT_AbstractPointsAttributesContainer)
+    CT_TYPE_IMPL_MACRO(CT_StdLASPointsAttributesContainer, CT_AbstractPointsAttributesContainer, LAS point attributes)
 
 public:     
 
@@ -26,7 +26,6 @@ public:
     CT_StdLASPointsAttributesContainer(const QString &modelName,
                                        const CT_AbstractResult *result);
 
-    virtual QString name() const;
 
 
     /**

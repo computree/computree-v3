@@ -50,11 +50,6 @@ CT_Circle2D::CT_Circle2D(const QString &modelName,
     setBaseDrawManager(&CIRCLE2D_DRAW_MANAGER);
 }
 
-QString CT_Circle2D::name() const
-{
-    return tr("2D circle");
-}
-
 double CT_Circle2D::getRadius() const
 {
     return ((const CT_Circle2DData&)getData()).getRadius();

@@ -52,11 +52,6 @@ CT_Triangulation2D::~CT_Triangulation2D()
     delete _delaunay;
 }
 
-QString CT_Triangulation2D::name() const
-{
-    return tr("2D triangulation");
-}
-
 CT_DelaunayTriangulation *CT_Triangulation2D::getDelaunayT() const
 {
     return _delaunay;

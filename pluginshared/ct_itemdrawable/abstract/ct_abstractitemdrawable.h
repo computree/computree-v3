@@ -32,6 +32,9 @@
 #include "ct_result/ct_resultcopymodelist.h"
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
 
+#include <QMap>
+#include <QString>
+
 #include <eigen/Eigen/Core>
 
 class CT_OutAbstractItemModel;
@@ -42,16 +45,19 @@ class CT_AbstractResult;
   * @example class MyItemDrawable : public CT_AbstractSingularItemDrawable
   *          {
   *             Q_OBJECT
-  *             CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable)
+  *             CT_TYPE_IMPL_MACRO(CT_AbstractSingularItemDrawable, CT_AbstractItemDrawable, Singular Item)
   *
   *          public:
   *             MyItemDrawable();
   *             ....
   *          };
   */
-#define CT_TYPE_IMPL_MACRO(ThisClassName, SuperClassName) public: \
-                                                          QString getType() const { return staticGetType(); } \
-                                                          static QString staticGetType() { return SuperClassName::staticGetType() + "/" + #ThisClassName; }
+#define CT_TYPE_IMPL_MACRO(ThisClassName, SuperClassName, Name) public: \
+    virtual QString name() const {return staticName();} \
+    static QString staticName() {return #Name;} \
+    QString getType() const { return staticGetType(); } \
+    static QString staticGetType() { QString statType = SuperClassName::staticGetType() + "/" + #ThisClassName; CT_AbstractItemDrawable::addNameTypeCorresp(statType, staticName()); return statType; }
+
 
 /**
  * @brief Represent a item that can be added in a result or in another item
@@ -106,6 +112,8 @@ public:
      *        overload this method if you want to show another name
      */
     virtual QString name() const;
+
+    static QString staticName();
 
     /**
      * @brief Returns a displayable name. Use the method "setDisplayableName" to change them. By default if the displayable
@@ -292,6 +300,9 @@ public:
      */
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList) = 0;
 
+    static void addNameTypeCorresp(QString type, QString name);
+    static QString getNameFromType(QString type);
+
 signals:
 
     /**
@@ -326,6 +337,7 @@ protected:
      */
     virtual QString internalVerifyModel(const CT_OutAbstractModel *model) const;
 
+
 private:
 
     quint64                     _id;
@@ -341,6 +353,7 @@ private:
     CT_AbstractItemDrawableDrawManager  *_alternativeDrawManager;
 
     static quint64  NEXTID;
+    static QMap<QString, QString> NAMEMAP;
 
     /**
      * @brief Call this method when the display state of this item change

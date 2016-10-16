@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_OPFMeshModel : public CT_MeshModel
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_OPFMeshModel, CT_MeshModel)
+    CT_TYPE_IMPL_MACRO(CT_OPFMeshModel, CT_MeshModel, OPF mesh model)
 
 public:
     CT_OPFMeshModel();
@@ -21,8 +21,6 @@ public:
     CT_OPFMeshModel(const QString &modelName,
                     const CT_AbstractResult *result,
                     CT_Mesh *mesh);
-
-    virtual QString name() const;
 
     void setDUp(double dUp);
     void setDDown(double dDown);

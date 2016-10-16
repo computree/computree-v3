@@ -13,7 +13,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributes : public CT_AbstractAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributes, CT_AbstractAttributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributes, CT_AbstractAttributes, Face attributes)
 
 public:
     CT_AbstractFaceAttributes();
@@ -37,8 +37,6 @@ public:
      * @return retourne le nuage de points enregistré
      */
     CT_FCIR getFaceCloudIndexRegistered() const;
-
-    virtual QString name() const;
 
 
 private:

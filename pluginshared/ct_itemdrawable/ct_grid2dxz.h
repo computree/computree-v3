@@ -138,6 +138,7 @@ public:
     static QString staticGetType();
 
     virtual QString name() const;
+    static QString staticName();
 
     /*!
      * \brief Copy method

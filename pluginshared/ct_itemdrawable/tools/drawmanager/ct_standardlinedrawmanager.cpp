@@ -8,7 +8,7 @@
 const QString CT_StandardLineDrawManager::INDEX_CONFIG_LINE_SIZE = CT_StandardLineDrawManager::staticInitConfigLineSize();
 const QString CT_StandardLineDrawManager::INDEX_CONFIG_LINE_STYLE = CT_StandardLineDrawManager::staticInitConfigLineStyle();
 
-CT_StandardLineDrawManager::CT_StandardLineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("3D line") : drawConfigurationName)
+CT_StandardLineDrawManager::CT_StandardLineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? CT_Line::staticName() : drawConfigurationName)
 {
     _forcedStyle = false;
 }
@@ -57,8 +57,8 @@ CT_ItemDrawableConfiguration CT_StandardLineDrawManager::createDrawConfiguration
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardLineDrawManager::staticInitConfigLineSize(), "Taille de Ligne", CT_ItemDrawableConfiguration::Int, 1);
-    item.addNewConfiguration(CT_StandardLineDrawManager::staticInitConfigLineStyle(), "Style de Ligne", CT_ItemDrawableConfiguration::Int, 1);
+    item.addNewConfiguration(CT_StandardLineDrawManager::staticInitConfigLineSize(), QObject::tr("Taille de Ligne"), CT_ItemDrawableConfiguration::Int, 1);
+    item.addNewConfiguration(CT_StandardLineDrawManager::staticInitConfigLineStyle(), QObject::tr("Style de Ligne"), CT_ItemDrawableConfiguration::Int, 1);
 
     return item;
 }

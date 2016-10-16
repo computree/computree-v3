@@ -44,8 +44,3 @@ CT_AbstractImage2D::~CT_AbstractImage2D()
 {
 
 }
-
-QString CT_AbstractImage2D::name() const
-{
-    return tr("Raster");
-}

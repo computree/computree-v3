@@ -281,26 +281,11 @@ public:
     //**********************************************//
     //          CompuTree Core and GUI tools        //
     //**********************************************//
-    /*!
-     * \brief getType
-     * \return A string describing the hierarchy of computree types and the type of grid (4dgrid and type of data in it)
-     */
-    inline virtual QString getType() const { return staticGetType(); }
+    virtual QString getType() const;
+    static QString staticGetType();
 
-    /*!
-     * \brief staticGetType
-     *
-     * Same as getType but static
-     *
-     * \return A string describing the hierarchy of computree types and the type of the grid (4dgrid and type of data in it)
-     */
-    inline static QString staticGetType() { return CT_Grid4D::staticGetType() + "/CT_Grid4D_Dense<" + CT_TypeInfo::name<DataT>() + QString(">"); }
-
-    /*!
-     * \brief name
-     * \return The name of the object (4dgrid and type of data in it)
-     */
-    inline virtual QString name() const { return QString("CT_Grid4D_Dense<") + CT_TypeInfo::name<DataT>() + QString(">"); }
+    virtual QString name() const;
+    static QString staticName();
 
     /*!
      * \brief Copy method

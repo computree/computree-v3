@@ -21,7 +21,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_StandardItemGroup : public CT_AbstractStandardItemGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StandardItemGroup, CT_AbstractStandardItemGroup)
+    CT_TYPE_IMPL_MACRO(CT_StandardItemGroup, CT_AbstractStandardItemGroup, Standard group)
 
 public:
 
@@ -44,9 +44,6 @@ public:
      */
     CT_StandardItemGroup(const QString &modelName,
                          const CT_AbstractResult *result);
-
-    virtual QString name() const;
-
 
     /*!
      *  \brief Ajoute un groupe (protégé par un Mutex)

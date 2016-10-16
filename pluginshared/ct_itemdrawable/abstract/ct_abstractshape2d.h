@@ -37,7 +37,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractShape2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractShape2D, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractShape2D, CT_AbstractItemDrawableWithoutPointCloud, 2D shape)
 
 public:
     /**
@@ -73,8 +73,6 @@ public:
     const Eigen::Vector2d& getCenter() const;
 
     void getBoundingBox(Eigen::Vector3d &min, Eigen::Vector3d &max) const;
-
-    virtual QString name() const;
 
 
 private:

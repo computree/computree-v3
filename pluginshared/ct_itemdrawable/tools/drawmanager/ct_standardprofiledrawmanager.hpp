@@ -27,7 +27,7 @@ template< typename DataT > const QString CT_StandardProfileDrawManager<DataT>::I
 
 template< typename DataT >
 CT_StandardProfileDrawManager<DataT>::CT_StandardProfileDrawManager(QString drawConfigurationName)
-    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Profile (%1)").arg(CT_TypeInfo::name<DataT>()) : drawConfigurationName)
+    : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Profile<DataT>::staticName() : drawConfigurationName)
 {
     
 }
@@ -185,17 +185,17 @@ CT_ItemDrawableConfiguration CT_StandardProfileDrawManager<DataT>::createDrawCon
 {
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
-    item.addNewConfiguration(staticInitConfigColumnModeEnabled(), "Mode colonne", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigColumnRadius(), "Rayon de colonne", CT_ItemDrawableConfiguration::Double, 0.50);
-    item.addNewConfiguration(staticInitConfigGraphModeEnabled(), "Mode graph", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigDrawAxis(), "Dessiner axe", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigDrawBars(), "Dessiner barres", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigDrawPoints(), "Dessiner points", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(staticInitConfigPointsSize(), "Taille des points", CT_ItemDrawableConfiguration::Int, 5);
-    item.addNewConfiguration(staticInitConfigDrawCurve(), "Dessiner courbe", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigGraphOrientation(), "Orientation graph", CT_ItemDrawableConfiguration::Int, 0);
-    item.addNewConfiguration(staticInitConfigScale(), "Mise à l'échelle", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigScaleCoeff(), "Coefficient d'échelle (m)", CT_ItemDrawableConfiguration::Double, 5);
+    item.addNewConfiguration(staticInitConfigColumnModeEnabled(), QObject::tr("Mode colonne"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigColumnRadius(), QObject::tr("Rayon de colonne"), CT_ItemDrawableConfiguration::Double, 0.50);
+    item.addNewConfiguration(staticInitConfigGraphModeEnabled(), QObject::tr("Mode graph"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigDrawAxis(), QObject::tr("Dessiner axe"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigDrawBars(), QObject::tr("Dessiner barres"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigDrawPoints(), QObject::tr("Dessiner points"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(staticInitConfigPointsSize(), QObject::tr("Taille des points"), CT_ItemDrawableConfiguration::Int, 5);
+    item.addNewConfiguration(staticInitConfigDrawCurve(), QObject::tr("Dessiner courbe"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigGraphOrientation(), QObject::tr("Orientation graph"), CT_ItemDrawableConfiguration::Int, 0);
+    item.addNewConfiguration(staticInitConfigScale(), QObject::tr("Mise à l'échelle"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigScaleCoeff(), QObject::tr("Coefficient d'échelle (m)"), CT_ItemDrawableConfiguration::Double, 5);
 
     return item;
 }

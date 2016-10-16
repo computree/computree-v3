@@ -40,11 +40,6 @@ CT_EdgeAttributesColor::CT_EdgeAttributesColor(const QString &modelName,
 {
 }
 
-QString CT_EdgeAttributesColor::name() const
-{
-    return tr("Color edge attributes");
-}
-
 CT_AbstractItemDrawable* CT_EdgeAttributesColor::copy(const CT_OutAbstractItemModel *model,
                                                         const CT_AbstractResult *result,
                                                         CT_ResultCopyModeList copyModeList)

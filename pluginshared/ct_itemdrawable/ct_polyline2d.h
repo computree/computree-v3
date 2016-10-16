@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Polyline2D : public CT_AbstractShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Polyline2D, CT_AbstractShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Polyline2D, CT_AbstractShape2D, 2D polyline)
 
 public:    
 
@@ -59,9 +59,6 @@ public:
     CT_Polyline2D(const QString &modelName,
                 const CT_AbstractResult *result,
                 CT_Polyline2DData *data);
-
-    virtual QString name() const;
-
 
     const QVector<Eigen::Vector2d *> &getVertices() const;
 

@@ -21,7 +21,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractGrid4D : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractGrid4D, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractGrid4D, CT_AbstractItemDrawableWithoutPointCloud, 4D grid)
 
 public:
 //**********************************************//
@@ -538,12 +538,6 @@ public:
                                               _dimy = (size_t)dim.y();
                                               _dimz = (size_t)dim.z();
                                             }
-
-    /*!
-     * \brief name
-     * \return The name of the object
-     */
-    virtual QString name() const;
 
 protected:
 //**********************************************//

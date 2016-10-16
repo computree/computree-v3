@@ -64,7 +64,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Scanner : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Scanner, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_Scanner, CT_AbstractItemDrawableWithoutPointCloud, Scan position)
 
 public:
 //********************************************//
@@ -124,9 +124,6 @@ public:
     *
     */
     ~CT_Scanner();
-
-    virtual QString name() const;
-
 
 //********************************************//
 //                  Getters                   //

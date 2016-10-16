@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Circle : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Circle, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_Circle, CT_AbstractShape, 3D circle)
 
 public:
 
@@ -60,8 +60,6 @@ public:
     CT_Circle(const QString &modelName,
               const CT_AbstractResult *result,
               CT_CircleData *data);
-
-    virtual QString name() const;
 
 
     double getRadius() const;

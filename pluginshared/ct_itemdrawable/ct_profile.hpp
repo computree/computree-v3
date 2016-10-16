@@ -271,11 +271,19 @@ QString CT_Profile<DataT>::getType() const
 template< typename DataT>
 QString CT_Profile<DataT>::staticGetType()
 {
-    return CT_AbstractProfile::staticGetType() + "/CT_Profile<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractProfile::staticGetType() + "/CT_Profile<" + CT_TypeInfo::name<DataT>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template< typename DataT>
 QString CT_Profile<DataT>::name() const
+{
+    return staticName();
+}
+
+template< typename DataT>
+QString CT_Profile<DataT>::staticName()
 {
     return tr("Profile (%1)").arg(CT_TypeInfo::name<DataT>());
 }

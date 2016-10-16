@@ -6,11 +6,10 @@
 #include <QObject>
 
 
-
 const QString CT_StandardLine2DDrawManager::INDEX_CONFIG_DRAW_POINTS = CT_StandardLine2DDrawManager::staticInitConfigDrawPoints();
 const QString CT_StandardLine2DDrawManager::INDEX_CONFIG_DRAW_LINE = CT_StandardLine2DDrawManager::staticInitConfigDrawLine();
 
-CT_StandardLine2DDrawManager::CT_StandardLine2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D line") : drawConfigurationName)
+CT_StandardLine2DDrawManager::CT_StandardLine2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Line2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -50,8 +49,8 @@ CT_ItemDrawableConfiguration CT_StandardLine2DDrawManager::createDrawConfigurati
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardLine2DDrawManager::staticInitConfigDrawPoints() ,"Dessiner les points", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardLine2DDrawManager::staticInitConfigDrawLine() ,"Dessiner la ligne", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardLine2DDrawManager::staticInitConfigDrawPoints() ,QObject::tr("Dessiner les points"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardLine2DDrawManager::staticInitConfigDrawLine() ,QObject::tr("Dessiner la ligne"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 }

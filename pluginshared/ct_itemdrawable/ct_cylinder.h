@@ -45,7 +45,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Cylinder : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Cylinder, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_Cylinder, CT_AbstractShape, Cylinder)
 
 public:
     CT_Cylinder();
@@ -58,8 +58,6 @@ public:
     CT_Cylinder(const QString &modelName,
                      const CT_AbstractResult *result,
                      CT_CylinderData *data);
-
-    virtual QString name() const;
 
 
     double getRadius() const;

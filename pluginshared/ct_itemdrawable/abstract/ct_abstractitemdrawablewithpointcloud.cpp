@@ -141,10 +141,6 @@ int CT_AbstractItemDrawableWithPointCloud::getFastestIncrement() const
     return 16;
 }
 
-QString CT_AbstractItemDrawableWithPointCloud::name() const
-{
-    return tr("Point cloud");
-}
 
 ///////////// PROTECTED /////////////
 

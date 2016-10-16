@@ -13,7 +13,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributes : public CT_AbstractAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributes, CT_AbstractAttributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributes, CT_AbstractAttributes, Edge attributes)
 
 public:
     CT_AbstractEdgeAttributes();
@@ -37,9 +37,6 @@ public:
      * @return retourne le nuage de points enregistré
      */
     CT_ECIR getEdgeCloudIndexRegistered() const;
-
-    virtual QString name() const;
-
 
 private:
     // TODO

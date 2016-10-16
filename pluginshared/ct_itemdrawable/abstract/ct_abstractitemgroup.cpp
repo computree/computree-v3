@@ -249,7 +249,3 @@ QString CT_AbstractItemGroup::internalVerifyModel(const CT_OutAbstractModel *mod
     return QString();
 }
 
-QString CT_GroupItemDrawableContainer::name() const
-{
-    return QObject::tr("Group");
-}

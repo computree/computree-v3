@@ -46,11 +46,6 @@ CT_PointsAttributesColor::CT_PointsAttributesColor(const QString &modelName,
     setBaseDrawManager(&PAC_DRAW_MANAGER);
 }
 
-QString CT_PointsAttributesColor::name() const
-{
-    return tr("Color point attributes");
-}
-
 CT_AbstractItemDrawable* CT_PointsAttributesColor::copy(const CT_OutAbstractItemModel *model,
                                                         const CT_AbstractResult *result,
                                                         CT_ResultCopyModeList copyModeList)

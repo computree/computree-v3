@@ -46,7 +46,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractImage2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractImage2D, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractImage2D, CT_AbstractItemDrawableWithoutPointCloud, Raster)
 
 public:
 
@@ -58,8 +58,6 @@ public:
     CT_AbstractImage2D(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractImage2D();
-
-    virtual QString name() const;
 
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)

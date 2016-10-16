@@ -127,10 +127,6 @@ double CT_AbstractShape::getDirectionZ() const
     return _data->getDirection().z();
 }
 
-QString CT_AbstractShape::name() const
-{
-    return tr("3D shape");
-}
 
 CT_ShapeData* CT_AbstractShape::getDataNotConst() const
 {

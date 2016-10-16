@@ -40,7 +40,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AffiliationID : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AffiliationID, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AffiliationID, CT_AbstractItemDrawableWithoutPointCloud, Affiliation ID)
 
 public:
     /**
@@ -86,8 +86,6 @@ public:
                       const size_t &value);
 
     virtual ~CT_AffiliationID();
-
-    virtual QString name() const;
 
     inline void setValue(size_t value) {_value = value;}
     inline size_t getValue() const {return _value;}

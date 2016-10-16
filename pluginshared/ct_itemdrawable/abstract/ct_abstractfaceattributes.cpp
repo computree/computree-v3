@@ -32,8 +32,3 @@ CT_FCIR CT_AbstractFaceAttributes::getFaceCloudIndexRegistered() const
 {
     return m_cir;
 }
-
-QString CT_AbstractFaceAttributes::name() const
-{
-    return tr("Face attributes");
-}

@@ -83,14 +83,23 @@ QString CT_FaceAttributesScalarT<SCALAR>::getType() const
 template<typename SCALAR>
 QString CT_FaceAttributesScalarT<SCALAR>::staticGetType()
 {
-    return CT_AbstractFaceAttributesScalar::staticGetType() + "/CT_FaceAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    QString type = CT_AbstractFaceAttributesScalar::staticGetType() + "/CT_FaceAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
+    return type;
 }
 
 template<typename SCALAR>
 QString CT_FaceAttributesScalarT<SCALAR>::name() const
 {
-    return "CT_FaceAttributesScalarT<" + CT_TypeInfo::name<SCALAR>() + ">";
+    return staticName();
 }
+
+template<typename SCALAR>
+QString CT_FaceAttributesScalarT<SCALAR>::staticName()
+{
+    return tr("Scalar face attributes (%1)").arg(CT_TypeInfo::name<SCALAR>());
+}
+
 
 template<typename SCALAR>
 CT_AbstractItemDrawable* CT_FaceAttributesScalarT<SCALAR>::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)

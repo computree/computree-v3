@@ -7,7 +7,7 @@ CT_AbstractItemDrawableDrawManager::CT_AbstractItemDrawableDrawManager(const QSt
 {
     m_autoDeleteConfig = true;
     _configuration = NULL;
-    _drawConfigurationNameBackup = drawConfigurationName.isEmpty() ? "CT_AbstractItemDrawable" : drawConfigurationName;
+    _drawConfigurationNameBackup = drawConfigurationName.isEmpty() ? CT_AbstractItemDrawable::staticName() : drawConfigurationName;
 }
 
 CT_AbstractItemDrawableDrawManager::~CT_AbstractItemDrawableDrawManager()

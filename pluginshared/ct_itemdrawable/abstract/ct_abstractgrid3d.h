@@ -49,7 +49,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractGrid3D : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractGrid3D, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractGrid3D, CT_AbstractItemDrawableWithoutPointCloud, 3D grid)
 
 public:
 
@@ -62,8 +62,6 @@ public:
     CT_AbstractGrid3D(const QString &modelName, const CT_AbstractResult *result);
 
     virtual ~CT_AbstractGrid3D();
-
-    virtual QString name() const;
 
     /*!
      * \brief Return a [0;1] value for any type (or -1 for NA)

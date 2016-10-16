@@ -34,7 +34,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PlotListInGrid : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PlotListInGrid, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_PlotListInGrid, CT_AbstractItemDrawableWithoutPointCloud, Plot list (grid))
 
 public:
 
@@ -65,9 +65,6 @@ public:
                       double size);
 
     virtual ~CT_PlotListInGrid();
-
-    virtual QString name() const;
-
 
     virtual bool hasBoundingBox() const {return true;}
 

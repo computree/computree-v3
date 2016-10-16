@@ -9,7 +9,7 @@
 const QString CT_StandardPoint2DDrawManager::INDEX_CONFIG_DRAW_POINT = CT_StandardPoint2DDrawManager::staticInitConfigDrawPoint();
 const QString CT_StandardPoint2DDrawManager::INDEX_CONFIG_POINT_SIZE = CT_StandardPoint2DDrawManager::staticInitConfigPointSize();
 
-CT_StandardPoint2DDrawManager::CT_StandardPoint2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("2D point") : drawConfigurationName)
+CT_StandardPoint2DDrawManager::CT_StandardPoint2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Point2D::staticName() : drawConfigurationName)
 {
     
 }
@@ -51,8 +51,8 @@ CT_ItemDrawableConfiguration CT_StandardPoint2DDrawManager::createDrawConfigurat
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigDrawPoint() ,"Dessiner le point", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigPointSize() ,"Taille du point", CT_ItemDrawableConfiguration::Double, 5);
+    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigDrawPoint() ,QObject::tr("Dessiner le point"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardPoint2DDrawManager::staticInitConfigPointSize() ,QObject::tr("Taille du point"), CT_ItemDrawableConfiguration::Double, 5);
 
     return item;
 }

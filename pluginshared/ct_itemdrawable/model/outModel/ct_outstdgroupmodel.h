@@ -24,7 +24,7 @@ public:
      */
     CT_OutStdGroupModel(const QString &uniqueName,
                         CT_AbstractItemGroup *group = new CT_StandardItemGroup(),
-                        const QString &displayableName = "",
+                        const QString &displayableName = "Group",
                         const QString &description = "");
 
     /**

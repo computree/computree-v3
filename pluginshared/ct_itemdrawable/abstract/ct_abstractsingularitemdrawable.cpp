@@ -199,11 +199,6 @@ QColor CT_AbstractSingularItemDrawable::defaultColor() const
     return m_defaultColor;
 }
 
-QString CT_AbstractSingularItemDrawable::name() const
-{
-    return tr("Item");
-}
-
 QString CT_AbstractSingularItemDrawable::internalVerifyModel(const CT_OutAbstractModel *model) const
 {
     if(dynamic_cast<const CT_OutAbstractSingularItemModel*>(model) == NULL)

@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointAttributesScalar : public CT_AbstractPointsAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractPointAttributesScalar, CT_AbstractPointsAttributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointAttributesScalar, CT_AbstractPointsAttributes, Scalar point attributes)
 
 public:
     CT_AbstractPointAttributesScalar();
@@ -24,8 +24,6 @@ public:
     virtual double dValueAt(const size_t &index) const = 0;
 
     virtual size_t attributesSize() const = 0;
-
-    virtual QString name() const;
 
 };
 

@@ -9,7 +9,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_ItemAttributeList : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_ItemAttributeList, CT_AbstractSingularItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_ItemAttributeList, CT_AbstractSingularItemDrawable, Item attribute list)
 
 public:
     CT_ItemAttributeList();

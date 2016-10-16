@@ -41,7 +41,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AttributesList : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AttributesList, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_AttributesList, CT_AbstractItemDrawableWithoutPointCloud, Attribute list)
 
 public:
     CT_AttributesList();
@@ -58,8 +58,6 @@ public:
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
     virtual CT_AbstractItemDrawable* copy(const QString &modelName, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
-
-    virtual QString name() const;
 
 };
 

@@ -16,7 +16,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointsAttributes : public CT_AbstractAttributes, public CT_IAccessPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractPointsAttributes, CT_AbstractAttributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointsAttributes, CT_AbstractAttributes, Point attributes)
 
 public:
     CT_AbstractPointsAttributes();
@@ -45,8 +45,6 @@ public:
       * \brief Retourne le nombre de point  sauter lorsqu'il faut dessiner rapidement (par dfaut 16).
       */
     virtual int getFastestIncrement() const;
-
-    virtual QString name() const;
 
 
 private:

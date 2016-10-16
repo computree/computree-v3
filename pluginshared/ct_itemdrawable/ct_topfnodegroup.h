@@ -15,7 +15,7 @@ class CT_OutOPFNodeGroupModel;
 class PLUGINSHAREDSHARED_EXPORT CT_TOPFNodeGroup : public CT_TNodeGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_TOPFNodeGroup, CT_TNodeGroup)
+    CT_TYPE_IMPL_MACRO(CT_TOPFNodeGroup, CT_TNodeGroup, OPF node group)
 
 public:
     CT_TOPFNodeGroup();
@@ -37,8 +37,6 @@ public:
      */
     CT_TOPFNodeGroup(const QString &modelName,
                      const CT_AbstractResult *result);
-
-    virtual QString name() const;
 
 
     CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);

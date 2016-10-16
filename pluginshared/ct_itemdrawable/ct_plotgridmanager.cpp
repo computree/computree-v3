@@ -47,11 +47,6 @@ CT_PlotGridManager::~CT_PlotGridManager()
 {
 }
 
-QString CT_PlotGridManager::name() const
-{
-    return tr("Plot grid manager");
-}
-
 CT_AbstractItemDrawable *CT_PlotGridManager::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
 {
     Q_UNUSED(copyModeList);

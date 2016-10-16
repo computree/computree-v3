@@ -2,7 +2,7 @@
 
 #include "ct_container.h"
 
-CT_StandardContainerDrawManager::CT_StandardContainerDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? "CT_Container" : drawConfigurationName)
+CT_StandardContainerDrawManager::CT_StandardContainerDrawManager(QString drawConfigurationName) : CT_AbstractItemDrawableDrawManager(drawConfigurationName.isEmpty() ? CT_Container::staticName() : drawConfigurationName)
 {
 }
 

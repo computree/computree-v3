@@ -46,7 +46,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Ellipse : public CT_AbstractShape
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Ellipse, CT_AbstractShape)
+    CT_TYPE_IMPL_MACRO(CT_Ellipse, CT_AbstractShape, 3D ellipse)
 
 public:
 
@@ -61,8 +61,6 @@ public:
     CT_Ellipse(const QString &modelName,
                const CT_AbstractResult *result,
                CT_EllipseData *data);
-
-    virtual QString name() const;
 
 
     const CT_LineData& getAxisA() const;

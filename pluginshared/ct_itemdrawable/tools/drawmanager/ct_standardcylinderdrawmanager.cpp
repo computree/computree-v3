@@ -4,13 +4,12 @@
 
 #include <QObject>
 
-
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_CYLINDER = CT_StandardCylinderDrawManager::staticInitConfigDrawCylinder();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_AXE = CT_StandardCylinderDrawManager::staticInitConfigDrawAxe();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_DRAW_MEDIAN_CIRCLE = CT_StandardCylinderDrawManager::staticInitConfigDrawMedianCircle();
 const QString CT_StandardCylinderDrawManager::INDEX_CONFIG_TRANSPARENCY_LEVEL = CT_StandardCylinderDrawManager::staticInitConfigTransparencyLevel();
 
-CT_StandardCylinderDrawManager::CT_StandardCylinderDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Cylinder") : drawConfigurationName)
+CT_StandardCylinderDrawManager::CT_StandardCylinderDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? CT_Cylinder::staticName() : drawConfigurationName)
 {
     
 }
@@ -60,10 +59,10 @@ CT_ItemDrawableConfiguration CT_StandardCylinderDrawManager::createDrawConfigura
     CT_ItemDrawableConfiguration item = CT_ItemDrawableConfiguration(drawConfigurationName);
 
     item.addAllConfigurationOf(CT_StandardAbstractShapeDrawManager::createDrawConfiguration(drawConfigurationName));
-    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawCylinder() ,"Dessiner le cylindre", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawAxe() ,"Dessiner l'axe", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawMedianCircle() , "Dessiner le cercle médian", CT_ItemDrawableConfiguration::Bool, false);
-    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigTransparencyLevel() , "Niveau de transparence [0;255]", CT_ItemDrawableConfiguration::Double, 100);
+    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawCylinder() ,QObject::tr("Dessiner le cylindre"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawAxe() ,QObject::tr("Dessiner l'axe"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigDrawMedianCircle() , QObject::tr("Dessiner le cercle médian"), CT_ItemDrawableConfiguration::Bool, false);
+    item.addNewConfiguration(CT_StandardCylinderDrawManager::staticInitConfigTransparencyLevel() , QObject::tr("Niveau de transparence [0;255]"), CT_ItemDrawableConfiguration::Double, 100);
 
     return item;
 }

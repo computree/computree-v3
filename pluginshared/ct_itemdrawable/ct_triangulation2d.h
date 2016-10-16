@@ -45,7 +45,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Triangulation2D : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Triangulation2D, CT_AbstractItemDrawableWithoutPointCloud)
+    CT_TYPE_IMPL_MACRO(CT_Triangulation2D, CT_AbstractItemDrawableWithoutPointCloud, 2D triangulation)
 
 public:
     CT_Triangulation2D();
@@ -56,9 +56,6 @@ public:
                 const CT_AbstractResult *result, CT_DelaunayTriangulation *delaunay);
 
     ~CT_Triangulation2D();
-
-    virtual QString name() const;
-
 
     CT_DelaunayTriangulation *getDelaunayT() const;
 

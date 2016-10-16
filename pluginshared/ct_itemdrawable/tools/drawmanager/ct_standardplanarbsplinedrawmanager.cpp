@@ -2,13 +2,13 @@
 
 #include "ct_planarbspline.h"
 
-#include <QObject>
+#include <QDebug>
 
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_DRAW_CONTROL_POINTS= CT_StandardPlanarBSplineDrawManager::staticInitConfigDrawControlPoints();
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_CONTROL_POINTS_SIZE = CT_StandardPlanarBSplineDrawManager::staticInitConfigControlPointsSize();
 const QString CT_StandardPlanarBSplineDrawManager::INDEX_CONFIG_DRAW_POLYLINE = CT_StandardPlanarBSplineDrawManager::staticInitConfigDrawPolyline();
 
-CT_StandardPlanarBSplineDrawManager::CT_StandardPlanarBSplineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? QObject::tr("Planar B-spline") : drawConfigurationName)
+CT_StandardPlanarBSplineDrawManager::CT_StandardPlanarBSplineDrawManager(QString drawConfigurationName) : CT_StandardAbstractShapeDrawManager(drawConfigurationName.isEmpty() ? CT_PlanarBSpline::staticName() : drawConfigurationName)
 {
 }
 
@@ -79,9 +79,9 @@ CT_ItemDrawableConfiguration CT_StandardPlanarBSplineDrawManager::createDrawConf
     item.addAllConfigurationOf(CT_StandardAbstractShapeDrawManager::createDrawConfiguration(drawConfigurationName));
 
     // Adding lines to this config dialog box
-    item.addNewConfiguration(staticInitConfigDrawControlPoints(), "Dessiner les Points de contrôle", CT_ItemDrawableConfiguration::Bool, true);
-    item.addNewConfiguration(staticInitConfigControlPointsSize(), "Taille des points de contrôle", CT_ItemDrawableConfiguration::Int, 3);
-    item.addNewConfiguration(staticInitConfigDrawPolyline(), "Dessiner la courbe B-Spline", CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigDrawControlPoints(), QObject::tr("Dessiner les Points de contrôle"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(staticInitConfigControlPointsSize(), QObject::tr("Taille des points de contrôle"), CT_ItemDrawableConfiguration::Int, 3);
+    item.addNewConfiguration(staticInitConfigDrawPolyline(), QObject::tr("Dessiner la courbe B-Spline"), CT_ItemDrawableConfiguration::Bool, true);
 
     return item;
 

@@ -63,6 +63,7 @@ public:
     static QString staticGetType();
 
     virtual QString name() const;
+    static QString staticName();
 
     double dMin() const { return CT_AttributesScalarT<SCALAR>::dMin(); }
     double dMax() const { return CT_AttributesScalarT<SCALAR>::dMax(); }

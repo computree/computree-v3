@@ -10,7 +10,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractAttributes : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractAttributes, CT_AbstractSingularItemDrawable)
+    CT_TYPE_IMPL_MACRO(CT_AbstractAttributes, CT_AbstractSingularItemDrawable, Point/Face/Edge attributes)
 
 public:
     CT_AbstractAttributes();
@@ -24,8 +24,6 @@ public:
      * @brief Returns the size of the cloud of attributes
      */
     virtual size_t attributesSize() const = 0;
-
-    virtual QString name() const;
 
 };
 

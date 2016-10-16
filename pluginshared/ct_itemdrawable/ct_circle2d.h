@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Circle2D : public CT_AbstractAreaShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Circle2D, CT_AbstractAreaShape2D)
+    CT_TYPE_IMPL_MACRO(CT_Circle2D, CT_AbstractAreaShape2D, 2D circle)
 
 public:
 
@@ -60,9 +60,6 @@ public:
     CT_Circle2D(const QString &modelName,
               const CT_AbstractResult *result,
               CT_Circle2DData *data);
-
-    virtual QString name() const;
-
 
     double getRadius() const;
 

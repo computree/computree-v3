@@ -86,11 +86,6 @@ CT_Polyline2D::CT_Polyline2D(const QString &modelName,
     _maxCoordinates(2) = 0;
 }
 
-QString CT_Polyline2D::name() const
-{
-    return tr("2D polyline");
-}
-
 const QVector<Eigen::Vector2d*>& CT_Polyline2D::getVertices() const
 {
     return ((const CT_Polyline2DData&)getData()).getVertices();

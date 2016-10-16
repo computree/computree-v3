@@ -2,7 +2,7 @@
 
 #include "ct_itemdrawable/ct_sphere.h"
 
-CT_StandardSphereDrawManager::CT_StandardSphereDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName)
+CT_StandardSphereDrawManager::CT_StandardSphereDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Sphere::staticName() : drawConfigurationName)
 {
 }
 

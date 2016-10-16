@@ -2,9 +2,11 @@
 
 #include "ct_scanner.h"
 
+#include <QObject>
+
 const QString CT_StandardScannerDrawManager::INDEX_CONFIG_FIELD_OF_VIEW = CT_StandardScannerDrawManager::staticInitConfigFieldOfView();
 
-CT_StandardScannerDrawManager::CT_StandardScannerDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName)
+CT_StandardScannerDrawManager::CT_StandardScannerDrawManager(QString drawConfigurationName) : CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager(drawConfigurationName.isEmpty() ? CT_Scanner::staticName() : drawConfigurationName)
 {
     
 }
@@ -32,7 +34,7 @@ CT_ItemDrawableConfiguration CT_StandardScannerDrawManager::createDrawConfigurat
     item.addAllConfigurationOf( CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::createDrawConfiguration(drawConfigurationName));
 
     // Adding lines to this config dialog box
-    item.addNewConfiguration(CT_StandardScannerDrawManager::staticInitConfigFieldOfView(), "Field of view scale", CT_ItemDrawableConfiguration::Double, 1.0 );       // How big will be the field of view
+    item.addNewConfiguration(CT_StandardScannerDrawManager::staticInitConfigFieldOfView(), QObject::tr("Field of view scale"), CT_ItemDrawableConfiguration::Double, 1.0 );       // How big will be the field of view
 
     return item;
 }
