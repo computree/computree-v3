@@ -132,7 +132,7 @@ QWidget* CTG_InTurnManager::createTabForTurn(CT_InTurn *turn, int index)
 
     QWidget *wid = new QWidget(NULL);
     //wid->setWindowTitle(QString("Tour %1").arg(index));
-    wid->setWindowTitle(tr("Modèles"));
+    wid->setWindowTitle(tr("Séléction des données d'entrée"));
 
     QVBoxLayout *layout = new QVBoxLayout();
 

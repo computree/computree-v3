@@ -503,9 +503,10 @@ void CTG_InModelPossibilitiesChoice::constructHeader()
     }
 
     QStringList header;
-    header << (tr("Sortie") + (!stepName.isEmpty() ? (tr(" de ") + stepName) : ""));
+    //header << (tr("Sortie") + (!stepName.isEmpty() ? (tr(" de ") + stepName) : ""));
+    header << tr("Données disponibles");
     header << tr("Sélection");
-    header << tr("Entrée");
+    header << tr("Données recherchées");
 
     _viewModel.setHorizontalHeaderLabels(header);
 
