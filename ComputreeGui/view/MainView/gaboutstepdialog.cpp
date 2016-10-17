@@ -179,7 +179,7 @@ void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent,
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
     //item->setText(0, iModel->displayableName() + " (" + iModel->itemDrawable()->name() + ")" + " / " + (iModel->lastOriginalModelWithAStep() != NULL ? iModel->lastOriginalModelWithAStep()->step()->getStepCustomName() : "???") + " / " + iModel->uniqueName() + " / " + iModel->modelTypeDisplayable());
-    item->setText(0, iModel->displayableName() + " / Type: " + iModel->itemDrawable()->name());
+    item->setText(0, iModel->displayableName() + " [" + iModel->itemDrawable()->name() + "]");
     item->setExpanded(true);
     createForChildrens(item, iModel);
 }
@@ -187,7 +187,7 @@ void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent,
 void GAboutStepDialog::recursiveCreateItemsForItemModel(QTreeWidgetItem *parent, const CT_InAbstractItemModel *iModel) const
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(parent);
-    item->setText(0, iModel->displayableName() + " / Type: " + CT_AbstractItemDrawable::getNameFromType(iModel->itemType()));
+    item->setText(0, iModel->displayableName() + " [" + CT_AbstractItemDrawable::getNameFromType(iModel->itemType()) + "]");
 
     item->setExpanded(true);
     createForChildrens(item, iModel);

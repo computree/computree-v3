@@ -10,7 +10,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractAttributes : public CT_AbstractSingularItemDrawable
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractAttributes, CT_AbstractSingularItemDrawable, Point/Face/Edge attributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractAttributes, CT_AbstractSingularItemDrawable, Attributes)
 
 public:
     CT_AbstractAttributes();

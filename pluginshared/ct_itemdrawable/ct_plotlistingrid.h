@@ -34,7 +34,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_PlotListInGrid : public CT_AbstractItemDrawableWithoutPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_PlotListInGrid, CT_AbstractItemDrawableWithoutPointCloud, Plot list (grid))
+    CT_TYPE_IMPL_MACRO(CT_PlotListInGrid, CT_AbstractItemDrawableWithoutPointCloud, Plot grid list)
 
 public:
 

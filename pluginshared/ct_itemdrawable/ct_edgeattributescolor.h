@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesColor : public CT_AbstractEdgeAttributes, public CT_AttributesColor
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesColor, CT_AbstractEdgeAttributes, Color edge attributes)
+    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesColor, CT_AbstractEdgeAttributes, Edge color attributes)
 
 public:
     CT_EdgeAttributesColor();

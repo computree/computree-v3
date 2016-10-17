@@ -405,7 +405,7 @@ QString CT_Grid3D<DataT>::name() const
 template< typename DataT>
 QString CT_Grid3D<DataT>::staticName()
 {
-    return tr("3D grid (%1)").arg(CT_TypeInfo::name<DataT>());
+    return tr("3D grid<%1>").arg(CT_TypeInfo::name<DataT>());
 }
 
 template< typename DataT>

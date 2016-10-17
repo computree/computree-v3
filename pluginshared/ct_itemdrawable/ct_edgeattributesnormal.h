@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_EdgeAttributesNormal : public CT_AbstractEdgeAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesNormal, CT_AbstractEdgeAttributes, Normal edge attributes)
+    CT_TYPE_IMPL_MACRO(CT_EdgeAttributesNormal, CT_AbstractEdgeAttributes, Edge normal attributes)
 
 public:
     CT_EdgeAttributesNormal();

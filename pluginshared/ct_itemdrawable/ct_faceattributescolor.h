@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesColor : public CT_AbstractFaceAttributes, public CT_AttributesColor
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_FaceAttributesColor, CT_AbstractFaceAttributes, Color face attributes)
+    CT_TYPE_IMPL_MACRO(CT_FaceAttributesColor, CT_AbstractFaceAttributes, Face color attributes)
 
 public:
     CT_FaceAttributesColor();

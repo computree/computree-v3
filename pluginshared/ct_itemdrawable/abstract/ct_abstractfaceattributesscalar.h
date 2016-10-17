@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractFaceAttributesScalar : public CT_AbstractFaceAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributesScalar, CT_AbstractFaceAttributes, Scalar face attributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractFaceAttributesScalar, CT_AbstractFaceAttributes, Face attributes)
 
 public:
     CT_AbstractFaceAttributesScalar();

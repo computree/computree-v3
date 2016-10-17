@@ -97,7 +97,7 @@ QString CT_FaceAttributesScalarT<SCALAR>::name() const
 template<typename SCALAR>
 QString CT_FaceAttributesScalarT<SCALAR>::staticName()
 {
-    return tr("Scalar face attributes (%1)").arg(CT_TypeInfo::name<SCALAR>());
+    return tr("Face %1 attributes").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 

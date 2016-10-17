@@ -9,7 +9,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_StdPointsAttributesContainer : public CT_AbstractPointsAttributesContainer
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StdPointsAttributesContainer, CT_AbstractPointsAttributesContainer, Standard point attributes list)
+    CT_TYPE_IMPL_MACRO(CT_StdPointsAttributesContainer, CT_AbstractPointsAttributesContainer, Point attributes list)
 
 public:
     CT_StdPointsAttributesContainer();

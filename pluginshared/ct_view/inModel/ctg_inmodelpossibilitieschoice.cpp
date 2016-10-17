@@ -293,9 +293,19 @@ void CTG_InModelComboBox::setCurrentInModel(CT_InAbstractModel *model)
 void CTG_InModelComboBox::updateDisplayData()
 {
     if(_inModelSelected != NULL)
-        setData(_inModelSelected->displayableName(), Qt::DisplayRole);
-    else
+    {
+        QString typeName = "";
+        CT_InAbstractItemModel* itemModel = dynamic_cast<CT_InAbstractItemModel*>(_inModelSelected);
+        if (itemModel != NULL)
+        {
+            typeName = " [" + CT_AbstractItemDrawable::getNameFromType(itemModel->itemType()) + "]";
+        }
+
+        setData(QString("%1%2").arg(_inModelSelected->displayableName()).arg(typeName), Qt::DisplayRole);
+    } else
+    {
         setData("", Qt::DisplayRole);
+    }
 }
 
 CT_InStdModelPossibility* CTG_InModelComboBox::getPossibilityOfCurrentInModel() const
@@ -334,7 +344,15 @@ void CTG_InModelPossibilitiesChoiceComboBoxDelegate::setEditorData(QWidget *edit
 
         while(it.hasNext()) {
             CT_InAbstractModel *inModel = it.next();
-            comboBox->addItem(inModel->displayableName(), qVariantFromValue((void*)inModel));
+
+            QString typeName = "";
+            CT_InAbstractItemModel* itemModel = dynamic_cast<CT_InAbstractItemModel*>(inModel);
+            if (itemModel != NULL)
+            {
+                typeName = " [" + CT_AbstractItemDrawable::getNameFromType(itemModel->itemType()) + "]";
+            }
+
+            comboBox->addItem(QString("%1%2").arg(inModel->displayableName()).arg(typeName), qVariantFromValue((void*)inModel));
         }
 
         CT_InAbstractModel *selectedModel = comboBoxItem->currentInModel();
@@ -495,17 +513,17 @@ void CTG_InModelPossibilitiesChoice::constructModel()
 
 void CTG_InModelPossibilitiesChoice::constructHeader()
 {
-    QString stepName;
+//    QString stepName;
 
-    if(_possibility != NULL)
-    {
-        stepName = _possibility->outModel()->step()->getStepCustomName() == _possibility->outModel()->step()->getStepDisplayableName() ? _possibility->outModel()->step()->getStepExtendedDisplayableName() : _possibility->outModel()->step()->getStepCustomName();
-    }
+//    if(_possibility != NULL)
+//    {
+//        stepName = _possibility->outModel()->step()->getStepCustomName() == _possibility->outModel()->step()->getStepDisplayableName() ? _possibility->outModel()->step()->getStepExtendedDisplayableName() : _possibility->outModel()->step()->getStepCustomName();
+//    }
 
     QStringList header;
     //header << (tr("Sortie") + (!stepName.isEmpty() ? (tr(" de ") + stepName) : ""));
     header << tr("Données disponibles");
-    header << tr("Sélection");
+    header << tr("Sél.");
     header << tr("Données recherchées");
 
     _viewModel.setHorizontalHeaderLabels(header);
@@ -585,13 +603,15 @@ void CTG_InModelPossibilitiesChoice::recursiveCreateItemsForGroupModel(QStandard
 
         CT_OutAbstractSingularItemModel *item = itI.next();
 
-        // le nom du modèle de sortie
-        QStandardItem *itemItem = new QStandardItem(item->displayableName());
-        if (item->itemDrawable() != NULL)
+        CT_AbstractItemDrawable* itemDrawable = item->itemDrawable();
+        QString itemType = "";
+        if (itemDrawable != NULL)
         {
-            itemItem->setToolTip(item->itemDrawable()->name());
+            itemType = " [" + itemDrawable->name() + "]";
         }
 
+        // le nom du modèle de sortie
+        QStandardItem *itemItem = new QStandardItem(QString("%1%2").arg(item->displayableName()).arg(itemType));
         itemItem->setEditable(false);
         list2.append(itemItem);
 

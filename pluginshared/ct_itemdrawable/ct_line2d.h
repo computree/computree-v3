@@ -44,7 +44,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_Line2D : public CT_AbstractShape2D
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_Line2D, CT_AbstractShape2D, 3D line)
+    CT_TYPE_IMPL_MACRO(CT_Line2D, CT_AbstractShape2D, 2D line)
 
 public:
 

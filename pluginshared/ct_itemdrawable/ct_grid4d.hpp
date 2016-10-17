@@ -568,7 +568,7 @@ QString CT_Grid4D<DataT>::name() const
 template< typename DataT>
 QString CT_Grid4D<DataT>::staticName()
 {
-    return tr("4D grid (%1)").arg(CT_TypeInfo::name<DataT>());
+    return tr("4D grid<%1>").arg(CT_TypeInfo::name<DataT>());
 }
 
 

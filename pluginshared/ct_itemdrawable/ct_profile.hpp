@@ -285,7 +285,7 @@ QString CT_Profile<DataT>::name() const
 template< typename DataT>
 QString CT_Profile<DataT>::staticName()
 {
-    return tr("Profile (%1)").arg(CT_TypeInfo::name<DataT>());
+    return tr("Profile<%1>").arg(CT_TypeInfo::name<DataT>());
 }
 
 template< typename DataT>

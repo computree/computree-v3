@@ -12,7 +12,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_MeshModel : public CT_AbstractMeshModel
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_MeshModel, CT_AbstractMeshModel, Standard mesh model)
+    CT_TYPE_IMPL_MACRO(CT_MeshModel, CT_AbstractMeshModel, Mesh model)
 
 public:
     CT_MeshModel();

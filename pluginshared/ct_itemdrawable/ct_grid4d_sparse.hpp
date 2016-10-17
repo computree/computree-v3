@@ -362,7 +362,7 @@ QString CT_Grid4D_Sparse<DataT>::name() const
 template< typename DataT>
 QString CT_Grid4D_Sparse<DataT>::staticName()
 {
-    return tr("4D grid (%1, sparse)").arg(CT_TypeInfo::name<DataT>());
+    return tr("4D grid<%1>, sparse").arg(CT_TypeInfo::name<DataT>());
 }
 
 

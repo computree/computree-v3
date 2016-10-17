@@ -17,7 +17,7 @@ class CT_AbstractReader;
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractStandardItemGroup : public CT_AbstractItemGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractStandardItemGroup, CT_AbstractItemGroup, Standard group)
+    CT_TYPE_IMPL_MACRO(CT_AbstractStandardItemGroup, CT_AbstractItemGroup, Std group)
 
 public:
     CT_AbstractStandardItemGroup();

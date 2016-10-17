@@ -39,7 +39,7 @@ class PLUGINSHAREDSHARED_EXPORT CT_AbstractAreaShape2D : public CT_AbstractShape
 {
     // IMPORTANT pour avoir le nom de l'ItemDrawable
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractAreaShape2D, CT_AbstractShape2D, Shape 2D with area)
+    CT_TYPE_IMPL_MACRO(CT_AbstractAreaShape2D, CT_AbstractShape2D, 2D area shape)
 
 public:
     /**

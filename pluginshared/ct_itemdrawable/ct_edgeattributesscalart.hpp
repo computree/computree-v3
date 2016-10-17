@@ -97,7 +97,7 @@ QString CT_EdgeAttributesScalarT<SCALAR>::name() const
 template<typename SCALAR>
 QString CT_EdgeAttributesScalarT<SCALAR>::staticName()
 {
-    return tr("Scalar edge attributes (%1)").arg(CT_TypeInfo::name<SCALAR>());
+    return tr("Edge %1 attributes").arg(CT_TypeInfo::name<SCALAR>());
 }
 
 template<typename SCALAR>

@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractPointAttributesScalar : public CT_AbstractPointsAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractPointAttributesScalar, CT_AbstractPointsAttributes, Scalar point attributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractPointAttributesScalar, CT_AbstractPointsAttributes, Point attributes)
 
 public:
     CT_AbstractPointAttributesScalar();

@@ -6,7 +6,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractEdgeAttributesScalar : public CT_AbstractEdgeAttributes
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributesScalar, CT_AbstractEdgeAttributes, Scalar edge attributes)
+    CT_TYPE_IMPL_MACRO(CT_AbstractEdgeAttributesScalar, CT_AbstractEdgeAttributes, Edge attributes)
 
 public:
     CT_AbstractEdgeAttributesScalar();

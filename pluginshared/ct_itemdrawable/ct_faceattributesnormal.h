@@ -7,7 +7,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_FaceAttributesNormal : public CT_AbstractFaceAttributes, public CT_AttributesNormal
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_FaceAttributesNormal, CT_AbstractFaceAttributes, Normal face attributes)
+    CT_TYPE_IMPL_MACRO(CT_FaceAttributesNormal, CT_AbstractFaceAttributes, Face normal attributes)
 
 public:
     CT_FaceAttributesNormal();

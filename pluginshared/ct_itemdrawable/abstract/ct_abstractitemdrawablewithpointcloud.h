@@ -42,7 +42,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractItemDrawableWithPointCloud : public CT_AbstractSingularItemDrawable, public CT_IAccessPointCloud
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithPointCloud, CT_AbstractSingularItemDrawable, Point cloud)
+    CT_TYPE_IMPL_MACRO(CT_AbstractItemDrawableWithPointCloud, CT_AbstractSingularItemDrawable, Item with points)
 
 public:
 

@@ -21,7 +21,7 @@
 class PLUGINSHAREDSHARED_EXPORT CT_StandardItemGroup : public CT_AbstractStandardItemGroup
 {
     Q_OBJECT
-    CT_TYPE_IMPL_MACRO(CT_StandardItemGroup, CT_AbstractStandardItemGroup, Standard group)
+    CT_TYPE_IMPL_MACRO(CT_StandardItemGroup, CT_AbstractStandardItemGroup, Std group)
 
 public:
 
