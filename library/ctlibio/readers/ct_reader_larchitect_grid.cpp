@@ -88,12 +88,12 @@ void CT_Reader_LArchitect_Grid::protectedCreateOutItemDrawableModelList()
 {
     CT_AbstractReader::protectedCreateOutItemDrawableModelList();
 
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_wood_surface, new CT_Grid3D<float>());
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_leaf_surface, new CT_Grid3D<float>());
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_wood_volume, new CT_Grid3D<float>());
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_leaf_volume, new CT_Grid3D<float>());
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_all_surface, new CT_Grid3D<float>());
-    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_all_volume, new CT_Grid3D<float>());
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_wood_surface, new CT_Grid3D<float>(), tr("Wood surface"));
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_leaf_surface, new CT_Grid3D<float>(), tr("Leaf surface"));
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_wood_volume, new CT_Grid3D<float>(), tr("Wood volume"));
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_leaf_volume, new CT_Grid3D<float>(), tr("Leaf volume"));
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_all_surface, new CT_Grid3D<float>(), tr("Total surface"));
+    addOutItemDrawableModel(DEF_CT_Reader_LArchitect_Grid_all_volume, new CT_Grid3D<float>(), tr("Total volume"));
 }
 
 bool CT_Reader_LArchitect_Grid::protectedReadFile()
@@ -332,7 +332,7 @@ bool CT_Reader_LArchitect_Grid::readHeader(QTextStream &stream, Eigen::Vector3d 
     {
         nMat = values.at(0).toInt(&ok[0]);
 
-        if (!ok[0] || (nMat <= 0) || (size < (2*nMat+3)))
+        if (!ok[0] || (nMat <= 0) || (size < (2*nMat+1)))
             return false;
 
         int matid;
@@ -350,7 +350,6 @@ bool CT_Reader_LArchitect_Grid::readHeader(QTextStream &stream, Eigen::Vector3d 
             matNames.insert(matName.toUpper(), matid);
         }
     }
-
     return true;
 }
 
