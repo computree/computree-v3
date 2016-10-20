@@ -1,7 +1,7 @@
 #include "pb_opfexporter.h"
 
 #include "ct_itemdrawable/ct_ttreegroup.h"
-#include "ct_itemdrawable/ct_topfnodegroup.h"
+#include "ct_itemdrawable/CT_TNodeGroup.h"
 #include "ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.h"
 
 #include "ct_itemdrawable/ct_itemattributelist.h"
@@ -110,7 +110,7 @@ bool PB_OPFExporter::protectedExportToFile()
 
         CT_TTreeGroup *topology = dynamic_cast<CT_TTreeGroup*>(itemDrawableToExport().first());
 
-        CT_TOPFNodeGroup *root = dynamic_cast<CT_TOPFNodeGroup*>(topology->rootNode());
+        CT_TNodeGroup *root = topology->rootNode();
 
         bool ok = true;
 
@@ -218,7 +218,7 @@ bool PB_OPFExporter::writeMeshAndShapeBdd(QTextStream &stream, const QString &pr
     return true;
 }
 
-void PB_OPFExporter::recursiveSearchMesh(CT_TOPFNodeGroup *node)
+void PB_OPFExporter::recursiveSearchMesh(CT_TNodeGroup *node)
 {
     CT_ItemIterator itI(node);
 
@@ -237,19 +237,19 @@ void PB_OPFExporter::recursiveSearchMesh(CT_TOPFNodeGroup *node)
     CT_TNodeGroup *component = node->rootComponent();
 
     if(component != NULL)
-        recursiveSearchMesh((CT_TOPFNodeGroup*)component);
+        recursiveSearchMesh((CT_TNodeGroup*)component);
 
     QListIterator<CT_TNodeGroup*> it(node->branches());
 
     while(it.hasNext())
-        recursiveSearchMesh((CT_TOPFNodeGroup*)it.next());
+        recursiveSearchMesh((CT_TNodeGroup*)it.next());
 
     if(component != NULL)
     {
         while(component->successor() != NULL)
         {
             component = component->successor();
-            recursiveSearchMesh((CT_TOPFNodeGroup*)component);
+            recursiveSearchMesh((CT_TNodeGroup*)component);
         }
     }
 }
@@ -326,11 +326,18 @@ bool PB_OPFExporter::writeShape(QTextStream &stream, CT_Mesh *mesh, const int &i
     return true;
 }
 
-bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type, CT_TOPFNodeGroup *node, const QString &prefix)
+bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type, CT_TNodeGroup *node, const QString &prefix)
 {
     bool ok = false;
 
-    quint8 scale = node->opfModel()->opfLevel();
+    CT_TOPFNodeGroup *opfNode = dynamic_cast<CT_TOPFNodeGroup*>(node);
+
+    quint8 scale = 0;
+
+    if (opfNode != NULL)
+    {
+        scale = opfNode->opfModel()->opfLevel();
+    }
 
     stream << prefix << "<" << type << " class=\"" << node->model()->displayableName() << "\" scale=\"" << scale << "\" id=\"" << node->id() << "\">" << endl;
 
@@ -341,23 +348,52 @@ bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type
     while(itI.hasNext())
     {
         CT_AbstractSingularItemDrawable *item = (CT_AbstractSingularItemDrawable*)itI.next();
-        CT_ItemAttributeList *attributes = dynamic_cast<CT_ItemAttributeList*>(item);
+//        CT_ItemAttributeList *attributes = dynamic_cast<CT_ItemAttributeList*>(item);
 
-        if(attributes != NULL)
-        {
-            QList<CT_AbstractItemAttribute*> l = attributes->notDefaultItemAttributes();
-            QListIterator<CT_AbstractItemAttribute*> itA(l);
+//        if(attributes != NULL)
+//        {
+//            QList<CT_AbstractItemAttribute*> l = attributes->notDefaultItemAttributes();
+//            QListIterator<CT_AbstractItemAttribute*> itA(l);
 
-            while(itA.hasNext())
-                writeAttribute(stream, node, attributes, itA.next(), prefix + "\t");
-        }
-        else
+//            while(itA.hasNext())
+//                writeAttribute(stream, node, attributes, itA.next(), prefix + "\t");
+//        }
+//        else
+//        {
+//            CT_MeshModel *oMesh = dynamic_cast<CT_MeshModel*>(item);
+
+//            if(oMesh != NULL)
+//                mesh = oMesh;
+//        }
+
+
+
+        CT_MeshModel *oMesh = dynamic_cast<CT_MeshModel*>(item);
+
+        if(oMesh != NULL)
         {
             CT_MeshModel *oMesh = dynamic_cast<CT_MeshModel*>(item);
 
             if(oMesh != NULL)
                 mesh = oMesh;
         }
+        else
+        {
+
+            QList<CT_AbstractItemAttribute*> l = item->defaultItemAttributes();
+            QListIterator<CT_AbstractItemAttribute*> itA(l);
+
+            while(itA.hasNext())
+                writeAttribute(stream, node, item, itA.next(), prefix + "\t");
+
+
+            QList<CT_AbstractItemAttribute*> l2 = item->notDefaultItemAttributes();
+            QListIterator<CT_AbstractItemAttribute*> itA2(l2);
+
+            while(itA2.hasNext())
+                writeAttribute(stream, node, item, itA2.next(), prefix + "\t");
+        }
+
     }
 
     ok = writeGeometry(stream, node, mesh, prefix + "\t");
@@ -365,19 +401,19 @@ bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type
     CT_TNodeGroup *component = node->rootComponent();
 
     if(component != NULL)
-        ok = recursiveWriteFile(stream, "decomp", (CT_TOPFNodeGroup*)component, prefix + "\t");
+        ok = recursiveWriteFile(stream, "decomp", (CT_TNodeGroup*)component, prefix + "\t");
 
     QListIterator<CT_TNodeGroup*> it(node->branches());
 
     while(it.hasNext())
-        ok = recursiveWriteFile(stream, "branch", (CT_TOPFNodeGroup*)it.next(), prefix + "\t");
+        ok = recursiveWriteFile(stream, "branch", (CT_TNodeGroup*)it.next(), prefix + "\t");
 
     if(component != NULL)
     {
         while(component->successor() != NULL)
         {
             component = component->successor();
-            ok = recursiveWriteFile(stream, "follow", (CT_TOPFNodeGroup*)component, prefix + "\t");
+            ok = recursiveWriteFile(stream, "follow", (CT_TNodeGroup*)component, prefix + "\t");
         }
     }
 
@@ -386,7 +422,7 @@ bool PB_OPFExporter::recursiveWriteFile(QTextStream &stream, const QString &type
     return ok;
 }
 
-bool PB_OPFExporter::writeAttribute(QTextStream &stream, CT_TOPFNodeGroup *node, CT_ItemAttributeList *l, CT_AbstractItemAttribute *att, const QString &prefix)
+bool PB_OPFExporter::writeAttribute(QTextStream &stream, CT_TNodeGroup *node, CT_AbstractSingularItemDrawable *l, CT_AbstractItemAttribute *att, const QString &prefix)
 {
     Q_UNUSED(node)
 
@@ -395,7 +431,7 @@ bool PB_OPFExporter::writeAttribute(QTextStream &stream, CT_TOPFNodeGroup *node,
     return true;
 }
 
-bool PB_OPFExporter::writeGeometry(QTextStream &stream, CT_TOPFNodeGroup *node, CT_MeshModel *mesh, const QString &prefix)
+bool PB_OPFExporter::writeGeometry(QTextStream &stream, CT_TNodeGroup *node, CT_MeshModel *mesh, const QString &prefix)
 {
     if(mesh != NULL)
     {
@@ -404,7 +440,13 @@ bool PB_OPFExporter::writeGeometry(QTextStream &stream, CT_TOPFNodeGroup *node, 
 
         stream << prefix << "\t<mat>" << endl;
 
-        QMatrix4x4 matrix = node->opfMatrix();
+        CT_TOPFNodeGroup *opfNode = dynamic_cast<CT_TOPFNodeGroup*>(node);
+
+        QMatrix4x4 matrix;
+        if (opfNode != NULL)
+        {
+            matrix = opfNode->opfMatrix();
+        }
 
         stream << prefix << "\t\t" << matrix(0,0)*100.0 << "\t" << matrix(0,1)*100.0 << "\t" << matrix(0,2)*100.0 << "\t" << matrix(0,3)*100.0 << endl;
         stream << prefix << "\t\t" << matrix(1,0)*100.0 << "\t" << matrix(1,1)*100.0 << "\t" << matrix(1,2)*100.0 << "\t" << matrix(1,3)*100.0 << endl;
