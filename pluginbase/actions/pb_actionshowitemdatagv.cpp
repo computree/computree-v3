@@ -135,6 +135,9 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
 
     if(sItem != NULL)
     {
+        PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("-------------------------------------"));
+        PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Informations sur l'item sélectionné :"));
+
         QList<CT_AbstractItemAttribute*> attList = sItem->itemAttributes();
 
         if(!attList.isEmpty())
@@ -147,10 +150,12 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
             {
                 CT_AbstractItemAttribute *att = itAtt.next();
 
+
                 QString txt = att->displayableName() + " = " + att->toString(sItem, NULL);
                 painter.drawText(2, y, txt);
-
                 y += add;
+
+                PS_LOG->addMessage(LogInterface::info, LogInterface::action, txt);
             }
 
             painter.restore();

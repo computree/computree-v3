@@ -450,6 +450,8 @@ protected:
     CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Grid3D<DataT>::minZ, QObject::tr("Z min"), "zmin")
     CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Grid3D<DataT>::resolution, QObject::tr("Resolution"), "res")
     CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid3D<DataT>::NA, QObject::tr("NA"), "na")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataValue(), &CT_Grid3D<DataT>::dataMin, QObject::tr("Min Value"), "min")
+    CT_DEFAULT_IA_V3(CT_Grid3D<DataT>, CT_AbstractCategory::staticInitDataValue(), &CT_Grid3D<DataT>::dataMax, QObject::tr("Max Value"), "max")
     CT_DEFAULT_IA_END(CT_Grid3D<DataT>)
 
     const static CT_StandardGrid3DDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;

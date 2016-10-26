@@ -385,6 +385,8 @@ public:
     CT_DEFAULT_IA_V3(CT_Image2D<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Image2D<DataT>::minY, QObject::tr("Y min"), "ymin")
     CT_DEFAULT_IA_V3(CT_Image2D<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Image2D<DataT>::resolution, QObject::tr("Resolution"), "res")
     CT_DEFAULT_IA_V3(CT_Image2D<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Image2D<DataT>::NA, QObject::tr("NA"), "na")
+    CT_DEFAULT_IA_V3(CT_Image2D<DataT>, CT_AbstractCategory::staticInitDataValue(), &CT_Image2D<DataT>::dataMin, QObject::tr("Min Value"), "min")
+    CT_DEFAULT_IA_V3(CT_Image2D<DataT>, CT_AbstractCategory::staticInitDataValue(), &CT_Image2D<DataT>::dataMax, QObject::tr("Max Value"), "max")
     CT_DEFAULT_IA_END(CT_Image2D<DataT>)
 };
 
