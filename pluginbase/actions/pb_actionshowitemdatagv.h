@@ -3,6 +3,7 @@
 
 #include "ct_actions/abstract/ct_abstractactionforgraphicsview.h"
 #include "actions/pb_actionselectitemdrawablegv.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 class PB_ActionShowItemDataGV : public CT_AbstractActionForGraphicsView
 {
@@ -32,6 +33,8 @@ private:
     bool                            m_use;
     QPoint                          m_mousePoint;
     PB_ActionSelectItemDrawableGV   *m_selectAction;
+
+    CT_AbstractSingularItemDrawable*    _previousSelectedItem;
 };
 
 #endif // PB_ACTIONSHOWITEMDATAGV_H

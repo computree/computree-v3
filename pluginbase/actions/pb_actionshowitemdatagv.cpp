@@ -9,7 +9,6 @@
 #include "ct_cloudindex/registered/abstract/ct_abstractmodifiablecloudindexregistered.h"
 #include "ct_cloudindex/abstract/ct_abstractmodifiablecloudindex.h"
 
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "ct_iterator/ct_pointiterator.h"
 #include "ct_iterator/ct_faceiterator.h"
@@ -26,6 +25,7 @@
 PB_ActionShowItemDataGV::PB_ActionShowItemDataGV() : CT_AbstractActionForGraphicsView()
 {
     m_selectAction = new PB_ActionSelectItemDrawableGV();
+    _previousSelectedItem = NULL;
 }
 
 PB_ActionShowItemDataGV::~PB_ActionShowItemDataGV()
@@ -133,10 +133,16 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
     while(itS.hasNext() && (sItem == NULL))
         sItem = dynamic_cast<CT_AbstractSingularItemDrawable*>(itS.next());
 
+
     if(sItem != NULL)
     {
-        PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("-------------------------------------"));
-        PS_LOG->addMessage(LogInterface::info, LogInterface::action, tr("Informations sur l'item sélectionné :"));
+        bool showLog = (sItem != _previousSelectedItem);
+        QString logMessage = "";
+        if (showLog)
+        {
+            logMessage.append("<br>-------------------------------------<br>");
+            logMessage.append(tr("Informations sur l'item sélectionné :<br>"));
+        }
 
         QList<CT_AbstractItemAttribute*> attList = sItem->itemAttributes();
 
@@ -155,14 +161,23 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
                 painter.drawText(2, y, txt);
                 y += add;
 
-                PS_LOG->addMessage(LogInterface::info, LogInterface::action, txt);
+                if (showLog)
+                {
+                    logMessage.append(QString("%1<br>").arg(txt));
+                }
             }
 
             painter.restore();
 
             y += add;
         }
+
+        if (showLog)
+        {
+            PS_LOG->addMessage(LogInterface::info, LogInterface::action, logMessage);
+        }
     }
+    _previousSelectedItem = sItem;
 
     CT_SPCIR pcir = graphicsView()->getSelectedPoints();
 
