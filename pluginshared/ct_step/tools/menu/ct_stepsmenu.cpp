@@ -93,7 +93,7 @@ QString CT_StepsMenu::staticPredefinedToString(CT_StepsMenu::LevelPredefined pre
 {           
     switch(predefined) {
     case LP_Filter: return QObject::tr("Filtrer");
-    case LP_Create: return QObject::tr("Créer");
+    case LP_Create: return QObject::tr("Créer / Fusionner");
     case LP_Extract: return QObject::tr("Extraire");
     case LP_Detect: return QObject::tr("Détecter");
     case LP_Transform: return QObject::tr("Transformer");
