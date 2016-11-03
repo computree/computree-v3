@@ -134,6 +134,18 @@ int CT_TreeStructureForIterator::nChildren() const
     return _nChild;
 }
 
+int CT_TreeStructureForIterator::nChildrenThatWasAGroup() const
+{
+    int n = 0;
+
+    QListIterator<CT_TreeStructureForIterator*> it(_children);
+
+    while(it.hasNext())
+        n += it.next()->isAGroup() ? 1 : 0;
+
+    return n;
+}
+
 CT_TreeStructureForIterator* CT_TreeStructureForIterator::currentChild() const
 {
     return _currentChild;

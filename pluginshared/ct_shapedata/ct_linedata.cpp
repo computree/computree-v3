@@ -27,6 +27,7 @@
 
 #include "ct_linedata.h"
 #include "ct_iterator/ct_pointiterator.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>

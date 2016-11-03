@@ -43,6 +43,11 @@ bool CT_AbstractFilter_XYZ::setPointCloud(const CT_AbstractPointCloudIndex *ci)
     return (_inCloud != NULL);
 }
 
+void CT_AbstractFilter_XYZ::updateAll()
+{
+    updateMinMax();
+}
+
 bool CT_AbstractFilter_XYZ::filterPointCloudIndex()
 {
     if(_inCloud == NULL)
@@ -98,6 +103,8 @@ Eigen::Vector3d CT_AbstractFilter_XYZ::maxBBox() const
 
 bool CT_AbstractFilter_XYZ::updateMinMax(bool force)
 {
+    m_minMaxUpdated = false;
+
     if(_inCloud == NULL)
         return false;
 

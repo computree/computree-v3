@@ -65,6 +65,23 @@ public:
     void operator()(const osg::Image& image, const unsigned int context_id);
 };
 
+class GOsgFindPointUnderPixelCallBack : public osg::Camera::DrawCallback
+{
+public:
+    GOsgFindPointUnderPixelCallBack(QPoint pixel);
+
+    virtual void operator () (osg::RenderInfo& renderInfo) const;
+
+    bool hasFound() const;
+
+    Eigen::Vector3d foundedPoint() const;
+
+private:
+    GLfloat         m_alpha;
+    QPoint          m_pixel;
+    Eigen::Vector3d m_point;
+};
+
 /**
  * @brief Graphics view that use the GLWidget of OpenSceneGraph to manage the scene
  */
@@ -514,6 +531,7 @@ protected:
     void conversionCompleted();
 
 private:
+    friend class GOsgFindPointUnderPixelCallBack;
     QMutex                                              *m_mutex;
 
     GOsgGraphicsViewSignalEmitter                       m_signalEmitter;

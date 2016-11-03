@@ -326,6 +326,9 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
         max.setY(max.x());
         max.setZ(max.x());
 
+        for(int i=0; i<5; ++i)
+            header->m_legacyNumberOfPointsByReturn[i] = 0; // deprecated in 1.4
+
         for(int i=0; i<15; ++i)
             header->m_numberOfPointsByReturn[i] = 0;
 
@@ -379,15 +382,24 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
 
                     if(i < rnSize)
                     {
-                        quint64 &val = header->m_numberOfPointsByReturn[(int)rn->dValueAt(i)-1];
+                        const int indexInTab = rn->dValueAt(i)-1;
+
+                        quint64 &val = header->m_numberOfPointsByReturn[indexInTab];
                         ++val;
+
+                        if(indexInTab < 5) {
+                            quint32 &legacyVal = header->m_legacyNumberOfPointsByReturn[(int)rn->dValueAt(i)-1];
+                            ++legacyVal;
+                        }
                     }
                 }
             }
         }
 
-        if(rn == NULL)
+        if(rn == NULL) {
             header->m_numberOfPointsByReturn[0] = nPoints;
+            header->m_legacyNumberOfPointsByReturn[0] = nPoints;
+        }
 
         QString error;
         QDate date = QDate::currentDate();
@@ -414,10 +426,12 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
         header->m_numberOfVariableLengthRecords = 0; // TODO : write the good value
         header->m_pointDataRecordFormat = format;
         header->m_pointDataRecordLength = getPointDataLength(format);
-        header->m_legacyNumberOfPointRecord = nPoints; // deprecated in 1.4
 
-        for(int i=0; i<5; ++i)
-            header->m_legacyNumberOfPointsByReturn[i] = 0; // deprecated in 1.4
+        if(((header->m_versionMinor == 1) && (header->m_versionMajor >= 4)) || (header->m_versionMinor > 1)) {
+            header->m_legacyNumberOfPointRecord = 0; // deprecated in 1.4
+        } else {
+            header->m_legacyNumberOfPointRecord = nPoints;
+        }
 
         // maximum point coordinate
         double scaleFactor = qMax(qMax(qAbs(max(0)), qAbs(max(1))), qAbs(max(2)));

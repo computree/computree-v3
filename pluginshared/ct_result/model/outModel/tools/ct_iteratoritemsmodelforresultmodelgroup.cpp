@@ -61,9 +61,9 @@ bool CT_IteratorItemsModelForResultModelGroup::recursiveBeginIterateItems(const 
     // le groupe de ce résultat
     _currentGroup = _resultGroup->rootGroup();
 
-    // si on ne doit pas renvoyer les groupes de ce résultat
-    // mais des groupes enfants
-    if(_rootTreeModels->nChildren() > 0)
+    // si on ne doit pas renvoyer un item dans le groupe racine de ce résultat
+    // mais dans les groupes enfants
+    if(_rootTreeModels->nChildrenThatWasAGroup() > 0)
     {
         _currentTreeModelsChild = _rootTreeModels;
 
@@ -83,8 +83,8 @@ CT_OutAbstractSingularItemModel* CT_IteratorItemsModelForResultModelGroup::recur
 
     DEF_CT_AbstractGroupModelOut *group = NULL;
 
-    // si on doit renvoyer les groupes de ce résultat car c'est eux qui
-    // contiennent l'item recherché
+    // si on doit renvoyer un item dans le groupe racine de ce résultat car c'est lui qui
+    // contient l'item recherché
     if(_currentTreeModelsChild == NULL)
     {
         if(_currentGroup != NULL)
@@ -102,10 +102,11 @@ CT_OutAbstractSingularItemModel* CT_IteratorItemsModelForResultModelGroup::recur
                 }
             }
 
+            _currentGroup = NULL;
+
             if(!_currentGroupItemDrawableModels.isEmpty())
                 return _currentGroupItemDrawableModels.takeFirst();
 
-            _currentGroup = NULL;
             return NULL;
         }
 

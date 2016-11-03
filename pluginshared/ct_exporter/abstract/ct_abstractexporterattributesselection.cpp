@@ -1,5 +1,8 @@
 #include "ct_abstractexporterattributesselection.h"
 
+#include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
+#include "ct_result/abstract/ct_abstractresult.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>

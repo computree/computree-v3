@@ -53,6 +53,11 @@ public:
     int nChildren() const;
 
     /**
+     * @brief Returns number of child that was a group
+     */
+    int nChildrenThatWasAGroup() const;
+
+    /**
      * @brief This class can help you to know and backup where you are in the structure.
      *
      *        Set the current child to the first child

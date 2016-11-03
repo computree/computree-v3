@@ -1,10 +1,9 @@
 #ifndef CT_ABSTRACTITEMGROUP_H
 #define CT_ABSTRACTITEMGROUP_H
 
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
-
 #include "ct_itemdrawable/model/inModel/abstract/ct_inabstractsingularitemmodel.h"
 #include "ct_itemdrawable/model/inModel/abstract/ct_inabstractgroupmodel.h"
+#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 class CT_OutAbstractGroupModel;
 class CT_OutAbstractSingularItemModel;

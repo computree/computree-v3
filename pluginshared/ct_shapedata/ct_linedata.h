@@ -29,9 +29,10 @@
 #define CT_LINEDATA_H
 
 #include "ct_shapedata.h"
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
 
 #include "ct_defines.h"
+
+class CT_AbstractSingularItemDrawable;
 
 class PLUGINSHAREDSHARED_EXPORT CT_LineData : public CT_ShapeData
 {

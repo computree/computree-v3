@@ -765,20 +765,15 @@ size_t GOsgGraphicsView::countItems()
 
 Eigen::Vector3d GOsgGraphicsView::pointUnderPixel(const QPoint &pixel, bool &found) const
 {
-    // TODO : must test it
-    float depth;
-    const_cast<GOsgGraphicsView*>(this)->glReadPixels(pixel.x(), height()-pixel.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-    found = depth < 1.0;
+    osg::ref_ptr<GOsgFindPointUnderPixelCallBack> cb = new GOsgFindPointUnderPixelCallBack(pixel);
 
-    osg::Matrix MVPW(m_view->getCamera()->getViewMatrix() *
-                     m_view->getCamera()->getProjectionMatrix() *
-                     m_view->getCamera()->getViewport()->computeWindowMatrix());
+    m_view->getCamera()->setFinalDrawCallback(cb.get());
+    const_cast<GOsgGraphicsView*>(this)->repaint();
+    m_view->getCamera()->setFinalDrawCallback(NULL);
 
-    osg::Matrixd inverseMVPW = osg::Matrixd::inverse(MVPW);
+    found = cb->hasFound();
 
-    osg::Vec3 point = osg::Vec3(pixel.x(), height()-pixel.y(), depth) * inverseMVPW;
-
-    return Eigen::Vector3d(point.x(), point.y(), point.z());
+    return cb->foundedPoint();
 }
 
 void GOsgGraphicsView::convertClickToLine(const QPoint &pixel, Eigen::Vector3d &orig, Eigen::Vector3d &dir) const
@@ -1298,4 +1293,46 @@ void GOsgCaptureOperation::operator()(const osg::Image &image, const unsigned in
 
     if(!filename.isEmpty())
         osgDB::writeImageFile(image, filename.toStdString());
+}
+
+// --- GOsgFindPixelCallBack --- //
+
+GOsgFindPointUnderPixelCallBack::GOsgFindPointUnderPixelCallBack(QPoint pixel)
+{
+    m_pixel = pixel;
+    m_alpha = 1.0;
+}
+
+void GOsgFindPointUnderPixelCallBack::operator ()(osg::RenderInfo &renderInfo) const
+{
+    osg::Camera *cam = renderInfo.getCurrentCamera();
+
+    glReadBuffer(GL_BACK);
+
+    osg::ref_ptr<osg::Image> img = new osg::Image();
+    img->readPixels(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT);
+
+    const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_alpha = ((GLfloat*)img->data(0, 0))[0];
+
+    if(hasFound()) {
+        osg::Matrix MVPW(cam->getViewMatrix() *
+                         cam->getProjectionMatrix() *
+                         cam->getViewport()->computeWindowMatrix());
+
+        osg::Matrixd inverseMVPW = osg::Matrixd::inverse(MVPW);
+
+        osg::Vec3 point = osg::Vec3(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), m_alpha) * inverseMVPW;
+
+        const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_point = Eigen::Vector3d(point.x(), point.y(), point.z());
+    }
+}
+
+bool GOsgFindPointUnderPixelCallBack::hasFound() const
+{
+    return m_alpha >= 0.0 && m_alpha < 1.0;
+}
+
+Eigen::Vector3d GOsgFindPointUnderPixelCallBack::foundedPoint() const
+{
+    return m_point;
 }

@@ -7,11 +7,12 @@ isEmpty(CT_PREFIX_INSTALL) {
 }
 
 CONFIG(debug, debug|release) {
-    PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/ComputreeInstallDebug
+    CT_DESTDIR_NAME = ComputreeInstallDebug
 } else {
-    PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/ComputreeInstallRelease
+    CT_DESTDIR_NAME = ComputreeInstallRelease
 }
 
+PLUGINSHARED_DESTDIR = $${CT_PREFIX_INSTALL}/$${CT_DESTDIR_NAME}
 PLUGINSHARED_PLUGIN_DESTDIR = $${PLUGINSHARED_DESTDIR}/plugins
 
 message(Element(s) will be installed to $${PLUGINSHARED_DESTDIR})

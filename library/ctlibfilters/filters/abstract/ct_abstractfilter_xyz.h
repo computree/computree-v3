@@ -34,7 +34,13 @@ public:
     bool setPointCloud(const CT_AbstractPointCloudIndex* ci);
 
     /**
-     * @brief Call to filter entire input cloud
+     * @brief Update the filter before use the method "filterPointCloudIndex" or "validatePoint". By default
+     *        just update the bounding box
+     */
+    virtual void updateAll();
+
+    /**
+     * @brief Call to filter entire input cloud. Call "updateAll" before this method.
      * @return false if the input cloud was not set or another error is occured
      */
     virtual bool filterPointCloudIndex();
@@ -50,7 +56,7 @@ public:
     CT_PointCloudIndexVector* takeOuputCloudIndex();
 
     /**
-     * @brief Call to check if a point is valid (not filtered) or not (filtered)
+     * @brief Call to check if a point is valid (not filtered) or not (filtered). Call "updateAll" before this method.
      * @param pointIt : the iterator that was on the current point to check
      * @return true if the point must be kept (not filtered)
      */

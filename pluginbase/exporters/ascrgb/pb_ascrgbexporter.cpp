@@ -94,10 +94,18 @@ bool PB_ASCRGBExporter::protectedExportToFile()
     {
         QTextStream txtStream(&file);
 
-        txtStream << "X Y Z R G B NX NY NZ\n";
-
         CT_AbstractColorCloud *cc = createColorCloudBeforeExportToFile();
         CT_AbstractNormalCloud *nn = createNormalCloudBeforeExportToFile();
+
+        txtStream << "X Y Z";
+
+        if(cc != NULL)
+            txtStream << " R G B";
+
+        if(nn != NULL)
+            txtStream << " NX NY NZ";
+
+        txtStream << "\n";
 
         float r = 1;
         float g = 1;
@@ -126,11 +134,7 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(1)) << " ";
                 txtStream << CT_NumericToStringConversionT<double>::toString(point(2));
 
-                if(cc == NULL)
-                {
-                    txtStream << " 0 0 0";
-                }
-                else
+                if(cc != NULL)
                 {
                     const CT_Color &co = cc->constColorAt(itP.cIndex());
                     r = (quint16)co.r() / 255.0;
@@ -142,18 +146,16 @@ bool PB_ASCRGBExporter::protectedExportToFile()
                     txtStream << b;
                 }
 
-                if(nn == NULL)
-                {
-                    txtStream << " 0 0 0\n";
-                }
-                else
+                if(nn != NULL)
                 {
                     const CT_Normal &no = nn->constNormalAt(itP.cIndex());
 
                     txtStream << " " << no[0] << " ";
                     txtStream << no[1] << " ";
-                    txtStream << no[2] << "\n";
+                    txtStream << no[2];
                 }
+
+                txtStream << "\n";
 
                 ++i;
 

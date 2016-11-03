@@ -1,8 +1,13 @@
 #ifndef CT_ITEMDRAWABLECOLLECTIONHIERARCHYRESULT_H
 #define CT_ITEMDRAWABLECOLLECTIONHIERARCHYRESULT_H
 
-#include "ct_result/abstract/ct_abstractresult.h"
-#include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+#include "pluginShared_global.h"
+#include <QList>
+
+class CT_AbstractSingularItemDrawable;
+class CT_ResultGroup;
+class CT_OutAbstractItemModel;
+class CT_OutAbstractResultModel;
 
 /**
  * @brief A collection of itemdrawable in a result that can be exported

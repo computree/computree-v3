@@ -1,7 +1,6 @@
 #include "ct_lasheader.h"
 
 #include <QDate>
-#include <QDebug>
 
 #define readRawDataAndCheck(Param, N, Err) if(stream.readRawData(Param, N) != N) { error = Err; return false; } else { filePos += N; }
 #define readData(Param, Err) if(stream.atEnd()) { error = Err; return false; } else { stream >> Param; filePos += sizeof(Param); }
@@ -210,7 +209,7 @@ CT_AbstractItemDrawable *CT_LASHeader::copy(const CT_OutAbstractItemModel *model
 
 size_t CT_LASHeader::sizeInBytes() const
 {
-    size_t size = sizeof(m_fileSignature) +
+    size_t s = sizeof(m_fileSignature) +
             sizeof(m_fileSourceID) +
             sizeof(m_globalEncoding) +
             sizeof(m_projectIDGuidData1) +
@@ -243,20 +242,20 @@ size_t CT_LASHeader::sizeInBytes() const
             sizeof(_maxCoordinates(2)) +
             sizeof(_minCoordinates(2));
 
-    if (m_versionMajor == 1 && m_versionMinor >= 3)
-    {
-        size =  size + sizeof(m_startOfWaveformDataPacketRecord);
-    }
+    if((m_versionMinor == 1) && (m_versionMajor <= 2))
+        return s;
 
-    if (m_versionMajor == 1 && m_versionMinor >= 4)
-    {
-        size =  size + sizeof(m_startOfFirstExtendedVariableLengthRecord) +
-                       sizeof(m_numberOfExtendedVariableLengthRecords) +
-                       sizeof(m_numberOfPointRecords) +
-                       sizeof(m_numberOfPointsByReturn);
-    }
+    s += sizeof(m_startOfWaveformDataPacketRecord);
 
-    return size;
+    if((m_versionMinor == 1) && (m_versionMajor <= 3))
+        return s;
+
+    s += sizeof(m_startOfFirstExtendedVariableLengthRecord) +
+         sizeof(m_numberOfExtendedVariableLengthRecords) +
+         sizeof(m_numberOfPointRecords) +
+         sizeof(m_numberOfPointsByReturn);
+
+    return s;
 }
 
 size_t CT_LASHeader::getPointsRecordCount() const
@@ -383,22 +382,22 @@ bool CT_LASHeader::read(QDataStream &stream, QString &error)
     setCenterY((maxY() + minY())/2.0);
     setCenterZ((maxZ() + minZ())/2.0);
 
-    if (m_versionMajor == 1 && m_versionMinor >= 3)
-    {
-        readDataAndCheckSize(m_startOfWaveformDataPacketRecord, QObject::tr("Start of Waveform Data Packet Record invalid"));
-    }
+    if((m_versionMinor == 1) && (m_versionMajor <= 2))
+        return true;
 
-    if (m_versionMajor == 1 && m_versionMinor >= 4)
-    {
-        readDataAndCheckSize(m_startOfFirstExtendedVariableLengthRecord, QObject::tr("Start Of First Extended Variable Length Record invalid"));
-        readDataAndCheckSize(m_numberOfExtendedVariableLengthRecords, QObject::tr("Number Of Extended Variable Length Records invalid"));
-        readDataAndCheckSize(m_numberOfPointRecords, QObject::tr("Number Of Point Records invalid"));
+    readDataAndCheckSize(m_startOfWaveformDataPacketRecord, QObject::tr("Start of Waveform Data Packet Record invalid"));
 
-        for(int i=0; i<15; ++i) {
-            quint64 p;
-            readDataAndCheckSize(p, QObject::tr("Number Of Points By Return (%1) invalid").arg(i));
-            m_numberOfPointsByReturn[i] = p;
-        }
+    if((m_versionMinor == 1) && (m_versionMajor <= 3))
+        return true;
+
+    readDataAndCheckSize(m_startOfFirstExtendedVariableLengthRecord, QObject::tr("Start Of First Extended Variable Length Record invalid"));
+    readDataAndCheckSize(m_numberOfExtendedVariableLengthRecords, QObject::tr("Number Of Extended Variable Length Records invalid"));
+    readDataAndCheckSize(m_numberOfPointRecords, QObject::tr("Number Of Point Records invalid"));
+
+    for(int i=0; i<15; ++i) {
+        quint64 p;
+        readDataAndCheckSize(p, QObject::tr("Number Of Points By Return (%1) invalid").arg(i));
+        m_numberOfPointsByReturn[i] = p;
     }
 
     return true;
@@ -483,19 +482,20 @@ bool CT_LASHeader::write(QDataStream &stream, QString &error)
     stream << get_maxZ();
     stream << get_minZ();
 
-    if (m_versionMajor == 1 && m_versionMinor >= 3)
-    {
-        stream << m_startOfWaveformDataPacketRecord;
-    }
-    if (m_versionMajor == 1 && m_versionMinor >= 4)
-    {
-        stream << m_startOfFirstExtendedVariableLengthRecord;
-        stream << m_numberOfExtendedVariableLengthRecords;
-        stream << m_numberOfPointRecords;
+    if((m_versionMinor == 1) && (m_versionMajor <= 2))
+        return true;
 
-        for(int i=0; i<15; ++i) {
-            stream << m_numberOfPointsByReturn[i];
-        }
+    stream << m_startOfWaveformDataPacketRecord;
+
+    if((m_versionMinor == 1) && (m_versionMajor <= 3))
+        return true;
+
+    stream << m_startOfFirstExtendedVariableLengthRecord;
+    stream << m_numberOfExtendedVariableLengthRecords;
+    stream << m_numberOfPointRecords;
+
+    for(int i=0; i<15; ++i) {
+        stream << m_numberOfPointsByReturn[i];
     }
 
     return true;
