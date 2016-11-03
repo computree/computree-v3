@@ -52,6 +52,7 @@ protected:
 private:
     GDALDriver                                      *m_driver;
     QHash<QString, CT_OutStdSingularItemModel*>     m_models;
+    QString                                         m_nameFromDriver;
 
     /**
      * @brief Return true if the file can be opened by this driver
@@ -68,6 +69,11 @@ private:
      * @brief Convert the poGeometry to a CT_XXX object and add it to a new group for the layer 'layerIndex'
      */
     void convertGeometryToCT(OGRGeometry *poGeometry, int layerIndex);
+
+    /**
+     * @brief Update the name from the driver
+     */
+    void updateNameFromDriver();
 #endif
 };
 

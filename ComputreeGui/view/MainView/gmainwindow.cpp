@@ -1042,6 +1042,7 @@ QString GMainWindow::createFileExtensionAvailable() const
     fileExtension += tr("All Valid Files (");
 
     // ALL VALID FILES (script and from load file step)
+    QSet<QString> uniqueFormats;
 
     fileExtension += createScriptManagerExtension("", "");
 
@@ -1063,7 +1064,12 @@ QString GMainWindow::createFileExtensionAvailable() const
         QListIterator<QString> itS(suffixes);
 
         while(itS.hasNext()) {
-            fileExtension += " *." + itS.next();
+            const QString &f = itS.next();
+
+            if(!uniqueFormats.contains(f)) {
+                uniqueFormats.insert(f);
+                fileExtension += " *." + f;
+            }
         }
     }
 

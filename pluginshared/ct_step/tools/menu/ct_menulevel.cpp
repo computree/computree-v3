@@ -50,12 +50,7 @@ bool sortSteps(const CT_VirtualAbstractStep *s1, const CT_VirtualAbstractStep *s
 
 QList<CT_VirtualAbstractStep *> CT_MenuLevel::steps() const
 {
-    QList<CT_VirtualAbstractStep *> s;
-    s.append(m_steps);
-
-    qSort(s.begin(), s.end(), sortSteps);
-
-    return s;
+    return m_stepsSorted.values();
 }
 
 QList<CT_MenuLevel::CT_NotFoundedStep> CT_MenuLevel::stepsNotFounded() const
@@ -162,6 +157,7 @@ bool CT_MenuLevel::addStepToCollectionOrDeleteIt(CT_VirtualAbstractStep *step)
     }
 
     m_steps.append(step);
+    m_stepsSorted.insertMulti(step->getStepDescription().toLower(), step);
 
     connect(step, SIGNAL(destroyed(QObject*)), this, SLOT(stepDeleted(QObject*)), Qt::DirectConnection);
 

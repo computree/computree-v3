@@ -145,6 +145,7 @@ private:
     typedef QList<CT_VirtualAbstractStep*>          StepCollection;
     typedef QListIterator<CT_VirtualAbstractStep*>  StepCollectionIt;
 
+    typedef QMap<QString, CT_VirtualAbstractStep*>  StepCollectionSorted;
 
     typedef QList<CT_NotFoundedStep>                StepNotFoundedCollection;
     typedef QListIterator<CT_NotFoundedStep>        StepNotFoundedCollectionIt;
@@ -153,6 +154,7 @@ private:
     typedef QListIterator<CT_MenuLevel*>            LevelCollectionIt;
 
     StepCollection              m_steps;
+    StepCollectionSorted        m_stepsSorted;
     StepNotFoundedCollection    m_stepsNotFounded;
     LevelCollection             m_levelsPredefined;
     LevelCollection             m_levelsCustom;

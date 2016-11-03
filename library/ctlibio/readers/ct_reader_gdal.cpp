@@ -42,6 +42,8 @@ CT_Reader_GDAL::CT_Reader_GDAL(const CT_Reader_GDAL &other) : CT_AbstractReader(
 
         m_models.insert(it.key(), model);
     }
+
+    updateNameFromDriver();
 #endif
 }
 
@@ -49,6 +51,8 @@ CT_Reader_GDAL::CT_Reader_GDAL(const CT_Reader_GDAL &other) : CT_AbstractReader(
 CT_Reader_GDAL::CT_Reader_GDAL(const GDALDriver *driver)
 {
     m_driver = (GDALDriver*)driver;
+
+    updateNameFromDriver();
 }
 #endif
 
@@ -92,9 +96,8 @@ CT_AbstractReader* CT_Reader_GDAL::copy() const
 QString CT_Reader_GDAL::GetReaderName() const
 {
     #ifdef USE_GDAL
-    if(m_driver != NULL) {
-        return QString("%1 %2").arg(getTypeOfDriver()).arg(CT_GdalTools::staticGdalDriverName(m_driver));
-    }
+    if(!m_nameFromDriver.isEmpty())
+        return m_nameFromDriver;
     #endif
     return metaObject()->className();
 }
@@ -492,5 +495,13 @@ void CT_Reader_GDAL::convertGeometryToCT(OGRGeometry *poGeometry, int layerIndex
         delete group;
     else
         addOutGroup(QString(DEF_CT_Reader_GDAL_layerOut).arg(layerIndex), group);
+}
+
+void CT_Reader_GDAL::updateNameFromDriver()
+{
+    if(m_driver != NULL)
+        m_nameFromDriver = QString("%1 %2").arg(getTypeOfDriver()).arg(CT_GdalTools::staticGdalDriverName(m_driver));
+    else
+        m_nameFromDriver = "";
 }
 #endif

@@ -115,6 +115,7 @@ QString CDM_Tools::createFileExtensionForExporter(CT_AbstractExporter *exporter)
     fileExtension += QObject::tr("All Valid Files (");
 
     // VALID FILES
+    QSet<QString> uniqueFormats;
 
     QListIterator<FileFormat> itFormat(exporter->exportFormats());
 
@@ -124,13 +125,13 @@ QString CDM_Tools::createFileExtensionForExporter(CT_AbstractExporter *exporter)
 
         QListIterator<QString> it(format.suffixes());
 
-        if(it.hasNext())
+        while(it.hasNext())
         {
-            fileExtension += "*." + it.next();
+            const QString &f = it.next();
 
-            while(it.hasNext())
-            {
-                fileExtension += " *." + it.next();
+            if(!uniqueFormats.contains(f)) {
+                uniqueFormats.insert(f);
+                fileExtension += "*." + f;
             }
         }
     }
