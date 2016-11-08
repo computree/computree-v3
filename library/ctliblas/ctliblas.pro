@@ -1,6 +1,8 @@
 CT_PREFIX = ../..
 CT_PREFIX_INSTALL = ../../..
 
+DONT_CHECK_CT_LIBRARY = 1
+
 # need filters and metrics
 COMPUTREE += ctlibfilters ctlibmetrics
 
