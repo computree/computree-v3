@@ -14,6 +14,10 @@
     USE_PCL_ERROR_MSG += "QHULL INCLUDE directory not found ! => $${QHULL_INC_PATH}"
 }
 
+!exists($${QHULL_LIBS_PATH}) {
+    USE_PCL_ERROR_MSG += "QHULL LIBS directory not found ! => $${QHULL_LIBS_PATH}"
+}
+
 !exists($${FLANN_INC_PATH}) {
     USE_PCL_ERROR_MSG += "FLANN INCLUDE directory not found ! => $${FLANN_INC_PATH}"
 }

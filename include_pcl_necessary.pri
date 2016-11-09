@@ -18,6 +18,14 @@ PCL_LIB_ADD += pcl_surface
 PCL_LIB_ADD += pcl_tracking
 PCL_LIB_ADD += pcl_visualization
 
+QHULL_LIB_ADD =
+#QHULL_LIB_ADD += qhull
+#QHULL_LIB_ADD += qhull_p
+#QHULL_LIB_ADD += qhullcpp
+QHULL_LIB_ADD += qhullstatic
+QHULL_LIB_ADD += qhullstatic_p
+
+
 #BOOST_LIB_ADD =
 #BOOST_LIB_ADD += boost_system
 #BOOST_LIB_ADD += boost_thread
@@ -28,8 +36,11 @@ INCLUDEPATH += $$QHULL_INC_PATH
 INCLUDEPATH += $$FLANN_INC_PATH
 INCLUDEPATH += $$BOOST_INC_PATH
 
+DEPENDPATH  += $$QHULL_INC_PATH
+
 LIBS += -L$$PCL_LIBS_PATH
 LIBS += -L$$BOOST_LIBS_PATH
+LIBS += -L$$QHULL_LIBS_PATH
 
 unix {
     for(a, PCL_LIB_ADD) {
@@ -47,6 +58,23 @@ unix {
             }
         }
     }
+
+    for(a, QHULL_LIB_ADD) {
+        CONFIG(debug, debug|release) {
+            !exists($$QHULL_LIBS_PATH/$${a}_d*) {
+                USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a}_d was not found"
+            } else {
+                LIBS += -l$${a}_d
+            }
+        } else {
+            !exists($$QHULL_LIBS_PATH/$${a}*) {
+                USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
+            } else {
+                LIBS += -l$${a}
+            }
+        }
+    }
+
 
 #    for(a, BOOST_LIB_ADD) {
 #        CONFIG(debug, debug|release) {
@@ -79,6 +107,23 @@ windows {
                 USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_release was not found"
             } else {
                 LIBS += -l$${a}_release
+            }
+        }
+    }
+
+
+    for(a, QHULL_LIB_ADD) {
+        CONFIG(debug, debug|release) {
+            !exists($$QHULL_LIBS_PATH/$${a}_d*) {
+                USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a}_d was not found"
+            } else {
+                LIBS += -l$${a}_d
+            }
+        } else {
+            !exists($$QHULL_LIBS_PATH/$${a}*) {
+                USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
+            } else {
+                LIBS += -l$${a}
             }
         }
     }

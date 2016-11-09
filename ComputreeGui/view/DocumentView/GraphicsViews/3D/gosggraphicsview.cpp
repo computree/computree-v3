@@ -1305,26 +1305,26 @@ GOsgFindPointUnderPixelCallBack::GOsgFindPointUnderPixelCallBack(QPoint pixel)
 
 void GOsgFindPointUnderPixelCallBack::operator ()(osg::RenderInfo &renderInfo) const
 {
-    osg::Camera *cam = renderInfo.getCurrentCamera();
+//    osg::Camera *cam = renderInfo.getCurrentCamera();
 
-    glReadBuffer(GL_BACK);
+//    glReadBuffer(GL_BACK);
 
-    osg::ref_ptr<osg::Image> img = new osg::Image();
-    img->readPixels(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT);
+//    osg::ref_ptr<osg::Image> img = new osg::Image();
+//    img->readPixels(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT);
 
-    const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_alpha = ((GLfloat*)img->data(0, 0))[0];
+//    const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_alpha = ((GLfloat*)img->data(0, 0))[0];
 
-    if(hasFound()) {
-        osg::Matrix MVPW(cam->getViewMatrix() *
-                         cam->getProjectionMatrix() *
-                         cam->getViewport()->computeWindowMatrix());
+//    if(hasFound()) {
+//        osg::Matrix MVPW(cam->getViewMatrix() *
+//                         cam->getProjectionMatrix() *
+//                         cam->getViewport()->computeWindowMatrix());
 
-        osg::Matrixd inverseMVPW = osg::Matrixd::inverse(MVPW);
+//        osg::Matrixd inverseMVPW = osg::Matrixd::inverse(MVPW);
 
-        osg::Vec3 point = osg::Vec3(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), m_alpha) * inverseMVPW;
+//        osg::Vec3 point = osg::Vec3(m_pixel.x(), cam->getViewport()->height()-m_pixel.y(), m_alpha) * inverseMVPW;
 
-        const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_point = Eigen::Vector3d(point.x(), point.y(), point.z());
-    }
+//        const_cast<GOsgFindPointUnderPixelCallBack*>(this)->m_point = Eigen::Vector3d(point.x(), point.y(), point.z());
+//    }
 }
 
 bool GOsgFindPointUnderPixelCallBack::hasFound() const
