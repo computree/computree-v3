@@ -5,7 +5,7 @@ unix {
     PCL_INC_PATH = "$${PCL_BASE_PATH}include/pcl-1.7"
     EIGEN_INC_PATH = "$${PCL_BASE_PATH}include/eigen3"
     QHULL_INC_PATH = "$${PCL_BASE_PATH}include"
-    QHULL_LIBS_PATH = "$${PCL_BASE_PATH}lib"
+    QHULL_LIBS_PATH = "$${PCL_BASE_PATH}lib/x86_64-linux-gnu"
     FLANN_INC_PATH = "$${PCL_BASE_PATH}include"
     BOOST_LIBS_PATH = "$${PCL_BASE_PATH}lib/x86_64-linux-gnu"
     BOOST_INC_PATH = "$${PCL_BASE_PATH}include"
