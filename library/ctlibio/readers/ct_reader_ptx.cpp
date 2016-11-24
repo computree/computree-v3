@@ -12,6 +12,7 @@
 #include <QTextStream>
 #include <QDebug>
 
+#define DEF_CT_Reader_PTX_groupOut      "grp"
 #define DEF_CT_Reader_PTX_sceneOut      "sce"
 #define DEF_CT_Reader_PTX_intensityOut  "int"
 #define DEF_CT_Reader_PTX_rgbOut        "rgb"
@@ -166,18 +167,21 @@ bool CT_Reader_PTX::readHeaderValues(QTextStream &stream, int &nColumn, int &nRo
         }
     }
 
+    qint64 pos = stream.pos();
     firstLine = stream.readLine().simplified();
 
     if(firstLine.isEmpty()) {
         if(stream.atEnd())
             return false;
 
+        pos = stream.pos();
         firstLine = stream.readLine();
     }
 
     QString pointLine = firstLine.simplified();
     int nPointsCol = pointLine.split(" ").size();
     hasColors = (nPointsCol == 7);
+    stream.seek(pos);
 
     return true;
 }
@@ -193,11 +197,21 @@ void CT_Reader_PTX::protectedCreateOutItemDrawableModelList()
 {
     CT_AbstractReader::protectedCreateOutItemDrawableModelList();
 
-    addOutItemDrawableModel(DEF_CT_Reader_PTX_sceneOut, new CT_Scene(), tr("Scène"));
-    addOutItemDrawableModel(DEF_CT_Reader_PTX_intensityOut, new CT_PointsAttributesScalarTemplated<double>(), tr("Intensité"));
-    addOutItemDrawableModel(DEF_CT_Reader_PTX_rgbOut, new CT_PointsAttributesColor(), tr("RGB"));
-    addOutItemDrawableModel(DEF_CT_Reader_PTX_matrixOut, new CT_TransformationMatrix(), tr("Matrice de transformation"));
-    addOutItemDrawableModel(DEF_CT_Reader_PTX_scannerOut, new CT_Scanner(), tr("Scanner"));
+    CT_OutStdGroupModel *group = new CT_OutStdGroupModel(DEF_CT_Reader_PTX_groupOut, new CT_StandardItemGroup(), tr("Scenes"));
+
+    m_sceneModel = new CT_OutStdSingularItemModel(DEF_CT_Reader_PTX_sceneOut, new CT_Scene(), tr("Scène"));
+    m_intModel = new CT_OutStdSingularItemModel(DEF_CT_Reader_PTX_intensityOut, new CT_PointsAttributesScalarTemplated<double>(), tr("Intensité"));
+    m_rgbModel = new CT_OutStdSingularItemModel(DEF_CT_Reader_PTX_rgbOut, new CT_PointsAttributesColor(), tr("RGB"));
+    m_matrixModel = new CT_OutStdSingularItemModel(DEF_CT_Reader_PTX_matrixOut, new CT_TransformationMatrix(), tr("Matrice de transformation"));
+    m_scannerModel = new CT_OutStdSingularItemModel(DEF_CT_Reader_PTX_scannerOut, new CT_Scanner(), tr("Scanner"));
+
+    group->addItem(m_sceneModel);
+    group->addItem(m_intModel);
+    group->addItem(m_rgbModel);
+    group->addItem(m_matrixModel);
+    group->addItem(m_scannerModel);
+
+    addOutGroupModel(group);
 }
 
 bool CT_Reader_PTX::protectedReadFile()
@@ -292,15 +306,15 @@ bool CT_Reader_PTX::protectedReadFile()
                     setProgress(a*100/nPoints);
                 }
 
-                qDebug() << "go to create scene";
+                CT_StandardItemGroup *group = new CT_StandardItemGroup(NULL, NULL);
 
-                CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
+                CT_Scene *scene = new CT_Scene(m_sceneModel, NULL, pcir);
                 scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
 
                 // add the scene
-                addOutItemDrawable(DEF_CT_Reader_PTX_sceneOut, scene);
+                group->addItemDrawable(scene);
 
-                CT_PointsAttributesScalarTemplated<double> *pas = new CT_PointsAttributesScalarTemplated<double>(NULL,
+                CT_PointsAttributesScalarTemplated<double> *pas = new CT_PointsAttributesScalarTemplated<double>(m_intModel,
                                                                                                                    NULL,
                                                                                                                    pcir,
                                                                                                                    collection,
@@ -308,10 +322,10 @@ bool CT_Reader_PTX::protectedReadFile()
                                                                                                                    imax);
 
                 // add attributes
-                addOutItemDrawable(DEF_CT_Reader_PTX_intensityOut, pas);
+                group->addItemDrawable(pas);
 
                 if (hasColors) {
-                    CT_PointsAttributesColor *colors = new CT_PointsAttributesColor(NULL,
+                    CT_PointsAttributesColor *colors = new CT_PointsAttributesColor(m_rgbModel,
                                                                                     NULL,
                                                                                     pcir,
                                                                                     cc);
@@ -328,10 +342,12 @@ bool CT_Reader_PTX::protectedReadFile()
                 scanPos(2) = matrix(2,4);
 
                 // add the scanner
-                addOutItemDrawable(DEF_CT_Reader_PTX_scannerOut, new CT_Scanner(NULL, NULL, 0, scanPos, Eigen::Vector3d(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
+                group->addItemDrawable(new CT_Scanner(m_scannerModel, NULL, 0, scanPos, Eigen::Vector3d(0,1,0), 360, 150, hres, vres, 0, 0, true, false));
 
                 // add the matrix
-                addOutItemDrawable(DEF_CT_Reader_PTX_matrixOut, new CT_TransformationMatrix(NULL, NULL, matrix));
+                group->addItemDrawable(new CT_TransformationMatrix(m_matrixModel, NULL, matrix));
+
+                addOutGroup(DEF_CT_Reader_PTX_groupOut, group);
             }
 
             f.close();

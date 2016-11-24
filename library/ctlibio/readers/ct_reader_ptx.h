@@ -48,6 +48,11 @@ public:
 
 private:
     bool    m_applyTransformation;
+    CT_OutStdSingularItemModel  *m_sceneModel;
+    CT_OutStdSingularItemModel  *m_intModel;
+    CT_OutStdSingularItemModel  *m_rgbModel;
+    CT_OutStdSingularItemModel  *m_matrixModel;
+    CT_OutStdSingularItemModel  *m_scannerModel;
 
     bool readHeaderValues(QTextStream &stream, int &nColumn, int &nRow, Eigen::Matrix4d &matrix, bool &hasColors) const;
 
