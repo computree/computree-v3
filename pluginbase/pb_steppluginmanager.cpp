@@ -73,6 +73,7 @@
 #include "exporters/ascid/pb_ascidexporter.h"
 
 #include "ctlibio/readers/ct_reader_xyb.h"
+#include "ctlibio/readers/ct_reader_ptx.h"
 #include "ctlibio/readers/ct_reader_obj.h"
 #include "ctlibio/readers/ct_reader_ascrgb.h"
 #include "ctlibio/readers/ct_reader_larchitect_grid.h"
@@ -206,6 +207,7 @@ bool PB_StepPluginManager::loadReaders()
 
     CT_StandardReaderSeparator *sep = addNewSeparator(new CT_StandardReaderSeparator("Readers"));
     sep->addReader(new CT_Reader_XYB());
+    sep->addReader(new CT_Reader_PTX());
     sep->addReader(new CT_Reader_OBJ());
     sep->addReader(new CT_Reader_LArchitect_Grid());
     sep->addReader(new CT_Reader_ASCRGB());
