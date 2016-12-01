@@ -6,7 +6,7 @@
 #include "ct_itemdrawable/ct_grid4d.h"
 #include <typeinfo>
 
-#include "opencv2/core/mat.hpp"
+#include "opencv2/core/core.hpp"
 
 /*!
  * \class CT_Grid4D_Sparse
@@ -240,9 +240,9 @@ public:
      */
     inline DataT valueAtIndex(const size_t index) const
     {
-        if ( index >= nCells() )
+        if ( index >= this->nCells() )
         {
-            return NA();
+            return this->NA();
         }
 
         return _data(index);
@@ -256,7 +256,7 @@ public:
      */
     inline bool setValueAtIndex(const size_t index, const DataT value)
     {
-        if ( index >= nCells() )
+        if ( index >= this->nCells() )
         {
             return false;
         }

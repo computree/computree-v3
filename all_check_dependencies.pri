@@ -22,15 +22,23 @@ isEmpty(USE_OSG_ERROR_MSG) {
     OSG_LIB_ADD += osgDB
     OSG_LIB_ADD += osgFX
 
+    INCLUDEPATH += $$OSG_INC_PATH
+
+    LIBS += -L$$OSG_LIBS_PATH
+
     unix {
         for(a, OSG_LIB_ADD) {
             CONFIG(debug, debug|release) {
-                !exists($$OSG_LIBS_PATH/$${a}d*) {
-                    USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a}d was not found"
+                !exists($$OSG_LIBS_PATH/lib$${a}*) {
+                    USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             } else {
-                !exists($$OSG_LIBS_PATH/$${a}*) {
-                    USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a} was not found"
+                !exists($$OSG_LIBS_PATH/lib$${a}*) {
+                    USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             }
         }
@@ -41,14 +49,19 @@ isEmpty(USE_OSG_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$OSG_LIBS_PATH/$${a}d*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a}d was not found"
+                } else {
+                    LIBS += -l$${a}d
                 }
             } else {
                 !exists($$OSG_LIBS_PATH/$${a}*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             }
         }
     }
+
     isEmpty(USE_OSG_ERROR_MSG) {
         warning("DEPENDENCY CHECK - OSG    - OK ($$OSG_USER_MODE)")
     } else {
@@ -76,32 +89,20 @@ isEmpty(USE_GDAL_ERROR_MSG) {
     unix {
         for(a, GDAL_LIB_ADD) {
             CONFIG(debug, debug|release) {
-                !exists($$GDAL_LIBS_PATH/lib$${a}_i*) {
-                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a}_i was not found"
+                !exists($$GDAL_LIBS_PATH/lib$${a}*) {
+                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             } else {
-                !exists($$GDAL_LIBS_PATH/lib$${a}_i*) {
-                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a}_i was not found"
+                !exists($$GDAL_LIBS_PATH/lib$${a}*) {
+                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             }
         }
     }
-
-    windows {
-        for(a, GDAL_LIB_ADD) {
-            CONFIG(debug, debug|release) {
-                !exists($$GDAL_LIBS_PATH/$${a}_i*) {
-                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/$${a}_i was not found"
-                }
-            } else {
-
-                !exists($$GDAL_LIBS_PATH/$${a}_i*) {
-                    USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/$${a}_i was not found"
-                }
-            }
-        }
-    }
-
     isEmpty(USE_GDAL_ERROR_MSG) {
         warning("DEPENDENCY CHECK - GDAL   - OK ($$GDAL_USER_MODE)")
     } else {
@@ -124,17 +125,21 @@ include(gsl_check.pri)
 
 #if GSL can be used
 isEmpty(USE_GSL_ERROR_MSG) {
-    GSL_LIB_ADD = libgsl
+GSL_LIB_ADD = libgsl
 
     unix {
         for(a, GSL_LIB_ADD) {
             CONFIG(debug, debug|release) {
-                !exists($$GSL_LIBS_PATH/lib$${a}_debug*) {
-                    USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/lib$${a}_debug was not found"
+                !exists($$GSL_LIBS_PATH/$${a}*) {
+                    USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             } else {
-                !exists($$GSL_LIBS_PATH/lib$${a}*) {
-                    USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/lib$${a} was not found"
+                !exists($$GSL_LIBS_PATH/$${a}*) {
+                    USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             }
         }
@@ -145,11 +150,15 @@ isEmpty(USE_GSL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$GSL_LIBS_PATH/$${a}_d*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a}_d was not found"
+                } else {
+                    LIBS += -l$${a}_d
                 }
             } else {
 
                 !exists($$GSL_LIBS_PATH/$${a}*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             }
         }
@@ -198,28 +207,77 @@ isEmpty(USE_PCL_ERROR_MSG) {
     PCL_LIB_ADD += pcl_visualization
 
     unix {
+        QHULL_LIB_ADD =
+        QHULL_LIB_ADD += qhull
+
         for(a, PCL_LIB_ADD) {
             CONFIG(debug, debug|release) {
-                !exists($$PCL_LIBS_PATH/lib$${a}_debug*) {
-                    USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a}_debug was not found"
+                !exists($$PCL_LIBS_PATH/lib$${a}*) {
+                    USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$PCL_LIBS_PATH/lib$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
+                }
+            }
+        }
+
+        for(a, QHULL_LIB_ADD) {
+            CONFIG(debug, debug|release) {
+                !exists($$QHULL_LIBS_PATH/lib$${a}*) {
+                    USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
+                }
+            } else {
+                !exists($$QHULL_LIBS_PATH/lib$${a}*) {
+                    USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
                 }
             }
         }
     }
+
     windows {
+        QHULL_LIB_ADD =
+        QHULL_LIB_ADD += qhullstatic
+        QHULL_LIB_ADD += qhullstatic_p
+
         for(a, PCL_LIB_ADD) {
             CONFIG(debug, debug|release) {
                 !exists($$PCL_LIBS_PATH/$${a}_debug*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_debug was not found"
+                } else {
+                    LIBS += -l$${a}_debug
                 }
             } else {
 
                 !exists($$PCL_LIBS_PATH/$${a}_release*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_release was not found"
+                } else {
+                    LIBS += -l$${a}_release
+                }
+            }
+        }
+
+
+        for(a, QHULL_LIB_ADD) {
+            CONFIG(debug, debug|release) {
+                !exists($$QHULL_LIBS_PATH/$${a}_d*) {
+                    USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a}_d was not found"
+                } else {
+                    LIBS += -l$${a}_d
+                }
+            } else {
+                !exists($$QHULL_LIBS_PATH/$${a}*) {
+                    USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             }
         }
@@ -247,33 +305,62 @@ include(opencv_check.pri)
 
 #if OPENCV can be used
 isEmpty(USE_OPENCV_ERROR_MSG) {
-    OPENCV_LIB_ADD =
-    OPENCV_LIB_ADD += opencv_ts
-    OPENCV_LIB_ADD += opencv_world
-
     unix {
+
+        OPENCV_LIB_ADD =
+        OPENCV_LIB_ADD += opencv_calib3d
+        OPENCV_LIB_ADD += opencv_core
+        OPENCV_LIB_ADD += opencv_features2d
+        OPENCV_LIB_ADD += opencv_flann
+        OPENCV_LIB_ADD += opencv_highgui
+        OPENCV_LIB_ADD += opencv_imgcodecs
+        OPENCV_LIB_ADD += opencv_imgproc
+        OPENCV_LIB_ADD += opencv_ml
+        OPENCV_LIB_ADD += opencv_objdetect
+        OPENCV_LIB_ADD += opencv_photo
+        OPENCV_LIB_ADD += opencv_shape
+        OPENCV_LIB_ADD += opencv_stitching
+        OPENCV_LIB_ADD += opencv_superres
+        OPENCV_LIB_ADD += opencv_video
+        OPENCV_LIB_ADD += opencv_videoio
+        OPENCV_LIB_ADD += opencv_videostab
+        OPENCV_LIB_ADD += opencv_viz
+
         for(a, OPENCV_LIB_ADD) {
             CONFIG(debug, debug|release) {
-                !exists($$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}d*) {
-                    USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}d was not found"
+                !exists($$OPENCV_LIBS_PATH/lib$${a}*) {
+                    USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             } else {
-                !exists($$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION}*) {
-                    USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a}$${OPENCV_VERSION} was not found"
+                !exists($$OPENCV_LIBS_PATH/lib$${a}*) {
+                    USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$${a}
                 }
             }
         }
     }
 
     windows {
+
+    OPENCV_LIB_ADD =
+    OPENCV_LIB_ADD += opencv_ts
+    OPENCV_LIB_ADD += opencv_world
+
         for(a, OPENCV_LIB_ADD) {
             CONFIG(debug, debug|release) {
                 !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d was not found"
+                } else {
+                    LIBS += -l$${a}$${OPENCV_VERSION}d
                 }
             } else {
                 !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION} was not found"
+                } else {
+                    LIBS += -l$${a}$${OPENCV_VERSION}
                 }
             }
         }

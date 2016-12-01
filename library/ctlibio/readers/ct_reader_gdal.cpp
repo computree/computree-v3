@@ -1,6 +1,7 @@
 #include "ct_reader_gdal.h"
 
 #ifdef USE_GDAL
+#include "gdal_priv.h"
 #include "gdal.h"
 #include "ogrsf_frmts.h"
 #endif

@@ -33,7 +33,7 @@
 #include "ct_itemdrawable/tools/ct_itemplateddata2darray.h"
 #include "ct_math/ct_math.h"
 
-#include "opencv2/core/mat.hpp"
+#include "opencv2/core/core.hpp"
 
 template< typename DataT > class CT_StandardImage2DDrawManager;
 

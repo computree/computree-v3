@@ -1,7 +1,7 @@
 unix {
     PCL_BASE_PATH = "/usr/"
 
-    PCL_LIBS_PATH = "$${PCL_BASE_PATH}lib"
+    PCL_LIBS_PATH = "$${PCL_BASE_PATH}lib/x86_64-linux-gnu"
     PCL_INC_PATH = "$${PCL_BASE_PATH}include/pcl-1.7"
     EIGEN_INC_PATH = "$${PCL_BASE_PATH}include/eigen3"
     QHULL_INC_PATH = "$${PCL_BASE_PATH}include"

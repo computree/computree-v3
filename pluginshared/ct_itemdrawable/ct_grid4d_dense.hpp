@@ -14,7 +14,7 @@ template< typename DataT>
 CT_Grid4D_Dense<DataT>::CT_Grid4D_Dense() : CT_Grid4D<DataT>()
 {
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = this->nCells();
     this->_data.create(1, ncells);
 }
 
@@ -51,7 +51,7 @@ CT_Grid4D_Dense<DataT>::CT_Grid4D_Dense(const CT_OutAbstractSingularItemModel *m
                                                                             na)
 {
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = this->nCells();
     this->_data.create(1, ncells);
     initGridWithValue(initValue);
 }
@@ -89,7 +89,7 @@ CT_Grid4D_Dense<DataT>::CT_Grid4D_Dense(const QString &modelName,
                                                                             na)
 {
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = this->nCells();
     this->_data.create(1, ncells);
     initGridWithValue(initValue);
 }
@@ -127,7 +127,7 @@ CT_Grid4D_Dense<DataT>::CT_Grid4D_Dense(const CT_OutAbstractSingularItemModel *m
                                                                             na)
 {
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = this->nCells();
     initGridWithValue(initValue);
 }
 
@@ -164,7 +164,7 @@ CT_Grid4D_Dense<DataT>::CT_Grid4D_Dense(const QString& modelName,
                                                                             na)
 {
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = this->nCells();
     this->_data.create(1, ncells);
     initGridWithValue(initValue);
 }
@@ -272,12 +272,12 @@ CT_Grid4D_Dense<DataT>::~CT_Grid4D_Dense()
 template< typename DataT>
 void CT_Grid4D_Dense<DataT>::initGridWithValue(const DataT val)
 {
-    for (size_t  i = 0 ; i < nCells() ; i++)
+    for (size_t  i = 0 ; i < this->nCells() ; i++)
     {
         _data(i) = val;
     }
-    _dataMin = val;
-    _dataMax = val;
+    this->_dataMin = val;
+    this->_dataMax = val;
 }
 
 template< typename DataT>
@@ -285,10 +285,10 @@ CT_AbstractItemDrawable* CT_Grid4D_Dense<DataT>::copy(const CT_OutAbstractItemMo
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid4D_Dense<DataT>* cpy = new CT_Grid4D_Dense<DataT>((const CT_OutAbstractSingularItemModel *)model, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
-    cpy->setId(id());
+    CT_Grid4D_Dense<DataT>* cpy = new CT_Grid4D_Dense<DataT>((const CT_OutAbstractSingularItemModel *)model, result, this->_bot.w(), this->_bot.x(), this->_bot.y(), this->_bot.z(), this->_dimw, this->_dimx, this->_dimy, this->_dimz, this->_resw, this->_resx, this->_resy, this->_resz, this->_NAdata, this->_NAdata);
+    cpy->setId(this->id());
 
-    size_t ncells = nCells();
+    size_t ncells = this->nCells();
     for (size_t i = 0 ; i < ncells ; i++)
     {
         cpy->setValueAtIndex(i, valueAtIndex(i));
@@ -299,7 +299,7 @@ CT_AbstractItemDrawable* CT_Grid4D_Dense<DataT>::copy(const CT_OutAbstractItemMo
         cpy->computeMinMax();
     }
 
-    cpy->setAlternativeDrawManager( getAlternativeDrawManager() );
+    cpy->setAlternativeDrawManager( this->getAlternativeDrawManager() );
 
     return cpy;
 }
@@ -309,10 +309,10 @@ CT_AbstractItemDrawable* CT_Grid4D_Dense<DataT>::copy(const QString &modelName, 
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid4D_Dense<DataT>* cpy = new CT_Grid4D_Dense<DataT>(modelName, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
-    cpy->setId(id());
+    CT_Grid4D_Dense<DataT>* cpy = new CT_Grid4D_Dense<DataT>(modelName, result, this->_bot.w(), this->_bot.x(), this->_bot.y(), this->_bot.z(), this->_dimw, this->_dimx, this->_dimy, this->_dimz, this->_resw, this->_resx, this->_resy, this->_resz, this->_NAdata, this->_NAdata);
+    cpy->setId(this->id());
 
-    size_t ncells = nCells();
+    size_t ncells = this->nCells();
     for (size_t i = 0 ; i < ncells ; i++)
     {
         cpy->setValueAtIndex(i, valueAtIndex(i));
@@ -323,7 +323,7 @@ CT_AbstractItemDrawable* CT_Grid4D_Dense<DataT>::copy(const QString &modelName, 
         cpy->computeMinMax();
     }
 
-    cpy->setAlternativeDrawManager( getAlternativeDrawManager() );
+    cpy->setAlternativeDrawManager( this->getAlternativeDrawManager() );
 
     return cpy;
 }
@@ -337,7 +337,7 @@ QString CT_Grid4D_Dense<DataT>::getType() const
 template< typename DataT>
 QString CT_Grid4D_Dense<DataT>::staticGetType()
 {
-    QString type = CT_AbstractGrid3D::staticGetType() + "/CT_Grid4D_Dense<" + CT_TypeInfo::name<DataT>() + ">";
+    QString type = CT_AbstractGrid4D::staticGetType() + "/CT_Grid4D_Dense<" + CT_TypeInfo::name<DataT>() + ">";
     CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
     return type;
 }
@@ -351,7 +351,7 @@ QString CT_Grid4D_Dense<DataT>::name() const
 template< typename DataT>
 QString CT_Grid4D_Dense<DataT>::staticName()
 {
-    return tr("4D grid<%1>, dense").arg(CT_TypeInfo::name<DataT>());
+    return CT_Grid4D_Dense<DataT>::tr("4D grid<%1>, dense").arg(CT_TypeInfo::name<DataT>());
 }
 
 

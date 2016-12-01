@@ -7,16 +7,16 @@ LIBS += -L$$GDAL_LIBS_PATH
 unix {
     for(a, GDAL_LIB_ADD) {
         CONFIG(debug, debug|release) {
-            !exists($$GDAL_LIBS_PATH/lib$${a}_i*) {
-                USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a}_i was not found"
+            !exists($$GDAL_LIBS_PATH/lib$${a}*) {
+                USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
             } else {
-                LIBS += -l$${a}_i
+                LIBS += $$GDAL_LIBS_PATH/lib$${a}.so
             }
         } else {
-            !exists($$GDAL_LIBS_PATH/lib$${a}_i*) {
-                USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a}_i was not found"
+            !exists($$GDAL_LIBS_PATH/lib$${a}*) {
+                USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
             } else {
-                LIBS += -l$${a}_i
+                LIBS += $$GDAL_LIBS_PATH/lib$${a}.so
             }
         }
     }

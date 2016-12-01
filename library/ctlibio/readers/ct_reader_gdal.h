@@ -8,6 +8,7 @@
 
 #ifdef USE_GDAL
 #include "gdal_priv.h"
+#include "ogr_geometry.h"
 #endif
 
 /**
