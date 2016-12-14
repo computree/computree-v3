@@ -25,6 +25,40 @@ isEmpty(USE_OSG_ERROR_MSG) {
 }
 
 
+##### GEOS ####
+
+#if we must check if we can use gdal
+!isEmpty(CHECK_CAN_USE_GEOS) {
+    # we check if GDAL can be used
+    CHECK_GEOS = 1
+}
+
+#if we want absolutely use gdal (the GDAL check test must pass)
+!isEmpty(MUST_USE_GEOS) {
+    # we check if GDAL can be used
+    CHECK_GEOS = 1
+}
+
+#if we must check if gdal can be used
+!isEmpty(CHECK_GEOS) {
+    include(geos_default_path.pri)
+
+    exists(geos_user_path.pri) {
+        include(geos_user_path.pri)
+    }
+
+    include(geos_check.pri)
+
+    #if GEOS can be used
+    isEmpty(USE_GEOS_ERROR_MSG) {
+        include(include_geos_necessary.pri)
+
+        isEmpty(USE_GEOS_ERROR_MSG) {
+            warning("GEOS found and it will be used in this plugin")
+        }
+    }
+}
+
 ##### GDAL ####
 
 #if we must check if we can use gdal
@@ -282,3 +316,9 @@ contains( COMPUTREE, ctlibopencv ) {
         INCLUDEPATH += $${PLUGIN_SHARED_DIR}/eigen
     }
 }
+
+DISTFILES += \
+    $$PWD/geos_check.pri \
+    $$PWD/geos_default_path.pri \
+    $$PWD/geos_user_path.pri \
+    $$PWD/include_geos_necessary.pri

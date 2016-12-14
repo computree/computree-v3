@@ -72,6 +72,46 @@ isEmpty(USE_OSG_ERROR_MSG) {
 }
 
 
+##### GEOS ####
+include(geos_default_path.pri)
+exists(geos_user_path.pri) {
+    include(geos_user_path.pri)
+    GEOS_USER_MODE = "geos_user_path.pri"
+} else {
+    GEOS_USER_MODE = "geos_default_path.pri"
+}
+include(geos_check.pri)
+
+#if GEOS can be used
+isEmpty(USE_GEOS_ERROR_MSG) {
+    GEOS_LIB_ADD = geos
+
+    unix {
+        for(a, GEOS_LIB_ADD) {
+            CONFIG(debug, debug|release) {
+                !exists($$GEOS_LIBS_PATH/lib$${a}*) {
+                    USE_GEOS_ERROR_MSG += "Library $$GEOS_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
+                }
+            } else {
+                !exists($$GEOS_LIBS_PATH/lib$${a}*) {
+                    USE_GEOS_ERROR_MSG += "Library $$GEOS_LIBS_PATH/lib$${a} was not found"
+                } else {
+                    LIBS += -l$$lib{a}
+                }
+            }
+        }
+    }
+    isEmpty(USE_GEOS_ERROR_MSG) {
+        warning("DEPENDENCY CHECK - GEOS   - OK ($$GEOS_USER_MODE)")
+    } else {
+        warning("DEPENDENCY CHECK - GEOS   - Libraries not found in specified path ($$GEOS_USER_MODE)")
+    }
+} else {
+        warning("DEPENDENCY CHECK - GEOS   - invalid path specified ($$GEOS_USER_MODE)")
+}
+
 ##### GDAL ####
 include(gdal_default_path.pri)
 exists(gdal_user_path.pri) {
