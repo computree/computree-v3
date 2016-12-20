@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <math.h>
 
 #define DEF_ESRI_ASCII_Grid "ESRI ASCII Grid"
 #define DEF_ESRI_SHP "GDAL ESRI Shapefile"
@@ -628,7 +629,7 @@ void PB_StepExportAttributesInLoop::compute()
                     if (_rasterExport && raster != NULL)
                     {
                         double val = pair.second->toDouble(pair.first, NULL);
-                        if (isnan(val)) {val = DEF_NA;}
+                        if (std::isnan(val)) {val = DEF_NA;}
                         raster->setValueAtCoords(x, y, val);
                     }
 #endif
