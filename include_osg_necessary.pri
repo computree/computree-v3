@@ -14,6 +14,7 @@ OSG_LIB_ADD += libosgText
 OSG_LIB_ADD += libosgUtil
 OSG_LIB_ADD += libosgDB
 OSG_LIB_ADD += libosgFX
+OSG_LIB_ADD += libOpenThreads
 
     for(a, OSG_LIB_ADD) {
         CONFIG(debug, debug|release) {
