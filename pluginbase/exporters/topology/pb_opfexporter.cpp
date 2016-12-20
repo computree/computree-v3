@@ -1,7 +1,7 @@
 #include "pb_opfexporter.h"
 
 #include "ct_itemdrawable/ct_ttreegroup.h"
-#include "ct_itemdrawable/CT_TNodeGroup.h"
+#include "ct_itemdrawable/ct_tnodegroup.h"
 #include "ct_itemdrawable/model/outModel/ct_outopfnodegroupmodel.h"
 
 #include "ct_itemdrawable/ct_itemattributelist.h"
