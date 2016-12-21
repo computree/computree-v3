@@ -215,12 +215,12 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:600;&quot;&gt;Computree 2.0&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:600;&quot;&gt;Computree 4.0&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Developped by:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;- Krebs Michaël (Arts et Métiers ParisTech site de Cluny, ARTS, Equipe Bois)&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;- Alexandre Piboule (ONF)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;- Alexandre Piboule (Office National des Forêts, ONF)&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Computree GUI interface is licenced under GPL license: &lt;/span&gt;&lt;a href=&quot;https://opensource.org/licenses/GPL-3.0&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://opensource.org/licenses/GPL-3.0&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -230,11 +230,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Computree uses following libraries:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;OpenSceneGraph: &lt;/span&gt;&lt;a href=&quot;http://www.openscenegraph.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.openscenegraph.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;MuParser: &lt;/span&gt;&lt;a href=&quot;http://muparser.beltoforion.de/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://muparser.beltoforion.de/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;PCL: &lt;/span&gt;&lt;a href=&quot;http://pointclouds.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://pointclouds.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;OpenCV: &lt;/span&gt;&lt;a href=&quot;http://opencv.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://opencv.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;GDAL: &lt;/span&gt;&lt;a href=&quot;http://www.gdal.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.gdal.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;OpenSceneGraph: &lt;/span&gt;&lt;a href=&quot;http://www.openscenegraph.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.openscenegraph.org&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;MuParser: &lt;/span&gt;&lt;a href=&quot;http://muparser.beltoforion.de&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://muparser.beltoforion.de&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;PCL: &lt;/span&gt;&lt;a href=&quot;http://pointclouds.or/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://pointclouds.org&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;OpenCV: &lt;/span&gt;&lt;a href=&quot;http://opencv.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://opencv.org&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;GDAL: &lt;/span&gt;&lt;a href=&quot;http://www.gdal.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.gdal.org&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;GEOS : &lt;/span&gt;&lt;a href=&quot;https://trac.osgeo.org/geos&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://trac.osgeo.org/geos&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;GSL: &lt;/span&gt;&lt;a href=&quot;https://www.gnu.org/software/gsl&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://www.gnu.org/software/gsl&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+</source>
         <translation></translation>
     </message>
     <message>
@@ -270,7 +273,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;MuParser : &lt;/span&gt;&lt;a href=&quot;http://muparser.beltoforion.de/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://muparser.beltoforion.de/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutdialog.ui" line="196"/>
+        <location filename="../view/MainView/gaboutdialog.ui" line="199"/>
         <source>Fermer</source>
         <translation>Close</translation>
     </message>
@@ -486,21 +489,21 @@ p, li { white-space: pre-wrap; }
     <name>GAboutStepDialog</name>
     <message>
         <location filename="../view/MainView/gaboutstepdialog.ui" line="14"/>
-        <source>CT_VirtualAbstractStep informations</source>
-        <translation></translation>
+        <source>Documentation de l&apos;étape</source>
+        <translation>Step documentation</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.ui" line="41"/>
+        <location filename="../view/MainView/gaboutstepdialog.ui" line="88"/>
         <source>Nom du plugin</source>
         <translation>Plugin name</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.ui" line="70"/>
+        <location filename="../view/MainView/gaboutstepdialog.ui" line="117"/>
         <source>Nom de l&apos;étape</source>
         <translation>Step name</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.ui" line="114"/>
+        <location filename="../view/MainView/gaboutstepdialog.ui" line="161"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Page wiki : &lt;a href=&quot;http://rdinnovation.onf.fr&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://rdinnovation.onf.fr&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wiki page: &lt;a href=&quot;http://rdinnovation.onf.fr&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://rdinnovation.onf.fr&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -515,14 +518,27 @@ p, li { white-space: pre-wrap; }
         <translation>Online help: &lt;a href=&quot;%1&quot;&gt;Internet page of this step&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.cpp" line="54"/>
-        <source>IN Models :</source>
-        <translation>In Models:</translation>
+        <location filename="../view/MainView/gaboutstepdialog.cpp" line="50"/>
+        <source>&lt;em&gt;Description détaillée&lt;/em&gt; :&lt;br&gt;&lt;br&gt;</source>
+        <translation>&lt;em&gt;Detailled description&lt;/em&gt; :&lt;br&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gaboutstepdialog.cpp" line="66"/>
+        <location filename="../view/MainView/gaboutstepdialog.cpp" line="54"/>
+        <source>Données en entrée :</source>
+        <translation>Input data:</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gaboutstepdialog.cpp" line="67"/>
+        <source>Données en sortie :</source>
+        <translation>Output data:</translation>
+    </message>
+    <message>
+        <source>IN Models :</source>
+        <translation type="vanished">In Models:</translation>
+    </message>
+    <message>
         <source>OUT Models :</source>
-        <translation>OUT Models:</translation>
+        <translation type="vanished">OUT Models:</translation>
     </message>
 </context>
 <context>
@@ -614,27 +630,27 @@ p, li { white-space: pre-wrap; }
         <translation>Center the view on the origin</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="102"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="176"/>
         <source>Déplacer la caméra</source>
         <translation>Move the camera</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="125"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="136"/>
         <source>Centrer la vue sur le barycentre des éléments présents dans la vue</source>
         <translation>Center the view on the centroid of the elements in the view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="139"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="150"/>
         <source>Centrer la vue sur le barycentre des éléments sélectionnés</source>
         <translation>Center the view on the centroid of the selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="159"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="102"/>
         <source>Vue personnalisée</source>
         <translation>Personalized view</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="179"/>
+        <location filename="../view/DocumentView/gcameragraphicsoptions.ui" line="122"/>
         <source>Ajuster la caméra aux éléments visibles</source>
         <translation>Adjust camera to visible elements</translation>
     </message>
@@ -695,7 +711,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="594"/>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="915"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="916"/>
         <source>Point de vue</source>
         <translation>Point of view</translation>
     </message>
@@ -720,17 +736,17 @@ p, li { white-space: pre-wrap; }
         <translation>Save screen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="927"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="928"/>
         <source>Exporter les éléments sélectionnés</source>
         <translation>Export selected items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="936"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="937"/>
         <source>Configurer les couleurs des points</source>
         <translation>Configure colors of items</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="942"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="943"/>
         <source>Changer la taille des pixels</source>
         <translation>Change pixels size</translation>
     </message>
@@ -748,7 +764,7 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">(Re)create octree</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="955"/>
+        <location filename="../view/DocumentView/gdocumentviewforgraphics.cpp" line="956"/>
         <source>Configurer l&apos;affichage</source>
         <translation>Configuring the display</translation>
     </message>
@@ -1099,34 +1115,29 @@ p, li { white-space: pre-wrap; }
         <translation>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki&quot;&gt;Computree Wiki summary&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="15"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;l&apos;utilisation de l&apos;interface graphique&lt;/b&gt; :</source>
-        <translation>For help on &lt;b&gt;graphical interface use&lt;/b&gt;:</translation>
+        <translation type="vanished">For help on &lt;b&gt;graphical interface use&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="16"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_computreeGUI&quot;&gt;Wiki sur l&apos;interface utilisateur&lt;/a&gt;</source>
-        <translation>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/En_computreeGUI&quot;&gt;User interface Wiki&lt;/a&gt;</translation>
+        <translation type="vanished">-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/En_computreeGUI&quot;&gt;User interface Wiki&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="19"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="15"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;une étape insérée&lt;/b&gt; :</source>
         <translation>For help on &lt;b&gt; an inserted step&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="20"/>
         <source>-&gt; Faire un clic droit sur l&apos;étape insérée, puis &lt;i&gt;Informations sur l&apos;étape&lt;/i&gt;</source>
-        <translation>-&gt; Right clic on the inserted step, and next on &lt;i&gt;Informations about step&lt;/i&gt;</translation>
+        <translation type="vanished">-&gt; Right clic on the inserted step, and next on &lt;i&gt;Informations about step&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="23"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;une étape dans un plugin (pas encore insérée)&lt;/b&gt; :</source>
-        <translation>For help on &lt;b&gt;a step in a plugin (not already inserted)&lt;/b&gt;:</translation>
+        <translation type="vanished">For help on &lt;b&gt;a step in a plugin (not already inserted)&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="24"/>
         <source>-&gt; Dans le sous-menu d&apos;insertion d&apos;étape du plugin, sur l&apos;étape, faire F1</source>
-        <translation>-&gt; In the plugin&apos;s sub-menu for step insertion, on the considered step, hit F1</translation>
+        <translation type="vanished">-&gt; In the plugin&apos;s sub-menu for step insertion, on the considered step, hit F1</translation>
     </message>
     <message>
         <source>-&gt; Dans la barre de menu, cliquer sur &lt;i&gt;Aide&lt;/i&gt;, puis &lt;i&gt;A propos des Plugins&lt;/i&gt;</source>
@@ -1137,32 +1148,45 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished">-&gt; Unfold &lt;i&gt;Step plugins&lt;/i&gt;, unfold the concerned plugin, select the step and clic on &lt;i&gt;Step info&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="27"/>
         <source>Pour de l&apos;aide sur &lt;b&gt;comment réaliser une tâche précise à l&apos;aide des étapes disponibles&lt;/b&gt; :</source>
-        <translation>For help on &lt;b&gt;How to achieve some specific task with available steps&lt;/b&gt;:</translation>
+        <translation type="vanished">For help on &lt;b&gt;How to achieve some specific task with available steps&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="28"/>
         <source>-&gt; Consulter les tutoriels disponibles ici : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/Fr_tutorials&quot;&gt;Tutoriels thématiques (How To&apos;s)&lt;/a&gt;</source>
-        <translation>-&gt; Consult How To&apos;s available here: &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/En_tutorials&quot;&gt;How To&apos;s (thematic tutorials)&lt;/a&gt;</translation>
+        <translation type="vanished">-&gt; Consult How To&apos;s available here: &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/wiki/En_tutorials&quot;&gt;How To&apos;s (thematic tutorials)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="31"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="16"/>
+        <source>-&gt; Faire un clic droit sur l&apos;étape insérée, puis &lt;i&gt;Documentation de l&apos;étape&lt;/i&gt;</source>
+        <translation>-&gt; Right clic on the inserted step, and next on &lt;i&gt;Step Documentation&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="19"/>
+        <source>Pour de l&apos;aide sur &lt;b&gt;une étape du menu (pas encore insérée)&lt;/b&gt; :</source>
+        <translation>For help on &lt;b&gt;a step in the menu (not already inserted)&lt;/b&gt;:</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="20"/>
+        <source>-&gt; Faire un clic droit sur l&apos;étape dans le menu, puis &lt;i&gt;Documentation de l&apos;étape&lt;/i&gt;</source>
+        <translation>-&gt; Right clic on the step in the menu, and next on &lt;i&gt;Step Documentation&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="23"/>
         <source>Pour &lt;b&gt;signaler un bug&lt;/b&gt; ou &lt;b&gt;suggérer une amélioration&lt;/b&gt; :</source>
         <translation>To &lt;b&gt;report a bug&lt;/b&gt; or &lt;b&gt;propose an improvement&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="32"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="24"/>
         <source>-&gt; Créer une nouvelle demande : &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/issues/new&quot;&gt;Nouvelle demande&lt;/a&gt;</source>
         <translation>-&gt; Create a new issue: &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/issues/new&quot;&gt;New issue&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="35"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="27"/>
         <source>Pour &lt;b&gt;poster un message sur le forum Computree&lt;/b&gt; :</source>
         <translation>To &lt;b&gt;post a message on Computree forum&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gineedhelpdialog.cpp" line="36"/>
+        <location filename="../view/MainView/gineedhelpdialog.cpp" line="28"/>
         <source>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/boards&quot;&gt;Forum Computree&lt;/a&gt;</source>
         <translation>-&gt; &lt;a href=&quot;http://rdinnovation.onf.fr/projects/computree/boards&quot;&gt;Computree Forum&lt;/a&gt;</translation>
     </message>
@@ -1291,6 +1315,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="156"/>
         <source>Nom</source>
         <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../view/ItemDrawableModelView/gitemdrawablemodelmanager.cpp" line="166"/>
+        <source>Type</source>
+        <translation></translation>
     </message>
     <message>
         <source>Couleur uni</source>
@@ -1724,7 +1753,7 @@ p, li { white-space: pre-wrap; }
         <translation>Tous les fichiers valides (</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1093"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1099"/>
         <source>All files</source>
         <translation>Tous les fichiers</translation>
     </message>
@@ -1783,12 +1812,12 @@ p, li { white-space: pre-wrap; }
         <translation>Save the steps tree (CTRL+S)</translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1168"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1174"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../view/MainView/gmainwindow.cpp" line="1168"/>
+        <location filename="../view/MainView/gmainwindow.cpp" line="1174"/>
         <source>Voud devez redémarrer l&apos;application pour prendre en compte le changement de langue.</source>
         <translation>You must restart the application to reflect the language change.</translation>
     </message>
@@ -2365,25 +2394,25 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Plugins</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="337"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="370"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="343"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="376"/>
         <source>Clé de l&apos;étape au sein du plugin ou d&apos;un script</source>
         <translation>Key of the step in plugin or in script</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="345"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="378"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="351"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="384"/>
         <source>Nom de l&apos;étape</source>
         <translation>Step name</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="353"/>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="386"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="359"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="392"/>
         <source>Description courte</source>
         <translation>Short description</translation>
     </message>
     <message>
-        <location filename="../view/Steps/gstepviewdefault.cpp" line="394"/>
+        <location filename="../view/Steps/gstepviewdefault.cpp" line="400"/>
         <source>Description détaillée</source>
         <translation>Detailled description</translation>
     </message>
@@ -2616,12 +2645,12 @@ Attention cette opération peut être lente.</source>
         <translation type="vanished">Please wait while octree creation</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1297"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1292"/>
         <source>Capture d&apos;écran</source>
         <translation>Sceen capture</translation>
     </message>
     <message>
-        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1297"/>
+        <location filename="../view/DocumentView/GraphicsViews/3D/gosggraphicsview.cpp" line="1292"/>
         <source>Image JPEG (*.jpg)</source>
         <translation>JPEG image (*.jpg)</translation>
     </message>

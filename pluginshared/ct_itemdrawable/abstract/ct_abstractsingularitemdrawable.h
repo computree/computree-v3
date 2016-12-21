@@ -214,10 +214,10 @@ private:
     //  => We must add CT_DEFAULT_IA_INIT(CT_AbstractSingularItemDrawable) in top of cpp file
     CT_DEFAULT_IA_BEGIN(CT_AbstractSingularItemDrawable)
     CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataId(), &CT_AbstractSingularItemDrawable::id, QObject::tr("ID"), "id")
-    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Nom"), "name")
-    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Centre X"), "cx")
-    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Centre Y"), "cy")
-    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Centre Z"), "cz")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Name"), "name")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Center X"), "cx")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Center Y"), "cy")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Center Z"), "cz")
     CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)

@@ -441,27 +441,32 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="174"/>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="144"/>
+        <source>Informations sur l&apos;item sélectionné :&lt;br&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="194"/>
         <source>Nombre de points sélectionnés = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="196"/>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="216"/>
         <source>Distance 3D      = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="198"/>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="218"/>
         <source>Distance 2D (XY) = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="220"/>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="240"/>
         <source>Nombre de faces sélectionnés = %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="244"/>
+        <location filename="../actions/pb_actionshowitemdatagv.cpp" line="264"/>
         <source>Nombre d&apos;arêtes sélectionnés = %1</source>
         <translation></translation>
     </message>
@@ -1325,12 +1330,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcreatereaderlist.cpp" line="144"/>
+        <location filename="../step/pb_stepcreatereaderlist.cpp" line="145"/>
         <source>Entête</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepcreatereaderlist.cpp" line="145"/>
+        <location filename="../step/pb_stepcreatereaderlist.cpp" line="144"/>
         <source>Reader</source>
         <translation></translation>
     </message>
@@ -1348,154 +1353,154 @@
 <context>
     <name>PB_StepExportAttributesInLoop</name>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="104"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="105"/>
         <source>Export d&apos;attributs dans une boucle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="131"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="132"/>
         <source>Résultat</source>
         <translation>Résultat</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="133"/>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="142"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="134"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="143"/>
         <source>Groupe</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="138"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="139"/>
         <source>Grille de placettes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="143"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="144"/>
         <source>Item (avec XY)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="144"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="145"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="145"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="146"/>
         <source>Y</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="146"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="147"/>
         <source>Attribut Item (avec XY)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="148"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="149"/>
         <source>Item</source>
         <translation>Item</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="149"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="150"/>
         <source>Attribut Item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="153"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="154"/>
         <source>Résultat compteur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="155"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="156"/>
         <source>Compteur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="170"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="171"/>
         <source>Activer export ASCII tabulaire (1 fichier en tout)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="170"/>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="174"/>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="180"/>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="184"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="171"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="175"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="181"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="185"/>
         <source>Activer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="174"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="175"/>
         <source>Activer export raster (1 fichier / tour / métrique)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="175"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="176"/>
         <source>L&apos;export raster nécessite une grille de placettes (désactiver si pas de résultat valide)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="180"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="181"/>
         <source>Activer export vectoriel (1 fichier / tour)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="184"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="185"/>
         <source>Export dans une boucle (cas normal)</source>
         <translation>Export dans une boucle (cas normal, décocher en cas d&apos;usage hors boucle)</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="196"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="197"/>
         <source>Export ASCII tabulaire (1 fichier en tout)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="197"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="198"/>
         <source>Choix du fichier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="197"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="198"/>
         <source>Fichier texte (*.txt)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="211"/>
-        <source>Export raster (1 fichier / tour / métrique)</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../step/pb_stepexportattributesinloop.cpp" line="212"/>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="226"/>
-        <source>Prefixe pour les fichiers exportés</source>
+        <source>Export raster (1 fichier / tour / métrique)</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportattributesinloop.cpp" line="213"/>
         <location filename="../step/pb_stepexportattributesinloop.cpp" line="227"/>
-        <source>Choix du format d&apos;export</source>
+        <source>Prefixe pour les fichiers exportés</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../step/pb_stepexportattributesinloop.cpp" line="214"/>
         <location filename="../step/pb_stepexportattributesinloop.cpp" line="228"/>
+        <source>Choix du format d&apos;export</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="215"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="229"/>
         <source>Répertoire d&apos;export (vide de préférence)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="225"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="226"/>
         <source>Export vectoriel (1 fichier / tour)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="407"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="408"/>
         <source>Impossible de créer le fichier d&apos;export ASCII. Arrêt des traitements.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="416"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="417"/>
         <source>Impossible d&apos;ouvrir le fichier d&apos;export ASCII. Arrêt des traitements.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportattributesinloop.cpp" line="446"/>
+        <location filename="../step/pb_stepexportattributesinloop.cpp" line="447"/>
         <source>Impossible d&apos;utiliser le format d&apos;export Vectoriel choisi.</source>
         <translation></translation>
     </message>
@@ -1503,7 +1508,7 @@
 <context>
     <name>PB_StepExportItemList</name>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="85"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="92"/>
         <source>Export avec nom de fichier adaptatif</source>
         <translation></translation>
     </message>
@@ -1512,54 +1517,70 @@
         <translation type="vanished">Pas de description détaillé pour cette étape</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="91"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="98"/>
         <source>Permet un export avec nom de fichier adaptatif.&lt;br&gt;Cette étape peut utiliser n&apos;importe quel exporter.&lt;br&gt;Le nom du fichier de sorti, est déterminé à partir du compteur de boucle spécifié.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="114"/>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="128"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="121"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="211"/>
         <source>Résultat</source>
         <translation>Résultat</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="116"/>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="129"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="123"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="132"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="212"/>
         <source>Groupe</source>
         <translation>Groupe</translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="117"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="124"/>
         <source>Item à exporter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="119"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="126"/>
         <source>Résultat compteur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="121"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="128"/>
         <source>Compteur</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="136"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="130"/>
+        <source>Nom de base</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="133"/>
+        <source>Base Name</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="134"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="219"/>
         <source>Répertoire d&apos;export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="137"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="220"/>
         <source>Préfixe de nom de fichier</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="150"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="233"/>
         <source>ERREUR : aucun exporter disponible</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../step/pb_stepexportitemlist.cpp" line="153"/>
+        <location filename="../step/pb_stepexportitemlist.cpp" line="236"/>
         <source>Choix du type de fichier</source>
         <translation></translation>
     </message>
@@ -2622,7 +2643,7 @@ Veuillez sélectionner les paramètres pour réaliser les tranches.</translation
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pb_steppluginmanager.cpp" line="122"/>
+        <location filename="../pb_steppluginmanager.cpp" line="123"/>
         <source>Plugin_Base initialized</source>
         <translation>Plugin_Base initialisé</translation>
     </message>
