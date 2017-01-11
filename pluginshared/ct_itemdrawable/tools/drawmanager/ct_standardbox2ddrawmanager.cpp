@@ -7,6 +7,7 @@
 
 
 const QString CT_StandardBox2DDrawManager::INDEX_CONFIG_DRAW_BOX = CT_StandardBox2DDrawManager::staticInitConfigDrawBox();
+const QString CT_StandardBox2DDrawManager::INDEX_CONFIG_FILL_BOX = CT_StandardBox2DDrawManager::staticInitConfigFillBox();
 
 CT_StandardBox2DDrawManager::CT_StandardBox2DDrawManager(QString drawConfigurationName) : CT_StandardAbstractShape2DDrawManager(drawConfigurationName.isEmpty() ? CT_Box2D::staticName() : drawConfigurationName)
 {
@@ -26,6 +27,7 @@ void CT_StandardBox2DDrawManager::draw(GraphicsViewInterface &view, PainterInter
     bool drawBox = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_DRAW_BOX).toBool();
     bool useAltZVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_USE_ALTERNATIVE_ZVALUE).toBool();
     double zVal = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_Z_VALUE).toDouble();
+    bool filled = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FILL_BOX).toBool();
 
     double zPlane = CT_Context::staticInstance()->getZPlaneFor2DShapes();
     if (useAltZVal)
@@ -40,7 +42,13 @@ void CT_StandardBox2DDrawManager::draw(GraphicsViewInterface &view, PainterInter
         Eigen::Vector3d min, max;
         item.getData().getBoundingBox(min, max);
 
-        painter.drawRectXY(min.head(2), max.head(2), zPlane);
+        if (filled)
+        {
+            painter.fillRectXY(min.head(2), max.head(2), zPlane);
+
+        } else {
+            painter.drawRectXY(min.head(2), max.head(2), zPlane);
+        }
     }
 }
 
@@ -50,6 +58,7 @@ CT_ItemDrawableConfiguration CT_StandardBox2DDrawManager::createDrawConfiguratio
 
     item.addAllConfigurationOf(CT_StandardAbstractShape2DDrawManager::createDrawConfiguration(drawConfigurationName));
     item.addNewConfiguration(CT_StandardBox2DDrawManager::staticInitConfigDrawBox() ,QObject::tr("Dessiner le rectangle"), CT_ItemDrawableConfiguration::Bool, true);
+    item.addNewConfiguration(CT_StandardBox2DDrawManager::staticInitConfigFillBox() ,QObject::tr("Remplir"), CT_ItemDrawableConfiguration::Bool, false);
 
     return item;
 }
@@ -59,4 +68,9 @@ CT_ItemDrawableConfiguration CT_StandardBox2DDrawManager::createDrawConfiguratio
 QString CT_StandardBox2DDrawManager::staticInitConfigDrawBox()
 {
     return "B2D_BX";
+}
+
+QString CT_StandardBox2DDrawManager::staticInitConfigFillBox()
+{
+    return "B2D_FL";
 }

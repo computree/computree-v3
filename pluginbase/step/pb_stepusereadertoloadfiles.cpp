@@ -134,7 +134,8 @@ void PB_StepUseReaderToLoadFiles::compute()
                         m_readerAddingTools.addReaderResults(outRes, group, reader, m_readerAutoIndex);
                     }
 
-                    disconnect(this, NULL, reader, NULL);
+                    disconnect(this, SIGNAL(stopped()), reader, SLOT(cancel()));
+                    disconnect(reader, SIGNAL(progressChanged(int)), this, SLOT(readerProgressChanged(int)));
                 }
             }
 
