@@ -55,6 +55,7 @@ protected:
 
     void replaceBadCharacters(QMap<QString, QString> &names) const;
     QString replaceBadCharacters(const QString &name) const;
+    QString replaceAccentCharacters(const QString &name) const;
     QMap<QString, QString> computeShortNames(const QMap<QString, QString> &names) const;
 
 #ifdef USE_GDAL

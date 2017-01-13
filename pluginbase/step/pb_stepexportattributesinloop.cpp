@@ -606,7 +606,8 @@ void PB_StepExportAttributesInLoop::compute()
                             vectorFeature->SetField(fieldName, pair.second->toInt(pair.first, NULL));
                         } else if (_ogrTypes.value(key) == OFTString)
                         {
-                            QString text = replaceBadCharacters(pair.second->toString(pair.first, NULL));
+                            //QString text = replaceAccentCharacters(pair.second->toString(pair.first, NULL));
+                            QString text = pair.second->toString(pair.first, NULL);
                             QByteArray textBA = text.toLatin1();
                             const char* textChar = textBA;
                             vectorFeature->SetField(fieldName, textChar);
@@ -744,6 +745,27 @@ QString PB_StepExportAttributesInLoop::replaceBadCharacters(const QString &name)
         value.replace(QRegExp("[\\W]"), "_");
         return value;
 }
+
+QString PB_StepExportAttributesInLoop::replaceAccentCharacters(const QString &name) const
+{
+        QString value = name;
+        value.replace(QRegExp("[àáâãäå]"), "a");
+        value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
+        value.replace(QRegExp("[éèëê]"), "e");
+        value.replace(QRegExp("[ÈÉÊË]"), "E");
+        value.replace(QRegExp("[ìíîï]"), "i");
+        value.replace(QRegExp("[ÌÍÎÏ]"), "I");
+        value.replace(QRegExp("[òóôõöø]"), "o");
+        value.replace(QRegExp("[ÒÓÔÕÖØ]"), "O");
+        value.replace(QRegExp("[ùúûü]"), "u");
+        value.replace(QRegExp("[ÙÚÛÜ]"), "U");
+        value.replace(QRegExp("[ñ]"), "n");
+        value.replace(QRegExp("[Ñ]"), "N");
+        value.replace(QRegExp("[ç]"), "c");
+        value.replace(QRegExp("[Ç]"), "C");
+        return value;
+}
+
 
 QMap<QString, QString> PB_StepExportAttributesInLoop::computeShortNames(const QMap<QString, QString> &names) const
 {

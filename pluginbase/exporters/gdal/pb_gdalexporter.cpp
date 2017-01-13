@@ -374,7 +374,8 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
                 poFeature->SetField(fieldName, att->toInt(shape2d, NULL));
             } else if (_ogrTypes.value(key) == OFTString)
             {
-                QString text = replaceBadCharacters(att->toString(shape2d, NULL));
+                //QString text = replaceAccentCharacters(att->toString(shape2d, NULL));
+                QString text = att->toString(shape2d, NULL);
                 QByteArray textBA = text.toLatin1();
                 const char* textChar = textBA;
                 poFeature->SetField(fieldName, textChar);
@@ -579,6 +580,27 @@ QString PB_GDALExporter::replaceBadCharacters(const QString &name) const
     value.replace(QRegExp("[\\W]"), "_");
     return value;
 }
+
+QString PB_GDALExporter::replaceAccentCharacters(const QString &name) const
+{
+        QString value = name;
+        value.replace(QRegExp("[àáâãäå]"), "a");
+        value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
+        value.replace(QRegExp("[éèëê]"), "e");
+        value.replace(QRegExp("[ÈÉÊË]"), "E");
+        value.replace(QRegExp("[ìíîï]"), "i");
+        value.replace(QRegExp("[ÌÍÎÏ]"), "I");
+        value.replace(QRegExp("[òóôõöø]"), "o");
+        value.replace(QRegExp("[ÒÓÔÕÖØ]"), "O");
+        value.replace(QRegExp("[ùúûü]"), "u");
+        value.replace(QRegExp("[ÙÚÛÜ]"), "U");
+        value.replace(QRegExp("[ñ]"), "n");
+        value.replace(QRegExp("[Ñ]"), "N");
+        value.replace(QRegExp("[ç]"), "c");
+        value.replace(QRegExp("[Ç]"), "C");
+        return value;
+}
+
 
 QMap<QString, QString> PB_GDALExporter::computeShortNames(const QMap<QString, QString> &names) const
 {
