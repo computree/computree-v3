@@ -48,10 +48,21 @@ protected:
 
     bool protectedExportToFile();
 
+
+    QList<QString>          _modelsKeys;
+    QMap<QString, QString>  _names;
+    QMap<QString, QString> _shortNames;
+
+    void replaceBadCharacters(QMap<QString, QString> &names) const;
+    QString replaceBadCharacters(const QString &name) const;
+    QMap<QString, QString> computeShortNames(const QMap<QString, QString> &names) const;
+
 #ifdef USE_GDAL
 private:
     GDALDriver                                      *m_driver;
     bool                                            m_exportRaster;
+
+    QMap<QString, OGRFieldType>                     _ogrTypes;
 
     bool exportRaster(const QString &filepath);
 

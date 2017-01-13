@@ -84,7 +84,7 @@ void PB_StepGenericExporter::init()
 
 QString PB_StepGenericExporter::getStepName() const
 {
-    return _exporter->getExporterName();
+    return replaceBadCharacters(_exporter->getExporterName());
 }
 
 QString PB_StepGenericExporter::getStepDisplayableName() const
@@ -409,3 +409,25 @@ void PB_StepGenericExporter::exportProgressChanged(int progress)
 {
     setProgress(progress);
 }
+
+QString PB_StepGenericExporter::replaceBadCharacters(const QString &name) const
+{
+    QString value = name;
+    value.replace(QRegExp("[àáâãäå]"), "a");
+    value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
+    value.replace(QRegExp("[éèëê]"), "e");
+    value.replace(QRegExp("[ÈÉÊË]"), "E");
+    value.replace(QRegExp("[ìíîï]"), "i");
+    value.replace(QRegExp("[ÌÍÎÏ]"), "I");
+    value.replace(QRegExp("[òóôõöø]"), "o");
+    value.replace(QRegExp("[ÒÓÔÕÖØ]"), "O");
+    value.replace(QRegExp("[ùúûü]"), "u");
+    value.replace(QRegExp("[ÙÚÛÜ]"), "U");
+    value.replace(QRegExp("[ñ]"), "n");
+    value.replace(QRegExp("[Ñ]"), "N");
+    value.replace(QRegExp("[ç]"), "c");
+    value.replace(QRegExp("[Ç]"), "C");
+    value.replace(QRegExp("[\\W]"), "_");
+    return value;
+}
+

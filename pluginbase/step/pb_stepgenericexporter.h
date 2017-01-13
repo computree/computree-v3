@@ -81,6 +81,7 @@ private:
     void configureExporterFromModel();
     void setDefaultExportPath(const QString &path);
 
+    QString replaceBadCharacters(const QString &name) const;
 private slots:
     void exportProgressChanged(int progress);
 };

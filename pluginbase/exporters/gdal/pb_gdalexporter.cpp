@@ -8,6 +8,7 @@
 #include "ct_tools/ct_gdaltools.h"
 
 #include <QFileInfo>
+#include <QDebug>
 
 // TODO : choose raster type (what is R, G or B, etc...) and export it in multiple bands
 // TODO : Group raster by dimension and resolution
@@ -27,7 +28,7 @@ PB_GDALExporter::PB_GDALExporter(const GDALDriver *driver) : CT_AbstractExporter
 
 void PB_GDALExporter::init()
 {
-    #ifdef USE_GDAL
+#ifdef USE_GDAL
     if(m_driver != NULL) {
         QStringList ext = CT_GdalTools::staticGdalDriverExtension(m_driver);
 
@@ -62,16 +63,16 @@ void PB_GDALExporter::init()
         setToolTip(toolTip);
 
     }
-    #endif
+#endif
 }
 
 QString PB_GDALExporter::getExporterCustomName() const
 {
-    #ifdef USE_GDAL
+#ifdef USE_GDAL
     if(m_driver != NULL) {
         return CT_GdalTools::staticGdalDriverName(m_driver);
     }
-    #endif
+#endif
 
     return CT_AbstractExporter::getExporterCustomName();
 }
@@ -108,10 +109,9 @@ QString PB_GDALExporter::getTypeOfDriver() const
 bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawable *> &list)
 {
     clearErrorMessage();
-	
-	#ifdef USE_GDAL
+
+#ifdef USE_GDAL
     m_exportRaster = false;
-    #endif
 
     QList<CT_AbstractItemDrawable*> myVectorList;
     QList<CT_AbstractItemDrawable*> myRasterList;
@@ -121,10 +121,63 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        if(dynamic_cast<CT_AbstractShape2D*>(item) != NULL)
+        CT_AbstractShape2D* shape2d = dynamic_cast<CT_AbstractShape2D*>(item);
+        if(shape2d != NULL)
+        {
             myVectorList.append(item);
+
+            QList<CT_AbstractItemAttribute *> attributes = shape2d->itemAttributes();
+            for (int i = 0 ; i < attributes.size() ; i++)
+            {
+                CT_AbstractItemAttribute* att = attributes.at(i);
+
+                CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*) shape2d->model();
+                CT_OutAbstractItemAttributeModel *attrModel = att->model();
+
+                QString itemDN = itemModel->displayableName();
+                QString itemUN = itemModel->uniqueName();
+
+                QString attrDN = attrModel->displayableName();
+                QString attrUN = attrModel->uniqueName();
+
+                if (attrModel->isADefaultItemAttributeModel() && attrModel->originalModel() != NULL) {attrUN = attrModel->originalModel()->uniqueName();}
+
+                QString key = QString("ITEM_%1_ATTR_%2").arg(itemUN).arg(attrUN);
+
+                if (!_modelsKeys.contains(key))
+                {
+                    _modelsKeys.append(key);
+                    _names.insert(key, QString("%2_%1").arg(itemDN).arg(attrDN));
+
+                    CT_AbstractCategory::ValueType type = attrModel->itemAttribute()->type();
+
+                    if      (type == CT_AbstractCategory::BOOLEAN) {_ogrTypes.insert(key, OFTInteger);}
+                    else if (type == CT_AbstractCategory::STRING)  {_ogrTypes.insert(key, OFTString);}
+                    else if (type == CT_AbstractCategory::STRING)  {_ogrTypes.insert(key, OFTString);}
+                    else if (type == CT_AbstractCategory::INT8)    {_ogrTypes.insert(key, OFTInteger);}
+                    else if (type == CT_AbstractCategory::UINT8)   {_ogrTypes.insert(key, OFTInteger);}
+                    else if (type == CT_AbstractCategory::INT16)   {_ogrTypes.insert(key, OFTInteger);}
+                    else if (type == CT_AbstractCategory::UINT16)  {_ogrTypes.insert(key, OFTInteger);}
+                    else if (type == CT_AbstractCategory::INT32)   {_ogrTypes.insert(key, OFTInteger);}
+                    //                else if (type == CT_AbstractCategory::UINT32)  {_ogrTypes.insert(key, OFTInteger64);}
+                    //                else if (type == CT_AbstractCategory::INT64)   {_ogrTypes.insert(key, OFTInteger64);}
+                    //                else if (type == CT_AbstractCategory::INT32)   {_ogrTypes.insert(key, OFTInteger64);}
+                    else                                           {_ogrTypes.insert(key, OFTReal);}
+                }
+            }
+        }
         else if(dynamic_cast<CT_AbstractImage2D*>(item) != NULL)
+        {
             myRasterList.append(item);
+        }
+    }
+
+    if (!_names.isEmpty())
+    {
+        replaceBadCharacters(_names);
+        qSort(_modelsKeys.begin(), _modelsKeys.end());
+        _shortNames = computeShortNames(_names);
+
     }
 
     if(myVectorList.isEmpty() && myRasterList.isEmpty())
@@ -141,20 +194,20 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
     if(!myVectorList.isEmpty())
         return CT_AbstractExporter::setItemDrawableToExport(myVectorList);
     else {
-		#ifdef USE_GDAL
         m_exportRaster = true;
-		#endif
         return CT_AbstractExporter::setItemDrawableToExport(myRasterList);
     }
+#endif
+    return false;
 }
 
 CT_AbstractExporter *PB_GDALExporter::copy() const
 {
-    #ifdef USE_GDAL
+#ifdef USE_GDAL
     return new PB_GDALExporter(m_driver);
-    #else
+#else
     return new PB_GDALExporter();
-    #endif
+#endif
 }
 
 bool PB_GDALExporter::protectedExportToFile()
@@ -208,7 +261,7 @@ bool PB_GDALExporter::exportRaster(const QString &filepath)
     padfTransform[5] = -grid->resolution();
     padfTransform[3] = grid->minY() + nYSize*padfTransform[1];
 
-    dataset->SetGeoTransform( padfTransform );   
+    dataset->SetGeoTransform( padfTransform );
 
     poBand->SetNoDataValue(grid->NAAsDouble());
 
@@ -252,6 +305,26 @@ bool PB_GDALExporter::exportVector(const QString &filepath)
 
     OGRLayer *layer = dataset->CreateLayer("layer", NULL, wkbUnknown, NULL);
 
+    for (int i = 0 ; layer != NULL && i < _modelsKeys.size() ; i++)
+    {
+        QString key = _modelsKeys.at(i);
+        if (_ogrTypes.contains(key))
+        {
+            OGRFieldType ogrType = _ogrTypes.value(key);
+
+            QByteArray fieldNameBA = _shortNames.value(key).toLatin1();
+            const char* fieldName = fieldNameBA;
+
+            OGRFieldDefn oField(fieldName, ogrType );
+
+            if (layer->CreateField( &oField ) != OGRERR_NONE)
+            {
+                //  erreur
+            }
+        }
+    }
+
+
     if( layer == NULL )
     {
         GDALClose(dataset);
@@ -274,8 +347,49 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
     OGRFeature *poFeature;
     poFeature = OGRFeature::CreateFeature( layer->GetLayerDefn() );
 
-    CT_Box2D *box = dynamic_cast<CT_Box2D*>(item);
+    CT_AbstractShape2D* shape2d = dynamic_cast<CT_AbstractShape2D*>(item);
+    if(shape2d != NULL)
+    {
+        QList<CT_AbstractItemAttribute *> attributes = shape2d->itemAttributes();
+        for (int i = 0 ; i < attributes.size() ; i++)
+        {
+            CT_AbstractItemAttribute* att = attributes.at(i);
 
+            CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*) shape2d->model();
+            CT_OutAbstractItemAttributeModel *attrModel = att->model();
+
+            QString itemUN = itemModel->uniqueName();
+            QString attrUN = attrModel->uniqueName();
+
+            if (attrModel->isADefaultItemAttributeModel() && attrModel->originalModel() != NULL) {attrUN = attrModel->originalModel()->uniqueName();}
+
+            QString key = QString("ITEM_%1_ATTR_%2").arg(itemUN).arg(attrUN);
+
+
+            QByteArray fieldNameBA = _shortNames.value(key).toLatin1();
+            const char* fieldName = fieldNameBA;
+
+            if      (_ogrTypes.value(key) == OFTBinary)
+            {
+                poFeature->SetField(fieldName, att->toInt(shape2d, NULL));
+            } else if (_ogrTypes.value(key) == OFTString)
+            {
+                QString text = replaceBadCharacters(att->toString(shape2d, NULL));
+                QByteArray textBA = text.toLatin1();
+                const char* textChar = textBA;
+                poFeature->SetField(fieldName, textChar);
+            } else if (_ogrTypes.value(key) == OFTInteger)
+            {
+                poFeature->SetField(fieldName, att->toInt(shape2d, NULL));
+            } else
+            {
+                poFeature->SetField(fieldName, att->toDouble(shape2d, NULL));
+            }
+        }
+    }
+
+
+    CT_Box2D *box = dynamic_cast<CT_Box2D*>(item);
     if(box != NULL)
     {
         return exportBox2D(box, dataset, layer, poFeature);
@@ -283,7 +397,6 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
     else
     {
         CT_Circle2D *circle = dynamic_cast<CT_Circle2D*>(item);
-
         if(circle != NULL)
         {
             return exportCircle2D(circle, dataset, layer, poFeature);
@@ -291,7 +404,6 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
         else
         {
             CT_Line2D *line = dynamic_cast<CT_Line2D*>(item);
-
             if(line != NULL)
             {
                 return exportLine2D(line, dataset, layer, poFeature);
@@ -299,7 +411,6 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
             else
             {
                 CT_Point2D *point = dynamic_cast<CT_Point2D*>(item);
-
                 if(point != NULL)
                 {
                     return exportPoint2D(point, dataset, layer, poFeature);
@@ -307,7 +418,6 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
                 else
                 {
                     CT_Polygon2D *polyg = dynamic_cast<CT_Polygon2D*>(item);
-
                     if(polyg != NULL)
                     {
                         return exportPolygon2D(polyg, dataset, layer, poFeature);
@@ -315,7 +425,6 @@ bool PB_GDALExporter::exportItemDrawable(CT_AbstractItemDrawable *item, GDALData
                     else
                     {
                         CT_Polyline2D *polyl = dynamic_cast<CT_Polyline2D*>(item);
-
                         if(polyl != NULL)
                         {
                             return exportPolyline2D(polyl, dataset, layer, poFeature);
@@ -439,4 +548,68 @@ bool PB_GDALExporter::exportOGRGeometry(OGRGeometry *geo, GDALDataset *dataset, 
 
     return true;
 }
+
+void PB_GDALExporter::replaceBadCharacters(QMap<QString, QString> &names) const
+{
+    QMutableMapIterator<QString, QString> it(names);
+    while (it.hasNext())
+    {
+        it.next();
+        it.setValue(replaceBadCharacters(it.value()));
+    }
+}
+
+QString PB_GDALExporter::replaceBadCharacters(const QString &name) const
+{
+    QString value = name;
+    value.replace(QRegExp("[àáâãäå]"), "a");
+    value.replace(QRegExp("[ÀÁÂÃÄÅ]"), "A");
+    value.replace(QRegExp("[éèëê]"), "e");
+    value.replace(QRegExp("[ÈÉÊË]"), "E");
+    value.replace(QRegExp("[ìíîï]"), "i");
+    value.replace(QRegExp("[ÌÍÎÏ]"), "I");
+    value.replace(QRegExp("[òóôõöø]"), "o");
+    value.replace(QRegExp("[ÒÓÔÕÖØ]"), "O");
+    value.replace(QRegExp("[ùúûü]"), "u");
+    value.replace(QRegExp("[ÙÚÛÜ]"), "U");
+    value.replace(QRegExp("[ñ]"), "n");
+    value.replace(QRegExp("[Ñ]"), "N");
+    value.replace(QRegExp("[ç]"), "c");
+    value.replace(QRegExp("[Ç]"), "C");
+    value.replace(QRegExp("[\\W]"), "_");
+    return value;
+}
+
+QMap<QString, QString> PB_GDALExporter::computeShortNames(const QMap<QString, QString> &names) const
+{
+    QMap<QString, QString> shortNames;
+    QList<QString> existing;
+
+    QMapIterator<QString, QString> it(names);
+    while (it.hasNext())
+    {
+        it.next();
+        QString key = it.key();
+        QString value = it.value();
+
+        if (value.size() <= 10)
+        {
+            shortNames.insert(key, value);
+            existing.append(value.toLower());
+        } else {
+            QString newValue = value.left(10);
+            int cpt = 2;
+            while (existing.contains(newValue.toLower()))
+            {
+                QString number = QVariant(cpt++).toString();
+                newValue = QString("%1%2").arg(value.left(10 - number.length())).arg(number);
+            }
+            shortNames.insert(key, newValue);
+            existing.append(newValue.toLower());
+        }
+    }
+
+    return shortNames;
+}
+
 #endif
