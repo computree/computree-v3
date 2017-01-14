@@ -31,6 +31,8 @@ void GStepChooserDialog::init()
     QMenu *contextMenuSteps = new QMenu(this);
     m_actionAddStepToFavorites = contextMenuSteps->addAction(QIcon(":/Icones/Icones/favorite.png"), tr("Ajouter aux favoris"), this, SLOT(editFavorites()));
     m_actionRemoveStepFromFavorites = contextMenuSteps->addAction(QIcon(":/Icones/Icones/delete.png"), tr("Supprimer des favoris"), this, SLOT(removeStepFromFavoritesMenu()));
+    m_actionRaiseStep = contextMenuSteps->addAction(QIcon(":/Icones/Icones/upper.png"), tr("Monter l'étape dans le menu"), this, SLOT(raiseStepInFavoritesMenu()));
+    m_actionLowerStep = contextMenuSteps->addAction(QIcon(":/Icones/Icones/lower.png"), tr("Descendre l'étape dans le menu"), this, SLOT(lowerStepInFavoritesMenu()));
     QAction *actionInfoStep = contextMenuSteps->addAction(QIcon(":/Icones/Icones/info.png"), tr("Documentation de l'étape"), this, SLOT(showSelectedStepInformation()));
     actionInfoStep->setShortcut(tr("F1"));
 
@@ -70,7 +72,7 @@ GStepViewDefault *GStepChooserDialog::stepsChooserWidget() const
     return ui->stepChooserWidget;
 }
 
-bool GStepChooserDialog::existInFavorites(CT_VirtualAbstractStep *step)
+CT_MenuLevel* GStepChooserDialog::existInFavorites(CT_VirtualAbstractStep *step)
 {
     CT_MenuLevel *favorite = GUI_MANAGER->getPluginManager()->stepsMenu()->levelFromOperation(CT_StepsMenu::LO_Favorites);
 
@@ -78,10 +80,10 @@ bool GStepChooserDialog::existInFavorites(CT_VirtualAbstractStep *step)
         return existInLevelRecursively(favorite, step);
     }
 
-    return false;
+    return NULL;
 }
 
-bool GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step)
+CT_MenuLevel *GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step)
 {
     QList<CT_VirtualAbstractStep*> steps = level->steps();
     QListIterator<CT_VirtualAbstractStep*> itS(steps);
@@ -90,18 +92,21 @@ bool GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, CT_Virtual
         CT_VirtualAbstractStep *nStep = itS.next();
 
         if(nStep == step)
-            return true;
+        {
+            return level;
+        }
     }
 
     QList<CT_MenuLevel*> levels = level->levels();
     QListIterator<CT_MenuLevel*> itL(levels);
 
     while(itL.hasNext()) {
-        if(existInLevelRecursively(itL.next(), step))
-            return true;
+        CT_MenuLevel* lev = itL.next();
+        if(existInLevelRecursively(lev, step))
+            return lev;
     }
 
-    return false;
+    return NULL;
 }
 
 bool GStepChooserDialog::event(QEvent *e)
@@ -172,6 +177,30 @@ void GStepChooserDialog::removeStepFromFavoritesMenu()
     ui->stepChooserWidget->reconstruct();
 }
 
+void GStepChooserDialog::raiseStepInFavoritesMenu()
+{
+    CT_VirtualAbstractStep* step = ui->stepChooserWidget->currentStepSelected();
+    CT_MenuLevel* level = existInFavorites(step);
+    if (level != NULL)
+    {
+        level->raiseStepInMenu(step);
+        ui->stepChooserWidget->reconstruct();
+        ui->stepChooserWidget->searchOriginalStepAndExpandParent(step);
+    }
+}
+
+void GStepChooserDialog::lowerStepInFavoritesMenu()
+{
+    CT_VirtualAbstractStep* step = ui->stepChooserWidget->currentStepSelected();
+    CT_MenuLevel* level = existInFavorites(step);
+    if (level != NULL)
+    {
+        level->lowerStepInMenu(step);
+        ui->stepChooserWidget->reconstruct();
+        ui->stepChooserWidget->searchOriginalStepAndExpandParent(step);
+    }
+}
+
 void GStepChooserDialog::showSelectedStepInformation()
 {
     CT_VirtualAbstractStep *step = ui->stepChooserWidget->currentStepSelected();
@@ -188,12 +217,16 @@ void GStepChooserDialog::refreshContextMenuOfStep(CT_VirtualAbstractStep *step)
 {
     m_actionAddStepToFavorites->setEnabled(false);
     m_actionRemoveStepFromFavorites->setEnabled(false);
+    m_actionRaiseStep->setEnabled(false);
+    m_actionLowerStep->setEnabled(false);
 
     if(step != NULL) {
-        bool exist = existInFavorites(step);
+        bool exist = (existInFavorites(step) != NULL);
 
         m_actionAddStepToFavorites->setEnabled(!exist);
         m_actionRemoveStepFromFavorites->setEnabled(exist);
+        m_actionRaiseStep->setEnabled(exist);
+        m_actionLowerStep->setEnabled(exist);
     }
 }
 

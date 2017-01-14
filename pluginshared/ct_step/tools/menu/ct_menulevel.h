@@ -62,6 +62,10 @@ public:
 
     bool addStep(CT_VirtualAbstractStep *step);
 
+    void raiseStepInMenu(CT_VirtualAbstractStep *step);
+
+    void lowerStepInMenu(CT_VirtualAbstractStep *step);
+
     /**
      * @brief Add a step that was not founded (use it for favorites levels)
      */

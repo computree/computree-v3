@@ -33,6 +33,18 @@ bool CT_MenuLevel::addStep(CT_VirtualAbstractStep *step)
     return addStepToCollectionOrDeleteIt(step);
 }
 
+void CT_MenuLevel::raiseStepInMenu(CT_VirtualAbstractStep *step)
+{
+    int index = m_steps.indexOf(step);
+    if (index > 0)  {m_steps.move(index, index - 1);}
+}
+
+void CT_MenuLevel::lowerStepInMenu(CT_VirtualAbstractStep *step)
+{
+    int index = m_steps.indexOf(step);
+    if (index >=0 && index < (m_steps.size() - 1))  {m_steps.move(index, index + 1);}
+}
+
 bool CT_MenuLevel::addNotFoundedStep(CT_MenuLevel::CT_NotFoundedStep nfs)
 {
     if(m_stepsNotFounded.contains(nfs))
@@ -50,6 +62,11 @@ bool sortSteps(const CT_VirtualAbstractStep *s1, const CT_VirtualAbstractStep *s
 
 QList<CT_VirtualAbstractStep *> CT_MenuLevel::steps() const
 {
+    if (isAFavoriteSubLevel())
+    {
+        return m_steps;
+    }
+
     return m_stepsSorted.values();
 }
 

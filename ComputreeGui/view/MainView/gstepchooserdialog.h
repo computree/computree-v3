@@ -32,11 +32,13 @@ private:
     GStepManager            *m_stepManager;
     QAction                 *m_actionAddStepToFavorites;
     QAction                 *m_actionRemoveStepFromFavorites;
+    QAction                 *m_actionRaiseStep;
+    QAction                 *m_actionLowerStep;
     QMenu                   *m_contextMenuRootLevel;
 
-    bool existInFavorites(CT_VirtualAbstractStep *step);
+    CT_MenuLevel *existInFavorites(CT_VirtualAbstractStep *step);
 
-    bool existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step);
+    CT_MenuLevel* existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step);
 
 protected:
     bool event(QEvent *e);
@@ -50,6 +52,8 @@ private slots:
     void exportFavorites();
 
     void removeStepFromFavoritesMenu();
+    void raiseStepInFavoritesMenu();
+    void lowerStepInFavoritesMenu();
     void showSelectedStepInformation();
     void refreshContextMenuOfStep(CT_VirtualAbstractStep *step);
     void refreshContextMenuOfLevel(CT_MenuLevel *level, int typeOfLevel);
