@@ -26,6 +26,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <math.h>
+#include <QDir>
 
 #define DEF_ESRI_ASCII_Grid "ESRI ASCII Grid"
 #define DEF_ESRI_SHP "GDAL ESRI Shapefile"
@@ -65,6 +66,8 @@ PB_StepExportAttributesInLoop::PB_StepExportAttributesInLoop(CT_StepInitializeDa
 
     _vectorPrefix = "";
     _rasterPrefix = "";
+
+    _subFolders = true;
 
     _rasterDriverName = DEF_ESRI_ASCII_Grid;
     _vectorDriverName = DEF_ESRI_SHP;
@@ -213,6 +216,7 @@ void PB_StepExportAttributesInLoop::createPostConfigurationDialog()
         configDialog->addString(tr("Prefixe pour les fichiers exportés"), "", _rasterPrefix);
         configDialog->addStringChoice(tr("Choix du format d'export"), "", driversR, _rasterDriverName);
         configDialog->addFileChoice(tr("Répertoire d'export (vide de préférence)"), CT_FileChoiceButton::OneExistingFolder, "", _outRasterFolder);
+        configDialog->addBool(tr("Créer un sous-dossier par métrique"), "", "", _subFolders);
     }
 #endif
 
@@ -657,7 +661,7 @@ void PB_StepExportAttributesInLoop::compute()
 
 #ifdef USE_OPENCV
         if (_rasterExport)
-        {
+        {           
             QMapIterator<QString, CT_Image2D<double>*> itRaster(rasters);
             while (itRaster.hasNext())
             {
@@ -668,6 +672,13 @@ void PB_StepExportAttributesInLoop::compute()
 
                 QString metricName = _names.value(key);
                 QString fileName = QString("%1/%2%3_%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg(exportBaseName);
+
+                if (_subFolders) {
+                    QDir dir(QString("%1/%2%3").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName));
+                    if (!dir.exists()) {dir.mkdir(".");}
+
+                    fileName = QString("%1/%2%3/%2%3_%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg(exportBaseName);
+                }
 
                 if (_rasterDriverName == DEF_ESRI_ASCII_Grid)
                 {

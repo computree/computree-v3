@@ -108,6 +108,7 @@ private:
     QStringList _outASCIIFileName;
     QStringList _outVectorFolder;
     QStringList _outRasterFolder;
+    bool        _subFolders;
 
     void replaceBadCharacters(QMap<QString, QString> &names) const;
     QString replaceBadCharacters(const QString &name) const;
