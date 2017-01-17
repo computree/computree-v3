@@ -78,8 +78,11 @@ void CT_StepEndLoop::compute()
         if (counter->getCurrentTurn() % _jump_n_step == 0) {waitForAckIfInDebugMode();}
 
         if (counter->hasNextTurn())
+        {
             _mustRecheckTree = true;
-
-        counter->beginNextTurn();
+            counter->beginNextTurn();
+        } else {
+            counter->setCurrentTurn(1);
+        }
     }
 }
