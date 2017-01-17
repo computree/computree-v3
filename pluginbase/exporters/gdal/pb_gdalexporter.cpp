@@ -134,7 +134,7 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
                 CT_OutAbstractSingularItemModel  *itemModel = (CT_OutAbstractSingularItemModel*) shape2d->model();
                 CT_OutAbstractItemAttributeModel *attrModel = att->model();
 
-                QString itemDN = itemModel->displayableName();
+                //QString itemDN = itemModel->displayableName();
                 QString itemUN = itemModel->uniqueName();
 
                 QString attrDN = attrModel->displayableName();
@@ -147,7 +147,7 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
                 if (!_modelsKeys.contains(key))
                 {
                     _modelsKeys.append(key);
-                    _names.insert(key, QString("%2_%1").arg(itemDN).arg(attrDN));
+                    _names.insert(key, attrDN);
 
                     CT_AbstractCategory::ValueType type = attrModel->itemAttribute()->type();
 
@@ -177,6 +177,26 @@ bool PB_GDALExporter::setItemDrawableToExport(const QList<CT_AbstractItemDrawabl
         replaceBadCharacters(_names);
         qSort(_modelsKeys.begin(), _modelsKeys.end());
         _shortNames = computeShortNames(_names);
+
+
+        QFileInfo exportPathInfo = QFileInfo(exportFilePath());
+
+        QFile ffields(QString("%1/fields_names.txt").arg(exportPathInfo.absolutePath()));
+        QTextStream fstream(&ffields);
+        if (ffields.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QMapIterator<QString, QString> itF(_shortNames);
+            while (itF.hasNext())
+            {
+                itF.next();
+                QString key = itF.key();
+                QString shortName = itF.value();
+                QString longName = _names.value(key);
+                fstream << shortName << "\t";
+                fstream << longName << "\n";
+            }
+            ffields.close();
+        }
 
     }
 

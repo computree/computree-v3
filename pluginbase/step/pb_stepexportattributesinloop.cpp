@@ -667,7 +667,7 @@ void PB_StepExportAttributesInLoop::compute()
                 rasterList.append(itRaster.value());
 
                 QString metricName = _names.value(key);
-                QString fileName = QString("%1/%2%3%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg(exportBaseName);
+                QString fileName = QString("%1/%2%3_%4").arg(_outRasterFolder.first()).arg(_rasterPrefix).arg(metricName).arg(exportBaseName);
 
                 if (_rasterDriverName == DEF_ESRI_ASCII_Grid)
                 {
