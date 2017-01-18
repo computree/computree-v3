@@ -83,6 +83,7 @@ void CT_StepEndLoop::compute()
             counter->beginNextTurn();
         } else {
             counter->setCurrentTurn(1);
+            counter->getBeginStep()->clearCounter();
         }
     }
 }

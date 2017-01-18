@@ -45,6 +45,11 @@ bool CT_StepBeginLoop::isSettingsModified() const
     }
 }
 
+void CT_StepBeginLoop::clearCounter()
+{
+    _counter.clear();
+}
+
 //////////////////// PROTECTED //////////////////
 
 void CT_StepBeginLoop::createInResultModelListProtected()
@@ -93,7 +98,7 @@ void CT_StepBeginLoop::compute()
 
     _counter->setTurnName(QString("Turn%1").arg(_counter->getCurrentTurn()));
 
-    CT_LoopCounter* loopCounter = new CT_LoopCounter(DEF_outCounter, outRes, _counter);
+    CT_LoopCounter* loopCounter = new CT_LoopCounter(DEF_outCounter, outRes, _counter, this);
     group->addItemDrawable(loopCounter);
 
     // For use in children steps

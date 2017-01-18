@@ -26,26 +26,33 @@
 *****************************************************************************/
 
 #include "ct_itemdrawable/ct_loopcounter.h"
+#include "ct_step/ct_stepbeginloop.h"
+
 
 CT_DEFAULT_IA_INIT(CT_LoopCounter)
 
 CT_LoopCounter::CT_LoopCounter() : CT_AbstractItemDrawableWithoutPointCloud()
 {
     _counter = QSharedPointer<CT_Counter>();
+    _beginStep = NULL;
 }
 
 CT_LoopCounter::CT_LoopCounter(const CT_OutAbstractSingularItemModel *model,
-                                    const CT_AbstractResult *result,
-                                    QSharedPointer<CT_Counter> counter) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+                               const CT_AbstractResult *result,
+                               QSharedPointer<CT_Counter> counter,
+                               CT_StepBeginLoop *beginStep) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
     _counter = counter;
+    _beginStep = beginStep;
 }
 
 CT_LoopCounter::CT_LoopCounter(const QString &modelName,
-                                    const CT_AbstractResult *result,
-                                    QSharedPointer<CT_Counter> counter) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
+                               const CT_AbstractResult *result,
+                               QSharedPointer<CT_Counter> counter,
+                               CT_StepBeginLoop *beginStep) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
     _counter = counter;
+    _beginStep = beginStep;
 }
 
 CT_LoopCounter::~CT_LoopCounter()
@@ -57,7 +64,7 @@ CT_AbstractItemDrawable* CT_LoopCounter::copy(const CT_OutAbstractItemModel *mod
 {
     Q_UNUSED(copyModeList);
 
-    CT_LoopCounter* cpy = new CT_LoopCounter((const CT_OutAbstractSingularItemModel*)model, result, _counter);
+    CT_LoopCounter* cpy = new CT_LoopCounter((const CT_OutAbstractSingularItemModel*)model, result, _counter, _beginStep);
 
     cpy->setAlternativeDrawManager(this->getAlternativeDrawManager());
 

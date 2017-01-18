@@ -32,6 +32,8 @@
 #include "ct_itemdrawable/tools/ct_counter.h"
 #include <QSharedPointer>
 
+class CT_StepBeginLoop;
+
 /*!
  * \class CT_LoopCounter
  * \ingroup PluginShared_Items
@@ -58,7 +60,7 @@ public:
       * \param result Result containing the item
       * \param value Value
       */
-     CT_LoopCounter(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, QSharedPointer<CT_Counter> counter);
+     CT_LoopCounter(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, QSharedPointer<CT_Counter> counter, CT_StepBeginLoop* beginStep);
 
      /**
       * @brief Create a ItemDrawable with a name of model defined in your step (typically a DEF_...)
@@ -66,7 +68,7 @@ public:
       *
       * @warning The modelName can not be empty and the result can not be NULL to use this constructor
       */
-     CT_LoopCounter(const QString &modelName, const CT_AbstractResult *result, QSharedPointer<CT_Counter> counter);
+     CT_LoopCounter(const QString &modelName, const CT_AbstractResult *result, QSharedPointer<CT_Counter> counter, CT_StepBeginLoop* beginStep);
 
     ~CT_LoopCounter();
 
@@ -80,6 +82,8 @@ public:
     inline void setCurrentTurn(size_t n) {_counter->setcurrentTurn(n);}
 
     inline void setTurnName(QString name) {_counter->setTurnName(name);}
+
+    inline CT_StepBeginLoop* getBeginStep() {return _beginStep;}
 
 
     /*!
@@ -95,6 +99,7 @@ public:
 
 protected:
     QSharedPointer<CT_Counter>     _counter;
+    CT_StepBeginLoop*              _beginStep;
 
 private:
 

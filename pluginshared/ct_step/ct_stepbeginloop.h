@@ -23,6 +23,8 @@ public:
 
     virtual bool isSettingsModified() const;
 
+    void clearCounter();
+
 protected:
     QSharedPointer<CT_Counter>  _counter;
 
