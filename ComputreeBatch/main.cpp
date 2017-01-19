@@ -27,6 +27,14 @@ int main(int argc, char *argv[])
     if(!useTrayIcon)
         dialog.show();
 
-    return app.exec();
+
+    try {
+        return app.exec();
+    }
+    catch(...) {
+       //throw;
+        return 0;
+    }
+    return 0;
 }
 
