@@ -3,6 +3,8 @@
 #include "ct_step/tools/menu/ct_stepsmenu.h"
 #include "ct_step/abstract/ct_virtualabstractstep.h"
 
+#include <QDebug>
+
 CT_MenuLevel *CT_MenuLevel::getOrCreateLevel(const QString &customDisplayableName, CT_MenuLevel *parentLevel)
 {
     if(parentLevel == NULL)
@@ -236,11 +238,12 @@ bool CT_MenuLevel::isAFavoriteSubLevel() const
     QString favoritesName = CT_StepsMenu::staticOperationToDisplayableName(CT_StepsMenu::LO_Favorites);
     CT_MenuLevel *l = const_cast<CT_MenuLevel*>(this);
 
-    if(l->parentLevel() != NULL) {
-        l = l->parentLevel();
-
+    l = l->parentLevel();
+    while(l != NULL)
+    {
         if(l->displayableName() == favoritesName)
             return true;
+        l = l->parentLevel();
     }
 
     return false;

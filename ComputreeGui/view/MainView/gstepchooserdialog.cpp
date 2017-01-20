@@ -85,6 +85,20 @@ CT_MenuLevel* GStepChooserDialog::existInFavorites(CT_VirtualAbstractStep *step)
 
 CT_MenuLevel *GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, CT_VirtualAbstractStep *step)
 {
+    QList<CT_MenuLevel*> levels = level->levels();
+    QListIterator<CT_MenuLevel*> itL(levels);
+
+    while(itL.hasNext()) {
+        CT_MenuLevel* lev = itL.next();
+
+        CT_MenuLevel* levelWithStep = existInLevelRecursively(lev, step);
+        if(levelWithStep != NULL)
+        {
+            return levelWithStep;
+        }
+    }
+
+
     QList<CT_VirtualAbstractStep*> steps = level->steps();
     QListIterator<CT_VirtualAbstractStep*> itS(steps);
 
@@ -95,15 +109,6 @@ CT_MenuLevel *GStepChooserDialog::existInLevelRecursively(CT_MenuLevel *level, C
         {
             return level;
         }
-    }
-
-    QList<CT_MenuLevel*> levels = level->levels();
-    QListIterator<CT_MenuLevel*> itL(levels);
-
-    while(itL.hasNext()) {
-        CT_MenuLevel* lev = itL.next();
-        if(existInLevelRecursively(lev, step))
-            return lev;
     }
 
     return NULL;
