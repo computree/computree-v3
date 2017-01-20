@@ -110,7 +110,7 @@ bool PB_Grid3DAsTableExporter::protectedExportToFile()
             size_t ydim = item->ydim();
             size_t zdim = item->zdim();
 
-            stream << "X\tY\tZ\tValue\n";
+            stream << "Xcorner\tYcorner\tZcorner\tXcenter\tYcenter\tZcenter\tColX\tRowY\tLevZ\tValue\n";
 
             // write data
             for (size_t xx = 0 ; xx < xdim ; xx++)
@@ -123,9 +123,19 @@ bool PB_Grid3DAsTableExporter::protectedExportToFile()
                         size_t sIndex;
                         item->index(xx, yy, zz, sIndex);
 
+                        Eigen::Vector3d corner;
+                        item->getCellBottomLeftCorner(xx, yy, zz, corner);
+
+                        stream << corner(0) << "\t";
+                        stream << corner(1) << "\t";
+                        stream << corner(2) << "\t";
+
                         stream << item->getCellCenterX(xx) << "\t";
                         stream << item->getCellCenterY(yy) << "\t";
                         stream << item->getCellCenterZ(zz) << "\t";
+                        stream << xx << "\t";
+                        stream << yy << "\t";
+                        stream << zz << "\t";
                         stream << item->valueAtIndexAsString(sIndex);
                         stream << "\n";
                     }
