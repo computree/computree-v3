@@ -30,6 +30,7 @@
 #include "ui_gmainwindow.h"
 
 #include "dm_guimanager.h"
+#include "cdm_citationinfo.h"
 
 #include "tools/graphicsview/dm_pointofviewmanager.h"
 
@@ -197,6 +198,13 @@ void GMainWindow::saveScript(QString &saveDirectory)
             getScriptManager()->writeScript(s, true, *getStepManager());
         }
     }
+}
+
+void GMainWindow::citationInfo()
+{
+    CDM_CitationInfo citationInfo(getStepManager(), getPluginManager());
+
+    qDebug() << citationInfo.getStepByPluginList();
 }
 
 void GMainWindow::showAboutDialog()
@@ -390,6 +398,9 @@ void GMainWindow::initUI()
     actionSaveScript->setIcon(QIcon(":/Icones/Icones/media-floppy.png"));
     actionSaveScript->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
 
+    actionGetCitationInfo = new QAction(tr("Informations de citation"), this);
+    actionGetCitationInfo->setIcon(QIcon(":/Icones/Icones/citation.png"));
+
     ui->toolBar->addAction(actionOpenFile);
     ui->toolBar->addAction(actionShowStepChooserDialog);
     ui->toolBar->addAction(actionStart);
@@ -427,6 +438,8 @@ void GMainWindow::initUI()
     ui->toolBar->addWidget(timeAutoDebugSpinBox);
 
     ui->toolBar->addSeparator();
+    ui->toolBar->addAction(actionGetCitationInfo);
+    ui->toolBar->addSeparator();
     ui->toolBar->addAction(actionNewDocument);
     ui->toolBar->addAction(actionNew2DDocument);
     ui->toolBar->addAction(actionNewItemModelDocument);
@@ -439,6 +452,7 @@ void GMainWindow::initUI()
     ui->menuFichier->addAction(actionOpenFile);
     ui->menuFichier->addSeparator();
     ui->menuFichier->addAction(actionSaveScript);
+    ui->menuFichier->addAction(actionGetCitationInfo);
     ui->menuFichier->addSeparator();
     ui->menuFichier->addAction(actionNewDocument);
     ui->menuFichier->addAction(actionNew2DDocument);
@@ -493,6 +507,7 @@ void GMainWindow::initUI()
 
     actionStop->setEnabled(false);
     actionSaveScript->setEnabled(false);
+    actionGetCitationInfo->setEnabled(true);
 
     QStringList dLA = GUI_MANAGER->getLanguageManager()->displayableLanguageAvailable();
     QStringList lA = GUI_MANAGER->getLanguageManager()->languageAvailable();
@@ -519,6 +534,7 @@ void GMainWindow::initUI()
     connect(actionStart, SIGNAL(triggered()), _stepManagerView, SLOT(executeStep()));
     connect(actionStop, SIGNAL(triggered()), _stepManagerView->getStepManager(), SLOT(stop()));
     connect(actionSaveScript, SIGNAL(triggered()), this, SLOT(saveScript()));
+    connect(actionGetCitationInfo, SIGNAL(triggered()), this, SLOT(citationInfo()));
 
     connect(actionAckManualMode, SIGNAL(triggered()), getStepManager(), SLOT(quitManualMode()));
 

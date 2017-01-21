@@ -72,5 +72,6 @@
         <file>Icones/in_progress.png</file>
         <file>Icones/lower.png</file>
         <file>Icones/upper.png</file>
+        <file>Icones/citation.png</file>
     </qresource>
 </RCC>

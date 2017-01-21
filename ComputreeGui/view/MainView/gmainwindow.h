@@ -89,6 +89,7 @@ public slots:
     void openFile(QString &loadDirectory);
     void saveScript();
     void saveScript(QString &saveDirectory);
+    void citationInfo();
     void showAboutDialog();
     void showAboutPluginsDialog();
     void showAboutMemory();
@@ -116,6 +117,7 @@ private:
     QString                                 _defaultSaveDirPath;
 
     QAction                                 *actionSaveScript;
+    QAction                                 *actionGetCitationInfo;
     QAction                                 *actionAProposPlugin;
 
     QLabel                                  *_permanentLabelForMessage;
