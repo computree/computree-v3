@@ -70,7 +70,8 @@ SOURCES += \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.cpp \
     $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.cpp \
     $$PWD/MainView/gaboutmemory.cpp \
-    $$PWD/Tools/gradient/ggradientmanager.cpp
+    $$PWD/Tools/gradient/ggradientmanager.cpp \
+    $$PWD/MainView/gcitationdialog.cpp
 	
 HEADERS += \
     view/MainView/gmainwindow.h \
@@ -148,7 +149,8 @@ HEADERS += \
     $$PWD/DocumentView/GraphicsViews/3D/Converter/dm_osguniformwithslot.h \
     $$PWD/StepResultTreeView/dm_stepmanagertreeviewproxy.h \
     $$PWD/MainView/gaboutmemory.h \
-    $$PWD/Tools/gradient/ggradientmanager.h
+    $$PWD/Tools/gradient/ggradientmanager.h \
+    $$PWD/MainView/gcitationdialog.h
 	
 FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     view/DocumentView/gcameragraphicsoptions.ui \
@@ -174,7 +176,8 @@ FORMS += view/DocumentView/GraphicsViews/ggraphicsviewoptions.ui \
     $$PWD/MainView/gfavoritesmenudialog.ui \
     $$PWD/MainView/gstepchooserdialog.ui \
     $$PWD/MainView/gaboutmemory.ui \
-    $$PWD/Tools/gradient/ggradientmanager.ui
+    $$PWD/Tools/gradient/ggradientmanager.ui \
+    $$PWD/MainView/gcitationdialog.ui
 
 INCLUDEPATH += view/DocumentView/GraphicsView
 INCLUDEPATH += view/DocumentView/GraphicsView/3D

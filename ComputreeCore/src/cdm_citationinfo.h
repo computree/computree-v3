@@ -15,8 +15,9 @@ class COMPUTREECORESHARED_EXPORT CDM_CitationInfo : public QObject
 public:
     CDM_CitationInfo(CDM_StepManager *stepManager, CDM_PluginManager *pluginManager);
 
-    QString getStepByPluginList();
-
+    QString getStepByPluginList();    
+    QString getPluginBibTex();
+    QString parseBibTex(QString bibTex);
 private:
     void recursiveGetStepList(CT_VirtualAbstractStep *step, QList<CT_VirtualAbstractStep *> &stepList);
 

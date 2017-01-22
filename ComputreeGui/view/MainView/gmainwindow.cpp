@@ -36,6 +36,7 @@
 
 #include "gdocumentviewforgraphics.h"
 #include "gdocumentviewforitemmodel.h"
+#include "gcitationdialog.h"
 
 #include "dm_stepsfrompluginsmodelconstructor.h"
 #include "view/Steps/gstepviewdefault.h"
@@ -204,7 +205,10 @@ void GMainWindow::citationInfo()
 {
     CDM_CitationInfo citationInfo(getStepManager(), getPluginManager());
 
-    qDebug() << citationInfo.getStepByPluginList();
+    QString bibTex = citationInfo.getPluginBibTex();
+    bibTex.replace(",", ",<br>");
+    GCitationDialog dialog(citationInfo.getStepByPluginList(), bibTex, this);
+    dialog.exec();
 }
 
 void GMainWindow::showAboutDialog()

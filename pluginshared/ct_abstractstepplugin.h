@@ -176,6 +176,19 @@ public:
      */
     virtual QString getPluginURL() const = 0;
 
+    /**
+     * @brief Get the official plugin name
+     * @return Plugin official name
+     */
+    virtual QString getPluginOfficialName() const {return "";}
+
+    /**
+     * @brief Get the plugin official citation in bibTex format
+     * @return Plugin official citation in bibTex format
+     */
+    virtual QString getPluginBibTexCitation() const {return "";}
+
+
 protected:
 
     /**
