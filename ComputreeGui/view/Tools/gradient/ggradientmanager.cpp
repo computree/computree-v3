@@ -17,24 +17,11 @@ GGradientManager::GGradientManager(QWidget *parent) :
 
     QColor special;
 
-    // AUTUMN
-    QLinearGradient gr = QLinearGradient(0, 0, 1, 0);
-    gr.setColorAt(0, Qt::red);
-    gr.setColorAt(1, Qt::yellow);
-
-    addGradient(gr);
 
     // GRAY
-    gr = QLinearGradient(0, 0, 1, 0);
+    QLinearGradient gr = QLinearGradient(0, 0, 1, 0);
     gr.setColorAt(0, Qt::black);
     gr.setColorAt(1, Qt::white);
-
-    addGradient(gr);
-
-    // COOL
-    gr = QLinearGradient(0, 0, 1, 0);
-    gr.setColorAt(0, Qt::cyan);
-    gr.setColorAt(1, Qt::magenta);
 
     addGradient(gr);
 
@@ -44,6 +31,15 @@ GGradientManager::GGradientManager(QWidget *parent) :
     gr.setColorAt(0.25, Qt::red);
     gr.setColorAt(0.75, Qt::yellow);
     gr.setColorAt(1, Qt::white);
+
+    addGradient(gr);
+
+    // Arcgis greenyellow - violet
+    gr = QLinearGradient(0, 0, 1, 0);
+    gr.setColorAt(0, Qt::green);
+    gr.setColorAt(0.333, Qt::yellow);
+    gr.setColorAt(0.666, Qt::red);
+    gr.setColorAt(1, Qt::blue);
 
     addGradient(gr);
 
@@ -68,12 +64,36 @@ GGradientManager::GGradientManager(QWidget *parent) :
 
     addGradient(gr);
 
+    // JET inversé
+    gr = QLinearGradient(0, 0, 1, 0);
+    gr.setColorAt(0, Qt::red);
+    gr.setColorAt(0.333, Qt::yellow);
+    gr.setColorAt(0.666, Qt::cyan);
+    gr.setColorAt(1, Qt::blue);
+
+    addGradient(gr);
+
     // RAINBOW
     gr = QLinearGradient(0, 0, 1, 0);
     gr.setColorAt(0, Qt::red);
     gr.setColorAt(0.4, Qt::yellow);
     gr.setColorAt(0.6, Qt::green);
     gr.setColorAt(0.8, Qt::blue);
+    gr.setColorAt(1, Qt::magenta);
+
+    addGradient(gr);
+
+
+    // AUTUMN
+    gr = QLinearGradient(0, 0, 1, 0);
+    gr.setColorAt(0, Qt::red);
+    gr.setColorAt(1, Qt::yellow);
+
+    addGradient(gr);
+
+    // COOL
+    gr = QLinearGradient(0, 0, 1, 0);
+    gr.setColorAt(0, Qt::cyan);
     gr.setColorAt(1, Qt::magenta);
 
     addGradient(gr);
