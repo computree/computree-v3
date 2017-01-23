@@ -585,7 +585,8 @@ void G3DCameraController::fitToSpecifiedBox(const Eigen::Vector3d &bot, const Ei
                 // try to compute dist from ortho
                 if (camera->getProjectionMatrixAsOrtho(left,right,bottom,top,zNear,zFar))
                 {
-                    dist = fabs(zFar - zNear) / 2.;
+                    //dist = fabs(zFar - zNear) / 2.;
+                    dist = std::max(2.5*dist, fabs(zFar - zNear) / 2.);
                 }
             }
         }
