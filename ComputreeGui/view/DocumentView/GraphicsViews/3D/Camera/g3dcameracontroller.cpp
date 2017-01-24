@@ -335,10 +335,22 @@ void G3DCameraController::setSceneCenter(double cx, double cy, double cz, bool r
 
 void G3DCameraController::setViewDirection(double rx, double ry, double rz, bool redrawView)
 {
-    // TODO
+    float rxx = rx;
+    float ryy = ry;
+    float rzz = rz;
+    osg::Vec3d center = m_camManipulator->getCenter();
 
-    if(redrawView)
-        redrawTheView();
+    double distance = m_camManipulator->getFusionDistanceValue();
+
+    // vue de dessus
+    m_camManipulator->home(0);
+    m_camManipulator->setCenter(osg::Vec3d(0.0f, 0.0f, 0.0f));
+    m_camManipulator->setRotation(osg::Quat(0.0f, osg::Vec3f(rxx, ryy, rzz)));
+    m_camManipulator->setCenter(center);
+    m_camManipulator->setDistance(distance);
+
+    redrawTheView();
+    emitCoordinatesChanged();
 }
 
 void G3DCameraController::setOrientation(double q0, double q1, double q2, double q3, bool redrawView)

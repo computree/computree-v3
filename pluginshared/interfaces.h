@@ -527,6 +527,10 @@ public:
     virtual bool useColor() const = 0;
     virtual bool useTransparency() const = 0;
     virtual int getFastDrawTime() const = 0;
+
+    virtual void setBackgroudColor(QColor &color) {}
+    virtual void setPointSize(float size) {}
+
 };
 
 class CameraInterface : public QObject
