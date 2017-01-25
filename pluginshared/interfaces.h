@@ -708,6 +708,9 @@ public:
 
     virtual ~GraphicsViewInterface() {}
 
+    virtual void validateOptions() {}
+
+
     /**
      * @brief Return the signal emitter of the graphics view
      */
