@@ -6,6 +6,14 @@
 
 CDM_CitationInfo::CDM_CitationInfo(CDM_StepManager *stepManager, CDM_PluginManager *pluginManager) : QObject(NULL)
 {
+    _computreeCitationRIS = "TY  - COMP\n"
+                            "TI  - Computree platform\n"
+                            "AU  - Computree Core Team\n"
+                            "PB  - ONF RDI Department\n"
+                            "PY  - 2017\n"
+                            "UR  - http://rdinnovation.onf.fr/computree\n"
+                            "ER  - \n";
+
     _stepManager = stepManager;
     _pluginManager = pluginManager;
     QList<CT_VirtualAbstractStep*> rootList = stepManager->getStepRootList();
@@ -17,13 +25,6 @@ CDM_CitationInfo::CDM_CitationInfo(CDM_StepManager *stepManager, CDM_PluginManag
         _stepList.append(currentStep);
         recursiveGetStepList(currentStep, _stepList);
     }
-    QString str = "@misc{plugONF,"
-                  "title={Plugin ONF for Computree},"
-                  "author={Alexandre Piboule},"
-                  "organization = {ONF RDI Department},"
-                  "year={2017},"
-                  "url = {http://rdinnovation.onf.fr/projects/plugin-onf}}";
-    parseBibTex(str);
 }
 
 void CDM_CitationInfo::recursiveGetStepList(CT_VirtualAbstractStep *step, QList<CT_VirtualAbstractStep*> &stepList)
@@ -40,11 +41,10 @@ void CDM_CitationInfo::recursiveGetStepList(CT_VirtualAbstractStep *step, QList<
 }
 
 
-QString CDM_CitationInfo::getStepByPluginList()
+QList<CDM_CitationInfo::StepCitationInfo> CDM_CitationInfo::getScriptTable()
 {
-    QString str;
-    QMultiMap<QString, CT_VirtualAbstractStep*> stepsByPlugins;
-    QMap<QString, QString> officialNames;
+    QList<CDM_CitationInfo::StepCitationInfo> list;
+
     for (int i = 0 ; i < _stepList.size() ; i++)
     {
         CT_VirtualAbstractStep* currentStep = _stepList.at(i);
@@ -52,42 +52,87 @@ QString CDM_CitationInfo::getStepByPluginList()
         CT_AbstractStepPlugin* plugin = currentStep->getPlugin();
         QString pluginOfficialName = plugin->getPluginOfficialName();
         QString pluginName = _pluginManager->getPluginName(_pluginManager->getPluginIndex(plugin));
-        stepsByPlugins.insert(pluginName, currentStep);
-        officialNames.insert(pluginName, pluginOfficialName);
-    }
-
-    QList<QString> plugins = stepsByPlugins.uniqueKeys();
-    for (int i = 0 ; i < plugins.size() ; i++)
-    {
-        QString pluginName = plugins.at(i);
-        QString pluginOfficialName = officialNames.value(pluginName);
-        QList<CT_VirtualAbstractStep*> steps = stepsByPlugins.values(pluginName);
 
         if (pluginName.left(5) == "plug_")
         {
             pluginName.remove(0, 5);
         }
-
         if (pluginOfficialName != "")
         {
             pluginName = pluginOfficialName;
         }
 
-        str += "<b>Plugin: " + pluginName + "</b><br>";
-
-        for (int j = 0 ; j < steps.size() ; j++)
-        {
-            CT_VirtualAbstractStep* step = steps.at(j);
-            str += step->getStepName() + "&emsp;" + step->getStepDescription() + "<br>";
-        }
-        str += "<br>";
+        list.append(CDM_CitationInfo::StepCitationInfo(currentStep->uniqueID(), currentStep->getStepName(), currentStep->getStepDescription(), pluginName));
     }
+    return list;
+}
+
+QString CDM_CitationInfo::getPluginAndStepCitations()
+{
+    QList<CT_AbstractStepPlugin*> pluginDone;
+
+    QString str;
+
+    str.append(parseRIS(_computreeCitationRIS));
+    str.append("<br>");
+
+    for (int i = 0 ; i < _stepList.size() ; i++)
+    {
+        CT_VirtualAbstractStep* currentStep = _stepList.at(i);
+
+        CT_AbstractStepPlugin* plugin = currentStep->getPlugin();
+        QString pluginOfficialName = plugin->getPluginOfficialName();
+        QString pluginName = _pluginManager->getPluginName(_pluginManager->getPluginIndex(plugin));
+        QString stepName = currentStep->getStepName();
+
+        if (pluginName.left(5) == "plug_")
+        {
+            pluginName.remove(0, 5);
+        }
+        if (pluginOfficialName != "")
+        {
+            pluginName = pluginOfficialName;
+        }
+
+        if (!pluginDone.contains(plugin))
+        {
+            pluginDone.append(plugin);
+
+            str.append(QString("[<b>Plugin %1</b>]<br>").arg(pluginName));
+            QString pluginRIS = plugin->getPluginRISCitation();
+            if (pluginRIS == "")
+            {
+                str.append(tr("<em>No official citation was provided</em><br>"));
+            } else {
+                str.append(parseRIS(pluginRIS));
+            }
+            str.append("<br>");
+        }
+
+        QStringList stepsRis = currentStep->getStepRISCitations();
+        if (stepsRis.size() > 0)
+        {
+            str.append(QString("[<b>%1 - in plugin %2</b>]<br>").arg(stepName).arg(pluginName));
+        }
+
+        for (int i = 0 ; i < stepsRis.size() ; i++)
+        {
+            str.append(parseRIS(stepsRis.at(i)));
+            str.append("<br>");
+        }
+    }
+
     return str;
 }
 
-QString CDM_CitationInfo::getPluginBibTex()
+QString CDM_CitationInfo::getPluginRIS()
 {
     QString str;
+
+    str.append(_computreeCitationRIS);
+
+    QList<QString> stepCitations;
+
     QMap<QString, CT_AbstractStepPlugin*> plugins;
     for (int i = 0 ; i < _stepList.size() ; i++)
     {
@@ -96,30 +141,128 @@ QString CDM_CitationInfo::getPluginBibTex()
         QString pluginName = _pluginManager->getPluginName(_pluginManager->getPluginIndex(plugin));
 
         plugins.insert(pluginName, plugin);
+
+        QStringList stepsRis = currentStep->getStepRISCitations();
+        for (int i = 0 ; i < stepsRis.size() ; i++)
+        {
+            QString ris = stepsRis.at(i);
+            if (!stepCitations.contains(ris))
+            {
+                stepCitations.append(ris);
+            }
+        }
+
     }
 
     QMapIterator<QString, CT_AbstractStepPlugin*> it(plugins);
     while (it.hasNext())
     {
         it.next();
-        str.append(it.value()->getPluginBibTexCitation());
+        str.append(it.value()->getPluginRISCitation());
+    }
+
+    for (int i = 0 ; i < stepCitations.size() ; i++)
+    {
+        str.append(stepCitations.at(i));
     }
 
     return str;
 }
 
-QString CDM_CitationInfo::parseBibTex(QString bibTex)
-{
+QString CDM_CitationInfo::parseRIS(QString ris)
+{    
+    QMultiMap<QString, QString> fields;
+    QStringList lines = ris.split("\n", QString::SkipEmptyParts);
 
-    bibTex.remove("{");
-    bibTex.remove("}");
-    bibTex.remove("@");
-    bibTex.replace(" = ", "=");
-    bibTex.replace("= ", "=");
-    bibTex.replace(" =", "=");
-    QStringList fields = bibTex.split(",", QString::SkipEmptyParts);
-    qDebug() << fields;
-    return "";
+    for (int i = 0 ; i < lines.size() ; i++)
+    {
+        QString line = lines.at(i);
+
+        QString fieldValue = line.mid(0,2);
+        int cpt = 2;
+        while (line.mid(cpt,1) == " " || line.mid(cpt,1) == "-")
+        {
+            ++cpt;
+        }
+
+        QString value = line.mid(cpt);
+
+        if (fieldValue.size() == 2)
+        {
+            fields.insert(fieldValue.toUpper(), value);
+        }
+    }
+
+    QString str;
+
+    if (fields.contains("AU") || fields.contains("A1") || fields.contains("PY"))
+    {
+        str.append("<b>");
+    }
+
+    QList<QString> authors = fields.values("AU");
+    authors.append(fields.values("A1"));
+    for (int i = 0 ; i < authors.size() ; i++)
+    {
+
+        QString author = authors.at(i);
+        author.replace(", ", " ");
+        author.replace(",", " ");
+        str.append(author);
+        if (i < authors.size() - 1)
+        {
+            str.append(", ");
+        }
+    }
+
+    if (str.size() > 0)
+    {
+        str.append(". ");
+    }
+
+    if (fields.contains("PY"))
+    {
+        str.append(fields.values("PY").first());
+        str.append(". ");
+    }else if (fields.contains("Y1"))
+    {
+        str.append(fields.values("Y1").first());
+        str.append(". ");
+    }
+
+    if (str.size() > 0)
+    {
+        str.append("</b>");
+    }
+
+    if (fields.contains("TI"))
+    {
+        str.append("<em>");
+        str.append(fields.values("TI").first());
+        str.append("</em>. ");
+    } else if (fields.contains("T1"))
+    {
+        str.append("<em>");
+        str.append(fields.values("T1").first());
+        str.append("</em>. ");
+    }
+
+    if (fields.contains("PB"))
+    {
+        str.append(fields.values("PB").first());
+        str.append(". ");
+    }
+    if (fields.contains("UR"))
+    {
+        str.append("<br><a href=\"");
+        str.append(fields.values("UR").first());
+        str.append("\">");
+        str.append(fields.values("UR").first());
+        str.append("</a>. ");
+    }
+    str.append("<br>");
+
+    return str;
 }
 
 

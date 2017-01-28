@@ -183,10 +183,10 @@ public:
     virtual QString getPluginOfficialName() const {return "";}
 
     /**
-     * @brief Get the plugin official citation in bibTex format
-     * @return Plugin official citation in bibTex format
+     * @brief Get the plugin official citation in RIS format
+     * @return Plugin official citation in RIS format
      */
-    virtual QString getPluginBibTexCitation() const {return "";}
+    virtual QString getPluginRISCitation() const {return "";}
 
 
 protected:

@@ -205,9 +205,10 @@ void GMainWindow::citationInfo()
 {
     CDM_CitationInfo citationInfo(getStepManager(), getPluginManager());
 
-    QString bibTex = citationInfo.getPluginBibTex();
-    bibTex.replace(",", ",<br>");
-    GCitationDialog dialog(citationInfo.getStepByPluginList(), bibTex, this);
+    QList<CDM_CitationInfo::StepCitationInfo> stepInfos = citationInfo.getScriptTable();
+
+    GCitationDialog dialog(stepInfos, citationInfo.getPluginAndStepCitations(), citationInfo.getPluginRIS(), this);
+
     dialog.exec();
 }
 

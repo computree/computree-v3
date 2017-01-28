@@ -138,6 +138,9 @@ public:
      */
     virtual QString getStepURL() const;
 
+    virtual QStringList getStepRISCitations() const {return QStringList();}
+
+
     /**
      * @brief Inherit this method if you want to initialize something.
      *
