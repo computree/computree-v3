@@ -39,7 +39,7 @@ int CT_ConfigurableWidgetToDialog::exec(CT_AbstractConfigurableWidget *widget)
             ok = false;
             QString pre = QObject::tr("La configuration est invalide");
 
-            if(err.isEmpty())
+            if(!err.isEmpty())
                 pre += QObject::tr(" :\r\n\r\n%1\r\n\r\n").arg(err);
             else
                 pre += QObject::tr(".");
