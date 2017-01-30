@@ -117,6 +117,19 @@ PB_StepPluginManager::~PB_StepPluginManager()
     PS_LOG->removeLogListener(&m_fileLog);
 }
 
+QString PB_StepPluginManager::getPluginRISCitation() const
+{
+    return "TY  - COMP\n"
+           "TI  - Plugin Base for Computree\n"
+           "AU  - Computree Core Team\n"
+           "PY  - 2017\n"
+           "PB  - Office National des Forêts, RDI Department\n"
+           "UR  - http://rdinnovation.onf.fr/projects/computree\n"
+           "ER  - \n";
+}
+
+
+
 bool PB_StepPluginManager::init()
 {
     PS_LOG->addNormalLogListener(&m_fileLog);

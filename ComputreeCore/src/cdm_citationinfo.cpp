@@ -9,7 +9,7 @@ CDM_CitationInfo::CDM_CitationInfo(CDM_StepManager *stepManager, CDM_PluginManag
     _computreeCitationRIS = "TY  - COMP\n"
                             "TI  - Computree platform\n"
                             "AU  - Computree Core Team\n"
-                            "PB  - ONF RDI Department\n"
+                            "PB  - Office National des Forêts, RDI Department\n"
                             "PY  - 2017\n"
                             "UR  - http://rdinnovation.onf.fr/computree\n"
                             "ER  - \n";

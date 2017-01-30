@@ -46,6 +46,7 @@ public:
 
     bool init();
 
+    QString getPluginRISCitation() const;
 protected:
 
     QSettings* initQSettings();
