@@ -39,6 +39,9 @@
 #include <math.h>                                                               // Used for M_PI constant
 #include "ct_itemdrawable/ct_beam.h"                                                             // A scan creates some rays
 #include "ct_itemdrawable/tools/drawmanager/ct_standardscannerdrawmanager.h"
+#include "ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h"
+
+class CT_ThetaPhiShootingPattern;
 
 /*! \def    DEG2RAD
             Linear constant to cast an angle in degrees to this angle in radians.
@@ -91,7 +94,7 @@ public:
     *  \warning The _zVector attribute is set to (0,0,1) by default
     *
     */
-    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
+    CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId = 0, bool clockWise = true );
 
     /*!
     *  \brief Constructor
@@ -112,7 +115,7 @@ public:
     CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanID, const Eigen::Vector3d &position, const Eigen::Vector3d &zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
 
-    CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId = 0, bool clocWise = true );
+    CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId = 0, bool clockWise = true );
 
     CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanID, const Eigen::Vector3d& position, const Eigen::Vector3d& zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
@@ -151,11 +154,11 @@ public:
     *
     *  \return Returns the ID of the scanner
     */
-    inline Eigen::Vector3d getZVector() const { return _zVector; }
+    inline Eigen::Vector3d getZVector() const { return m_shootingPattern->getZVector(); }
 
-    inline double getZVectorX() const {return _zVector(0);}
-    inline double getZVectorY() const {return _zVector(1);}
-    inline double getZVectorZ() const {return _zVector(2);}
+    inline double getZVectorX() const {return getZVector()(0);}
+    inline double getZVectorY() const {return getZVector()(1);}
+    inline double getZVectorZ() const {return getZVector()(2);}
 
 
     /*!
@@ -163,63 +166,68 @@ public:
     *
     *  \return Returns the horizontal field of view of the scanner
     */
-    inline double getHFov() const { return _hFov; }
+    inline double getHFov() const { return m_shootingPattern->getHFov(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the vertical field of view of the scanner
     */
-    inline double getVFov() const { return _vFov; }
+    inline double getVFov() const { return m_shootingPattern->getVFov(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the horizontal resolution of the scanner
     */
-    inline double getHRes() const { return _hRes; }
+    inline double getHRes() const { return m_shootingPattern->getHRes(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the vertical resolution of the scanner
     */
-    inline double getVRes() const { return _vRes; }
+    inline double getVRes() const { return m_shootingPattern->getVRes(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the initial theta of the scanner
     */
-    inline double getInitTheta() const { return _initTheta; }
+    inline double getInitTheta() const { return m_shootingPattern->getInitTheta(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the initial phi of the scanner
     */
-    inline double getInitPhi() const { return _initPhi; }
+    inline double getInitPhi() const { return m_shootingPattern->getInitPhi(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the number of horizontal rays of the scanner
     */
-    inline int getNHRays() const { return _nHRays; }
+    inline int getNHRays() const { return m_shootingPattern->getNHRays(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the number of vertical rays of the scanner
     */
-    inline double getNVRays() const { return _nVRays; }
+    inline double getNVRays() const { return m_shootingPattern->getNVRays(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns true if the scanner is clockwise, false else
     */
-    inline double getClockWise() const { return _clockWise; }
+    inline bool getClockWise() const { return m_shootingPattern->isClockWise(); }
+
+    /**
+     * @brief Returns the shooting pattern
+     */
+    CT_ShootingPattern* getShootingPattern() const;
 
 //********************************************//
 //                  Setters                   //
@@ -232,57 +240,57 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setPosition ( const Eigen::Vector3d& position ) { setCenterCoordinate(position); }
+    inline void setPosition ( const Eigen::Vector3d& position ) { setCenterCoordinate(position); m_shootingPattern->setOrigin(position); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setZVector ( const Eigen::Vector3d& zVector ) { _zVector = zVector; }
+    inline void setZVector ( const Eigen::Vector3d& zVector ) { m_shootingPattern->setZVector(zVector); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setHFov ( double hFov ) { _hFov = hFov; }
+    inline void setHFov ( double hFov ) { m_shootingPattern->setHFov(hFov); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setVFov ( double vFov ) { _vFov = vFov; }
+    inline void setVFov ( double vFov ) { m_shootingPattern->setVFov(vFov); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setHRes ( double hRes ) { _hRes = hRes; }
+    inline void setHRes ( double hRes ) { m_shootingPattern->setHRes(hRes); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setVRes ( double vRes ) { _vRes = vRes; }
+    inline void setVRes ( double vRes ) { m_shootingPattern->setVRes(vRes); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setInitTheta ( double initTheta ) { _initTheta = initTheta; }
+    inline void setInitTheta ( double initTheta ) { m_shootingPattern->setInitTheta(initTheta); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setInitPhi ( double initPhi ) { _initPhi = initPhi; }
+    inline void setInitPhi ( double initPhi ) { m_shootingPattern->setInitPhi(initPhi); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setNHRays ( int nHRays ) { _nHRays = nHRays; }
+    inline void setNHRays ( int nHRays ) { m_shootingPattern->setNHRays(nHRays); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setNVRays ( int nVRays ) { _nVRays = nVRays; }
+    inline void setNVRays ( int nVRays ) { m_shootingPattern->setNVRays(nVRays); }
 
     /*!
     *  \brief Setter of the class
     */
-    inline void setClockWise ( bool clockWise ) { _clockWise = clockWise; }
+    inline void setClockWise ( bool clockWise ) { m_shootingPattern->setClockWise(clockWise); }
 
 //***********************************************************************************//
 //      Virtual/redefined methods from CT_AbstractItemDrawableWithoutPointCloud      //
@@ -323,17 +331,9 @@ public :
     void beam ( int i, int j, CT_Beam &beam, bool moreStability = false ) const;
 
 private :
-    int             _scanID;        /*!< ID of the scan*/
-    Eigen::Vector3d	_zVector;		/*!< direction of the scan's vertica in the world coordinate system*/
-    double          _hFov;			/*!< horizontal field of view*/
-    double          _vFov;			/*!< vertical field of view*/
-    double          _hRes;			/*!< horizontal angle resolution of the scan*/
-    double          _vRes;			/*!< vertical angle resolution of the scan*/
-    double          _initTheta;		/*!< initial horizontal angle of the measurement in the world coordinate system*/
-    double          _initPhi;		/*!< initial vertical angle of the measurement in the world coordinate system*/
-    int             _nHRays;		/*!< number of ray on a entire horizontal move of the scan*/
-    int             _nVRays;		/*!< number of ray on a entire horizontal move of the scan*/
-    bool            _clockWise;     /*!< Whether the scan has been done in clockwise or not*/
+    int                             _scanID;        /*!< ID of the scan*/
+
+    CT_ThetaPhiShootingPattern*     m_shootingPattern;
 
     CT_DEFAULT_IA_BEGIN(CT_Scanner)
     CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"), "sid")

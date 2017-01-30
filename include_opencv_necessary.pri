@@ -43,7 +43,7 @@ OPENCV_LIB_ADD += opencv_viz
 windows {
 
 OPENCV_LIB_ADD =
-OPENCV_LIB_ADD += opencv_ts
+#OPENCV_LIB_ADD += opencv_ts
 OPENCV_LIB_ADD += opencv_world
 
     for(a, OPENCV_LIB_ADD) {

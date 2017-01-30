@@ -34,13 +34,7 @@ const CT_StandardBeamDrawManager CT_Beam::BEAM_DRAW_MANAGER;
 
 CT_Beam::CT_Beam() : CT_AbstractItemDrawableWithoutPointCloud()
 {
-    _origin(0) = 0;
-    _origin(1) = 0;
-    _origin(2) = 0;
-
-    _direction(0) = 1;
-    _direction(1) = 0;
-    _direction(2) = 0;
+    m_shot = new CT_Shot(true);
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -52,13 +46,7 @@ CT_Beam::CT_Beam() : CT_AbstractItemDrawableWithoutPointCloud()
 
 CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    _origin(0) = 0;
-    _origin(1) = 0;
-    _origin(2) = 0;
-
-    _direction(0) = 1;
-    _direction(1) = 0;
-    _direction(2) = 0;
+    m_shot = new CT_Shot(true);
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -68,17 +56,17 @@ CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_Abstract
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, const Eigen::Vector3d &origin, const Eigen::Vector3d &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
+CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model,
+                 const CT_AbstractResult *result,
+                 const Eigen::Vector3d &origin,
+                 const Eigen::Vector3d &direction) : CT_AbstractItemDrawableWithoutPointCloud(model, result)
 {
-    assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
+    Q_ASSERT( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
 
-    _origin = origin;
-
-    // Normalizing direction
-    _direction = direction.normalized();
+    m_shot = new CT_Shot(origin, direction.normalized());
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterCoordinate(_origin);
+    setCenterCoordinate(origin);
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
@@ -86,13 +74,7 @@ CT_Beam::CT_Beam(const CT_OutAbstractSingularItemModel *model, const CT_Abstract
 
 CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
-    _origin(0) = 0;
-    _origin(1) = 0;
-    _origin(2) = 0;
-
-    _direction(0) = 1;
-    _direction(1) = 0;
-    _direction(2) = 0;
+    m_shot = new CT_Shot(true);
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
     setCenterX( 0 );
@@ -104,23 +86,19 @@ CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result) : CT
 
 CT_Beam::CT_Beam(const QString &modelName, const CT_AbstractResult *result, const Eigen::Vector3d &origin, const Eigen::Vector3d &direction) : CT_AbstractItemDrawableWithoutPointCloud(modelName, result)
 {
-    assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
+    Q_ASSERT( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
 
-    _origin = origin;
-
-    // Normalizing direction
-    _direction = direction.normalized();
+    m_shot = new CT_Shot(origin, direction.normalized());
 
     // Setting the center attribute from the CT_AbstractItemDrawableWithoutPointCloud class
-    setCenterCoordinate(_origin);
+    setCenterCoordinate(origin);
 
     setBaseDrawManager(&BEAM_DRAW_MANAGER);
 }
 
-
 CT_Beam::~CT_Beam()
 {
-    // The destructor does not do anything. The destructor from the CT_AbstractItemDrawableWithoutPointCloud class will also be called
+    delete m_shot;
 }
 
 bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top, Eigen::Vector3d &nearP, Eigen::Vector3d &farP) const
@@ -128,13 +106,13 @@ bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top, 
     double t0 = 0;
     double t1 = std::numeric_limits<double>::max();
 
-    if (!updateIntervals(bot(0), top(0), _origin(0), _direction(0), t0, t1)) {return false;}
-    if (!updateIntervals(bot(1), top(1), _origin(1), _direction(1), t0, t1)) {return false;}
-    if (!updateIntervals(bot(2), top(2), _origin(2), _direction(2), t0, t1)) {return false;}
+    if (!updateIntervals(bot(0), top(0), m_shot->getOrigin()(0), m_shot->getDirection()(0), t0, t1)) {return false;}
+    if (!updateIntervals(bot(1), top(1), m_shot->getOrigin()(1), m_shot->getDirection()(1), t0, t1)) {return false;}
+    if (!updateIntervals(bot(2), top(2), m_shot->getOrigin()(2), m_shot->getDirection()(2), t0, t1)) {return false;}
 
 
-    nearP = _origin + _direction*t0;
-    farP  = _origin + _direction*t1;
+    nearP = m_shot->getOrigin() + m_shot->getDirection()*t0;
+    farP  = m_shot->getOrigin() + m_shot->getDirection()*t1;
 
     return true;
 }
@@ -144,9 +122,9 @@ bool CT_Beam::intersect(const Eigen::Vector3d& bot, const Eigen::Vector3d& top) 
     double t0 = 0;
     double t1 = std::numeric_limits<double>::max();
 
-    if (!updateIntervals(bot(0), top(0), _origin(0), _direction(0), t0, t1)) {return false;}
-    if (!updateIntervals(bot(1), top(1), _origin(1), _direction(1), t0, t1)) {return false;}
-    if (!updateIntervals(bot(2), top(2), _origin(2), _direction(2), t0, t1)) {return false;}
+    if (!updateIntervals(bot(0), top(0), m_shot->getOrigin()(0), m_shot->getDirection()(0), t0, t1)) {return false;}
+    if (!updateIntervals(bot(1), top(1), m_shot->getOrigin()(1), m_shot->getDirection()(1), t0, t1)) {return false;}
+    if (!updateIntervals(bot(2), top(2), m_shot->getOrigin()(2), m_shot->getDirection()(2), t0, t1)) {return false;}
 
     return true;
 }
@@ -175,7 +153,7 @@ CT_Beam* CT_Beam::copy(const CT_OutAbstractItemModel *model,
                      const CT_AbstractResult *result,
                      CT_ResultCopyModeList copyModeList)
 {
-    CT_Beam *ray = new CT_Beam((const CT_OutAbstractSingularItemModel *)model, result, _origin, _direction);
+    CT_Beam *ray = new CT_Beam((const CT_OutAbstractSingularItemModel *)model, result, m_shot->getOrigin(), m_shot->getDirection());
     ray->setId(id());
 
     ray->setAlternativeDrawManager(getAlternativeDrawManager());

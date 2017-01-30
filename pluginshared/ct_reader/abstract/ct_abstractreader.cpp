@@ -168,6 +168,20 @@ const QList<FileFormat>& CT_AbstractReader::readableFormats() const
     return m_formats;
 }
 
+bool CT_AbstractReader::isExtensionPresentInReadableFormat(const QString &extension) const
+{
+    QListIterator<FileFormat> it(m_formats);
+
+    while(it.hasNext()) {
+        const FileFormat& ff = it.next();
+
+        if(ff.suffixes().contains(extension))
+            return true;
+    }
+
+    return false;
+}
+
 bool CT_AbstractReader::isReadError() const
 {
     return m_error;

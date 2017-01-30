@@ -34,6 +34,7 @@
 #include "assert.h"
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardbeamdrawmanager.h"
+#include "ct_itemdrawable/tools/scanner/ct_shot.h"
 
 /*! \def    EPSILON_INTERSECTION_RAY
             Redefinition of the zero for the ray-box intersection algorithm */
@@ -113,7 +114,7 @@ public:
     */
     inline Eigen::Vector3d operator() (double t) const
     {
-        return _origin + _direction*t;
+        return m_shot->getOrigin() + m_shot->getDirection()*t;
     }
 
 //********************************************//
@@ -124,14 +125,16 @@ public:
     *
     *  \return Returns the origin of the ray
     */
-    inline Eigen::Vector3d getOrigin () const { return _origin; }
+    inline Eigen::Vector3d getOrigin () const { return m_shot->getOrigin(); }
 
     /*!
     *  \brief Getter of the class
     *
     *  \return Returns the direction of the ray
     */
-    inline Eigen::Vector3d getDirection () const { return _direction; }
+    inline Eigen::Vector3d getDirection () const { return m_shot->getDirection(); }
+
+    inline CT_Shot* getShot() const { return m_shot; }
 
 //********************************************//
 //                  Setters                   //
@@ -141,7 +144,7 @@ public:
     */
     inline void setOrigin ( const Eigen::Vector3d& origin )
     {
-        _origin = origin;
+        m_shot->setOrigin(origin);
     }
 
     /*!
@@ -149,8 +152,8 @@ public:
     */
     inline void setDirection ( const Eigen::Vector3d& direction )
     {
-        assert( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
-        _direction = direction;
+        Q_ASSERT( !(direction(0) == 0 && direction(1) == 0 && direction(2) == 0) );
+        m_shot->setDirection(direction);
     }
 
 //********************************************//
@@ -215,8 +218,7 @@ public:
                          CT_ResultCopyModeList copyModeList);
 
 private :
-    Eigen::Vector3d _origin;          /*!< Origin of the ray*/
-    Eigen::Vector3d _direction;       /*!< Direction of the ray*/
+    CT_Shot*            m_shot;
 
     const static CT_StandardBeamDrawManager BEAM_DRAW_MANAGER;      /*!< Static attribute of the class :
                                                                    *  Draw manager of a ray.

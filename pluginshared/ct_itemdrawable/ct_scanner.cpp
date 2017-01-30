@@ -44,36 +44,34 @@ CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWith
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = Eigen::Vector3d(0,0,1);
-    _hFov = 0;
-    _vFov = 0;
-    _hRes = 0;
-    _vRes = 0;
-    _initTheta = 0;
-    _initPhi = 0;
-    _nHRays = 0;
-    _nVRays = 0;
-    _clockWise = clockWise;
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       Eigen::Vector3d(0,0,1),
+                                                       clockWise);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
-CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
+CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
 {
     _scanID = scanId;
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = Eigen::Vector3d(0,0,1);
-    _hFov = 0;
-    _vFov = 0;
-    _hRes = 0;
-    _vRes = 0;
-    _initTheta = 0;
-    _initPhi = 0;
-    _nHRays = 0;
-    _nVRays = 0;
-    _clockWise = clocWise;
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       Eigen::Vector3d(0,0,1),
+                                                       clockWise);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -96,57 +94,38 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
     setCenterX(origin.x());
     setCenterY(origin.y());
     setCenterZ(origin.z());
-    _zVector = zVector;
-    _clockWise = clockWise;
-
-    if ( radians )
-    {
-        _hFov = hFov;
-        _vFov = vFov;
-        _hRes = hRes;
-        _vRes = vRes;
-
-        _clockWise ? _initTheta = -initTheta : _initTheta = initTheta;
-        _initPhi = initPhi;
-    }
-
-    else
-    {
-        _hFov = hFov * DEG2RAD;
-        _vFov = vFov * DEG2RAD;
-        _hRes = hRes * DEG2RAD;
-        _vRes = vRes * DEG2RAD;
-
-        _clockWise ? _initTheta = -initTheta*DEG2RAD : _initTheta = initTheta*DEG2RAD;
-
-        _initPhi = initPhi*DEG2RAD;
-    }
-
-    // Calculates the number of horizontal and vertical rays
-    _nHRays = (int)ceil(fabs(_hFov/_hRes));
-    _nVRays = (int)ceil(fabs(_vFov/_vRes));
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+                                                       hFov,
+                                                       vFov,
+                                                       hRes,
+                                                       vRes,
+                                                       initTheta,
+                                                       initPhi,
+                                                       zVector,
+                                                       clockWise,
+                                                       radians);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
 
 
-CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId, bool clocWise) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
+CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
 {
     _scanID = scanId;
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    _zVector = Eigen::Vector3d(0,0,1);
-    _hFov = 0;
-    _vFov = 0;
-    _hRes = 0;
-    _vRes = 0;
-    _initTheta = 0;
-    _initPhi = 0;
-    _nHRays = 0;
-    _nVRays = 0;
-    _clockWise = clocWise;
+
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       0,
+                                                       Eigen::Vector3d(0,0,1),
+                                                       clockWise);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -170,54 +149,39 @@ CT_Scanner::CT_Scanner(const QString &modelName,
     setCenterY(origin(1));
     setCenterZ(origin(2));
 
-    _zVector = zVector;
-    _clockWise = clockWise;
-
-    if ( radians )
-    {
-        _hFov = hFov;
-        _vFov = vFov;
-        _hRes = hRes;
-        _vRes = vRes;
-
-        _clockWise ? _initTheta = -initTheta : _initTheta = initTheta;
-        _initPhi = initPhi;
-    }
-
-    else
-    {
-        _hFov = hFov * DEG2RAD;
-        _vFov = vFov * DEG2RAD;
-        _hRes = hRes * DEG2RAD;
-        _vRes = vRes * DEG2RAD;
-
-        _clockWise ? _initTheta = -initTheta*DEG2RAD : _initTheta = initTheta*DEG2RAD;
-
-        _initPhi = initPhi*DEG2RAD;
-    }
-
-    // Calculates the number of horizontal and vertical rays
-    _nHRays = (int)ceil(fabs(_hFov/_hRes));
-    _nVRays = (int)ceil(fabs(_vFov/_vRes));
-
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+                                                       hFov,
+                                                       vFov,
+                                                       hRes,
+                                                       vRes,
+                                                       initTheta,
+                                                       initPhi,
+                                                       zVector,
+                                                       clockWise,
+                                                       radians);
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
 CT_Scanner::~CT_Scanner()
 {
-    // Nothing to do
+    delete m_shootingPattern;
+}
+
+CT_ShootingPattern* CT_Scanner::getShootingPattern() const
+{
+    return m_shootingPattern;
 }
 
 CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
 {
     assert ( i >= 0 && j >= 0 );
-    assert ( i <= _nHRays && j <= _nVRays );
+    assert ( i <= getNHRays() && j <= getNVRays() );
 
-    double theta = _initTheta + (i * _hRes);
-    double phi = _initPhi + (j * _vRes);
+    double theta = getInitTheta() + (i * getHRes());
+    double phi = getInitPhi() + (j * getVRes());
 
     // If clockwise, then real theta equals opposite to initial
-    if ( _clockWise )
+    if ( getClockWise() )
     {
         theta *= -1;
     }
@@ -251,13 +215,13 @@ CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
 void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
 {
     assert ( i >= 0 && j >= 0 );
-    assert ( i <= _nHRays && j <= _nVRays );
+    assert ( i <= getNHRays() && j <= getNVRays() );
 
-    double theta = _initTheta + (i * _hRes);
-    double phi = _initPhi + (j * _vRes);
+    double theta = getInitTheta() + (i * getHRes());
+    double phi = getInitPhi() + (j * getVRes());
 
     // If clockwise, then real theta equals opposite to initial
-    if ( _clockWise )
+    if ( getClockWise() )
     {
         theta *= -1;
     }
@@ -293,7 +257,18 @@ CT_Scanner* CT_Scanner::copy(const CT_OutAbstractItemModel *model,
                              const CT_AbstractResult *result,
                              CT_ResultCopyModeList copyModeList)
 {
-    CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model, result, _scanID, getPosition(), _zVector, _hFov, _vFov, _hRes, _vRes, _initTheta, _initPhi, _clockWise);
+    CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model,
+                                    result,
+                                    getScanID(),
+                                    getPosition(),
+                                    getZVector(),
+                                    getHFov(),
+                                    getVFov(),
+                                    getHRes(),
+                                    getVRes(),
+                                    getInitTheta(),
+                                    getInitPhi(),
+                                    getClockWise());
     sc->setId(id());
     sc->setAlternativeDrawManager(getAlternativeDrawManager());
 

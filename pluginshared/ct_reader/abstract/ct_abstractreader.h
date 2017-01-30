@@ -110,6 +110,12 @@ public:
     const QList<FileFormat> &readableFormats() const;
 
     /**
+     * @brief Returns true if the extension is present in readable formats
+     * @param extension : must be the extension of the file WITHOUT the comma "."
+     */
+    bool isExtensionPresentInReadableFormat(const QString& extension) const;
+
+    /**
      * @brief Return true if it was a read error
      */
     bool isReadError() const;

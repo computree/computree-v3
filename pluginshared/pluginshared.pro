@@ -397,7 +397,10 @@ SOURCES += \
     ct_itemdrawable/ct_grid3d_sparse.cpp \
     ct_math/delaunay2d/ct_delaunaysidelist.cpp \
     ct_math/delaunay2d/ct_delaunaytrianglesrecycler.cpp \
-    ct_itemdrawable/ct_grid3d_points.cpp
+    ct_itemdrawable/ct_grid3d_points.cpp \
+    ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.cpp \
+    ct_itemdrawable/tools/scanner/ct_shootingpatternfrompointcloud.cpp \
+    ct_itemdrawable/ct_shootingpatternd.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -891,7 +894,12 @@ HEADERS += interfaces.h \
     ct_itemdrawable/ct_grid3d_sparse.hpp \
     ct_math/delaunay2d/ct_delaunaysidelist.h \
     ct_math/delaunay2d/ct_delaunaytrianglesrecycler.h \
-    ct_itemdrawable/ct_grid3d_points.h
+    ct_itemdrawable/ct_grid3d_points.h \
+    ct_itemdrawable/tools/scanner/ct_shootingpattern.h \
+    ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h \
+    ct_itemdrawable/tools/scanner/ct_shot.h \
+    ct_itemdrawable/tools/scanner/ct_shootingpatternfrompointcloud.h \
+    ct_itemdrawable/ct_shootingpatternd.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

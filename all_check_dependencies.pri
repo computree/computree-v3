@@ -386,7 +386,7 @@ isEmpty(USE_OPENCV_ERROR_MSG) {
     windows {
 
     OPENCV_LIB_ADD =
-    OPENCV_LIB_ADD += opencv_ts
+    #OPENCV_LIB_ADD += opencv_ts
     OPENCV_LIB_ADD += opencv_world
 
         for(a, OPENCV_LIB_ADD) {
