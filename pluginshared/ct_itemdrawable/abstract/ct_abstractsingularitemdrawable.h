@@ -2,7 +2,6 @@
 #define CT_ABSTRACTSINGULARITEMDRAWABLE_H
 
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
-#include "ct_attributes/tools/ct_defaultitemattributemanager.h"
 #include "ct_attributes/tools/ct_itemattributecontainer.h"
 
 /**

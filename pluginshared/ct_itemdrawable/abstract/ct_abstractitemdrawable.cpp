@@ -36,7 +36,7 @@
 
 quint64 CT_AbstractItemDrawable::NEXTID = 1;
 QMap<QString, QString> CT_AbstractItemDrawable::NAMEMAP;
-
+QMutex CT_AbstractItemDrawable::NAMEMAP_Mutex;
 
 CT_AbstractItemDrawable::CT_AbstractItemDrawable() : CT_AbstractItem()
 {
@@ -346,11 +346,15 @@ QList<CT_ItemDrawableConfiguration*> CT_AbstractItemDrawable::getDependantViewCo
 
 void CT_AbstractItemDrawable::addNameTypeCorresp(QString type, QString name)
 {
+    QMutexLocker locker(&NAMEMAP_Mutex);
+
     NAMEMAP.insert(type, name);
 }
 
 QString CT_AbstractItemDrawable::getNameFromType(QString type)
 {
+    QMutexLocker locker(&NAMEMAP_Mutex);
+
     return NAMEMAP.value(type);
 }
 

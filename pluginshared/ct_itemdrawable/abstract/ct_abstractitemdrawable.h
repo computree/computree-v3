@@ -31,6 +31,7 @@
 #include "ct_item/abstract/ct_abstractitem.h"
 #include "ct_result/ct_resultcopymodelist.h"
 #include "ct_itemdrawable/tools/drawmanager/abstract/ct_abstractitemdrawabledrawmanager.h"
+#include "ct_attributes/tools/ct_defaultitemattributemanager.h"
 
 #include <QMap>
 #include <QString>
@@ -56,8 +57,9 @@ class CT_AbstractResult;
     virtual QString name() const {return staticName();} \
     static QString staticName() {return #Name;} \
     QString getType() const { return staticGetType(); } \
-    static QString staticGetType() { QString statType = SuperClassName::staticGetType() + "/" + #ThisClassName; CT_AbstractItemDrawable::addNameTypeCorresp(statType, staticName()); return statType; }
-
+    static QString staticGetType() { QString statType = SuperClassName::staticGetType() + "/" + #ThisClassName; return statType; } \
+    static void staticInitNameTypeCorresp() { ThisClassName::addNameTypeCorresp(staticGetType(), staticName()); } \
+    CT_StaticInitDefaultIAInvoker<ThisClassName> ThisClassName::INVOKER_DEFAULT_NT = CT_StaticInitDefaultIAInvoker<ThisClassName>(&staticInitNameTypeCorresp);
 
 /**
  * @brief Represent a item that can be added in a result or in another item
@@ -354,6 +356,7 @@ private:
 
     static quint64  NEXTID;
     static QMap<QString, QString> NAMEMAP;
+    static QMutex NAMEMAP_Mutex;
 
     /**
      * @brief Call this method when the display state of this item change
