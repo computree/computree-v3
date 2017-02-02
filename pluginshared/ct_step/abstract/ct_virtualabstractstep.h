@@ -611,9 +611,10 @@ protected:
     /**
      * @brief Show the INPUT elements configuration dialog. This dialog allow the user to select elements that must be used in "compute" method
      *        for searched elements. The dialog is showed in read only mode if the step has childrens or if we can not configure something.
+     * @param forceReadOnly : true to force to show the input configuration dialog in read only mode
      * @return true if settings is modified.
      */
-    virtual bool configureInputResult();
+    virtual bool configureInputResult(bool forceReadOnly = false);
 
     /**
      * @brief Redefine this method if you want to create a post configuration dialog.

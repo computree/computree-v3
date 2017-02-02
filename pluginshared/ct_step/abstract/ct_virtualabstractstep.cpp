@@ -1291,7 +1291,7 @@ bool CT_VirtualAbstractStep::preConfigure()
     return true;
 }
 
-bool CT_VirtualAbstractStep::configureInputResult()
+bool CT_VirtualAbstractStep::configureInputResult(bool forceReadOnly)
 {
     bool firstTime = (_inManager->getTurnManager()->nTurn() == 0);
 
@@ -1306,7 +1306,8 @@ bool CT_VirtualAbstractStep::configureInputResult()
     }
 
     if(!_stepChildList.isEmpty()
-            || (!firstTime && crReturn == CT_InResultModelConfigurationManager::CreateNotNecessary))
+            || (!firstTime && crReturn == CT_InResultModelConfigurationManager::CreateNotNecessary)
+            || forceReadOnly)
     {
         /*QMessageBox::warning(NULL, "Impossible", "Vous ne pouvez pas re-configurer les résultats d'entrées "
                                                  "puisque vous possédez des étapes filles. La re-configuration peut "

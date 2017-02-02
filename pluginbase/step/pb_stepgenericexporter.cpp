@@ -219,9 +219,12 @@ void PB_StepGenericExporter::createInResultModelListProtected()
     setMaximumTurn(1);
 }
 
-bool PB_StepGenericExporter::configureInputResult()
+bool PB_StepGenericExporter::configureInputResult(bool forceReadOnly)
 {
-    if(CT_VirtualAbstractStep::configureInputResult())
+    if(forceReadOnly)
+        return CT_VirtualAbstractStep::configureInputResult(forceReadOnly);
+
+    if(CT_VirtualAbstractStep::configureInputResult(forceReadOnly))
         return configureExporter();
 
     return false;

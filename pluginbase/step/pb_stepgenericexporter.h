@@ -56,7 +56,7 @@ protected:
     void createInResultModelListProtected();
 
     // CT_AbstractStep non obligatoire :
-    bool configureInputResult();
+    bool configureInputResult(bool forceReadOnly = false);
 
     // CT_AbstractStep non obligatoire :
     bool postConfigure();
