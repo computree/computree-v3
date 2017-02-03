@@ -85,7 +85,6 @@ void PB_StepBeginLoopThroughGroups02::compute(CT_ResultGroup *outRes, CT_Standar
             }
         }
         _counter->setNTurns(_ids.size());
-        NTurnsSelected();
     }
 
     QList<CT_AbstractItemGroup*> groupsToBeRemoved;
@@ -112,6 +111,9 @@ void PB_StepBeginLoopThroughGroups02::compute(CT_ResultGroup *outRes, CT_Standar
             groupsToBeRemoved.append(group);
         }
     }
+
+    NTurnsSelected();
+
 
     while (!groupsToBeRemoved.isEmpty())
     {
