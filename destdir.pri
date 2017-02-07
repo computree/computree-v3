@@ -20,14 +20,13 @@ message(Element(s) will be installed to $${PLUGINSHARED_DESTDIR})
 contains(QMAKE_TARGET.arch, x86_64) {
     DEFINES += ENVIRONMENT64
 } else {
-    DEFINES += ENVIRONMENT32
-}
-
-isEmpty(QMAKE_TARGET.arch) {
-    *-64 {
-        DEFINES += ENVIRONMENT64
+    isEmpty(QMAKE_TARGET.arch) {
+        *-64 {
+            DEFINES += ENVIRONMENT64
+        } else {
+            DEFINES += ENVIRONMENT32
+        }
     } else {
         DEFINES += ENVIRONMENT32
     }
 }
-
