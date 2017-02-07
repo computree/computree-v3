@@ -493,6 +493,11 @@ PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<unsigned long>::valueAtIndexAsString
 template<>
 PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<unsigned long>::NAAsString() const;
 
+template<>
+PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<long int>::valueAtIndexAsString(const size_t index) const;
+
+template<>
+PLUGINSHAREDSHARED_EXPORT QString CT_Grid3D<long int>::NAAsString() const;
 
 // fin des spécialisations
 

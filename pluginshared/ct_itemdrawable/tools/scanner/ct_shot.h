@@ -6,7 +6,7 @@
 #ifndef CT_SHOT_H
 #define CT_SHOT_H
 
-#include "Eigen/Core"
+#include "Eigen/Dense"
 
 #include "pluginShared_global.h"
 

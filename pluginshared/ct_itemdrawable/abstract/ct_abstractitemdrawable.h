@@ -59,7 +59,7 @@ class CT_AbstractResult;
     QString getType() const { return staticGetType(); } \
     static QString staticGetType() { QString statType = SuperClassName::staticGetType() + "/" + #ThisClassName; return statType; } \
     static void staticInitNameTypeCorresp() { ThisClassName::addNameTypeCorresp(staticGetType(), staticName()); } \
-    CT_StaticInitDefaultIAInvoker<ThisClassName> ThisClassName::INVOKER_DEFAULT_NT = CT_StaticInitDefaultIAInvoker<ThisClassName>(&staticInitNameTypeCorresp);
+    CT_StaticInitDefaultIAInvoker<ThisClassName> INVOKER_DEFAULT_NT = CT_StaticInitDefaultIAInvoker<ThisClassName>(&staticInitNameTypeCorresp);
 
 /**
  * @brief Represent a item that can be added in a result or in another item
