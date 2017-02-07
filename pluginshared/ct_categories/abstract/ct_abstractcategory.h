@@ -175,7 +175,7 @@ public:
      * @brief Convert a type of data to a type of data of a category
      */
     template <typename VType>
-    static inline CT_AbstractCategory::ValueType staticValueTypeToCategoryType()
+    static CT_AbstractCategory::ValueType staticValueTypeToCategoryType()
     {
         qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + CT_TypeInfo::name<VType>() + ") ===>" + __FILE__ + __LINE__));
 
@@ -186,7 +186,7 @@ public:
      * @brief Convert a type of data to a type of data of a category (String)
      */
     template <typename VType>
-    static inline QString staticValueTypeToCategoryTypeString()
+    static QString staticValueTypeToCategoryTypeString()
     {
         qFatal(qPrintable(QString("staticValueTypeToCategoryType unknown data type (") + CT_TypeInfo::name<VType>() + ") ===>" + __FILE__ + __LINE__));
 
