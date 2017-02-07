@@ -22,3 +22,12 @@ contains(QMAKE_TARGET.arch, x86_64) {
 } else {
     DEFINES += ENVIRONMENT32
 }
+
+isEmpty(QMAKE_TARGET.arch) {
+    *-64 {
+        DEFINES += ENVIRONMENT64
+    } else {
+        DEFINES += ENVIRONMENT32
+    }
+}
+
