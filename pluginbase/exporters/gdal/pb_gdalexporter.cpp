@@ -532,6 +532,13 @@ bool PB_GDALExporter::exportPolygon2D(const CT_Polygon2D *polygon, GDALDataset *
         extRing.addPoint((*v)[0], (*v)[1], 0);
     }
 
+    it.toFront();
+    if (it.hasNext())
+    {
+        Eigen::Vector2d *v = it.next();
+        extRing.addPoint((*v)[0], (*v)[1], 0);
+    }
+
     po.addRing(&extRing);
 
     return exportOGRGeometry(&po, dataset, layer, poFeature);
