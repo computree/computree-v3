@@ -276,6 +276,13 @@ void CT_Image2D<DataT>::computeMinMax()
 }
 
 template< typename DataT>
+void CT_Image2D<DataT>::setMinMax(DataT min, DataT max)
+{
+    _dataMin = min;
+    _dataMax = max;
+}
+
+template< typename DataT>
 QString CT_Image2D<DataT>::getType() const
 {
     return staticGetType();
@@ -522,6 +529,19 @@ double CT_Image2D<DataT>::NAAsDouble() const
 {
     return NA();
 }
+
+template< typename DataT>
+double CT_Image2D<DataT>::minValueAsDouble() const
+{
+    return dataMin();
+}
+
+template< typename DataT>
+double CT_Image2D<DataT>::maxValueAsDouble() const
+{
+    return dataMax();
+}
+
 
 template< typename DataT>
 bool CT_Image2D<DataT>::addValueAtCoords(const double x, const double y, const DataT value)

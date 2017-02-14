@@ -400,7 +400,9 @@ SOURCES += \
     ct_itemdrawable/ct_grid3d_points.cpp \
     ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.cpp \
     ct_itemdrawable/tools/scanner/ct_shootingpatternfrompointcloud.cpp \
-    ct_itemdrawable/ct_shootingpatternd.cpp
+    ct_itemdrawable/ct_shootingpatternd.cpp \
+    ct_itemdrawable/ct_colorcomposite.cpp \
+    ct_itemdrawable/tools/drawmanager/ct_standardcolorcompositedrawmanager.cpp
 
 HEADERS += interfaces.h \
     pluginShared_global.h \
@@ -899,7 +901,9 @@ HEADERS += interfaces.h \
     ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h \
     ct_itemdrawable/tools/scanner/ct_shot.h \
     ct_itemdrawable/tools/scanner/ct_shootingpatternfrompointcloud.h \
-    ct_itemdrawable/ct_shootingpatternd.h
+    ct_itemdrawable/ct_shootingpatternd.h \
+    ct_itemdrawable/ct_colorcomposite.h \
+    ct_itemdrawable/tools/drawmanager/ct_standardcolorcompositedrawmanager.h
 
 INCLUDEPATH += .
 INCLUDEPATH += ./ct_actions

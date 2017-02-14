@@ -93,6 +93,9 @@ public:
      */
     virtual double NAAsDouble() const = 0;
 
+    virtual double minValueAsDouble() const = 0;
+    virtual double maxValueAsDouble() const = 0;
+
     /*!
      * \brief Compute index for given column, row
      * \param col Column

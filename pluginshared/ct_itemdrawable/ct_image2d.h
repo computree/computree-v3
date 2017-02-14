@@ -184,6 +184,9 @@ public:
      */
     void computeMinMax();
 
+    void setMinMax(DataT min, DataT max);
+
+
     /**
       * \brief Gives the NA value
       * \return Valeur NA value
@@ -308,6 +311,10 @@ public:
      *
      */
     virtual double NAAsDouble() const;
+
+    virtual double minValueAsDouble() const;
+    virtual double maxValueAsDouble() const;
+
 
     /**
       * \brief Gives neighbours values
