@@ -183,6 +183,10 @@ private:
 
     PixelSize                                   _pixelSize;
 
+    bool                        _viewDetached;
+    QWidget*                    _previousParent;
+    Qt::WindowFlags             _flags;
+
     void createAndAddCameraAndGraphicsOptions(QWidget *parent);
     void createAndAddItemDrawableWidgetContainer(QWidget *parent);
     void createAndAddGraphicsWidgetContainer(QWidget *parent);
@@ -239,6 +243,7 @@ public slots:
     void setCameraType(bool orthographic);
 
 
+    void detachView();
 protected slots:
     virtual void closeEvent(QCloseEvent *closeEvent);
 

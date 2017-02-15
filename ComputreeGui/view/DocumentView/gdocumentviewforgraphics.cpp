@@ -65,6 +65,8 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     connect(this, SIGNAL(startDirtyColorsOfPointTimer()), &m_timerDirtyColorsOfPoints, SLOT(start()), Qt::QueuedConnection);
     connect(this, SIGNAL(startDirtyNormalsOfPointTimer()), &m_timerDirtyNormalsOfPoints, SLOT(start()), Qt::QueuedConnection);
     connect(this, SIGNAL(startCheckDirtyColorsAndNormalsCloudOfPointTimer()), &m_timerCheckDirtyColorsAndNormalCloudOfPoints, SLOT(start()), Qt::QueuedConnection);
+
+    _viewDetached = false;
 }
 
 GDocumentViewForGraphics::~GDocumentViewForGraphics()
@@ -908,6 +910,10 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     screenshotButton->setToolTip(tr("Enregistrer une capture d'écran"));
     screenshotButton->setIcon(QIcon(":/Icones/Icones/screenshot.png"));
 
+//    QPushButton *maximizeButton = new QPushButton(widgetContainer);
+//    maximizeButton->setIcon(QIcon(":/Icones/Icones/maximize.png"));
+
+
     // bouton qui permet d'ouvrir/enregistrer un point de vue
     _pointOfViewButton= new QToolButton(widgetContainer);
     _pointOfViewButton->setMaximumWidth(38);
@@ -964,6 +970,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(buttonShowOptions);
     layout->addWidget(buttonPointsAttributes);
     layout->addWidget(_buttonExport);
+    //layout->addWidget(maximizeButton);
     layout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Expanding));
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
@@ -978,6 +985,26 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     connect(_cameraOptionsView, SIGNAL(syncGraphics(bool)), this, SLOT(syncChanged(bool)));
 
     connect(_graphicsOptionsView, SIGNAL(pointSizeChanged(double)), this, SLOT(changePixelSize(double)));
+
+//    connect (maximizeButton, SIGNAL(clicked()), this, SLOT(detachView()));
+}
+
+void GDocumentViewForGraphics::detachView()
+{
+    if (_viewDetached)
+    {
+        getSubWindow()->setParent(_previousParent, _flags);
+        getSubWindow()->show();
+        _viewDetached = false;
+    } else {
+
+        getSubWindow()->showMaximized();
+        _previousParent = (QWidget*) parent();
+        _flags = getSubWindow()->windowFlags();
+        getSubWindow()->setParent(NULL, Qt::Window);
+        setCurrentAction(NULL, false);
+        _viewDetached = true;
+    }
 }
 
 void GDocumentViewForGraphics::createAndAddGraphicsWidgetContainer(QWidget *parent)
