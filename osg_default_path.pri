@@ -5,7 +5,7 @@ unix {
 }
 
 windows {
-    OSG_BASE_PATH = "C:/Program Files/OpenSceneGraph/"
+    OSG_BASE_PATH = "$$PWD/../Computree_dependencies/OpenSceneGraph/"
     OSG_INC_PATH = $${OSG_BASE_PATH}include
     OSG_LIBS_PATH = $${OSG_BASE_PATH}lib
 }

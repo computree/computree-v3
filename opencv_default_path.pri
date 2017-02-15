@@ -7,7 +7,7 @@ unix {
 }
 
 windows {
-    OPENCV_BASE_PATH = "C:/opencv/build/"
+    OPENCV_BASE_PATH = "$$PWD/../Computree_dependencies/opencv/build/"
 
     OPENCV_INC_PATH = "$${OPENCV_BASE_PATH}include"
     OPENCV_LIBS_PATH = "$${OPENCV_BASE_PATH}x64/vc12/lib"

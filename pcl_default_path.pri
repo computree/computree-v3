@@ -12,7 +12,7 @@ unix {
 }
 
 windows {
-    PCL_BASE_PATH = "C:/Program Files/PCL 1.7.2/"
+    PCL_BASE_PATH = "$$PWD/../Computree_dependencies/PCL 1.7.2/"
     PCL_3RDPARTY_PATH = "$${PCL_BASE_PATH}3rdParty/"
 
     PCL_LIBS_PATH = "$${PCL_BASE_PATH}lib"

@@ -6,7 +6,7 @@ unix {
 }
 
 windows {
-    GSL_BASE_PATH = "C:/libgsl-2.1/"
+    GSL_BASE_PATH = "$$PWD/../Computree_dependencies/libgsl-2.1/"
 
     GSL_INC_PATH = "$${GSL_BASE_PATH}include"
     GSL_LIBS_PATH = "$${GSL_BASE_PATH}lib/x64"
