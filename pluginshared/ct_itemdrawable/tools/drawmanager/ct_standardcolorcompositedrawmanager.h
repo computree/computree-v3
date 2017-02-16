@@ -14,11 +14,15 @@ public:
 
 protected:
 
+    const static QString INDEX_CONFIG_MIN_RED;
+    const static QString INDEX_CONFIG_MAX_RED;
     const static QString INDEX_CONFIG_3D_MODE_ENABLED;
     const static QString INDEX_CONFIG_MAP_MODE_ENABLED;
     const static QString INDEX_CONFIG_MAP_MODE_ZLEVEL_ENABLED;
     const static QString INDEX_CONFIG_MAP_MODE_ZLEVEL_VALUE;
 
+    static QString staticInitConfigMinRed();
+    static QString staticInitConfigMaxRed();
     static QString staticInitConfig3DModeEnabled();
     static QString staticInitConfigMapModeEnabled();
     static QString staticInitConfigMapModeZLevelEnabled();

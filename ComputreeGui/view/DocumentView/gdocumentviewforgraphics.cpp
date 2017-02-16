@@ -970,7 +970,7 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(buttonShowOptions);
     layout->addWidget(buttonPointsAttributes);
     layout->addWidget(_buttonExport);
-    //layout->addWidget(maximizeButton);
+//    layout->addWidget(maximizeButton);
     layout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Expanding));
 
     ((QVBoxLayout*)parent->layout())->insertWidget(0, widgetContainer);
