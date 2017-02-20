@@ -1,0 +1,96 @@
+{
+	"archive_format": "computree-win-{arch}-%Y%m%d-%H%M%S",
+	"params": {
+		"main_dir": "computreev3",
+		"out_dir": "{top_srcdir}\\temp",
+		"build_dir": "{top_srcdir}\\ComputreeInstallRelease",
+		"deps_dir": "{top_srcdir}\\Computree_dependencies",
+		"main_exe": "{top_srcdir}\\ComputreeInstallRelease\\ComputreeGui.exe",
+		"qt_dir": "C:\\Qt\\5.8\\msvc2013_64",
+		"msvc_dir": "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC"
+	},
+	"deps": [
+		{
+			"src_dir": "{build_dir}",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"ComputreeGui.exe",
+				"ComputreeBatch.exe",
+				"CompuTreeCore.dll",
+				"pluginShared.dll",
+				"ctlib*.dll"
+			]
+		},
+		{
+			"src_dir": "{build_dir}\\plugins",
+			"dst_dir": "{out_dir}\\plugins",
+			"globs": [
+				"*.dll"
+			]
+		},
+		{
+			"src_dir": "{deps_dir}\\OpenSceneGraph\\bin",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"osg100-osg.dll",
+				"osg100-osgViewer.dll",
+				"osg100-osgGA.dll",
+				"osg100-osgText.dll",
+				"osg100-osgUtil.dll",
+				"osg100-osgDB.dll",
+				"osg100-osgFX.dll",
+				"ot20-OpenThreads.dll"
+			]
+		},
+		{
+			"src_dir": "{deps_dir}\\OpenSceneGraph\\3rdParty\\x64\\bin",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"zlib.dll"
+			]
+		},
+		{
+			"src_dir": "{deps_dir}\\opencv\\build\\x64\\vc12\\bin",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"opencv_world300.dll"
+			]
+		},
+		{
+			"src_dir": "{deps_dir}\\gdal\\bin",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"gdal200.dll"
+			]
+		},
+		{
+			"src_dir": "{qt_dir}",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"bin\\icudt*.dll",
+				"bin\\icuin*.dll",
+				"bin\\icuuc*.dll",
+				"bin\\Qt5Concurrent.dll",
+				"bin\\Qt5Core.dll",
+				"bin\\Qt5Gui.dll",
+				"bin\\Qt5OpenGL.dll",
+				"bin\\Qt5Widgets.dll",
+				"bin\\Qt5Xml.dll",
+				"plugins\\platforms\\qminimal.dll",
+				"plugins\\platforms\\qoffscreen.dll",
+				"plugins\\platforms\\qwindows.dll"
+			]
+		},
+		{
+			"src_dir": "{msvc_dir}\\redist\\x64\\*",
+			"dst_dir": "{out_dir}",
+			"globs": [
+				"msvcp120.dll",
+				"msvcr120.dll",
+				"vcamp120.dll",
+				"vccorlib120.dll",
+				"vcomp120.dll"
+			]
+		}
+	] 
+}
