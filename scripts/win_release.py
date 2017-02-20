@@ -195,6 +195,14 @@ def main(log):
     if len(bad) > 0:
         print("Architecture mismatch detected. See the log file for details.")
         sys.exit(1)
+
+    # run windeployqt to make translations and icons and stuff
+    # FIXME: we assume here that the main executable is at the root of the output dir
+    target_exe = os.path.join(out_path, os.path.basename(exe))
+    windeployqt = os.path.join(params["qt_dir"], "bin", "windeployqt.exe");
+    cmd_env = os.environ.copy()
+    cmd_env["VCINSTALLDIR"] = str(params["msvc_dir"])
+    subprocess.check_call([windeployqt, target_exe], env=cmd_env)
     
     fmt = opts["archive_format"].format(arch=main_arch)
     fmt = datetime.datetime.utcnow().strftime(fmt)
@@ -205,7 +213,7 @@ def main(log):
                 rel = os.path.relpath(root, out_path)
                 path = os.path.join(root, file)
                 zip_name = os.path.join(fmt, rel, file)
-                print("{} -> {}".format(path, zip_name))
+                log.write("zip {} -> {}\n".format(path, zip_name))
                 zippy.write(path, zip_name)
 
     zip_size = s = os.stat(out_zip).st_size
@@ -214,9 +222,3 @@ def main(log):
 if __name__=="__main__":
     with open("win_release_log.txt", "w") as log:
         main(log)
-
-#    FIXME: is windeployqt really important?
-#    windeployqt = r"C:\Qt\5.8\msvc2013_64\bin\windeployqt.exe"
-#    cmd_env = os.environ.copy()
-#    cmd_env["VCINSTALLDIR"] = msvc_dir
-#    subprocess.check_call([windeployqt, os.path.join(out_path, main_exe)], env=cmd_env)
