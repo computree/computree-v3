@@ -381,8 +381,7 @@ bool CT_Reader_LAS::protectedReadFile()
         }
 
         CT_Scene *scene = new CT_Scene(NULL, NULL, pcir);
-        scene->setBoundingBox(header->get_minX(), header->get_minY(), header->get_minZ(),
-                              header->get_maxX(), header->get_maxY(), header->get_maxZ());
+        scene->updateBoundingBox();
 
         // add the scene
         addOutItemDrawable(DEF_CT_Reader_LAS_sceneOut, scene);

@@ -41,6 +41,9 @@ public:
 
     CT_Grid3D_Points();
 
+    ~CT_Grid3D_Points();
+
+
     /*!
      * \brief Contructor with integer column and row coordinates
      *
@@ -112,9 +115,15 @@ public:
 
 
     bool addPoint(size_t pointGlobalIndex);
-    const QList<size_t>& getConstPointGlobalIndexList(size_t cellIndex) const;
+    bool addPoint(size_t pointLocalIndex, double x, double y, double z);
+
+    const QList<size_t>* getConstPointIndexList(size_t cellIndex) const;
 
     QList<size_t> getCellIndicesAtNeighbourhoodN(size_t originIndex, size_t n) const;
+
+    size_t getPointsIndicesInsideSphere(size_t gridIndex, double radius, QList<size_t> *indexList) const;
+
+    size_t getPointIndicesIncludingKNearestNeighbours(Eigen::Vector3d position, size_t k, double maxDist, QList<size_t> &indexList) const;
 
 
     // Neutralize useless Methods
@@ -129,7 +138,7 @@ public:
     virtual CT_AbstractItemDrawable* copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList);
 
 private:
-    QMap<size_t, QList<size_t> >    _cells;
+    QMap<size_t, QList<size_t>* >    _cells;
 
     QList<size_t>                   _emptyList;
     CT_PointAccessor                _pointAccessor;

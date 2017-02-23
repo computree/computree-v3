@@ -42,6 +42,12 @@ CT_Grid3D_Points::CT_Grid3D_Points() : CT_AbstractGrid3D()
     _maxCoordinates(2) = 0;
 }
 
+CT_Grid3D_Points::~CT_Grid3D_Points()
+{
+    qDeleteAll(_cells.values());
+    _cells.clear();
+}
+
 CT_Grid3D_Points::CT_Grid3D_Points(const CT_OutAbstractSingularItemModel *model,
                             const CT_AbstractResult *result,
                             double xmin,
@@ -110,6 +116,8 @@ CT_Grid3D_Points* CT_Grid3D_Points::createGrid3DFromXYZCoords(const CT_OutAbstra
                                                               double resolution,
                                                               bool extends)
 {
+
+
     size_t dimx = ceil((xmax - xmin)/resolution);
     size_t dimy = ceil((ymax - ymin)/resolution);
     size_t dimz = ceil((zmax - zmin)/resolution);
@@ -183,9 +191,11 @@ bool CT_Grid3D_Points::addPoint(size_t pointGlobalIndex)
     {
         if (_cells.contains(cellIndex))
         {
-            (_cells[cellIndex]).append(pointGlobalIndex);
+            (_cells[cellIndex])->append(pointGlobalIndex);
         } else {
-            _cells.insert(cellIndex, QList<size_t>() << pointGlobalIndex);
+            QList<size_t>* list = new QList<size_t>();
+            list->append(pointGlobalIndex);
+            _cells.insert(cellIndex, list);
         }
     } else {
         return false;
@@ -193,13 +203,34 @@ bool CT_Grid3D_Points::addPoint(size_t pointGlobalIndex)
     return true;
 }
 
-const QList<size_t> &CT_Grid3D_Points::getConstPointGlobalIndexList(size_t cellIndex) const
+bool CT_Grid3D_Points::addPoint(size_t pointLocalIndex, double x, double y, double z)
+{
+    size_t cellIndex;
+    if (this->indexAtXYZ(x, y, z, cellIndex))
+    {
+        if (_cells.contains(cellIndex))
+        {
+            (_cells[cellIndex])->append(pointLocalIndex);
+        } else {
+            QList<size_t>* list = new QList<size_t>();
+            list->append(pointLocalIndex);
+            _cells.insert(cellIndex, list);
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
+
+
+
+const QList<size_t> *CT_Grid3D_Points::getConstPointIndexList(size_t cellIndex) const
 {
     if (_cells.contains(cellIndex))
     {
-        return _cells[cellIndex];
+        return _cells.value(cellIndex);
     }
-    return _emptyList;
+    return &_emptyList;
 }
 
 QList<size_t> CT_Grid3D_Points::getCellIndicesAtNeighbourhoodN(size_t originIndex, size_t n) const
@@ -318,6 +349,84 @@ QList<size_t> CT_Grid3D_Points::getCellIndicesAtNeighbourhoodN(size_t originInde
 
     return indices;
 }
+
+size_t CT_Grid3D_Points::getPointsIndicesInsideSphere(size_t gridIndex, double radius, QList<size_t> *indexList) const
+{
+    // point number
+    size_t n = 0;
+    double radius2 = radius*radius;
+
+    // center of reference cell (center of the sphere)
+    Eigen::Vector3d refCenter;
+    Eigen::Vector3d currentCenter;
+    size_t cellIndex;
+    if (this->getCellCenterCoordinates(gridIndex, refCenter))
+    {
+        // Compute bounding box for search
+        size_t minXcol, maxXcol, minYlin, maxYlin, minZlev, maxZlev;
+        if (!this->colX(refCenter(0) - radius, minXcol)) {minXcol = 0;}
+        if (!this->colX(refCenter(0) + radius, maxXcol)) {maxXcol = this->xdim() - 1;}
+        if (!this->linY(refCenter(1) - radius, minYlin)) {minYlin = 0;}
+        if (!this->linY(refCenter(1) + radius, maxYlin)) {maxYlin = this->ydim() - 1;}
+        if (!this->levelZ(refCenter(2) - radius, minZlev)) {minZlev = 0;}
+        if (!this->levelZ(refCenter(2) + radius, maxZlev)) {maxZlev = this->zdim() - 1;}
+
+        for (size_t xx = minXcol ; xx <= maxXcol ; xx++)
+        {
+            for (size_t yy = minYlin ; yy <= maxYlin ; yy++)
+            {
+                for (size_t zz = minZlev ; zz <= maxZlev ; zz++)
+                {
+                    if (this->index(xx, yy, zz, cellIndex))
+                    {
+                        if (this->getCellCenterCoordinates(cellIndex, currentCenter))
+                        {
+                            double dist2 = pow(currentCenter(0) - refCenter(0), 2) + pow(currentCenter(1) - refCenter(1), 2) + pow(currentCenter(2) - refCenter(2), 2);
+
+                            if (dist2 <= radius2)
+                            {
+                                const QList<size_t> *indices = this->getConstPointIndexList(cellIndex);
+                                n += indices->size();
+
+                                if (indexList != NULL)
+                                {
+                                    if (indices->size() > 0)
+                                    {
+                                        indexList->append(*indices);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return n;
+}
+
+size_t CT_Grid3D_Points::getPointIndicesIncludingKNearestNeighbours(Eigen::Vector3d position, size_t k, double maxDist, QList<size_t> &indexList) const
+{
+    size_t n = 0;
+
+    size_t index;
+    if (this->indexAtXYZ(position(0), position(1), position(2), index))
+    {
+        double radius = this->resolution() / 100.0;
+
+        while (n < k && radius < maxDist)
+        {
+            n = this->getPointsIndicesInsideSphere(index, radius, NULL);
+            radius += this->resolution();
+        }
+
+        n = this->getPointsIndicesInsideSphere(index, radius, &indexList);
+    }
+
+    return n;
+}
+
 
 
 CT_AbstractItemDrawable* CT_Grid3D_Points::copy(const CT_OutAbstractItemModel *model, const CT_AbstractResult *result, CT_ResultCopyModeList copyModeList)
