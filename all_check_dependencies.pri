@@ -31,14 +31,10 @@ isEmpty(USE_OSG_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$OSG_LIBS_PATH/lib$${a}*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$OSG_LIBS_PATH/lib$${a}*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             }
         }
@@ -49,18 +45,16 @@ isEmpty(USE_OSG_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$OSG_LIBS_PATH/$${a}d*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a}d was not found"
-                } else {
-                    LIBS += -l$${a}d
                 }
             } else {
                 !exists($$OSG_LIBS_PATH/$${a}*) {
                     USE_OSG_ERROR_MSG += "Library $$OSG_LIBS_PATH/$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             }
         }
     }
+
+    OSG_LIB_ADD =
 
     isEmpty(USE_OSG_ERROR_MSG) {
         warning("DEPENDENCY CHECK - OSG    - OK ($$OSG_USER_MODE)")
@@ -91,18 +85,17 @@ isEmpty(USE_GEOS_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$GEOS_LIBS_PATH/lib$${a}*) {
                     USE_GEOS_ERROR_MSG += "Library $$GEOS_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$GEOS_LIBS_PATH/lib$${a}*) {
                     USE_GEOS_ERROR_MSG += "Library $$GEOS_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             }
         }
     }
+
+    GEOS_LIB_ADD =
+
     isEmpty(USE_GEOS_ERROR_MSG) {
         warning("DEPENDENCY CHECK - GEOS   - OK ($$GEOS_USER_MODE)")
     } else {
@@ -131,18 +124,17 @@ isEmpty(USE_GDAL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$GDAL_LIBS_PATH/lib$${a}*) {
                     USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$GDAL_LIBS_PATH/lib$${a}*) {
                     USE_GDAL_ERROR_MSG += "Library $$GDAL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             }
         }
     }
+
+    GDAL_LIB_ADD =
+
     isEmpty(USE_GDAL_ERROR_MSG) {
         warning("DEPENDENCY CHECK - GDAL   - OK ($$GDAL_USER_MODE)")
     } else {
@@ -165,21 +157,17 @@ include(gsl_check.pri)
 
 #if GSL can be used
 isEmpty(USE_GSL_ERROR_MSG) {
-GSL_LIB_ADD = libgsl
+    GSL_LIB_ADD = libgsl
 
     unix {
         for(a, GSL_LIB_ADD) {
             CONFIG(debug, debug|release) {
                 !exists($$GSL_LIBS_PATH/$${a}*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             } else {
                 !exists($$GSL_LIBS_PATH/$${a}*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             }
         }
@@ -190,19 +178,17 @@ GSL_LIB_ADD = libgsl
             CONFIG(debug, debug|release) {
                 !exists($$GSL_LIBS_PATH/$${a}_d*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a}_d was not found"
-                } else {
-                    LIBS += -l$${a}_d
                 }
             } else {
 
                 !exists($$GSL_LIBS_PATH/$${a}*) {
                     USE_GSL_ERROR_MSG += "Library $$GSL_LIBS_PATH/$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             }
         }
     }
+
+    GSL_LIB_ADD =
 
     isEmpty(USE_GSL_ERROR_MSG) {
         warning("DEPENDENCY CHECK - GSL    - OK ($$GSL_USER_MODE)")
@@ -254,14 +240,10 @@ isEmpty(USE_PCL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$PCL_LIBS_PATH/lib$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$PCL_LIBS_PATH/lib$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             }
         }
@@ -270,14 +252,10 @@ isEmpty(USE_PCL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$QHULL_LIBS_PATH/lib$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             } else {
                 !exists($$QHULL_LIBS_PATH/lib$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$$lib{a}
                 }
             }
         }
@@ -292,15 +270,11 @@ isEmpty(USE_PCL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$PCL_LIBS_PATH/$${a}_debug*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_debug was not found"
-                } else {
-                    LIBS += -l$${a}_debug
                 }
             } else {
 
                 !exists($$PCL_LIBS_PATH/$${a}_release*) {
                     USE_PCL_ERROR_MSG += "Library $$PCL_LIBS_PATH/$${a}_release was not found"
-                } else {
-                    LIBS += -l$${a}_release
                 }
             }
         }
@@ -310,18 +284,17 @@ isEmpty(USE_PCL_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$QHULL_LIBS_PATH/$${a}_d*) {
                     USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a}_d was not found"
-                } else {
-                    LIBS += -l$${a}_d
                 }
             } else {
                 !exists($$QHULL_LIBS_PATH/$${a}*) {
                     USE_PCL_ERROR_MSG += "Library $$QHULL_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             }
         }
     }
+
+    PCL_LIB_ADD =
+    QHULL_LIB_ADD =
 
     isEmpty(USE_PCL_ERROR_MSG) {
         warning("DEPENDENCY CHECK - PCL    - OK ($$PCL_USER_MODE)")
@@ -370,14 +343,10 @@ isEmpty(USE_OPENCV_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$OPENCV_LIBS_PATH/lib$${a}*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             } else {
                 !exists($$OPENCV_LIBS_PATH/lib$${a}*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/lib$${a} was not found"
-                } else {
-                    LIBS += -l$${a}
                 }
             }
         }
@@ -393,18 +362,16 @@ isEmpty(USE_OPENCV_ERROR_MSG) {
             CONFIG(debug, debug|release) {
                 !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}d was not found"
-                } else {
-                    LIBS += -l$${a}$${OPENCV_VERSION}d
                 }
             } else {
                 !exists($$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION}*) {
                     USE_OPENCV_ERROR_MSG += "Library $$OPENCV_LIBS_PATH/$${a}$${OPENCV_VERSION} was not found"
-                } else {
-                    LIBS += -l$${a}$${OPENCV_VERSION}
                 }
             }
         }
     }
+
+    OPENCV_LIB_ADD =
 
     isEmpty(USE_OPENCV_ERROR_MSG) {
         warning("DEPENDENCY CHECK - OPENCV - OK ($$OPENCV_USER_MODE)")
