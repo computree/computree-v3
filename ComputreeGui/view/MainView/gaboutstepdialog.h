@@ -25,6 +25,9 @@ public:
 
     void initView(CT_VirtualAbstractStep *step);
 
+private slots:
+    void on_cb_ris_toggled(bool checked);
+
 private:
 
     void recursiveCreateItemsForModel(QTreeWidgetItem *parent, const CT_OutAbstractModel *rModel) const;

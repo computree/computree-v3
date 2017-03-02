@@ -7,6 +7,9 @@
 #include "ct_result/abstract/ct_abstractresult.h"
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawable.h"
 
+#include "cdm_citationinfo.h"
+
+
 #include "ct_global/ct_context.h"
 #include "ct_categories/tools/ct_categorymanager.h"
 
@@ -46,6 +49,32 @@ void GAboutStepDialog::initView(CT_VirtualAbstractStep *step)
     }
 
     ui->briefDescription->setText(step->getStepDescription());
+
+    QStringList citations = step->getStepRISCitations();
+
+    if (citations.size() > 0)
+    {
+        ui->citation->setVisible(true);
+        ui->cb_ris->setVisible(true);
+        ui->ris->setVisible(false);
+        QString citation = tr("<em>References</em> :<br><br>");
+        QString risData;
+
+        for (int i = 0 ; i < citations.size() ; i++)
+        {
+            citation.append(CDM_CitationInfo::parseRIS(citations.at(i)));
+            if (i < citations.size() - 1) {citation.append("<br>");}
+
+            risData.append(citations.at(i));
+        }
+        ui->citation->setText(citation);
+        ui->ris->setText(risData);
+    } else {
+        ui->citation->setVisible(false);
+        ui->cb_ris->setVisible(false);
+        ui->ris->setVisible(false);
+    }
+
 
     ui->detailledDescription->setText(tr("<em>Description détaillée</em> :<br><br>") + step->getStepDetailledDescription());
 
@@ -230,4 +259,15 @@ void GAboutStepDialog::createForChildrens(QTreeWidgetItem *parent, const CT_InAb
 
     while(it.hasNext())
         recursiveCreateItemsForModel(parent, (CT_InAbstractModel*)it.next());
+}
+
+void GAboutStepDialog::on_cb_ris_toggled(bool checked)
+{
+    Q_UNUSED(checked);
+    if (ui->cb_ris->isChecked())
+    {
+        ui->ris->setVisible(true);
+    } else {
+        ui->ris->setVisible(false);
+    }
 }

@@ -6,14 +6,6 @@
 
 CDM_CitationInfo::CDM_CitationInfo(CDM_StepManager *stepManager, CDM_PluginManager *pluginManager) : QObject(NULL)
 {
-    _computreeCitationRIS = "TY  - COMP\n"
-                            "TI  - Computree platform\n"
-                            "AU  - Computree Core Team\n"
-                            "PB  - Office National des Forêts, RDI Department\n"
-                            "PY  - 2017\n"
-                            "UR  - http://rdinnovation.onf.fr/computree\n"
-                            "ER  - \n";
-
     _stepManager = stepManager;
     _pluginManager = pluginManager;
     QList<CT_VirtualAbstractStep*> rootList = stepManager->getStepRootList();
@@ -73,7 +65,7 @@ QString CDM_CitationInfo::getPluginAndStepCitations()
 
     QString str;
 
-    str.append(parseRIS(_computreeCitationRIS));
+    str.append(parseRIS(getComputreeCoreRis()));
     str.append("<br>");
 
     for (int i = 0 ; i < _stepList.size() ; i++)
@@ -129,7 +121,7 @@ QString CDM_CitationInfo::getPluginRIS()
 {
     QString str;
 
-    str.append(_computreeCitationRIS);
+    str.append(getComputreeCoreRis());
 
     QList<QString> stepCitations;
 
@@ -263,6 +255,19 @@ QString CDM_CitationInfo::parseRIS(QString ris)
     str.append("<br>");
 
     return str;
+}
+
+QString CDM_CitationInfo::getComputreeCoreRis()
+{
+    QString computreeCitationRIS = "TY  - COMP\n"
+                            "TI  - Computree platform\n"
+                            "AU  - Computree Core Team\n"
+                            "PB  - Office National des Forêts, RDI Department\n"
+                            "PY  - 2017\n"
+                            "UR  - http://rdinnovation.onf.fr/computree\n"
+                            "ER  - \n";
+
+    return computreeCitationRIS;
 }
 
 

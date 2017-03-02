@@ -35,7 +35,11 @@ public:
     QList<CDM_CitationInfo::StepCitationInfo> getScriptTable();
     QString getPluginAndStepCitations();
     QString getPluginRIS();
-    QString parseRIS(QString ris);
+
+
+    static QString parseRIS(QString ris);
+    static QString getComputreeCoreRis();
+
 private:
     void recursiveGetStepList(CT_VirtualAbstractStep *step, QList<CT_VirtualAbstractStep *> &stepList);
 
