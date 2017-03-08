@@ -179,6 +179,10 @@ public:
      */
     inline double maxZ() const {return _maxCoordinates(2);}
 
+    inline double sizeX() const {return _maxCoordinates(0) - _minCoordinates(0);}
+    inline double sizeY() const {return _maxCoordinates(1) - _minCoordinates(1);}
+    inline double sizeZ() const {return _maxCoordinates(2) - _minCoordinates(2);}
+
     /**
      * @brief Set a default color to this item. When it will added for the first time in a view it will have this color
      */
@@ -216,7 +220,16 @@ private:
     CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataDisplayableName(), &CT_AbstractSingularItemDrawable::displayableName, QObject::tr("Name"), "name")
     CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCx(), &CT_AbstractSingularItemDrawable::getCenterX, QObject::tr("Center X"), "cx")
     CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCy(), &CT_AbstractSingularItemDrawable::getCenterY, QObject::tr("Center Y"), "cy")
-    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Center Z"), "cz")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataCz(), &CT_AbstractSingularItemDrawable::getCenterZ, QObject::tr("Center Z"), "cz")    
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataX(), &CT_AbstractSingularItemDrawable::minX, QObject::tr("Min X"), "minx")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataX(), &CT_AbstractSingularItemDrawable::maxX, QObject::tr("Max X"), "maxx")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataY(), &CT_AbstractSingularItemDrawable::minY, QObject::tr("Min Y"), "miny")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataY(), &CT_AbstractSingularItemDrawable::maxY, QObject::tr("Max Y"), "maxy")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataZ(), &CT_AbstractSingularItemDrawable::minZ, QObject::tr("Min Z"), "minz")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataZ(), &CT_AbstractSingularItemDrawable::maxZ, QObject::tr("Max Z"), "maxz")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataXDimension(), &CT_AbstractSingularItemDrawable::sizeX, QObject::tr("Size X"), "szx")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataYDimension(), &CT_AbstractSingularItemDrawable::sizeY, QObject::tr("Size Y"), "szy")
+    CT_DEFAULT_IA_V3(CT_AbstractSingularItemDrawable, CT_AbstractCategory::staticInitDataZDimension(), &CT_AbstractSingularItemDrawable::sizeZ, QObject::tr("Size Z"), "szz")
     CT_DEFAULT_IA_END(CT_AbstractSingularItemDrawable)
 
     //CT_DECLARE_ADD_DEFAULT_IA(CT_AbstractSingularItemDrawable)
