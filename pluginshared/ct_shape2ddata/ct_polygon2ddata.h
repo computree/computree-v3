@@ -44,6 +44,7 @@ public:
     CT_Polygon2DData();
 
     CT_Polygon2DData(const QVector<Eigen::Vector2d *> &vertices, bool copy = true);
+    CT_Polygon2DData(const QVector<Eigen::Vector3d *> &vertices);
 
     ~CT_Polygon2DData();
 
@@ -56,8 +57,8 @@ public:
 
     inline const QVector<Eigen::Vector2d*>& getVertices() const {return _vertices;}
 
-    double getAreaIfNotSelfIntersecting() const;
-    double getSignedArea() const;
+    double getAreaIfNotSelfIntersecting();
+    double getSignedArea();
     double getPerimeter() const;
     inline int getVerticesNumber() const {return _vertices.size();}
 
@@ -71,17 +72,28 @@ public:
     static CT_Polygon2DData* createConvexHull(const CT_DelaunayT &triangulation);
 
     static void orderPointsByXY(QList<Eigen::Vector2d *> &pointList);
+    static void orderPointsByXY(QList<Eigen::Vector3d *> &pointList);
+
+
     // Use Andrew's monotone chain convex hull algorithm
     static CT_Polygon2DData* createConvexHull(QList<Eigen::Vector2d *> &orderedCandidates);
+    static CT_Polygon2DData *createConvexHull(QList<Eigen::Vector3d *> &orderedCandidates);
+
     static CT_Polygon2DData* chainHull_2D(QList<Eigen::Vector2d*> &orderedCandidates);
 
 private:
     QVector<Eigen::Vector2d*> _vertices;
 
+    double                    _area;
+    double                    _areaComputed;
+
     friend class CT_Polygon2D;
 
     static double cross(const Eigen::Vector2d* O, const Eigen::Vector2d* A, const Eigen::Vector2d* B);
-    static bool compare(const Eigen::Vector2d* p1, const Eigen::Vector2d* p2);
+    static double cross(const Eigen::Vector3d *O, const Eigen::Vector3d *A, const Eigen::Vector3d *B);
+
+    static bool compareV2d(const Eigen::Vector2d* p1, const Eigen::Vector2d* p2);
+    static bool compareV3d(const Eigen::Vector3d *p1, const Eigen::Vector3d *p2);
 
 };
 
