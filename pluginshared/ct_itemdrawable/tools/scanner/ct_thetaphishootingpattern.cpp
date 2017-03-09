@@ -27,7 +27,8 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
                                                        double initPhi,
                                                        const Eigen::Vector3d &zVector,
                                                        bool clockWise,
-                                                       bool radians) : CT_ShootingPattern(origin)
+                                                       bool radians) :
+    CT_ShootingPattern(), m_origin(origin)
 {
     m_zVector = zVector;
     m_clockWise = clockWise;
@@ -55,7 +56,9 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
     m_nVRays = (int)ceil(fabs(m_vFov/m_vRes));
 }
 
-CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &other) : CT_ShootingPattern(other.getOrigin())
+CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &other) :
+    CT_ShootingPattern(),
+    m_origin(other.getOrigin())
 {
     m_zVector = other.m_zVector;
     m_clockWise = other.m_clockWise;
@@ -77,7 +80,7 @@ size_t CT_ThetaPhiShootingPattern::getNumberOfShots() const
     return m_nHRays*m_nVRays;
 }
 
-void CT_ThetaPhiShootingPattern::getShotDirectionAt(const size_t &index, Eigen::Vector3d& direction) const
+CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &index) const
 {
     size_t i = index/getNVRays();
     size_t j = index - (i*getNVRays());
@@ -94,9 +97,11 @@ void CT_ThetaPhiShootingPattern::getShotDirectionAt(const size_t &index, Eigen::
     double sinTheta = std::sin ( theta );
     double cosTheta = std::cos ( theta );
 
+    Eigen::Vector3d direction;
     direction.x() = sinPhi*cosTheta;
     direction.y() = sinPhi*sinTheta;
     direction.z() = std::cos(phi);
+    return CT_Shot(m_origin, direction);
 }
 
 CT_ShootingPattern* CT_ThetaPhiShootingPattern::clone() const

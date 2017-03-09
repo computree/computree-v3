@@ -15,18 +15,9 @@
 class PLUGINSHAREDSHARED_EXPORT CT_ShootingPattern
 {
 public:
-    CT_ShootingPattern(const Eigen::Vector3d& origin) : m_origin(origin) {}
+    CT_ShootingPattern() {}
+
     virtual ~CT_ShootingPattern() {}
-
-    /**
-     * @brief Returns the origin of all shot
-     */
-    inline const Eigen::Vector3d& getOrigin() const { return m_origin; }
-
-    /**
-     * @brief Set the origin of all shot
-     */
-    inline void setOrigin (const Eigen::Vector3d& origin) { m_origin = origin; }
 
     /**
      * @brief Returns the number of shots
@@ -34,50 +25,15 @@ public:
     virtual size_t getNumberOfShots() const = 0;
 
     /**
-     * @brief Returns the shot direction at index specified
-     */
-    Eigen::Vector3d getShotDirectionAt(const size_t& index) const {
-        Eigen::Vector3d direction;
-
-        getShotDirectionAt(index, direction);
-
-        return direction;
-    }
-
-    /**
-     * @brief Returns the shot direction at index specified
-     */
-    virtual void getShotDirectionAt(const size_t& index, Eigen::Vector3d& direction) const = 0;
-
-    /**
      * @brief Returns the shot at index specified
      */
-    CT_Shot getShotAt(const size_t& index) const {
-        CT_Shot shot;
-
-        getShotAt(index, shot);
-
-        return shot;
-    }
-
-    /**
-     * @brief Returns the shot at index specified
-     */
-    void getShotAt(const size_t& index, CT_Shot& shot) const {
-        Eigen::Vector3d direction;
-        getShotDirectionAt(index, direction);
-
-        shot.setOrigin(getOrigin());
-        shot.setDirection(direction);
-    }
+    virtual CT_Shot getShotAt(const size_t& index) const = 0;
 
     /**
      * @brief Copy this pattern
      */
     virtual CT_ShootingPattern* clone() const = 0;
 
-private:
-    Eigen::Vector3d m_origin;     /*!< origin of all shot */
 };
 
 

@@ -53,14 +53,14 @@ public:
     size_t getNumberOfShots() const;
 
     /**
-     * @brief Returns the shot direction at index specified
+     * @brief Returns the shot at the given index
      */
-    void getShotDirectionAt(const size_t& index, Eigen::Vector3d& direction) const;
+    CT_Shot getShotAt(const size_t& index) const;
 
     /**
-     * @brief Returns the shot at index "index"
+     * @brief Returns the origin of all shots
      */
-    void getShotAt(const size_t& index, CT_Shot& shot) const;
+    inline const Eigen::Vector3d& getOrigin() const { return m_origin; }
 
     /**
      * @brief Returns the normal of the scanner
@@ -111,6 +111,11 @@ public:
      * @brief Returns true if the shooting pattern is made in clockwise order or not
      */
     inline bool isClockWise() const { return m_clockWise; }
+
+    /**
+     * @brief Set the origin of all shots
+     */
+    inline void setOrigin( const Eigen::Vector3d& origin ) { m_origin = origin; }
 
     /**
      * @brief Set the normal of the scanner
@@ -168,6 +173,7 @@ public:
     CT_ShootingPattern* clone() const;
 
 private:
+    Eigen::Vector3d m_origin;		/*!< origin of the shots */
     Eigen::Vector3d	m_zVector;		/*!< normal of the scanner */
     double          m_hFov;			/*!< horizontal field of view */
     double          m_vFov;			/*!< vertical field of view */

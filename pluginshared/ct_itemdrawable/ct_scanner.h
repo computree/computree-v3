@@ -240,7 +240,11 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setPosition ( const Eigen::Vector3d& position ) { setCenterCoordinate(position); m_shootingPattern->setOrigin(position); }
+    inline void setPosition ( const Eigen::Vector3d& position )
+    {
+        setCenterCoordinate(position);
+        m_shootingPattern->setOrigin(position);
+    }
 
     /*!
     *  \brief Setter of the class

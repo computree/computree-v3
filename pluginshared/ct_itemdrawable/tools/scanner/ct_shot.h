@@ -18,40 +18,36 @@ public:
     /**
      * @brief Construct a default shot
      */
-    CT_Shot(bool valid = true)
-    {
-        if(valid)
-            m_direction = Eigen::Vector3d(1,0,0);
-    }
+    CT_Shot(bool valid = true);
 
     /**
      * @brief Construct a shot with an origin and a direction
      */
-    CT_Shot(const Eigen::Vector3d& origin, const Eigen::Vector3d& direction) : m_origin(origin), m_direction(direction) {}
+    CT_Shot(const Eigen::Vector3d& origin, const Eigen::Vector3d& direction);
 
     /**
      * @brief Set the origin of the shot
      */
-    inline void setOrigin(const Eigen::Vector3d& origin) { m_origin = origin; }
+    void setOrigin(const Eigen::Vector3d& origin);
 
     /**
      * @brief Returns the origin of the shot
      */
-    inline const Eigen::Vector3d& getOrigin() const { return m_origin; }
+    const Eigen::Vector3d& getOrigin() const;
 
     /**
      * @brief Set the direction of the shot
      */
-    inline void setDirection(const Eigen::Vector3d& direction) { m_direction = direction; }
+    void setDirection(const Eigen::Vector3d& direction);
 
     /**
      * @brief Returns the direction of the shot
      */
-    inline const Eigen::Vector3d& getDirection() const { return m_direction; }
+    const Eigen::Vector3d& getDirection() const;
 
 private:
-    Eigen::Vector3d     m_direction;
     Eigen::Vector3d     m_origin;
+    Eigen::Vector3d     m_direction;
 };
 
 #endif // CT_SHOT_H
