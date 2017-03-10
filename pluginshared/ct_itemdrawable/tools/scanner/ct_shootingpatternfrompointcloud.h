@@ -30,24 +30,10 @@ public:
      */
     CT_ShootingPatternFromPointCloud(const CT_ShootingPatternFromPointCloud& other);
 
-    /**
-     * @brief Returns the origin of all shots
-     */
+    const Eigen::Vector3d& getCenterCoordinate() const { return m_origin; }
     inline const Eigen::Vector3d& getOrigin() const { return m_origin; }
-
-    /**
-     * @brief Returns the number of shots
-     */
     size_t getNumberOfShots() const;
-
-    /**
-     * @brief Returns the shot direction at index specified
-     */
     CT_Shot getShotAt(const size_t& index) const;
-
-    /**
-     * @brief Copy this pattern
-     */
     CT_ShootingPattern* clone() const;
 
 private:

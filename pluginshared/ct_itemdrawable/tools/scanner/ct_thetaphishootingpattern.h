@@ -47,15 +47,10 @@ public:
      */
     CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern& other);
 
-    /**
-     * @brief Returns the number of shots
-     */
+    const Eigen::Vector3d& getCenterCoordinate() const { return m_origin; }
     size_t getNumberOfShots() const;
-
-    /**
-     * @brief Returns the shot at the given index
-     */
     CT_Shot getShotAt(const size_t& index) const;
+    CT_ShootingPattern* clone() const;
 
     /**
      * @brief Returns the origin of all shots
@@ -166,11 +161,6 @@ public:
      * @brief Set true if the shooting pattern is made in clockwise order or not
      */
     inline void setClockWise ( bool clockWise ) { m_clockWise = clockWise; }
-
-    /**
-     * @brief Copy this pattern
-     */
-    CT_ShootingPattern* clone() const;
 
 private:
     Eigen::Vector3d m_origin;		/*!< origin of the shots */

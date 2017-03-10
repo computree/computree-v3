@@ -20,6 +20,11 @@ public:
     virtual ~CT_ShootingPattern() {}
 
     /**
+     * @brief Returns the center coordinate of this shooting pattern
+     * @return Cartesian center coordinates
+     */
+    virtual const Eigen::Vector3d& getCenterCoordinate() const = 0;
+    /**
      * @brief Returns the number of shots
      */
     virtual size_t getNumberOfShots() const = 0;

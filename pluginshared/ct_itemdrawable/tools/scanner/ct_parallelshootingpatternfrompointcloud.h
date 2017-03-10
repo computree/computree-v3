@@ -40,19 +40,9 @@ public:
      */
     CT_ParallelShootingPatternFromPointCloud(const CT_ParallelShootingPatternFromPointCloud& other);
 
-    /**
-     * @brief Returns the number of shots
-     */
+    const Eigen::Vector3d& getCenterCoordinate() const { return m_point; }
     size_t getNumberOfShots() const;
-
-    /**
-     * @brief Returns the shot direction at index specified
-     */
     CT_Shot getShotAt(const size_t& index) const;
-
-    /**
-     * @brief Copy this pattern
-     */
     CT_ShootingPattern* clone() const;
 
 private:
