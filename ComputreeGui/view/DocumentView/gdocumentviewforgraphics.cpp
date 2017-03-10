@@ -18,6 +18,9 @@
 
 #include "ct_itemdrawable/abstract/ct_abstractitemgroup.h"
 #include "ct_itemdrawable/abstract/ct_abstractsingularitemdrawable.h"
+#include "ct_itemdrawable/accessibility/ct_iaccesspointcloud.h"
+#include "ct_itemdrawable/accessibility/ct_iaccessedgecloud.h"
+#include "ct_itemdrawable/accessibility/ct_iaccessfacecloud.h"
 
 #include "dm_iteminfoforgraphics.h"
 
@@ -754,10 +757,27 @@ void GDocumentViewForGraphics::exporterActionTriggered()
     CT_AbstractExporter *exCopy = exporter->copy();
     exCopy->init();
 
-    if(exCopy->canExportItems())
-        exCopy->setItemDrawableToExport(getSelectedItemDrawable());
+    QList<CT_AbstractItemDrawable*> selectedItems = getSelectedItemDrawable();
 
-    if(exCopy->canExportPoints())
+    bool pointsAlreadyExported = false;
+    bool edgesAlreadyExported = false;
+    bool facesAlreadyExported = false;
+
+    if(exCopy->canExportPoints() || exCopy->canExportEdges() || exCopy->canExportFaces()) {
+        foreach (CT_AbstractItemDrawable* item, selectedItems) {
+            if(dynamic_cast<CT_IAccessPointCloud*>(item))
+                pointsAlreadyExported = true;
+            else if(dynamic_cast<CT_IAccessEdgeCloud*>(item))
+                edgesAlreadyExported = true;
+            else if(dynamic_cast<CT_IAccessFaceCloud*>(item))
+                facesAlreadyExported = true;
+        }
+    }
+
+    if(exCopy->canExportItems())
+        exCopy->setItemDrawableToExport(selectedItems);
+
+    if(exCopy->canExportPoints() && !pointsAlreadyExported)
     {
         QList<CT_AbstractCloudIndex*> points;
 
@@ -770,7 +790,7 @@ void GDocumentViewForGraphics::exporterActionTriggered()
         exCopy->setPointsToExport(points);
     }
 
-    if(exCopy->canExportFaces())
+    if(exCopy->canExportFaces() && !facesAlreadyExported)
     {
         QList<CT_AbstractCloudIndex*> faces;
 
@@ -783,7 +803,7 @@ void GDocumentViewForGraphics::exporterActionTriggered()
         exCopy->setFacesToExport(faces);
     }
 
-    if(exCopy->canExportEdges())
+    if(exCopy->canExportEdges() && !edgesAlreadyExported)
     {
         QList<CT_AbstractCloudIndex*> edges;
 
