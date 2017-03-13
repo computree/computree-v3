@@ -56,5 +56,6 @@ void GLogWidget::slotNewMessageReceived()
     QColor col = m_colors.value(pair.first, Qt::black);
     ui->textEdit->moveCursor(QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
     ui->textEdit->insertHtml(BEGIN_HMTL + "<font color=\"" + col.name() + "\">" + pair.second + "</font>" + END_HMTL);
+    ui->textEdit->moveCursor(QTextCursor::EndOfBlock, QTextCursor::MoveAnchor);
     m_mutex.unlock();
 }
