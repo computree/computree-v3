@@ -80,14 +80,14 @@ size_t CT_CloudIndexStdVectorTMethodImpl<T>::indexOf(const size_t &index) const
         first = std::lower_bound(first, last, index);
 
         if(first!=last && !(index<(*first)))
-            return *first;
+            return std::distance(_vector.begin(), first);
     }
     else
     {
         typename std::vector<T>::const_iterator it = std::find(_vector.begin(), _vector.end(), index);
 
         if(it != _vector.end())
-            return *it;
+            return std::distance(_vector.begin(), it);
     }
 
     return size();
