@@ -87,7 +87,7 @@ size_t CT_CloudIndexStdVectorTMethodImpl<T>::indexOf(const size_t &index) const
         typename std::vector<T>::const_iterator it = std::find(_vector.begin(), _vector.end(), index);
 
         if(it != _vector.end())
-            return std::distance(_vector.begin(), it);
+            return std::distance(_vector.cbegin(), it);
     }
 
     return size();
