@@ -80,6 +80,16 @@ double CT_CylinderData::getCircleError() const
     return _circleError;
 }
 
+void CT_CylinderData::setLineError(double error)
+{
+    _lineError  = error;
+}
+
+void CT_CylinderData::setCircleError(double error)
+{
+    _circleError  = error;
+}
+
 CT_CylinderData* CT_CylinderData::clone() const
 {
     return new CT_CylinderData(getCenter(), getDirection(), getRadius(), getHeight(), getLineError(), getCircleError());

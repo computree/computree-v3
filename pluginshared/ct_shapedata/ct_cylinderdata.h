@@ -46,6 +46,9 @@ public:
     double getLineError() const;
     double getCircleError() const;
 
+    void setLineError(double error);
+    void setCircleError(double error);
+
     CT_CylinderData* clone() const;
 
     /**
