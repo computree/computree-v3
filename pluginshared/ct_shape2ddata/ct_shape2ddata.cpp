@@ -49,6 +49,7 @@ const Eigen::Vector2d &CT_Shape2DData::getCenter() const
 
 void CT_Shape2DData::setCenter(const Eigen::Vector2d &center)
 {
-    _center = center;
+    _center(0) = center(0);
+    _center(1) = center(1);
 }
 

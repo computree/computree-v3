@@ -15,9 +15,11 @@ protected:
 
     const static QString INDEX_CONFIG_DRAW_POINTS;
     const static QString INDEX_CONFIG_DRAW_LINES;
+    const static QString INDEX_CONFIG_DRAW_CENTROID;
 
     static QString staticInitConfigDrawPoints();
     static QString staticInitConfigDrawLines();
+    static QString staticInitConfigCentroid();
 
     virtual CT_ItemDrawableConfiguration createDrawConfiguration(QString drawConfigurationName) const;
 };

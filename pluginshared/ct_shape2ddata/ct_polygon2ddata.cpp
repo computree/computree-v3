@@ -96,6 +96,7 @@ CT_Polygon2DData::CT_Polygon2DData(const QVector<Eigen::Vector3d *> &vertices)
 
 void CT_Polygon2DData::computeCentroid()
 {
+
     double signedArea = 0.0;
     double a = 0.0;
 
@@ -108,31 +109,50 @@ void CT_Polygon2DData::computeCentroid()
     _max(0) = -std::numeric_limits<double>::max();
     _max(1) = -std::numeric_limits<double>::max();
 
+    for (int i = 0 ; i < _vertices.size() ; i++)
+    {
+        Eigen::Vector2d *pt = _vertices.at(i);
+
+        if ((*pt)(0) < _min(0)) {_min(0) = (*pt)(0);}
+        if ((*pt)(0) > _max(0)) {_max(0) = (*pt)(0);}
+        if ((*pt)(1) < _min(1)) {_min(1) = (*pt)(1);}
+        if ((*pt)(1) > _max(1)) {_max(1) = (*pt)(1);}
+    }
+
+
     Eigen::Vector2d *pt1 = NULL;
     Eigen::Vector2d *pt2 = NULL;
 
     int size = _vertices.size();
     pt1 = _vertices.at(size - 1);
+
     for (int i = 0 ; i < size ; i++)
     {
         pt2 = _vertices.at(i);
 
-        if ((*pt2)(0) < _min(0)) {_min(0) = (*pt2)(0);}
-        if ((*pt2)(0) > _max(0)) {_max(0) = (*pt2)(0);}
-        if ((*pt2)(1) < _min(1)) {_min(1) = (*pt2)(1);}
-        if ((*pt2)(1) > _max(1)) {_max(1) = (*pt2)(1);}
+        double x1 = (*pt1)(0) - _min(0);
+        double y1 = (*pt1)(1) - _min(1);
+        double x2 = (*pt2)(0) - _min(0);
+        double y2 = (*pt2)(1) - _min(1);
 
-        a = (*pt1)(0)*(*pt2)(1) - (*pt2)(0)*(*pt1)(1);
+        a = x1*y2 - x2*y1;
         signedArea += a;
 
-        ptC += (*pt1 + *pt2)*a    ;
+        ptC(0) += (x1 + x2)*a;
+        ptC(1) += (y1 + y2)*a;
+
         pt1 = pt2;
     }
+    _vertices.removeAt(_vertices.size() - 1);
 
-    signedArea *= 0.5;
-    ptC /= (6.0*signedArea);
+
+    signedArea = signedArea*0.5;
+    ptC(0) = ptC(0) / ((double)6.0*signedArea) + _min(0);
+    ptC(1) = ptC(1) / ((double)6.0*signedArea) + _min(1);
 
     setCenter(ptC);
+    _area = signedArea;
+    _areaComputed  = true;
 }
 
 CT_Polygon2DData::~CT_Polygon2DData()
@@ -177,7 +197,13 @@ double CT_Polygon2DData::getSignedArea()
     for (int i = 0 ; i < size ; i++)
     {
         pt2 = _vertices.at(i);
-        area += (*pt1)(0)*(*pt2)(1) - (*pt2)(0)*(*pt1)(1);
+
+        double x1 = (*pt1)(0) - _min(0);
+        double y1 = (*pt1)(1) - _min(1);
+        double x2 = (*pt2)(0) - _min(0);
+        double y2 = (*pt2)(1) - _min(1);
+
+        area += x1*y2 - x2*y1;
         pt1 = pt2;
     }
 
