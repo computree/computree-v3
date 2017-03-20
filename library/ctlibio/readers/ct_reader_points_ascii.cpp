@@ -327,6 +327,26 @@ void CT_Reader_Points_ASCII::setFirstConfiguration(bool first)
     m_firstConfiguration = first;
 }
 
+void CT_Reader_Points_ASCII::setLinesToSkip(int skip)
+{
+    m_nLinesToSkip = skip;
+}
+
+void CT_Reader_Points_ASCII::setHasHeader(bool hasHeader)
+{
+    m_hasHeader = hasHeader;
+}
+
+void CT_Reader_Points_ASCII::setValueSeparator(QString sep)
+{
+    m_separator = sep;
+}
+
+void CT_Reader_Points_ASCII::setLocaleName(QString locale)
+{
+    m_localeName = locale;
+}
+
 int CT_Reader_Points_ASCII::xColumnIndex() const
 {
     return m_columnXIndex;

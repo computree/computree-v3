@@ -54,6 +54,11 @@ public:
 
     void setFirstConfiguration(bool first);
 
+    void setLinesToSkip(int skip);
+    void setHasHeader(bool hasHeader);
+    void setValueSeparator(QString sep);
+    void setLocaleName(QString locale);
+
     int xColumnIndex() const;
     int yColumnIndex() const;
     int zColumnIndex() const;
