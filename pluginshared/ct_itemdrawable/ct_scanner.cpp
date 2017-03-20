@@ -149,7 +149,7 @@ CT_Scanner::CT_Scanner(const QString &modelName,
     setCenterY(origin(1));
     setCenterZ(origin(2));
 
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(origin,
                                                        hFov,
                                                        vFov,
                                                        hRes,
