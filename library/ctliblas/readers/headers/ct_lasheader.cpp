@@ -1,6 +1,7 @@
 #include "ct_lasheader.h"
 
 #include <QDate>
+#include <QDebug>
 
 #define readRawDataAndCheck(Param, N, Err) if(stream.readRawData(Param, N) != N) { error = Err; return false; } else { filePos += N; }
 #define readData(Param, Err) if(stream.atEnd()) { error = Err; return false; } else { stream >> Param; filePos += sizeof(Param); }
