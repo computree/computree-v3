@@ -38,7 +38,7 @@
 #include "ct_math/ct_math.h"
 #include <QMutex>
 
-template< typename DataT > class CT_StandardGrid3DDrawManager;
+template< typename DataT > class CT_StandardGrid3D_SparseDrawManager;
 
 /*!
  * \class CT_Grid3D_Sparse
@@ -413,6 +413,7 @@ public:
       */
     QList<DataT> neighboursValues(const size_t colx, const size_t liny, const size_t levz, const size_t distance, const bool keepNAs = false, const CenterMode centermode = CT_Grid3D_Sparse::CM_DropCenter) const;
 
+    void getIndicesWithData(QList<size_t> &list) const;
 
     /** Methods for colors management
      */
@@ -444,7 +445,7 @@ protected:
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid3D_Sparse<DataT>::NA, QObject::tr("NA"), "na")
     CT_DEFAULT_IA_END(CT_Grid3D_Sparse<DataT>)
 
-    //const static CT_StandardGrid3DDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;
+    const static CT_StandardGrid3D_SparseDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;
 
 };
 
