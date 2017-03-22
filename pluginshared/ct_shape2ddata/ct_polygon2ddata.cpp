@@ -143,7 +143,6 @@ void CT_Polygon2DData::computeCentroid()
 
         pt1 = pt2;
     }
-    _vertices.removeAt(_vertices.size() - 1);
 
 
     signedArea = signedArea*0.5;
@@ -352,36 +351,31 @@ double CT_Polygon2DData::cross(const Eigen::Vector2d* O, const Eigen::Vector2d* 
 CT_Polygon2DData* CT_Polygon2DData::createConvexHull(QList<Eigen::Vector2d*> &orderedCandidates)
 {
     // Adapted from http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+    // And also: http://www.codecodex.com/wiki/Andrew's_Monotone_Chain_Algorithm
 
     int n = orderedCandidates.size();
 
     if (n < 3) {return NULL;}
 
+    int k = 0;
+
+    QVector<Eigen::Vector2d*> H(2*n);
+
     // Build lower hull
-    QVector<Eigen::Vector2d*> Hlower(n);
-    int l = 0;
-    for (int i = 0 ; i < n ; ++i)
-    {
-        while (l >= 2 && cross(Hlower[l-2], Hlower[l-1], orderedCandidates[i]) <= 0) {l--;}
-        Hlower[l++] = orderedCandidates[i];
+    for (int i = 0 ; i < n ; ++i) {
+        while (k >= 2 && cross(H[k-2], H[k-1], orderedCandidates[i]) <= 0) {k--;}
+        H[k++] = orderedCandidates[i];
     }
-    Hlower.resize(l - 1);
 
     // Build upper hull
-    QVector<Eigen::Vector2d*> Hupper(n);
-    int u = 0;
-    for (int i = n-1; i >= 0; i--)
-    {
-        while (u >= 2 && cross(Hupper[u-2], Hupper[u-1], orderedCandidates[i]) <= 0) {u--;}
-        Hupper[u++] = orderedCandidates[i];
+    for (int i = n-2, t = k + 1 ; i >= 0; i--) {
+        while (k >= t && cross(H[k-2], H[k-1], orderedCandidates[i]) <= 0) {k--;}
+        H[k++] = orderedCandidates[i];
     }
-    Hupper.resize(u - 1);
 
-    Hlower += Hupper;
+    H.resize(k-1);
 
-    if (Hlower.size() < 3) {return NULL;}
-
-    return  new CT_Polygon2DData(Hlower);
+    return new CT_Polygon2DData(H);
 }
 
 void CT_Polygon2DData::orderPointsByXY(QList<Eigen::Vector3d*> &pointList)
@@ -407,36 +401,33 @@ double CT_Polygon2DData::cross(const Eigen::Vector3d* O, const Eigen::Vector3d* 
 CT_Polygon2DData* CT_Polygon2DData::createConvexHull(QList<Eigen::Vector3d*> &orderedCandidates)
 {
     // Adapted from http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+    // And also: http://www.codecodex.com/wiki/Andrew's_Monotone_Chain_Algorithm
 
     int n = orderedCandidates.size();
 
     if (n < 3) {return NULL;}
 
+    int k = 0;
+
+    QVector<Eigen::Vector3d*> H(2*n);
+
     // Build lower hull
-    QVector<Eigen::Vector3d*> Hlower(n);
-    int l = 0;
-    for (int i = 0 ; i < n ; ++i)
-    {
-        while (l >= 2 && cross(Hlower[l-2], Hlower[l-1], orderedCandidates[i]) <= 0) {l--;}
-        Hlower[l++] = orderedCandidates[i];
+    for (int i = 0 ; i < n ; ++i) {
+        while (k >= 2 && cross(H[k-2], H[k-1], orderedCandidates[i]) <= 0) {k--;}
+        H[k++] = orderedCandidates[i];
     }
-    Hlower.resize(l - 1);
 
     // Build upper hull
-    QVector<Eigen::Vector3d*> Hupper(n);
-    int u = 0;
-    for (int i = n-1; i >= 0; i--)
-    {
-        while (u >= 2 && cross(Hupper[u-2], Hupper[u-1], orderedCandidates[i]) <= 0) {u--;}
-        Hupper[u++] = orderedCandidates[i];
+    for (int i = n-2, t = k + 1; i >= 0; i--) {
+        while (k >= t && cross(H[k-2], H[k-1], orderedCandidates[i]) <= 0) {k--;}
+        H[k++] = orderedCandidates[i];
     }
-    Hupper.resize(u - 1);
 
-    Hlower += Hupper;
+    H.resize(k-1);
 
-    if (Hlower.size() < 3) {return NULL;}
 
-    return  new CT_Polygon2DData(Hlower);
+    return  new CT_Polygon2DData(H);
+
 }
 
 
