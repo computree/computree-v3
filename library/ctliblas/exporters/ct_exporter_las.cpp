@@ -441,20 +441,16 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
 //        // scale factor is the optimized to convert a point to be the most accurate
 //        scaleFactor = qMin((scaleFactor/(std::numeric_limits<qint32>::max()-1)), 1.0);
 
-        double scaleFactor = 0.000001;
+        double scaleFactor = 0.00001;
         double maxCoord = max(0);
         if (max(1) > maxCoord) {maxCoord = max(1);}
         if (max(2) > maxCoord) {maxCoord = max(2);}
-        if (-min(0) > maxCoord) {maxCoord = -min(0);}
-        if (-min(1) > maxCoord) {maxCoord = -min(1);}
-        if (-min(2) > maxCoord) {maxCoord = -min(2);}
 
-        if (maxCoord > 9999.0) {scaleFactor = 0.00001;}
-        if (maxCoord > 99999.0) {scaleFactor = 0.0001;}
-        if (maxCoord > 999999.0) {scaleFactor = 0.001;}
-        if (maxCoord > 9999999.0) {scaleFactor = 0.01;}
-        if (maxCoord > 99999999.0) {scaleFactor = 0.1;}
-        if (maxCoord > 999999999.0) {scaleFactor =  1;}
+        if (maxCoord > 9999.0) {scaleFactor = 0.0001;}
+        if (maxCoord > 99999.0) {scaleFactor = 0.001;}
+        if (maxCoord > 999999.0) {scaleFactor = 0.01;}
+        if (maxCoord > 9999999.0) {scaleFactor = 0.1;}
+        if (maxCoord > 99999999.0) {scaleFactor = 1;}
 
         header->m_xScaleFactor = scaleFactor;
         header->m_yScaleFactor = scaleFactor;
