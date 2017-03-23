@@ -45,6 +45,7 @@ public:
 
     DM_DocumentManagerView* getDocumentManagerView() const;
     CDM_StepManager* getStepManager() const;
+    CDM_ScriptManagerAbstract* getScriptManager() const;
     DM_ActionsManager* getActionsManager() const;
     CDM_Internationalization* getLanguageManager() const;
     DM_ItemDrawableConfigurationManagerView* getItemDrawableConfigurationManagerView() const;

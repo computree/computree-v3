@@ -61,6 +61,11 @@ CDM_StepManager* GGuiManager::getStepManager() const
     return _mainWindow->getStepManager();
 }
 
+CDM_ScriptManagerAbstract *GGuiManager::getScriptManager() const
+{
+    return _mainWindow->getScriptManager();
+}
+
 DM_ActionsManager* GGuiManager::getActionsManager() const
 {
     return (DM_ActionsManager*)_mainWindow->actionsManager();

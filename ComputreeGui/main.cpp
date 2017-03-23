@@ -26,6 +26,8 @@
 *****************************************************************************/
 
 #include <QApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 #include "view/MainView/gguimanager.h"
 
@@ -50,6 +52,28 @@ int main(int argc, char *argv[])
 
     GGuiManager gm(&language);
     gm.initUi();
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("ComputreeGui");
+    parser.addHelpOption();
+    parser.addOptions({
+        {{"s", "script"},
+         QCoreApplication::translate("main", "Load script file <path>"),
+         QCoreApplication::translate("main", "path")},
+        {{"r", "run"},
+         QCoreApplication::translate("main", "Run script on load")}
+    });
+    parser.process(a);
+
+    if (parser.isSet("script")) {
+        QString scriptPath = parser.value("script");
+        CDM_StepManager *stepManager = gm.getStepManager();
+        CDM_ScriptManagerAbstract* scriptManager = gm.getScriptManager();
+        scriptManager->loadScript(scriptPath, *stepManager);
+        if (parser.isSet("run")) {
+            stepManager->executeStep();
+        }
+    }
 
     return a.exec();
 }
