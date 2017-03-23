@@ -125,6 +125,8 @@ public:
 
     size_t getPointIndicesIncludingKNearestNeighbours(Eigen::Vector3d position, size_t k, double maxDist, QList<size_t> &indexList) const;
 
+    void getIndicesWithPoints(QList<size_t> &list) const {list.append(_cells.keys());}
+
 
     // Neutralize useless Methods
     virtual double ratioValueAtIndex(const size_t index) const {Q_UNUSED(index); qDebug() << "This method should not be used in this context";return 0;}

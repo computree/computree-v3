@@ -57,6 +57,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse() : CT_AbstractGrid3D()
     _maxCoordinates(1) = 0;
     _maxCoordinates(2) = 0;
     _NAdata = -1;
+    _initData = -1;
     _dataMax = -1;
     _dataMin = -1;
 
@@ -94,6 +95,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     _maxCoordinates(2) = minZ() + _res * _dimz;
 
     _NAdata = na;
+    _initData = initValue;
 
     setCenterX (minX() + (maxX() - minX())/2.0);
     setCenterY (minY() + (maxY() - minY())/2.0);
@@ -133,6 +135,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString &modelName,
     _maxCoordinates(2) = minZ() + _res * _dimz;
 
     _NAdata = na;
+    _initData = initValue;
 
     setCenterX (minX() + (maxX() - minX())/2.0);
     setCenterY (minY() + (maxY() - minY())/2.0);
@@ -173,6 +176,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     _maxCoordinates(2) = (minZ() + _res * _dimz);
 
     _NAdata = na;
+    _initData = initValue;
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (xmax >= maxX())
@@ -232,6 +236,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString& model,
     _maxCoordinates(2) = (minZ() + _res * _dimz);
 
     _NAdata = na;
+    _initData = initValue;
 
     // to ensure a point exactly on a maximum limit of the grid will be included in the grid
     while (xmax >= maxX())
@@ -361,9 +366,9 @@ void CT_Grid3D_Sparse<DataT>::setValueAtIndexFromDouble(const size_t &index, con
 
 template< typename DataT>
 void CT_Grid3D_Sparse<DataT>::computeMinMax()
-{
-    _dataMin = NA();
-    _dataMax = NA();
+{  
+    _dataMin = _initData;
+    _dataMax = _initData;
 
     bool first = true;
     cv::SparseMatConstIterator it = _data.begin(), it_end = _data.end();
@@ -446,6 +451,10 @@ template< typename DataT>
 DataT CT_Grid3D_Sparse<DataT>::valueAtIndex(const size_t index) const
 {
     if (index >= nCells()) {return NA();}
+
+    const DataT* val = _data.find<DataT>(index);
+    if (val == NULL) {return _initData;}
+
     return _data(index);
 }
 
@@ -505,6 +514,10 @@ template< typename DataT>
 DataT CT_Grid3D_Sparse<DataT>::dataFromArray(const size_t &index) const
 {
     if (index >= nCells()) {return NA();}
+
+    const DataT* val = _data.find<DataT>(index);
+    if (val == NULL) {return _initData;}
+
     return _data(index);
 }
 

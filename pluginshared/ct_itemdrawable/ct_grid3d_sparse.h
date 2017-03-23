@@ -429,6 +429,7 @@ public:
 
 protected:
     DataT       _NAdata;            /*!< Valeur codant NA */
+    DataT       _initData;            /*!< Valeur par defaut */
 
     DataT       _dataMax;           /*!< valeur maximale du grid*/
     DataT       _dataMin;           /*!< valeur minimale du grid*/

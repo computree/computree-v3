@@ -103,7 +103,7 @@ void CT_StandardGrid3D_SparseDrawManager<DataT>::draw(GraphicsViewInterface &vie
                     DataT data = item.valueAtIndex(index);
 
                     // Draw a cube if the value it contains is between the two thresholds
-                    if ( data >= lowThresh && data <= highThresh )
+                    if ( data != item.NA() && data >= lowThresh && data <= highThresh )
                     {
                         bool predef = false;
                         if (usePredefinedColors && item.colorsDefined())
