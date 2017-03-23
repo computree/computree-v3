@@ -450,7 +450,7 @@ CT_LASHeader* CT_Exporter_LAS::writeHeader(QDataStream &stream,
         if (maxCoord > 99999.0) {scaleFactor = 0.001;}
         if (maxCoord > 999999.0) {scaleFactor = 0.01;}
         if (maxCoord > 9999999.0) {scaleFactor = 0.1;}
-        if (maxCoord > 99999999.0) {scaleFactor = 1;}
+        if (maxCoord > 99999999.0) {scaleFactor = 1.0;}
 
         header->m_xScaleFactor = scaleFactor;
         header->m_yScaleFactor = scaleFactor;

@@ -281,9 +281,9 @@ void CT_LASHeader::transformPoint(const qint32 &x, const qint32 &y, const qint32
 
 void CT_LASHeader::inverseTransformPoint(const double &x, const double &y, const double &z, qint32 &xc, qint32 &yc, qint32 &zc) const
 {
-    xc = ((double)(x - m_xOffset))/m_xScaleFactor;
-    yc = ((double)(y - m_yOffset))/m_yScaleFactor;
-    zc = ((double)(z - m_zOffset))/m_zScaleFactor;
+    xc = (qint32)std::round(((double)(x - m_xOffset)) / (double)m_xScaleFactor);
+    yc = (qint32)std::round(((double)(y - m_yOffset)) / (double)m_yScaleFactor);
+    zc = (qint32)std::round(((double)(z - m_zOffset)) / (double)m_zScaleFactor);
 }
 
 bool CT_LASHeader::read(QDataStream &stream, QString &error)
