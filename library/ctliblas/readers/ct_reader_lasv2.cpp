@@ -362,7 +362,7 @@ bool CT_Reader_LASV2::protectedReadFile()
         CT_StdLASPointsAttributesContainer *container = new CT_StdLASPointsAttributesContainer(NULL,
                                                                                                NULL);
 
-        if(mask6_10V == NULL)
+        if (header->m_pointDataRecordFormat < 6)
         {
 
             // 0b00000111
