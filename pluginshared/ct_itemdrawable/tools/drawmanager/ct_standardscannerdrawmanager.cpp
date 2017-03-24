@@ -2,7 +2,10 @@
 
 #include "ct_scanner.h"
 
+#include <Eigen/Dense>
 #include <QObject>
+#include <QScopedPointer>
+#include <QtMath>
 
 const QString CT_StandardScannerDrawManager::INDEX_CONFIG_FIELD_OF_VIEW = CT_StandardScannerDrawManager::staticInitConfigFieldOfView();
 
@@ -53,6 +56,8 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
     double endTheta = scanner.getInitTheta() + clockWiseScaler * scanner.getHFov();
     double endPhi = scanner.getInitPhi() + clockWiseScaler * scanner.getVFov();
 
+
+    /*
     painter.drawPartOfSphere(scanner.getPositionX(),
                              scanner.getPositionY(),
                              scanner.getPositionZ(),
@@ -61,13 +66,32 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
                              endTheta,
                              scanner.getInitPhi(),
                              endPhi);
+    */
+
+    CT_ThetaPhiShootingPattern* pattern = dynamic_cast<CT_ThetaPhiShootingPattern*>(scanner.getShootingPattern());
+    QScopedPointer<CT_ThetaPhiShootingPattern> patternSimple(dynamic_cast<CT_ThetaPhiShootingPattern*>(pattern->clone()));
+    patternSimple->setHRes(qDegreesToRadians(10.));
+    patternSimple->setVRes(qDegreesToRadians(10.));
+    size_t n = patternSimple->getNumberOfShots();
+
+    for (size_t i = 0; i < n; i++) {
+        const CT_Shot& shot = patternSimple->getShotAt(i);
+        double x0 = shot.getOrigin().x();
+        double y0 = shot.getOrigin().y();
+        double z0 = shot.getOrigin().z();
+        Eigen::Vector3d dir = shot.getDirection();
+        dir.normalize();
+        Eigen::Vector3d v = dir + shot.getOrigin();
+        painter.drawLine(x0, y0, z0, v.x(), v.y(), v.z());
+    }
 
     // Drawing the four major limits of the field of view
+    /*
     double midPhi = scanner.getVFov()/2 + scanner.getInitPhi();
-    drawLineToPosition(painter, scanner, scanner.getInitTheta(), scanner.getInitPhi());
     drawLineToPosition(painter, scanner, endTheta, scanner.getInitPhi());
     drawLineToPosition(painter, scanner, endTheta, endPhi);
     drawLineToPosition(painter, scanner, endTheta, midPhi);
+    */
 }
 
 void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter, const CT_Scanner &scanner, double theta, double phi) const
