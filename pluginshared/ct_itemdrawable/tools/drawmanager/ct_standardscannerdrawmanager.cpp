@@ -54,8 +54,7 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
     double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
     double clockWiseScaler = scanner.getClockWise() ? -1.0 : 1.0;
     double endTheta = scanner.getInitTheta() + clockWiseScaler * scanner.getHFov();
-    double endPhi = scanner.getInitPhi() + clockWiseScaler * scanner.getVFov();
-
+    double endPhi = scanner.getInitPhi() + scanner.getVFov();
 
     /*
     painter.drawPartOfSphere(scanner.getPositionX(),
@@ -107,7 +106,7 @@ void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter
     painter.drawLine(scanner.getPositionX(),
                      scanner.getPositionY(),
                      scanner.getPositionZ(),
-                     scanner.getPositionX() + scaling*sinTheta*cosPhi,
-                     scanner.getPositionY() + scaling*sinTheta*sinPhi,
-                     scanner.getPositionZ() + scaling*cosTheta);
+                     scanner.getPositionX() + scaling*sinPhi*cosTheta,
+                     scanner.getPositionY() + scaling*sinPhi*sinTheta,
+                     scanner.getPositionZ() + scaling*cosPhi);
 }

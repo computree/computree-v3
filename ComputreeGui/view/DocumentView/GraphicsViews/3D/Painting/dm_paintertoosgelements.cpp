@@ -697,9 +697,9 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
                     sinPhi = sin (currentPhi);
                     cosPhi = cos (currentPhi);
 
-                    (*vertexArray)[currentIndex] = osg::Vec3f(sinTheta*cosPhi,
-                                                              sinTheta*sinPhi,
-                                                              cosTheta);
+                    (*vertexArray)[currentIndex] = osg::Vec3f(sinPhi*cosTheta,
+                                                              sinPhi*sinTheta,
+                                                              cosPhi);
                     (*colorArray)[currentIndex++] = color;
                     currentPhi += stepPhi;
             }
