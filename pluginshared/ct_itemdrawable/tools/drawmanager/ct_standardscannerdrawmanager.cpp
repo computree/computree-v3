@@ -49,28 +49,26 @@ QString CT_StandardScannerDrawManager::staticInitConfigFieldOfView()
 void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, const CT_Scanner &scanner) const
 {
     double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
+    double clockWiseScaler = scanner.getClockWise() ? -1.0 : 1.0;
+    double endTheta = scanner.getInitTheta() + clockWiseScaler * scanner.getHFov();
+    double endPhi = scanner.getInitPhi() + clockWiseScaler * scanner.getVFov();
 
-    if ( !scanner.getClockWise() )
-    {
-        painter.drawPartOfSphere( scanner.getPosition().x(), scanner.getPosition().y(), scanner.getPosition().z(), scaling, scanner.getInitTheta(), scanner.getInitTheta()+scanner.getHFov(), scanner.getInitPhi(), scanner.getInitPhi() + scanner.getVFov());
+    painter.drawPartOfSphere(scanner.getPositionX(),
+                             scanner.getPositionY(),
+                             scanner.getPositionZ(),
+                             scaling,
+                             scanner.getInitTheta(),
+                             endTheta,
+                             scanner.getInitPhi(),
+                             endPhi);
 
-        // Drawing the four major limits of the field of view
-        drawLineToPosition( painter, scanner, scanner.getInitTheta(), scanner.getInitPhi() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta() + scanner.getHFov(), scanner.getInitPhi() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta() + scanner.getHFov(), scanner.getInitPhi() + scanner.getVFov() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta(), scanner.getInitPhi() + scanner.getVFov() );
-    }
-
-    else
-    {
-        painter.drawPartOfSphere( scanner.getPosition().x(), scanner.getPosition().y(), scanner.getPosition().z(), scaling, scanner.getInitTheta(), scanner.getInitTheta()-scanner.getHFov(), scanner.getInitPhi(), scanner.getInitPhi() + scanner.getVFov());
-
-        // Drawing the four major limits of the field of view
-        drawLineToPosition( painter, scanner, scanner.getInitTheta()-scanner.getHFov(), scanner.getInitPhi() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta(), scanner.getInitPhi() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta(), scanner.getInitPhi() + scanner.getVFov() );
-        drawLineToPosition( painter, scanner, scanner.getInitTheta() - scanner.getHFov(), scanner.getInitPhi() + scanner.getVFov() );
-    }
+    // Drawing the four major limits of the field of view
+    double midTheta = scanner.getHFov()/2 + scanner.getInitTheta();
+    double midPhi = scanner.getVFov()/2 + scanner.getInitPhi();
+    drawLineToPosition(painter, scanner, scanner.getInitTheta(), scanner.getInitPhi());
+    drawLineToPosition(painter, scanner, endTheta, scanner.getInitPhi());
+    drawLineToPosition(painter, scanner, endTheta, endPhi);
+    drawLineToPosition(painter, scanner, midTheta, midPhi);
 }
 
 void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter, const CT_Scanner &scanner, double theta, double phi) const
@@ -78,10 +76,15 @@ void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter
     double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
 
     double cosPhi, sinPhi, cosTheta, sinTheta;
-    sinTheta = sin (theta);
-    cosTheta = cos (theta);
-    sinPhi = sin (phi);
-    cosPhi = cos (phi);
-    painter.drawLine(scanner.getPosition().x(), scanner.getPosition().y(), scanner.getPosition().z(),
-                     scaling*sinPhi*cosTheta + scanner.getPosition().x(), scaling*sinPhi*sinTheta + scanner.getPosition().y(), scaling*cosPhi + scanner.getPosition().z() );
+    sinTheta = sin(theta);
+    cosTheta = cos(theta);
+    sinPhi = sin(phi);
+    cosPhi = cos(phi);
+
+    painter.drawLine(scanner.getPositionX(),
+                     scanner.getPositionY(),
+                     scanner.getPositionZ(),
+                     scanner.getPositionX() + scaling*sinTheta*cosPhi,
+                     scanner.getPositionY() + scaling*sinTheta*sinPhi,
+                     scanner.getPositionZ() + scaling*cosTheta);
 }

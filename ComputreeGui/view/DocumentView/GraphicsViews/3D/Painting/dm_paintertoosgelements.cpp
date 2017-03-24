@@ -667,8 +667,8 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
         size_t currentIndex = vertexArray->size();
         size_t backupBeginIndex = currentIndex;
 
-        osg::DrawArrays *fSet = new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, currentIndex, nVertex);
-        osg::DrawElementsUInt *sSet = new osg::DrawElementsUInt(osg::PrimitiveSet::LINE_STRIP);
+        osg::DrawArrays *fSet = new osg::DrawArrays(osg::PrimitiveSet::LINES, currentIndex, nVertex);
+        osg::DrawElementsUInt *sSet = new osg::DrawElementsUInt(osg::PrimitiveSet::LINES);
 
         DM_PainterToOsgElements::LocalColorArrayType::value_type color = DM_PainterToOsgElements::staticQColorToInternalColor(getColor());
 
@@ -679,8 +679,8 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
         colorArray->resize(currentIndex+nVertex);
         sSet->resize(nVertex);
 
-        double stepTheta = fabs(eTheta-iTheta) / ((double)nSteps);
-        double stepPhi = fabs(ePhi-iPhi) / ((double)nSteps);
+        double stepTheta = (eTheta-iTheta) / ((double)nSteps);
+        double stepPhi = (ePhi-iPhi) / ((double)nSteps);
 
         double cosPhi, sinPhi, cosTheta, sinTheta;
 
@@ -697,9 +697,9 @@ void DM_PainterToOsgElements::drawPartOfSphere(const double &centerX, const doub
                     sinPhi = sin (currentPhi);
                     cosPhi = cos (currentPhi);
 
-                    (*vertexArray)[currentIndex] = osg::Vec3f(sinPhi*cosTheta,
-                                                              sinPhi*sinTheta,
-                                                              cosPhi);
+                    (*vertexArray)[currentIndex] = osg::Vec3f(sinTheta*cosPhi,
+                                                              sinTheta*sinPhi,
+                                                              cosTheta);
                     (*colorArray)[currentIndex++] = color;
                     currentPhi += stepPhi;
             }

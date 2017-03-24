@@ -94,7 +94,7 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
     setCenterX(origin.x());
     setCenterY(origin.y());
     setCenterZ(origin.z());
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
+    m_shootingPattern = new CT_ThetaPhiShootingPattern(origin,
                                                        hFov,
                                                        vFov,
                                                        hRes,
