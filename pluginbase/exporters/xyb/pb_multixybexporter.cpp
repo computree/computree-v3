@@ -90,7 +90,7 @@ bool PB_MultiXYBExporter::protectedExportToFile()
     {
         CT_AbstractItemDrawable *item = it.next();
 
-        QString filePath = QString("%1/%2_%4.%3").arg(path).arg(baseName).arg(suffix).arg(item->id());
+        QString filePath = QString("%1/%2_%4.%3").arg(path).arg(baseName).arg(suffix).arg(item->displayableName());
         QFile file(filePath);
 
         if(file.open(QFile::WriteOnly | QFile::Text))
