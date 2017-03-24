@@ -284,16 +284,6 @@ public:
     /*!
     *  \brief Setter of the class
     */
-    inline void setNHRays ( int nHRays ) { m_shootingPattern->setNHRays(nHRays); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setNVRays ( int nVRays ) { m_shootingPattern->setNVRays(nVRays); }
-
-    /*!
-    *  \brief Setter of the class
-    */
     inline void setClockWise ( bool clockWise ) { m_shootingPattern->setClockWise(clockWise); }
 
 //***********************************************************************************//

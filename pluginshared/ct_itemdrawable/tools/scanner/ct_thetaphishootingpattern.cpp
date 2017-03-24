@@ -50,10 +50,7 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
         m_initTheta = qDegreesToRadians(m_initTheta);
         m_initPhi = qDegreesToRadians(m_initPhi);
     }
-
-    // Calculates the number of horizontal and vertical rays
-    m_nHRays = (int)ceil(fabs(m_hFov/m_hRes));
-    m_nVRays = (int)ceil(fabs(m_vFov/m_vRes));
+    updateNumberOfRays();
 }
 
 CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &other) :
@@ -107,4 +104,11 @@ CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &index) const
 CT_ShootingPattern* CT_ThetaPhiShootingPattern::clone() const
 {
     return new CT_ThetaPhiShootingPattern(*this);
+}
+
+void CT_ThetaPhiShootingPattern::updateNumberOfRays()
+{
+    // Calculates the number of horizontal and vertical rays
+    m_nHRays = (int)ceil(fabs(m_hFov/m_hRes));
+    m_nVRays = (int)ceil(fabs(m_vFov/m_vRes));
 }

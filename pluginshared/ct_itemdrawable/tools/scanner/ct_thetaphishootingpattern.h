@@ -120,22 +120,22 @@ public:
     /**
      * @brief Set the horizontal field of view
      */
-    inline void setHFov ( double hFov ) { m_hFov = hFov; }
+    inline void setHFov ( double hFov ) { m_hFov = hFov; updateNumberOfRays(); }
 
     /**
      * @brief Set the vertical field of view
      */
-    inline void setVFov ( double vFov ) { m_vFov = vFov; }
+    inline void setVFov ( double vFov ) { m_vFov = vFov; updateNumberOfRays(); }
 
     /**
      * @brief Set the horizontal resolution
      */
-    inline void setHRes ( double hRes ) { m_hRes = hRes; }
+    inline void setHRes ( double hRes ) { m_hRes = hRes; updateNumberOfRays(); }
 
     /**
      * @brief Set the vertical resolution
      */
-    inline void setVRes ( double vRes ) { m_vRes = vRes; }
+    inline void setVRes ( double vRes ) { m_vRes = vRes; updateNumberOfRays(); }
 
     /**
      * @brief Set the the initial theta
@@ -148,21 +148,13 @@ public:
     inline void setInitPhi ( double initPhi ) { m_initPhi = initPhi; }
 
     /**
-     * @brief Set the number of horizontal rays
-     */
-    inline void setNHRays ( int nHRays ) { m_nHRays = nHRays; }
-
-    /**
-     * @brief Set the number of vertical rays
-     */
-    inline void setNVRays ( int nVRays ) { m_nVRays = nVRays; }
-
-    /**
      * @brief Set true if the shooting pattern is made in clockwise order or not
      */
     inline void setClockWise ( bool clockWise ) { m_clockWise = clockWise; }
 
 private:
+    void updateNumberOfRays();
+
     Eigen::Vector3d m_origin;		/*!< origin of the shots */
     Eigen::Vector3d	m_zVector;		/*!< normal of the scanner */
     double          m_hFov;			/*!< horizontal field of view */
