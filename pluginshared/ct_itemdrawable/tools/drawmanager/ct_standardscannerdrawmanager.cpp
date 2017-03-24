@@ -63,12 +63,11 @@ void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, c
                              endPhi);
 
     // Drawing the four major limits of the field of view
-    double midTheta = scanner.getHFov()/2 + scanner.getInitTheta();
     double midPhi = scanner.getVFov()/2 + scanner.getInitPhi();
     drawLineToPosition(painter, scanner, scanner.getInitTheta(), scanner.getInitPhi());
     drawLineToPosition(painter, scanner, endTheta, scanner.getInitPhi());
     drawLineToPosition(painter, scanner, endTheta, endPhi);
-    drawLineToPosition(painter, scanner, midTheta, midPhi);
+    drawLineToPosition(painter, scanner, endTheta, midPhi);
 }
 
 void CT_StandardScannerDrawManager::drawLineToPosition(PainterInterface &painter, const CT_Scanner &scanner, double theta, double phi) const
