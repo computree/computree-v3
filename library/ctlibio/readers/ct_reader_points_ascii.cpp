@@ -477,8 +477,9 @@ bool CT_Reader_Points_ASCII::protectedReadFile()
             QTextStream stream(&f);
             QString     currentLine;
             QStringList wordsOfLine;
+            CT_Point point;
 
-            int nLine = 1;
+            int nLine = 0;
             int maxIndex = maxColumnIndex();
 
             // Getting the file size to set progress
@@ -504,36 +505,34 @@ bool CT_Reader_Points_ASCII::protectedReadFile()
             bool error = false;
 
             // While we did not reached the end of file
-            while( !stream.atEnd()
-                   && !isStopped()
-                   && !error)
-            {
+            while(!stream.atEnd() && !isStopped() && !error) {
                 // Read the currentLine
+                ++nLine;
                 currentLine = stream.readLine();
                 currentSizeRead += currentLine.size();
+                setProgress((currentSizeRead*100) / fileSize);
 
-                if(!currentLine.isEmpty())
-                {
-                    // Read each word separately
-                    wordsOfLine = currentLine.split(m_separator, QString::SkipEmptyParts );
+                if(currentLine.isEmpty())
+                    continue;
 
-                    // Checking for a valid line
-                    if(maxIndex >= wordsOfLine.size())
-                    {
-                        PS_LOG->addErrorMessage(LogInterface::reader, tr("Error while loading the file at line %1. Number of columns is too less.").arg(nLine));
-                        error = true;
-                    }
+                // Read each word separately
+                wordsOfLine = currentLine.split(m_separator, QString::SkipEmptyParts);
 
-                    CHK_ERR(readAndAddPoint(wordsOfLine, locale, uspc, minBB, maxBB), tr("Error while loading point in file at line ") + QString().number(nLine));
-                    CHK_ERR(readAndAddIntensity(wordsOfLine, locale, intensityCloud, minIntensity, maxIntensity), tr("Error while intensity in file at line ") + QString().number(nLine));
-                    CHK_ERR(readAndAddColor(wordsOfLine, locale, colorCloud), tr("Error while loading color in file at line ") + QString().number(nLine));
-                    CHK_ERR(readAndAddNormal(wordsOfLine, locale, normalCloud), tr("Error while loading normal in file at line ") + QString().number(nLine));
-
+                // Checking for a valid line
+                if(maxIndex >= wordsOfLine.size()) {
+                    PS_LOG->addErrorMessage(LogInterface::reader, tr("Error loading at line %1: missing columns.").arg(nLine));
+                    error = true;
                 }
 
-                ++nLine;
+                CHK_ERR(readPoint(wordsOfLine, locale, point), tr("Error loading point at line %1").arg(nLine));
+                if (point == Eigen::Vector3d::Zero())
+                    continue;
 
-                setProgress((currentSizeRead*100) / fileSize);
+                addPoint(point, uspc, minBB, maxBB);
+                CHK_ERR(readAndAddIntensity(wordsOfLine, locale, intensityCloud, minIntensity, maxIntensity), tr("Error loading intensity at line %1").arg(nLine));
+                CHK_ERR(readAndAddColor(wordsOfLine, locale, colorCloud), tr("Error loading color at line %1").arg(nLine));
+                CHK_ERR(readAndAddNormal(wordsOfLine, locale, normalCloud), tr("Error loading normal at line %1").arg(nLine));
+
             }
 
             f.close();
@@ -661,11 +660,9 @@ void CT_Reader_Points_ASCII::updateBoundingBox(const CT_Point &point, Eigen::Vec
     bboxMax[2] = qMax(point[CT_Point::Z], bboxMax[2]);
 }
 
-bool CT_Reader_Points_ASCII::readAndAddPoint(const QStringList &wordsOfLine, const QLocale &locale, CT_AbstractUndefinedSizePointCloud *array, Eigen::Vector3d &minBB, Eigen::Vector3d &maxBB) const
+bool CT_Reader_Points_ASCII::readPoint(const QStringList &wordsOfLine, const QLocale &locale, CT_Point &point) const
 {
     bool ok;
-
-    CT_Point point;
 
     point[CT_Point::X] = locale.toDouble(wordsOfLine.at(m_columnXIndex), &ok);
 
@@ -682,11 +679,15 @@ bool CT_Reader_Points_ASCII::readAndAddPoint(const QStringList &wordsOfLine, con
     if(!ok)
         return false;
 
-    array->addPoint(point);
-
-    updateBoundingBox(point, minBB, maxBB);
-
     return true;
+}
+
+void CT_Reader_Points_ASCII::addPoint(const CT_Point &point,
+                                      CT_AbstractUndefinedSizePointCloud *array,
+                                      Eigen::Vector3d &minBB, Eigen::Vector3d &maxBB) const
+{
+    array->addPoint(point);
+    updateBoundingBox(point, minBB, maxBB);
 }
 
 bool CT_Reader_Points_ASCII::readAndAddIntensity(const QStringList &wordsOfLine, const QLocale &locale, CT_StandardCloudStdVectorT<float> *array, float &minI, float &maxI) const

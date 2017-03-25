@@ -117,7 +117,8 @@ protected:
 
     void updateBoundingBox(const CT_Point &point, Eigen::Vector3d &bboxMin, Eigen::Vector3d &bboxMax) const;
 
-    bool readAndAddPoint(const QStringList &wordsOfLine, const QLocale &locale, CT_AbstractUndefinedSizePointCloud *array, Eigen::Vector3d &minBB, Eigen::Vector3d &maxBB) const;
+    bool readPoint(const QStringList &wordsOfLine, const QLocale &locale, CT_Point &point) const;
+    void addPoint(const CT_Point &point, CT_AbstractUndefinedSizePointCloud *array, Eigen::Vector3d &minBB, Eigen::Vector3d &maxBB) const;
     bool readAndAddIntensity(const QStringList &wordsOfLine, const QLocale &locale, CT_StandardCloudStdVectorT<float> *array, float &minI, float &maxI) const;
     bool readAndAddColor(const QStringList &wordsOfLine, const QLocale &locale, CT_ColorCloudStdVector *array) const;
     bool readAndAddNormal(const QStringList &wordsOfLine, const QLocale &locale, CT_NormalCloudStdVector *array) const;
