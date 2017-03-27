@@ -189,7 +189,6 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             double zmax = -std::numeric_limits<double>::max();
 
             QString line;
-            CT_Point pReaded;
 
             // Getting the file size to set progress
             qint64 fileSize = f.size();
@@ -211,7 +210,7 @@ bool CT_Reader_ASCRGB::protectedReadFile()
                     continue;
 
                 readColor(values, color);
-                pointCloud->addPoint(pReaded);
+                pointCloud->addPoint(point);
                 CT_Color &c = colorCloud->addColor();
                 c.setColor(color);
 
