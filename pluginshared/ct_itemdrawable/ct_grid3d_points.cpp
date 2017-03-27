@@ -222,6 +222,22 @@ bool CT_Grid3D_Points::addPoint(size_t pointLocalIndex, double x, double y, doub
     return true;
 }
 
+bool CT_Grid3D_Points::addPointAtIndex(size_t cellIndex, size_t pointLocalIndex)
+{
+    if (!(cellIndex >= this->nCells())) {return false;}
+
+    if (_cells.contains(cellIndex))
+    {
+        (_cells[cellIndex])->append(pointLocalIndex);
+    } else {
+        QList<size_t>* list = new QList<size_t>();
+        list->append(pointLocalIndex);
+        _cells.insert(cellIndex, list);
+    }
+
+    return true;
+}
+
 
 
 const QList<size_t> *CT_Grid3D_Points::getConstPointIndexList(size_t cellIndex) const

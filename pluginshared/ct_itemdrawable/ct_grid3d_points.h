@@ -116,6 +116,7 @@ public:
 
     bool addPoint(size_t pointGlobalIndex);
     bool addPoint(size_t pointLocalIndex, double x, double y, double z);
+    bool addPointAtIndex(size_t cellIndex, size_t pointLocalIndex);
 
     const QList<size_t>* getConstPointIndexList(size_t cellIndex) const;
 
