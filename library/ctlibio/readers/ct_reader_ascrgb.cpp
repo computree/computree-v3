@@ -103,6 +103,69 @@ void CT_Reader_ASCRGB::protectedCreateOutItemDrawableModelList()
     addOutItemDrawableModel(DEF_CT_Reader_ASCRGB_colorOut, new CT_PointsAttributesColor(), tr("Attribut de points (couleurs)"));
 }
 
+bool readPoint(QStringList &values, CT_Point &point)
+{
+    if (values.size() <= 2)
+        return false;
+
+    bool okX = false;
+    bool okY = false;
+    bool okZ = false;
+
+    double x = values.at(0).toDouble(&okX);
+    double y = values.at(1).toDouble(&okY);
+    double z = values.at(2).toDouble(&okZ);
+
+    if (!okX || !okY || !okZ)
+        return false;
+
+    point(0) = x;
+    point(1) = y;
+    point(2) = z;
+    return true;
+}
+
+void readColor(QStringList &values, CT_Color &color)
+{
+    bool okR = false;
+    bool okG = false;
+    bool okB = false;
+
+    double valueR = 1;
+    double valueG = 1;
+    double valueB = 1;
+
+    if (values.size() > 3) {valueR = values.at(3).toDouble(&okR);}
+    if (values.size() > 4) {valueG = values.at(4).toDouble(&okG);}
+    if (values.size() > 5) {valueB = values.at(5).toDouble(&okB);}
+
+    if (!okG) {valueG = valueR;}
+    if (!okB) {valueB = valueR;}
+
+    valueR = qBound(0., valueR, 1.);
+    valueG = qBound(0., valueG, 1.);
+    valueB = qBound(0., valueB, 1.);
+
+    color(0) = 255*valueR;
+    color(1) = 255*valueG;
+    color(2) = 255*valueB;
+    color(3) = 0;
+}
+
+/*
+ * Check if the point is inside the bounds of a cylinder
+ */
+bool CT_Reader_ASCRGB::isInsideRadius(const CT_Point &point)
+{
+    if (m_filterRadius > 0) {
+        double distance2D = sqrt(point.x() * point.x() + point.y() * point.y());
+        return (distance2D <= m_filterRadius &&
+                point.z() >= _zminFilter &&
+                point.z() <= _zmaxFilter);
+    }
+    return true;
+}
+
 bool CT_Reader_ASCRGB::protectedReadFile()
 {
     // Test File validity
@@ -112,8 +175,6 @@ bool CT_Reader_ASCRGB::protectedReadFile()
 
         if (f.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            bool filter = m_filterRadius > 0;
-
             QTextStream stream(&f);
 
             CT_AbstractUndefinedSizePointCloud* pointCloud = PS_REPOSITORY->createNewUndefinedSizePointCloud();
@@ -139,73 +200,28 @@ bool CT_Reader_ASCRGB::protectedReadFile()
             {
                 line = stream.readLine();
                 currentSizeRead += line.size();
-                QStringList values = line.split(" ", QString::SkipEmptyParts);
-
-                if (values.size() > 2)
-                {
-                    bool okX = false;
-                    bool okY = false;
-                    bool okZ = false;
-                    bool okR = false;
-                    bool okG = false;
-                    bool okB = false;
-
-                    double x = values.at(0).toDouble(&okX);
-                    double y = values.at(1).toDouble(&okY);
-                    double z = values.at(2).toDouble(&okZ);
-
-                    double valueR = 1;
-                    double valueG = 1;
-                    double valueB = 1;
-
-                    if (values.size() > 3) {valueR = values.at(3).toDouble(&okR);}
-                    if (values.size() > 4) {valueG = values.at(4).toDouble(&okG);}
-                    if (values.size() > 5) {valueB = values.at(5).toDouble(&okB);}
-
-                    if (!okG) {valueG = valueR;}
-                    if (!okB) {valueB = valueR;}
-
-                    if (valueR < 0) {valueR = 0;}
-                    if (valueG < 0) {valueG = 0;}
-                    if (valueB < 0) {valueB = 0;}
-
-                    if (valueR > 1) {valueR = 1;}
-                    if (valueG > 1) {valueG = 1;}
-                    if (valueB > 1) {valueB = 1;}
-
-                    short r = 255*valueR;
-                    short g = 255*valueG;
-                    short b = 255*valueB;
-
-                    if (okX && okY && okZ)
-                    {
-                        double distance2D = sqrt(x*x + y*y);
-
-                        if (!filter || (distance2D <= m_filterRadius && z >= _zminFilter && z <= _zmaxFilter))
-                        {
-                            if (x<xmin) {xmin = x;}
-                            if (x>xmax) {xmax = x;}
-                            if (y<ymin) {ymin = y;}
-                            if (y>ymax) {ymax = y;}
-                            if (z<zmin) {zmin = z;}
-                            if (z>zmax) {zmax = z;}
-
-                            pReaded(0) = x;
-                            pReaded(1) = y;
-                            pReaded(2) = z;
-
-                            pointCloud->addPoint(pReaded);
-
-                            CT_Color &color = colorCloud->addColor();
-
-                            color.r() = r;
-                            color.g() = g;
-                            color.b() = b;
-                        }
-                    }
-                }
-
                 setProgress((currentSizeRead*100)/fileSize);
+                QStringList values = line.split(" ", QString::SkipEmptyParts);
+                CT_Point point;
+                CT_Color color;
+                bool ok = readPoint(values, point);
+
+                // FIXME: converted radius filter to lambda
+                if (!ok || isFiltered(point) || !isInsideRadius(point))
+                    continue;
+
+                readColor(values, color);
+                pointCloud->addPoint(pReaded);
+                CT_Color &c = colorCloud->addColor();
+                c.setColor(color);
+
+                /* update bounding box */
+                if (point.x() < xmin) {xmin = point.x();}
+                if (point.x() > xmax) {xmax = point.x();}
+                if (point.y() < ymin) {ymin = point.y();}
+                if (point.y() > ymax) {ymax = point.y();}
+                if (point.z() < zmin) {zmin = point.z();}
+                if (point.z() > zmax) {zmax = point.z();}
             }
 
             f.close();

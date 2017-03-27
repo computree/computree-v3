@@ -32,6 +32,8 @@ private:
     double   _zminFilter;
     double   _zmaxFilter;
 
+    bool isInsideRadius(const CT_Point &point);
+
 protected:
     void protectedInit();
     void protectedCreateOutItemDrawableModelList();
