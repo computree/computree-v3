@@ -14,6 +14,7 @@ CT_AbstractReader::CT_AbstractReader()
     m_stop = false;
     m_filePath = "";
     m_filepathCanBeModified = true;
+    m_filterPoint = filter_point_all;
 }
 
 CT_AbstractReader::CT_AbstractReader(const CT_AbstractReader &other)
@@ -40,6 +41,7 @@ CT_AbstractReader::CT_AbstractReader(const CT_AbstractReader &other)
     m_stop = other.m_stop;
     m_filePath = other.m_filePath;
     m_filepathCanBeModified = other.m_filepathCanBeModified;
+    m_filterPoint = other.m_filterPoint;
 }
 
 CT_AbstractReader::~CT_AbstractReader()
@@ -220,6 +222,11 @@ bool CT_AbstractReader::readFile()
 void CT_AbstractReader::cancel()
 {
     m_stop = true;
+}
+
+void CT_AbstractReader::setFilterPoint(CT_ReaderFilterPoint filter)
+{
+    m_filterPoint = filter;
 }
 
 QString CT_AbstractReader::errorMessage() const
@@ -596,6 +603,11 @@ CT_FileHeader* CT_AbstractReader::protectedReadHeader(const QString &filepath, Q
     return f;
 }
 
+bool CT_AbstractReader::isFiltered(const CT_Point &pt)
+{
+    return !m_filterPoint(pt);
+}
+
 void CT_AbstractReader::clearOutItemDrawableModel()
 {
     qDeleteAll(m_outItemsModel.begin(), m_outItemsModel.end());
@@ -619,3 +631,6 @@ void CT_AbstractReader::clearOutGroups()
     qDeleteAll(m_outGroups.begin(), m_outGroups.end());
     m_outGroups.clear();
 }
+
+const CT_ReaderFilterPoint CT_AbstractReader::filter_point_all =
+        [](const CT_Point &pt){ return true; };

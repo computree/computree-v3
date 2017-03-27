@@ -525,7 +525,7 @@ bool CT_Reader_Points_ASCII::protectedReadFile()
                 }
 
                 CHK_ERR(readPoint(wordsOfLine, locale, point), tr("Error loading point at line %1").arg(nLine));
-                if (point == Eigen::Vector3d::Zero())
+                if (isFiltered(point))
                     continue;
 
                 addPoint(point, uspc, minBB, maxBB);

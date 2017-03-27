@@ -6,6 +6,8 @@
 #include "ct_itemdrawable/ct_fileheader.h"
 #include "ct_step/tools/menu/ct_stepsmenu.h"
 
+typedef std::function<bool (const CT_Point& pt)> CT_ReaderFilterPoint;
+
 #define READER_COPY_FULL_IMP(argClass) virtual CT_AbstractReader *copyFull() const { return new argClass(*this); }
 
 class PLUGINSHAREDSHARED_EXPORT CT_AbstractReader : public QObject
@@ -280,6 +282,25 @@ public:
      */
     virtual CT_AbstractReader *copyFull() const = 0;
 
+
+    /**
+     * @brief Define the filter to use when loading points.
+     * @param filter lambda returning true for points to load and false otherwise
+     */
+    void setFilterPoint(CT_ReaderFilterPoint filter);
+
+    /**
+     * @brief evaluate the current filter for the given point
+     * @param point to test
+     * @return true if the point is rejected
+     */
+    bool isFiltered(const CT_Point& point);
+
+    /**
+     * @brief filter_point_all: default point filter that accepts all points
+     */
+    static const CT_ReaderFilterPoint filter_point_all;
+
 public slots:
 
     /**
@@ -388,6 +409,7 @@ private:
     bool                                                    m_stop;
     QString                                                 m_filePath;
     bool                                                    m_filepathCanBeModified;
+    CT_ReaderFilterPoint                                    m_filterPoint;
 
     void clearOutItemDrawableModel();
     void clearOutItemDrawable();
