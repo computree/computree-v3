@@ -212,6 +212,23 @@ void CT_Reader_XYB::protectedCreateOutItemDrawableModelList()
     addOutItemDrawableModel(DEF_CT_Reader_XYB_scannerOut, new CT_Scanner(), tr("Scanner"));
 }
 
+/*
+ * Check if the point is inside the bounds of a cylinder
+ * FIXME: refactor the code duplicated with CT_Reader_ASCRGB
+ */
+bool CT_Reader_XYB::isInsideRadius(const CT_Point &point)
+{
+    if (_filterRadius > 0) {
+        double dx = point.x() - m_current.m_center[0];
+        double dy = point.y() - m_current.m_center[1];
+        double distance2D = sqrt(dx*dx + dy*dy);
+        return (distance2D <= _filterRadius &&
+                point.z() >= _zminFilter &&
+                point.z() <= _zmaxFilter);
+    }
+    return true;
+}
+
 bool CT_Reader_XYB::protectedReadFile()
 {
     bool filter = (_filterRadius > 0);
@@ -233,23 +250,12 @@ bool CT_Reader_XYB::protectedReadFile()
             qint64 n_points = (filesize - m_current._offset) / 26;
 
             CT_AbstractUndefinedSizePointCloud* mpcir;
-            CT_NMPCIR pcir;
             CT_Point pReaded;
-            CT_MutablePointIterator *it = NULL;
 
-            if (filter)
-                mpcir = PS_REPOSITORY->createNewUndefinedSizePointCloud();
-            else {
-                pcir = PS_REPOSITORY->createNewPointCloud(n_points);
-                it = new CT_MutablePointIterator(pcir);
-            }
+            mpcir = PS_REPOSITORY->createNewUndefinedSizePointCloud();
 
             CT_StandardCloudStdVectorT<quint16> *collection;
-
-            if(filter)
-                collection = new CT_StandardCloudStdVectorT<quint16>();
-            else
-                collection = new CT_StandardCloudStdVectorT<quint16>(n_points);
+            collection = new CT_StandardCloudStdVectorT<quint16>();
 
             double xmin = std::numeric_limits<double>::max();
             double ymin = std::numeric_limits<double>::max();
@@ -267,67 +273,37 @@ bool CT_Reader_XYB::protectedReadFile()
             while(!stream.atEnd()
                   && !isStopped())
             {
+                ++a;
+                setProgress(a*100/n_points);
+
                 stream >> x;
                 stream >> y;
                 stream >> z;
                 stream >> reflectance;
 
-                if (filter)
-                {
-                    double dx = x - m_current.m_center[0];
-                    double dy = y - m_current.m_center[1];
-                    double distance2D = sqrt(dx*dx + dy*dy);
+                pReaded(CT_Point::X) = x;
+                pReaded(CT_Point::Y) = y;
+                pReaded(CT_Point::Z) = z;
 
-                    if (distance2D <= _filterRadius && z >= _zminFilter && z <= _zmaxFilter)
-                    {
-                        pReaded(CT_Point::X) = x;
-                        pReaded(CT_Point::Y) = y;
-                        pReaded(CT_Point::Z) = z;
+                if (isFiltered(pReaded) || !isInsideRadius(pReaded))
+                    continue;
 
-                        if (x<xmin) {xmin = x;}
-                        if (x>xmax) {xmax = x;}
-                        if (y<ymin) {ymin = y;}
-                        if (y>ymax) {ymax = y;}
-                        if (z<zmin) {zmin = z;}
-                        if (z>zmax) {zmax = z;}
-                        if (reflectance<imin) {imin = reflectance;}
-                        if (reflectance>imax) {imax = reflectance;}
+                if (x<xmin) {xmin = x;}
+                if (x>xmax) {xmax = x;}
+                if (y<ymin) {ymin = y;}
+                if (y>ymax) {ymax = y;}
+                if (z<zmin) {zmin = z;}
+                if (z>zmax) {zmax = z;}
+                if (reflectance<imin) {imin = reflectance;}
+                if (reflectance>imax) {imax = reflectance;}
 
-                        mpcir->addPoint(pReaded);
-
-                        collection->addT(reflectance);
-                    }
-                }
-                else
-                {
-                    pReaded(CT_Point::X) = x;
-                    pReaded(CT_Point::Y) = y;
-                    pReaded(CT_Point::Z) = z;
-
-                    if (x<xmin) {xmin = x;}
-                    if (x>xmax) {xmax = x;}
-                    if (y<ymin) {ymin = y;}
-                    if (y>ymax) {ymax = y;}
-                    if (z<zmin) {zmin = z;}
-                    if (z>zmax) {zmax = z;}
-                    if (reflectance<imin) {imin = reflectance;}
-                    if (reflectance>imax) {imax = reflectance;}
-
-                    it->next();
-                    it->replaceCurrentPoint(pReaded);
-
-                    (*collection)[a] = reflectance;
-                }
-                ++a;
-                setProgress(a*100/n_points);
+                mpcir->addPoint(pReaded);
+                collection->addT(reflectance);
             }
-
-            if (it != NULL) {delete it;}
 
             CT_Scene *scene;
 
-            if(filter)
-                pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(mpcir);
+            CT_NMPCIR pcir = PS_REPOSITORY->registerUndefinedSizePointCloud(mpcir);
 
             scene = new CT_Scene(NULL, NULL, pcir);
             scene->setBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax);
