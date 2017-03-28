@@ -49,7 +49,8 @@ public:
 
     const Eigen::Vector3d& getCenterCoordinate() const { return m_origin; }
     size_t getNumberOfShots() const;
-    CT_Shot getShotAt(const size_t& index) const;
+    CT_Shot getShotAt(const size_t& index);
+    CT_Shot getShotAt(const size_t& i, const size_t& j);
     CT_ShootingPattern* clone() const;
 
     /**
@@ -154,6 +155,7 @@ public:
 
 private:
     void updateNumberOfRays();
+    void resetCache();
 
     Eigen::Vector3d m_origin;		/*!< origin of the shots */
     Eigen::Vector3d	m_zVector;		/*!< normal of the scanner */
@@ -166,6 +168,14 @@ private:
     int             m_nHRays;		/*!< number of ray on a entire horizontal move of the shooting pattern */
     int             m_nVRays;		/*!< number of ray on a entire horizontal move of the shooting pattern */
     bool            m_clockWise;    /*!< Whether the shooting pattern has been done in clockwise or not */
+
+    /* cache */
+    size_t m_cacheI;
+    size_t m_cacheJ;
+    double m_cacheSinTheta;
+    double m_cacheCosTheta;
+    double m_cacheSinPhi;
+    double m_cacheCosPhi;
 };
 
 #endif // CT_THETAPHISHOOTINGPATTERN_H

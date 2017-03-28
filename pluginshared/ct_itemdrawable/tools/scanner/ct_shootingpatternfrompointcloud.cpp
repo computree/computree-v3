@@ -24,7 +24,7 @@ size_t CT_ShootingPatternFromPointCloud::getNumberOfShots() const
     return m_pcir->abstractCloudIndexT()->size();
 }
 
-CT_Shot CT_ShootingPatternFromPointCloud::getShotAt(const size_t &index) const
+CT_Shot CT_ShootingPatternFromPointCloud::getShotAt(const size_t &index)
 {
     auto idx = m_pcir->abstractCloudIndexT()->constIndexAt(index);
     CT_Point p = m_pAccessor.pointAt(idx);

@@ -51,6 +51,7 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
         m_initPhi = qDegreesToRadians(m_initPhi);
     }
     updateNumberOfRays();
+    resetCache();
 }
 
 CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &other) :
@@ -70,6 +71,13 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShooting
 
     m_nHRays = other.m_nHRays;
     m_nVRays = other.m_nVRays;
+    resetCache();
+}
+
+void CT_ThetaPhiShootingPattern::resetCache()
+{
+    m_cacheI = std::numeric_limits<size_t>::max();
+    m_cacheJ = std::numeric_limits<size_t>::max();
 }
 
 size_t CT_ThetaPhiShootingPattern::getNumberOfShots() const
@@ -77,27 +85,37 @@ size_t CT_ThetaPhiShootingPattern::getNumberOfShots() const
     return m_nHRays*m_nVRays;
 }
 
-CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &index) const
+CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &index)
 {
     size_t i = index/getNVRays();
     size_t j = index - (i*getNVRays());
+    return getShotAt(i, j);
+}
 
-    double theta = getInitTheta() + (i * getHRes());
-    double phi = getInitPhi() + (j * getVRes());
-
-    // If clockwise, then real theta equals opposite to initial
-    if(isClockWise())
-        theta = -theta;
+CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &i, const size_t &j)
+{
+    if (i != m_cacheI) {
+        double theta = getInitTheta() + (i * getHRes());
+        // If clockwise, then real theta equals opposite to initial
+        if(isClockWise()) {
+            theta = -theta;
+        }
+        m_cacheSinTheta = std::sin(theta);
+        m_cacheCosTheta = std::cos(theta);
+        m_cacheI = i;
+    }
+    if (j != m_cacheJ) {
+        double phi = getInitPhi() + (j * getVRes());
+        m_cacheSinPhi = std::sin(phi);
+        m_cacheCosPhi = std::cos(phi);
+        m_cacheJ = j;
+    }
 
     // The direction is calculated using spherical coordinates
-    double sinPhi = std::sin( phi );
-    double sinTheta = std::sin ( theta );
-    double cosTheta = std::cos ( theta );
-
     Eigen::Vector3d direction;
-    direction.x() = sinPhi*cosTheta;
-    direction.y() = sinPhi*sinTheta;
-    direction.z() = std::cos(phi);
+    direction.x() = m_cacheSinPhi*m_cacheCosTheta;
+    direction.y() = m_cacheSinPhi*m_cacheSinTheta;
+    direction.z() = m_cacheCosPhi;
     return CT_Shot(m_origin, direction);
 }
 

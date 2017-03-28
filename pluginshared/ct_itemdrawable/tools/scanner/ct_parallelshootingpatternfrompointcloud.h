@@ -42,7 +42,7 @@ public:
 
     const Eigen::Vector3d& getCenterCoordinate() const { return m_point; }
     size_t getNumberOfShots() const;
-    CT_Shot getShotAt(const size_t& index) const;
+    CT_Shot getShotAt(const size_t& index);
     CT_ShootingPattern* clone() const;
 
 private:

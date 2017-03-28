@@ -32,7 +32,7 @@ public:
     /**
      * @brief Returns the shot at index specified
      */
-    virtual CT_Shot getShotAt(const size_t& index) const = 0;
+    virtual CT_Shot getShotAt(const size_t& index) = 0;
 
     /**
      * @brief Copy this pattern
