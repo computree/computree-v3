@@ -224,7 +224,7 @@ bool CT_Grid3D_Points::addPoint(size_t pointLocalIndex, double x, double y, doub
 
 bool CT_Grid3D_Points::addPointAtIndex(size_t cellIndex, size_t pointLocalIndex)
 {
-    if (!(cellIndex >= this->nCells())) {return false;}
+    if (cellIndex >= this->nCells()) {return false;}
 
     if (_cells.contains(cellIndex))
     {
