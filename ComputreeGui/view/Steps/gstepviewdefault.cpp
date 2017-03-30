@@ -522,7 +522,7 @@ void GStepViewDefault::on_pb_replaceDefault_clicked()
 
 void GStepViewDefault::filterStep()
 {
-    QString text = ui->lineEditSearch->text();
+    QString text = ui->lineEditSearch->text().trimmed();
     QString userText = text;
     QRegExp regFromString(".*" + text + ".*", Qt::CaseInsensitive);
     QRegExp userReg(userText.remove("r:").remove("i:"));
@@ -531,16 +531,17 @@ void GStepViewDefault::filterStep()
         userReg.setCaseSensitivity(Qt::CaseInsensitive);
 
     if(text.isEmpty())
+        ui->treeView->collapseAll();
+
+    if(text.isEmpty())
         m_proxy->setFilterRegExp(".*");
     else if(text.startsWith("r:"))
         m_proxy->setFilterRegExp(userReg);
     else
         m_proxy->setFilterRegExp(regFromString);
 
+    m_proxy->invalidate();
+
     if(!text.isEmpty())
         ui->treeView->expandAll();
-    else
-        ui->treeView->collapseAll();
-
-    m_proxy->invalidate();
 }

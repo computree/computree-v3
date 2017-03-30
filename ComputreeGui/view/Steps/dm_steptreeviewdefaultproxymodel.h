@@ -126,6 +126,7 @@ private:
     void*                                                                                       m_stepsNameContext;
     FilterConfigs                                                                               m_filterConfig;
     QFont                                                                                       m_manualStepFont;
+    QHash<CT_VirtualAbstractStep*, int>                                                         m_backupStepCompatibleWithParent;
 
     /**
      * @brief Check recursively if this row is accepted.

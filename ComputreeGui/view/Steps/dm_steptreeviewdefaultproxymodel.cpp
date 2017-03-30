@@ -147,6 +147,7 @@ void DM_StepTreeViewDefaultProxyModel::setParentStep(CT_VirtualAbstractStep *par
         disconnect(m_parentStep, NULL, this, NULL);
 
     m_parentStep = parent;
+    m_backupStepCompatibleWithParent.clear();
 
     if(m_parentStep != NULL)
         connect(m_parentStep, SIGNAL(destroyed()), this, SLOT(parentStepDestroyed()), Qt::DirectConnection);
@@ -299,7 +300,7 @@ bool DM_StepTreeViewDefaultProxyModel::acceptStep(const QModelIndex &index, bool
             return false;
     }
 
-    return isStepCompatibleWithParent(index) || m_showNotCompatible;
+    return m_showNotCompatible || isStepCompatibleWithParent(index);
 }
 
 bool DM_StepTreeViewDefaultProxyModel::existStepInPluginCollection(const QModelIndex &index) const
@@ -319,7 +320,17 @@ bool DM_StepTreeViewDefaultProxyModel::isStepCompatibleWithParent(const QModelIn
     if(step == NULL)
         return false;
 
-    return step->acceptAddAfterThisStep(m_parentStep);
+    int val = m_backupStepCompatibleWithParent.value(step, 2);
+
+    if(val == 2) {
+        bool compatible = step->acceptAddAfterThisStep(m_parentStep);
+
+        const_cast<DM_StepTreeViewDefaultProxyModel*>(this)->m_backupStepCompatibleWithParent.insert(step, (compatible ? 1 : 0));
+
+        return compatible;
+    }
+
+    return (val == 1);
 }
 
 void DM_StepTreeViewDefaultProxyModel::parentStepDestroyed()
