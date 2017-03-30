@@ -1,6 +1,8 @@
 #include "gstepviewdefault.h"
 #include "ui_gstepviewdefault.h"
 
+#include "dm_guimanager.h"
+
 #include <QMenu>
 #include <QAction>
 #include <QModelIndex>
@@ -186,14 +188,19 @@ void GStepViewDefault::reconstruct()
     }
 }
 
-bool GStepViewDefault::searchStepByNameAndExpandParent(const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed)
+bool GStepViewDefault::searchStepByNameAndExpandParent(const QString &anyName,
+                                                       const QString& pluginName,
+                                                       bool changeDisplayConfigIfNameFoundedIsNotDisplayed)
 {
     if(m_proxy != NULL && !anyName.trimmed().isEmpty()) {
 
         int n = m_proxy->rowCount();
 
         for(int i=0; i<n; ++i) {
-            if(recursiveSearchStepByNameAndExpandParent(m_proxy->index(i, 0), anyName, changeDisplayConfigIfNameFoundedIsNotDisplayed))
+            if(recursiveSearchStepByNameAndExpandParent(m_proxy->index(i, 0),
+                                                        anyName,
+                                                        pluginName,
+                                                        changeDisplayConfigIfNameFoundedIsNotDisplayed))
                 return true;
         }
     }
@@ -204,19 +211,24 @@ bool GStepViewDefault::searchStepByNameAndExpandParent(const QString &anyName, b
 bool GStepViewDefault::searchOriginalStepAndExpandParent(CT_VirtualAbstractStep *step)
 {
     if(step != NULL)
-        return searchStepByNameAndExpandParent(step->getPlugin()->getKeyForStep(*step), false);
+        return searchStepByNameAndExpandParent(step->getPlugin()->getKeyForStep(*step),
+                                               GUI_MANAGER->getPluginManager()->getPluginName(step->getPlugin()),
+                                               false);
 
     return false;
 }
 
-bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelIndex &index, const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed)
+bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelIndex &index,
+                                                                const QString &anyName,
+                                                                const QString& pluginName,
+                                                                bool changeDisplayConfigIfNameFoundedIsNotDisplayed)
 {
     if(m_proxy != NULL && index.isValid()) {
         int n = m_proxy->rowCount(index);
 
         for(int i=0; i<n; ++i)
         {
-            if(recursiveSearchStepByNameAndExpandParent(index.child(i, 0), anyName, changeDisplayConfigIfNameFoundedIsNotDisplayed))
+            if(recursiveSearchStepByNameAndExpandParent(index.child(i, 0), anyName, pluginName, changeDisplayConfigIfNameFoundedIsNotDisplayed))
                 return true;
         }
 
@@ -228,41 +240,48 @@ bool GStepViewDefault::recursiveSearchStepByNameAndExpandParent(const QModelInde
 
                     CT_VirtualAbstractStep *step = ((CT_VirtualAbstractStep*)item->data(DM_StepsFromPluginsModelConstructor::DR_Pointer).value<void*>());
 
-                    if((step != NULL)
-                            && ((step->getStepName() == anyName)
-                            || (step->getPlugin()->getKeyForStep(*step) == anyName)
-                            || (step->getStepCustomName() == anyName)
-                            || (step->getStepExtendedName() == anyName)
-                            || (step->getStepDisplayableName() == anyName)
-                            || (step->getStepDescription() == anyName))) {
+                    if(step != NULL) {
+                        bool ok = true;
 
-                        ui->treeView->expand(index.parent());
-                        ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
-                        ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
-
-                        if(changeDisplayConfigIfNameFoundedIsNotDisplayed) {
-                            if(step->getStepDescription() == anyName) {
-                                if(!(m_nameConfig & DNC_StepShortDescription)) {
-                                    m_nameConfig |= DNC_StepShortDescription;
-                                    emit displayNameConfigurationChanged(m_nameConfig);
-                                    m_proxy->invalidate();
-                                }
-                            } else if(step->getStepDisplayableName() == anyName) {
-                                if(!(m_nameConfig & DNC_StepDisplayableName)) {
-                                    m_nameConfig |= DNC_StepDisplayableName;
-                                    emit displayNameConfigurationChanged(m_nameConfig);
-                                    m_proxy->invalidate();
-                                }
-                            } else if(step->getPlugin()->getKeyForStep(*step) == anyName) {
-                                if(!(m_nameConfig & DNC_StepKey)) {
-                                    m_nameConfig |= DNC_StepKey;
-                                    emit displayNameConfigurationChanged(m_nameConfig);
-                                    m_proxy->invalidate();
-                                }
-                            }
+                        if(!pluginName.isEmpty()) {
+                            ok = (GUI_MANAGER->getPluginManager()->getPluginName(step->getPlugin()) == pluginName);
                         }
 
-                        return true;
+                        if(ok && ((step->getStepName() == anyName)
+                               || (step->getPlugin()->getKeyForStep(*step) == anyName)
+                               || (step->getStepCustomName() == anyName)
+                               || (step->getStepExtendedName() == anyName)
+                               || (step->getStepDisplayableName() == anyName)
+                               || (step->getStepDescription() == anyName))) {
+
+                            ui->treeView->expand(index.parent());
+                            ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+                            ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+
+                            if(changeDisplayConfigIfNameFoundedIsNotDisplayed) {
+                                if(step->getStepDescription() == anyName) {
+                                    if(!(m_nameConfig & DNC_StepShortDescription)) {
+                                        m_nameConfig |= DNC_StepShortDescription;
+                                        emit displayNameConfigurationChanged(m_nameConfig);
+                                        m_proxy->invalidate();
+                                    }
+                                } else if(step->getStepDisplayableName() == anyName) {
+                                    if(!(m_nameConfig & DNC_StepDisplayableName)) {
+                                        m_nameConfig |= DNC_StepDisplayableName;
+                                        emit displayNameConfigurationChanged(m_nameConfig);
+                                        m_proxy->invalidate();
+                                    }
+                                } else if(step->getPlugin()->getKeyForStep(*step) == anyName) {
+                                    if(!(m_nameConfig & DNC_StepKey)) {
+                                        m_nameConfig |= DNC_StepKey;
+                                        emit displayNameConfigurationChanged(m_nameConfig);
+                                        m_proxy->invalidate();
+                                    }
+                                }
+                            }
+
+                            return true;
+                        }
                     }
                 }
             }

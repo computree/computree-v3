@@ -111,9 +111,12 @@ public slots:
      * @brief Search a step by it's name : displayable or not, extended or custom, etc... and expand the parent to let the user
      *        show immediately the step
      * @param anyName : the stepName per example the extended or the custom or the displable, etc...
+     * @param pluginName : if you know the plugin name the search can be faster. Otherwise pass an empty string.
      * @return true : if the step was found
      */
-    bool searchStepByNameAndExpandParent(const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed = true);
+    bool searchStepByNameAndExpandParent(const QString &anyName,
+                                         const QString& pluginName = "",
+                                         bool changeDisplayConfigIfNameFoundedIsNotDisplayed = true);
 
     /**
      * @brief Search the original step from a copy step : displayable or not, extended or custom, etc... and expand the parent to let the user
@@ -135,7 +138,10 @@ private:
      * @brief Search a step recursively by it's name : displayable or not, extended or custom, etc... and expand the parent to let the user
      *        show immediately the step
      */
-    bool recursiveSearchStepByNameAndExpandParent(const QModelIndex &index, const QString &anyName, bool changeDisplayConfigIfNameFoundedIsNotDisplayed);
+    bool recursiveSearchStepByNameAndExpandParent(const QModelIndex &index,
+                                                  const QString &anyName,
+                                                  const QString &pluginName = "",
+                                                  bool changeDisplayConfigIfNameFoundedIsNotDisplayed = true);
 
     /**
      * @brief Resize column of tree view in function of the size of the treeview and the maximum size
