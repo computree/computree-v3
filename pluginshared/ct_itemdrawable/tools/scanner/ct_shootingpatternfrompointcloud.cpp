@@ -33,6 +33,11 @@ CT_Shot CT_ShootingPatternFromPointCloud::getShotAt(const size_t &index)
     return CT_Shot(m_origin, direction);
 }
 
+CT_Shot CT_ShootingPatternFromPointCloud::getShotForPoint(const CT_Point &pt)
+{
+    return CT_Shot(m_origin, pt - m_origin);
+}
+
 CT_ShootingPattern* CT_ShootingPatternFromPointCloud::clone() const
 {
     return new CT_ShootingPatternFromPointCloud(*this);

@@ -34,6 +34,7 @@ public:
     inline const Eigen::Vector3d& getOrigin() const { return m_origin; }
     size_t getNumberOfShots() const;
     CT_Shot getShotAt(const size_t& index);
+    CT_Shot getShotForPoint(const CT_Point& pt);
     CT_ShootingPattern* clone() const;
 
 private:

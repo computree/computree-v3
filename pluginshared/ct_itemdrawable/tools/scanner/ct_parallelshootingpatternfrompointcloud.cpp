@@ -47,6 +47,12 @@ CT_Shot CT_ParallelShootingPatternFromPointCloud::getShotAt( const size_t& index
     return CT_Shot(origin, m_normal);
 }
 
+CT_Shot CT_ParallelShootingPatternFromPointCloud::getShotForPoint(const CT_Point &pt)
+{
+    auto origin = m_plane.projection(pt);
+    return CT_Shot(origin, m_normal);
+}
+
 CT_ShootingPattern* CT_ParallelShootingPatternFromPointCloud::clone() const
 {
     return new CT_ParallelShootingPatternFromPointCloud(*this);

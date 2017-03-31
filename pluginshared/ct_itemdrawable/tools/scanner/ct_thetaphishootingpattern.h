@@ -51,6 +51,7 @@ public:
     size_t getNumberOfShots() const;
     CT_Shot getShotAt(const size_t& index);
     CT_Shot getShotAt(const size_t& i, const size_t& j);
+    CT_Shot getShotForPoint(const CT_Point& pt);
     CT_ShootingPattern* clone() const;
 
     /**

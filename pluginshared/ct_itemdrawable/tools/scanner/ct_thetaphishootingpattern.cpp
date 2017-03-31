@@ -119,6 +119,11 @@ CT_Shot CT_ThetaPhiShootingPattern::getShotAt(const size_t &i, const size_t &j)
     return CT_Shot(m_origin, direction);
 }
 
+CT_Shot CT_ThetaPhiShootingPattern::getShotForPoint(const CT_Point &pt)
+{
+    return CT_Shot(m_origin, pt - m_origin);
+}
+
 CT_ShootingPattern* CT_ThetaPhiShootingPattern::clone() const
 {
     return new CT_ThetaPhiShootingPattern(*this);

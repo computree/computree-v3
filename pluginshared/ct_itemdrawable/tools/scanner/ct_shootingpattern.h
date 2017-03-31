@@ -7,6 +7,7 @@
 #define CT_SHOOTINGPATTERN_H
 
 #include "ct_shot.h"
+#include "ct_point.h"
 
 /**
  * @brief This class is abstract. It offers the possibility to define a specific
@@ -33,6 +34,11 @@ public:
      * @brief Returns the shot at index specified
      */
     virtual CT_Shot getShotAt(const size_t& index) = 0;
+
+    /**
+     * @brief Returns the shot for a given point
+     */
+    virtual CT_Shot getShotForPoint(const CT_Point& pt) = 0;
 
     /**
      * @brief Copy this pattern
