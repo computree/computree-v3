@@ -41,7 +41,7 @@
 #include "qdebug.h"
 
 template< typename DataT>
-const CT_StandardGrid3D_SparseDrawManager<DataT> CT_Grid3D_Sparse<DataT>::ABSGRID3D_DRAW_MANAGER;
+const CT_StandardGrid3D_SparseDrawManager<DataT> CT_Grid3D_Sparse<DataT>::GRID3D_SPARSE_DRAW_MANAGER;
 
 template< typename DataT>
 CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse() : CT_AbstractGrid3D()
@@ -65,7 +65,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse() : CT_AbstractGrid3D()
     ncells[0] = 1;
     this->_data.create(1, ncells);
 
-    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+    setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
 }
 
 template< typename DataT>
@@ -105,7 +105,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     ncells[0] = nCells();
     this->_data.create(1, ncells);
 
-    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+    setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
 }
 
 template< typename DataT>
@@ -145,7 +145,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString &modelName,
     ncells[0] = nCells();
     this->_data.create(1, ncells);
 
-    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+    setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
 }
 
 template< typename DataT>
@@ -205,7 +205,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     ncells[0] = nCells();
     this->_data.create(1, ncells);
 
-    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+    setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
 }
 
 template< typename DataT>
@@ -265,7 +265,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString& model,
     ncells[0] = nCells();
     this->_data.create(1, ncells);
 
-    setBaseDrawManager(&ABSGRID3D_DRAW_MANAGER);
+    setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
 }
 
 

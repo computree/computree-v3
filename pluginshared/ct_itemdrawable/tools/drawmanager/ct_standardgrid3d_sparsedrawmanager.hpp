@@ -61,9 +61,9 @@ void CT_StandardGrid3D_SparseDrawManager<DataT>::draw(GraphicsViewInterface &vie
     size_t     nZinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZINF).toInt();
     size_t     nZsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZSUP).toInt();
 
-    if (nXsup > item.xdim()) {nXsup = item.xdim();}
-    if (nYsup > item.ydim()) {nXsup = item.ydim();}
-    if (nZsup > item.zdim()) {nXsup = item.zdim();}
+    if (nXsup >= item.xdim()) {nXsup = item.xdim()-1;}
+    if (nYsup >= item.ydim()) {nXsup = item.ydim()-1;}
+    if (nZsup >= item.zdim()) {nXsup = item.zdim()-1;}
 
     if (transparencyValue > 255) {transparencyValue = 255;}
     if (transparencyValue < 0) {transparencyValue = 0;}
@@ -83,55 +83,53 @@ void CT_StandardGrid3D_SparseDrawManager<DataT>::draw(GraphicsViewInterface &vie
     double scaling = 240.0 / (highThresh - lowThresh);
     double offset = - (240*lowThresh)/(highThresh - lowThresh);
 
-    size_t xdim = item.xdim();
-    size_t ydim = item.ydim();
-    size_t zdim = item.zdim();
     double demiRes = reductionCoef*item.resolution() / 2.0;
 
     double xmin, ymin, zmin, xmax, ymax, zmax;
 
+    size_t xx, yy, zz;
+
     // For each voxel of the grid
-    for (size_t xx = nXinf ; xx < (xdim - nXsup) ; xx++)
+    cv::SparseMatConstIterator_<DataT> pixelIterator = item.beginIterator();
+    cv::SparseMatConstIterator_<DataT> pixelIteratorEnd = item.endIterator();
+
+    while( pixelIterator != pixelIteratorEnd)
     {
-        for (size_t yy = nYinf ; yy < (ydim - nYsup)  ; yy++)
+        const cv::SparseMat::Node* curNode = pixelIterator.node();
+        size_t index = curNode->idx[0];
+
+        item.indexToGrid(index, xx, yy, zz);
+
+        if( xx >= nXinf && xx <= nXsup && yy >= nYinf && yy <= nYsup && zz >= nZinf && zz <= nZsup )
         {
-            for (size_t zz = nZinf ; zz < (zdim - nZsup); zz++)
+            DataT data = pixelIterator.value<DataT>();
+
+            // Draw a cube if the value it contains is between the two thresholds
+            if ( data != item.NA() && data >= lowThresh && data <= highThresh )
             {
-                size_t index;
-                if (item.index(xx, yy, zz, index))
+                bool predef = false;
+                if (usePredefinedColors && item.colorsDefined())
                 {
-                    DataT data = item.valueAtIndex(index);
-
-                    // Draw a cube if the value it contains is between the two thresholds
-                    if ( data != item.NA() && data >= lowThresh && data <= highThresh )
-                    {
-                        bool predef = false;
-                        if (usePredefinedColors && item.colorsDefined())
-                        {
-                            painter.setColor(item.getColorForValue(data));
-                            predef = true;
-                        }
-
-                        if (!predef && drawAsMap && !itemDrawable.isSelected())
-                        {
-                            double h = (int) qRound((data*scaling) + offset);
-                            painter.setColor( QColor::fromHsv(h,255,255,transparencyValue) );
-                        } else if (!predef){
-                            painter.setColor(QColor(255,255,255, transparencyValue));
-                        }
-
-                        xmin = item.getCellCenterX(xx) - demiRes;
-                        ymin = item.getCellCenterY(yy) - demiRes;
-                        zmin = item.getCellCenterZ(zz) - demiRes;
-                        xmax = item.getCellCenterX(xx) + demiRes;
-                        ymax = item.getCellCenterY(yy) + demiRes;
-                        zmax = item.getCellCenterZ(zz) + demiRes;
-
-                        painter.drawCube( xmin, ymin, zmin, xmax, ymax, zmax, GL_FRONT_AND_BACK, drawingMode );
-                    }
-                } else {
-                    qDebug() << "Problème d'index (drawmanager)";
+                    painter.setColor(item.getColorForValue(data));
+                    predef = true;
                 }
+
+                if (!predef && drawAsMap && !itemDrawable.isSelected())
+                {
+                    double h = (int) qRound((data*scaling) + offset);
+                    painter.setColor( QColor::fromHsv(h,255,255,transparencyValue) );
+                } else if (!predef){
+                    painter.setColor(QColor(255,255,255, transparencyValue));
+                }
+
+                xmin = item.getCellCenterX(xx) - demiRes;
+                ymin = item.getCellCenterY(yy) - demiRes;
+                zmin = item.getCellCenterZ(zz) - demiRes;
+                xmax = item.getCellCenterX(xx) + demiRes;
+                ymax = item.getCellCenterY(yy) + demiRes;
+                zmax = item.getCellCenterZ(zz) + demiRes;
+
+                painter.drawCube( xmin, ymin, zmin, xmax, ymax, zmax, GL_FRONT_AND_BACK, drawingMode );
             }
         }
     }

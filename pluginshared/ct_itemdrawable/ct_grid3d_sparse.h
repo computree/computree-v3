@@ -427,6 +427,12 @@ public:
 
     inline QColor getColorForValue(DataT value) const {return _colorMap.value(value, _defaultColor);}
 
+    inline cv::SparseMatIterator_<DataT> beginIterator() { return _data.begin(); }
+    inline cv::SparseMatIterator_<DataT> endIterator() { return _data.end(); }
+    inline cv::SparseMatConstIterator_<DataT> beginIterator() const { return _data.begin(); }
+    inline cv::SparseMatConstIterator_<DataT> endIterator() const { return _data.end(); }
+    inline int countNonZeroCells() const { return _data.nzcount(); }
+
 protected:
     DataT       _NAdata;            /*!< Valeur codant NA */
     DataT       _initData;            /*!< Valeur par defaut */
@@ -442,11 +448,14 @@ protected:
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataXDimension(), &CT_Grid3D_Sparse<DataT>::xdim, QObject::tr("X dimension"), "xd")
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataYDimension(), &CT_Grid3D_Sparse<DataT>::ydim, QObject::tr("Y dimension"), "yd")
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataZDimension(), &CT_Grid3D_Sparse<DataT>::zdim, QObject::tr("Z dimension"), "zd")
+    CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataX(), &CT_Grid3D_Sparse<DataT>::minX, QObject::tr("X min"), "xmin")
+    CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataY(), &CT_Grid3D_Sparse<DataT>::minY, QObject::tr("Y min"), "ymin")
+    CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataZ(), &CT_Grid3D_Sparse<DataT>::minZ, QObject::tr("Z min"), "zmin")
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataResolution(), &CT_Grid3D_Sparse<DataT>::resolution, QObject::tr("Resolution"), "res")
     CT_DEFAULT_IA_V3(CT_Grid3D_Sparse<DataT>, CT_AbstractCategory::staticInitDataNa(), &CT_Grid3D_Sparse<DataT>::NA, QObject::tr("NA"), "na")
     CT_DEFAULT_IA_END(CT_Grid3D_Sparse<DataT>)
 
-    const static CT_StandardGrid3D_SparseDrawManager<DataT> ABSGRID3D_DRAW_MANAGER;
+    const static CT_StandardGrid3D_SparseDrawManager<DataT> GRID3D_SPARSE_DRAW_MANAGER;
 
 };
 

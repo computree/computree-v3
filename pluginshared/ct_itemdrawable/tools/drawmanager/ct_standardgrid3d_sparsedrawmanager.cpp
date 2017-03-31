@@ -29,9 +29,9 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
     if (nYinf < 0) {nYinf = 0;}
     if (nZinf < 0) {nZinf = 0;}
 
-    if (nXsup > item.xdim()) {nXsup = item.xdim();}
-    if (nYsup > item.ydim()) {nXsup = item.ydim();}
-    if (nZsup > item.zdim()) {nXsup = item.zdim();}
+    if (nXsup >= item.xdim()) {nXsup = item.xdim()-1;}
+    if (nYsup >= item.ydim()) {nXsup = item.ydim()-1;}
+    if (nZsup >= item.zdim()) {nXsup = item.zdim()-1;}
 
     if (transparencyValue > 255) {transparencyValue = 255;}
     if (transparencyValue < 0) {transparencyValue = 0;}
@@ -43,55 +43,55 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
 
     QColor color = painter.getColor();
 
-    size_t xdim = item.xdim();
-    size_t ydim = item.ydim();
-    size_t zdim = item.zdim();
     double demiRes = reductionCoef*item.resolution() / 2.0;
 
     double xmin, ymin, zmin, xmax, ymax, zmax;
 
+    size_t xx, yy, zz;
+
     // For each voxel of the grid
-    for (size_t xx = nXinf ; xx < (xdim - nXsup) ; xx++)
+    cv::SparseMatConstIterator_<bool> pixelIterator = item.beginIterator();
+    cv::SparseMatConstIterator_<bool> pixelIteratorEnd = item.endIterator();
+
+    while( pixelIterator != pixelIteratorEnd)
     {
-        for (size_t yy = nYinf ; yy < (ydim - nYsup)  ; yy++)
+        const cv::SparseMat::Node* curNode = pixelIterator.node();
+        size_t index = curNode->idx[0];
+
+        item.indexToGrid(index, xx, yy, zz);
+
+        if( xx >= nXinf && xx <= nXsup && yy >= nYinf && yy <= nYsup && zz >= nZinf && zz <= nZsup )
         {
-            for (size_t zz = nZinf ; zz < (zdim - nZsup); zz++)
+            bool data = pixelIterator.value<bool>();
+
+            if (data || !showTrueOnly)
             {
-                size_t index;
-
-                if (item.index(xx, yy, zz, index))
+                if (drawAsMap && !itemDrawable.isSelected())
                 {
-                    bool data = item.valueAtIndex(index);
-
-                    if (data || !showTrueOnly)
+                    if (data)
                     {
-                        if (drawAsMap && !itemDrawable.isSelected())
-                        {
-                            if (data)
-                            {
-                                painter.setColor(QColor(0,255,0, transparencyValue));
-                            } else {
-                                painter.setColor(QColor(255,0,0, transparencyValue));
-                            }
-
-
-                            xmin = item.getCellCenterX(xx) - demiRes;
-                            ymin = item.getCellCenterY(yy) - demiRes;
-                            zmin = item.getCellCenterZ(zz) - demiRes;
-                            xmax = item.getCellCenterX(xx) + demiRes;
-                            ymax = item.getCellCenterY(yy) + demiRes;
-                            zmax = item.getCellCenterZ(zz) + demiRes;
-
-                            painter.drawCube( xmin, ymin, zmin, xmax, ymax, zmax, GL_FRONT_AND_BACK, drawingMode );
-                        }
+                        painter.setColor(QColor(0,255,0, transparencyValue));
+                    } else {
+                        painter.setColor(QColor(255,0,0, transparencyValue));
                     }
-                } else {
-                    qDebug() << "Problème d'index (drawmanager)";
+
+
+                    xmin = item.getCellCenterX(xx) - demiRes;
+                    ymin = item.getCellCenterY(yy) - demiRes;
+                    zmin = item.getCellCenterZ(zz) - demiRes;
+                    xmax = item.getCellCenterX(xx) + demiRes;
+                    ymax = item.getCellCenterY(yy) + demiRes;
+                    zmax = item.getCellCenterZ(zz) + demiRes;
+
+                    painter.drawCube( xmin, ymin, zmin, xmax, ymax, zmax, GL_FRONT_AND_BACK, drawingMode );
                 }
             }
         }
-        painter.setColor(color);
+
+        ++pixelIterator;
     }
+
+    painter.setColor(color);
 }
 
 template<>

@@ -6,7 +6,7 @@
 #include "ct_itemdrawable/ct_grid4d.h"
 #include <typeinfo>
 
-#include "opencv2/core/core.hpp"
+#include "opencv2/core/mat.hpp"
 
 /*!
  * \class CT_Grid4D_Sparse
@@ -240,12 +240,15 @@ public:
      */
     inline DataT valueAtIndex(const size_t index) const
     {
-        if ( index >= this->nCells() )
+        size_t levw, levx, levy, levz;
+        if( !CT_AbstractGrid4D::indexToGrid( index, levw, levx, levy, levz ) )
         {
-            return this->NA();
+            return NA();
         }
 
-        return _data(index);
+        int idx[4] = { levw, levx, levy, levz };
+
+        return _data.operator ()( idx );
     }
 
     /*!
@@ -256,12 +259,15 @@ public:
      */
     inline bool setValueAtIndex(const size_t index, const DataT value)
     {
-        if ( index >= this->nCells() )
+        size_t levw, levx, levy, levz;
+        if( !CT_AbstractGrid4D::indexToGrid( index, levw, levx, levy, levz ) )
         {
             return false;
         }
 
-        _data.ref(index) = value;
+        int idx[4] = { levw, levx, levy, levz };
+
+        _data.ref( idx ) = value;
 
         return true;
     }
@@ -270,11 +276,26 @@ public:
     //**********************************************//
     //          CompuTree Core and GUI tools        //
     //**********************************************//
-    virtual QString getType() const;
-    static QString staticGetType();
+    /*!
+     * \brief getType
+     * \return A string describing the hierarchy of computree types and the type of grid (4dgrid and type of data in it)
+     */
+    inline virtual QString getType() const { return staticGetType(); }
 
-    virtual QString name() const;
-    static QString staticName();
+    /*!
+     * \brief staticGetType
+     *
+     * Same as getType but static
+     *
+     * \return A string describing the hierarchy of computree types and the type of the grid (4dgrid and type of data in it)
+     */
+    inline static QString staticGetType() { return CT_Grid4D<DataT>::staticGetType() + "/CT_Grid4D_Sparse<" + CT_TypeInfo::name<DataT>() + QString(">"); }
+
+    /*!
+     * \brief name
+     * \return The name of the object (4dgrid and type of data in it)
+     */
+    inline virtual QString name() const { return QString("CT_Grid4D_Sparse<") + CT_TypeInfo::name<DataT>() + QString(">"); }
 
     /*!
      * \brief Copy method
@@ -289,6 +310,9 @@ public:
 
     virtual void computeMinMax();
 
+    inline cv::SparseMatConstIterator_<DataT> beginIterator() const { return _data.begin(); }
+    inline cv::SparseMatConstIterator_<DataT> endIterator()  const { return _data.end(); }
+    inline int countNonZeroCells() { return _data.nzcount(); }
 
 protected:
 
@@ -296,6 +320,23 @@ protected:
     // Attributes
     // -------------------------------------------------------
 
+    using CT_Grid4D<DataT>::nCells;
+    using CT_Grid4D<DataT>::NA;
+    using CT_Grid4D<DataT>::id;
+    using CT_Grid4D<DataT>::getAlternativeDrawManager;
+    using CT_Grid4D<DataT>::_top;
+    using CT_Grid4D<DataT>::_bot;
+    using CT_Grid4D<DataT>::_dimw;
+    using CT_Grid4D<DataT>::_dimx;
+    using CT_Grid4D<DataT>::_dimy;
+    using CT_Grid4D<DataT>::_dimz;
+    using CT_Grid4D<DataT>::_resw;
+    using CT_Grid4D<DataT>::_resx;
+    using CT_Grid4D<DataT>::_resy;
+    using CT_Grid4D<DataT>::_resz;
+    using CT_Grid4D<DataT>::_NAdata;
+    using CT_Grid4D<DataT>::_dataMin;
+    using CT_Grid4D<DataT>::_dataMax;
     cv::SparseMat_<DataT> _data;       /*!< Tableau contenant les donnees pour chaque case de la grille*/
 };
 

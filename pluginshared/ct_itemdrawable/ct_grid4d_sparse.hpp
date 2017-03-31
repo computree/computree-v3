@@ -14,9 +14,13 @@
 template< typename DataT>
 CT_Grid4D_Sparse<DataT>::CT_Grid4D_Sparse() : CT_Grid4D<DataT>()
 {
-    int ncells[1];
-    ncells[0] = this->nCells();
-    this->_data.create(1, ncells);
+    const int nDims = 4;
+    int ncells[nDims];
+    ncells[0] = _dimw;
+    ncells[1] = _dimx;
+    ncells[2] = _dimy;
+    ncells[3] = _dimz;
+    this->_data.create(nDims, ncells);
 }
 
 template< typename DataT>
@@ -51,9 +55,13 @@ CT_Grid4D_Sparse<DataT>::CT_Grid4D_Sparse(const CT_OutAbstractSingularItemModel 
                                                                             resz,
                                                                             na)
 {
-    int ncells[1];
-    ncells[0] = this->nCells();
-    this->_data.create(1, ncells);
+    const int nDims = 4;
+    int ncells[nDims];
+    ncells[0] = _dimw;
+    ncells[1] = _dimx;
+    ncells[2] = _dimy;
+    ncells[3] = _dimz;
+    this->_data.create(nDims, ncells);
 }
 
 template< typename DataT>
@@ -88,9 +96,13 @@ CT_Grid4D_Sparse<DataT>::CT_Grid4D_Sparse(const QString &modelName,
                                                                             resz,
                                                                             na)
 {
-    int ncells[1];
-    ncells[0] = this->nCells();
-    this->_data.create(1, ncells);
+    const int nDims = 4;
+    int ncells[nDims];
+    ncells[0] = _dimw;
+    ncells[1] = _dimx;
+    ncells[2] = _dimy;
+    ncells[3] = _dimz;
+    this->_data.create(nDims, ncells);
 }
 
 template< typename DataT>
@@ -125,9 +137,13 @@ CT_Grid4D_Sparse<DataT>::CT_Grid4D_Sparse(const CT_OutAbstractSingularItemModel 
                                                                             resz,
                                                                             na)
 {
-    int ncells[1];
-    ncells[0] = this->nCells();
-    this->_data.create(1, ncells);
+    const int nDims = 4;
+    int ncells[nDims];
+    ncells[0] = _dimw;
+    ncells[1] = _dimx;
+    ncells[2] = _dimy;
+    ncells[3] = _dimz;
+    this->_data.create(nDims, ncells);
 }
 
 template< typename DataT>
@@ -162,9 +178,13 @@ CT_Grid4D_Sparse<DataT>::CT_Grid4D_Sparse(const QString& modelName,
                                                                             resz,
                                                                             na)
 {
-    int ncells[1];
-    ncells[0] = this->nCells();
-    this->_data.create(1, ncells);
+    const int nDims = 4;
+    int ncells[nDims];
+    ncells[0] = _dimw;
+    ncells[1] = _dimx;
+    ncells[2] = _dimy;
+    ncells[3] = _dimz;
+    this->_data.create(nDims, ncells);
 }
 
 template< typename DataT>
@@ -272,10 +292,10 @@ CT_AbstractItemDrawable* CT_Grid4D_Sparse<DataT>::copy(const CT_OutAbstractItemM
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid4D_Sparse<DataT>* cpy = new CT_Grid4D_Sparse<DataT>((const CT_OutAbstractSingularItemModel *)model, result, this->_bot.w(), this->_bot.x(), this->_bot.y(), this->_bot.z(), this->_dimw, this->_dimx, this->_dimy, this->_dimz, this->_resw, this->_resx, this->_resy, this->_resz, this->_NAdata, this->_NAdata);
-    cpy->setId(this->id());
+    CT_Grid4D_Sparse<DataT>* cpy = new CT_Grid4D_Sparse<DataT>((const CT_OutAbstractSingularItemModel *)model, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
+    cpy->setId(id());
 
-    size_t ncells = this->nCells();
+    size_t ncells = nCells();
     for (size_t i = 0 ; i < ncells ; i++)
     {
         cpy->setValueAtIndex(i, valueAtIndex(i));
@@ -286,7 +306,7 @@ CT_AbstractItemDrawable* CT_Grid4D_Sparse<DataT>::copy(const CT_OutAbstractItemM
         cpy->computeMinMax();
     }
 
-    cpy->setAlternativeDrawManager( this->getAlternativeDrawManager() );
+    cpy->setAlternativeDrawManager( getAlternativeDrawManager() );
 
     return cpy;
 }
@@ -296,10 +316,10 @@ CT_AbstractItemDrawable* CT_Grid4D_Sparse<DataT>::copy(const QString &modelName,
 {
     Q_UNUSED(copyModeList);
 
-    CT_Grid4D_Sparse<DataT>* cpy = new CT_Grid4D_Sparse<DataT>(modelName, result, this->_bot.w(), this->_bot.x(), this->_bot.y(), this->_bot.z(), this->_dimw, this->_dimx, this->_dimy, this->_dimz, this->_resw, this->_resx, this->_resy, this->_resz, this->_NAdata, this->_NAdata);
-    cpy->setId(this->id());
+    CT_Grid4D_Sparse<DataT>* cpy = new CT_Grid4D_Sparse<DataT>(modelName, result, _bot.w(), _bot.x(), _bot.y(), _bot.z(), _dimw, _dimx, _dimy, _dimz, _resw, _resx, _resy, _resz, _NAdata, _NAdata);
+    cpy->setId(id());
 
-    size_t ncells = this->nCells();
+    size_t ncells = nCells();
     for (size_t i = 0 ; i < ncells ; i++)
     {
         cpy->setValueAtIndex(i, valueAtIndex(i));
@@ -310,7 +330,7 @@ CT_AbstractItemDrawable* CT_Grid4D_Sparse<DataT>::copy(const QString &modelName,
         cpy->computeMinMax();
     }
 
-    cpy->setAlternativeDrawManager( this->getAlternativeDrawManager() );
+    cpy->setAlternativeDrawManager( getAlternativeDrawManager() );
 
     return cpy;
 }
@@ -319,53 +339,25 @@ CT_AbstractItemDrawable* CT_Grid4D_Sparse<DataT>::copy(const QString &modelName,
 template< typename DataT>
 void CT_Grid4D_Sparse<DataT>::computeMinMax()
 {
-    this->_dataMin = this->NA();
-    this->_dataMax = this->NA();
+    _dataMin = NA();
+    _dataMax = NA();
 
     bool first = true;
-    cv::SparseMatConstIterator it = this->_data.begin(), it_end = this->_data.end();
+    cv::SparseMatConstIterator it = _data.begin(), it_end = _data.end();
     for( ; it != it_end; ++it )
     {
-       DataT val = it.value<DataT>();
-       if (first)
-       {
-           this->_dataMin = val;
-           this->_dataMax = val;
-           first = false;
-       } else {
-           if (val < this->_dataMin) {this->_dataMin = val;}
-           if (val > this->_dataMax) {this->_dataMax = val;}
-       }
+        DataT val = it.value<DataT>();
+        if (first)
+        {
+            _dataMin = val;
+            _dataMax = val;
+            first = false;
+        } else {
+            if (val < _dataMin) {_dataMin = val;}
+            if (val > _dataMax) {_dataMax = val;}
+        }
     }
 }
-
-template< typename DataT>
-QString CT_Grid4D_Sparse<DataT>::getType() const
-{
-    return staticGetType();
-}
-
-template< typename DataT>
-QString CT_Grid4D_Sparse<DataT>::staticGetType()
-{
-    QString type = CT_AbstractGrid4D::staticGetType() + "/CT_Grid4D_Sparse<" + CT_TypeInfo::name<DataT>() + ">";
-    CT_AbstractItemDrawable::addNameTypeCorresp(type, staticName());
-    return type;
-}
-
-template< typename DataT>
-QString CT_Grid4D_Sparse<DataT>::name() const
-{
-    return staticName();
-}
-
-template< typename DataT>
-QString CT_Grid4D_Sparse<DataT>::staticName()
-{
-    return CT_Grid4D_Sparse<DataT>::tr("4D grid<%1>, sparse").arg(CT_TypeInfo::name<DataT>());
-}
-
-
 
 #endif
 
