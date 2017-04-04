@@ -28,6 +28,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QVector>
 
 #include "view/MainView/gguimanager.h"
 
@@ -49,6 +50,12 @@ int main(int argc, char *argv[])
     #endif
 
     osg::setNotifyHandler(new DM_OSGNotifyHandler());
+
+    /*
+     * Prevent the warning: QObject::connect: Cannot queue arguments of type
+     * 'QVector<int>'
+     */
+    qRegisterMetaType<QVector<int>>();
 
     GGuiManager gm(&language);
     gm.initUi();
