@@ -46,6 +46,9 @@ CDM_Log::~CDM_Log()
         mutex.unlock();
     }
 
+    m_thread.quit();
+    m_thread.wait();
+
     delete m_logProcess;
 }
 
