@@ -41,18 +41,6 @@
 #include "ct_itemdrawable/tools/drawmanager/ct_standardscannerdrawmanager.h"
 #include "ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h"
 
-class CT_ThetaPhiShootingPattern;
-
-/*! \def    DEG2RAD
-            Linear constant to cast an angle in degrees to this angle in radians.
-            */
-#define DEG2RAD (M_PI/180.0)
-
-/*! \def    RAD2DEG
-            Linear constant to cast an angle in radians to this angle in degrees.
-            */
-#define RAD2DEG (180.0/M_PI)
-
 /*! \def    SCANNER_EPSILON
             Used to avoid some instabilities : in some cases, we want values less than this constant (10e-5) become 0
             */

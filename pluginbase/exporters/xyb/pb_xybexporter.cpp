@@ -238,8 +238,8 @@ bool PB_XYBExporter::createExportFileForPieceByPieceExport()
             double z = m_scanner->getPosition().z();
 
             txtStream << "ScanPosition " << x << " " << y << " " << z << "\n";
-            txtStream << "Rows " << (m_scanner->getVFov()*RAD2DEG)/(m_scanner->getHRes()*RAD2DEG) << "\n";
-            txtStream << "Cols " << (m_scanner->getHFov()*RAD2DEG)/(m_scanner->getVRes()*RAD2DEG) << "\n";
+            txtStream << "Rows " << m_scanner->getNVRays() << "\n";
+            txtStream << "Cols " << m_scanner->getNHRays() << "\n";
         }
         else
         {
