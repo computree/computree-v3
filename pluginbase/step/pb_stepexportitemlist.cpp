@@ -127,7 +127,7 @@ void PB_StepExportItemList::createInResultModelListProtected()
     resCounter->setRootGroup(DEF_inGroupCounter);
     resCounter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
 
-    CT_InResultModelGroup* baseNameRes = createNewInResultModel(DEF_inresName, tr("Nom de base"), "", true);
+    CT_InResultModelGroup* baseNameRes = createNewInResultModel(DEF_inresName, tr("Nom de base (optionnel)"), "", true);
     baseNameRes->setZeroOrMoreRootGroup();
     baseNameRes->addGroupModel("", DEF_inGroupName, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
     baseNameRes->addItemModel(DEF_inGroupName, DEF_inName, CT_AbstractSingularItemDrawable::staticGetType(), tr("Base Name"));
