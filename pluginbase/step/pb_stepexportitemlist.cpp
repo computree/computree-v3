@@ -246,7 +246,7 @@ void PB_StepExportItemList::compute()
     CT_ResultGroup* resIn_BaseName = NULL;
 
     QString rootBaseName = "";
-    if (inResultList.size() > 1)
+    if (inResultList.size() > 2)
     {
         resIn_BaseName = inResultList.at(2);
 
