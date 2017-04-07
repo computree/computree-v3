@@ -4,18 +4,10 @@
 
 #include "ct_itemdrawable/ct_scanner.h"
 
-CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_Scanner *scanner) : CT_ThetaPhiShootingPattern(scanner->getPosition(),
-                                                                                                                  scanner->getHFov(),
-                                                                                                                  scanner->getVFov(),
-                                                                                                                  scanner->getHRes(),
-                                                                                                                  scanner->getVRes(),
-                                                                                                                  scanner->getInitTheta(),
-                                                                                                                  scanner->getInitPhi(),
-                                                                                                                  scanner->getZVector(),
-                                                                                                                  scanner->getClockWise(),
-                                                                                                                  true)
+CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern() :
+    CT_ShootingPattern()
 {
-
+    init(Eigen::Vector3d::Zero(), 0, 0, 0, 0, 0, 0, Eigen::Vector3d(0, 0, 1), true, false);
 }
 
 CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &origin,
@@ -28,8 +20,30 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
                                                        const Eigen::Vector3d &zVector,
                                                        bool clockWise,
                                                        bool radians) :
-    CT_ShootingPattern(), m_origin(origin)
+    CT_ShootingPattern()
 {
+    init(origin, hFov, vFov, hRes, vRes, initTheta, initPhi, zVector, clockWise, radians);
+}
+
+CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &o) :
+    CT_ShootingPattern()
+{
+    init(o.getOrigin(), o.getHFov(), o.getVFov(), o.getHRes(), o.getVRes(),
+         o.getInitTheta(), o.getInitPhi(), o.getZVector(), o.isClockWise(), true);
+}
+
+void CT_ThetaPhiShootingPattern::init(const Eigen::Vector3d &origin,
+                                      double hFov,
+                                      double vFov,
+                                      double hRes,
+                                      double vRes,
+                                      double initTheta,
+                                      double initPhi,
+                                      const Eigen::Vector3d &zVector,
+                                      bool clockWise,
+                                      bool radians)
+{
+    m_origin = origin;
     m_zVector = zVector;
     m_clockWise = clockWise;
 
@@ -51,26 +65,6 @@ CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const Eigen::Vector3d &or
         m_initPhi = qDegreesToRadians(m_initPhi);
     }
     updateNumberOfRays();
-    resetCache();
-}
-
-CT_ThetaPhiShootingPattern::CT_ThetaPhiShootingPattern(const CT_ThetaPhiShootingPattern &other) :
-    CT_ShootingPattern(),
-    m_origin(other.getOrigin())
-{
-    m_zVector = other.m_zVector;
-    m_clockWise = other.m_clockWise;
-
-    m_hFov = other.m_hFov;
-    m_vFov = other.m_vFov;
-    m_hRes = other.m_hRes;
-    m_vRes = other.m_vRes;
-
-    m_initTheta = other.m_initTheta;
-    m_initPhi = other.m_initPhi;
-
-    m_nHRays = other.m_nHRays;
-    m_nVRays = other.m_nVRays;
     resetCache();
 }
 

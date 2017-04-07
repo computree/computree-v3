@@ -213,14 +213,18 @@ bool PB_XYBExporter::createExportFileForPieceByPieceExport()
     QString filePath = QString("%1/%2.%4").arg(path).arg(baseName).arg(suffix);
 
     // if we don't have the scanner but his model
+    CT_ThetaPhiShootingPattern *pattern = nullptr;
     if(m_scannerModel != NULL) {
 
         // we search the real scanner
         CT_ItemSearchHelper helper;
         CT_ResultItemIterator it = helper.searchSingularItemsForModel(m_scannerModel);
 
-        if(it.hasNext())
+        if (it.hasNext())
             m_scanner = dynamic_cast<CT_Scanner*>((CT_AbstractSingularItemDrawable*)it.next());
+    }
+    if (m_scanner) {
+        pattern = dynamic_cast<CT_ThetaPhiShootingPattern*>(m_scanner->getShootingPattern());
     }
 
     _file = new QFile(filePath);
@@ -231,15 +235,15 @@ bool PB_XYBExporter::createExportFileForPieceByPieceExport()
 
         txtStream << "# SCENE XYZ binary format v1.0\n";
 
-        if(m_scanner != NULL)
+        if(pattern != NULL)
         {
-            double x = m_scanner->getPosition().x();
-            double y = m_scanner->getPosition().y();
-            double z = m_scanner->getPosition().z();
+            double x = pattern->getOrigin().x();
+            double y = pattern->getOrigin().y();
+            double z = pattern->getOrigin().z();
 
             txtStream << "ScanPosition " << x << " " << y << " " << z << "\n";
-            txtStream << "Rows " << m_scanner->getNVRays() << "\n";
-            txtStream << "Cols " << m_scanner->getNHRays() << "\n";
+            txtStream << "Rows " << pattern->getNVRays() << "\n";
+            txtStream << "Cols " << pattern->getNHRays() << "\n";
         }
         else
         {

@@ -16,10 +16,11 @@ class CT_Scanner;
 class PLUGINSHAREDSHARED_EXPORT CT_ThetaPhiShootingPattern : public CT_ShootingPattern
 {
 public:
+
     /**
-     * @brief Construct from a scanner information
+     * @brief Default constructor with parameters.
      */
-    CT_ThetaPhiShootingPattern(const CT_Scanner* scanner);
+    CT_ThetaPhiShootingPattern();
 
     /**
      * @brief Construct it with all information
@@ -155,6 +156,17 @@ public:
     inline void setClockWise ( bool clockWise ) { m_clockWise = clockWise; }
 
 private:
+    void init(const Eigen::Vector3d &origin,
+              double hFov,
+              double vFov,
+              double hRes,
+              double vRes,
+              double initTheta,
+              double initPhi,
+              const Eigen::Vector3d &zVector,
+              bool clockWise,
+              bool radians);
+
     void updateNumberOfRays();
     void resetCache();
 

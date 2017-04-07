@@ -33,10 +33,10 @@
     \author J. Ravaglia - mail to : joris.ravaglia@gmail.com
     \version 0.1
 */
-
+#include <memory>
+#include <math.h>                                                               // Used for M_PI constant
 #include "ct_itemdrawable/abstract/ct_abstractitemdrawablewithoutpointcloud.h"                           // Inherits from CT_abstractItemDrawableWithoutPointCloud
 #include "ct_point.h"                                                           // Used to get rays from a scanner
-#include <math.h>                                                               // Used for M_PI constant
 #include "ct_itemdrawable/ct_beam.h"                                                             // A scan creates some rays
 #include "ct_itemdrawable/tools/drawmanager/ct_standardscannerdrawmanager.h"
 #include "ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h"
@@ -85,7 +85,7 @@ public:
     CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId = 0, bool clockWise = true );
 
     /*!
-    *  \brief Constructor
+    *  \brief Constructor for scanner with theta phi shooting pattern
     *
     *  Constructor of the class
     *
@@ -137,81 +137,6 @@ public:
     inline double getPositionY() const {return getCenterY();}
     inline double getPositionZ() const {return getCenterZ();}
 
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the ID of the scanner
-    */
-    inline Eigen::Vector3d getZVector() const { return m_shootingPattern->getZVector(); }
-
-    inline double getZVectorX() const {return getZVector()(0);}
-    inline double getZVectorY() const {return getZVector()(1);}
-    inline double getZVectorZ() const {return getZVector()(2);}
-
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the horizontal field of view of the scanner
-    */
-    inline double getHFov() const { return m_shootingPattern->getHFov(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the vertical field of view of the scanner
-    */
-    inline double getVFov() const { return m_shootingPattern->getVFov(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the horizontal resolution of the scanner
-    */
-    inline double getHRes() const { return m_shootingPattern->getHRes(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the vertical resolution of the scanner
-    */
-    inline double getVRes() const { return m_shootingPattern->getVRes(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the initial theta of the scanner
-    */
-    inline double getInitTheta() const { return m_shootingPattern->getInitTheta(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the initial phi of the scanner
-    */
-    inline double getInitPhi() const { return m_shootingPattern->getInitPhi(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the number of horizontal rays of the scanner
-    */
-    inline int getNHRays() const { return m_shootingPattern->getNHRays(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns the number of vertical rays of the scanner
-    */
-    inline double getNVRays() const { return m_shootingPattern->getNVRays(); }
-
-    /*!
-    *  \brief Getter of the class
-    *
-    *  \return Returns true if the scanner is clockwise, false else
-    */
-    inline bool getClockWise() const { return m_shootingPattern->isClockWise(); }
-
     /**
      * @brief Returns the shooting pattern
      */
@@ -224,55 +149,6 @@ public:
     *  \brief Setter of the class
     */
     inline void setID ( int scanID ) { _scanID = scanID; }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setPosition ( const Eigen::Vector3d& position )
-    {
-        setCenterCoordinate(position);
-        m_shootingPattern->setOrigin(position);
-    }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setZVector ( const Eigen::Vector3d& zVector ) { m_shootingPattern->setZVector(zVector); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setHFov ( double hFov ) { m_shootingPattern->setHFov(hFov); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setVFov ( double vFov ) { m_shootingPattern->setVFov(vFov); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setHRes ( double hRes ) { m_shootingPattern->setHRes(hRes); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setVRes ( double vRes ) { m_shootingPattern->setVRes(vRes); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setInitTheta ( double initTheta ) { m_shootingPattern->setInitTheta(initTheta); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setInitPhi ( double initPhi ) { m_shootingPattern->setInitPhi(initPhi); }
-
-    /*!
-    *  \brief Setter of the class
-    */
-    inline void setClockWise ( bool clockWise ) { m_shootingPattern->setClockWise(clockWise); }
 
 //***********************************************************************************//
 //      Virtual/redefined methods from CT_AbstractItemDrawableWithoutPointCloud      //
@@ -296,47 +172,21 @@ public :
     *
     *  \param i : horizontal index of the beam
     *  \param j : vertical index of the beam
-    *  \param moreStability : if equals true, then direction component close to 0 are set to 0. This avoids some numerical instabilities in some cases.
-    *
-    *  \return Returns the (ith, jth) beam
-    */
-    CT_Beam* beam ( int i, int j, bool moreStability = false ) const;
-
-    /*!
-    *  \brief Provides access the (ith, jth) beam
-    *
-    *  \param i : horizontal index of the beam
-    *  \param j : vertical index of the beam
-    *  \param moreStability : if equals true, then direction component close to 0 are set to 0. This avoids some numerical instabilities in some cases.
     *  \param beam : Returns the (ith, jth) beam
     */
-    void beam ( int i, int j, CT_Beam &beam, bool moreStability = false ) const;
+    void beam(int i, CT_Beam &beam) const;
 
 private :
     int                             _scanID;        /*!< ID of the scan*/
 
-    CT_ThetaPhiShootingPattern*     m_shootingPattern;
+    std::unique_ptr<CT_ShootingPattern>     m_shootingPattern;
 
     CT_DEFAULT_IA_BEGIN(CT_Scanner)
     CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataId(), &CT_Scanner::getScanID, QObject::tr("ScanID"), "sid")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getHFov, QObject::tr("HFov"), "hfov")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getVFov, QObject::tr("VFov"), "vfov")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getHRes, QObject::tr("HRes"), "hres")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataResolution(), &CT_Scanner::getVRes, QObject::tr("VRes"), "vres")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitTheta, QObject::tr("InitTheta"), "it")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataAngle(), &CT_Scanner::getInitPhi, QObject::tr("InitPhi"), "ip")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNHRays, QObject::tr("NHRays"), "nhr")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataNumber(), &CT_Scanner::getNVRays, QObject::tr("NVRays"), "nvr")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataValue(), &CT_Scanner::getClockWise, QObject::tr("ClockWise"), "cw")
     CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataX(), &CT_Scanner::getPositionX, QObject::tr("PositionX"), "px")
     CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataY(), &CT_Scanner::getPositionY, QObject::tr("PositionY"), "py")
     CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataZ(), &CT_Scanner::getPositionZ, QObject::tr("PositionZ"), "pz")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataXDirection(), &CT_Scanner::getZVectorX, QObject::tr("ZVectorX"), "zvx")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataYDirection(), &CT_Scanner::getZVectorY, QObject::tr("ZVectorY"), "zvy")
-    CT_DEFAULT_IA_V3(CT_Scanner, CT_AbstractCategory::staticInitDataZDirection(), &CT_Scanner::getZVectorZ, QObject::tr("ZVectorZ"), "zvz")
     CT_DEFAULT_IA_END(CT_Scanner)
-
-
 
     const static CT_StandardScannerDrawManager CT_SCANNER_DRAW_MANAGER;
 };

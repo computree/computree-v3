@@ -2,7 +2,9 @@
 #define CT_STANDARDSCANNERDRAWMANAGER_H
 
 #include "ct_itemdrawable/tools/drawmanager/ct_standardabstractitemdrawablewithoutpointclouddrawmanager.h"
-
+#include "ct_itemdrawable/tools/scanner/ct_parallelshootingpatternfrompointcloud.h"
+#include "ct_itemdrawable/tools/scanner/ct_thetaphishootingpattern.h"
+#include "ct_itemdrawable/tools/scanner/ct_parallelshootingpatternfrompointcloud.h"
 #include <QObject>
 
 class CT_Scanner;
@@ -28,7 +30,7 @@ protected :
     *
     *  \param painter : painter that manages the drawings
     */
-    void drawFieldOfView(PainterInterface &painter, const CT_Scanner &scanner) const;
+    void drawFieldOfView(PainterInterface &painter, CT_ThetaPhiShootingPattern* pattern) const;
 
     /*!
     *  \brief Draws a line from the position of the scanner to the point on the unit sphere with spherical coordinates (theta, phi, 1)

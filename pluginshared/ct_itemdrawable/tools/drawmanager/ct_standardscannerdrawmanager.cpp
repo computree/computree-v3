@@ -17,7 +17,7 @@ CT_StandardScannerDrawManager::CT_StandardScannerDrawManager(QString drawConfigu
 CT_StandardScannerDrawManager::~CT_StandardScannerDrawManager()
 {
 }
-
+#include <QDebug>
 void CT_StandardScannerDrawManager::draw(GraphicsViewInterface &view, PainterInterface &painter, const CT_AbstractItemDrawable &itemDrawable) const
 {
     const CT_Scanner &item = dynamic_cast<const CT_Scanner&>(itemDrawable);
@@ -25,7 +25,12 @@ void CT_StandardScannerDrawManager::draw(GraphicsViewInterface &view, PainterInt
     CT_StandardAbstractItemDrawableWithoutPointCloudDrawManager::draw(view, painter, itemDrawable);
 
     // Drawing the field of view
-    drawFieldOfView(painter, item);
+    CT_ShootingPattern *pattern = item.getShootingPattern();
+    qDebug() << "draw pattern" << pattern;
+    if (CT_ThetaPhiShootingPattern* p = dynamic_cast<CT_ThetaPhiShootingPattern*>(pattern)) {
+        drawFieldOfView(painter, p);
+    }
+    // TODO: support other types of shooting pattern
 }
 
 CT_ItemDrawableConfiguration CT_StandardScannerDrawManager::createDrawConfiguration(QString drawConfigurationName) const
@@ -49,26 +54,10 @@ QString CT_StandardScannerDrawManager::staticInitConfigFieldOfView()
     return "SC_FOV";
 }
 
-void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, const CT_Scanner &scanner) const
+void CT_StandardScannerDrawManager::drawFieldOfView(PainterInterface &painter, CT_ThetaPhiShootingPattern* pattern) const
 {
-    double scaling = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_FIELD_OF_VIEW).toDouble();
-    double clockWiseScaler = scanner.getClockWise() ? -1.0 : 1.0;
-    double endTheta = scanner.getInitTheta() + clockWiseScaler * scanner.getHFov();
-    double endPhi = scanner.getInitPhi() + scanner.getVFov();
-
-    /*
-    painter.drawPartOfSphere(scanner.getPositionX(),
-                             scanner.getPositionY(),
-                             scanner.getPositionZ(),
-                             scaling,
-                             scanner.getInitTheta(),
-                             endTheta,
-                             scanner.getInitPhi(),
-                             endPhi);
-    */
-
-    CT_ThetaPhiShootingPattern* pattern = dynamic_cast<CT_ThetaPhiShootingPattern*>(scanner.getShootingPattern());
-    QScopedPointer<CT_ThetaPhiShootingPattern> patternSimple(dynamic_cast<CT_ThetaPhiShootingPattern*>(pattern->clone()));
+    QScopedPointer<CT_ThetaPhiShootingPattern> patternSimple(
+                dynamic_cast<CT_ThetaPhiShootingPattern*>(pattern->clone()));
     patternSimple->setHRes(qDegreesToRadians(10.));
     patternSimple->setVRes(qDegreesToRadians(10.));
     size_t n = patternSimple->getNumberOfShots();

@@ -38,40 +38,33 @@ CT_DEFAULT_IA_INIT(CT_Scanner)
 // Initializing the draw manager
 const CT_StandardScannerDrawManager CT_Scanner::CT_SCANNER_DRAW_MANAGER;
 
-CT_Scanner::CT_Scanner(int scanID, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud()
+CT_Scanner::CT_Scanner(int scanID, bool clockWise) :
+    CT_AbstractItemDrawableWithoutPointCloud()
 {
     _scanID = scanID;
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       Eigen::Vector3d(0,0,1),
-                                                       clockWise);
+    CT_ThetaPhiShootingPattern *p = new CT_ThetaPhiShootingPattern();
+    p->setClockWise(clockWise);
+    m_shootingPattern.reset(p);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
-CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanId, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
+CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
+                       const CT_AbstractResult *result, int scanId, bool clockWise) :
+    CT_AbstractItemDrawableWithoutPointCloud (model, result )
 {
     _scanID = scanId;
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       Eigen::Vector3d(0,0,1),
-                                                       clockWise);
+
+
+    CT_ThetaPhiShootingPattern *p = new CT_ThetaPhiShootingPattern();
+    p->setClockWise(clockWise);
+    m_shootingPattern.reset(p);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -88,13 +81,14 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
                        double initTheta,
                        double initPhi,
                        bool clockWise,
-                       bool radians) : CT_AbstractItemDrawableWithoutPointCloud (model, result )
+                       bool radians) :
+    CT_AbstractItemDrawableWithoutPointCloud (model, result)
 {
     _scanID = scanID;
     setCenterX(origin.x());
     setCenterY(origin.y());
     setCenterZ(origin.z());
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(origin,
+    m_shootingPattern.reset(new CT_ThetaPhiShootingPattern(origin,
                                                        hFov,
                                                        vFov,
                                                        hRes,
@@ -103,29 +97,25 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
                                                        initPhi,
                                                        zVector,
                                                        clockWise,
-                                                       radians);
+                                                       radians));
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
 
 
-CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId, bool clockWise) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
+CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result,
+                       int scanId, bool clockWise) :
+    CT_AbstractItemDrawableWithoutPointCloud (modelName, result)
 {
     _scanID = scanId;
     setCenterX(0);
     setCenterY(0);
     setCenterZ(0);
 
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(Eigen::Vector3d(0,0,0),
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       0,
-                                                       Eigen::Vector3d(0,0,1),
-                                                       clockWise);
+    CT_ThetaPhiShootingPattern *p = new CT_ThetaPhiShootingPattern();
+    p->setClockWise(clockWise);
+    m_shootingPattern.reset(p);
 
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
@@ -142,14 +132,15 @@ CT_Scanner::CT_Scanner(const QString &modelName,
                        double initTheta,
                        double initPhi,
                        bool clockWise,
-                       bool radians) : CT_AbstractItemDrawableWithoutPointCloud (modelName, result )
+                       bool radians) :
+    CT_AbstractItemDrawableWithoutPointCloud (modelName, result)
 {
     _scanID = scanID;
     setCenterX(origin(0));
     setCenterY(origin(1));
     setCenterZ(origin(2));
 
-    m_shootingPattern = new CT_ThetaPhiShootingPattern(origin,
+    m_shootingPattern.reset(new CT_ThetaPhiShootingPattern(origin,
                                                        hFov,
                                                        vFov,
                                                        hRes,
@@ -158,117 +149,39 @@ CT_Scanner::CT_Scanner(const QString &modelName,
                                                        initPhi,
                                                        zVector,
                                                        clockWise,
-                                                       radians);
+                                                       radians));
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
 CT_Scanner::~CT_Scanner()
 {
-    delete m_shootingPattern;
 }
 
 CT_ShootingPattern* CT_Scanner::getShootingPattern() const
 {
-    return m_shootingPattern;
+    return m_shootingPattern.get();
 }
 
-CT_Beam *CT_Scanner::beam(int i, int j, bool moreStability) const
+void CT_Scanner::beam(int i, CT_Beam &beam) const
 {
-    assert ( i >= 0 && j >= 0 );
-    assert ( i <= getNHRays() && j <= getNVRays() );
+    CT_ShootingPattern *p = getShootingPattern();
+    if (!p)
+        return;
 
-    double theta = getInitTheta() + (i * getHRes());
-    double phi = getInitPhi() + (j * getVRes());
+    const CT_Shot &shot = p->getShotAt(i);
 
-    // If clockwise, then real theta equals opposite to initial
-    if ( getClockWise() )
-    {
-        theta *= -1;
-    }
-
-    // The direction is calculated using spherical coordinates, the origin is the scaning position
-    double sinPhi = sin( phi );
-    double cosPhi = cos ( phi );
-    double sinTheta = sin ( theta );
-    double cosTheta = cos ( theta );
-
-    Eigen::Vector3d direction;
-
-    if ( moreStability )
-    {
-        // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(0) = 0;
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(1) = 0;
-        fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
-    }
-
-    else
-    {
-        direction(0) = sinPhi*cosTheta;
-        direction(1) = sinPhi*sinTheta;
-        direction(2) = cosPhi;
-    }
-
-    return new CT_Beam(NULL, NULL, getCenterCoordinate(), direction);
-}
-
-void CT_Scanner::beam(int i, int j, CT_Beam &beam, bool moreStability) const
-{
-    assert ( i >= 0 && j >= 0 );
-    assert ( i <= getNHRays() && j <= getNVRays() );
-
-    double theta = getInitTheta() + (i * getHRes());
-    double phi = getInitPhi() + (j * getVRes());
-
-    // If clockwise, then real theta equals opposite to initial
-    if ( getClockWise() )
-    {
-        theta *= -1;
-    }
-
-    // The direction is calculated using spherical coordinates, the origin is the scaning position
-    double sinPhi = sin( phi );
-    double cosPhi = cos ( phi );
-    double sinTheta = sin ( theta );
-    double cosTheta = cos ( theta );
-
-    Eigen::Vector3d direction;
-
-    if ( moreStability )
-    {
-        // We avoid too small numbers that leads to numerical instability
-        fabs(sinPhi*cosTheta) > SCANNER_EPSILON ? direction(0) = sinPhi*cosTheta : direction(0) = 0;
-        fabs(sinPhi*sinTheta) > SCANNER_EPSILON ? direction(1) = sinPhi*sinTheta : direction(1) = 0;
-        fabs(cosPhi) > SCANNER_EPSILON ? direction(2) = cosPhi : direction(2) = 0;
-    }
-
-    else
-    {
-        direction(0) = sinPhi*cosTheta;
-        direction(1) = sinPhi*sinTheta;
-        direction(2) = cosPhi;
-    }
-
-    beam.setOrigin(getCenterCoordinate());
-    beam.setDirection(direction);
+    beam.setOrigin(shot.getOrigin());
+    beam.setDirection(shot.getDirection());
 }
 
 CT_Scanner* CT_Scanner::copy(const CT_OutAbstractItemModel *model,
                              const CT_AbstractResult *result,
                              CT_ResultCopyModeList copyModeList)
 {
+    // TODO: copy the shooting pattern instead of the hardcoded constructor
     CT_Scanner *sc = new CT_Scanner((const CT_OutAbstractSingularItemModel *)model,
                                     result,
-                                    getScanID(),
-                                    getPosition(),
-                                    getZVector(),
-                                    getHFov(),
-                                    getVFov(),
-                                    getHRes(),
-                                    getVRes(),
-                                    getInitTheta(),
-                                    getInitPhi(),
-                                    getClockWise());
+                                    getScanID());
     sc->setId(id());
     sc->setAlternativeDrawManager(getAlternativeDrawManager());
 
