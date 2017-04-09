@@ -74,5 +74,7 @@
         <file>Icones/upper.png</file>
         <file>Icones/citation.png</file>
         <file>Icones/maximize.png</file>
+        <file>Icones/decrease_size.png</file>
+        <file>Icones/increase_size.png</file>
     </qresource>
 </RCC>

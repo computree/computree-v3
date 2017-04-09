@@ -68,7 +68,7 @@ public:
 
     void redrawAllDocument();
 
-    DocumentInterface* new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
+    DocumentInterface* new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow, float pointSize = 1.0, bool orthographic = false, QColor &color = QColor(48, 48, 48));
     DocumentInterface* new2DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
     DocumentInterface* newTreeViewDocument(bool fromGui, bool inLoadConfigurationFromMainWindow);
 
@@ -76,7 +76,7 @@ public:
     void lockAllDocuments();
     void unlockAllDocuments();
 
-    DocumentInterface* new3DDocument();
+    DocumentInterface* new3DDocument(float pointSize = 1.0, bool orthographic = false, QColor &color = QColor(48, 48, 48));
     DocumentInterface* new2DDocument();
     DocumentInterface* newTreeViewDocument();
     int nDocuments() const;

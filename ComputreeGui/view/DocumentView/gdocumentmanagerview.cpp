@@ -448,7 +448,7 @@ void GDocumentManagerView::redrawAllDocument()
     m_mutex->unlock();
 }
 
-DocumentInterface *GDocumentManagerView::new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow)
+DocumentInterface *GDocumentManagerView::new3DDocument(bool fromGui, bool inLoadConfigurationFromMainWindow, float pointSize, bool orthographic, QColor &color)
 {
     GDocumentViewForGraphics *doc = new GDocumentViewForGraphics(*this, tr("Document %1").arg(GDocumentView::NUMBER), "NORMAL");
     doc->init();
@@ -461,6 +461,18 @@ DocumentInterface *GDocumentManagerView::new3DDocument(bool fromGui, bool inLoad
 
     addDocumentView(*doc, fromGui, inLoadConfigurationFromMainWindow);
     graphics->init();
+
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(graphics->constGetOptionsInternal());
+
+    opt.setPointSize(pointSize);
+    opt.setBackgroudColor(color);
+    if (orthographic) {opt.setCameraType(CameraInterface::ORTHOGRAPHIC);}
+    else {opt.setCameraType(CameraInterface::PERSPECTIVE);}
+
+    graphics->setOptions(opt);
+    graphics->validateOptions();
+
 
     return doc;
 }
@@ -530,9 +542,9 @@ void GDocumentManagerView::unlockAllDocuments()
     m_mutex->unlock();
 }
 
-DocumentInterface* GDocumentManagerView::new3DDocument()
+DocumentInterface* GDocumentManagerView::new3DDocument(float pointSize, bool orthographic, QColor &color)
 {
-    return new3DDocument(false, false);
+    return new3DDocument(false, false, pointSize, orthographic, color);
 }
 
 DocumentInterface* GDocumentManagerView::new2DDocument()

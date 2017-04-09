@@ -28,12 +28,6 @@ class GDocumentViewForGraphics : public GDocumentView
 
 public:
 
-    enum PixelSize {
-        PX_1,
-        PX_2,
-        PX_3
-    };
-
     struct NormalsConfiguration {
         QColor normalColor;
         float normalLength;
@@ -174,14 +168,13 @@ private:
     DM_PointOfViewManager       _pofManager;
 
     QPushButton                 *_buttonExport;
-    QPushButton                 *_buttonPixelSize;
+    QPushButton                 *_buttonPixelSizeUp;
+    QPushButton                 *_buttonPixelSizeDown;
 
     QString                     _type;
 
     QMutex                      *m_mutex;
     QMutex                      *m_mutexGetOrCreateCloud;
-
-    PixelSize                                   _pixelSize;
 
     bool                        _viewDetached;
     QWidget*                    _previousParent;
@@ -237,8 +230,8 @@ public slots:
      */
     void showAttributesOptions();
 
-    void changePixelSize();
-    void changePixelSize(double size);
+    void changePixelSizeUp();
+    void changePixelSizeDown();
     void setTransparencyActivated(bool activated);
     void setCameraType(bool orthographic);
 

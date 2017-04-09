@@ -41,7 +41,6 @@ GDocumentViewForGraphics::GDocumentViewForGraphics(GDocumentManagerView &manager
     _type = type;
     _pofManager.loadDefault();
     m_useNormalCloud = true;
-    _pixelSize = PX_1;
 
     m_pointsColorCloudRegistered = CT_CCR(NULL);
     m_pointsAttribCloudRegistered = QSharedPointer< AttribCloudRegisteredType >(NULL);
@@ -641,7 +640,7 @@ void GDocumentViewForGraphics::showAttributesOptions()
     dialog.exec();
 }
 
-void GDocumentViewForGraphics::changePixelSize()
+void GDocumentViewForGraphics::changePixelSizeUp()
 {
     if(m_graphics == NULL)
         return;
@@ -649,42 +648,28 @@ void GDocumentViewForGraphics::changePixelSize()
     DM_GraphicsViewOptions opt;
     opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
 
-    if (_pixelSize == PX_1)
-    {
-        _pixelSize = PX_2;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_2.png"));
-        opt.setPointSize(2);
-    } else if (_pixelSize == PX_2)
-    {
-        _pixelSize = PX_3;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_3.png"));
-        opt.setPointSize(3);
-    } else if (_pixelSize == PX_3)
-    {
-        _pixelSize = PX_1;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_1.png"));
-        opt.setPointSize(1);
-    }
+    opt.setPointSize(opt.getPointSize() + 1);
 
     _graphicsOptionsView->setOptions(opt);
 
     validateOptions();
 }
 
-void GDocumentViewForGraphics::changePixelSize(double size)
+void GDocumentViewForGraphics::changePixelSizeDown()
 {
-    if (size == 1)
+    if(m_graphics == NULL)
+        return;
+
+    DM_GraphicsViewOptions opt;
+    opt.updateFromOtherOptions(((const GGraphicsView*)m_graphics)->constGetOptionsInternal());
+
+    if (opt.getPointSize() > 1)
     {
-        _pixelSize = PX_1;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_1.png"));
-    } else if (size == 2)
-    {
-        _pixelSize = PX_2;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_2.png"));
-    } else if (size >= 3)
-    {
-        _pixelSize = PX_3;
-        _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_3.png"));
+        opt.setPointSize(opt.getPointSize() - 1);
+
+        _graphicsOptionsView->setOptions(opt);
+
+        validateOptions();
     }
 }
 
@@ -963,12 +948,20 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     buttonPointsAttributes->setToolTip(tr("Configurer les couleurs des points"));
     buttonPointsAttributes->setIcon(QIcon(":/Icones/Icones/gradient.png"));
 
-    _buttonPixelSize = new QPushButton(widgetContainer);
-    _buttonPixelSize->setMaximumWidth(33);
-    _buttonPixelSize->setMinimumWidth(33);
-    _buttonPixelSize->setToolTip(tr("Changer la taille des pixels"));
-    _buttonPixelSize->setIcon(QIcon(":/Icones/Icones/px_1.png"));
-    _buttonPixelSize->setEnabled(true);
+    _buttonPixelSizeUp = new QPushButton(widgetContainer);
+    _buttonPixelSizeUp->setMaximumWidth(33);
+    _buttonPixelSizeUp->setMinimumWidth(33);
+    _buttonPixelSizeUp->setToolTip(tr("Augmenter la taille des pixels"));
+    _buttonPixelSizeUp->setIcon(QIcon(":/Icones/Icones/increase_size"));
+    _buttonPixelSizeUp->setEnabled(true);
+
+    _buttonPixelSizeDown = new QPushButton(widgetContainer);
+    _buttonPixelSizeDown->setMaximumWidth(33);
+    _buttonPixelSizeDown->setMinimumWidth(33);
+    _buttonPixelSizeDown->setToolTip(tr("Diminuer la taille des pixels"));
+    _buttonPixelSizeDown->setIcon(QIcon(":/Icones/Icones/decrease_size.png"));
+    _buttonPixelSizeDown->setEnabled(true);
+
 
     connect(GUI_MANAGER->getPluginManager(), SIGNAL(finishLoading()), this, SLOT(pluginExporterManagerReloaded()));
 
@@ -986,7 +979,8 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     layout->addWidget(_cameraOptionsView);
     layout->addWidget(_pointOfViewButton);
     layout->addWidget(screenshotButton);
-    layout->addWidget(_buttonPixelSize);
+    layout->addWidget(_buttonPixelSizeDown);
+    layout->addWidget(_buttonPixelSizeUp);
     layout->addWidget(buttonShowOptions);
     layout->addWidget(buttonPointsAttributes);
     layout->addWidget(_buttonExport);
@@ -998,13 +992,12 @@ void GDocumentViewForGraphics::createAndAddCameraAndGraphicsOptions(QWidget *par
     connect(screenshotButton, SIGNAL(clicked()), this, SLOT(takeAndSaveScreenshot()));
     connect(buttonShowOptions, SIGNAL(clicked()), this, SLOT(showOptions()));
     connect(buttonPointsAttributes, SIGNAL(clicked()), this, SLOT(showAttributesOptions()));
-    connect(_buttonPixelSize, SIGNAL(clicked()), this, SLOT(changePixelSize()));
+    connect(_buttonPixelSizeUp, SIGNAL(clicked()), this, SLOT(changePixelSizeUp()));
+    connect(_buttonPixelSizeDown, SIGNAL(clicked()), this, SLOT(changePixelSizeDown()));
     connect(_pointOfViewMenu, SIGNAL(addActualPointOfView()), this, SLOT(addActualPointOfView()));
     connect(_pointOfViewMenu, SIGNAL(setPointOfView(DM_PointOfView*)), this, SLOT(setPointOfView(DM_PointOfView*)), Qt::DirectConnection);
 
     connect(_cameraOptionsView, SIGNAL(syncGraphics(bool)), this, SLOT(syncChanged(bool)));
-
-    connect(_graphicsOptionsView, SIGNAL(pointSizeChanged(double)), this, SLOT(changePixelSize(double)));
 
 //    connect (maximizeButton, SIGNAL(clicked()), this, SLOT(detachView()));
 }
