@@ -1321,7 +1321,7 @@ public:
     /**
      * @brief Create a new document with 3D View
      */
-    virtual DocumentInterface* new3DDocument(float pointSize = 1.0, bool orthographic = false, QColor &color = QColor(48, 48, 48)) = 0;
+    virtual DocumentInterface* new3DDocument(float pointSize = 1.0, bool orthographic = false, QColor *color = NULL) = 0;
 
     /**
      * @brief Create a new document with 2D View
