@@ -25,13 +25,16 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
     size_t     nZinf = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZINF).toUInt();
     size_t     nZsup = getDrawConfiguration()->getVariableValue(INDEX_CONFIG_HIDE_PLANE_NB_ZSUP).toUInt();
 
-    if (nXinf < 0) {nXinf = 0;}
-    if (nYinf < 0) {nYinf = 0;}
-    if (nZinf < 0) {nZinf = 0;}
+    size_t xinf = nXinf;
+    size_t yinf = nYinf;
+    size_t zinf = nZinf;
+    size_t xsup = 0;
+    size_t ysup = 0;
+    size_t zsup = 0;
 
-    if (nXsup >= item.xdim()) {nXsup = item.xdim()-1;}
-    if (nYsup >= item.ydim()) {nXsup = item.ydim()-1;}
-    if (nZsup >= item.zdim()) {nXsup = item.zdim()-1;}
+    if (nXsup < item.xdim()) {xsup = item.xdim() - nXsup - 1;}
+    if (nYsup < item.ydim()) {ysup = item.ydim() - nYsup - 1;}
+    if (nZsup < item.zdim()) {zsup = item.zdim() - nZsup - 1;}
 
     if (transparencyValue > 255) {transparencyValue = 255;}
     if (transparencyValue < 0) {transparencyValue = 0;}
@@ -46,23 +49,21 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
     double demiRes = reductionCoef*item.resolution() / 2.0;
 
     double xmin, ymin, zmin, xmax, ymax, zmax;
-
     size_t xx, yy, zz;
 
-    // For each voxel of the grid
-    cv::SparseMatConstIterator_<bool> pixelIterator = item.beginIterator();
-    cv::SparseMatConstIterator_<bool> pixelIteratorEnd = item.endIterator();
+    // For each voxel of the grid   
+    QList<size_t> indices;
+    item.getIndicesWithData(indices);
 
-    while( pixelIterator != pixelIteratorEnd)
+    for (int i = 0 ; i < indices.size() ; i++)
     {
-        const cv::SparseMat::Node* curNode = pixelIterator.node();
-        size_t index = curNode->idx[0];
+        size_t index = indices.at(i);
 
         item.indexToGrid(index, xx, yy, zz);
 
-        if( xx >= nXinf && xx <= nXsup && yy >= nYinf && yy <= nYsup && zz >= nZinf && zz <= nZsup )
+        if( xx >= xinf && xx <= xsup && yy >= yinf && yy <= ysup && zz >= zinf && zz <= zsup )
         {
-            bool data = pixelIterator.value<bool>();
+            bool data = item.valueAtIndex(index);
 
             if (data || !showTrueOnly)
             {
@@ -75,7 +76,6 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
                         painter.setColor(QColor(255,0,0, transparencyValue));
                     }
 
-
                     xmin = item.getCellCenterX(xx) - demiRes;
                     ymin = item.getCellCenterY(yy) - demiRes;
                     zmin = item.getCellCenterZ(zz) - demiRes;
@@ -87,8 +87,6 @@ void CT_StandardGrid3D_SparseDrawManager<bool>::draw(GraphicsViewInterface &view
                 }
             }
         }
-
-        ++pixelIterator;
     }
 
     painter.setColor(color);
