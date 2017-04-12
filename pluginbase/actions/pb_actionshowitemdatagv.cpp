@@ -149,7 +149,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         if(!attList.isEmpty())
         {
             painter.save();
-            painter.setPen(QColor(255,255,255,127));
+            painter.setPen(QColor(255,255,255));
             QListIterator<CT_AbstractItemAttribute*> itAtt(attList);
 
             while(itAtt.hasNext())
@@ -190,7 +190,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         const CT_Point &p = itp.currentPoint();
 
         painter.save();
-        painter.setPen(QColor(255,255,255,127));
+        painter.setPen(QColor(255,255,255));
         painter.drawText(2, y, tr("Nombre de points sélectionnés = %1").arg(itp.size()));
         y += add;
         painter.drawText(2, y, QString("P1 { %1 ; %2 ; %3 }").arg(p(0)).arg(p(1)).arg(p(2)));
@@ -203,7 +203,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
     if (itp.size() == 2)
     {
         painter.save();
-        painter.setPen(QColor(255,255,255,127));
+        painter.setPen(QColor(255,255,255));
 
         itp.toFront();
 
@@ -236,7 +236,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         const CT_Point &p3 = pAccess.constPointAt(f.iPointAt(2));
 
         painter.save();
-        painter.setPen(QColor(255,255,255,127));
+        painter.setPen(QColor(255,255,255));
         painter.drawText(2, y, tr("Nombre de faces sélectionnés = %1").arg(itf.size()));
         y += add;
         painter.drawText(2, y, QString("F1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 } { %7 ; %8 ; %9 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
@@ -260,7 +260,7 @@ void PB_ActionShowItemDataGV::drawOverlay(GraphicsViewInterface &view, QPainter 
         const CT_Point &p2 = pAccess.constPointAt(e.iPointAt(1));
 
         painter.save();
-        painter.setPen(QColor(255,255,255,127));
+        painter.setPen(QColor(255,255,255));
         painter.drawText(2, y, tr("Nombre d'arêtes sélectionnés = %1").arg(ite.size()));
         y += add;
         painter.drawText(2, y, QString("E1 { %1 ; %2 ; %3 } { %4 ; %5 ; %6 }").arg(p1(0)).arg(p1(1)).arg(p1(2))
