@@ -139,6 +139,7 @@ public:
 
     const CT_DelaunayTriangle* getZCoordForXY(double x, double y, double &outZ, CT_DelaunayTriangle *refTriangle = NULL);
 
+    QList<CT_DelaunayVertex *> getNeighboursForCoordinates(double x, double y);
 
     inline double getMinX() const {return _minx;}
     inline double getMinY() const {return _miny;}

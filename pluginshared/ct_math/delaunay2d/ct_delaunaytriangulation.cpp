@@ -717,6 +717,155 @@ bool CT_DelaunayTriangulation::doInsertion()
     return true;
 }
 
+
+
+QList<CT_DelaunayVertex*> CT_DelaunayTriangulation::getNeighboursForCoordinates(double x, double y)
+{
+    QList<CT_DelaunayVertex*> neigbours;
+
+    if (!_initialized) {return neigbours;} // we need 4 corners to continue
+
+
+    CT_DelaunayTriangle* t1;
+    CT_DelaunayTriangle* t1old;
+    CT_DelaunayTriangle* t2;
+    CT_DelaunayTriangle* n1;
+    CT_DelaunayVertex* vBase;
+    CT_DelaunayVertex* vNext;
+    CT_DelaunayVertex* vFirst;
+
+    // we use arrayList and not vector for performance reasons
+    QList<CT_DelaunayTriangle*> destrLst;
+    CT_DelaunaySideList borderLst;
+
+    // initialisations
+    t1 = _refTriangle;
+    t2 = NULL;
+
+    // is the point in the triangulation, else add to outOfBoundsVertices list
+    // and DO NOT insert
+    if ((x <= _minx) || (x >= _maxx) || (y <= _miny) || (y >= _maxy))
+    {
+        return neigbours;
+
+        // we have to test the point in the triangulation
+    } else {
+        // 1) find the triangle which contains the point to be inserted
+        // faster way, actually used (walk through the triangulation from refTriangle)
+
+        t1old = NULL; // to avoid infinite loops
+        while ((!t1->contains(x, y)) && t1old != t1)
+        {
+            t1old = t1;
+            t1 = t1->getNextTriangleTo(x, y);
+        }
+
+
+        if (x == t1->_v1->x() && y == t1->_v1->y())
+        {
+            neigbours.append(t1->_v1);
+            return neigbours;
+        } else if (x == t1->_v2->x() && y == t1->_v2->y())
+        {
+            neigbours.append(t1->_v2);
+            return neigbours;
+        } else if (x == t1->_v3->x() && y == t1->_v3->y())
+        {
+            neigbours.append(t1->_v3);
+            return neigbours;
+        } else {
+
+            // 2) create one list :
+            // - borderLst : contains the sides of the polygon formed by "to destroy" triangles
+            // a side is composed of two vertices, and one bording triangle (or NULL if don't exist)
+
+            _refTriangle = t1;
+            destrLst.append(t1);
+
+            for (int j = 0 ; j < destrLst.size() ; j++)
+            {
+                t2 = destrLst.at(j);
+
+                // for n12 neighbor triangle
+                n1 = t2->_n12;
+
+                if ((n1 == NULL) || !destrLst.contains(n1))
+                {
+                    if ((n1 != NULL) && n1->circleContains(x,y))
+                    {
+                        destrLst.append(n1);
+                    } else {
+                        borderLst.appendSide(n1, t2->_v1, t2->_v2);
+                    }
+                }
+
+                // for n23 neighbor triangle
+                n1 = t2->_n23;
+
+                if ((n1 == NULL) || !destrLst.contains(n1)) {
+                    if ((n1 != NULL) && n1->circleContains (x,y))
+                    {
+                        destrLst.append(n1);
+                    } else {
+                        borderLst.appendSide(n1, t2->_v2, t2->_v3);
+                    }
+                }
+
+                // for n31 neighbor triangle
+                n1 = t2->_n31;
+
+                if ((n1 == NULL) || !destrLst.contains(n1)) {
+                    if ((n1 != NULL) && n1->circleContains (x,y)) {
+                        destrLst.append(n1);
+                    } else {
+                        borderLst.appendSide(n1, t2->_v3, t2->_v1);
+                    }
+                }
+            }
+
+            int sdIndex = 0;
+            borderLst.removeSide(sdIndex, true);
+
+            CT_DelaunayVertex* sd_v1 = borderLst.getRemovedV1();
+            CT_DelaunayVertex* sd_v2 = borderLst.getRemovedV2();
+
+            neigbours.append(sd_v1);
+            neigbours.append(sd_v2);
+
+            vFirst = sd_v1;
+            vNext = sd_v2;
+
+            while (vNext != vFirst)
+            {
+                vBase = vNext;
+
+                // search the next side to link
+                for (int j = 0 ; j < borderLst.size() ; j++)
+                {
+                    sdIndex = j;
+                    sd_v1 = borderLst.getV1(sdIndex);
+                    sd_v2 = borderLst.getV2(sdIndex);
+
+
+                    if ((sd_v1 == vBase) || (sd_v2 == vBase)) {break;}
+                }
+
+                if (sd_v1 == vBase)
+                {
+                    neigbours.append(sd_v2);
+                } else if (sd_v2 == vBase) {
+                    neigbours.append(sd_v1);
+                }
+
+                vNext = borderLst.swap(sdIndex, vBase);
+                borderLst.removeSide(sdIndex);
+            }
+        }
+    }
+
+    return neigbours;
+}
+
 void CT_DelaunayTriangulation::updateCornersZValues()
 {
     computeVerticesNeighbors();
