@@ -102,7 +102,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     setCenterZ (minZ() + (maxZ() - minZ())/2.0);
 
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = 1;
     this->_data.create(1, ncells);
 
     setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
@@ -142,7 +142,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString &modelName,
     setCenterZ (minZ() + (maxZ() - minZ())/2.0);
 
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = 1;
     this->_data.create(1, ncells);
 
     setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
@@ -202,7 +202,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const CT_OutAbstractSingularItemModel 
     setCenterZ (minZ() + (maxZ() - minZ())/2.0);
 
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = 1;
     this->_data.create(1, ncells);
 
     setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
@@ -262,7 +262,7 @@ CT_Grid3D_Sparse<DataT>::CT_Grid3D_Sparse(const QString& model,
     setCenterZ (minZ() + (maxZ() - minZ())/2.0);
 
     int ncells[1];
-    ncells[0] = nCells();
+    ncells[0] = 1;
     this->_data.create(1, ncells);
 
     setBaseDrawManager(&GRID3D_SPARSE_DRAW_MANAGER);
