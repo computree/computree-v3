@@ -89,7 +89,7 @@ PB_StepExportItemList::~PB_StepExportItemList()
 // Step description (tooltip of contextual menu)
 QString PB_StepExportItemList::getStepDescription() const
 {
-    return tr("Export avec nom de fichier adaptatif");
+    return tr("Export avec nom de fichier adaptatif (DEPRECATED)");
 }
 
 // Step detailled description
