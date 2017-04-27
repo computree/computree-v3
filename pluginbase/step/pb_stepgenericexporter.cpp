@@ -8,12 +8,15 @@
 
 #include "ct_itemdrawable/model/outModel/ct_outstdsingularitemmodel.h"
 #include "ct_itemdrawable/model/outModel/ct_outstdgroupmodel.h"
+#include "ct_itemdrawable/ct_loopcounter.h"
 
 #include "ct_result/model/inModel/ct_inresultmodelgrouptocopy.h"
 #include "ct_result/model/outModel/ct_outresultmodelgroupcopy.h"
 
 #include "ct_turn/inTurn/tools/ct_inturnmanager.h"
 #include "ct_result/ct_resultgroup.h"
+#include "ct_view/ct_stepconfigurabledialog.h"
+
 
 #include "ct_step/ct_stepinitializedata.h"
 #include "ct_step/abstract/ct_abstractsteploadfile.h"
@@ -26,10 +29,21 @@
 #define DEF_SearchInItemDrawable    "i"
 #define DEF_SearchInResultToExport  "r"
 
+#define DEFin_resCounter "resCounter"
+#define DEF_inGroupCounter "GroupCounter"
+#define DEF_inCounter "counter"
+
+#define DEF_inresName "resName"
+#define DEF_inGroupName "GroupName"
+#define DEF_inName "Name"
+#define DEF_inNameAtt "NameAtt"
+
+
 PB_StepGenericExporter::PB_StepGenericExporter(CT_StepInitializeData &dataInit,
                                                const QString &pluginName,
                                                CT_AbstractExporter *exporter) : CT_AbstractStep(dataInit)
 {
+    _adaptative = false;
     _pluginName = pluginName;
     _exporter = exporter;
     _exporter->setMyStep(this);
@@ -129,6 +143,7 @@ SettingsNodeGroup* PB_StepGenericExporter::getAllSettings() const
     SettingsNodeGroup *group = new SettingsNodeGroup(getStepName());
     group->addValue(new SettingsNodeValue("Version", "1"));
     group->addValue(new SettingsNodeValue("ExportPath", _exportFilename));
+    group->addValue(new SettingsNodeValue("Adaptative", _adaptative));
 
     SettingsNodeGroup *confGroup = new SettingsNodeGroup("ExporterConfiguration");
 
@@ -167,6 +182,15 @@ bool PB_StepGenericExporter::setAllSettings(const SettingsNodeGroup *settings)
 
     _exportFilename = values.first()->value().toString();
 
+    values.clear();
+    values = groups.first()->valuesByTagName("Adaptative");
+
+    if(values.isEmpty())
+        return false;
+
+    _adaptative = values.first()->value().toBool();
+
+
     groups = groups.first()->groupsByTagName("ExporterConfiguration");
 
     if(groups.isEmpty())
@@ -203,6 +227,14 @@ CT_VirtualAbstractStep* PB_StepGenericExporter::createNewInstance(CT_StepInitial
     return stepCopy;
 }
 
+void PB_StepGenericExporter::createPreConfigurationDialog()
+{
+    CT_StepConfigurableDialog *configDialog = newStandardPreConfigurationDialog();
+
+    configDialog->addBool(tr("Nom adaptatif (dans une boucle)"), "", "", _adaptative);
+
+}
+
 //////////////////// PROTECTED //////////////////
 
 void PB_StepGenericExporter::createInResultModelListProtected()
@@ -214,6 +246,21 @@ void PB_StepGenericExporter::createInResultModelListProtected()
 
     if(!_exporter->exportOnlyGroup())
         resultModel->addItemModel(DEF_SearchInGroup, DEF_SearchInItemDrawable, CT_AbstractItemDrawable::staticGetType(), tr("Item"));
+
+
+    if (_adaptative)
+    {
+        CT_InResultModelGroup* resCounter = createNewInResultModel(DEFin_resCounter, tr("Résultat compteur"), "", true);
+        resCounter->setRootGroup(DEF_inGroupCounter);
+        resCounter->addItemModel(DEF_inGroupCounter, DEF_inCounter, CT_LoopCounter::staticGetType(), tr("Compteur"));
+
+        CT_InResultModelGroup* baseNameRes = createNewInResultModel(DEF_inresName, tr("Nom de base (optionnel)"), "", true);
+        baseNameRes->setZeroOrMoreRootGroup();
+        baseNameRes->addGroupModel("", DEF_inGroupName, CT_AbstractItemGroup::staticGetType(), tr("Groupe"));
+        baseNameRes->addItemModel(DEF_inGroupName, DEF_inName, CT_AbstractSingularItemDrawable::staticGetType(), tr("Base Name"));
+        baseNameRes->addItemAttributeModel(DEF_inName, DEF_inNameAtt, QList<QString>() << CT_AbstractCategory::DATA_FILE_NAME << CT_AbstractCategory::DATA_VALUE, CT_AbstractCategory::ANY, tr("Name"));
+        baseNameRes->setMinimumNumberOfPossibilityThatMustBeSelectedForOneTurn(0);
+    }
 
     // un tour maximum !
     setMaximumTurn(1);
@@ -254,7 +301,13 @@ bool PB_StepGenericExporter::postConfigure()
         extensions += ")";
     }
 
-    QString exportFileName = QFileDialog::getSaveFileName(NULL, tr("Exporter sous..."), _exportFilename.isEmpty() ? _exportPath : _exportFilename, extensions);
+    QString exportFileName;
+    if (_adaptative)
+    {
+        exportFileName = QFileDialog::getExistingDirectory(NULL, tr("Exporter dans..."), _exportFilename.isEmpty() ? _exportPath : _exportFilename);
+    } else {
+        exportFileName = QFileDialog::getSaveFileName(NULL, tr("Exporter sous..."), _exportFilename.isEmpty() ? _exportPath : _exportFilename, extensions);
+    }
 
     if(exportFileName.isEmpty())
         return false;
@@ -275,6 +328,40 @@ void PB_StepGenericExporter::createOutResultModelListProtected()
 
 void PB_StepGenericExporter::compute()
 {
+    CT_ResultGroup* resIn_Counter = NULL;
+    CT_ResultGroup* resIn_BaseName = NULL;
+    QString rootBaseName = "";
+    QString baseName = "";
+
+    if (_adaptative)
+    {
+        QList<CT_ResultGroup*> inResultList = getInputResults();
+
+        resIn_Counter = inResultList.at(1);
+        if (inResultList.size() > 2)
+        {
+            resIn_BaseName = inResultList.at(2);
+
+            CT_ResultItemIterator it0(resIn_BaseName, this, DEF_inName);
+            if (it0.hasNext())
+            {
+                const CT_AbstractSingularItemDrawable* item = it0.next();
+                CT_AbstractItemAttribute* att = item->firstItemAttributeByINModelName(resIn_BaseName, this, DEF_inNameAtt);
+                QString tmp = att->toString(item, NULL);
+                rootBaseName = QFileInfo(tmp).baseName();
+            }
+        }
+
+        CT_ResultItemIterator it(resIn_Counter, this, DEF_inCounter);
+        if (it.hasNext())
+        {
+            CT_LoopCounter* counter = (CT_LoopCounter*) it.next();
+            baseName = counter->getTurnName();
+            baseName = QFileInfo(baseName).baseName();
+        }
+    }
+
+
     // on récupère le modèle d'entrée à exporter
     CT_InAbstractModel *inItemModelToExport = NULL;
 
@@ -304,7 +391,22 @@ void PB_StepGenericExporter::compute()
     if(!itemsToExport.isEmpty())
     {
         _exporter->clearErrorMessage();
-        _exporter->setExportFilePath(_exportFilename);
+
+        if (_adaptative)
+        {
+            QString path = _exportFilename;
+            path.append("/");
+            path.append(rootBaseName);
+            if (!rootBaseName.isEmpty())
+            {
+                path.append("_");
+            }
+            path.append(baseName);
+            _exporter->setExportFilePath(path);
+
+        } else {
+            _exporter->setExportFilePath(_exportFilename);
+        }
 
         // on la donne à l'exportateur
         if(!_exporter->setItemDrawableToExport(itemsToExport))

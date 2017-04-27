@@ -52,6 +52,8 @@ public:
 
 protected:
 
+    void createPreConfigurationDialog();
+
     // CT_AbstractStep obligatoire :
     void createInResultModelListProtected();
 
@@ -72,6 +74,8 @@ private:
     QString             _pluginName;
     QString             _exportPath;
     QString             _exportFilename;
+
+    bool                _adaptative;
 
     SettingsNodeGroup   *_exporterConfiguration;
 
