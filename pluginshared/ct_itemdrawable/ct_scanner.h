@@ -102,6 +102,15 @@ public:
     */
     CT_Scanner(const CT_OutAbstractSingularItemModel *model, const CT_AbstractResult *result, int scanID, const Eigen::Vector3d &position, const Eigen::Vector3d &zVector, double hFov, double vFov, double hRes, double vRes, double initTheta, double initPhi, bool clockWise, bool radians = false );
 
+    /**
+     * @brief Constructor with custom shooting pattern
+     * The CT_Scanner takes the ownership of the shooting pointer.
+     *
+     * FIXME: if CT_OutAbstractSingularItemModel pointer is passed as first
+     * argument instead of a QString, the pattern pointer is casted to boolean
+     * and the selected overloaded constructor is not the expect one.
+     */
+    CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanID, CT_ShootingPattern *pattern);
 
     CT_Scanner(const QString &modelName, const CT_AbstractResult *result, int scanId = 0, bool clockWise = true );
 

@@ -102,6 +102,20 @@ CT_Scanner::CT_Scanner(const CT_OutAbstractSingularItemModel *model,
     setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
 }
 
+CT_Scanner::CT_Scanner(const QString &modelName,
+                       const CT_AbstractResult *result, int scanID,
+                       CT_ShootingPattern *pattern) :
+    CT_AbstractItemDrawableWithoutPointCloud (modelName, result)
+{
+    _scanID = scanID;
+    const Eigen::Vector3d& center = pattern->getCenterCoordinate();
+    setCenterX(center.x());
+    setCenterY(center.y());
+    setCenterZ(center.z());
+    m_shootingPattern.reset(pattern);
+    setBaseDrawManager(&CT_SCANNER_DRAW_MANAGER);
+}
+
 
 
 CT_Scanner::CT_Scanner(const QString &modelName, const CT_AbstractResult *result,

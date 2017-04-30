@@ -131,6 +131,7 @@ CT_Grid3D<DataT>::CT_Grid3D(const QString &modelName,
     setCenterY (minY() + (maxY() - minY())/2.0);
     setCenterZ (minZ() + (maxZ() - minZ())/2.0);
 
+    // FIXME: check that the size is reasonable
     _data.resize(nCells());
     initGridWithValue(initValue);
 
