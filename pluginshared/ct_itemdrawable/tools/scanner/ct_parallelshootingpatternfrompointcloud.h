@@ -24,6 +24,12 @@
  */
 class CT_ParallelShootingPatternFromPointCloud: public CT_ShootingPattern {
 public:
+
+    /**
+     * @brief default constructor
+     */
+    CT_ParallelShootingPatternFromPointCloud();
+
     /**
      * @brief Shooting Pattern constructor
      * @param origin: a point in the plane

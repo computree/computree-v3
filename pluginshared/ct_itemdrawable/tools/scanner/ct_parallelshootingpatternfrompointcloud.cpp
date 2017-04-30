@@ -11,6 +11,15 @@
 
 #include "Eigen/Geometry"
 
+CT_ParallelShootingPatternFromPointCloud::CT_ParallelShootingPatternFromPointCloud() :
+    CT_ShootingPattern(),
+    m_point(Eigen::Vector3d::Zero()),
+    m_normal(Eigen::Vector3d::Ones()),
+    m_pcir(nullptr),
+    m_plane(m_normal, m_point)
+{
+}
+
 CT_ParallelShootingPatternFromPointCloud::CT_ParallelShootingPatternFromPointCloud(
         const Eigen::Vector3d &point,
         const Eigen::Vector3d &normal,

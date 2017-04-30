@@ -18,6 +18,11 @@ class PLUGINSHAREDSHARED_EXPORT CT_ShootingPatternFromPointCloud : public CT_Sho
 {
 public:
     /**
+     * @brief default constructor
+     */
+    CT_ShootingPatternFromPointCloud();
+
+    /**
      * @brief Construct a pattern with an origin and a list of index of points
      * @param origin : origin of all shots
      * @param pcir : list of index of points that represent an impact or to deduce the direction

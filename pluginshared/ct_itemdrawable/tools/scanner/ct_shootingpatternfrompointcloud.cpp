@@ -2,6 +2,13 @@
 
 #include "ct_cloudindex/registered/abstract/ct_abstractcloudindexregisteredt.h"
 
+CT_ShootingPatternFromPointCloud::CT_ShootingPatternFromPointCloud() :
+    CT_ShootingPattern(),
+    m_origin(0, 0, 0),
+    m_pcir(nullptr)
+{
+}
+
 CT_ShootingPatternFromPointCloud::CT_ShootingPatternFromPointCloud(
         const Eigen::Vector3d& origin,
         CT_PCIR pcir) :
