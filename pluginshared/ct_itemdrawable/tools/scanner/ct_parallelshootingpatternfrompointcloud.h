@@ -22,7 +22,7 @@
  * scene, where the angles between the rays are negligible.
  *
  */
-class CT_ParallelShootingPatternFromPointCloud: public CT_ShootingPattern {
+class PLUGINSHAREDSHARED_EXPORT CT_ParallelShootingPatternFromPointCloud: public CT_ShootingPattern {
 public:
 
     /**
